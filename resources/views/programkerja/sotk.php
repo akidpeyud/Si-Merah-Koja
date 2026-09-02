@@ -27,7 +27,7 @@
             color: #1f2937;
         }
 
-        /* --- NAVBAR STYLES (DARI HOMEPAGE) --- */
+        /* --- NAVBAR STYLES --- */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -66,6 +66,31 @@
             border-bottom: 1px solid #374151; font-weight: 600;
         }
         .dropdown-menu-custom li a:hover { background-color: #374151; color: #ef4444; padding-left: 26px; }
+
+        /* --- DROPDOWN WHITE (Layanan & Fasilitas) --- */
+        .dropdown-white .dropdown-menu-custom {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            min-width: 240px;
+        }
+        .dropdown-white .dropdown-menu-custom li a {
+            color: #336699; 
+            font-size: 13px;
+            font-weight: 600;
+            padding: 16px 20px;
+            border-bottom: 1px solid #f3f4f6;
+            transition: all 0.2s ease;
+        }
+        .dropdown-white .dropdown-menu-custom li:last-child a {
+            border-bottom: none;
+        }
+        .dropdown-white .dropdown-menu-custom li a:hover {
+            background-color: #f8fafc;
+            color: #ef4444;
+            padding-left: 24px;
+        }
 
         /* --- PAGE HEADER --- */
         .page-header {
@@ -177,17 +202,21 @@
             color: #4b5563; 
             line-height: 1.5;
         }
+        
+        /* Updated Social Links (1 Baris) */
         .social-links {
             display: flex;
-            gap: 10px;
+            flex-wrap: nowrap; /* Memaksa agar tetap 1 baris */
+            gap: 6px; /* Jarak antar ikon diperkecil */
             margin-top: 25px;
         }
         .social-links a {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 36px;
-            height: 36px;
+            width: 32px; /* Ukuran lingkaran diperkecil */
+            height: 32px; 
+            font-size: 13px; /* Ukuran ikon disesuaikan */
             background-color: #ffffff;
             color: #6b7280;
             border-radius: 50%;
@@ -250,7 +279,7 @@
             object-fit: contain;
         }
 
-        /* --- FOOTER STYLES (DARI HOMEPAGE) --- */
+        /* --- FOOTER STYLES --- */
         .footer-bottom {
             background-color: #1a1a1a;
             color: #9ca3af;
@@ -292,10 +321,7 @@
             padding-top: 20px;
             border-top: 1px solid #333;
         }
-        .footer-newsletter { display: flex; align-items: center; gap: 10px;}
-        .footer-newsletter input {
-            background: white; border: none; padding: 10px 15px; border-radius: 4px; width: 200px; outline: none; font-size: 12px;
-        }
+        
         .footer-social { display: flex; gap: 5px; }
         .footer-social a {
             width: 35px; height: 35px; background: #333; color: white; display: flex; align-items: center; justify-content: center; border-radius: 4px; text-decoration: none; transition: background 0.3s;
@@ -312,7 +338,7 @@
         $pesan_wa = "Terimakasih%20telah%20menghubungi%20%F0%9F%94%A5%F0%9F%94%A5%F0%9F%94%A5..%0ASistem%20Informasi%20Penanggulangan%20Kebakaran%20dan%20Penyelamatan%20Daerah%20Kota%20Jambi%20(SIMERAH%20KOJA)";
     ?>
 
- <!-- Navbar -->
+    <!-- Navbar -->
     <nav class="navbar">
         <a href="/" class="nav-logos" style="text-decoration: none;">
             <img src="/images/jambi.png" alt="Logo Pemkot">
@@ -330,25 +356,26 @@
             </li>
             <li class="dropdown-custom">
                 <a href="#">Program Kerja <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+                <!-- UPDATE: Menambahkan link PRODUK HUKUM di Dropdown Program Kerja -->
                 <ul class="dropdown-menu-custom">
                     <li><a href="/sotk">SOTK</a></li>
                     <li><a href="/perencanaan">PERENCANAAN</a></li>
                     <li><a href="/pelaporan">PELAPORAN</a></li>
                     <li><a href="/sop">SOP</a></li>
+                    <li><a href="/produkhukum">PRODUK HUKUM</a></li>
                 </ul>
             </li>
-            <li class="dropdown-custom">
+            <li class="dropdown-custom dropdown-white">
                 <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-                <ul class="dropdown-menu-custom">
-                    <li><a href="#">LAYANAN PERIZINAN</a></li>
-                    <li><a href="#">EDUKASI DAN SOSIALISASI</a></li>
-                    <li><a href="#">PKS</a></li>
-                    <li><a href="#">LAYANAN LAINNYA</a></li>
+                <ul class="dropdown-menu-custom dropdown-menu">
+                    <li><a href="/layanan-perizinan">LAYANAN PERIZINAN</a></li>
+                    <li><a href="/edukasi-sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
+                    <li><a href="/perjanjian-kerjasama">PKS</a></li>
+                    <li><a href="/layanan-lainnya">LAYANAN LAINNYA</a></li>
                 </ul>
             </li>
             <li><a href="/redkar">Redkar</a></li>
-            
-            <li><a href="#" class="btn-login">LOGIN</a></li>
+            <li><a href="/login" class="btn-login">LOGIN</a></li>
         </ul>
     </nav>
 
@@ -403,13 +430,15 @@
                 <!-- Kiri: Widget Kontak -->
                 <div class="col-lg-4 col-xl-3">
                     <div class="contact-widget">
+                        <!-- EMAIL RESMI -->
                         <div class="contact-item">
                             <i class="fas fa-envelope-open-text"></i>
                             <div>
                                 <h6>Email Resmi</h6>
-                                <p>damkar.jbi@gmail.com</p>
+                                <p><a href="mailto:damkar.jbi@gmail.com" style="color: #4b5563; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#4b5563'">damkar.jbi@gmail.com</a></p>
                             </div>
                         </div>
+                        <!-- ALAMAT -->
                         <div class="contact-item mb-0">
                             <i class="fas fa-map-marker-alt"></i>
                             <div>
@@ -418,10 +447,14 @@
                             </div>
                         </div>
                         
+                        <!-- SOSIAL MEDIA LINKS -->
                         <div class="social-links">
-                            <a href="#"><i class="fab fa-twitter"></i></a>
-                            <a href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
+                            <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
+                            <a href="https://www.facebook.com/DamkarKotaJambi" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="https://www.youtube.com/@damkarkotajambi" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+                            <a href="https://www.tiktok.com/@damkar.kota.jambi" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                            <a href="https://www.instagram.com/damkar.kotajambi/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
                         </div>
                     </div>
                 </div>
@@ -502,18 +535,14 @@
         
         <div class="footer-copyright">
             <div>SIMERAHKOJA © 2026 / ALL RIGHTS RESERVED</div>
-            <div class="footer-newsletter">
-                <input type="email" placeholder="Enter your email here...">
-                <div style="background: white; padding: 10px; border-radius: 4px; cursor: pointer; color: #111827;">
-                    <i class="fas fa-envelope"></i>
-                </div>
-            </div>
+            <!-- FOOTER SOCIAL LINKS -->
             <div class="footer-social">
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#"><i class="fab fa-google-plus-g"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
+                <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.facebook.com/DamkarKotaJambi" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.youtube.com/@damkarkotajambi" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.tiktok.com/@damkar.kota.jambi" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/damkar.kotajambi/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
     </div>
