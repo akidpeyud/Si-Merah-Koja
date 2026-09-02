@@ -401,42 +401,42 @@
                             </div>
                             
                             <div class="col-12">
-                                <label class="form-label">nama_lengkap</label>
+                                <label class="form-label">Nama Lengkap</label>
                                 <input type="text" class="form-control" name="nama_lengkap" required>
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">jenis_kelamin</label>
+                                <label class="form-label">Jenis Kelamin</label>
                                 <select class="form-select" name="jenis_kelamin" required>
-                                    <option value="" selected disabled>Pilih jenis_kelamin</option>
+                                    <option value="" selected disabled>Pilih Jenis Kelamin</option>
                                     <option value="L">Laki-Laki</option>
                                     <option value="P">Perempuan</option>
                                 </select>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">tempat_lahir</label>
+                                <label class="form-label">Tempat Lahir</label>
                                 <input type="text" class="form-control" name="tempat_lahir" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">tanggal_lahir</label>
+                                <label class="form-label">Tanggal Lahir</label>
                                 <input type="date" class="form-control" name="tanggal_lahir" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">status_perkawinan</label>
+                                <label class="form-label">Status Perkawinan</label>
                                 <select class="form-select" name="status_perkawinan" required>
-                                    <option value="" selected disabled>Pilih status_perkawinan</option>
+                                    <option value="" selected disabled>Pilih Status Perkawinan</option>
                                     <option value="Belum Kawin">Belum Kawin</option>
                                     <option value="Kawin">Kawin</option>
                                 </select>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">agama</label>
+                                <label class="form-label">Agama</label>
                                 <select class="form-select" name="agama" required>
-                                    <option value="" selected disabled>Pilih agama</option>
+                                    <option value="" selected disabled>Pilih Agama</option>
                                     <option value="Islam">Islam</option>
                                     <option value="Kristen">Kristen</option>
                                     <option value="Katolik">Katolik</option>
@@ -446,12 +446,12 @@
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">nomor_telp</label>
+                                <label class="form-label">Nomor Telpon</label>
                                 <input type="text" class="form-control" name="nomor_telp" required>
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">ktp</label>
+                                <label class="form-label">Kartu Tanda Penduduk</label>
                                 <div class="file-upload-wrapper" onclick="document.getElementById('ktp_upload').click()">
                                     <p>Drag & Drop your files or <span>Browse</span></p>
                                     <input type="file" id="ktp_upload" name="ktp" class="d-none" accept=".jpg,.jpeg,.png,.pdf">
@@ -459,58 +459,64 @@
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">alamat</label>
+                                <label class="form-label">Alamat</label>
                                 <textarea class="form-control" name="alamat" rows="3" required></textarea>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">rt_rw</label>
+                                <label class="form-label">RT/RW</label>
                                 <input type="text" class="form-control" name="rt_rw" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">kode_pos</label>
+                                <label class="form-label">Kode Pos</label>
                                 <input type="text" class="form-control" name="kode_pos" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">provinsi</label>
+                                <label class="form-label">Provinsi</label>
                                 <input type="text" class="form-control readonly-input" name="provinsi" value="JAMBI" readonly>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">kabupaten_kota</label>
+                                <label class="form-label">Kabupaten/Kota</label>
                                 <input type="text" class="form-control readonly-input" name="kabupaten_kota" value="KOTA JAMBI" readonly>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">kecamatan</label>
-                                <select class="form-select" name="kecamatan" required>
-                                    <option value="" selected disabled>Pilih kecamatan</option>
+                                <label class="form-label">Kecamatan</label>
+                                <select class="form-select" name="kecamatan" id="kecamatan" required>
+                                    <option value="" selected disabled>Pilih Kecamatan</option>
                                     <option value="Alam Barajo">Alam Barajo</option>
                                     <option value="Danau Sipin">Danau Sipin</option>
+                                    <option value="Danau Teluk">Danau Teluk</option>
                                     <option value="Jambi Selatan">Jambi Selatan</option>
-                                    <!-- Tambahkan opsi kecamatan lainnya -->
+                                    <option value="Jambi Timur">Jambi Timur</option>
+                                    <option value="Jelutung">Jelutung</option>
+                                    <option value="Kota Baru">Kota Baru</option>
+                                    <option value="Paal Merah">Paal Merah</option>
+                                    <option value="Pasar Jambi">Pasar Jambi</option>
+                                    <option value="Pelayangan">Pelayangan</option>
+                                    <option value="Telanaipura">Telanaipura</option>
                                 </select>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">kelurahan</label>
-                                <select class="form-select" name="kelurahan" required>
-                                    <option value="" selected disabled>Pilih kelurahan</option>
-                                    <!-- Opsi kelurahan akan bergantung pada kecamatan via JS nantinya -->
+                                <label class="form-label">Kelurahan</label>
+                                <select class="form-select" name="kelurahan" id="kelurahan" required>
+                                    <option value="" selected disabled>Pilih Kelurahan</option>
                                 </select>
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">pekerjaan</label>
+                                <label class="form-label">Pekerjaan</label>
                                 <input type="text" class="form-control" name="pekerjaan" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">penddkn_terakhir</label>
-                                <select class="form-select" name="penddkn_terakhir" required>
-                                    <option value="" selected disabled>Pilih penddkn_terakhir</option>
+                                <label class="form-label">Pendidikan Terakhir</label>
+                                <select class="form-select" name="pendidikan_terakhir" required>
+                                    <option value="" selected disabled>Pilih Pendidikan Terakhir</option>
                                     <option value="SMA/SMK">SMA/SMK</option>
                                     <option value="D3">D3</option>
                                     <option value="S1">S1</option>
@@ -518,27 +524,27 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">sehat_jasmani</label>
+                                <label class="form-label">Sehat Jasmani</label>
                                 <select class="form-select" name="sehat_jasmani" required>
-                                    <option value="" selected disabled>Pilih sehat_jasmani</option>
+                                    <option value="" selected disabled>Pilih Kondisi</option>
                                     <option value="Ya">Ya</option>
                                     <option value="Tidak">Tidak</option>
                                 </select>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">buta_warna</label>
+                                <label class="form-label">Buta Warna</label>
                                 <select class="form-select" name="buta_warna" required>
-                                    <option value="" selected disabled>Pilih buta_warna</option>
-                                    <option value="Tidak">Tidak</option>
+                                    <option value="" selected disabled>Pilih Kondisi</option>
                                     <option value="Ya">Ya</option>
+                                    <option value="Tidak">Tidak</option>
                                 </select>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">golongan_darah</label>
+                                <label class="form-label">Golongan Darah</label>
                                 <select class="form-select" name="golongan_darah" required>
-                                    <option value="" selected disabled>Pilih golongan_darah</option>
+                                    <option value="" selected disabled>Pilih Golongan Darah</option>
                                     <option value="A">A</option>
                                     <option value="B">B</option>
                                     <option value="AB">AB</option>
@@ -619,5 +625,40 @@
 
     <!-- Script Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script Dynamic Dropdown Kecamatan ke Kelurahan -->
+    <script>
+        const dataWilayah = {
+            "Alam Barajo": ["Bagan Pete", "Beliung", "Kenali Besar", "Mayang Mangurai", "Pinang Merah", "Rawa Sari", "Simpang Rimbo"],
+            "Danau Sipin": ["Legok", "Murni", "Selamat", "Solok Sipin", "Sungai Putri"],
+            "Danau Teluk": ["Olak Kemang", "Pasir Panjang", "Tanjung Pasir", "Tanjung Raden", "Ulu Gedong"],
+            "Jambi Selatan": ["Pakuan Baru", "Pasir Putih", "Tambak Sari", "The Hok", "Wijaya Pura"],
+            "Jambi Timur": ["Budiman", "Kasang", "Kasang Jaya", "Rajawali", "Sejinjang", "Sulanjana", "Talang Banjar", "Tanjung Pinang", "Tanjung Sari"],
+            "Jelutung": ["Cempaka Putih", "Handil Jaya", "Jelutung", "Kebun Handil", "Lebak Bandung", "Payo Lebar", "Talang Jauh"],
+            "Kota Baru": ["Kenali Asam", "Kenali Asam Atas", "Kenali Asam Bawah", "Paal Lima", "Simpang Tiga Sipin", "Sukakarya", "Talang Gulo"],
+            "Paal Merah": ["Bakung Jaya", "Eka Jaya", "Lingkar Selatan", "Paal Merah", "Payo Selincah", "Talang Bakung"],
+            "Pasar Jambi": ["Beringin", "Orang Kayo Hitam", "Pasar Jambi", "Sungai Asam"],
+            "Pelayangan": ["Arab Melayu", "Jelmu", "Mudung Laut", "Tahtul Yaman", "Tanjung Johor", "Tengah"],
+            "Telanaipura": ["Aur Kenali", "Buluran Kenali", "Pematang Sulur", "Penyengat Rendah", "Simpang Empat Sipin", "Telanaipura", "Teluk Kenali"]
+        };
+
+        document.getElementById('kecamatan').addEventListener('change', function() {
+            const kecamatan = this.value;
+            const kelurahanSelect = document.getElementById('kelurahan');
+
+            // Reset options kelurahan
+            kelurahanSelect.innerHTML = '<option value="" selected disabled>Pilih Kelurahan</option>';
+
+            // Jika ada kecamatan yang dipilih dan ada di dataWilayah
+            if (kecamatan && dataWilayah[kecamatan]) {
+                dataWilayah[kecamatan].forEach(function(kelurahan) {
+                    const option = document.createElement('option');
+                    option.value = kelurahan;
+                    option.textContent = kelurahan;
+                    kelurahanSelect.appendChild(option);
+                });
+            }
+        });
+    </script>
 </body>
 </html>
