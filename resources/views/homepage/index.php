@@ -16,7 +16,7 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        /* --- STYLES DARI HEADER (TETAP SAMA SEPERTI SEBELUMNYA) --- */
+        /* --- STYLES DARI HEADER --- */
         .hero-section {
             background-image: linear-gradient(rgba(11, 15, 25, 0.75), rgba(11, 15, 25, 0.9)), url('/images/background1.jpg');
             background-size: cover;
@@ -26,26 +26,13 @@
             display: flex;
             flex-direction: column;
         }
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #0b0f19;
-            padding: 10px 50px;
-            font-size: 13px;
-            font-weight: 500;
-            color: #d1d5db;
-        }
-        .top-bar .social-icons a { color: #9ca3af; margin-right: 18px; text-decoration: none; transition: color 0.3s; }
-        .top-bar .social-icons a:hover { color: #ffffff; }
-        .top-bar .contact-info span { margin-left: 20px; }
-        .top-bar .contact-info i { color: #ef4444; margin-right: 6px; }
+        
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px 50px;
-            background-color: #111827;
+            background-color: #111827; 
             border-bottom: 4px solid #ef4444;
             position: relative;
             z-index: 999;
@@ -64,19 +51,27 @@
             background-color: #ef4444; color: #ffffff; padding: 8px 24px; border-radius: 50px; margin-left: 10px;
         }
         .nav-links .btn-login:hover { background-color: #dc2626; color: #ffffff; }
+        
+        /* Dropdown Menu */
         .dropdown-menu {
-            display: none; position: absolute; top: 100%; left: 0; background-color: #1f2937;
-            min-width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-radius: 8px;
-            overflow: hidden; z-index: 10; margin-top: 0; border: 1px solid #374151;
+            display: none; position: absolute; top: 100%; left: 0; 
+            background-color: #111827; 
+            min-width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
+            border-radius: 0 0 8px 8px; 
+            overflow: hidden; z-index: 10; margin-top: 0; 
+            border: 1px solid #1f293b;
+            border-top: none; 
         }
         .dropdown:hover .dropdown-menu { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .dropdown-menu li { list-style: none; padding-bottom: 0; margin-bottom: 0; }
         .dropdown-menu li a {
             color: #e5e7eb; padding: 14px 20px; display: block; font-size: 13px;
-            border-bottom: 1px solid #374151; font-weight: 600;
+            border-bottom: 1px solid #1f293b; font-weight: 600;
         }
-        .dropdown-menu li a:hover { background-color: #374151; color: #ef4444; padding-left: 26px; }
+        .dropdown-menu li:last-child a { border-bottom: none; }
+        .dropdown-menu li a:hover { background-color: #1f293b; color: #ef4444; padding-left: 26px; }
+        
         .main-content {
             flex-grow: 1; display: flex; flex-direction: column; align-items: center;
             justify-content: center; text-align: center; padding: 20px; margin-top: -20px;
@@ -93,6 +88,7 @@
             font-size: 1.15rem; font-weight: 500; color: #cbd5e1; max-width: 700px;
             margin-bottom: 50px; line-height: 1.7;
         }
+        
         .emergency-btn-container { position: relative; display: inline-block; }
         .btn-darurat {
             display: flex; align-items: center; justify-content: center; width: 150px; height: 150px;
@@ -107,6 +103,7 @@
             70% { box-shadow: 0 0 0 25px rgba(239, 68, 68, 0); }
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
+        
         .emergency-popup {
             visibility: hidden; opacity: 0; position: absolute; bottom: 120%; left: 50%;
             transform: translateX(-50%) translateY(10px); background-color: #1f2937;
@@ -134,9 +131,7 @@
             border-width: 8px; border-style: solid; border-color: #1f2937 transparent transparent transparent;
         }
 
-        /* --- STYLES BARU UNTUK KONTEN DI BAWAH (SECTION 1-6) --- */
-        
-        /* Section General Styles */
+        /* --- STYLES UNTUK KONTEN DI BAWAH --- */
         .section-container {
             padding: 80px 5%;
             background-color: #ffffff;
@@ -172,7 +167,7 @@
             color: #ef4444; font-size: 8px; margin: 0 10px;
         }
 
-        /* Section 1: Tentang (Berdasarkan image_d1c175.png) */
+        /* Section 1: Tentang */
         .about-section {
             display: flex;
             align-items: center;
@@ -229,9 +224,9 @@
         }
         .about-image img { width: 100%; max-width: 400px; }
 
-        /* Section 2: Layanan & Fasilitas (Berdasarkan image_d1c1f5.png) */
+        /* Section 2: Layanan & Fasilitas */
         .layanan-section {
-            background-color: #f8fafc; /* Sedikit abu-abu terang */
+            background-color: #f8fafc; 
         }
         .layanan-grid {
             display: grid;
@@ -259,7 +254,7 @@
             font-size: 30px; color: white;
             margin-bottom: 20px;
         }
-        /* Warna icon bervariasi */
+        
         .icon-gray { background: #9ca3af; }
         .icon-pink { background: #ec4899; }
         .icon-orange { background: #f97316; }
@@ -280,7 +275,7 @@
         }
         .btn-layanan-lainnya:hover { background: #dc2626; }
 
-        /* Section 3: Kejadian & Evakuasi (Berdasarkan image_d1c269.png) */
+        /* Section 3: Kejadian & Evakuasi */
         .kejadian-section {
             max-width: 1000px; margin: 0 auto;
         }
@@ -300,7 +295,7 @@
             gap: 20px;
         }
         .kejadian-date {
-            background: #0b0f19; /* Biru Dongker Gelap */
+            background: #0b0f19;
             color: white;
             width: 70px; height: 70px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -317,9 +312,9 @@
         .kejadian-info a { font-size: 12px; color: #9ca3af; text-decoration: none; font-weight: 600; transition: color 0.3s;}
         .kejadian-info a:hover { color: #ef4444; }
 
-        /* Section 4: Video Edukasi (Berdasarkan image_d1c518.jpg) - Dark Red Theme */
+        /* Section 4: Video Edukasi */
         .video-section {
-            background-color: #7f1d1d; /* Merah gelap */
+            background-color: #7f1d1d; 
             color: white;
         }
         .video-section .section-title, .video-section .section-subtitle { color: white; }
@@ -354,7 +349,7 @@
         }
         .video-card:hover .video-play-btn { transform: translate(-50%, -50%) scale(1.1); }
 
-        /* Section 5: Info Grafis & Berita Medsos (Berdasarkan image_d1c539.jpg & image_d1c5b6.jpg) */
+        /* Section 5: Info Grafis & Berita Medsos */
         .grafis-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -368,7 +363,6 @@
         }
         .grafis-card img { width: 100%; display: block; }
         
-        /* Layout untuk Berita Sosmed (Bawahnya Info Grafis) */
         .berita-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -394,9 +388,9 @@
         .berita-footer a { font-size: 12px; color: #9ca3af; text-decoration: none; font-weight: 600; }
         .berita-footer a:hover { color: #ef4444; }
 
-        /* Section 6: Giat Disdamkartan (Berdasarkan image_d1c594.png) - Dark Navy Theme */
+        /* Section 6: Giat Disdamkartan */
         .giat-section {
-            background-color: #0b0f19; /* Biru Dongker Gelap */
+            background-color: #0b0f19;
             color: white;
             padding: 80px 5%;
         }
@@ -429,7 +423,7 @@
         .giat-text a { font-size: 11px; color: #6b7280; text-decoration: none; font-weight: 600; }
         .giat-text a:hover { color: #ffffff; }
 
-        /* Footer Bawah (Berdasarkan image_d1c5ed.png) */
+        /* Footer Bawah */
         .footer-bottom {
             background-color: #1a1a1a;
             color: #9ca3af;
@@ -449,7 +443,7 @@
         .footer-about p { line-height: 1.8; font-size: 12px; margin-bottom: 20px;}
         
         .footer-map-container { position: relative; width: 100%; height: 120px; background: #333; border-radius: 8px; overflow: hidden; margin-bottom: 15px;}
-        .footer-map-container img { width: 100%; height: 100%; object-fit: cover;}
+        .footer-map-container iframe { width: 100%; height: 100%; border: none;}
         .footer-find { font-weight: 700; color: white; margin-bottom: 20px; }
         .footer-find i { color: #ef4444; margin-right: 5px;}
         .footer-download p { font-size: 12px; color: #ef4444; margin-bottom: 10px; }
@@ -486,58 +480,53 @@
 <body>
 
     <?php
-        $email_kontak = "damkar.jbi@gmail.com";
-        $telp_kontak = "+(0741) 41171";
         $no_whatsapp = "628117113113"; 
         $no_telepon  = "074141171";
         $pesan_wa = "Terimakasih%20telah%20menghubungi%20%F0%9F%94%A5%F0%9F%94%A5%F0%9F%94%A5..%0ASistem%20Informasi%20Penanggulangan%20Kebakaran%20dan%20Penyelamatan%20Daerah%20Kota%20Jambi%20(SIMERAH%20KOJA)%0A%0AMohon%20Isi%20Laporan%20Pengaduan%3A%20%0A%0ANama%20Pelapor%20%20%20%3A%0ANo.%20HP%20Pelapor%20%3A%0AAlamat%20Pelapor%20%3A%0AJenis%20Laporan%20%20%20%3A%20%20(Kebakaran%2FEvakuasi)%0A%0AAlamat%20Kejadian%20%3A%0A%0AKirim%20Peta%20Lokasi%20kejadian%20(Google%20Maps)%20%3A%0A%0AKirim%20Foto%20%26%20Video%20Kejadian%20%3A%0A%0ALaporan%20akan%20segera%20kami%20tindaklanjuti%20%F0%9F%9A%92%F0%9F%9A%92%F0%9F%9A%92%0ASalam%20YUDHA%20BRAMA%20JAYA%20Dinas%20Pemadam%20Kebakaran%20%26%20Penyelamatan%20Kota%20Jambi.";
     ?>
 
-    <!-- HEADER / HERO SECTION (TETAP SAMA) -->
-    <div class="hero-section">
-        <div class="top-bar">
-            <div class="social-icons">
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-            </div>
-            <div class="contact-info">
-                <span><i class="fas fa-envelope"></i> <?php echo $email_kontak; ?></span>
-                <span><i class="fas fa-phone-alt"></i> <?php echo $telp_kontak; ?></span>
-            </div>
+    <!-- NAVBAR TEMA GELAP -->
+    <nav class="navbar">
+        <div class="nav-logos">
+            <img src="/images/jambi.png" alt="Logo Pemkot">
+            <img src="/images/logo.png" alt="Logo Damkar">
+            <img src="/images/logo-redkar.png" alt="Logo Redkar">
         </div>
+        <ul class="nav-links">
+            <li class="dropdown">
+                <a href="#">Layanan Kedaruratan <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a href="https://wa.me/<?php echo $no_whatsapp; ?>?text=<?php echo $pesan_wa; ?>" target="_blank">WHATSAPP</a></li>
+                    <li><a href="tel:<?php echo $no_telepon; ?>">TELEPHONE</a></li>
+                    <li><a href="tel:112">CALL CENTER 112</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Program Kerja <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/sotk">SOTK</a></li>
+                    <li><a href="/perencanaan">PERENCANAAN</a></li>
+                    <li><a href="/pelaporan">PELAPORAN</a></li>
+                    <li><a href="/sop">SOP</a></li>
+                    <li><a href="/produkhukum">PRODUK HUKUM</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
+                    <li><a href="#">PKS</a></li>
+                 
+                </ul>
+            </li>
+            <li><a href="#">Redkar</a></li>
+            <li><a href="#" class="btn-login">LOGIN</a></li>
+        </ul>
+    </nav>
 
-        <nav class="navbar">
-            <div class="nav-logos">
-                <img src="/images/jambi.png" alt="Logo Pemkot">
-                <img src="/images/logo.png" alt="Logo Damkar">
-                <img src="/images/logo-redkar.png" alt="Logo Redkar">
-            </div>
-            <ul class="nav-links">
-                <li class="dropdown">
-                    <a href="#">Layanan Kedaruratan <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="https://wa.me/<?php echo $no_whatsapp; ?>?text=<?php echo $pesan_wa; ?>" target="_blank">WHATSAPP</a></li>
-                        <li><a href="tel:<?php echo $no_telepon; ?>">TELEPHONE</a></li>
-                        <li><a href="tel:112">CALL CENTER 112</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#">Program Kerja <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/sotk">SOTK</a></li>
-                        <li><a href="#">PERENCANAAN</a></li>
-                        <li><a href="#">PELAPORAN</a></li>
-                        <li><a href="#">SOP</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a></li>
-                <li><a href="#">Redkar</a></li>
-                <li><a href="#" class="btn-login">LOGIN</a></li>
-            </ul>
-        </nav>
-
+    <!-- HERO SECTION (HOME) -->
+    <div class="hero-section">
         <div class="main-content">
             <div class="center-logos">
                 <img src="/images/jambi.png" alt="Logo Pemkot">
@@ -594,7 +583,6 @@
             </div>
             
             <div class="about-image">
-                <!-- Ganti src ini dengan file logo besar Simerah Koja di folder images -->
                 <img src="/images/simerahkoja.png" alt="Logo Besar Simerah Koja">
             </div>
         </div>
@@ -664,7 +652,6 @@
     <!-- SECTION 3: KEJADIAN & EVAKUASI -->
     <div class="section-container kejadian-section">
         <div class="kejadian-header-img">
-            <!-- Ganti src ini dengan gambar vektor mobil damkar -->
             <img src="https://via.placeholder.com/400x150/ffffff/ef4444?text=Vektor+Mobil+Damkar" alt="Mobil Damkar">
         </div>
         
@@ -758,7 +745,6 @@
         </div>
 
         <div class="video-grid">
-            <!-- Nanti ganti link placeholder dengan thumbnail videonya -->
             <div class="video-card">
                 <img src="https://via.placeholder.com/300x170/333333/ffffff?text=Thumbnail+Video+1" alt="Video Edukasi">
                 <i class="far fa-play-circle video-play-btn"></i>
@@ -787,7 +773,6 @@
         </div>
         
         <div class="grafis-grid">
-            <!-- Nanti ganti dengan gambar pamflet/infografis asli di folder images -->
             <div class="grafis-card"><img src="https://via.placeholder.com/400x400/f8fafc/9ca3af?text=Infografis+1" alt="Infografis"></div>
             <div class="grafis-card"><img src="https://via.placeholder.com/400x400/f8fafc/9ca3af?text=Infografis+2" alt="Infografis"></div>
             <div class="grafis-card"><img src="https://via.placeholder.com/400x400/f8fafc/9ca3af?text=Infografis+3" alt="Infografis"></div>
@@ -905,7 +890,6 @@
     <div class="giat-section">
         <div class="giat-container">
             <div class="giat-image">
-                <!-- Nanti ganti dengan gambar vektor 2 orang petugas damkar -->
                 <img src="https://via.placeholder.com/300x500/111827/ffffff?text=Vektor+Petugas+Damkar" alt="Petugas Damkar">
             </div>
             
@@ -947,16 +931,14 @@
         <div class="footer-grid">
             <div class="footer-about">
                 <div class="footer-logo">
-                    <!-- Ganti src ini dengan file logo Simerah Koja -->
                     <img src="/images/simerahkoja.png" alt="Logo Simerah Koja">
                 </div>
                 <h3>Tentang Kami</h3>
                 <p>SIMERAH KOJA merupakan sistem informasi pemerintahan berbasis elektronik yang terintegrasi pada dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
             </div>
             
-        <div class="footer-contact">
+            <div class="footer-contact">
                 <div class="footer-map-container">
-                    <!-- Google Maps Embed Resmi Dinas Pemadam Kebakaran Kota Jambi -->
                     <iframe 
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.202353147814!2d103.600648!3d-1.618096!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e22c8c6a234f6b1%3A0x4d537f0a82384f88!2sDinas%20Pemadam%20Kebakaran%20Kota%20Jambi!5e1!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid" 
                         width="100%" 
@@ -994,12 +976,14 @@
                     <i class="fas fa-envelope"></i>
                 </div>
             </div>
+         <!-- FOOTER SOCIAL LINKS -->
             <div class="footer-social">
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#"><i class="fab fa-google-plus-g"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
+                <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.facebook.com/DamkarKotaJambi" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.youtube.com/@damkarkotajambi" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.tiktok.com/@damkar.kota.jambi" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/damkar.kotajambi/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
     </div>
