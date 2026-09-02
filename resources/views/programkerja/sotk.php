@@ -312,7 +312,7 @@
         $pesan_wa = "Terimakasih%20telah%20menghubungi%20%F0%9F%94%A5%F0%9F%94%A5%F0%9F%94%A5..%0ASistem%20Informasi%20Penanggulangan%20Kebakaran%20dan%20Penyelamatan%20Daerah%20Kota%20Jambi%20(SIMERAH%20KOJA)";
     ?>
 
-    <!-- Navbar -->
+ <!-- Navbar -->
     <nav class="navbar">
         <a href="/" class="nav-logos" style="text-decoration: none;">
             <img src="/images/jambi.png" alt="Logo Pemkot">
@@ -337,8 +337,17 @@
                     <li><a href="/sop">SOP</a></li>
                 </ul>
             </li>
-            <li><a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a></li>
-            <li><a href="#">Redkar</a></li>
+            <li class="dropdown-custom">
+                <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+                <ul class="dropdown-menu-custom">
+                    <li><a href="#">LAYANAN PERIZINAN</a></li>
+                    <li><a href="#">EDUKASI DAN SOSIALISASI</a></li>
+                    <li><a href="#">PKS</a></li>
+                    <li><a href="#">LAYANAN LAINNYA</a></li>
+                </ul>
+            </li>
+            <li><a href="/redkar">Redkar</a></li>
+            
             <li><a href="#" class="btn-login">LOGIN</a></li>
         </ul>
     </nav>

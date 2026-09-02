@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relawan Pemadam Kebakaran | SIMERAH KOJA</title>
+    
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: #f3f4f6; 
+            color: #1f2937;
+        }
+
+        /* --- NAVBAR STYLES --- */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 50px;
+            background-color: #111827;
+            border-bottom: 4px solid #ef4444;
+            position: relative;
+            z-index: 999;
+        }
+        .nav-logos { display: flex; gap: 15px; align-items: center; }
+        .nav-logos img { height: 40px; transition: transform 0.3s; }
+        .nav-logos img:hover { transform: scale(1.05); }
+        .nav-links { list-style: none; display: flex; gap: 30px; align-items: center; margin-bottom: 0; padding-left: 0; }
+        .nav-links li { position: relative; padding-bottom: 15px; margin-bottom: -15px; }
+        .nav-links a {
+            color: #f8fafc; text-decoration: none; font-weight: 700; font-size: 13px;
+            text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s ease;
+        }
+        .nav-links a:hover { color: #ef4444; }
+        .nav-links .btn-login {
+            background-color: #ef4444; color: #ffffff; padding: 8px 24px; border-radius: 50px; margin-left: 10px;
+        }
+        .nav-links .btn-login:hover { background-color: #dc2626; color: #ffffff; }
+        
+        .dropdown-menu-custom {
+            display: none; position: absolute; top: 100%; left: 0; background-color: #1f2937;
+            min-width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-radius: 8px;
+            overflow: hidden; z-index: 10; margin-top: 0; border: 1px solid #374151; padding: 0;
+        }
+        .dropdown-custom:hover .dropdown-menu-custom { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .dropdown-menu-custom li { list-style: none; padding-bottom: 0; margin-bottom: 0; }
+        .dropdown-menu-custom li a {
+            color: #e5e7eb; padding: 14px 20px; display: block; font-size: 13px;
+            border-bottom: 1px solid #374151; font-weight: 600;
+        }
+        .dropdown-menu-custom li a:hover { background-color: #374151; color: #ef4444; padding-left: 26px; }
+
+        /* --- PAGE HEADER --- */
+        .page-header {
+            position: relative;
+            background-image: linear-gradient(rgba(11, 15, 25, 0.8), rgba(11, 15, 25, 0.95)), url('/images/background1.jpg');
+            background-size: cover;
+            background-position: center;
+            padding: 50px 0;
+            text-align: center;
+            color: white;
+            border-bottom: 4px solid #ef4444;
+        }
+        .page-header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .breadcrumb-custom {
+            display: inline-flex;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .breadcrumb-custom span {
+            color: #ef4444;
+        }
+        .breadcrumb-custom a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .breadcrumb-custom a:hover { color: #ffffff; }
+
+        /* --- REDKAR CONTENT STYLES --- */
+        .info-sidebar h3 {
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        .info-block {
+            margin-bottom: 25px;
+        }
+        .info-block h5 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .info-block h5 i {
+            color: #ef4444;
+            font-size: 18px;
+            width: 25px;
+        }
+        .info-block ul {
+            padding-left: 35px;
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.8;
+            margin-bottom: 0;
+        }
+        .info-block p {
+            padding-left: 25px;
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 0;
+        }
+        .social-share {
+            display: flex;
+            gap: 8px;
+            margin-top: 30px;
+        }
+        .social-share a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background-color: #9ca3af;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .social-share a:hover {
+            background-color: #ef4444;
+        }
+
+        /* Form Card */
+        .form-card {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border: 1px solid #e5e7eb;
+            padding: 40px;
+        }
+        .form-card .form-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-card .form-title img {
+            height: 45px;
+            margin: 0 5px;
+        }
+        .form-card .form-title h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #111827;
+            margin-top: 15px;
+        }
+        .form-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+            text-transform: capitalize;
+        }
+        .form-control, .form-select {
+            font-size: 13px;
+            padding: 10px 15px;
+            border-color: #d1d5db;
+            color: #4b5563;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 0.25rem rgba(239, 68, 68, 0.1);
+        }
+        .file-upload-wrapper {
+            border: 2px dashed #d1d5db;
+            border-radius: 6px;
+            padding: 30px 20px;
+            text-align: center;
+            background-color: #f8fafc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .file-upload-wrapper:hover {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+        .file-upload-wrapper p {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 600;
+            color: #6b7280;
+        }
+        .file-upload-wrapper p span {
+            text-decoration: underline;
+            color: #111827;
+        }
+        .btn-submit {
+            background-color: #ef4444;
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            transition: background 0.3s;
+        }
+        .btn-submit:hover {
+            background-color: #dc2626;
+        }
+        .readonly-input {
+            background-color: #f3f4f6;
+            cursor: not-allowed;
+        }
+
+        /* --- FOOTER STYLES --- */
+        .footer-bottom {
+            background-color: #1a1a1a;
+            color: #9ca3af;
+            padding: 50px 5%;
+            font-size: 13px;
+            margin-top: 60px;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 1fr;
+            gap: 40px;
+            max-width: 1100px;
+            margin: 0 auto 40px;
+        }
+        .footer-logo { text-align: center; }
+        .footer-logo img { height: 120px; margin-bottom: 15px; }
+        .footer-about h3 { color: white; font-size: 18px; margin-bottom: 20px; font-weight: 700;}
+        .footer-about p { line-height: 1.8; font-size: 12px; margin-bottom: 20px;}
+        
+        .footer-map-container { position: relative; width: 100%; height: 120px; background: #333; border-radius: 8px; overflow: hidden; margin-bottom: 15px;}
+        .footer-map-container img { width: 100%; height: 100%; object-fit: cover;}
+        .footer-find { font-weight: 700; color: white; margin-bottom: 20px; }
+        .footer-find i { color: #ef4444; margin-right: 5px;}
+        .footer-download p { font-size: 12px; color: #ef4444; margin-bottom: 10px; }
+        .footer-download img { height: 40px; cursor: pointer;}
+        
+        .footer-links h3 { color: white; font-size: 18px; margin-bottom: 20px; font-weight: 700;}
+        .footer-links ul { list-style: none; padding-left: 0; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a { color: #9ca3af; text-decoration: none; transition: color 0.3s; display: flex; align-items: center; gap: 10px;}
+        .footer-links a i { font-size: 10px; color: #4b5563;}
+        .footer-links a:hover { color: white; }
+
+        .footer-copyright {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+        }
+        .footer-newsletter { display: flex; align-items: center; gap: 10px;}
+        .footer-newsletter input {
+            background: white; border: none; padding: 10px 15px; border-radius: 4px; width: 200px; outline: none; font-size: 12px;
+        }
+        .footer-social { display: flex; gap: 5px; }
+        .footer-social a {
+            width: 35px; height: 35px; background: #333; color: white; display: flex; align-items: center; justify-content: center; border-radius: 4px; text-decoration: none; transition: background 0.3s;
+        }
+        .footer-social a:hover { background: #ef4444; }
+
+    </style>
+</head>
+<body>
+
+    <?php
+        $no_whatsapp = "628117113113"; 
+        $no_telepon  = "074141171";
+        $pesan_wa = "Terimakasih%20telah%20menghubungi%20%F0%9F%94%A5%F0%9F%94%A5%F0%9F%94%A5..%0ASistem%20Informasi%20Penanggulangan%20Kebakaran%20dan%20Penyelamatan%20Daerah%20Kota%20Jambi%20(SIMERAH%20KOJA)";
+    ?>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="/" class="nav-logos" style="text-decoration: none;">
+            <img src="/images/jambi.png" alt="Logo Pemkot">
+            <img src="/images/logo.png" alt="Logo Damkar">
+            <img src="/images/logo-redkar.png" alt="Logo Redkar">
+        </a>
+        <ul class="nav-links">
+            <li class="dropdown-custom">
+                <a href="#">Layanan Kedaruratan <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+                <ul class="dropdown-menu-custom">
+                    <li><a href="https://wa.me/<?php echo $no_whatsapp; ?>?text=<?php echo $pesan_wa; ?>" target="_blank">WHATSAPP</a></li>
+                    <li><a href="tel:<?php echo $no_telepon; ?>">TELEPHONE</a></li>
+                    <li><a href="tel:112">CALL CENTER 112</a></li>
+                </ul>
+            </li>
+            <li class="dropdown-custom">
+                <a href="#">Program Kerja <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+                <ul class="dropdown-menu-custom">
+                    <li><a href="/sotk">SOTK</a></li>
+                    <li><a href="/perencanaan">PERENCANAAN</a></li>
+                    <li><a href="/pelaporan">PELAPORAN</a></li>
+                    <li><a href="/sop">SOP</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a></li>
+            <li><a href="/redkar" style="color: #ef4444;">Redkar</a></li>
+            <li><a href="#" class="btn-login">LOGIN</a></li>
+        </ul>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>RELAWAN PEMADAM KEBAKARAN</h1>
+            <div class="breadcrumb-custom mt-2">
+                <a href="/">Home</a> 
+                <i class="fas fa-angle-double-right mx-2" style="font-size: 10px; color: #9ca3af;"></i> 
+                <span>RELAWAN PEMADAM KEBAKARAN (REDKAR)</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <div class="container mt-5">
+        <div class="row g-5">
+            
+            <!-- Kiri: Informasi Syarat & Kontak -->
+            <div class="col-lg-4">
+                <div class="info-sidebar position-sticky" style="top: 100px;">
+                    <h3>Informasi</h3>
+                    
+                    <div class="info-block">
+                        <h5><i class="fas fa-check-square"></i> Syarat Keanggotaan</h5>
+                        <ul>
+                            <li>penduduk yang berdomisili di wilayah kekuasaan Daerah Kota Jambi dan berusia minimal 18 tahun;</li>
+                            <li>sehat jasmani dan rohani;</li>
+                            <li>memiliki jiwa penolong, semangat pengabdian dan dedikasi tinggi;</li>
+                            <li>mampu bekerja secara mandiri dan dapat bekerja sama dengan pihak lain; dan</li>
+                            <li>terdaftar dan mendapatkan nomor register REDKAR dari Dinas.</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-block">
+                        <h5><i class="fas fa-envelope"></i> Email</h5>
+                        <p>damkar.jbi@gmail.com</p>
+                    </div>
+
+                    <div class="info-block">
+                        <h5><i class="fas fa-map-marker-alt"></i> Address</h5>
+                        <p>Jl. HOS. Cokroaminoto, Suka Karya, Kec. Kota Baru</p>
+                    </div>
+
+                    <div class="social-share">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-tiktok"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kanan: Form Pendaftaran -->
+            <div class="col-lg-8">
+                <div class="form-card">
+                    <div class="form-title">
+                        <img src="/images/logo.png" alt="Logo Damkar">
+                        <img src="/images/logo-redkar.png" alt="Logo Redkar">
+                        <h2>Daftar Sebagai Relawan</h2>
+                    </div>
+
+                    <form action="#" method="POST" enctype="multipart/form-data">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">NIK</label>
+                                <input type="text" class="form-control" name="nik" required>
+                            </div>
+                            
+                            <div class="col-12">
+                                <label class="form-label">nama_lengkap</label>
+                                <input type="text" class="form-control" name="nama_lengkap" required>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">jenis_kelamin</label>
+                                <select class="form-select" name="jenis_kelamin" required>
+                                    <option value="" selected disabled>Pilih jenis_kelamin</option>
+                                    <option value="L">Laki-Laki</option>
+                                    <option value="P">Perempuan</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">tempat_lahir</label>
+                                <input type="text" class="form-control" name="tempat_lahir" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">tanggal_lahir</label>
+                                <input type="date" class="form-control" name="tanggal_lahir" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">status_perkawinan</label>
+                                <select class="form-select" name="status_perkawinan" required>
+                                    <option value="" selected disabled>Pilih status_perkawinan</option>
+                                    <option value="Belum Kawin">Belum Kawin</option>
+                                    <option value="Kawin">Kawin</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">agama</label>
+                                <select class="form-select" name="agama" required>
+                                    <option value="" selected disabled>Pilih agama</option>
+                                    <option value="Islam">Islam</option>
+                                    <option value="Kristen">Kristen</option>
+                                    <option value="Katolik">Katolik</option>
+                                    <option value="Hindu">Hindu</option>
+                                    <option value="Buddha">Buddha</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">nomor_telp</label>
+                                <input type="text" class="form-control" name="nomor_telp" required>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">ktp</label>
+                                <div class="file-upload-wrapper" onclick="document.getElementById('ktp_upload').click()">
+                                    <p>Drag & Drop your files or <span>Browse</span></p>
+                                    <input type="file" id="ktp_upload" name="ktp" class="d-none" accept=".jpg,.jpeg,.png,.pdf">
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">alamat</label>
+                                <textarea class="form-control" name="alamat" rows="3" required></textarea>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">rt_rw</label>
+                                <input type="text" class="form-control" name="rt_rw" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">kode_pos</label>
+                                <input type="text" class="form-control" name="kode_pos" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">provinsi</label>
+                                <input type="text" class="form-control readonly-input" name="provinsi" value="JAMBI" readonly>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">kabupaten_kota</label>
+                                <input type="text" class="form-control readonly-input" name="kabupaten_kota" value="KOTA JAMBI" readonly>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">kecamatan</label>
+                                <select class="form-select" name="kecamatan" required>
+                                    <option value="" selected disabled>Pilih kecamatan</option>
+                                    <option value="Alam Barajo">Alam Barajo</option>
+                                    <option value="Danau Sipin">Danau Sipin</option>
+                                    <option value="Jambi Selatan">Jambi Selatan</option>
+                                    <!-- Tambahkan opsi kecamatan lainnya -->
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">kelurahan</label>
+                                <select class="form-select" name="kelurahan" required>
+                                    <option value="" selected disabled>Pilih kelurahan</option>
+                                    <!-- Opsi kelurahan akan bergantung pada kecamatan via JS nantinya -->
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">pekerjaan</label>
+                                <input type="text" class="form-control" name="pekerjaan" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">penddkn_terakhir</label>
+                                <select class="form-select" name="penddkn_terakhir" required>
+                                    <option value="" selected disabled>Pilih penddkn_terakhir</option>
+                                    <option value="SMA/SMK">SMA/SMK</option>
+                                    <option value="D3">D3</option>
+                                    <option value="S1">S1</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">sehat_jasmani</label>
+                                <select class="form-select" name="sehat_jasmani" required>
+                                    <option value="" selected disabled>Pilih sehat_jasmani</option>
+                                    <option value="Ya">Ya</option>
+                                    <option value="Tidak">Tidak</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">buta_warna</label>
+                                <select class="form-select" name="buta_warna" required>
+                                    <option value="" selected disabled>Pilih buta_warna</option>
+                                    <option value="Tidak">Tidak</option>
+                                    <option value="Ya">Ya</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">golongan_darah</label>
+                                <select class="form-select" name="golongan_darah" required>
+                                    <option value="" selected disabled>Pilih golongan_darah</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="AB">AB</option>
+                                    <option value="O">O</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn-submit">KIRIM</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-bottom">
+        <div class="footer-grid">
+            <div class="footer-about">
+                <div class="footer-logo">
+                    <img src="/images/simerahkoja.png" alt="Logo Simerah Koja">
+                </div>
+                <h3>Tentang Kami</h3>
+                <p>SIMERAH KOJA merupakan sistem informasi pemerintahan berbasis elektronik yang terintegrasi pada dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+            </div>
+            
+            <div class="footer-contact">
+                <div class="footer-map-container">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.202353147814!2d103.600648!3d-1.618096!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e22c8c6a234f6b1%3A0x4d537f0a82384f88!2sDinas%20Pemadam%20Kebakaran%20Kota%20Jambi!5e1!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid" 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy">
+                    </iframe>
+                </div>
+                <div class="footer-find">
+                    <i class="fas fa-map-marker-alt"></i> Find us on Map
+                </div>
+                <div class="footer-download">
+                    <p>Download Aplikasi SIMERAH KOJA :</p>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play">
+                </div>
+            </div>
+            
+            <div class="footer-links">
+                <h3>Link Terkait</h3>
+                <ul>
+                    <li><a href="#"><i class="fas fa-angle-double-right"></i> Official Damkar</a></li>
+                    <li><a href="#"><i class="fas fa-angle-double-right"></i> Website Jambikota</a></li>
+                    <li><a href="#"><i class="fas fa-angle-double-right"></i> SIKOJA</a></li>
+                    <li><a href="#"><i class="fas fa-angle-double-right"></i> 112 Kota Jambi</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-copyright">
+            <div>SIMERAHKOJA © 2026 / ALL RIGHTS RESERVED</div>
+            <div class="footer-newsletter">
+                <input type="email" placeholder="Enter your email here...">
+                <div style="background: white; padding: 10px; border-radius: 4px; cursor: pointer; color: #111827;">
+                    <i class="fas fa-envelope"></i>
+                </div>
+            </div>
+            <div class="footer-social">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-google-plus-g"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

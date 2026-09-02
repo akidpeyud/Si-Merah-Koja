@@ -33,3 +33,6 @@ Route::get('/produkhukum', function () {
 Route::get('/sop', function () {
     return view('programkerja.sop');
 });
+Route::get('/redkar', function () {
+    return view('redkar.redkar'); 
+});
