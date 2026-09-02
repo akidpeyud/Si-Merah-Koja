@@ -600,6 +600,15 @@
         
         <div class="footer-copyright">
             <div>SIMERAHKOJA © 2026 / ALL RIGHTS RESERVED</div>
+<<<<<<< HEAD
+=======
+            <div class="footer-newsletter">
+                <input type="email" placeholder="Enter your email here...">
+                <div style="background: white; padding: 10px; border-radius: 4px; cursor: pointer; color: #111827;">
+                    <i class="fas fa-envelope"></i>
+                </div>
+            </div>
+>>>>>>> 060ae391d88be9234b68dff8e684c20dfecee1e0
             <!-- FOOTER SOCIAL LINKS -->
             <div class="footer-social">
                 <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>

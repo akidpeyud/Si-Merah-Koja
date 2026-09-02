@@ -548,13 +548,26 @@
         
         <div class="footer-copyright">
             <div>SIMERAHKOJA © 2026 / ALL RIGHTS RESERVED</div>
+<<<<<<< HEAD
+=======
+            <div class="footer-newsletter">
+                <input type="email" placeholder="Enter your email here...">
+                <div style="background: white; padding: 10px; border-radius: 4px; cursor: pointer; color: #111827;">
+                    <i class="fas fa-envelope"></i>
+                </div>
+            </div>
+>>>>>>> 060ae391d88be9234b68dff8e684c20dfecee1e0
             <!-- FOOTER SOCIAL LINKS -->
             <div class="footer-social">
                 <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
                 <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
                 <a href="https://www.facebook.com/DamkarKotaJambi" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
                 <a href="https://www.youtube.com/@damkarkotajambi" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+<<<<<<< HEAD
                 <a href="https://www.tiktok.com/@damkar_kotajambi113" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+=======
+                <a href="https://www.tiktok.com/@damkar.kota.jambi" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+>>>>>>> 060ae391d88be9234b68dff8e684c20dfecee1e0
                 <a href="https://www.instagram.com/damkar.kotajambi/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
             </div>
         </div>

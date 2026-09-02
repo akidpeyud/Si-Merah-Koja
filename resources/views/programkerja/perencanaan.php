@@ -53,6 +53,7 @@
         }
         .nav-links .btn-login:hover { background-color: #dc2626; color: #ffffff; }
         
+        /* FIX: Pakai class custom biar kebal dari Bootstrap */
         .dropdown-menu-custom {
             display: none; position: absolute; top: 100%; left: 0; background-color: #1f2937;
             min-width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-radius: 8px;
@@ -290,6 +291,7 @@
         $pesan_wa = "Terimakasih%20telah%20menghubungi%20%F0%9F%94%A5%F0%9F%94%A5%F0%9F%94%A5..%0ASistem%20Informasi%20Penanggulangan%20Kebakaran%20dan%20Penyelamatan%20Daerah%20Kota%20Jambi%20(SIMERAH%20KOJA)";
     ?>
 
+<<<<<<< HEAD
 <nav class="navbar">
     <a href="/" class="nav-logos" style="text-decoration: none;">
         <img src="/images/jambi.png" alt="Logo Pemkot">
@@ -307,6 +309,25 @@
             </ul>
         </li>
 
+=======
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-logos">
+            <img src="/images/jambi.png" alt="Logo Pemkot">
+            <img src="/images/logo.png" alt="Logo Damkar">
+            <img src="/images/logo-redkar.png" alt="Logo Redkar">
+        </div>
+        <ul class="nav-links">
+            <!-- FIX HTML: Gunakan dropdown-custom dan dropdown-menu-custom -->
+            <li class="dropdown-custom">
+                <a href="#">Layanan Kedaruratan <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+                <ul class="dropdown-menu-custom">
+                    <li><a href="https://wa.me/628117113113?text=Terimakasih%20telah%20menghubungi%20SIMERAH%20KOJA..." target="_blank">WHATSAPP</a></li>
+                    <li><a href="tel:074141171">TELEPHONE</a></li>
+                    <li><a href="tel:112">CALL CENTER 112</a></li>
+                </ul>
+            </li>
+>>>>>>> 060ae391d88be9234b68dff8e684c20dfecee1e0
             <li class="dropdown-custom">
                 <a href="#">Program Kerja <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
                 <ul class="dropdown-menu-custom">
@@ -315,6 +336,7 @@
                     <li><a href="/pelaporan">PELAPORAN</a></li>
                     <li><a href="/sop">SOP</a></li>
                     <li><a href="/produkhukum">PRODUK HUKUM</a></li>
+<<<<<<< HEAD
                 </ul>
             </li>
 
@@ -337,6 +359,23 @@
     </ul>
 </nav>
 
+=======
+                </ul>
+            </li>
+            <li class="dropdown-custom">
+                <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+                <ul class="dropdown-menu-custom">
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
+                    <li><a href="/layanan-fasilitas/perjanjian_kerjasama">PKS</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Redkar</a></li>
+            <li><a href="#" class="btn-login">LOGIN</a></li>
+        </ul>
+    </nav>
+    
+>>>>>>> 060ae391d88be9234b68dff8e684c20dfecee1e0
     <!-- Page Header -->
     <section class="page-header">
         <div class="container">
@@ -470,6 +509,15 @@
         
         <div class="footer-copyright">
             <div>SIMERAHKOJA © 2026 / ALL RIGHTS RESERVED</div>
+<<<<<<< HEAD
+=======
+            <div class="footer-newsletter">
+                <input type="email" placeholder="Enter your email here...">
+                <div style="background: white; padding: 10px; border-radius: 4px; cursor: pointer; color: #111827;">
+                    <i class="fas fa-envelope"></i>
+                </div>
+            </div>
+>>>>>>> 060ae391d88be9234b68dff8e684c20dfecee1e0
             <!-- FOOTER SOCIAL LINKS -->
             <div class="footer-social">
                 <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>

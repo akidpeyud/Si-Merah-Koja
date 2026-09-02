@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Layanan Perizinan RPKBGL - SIMERAH KOJA</title>
+    <title>Layanan Perizinan SKK - SIMERAH KOJA</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -51,11 +51,7 @@
             text-align: center; color: white; border-bottom: 4px solid #ef4444;
         }
         .page-hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 15px; letter-spacing: 1px; }
-        
-        /* FIX: Breadcrumb Home sekarang bisa diklik dan berwarna biru ala gambar */
         .breadcrumb { font-size: 14px; font-weight: 600; color: #cbd5e1; }
-        .breadcrumb a { color: #38bdf8; text-decoration: none; transition: 0.3s; }
-        .breadcrumb a:hover { color: #bae6fd; text-decoration: underline; }
         .breadcrumb span { color: #ef4444; margin: 0 5px;}
         .breadcrumb .active { color: #ef4444; }
 
@@ -65,12 +61,14 @@
             gap: 20px; background: white; padding: 30px; border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.08); position: relative; z-index: 5;
         }
-        .service-icon-link { text-decoration: none; display: block; }
+        
+        .service-icon-link { display: block; text-decoration: none; }
         .service-icon-box {
             display: flex; flex-direction: column; align-items: center; text-align: center;
             padding: 10px; transition: transform 0.3s ease;
         }
         .service-icon-box:hover { transform: translateY(-5px); }
+        
         .icon-top-box {
             width: 70px; height: 70px; border-radius: 16px; display: flex; 
             align-items: center; justify-content: center; font-size: 35px; 
@@ -84,6 +82,8 @@
         
         .service-icon-box h3 { font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 8px; transition: color 0.3s; }
         .service-icon-box p { font-size: 11px; color: #64748b; line-height: 1.5; }
+        
+        /* Efek Aktif (Tulisan jadi merah) */
         .service-icon-link.active .service-icon-box h3 { color: #ef4444; }
 
         /* --- LAYOUT FORM & SIDEBAR --- */
@@ -105,34 +105,7 @@
         .info-body { padding-left: 39px; font-size: 12px; color: #64748b; line-height: 1.6; }
         .info-body ul { padding-left: 15px; margin-bottom: 10px; }
         .info-body a { color: #ef4444; text-decoration: none; font-weight: 600; }
-        
-        .btn-detail { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; margin-top: 5px; transition: 0.3s;}
-        .btn-detail:hover { background: #dc2626; }
-
-        /* FIX: CSS untuk Kotak Dropdown Tampilkan Detail */
-        .detail-content {
-            display: none; /* Disembunyikan dulu secara default */
-            margin-top: 10px;
-            padding: 15px;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            background-color: #f8fafc;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-        .detail-content ul {
-            padding-left: 20px;
-            margin: 0;
-        }
-        .detail-content li {
-            font-size: 12px;
-            color: #64748b;
-            line-height: 1.6;
-            margin-bottom: 8px;
-            list-style-type: circle;
-        }
-        .detail-content li:last-child {
-            margin-bottom: 0;
-        }
+        .btn-detail { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; margin-top: 5px;}
 
         .sidebar-social { padding-left: 39px; display: flex; gap: 8px; margin-top: 20px; }
         .sidebar-social a { background: #94a3b8; color: white; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px; text-decoration: none; font-size: 13px; transition: 0.3s; }
@@ -141,6 +114,7 @@
         /* Form */
         .form-container { flex-grow: 1; background: #ffffff; }
         .form-title { font-size: 22px; font-weight: 800; color: #0f172a; line-height: 1.3; margin-bottom: 5px;}
+        
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-size: 13px; font-weight: 700; color: #1e293b; margin-bottom: 8px; }
         .form-control { width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; color: #334155; outline: none; transition: border-color 0.3s; background-color: #f8fafc; }
@@ -219,9 +193,9 @@
                 <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
                 <ul class="dropdown-menu">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
-                    <li><a href="/layanan-fasilitas/perjanjian_kerjasama">PKS</a></li>
-                    <li><a href="/layanan-fasilitas/layanan_lainnya">LAYANAN LAINNYA</a></li>
+                    <li><a href="#">EDUKASI DAN SOSIALISASI</a></li>
+                    <li><a href="#">PKS</a></li>
+                    <li><a href="#">LAYANAN LAINNYA</a></li>
                 </ul>
             </li>
             <li><a href="#">Redkar</a></li>
@@ -233,15 +207,14 @@
     <div class="page-hero">
         <h1>LAYANAN PERIZINAN</h1>
         <div class="breadcrumb">
-            <!-- FIX: Teks Home dibungkus tag link mengarah ke rute '/' (halaman utama) -->
-            <a href="/">Home</a> <span>&raquo;</span> PERIZINAN <span>&raquo;</span> <span class="active">RPKBGL</span>
+            Home <span>&raquo;</span> PERIZINAN <span>&raquo;</span> <span class="active">SKK</span>
         </div>
     </div>
 
-    <!-- DERETAN IKON KLIKABEL -->
+    <!-- DERETAN IKON KLIKABEL (SKK yang Aktif) -->
     <div class="service-icons-container">
-        <!-- RPKBGL (Tab Aktif di halaman ini) -->
-        <a href="/layanan-fasilitas/layanan_perizinan" class="service-icon-link active">
+        <!-- RPKBGL -->
+        <a href="/layanan-fasilitas/layanan_perizinan" class="service-icon-link">
             <div class="service-icon-box">
                 <div class="icon-top-box bg-gray"><i class="fas fa-building"></i></div>
                 <h3>RPKBGL</h3>
@@ -249,8 +222,8 @@
             </div>
         </a>
         
-        <!-- SKK -->
-        <a href="/layanan-fasilitas/skk" class="service-icon-link">
+        <!-- SKK (Aktif) -->
+        <a href="/layanan-fasilitas/skk" class="service-icon-link active">
             <div class="service-icon-box">
                 <div class="icon-top-box bg-pink"><i class="fas fa-user-shield"></i></div>
                 <h3>SKK</h3>
@@ -307,32 +280,20 @@
                     </div>
                     <div class="info-body">
                         <ul>
-                            <li>Menginput Formulir Rekomendasi Proteksi Kebakaran secara elektronik melalui simerah.jambikota.go.id</li>
+                            <li>Menginput Formulir Sertifikat Keamanan Kebakaran (SKK) secara elektronik melalui simerah.jambikota.go.id</li>
                             <li>Upload Surat Permohonan Bermaterai (<a href="#">Download Surat Permohonan</a>)</li>
-                            <li>Upload Detail Persyaratan RPKBGL Lainnya (<a href="#">Lihat Detail</a>)</li>
+                            <li>Upload Detail Persyaratan SKK Lainnya (<a href="#">Lihat Detail</a>)</li>
                         </ul>
                     </div>
                 </li>
 
-                <!-- FIX: Tombol Tampilkan Detail dengan JavaScript Dropdown -->
                 <li class="info-item">
                     <div class="info-header">
                         <div class="icon-red"><i class="fas fa-envelope"></i></div>
                         <h4>Sistem, Mekanisme dan Prosedur</h4>
                     </div>
                     <div class="info-body">
-                        <button class="btn-detail" onclick="toggleDetail()">Tampilkan Detail</button>
-                        
-                        <!-- Kotak konten yang muncul saat tombol diklik -->
-                        <div id="detailProsedur" class="detail-content">
-                            <ul>
-                                <li>Pemohon mendaftar secara online, setelah itu mengupload kelengkapan berkas yang dipersyaratkan</li>
-                                <li>Tim Inspeksi melakukan pemeriksaan secara administrasi/teknis</li>
-                                <li>Tim Inspeksi melakukan peninjauan lapangan dan membuat berita acara hasil pemeriksaan administrasi dan peninjauan lapangan</li>
-                                <li>Kepala Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi menerbitkan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan</li>
-                                <li>Pemohon mengambil Rekomendasi Kebakaran Bangunan, Gedung dan Lingkungan setelah mendapatkan notifikasi via Whatsapp di Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi melalui bidang pencegahan</li>
-                            </ul>
-                        </div>
+                        <button class="btn-detail">Tampilkan Detail</button>
                     </div>
                 </li>
 
@@ -352,7 +313,7 @@
                         <h4>Produk Layanan</h4>
                     </div>
                     <div class="info-body">
-                        Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan
+                        Sertifikat Keamanan Kebakaran
                     </div>
                 </li>
 
@@ -378,7 +339,7 @@
 
         <!-- KANAN: FORMULIR -->
         <div class="form-container">
-            <h2 class="form-title">Rekomendasi Proteksi<br>Kebakaran Bangunan Gedung & Lingkungan</h2>
+            <h2 class="form-title">Sertifikat Keamanan Kebakaran (SKK)</h2>
             <div class="decor-line"><i class="fas fa-circle"></i></div>
 
             <form action="#" method="POST" enctype="multipart/form-data">
@@ -521,7 +482,7 @@
                     <i class="fas fa-envelope"></i>
                 </div>
             </div>
-           <!-- FOOTER SOCIAL LINKS -->
+          <!-- FOOTER SOCIAL LINKS -->
             <div class="footer-social">
                 <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
                 <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
@@ -533,16 +494,5 @@
         </div>
     </div>
 
-    <!-- SCRIPT UNTUK MENGATUR TOMBOL TAMPILKAN DETAIL -->
-    <script>
-        function toggleDetail() {
-            var detailDiv = document.getElementById("detailProsedur");
-            if (detailDiv.style.display === "none" || detailDiv.style.display === "") {
-                detailDiv.style.display = "block";
-            } else {
-                detailDiv.style.display = "none";
-            }
-        }
-    </script>
 </body>
 </html>

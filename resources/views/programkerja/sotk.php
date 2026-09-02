@@ -367,11 +367,19 @@
             </li>
             <li class="dropdown-custom dropdown-white">
                 <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+<<<<<<< HEAD
                 <ul class="dropdown-menu-custom dropdown-menu">
                     <li><a href="/layanan-perizinan">LAYANAN PERIZINAN</a></li>
                     <li><a href="/edukasi-sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
                     <li><a href="/perjanjian-kerjasama">PKS</a></li>
                     <li><a href="/layanan-lainnya">LAYANAN LAINNYA</a></li>
+=======
+                <ul class="dropdown-menu-custom">
+                    <li><a href="#">LAYANAN PERIZINAN</a></li>
+                    <li><a href="#">EDUKASI DAN SOSIALISASI</a></li>
+                    <li><a href="#">PKS</a></li>
+                    
+>>>>>>> 060ae391d88be9234b68dff8e684c20dfecee1e0
                 </ul>
             </li>
             <li><a href="/redkar">Redkar</a></li>
@@ -535,7 +543,17 @@
         
         <div class="footer-copyright">
             <div>SIMERAHKOJA © 2026 / ALL RIGHTS RESERVED</div>
+<<<<<<< HEAD
             <!-- FOOTER SOCIAL LINKS -->
+=======
+            <div class="footer-newsletter">
+                <input type="email" placeholder="Enter your email here...">
+                <div style="background: white; padding: 10px; border-radius: 4px; cursor: pointer; color: #111827;">
+                    <i class="fas fa-envelope"></i>
+                </div>
+            </div>
+           <!-- FOOTER SOCIAL LINKS -->
+>>>>>>> 060ae391d88be9234b68dff8e684c20dfecee1e0
             <div class="footer-social">
                 <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
                 <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
@@ -545,6 +563,9 @@
                 <a href="https://www.instagram.com/damkar.kotajambi/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
+
+
+
     </div>
 
     <!-- Script Bootstrap untuk Layout Grid -->

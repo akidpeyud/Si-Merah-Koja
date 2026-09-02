@@ -36,6 +36,7 @@ Route::get('/produkhukum', function () {
 
 // === 3. REDKAR ===
 Route::get('/redkar', function () {
+<<<<<<< HEAD
     return view('redkar.redkar');
 })->name('redkar');
 
@@ -62,3 +63,22 @@ Route::get('/layanan-lainnya', function () {
 Route::get('/login', function () {
     return view('login.login');
 })->name('login');
+=======
+    return view('redkar.redkar'); 
+});
+Route::get('/layanan-fasilitas/layanan_perizinan', function () {
+    return view('layanan-fasilitas.layanan_perizinan');
+});
+Route::get('/layanan-fasilitas/skk', function () {
+    return view('layanan-fasilitas.skk');
+});
+Route::get('/layanan-fasilitas/perpanjang_skk', function () {
+    return view('layanan-fasilitas.perpanjang_skk');
+});
+Route::get('/layanan-fasilitas/izin_penjualan', function () {
+    return view('layanan-fasilitas.izin_penjualan');
+});
+Route::get('/layanan-fasilitas/edukasi_sosialisasi', function () {
+    return view('layanan-fasilitas.edukasi_sosialisasi');
+});
+>>>>>>> 060ae391d88be9234b68dff8e684c20dfecee1e0
