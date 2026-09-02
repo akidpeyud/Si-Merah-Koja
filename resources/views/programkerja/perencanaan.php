@@ -53,6 +53,7 @@
         }
         .nav-links .btn-login:hover { background-color: #dc2626; color: #ffffff; }
         
+        /* FIX: Pakai class custom biar kebal dari Bootstrap */
         .dropdown-menu-custom {
             display: none; position: absolute; top: 100%; left: 0; background-color: #1f2937;
             min-width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-radius: 8px;
@@ -266,17 +267,18 @@
 
     <!-- Navbar -->
     <nav class="navbar">
-        <a href="/" class="nav-logos" style="text-decoration: none;">
+        <div class="nav-logos">
             <img src="/images/jambi.png" alt="Logo Pemkot">
             <img src="/images/logo.png" alt="Logo Damkar">
             <img src="/images/logo-redkar.png" alt="Logo Redkar">
-        </a>
+        </div>
         <ul class="nav-links">
+            <!-- FIX HTML: Gunakan dropdown-custom dan dropdown-menu-custom -->
             <li class="dropdown-custom">
                 <a href="#">Layanan Kedaruratan <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
                 <ul class="dropdown-menu-custom">
-                    <li><a href="https://wa.me/<?php echo $no_whatsapp; ?>?text=<?php echo $pesan_wa; ?>" target="_blank">WHATSAPP</a></li>
-                    <li><a href="tel:<?php echo $no_telepon; ?>">TELEPHONE</a></li>
+                    <li><a href="https://wa.me/628117113113?text=Terimakasih%20telah%20menghubungi%20SIMERAH%20KOJA..." target="_blank">WHATSAPP</a></li>
+                    <li><a href="tel:074141171">TELEPHONE</a></li>
                     <li><a href="tel:112">CALL CENTER 112</a></li>
                 </ul>
             </li>
@@ -287,14 +289,22 @@
                     <li><a href="/perencanaan">PERENCANAAN</a></li>
                     <li><a href="/pelaporan">PELAPORAN</a></li>
                     <li><a href="/sop">SOP</a></li>
+                    <li><a href="/produkhukum">PRODUK HUKUM</a></li>
                 </ul>
             </li>
-            <li><a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a></li>
+            <li class="dropdown-custom">
+                <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+                <ul class="dropdown-menu-custom">
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
+                    <li><a href="/layanan-fasilitas/perjanjian_kerjasama">PKS</a></li>
+                </ul>
+            </li>
             <li><a href="#">Redkar</a></li>
             <li><a href="#" class="btn-login">LOGIN</a></li>
         </ul>
     </nav>
-
+    
     <!-- Page Header -->
     <section class="page-header">
         <div class="container">
@@ -430,12 +440,14 @@
                     <i class="fas fa-envelope"></i>
                 </div>
             </div>
+            <!-- FOOTER SOCIAL LINKS -->
             <div class="footer-social">
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#"><i class="fab fa-google-plus-g"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
+                <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.facebook.com/DamkarKotaJambi" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.youtube.com/@damkarkotajambi" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.tiktok.com/@damkar.kota.jambi" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/damkar.kotajambi/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
     </div>

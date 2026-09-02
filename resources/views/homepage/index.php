@@ -32,7 +32,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 50px;
-            background-color: #111827; /* Biru Dongker Gelap */
+            background-color: #111827; 
             border-bottom: 4px solid #ef4444;
             position: relative;
             z-index: 999;
@@ -59,7 +59,7 @@
             min-width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
             border-radius: 0 0 8px 8px; 
             overflow: hidden; z-index: 10; margin-top: 0; 
-            border: 1px solid #1f2937;
+            border: 1px solid #1f293b;
             border-top: none; 
         }
         .dropdown:hover .dropdown-menu { display: block; animation: fadeIn 0.3s ease; }
@@ -67,10 +67,10 @@
         .dropdown-menu li { list-style: none; padding-bottom: 0; margin-bottom: 0; }
         .dropdown-menu li a {
             color: #e5e7eb; padding: 14px 20px; display: block; font-size: 13px;
-            border-bottom: 1px solid #1f2937; font-weight: 600;
+            border-bottom: 1px solid #1f293b; font-weight: 600;
         }
         .dropdown-menu li:last-child a { border-bottom: none; }
-        .dropdown-menu li a:hover { background-color: #1f2937; color: #ef4444; padding-left: 26px; }
+        .dropdown-menu li a:hover { background-color: #1f293b; color: #ef4444; padding-left: 26px; }
         
         .main-content {
             flex-grow: 1; display: flex; flex-direction: column; align-items: center;
@@ -485,46 +485,48 @@
         $pesan_wa = "Terimakasih%20telah%20menghubungi%20%F0%9F%94%A5%F0%9F%94%A5%F0%9F%94%A5..%0ASistem%20Informasi%20Penanggulangan%20Kebakaran%20dan%20Penyelamatan%20Daerah%20Kota%20Jambi%20(SIMERAH%20KOJA)%0A%0AMohon%20Isi%20Laporan%20Pengaduan%3A%20%0A%0ANama%20Pelapor%20%20%20%3A%0ANo.%20HP%20Pelapor%20%3A%0AAlamat%20Pelapor%20%3A%0AJenis%20Laporan%20%20%20%3A%20%20(Kebakaran%2FEvakuasi)%0A%0AAlamat%20Kejadian%20%3A%0A%0AKirim%20Peta%20Lokasi%20kejadian%20(Google%20Maps)%20%3A%0A%0AKirim%20Foto%20%26%20Video%20Kejadian%20%3A%0A%0ALaporan%20akan%20segera%20kami%20tindaklanjuti%20%F0%9F%9A%92%F0%9F%9A%92%F0%9F%9A%92%0ASalam%20YUDHA%20BRAMA%20JAYA%20Dinas%20Pemadam%20Kebakaran%20%26%20Penyelamatan%20Kota%20Jambi.";
     ?>
 
-    <!-- HEADER / HERO SECTION -->
+    <!-- NAVBAR TEMA GELAP -->
+    <nav class="navbar">
+        <div class="nav-logos">
+            <img src="/images/jambi.png" alt="Logo Pemkot">
+            <img src="/images/logo.png" alt="Logo Damkar">
+            <img src="/images/logo-redkar.png" alt="Logo Redkar">
+        </div>
+        <ul class="nav-links">
+            <li class="dropdown">
+                <a href="#">Layanan Kedaruratan <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a href="https://wa.me/<?php echo $no_whatsapp; ?>?text=<?php echo $pesan_wa; ?>" target="_blank">WHATSAPP</a></li>
+                    <li><a href="tel:<?php echo $no_telepon; ?>">TELEPHONE</a></li>
+                    <li><a href="tel:112">CALL CENTER 112</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Program Kerja <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/sotk">SOTK</a></li>
+                    <li><a href="/perencanaan">PERENCANAAN</a></li>
+                    <li><a href="/pelaporan">PELAPORAN</a></li>
+                    <li><a href="/sop">SOP</a></li>
+                    <li><a href="/produkhukum">PRODUK HUKUM</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
+                    <li><a href="#">PKS</a></li>
+                 
+                </ul>
+            </li>
+            <li><a href="#">Redkar</a></li>
+            <li><a href="#" class="btn-login">LOGIN</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO SECTION (HOME) -->
     <div class="hero-section">
-        <nav class="navbar">
-            <div class="nav-logos">
-                <img src="/images/jambi.png" alt="Logo Pemkot">
-                <img src="/images/logo.png" alt="Logo Damkar">
-                <img src="/images/logo-redkar.png" alt="Logo Redkar">
-            </div>
-            <ul class="nav-links">
-                <li class="dropdown">
-                    <a href="#">Layanan Kedaruratan <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="https://wa.me/<?php echo $no_whatsapp; ?>?text=<?php echo $pesan_wa; ?>" target="_blank">WHATSAPP</a></li>
-                        <li><a href="tel:<?php echo $no_telepon; ?>">TELEPHONE</a></li>
-                        <li><a href="tel:112">CALL CENTER 112</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#">Program Kerja <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/sotk">SOTK</a></li>
-                        <li><a href="/perencanaan">PERENCANAAN</a></li>
-                        <li><a href="/pelaporan">PELAPORAN</a></li>
-                        <li><a href="/sop">SOP</a></li>
-                        <li><a href="/produkhukum">PRODUK HUKUM</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">LAYANAN PERIZINAN</a></li>
-                        <li><a href="#">EDUKASI DAN SOSIALISASI</a></li>
-                        <li><a href="#">PKS</a></li>
-                        <li><a href="#">LAYANAN LAINNYA</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">Redkar</a></li>
-                <li><a href="#" class="btn-login">LOGIN</a></li>
-            </ul>
-        </nav>
 
         <div class="main-content">
             <div class="center-logos">
@@ -975,16 +977,17 @@
                     <i class="fas fa-envelope"></i>
                 </div>
             </div>
+         <!-- FOOTER SOCIAL LINKS -->
             <div class="footer-social">
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#"><i class="fab fa-google-plus-g"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
+                <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.facebook.com/DamkarKotaJambi" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.youtube.com/@damkarkotajambi" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.tiktok.com/@damkar.kota.jambi" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/damkar.kotajambi/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
     </div>
 
 </body>
 </html>
-ini mau di push langsung bisa kan soal nya tadi gua abis pull trus gua save ini gua ga ada close visual studio code nya jadi langsung jalankan 3perintah itu kan nah klo misalnya di hari selanjutnya klo mau push harus login git lagi gaa

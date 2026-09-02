@@ -36,3 +36,18 @@ Route::get('/sop', function () {
 Route::get('/redkar', function () {
     return view('redkar.redkar'); 
 });
+Route::get('/layanan-fasilitas/layanan_perizinan', function () {
+    return view('layanan-fasilitas.layanan_perizinan');
+});
+Route::get('/layanan-fasilitas/skk', function () {
+    return view('layanan-fasilitas.skk');
+});
+Route::get('/layanan-fasilitas/perpanjang_skk', function () {
+    return view('layanan-fasilitas.perpanjang_skk');
+});
+Route::get('/layanan-fasilitas/izin_penjualan', function () {
+    return view('layanan-fasilitas.izin_penjualan');
+});
+Route::get('/layanan-fasilitas/edukasi_sosialisasi', function () {
+    return view('layanan-fasilitas.edukasi_sosialisasi');
+});
