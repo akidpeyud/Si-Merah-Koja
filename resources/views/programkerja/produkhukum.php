@@ -355,16 +355,14 @@
             </ul>
         </li>
 
-            <li class="dropdown-custom">
-                <a href="#">Program Kerja <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-                <ul class="dropdown-menu-custom">
-                    <li><a href="/sotk">SOTK</a></li>
-                    <li><a href="/perencanaan">PERENCANAAN</a></li>
-                    <li><a href="/pelaporan">PELAPORAN</a></li>
-                    <li><a href="/sop">SOP</a></li>
-                    <li><a href="/produkhukum">PRODUK HUKUM</a></li>
+            <li class="dropdown">
+                <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
+                    <li><a href="#">PKS</a></li>
+                 
                 </ul>
-            </li>
 
         <!-- Dropdown Layanan & Fasilitas -->
         <li class="dropdown-custom dropdown-white">
