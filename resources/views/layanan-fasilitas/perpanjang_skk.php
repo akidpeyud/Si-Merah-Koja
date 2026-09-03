@@ -16,13 +16,15 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        /* --- NAVBAR TEMA GELAP --- */
+        /* --- NAVBAR TEMA GELAP (STICKY DI ATAS) --- */
         .navbar {
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px 50px; background-color: #0f172a; 
-            border-bottom: 4px solid #ef4444; position: relative; z-index: 999;
+            border-bottom: 4px solid #ef4444; 
+            position: sticky; top: 0; z-index: 9999; 
         }
         .nav-logos { display: flex; gap: 15px; align-items: center; }
+        .nav-logos a { display: block; text-decoration: none; }
         .nav-logos img { height: 40px; transition: transform 0.3s; }
         .nav-logos img:hover { transform: scale(1.05); }
         .nav-links { list-style: none; display: flex; gap: 30px; align-items: center; }
@@ -84,8 +86,6 @@
         
         .service-icon-box h3 { font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 8px; transition: color 0.3s; }
         .service-icon-box p { font-size: 11px; color: #64748b; line-height: 1.5; }
-        
-        /* Efek Aktif (Tulisan jadi merah) */
         .service-icon-link.active .service-icon-box h3 { color: #ef4444; }
 
         /* --- LAYOUT FORM & SIDEBAR --- */
@@ -107,10 +107,11 @@
         .info-body { padding-left: 39px; font-size: 12px; color: #64748b; line-height: 1.6; }
         .info-body ul { padding-left: 15px; margin-bottom: 10px; }
         .info-body a { color: #ef4444; text-decoration: none; font-weight: 600; }
+        
         .btn-detail { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; margin-top: 5px;}
         .btn-detail:hover { background: #dc2626; }
 
-        /* CSS BARU UNTUK KOTAK TAMPILKAN DETAIL */
+        /* CSS BARU UNTUK KOTAK TAMPILKAN DETAIL (Mekanisme) */
         .detail-content {
             display: none; 
             margin-top: 10px;
@@ -120,20 +121,88 @@
             background-color: #f8fafc;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
-        .detail-content ul {
+        .detail-content ul { padding-left: 20px; margin: 0; }
+        .detail-content li { font-size: 12px; color: #64748b; line-height: 1.6; margin-bottom: 8px; list-style-type: circle; }
+        .detail-content li:last-child { margin-bottom: 0; }
+
+        /* --- STYLES UNTUK MODAL (POPUP LIHAT DETAIL) --- */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 10000; 
+            left: 0; top: 0; width: 100%; height: 100%; 
+            background-color: rgba(0,0,0,0.6); 
+            backdrop-filter: blur(4px);
+            overflow-y: auto; 
+        }
+        .modal-content {
+            background-color: #ffffff;
+            margin: 5% auto;
+            padding: 30px 40px;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 800px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            position: relative;
+            animation: slideDown 0.4s ease-out;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            color: #9ca3af;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .close-btn:hover { color: #ef4444; }
+        .modal-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1f2937;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f3f4f6;
+        }
+        .modal-body ol {
             padding-left: 20px;
-            margin: 0;
+            color: #4b5563;
         }
-        .detail-content li {
-            font-size: 12px;
-            color: #64748b;
-            line-height: 1.6;
-            margin-bottom: 8px;
-            list-style-type: circle;
+        .modal-body li {
+            margin-bottom: 15px;
+            font-size: 13px;
+            line-height: 1.8;
         }
-        .detail-content li:last-child {
-            margin-bottom: 0;
+        .modal-footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #f3f4f6;
+            text-align: right;
         }
+        .btn-tutup {
+            background-color: #ef4444;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn-tutup:hover { background-color: #dc2626; }
+        
+        .link-detail {
+            color: #ef4444;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .link-detail:hover { text-decoration: underline; }
 
         .sidebar-social { padding-left: 39px; display: flex; gap: 8px; margin-top: 20px; }
         .sidebar-social a { background: #94a3b8; color: white; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px; text-decoration: none; font-size: 13px; transition: 0.3s; }
@@ -175,9 +244,8 @@
         .footer-links li { margin-bottom: 12px; }
         .footer-links a { color: #9ca3af; text-decoration: none; transition: color 0.3s; display: flex; align-items: center; gap: 10px;}
         .footer-links a:hover { color: white; }
+        
         .footer-copyright { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto; padding-top: 20px; border-top: 1px solid #333; }
-        .footer-newsletter { display: flex; align-items: center; gap: 10px;}
-        .footer-newsletter input { background: white; border: none; padding: 10px 15px; border-radius: 4px; width: 200px; outline: none; font-size: 12px; }
         .footer-social { display: flex; gap: 5px; }
         .footer-social a { width: 35px; height: 35px; background: #333; color: white; display: flex; align-items: center; justify-content: center; border-radius: 4px; text-decoration: none; font-size: 13px; transition: 0.3s; }
         .footer-social a:hover { background: #ef4444; }
@@ -194,9 +262,9 @@
     <!-- NAVBAR TEMA GELAP -->
     <nav class="navbar">
         <div class="nav-logos">
-            <img src="/images/jambi.png" alt="Logo Pemkot">
-            <img src="/images/logo.png" alt="Logo Damkar">
-            <img src="/images/logo-redkar.png" alt="Logo Redkar">
+            <a href="/"><img src="/images/jambi.png" alt="Logo Pemkot"></a>
+            <a href="/"><img src="/images/logo.png" alt="Logo Damkar"></a>
+            <a href="/"><img src="/images/logo-redkar.png" alt="Logo Redkar"></a>
         </div>
         <ul class="nav-links">
             <li class="dropdown">
@@ -309,7 +377,10 @@
                         <ul>
                             <li>Menginput Formulir Perpanjangan Sertifikat Keamanan Kebakaran secara elektronik melalui simerah.jambikota.go.id</li>
                             <li>Upload Surat Permohonan Bermaterai (<a href="#">Download Surat Permohonan</a>)</li>
-                            <li>Upload Detail Persyaratan Perpanjangan SKK Lainnya (<a href="#">Lihat Detail</a>)</li>
+                            <!-- POPUP LIHAT DETAIL -->
+                            <li>Upload Detail Persyaratan Perpanjangan SKK Lainnya<br>
+                                <a class="link-detail" onclick="bukaModal()">(Liat Detail)</a>
+                            </li>
                         </ul>
                     </div>
                 </li>
@@ -323,7 +394,6 @@
                     <div class="info-body">
                         <button type="button" class="btn-detail" onclick="toggleDetail()">Tampilkan Detail</button>
                         
-                        <!-- Kotak konten yang muncul saat tombol diklik -->
                         <div id="detailProsedur" class="detail-content">
                             <ul>
                                 <li>Pemohon mendaftar secara online, setelah itu mengupload kelengkapan berkas yang dipersyaratkan;</li>
@@ -368,11 +438,11 @@
             </ul>
 
             <div class="sidebar-social">
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-                <a href="#"><i class="fab fa-tiktok"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.facebook.com/DamkarKotaJambi" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.youtube.com/@damkarkotajambi" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.tiktok.com/@damkar.kota.jambi" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/damkar.kotajambi/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
 
@@ -505,22 +575,16 @@
             <div class="footer-links">
                 <h3>Link Terkait</h3>
                 <ul>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> Official Damkar</a></li>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> Website Jambikota</a></li>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> SIKOJA</a></li>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> 112 Kota Jambi</a></li>
+                    <li><a href="https://damkar.jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> Official Damkar</a></li>
+                    <li><a href="https://jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> Website Jambikota</a></li>
+                    <li><a href="https://sikoja.jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> SIKOJA</a></li>
+                  
                 </ul>
             </div>
         </div>
         
         <div class="footer-copyright">
             <div>SIMERAHKOJA © 2026 / ALL RIGHTS RESERVED</div>
-            <div class="footer-newsletter">
-                <input type="email" placeholder="Enter your email here...">
-                <div style="background: white; padding: 10px; border-radius: 4px; cursor: pointer; color: #111827;">
-                    <i class="fas fa-envelope"></i>
-                </div>
-            </div>
             <!-- FOOTER SOCIAL LINKS -->
             <div class="footer-social">
                 <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
@@ -533,7 +597,31 @@
         </div>
     </div>
 
-    <!-- SCRIPT UNTUK MENGATUR TOMBOL TAMPILKAN DETAIL -->
+    <!-- MODAL POPUP DETAIL PERSYARATAN -->
+    <div id="modalPersyaratan" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="tutupModal()">&times;</span>
+            <div class="modal-title">Detail Persyaratan Perpanjang SKK Lainnya</div>
+            <div class="modal-body">
+                <ol>
+                    <li>Menginput Formulir Perpanjangan Sertifikat Keamanan Kebakaran secara elektronik melalui simerah.jambikota.go.id</li>
+                    <li>Identitas Pemohon/Penangung Jawab &bull; WNI : Scan Asli Kartu Tanda Penduduk (KTP-el) &bull; WNA : Scan Asli Kartu Izin Tinggal Terbatas (KITAS) atau VISA / Paspor</li>
+                    <li>Jika dikuasakan Scan Asli Surat kuasa di atas kertas bermaterai sesuai peraturan yang berlaku dan KTP-el orang yang diberi kuasa</li>
+                    <li>Jika Usaha Perorangan (Scan Asli) &bull; NPWP Perorangan Jika Badan Usaha (Scan Asli) &bull; Akta pendirian dan perubahan (Kantor Pusat dan Kantor Cabang, jika ada) &bull; SK pengesahan pendirian dan perubahan yang dikeluarkan oleh Kemenkumham &bull; NPWP Badan Usaha</li>
+                    <li>Scan Asli Izin Mendirikan Bangunan (IMB)</li>
+                    <li style="color: #ef4444; font-weight: 600;">Scan Asli Sertifikat Keselamatan Kebakaran (SKK) 1 Tahun Terakhir</li>
+                    <li style="color: #ef4444; font-weight: 600;">Scan Asli Sertifikat Layak Fungsi (SLF) Tahun Terakhir</li>
+                    <li>Tanda Daftar Keahlian Keselamatan Kebakaran</li>
+                    <li>Proposal teknis yang dilengkapi dengan (Scan Asli): &bull; Gambar teknis yang ditandangani oleh Izin Pelaku Teknis Bangunan (IPTB): &bull; As built drawing site plan &bull; As built drawing denah setiap lantai sarana proteksi kebakaran dalam gedung yang meliputi titik fire alarm, titik sprinkler, titik hidran gedung, dan titik APAR &bull; Gambar skematik instalasi proteksi kebakaran (single line diagram) ; &bull; Spesifikasi teknis: &bull; Spesifikasi peralatan dan instalasi sistem proteksi kebakaran &cir; Sistem alarm dan komunikasi darurat &cir; Sistem hidran dan pipa kebakaran &cir; Sistem pompa kebakaran &cir; Sistem sprinkler otomatis &cir; Alat Pemadam Api Ringan (APAR) ? Spesifikasi fasilitas sarana jalan keluar atau jalur penyelamatan &bull; Spesifikasi akses penanggulangan kebakaran dan penyelamatan ; &bull; Dokumen penyelenggaraan sistem Manajemen Keselamatan Kebakaran Gedung (MKKG) / SOP ; &bull; Data inventaris pengelolaan dan pemeliharaan Alat Pemadam Api Ringan (APAR) ; &bull; Dokumen pemeliharaan dan laporan pemeriksaan internal sistem proteksi kebakaran oleh pemilik dan pengelola gedung yang memiliki tanda daftar keahlian keselamatan kebakaran</li>
+                </ol>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-tutup" onclick="tutupModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT UNTUK MENGATUR TOMBOL TAMPILKAN DETAIL & POPUP MODAL -->
     <script>
         function toggleDetail() {
             var detailDiv = document.getElementById("detailProsedur");
@@ -541,6 +629,20 @@
                 detailDiv.style.display = "block";
             } else {
                 detailDiv.style.display = "none";
+            }
+        }
+
+        var modal = document.getElementById("modalPersyaratan");
+        function bukaModal() {
+            modal.style.display = "block";
+        }
+        function tutupModal() {
+            modal.style.display = "none";
+        }
+        // Menutup modal jika klik di luar kotak putih
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
             }
         }
     </script>
