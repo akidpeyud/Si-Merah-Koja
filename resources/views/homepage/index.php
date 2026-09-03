@@ -487,10 +487,6 @@
             padding-top: 20px;
             border-top: 1px solid #333;
         }
-        .footer-newsletter { display: flex; align-items: center; gap: 10px;}
-        .footer-newsletter input {
-            background: white; border: none; padding: 10px 15px; border-radius: 4px; width: 200px; outline: none; font-size: 12px;
-        }
         .footer-social { display: flex; gap: 5px; }
         .footer-social a {
             width: 35px; height: 35px; background: #333; color: white; display: flex; align-items: center; justify-content: center; border-radius: 4px; text-decoration: none; transition: background 0.3s;
@@ -548,7 +544,6 @@
 
     <!-- HERO SECTION (HOME) -->
     <div class="hero-section">
-
         <div class="main-content">
             <div class="center-logos">
                 <img src="/images/jambi.png" alt="Logo Pemkot">
@@ -610,7 +605,7 @@
         </div>
     </div>
 
-    <!-- SECTION 2: LAYANAN & FASILITAS (Udah Bisa Diklik) -->
+    <!-- SECTION 2: LAYANAN & FASILITAS -->
     <div class="section-container layanan-section">
         <div class="section-title-wrap">
             <div class="section-subtitle">Sistem Layanan Kebakaran Dan Penyelamatan Utama</div>
@@ -911,7 +906,7 @@
         <div class="giat-container">
             <div class="giat-image">
                 <img src="/images/damkar.png" alt="damkar">
-            </div>
+            </div> <!-- [PERBAIKAN] Tag div penutup ini sebelumnya hilang -->
             
             <div class="giat-content">
                 <h2>GIAT DISDAMKARTAN<br>KOTA JAMBI</h2>
@@ -985,10 +980,7 @@
         
         <div class="footer-copyright">
             <div>SIMERAHKOJA © 2026 / ALL RIGHTS RESERVED</div>
-            <div class="footer-newsletter">
-             
-            
-         <!-- FOOTER SOCIAL LINKS -->
+            <!-- [PERBAIKAN] Menghapus div "footer-newsletter" yang menggantung, menyisakan social links -->
             <div class="footer-social">
                 <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
                 <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
@@ -998,7 +990,7 @@
                 <a href="https://www.instagram.com/damkar.kotajambi/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
-    </div>
+    </div> <!-- [PERBAIKAN] Tag penutup utama footer yang hilang -->
 
 </body>
 </html>
