@@ -53,6 +53,7 @@
         }
         .nav-links .btn-login:hover { background-color: #dc2626; color: #ffffff; }
         
+        /* DROPDOWN CUSTOM TEMA GELAP */
         .dropdown-menu-custom {
             display: none; position: absolute; top: 100%; left: 0; background-color: #1f2937;
             min-width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-radius: 8px;
@@ -66,31 +67,6 @@
             border-bottom: 1px solid #374151; font-weight: 600;
         }
         .dropdown-menu-custom li a:hover { background-color: #374151; color: #ef4444; padding-left: 26px; }
-
-        /* --- DROPDOWN WHITE (Layanan & Fasilitas) --- */
-        .dropdown-white .dropdown-menu-custom {
-            background-color: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            min-width: 240px;
-        }
-        .dropdown-white .dropdown-menu-custom li a {
-            color: #336699; 
-            font-size: 13px;
-            font-weight: 600;
-            padding: 16px 20px;
-            border-bottom: 1px solid #f3f4f6;
-            transition: all 0.2s ease;
-        }
-        .dropdown-white .dropdown-menu-custom li:last-child a {
-            border-bottom: none;
-        }
-        .dropdown-white .dropdown-menu-custom li a:hover {
-            background-color: #f8fafc;
-            color: #ef4444;
-            padding-left: 24px;
-        }
 
         /* --- PAGE HEADER --- */
         .page-header {
@@ -338,57 +314,57 @@
         $pesan_wa = "Terimakasih%20telah%20menghubungi%20%F0%9F%94%A5%F0%9F%94%A5%F0%9F%94%A5..%0ASistem%20Informasi%20Penanggulangan%20Kebakaran%20dan%20Penyelamatan%20Daerah%20Kota%20Jambi%20(SIMERAH%20KOJA)";
     ?>
 
-<nav class="navbar">
-    <a href="/" class="nav-logos" style="text-decoration: none;">
-        <img src="/images/jambi.png" alt="Logo Pemkot">
-        <img src="/images/logo.png" alt="Logo Damkar">
-        <img src="/images/logo-redkar.png" alt="Logo Redkar">
-    </a>
-    <ul class="nav-links">
-        <!-- Dropdown Kedaruratan -->
-        <li class="dropdown-custom">
-            <a href="#">Layanan Kedaruratan <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-            <ul class="dropdown-menu-custom">
-                <li><a href="https://wa.me/<?php echo $no_whatsapp; ?>?text=<?php echo $pesan_wa; ?>" target="_blank">WHATSAPP</a></li>
-                <li><a href="tel:<?php echo $no_telepon; ?>">TELEPHONE</a></li>
-                <li><a href="tel:112">CALL CENTER 112</a></li>
-            </ul>
-        </li>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="/" class="nav-logos" style="text-decoration: none;">
+            <img src="/images/jambi.png" alt="Logo Pemkot">
+            <img src="/images/logo.png" alt="Logo Damkar">
+            <img src="/images/logo-redkar.png" alt="Logo Redkar">
+        </a>
+        <ul class="nav-links">
+            <li class="dropdown-custom">
+                <a href="#">Layanan Kedaruratan <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+                <ul class="dropdown-menu-custom">
+                    <li><a href="https://wa.me/<?php echo $no_whatsapp; ?>?text=<?php echo $pesan_wa; ?>" target="_blank">WHATSAPP</a></li>
+                    <li><a href="tel:<?php echo $no_telepon; ?>">TELEPHONE</a></li>
+                    <li><a href="tel:112">CALL CENTER 112</a></li>
+                </ul>
+            </li>
+            
+            <li class="dropdown-custom">
+                <a href="#">Program Kerja <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+                <ul class="dropdown-menu-custom">
+                    <li><a href="/sotk">SOTK</a></li>
+                    <li><a href="/perencanaan">PERENCANAAN</a></li>
+                    <li><a href="/pelaporan">PELAPORAN</a></li>
+                    <li><a href="/sop">SOP</a></li>
+                    <li><a href="/produkhukum">PRODUK HUKUM</a></li>
+                </ul>
+            </li>
 
-            <li class="dropdown">
+            <li class="dropdown-custom">
                 <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-                <ul class="dropdown-menu">
+                <ul class="dropdown-menu-custom">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
-                    <li><a href="#">PKS</a></li>
-                 
+                    <li><a href="/layanan-fasilitas/pks">PKS</a></li>
+                    <li><a href="/layanan-fasilitas/skk">SKK</a></li>
+                    <li><a href="/layanan-fasilitas/perpanjang_skk">PERPANJANG SKK</a></li>
+                    <li><a href="/layanan-fasilitas/izin_penjualan">IZIN PENJUALAN</a></li>
                 </ul>
-
-        <!-- Dropdown Layanan & Fasilitas -->
-        <li class="dropdown-custom dropdown-white">
-            <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-            <ul class="dropdown-menu-custom dropdown-menu">
-                <li><a href="/layanan-perizinan">LAYANAN PERIZINAN</a></li>
-                <li><a href="/edukasi-sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
-                <li><a href="/perjanjian-kerjasama">PKS</a></li>
-                <li><a href="/layanan-lainnya">LAYANAN LAINNYA</a></li>
-            </ul>
-        </li>
-
-        <!-- Tombol Redkar -->
-        <li><a href="/redkar">Redkar</a></li>
-
-        <!-- Tombol Login -->
-        <li><a href="/login" class="btn-login">LOGIN</a></li>
-    </ul>
-</nav>
+            </li>   
+            
+            <li><a href="/redkar">Redkar</a></li>
+            <li><a href="/login" class="btn-login">LOGIN</a></li>
+        </ul>
+    </nav>
 
     <!-- Page Header -->
     <section class="page-header">
         <div class="container">
             <h1>PROGRAM KERJA</h1>
             <div class="breadcrumb-custom mt-2">
-                <a href="../homepage/index.php">Home</a> 
+                <a href="/">Home</a> 
                 <i class="fas fa-angle-double-right mx-2" style="font-size: 10px; color: #9ca3af;"></i> 
                 <span>PROGRAM KERJA</span>
             </div>
@@ -399,33 +375,35 @@
     <div class="container">
         <div class="main-container">
             
-<ul class="nav custom-tabs">
-    <li class="nav-item">
-        <a class="nav-link" href="/sotk">
-            <i class="fas fa-folder"></i> SOTK
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="/sop">
-            <i class="fas fa-folder"></i> SOP
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="/perencanaan">
-            <i class="fas fa-folder"></i> PERENCANAAN
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="/pelaporan">
-            <i class="fas fa-folder"></i> PELAPORAN
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="/produkhukum">
-            <i class="fas fa-folder"></i> PRODUK HUKUM
-        </a>
-    </li>
-</ul>
+            <!-- Horizontal Tabs Navigation -->
+            <ul class="nav custom-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" href="/sotk">
+                        <i class="fas fa-folder"></i> SOTK
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/sop">
+                        <i class="fas fa-folder"></i> SOP
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/perencanaan">
+                        <i class="fas fa-folder"></i> PERENCANAAN
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/pelaporan">
+                        <i class="fas fa-folder"></i> PELAPORAN
+                    </a>
+                </li>
+                <!-- TAB PRODUK HUKUM ACTIVE -->
+                <li class="nav-item">
+                    <a class="nav-link active" href="/produkhukum">
+                        <i class="fas fa-folder-open"></i> PRODUK HUKUM
+                    </a>
+                </li>
+            </ul>
 
             <!-- Grid Layout (Contact Info + PDF List) -->
             <div class="row g-4 align-items-stretch">
@@ -598,15 +576,6 @@
         
         <div class="footer-copyright">
             <div>SIMERAHKOJA © 2026 / ALL RIGHTS RESERVED</div>
-<<<<<<< HEAD
-=======
-            <div class="footer-newsletter">
-                <input type="email" placeholder="Enter your email here...">
-                <div style="background: white; padding: 10px; border-radius: 4px; cursor: pointer; color: #111827;">
-                    <i class="fas fa-envelope"></i>
-                </div>
-            </div>
->>>>>>> 060ae391d88be9234b68dff8e684c20dfecee1e0
             <!-- FOOTER SOCIAL LINKS -->
             <div class="footer-social">
                 <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>

@@ -53,6 +53,7 @@
         }
         .nav-links .btn-login:hover { background-color: #dc2626; color: #ffffff; }
         
+        /* DROPDOWN CUSTOM TEMA GELAP (DIGUNAKAN UNTUK SEMUA DROPDOWN) */
         .dropdown-menu-custom {
             display: none; position: absolute; top: 100%; left: 0; background-color: #1f2937;
             min-width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-radius: 8px;
@@ -66,31 +67,6 @@
             border-bottom: 1px solid #374151; font-weight: 600;
         }
         .dropdown-menu-custom li a:hover { background-color: #374151; color: #ef4444; padding-left: 26px; }
-
-        /* --- DROPDOWN WHITE (Layanan & Fasilitas) --- */
-        .dropdown-white .dropdown-menu-custom {
-            background-color: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            min-width: 240px;
-        }
-        .dropdown-white .dropdown-menu-custom li a {
-            color: #336699; 
-            font-size: 13px;
-            font-weight: 600;
-            padding: 16px 20px;
-            border-bottom: 1px solid #f3f4f6;
-            transition: all 0.2s ease;
-        }
-        .dropdown-white .dropdown-menu-custom li:last-child a {
-            border-bottom: none;
-        }
-        .dropdown-white .dropdown-menu-custom li a:hover {
-            background-color: #f8fafc;
-            color: #ef4444;
-            padding-left: 24px;
-        }
 
         /* --- PAGE HEADER --- */
         .page-header {
@@ -279,6 +255,49 @@
             object-fit: contain;
         }
 
+        /* --- SECTION LAYANAN & FASILITAS --- */
+        .layanan-section {
+            background-color: #ffffff;
+            padding: 60px 0;
+            margin-bottom: 60px;
+            text-align: center;
+        }
+        .section-title-wrap {
+            margin-bottom: 40px;
+        }
+        .section-subtitle {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ef4444;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        .section-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 15px;
+        }
+        .section-title span {
+            color: #ef4444;
+        }
+        .section-divider {
+            color: #ef4444;
+            font-size: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .section-divider::before,
+        .section-divider::after {
+            content: "";
+            height: 2px;
+            width: 50px;
+            background-color: #e5e7eb;
+            margin: 0 15px;
+        }
+
         /* --- FOOTER STYLES --- */
         .footer-bottom {
             background-color: #1a1a1a;
@@ -321,11 +340,13 @@
             padding-top: 20px;
             border-top: 1px solid #333;
         }
+        
         .footer-social { display: flex; gap: 5px; }
         .footer-social a {
             width: 35px; height: 35px; background: #333; color: white; display: flex; align-items: center; justify-content: center; border-radius: 4px; text-decoration: none; transition: background 0.3s;
         }
         .footer-social a:hover { background: #ef4444; }
+
     </style>
 </head>
 <body>
@@ -362,14 +383,20 @@
                     <li><a href="/produkhukum">PRODUK HUKUM</a></li>
                 </ul>
             </li>
-            <li class="dropdown">
+            
+            <!-- UPDATE: Dropdown Layanan & Fasilitas (Tema Gelap) -->
+            <li class="dropdown-custom">
                 <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-                <ul class="dropdown-menu">
-                    <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
-                    <li><a href="#">PKS</a></li>
-                 
+                <ul class="dropdown-menu-custom">
+                    <li><a href="/layanan_perizinan">LAYANAN PERIZINAN</a></li>
+                    <li><a href="/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
+                    <li><a href="/pks">PKS</a></li>
+                    <li><a href="/skk">SKK</a></li>
+                    <li><a href="/perpanjang_skk">PERPANJANG SKK</a></li>
+                    <li><a href="/izin_penjualan">IZIN PENJUALAN</a></li>
                 </ul>
+            </li>
+
             <li><a href="/redkar">Redkar</a></li>
             <li><a href="/login" class="btn-login">LOGIN</a></li>
         </ul>
@@ -425,7 +452,8 @@
                 
                 <!-- Kiri: Widget Kontak -->
                 <div class="col-lg-4 col-xl-3">
-                    <div class="contact-widget position-sticky" style="top: 100px;">
+                    <div class="contact-widget">
+                        <!-- EMAIL RESMI -->
                         <div class="contact-item">
                             <i class="fas fa-envelope-open-text"></i>
                             <div>
@@ -433,6 +461,7 @@
                                 <p><a href="mailto:damkar.jbi@gmail.com" style="color: #4b5563; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#4b5563'">damkar.jbi@gmail.com</a></p>
                             </div>
                         </div>
+                        <!-- ALAMAT -->
                         <div class="contact-item mb-0">
                             <i class="fas fa-map-marker-alt"></i>
                             <div>
@@ -482,6 +511,22 @@
 
             </div>
 
+        </div>
+    </div>
+
+    <!-- SECTION 2: LAYANAN & FASILITAS (Disisipkan di sini) -->
+    <div class="section-container layanan-section">
+        <div class="container">
+            <div class="section-title-wrap">
+                <div class="section-subtitle">Sistem Layanan Kebakaran Dan Penyelamatan Utama</div>
+                <h2 class="section-title">LAYANAN & <span>FASILITAS</span></h2>
+                <div class="section-divider"><i class="fas fa-circle"></i></div>
+            </div>
+            
+            <!-- Tempat menaruh konten grid layanan/fasilitas nantinya -->
+            <div class="row">
+                <!-- Tambahkan card/item layanan di sini -->
+            </div>
         </div>
     </div>
 
