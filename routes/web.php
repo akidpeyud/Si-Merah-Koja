@@ -54,3 +54,10 @@ Route::get('/layanan-fasilitas/edukasi_sosialisasi', function () {
 Route::get('/layanan-fasilitas/pks', function () {
     return view('layanan-fasilitas.pks');
 });
+// === LOGIN ===
+Route::get('/login', function () {
+    return view('login.login');
+});
+Route::get('/lupa-password', function () {
+    return view('login.lupa_password');
+});
