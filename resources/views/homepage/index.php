@@ -16,17 +16,43 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        /* --- STYLES DARI HEADER --- */
+       /* --- STYLES DARI HEADER --- */
         .hero-section {
-            background-image: linear-gradient(rgba(11, 15, 25, 0.75), rgba(11, 15, 25, 0.9)), url('/images/background1.jpg');
-            background-size: cover;
-            background-position: center;
+            position: relative;
             min-height: 100vh;
             color: #ffffff;
             display: flex;
             flex-direction: column;
+            z-index: 1; /* Memastikan konten teks dan tombol tetap bisa diklik */
         }
         
+        /* Layer Background 1 */
+        .hero-section::before,
+        .hero-section::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-size: cover;
+            background-position: center;
+            z-index: -1; /* Posisi di belakang konten utama */
+        }
+        
+        .hero-section::before {
+            background-image: linear-gradient(rgba(11, 15, 25, 0.75), rgba(11, 15, 25, 0.9)), url('/images/background1.jpg');
+        }
+
+        /* Layer Background 2 (Animasi Ketukar) */
+        .hero-section::after {
+            background-image: linear-gradient(rgba(11, 15, 25, 0.75), rgba(11, 15, 25, 0.9)), url('/images/background2.jpeg');
+            animation: gantiBackground 9s infinite; /* Total durasi siklus 12 detik */
+        }
+
+        /* Logika Animasi (Fade In & Fade Out) */
+        @keyframes gantiBackground {
+            0%, 40% { opacity: 0; }     /* Menampilkan Background 1 */
+            50%, 90% { opacity: 1; }    /* Menampilkan Background 2 secara halus */
+            100% { opacity: 0; }        /* Transisi balik ke Background 1 */
+        }
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -520,7 +546,7 @@
                  
                 </ul>
             </li>
-            <li><a href="#">Redkar</a></li>
+            <li><a href="/redkar">Redkar</a></li>
             <li><a href="#" class="btn-login">LOGIN</a></li>
         </ul>
     </nav>
