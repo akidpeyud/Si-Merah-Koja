@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relawan Pemadam Kebakaran | SIMERAH KOJA</title>
-    
+
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+
     <style>
         * {
             margin: 0;
@@ -52,7 +52,8 @@
             background-color: #ef4444; color: #ffffff; padding: 8px 24px; border-radius: 50px; margin-left: 10px;
         }
         .nav-links .btn-login:hover { background-color: #dc2626; color: #ffffff; }
-        
+
+        /* DROPDOWN CUSTOM TEMA GELAP */
         .dropdown-menu-custom {
             display: none; position: absolute; top: 100%; left: 0; background-color: #1f2937;
             min-width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-radius: 8px;
@@ -290,14 +291,14 @@
         .footer-logo img { height: 120px; margin-bottom: 15px; }
         .footer-about h3 { color: white; font-size: 18px; margin-bottom: 20px; font-weight: 700;}
         .footer-about p { line-height: 1.8; font-size: 12px; margin-bottom: 20px;}
-        
+
         .footer-map-container { position: relative; width: 100%; height: 120px; background: #333; border-radius: 8px; overflow: hidden; margin-bottom: 15px;}
         .footer-map-container img { width: 100%; height: 100%; object-fit: cover;}
         .footer-find { font-weight: 700; color: white; margin-bottom: 20px; }
         .footer-find i { color: #ef4444; margin-right: 5px;}
         .footer-download p { font-size: 12px; color: #ef4444; margin-bottom: 10px; }
         .footer-download img { height: 40px; cursor: pointer;}
-        
+
         .footer-links h3 { color: white; font-size: 18px; margin-bottom: 20px; font-weight: 700;}
         .footer-links ul { list-style: none; padding-left: 0; }
         .footer-links li { margin-bottom: 12px; }
@@ -339,6 +340,7 @@
             <img src="/images/logo-redkar.png" alt="Logo Redkar">
         </a>
         <ul class="nav-links">
+            <!-- Dropdown Kedaruratan -->
             <li class="dropdown-custom">
                 <a href="#">Layanan Kedaruratan <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
                 <ul class="dropdown-menu-custom">
@@ -347,6 +349,8 @@
                     <li><a href="tel:112">CALL CENTER 112</a></li>
                 </ul>
             </li>
+            
+            <!-- Dropdown Program Kerja -->
             <li class="dropdown-custom">
                 <a href="#">Program Kerja <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
                 <ul class="dropdown-menu-custom">
@@ -354,6 +358,7 @@
                     <li><a href="/perencanaan">PERENCANAAN</a></li>
                     <li><a href="/pelaporan">PELAPORAN</a></li>
                     <li><a href="/sop">SOP</a></li>
+                    <li><a href="/produkhukum">PRODUK HUKUM</a></li>
                 </ul>
             </li>
             <li class="dropdown-custom dropdown-white">
@@ -385,12 +390,12 @@
     <!-- Main Content Area -->
     <div class="container mt-5">
         <div class="row g-5">
-            
+
             <!-- Kiri: Informasi Syarat & Kontak -->
             <div class="col-lg-4">
                 <div class="info-sidebar position-sticky" style="top: 100px;">
                     <h3>Informasi</h3>
-                    
+
                     <div class="info-block">
                         <h5><i class="fas fa-check-square"></i> Syarat Keanggotaan</h5>
                         <ul>
@@ -438,7 +443,7 @@
                                 <label class="form-label">NIK</label>
                                 <input type="text" class="form-control" name="nik" required>
                             </div>
-                            
+
                             <div class="col-12">
                                 <label class="form-label">Nama Lengkap</label>
                                 <input type="text" class="form-control" name="nama_lengkap" required>
@@ -612,7 +617,7 @@
                 <h3>Tentang Kami</h3>
                 <p>SIMERAH KOJA merupakan sistem informasi pemerintahan berbasis elektronik yang terintegrasi pada dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
             </div>
-            
+
             <div class="footer-contact">
                 <div class="footer-map-container">
                     <iframe 
@@ -632,7 +637,7 @@
                     <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play">
                 </div>
             </div>
-            
+
             <div class="footer-links">
                 <h3>Link Terkait</h3>
                 <ul>
@@ -643,7 +648,7 @@
                 </ul>
             </div>
         </div>
-        
+
         <div class="footer-copyright">
             <div>SIMERAHKOJA © 2026 / ALL RIGHTS RESERVED</div>
             <!-- FOOTER SOCIAL LINKS -->
@@ -660,7 +665,7 @@
 
     <!-- Script Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <!-- Script Dynamic Dropdown Kecamatan ke Kelurahan -->
     <script>
         const dataWilayah = {

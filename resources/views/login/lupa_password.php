@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SIMERAH KOJA</title>
+    <title>Reset Password - SIMERAH KOJA</title>
 
-    <!-- Google Fonts: Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
@@ -23,7 +20,6 @@
         }
 
         body {
-            /* Background image with a dark overlay for readability */
             background-image: linear-gradient(rgba(17, 24, 39, 0.7), rgba(17, 24, 39, 0.8)), url('/images/background2.jpeg');
             background-size: cover;
             background-position: center;
@@ -49,20 +45,20 @@
             max-width: 420px;
             background: #ffffff;
             border-radius: 12px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2); /* Enhanced shadow for image background */
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             overflow: hidden;
             border: 1px solid #e5e7eb;
         }
 
         .login-header {
-            background-color: #111827; /* Dark blue seragam dengan navbar & footer */
-            border-bottom: 4px solid #ef4444; /* Garis aksen merah */
-            padding: 40px 30px 30px;
+            background-color: #111827;
+            border-bottom: 4px solid #ef4444; 
+            padding: 30px 30px 20px;
             text-align: center;
         }
 
         .login-header img {
-            height: 130px; /* Logo diperbesar dari 70px ke 100px */
+            height: 130px; /* Disamakan dengan halaman login */
             margin-bottom: 20px;
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
         }
@@ -75,7 +71,7 @@
         }
 
         .login-body {
-            padding: 40px 30px;
+            padding: 30px 30px;
         }
 
         .login-title {
@@ -83,28 +79,37 @@
             font-weight: 800;
             color: #111827;
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 10px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
+        .reset-desc {
+            text-align: center;
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
         /* --- FORM STYLES --- */
         .form-label {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: #374151;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .input-group-text {
             background-color: #f8fafc;
             border-color: #d1d5db;
             color: #9ca3af;
+            font-size: 13px;
         }
 
         .form-control {
             font-size: 13px;
-            padding: 12px 15px;
+            padding: 10px 15px;
             border-color: #d1d5db;
             color: #4b5563;
         }
@@ -129,7 +134,7 @@
             border: none;
             border-radius: 6px;
             width: 100%;
-            margin-top: 15px;
+            margin-top: 10px;
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -141,23 +146,10 @@
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
         }
 
-        .forgot-password {
-            font-size: 12px;
-            color: #ef4444;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s;
-        }
-
-        .forgot-password:hover {
-            color: #dc2626;
-            text-decoration: underline;
-        }
-
         .back-to-home {
             display: block;
             text-align: center;
-            margin-top: 25px;
+            margin-top: 20px;
             font-size: 13px;
             color: #6b7280;
             text-decoration: none;
@@ -172,17 +164,6 @@
         .back-to-home:hover {
             color: #111827;
         }
-
-        /* Checkbox custom */
-        .form-check-label {
-            font-size: 12px;
-            color: #4b5563;
-            cursor: pointer;
-        }
-        .form-check-input:checked {
-            background-color: #ef4444;
-            border-color: #ef4444;
-        }
     </style>
 </head>
 <body>
@@ -190,62 +171,53 @@
     <div class="login-wrapper">
         <div class="login-card">
             
-            <!-- HEADER BERSERTA LOGO -->
             <div class="login-header">
                 <img src="/images/simerahkoja.png" alt="Logo Simerah Koja">
                 <p>Sistem Informasi Penanggulangan Kebakaran dan Penyelamatan Daerah Kota Jambi</p>
             </div>
 
-            <!-- FORM BODY -->
             <div class="login-body">
-                <h2 class="login-title">Masuk Akun</h2>
+                <h2 class="login-title">Reset Password</h2>
+                <p class="reset-desc">Masukkan Email dan Nomor Kepegawaian Anda untuk mengatur ulang kata sandi.</p>
                 
                 <form action="#" method="POST">
                     
-                    <!-- Input Email -->
                     <div class="mb-3">
                         <label class="form-label">Email Address</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                            <input type="email" class="form-control" name="email" placeholder="Masukkan email Anda" required>
+                            <input type="email" class="form-control" name="email" placeholder="Masukkan email terdaftar" required>
                         </div>
                     </div>
 
-                    <!-- Input Password -->
                     <div class="mb-3">
-                        <label class="form-label">Password</label>
+                        <label class="form-label">Nomor Kepegawaian</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-id-badge"></i></span>
+                            <input type="text" class="form-control" name="nomor_pegawai" placeholder="Masukkan NIP/Nomor Kepegawaian" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Password Baru</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                            <input type="password" class="form-control" name="password" placeholder="Masukkan password Anda" required>
+                            <input type="password" class="form-control" name="password" placeholder="Buat password baru" required>
                         </div>
                     </div>
 
-                    <!-- Remember Me & Forgot Password -->
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="rememberMe">
-                            <label class="form-check-label" for="rememberMe">
-                                Ingat Saya
-                            </label>
-                        </div>
-                        <a href="/lupa-password" class="forgot-password">Lupa Password?</a>
-                    </div>
-
-                    <!-- Tombol Login -->
-                    <button type="submit" class="btn-submit">LOGIN</button>
+                    <button type="submit" class="btn-submit">Simpan Password Baru</button>
 
                 </form>
 
-                <!-- Kembali ke Beranda -->
-                <a href="/" class="back-to-home">
-                    <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+                <a href="/login" class="back-to-home">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Login
                 </a>
 
             </div>
         </div>
     </div>
 
-    <!-- Script Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

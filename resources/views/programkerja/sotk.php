@@ -513,6 +513,13 @@
 
         </div>
     </div>
+            
+            <!-- Tempat menaruh konten grid layanan/fasilitas nantinya -->
+            <div class="row">
+                <!-- Tambahkan card/item layanan di sini -->
+            </div>
+        </div>
+    </div>
 
     <!-- SECTION 2: LAYANAN & FASILITAS (Disisipkan di sini) -->
     <div class="section-container layanan-section">
