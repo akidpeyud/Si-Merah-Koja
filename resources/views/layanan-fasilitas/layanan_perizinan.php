@@ -221,7 +221,7 @@
                     <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
                     <li><a href="/layanan-fasilitas/perjanjian_kerjasama">PKS</a></li>
-                    <li><a href="/layanan-fasilitas/layanan_lainnya">LAYANAN LAINNYA</a></li>
+                    
                 </ul>
             </li>
             <li><a href="#">Redkar</a></li>

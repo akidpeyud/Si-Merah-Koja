@@ -8,7 +8,7 @@
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Bootstrap 5.3 CSS (Hanya untuk Grid System konten tengah) -->
+    <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Font Awesome -->
@@ -27,7 +27,7 @@
             color: #1f2937;
         }
 
-        /* --- NAVBAR STYLES (DARI HOMEPAGE) --- */
+        /* --- NAVBAR STYLES --- */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -53,6 +53,7 @@
         }
         .nav-links .btn-login:hover { background-color: #dc2626; color: #ffffff; }
         
+        /* DROPDOWN CUSTOM TEMA GELAP (DIGUNAKAN UNTUK SEMUA DROPDOWN) */
         .dropdown-menu-custom {
             display: none; position: absolute; top: 100%; left: 0; background-color: #1f2937;
             min-width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-radius: 8px;
@@ -101,7 +102,7 @@
         }
         .breadcrumb-custom a:hover { color: #ffffff; }
 
-        /* --- MAIN CONTENT (SOTK) --- */
+        /* --- MAIN CONTAINER --- */
         .main-container {
             background-color: #ffffff;
             border-radius: 12px;
@@ -177,17 +178,21 @@
             color: #4b5563; 
             line-height: 1.5;
         }
+        
+        /* Social Links (1 Baris) */
         .social-links {
             display: flex;
-            gap: 10px;
+            flex-wrap: nowrap;
+            gap: 6px; 
             margin-top: 25px;
         }
         .social-links a {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 36px;
-            height: 36px;
+            width: 32px; 
+            height: 32px; 
+            font-size: 13px;
             background-color: #ffffff;
             color: #6b7280;
             border-radius: 50%;
@@ -250,7 +255,50 @@
             object-fit: contain;
         }
 
-        /* --- FOOTER STYLES (DARI HOMEPAGE) --- */
+        /* --- SECTION LAYANAN & FASILITAS --- */
+        .layanan-section {
+            background-color: #ffffff;
+            padding: 60px 0;
+            margin-bottom: 60px;
+            text-align: center;
+        }
+        .section-title-wrap {
+            margin-bottom: 40px;
+        }
+        .section-subtitle {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ef4444;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        .section-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 15px;
+        }
+        .section-title span {
+            color: #ef4444;
+        }
+        .section-divider {
+            color: #ef4444;
+            font-size: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .section-divider::before,
+        .section-divider::after {
+            content: "";
+            height: 2px;
+            width: 50px;
+            background-color: #e5e7eb;
+            margin: 0 15px;
+        }
+
+        /* --- FOOTER STYLES --- */
         .footer-bottom {
             background-color: #1a1a1a;
             color: #9ca3af;
@@ -292,10 +340,7 @@
             padding-top: 20px;
             border-top: 1px solid #333;
         }
-        .footer-newsletter { display: flex; align-items: center; gap: 10px;}
-        .footer-newsletter input {
-            background: white; border: none; padding: 10px 15px; border-radius: 4px; width: 200px; outline: none; font-size: 12px;
-        }
+        
         .footer-social { display: flex; gap: 5px; }
         .footer-social a {
             width: 35px; height: 35px; background: #333; color: white; display: flex; align-items: center; justify-content: center; border-radius: 4px; text-decoration: none; transition: background 0.3s;
@@ -312,7 +357,7 @@
         $pesan_wa = "Terimakasih%20telah%20menghubungi%20%F0%9F%94%A5%F0%9F%94%A5%F0%9F%94%A5..%0ASistem%20Informasi%20Penanggulangan%20Kebakaran%20dan%20Penyelamatan%20Daerah%20Kota%20Jambi%20(SIMERAH%20KOJA)";
     ?>
 
- <!-- Navbar -->
+    <!-- Navbar -->
     <nav class="navbar">
         <a href="/" class="nav-logos" style="text-decoration: none;">
             <img src="/images/jambi.png" alt="Logo Pemkot">
@@ -335,20 +380,25 @@
                     <li><a href="/perencanaan">PERENCANAAN</a></li>
                     <li><a href="/pelaporan">PELAPORAN</a></li>
                     <li><a href="/sop">SOP</a></li>
+                    <li><a href="/produkhukum">PRODUK HUKUM</a></li>
                 </ul>
             </li>
+            
+            <!-- UPDATE: Dropdown Layanan & Fasilitas (Tema Gelap) -->
             <li class="dropdown-custom">
                 <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
                 <ul class="dropdown-menu-custom">
-                    <li><a href="#">LAYANAN PERIZINAN</a></li>
-                    <li><a href="#">EDUKASI DAN SOSIALISASI</a></li>
-                    <li><a href="#">PKS</a></li>
-                    
+                    <li><a href="/layanan_perizinan">LAYANAN PERIZINAN</a></li>
+                    <li><a href="/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
+                    <li><a href="/pks">PKS</a></li>
+                    <li><a href="/skk">SKK</a></li>
+                    <li><a href="/perpanjang_skk">PERPANJANG SKK</a></li>
+                    <li><a href="/izin_penjualan">IZIN PENJUALAN</a></li>
                 </ul>
             </li>
+
             <li><a href="/redkar">Redkar</a></li>
-            
-            <li><a href="#" class="btn-login">LOGIN</a></li>
+            <li><a href="/login" class="btn-login">LOGIN</a></li>
         </ul>
     </nav>
 
@@ -397,19 +447,21 @@
                 </li>
             </ul>
 
-            <!-- Grid Layout (Contact Info + PDF Viewer) -->
+            <!-- Grid Layout (Contact Info + Document Viewer) -->
             <div class="row g-4 align-items-stretch">
                 
                 <!-- Kiri: Widget Kontak -->
                 <div class="col-lg-4 col-xl-3">
                     <div class="contact-widget">
+                        <!-- EMAIL RESMI -->
                         <div class="contact-item">
                             <i class="fas fa-envelope-open-text"></i>
                             <div>
                                 <h6>Email Resmi</h6>
-                                <p>damkar.jbi@gmail.com</p>
+                                <p><a href="mailto:damkar.jbi@gmail.com" style="color: #4b5563; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#4b5563'">damkar.jbi@gmail.com</a></p>
                             </div>
                         </div>
+                        <!-- ALAMAT -->
                         <div class="contact-item mb-0">
                             <i class="fas fa-map-marker-alt"></i>
                             <div>
@@ -418,10 +470,14 @@
                             </div>
                         </div>
                         
+                        <!-- Social Media Links -->
                         <div class="social-links">
-                            <a href="#"><i class="fab fa-twitter"></i></a>
-                            <a href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
+                            <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
+                            <a href="https://www.facebook.com/DamkarKotaJambi" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="https://www.youtube.com/@damkarkotajambi" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+                            <a href="https://www.tiktok.com/@damkar.kota.jambi" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                            <a href="https://www.instagram.com/damkar.kotajambi/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
                         </div>
                     </div>
                 </div>
@@ -455,6 +511,22 @@
 
             </div>
 
+        </div>
+    </div>
+
+    <!-- SECTION 2: LAYANAN & FASILITAS (Disisipkan di sini) -->
+    <div class="section-container layanan-section">
+        <div class="container">
+            <div class="section-title-wrap">
+                <div class="section-subtitle">Sistem Layanan Kebakaran Dan Penyelamatan Utama</div>
+                <h2 class="section-title">LAYANAN & <span>FASILITAS</span></h2>
+                <div class="section-divider"><i class="fas fa-circle"></i></div>
+            </div>
+            
+            <!-- Tempat menaruh konten grid layanan/fasilitas nantinya -->
+            <div class="row">
+                <!-- Tambahkan card/item layanan di sini -->
+            </div>
         </div>
     </div>
 
@@ -502,13 +574,7 @@
         
         <div class="footer-copyright">
             <div>SIMERAHKOJA © 2026 / ALL RIGHTS RESERVED</div>
-            <div class="footer-newsletter">
-                <input type="email" placeholder="Enter your email here...">
-                <div style="background: white; padding: 10px; border-radius: 4px; cursor: pointer; color: #111827;">
-                    <i class="fas fa-envelope"></i>
-                </div>
-            </div>
-           <!-- FOOTER SOCIAL LINKS -->
+            <!-- Footer Social Links -->
             <div class="footer-social">
                 <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
                 <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
@@ -518,12 +584,9 @@
                 <a href="https://www.instagram.com/damkar.kotajambi/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
-
-
-
     </div>
 
-    <!-- Script Bootstrap untuk Layout Grid -->
+    <!-- Script Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

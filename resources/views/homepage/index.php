@@ -16,14 +16,14 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-       /* --- STYLES DARI HEADER --- */
+        /* --- STYLES DARI HEADER --- */
         .hero-section {
             position: relative;
             min-height: 100vh;
             color: #ffffff;
             display: flex;
             flex-direction: column;
-            z-index: 1; /* Memastikan konten teks dan tombol tetap bisa diklik */
+            z-index: 1; 
         }
         
         /* Layer Background 1 */
@@ -34,7 +34,7 @@
             top: 0; left: 0; right: 0; bottom: 0;
             background-size: cover;
             background-position: center;
-            z-index: -1; /* Posisi di belakang konten utama */
+            z-index: -1; 
         }
         
         .hero-section::before {
@@ -44,15 +44,16 @@
         /* Layer Background 2 (Animasi Ketukar) */
         .hero-section::after {
             background-image: linear-gradient(rgba(11, 15, 25, 0.75), rgba(11, 15, 25, 0.9)), url('/images/background2.jpeg');
-            animation: gantiBackground 9s infinite; /* Total durasi siklus 12 detik */
+            animation: gantiBackground 9s infinite; 
         }
 
-        /* Logika Animasi (Fade In & Fade Out) */
         @keyframes gantiBackground {
-            0%, 40% { opacity: 0; }     /* Menampilkan Background 1 */
-            50%, 90% { opacity: 1; }    /* Menampilkan Background 2 secara halus */
-            100% { opacity: 0; }        /* Transisi balik ke Background 1 */
+            0%, 40% { opacity: 0; }     
+            50%, 90% { opacity: 1; }    
+            100% { opacity: 0; }        
         }
+
+        /* --- NAVBAR STICKY --- */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -60,8 +61,9 @@
             padding: 15px 50px;
             background-color: #111827; 
             border-bottom: 4px solid #ef4444;
-            position: relative;
-            z-index: 999;
+            position: sticky; 
+            top: 0;
+            z-index: 9999; 
         }
         .nav-logos { display: flex; gap: 15px; align-items: center; }
         .nav-logos img { height: 40px; transition: transform 0.3s; }
@@ -261,7 +263,12 @@
             max-width: 1200px;
             margin: 0 auto;
         }
+        
+        /* FIX: CSS agar tag <a> berfungsi sebagai kotak dan textnya tidak biru */
         .layanan-card {
+            display: block; 
+            text-decoration: none; 
+            color: inherit;
             background: #ffffff;
             padding: 30px 20px;
             border-radius: 12px;
@@ -291,15 +298,6 @@
         
         .layanan-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
         .layanan-card p { font-size: 13px; color: #6b7280; line-height: 1.6; }
-        .btn-layanan-lainnya {
-            display: block; width: fit-content;
-            margin: 50px auto 0;
-            background: #ef4444; color: white;
-            padding: 12px 30px; border-radius: 6px;
-            text-decoration: none; font-weight: 700; font-size: 14px;
-            transition: background 0.3s;
-        }
-        .btn-layanan-lainnya:hover { background: #dc2626; }
 
         /* Section 3: Kejadian & Evakuasi */
         .kejadian-section {
@@ -472,8 +470,6 @@
         .footer-map-container iframe { width: 100%; height: 100%; border: none;}
         .footer-find { font-weight: 700; color: white; margin-bottom: 20px; }
         .footer-find i { color: #ef4444; margin-right: 5px;}
-        .footer-download p { font-size: 12px; color: #ef4444; margin-bottom: 10px; }
-        .footer-download img { height: 40px; cursor: pointer;}
         
         .footer-links h3 { color: white; font-size: 18px; margin-bottom: 20px; font-weight: 700;}
         .footer-links ul { list-style: none; }
@@ -542,8 +538,7 @@
                 <ul class="dropdown-menu">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
-                    <li><a href="#">PKS</a></li>
-                 
+                    <li><a href="/layanan-fasilitas/perjanjian_kerjasama">PKS</a></li>
                 </ul>
             </li>
             <li><a href="/redkar">Redkar</a></li>
@@ -615,7 +610,7 @@
         </div>
     </div>
 
-    <!-- SECTION 2: LAYANAN & FASILITAS -->
+    <!-- SECTION 2: LAYANAN & FASILITAS (Udah Bisa Diklik) -->
     <div class="section-container layanan-section">
         <div class="section-title-wrap">
             <div class="section-subtitle">Sistem Layanan Kebakaran Dan Penyelamatan Utama</div>
@@ -624,62 +619,60 @@
         </div>
 
         <div class="layanan-grid">
-            <div class="layanan-card">
+            <a href="/layanan-fasilitas/layanan_perizinan" class="layanan-card">
                 <div class="layanan-icon icon-gray"><i class="far fa-building"></i></div>
                 <h3>RPKBGL</h3>
                 <p>Layanan Perizinan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan.</p>
-            </div>
+            </a>
             
-            <div class="layanan-card">
+            <a href="/layanan-fasilitas/skk" class="layanan-card">
                 <div class="layanan-icon icon-pink"><i class="fas fa-user-shield"></i></div>
                 <h3>SKK</h3>
                 <p>Layanan Perizinan Penerbitan Sertifikat Keamanan Kebakaran.</p>
-            </div>
+            </a>
             
-            <div class="layanan-card">
+            <a href="/layanan-fasilitas/perpanjang_skk" class="layanan-card">
                 <div class="layanan-icon icon-orange"><i class="fas fa-fire-extinguisher"></i></div>
                 <h3>Perpanjang SKK</h3>
                 <p>Layanan Perizinan Perpanjangan Sertifikat Keamanan Kebakaran.</p>
-            </div>
+            </a>
             
-            <div class="layanan-card">
+            <a href="/layanan-fasilitas/izin_penjualan" class="layanan-card">
                 <div class="layanan-icon icon-purple"><i class="fas fa-file-invoice"></i></div>
                 <h3>Izin Penjualan</h3>
                 <p>Layanan Perizinan Penjualan Alat-alat Pencegahan, Pemadaman Kebakaran dan Penyelamatan.</p>
-            </div>
+            </a>
             
-            <div class="layanan-card">
+            <a href="/redkar" class="layanan-card">
                 <div class="layanan-icon icon-red"><i class="fas fa-running"></i></div>
                 <h3>REDKAR</h3>
                 <p>Kumpulan Relawan Pemadam Kebakaran Kota Jambi.</p>
-            </div>
+            </a>
             
-            <div class="layanan-card">
+            <a href="/layanan-fasilitas/perjanjian_kerjasama" class="layanan-card">
                 <div class="layanan-icon icon-yellow"><i class="fas fa-handshake"></i></div>
                 <h3>PKS</h3>
                 <p>Daftar Perjanjian Kerjasama dengan Instansi Terkait.</p>
-            </div>
+            </a>
             
-            <div class="layanan-card">
+            <a href="/layanan-fasilitas/edukasi_sosialisasi" class="layanan-card">
                 <div class="layanan-icon icon-blue"><i class="fas fa-chalkboard-teacher"></i></div>
                 <h3>Edukasi Sosialisasi</h3>
                 <p>Edukasi dan Sosialisasi untuk masyarakat baik instansi maupun pendidikan.</p>
-            </div>
+            </a>
             
-            <div class="layanan-card">
+            <a href="#" class="layanan-card">
                 <div class="layanan-icon icon-orange"><i class="fas fa-mobile-alt"></i></div>
                 <h3>Media Edukasi</h3>
                 <p>Media Edukasi berupa info grafis, modul pembelajaran, dan video edukasi lainnya.</p>
-            </div>
+            </a>
         </div>
-
-        <a href="#" class="btn-layanan-lainnya">Layanan Lainnya</a>
     </div>
 
     <!-- SECTION 3: KEJADIAN & EVAKUASI -->
     <div class="section-container kejadian-section">
         <div class="kejadian-header-img">
-            <img src="https://via.placeholder.com/400x150/ffffff/ef4444?text=Vektor+Mobil+Damkar" alt="Mobil Damkar">
+           <img src="/images/mobil.png" alt="Logo mobil damkar">
         </div>
         
         <div class="section-title-wrap">
@@ -917,7 +910,7 @@
     <div class="giat-section">
         <div class="giat-container">
             <div class="giat-image">
-                <img src="https://via.placeholder.com/300x500/111827/ffffff?text=Vektor+Petugas+Damkar" alt="Petugas Damkar">
+                <img src="/images/damkar.png" alt="damkar">
             </div>
             
             <div class="giat-content">
@@ -978,19 +971,14 @@
                 <div class="footer-find">
                     <i class="fas fa-map-marker-alt"></i> Find us on Map
                 </div>
-                <div class="footer-download">
-                    <p>Download Aplikasi SIMERAH KOJA :</p>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play">
-                </div>
             </div>
             
             <div class="footer-links">
                 <h3>Link Terkait</h3>
                 <ul>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> Official Damkar</a></li>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> Website Jambikota</a></li>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> SIKOJA</a></li>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> 112 Kota Jambi</a></li>
+                    <li><a href="https://damkar.jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> Official Damkar</a></li>
+                    <li><a href="https://jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> Website Jambikota</a></li>
+                    <li><a href="https://sikoja.jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> SIKOJA</a></li>
                 </ul>
             </div>
         </div>
@@ -998,11 +986,8 @@
         <div class="footer-copyright">
             <div>SIMERAHKOJA © 2026 / ALL RIGHTS RESERVED</div>
             <div class="footer-newsletter">
-                <input type="email" placeholder="Enter your email here...">
-                <div style="background: white; padding: 10px; border-radius: 4px; cursor: pointer; color: #111827;">
-                    <i class="fas fa-envelope"></i>
-                </div>
-            </div>
+             
+            
          <!-- FOOTER SOCIAL LINKS -->
             <div class="footer-social">
                 <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
