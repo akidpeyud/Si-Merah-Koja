@@ -384,14 +384,18 @@
                 </ul>
             </li>
             
-<li class="dropdown-custom">
-    <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-    <ul class="dropdown-menu-custom">
-        <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
-        <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
-        <li><a href="/layanan-fasilitas/pks">PKS</a></li>
-    </ul>
-</li>
+            <!-- UPDATE: Dropdown Layanan & Fasilitas (Tema Gelap) -->
+            <li class="dropdown-custom">
+                <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+                <ul class="dropdown-menu-custom">
+                    <li><a href="/layanan_perizinan">LAYANAN PERIZINAN</a></li>
+                    <li><a href="/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
+                    <li><a href="/pks">PKS</a></li>
+                    <li><a href="/skk">SKK</a></li>
+                    <li><a href="/perpanjang_skk">PERPANJANG SKK</a></li>
+                    <li><a href="/izin_penjualan">IZIN PENJUALAN</a></li>
+                </ul>
+            </li>
 
             <li><a href="/redkar">Redkar</a></li>
             <li><a href="/login" class="btn-login">LOGIN</a></li>
@@ -509,6 +513,22 @@
 
         </div>
     </div>
+            
+            <!-- Tempat menaruh konten grid layanan/fasilitas nantinya -->
+            <div class="row">
+                <!-- Tambahkan card/item layanan di sini -->
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 2: LAYANAN & FASILITAS (Disisipkan di sini) -->
+    <div class="section-container layanan-section">
+        <div class="container">
+            <div class="section-title-wrap">
+                <div class="section-subtitle">Sistem Layanan Kebakaran Dan Penyelamatan Utama</div>
+                <h2 class="section-title">LAYANAN & <span>FASILITAS</span></h2>
+                <div class="section-divider"><i class="fas fa-circle"></i></div>
+            </div>
             
             <!-- Tempat menaruh konten grid layanan/fasilitas nantinya -->
             <div class="row">

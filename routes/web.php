@@ -51,13 +51,3 @@ Route::get('/layanan-fasilitas/izin_penjualan', function () {
 Route::get('/layanan-fasilitas/edukasi_sosialisasi', function () {
     return view('layanan-fasilitas.edukasi_sosialisasi');
 });
-Route::get('/layanan-fasilitas/pks', function () {
-    return view('layanan-fasilitas.pks');
-});
-// === LOGIN ===
-Route::get('/login', function () {
-    return view('login.login');
-});
-Route::get('/lupa-password', function () {
-    return view('login.lupa_password');
-});

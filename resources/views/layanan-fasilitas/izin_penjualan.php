@@ -51,7 +51,10 @@
             text-align: center; color: white; border-bottom: 4px solid #ef4444;
         }
         .page-hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 15px; letter-spacing: 1px; }
+        
         .breadcrumb { font-size: 14px; font-weight: 600; color: #cbd5e1; }
+        .breadcrumb a { color: #38bdf8; text-decoration: none; transition: 0.3s; }
+        .breadcrumb a:hover { color: #bae6fd; text-decoration: underline; }
         .breadcrumb span { color: #ef4444; margin: 0 5px;}
         .breadcrumb .active { color: #ef4444; }
 
@@ -105,7 +108,34 @@
         .info-body { padding-left: 39px; font-size: 12px; color: #64748b; line-height: 1.6; }
         .info-body ul { padding-left: 15px; margin-bottom: 10px; }
         .info-body a { color: #ef4444; text-decoration: none; font-weight: 600; }
-        .btn-detail { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; margin-top: 5px;}
+        
+        .btn-detail { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; margin-top: 5px; transition: 0.3s;}
+        .btn-detail:hover { background: #dc2626; }
+
+        /* CSS BARU UNTUK KOTAK TAMPILKAN DETAIL */
+        .detail-content {
+            display: none; 
+            margin-top: 10px;
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background-color: #f8fafc;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .detail-content ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+        .detail-content li {
+            font-size: 12px;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 8px;
+            list-style-type: circle;
+        }
+        .detail-content li:last-child {
+            margin-bottom: 0;
+        }
 
         .sidebar-social { padding-left: 39px; display: flex; gap: 8px; margin-top: 20px; }
         .sidebar-social a { background: #94a3b8; color: white; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px; text-decoration: none; font-size: 13px; transition: 0.3s; }
@@ -146,6 +176,7 @@
         .footer-links ul { list-style: none; }
         .footer-links li { margin-bottom: 12px; }
         .footer-links a { color: #9ca3af; text-decoration: none; transition: color 0.3s; display: flex; align-items: center; gap: 10px;}
+        .footer-links a i { font-size: 10px; color: #4b5563;}
         .footer-links a:hover { color: white; }
         .footer-copyright { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto; padding-top: 20px; border-top: 1px solid #333; }
         .footer-newsletter { display: flex; align-items: center; gap: 10px;}
@@ -193,12 +224,11 @@
                 <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
                 <ul class="dropdown-menu">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
-                    <li><a href="#">EDUKASI DAN SOSIALISASI</a></li>
-                    <li><a href="#">PKS</a></li>
-                    <li><a href="#">LAYANAN LAINNYA</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
+                    <li><a href="/layanan-fasilitas/perjanjian_kerjasama">PKS</a></li>
                 </ul>
             </li>
-            <li><a href="#">Redkar</a></li>
+            <li><a href="/redkar">Redkar</a></li>
             <li><a href="#" class="btn-login">LOGIN</a></li>
         </ul>
     </nav>
@@ -207,7 +237,7 @@
     <div class="page-hero">
         <h1>LAYANAN PERIZINAN</h1>
         <div class="breadcrumb">
-            Home <span>&raquo;</span> PERIZINAN <span>&raquo;</span> <span class="active">Izin Penjualan</span>
+            <a href="/">Home</a> <span>&raquo;</span> PERIZINAN <span>&raquo;</span> <span class="active">Izin Penjualan</span>
         </div>
     </div>
 
@@ -287,13 +317,25 @@
                     </div>
                 </li>
 
+                <!-- TOMBOL DETAIL DAN KONTEN DETAIL BARU -->
                 <li class="info-item">
                     <div class="info-header">
                         <div class="icon-red"><i class="fas fa-envelope"></i></div>
                         <h4>Sistem, Mekanisme dan Prosedur</h4>
                     </div>
                     <div class="info-body">
-                        <button class="btn-detail">Tampilkan Detail</button>
+                        <button type="button" class="btn-detail" onclick="toggleDetail()">Tampilkan Detail</button>
+                        
+                        <!-- Kotak konten yang muncul saat tombol diklik -->
+                        <div id="detailProsedur" class="detail-content">
+                            <ul>
+                                <li>Pemohon mendaftar secara online, setelah itu mengupload kelengkapan berkas yang dipersyaratkan;</li>
+                                <li>Tim Inspeksi melakukan pemeriksaan proteksi aktif kebakaran gedung pemohon;</li>
+                                <li>Tim inspeksi merekomendasikan kepada kepala dinas pemadam kebakaran dan penyelamatan kota jambi untuk menerima dan menolak kunjungan pemohon berdasarkan hasil inspeksi lapangan (memenuhi syarat/ tidak memenuhi syarat);</li>
+                                <li>Kepala dinas pemadam kebakaran dan penyelamatan kota jambi memberikan jawaban berdasarkan hasil rekomendasi tim inspeks;</li>
+                                <li>Sistem akan memberikan notifkasi via Whatsapp di Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi;</li>
+                            </ul>
+                        </div>
                     </div>
                 </li>
 
@@ -466,9 +508,9 @@
             <div class="footer-links">
                 <h3>Link Terkait</h3>
                 <ul>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> Official Damkar</a></li>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> Website Jambikota</a></li>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> SIKOJA</a></li>
+                    <li><a href="https://damkar.jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> Official Damkar</a></li>
+                    <li><a href="https://jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> Website Jambikota</a></li>
+                    <li><a href="https://sikoja.jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> SIKOJA</a></li>
                     <li><a href="#"><i class="fas fa-angle-double-right"></i> 112 Kota Jambi</a></li>
                 </ul>
             </div>
@@ -482,7 +524,7 @@
                     <i class="fas fa-envelope"></i>
                 </div>
             </div>
-           <!-- FOOTER SOCIAL LINKS -->
+            <!-- FOOTER SOCIAL LINKS -->
             <div class="footer-social">
                 <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
                 <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
@@ -494,5 +536,16 @@
         </div>
     </div>
 
+    <!-- SCRIPT UNTUK MENGATUR TOMBOL TAMPILKAN DETAIL -->
+    <script>
+        function toggleDetail() {
+            var detailDiv = document.getElementById("detailProsedur");
+            if (detailDiv.style.display === "none" || detailDiv.style.display === "") {
+                detailDiv.style.display = "block";
+            } else {
+                detailDiv.style.display = "none";
+            }
+        }
+    </script>
 </body>
 </html>

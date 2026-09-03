@@ -68,6 +68,31 @@
         }
         .dropdown-menu-custom li a:hover { background-color: #374151; color: #ef4444; padding-left: 26px; }
 
+        /* --- DROPDOWN WHITE (Layanan & Fasilitas) --- */
+        .dropdown-white .dropdown-menu-custom {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            min-width: 240px;
+        }
+        .dropdown-white .dropdown-menu-custom li a {
+            color: #336699; 
+            font-size: 13px;
+            font-weight: 600;
+            padding: 16px 20px;
+            border-bottom: 1px solid #f3f4f6;
+            transition: all 0.2s ease;
+        }
+        .dropdown-white .dropdown-menu-custom li:last-child a {
+            border-bottom: none;
+        }
+        .dropdown-white .dropdown-menu-custom li a:hover {
+            background-color: #f8fafc;
+            color: #ef4444;
+            padding-left: 24px;
+        }
+
         /* --- PAGE HEADER --- */
         .page-header {
             position: relative;
@@ -138,7 +163,7 @@
             color: #6b7280;
             margin-bottom: 0;
         }
-
+        
         /* Updated Social Links (1 Baris) */
         .social-links {
             display: flex;
@@ -290,7 +315,7 @@
             padding-top: 20px;
             border-top: 1px solid #333;
         }
-
+        
         .footer-social { display: flex; gap: 5px; }
         .footer-social a {
             width: 35px; height: 35px; background: #333; color: white; display: flex; align-items: center; justify-content: center; border-radius: 4px; text-decoration: none; transition: background 0.3s;
@@ -336,21 +361,16 @@
                     <li><a href="/produkhukum">PRODUK HUKUM</a></li>
                 </ul>
             </li>
-            
-            <!-- Dropdown Layanan & Fasilitas -->
-            <li class="dropdown-custom">
+            <li class="dropdown-custom dropdown-white">
                 <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-                <ul class="dropdown-menu-custom">
-                    <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
-                    <li><a href="/layanan-fasilitas/pks">PKS</a></li>
+                <ul class="dropdown-menu-custom dropdown-menu">
+                    <li><a href="/layanan-perizinan">LAYANAN PERIZINAN</a></li>
+                    <li><a href="/edukasi-sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
+                    <li><a href="/perjanjian-kerjasama">PKS</a></li>
+                    <li><a href="/layanan-lainnya">LAYANAN LAINNYA</a></li>
                 </ul>
             </li>
-
-            <!-- Tombol Redkar -->
             <li><a href="/redkar" style="color: #ef4444;">Redkar</a></li>
-
-            <!-- Tombol Login -->
             <li><a href="/login" class="btn-login">LOGIN</a></li>
         </ul>
     </nav>
