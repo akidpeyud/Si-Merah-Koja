@@ -51,3 +51,6 @@ Route::get('/layanan-fasilitas/izin_penjualan', function () {
 Route::get('/layanan-fasilitas/edukasi_sosialisasi', function () {
     return view('layanan-fasilitas.edukasi_sosialisasi');
 });
+Route::get('/layanan-fasilitas/pks', function () {
+    return view('layanan-fasilitas.pks');
+});
