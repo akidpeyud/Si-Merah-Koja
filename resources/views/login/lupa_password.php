@@ -180,7 +180,7 @@
                 <h2 class="login-title">Reset Password</h2>
                 <p class="reset-desc">Masukkan Email dan Nomor Kepegawaian Anda untuk mengatur ulang kata sandi.</p>
                 
-                <form action="#" method="POST">
+                <form action="lupa-password" method="POST">
                     
                     <div class="mb-3">
                         <label class="form-label">Email Address</label>

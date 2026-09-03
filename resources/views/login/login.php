@@ -200,7 +200,7 @@
             <div class="login-body">
                 <h2 class="login-title">Masuk Akun</h2>
                 
-                <form action="#" method="POST">
+                <form action="/login" method="POST">
                     
                     <!-- Input Email -->
                     <div class="mb-3">

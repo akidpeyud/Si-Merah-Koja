@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
 // Route untuk halaman utama (Homepage)
 Route::get('/', function () {
@@ -8,34 +9,31 @@ Route::get('/', function () {
 });
 
 // === ROUTE UNTUK MENU PROGRAM KERJA ===
-
-// Route untuk halaman SOTK
 Route::get('/sotk', function () {
     return view('programkerja.sotk');
 });
 
-// Route untuk halaman Pelaporan
 Route::get('/pelaporan', function () {
     return view('programkerja.pelaporan');
 });
 
-// Route untuk halaman Perencanaan (Pastikan file sudah di-rename jadi perencanaan.php)
 Route::get('/perencanaan', function () {
     return view('programkerja.perencanaan');
 });
 
-// Route untuk halaman Produk Hukum
 Route::get('/produkhukum', function () {
     return view('programkerja.produkhukum');
 });
 
-// Route untuk halaman SOP
 Route::get('/sop', function () {
     return view('programkerja.sop');
 });
+
 Route::get('/redkar', function () {
     return view('redkar.redkar'); 
 });
+
+// === ROUTE LAYANAN & FASILITAS ===
 Route::get('/layanan-fasilitas/layanan_perizinan', function () {
     return view('layanan-fasilitas.layanan_perizinan');
 });
@@ -51,3 +49,15 @@ Route::get('/layanan-fasilitas/izin_penjualan', function () {
 Route::get('/layanan-fasilitas/edukasi_sosialisasi', function () {
     return view('layanan-fasilitas.edukasi_sosialisasi');
 });
+Route::get('/layanan-fasilitas/pks', function () {
+    return view('layanan-fasilitas.pks');
+});
+
+// === ROUTE AUTH (LOGIN, LUPA PASSWORD, LOGOUT) ===
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'processLogin']);
+
+Route::get('/lupa-password', [AuthController::class, 'showForgotPassword']);
+Route::post('/lupa-password', [AuthController::class, 'processForgotPassword']);
+
+Route::post('/logout', [AuthController::class, 'logout']);
