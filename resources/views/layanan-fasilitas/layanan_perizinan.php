@@ -16,11 +16,12 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        /* --- NAVBAR TEMA GELAP --- */
+        /* --- NAVBAR TEMA GELAP (STICKY DI ATAS) --- */
         .navbar {
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px 50px; background-color: #0f172a; 
-            border-bottom: 4px solid #ef4444; position: relative; z-index: 999;
+            border-bottom: 4px solid #ef4444; 
+            position: sticky; top: 0; z-index: 9999; 
         }
         .nav-logos { display: flex; gap: 15px; align-items: center; }
         .nav-logos img { height: 40px; transition: transform 0.3s; }
@@ -52,7 +53,6 @@
         }
         .page-hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 15px; letter-spacing: 1px; }
         
-        /* FIX: Breadcrumb Home sekarang bisa diklik dan berwarna biru ala gambar */
         .breadcrumb { font-size: 14px; font-weight: 600; color: #cbd5e1; }
         .breadcrumb a { color: #38bdf8; text-decoration: none; transition: 0.3s; }
         .breadcrumb a:hover { color: #bae6fd; text-decoration: underline; }
@@ -109,9 +109,9 @@
         .btn-detail { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; margin-top: 5px; transition: 0.3s;}
         .btn-detail:hover { background: #dc2626; }
 
-        /* FIX: CSS untuk Kotak Dropdown Tampilkan Detail */
+        /* CSS untuk Kotak Dropdown Tampilkan Detail (Mekanisme) */
         .detail-content {
-            display: none; /* Disembunyikan dulu secara default */
+            display: none; 
             margin-top: 10px;
             padding: 15px;
             border: 1px solid #e2e8f0;
@@ -119,20 +119,35 @@
             background-color: #f8fafc;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
-        .detail-content ul {
-            padding-left: 20px;
-            margin: 0;
+        .detail-content ul { padding-left: 20px; margin: 0; }
+        .detail-content li { font-size: 12px; color: #64748b; line-height: 1.6; margin-bottom: 8px; list-style-type: circle; }
+        .detail-content li:last-child { margin-bottom: 0; }
+
+        /* --- CSS UNTUK MODAL POP-UP (LIAT DETAIL PERSYARATAN) --- */
+        .modal-overlay {
+            display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%;
+            overflow: auto; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(3px); animation: fadeIn 0.3s;
         }
-        .detail-content li {
-            font-size: 12px;
-            color: #64748b;
-            line-height: 1.6;
-            margin-bottom: 8px;
-            list-style-type: circle;
+        .modal-box {
+            background-color: #ffffff; margin: 5vh auto; padding: 0;
+            border-radius: 8px; width: 85%; max-width: 800px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative;
         }
-        .detail-content li:last-child {
-            margin-bottom: 0;
+        .modal-header {
+            padding: 20px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;
         }
+        .modal-header h2 { font-size: 22px; font-weight: 800; color: #1f2937; }
+        .modal-close-icon { color: #9ca3af; font-size: 28px; font-weight: bold; cursor: pointer; background: none; border: none; line-height: 1; }
+        .modal-close-icon:hover { color: #111827; }
+        .modal-body { padding: 25px 20px; font-size: 13px; color: #4b5563; line-height: 1.8; max-height: 60vh; overflow-y: auto; }
+        .modal-body ol { padding-left: 20px; }
+        .modal-body li { margin-bottom: 15px; }
+        .modal-footer { padding: 15px 20px; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-start; }
+        .btn-modal-tutup { background: #ef4444; color: white; border: none; padding: 10px 24px; border-radius: 6px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.3s;}
+        .btn-modal-tutup:hover { background: #dc2626; }
+        
+        .link-detail { color: #ef4444; font-weight: 600; cursor: pointer; text-decoration: none; }
+        .link-detail:hover { text-decoration: underline; }
 
         .sidebar-social { padding-left: 39px; display: flex; gap: 8px; margin-top: 20px; }
         .sidebar-social a { background: #94a3b8; color: white; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px; text-decoration: none; font-size: 13px; transition: 0.3s; }
@@ -174,8 +189,7 @@
         .footer-links a { color: #9ca3af; text-decoration: none; transition: color 0.3s; display: flex; align-items: center; gap: 10px;}
         .footer-links a:hover { color: white; }
         .footer-copyright { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto; padding-top: 20px; border-top: 1px solid #333; }
-        .footer-newsletter { display: flex; align-items: center; gap: 10px;}
-        .footer-newsletter input { background: white; border: none; padding: 10px 15px; border-radius: 4px; width: 200px; outline: none; font-size: 12px; }
+        
         .footer-social { display: flex; gap: 5px; }
         .footer-social a { width: 35px; height: 35px; background: #333; color: white; display: flex; align-items: center; justify-content: center; border-radius: 4px; text-decoration: none; font-size: 13px; transition: 0.3s; }
         .footer-social a:hover { background: #ef4444; }
@@ -191,12 +205,11 @@
 
     <!-- NAVBAR TEMA GELAP -->
     <nav class="navbar">
-        <div class="nav-logos">
-            <img src="/images/jambi.png" alt="Logo Pemkot">
-            <img src="/images/logo.png" alt="Logo Damkar">
-            <img src="/images/logo-redkar.png" alt="Logo Redkar">
-        </div>
-        <ul class="nav-links">
+       <div class="nav-logos">
+            <a href="/"><img src="/images/jambi.png" alt="Logo Pemkot"></a>
+            <a href="/"><img src="/images/logo.png" alt="Logo Damkar"></a>
+            <a href="/"><img src="/images/logo-redkar.png" alt="Logo Redkar"></a>
+        </div> <ul class="nav-links">
             <li class="dropdown">
                 <a href="#">Layanan Kedaruratan <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
                 <ul class="dropdown-menu">
@@ -221,10 +234,9 @@
                     <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
                     <li><a href="/layanan-fasilitas/perjanjian_kerjasama">PKS</a></li>
-                    
                 </ul>
             </li>
-            <li><a href="#">Redkar</a></li>
+            <li><a href="/redkar">Redkar</a></li>
             <li><a href="#" class="btn-login">LOGIN</a></li>
         </ul>
     </nav>
@@ -233,7 +245,6 @@
     <div class="page-hero">
         <h1>LAYANAN PERIZINAN</h1>
         <div class="breadcrumb">
-            <!-- FIX: Teks Home dibungkus tag link mengarah ke rute '/' (halaman utama) -->
             <a href="/">Home</a> <span>&raquo;</span> PERIZINAN <span>&raquo;</span> <span class="active">RPKBGL</span>
         </div>
     </div>
@@ -309,28 +320,29 @@
                         <ul>
                             <li>Menginput Formulir Rekomendasi Proteksi Kebakaran secara elektronik melalui simerah.jambikota.go.id</li>
                             <li>Upload Surat Permohonan Bermaterai (<a href="#">Download Surat Permohonan</a>)</li>
-                            <li>Upload Detail Persyaratan RPKBGL Lainnya (<a href="#">Lihat Detail</a>)</li>
+                            <!-- TEKS POPUP SESUAI GAMBAR 3 -->
+                            <li>Upload Detail Persyaratan RPKBGL Lainnya<br>
+                                <a class="link-detail" onclick="bukaModal()">(Liat Detail)</a>
+                            </li>
                         </ul>
                     </div>
                 </li>
 
-                <!-- FIX: Tombol Tampilkan Detail dengan JavaScript Dropdown -->
                 <li class="info-item">
                     <div class="info-header">
                         <div class="icon-red"><i class="fas fa-envelope"></i></div>
                         <h4>Sistem, Mekanisme dan Prosedur</h4>
                     </div>
                     <div class="info-body">
-                        <button class="btn-detail" onclick="toggleDetail()">Tampilkan Detail</button>
+                        <button type="button" class="btn-detail" onclick="toggleDetail()">Tampilkan Detail</button>
                         
-                        <!-- Kotak konten yang muncul saat tombol diklik -->
                         <div id="detailProsedur" class="detail-content">
                             <ul>
-                                <li>Pemohon mendaftar secara online, setelah itu mengupload kelengkapan berkas yang dipersyaratkan</li>
-                                <li>Tim Inspeksi melakukan pemeriksaan secara administrasi/teknis</li>
-                                <li>Tim Inspeksi melakukan peninjauan lapangan dan membuat berita acara hasil pemeriksaan administrasi dan peninjauan lapangan</li>
-                                <li>Kepala Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi menerbitkan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan</li>
-                                <li>Pemohon mengambil Rekomendasi Kebakaran Bangunan, Gedung dan Lingkungan setelah mendapatkan notifikasi via Whatsapp di Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi melalui bidang pencegahan</li>
+                                <li>Pemohon mendaftar secara online, setelah itu mengupload kelengkapan berkas yang dipersyaratkan;</li>
+                                <li>Tim Inspeksi melakukan pemeriksaan proteksi aktif kebakaran gedung pemohon;</li>
+                                <li>Tim inspeksi merekomendasikan kepada kepala dinas pemadam kebakaran dan penyelamatan kota jambi untuk menerima dan menolak kunjungan pemohon berdasarkan hasil inspeksi lapangan (memenuhi syarat/ tidak memenuhi syarat);</li>
+                                <li>Kepala dinas pemadam kebakaran dan penyelamatan kota jambi memberikan jawaban berdasarkan hasil rekomendasi tim inspeks;</li>
+                                <li>Sistem akan memberikan notifkasi via Whatsapp di Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi;</li>
                             </ul>
                         </div>
                     </div>
@@ -368,15 +380,18 @@
             </ul>
 
             <div class="sidebar-social">
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-                <a href="#"><i class="fab fa-tiktok"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
+               
+                <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.facebook.com/DamkarKotaJambi" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.youtube.com/@damkarkotajambi" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.tiktok.com/@damkar.kota.jambi" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/damkar.kotajambi/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+            
             </div>
         </div>
 
         <!-- KANAN: FORMULIR -->
+
         <div class="form-container">
             <h2 class="form-title">Rekomendasi Proteksi<br>Kebakaran Bangunan Gedung & Lingkungan</h2>
             <div class="decor-line"><i class="fas fa-circle"></i></div>
@@ -478,7 +493,7 @@
 
     </div>
 
-    <!-- FOOTER -->
+    <!-- FOOTER (TANPA KOTAK INPUT EMAIL SESUAI PERMINTAAN) -->
     <div class="footer-bottom">
         <div class="footer-grid">
             <div class="footer-about">
@@ -505,23 +520,16 @@
             <div class="footer-links">
                 <h3>Link Terkait</h3>
                 <ul>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> Official Damkar</a></li>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> Website Jambikota</a></li>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> SIKOJA</a></li>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> 112 Kota Jambi</a></li>
+                    <li><a href="https://damkar.jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> Official Damkar</a></li>
+                    <li><a href="https://jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> Website Jambikota</a></li>
+                    <li><a href="https://sikoja.jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> SIKOJA</a></li>
+                   
                 </ul>
             </div>
         </div>
         
         <div class="footer-copyright">
             <div>SIMERAHKOJA © 2026 / ALL RIGHTS RESERVED</div>
-            <div class="footer-newsletter">
-                <input type="email" placeholder="Enter your email here...">
-                <div style="background: white; padding: 10px; border-radius: 4px; cursor: pointer; color: #111827;">
-                    <i class="fas fa-envelope"></i>
-                </div>
-            </div>
-           <!-- FOOTER SOCIAL LINKS -->
             <div class="footer-social">
                 <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
                 <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
@@ -533,7 +541,31 @@
         </div>
     </div>
 
-    <!-- SCRIPT UNTUK MENGATUR TOMBOL TAMPILKAN DETAIL -->
+    <!-- STRUKTUR MODAL POP-UP (DETAIL PERSYARATAN) -->
+    <div id="modalPersyaratan" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Detail Persyaratan RPKBGL Lainnya</h2>
+                <button class="modal-close-icon" onclick="tutupModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <ol>
+                    <li>Menginput Formulir Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan RPKBGL secara elektronik melalui simerah.jambikota.go.id</li>
+                    <li>Identitas Pemohon/Penangung Jawab &bull; WNI : Scan Asli Kartu Tanda Penduduk (KTP-el) &bull; WNA : Scan Asli Kartu Izin Tinggal Terbatas (KITAS) atau VISA / Paspor</li>
+                    <li>Jika dikuasakan Scan Asli Surat kuasa di atas kertas bermaterai sesuai peraturan yang berlaku dan KTP-el orang yang diberi kuasa</li>
+                    <li>Jika Usaha Perorangan (Scan Asli) &bull; NPWP Perorangan Jika Badan Usaha (Scan Asli) &bull; Akta pendirian dan perubahan (Kantor Pusat dan Kantor Cabang, jika ada) &bull; SK pengesahan pendirian dan perubahan yang dikeluarkan oleh Kemenkumham &bull; NPWP Badan Usaha</li>
+                    <li>Scan Asli Izin Mendirikan Bangunan (IMB)</li>
+                    <li>Tanda Daftar Keahlian Keselamatan Kebakaran</li>
+                    <li>Proposal teknis yang dilengkapi dengan (Scan Asli): &bull; Gambar teknis yang ditandangani oleh Izin Pelaku Teknis Bangunan (IPTB): &bull; As built drawing site plan &bull; As built drawing denah setiap lantai sarana proteksi kebakaran dalam gedung yang meliputi titik fire alarm, titik sprinkler, titik hidran gedung, dan titik APAR &bull; Gambar skematik instalasi proteksi kebakaran (single line diagram) ; &bull; Spesifikasi teknis: &bull; Spesifikasi peralatan dan instalasi sistem proteksi kebakaran &cir; Sistem alarm dan komunikasi darurat &cir; Sistem hidran dan pipa kebakaran &cir; Sistem pompa kebakaran &cir; Sistem sprinkler otomatis &cir; Alat Pemadam Api Ringan (APAR) &cir; Spesifikasi fasilitas sarana jalan keluar atau jalur penyelamatan &bull; Spesifikasi akses penanggulangan kebakaran dan penyelamatan ; &bull; Dokumen penyelenggaraan sistem Manajemen Keselamatan Kebakaran Gedung (MKKG) / SOP ; &bull; Data inventaris pengelolaan dan pemeliharaan Alat Pemadam Api Ringan (APAR) ; &bull; Dokumen pemeliharaan dan laporan pemeriksaan internal sistem proteksi kebakaran oleh pemilik dan pengelola gedung yang memiliki tanda daftar keahlian keselamatan kebakaran</li>
+                </ol>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-tutup" onclick="tutupModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT UNTUK MENGATUR TOMBOL TAMPILKAN DETAIL & POPUP MODAL -->
     <script>
         function toggleDetail() {
             var detailDiv = document.getElementById("detailProsedur");
@@ -541,6 +573,20 @@
                 detailDiv.style.display = "block";
             } else {
                 detailDiv.style.display = "none";
+            }
+        }
+
+        var modal = document.getElementById("modalPersyaratan");
+        function bukaModal() {
+            modal.style.display = "block";
+        }
+        function tutupModal() {
+            modal.style.display = "none";
+        }
+        // Menutup modal jika klik di luar kotak putih
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
             }
         }
     </script>
