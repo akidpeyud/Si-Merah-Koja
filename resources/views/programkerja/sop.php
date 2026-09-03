@@ -370,16 +370,14 @@
                 </ul>
             </li>
 
-        <!-- Dropdown Layanan & Fasilitas -->
-        <li class="dropdown-custom dropdown-white">
-            <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-            <ul class="dropdown-menu-custom dropdown-menu">
-                <li><a href="/layanan-perizinan">LAYANAN PERIZINAN</a></li>
-                <li><a href="/edukasi-sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
-                <li><a href="/perjanjian-kerjasama">PKS</a></li>
-                <li><a href="/layanan-lainnya">LAYANAN LAINNYA</a></li>
-            </ul>
-        </li>
+            <li class="dropdown">
+                <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
+                    <li><a href="#">PKS</a></li>
+                 
+                </ul>
 
         <!-- Tombol Redkar -->
         <li><a href="/redkar">Redkar</a></li>
