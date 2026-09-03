@@ -509,15 +509,6 @@
 
         </div>
     </div>
-
-    <!-- SECTION 2: LAYANAN & FASILITAS (Disisipkan di sini) -->
-    <div class="section-container layanan-section">
-        <div class="container">
-            <div class="section-title-wrap">
-                <div class="section-subtitle">Sistem Layanan Kebakaran Dan Penyelamatan Utama</div>
-                <h2 class="section-title">LAYANAN & <span>FASILITAS</span></h2>
-                <div class="section-divider"><i class="fas fa-circle"></i></div>
-            </div>
             
             <!-- Tempat menaruh konten grid layanan/fasilitas nantinya -->
             <div class="row">
