@@ -53,7 +53,7 @@
         }
         .nav-links .btn-login:hover { background-color: #dc2626; color: #ffffff; }
         
-        /* FIX: Pakai class custom biar kebal dari Bootstrap */
+        /* DROPDOWN CUSTOM TEMA GELAP */
         .dropdown-menu-custom {
             display: none; position: absolute; top: 100%; left: 0; background-color: #1f2937;
             min-width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-radius: 8px;
@@ -67,31 +67,6 @@
             border-bottom: 1px solid #374151; font-weight: 600;
         }
         .dropdown-menu-custom li a:hover { background-color: #374151; color: #ef4444; padding-left: 26px; }
-
-        /* --- DROPDOWN WHITE (Layanan & Fasilitas) --- */
-        .dropdown-white .dropdown-menu-custom {
-            background-color: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            min-width: 240px;
-        }
-        .dropdown-white .dropdown-menu-custom li a {
-            color: #336699; 
-            font-size: 13px;
-            font-weight: 600;
-            padding: 16px 20px;
-            border-bottom: 1px solid #f3f4f6;
-            transition: all 0.2s ease;
-        }
-        .dropdown-white .dropdown-menu-custom li:last-child a {
-            border-bottom: none;
-        }
-        .dropdown-white .dropdown-menu-custom li a:hover {
-            background-color: #f8fafc;
-            color: #ef4444;
-            padding-left: 24px;
-        }
 
         /* --- PAGE HEADER --- */
         .page-header {
@@ -299,7 +274,6 @@
             <img src="/images/logo-redkar.png" alt="Logo Redkar">
         </a>
         <ul class="nav-links">
-            <!-- Dropdown Kedaruratan -->
             <li class="dropdown-custom">
                 <a href="#">Layanan Kedaruratan <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
                 <ul class="dropdown-menu-custom">
@@ -308,8 +282,7 @@
                     <li><a href="tel:112">CALL CENTER 112</a></li>
                 </ul>
             </li>
-
-            <!-- Dropdown Program Kerja -->
+            
             <li class="dropdown-custom">
                 <a href="#">Program Kerja <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
                 <ul class="dropdown-menu-custom">
@@ -321,19 +294,21 @@
                 </ul>
             </li>
 
-            <li class="dropdown">
+            <li class="dropdown-custom">
                 <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-                <ul class="dropdown-menu">
+            <li class="dropdown-custom">
+                <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+                <ul class="dropdown-menu-custom">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
-                    <li><a href="#">PKS</a></li>
-                 
+                    <li><a href="/layanan-fasilitas/pks">PKS</a></li>
+                    <li><a href="/layanan-fasilitas/skk">SKK</a></li>
+                    <li><a href="/layanan-fasilitas/perpanjang_skk">PERPANJANG SKK</a></li>
+                    <li><a href="/layanan-fasilitas/izin_penjualan">IZIN PENJUALAN</a></li>
                 </ul>
-
-            <!-- Tombol Redkar -->
+            </li>
+            
             <li><a href="/redkar">Redkar</a></li>
-
-            <!-- Tombol Login -->
             <li><a href="/login" class="btn-login">LOGIN</a></li>
         </ul>
     </nav>
@@ -390,7 +365,6 @@
                 <!-- Kiri: Widget Kontak -->
                 <div class="col-lg-4 col-xl-3">
                     <div class="contact-widget position-sticky" style="top: 100px;">
-                        <!-- EMAIL RESMI -->
                         <div class="contact-item">
                             <i class="fas fa-envelope-open-text"></i>
                             <div>
@@ -398,7 +372,6 @@
                                 <p><a href="mailto:damkar.jbi@gmail.com" style="color: #4b5563; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#4b5563'">damkar.jbi@gmail.com</a></p>
                             </div>
                         </div>
-                        <!-- ALAMAT -->
                         <div class="contact-item mb-0">
                             <i class="fas fa-map-marker-alt"></i>
                             <div>
@@ -407,7 +380,6 @@
                             </div>
                         </div>
                         
-                        <!-- SOSIAL MEDIA LINKS -->
                         <div class="social-links">
                             <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
                             <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
@@ -473,7 +445,7 @@
         
         <div class="footer-copyright">
             <div>SIMERAHKOJA © 2026 / ALL RIGHTS RESERVED</div>
-            <!-- FOOTER SOCIAL LINKS -->
+            <!-- Footer Social Links -->
             <div class="footer-social">
                 <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
                 <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
@@ -485,6 +457,7 @@
         </div>
     </div>
 
+    <!-- Script Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
