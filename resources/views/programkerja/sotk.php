@@ -27,7 +27,7 @@
             color: #1f2937;
         }
 
-        /* --- NAVBAR STYLES --- */
+/* --- NAVBAR STYLES --- */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -35,8 +35,11 @@
             padding: 15px 50px;
             background-color: #111827;
             border-bottom: 4px solid #ef4444;
-            position: relative;
-            z-index: 999;
+            
+            /* INI KUNCI UTAMANYA AGAR TETAP MENEMPEL DI ATAS SAAT DI-SCROLL */
+            position: sticky;
+            top: 0; 
+            z-index: 9999; /* Pastikan z-index sangat tinggi agar menimpa konten lain */
         }
         .nav-logos { display: flex; gap: 15px; align-items: center; }
         .nav-logos img { height: 40px; transition: transform 0.3s; }
@@ -552,10 +555,9 @@
             <div class="footer-links">
                 <h3>Link Terkait</h3>
                 <ul>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> Official Damkar</a></li>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> Website Jambikota</a></li>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> SIKOJA</a></li>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> 112 Kota Jambi</a></li>
+                     <li><a href="https://damkar.jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> Official Damkar</a></li>
+                    <li><a href="https://jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> Website Jambikota</a></li>
+                    <li><a href="https://sikoja.jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> SIKOJA</a></li>
                 </ul>
             </div>
         </div>

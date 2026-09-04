@@ -27,7 +27,7 @@
             color: #1f2937;
         }
 
-        /* --- NAVBAR STYLES --- */
+/* --- NAVBAR STYLES --- */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -35,8 +35,11 @@
             padding: 15px 50px;
             background-color: #111827;
             border-bottom: 4px solid #ef4444;
-            position: relative;
-            z-index: 999;
+            
+            /* INI KUNCI UTAMANYA AGAR TETAP MENEMPEL DI ATAS SAAT DI-SCROLL */
+            position: sticky;
+            top: 0; 
+            z-index: 9999; /* Pastikan z-index sangat tinggi agar menimpa konten lain */
         }
         .nav-logos { display: flex; gap: 15px; align-items: center; }
         .nav-logos img { height: 40px; transition: transform 0.3s; }
@@ -361,15 +364,16 @@
                     <li><a href="/produkhukum">PRODUK HUKUM</a></li>
                 </ul>
             </li>
-            <li class="dropdown-custom dropdown-white">
+            <!-- UPDATE: Dropdown Layanan & Fasilitas (Sesuai yang Anda minta) -->
+            <li class="dropdown-custom">
                 <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-                <ul class="dropdown-menu-custom dropdown-menu">
-                    <li><a href="/layanan-perizinan">LAYANAN PERIZINAN</a></li>
-                    <li><a href="/edukasi-sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
-                    <li><a href="/perjanjian-kerjasama">PKS</a></li>
-                    <li><a href="/layanan-lainnya">LAYANAN LAINNYA</a></li>
+                <ul class="dropdown-menu-custom">
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
+                    <li><a href="#">PKS</a></li>
                 </ul>
             </li>
+
             <li><a href="/redkar" style="color: #ef4444;">Redkar</a></li>
             <li><a href="/login" class="btn-login">LOGIN</a></li>
         </ul>
@@ -641,10 +645,9 @@
             <div class="footer-links">
                 <h3>Link Terkait</h3>
                 <ul>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> Official Damkar</a></li>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> Website Jambikota</a></li>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> SIKOJA</a></li>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> 112 Kota Jambi</a></li>
+                    <li><a href="https://damkar.jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> Official Damkar</a></li>
+                    <li><a href="https://jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> Website Jambikota</a></li>
+                    <li><a href="https://sikoja.jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> SIKOJA</a></li>
                 </ul>
             </div>
         </div>

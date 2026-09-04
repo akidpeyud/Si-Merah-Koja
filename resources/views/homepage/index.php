@@ -117,43 +117,91 @@
             margin-bottom: 50px; line-height: 1.7;
         }
         
-        .emergency-btn-container { position: relative; display: inline-block; }
+        /* --- TOMBOL DARURAT INTERAKTIF --- */
+        .emergency-btn-container { position: relative; display: inline-block; z-index: 10; }
+        
         .btn-darurat {
-            display: flex; align-items: center; justify-content: center; width: 150px; height: 150px;
-            background: #ef4444; color: white; border: 6px solid #111827; border-radius: 50%;
-            text-decoration: none; font-weight: 800; font-size: 15px; text-align: center;
-            line-height: 1.4; box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.5);
-            cursor: pointer; transition: all 0.3s ease; animation: modernPulse 2.5s infinite;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            width: 150px; height: 150px;
+            background: radial-gradient(circle, #ff5f5f, #dc2626); 
+            color: white; border: 6px solid #111827; border-radius: 50%;
+            text-decoration: none; font-weight: 800; font-size: 14px; text-align: center;
+            line-height: 1.3; box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.6);
+            cursor: pointer; transition: all 0.3s ease;
+            position: relative;
         }
-        .btn-darurat:hover { transform: scale(1.05) translateY(-5px); background: #dc2626; animation: none; }
-        @keyframes modernPulse {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
-            70% { box-shadow: 0 0 0 25px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+
+        /* Efek Gelombang Sinyal (Sonar) */
+        .btn-darurat::before, .btn-darurat::after {
+            content: ''; position: absolute;
+            top: -6px; left: -6px; right: -6px; bottom: -6px;
+            border-radius: 50%; border: 3px solid #ef4444;
+            animation: sinyalDarurat 2s linear infinite;
+            pointer-events: none; 
+        }
+        .btn-darurat::after { animation-delay: 1s; }
+
+        @keyframes sinyalDarurat {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+
+        /* Bergetar Cepat saat di-hover */
+        .btn-darurat:hover {
+            background: radial-gradient(circle, #ef4444, #991b1b);
+            animation: getarDarurat 0.3s cubic-bezier(.36,.07,.19,.97) both infinite;
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.8);
+        }
+
+        @keyframes getarDarurat {
+            0%, 100% { transform: rotate(0) scale(1.05); }
+            25% { transform: rotate(3deg) scale(1.05); }
+            50% { transform: rotate(-3deg) scale(1.05); }
+            75% { transform: rotate(3deg) scale(1.05); }
         }
         
+        /* Ikon berkedip di dalam tombol */
+        .icon-darurat {
+            font-size: 26px; margin-bottom: 5px;
+            animation: kedipIkon 1s infinite alternate;
+        }
+        @keyframes kedipIkon {
+            0% { opacity: 0.7; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1.1); text-shadow: 0 0 10px white; }
+        }
+
+        /* --- POPUP MENU (Animasi Memantul/Bounce) --- */
         .emergency-popup {
-            visibility: hidden; opacity: 0; position: absolute; bottom: 120%; left: 50%;
-            transform: translateX(-50%) translateY(10px); background-color: #1f2937;
-            min-width: 200px; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            z-index: 100; text-align: left; transition: all 0.4s ease; border: 1px solid #374151; padding: 8px;
+            visibility: hidden; opacity: 0; position: absolute; bottom: 140%; left: 50%;
+            transform: translateX(-50%) scale(0.7); transform-origin: bottom center;
+            background-color: #1f2937; min-width: 220px; border-radius: 12px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6); z-index: 100; text-align: left; 
+            border: 1px solid #374151; padding: 10px;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
         }
+        
         .emergency-btn-container:hover .emergency-popup {
-            visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); bottom: 110%;
+            visibility: visible; opacity: 1; 
+            transform: translateX(-50%) scale(1); bottom: 115%;
         }
+        
         .emergency-popup a {
             display: flex; align-items: center; padding: 12px 16px; text-decoration: none;
             font-weight: 700; font-size: 13px; border-radius: 8px; color: #e5e7eb;
-            margin-bottom: 4px; transition: all 0.2s;
+            margin-bottom: 5px; transition: all 0.2s ease; position: relative; overflow: hidden;
         }
         .emergency-popup a:last-child { margin-bottom: 0; }
-        .emergency-popup a i { margin-right: 12px; font-size: 18px;}
-        .text-wa:hover { background-color: #064e3b; color: #34d399; }
-        .text-telp:hover { background-color: #0c4a6e; color: #38bdf8; }
-        .text-112:hover { background-color: #7f1d1d; color: #f87171; }
+        .emergency-popup a i { margin-right: 12px; font-size: 18px; z-index: 2;}
+        .emergency-popup a span { z-index: 2; }
+        
+        .text-wa:hover { background-color: #064e3b; color: #34d399; transform: translateX(5px); }
+        .text-telp:hover { background-color: #0c4a6e; color: #38bdf8; transform: translateX(5px); }
+        .text-112:hover { background-color: #7f1d1d; color: #f87171; transform: translateX(5px); }
+        
         .text-wa i { color: #22c55e; }
         .text-telp i { color: #0ea5e9; }
         .text-112 i { color: #ef4444; }
+        
         .emergency-popup::after {
             content: ""; position: absolute; top: 100%; left: 50%; margin-left: -8px;
             border-width: 8px; border-style: solid; border-color: #1f2937 transparent transparent transparent;
@@ -264,7 +312,6 @@
             margin: 0 auto;
         }
         
-        /* FIX: CSS agar tag <a> berfungsi sebagai kotak dan textnya tidak biru */
         .layanan-card {
             display: block; 
             text-decoration: none; 
@@ -538,7 +585,7 @@
                 </ul>
             </li>
             <li><a href="/redkar">Redkar</a></li>
-           <li><a href="/login" class="btn-login">LOGIN</a></li>
+            <li><a href="/login" class="btn-login">LOGIN</a></li>
         </ul>
     </nav>
 
@@ -560,18 +607,19 @@
 
             <div class="emergency-btn-container">
                 <div class="btn-darurat">
-                    TOMBOL<br>DARURAT<br>LAPOR
+                    <i class="fas fa-bullhorn icon-darurat"></i>
+                    <span>TOMBOL<br>DARURAT<br>LAPOR</span>
                 </div>
                 
                 <div class="emergency-popup">
                     <a href="https://wa.me/<?php echo $no_whatsapp; ?>?text=<?php echo $pesan_wa; ?>" target="_blank" class="text-wa">
-                        <i class="fab fa-whatsapp"></i> WHATSAPP
+                        <i class="fab fa-whatsapp"></i> <span>WHATSAPP</span>
                     </a>
                     <a href="tel:<?php echo $no_telepon; ?>" class="text-telp">
-                        <i class="fas fa-phone-alt"></i> TELEPHONE
+                        <i class="fas fa-phone-alt"></i> <span>TELEPHONE</span>
                     </a>
                     <a href="tel:112" class="text-112">
-                        <i class="fas fa-headset"></i> CALL CENTER 112
+                        <i class="fas fa-headset"></i> <span>CALL CENTER 112</span>
                     </a>
                 </div>
             </div>
@@ -906,7 +954,7 @@
         <div class="giat-container">
             <div class="giat-image">
                 <img src="/images/damkar.png" alt="damkar">
-            </div> <!-- [PERBAIKAN] Tag div penutup ini sebelumnya hilang -->
+            </div> 
             
             <div class="giat-content">
                 <h2>GIAT DISDAMKARTAN<br>KOTA JAMBI</h2>
@@ -980,7 +1028,6 @@
         
         <div class="footer-copyright">
             <div>SIMERAHKOJA © 2026 / ALL RIGHTS RESERVED</div>
-            <!-- [PERBAIKAN] Menghapus div "footer-newsletter" yang menggantung, menyisakan social links -->
             <div class="footer-social">
                 <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
                 <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
@@ -990,7 +1037,7 @@
                 <a href="https://www.instagram.com/damkar.kotajambi/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
-    </div> <!-- [PERBAIKAN] Tag penutup utama footer yang hilang -->
+    </div> 
 
 </body>
 </html>
