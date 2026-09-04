@@ -292,12 +292,15 @@
                         </div>
                     </div>
 
-                    <!-- Input Password -->
+<!-- Input Password dengan Tombol Mata -->
                     <div class="mb-3">
                         <label class="form-label">Password</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                            <input type="password" class="form-control" name="password" placeholder="Masukkan password Anda" required>
+                            <input type="password" class="form-control" name="password" id="passwordInput" placeholder="Masukkan password Anda" required>
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword" style="border-color: #d1d5db; background-color: #f8fafc; color: #9ca3af;">
+                                <i class="fas fa-eye" id="eyeIcon"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -325,6 +328,26 @@
             </div>
         </div>
     </div>
+    <script>
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('passwordInput');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        togglePassword.addEventListener('click', function () {
+            // Ubah tipe input dari password ke text atau sebaliknya
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            // Ubah ikon mata (fa-eye menjadi fa-eye-slash)
+            if (type === 'password') {
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            } else {
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            }
+        });
+    </script>
 
     <!-- Script Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

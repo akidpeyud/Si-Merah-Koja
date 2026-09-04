@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password - SIMERAH KOJA</title>
 
+    <!-- Google Fonts: Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
@@ -58,7 +61,7 @@
         }
 
         .login-header img {
-            height: 130px; /* Disamakan dengan halaman login */
+            height: 130px;
             margin-bottom: 20px;
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
         }
@@ -88,9 +91,46 @@
             text-align: center;
             font-size: 12px;
             color: #6b7280;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             line-height: 1.5;
         }
+
+        /* --- ALERT STYLES --- */
+        .custom-alert {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            position: relative;
+            line-height: 1.5;
+        }
+        .custom-alert i.alert-icon {
+            font-size: 18px;
+            margin-right: 12px;
+            margin-top: 1px;
+        }
+        .custom-alert-error {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+        .custom-alert-error i.alert-icon { color: #ef4444; }
+
+        .btn-close-alert {
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 20px;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            cursor: pointer;
+            opacity: 0.5;
+        }
+        .btn-close-alert:hover { opacity: 1; }
 
         /* --- FORM STYLES --- */
         .form-label {
@@ -138,6 +178,7 @@
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
+            cursor: pointer;
         }
 
         .btn-submit:hover {
@@ -178,35 +219,41 @@
 
             <div class="login-body">
                 <h2 class="login-title">Reset Password</h2>
-                <p class="reset-desc">Masukkan Email dan Nomor Kepegawaian Anda untuk mengatur ulang kata sandi.</p>
+                <p class="reset-desc">Masukkan Email dan Nomor Kepegawaian Anda. Password baru akan dikirim otomatis ke email Anda.</p>
                 
-                <form action="lupa-password" method="POST">
+                <!-- Notifikasi Error Laravel -->
+                @if($errors->any())
+                    <div class="custom-alert custom-alert-error" id="errorAlert">
+                        <i class="fas fa-exclamation-circle alert-icon"></i>
+                        <div>
+                            @foreach($errors->all() as $error)
+                                <span>{{ $error }}</span><br>
+                            @endforeach
+                        </div>
+                        <button type="button" class="btn-close-alert" onclick="document.getElementById('errorAlert').style.display='none'">&times;</button>
+                    </div>
+                @endif
+
+                <form action="/lupa-password" method="POST">
+                    @csrf
                     
                     <div class="mb-3">
                         <label class="form-label">Email Address</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                            <input type="email" class="form-control" name="email" placeholder="Masukkan email terdaftar" required>
+                            <input type="email" class="form-control" name="email" value="{{ old('email') }}" placeholder="Masukkan email terdaftar" required autofocus>
                         </div>
                     </div>
 
-                    <div class="mb-3">
+                    <div class="mb-4">
                         <label class="form-label">Nomor Kepegawaian</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-id-badge"></i></span>
-                            <input type="text" class="form-control" name="nomor_pegawai" placeholder="Masukkan NIP/Nomor Kepegawaian" required>
+                            <input type="text" class="form-control" name="nomor_pegawai" value="{{ old('nomor_pegawai') }}" placeholder="Masukkan NIP/Nomor Kepegawaian" required>
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Password Baru</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                            <input type="password" class="form-control" name="password" placeholder="Buat password baru" required>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn-submit">Simpan Password Baru</button>
+                    <button type="submit" class="btn-submit">Kirim Password Baru</button>
 
                 </form>
 
