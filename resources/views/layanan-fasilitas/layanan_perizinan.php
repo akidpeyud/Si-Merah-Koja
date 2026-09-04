@@ -237,7 +237,7 @@
                 </ul>
             </li>
             <li><a href="/redkar">Redkar</a></li>
-            <li><a href="#" class="btn-login">LOGIN</a></li>
+            <li><a href="/login" class="btn-login">LOGIN</a></li>
         </ul>
     </nav>
 
