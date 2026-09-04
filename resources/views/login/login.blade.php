@@ -23,7 +23,6 @@
         }
 
         body {
-            /* Background image with a dark overlay for readability */
             background-image: linear-gradient(rgba(17, 24, 39, 0.7), rgba(17, 24, 39, 0.8)), url('/images/background2.jpeg');
             background-size: cover;
             background-position: center;
@@ -49,20 +48,20 @@
             max-width: 420px;
             background: #ffffff;
             border-radius: 12px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2); /* Enhanced shadow for image background */
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); 
             overflow: hidden;
             border: 1px solid #e5e7eb;
         }
 
         .login-header {
-            background-color: #111827; /* Dark blue seragam dengan navbar & footer */
-            border-bottom: 4px solid #ef4444; /* Garis aksen merah */
+            background-color: #111827; 
+            border-bottom: 4px solid #ef4444; 
             padding: 40px 30px 30px;
             text-align: center;
         }
 
         .login-header img {
-            height: 130px; /* Logo diperbesar dari 70px ke 100px */
+            height: 130px; 
             margin-bottom: 20px;
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
         }
@@ -87,6 +86,62 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+
+        /* --- ALERT STYLES (BARU) --- */
+        .custom-alert {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            position: relative;
+            line-height: 1.5;
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .custom-alert i.alert-icon {
+            font-size: 18px;
+            margin-right: 12px;
+            margin-top: 1px;
+        }
+
+        /* Alert Error (Gagal Login) */
+        .custom-alert-error {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+        .custom-alert-error i.alert-icon { color: #ef4444; }
+
+        /* Alert Success (Berhasil/Logout) */
+        .custom-alert-success {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+        .custom-alert-success i.alert-icon { color: #22c55e; }
+
+        /* Tombol Silang Alert */
+        .btn-close-alert {
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 20px;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+        .btn-close-alert:hover { opacity: 1; }
 
         /* --- FORM STYLES --- */
         .form-label {
@@ -129,7 +184,7 @@
             border: none;
             border-radius: 6px;
             width: 100%;
-            margin-top: 15px;
+            margin-top: 5px; /* Disesuaikan agar tidak terlalu jauh */
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -173,7 +228,6 @@
             color: #111827;
         }
 
-        /* Checkbox custom */
         .form-check-label {
             font-size: 12px;
             color: #4b5563;
@@ -200,14 +254,41 @@
             <div class="login-body">
                 <h2 class="login-title">Masuk Akun</h2>
                 
+                <!-- INTEGRASI ALERT LARAVEL -->
+                
+                <!-- 1. Alert Error (Email/Password Salah) -->
+                @if($errors->any())
+                    <div class="custom-alert custom-alert-error" id="errorAlert">
+                        <i class="fas fa-exclamation-circle alert-icon"></i>
+                        <div>
+                            @foreach($errors->all() as $error)
+                                <span>{{ $error }}</span><br>
+                            @endforeach
+                        </div>
+                        <button type="button" class="btn-close-alert" onclick="document.getElementById('errorAlert').style.display='none'">&times;</button>
+                    </div>
+                @endif
+
+                <!-- 2. Alert Success (Berhasil Ubah Password / Logout) -->
+                @if(session('success'))
+                    <div class="custom-alert custom-alert-success" id="successAlert">
+                        <i class="fas fa-check-circle alert-icon"></i>
+                        <div>
+                            <span>{{ session('success') }}</span>
+                        </div>
+                        <button type="button" class="btn-close-alert" onclick="document.getElementById('successAlert').style.display='none'">&times;</button>
+                    </div>
+                @endif
+
                 <form action="/login" method="POST">
+                    @csrf <!-- Jangan lupa tag ini untuk keamanan form Laravel -->
                     
                     <!-- Input Email -->
                     <div class="mb-3">
                         <label class="form-label">Email Address</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                            <input type="email" class="form-control" name="email" placeholder="Masukkan email Anda" required>
+                            <input type="email" class="form-control" name="email" value="{{ old('email') }}" placeholder="Masukkan email Anda" required autofocus>
                         </div>
                     </div>
 
@@ -223,7 +304,7 @@
                     <!-- Remember Me & Forgot Password -->
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="rememberMe">
+                            <input class="form-check-input" type="checkbox" name="remember" id="rememberMe">
                             <label class="form-check-label" for="rememberMe">
                                 Ingat Saya
                             </label>

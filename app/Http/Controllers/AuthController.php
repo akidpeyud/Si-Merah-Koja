@@ -27,7 +27,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
-            return redirect()->intended('/'); // Redirect ke beranda setelah sukses
+            return redirect()->intended('/internal/index')->with('success', 'Login berhasil, selamat datang!');
         }
 
         return back()->withErrors([

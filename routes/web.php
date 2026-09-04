@@ -61,3 +61,6 @@ Route::get('/lupa-password', [AuthController::class, 'showForgotPassword']);
 Route::post('/lupa-password', [AuthController::class, 'processForgotPassword']);
 
 Route::post('/logout', [AuthController::class, 'logout']);
+Route::get('/internal/index', function () {
+    return view('internal.index');
+});
