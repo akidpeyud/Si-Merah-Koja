@@ -343,15 +343,15 @@
                 </ul>
             </li>
 
-<li class="dropdown-custom">
-    <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-    <ul class="dropdown-menu-custom">
-        <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
-        <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
-        <li><a href="/layanan-fasilitas/pks">PKS</a></li>
-    </ul>
-</li>
-            
+            <!-- UPDATE: Dropdown Layanan & Fasilitas (Sesuai yang Anda minta) -->
+            <li class="dropdown-custom">
+                <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
+                <ul class="dropdown-menu-custom">
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
+                    <li><a href="#">PKS</a></li>
+                </ul>
+            </li>   
             <li><a href="/redkar">Redkar</a></li>
             <li><a href="/login" class="btn-login">LOGIN</a></li>
         </ul>
