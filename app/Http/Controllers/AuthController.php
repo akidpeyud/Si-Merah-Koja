@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Models\User;
+use App\Models\RedkarRegistration;
 
 class AuthController extends Controller
 {
@@ -178,6 +179,7 @@ class AuthController extends Controller
 
         return back()->with('success', 'Pengguna baru berhasil ditambahkan! Password default: Damkar123');
     }
+
     // Memproses update data user
     public function updateUser(Request $request, $id)
     {
@@ -208,6 +210,7 @@ class AuthController extends Controller
 
         return back()->with('success', 'Data pengguna berhasil diperbarui!');
     }
+
     // Memproses pendaftaran relawan Redkar dari halaman publik
     public function storeRedkar(Request $request)
     {
@@ -264,5 +267,29 @@ class AuthController extends Controller
         ]);
 
         return back()->with('success', 'Pendaftaran relawan REDKAR berhasil dikirim! Data Anda sedang diproses.');
+    }
+
+    // Menampilkan daftar pendaftar REDKAR (Khusus Operator dan Super User)
+    public function kelolaRedkar()
+    {
+        if (!in_array(Auth::user()->role, ['operator', 'super_user'])) {
+            return redirect('/internal/index')->with('error', 'Akses Ditolak! Halaman khusus Operator dan Super User.');
+        }
+
+        $relawan = RedkarRegistration::orderBy('created_at', 'desc')->get();
+        
+        return view('internal.operator.kelola_redkar', compact('relawan'));
+    }
+
+    // Menampilkan halaman cetak/download PDF untuk 1 relawan
+    public function cetakRedkar($id)
+    {
+        if (!in_array(Auth::user()->role, ['operator', 'super_user'])) {
+            return redirect('/internal/index')->with('error', 'Akses Ditolak!');
+        }
+
+        $relawan = RedkarRegistration::findOrFail($id);
+        
+        return view('internal.operator.cetak_redkar', compact('relawan'));
     }
 }

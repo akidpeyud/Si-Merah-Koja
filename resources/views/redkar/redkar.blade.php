@@ -27,7 +27,20 @@
             color: #1f2937;
         }
 
-/* --- NAVBAR STYLES --- */
+        /* --- GLOBAL ALERT STYLES --- */
+        #globalSuccessAlert {
+            position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
+            background-color: #10b981; color: white; padding: 16px 24px; border-radius: 8px;
+            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); z-index: 99999;
+            display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px;
+            animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #globalSuccessAlert .alert-icon { font-size: 22px; }
+        .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; margin-left: 10px; cursor: pointer; }
+        @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+        @keyframes fadeOutUpCenter { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -50px); opacity: 0; } }
+
+        /* --- NAVBAR STYLES --- */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -35,11 +48,9 @@
             padding: 15px 50px;
             background-color: #111827;
             border-bottom: 4px solid #ef4444;
-            
-            /* INI KUNCI UTAMANYA AGAR TETAP MENEMPEL DI ATAS SAAT DI-SCROLL */
             position: sticky;
             top: 0; 
-            z-index: 9999; /* Pastikan z-index sangat tinggi agar menimpa konten lain */
+            z-index: 9999;
         }
         .nav-logos { display: flex; gap: 15px; align-items: center; }
         .nav-logos img { height: 40px; transition: transform 0.3s; }
@@ -71,31 +82,6 @@
         }
         .dropdown-menu-custom li a:hover { background-color: #374151; color: #ef4444; padding-left: 26px; }
 
-        /* --- DROPDOWN WHITE (Layanan & Fasilitas) --- */
-        .dropdown-white .dropdown-menu-custom {
-            background-color: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            min-width: 240px;
-        }
-        .dropdown-white .dropdown-menu-custom li a {
-            color: #336699; 
-            font-size: 13px;
-            font-weight: 600;
-            padding: 16px 20px;
-            border-bottom: 1px solid #f3f4f6;
-            transition: all 0.2s ease;
-        }
-        .dropdown-white .dropdown-menu-custom li:last-child a {
-            border-bottom: none;
-        }
-        .dropdown-white .dropdown-menu-custom li a:hover {
-            background-color: #f8fafc;
-            color: #ef4444;
-            padding-left: 24px;
-        }
-
         /* --- PAGE HEADER --- */
         .page-header {
             position: relative;
@@ -120,9 +106,7 @@
             font-size: 13px;
             font-weight: 600;
         }
-        .breadcrumb-custom span {
-            color: #ef4444;
-        }
+        .breadcrumb-custom span { color: #ef4444; }
         .breadcrumb-custom a {
             color: #cbd5e1;
             text-decoration: none;
@@ -137,9 +121,7 @@
             margin-bottom: 30px;
             font-size: 24px;
         }
-        .info-block {
-            margin-bottom: 25px;
-        }
+        .info-block { margin-bottom: 25px; }
         .info-block h5 {
             font-size: 15px;
             font-weight: 700;
@@ -167,7 +149,6 @@
             margin-bottom: 0;
         }
         
-        /* Updated Social Links (1 Baris) */
         .social-links {
             display: flex;
             flex-wrap: nowrap;
@@ -267,9 +248,7 @@
             border-radius: 6px;
             transition: background 0.3s;
         }
-        .btn-submit:hover {
-            background-color: #dc2626;
-        }
+        .btn-submit:hover { background-color: #dc2626; }
         .readonly-input {
             background-color: #f3f4f6;
             cursor: not-allowed;
@@ -324,10 +303,28 @@
             width: 35px; height: 35px; background: #333; color: white; display: flex; align-items: center; justify-content: center; border-radius: 4px; text-decoration: none; transition: background 0.3s;
         }
         .footer-social a:hover { background: #ef4444; }
-
     </style>
 </head>
 <body>
+
+    <!-- ALERT SUKSES FLOATING -->
+    @if(session('success'))
+        <div id="globalSuccessAlert">
+            <i class="fas fa-check-circle alert-icon"></i>
+            <span>{{ session('success') }}</span>
+            <button class="btn-close-alert" onclick="closeAlert()"><i class="fas fa-times"></i></button>
+        </div>
+        <script>
+            function closeAlert() {
+                let alertBox = document.getElementById('globalSuccessAlert');
+                if(alertBox) { 
+                    alertBox.style.animation = 'fadeOutUpCenter 0.4s ease forwards'; 
+                    setTimeout(() => alertBox.remove(), 400); 
+                }
+            }
+            setTimeout(closeAlert, 5000);
+        </script>
+    @endif
 
     <?php
         $no_whatsapp = "628117113113"; 
@@ -364,7 +361,8 @@
                     <li><a href="/produkhukum">PRODUK HUKUM</a></li>
                 </ul>
             </li>
-            <!-- UPDATE: Dropdown Layanan & Fasilitas (Sesuai yang Anda minta) -->
+
+            <!-- Dropdown Layanan & Fasilitas -->
             <li class="dropdown-custom">
                 <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
                 <ul class="dropdown-menu-custom">
@@ -441,43 +439,57 @@
                         <h2>Daftar Sebagai Relawan</h2>
                     </div>
 
-                    <form action="#" method="POST" enctype="multipart/form-data">
+                    <!-- ALERT JIKA TERDAPAT ERROR VALIDASI -->
+                    @if($errors->any())
+                        <div class="alert alert-danger py-2 px-3 mb-4" style="font-size: 13px; border-radius: 8px;">
+                            <div class="fw-bold mb-1"><i class="fas fa-exclamation-triangle me-1"></i> Formulir gagal dikirim:</div>
+                            <ul class="mb-0 ps-3">
+                                @foreach($errors->all() as $err)
+                                    <li>{{ $err }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <!-- IMPLEMENTASI LANGKAH 5: FORM ACTION & CSRF -->
+                    <form action="/redkar/daftar" method="POST" enctype="multipart/form-data">
+                        @csrf
                         <div class="row g-3">
                             <div class="col-12">
                                 <label class="form-label">NIK</label>
-                                <input type="text" class="form-control" name="nik" required>
+                                <input type="text" class="form-control" name="nik" value="{{ old('nik') }}" placeholder="16 digit NIK sesuai KTP" required>
                             </div>
 
                             <div class="col-12">
                                 <label class="form-label">Nama Lengkap</label>
-                                <input type="text" class="form-control" name="nama_lengkap" required>
+                                <input type="text" class="form-control" name="nama_lengkap" value="{{ old('nama_lengkap') }}" required>
                             </div>
 
                             <div class="col-12">
                                 <label class="form-label">Jenis Kelamin</label>
                                 <select class="form-select" name="jenis_kelamin" required>
                                     <option value="" selected disabled>Pilih Jenis Kelamin</option>
-                                    <option value="L">Laki-Laki</option>
-                                    <option value="P">Perempuan</option>
+                                    <option value="L" {{ old('jenis_kelamin') == 'L' ? 'selected' : '' }}>Laki-Laki</option>
+                                    <option value="P" {{ old('jenis_kelamin') == 'P' ? 'selected' : '' }}>Perempuan</option>
                                 </select>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">Tempat Lahir</label>
-                                <input type="text" class="form-control" name="tempat_lahir" required>
+                                <input type="text" class="form-control" name="tempat_lahir" value="{{ old('tempat_lahir') }}" required>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">Tanggal Lahir</label>
-                                <input type="date" class="form-control" name="tanggal_lahir" required>
+                                <input type="date" class="form-control" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}" required>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">Status Perkawinan</label>
                                 <select class="form-select" name="status_perkawinan" required>
                                     <option value="" selected disabled>Pilih Status Perkawinan</option>
-                                    <option value="Belum Kawin">Belum Kawin</option>
-                                    <option value="Kawin">Kawin</option>
+                                    <option value="Belum Kawin" {{ old('status_perkawinan') == 'Belum Kawin' ? 'selected' : '' }}>Belum Kawin</option>
+                                    <option value="Kawin" {{ old('status_perkawinan') == 'Kawin' ? 'selected' : '' }}>Kawin</option>
                                 </select>
                             </div>
 
@@ -485,40 +497,40 @@
                                 <label class="form-label">Agama</label>
                                 <select class="form-select" name="agama" required>
                                     <option value="" selected disabled>Pilih Agama</option>
-                                    <option value="Islam">Islam</option>
-                                    <option value="Kristen">Kristen</option>
-                                    <option value="Katolik">Katolik</option>
-                                    <option value="Hindu">Hindu</option>
-                                    <option value="Buddha">Buddha</option>
+                                    <option value="Islam" {{ old('agama') == 'Islam' ? 'selected' : '' }}>Islam</option>
+                                    <option value="Kristen" {{ old('agama') == 'Kristen' ? 'selected' : '' }}>Kristen</option>
+                                    <option value="Katolik" {{ old('agama') == 'Katolik' ? 'selected' : '' }}>Katolik</option>
+                                    <option value="Hindu" {{ old('agama') == 'Hindu' ? 'selected' : '' }}>Hindu</option>
+                                    <option value="Buddha" {{ old('agama') == 'Buddha' ? 'selected' : '' }}>Buddha</option>
                                 </select>
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">Nomor Telpon</label>
-                                <input type="text" class="form-control" name="nomor_telp" required>
+                                <label class="form-label">Nomor Telpon (WhatsApp Aktif)</label>
+                                <input type="text" class="form-control" name="nomor_telp" value="{{ old('nomor_telp') }}" placeholder="Contoh: 081234567890" required>
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">Kartu Tanda Penduduk</label>
+                                <label class="form-label">Kartu Tanda Penduduk (KTP)</label>
                                 <div class="file-upload-wrapper" onclick="document.getElementById('ktp_upload').click()">
-                                    <p>Drag & Drop your files or <span>Browse</span></p>
+                                    <p id="ktp_file_label"><i class="fas fa-cloud-upload-alt me-1"></i> Klik untuk unggah file KTP atau <span>Browse</span> (.jpg, .png, .pdf max 2MB)</p>
                                     <input type="file" id="ktp_upload" name="ktp" class="d-none" accept=".jpg,.jpeg,.png,.pdf">
                                 </div>
                             </div>
 
                             <div class="col-12">
                                 <label class="form-label">Alamat</label>
-                                <textarea class="form-control" name="alamat" rows="3" required></textarea>
+                                <textarea class="form-control" name="alamat" rows="3" required>{{ old('alamat') }}</textarea>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">RT/RW</label>
-                                <input type="text" class="form-control" name="rt_rw" required>
+                                <input type="text" class="form-control" name="rt_rw" value="{{ old('rt_rw') }}" placeholder="Contoh: RT 05 / RW 02" required>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">Kode Pos</label>
-                                <input type="text" class="form-control" name="kode_pos" required>
+                                <input type="text" class="form-control" name="kode_pos" value="{{ old('kode_pos') }}" required>
                             </div>
 
                             <div class="col-md-6">
@@ -558,16 +570,16 @@
 
                             <div class="col-12">
                                 <label class="form-label">Pekerjaan</label>
-                                <input type="text" class="form-control" name="pekerjaan" required>
+                                <input type="text" class="form-control" name="pekerjaan" value="{{ old('pekerjaan') }}" required>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">Pendidikan Terakhir</label>
                                 <select class="form-select" name="pendidikan_terakhir" required>
                                     <option value="" selected disabled>Pilih Pendidikan Terakhir</option>
-                                    <option value="SMA/SMK">SMA/SMK</option>
-                                    <option value="D3">D3</option>
-                                    <option value="S1">S1</option>
+                                    <option value="SMA/SMK" {{ old('pendidikan_terakhir') == 'SMA/SMK' ? 'selected' : '' }}>SMA/SMK</option>
+                                    <option value="D3" {{ old('pendidikan_terakhir') == 'D3' ? 'selected' : '' }}>D3</option>
+                                    <option value="S1" {{ old('pendidikan_terakhir') == 'S1' ? 'selected' : '' }}>S1</option>
                                 </select>
                             </div>
 
@@ -575,8 +587,8 @@
                                 <label class="form-label">Sehat Jasmani</label>
                                 <select class="form-select" name="sehat_jasmani" required>
                                     <option value="" selected disabled>Pilih Kondisi</option>
-                                    <option value="Ya">Ya</option>
-                                    <option value="Tidak">Tidak</option>
+                                    <option value="Ya" {{ old('sehat_jasmani') == 'Ya' ? 'selected' : '' }}>Ya</option>
+                                    <option value="Tidak" {{ old('sehat_jasmani') == 'Tidak' ? 'selected' : '' }}>Tidak</option>
                                 </select>
                             </div>
 
@@ -584,8 +596,8 @@
                                 <label class="form-label">Buta Warna</label>
                                 <select class="form-select" name="buta_warna" required>
                                     <option value="" selected disabled>Pilih Kondisi</option>
-                                    <option value="Tidak">Tidak</option>
-                                    <option value="Ya">Ya</option>
+                                    <option value="Tidak" {{ old('buta_warna') == 'Tidak' ? 'selected' : '' }}>Tidak</option>
+                                    <option value="Ya" {{ old('buta_warna') == 'Ya' ? 'selected' : '' }}>Ya</option>
                                 </select>
                             </div>
 
@@ -593,15 +605,15 @@
                                 <label class="form-label">Golongan Darah</label>
                                 <select class="form-select" name="golongan_darah" required>
                                     <option value="" selected disabled>Pilih Golongan Darah</option>
-                                    <option value="A">A</option>
-                                    <option value="B">B</option>
-                                    <option value="AB">AB</option>
-                                    <option value="O">O</option>
+                                    <option value="A" {{ old('golongan_darah') == 'A' ? 'selected' : '' }}>A</option>
+                                    <option value="B" {{ old('golongan_darah') == 'B' ? 'selected' : '' }}>B</option>
+                                    <option value="AB" {{ old('golongan_darah') == 'AB' ? 'selected' : '' }}>AB</option>
+                                    <option value="O" {{ old('golongan_darah') == 'O' ? 'selected' : '' }}>O</option>
                                 </select>
                             </div>
 
                             <div class="col-12 mt-4">
-                                <button type="submit" class="btn-submit">KIRIM</button>
+                                <button type="submit" class="btn-submit"><i class="fas fa-paper-plane me-2"></i>KIRIM PENDAFTARAN</button>
                             </div>
                         </div>
                     </form>
@@ -654,7 +666,6 @@
 
         <div class="footer-copyright">
             <div>SIMERAHKOJA © 2026 / ALL RIGHTS RESERVED</div>
-            <!-- FOOTER SOCIAL LINKS -->
             <div class="footer-social">
                 <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
                 <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
@@ -669,7 +680,7 @@
     <!-- Script Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Script Dynamic Dropdown Kecamatan ke Kelurahan -->
+    <!-- Script Dynamic Dropdown Kecamatan ke Kelurahan & File Upload Preview -->
     <script>
         const dataWilayah = {
             "Alam Barajo": ["Bagan Pete", "Beliung", "Kenali Besar", "Mayang Mangurai", "Pinang Merah", "Rawa Sari", "Simpang Rimbo"],
@@ -689,10 +700,8 @@
             const kecamatan = this.value;
             const kelurahanSelect = document.getElementById('kelurahan');
 
-            // Reset options kelurahan
             kelurahanSelect.innerHTML = '<option value="" selected disabled>Pilih Kelurahan</option>';
 
-            // Jika ada kecamatan yang dipilih dan ada di dataWilayah
             if (kecamatan && dataWilayah[kecamatan]) {
                 dataWilayah[kecamatan].forEach(function(kelurahan) {
                     const option = document.createElement('option');
@@ -700,6 +709,14 @@
                     option.textContent = kelurahan;
                     kelurahanSelect.appendChild(option);
                 });
+            }
+        });
+
+        // Menampilkan nama file KTP saat file dipilih
+        document.getElementById('ktp_upload').addEventListener('change', function() {
+            const fileLabel = document.getElementById('ktp_file_label');
+            if (this.files && this.files[0]) {
+                fileLabel.innerHTML = `<span class="text-success"><i class="fas fa-check-circle me-1"></i> File dipilih: <strong>${this.files[0].name}</strong></span>`;
             }
         });
     </script>
