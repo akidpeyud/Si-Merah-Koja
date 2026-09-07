@@ -71,3 +71,10 @@ Route::post('/internal/profil/update-password', [App\Http\Controllers\AuthContro
 Route::get('/internal/kelola-user', [App\Http\Controllers\AuthController::class, 'kelolaUser'])->middleware('auth');
 Route::post('/internal/kelola-user/tambah', [App\Http\Controllers\AuthController::class, 'storeUser'])->middleware('auth');
 Route::put('/internal/kelola-user/update/{id}', [AuthController::class, 'updateUser'])->middleware('auth');
+// Rute untuk menerima data kiriman form publik
+Route::post('/redkar/daftar', [AuthController::class, 'storeRedkar']);
+
+// Rute khusus Operator / Super User untuk melihat daftar relawan yang masuk
+Route::middleware(['auth'])->group(function () {
+    Route::get('/internal/operator/redkar-masuk', [AuthController::class, 'showRedkarData']);
+});
