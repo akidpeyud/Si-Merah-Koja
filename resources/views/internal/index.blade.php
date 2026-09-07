@@ -172,7 +172,25 @@
             setTimeout(closeAlert, 4000);
         </script>
     @endif
-
+    <!-- ALERT ERROR GLOBAL -->
+    @if(session('error'))
+        <div id="globalErrorAlert" style="position: fixed; top: 30px; left: 50%; transform: translateX(-50%); background-color: #ef4444; color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.4); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+            <i class="fas fa-exclamation-triangle alert-icon" style="font-size: 22px;"></i>
+            <span>{{ session('error') }}</span>
+            <button class="btn-close-alert" onclick="closeErrorAlert()" style="background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; margin-left: 10px; cursor: pointer;"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <script>
+            function closeErrorAlert() {
+                let errorBox = document.getElementById('globalErrorAlert');
+                if(errorBox) {
+                    errorBox.style.animation = 'fadeOutUpCenter 0.4s ease forwards';
+                    setTimeout(() => errorBox.remove(), 400); 
+                }
+            }
+            setTimeout(closeErrorAlert, 4000);
+        </script>
+    @endif
     <!-- NAVBAR INTERNAL -->
     <nav class="navbar-internal">
         <a href="#" class="nav-brand">
@@ -239,7 +257,7 @@
             
             <!-- Pengaturan Super User Khusus -->
             @if(Auth::user()->role === 'super_user')
-                <a href="#" class="sidebar-item"><i class="fas fa-users"></i> Kelola Semua Pengguna</a>
+                <a href="/internal/kelola-user" class="sidebar-item"><i class="fas fa-users"></i> Kelola Semua Pengguna</a>
             @endif
         </aside>
 

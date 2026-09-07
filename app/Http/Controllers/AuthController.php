@@ -66,15 +66,14 @@ class AuthController extends Controller
             ])->onlyInput('email', 'nomor_pegawai');
         }
 
-        // 3. Buat password sementara yang bersih (Contoh: gabungan kata sandi pendek + angka acak yang aman)
-        // Menggunakan huruf dan angka tanpa simbol agar tidak membingungkan saat diketik ulang
-        $passwordBaru = 'Damkar' . rand(1000, 9999); // Contoh hasil: Damkar8492
+        // 3. Buat password sementara yang bersih
+        $passwordBaru = 'Damkar' . rand(1000, 9999);
 
-        // 4. Update password baru ke database (Otomatis di-hash dengan benar)
+        // 4. Update password baru ke database (Otomatis di-hash)
         $user->password = Hash::make($passwordBaru);
         $user->save();
 
-        // 5. Susun isi email dengan format string yang aman
+        // 5. Susun isi email
         $pesanEmail = "Halo " . $user->nama_lengkap . ",\n\n"
                     . "Permintaan reset password untuk akun SIMERAH KOJA Anda berhasil diverifikasi.\n"
                     . "Berikut adalah password sementara Anda:\n\n"
@@ -99,7 +98,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         
-        // Tambahkan with('success') agar alert hijau muncul saat berhasil logout
         return redirect('/login')->with('success', 'Anda telah berhasil keluar dari sistem.');
     }
 
@@ -134,5 +132,50 @@ class AuthController extends Controller
         $user->save();
 
         return back()->with('success', 'Password Anda berhasil diperbarui!');
+    }
+
+    // Menampilkan halaman Kelola User (Khusus Super User)
+    public function kelolaUser()
+    {
+        // Pastikan hanya super_user yang bisa mengakses halaman ini
+        if (Auth::user()->role !== 'super_user') {
+            return redirect('/internal/index')->with('error', 'Akses Ditolak! Hanya Super User yang dapat mengelola pengguna.');
+        }
+
+        // Ambil semua data user dari database, urutkan dari yang terbaru
+        $users = User::orderBy('created_at', 'desc')->get();
+        
+        return view('internal.kelola_user', compact('users'));
+    }
+
+    // Memproses penambahan user baru dari form
+    public function storeUser(Request $request)
+    {
+        // PENGAMAN EKSTRA: Pastikan HANYA super_user yang bisa menyimpan data ke database
+        if (Auth::user()->role !== 'super_user') {
+            return redirect('/internal/index')->with('error', 'Akses Ditolak! Anda tidak memiliki izin untuk menambah pengguna.');
+        }
+
+        // Validasi input
+        $request->validate([
+            'nama_lengkap' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'unique:users,email'],
+            'nomor_pegawai' => ['required', 'unique:users,nomor_pegawai'],
+            'role' => ['required']
+        ], [
+            'email.unique' => 'Email ini sudah terdaftar di sistem.',
+            'nomor_pegawai.unique' => 'NIP/Nomor Pegawai ini sudah digunakan.'
+        ]);
+
+        // Buat user baru
+        $user = new User();
+        $user->nama_lengkap = $request->nama_lengkap;
+        $user->email = $request->email;
+        $user->nomor_pegawai = $request->nomor_pegawai;
+        $user->password = Hash::make('Damkar123'); // Password bawaan awal (default)
+        $user->role = $request->role;
+        $user->save();
+
+        return back()->with('success', 'Pengguna baru berhasil ditambahkan! Password default: Damkar123');
     }
 }
