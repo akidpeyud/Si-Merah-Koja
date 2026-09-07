@@ -122,19 +122,30 @@
                 <i class="fas fa-home"></i> Dashboard Utama
             </a>
 
+            <!-- 1. BAGIAN PENCEGAHAN -->
             @if(Auth::user()->role === 'pencegahan' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title">Bagian Pencegahan</div>
-                <a href="#" class="sidebar-item"><i class="far fa-building"></i> Kelola RPKBGL</a>
+                <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
+                <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
+                <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
+                <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
+                <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
             @endif
 
+            <!-- 2. BAGIAN PEMADAMAN & PENYELAMATAN -->
             @if(Auth::user()->role === 'pemadaman' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title" style="{{ Auth::user()->role === 'super_user' ? '' : 'border-top: none;' }}">Bagian Pemadaman & Penyelamatan</div>
                 <a href="#" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Laporan Darurat Masuk</a>
+                <a href="#" class="sidebar-item"><i class="fas fa-users-cog"></i> Jadwal Piket Regu</a>
+                <a href="#" class="sidebar-item"><i class="fas fa-running"></i> Data Relawan Redkar</a>
             @endif
 
+            <!-- 3. BAGIAN SAPRA -->
             @if(Auth::user()->role === 'sapra' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title" style="{{ Auth::user()->role === 'super_user' ? '' : 'border-top: none;' }}">Bagian Sapra</div>
                 <a href="#" class="sidebar-item"><i class="fas fa-truck-monster"></i> Kelola Armada Mobil</a>
+                <a href="#" class="sidebar-item"><i class="fas fa-tools"></i> Maintenance Peralatan</a>
+                <a href="#" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
             @endif
 
             <div class="sidebar-title">Pengaturan Akun</div>
@@ -229,7 +240,6 @@
                                 <label class="form-label">Konfirmasi Password Baru</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light"><i class="fas fa-check-circle"></i></span>
-                                    <!-- Atribut name harus 'password_baru_confirmation' agar cocok dengan validasi 'confirmed' Laravel -->
                                     <input type="password" name="password_baru_confirmation" class="form-control" placeholder="Ketik ulang password baru" required>
                                 </div>
                             </div>

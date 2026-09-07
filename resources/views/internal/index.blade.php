@@ -127,7 +127,14 @@
         .welcome-panel p { font-size: 14px; color: #cbd5e1; line-height: 1.6; max-width: 600px; margin-bottom: 0; }
         .welcome-icon-bg { position: absolute; right: 30px; top: -20px; font-size: 180px; opacity: 0.1; color: white; }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+        /* GRID STATISTIK FLEKSIBEL */
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 20px; 
+            margin-bottom: 30px; 
+        }
+        
         .stat-card {
             background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
             border: 1px solid #e5e7eb; display: flex; flex-direction: column; position: relative; overflow: hidden;
@@ -136,6 +143,8 @@
         .border-blue::after { background-color: #3b82f6; }
         .border-red::after { background-color: #ef4444; }
         .border-orange::after { background-color: #f59e0b; }
+        .border-green::after { background-color: #10b981; }
+        .border-purple::after { background-color: #8b5cf6; }
         
         .stat-title { font-size: 12px; color: #6b7280; font-weight: 600; margin-bottom: 10px; text-transform: uppercase; }
         .stat-value { font-size: 28px; font-weight: 800; color: #111827; }
@@ -201,9 +210,11 @@
             <!-- 1. BAGIAN PENCEGAHAN -->
             @if(Auth::user()->role === 'pencegahan' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title">Bagian Pencegahan</div>
-                <a href="#" class="sidebar-item"><i class="far fa-building"></i> Kelola RPKBGL</a>
-                <a href="#" class="sidebar-item"><i class="fas fa-user-shield"></i> Kelola SKK</a>
-                <a href="#" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Edukasi & Sosialisasi</a>
+                <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
+                <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
+                <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
+                <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
+                <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
             @endif
 
             <!-- 2. BAGIAN PEMADAMAN & PENYELAMATAN -->
@@ -224,7 +235,7 @@
 
             <!-- PENGATURAN UMUM -->
             <div class="sidebar-title">Pengaturan Akun</div>
-            <a href="profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
+            <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
             
             <!-- Pengaturan Super User Khusus -->
             @if(Auth::user()->role === 'super_user')
@@ -247,22 +258,49 @@
                 @if(Auth::user()->role === 'super_user')
                     <p>Anda login sebagai <strong>Super User</strong>. Anda memiliki kendali penuh untuk memantau dan mengelola seluruh modul Pencegahan, Pemadaman, maupun Sapra.</p>
                 @else
-                    <p>Anda login sebagai admin <strong>Bagian {{ ucwords(Auth::user()->role ?? 'Pegawai') }}</strong>. Pastikan untuk selalu memproses data laporan sesuai dengan wewenang bagian Anda.</p>
+                    <p>Anda login sebagai admin <strong>Bagian {{ ucwords(str_replace('_', ' ', Auth::user()->role ?? 'Pegawai')) }}</strong>. Pastikan untuk selalu memproses data laporan sesuai dengan wewenang bagian Anda.</p>
                 @endif
             </div>
 
             <br>
 
-            <!-- Grid Statistik (Disesuaikan dengan Role) -->
+            <!-- Grid Statistik -->
             <div class="stats-grid">
+                
+                <!-- STATISTIK KHUSUS PENCEGAHAN -->
                 @if(Auth::user()->role === 'pencegahan' || Auth::user()->role === 'super_user')
                 <div class="stat-card border-blue">
-                    <i class="fas fa-user-shield stat-icon text-primary"></i>
-                    <div class="stat-title">SKK Diproses (Pencegahan)</div>
+                    <i class="fas fa-clipboard-check stat-icon text-primary"></i>
+                    <div class="stat-title">Layanan Inspeksi</div>
+                    <div class="stat-value">24</div>
+                </div>
+                
+                <div class="stat-card border-green">
+                    <i class="fas fa-bullhorn stat-icon text-success"></i>
+                    <div class="stat-title">Layanan Sosialisasi</div>
                     <div class="stat-value">12</div>
+                </div>
+
+                <div class="stat-card border-purple">
+                    <i class="fas fa-chalkboard-teacher stat-icon" style="color: #8b5cf6;"></i>
+                    <div class="stat-title">Pelatihan Aktif</div>
+                    <div class="stat-value">5</div>
+                </div>
+
+                <div class="stat-card border-orange">
+                    <i class="fas fa-chart-line stat-icon text-warning"></i>
+                    <div class="stat-title">Pembinaan & Pengembangan</div>
+                    <div class="stat-value">8</div>
+                </div>
+
+                <div class="stat-card border-red">
+                    <i class="fas fa-level-up-alt stat-icon text-danger"></i>
+                    <div class="stat-title">Peningkatan Kapasitas</div>
+                    <div class="stat-value">3</div>
                 </div>
                 @endif
 
+                <!-- STATISTIK KHUSUS PEMADAMAN -->
                 @if(Auth::user()->role === 'pemadaman' || Auth::user()->role === 'super_user')
                 <div class="stat-card border-red">
                     <i class="fas fa-fire stat-icon text-danger"></i>
@@ -271,6 +309,7 @@
                 </div>
                 @endif
 
+                <!-- STATISTIK KHUSUS SAPRA -->
                 @if(Auth::user()->role === 'sapra' || Auth::user()->role === 'super_user')
                 <div class="stat-card border-orange">
                     <i class="fas fa-truck-monster stat-icon text-warning"></i>
@@ -278,6 +317,7 @@
                     <div class="stat-value">18</div>
                 </div>
                 @endif
+
             </div>
 
         </main>
