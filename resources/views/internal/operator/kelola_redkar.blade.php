@@ -3,141 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biodata_REDKAR_{{ $relawan->nama_lengkap }}</title>
+    <title>Kelola Redkar - SIMERAH KOJA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* Desain Khusus Kertas Dokumen */
-        body { font-family: 'Arial', sans-serif; color: #000; background-color: #525659; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .document-page { background: #fff; width: 210mm; min-height: 297mm; padding: 20mm; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: #f3f4f6; color: #1f2937; }
         
-        .kop-surat { display: flex; align-items: center; border-bottom: 3px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
-        .kop-surat img { width: 80px; }
-        .kop-teks { flex: 1; text-align: center; }
-        .kop-teks h2 { margin: 0; font-size: 18px; text-transform: uppercase; }
-        .kop-teks h1 { margin: 5px 0; font-size: 24px; font-weight: bold; text-transform: uppercase; }
-        .kop-teks p { margin: 0; font-size: 12px; }
+        .navbar-internal { background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
+        .nav-brand img { height: 40px; }
+        .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; }
+        .badge-internal { background: #10b981; color: white; font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 700; margin-left: 10px; }
+        .badge-role { background: #3b82f6; color: white; font-size: 11px; padding: 4px 10px; border-radius: 50px; font-weight: 700; text-transform: uppercase; }
+        .badge-role.operator { background: #8b5cf6; }
+        .badge-role.super_user { background: #ef4444; }
 
-        .doc-title { text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 20px; text-decoration: underline; }
-        
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px; }
-        td { padding: 8px; vertical-align: top; }
-        .label-col { width: 30%; font-weight: bold; }
-        .separator { width: 2%; text-align: center; font-weight: bold; }
-        .value-col { width: 68%; }
+        .user-menu { display: flex; align-items: center; gap: 20px; }
+        .user-profile { display: flex; align-items: center; gap: 10px; color: #e5e7eb; font-size: 14px; font-weight: 600; }
+        .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .btn-logout:hover { background-color: #dc2626; }
 
-        /* Sembunyikan elemen web saat proses Save to PDF / Print */
-        @media print {
-            body { background-color: #fff; padding: 0; }
-            .document-page { box-shadow: none; width: 100%; padding: 0; margin: 0; min-height: auto; }
-            .no-print { display: none !important; }
-        }
+        .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
+        .sidebar { width: 260px; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; }
+        .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600; border-radius: 8px; transition: all 0.2s; }
+        .sidebar-item:hover { background-color: #f3f4f6; color: #111827; }
+        .sidebar-item.active { background-color: #e0f2fe; color: #0284c7; }
+        .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #9ca3af; }
+        .sidebar-title { font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase; margin-top: 15px; margin-bottom: 5px; padding-left: 15px; border-top: 1px dashed #e5e7eb; padding-top: 15px; }
 
-        .btn-print { background-color: #10b981; color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; position: fixed; bottom: 30px; right: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .btn-print:hover { background-color: #059669; }
+        .main-content { flex: 1; padding: 40px 50px; background-color: #f9fafb; }
+        .page-header h1 { font-size: 28px; font-weight: 800; color: #111827; margin-bottom: 5px; }
+        .page-header p { color: #6b7280; font-size: 14px; margin-bottom: 30px; }
+
+        .content-card { background: white; border-radius: 12px; border: 1px solid #e5e7eb; padding: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .table th { background-color: #f8fafc; color: #4b5563; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; padding: 15px; border-bottom: 2px solid #e5e7eb; }
+        .table td { padding: 15px; vertical-align: middle; font-size: 14px; color: #1f2937; border-bottom: 1px solid #e5e7eb; }
+        .btn-pdf { background-color: #ef4444; color: white; font-weight: 600; font-size: 12px; padding: 6px 12px; border-radius: 6px; border: none; text-decoration: none; display: inline-block; transition: 0.2s; }
+        .btn-pdf:hover { background-color: #dc2626; color: white; }
     </style>
 </head>
 <body>
 
-    <button onclick="window.print()" class="btn-print no-print">
-        💾 Download PDF / Cetak Dokumen
-    </button>
-
-    <div class="document-page">
-        <!-- KOP SURAT -->
-        <div class="kop-surat">
-            <img src="/images/jambi.png" alt="Logo Jambi">
-            <div class="kop-teks">
-                <h2>Pemerintah Kota Jambi</h2>
-                <h1>Dinas Pemadam Kebakaran dan Penyelamatan</h1>
-                <p>Jl. HOS. Cokroaminoto, Suka Karya, Kec. Kota Baru, Kota Jambi</p>
-                <p>Email: damkar.jbi@gmail.com | Website: damkar.jambikota.go.id</p>
+    <nav class="navbar-internal">
+        <a href="/internal/index" class="nav-brand">
+            <img src="/images/simerahkoja.png" alt="Logo Simerah">
+            <span class="title">SIMERAH KOJA <span class="badge-internal">INTERNAL APP</span></span>
+        </a>
+        <div class="user-menu">
+            <div class="user-profile">
+                <span class="badge-role {{ Auth::user()->role }}">{{ str_replace('_', ' ', Auth::user()->role) }}</span>
+                <span>{{ Auth::user()->nama_lengkap }}</span>
+                <i class="fas fa-user-circle"></i>
             </div>
-            <img src="/images/logo-redkar.png" alt="Logo Redkar">
+            <form action="/logout" method="POST" style="margin: 0;">
+                @csrf
+                <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
+            </form>
         </div>
+    </nav>
 
-        <div class="doc-title">
-            FORMULIR PENDAFTARAN RELAWAN PEMADAM KEBAKARAN (REDKAR)
-        </div>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <a href="/internal/index" class="sidebar-item"><i class="fas fa-home"></i> Dashboard Utama</a>
 
-        <table>
-            <tr>
-                <td class="label-col">Tanggal Pendaftaran</td>
-                <td class="separator">:</td>
-                <td class="value-col">{{ $relawan->created_at->format('d F Y') }}</td>
-            </tr>
-            <tr>
-                <td class="label-col">NIK (Nomor Induk Kependudukan)</td>
-                <td class="separator">:</td>
-                <td class="value-col">{{ $relawan->nik }}</td>
-            </tr>
-            <tr>
-                <td class="label-col">Nama Lengkap</td>
-                <td class="separator">:</td>
-                <td class="value-col">{{ $relawan->nama_lengkap }}</td>
-            </tr>
-            <tr>
-                <td class="label-col">Jenis Kelamin</td>
-                <td class="separator">:</td>
-                <td class="value-col">{{ $relawan->jenis_kelamin == 'L' ? 'Laki-Laki' : 'Perempuan' }}</td>
-            </tr>
-            <tr>
-                <td class="label-col">Tempat, Tanggal Lahir</td>
-                <td class="separator">:</td>
-                <td class="value-col">{{ $relawan->tempat_lahir }}, {{ \Carbon\Carbon::parse($relawan->tanggal_lahir)->format('d F Y') }}</td>
-            </tr>
-            <tr>
-                <td class="label-col">Status Perkawinan</td>
-                <td class="separator">:</td>
-                <td class="value-col">{{ $relawan->status_perkawinan }}</td>
-            </tr>
-            <tr>
-                <td class="label-col">Agama</td>
-                <td class="separator">:</td>
-                <td class="value-col">{{ $relawan->agama }}</td>
-            </tr>
-            <tr>
-                <td class="label-col">Nomor HP / WhatsApp</td>
-                <td class="separator">:</td>
-                <td class="value-col">{{ $relawan->nomor_telp }}</td>
-            </tr>
-            <tr>
-                <td class="label-col">Alamat Lengkap</td>
-                <td class="separator">:</td>
-                <td class="value-col">{{ $relawan->alamat }}, {{ $relawan->rt_rw }}, Kel. {{ $relawan->kelurahan }}, Kec. {{ $relawan->kecamatan }}, {{ $relawan->kabupaten_kota }}, {{ $relawan->provinsi }} - {{ $relawan->kode_pos }}</td>
-            </tr>
-            <tr>
-                <td class="label-col">Pekerjaan</td>
-                <td class="separator">:</td>
-                <td class="value-col">{{ $relawan->pekerjaan }}</td>
-            </tr>
-            <tr>
-                <td class="label-col">Pendidikan Terakhir</td>
-                <td class="separator">:</td>
-                <td class="value-col">{{ $relawan->pendidikan_terakhir }}</td>
-            </tr>
-            <tr>
-                <td class="label-col">Kondisi Fisik & Kesehatan</td>
-                <td class="separator">:</td>
-                <td class="value-col">
-                    Sehat Jasmani: <b>{{ $relawan->sehat_jasmani }}</b><br>
-                    Buta Warna: <b>{{ $relawan->buta_warna }}</b><br>
-                    Golongan Darah: <b>{{ $relawan->golongan_darah }}</b>
-                </td>
-            </tr>
-        </table>
+            @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
+                <div class="sidebar-title">Manajemen Berita</div>
+                <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+                <a href="/internal/operator/kelola-redkar" class="sidebar-item active"><i class="fas fa-users-cog"></i> Pendaftar Redkar</a>
+            @endif
 
-        <div style="margin-top: 50px; text-align: right; padding-right: 50px;">
-            <p>Jambi, {{ $relawan->created_at->format('d F Y') }}</p>
-            <p style="margin-bottom: 80px;">Calon Relawan,</p>
-            <p style="font-weight: bold; text-decoration: underline;">{{ $relawan->nama_lengkap }}</p>
-        </div>
+            <div class="sidebar-title">Pengaturan Akun</div>
+            <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
+            
+            @if(Auth::user()->role === 'super_user')
+                <a href="/internal/kelola-user" class="sidebar-item"><i class="fas fa-users"></i> Kelola Semua Pengguna</a>
+            @endif
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Daftar Calon Relawan (REDKAR)</h1>
+                <p>Data masyarakat yang mendaftar melalui formulir publik website.</p>
+            </div>
+
+            <div class="content-card">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Tanggal Daftar</th>
+                                <th>NIK</th>
+                                <th>Nama Lengkap</th>
+                                <th>Kecamatan</th>
+                                <th>No. Telp (WA)</th>
+                                <th>KTP</th>
+                                <th class="text-center">Aksi Dokumen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($relawan as $r)
+                            <tr>
+                                <td style="font-size: 13px;">{{ $r->created_at->format('d M Y, H:i') }}</td>
+                                <td class="fw-bold">{{ $r->nik }}</td>
+                                <td>{{ $r->nama_lengkap }}</td>
+                                <td>{{ $r->kecamatan }}</td>
+                                <td>
+                                    <a href="https://wa.me/{{ preg_replace('/^0/', '62', $r->nomor_telp) }}" target="_blank" class="text-success text-decoration-none fw-bold"><i class="fab fa-whatsapp me-1"></i> {{ $r->nomor_telp }}</a>
+                                </td>
+                                <td>
+                                    @if($r->ktp)
+                                        <a href="/storage/{{ $r->ktp }}" target="_blank" class="badge bg-info text-decoration-none"><i class="fas fa-eye me-1"></i> Lihat KTP</a>
+                                    @else
+                                        <span class="badge bg-secondary">Tidak Ada</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    <a href="/internal/operator/cetak-redkar/{{ $r->id }}" target="_blank" class="btn-pdf">
+                                        <i class="fas fa-file-pdf me-1"></i> PDF Biodata
+                                    </a>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted">Belum ada data relawan yang mendaftar.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <script>
-        window.onload = function() {
-            setTimeout(function() {
-                window.print();
-            }, 500);
-        };
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

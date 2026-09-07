@@ -281,14 +281,15 @@ class AuthController extends Controller
         return view('internal.operator.kelola_redkar', compact('relawan'));
     }
 
-    // Menampilkan halaman cetak/download PDF untuk 1 relawan
+// BENAR (Mengambil 1 data spesifik berdasarkan ID)
     public function cetakRedkar($id)
     {
         if (!in_array(Auth::user()->role, ['operator', 'super_user'])) {
             return redirect('/internal/index')->with('error', 'Akses Ditolak!');
         }
 
-        $relawan = RedkarRegistration::findOrFail($id);
+        // PASTIKAN MENGGUNAKAN findOrFail($id), BUKAN get()
+        $relawan = RedkarRegistration::findOrFail($id); 
         
         return view('internal.operator.cetak_redkar', compact('relawan'));
     }
