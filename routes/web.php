@@ -102,3 +102,9 @@ Route::get('/internal/pencegahan/layanan-inspeksi/tambah', function () {
 Route::get('/internal/pencegahan/layanan-sosialisasi/tambah', function () {
     return view('internal.pencegahan.create_sosialisasi');
 });
+Route::get('/internal/pencegahan/pelatihan/tambah', function () {
+    return view('internal.pencegahan.create_pelatihan');
+});
+Route::get('/internal/pencegahan/pembinaan-pengembangan/tambah', function () {
+    return view('internal.pencegahan.create_pembinaan');
+});
