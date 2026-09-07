@@ -71,3 +71,34 @@ Route::post('/internal/profil/update-password', [App\Http\Controllers\AuthContro
 Route::get('/internal/kelola-user', [App\Http\Controllers\AuthController::class, 'kelolaUser'])->middleware('auth');
 Route::post('/internal/kelola-user/tambah', [App\Http\Controllers\AuthController::class, 'storeUser'])->middleware('auth');
 Route::put('/internal/kelola-user/update/{id}', [AuthController::class, 'updateUser'])->middleware('auth');
+//pencegahan
+Route::get('/internal/pencegahan/layanan-inspeksi', function () {
+    return view('internal.pencegahan.layanan_inspeksi');
+});
+Route::get('/internal/pencegahan/layanan-sosialisasi', function () {
+    // Ingat ya bro, karena di folder lu namanya pakai underscore
+    return view('internal.pencegahan.layanan_sosialisasi');
+});
+Route::get('/internal/pencegahan/pelatihan', function () {
+    // Ingat untuk rename filenya jadi pelatihan.blade.php ya
+    return view('internal.pencegahan.pelatihan');
+});
+Route::get('/internal/pencegahan/pembinaan-pengembangan', function () {
+    // Pastikan nama filenya nanti pembinaan_pengembangan.blade.php ya
+    return view('internal.pencegahan.pembinaan_pengembangan');
+});
+Route::get('/internal/pencegahan/peningkatan-kapasitas', function () {
+    // Pastikan nama filenya nanti peningkatan_kapasitas.blade.php
+    return view('internal.pencegahan.peningkatan_kapasitas');
+});
+// Route untuk nampilin form tambah inspeksi
+Route::get('/internal/pencegahan/layanan-inspeksi/tambah', function () {
+    return view('internal.pencegahan.create_inspeksi');
+});
+
+// Route untuk nyimpen data (nantinya kalau lu udah bikin controller)
+// Route::post('/internal/pencegahan/layanan-inspeksi/simpan', [InspeksiController::class, 'store']);
+// Route untuk nampilin form tambah sosialisasi
+Route::get('/internal/pencegahan/layanan-sosialisasi/tambah', function () {
+    return view('internal.pencegahan.create_sosialisasi');
+});
