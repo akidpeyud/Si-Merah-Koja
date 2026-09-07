@@ -219,7 +219,13 @@
                                     </span>
                                 </td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-primary me-1" title="Edit Data"><i class="fas fa-edit"></i></button>
+                                    <!-- Tombol Edit dengan memanggil data user terkait -->
+                                    <button class="btn btn-sm btn-outline-primary me-1" title="Edit Data" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#editUserModal{{ $u->id }}" data-id="{{ $u->id }}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    
                                     <button class="btn btn-sm btn-outline-danger" title="Hapus Akun"><i class="fas fa-trash"></i></button>
                                 </td>
                             </tr>
@@ -278,6 +284,56 @@
             </div>
         </div>
     </div>
+    <!-- MODAL EDIT USER (Diloop berdasarkan data user) -->
+    @foreach($users as $u)
+    <div class="modal fade" id="editUserModal{{ $u->id }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ $u->id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
+                <div class="modal-header bg-primary text-white" style="border-radius: 12px 12px 0 0; border-bottom: 4px solid #3b82f6;">
+                    <h5 class="modal-title fw-bold" id="editUserModalLabel{{ $u->id }}"><i class="fas fa-user-edit me-2"></i> Edit Pengguna: {{ $u->nama_lengkap }}</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <form action="/internal/kelola-user/update/{{ $u->id }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" style="font-size: 13px;">Nama Lengkap</label>
+                            <input type="text" name="nama_lengkap" class="form-control" value="{{ $u->nama_lengkap }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" style="font-size: 13px;">NIP / Nomor Kepegawaian</label>
+                            <input type="text" name="nomor_pegawai" class="form-control" value="{{ $u->nomor_pegawai }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" style="font-size: 13px;">Alamat Email</label>
+                            <input type="email" name="email" class="form-control" value="{{ $u->email }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" style="font-size: 13px;">Pilih Divisi / Role</label>
+                            <select name="role" class="form-select" required>
+                                <option value="pencegahan" {{ $u->role == 'pencegahan' ? 'selected' : '' }}>Bagian Pencegahan</option>
+                                <option value="pemadaman" {{ $u->role == 'pemadaman' ? 'selected' : '' }}>Bagian Pemadaman & Penyelamatan (Damtan)</option>
+                                <option value="sapra" {{ $u->role == 'sapra' ? 'selected' : '' }}>Bagian Sapra</option>
+                                <option value="super_user" {{ $u->role == 'super_user' ? 'selected' : '' }}>Super User (Admin Penuh)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" style="font-size: 13px;">Password Baru (Opsional)</label>
+                            <input type="password" name="password" class="form-control" placeholder="Kosongkan jika tidak ingin mengubah password">
+                            <div class="form-text" style="font-size: 11px;">Isi hanya jika ingin mereset password pengguna ini secara paksa.</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light" style="border-radius: 0 0 12px 12px;">
+                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary fw-bold">Simpan Perubahan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endforeach
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
