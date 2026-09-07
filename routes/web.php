@@ -61,23 +61,48 @@ Route::get('/lupa-password', [AuthController::class, 'showForgotPassword']);
 Route::post('/lupa-password', [AuthController::class, 'processForgotPassword']);
 
 Route::post('/logout', [AuthController::class, 'logout']);
+
 Route::get('/internal/index', function () {
     return view('internal.index');
 });
-Route::get('/internal/profil', [App\Http\Controllers\AuthController::class, 'showProfile'])->middleware('auth');
-Route::post('/internal/profil/update-password', [App\Http\Controllers\AuthController::class, 'updatePassword'])->middleware('auth');
-Route::get('/internal/profil', [App\Http\Controllers\AuthController::class, 'showProfile'])->middleware('auth');
-Route::post('/internal/profil/update-password', [App\Http\Controllers\AuthController::class, 'updatePassword'])->middleware('auth');
-Route::get('/internal/kelola-user', [App\Http\Controllers\AuthController::class, 'kelolaUser'])->middleware('auth');
-Route::post('/internal/kelola-user/tambah', [App\Http\Controllers\AuthController::class, 'storeUser'])->middleware('auth');
+
+Route::get('/internal/profil', [AuthController::class, 'showProfile'])->middleware('auth');
+Route::post('/internal/profil/update-password', [AuthController::class, 'updatePassword'])->middleware('auth');
+
+Route::get('/internal/kelola-user', [AuthController::class, 'kelolaUser'])->middleware('auth');
+Route::post('/internal/kelola-user/tambah', [AuthController::class, 'storeUser'])->middleware('auth');
 Route::put('/internal/kelola-user/update/{id}', [AuthController::class, 'updateUser'])->middleware('auth');
+
+// === ROUTE PENCEGAHAN (DARI TEMANMU) ===
+Route::get('/internal/pencegahan/layanan-inspeksi', function () {
+    return view('internal.pencegahan.layanan_inspeksi');
+});
+Route::get('/internal/pencegahan/layanan-sosialisasi', function () {
+    return view('internal.pencegahan.layanan_sosialisasi');
+});
+Route::get('/internal/pencegahan/pelatihan', function () {
+    return view('internal.pencegahan.pelatihan');
+});
+Route::get('/internal/pencegahan/pembinaan-pengembangan', function () {
+    return view('internal.pencegahan.pembinaan_pengembangan');
+});
+Route::get('/internal/pencegahan/peningkatan-kapasitas', function () {
+    return view('internal.pencegahan.peningkatan_kapasitas');
+});
+Route::get('/internal/pencegahan/layanan-inspeksi/tambah', function () {
+    return view('internal.pencegahan.create_inspeksi');
+});
+Route::get('/internal/pencegahan/layanan-sosialisasi/tambah', function () {
+    return view('internal.pencegahan.create_sosialisasi');
+});
+
+// === ROUTE REDKAR (KODEMU) ===
 // Rute untuk menerima data kiriman form publik
 Route::post('/redkar/daftar', [AuthController::class, 'storeRedkar']);
 
-// Rute khusus Operator / Super User untuk melihat daftar relawan yang masuk
+// Rute khusus Operator / Super User (Digabung dalam 1 middleware group agar aman)
 Route::middleware(['auth'])->group(function () {
     Route::get('/internal/operator/redkar-masuk', [AuthController::class, 'showRedkarData']);
+    Route::get('/internal/operator/kelola-redkar', [AuthController::class, 'kelolaRedkar']);
+    Route::get('/internal/operator/cetak-redkar/{id}', [AuthController::class, 'cetakRedkar']);
 });
-// Manajemen Redkar (Khusus Operator / Super User)
-    Route::get('/internal/operator/kelola-redkar', [App\Http\Controllers\AuthController::class, 'kelolaRedkar']);
-    Route::get('/internal/operator/cetak-redkar/{id}', [App\Http\Controllers\AuthController::class, 'cetakRedkar']);
