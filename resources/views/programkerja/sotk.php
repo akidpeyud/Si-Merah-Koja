@@ -8,7 +8,7 @@
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Bootstrap 5.3 CSS (Hanya untuk Grid System konten tengah) -->
+    <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Font Awesome -->
@@ -27,7 +27,7 @@
             color: #1f2937;
         }
 
-        /* --- NAVBAR STYLES --- */
+/* --- NAVBAR STYLES --- */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -35,8 +35,11 @@
             padding: 15px 50px;
             background-color: #111827;
             border-bottom: 4px solid #ef4444;
-            position: relative;
-            z-index: 999;
+            
+            /* INI KUNCI UTAMANYA AGAR TETAP MENEMPEL DI ATAS SAAT DI-SCROLL */
+            position: sticky;
+            top: 0; 
+            z-index: 9999; /* Pastikan z-index sangat tinggi agar menimpa konten lain */
         }
         .nav-logos { display: flex; gap: 15px; align-items: center; }
         .nav-logos img { height: 40px; transition: transform 0.3s; }
@@ -53,6 +56,7 @@
         }
         .nav-links .btn-login:hover { background-color: #dc2626; color: #ffffff; }
         
+        /* DROPDOWN CUSTOM TEMA GELAP (DIGUNAKAN UNTUK SEMUA DROPDOWN) */
         .dropdown-menu-custom {
             display: none; position: absolute; top: 100%; left: 0; background-color: #1f2937;
             min-width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-radius: 8px;
@@ -66,31 +70,6 @@
             border-bottom: 1px solid #374151; font-weight: 600;
         }
         .dropdown-menu-custom li a:hover { background-color: #374151; color: #ef4444; padding-left: 26px; }
-
-        /* --- DROPDOWN WHITE (Layanan & Fasilitas) --- */
-        .dropdown-white .dropdown-menu-custom {
-            background-color: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            min-width: 240px;
-        }
-        .dropdown-white .dropdown-menu-custom li a {
-            color: #336699; 
-            font-size: 13px;
-            font-weight: 600;
-            padding: 16px 20px;
-            border-bottom: 1px solid #f3f4f6;
-            transition: all 0.2s ease;
-        }
-        .dropdown-white .dropdown-menu-custom li:last-child a {
-            border-bottom: none;
-        }
-        .dropdown-white .dropdown-menu-custom li a:hover {
-            background-color: #f8fafc;
-            color: #ef4444;
-            padding-left: 24px;
-        }
 
         /* --- PAGE HEADER --- */
         .page-header {
@@ -126,7 +105,7 @@
         }
         .breadcrumb-custom a:hover { color: #ffffff; }
 
-        /* --- MAIN CONTENT (SOTK) --- */
+        /* --- MAIN CONTAINER --- */
         .main-container {
             background-color: #ffffff;
             border-radius: 12px;
@@ -203,20 +182,20 @@
             line-height: 1.5;
         }
         
-        /* Updated Social Links (1 Baris) */
+        /* Social Links (1 Baris) */
         .social-links {
             display: flex;
-            flex-wrap: nowrap; /* Memaksa agar tetap 1 baris */
-            gap: 6px; /* Jarak antar ikon diperkecil */
+            flex-wrap: nowrap;
+            gap: 6px; 
             margin-top: 25px;
         }
         .social-links a {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 32px; /* Ukuran lingkaran diperkecil */
+            width: 32px; 
             height: 32px; 
-            font-size: 13px; /* Ukuran ikon disesuaikan */
+            font-size: 13px;
             background-color: #ffffff;
             color: #6b7280;
             border-radius: 50%;
@@ -277,6 +256,49 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             border-radius: 4px;
             object-fit: contain;
+        }
+
+        /* --- SECTION LAYANAN & FASILITAS --- */
+        .layanan-section {
+            background-color: #ffffff;
+            padding: 60px 0;
+            margin-bottom: 60px;
+            text-align: center;
+        }
+        .section-title-wrap {
+            margin-bottom: 40px;
+        }
+        .section-subtitle {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ef4444;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        .section-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 15px;
+        }
+        .section-title span {
+            color: #ef4444;
+        }
+        .section-divider {
+            color: #ef4444;
+            font-size: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .section-divider::before,
+        .section-divider::after {
+            content: "";
+            height: 2px;
+            width: 50px;
+            background-color: #e5e7eb;
+            margin: 0 15px;
         }
 
         /* --- FOOTER STYLES --- */
@@ -356,7 +378,6 @@
             </li>
             <li class="dropdown-custom">
                 <a href="#">Program Kerja <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-                <!-- UPDATE: Menambahkan link PRODUK HUKUM di Dropdown Program Kerja -->
                 <ul class="dropdown-menu-custom">
                     <li><a href="/sotk">SOTK</a></li>
                     <li><a href="/perencanaan">PERENCANAAN</a></li>
@@ -365,23 +386,17 @@
                     <li><a href="/produkhukum">PRODUK HUKUM</a></li>
                 </ul>
             </li>
-            <li class="dropdown-custom dropdown-white">
+            
+            <!-- UPDATE: Dropdown Layanan & Fasilitas (Sesuai yang Anda minta) -->
+            <li class="dropdown-custom">
                 <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-<<<<<<< HEAD
-                <ul class="dropdown-menu-custom dropdown-menu">
-                    <li><a href="/layanan-perizinan">LAYANAN PERIZINAN</a></li>
-                    <li><a href="/edukasi-sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
-                    <li><a href="/perjanjian-kerjasama">PKS</a></li>
-                    <li><a href="/layanan-lainnya">LAYANAN LAINNYA</a></li>
-=======
                 <ul class="dropdown-menu-custom">
-                    <li><a href="#">LAYANAN PERIZINAN</a></li>
-                    <li><a href="#">EDUKASI DAN SOSIALISASI</a></li>
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
                     <li><a href="#">PKS</a></li>
-                    
->>>>>>> 060ae391d88be9234b68dff8e684c20dfecee1e0
                 </ul>
             </li>
+
             <li><a href="/redkar">Redkar</a></li>
             <li><a href="/login" class="btn-login">LOGIN</a></li>
         </ul>
@@ -432,7 +447,7 @@
                 </li>
             </ul>
 
-            <!-- Grid Layout (Contact Info + PDF Viewer) -->
+            <!-- Grid Layout (Contact Info + Document Viewer) -->
             <div class="row g-4 align-items-stretch">
                 
                 <!-- Kiri: Widget Kontak -->
@@ -455,7 +470,7 @@
                             </div>
                         </div>
                         
-                        <!-- SOSIAL MEDIA LINKS -->
+                        <!-- Social Media Links -->
                         <div class="social-links">
                             <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
                             <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
@@ -498,6 +513,13 @@
 
         </div>
     </div>
+            
+            <!-- Tempat menaruh konten grid layanan/fasilitas nantinya -->
+            <div class="row">
+                <!-- Tambahkan card/item layanan di sini -->
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <div class="footer-bottom">
@@ -533,27 +555,16 @@
             <div class="footer-links">
                 <h3>Link Terkait</h3>
                 <ul>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> Official Damkar</a></li>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> Website Jambikota</a></li>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> SIKOJA</a></li>
-                    <li><a href="#"><i class="fas fa-angle-double-right"></i> 112 Kota Jambi</a></li>
+                     <li><a href="https://damkar.jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> Official Damkar</a></li>
+                    <li><a href="https://jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> Website Jambikota</a></li>
+                    <li><a href="https://sikoja.jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> SIKOJA</a></li>
                 </ul>
             </div>
         </div>
         
         <div class="footer-copyright">
             <div>SIMERAHKOJA © 2026 / ALL RIGHTS RESERVED</div>
-<<<<<<< HEAD
-            <!-- FOOTER SOCIAL LINKS -->
-=======
-            <div class="footer-newsletter">
-                <input type="email" placeholder="Enter your email here...">
-                <div style="background: white; padding: 10px; border-radius: 4px; cursor: pointer; color: #111827;">
-                    <i class="fas fa-envelope"></i>
-                </div>
-            </div>
-           <!-- FOOTER SOCIAL LINKS -->
->>>>>>> 060ae391d88be9234b68dff8e684c20dfecee1e0
+            <!-- Footer Social Links -->
             <div class="footer-social">
                 <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
                 <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
@@ -563,12 +574,9 @@
                 <a href="https://www.instagram.com/damkar.kotajambi/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
-
-
-
     </div>
 
-    <!-- Script Bootstrap untuk Layout Grid -->
+    <!-- Script Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

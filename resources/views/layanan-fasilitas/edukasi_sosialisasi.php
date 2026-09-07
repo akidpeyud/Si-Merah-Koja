@@ -204,8 +204,8 @@
                    
                 </ul>
             </li>
-            <li><a href="#">Redkar</a></li>
-            <li><a href="#" class="btn-login">LOGIN</a></li>
+            <li><a href="/redkar">Redkar</a></li>
+            <li><a href="/login" class="btn-login">LOGIN</a></li>
         </ul>
     </nav>
 
@@ -288,11 +288,12 @@
             </ul>
 
             <div class="sidebar-social">
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-                <a href="#"><i class="fab fa-tiktok"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.facebook.com/DamkarKotaJambi" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.youtube.com/@damkarkotajambi" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.tiktok.com/@damkar.kota.jambi" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/damkar.kotajambi/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+            
             </div>
         </div>
 
