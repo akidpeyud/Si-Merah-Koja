@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\RedkarController; // Tambahkan baris ini
 
 // Route untuk halaman utama (Homepage)
 Route::get('/', function () {
@@ -30,9 +29,9 @@ Route::get('/sop', function () {
     return view('programkerja.sop');
 });
 
-// === ROUTE REDKAR ===
-Route::get('/redkar', [RedkarController::class, 'index'])->name('redkar.index');
-Route::post('/redkar', [RedkarController::class, 'store'])->name('redkar.store');
+Route::get('/redkar', function () {
+    return view('redkar.redkar'); 
+});
 
 // === ROUTE LAYANAN & FASILITAS ===
 Route::get('/layanan-fasilitas/layanan_perizinan', function () {
@@ -60,11 +59,22 @@ Route::post('/login', [AuthController::class, 'processLogin']);
 
 Route::get('/lupa-password', [AuthController::class, 'showForgotPassword']);
 Route::post('/lupa-password', [AuthController::class, 'processForgotPassword']);
-Route::post('/logout', [AuthController::class, 'logout']);
 
-// === ROUTE INTERNAL ===
+Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/internal/index', function () {
     return view('internal.index');
 });
-Route::get('/internal/profil', [AuthController::class, 'showProfile'])->middleware('auth');
-Route::post('/internal/profil/update-password', [AuthController::class, 'updatePassword'])->middleware('auth');
+Route::get('/internal/profil', [App\Http\Controllers\AuthController::class, 'showProfile'])->middleware('auth');
+Route::post('/internal/profil/update-password', [App\Http\Controllers\AuthController::class, 'updatePassword'])->middleware('auth');
+Route::get('/internal/profil', [App\Http\Controllers\AuthController::class, 'showProfile'])->middleware('auth');
+Route::post('/internal/profil/update-password', [App\Http\Controllers\AuthController::class, 'updatePassword'])->middleware('auth');
+Route::get('/internal/kelola-user', [App\Http\Controllers\AuthController::class, 'kelolaUser'])->middleware('auth');
+Route::post('/internal/kelola-user/tambah', [App\Http\Controllers\AuthController::class, 'storeUser'])->middleware('auth');
+Route::put('/internal/kelola-user/update/{id}', [AuthController::class, 'updateUser'])->middleware('auth');
+// Rute untuk menerima data kiriman form publik
+Route::post('/redkar/daftar', [AuthController::class, 'storeRedkar']);
+
+// Rute khusus Operator / Super User untuk melihat daftar relawan yang masuk
+Route::middleware(['auth'])->group(function () {
+    Route::get('/internal/operator/redkar-masuk', [AuthController::class, 'showRedkarData']);
+});
