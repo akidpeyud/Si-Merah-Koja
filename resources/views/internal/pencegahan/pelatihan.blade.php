@@ -148,9 +148,12 @@
                     <h1>Data Pelatihan</h1>
                     <p>Kelola program pelatihan internal anggota maupun relawan REDKAR.</p>
                 </div>
-                <button class="btn btn-primary px-4 py-2" style="border-radius: 10px; font-weight: 600; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);">
+                
+                <!-- TOMBOL SUDAH DIUBAH JADI LINK (TAG A) KE FORM TAMBAH -->
+                <a href="/internal/pencegahan/pelatihan/tambah" class="btn btn-primary px-4 py-2" style="border-radius: 10px; font-weight: 600; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); text-decoration: none;">
                     <i class="fas fa-plus me-2"></i> Buat Pelatihan Baru
-                </button>
+                </a>
+                
             </div>
 
             <div class="content-card">
