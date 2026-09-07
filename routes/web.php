@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RedkarController; // Tambahkan baris ini
 
 // Route untuk halaman utama (Homepage)
 Route::get('/', function () {
@@ -29,9 +30,9 @@ Route::get('/sop', function () {
     return view('programkerja.sop');
 });
 
-Route::get('/redkar', function () {
-    return view('redkar.redkar'); 
-});
+// === ROUTE REDKAR ===
+Route::get('/redkar', [RedkarController::class, 'index'])->name('redkar.index');
+Route::post('/redkar', [RedkarController::class, 'store'])->name('redkar.store');
 
 // === ROUTE LAYANAN & FASILITAS ===
 Route::get('/layanan-fasilitas/layanan_perizinan', function () {
@@ -59,12 +60,11 @@ Route::post('/login', [AuthController::class, 'processLogin']);
 
 Route::get('/lupa-password', [AuthController::class, 'showForgotPassword']);
 Route::post('/lupa-password', [AuthController::class, 'processForgotPassword']);
-
 Route::post('/logout', [AuthController::class, 'logout']);
+
+// === ROUTE INTERNAL ===
 Route::get('/internal/index', function () {
     return view('internal.index');
 });
-Route::get('/internal/profil', [App\Http\Controllers\AuthController::class, 'showProfile'])->middleware('auth');
-Route::post('/internal/profil/update-password', [App\Http\Controllers\AuthController::class, 'updatePassword'])->middleware('auth');
-Route::get('/internal/profil', [App\Http\Controllers\AuthController::class, 'showProfile'])->middleware('auth');
-Route::post('/internal/profil/update-password', [App\Http\Controllers\AuthController::class, 'updatePassword'])->middleware('auth');
+Route::get('/internal/profil', [AuthController::class, 'showProfile'])->middleware('auth');
+Route::post('/internal/profil/update-password', [AuthController::class, 'updatePassword'])->middleware('auth');
