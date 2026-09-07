@@ -31,7 +31,7 @@
             position: fixed;
             top: 30px;
             left: 50%;
-            transform: translateX(-50%); /* Kunci agar posisinya persis di tengah layar */
+            transform: translateX(-50%);
             background-color: #10b981;
             color: white;
             padding: 16px 24px;
@@ -46,32 +46,17 @@
             animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         
-        #globalSuccessAlert .alert-icon {
-            font-size: 22px;
-        }
-
+        #globalSuccessAlert .alert-icon { font-size: 22px; }
         #globalSuccessAlert .btn-close-alert {
-            background: transparent;
-            border: none;
-            color: white;
-            opacity: 0.7;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 0;
-            margin-left: 10px;
-            transition: opacity 0.2s;
+            background: transparent; border: none; color: white; opacity: 0.7;
+            font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px; transition: opacity 0.2s;
         }
+        #globalSuccessAlert .btn-close-alert:hover { opacity: 1; }
 
-        #globalSuccessAlert .btn-close-alert:hover {
-            opacity: 1;
-        }
-
-        /* Animasi turun dari atas ke tengah */
         @keyframes slideDownCenter {
             from { transform: translate(-50%, -50px); opacity: 0; }
             to { transform: translate(-50%, 0); opacity: 1; }
         }
-        /* Animasi naik dari tengah ke atas saat menghilang */
         @keyframes fadeOutUpCenter {
             from { transform: translate(-50%, 0); opacity: 1; }
             to { transform: translate(-50%, -50px); opacity: 0; }
@@ -79,213 +64,82 @@
 
         /* --- NAVBAR INTERNAL --- */
         .navbar-internal {
-            background-color: #111827;
-            padding: 15px 50px;
-            border-bottom: 4px solid #10b981;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 9999;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981;
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            color: white;
-            text-decoration: none;
-        }
+        .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
         .nav-brand img { height: 40px; }
-        .nav-brand .title {
-            font-weight: 800;
-            font-size: 18px;
-            letter-spacing: 1px;
-        }
+        .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; }
         .badge-internal {
-            background: #10b981;
-            color: white;
-            font-size: 10px;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-weight: 700;
-            margin-left: 10px;
-            vertical-align: middle;
+            background: #10b981; color: white; font-size: 10px; padding: 3px 8px;
+            border-radius: 4px; font-weight: 700; margin-left: 10px; vertical-align: middle;
         }
         .badge-role {
-            background: #3b82f6;
-            color: white;
-            font-size: 11px;
-            padding: 4px 10px;
-            border-radius: 50px;
-            font-weight: 700;
-            text-transform: uppercase;
+            background: #3b82f6; color: white; font-size: 11px; padding: 4px 10px;
+            border-radius: 50px; font-weight: 700; text-transform: uppercase;
         }
         .badge-role.super_user { background: #ef4444; }
 
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #e5e7eb;
-            font-size: 14px;
-            font-weight: 600;
-        }
+        .user-menu { display: flex; align-items: center; gap: 20px; }
+        .user-profile { display: flex; align-items: center; gap: 10px; color: #e5e7eb; font-size: 14px; font-weight: 600; }
         .user-profile i { font-size: 20px; color: #9ca3af; }
         
         .btn-logout {
-            background-color: #ef4444;
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
+            background-color: #ef4444; color: white; border: none; padding: 8px 20px;
+            border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s;
         }
         .btn-logout:hover { background-color: #dc2626; }
 
         /* --- SIDEBAR --- */
-        .dashboard-container {
-            display: flex;
-            min-height: calc(100vh - 74px);
-        }
+        .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
         .sidebar {
-            width: 260px;
-            background-color: #ffffff;
-            border-right: 1px solid #e5e7eb;
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+            width: 260px; background-color: #ffffff; border-right: 1px solid #e5e7eb;
+            padding: 30px 20px; display: flex; flex-direction: column; gap: 8px;
         }
         .sidebar-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 12px 15px;
-            color: #4b5563;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 600;
-            border-radius: 8px;
-            transition: all 0.2s;
+            display: flex; align-items: center; gap: 15px; padding: 12px 15px;
+            color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600;
+            border-radius: 8px; transition: all 0.2s;
         }
         .sidebar-item:hover { background-color: #f3f4f6; color: #111827; }
         .sidebar-item.active { background-color: #e0f2fe; color: #0284c7; }
         .sidebar-item.active i { color: #0284c7; }
-        .sidebar-item i {
-            font-size: 16px;
-            width: 20px;
-            text-align: center;
-            color: #9ca3af;
-        }
+        .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #9ca3af; }
         .sidebar-title {
-            font-size: 11px;
-            font-weight: 800;
-            color: #9ca3af;
-            text-transform: uppercase;
-            margin-top: 15px;
-            margin-bottom: 5px;
-            padding-left: 15px;
-            letter-spacing: 1px;
-            border-top: 1px dashed #e5e7eb;
-            padding-top: 15px;
+            font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase;
+            margin-top: 15px; margin-bottom: 5px; padding-left: 15px; letter-spacing: 1px;
+            border-top: 1px dashed #e5e7eb; padding-top: 15px;
         }
 
         /* --- MAIN AREA --- */
-        .main-content {
-            flex: 1;
-            padding: 40px 50px;
-            background-color: #f9fafb;
-        }
+        .main-content { flex: 1; padding: 40px 50px; background-color: #f9fafb; }
         .page-header { margin-bottom: 30px; }
-        .page-header h1 {
-            font-size: 28px;
-            font-weight: 800;
-            color: #111827;
-            margin-bottom: 5px;
-        }
+        .page-header h1 { font-size: 28px; font-weight: 800; color: #111827; margin-bottom: 5px; }
         .page-header p { color: #6b7280; font-size: 14px; margin: 0; }
 
         .welcome-panel {
-            background: linear-gradient(135deg, #1e3a8a, #111827);
-            border-radius: 16px;
-            padding: 40px;
-            color: white;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(30, 58, 138, 0.3);
-            margin-bottom: 30px;
+            background: linear-gradient(135deg, #1e3a8a, #111827); border-radius: 16px;
+            padding: 40px; color: white; position: relative; overflow: hidden;
+            box-shadow: 0 10px 25px rgba(30, 58, 138, 0.3); margin-bottom: 30px;
         }
         .welcome-panel h2 { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
-        .welcome-panel p {
-            font-size: 14px;
-            color: #cbd5e1;
-            line-height: 1.6;
-            max-width: 600px;
-            margin-bottom: 0;
-        }
-        .welcome-icon-bg {
-            position: absolute;
-            right: 30px;
-            top: -20px;
-            font-size: 180px;
-            opacity: 0.1;
-            color: white;
-        }
+        .welcome-panel p { font-size: 14px; color: #cbd5e1; line-height: 1.6; max-width: 600px; margin-bottom: 0; }
+        .welcome-icon-bg { position: absolute; right: 30px; top: -20px; font-size: 180px; opacity: 0.1; color: white; }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
-        }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
         .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            border: 1px solid #e5e7eb;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
+            background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            border: 1px solid #e5e7eb; display: flex; flex-direction: column; position: relative; overflow: hidden;
         }
-        .stat-card::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-        }
+        .stat-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px; }
         .border-blue::after { background-color: #3b82f6; }
         .border-red::after { background-color: #ef4444; }
         .border-orange::after { background-color: #f59e0b; }
         
-        .stat-title {
-            font-size: 12px;
-            color: #6b7280;
-            font-weight: 600;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
+        .stat-title { font-size: 12px; color: #6b7280; font-weight: 600; margin-bottom: 10px; text-transform: uppercase; }
         .stat-value { font-size: 28px; font-weight: 800; color: #111827; }
-        .stat-icon {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            font-size: 35px;
-            opacity: 0.1;
-        }
+        .stat-icon { position: absolute; top: 25px; right: 25px; font-size: 35px; opacity: 0.1; }
     </style>
 </head>
 <body>
@@ -299,7 +153,6 @@
         </div>
         
         <script>
-            // Fungsi untuk menutup alert secara manual
             function closeAlert() {
                 let alertBox = document.getElementById('globalSuccessAlert');
                 if(alertBox) {
@@ -307,8 +160,6 @@
                     setTimeout(() => alertBox.remove(), 400); 
                 }
             }
-
-            // Menutup alert secara otomatis setelah 4 detik
             setTimeout(closeAlert, 4000);
         </script>
     @endif
@@ -363,9 +214,9 @@
                 <a href="#" class="sidebar-item"><i class="fas fa-running"></i> Data Relawan Redkar</a>
             @endif
 
-            <!-- 3. BAGIAN SARANA & PRASARANA -->
-            @if(Auth::user()->role === 'sarpras' || Auth::user()->role === 'super_user')
-                <div class="sidebar-title" style="{{ Auth::user()->role === 'super_user' ? '' : 'border-top: none;' }}">Bagian Sarpras</div>
+            <!-- 3. BAGIAN SAPRA -->
+            @if(Auth::user()->role === 'sapra' || Auth::user()->role === 'super_user')
+                <div class="sidebar-title" style="{{ Auth::user()->role === 'super_user' ? '' : 'border-top: none;' }}">Bagian Sapra</div>
                 <a href="#" class="sidebar-item"><i class="fas fa-truck-monster"></i> Kelola Armada Mobil</a>
                 <a href="#" class="sidebar-item"><i class="fas fa-tools"></i> Maintenance Peralatan</a>
                 <a href="#" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
@@ -373,7 +224,7 @@
 
             <!-- PENGATURAN UMUM -->
             <div class="sidebar-title">Pengaturan Akun</div>
-            <a href="#" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
+            <a href="profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
             
             <!-- Pengaturan Super User Khusus -->
             @if(Auth::user()->role === 'super_user')
@@ -394,7 +245,7 @@
                 <h2>Selamat Bekerja, {{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}!</h2>
                 
                 @if(Auth::user()->role === 'super_user')
-                    <p>Anda login sebagai <strong>Super User</strong>. Anda memiliki kendali penuh untuk memantau dan mengelola seluruh modul Pencegahan, Pemadaman, maupun Sarana & Prasarana.</p>
+                    <p>Anda login sebagai <strong>Super User</strong>. Anda memiliki kendali penuh untuk memantau dan mengelola seluruh modul Pencegahan, Pemadaman, maupun Sapra.</p>
                 @else
                     <p>Anda login sebagai admin <strong>Bagian {{ ucwords(Auth::user()->role ?? 'Pegawai') }}</strong>. Pastikan untuk selalu memproses data laporan sesuai dengan wewenang bagian Anda.</p>
                 @endif
@@ -420,10 +271,10 @@
                 </div>
                 @endif
 
-                @if(Auth::user()->role === 'sarpras' || Auth::user()->role === 'super_user')
+                @if(Auth::user()->role === 'sapra' || Auth::user()->role === 'super_user')
                 <div class="stat-card border-orange">
                     <i class="fas fa-truck-monster stat-icon text-warning"></i>
-                    <div class="stat-title">Armada Aktif (Sarpras)</div>
+                    <div class="stat-title">Armada Aktif (Sapra)</div>
                     <div class="stat-value">18</div>
                 </div>
                 @endif
