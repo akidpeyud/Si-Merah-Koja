@@ -178,4 +178,34 @@ class AuthController extends Controller
 
         return back()->with('success', 'Pengguna baru berhasil ditambahkan! Password default: Damkar123');
     }
+    // Memproses update data user
+    public function updateUser(Request $request, $id)
+    {
+        if (Auth::user()->role !== 'super_user') {
+            return redirect('/internal/index')->with('error', 'Akses Ditolak!');
+        }
+
+        $user = User::findOrFail($id);
+
+        $request->validate([
+            'nama_lengkap' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'unique:users,email,' . $id],
+            'nomor_pegawai' => ['required', 'unique:users,nomor_pegawai,' . $id],
+            'role' => ['required']
+        ]);
+
+        $user->nama_lengkap = $request->nama_lengkap;
+        $user->email = $request->email;
+        $user->nomor_pegawai = $request->nomor_pegawai;
+        $user->role = $request->role;
+
+        // Jika password diisi, update passwordnya
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return back()->with('success', 'Data pengguna berhasil diperbarui!');
+    }
 }
