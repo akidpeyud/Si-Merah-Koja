@@ -256,6 +256,7 @@
             @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title" style="{{ Auth::user()->role === 'super_user' ? '' : 'border-top: none;' }}">Manajemen Berita</div>
                 <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+                <a href="/internal/operator/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
             @endif
 
             <!-- PENGATURAN UMUM -->

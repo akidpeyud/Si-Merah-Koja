@@ -78,3 +78,6 @@ Route::post('/redkar/daftar', [AuthController::class, 'storeRedkar']);
 Route::middleware(['auth'])->group(function () {
     Route::get('/internal/operator/redkar-masuk', [AuthController::class, 'showRedkarData']);
 });
+// Manajemen Redkar (Khusus Operator / Super User)
+    Route::get('/internal/operator/kelola-redkar', [App\Http\Controllers\AuthController::class, 'kelolaRedkar']);
+    Route::get('/internal/operator/cetak-redkar/{id}', [App\Http\Controllers\AuthController::class, 'cetakRedkar']);
