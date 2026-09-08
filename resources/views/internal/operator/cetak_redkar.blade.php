@@ -5,40 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biodata_REDKAR_{{ $relawan->nama_lengkap }}</title>
     <style>
-        /* Desain Khusus Kertas Dokumen */
-        body { font-family: 'Arial', sans-serif; color: #000; background-color: #525659; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .document-page { background: #fff; width: 210mm; min-height: 297mm; padding: 20mm; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        /* Desain Khusus Kertas Dokumen A4 */
+        body { font-family: 'Times New Roman', Times, serif; color: #000; background-color: #525659; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .document-page { background: #fff; width: 210mm; min-height: 297mm; padding: 25mm 20mm; box-shadow: 0 0 10px rgba(0,0,0,0.5); box-sizing: border-box; }
         
-        .kop-surat { display: flex; align-items: center; border-bottom: 3px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
-        .kop-surat img { width: 80px; }
-        .kop-teks { flex: 1; text-align: center; }
-        .kop-teks h2 { margin: 0; font-size: 18px; text-transform: uppercase; }
-        .kop-teks h1 { margin: 5px 0; font-size: 24px; font-weight: bold; text-transform: uppercase; }
-        .kop-teks p { margin: 0; font-size: 12px; }
+        /* Kop Surat Resmi */
+        .kop-surat { display: flex; align-items: center; border-bottom: 4px double #000; padding-bottom: 12px; margin-bottom: 25px; }
+        .kop-surat img { width: 85px; height: auto; }
+        .kop-teks { flex: 1; text-align: center; padding: 0 15px; }
+        .kop-teks h2 { margin: 0; font-size: 16pt; font-weight: bold; text-transform: uppercase; }
+        .kop-teks h1 { margin: 5px 0; font-size: 18pt; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+        .kop-teks p { margin: 2px 0 0 0; font-size: 10pt; font-family: 'Arial', sans-serif; }
 
-        .doc-title { text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 20px; text-decoration: underline; }
+        .doc-title { text-align: center; font-size: 14pt; font-weight: bold; margin-bottom: 30px; text-decoration: underline; letter-spacing: 0.5px; }
         
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px; }
-        td { padding: 8px; vertical-align: top; }
-        .label-col { width: 30%; font-weight: bold; }
-        .separator { width: 2%; text-align: center; font-weight: bold; }
-        .value-col { width: 68%; }
+        /* Tabel Data Diri */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12pt; line-height: 1.5; }
+        td { padding: 6px 4px; vertical-align: top; }
+        .label-col { width: 32%; }
+        .separator { width: 3%; text-align: center; }
+        .value-col { width: 65%; font-weight: bold; text-transform: capitalize; }
 
-        /* Sembunyikan elemen web saat proses Save to PDF / Print */
+        /* Sembunyikan tombol web saat diprint */
         @media print {
             body { background-color: #fff; padding: 0; }
             .document-page { box-shadow: none; width: 100%; padding: 0; margin: 0; min-height: auto; }
             .no-print { display: none !important; }
         }
 
-        .btn-print { background-color: #10b981; color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; position: fixed; bottom: 30px; right: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        /* Tombol melayang untuk download */
+        .btn-print { background-color: #10b981; color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; position: fixed; bottom: 30px; right: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.2s; font-family: 'Arial', sans-serif; }
         .btn-print:hover { background-color: #059669; }
     </style>
 </head>
 <body>
 
     <button onclick="window.print()" class="btn-print no-print">
-        💾 Download PDF / Cetak Dokumen
+        💾 Cetak / Download PDF
     </button>
 
     <div class="document-page">
@@ -48,7 +51,7 @@
             <div class="kop-teks">
                 <h2>Pemerintah Kota Jambi</h2>
                 <h1>Dinas Pemadam Kebakaran dan Penyelamatan</h1>
-                <p>Jl. HOS. Cokroaminoto, Suka Karya, Kec. Kota Baru, Kota Jambi</p>
+                <p>Jl. HOS. Cokroaminoto, Suka Karya, Kec. Kota Baru, Kota Jambi 36125</p>
                 <p>Email: damkar.jbi@gmail.com | Website: damkar.jambikota.go.id</p>
             </div>
             <img src="/images/logo-redkar.png" alt="Logo Redkar">
@@ -60,79 +63,83 @@
 
         <table>
             <tr>
-                <td class="label-col">Tanggal Pendaftaran</td>
+                <td class="label-col">1. Tanggal Pendaftaran</td>
                 <td class="separator">:</td>
-                <td class="value-col">{{ $relawan->created_at->format('d F Y') }}</td>
+                <td class="value-col">{{ \Carbon\Carbon::parse($relawan->created_at)->locale('id')->isoFormat('D MMMM Y') }}</td>
             </tr>
             <tr>
-                <td class="label-col">NIK (Nomor Induk Kependudukan)</td>
+                <td class="label-col">2. NIK (Nomor KTP)</td>
                 <td class="separator">:</td>
                 <td class="value-col">{{ $relawan->nik }}</td>
             </tr>
             <tr>
-                <td class="label-col">Nama Lengkap</td>
+                <td class="label-col">3. Nama Lengkap</td>
                 <td class="separator">:</td>
                 <td class="value-col">{{ $relawan->nama_lengkap }}</td>
             </tr>
             <tr>
-                <td class="label-col">Jenis Kelamin</td>
+                <td class="label-col">4. Jenis Kelamin</td>
                 <td class="separator">:</td>
                 <td class="value-col">{{ $relawan->jenis_kelamin == 'L' ? 'Laki-Laki' : 'Perempuan' }}</td>
             </tr>
             <tr>
-                <td class="label-col">Tempat, Tanggal Lahir</td>
+                <td class="label-col">5. Tempat, Tanggal Lahir</td>
                 <td class="separator">:</td>
-                <td class="value-col">{{ $relawan->tempat_lahir }}, {{ \Carbon\Carbon::parse($relawan->tanggal_lahir)->format('d F Y') }}</td>
+                <td class="value-col">{{ $relawan->tempat_lahir }}, {{ \Carbon\Carbon::parse($relawan->tanggal_lahir)->locale('id')->isoFormat('D MMMM Y') }}</td>
             </tr>
             <tr>
-                <td class="label-col">Status Perkawinan</td>
+                <td class="label-col">6. Status Perkawinan</td>
                 <td class="separator">:</td>
                 <td class="value-col">{{ $relawan->status_perkawinan }}</td>
             </tr>
             <tr>
-                <td class="label-col">Agama</td>
+                <td class="label-col">7. Agama</td>
                 <td class="separator">:</td>
                 <td class="value-col">{{ $relawan->agama }}</td>
             </tr>
             <tr>
-                <td class="label-col">Nomor HP / WhatsApp</td>
+                <td class="label-col">8. Nomor Telepon / WA</td>
                 <td class="separator">:</td>
                 <td class="value-col">{{ $relawan->nomor_telp }}</td>
             </tr>
             <tr>
-                <td class="label-col">Alamat Lengkap</td>
+                <td class="label-col">9. Pendidikan Terakhir</td>
                 <td class="separator">:</td>
-                <td class="value-col">{{ $relawan->alamat }}, {{ $relawan->rt_rw }}, Kel. {{ $relawan->kelurahan }}, Kec. {{ $relawan->kecamatan }}, {{ $relawan->kabupaten_kota }}, {{ $relawan->provinsi }} - {{ $relawan->kode_pos }}</td>
+                <td class="value-col">{{ strtoupper($relawan->pendidikan_terakhir) }}</td>
             </tr>
             <tr>
-                <td class="label-col">Pekerjaan</td>
+                <td class="label-col">10. Pekerjaan</td>
                 <td class="separator">:</td>
                 <td class="value-col">{{ $relawan->pekerjaan }}</td>
             </tr>
             <tr>
-                <td class="label-col">Pendidikan Terakhir</td>
+                <td class="label-col">11. Alamat Lengkap</td>
                 <td class="separator">:</td>
-                <td class="value-col">{{ $relawan->pendidikan_terakhir }}</td>
+                <td class="value-col" style="line-height: 1.6;">
+                    {{ $relawan->alamat }}, {{ $relawan->rt_rw }}<br>
+                    Kel. {{ $relawan->kelurahan }}, Kec. {{ $relawan->kecamatan }}<br>
+                    {{ $relawan->kabupaten_kota }}, {{ $relawan->provinsi }} - {{ $relawan->kode_pos }}
+                </td>
             </tr>
             <tr>
-                <td class="label-col">Kondisi Fisik & Kesehatan</td>
+                <td class="label-col">12. Riwayat Kesehatan</td>
                 <td class="separator">:</td>
-                <td class="value-col">
-                    Sehat Jasmani: <b>{{ $relawan->sehat_jasmani }}</b><br>
-                    Buta Warna: <b>{{ $relawan->buta_warna }}</b><br>
-                    Golongan Darah: <b>{{ $relawan->golongan_darah }}</b>
+                <td class="value-col" style="font-weight: normal; line-height: 1.6;">
+                    - Sehat Jasmani & Rohani &nbsp;: <b>{{ $relawan->sehat_jasmani }}</b><br>
+                    - Tidak Buta Warna &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <b>{{ $relawan->buta_warna }}</b><br>
+                    - Golongan Darah &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <b>{{ strtoupper($relawan->golongan_darah) }}</b>
                 </td>
             </tr>
         </table>
 
-        <div style="margin-top: 50px; text-align: right; padding-right: 50px;">
-            <p>Jambi, {{ $relawan->created_at->format('d F Y') }}</p>
-            <p style="margin-bottom: 80px;">Calon Relawan,</p>
-            <p style="font-weight: bold; text-decoration: underline;">{{ $relawan->nama_lengkap }}</p>
+        <div style="margin-top: 60px; text-align: right; padding-right: 40px; font-size: 12pt;">
+            <p>Jambi, {{ \Carbon\Carbon::parse($relawan->created_at)->locale('id')->isoFormat('D MMMM Y') }}</p>
+            <p style="margin-bottom: 90px;">Calon Relawan,</p>
+            <p style="font-weight: bold; text-decoration: underline; text-transform: uppercase;">{{ $relawan->nama_lengkap }}</p>
         </div>
     </div>
 
-    <!-- Script otomatis buka dialog print/save PDF saat halaman dimuat (Bisa dihapus jika ingin klik tombol manual saja) -->
+    <!-- Script otomatis buka dialog print -->
     <script>
         window.onload = function() {
             setTimeout(function() {

@@ -173,6 +173,7 @@
             setTimeout(closeAlert, 4000);
         </script>
     @endif
+
     <!-- ALERT ERROR GLOBAL -->
     @if(session('error'))
         <div id="globalErrorAlert" style="position: fixed; top: 30px; left: 50%; transform: translateX(-50%); background-color: #ef4444; color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.4); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
@@ -192,6 +193,7 @@
             setTimeout(closeErrorAlert, 4000);
         </script>
     @endif
+
     <!-- NAVBAR INTERNAL -->
     <nav class="navbar-internal">
         <a href="#" class="nav-brand">
@@ -203,7 +205,11 @@
             <div class="user-profile">
                 <!-- Menampilkan Badge Jabatan (Role) -->
                 <span class="badge-role {{ Auth::user()->role ?? '' }}">
-                    {{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}
+                    @if(Auth::user()->role === 'user')
+                        PEGAWAI
+                    @else
+                        {{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}
+                    @endif
                 </span>
                 <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
                 <i class="fas fa-user-circle"></i>
@@ -220,40 +226,34 @@
     <!-- KONTEN UTAMA -->
     <div class="dashboard-container">
         
-        <!-- SIDEBAR DENGAN LOGIKA ROLE -->
+        <!-- SIDEBAR TERINTEGRASI -->
         <aside class="sidebar">
             <a href="/internal/index" class="sidebar-item active">
                 <i class="fas fa-home"></i> Dashboard Utama
             </a>
 
-            <!-- 1. BAGIAN PENCEGAHAN -->
-            @if(Auth::user()->role === 'pencegahan' || Auth::user()->role === 'super_user')
+            <!-- MODUL OPERASIONAL (Bisa diakses oleh User & Super User) -->
+            @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title">Bagian Pencegahan</div>
                 <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
                 <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
                 <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
                 <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
                 <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
-            @endif
 
-            <!-- 2. BAGIAN PEMADAMAN & PENYELAMATAN -->
-            @if(Auth::user()->role === 'pemadaman' || Auth::user()->role === 'super_user')
-                <div class="sidebar-title" style="{{ Auth::user()->role === 'super_user' ? '' : 'border-top: none;' }}">Bagian Pemadaman & Penyelamatan</div>
+                <div class="sidebar-title">Bagian Pemadaman & Penyelamatan</div>
                 <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
                 <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-users-cog"></i> Data Laporan</a>
-            @endif
 
-            <!-- 3. BAGIAN SAPRA -->
-            @if(Auth::user()->role === 'sapra' || Auth::user()->role === 'super_user')
-                <div class="sidebar-title" style="{{ Auth::user()->role === 'super_user' ? '' : 'border-top: none;' }}">Bagian Sapra</div>
+                <div class="sidebar-title">Bagian Sapra</div>
                 <a href="#" class="sidebar-item"><i class="fas fa-truck-monster"></i> Kelola Armada Mobil</a>
                 <a href="#" class="sidebar-item"><i class="fas fa-tools"></i> Maintenance Peralatan</a>
                 <a href="#" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
             @endif
 
-            <!-- 4. BAGIAN OPERATOR BERITA -->
+            <!-- MODUL OPERATOR BERITA (Bisa diakses oleh Operator & Super User) -->
             @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
-                <div class="sidebar-title" style="{{ Auth::user()->role === 'super_user' ? '' : 'border-top: none;' }}">Manajemen Berita</div>
+                <div class="sidebar-title">Manajemen Berita</div>
                 <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
                 <a href="/internal/operator/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
             @endif
@@ -271,7 +271,7 @@
         <!-- MAIN AREA -->
         <main class="main-content">
             <div class="page-header">
-                <h1>Ruang Kerja - Bagian {{ ucwords(str_replace('_', ' ', Auth::user()->role ?? 'Umum')) }}</h1>
+                <h1>Ruang Kerja - Terintegrasi</h1>
                 <p>Ringkasan sistem informasi internal Disdamkartan Kota Jambi.</p>
             </div>
 
@@ -281,9 +281,9 @@
                 <h2>Selamat Bekerja, {{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}!</h2>
                 
                 @if(Auth::user()->role === 'super_user')
-                    <p>Anda login sebagai <strong>Super User</strong>. Anda memiliki kendali penuh untuk memantau dan mengelola seluruh modul Pencegahan, Pemadaman, maupun Sapra.</p>
+                    <p>Anda login sebagai <strong>Super User</strong>. Anda memiliki kendali penuh untuk memantau dan mengelola seluruh modul operasional maupun sistem.</p>
                 @else
-                    <p>Anda login sebagai admin <strong>Bagian {{ ucwords(str_replace('_', ' ', Auth::user()->role ?? 'Pegawai')) }}</strong>. Pastikan untuk selalu memproses data laporan sesuai dengan wewenang bagian Anda.</p>
+                    <p>Anda login sebagai <strong>Pegawai Internal</strong>. Anda dapat saling berkolaborasi dalam mengelola laporan dari seluruh modul layanan Disdamkartan.</p>
                 @endif
             </div>
 
@@ -293,7 +293,7 @@
             <div class="stats-grid">
                 
                 <!-- STATISTIK KHUSUS PENCEGAHAN -->
-                @if(Auth::user()->role === 'pencegahan' || Auth::user()->role === 'super_user')
+                @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
                 <div class="stat-card border-blue">
                     <i class="fas fa-clipboard-check stat-icon text-primary"></i>
                     <div class="stat-title">Layanan Inspeksi</div>
@@ -326,7 +326,7 @@
                 @endif
 
                 <!-- STATISTIK KHUSUS PEMADAMAN -->
-                @if(Auth::user()->role === 'pemadaman' || Auth::user()->role === 'super_user')
+                @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
                 <div class="stat-card border-red">
                     <i class="fas fa-fire stat-icon text-danger"></i>
                     <div class="stat-title">Siaga Darurat (Pemadaman)</div>
@@ -335,7 +335,7 @@
                 @endif
 
                 <!-- STATISTIK KHUSUS SAPRA -->
-                @if(Auth::user()->role === 'sapra' || Auth::user()->role === 'super_user')
+                @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
                 <div class="stat-card border-orange">
                     <i class="fas fa-truck-monster stat-icon text-warning"></i>
                     <div class="stat-title">Armada Aktif (Sapra)</div>

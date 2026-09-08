@@ -27,24 +27,27 @@
             animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         #globalSuccessAlert .alert-icon { font-size: 22px; }
-        .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; margin-left: 10px; }
+        .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; margin-left: 10px; cursor: pointer; }
 
         @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
         @keyframes fadeOutUpCenter { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -50px); opacity: 0; } }
 
-        /* --- NAVBAR & SIDEBAR (Sama dengan Dashboard) --- */
+        /* --- NAVBAR & SIDEBAR --- */
         .navbar-internal { background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 9999; }
         .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
         .nav-brand img { height: 40px; }
         .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; }
         .badge-internal { background: #10b981; color: white; font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 700; margin-left: 10px; }
+        
         .badge-role { background: #3b82f6; color: white; font-size: 11px; padding: 4px 10px; border-radius: 50px; font-weight: 700; text-transform: uppercase; }
         .badge-role.super_user { background: #ef4444; }
         .badge-role.operator { background: #8b5cf6; }
+        .badge-role.user { background: #10b981; }
 
         .user-menu { display: flex; align-items: center; gap: 20px; }
         .user-profile { display: flex; align-items: center; gap: 10px; color: #e5e7eb; font-size: 14px; font-weight: 600; }
-        .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; }
+        .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; transition: 0.2s; cursor: pointer; }
+        .btn-logout:hover { background-color: #dc2626; }
 
         .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
         .sidebar { width: 260px; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; }
@@ -104,7 +107,13 @@
 
         <div class="user-menu">
             <div class="user-profile">
-                <span class="badge-role {{ Auth::user()->role ?? '' }}">{{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}</span>
+                <span class="badge-role {{ Auth::user()->role ?? '' }}">
+                    @if(Auth::user()->role === 'user')
+                        PEGAWAI
+                    @else
+                        {{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}
+                    @endif
+                </span>
                 <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
                 <i class="fas fa-user-circle"></i>
             </div>
@@ -117,50 +126,49 @@
 
     <div class="dashboard-container">
         
-        <!-- SIDEBAR -->
+        <!-- SIDEBAR TERINTEGRASI -->
         <aside class="sidebar">
             <a href="/internal/index" class="sidebar-item">
                 <i class="fas fa-home"></i> Dashboard Utama
             </a>
 
-            <!-- 1. BAGIAN PENCEGAHAN -->
-            @if(Auth::user()->role === 'pencegahan' || Auth::user()->role === 'super_user')
+            <!-- MODUL OPERASIONAL (Bisa diakses oleh User & Super User) -->
+            @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title">Bagian Pencegahan</div>
                 <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
                 <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
                 <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
                 <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
                 <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
-            @endif
 
-            <!-- 2. BAGIAN PEMADAMAN & PENYELAMATAN -->
-            @if(Auth::user()->role === 'pemadaman' || Auth::user()->role === 'super_user')
-                <div class="sidebar-title" style="{{ Auth::user()->role === 'super_user' ? '' : 'border-top: none;' }}">Bagian Pemadaman & Penyelamatan</div>
-                <a href="#" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Laporan Darurat Masuk</a>
-                <a href="#" class="sidebar-item"><i class="fas fa-users-cog"></i> Jadwal Piket Regu</a>
-                <a href="#" class="sidebar-item"><i class="fas fa-running"></i> Data Relawan Redkar</a>
-            @endif
+                <div class="sidebar-title">Bagian Pemadaman & Penyelamatan</div>
+                <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
+                <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-users-cog"></i> Data Laporan</a>
 
-            <!-- 3. BAGIAN SAPRA -->
-            @if(Auth::user()->role === 'sapra' || Auth::user()->role === 'super_user')
-                <div class="sidebar-title" style="{{ Auth::user()->role === 'super_user' ? '' : 'border-top: none;' }}">Bagian Sapra</div>
+                <div class="sidebar-title">Bagian Sapra</div>
                 <a href="#" class="sidebar-item"><i class="fas fa-truck-monster"></i> Kelola Armada Mobil</a>
                 <a href="#" class="sidebar-item"><i class="fas fa-tools"></i> Maintenance Peralatan</a>
                 <a href="#" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
             @endif
-            <!-- 4. BAGIAN OPERATOR BERITA -->
+
+            <!-- MODUL OPERATOR BERITA (Bisa diakses oleh Operator & Super User) -->
             @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
-                <div class="sidebar-title" style="{{ Auth::user()->role === 'super_user' ? '' : 'border-top: none;' }}">Manajemen Berita</div>
+                <div class="sidebar-title">Manajemen Berita</div>
                 <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+                <a href="/internal/operator/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
             @endif
 
+            <!-- PENGATURAN UMUM -->
             <div class="sidebar-title">Pengaturan Akun</div>
             <a href="/internal/profil" class="sidebar-item active">
                 <i class="fas fa-user-edit"></i> Profil Saya
             </a>
             
+            <!-- Pengaturan Super User Khusus -->
             @if(Auth::user()->role === 'super_user')
-                <a href="#" class="sidebar-item"><i class="fas fa-users"></i> Kelola Semua Pengguna</a>
+                <a href="/internal/kelola-user" class="sidebar-item">
+                    <i class="fas fa-users"></i> Kelola Semua Pengguna
+                </a>
             @endif
         </aside>
 
@@ -197,10 +205,10 @@
                         </div>
 
                         <div class="info-group">
-                            <div class="info-label">Divisi / Hak Akses</div>
+                            <div class="info-label">Hak Akses Sistem</div>
                             <div class="info-value">
                                 <span class="badge-role {{ Auth::user()->role }} d-inline-block mt-1">
-                                    {{ str_replace('_', ' ', Auth::user()->role) }}
+                                    {{ Auth::user()->role === 'user' ? 'Pegawai Internal' : ucwords(str_replace('_', ' ', Auth::user()->role)) }}
                                 </span>
                             </div>
                         </div>

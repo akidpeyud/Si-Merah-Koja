@@ -27,7 +27,7 @@
             animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         #globalSuccessAlert .alert-icon { font-size: 22px; }
-        .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; margin-left: 10px; }
+        .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; margin-left: 10px; cursor: pointer; }
         @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
         @keyframes fadeOutUpCenter { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -50px); opacity: 0; } }
 
@@ -37,22 +37,23 @@
         .nav-brand img { height: 40px; }
         .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; }
         .badge-internal { background: #10b981; color: white; font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 700; margin-left: 10px; }
+        
         .badge-role { background: #3b82f6; color: white; font-size: 11px; padding: 4px 10px; border-radius: 50px; font-weight: 700; text-transform: uppercase; }
         .badge-role.super_user { background: #ef4444; }
-        .badge-role.pencegahan { background: #3b82f6; }
-        .badge-role.pemadaman { background: #ef4444; }
-        .badge-role.sapra { background: #f59e0b; }
         .badge-role.operator { background: #8b5cf6; }
+        .badge-role.user { background: #10b981; }
 
         .user-menu { display: flex; align-items: center; gap: 20px; }
         .user-profile { display: flex; align-items: center; gap: 10px; color: #e5e7eb; font-size: 14px; font-weight: 600; }
-        .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; }
+        .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s;}
+        .btn-logout:hover { background-color: #dc2626; }
 
         .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
         .sidebar { width: 260px; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; }
         .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600; border-radius: 8px; transition: all 0.2s; }
         .sidebar-item:hover { background-color: #f3f4f6; color: #111827; }
         .sidebar-item.active { background-color: #e0f2fe; color: #0284c7; }
+        .sidebar-item.active i { color: #0284c7; }
         .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #9ca3af; }
         .sidebar-title { font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase; margin-top: 15px; margin-bottom: 5px; padding-left: 15px; border-top: 1px dashed #e5e7eb; padding-top: 15px; }
 
@@ -116,7 +117,13 @@
 
         <div class="user-menu">
             <div class="user-profile">
-                <span class="badge-role {{ Auth::user()->role ?? '' }}">{{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}</span>
+                <span class="badge-role {{ Auth::user()->role ?? '' }}">
+                    @if(Auth::user()->role === 'user')
+                        PEGAWAI
+                    @else
+                        {{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}
+                    @endif
+                </span>
                 <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
                 <i class="fas fa-user-circle"></i>
             </div>
@@ -129,40 +136,45 @@
 
     <div class="dashboard-container">
         
-        <!-- SIDEBAR -->
+        <!-- SIDEBAR TERINTEGRASI -->
         <aside class="sidebar">
             <a href="/internal/index" class="sidebar-item">
                 <i class="fas fa-home"></i> Dashboard Utama
             </a>
 
-            @if(Auth::user()->role === 'pencegahan' || Auth::user()->role === 'super_user')
+            <!-- MODUL OPERASIONAL (Bisa diakses oleh User & Super User) -->
+            @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title">Bagian Pencegahan</div>
                 <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
                 <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
                 <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
                 <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
                 <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
-            @endif
 
-            @if(Auth::user()->role === 'pemadaman' || Auth::user()->role === 'super_user')
-                <div class="sidebar-title" style="{{ Auth::user()->role === 'super_user' ? '' : 'border-top: none;' }}">Bagian Pemadaman & Penyelamatan</div>
-                <a href="#" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Laporan Darurat Masuk</a>
-                <a href="#" class="sidebar-item"><i class="fas fa-users-cog"></i> Jadwal Piket Regu</a>
-                <a href="#" class="sidebar-item"><i class="fas fa-running"></i> Data Relawan Redkar</a>
-            @endif
+                <div class="sidebar-title">Bagian Pemadaman & Penyelamatan</div>
+                <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
+                <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-users-cog"></i> Data Laporan</a>
 
-            @if(Auth::user()->role === 'sapra' || Auth::user()->role === 'super_user')
-                <div class="sidebar-title" style="{{ Auth::user()->role === 'super_user' ? '' : 'border-top: none;' }}">Bagian Sapra</div>
+                <div class="sidebar-title">Bagian Sapra</div>
                 <a href="#" class="sidebar-item"><i class="fas fa-truck-monster"></i> Kelola Armada Mobil</a>
                 <a href="#" class="sidebar-item"><i class="fas fa-tools"></i> Maintenance Peralatan</a>
                 <a href="#" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
             @endif
 
+            <!-- MODUL OPERATOR BERITA (Bisa diakses oleh Operator & Super User) -->
+            @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
+                <div class="sidebar-title">Manajemen Berita</div>
+                <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+                <a href="/internal/operator/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
+            @endif
+
+            <!-- PENGATURAN UMUM -->
             <div class="sidebar-title">Pengaturan Akun</div>
             <a href="/internal/profil" class="sidebar-item">
                 <i class="fas fa-user-edit"></i> Profil Saya
             </a>
             
+            <!-- Pengaturan Super User Khusus -->
             @if(Auth::user()->role === 'super_user')
                 <a href="/internal/kelola-user" class="sidebar-item active">
                     <i class="fas fa-users"></i> Kelola Semua Pengguna
@@ -203,7 +215,7 @@
                                 <th>Nama Lengkap</th>
                                 <th>NIP / No Pegawai</th>
                                 <th>Email</th>
-                                <th>Divisi / Role</th>
+                                <th>Hak Akses (Role)</th>
                                 <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -216,7 +228,7 @@
                                 <td>{{ $u->email }}</td>
                                 <td>
                                     <span class="badge-role {{ $u->role }}">
-                                        {{ ucwords(str_replace('_', ' ', $u->role)) }}
+                                        {{ $u->role === 'user' ? 'Pegawai Internal' : ucwords(str_replace('_', ' ', $u->role)) }}
                                     </span>
                                 </td>
                                 <td class="text-center">
@@ -264,13 +276,11 @@
                             <input type="email" name="email" class="form-control" required placeholder="email@contoh.com">
                         </div>
                         <div class="mb-4">
-                            <label class="form-label fw-semibold" style="font-size: 13px;">Pilih Divisi / Role</label>
+                            <label class="form-label fw-semibold" style="font-size: 13px;">Pilih Hak Akses (Role)</label>
                             <select name="role" class="form-select" required>
                                 <option value="" selected disabled>-- Pilih Hak Akses --</option>
-                                <option value="pencegahan">Bagian Pencegahan</option>
-                                <option value="pemadaman">Bagian Pemadaman & Penyelamatan (Damtan)</option>
-                                <option value="sapra">Bagian Sapra</option>
-                                <option value="operator">Operator (Input Berita)</option>
+                                <option value="user">User (Pegawai Internal Terintegrasi)</option>
+                                <option value="operator">Operator (Manajemen Berita & Redkar)</option>
                                 <option value="super_user">Super User (Admin Penuh)</option>
                             </select>
                         </div>
@@ -313,12 +323,10 @@
                             <input type="email" name="email" class="form-control" value="{{ $u->email }}" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold" style="font-size: 13px;">Pilih Divisi / Role</label>
+                            <label class="form-label fw-semibold" style="font-size: 13px;">Pilih Hak Akses (Role)</label>
                             <select name="role" class="form-select" required>
-                                <option value="pencegahan" {{ $u->role == 'pencegahan' ? 'selected' : '' }}>Bagian Pencegahan</option>
-                                <option value="pemadaman" {{ $u->role == 'pemadaman' ? 'selected' : '' }}>Bagian Pemadaman & Penyelamatan (Damtan)</option>
-                                <option value="sapra" {{ $u->role == 'sapra' ? 'selected' : '' }}>Bagian Sapra</option>
-                                <option value="super_user" {{ $u->role == 'operator' ? 'selected' : '' }}>Operator Berita</option>
+                                <option value="user" {{ $u->role == 'user' ? 'selected' : '' }}>User (Pegawai Internal Terintegrasi)</option>
+                                <option value="operator" {{ $u->role == 'operator' ? 'selected' : '' }}>Operator (Manajemen Berita & Redkar)</option>
                                 <option value="super_user" {{ $u->role == 'super_user' ? 'selected' : '' }}>Super User (Admin Penuh)</option>
                             </select>
                         </div>
