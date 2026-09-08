@@ -30,8 +30,6 @@
         .user-profile i { font-size: 22px; color: #94a3b8; }
         .btn-logout { background-color: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; transition: all 0.2s; cursor: pointer; }
         .btn-logout:hover { background-color: #ef4444; color: white; }
-
-        /* Layout */
         .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
         .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e2e8f0; padding: 25px 20px; display: flex; flex-direction: column; gap: 5px; }
         .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #64748b; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 10px; transition: all 0.2s; }
@@ -39,29 +37,22 @@
         .sidebar-item.active { background-color: #eff6ff; color: #2563eb; border-left: 4px solid #2563eb; }
         .sidebar-item i { font-size: 16px; width: 20px; text-align: center; }
         .sidebar-title { font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin: 20px 0 10px 10px; letter-spacing: 1px; }
-        
         .main-content { flex: 1; padding: 40px; }
         .page-header h1 { font-size: 26px; font-weight: 800; color: #0f172a; }
         .page-header p { color: #64748b; font-size: 15px; margin-top: 5px; }
-        
-        /* Modern Table Card */
         .content-card { background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; overflow: hidden; margin-top: 25px; }
         .card-toolbar { padding: 20px 25px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #ffffff; }
         .search-box { position: relative; width: 300px; }
         .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
         .search-box input { width: 100%; padding: 10px 15px 10px 40px; border-radius: 10px; border: 1px solid #e2e8f0; font-size: 14px; outline: none; transition: border 0.2s; background: #f8fafc; }
         .search-box input:focus { border-color: #3b82f6; background: white; }
-        
         .table-custom { margin-bottom: 0; }
         .table-custom th { background-color: #f8fafc; color: #475569; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 16px 25px; border-bottom: 1px solid #e2e8f0; border-top: none; }
         .table-custom td { padding: 18px 25px; vertical-align: middle; font-size: 14px; border-bottom: 1px solid #f1f5f9; color: #334155; }
         .table-custom tbody tr { transition: all 0.2s ease; }
         .table-custom tbody tr:hover { background-color: #f8fafc; }
-        
         .title-text { font-weight: 700; color: #0f172a; font-size: 15px; display: block; margin-bottom: 3px; }
         .sub-text { color: #64748b; font-size: 13px; }
-        
-        /* Modern Badges */
         .badge-soft-warning { background-color: #fef3c7; color: #d97706; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 12px; }
         .badge-soft-success { background-color: #dcfce7; color: #15803d; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 12px; }
         .badge-soft-primary { background-color: #dbeafe; color: #1d4ed8; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 12px; }
@@ -75,7 +66,6 @@
     </style>
 </head>
 <body>
-
     <nav class="navbar-internal">
         <a href="#" class="nav-brand">
             <img src="/images/simerahkoja.png" alt="Logo Simerah" onerror="this.style.display='none'">
@@ -94,7 +84,6 @@
                 <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
                 <i class="fas fa-user-circle"></i>
             </div>
-            <!-- Route Logout Laravel -->
             <form action="/logout" method="POST" style="margin: 0;">
                 @csrf
                 <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
@@ -154,22 +143,34 @@
             <div class="page-header d-flex justify-content-between align-items-end">
                 <div>
                     <h1>Data Peningkatan Kapasitas</h1>
-                    <p>Kelola program diklat, sertifikasi, dan peningkatan keahlian personil maupun relawan.</p>
+                    <p>Kelola data diklat, bimtek, dan sertifikasi khusus aparatur/anggota pemadam kebakaran.</p>
                 </div>
-                <button class="btn btn-primary px-4 py-2" style="border-radius: 10px; font-weight: 600; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);">
-                    <i class="fas fa-plus me-2"></i> Tambah Program Baru
-                </button>
+                
+                <a href="/internal/pencegahan/peningkatan-kapasitas/tambah" class="btn btn-primary px-4 py-2" style="border-radius: 10px; font-weight: 600; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); text-decoration: none;">
+                    <i class="fas fa-plus me-2"></i> Tambah Data Peningkatan
+                </a>
             </div>
 
             <div class="content-card">
                 <div class="card-toolbar">
                     <div class="search-box">
                         <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Cari nama program atau peserta...">
+                        <!-- ID searchInput ditambahkan di sini -->
+                        <input type="text" id="searchInput" placeholder="Cari nama kegiatan atau aparatur...">
                     </div>
-                    <button class="btn btn-light" style="border-radius: 10px; font-weight: 600; border: 1px solid #e2e8f0;">
-                        <i class="fas fa-filter me-2 text-muted"></i> Filter Data
-                    </button>
+                    
+                    <!-- TOMBOL FILTER DIUBAH JADI DROPDOWN -->
+                    <div class="dropdown">
+                        <button class="btn btn-light dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 10px; font-weight: 600; border: 1px solid #e2e8f0;">
+                            <i class="fas fa-filter me-2 text-muted"></i> Filter Data
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown">
+                            <li><a class="dropdown-item filter-btn" href="#" data-filter="all">Tampilkan Semua</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item filter-btn" href="#" data-filter="selesai"><i class="fas fa-check-circle text-success me-2"></i> Selesai</a></li>
+                            <li><a class="dropdown-item filter-btn" href="#" data-filter="menunggu"><i class="fas fa-clock text-warning me-2"></i> Menunggu</a></li>
+                        </ul>
+                    </div>
                 </div>
                 
                 <div class="table-responsive">
@@ -177,23 +178,24 @@
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
-                                <th width="20%">Tanggal Pelaksanaan</th>
-                                <th width="30%">Nama Program Peningkatan</th>
-                                <th width="20%">Penyelenggara / Tempat</th>
+                                <th width="20%">Waktu Pelaksanaan</th>
+                                <th width="35%">Nama Kegiatan & Penyelenggara</th>
+                                <th width="15%">Jenis Kegiatan</th>
                                 <th width="15%">Status</th>
                                 <th width="10%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="tableBody">
+                            <!-- Data baris tabel di sini -->
                             <tr>
                                 <td>1</td>
-                                <td><span class="title-text">25 - 28 Sep 2026</span></td>
+                                <td><span class="title-text">10 - 15 Okt 2026</span></td>
                                 <td>
-                                    <span class="title-text">Diklat Inspektur Kebakaran Tkt. I</span>
-                                    <span class="sub-text">Peserta: 5 Personil Internal</span>
+                                    <span class="title-text">Diklat Inspektur Kebakaran Tingkat I</span>
+                                    <span class="sub-text">Kementerian Dalam Negeri</span>
                                 </td>
-                                <td><span class="title-text">Kemendagri RI</span><span class="sub-text">Pusdiklat Karhutla, Jakarta</span></td>
-                                <td><span class="badge-soft-warning"><i class="fas fa-clock me-1"></i> Menunggu Berangkat</span></td>
+                                <td><span class="title-text">Diklat Teknis</span><span class="sub-text">5 Anggota</span></td>
+                                <td><span class="badge-soft-warning status-badge"><i class="fas fa-clock me-1"></i> Menunggu</span></td>
                                 <td class="text-center">
                                     <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
                                     <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
@@ -201,13 +203,13 @@
                             </tr>
                             <tr>
                                 <td>2</td>
-                                <td><span class="title-text">10 Ags 2026</span></td>
+                                <td><span class="title-text">01 - 03 Sep 2026</span></td>
                                 <td>
-                                    <span class="title-text">Workshop Pertolongan Pertama (PPGD)</span>
-                                    <span class="sub-text">Peserta: 20 Anggota Regu Piket</span>
+                                    <span class="title-text">Bimtek Penyusunan SOP Pemadaman</span>
+                                    <span class="sub-text">Pusdiklat Damkar Ciracas</span>
                                 </td>
-                                <td><span class="title-text">Dinas Kesehatan / PMI</span><span class="sub-text">Mako Damkar Kota Jambi</span></td>
-                                <td><span class="badge-soft-success"><i class="fas fa-check-circle me-1"></i> Selesai</span></td>
+                                <td><span class="title-text">Bimtek</span><span class="sub-text">2 Anggota</span></td>
+                                <td><span class="badge-soft-success status-badge"><i class="fas fa-check-circle me-1"></i> Selesai</span></td>
                                 <td class="text-center">
                                     <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
                                     <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
@@ -220,5 +222,51 @@
         </main>
     </div>
 
+    <!-- SCRIPT WAJIB UNTUK DROPDOWN BOOTSTRAP -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- SCRIPT JAVASCRIPT UNTUK SEARCH & FILTER -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const tableRows = document.querySelectorAll('#tableBody tr');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+
+            // 1. Fitur Live Search
+            searchInput.addEventListener('keyup', function(e) {
+                const term = e.target.value.toLowerCase();
+                
+                tableRows.forEach(row => {
+                    // Ambil teks dari seluruh baris (nama kegiatan, penyelenggara, dll)
+                    const text = row.textContent.toLowerCase();
+                    if(text.includes(term)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+
+            // 2. Fitur Tombol Filter (Berdasarkan Status)
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const filterValue = this.getAttribute('data-filter'); // 'all', 'selesai', atau 'menunggu'
+                    
+                    tableRows.forEach(row => {
+                        const statusText = row.querySelector('.status-badge').textContent.toLowerCase();
+                        
+                        if (filterValue === 'all') {
+                            row.style.display = '';
+                        } else if (statusText.includes(filterValue)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 </html>
