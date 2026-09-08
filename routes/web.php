@@ -108,3 +108,6 @@ Route::get('/internal/pencegahan/pelatihan/tambah', function () {
 Route::get('/internal/pencegahan/pembinaan-pengembangan/tambah', function () {
     return view('internal.pencegahan.create_pembinaan');
 });
+Route::get('/internal/pencegahan/peningkatan-kapasitas/tambah', function () {
+    return view('internal.pencegahan.create_peningkatan');
+});

@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Layanan Sosialisasi - SIMERAH KOJA</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background-color: #f8fafc; color: #1e293b; }
@@ -74,22 +72,17 @@
             </form>
         </div>
     </nav>
-
     <div class="dashboard-container">
         <aside class="sidebar">
             <a href="/internal/index" class="sidebar-item"><i class="fas fa-home"></i> Dashboard Utama</a>
-
             @if(Auth::user()->role === 'pencegahan' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title">Bagian Pencegahan</div>
                 <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
-                
                 <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item active"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
-                
                 <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
                 <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
                 <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
             @endif
-
             <div class="sidebar-title">Pengaturan Akun</div>
             <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
         </aside>
@@ -98,24 +91,30 @@
             <div class="page-header d-flex justify-content-between align-items-end">
                 <div>
                     <h1>Data Layanan Sosialisasi</h1>
-                    <p>Kelola jadwal kegiatan edukasi pencegahan kebakaran ke masyarakat atau instansi.</p>
+                    <p>Kelola jadwal penyuluhan dan sosialisasi pencegahan kebakaran ke masyarakat.</p>
                 </div>
-                
                 <a href="/internal/pencegahan/layanan-sosialisasi/tambah" class="btn btn-primary px-4 py-2" style="border-radius: 10px; font-weight: 600; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); text-decoration: none;">
-                    <i class="fas fa-plus me-2"></i> Tambah Jadwal Sosialisasi
+                    <i class="fas fa-plus me-2"></i> Buat Sosialisasi Baru
                 </a>
-                
             </div>
 
             <div class="content-card">
                 <div class="card-toolbar">
                     <div class="search-box">
                         <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Cari kegiatan atau instansi...">
+                        <input type="text" id="searchInput" placeholder="Cari nama kegiatan atau lokasi...">
                     </div>
-                    <button class="btn btn-light" style="border-radius: 10px; font-weight: 600; border: 1px solid #e2e8f0;">
-                        <i class="fas fa-filter me-2 text-muted"></i> Filter Data
-                    </button>
+                    <div class="dropdown">
+                        <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 10px; font-weight: 600; border: 1px solid #e2e8f0;">
+                            <i class="fas fa-filter me-2 text-muted"></i> Filter Data
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item filter-btn" href="#" data-filter="all">Tampilkan Semua</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item filter-btn" href="#" data-filter="selesai"><i class="fas fa-check-circle text-success me-2"></i> Selesai</a></li>
+                            <li><a class="dropdown-item filter-btn" href="#" data-filter="berjalan"><i class="fas fa-sync-alt text-primary me-2"></i> Sedang Berjalan / Menunggu</a></li>
+                        </ul>
+                    </div>
                 </div>
                 
                 <div class="table-responsive">
@@ -123,23 +122,23 @@
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
-                                <th width="20%">Tanggal & Waktu</th>
-                                <th width="30%">Nama Kegiatan & Instansi</th>
-                                <th width="20%">Sasaran Peserta</th>
+                                <th width="20%">Tanggal Pelaksanaan</th>
+                                <th width="35%">Nama Kegiatan / Judul</th>
+                                <th width="15%">Sasaran</th>
                                 <th width="15%">Status</th>
                                 <th width="10%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="tableBody">
                             <tr>
                                 <td>1</td>
-                                <td><span class="title-text">15 Sep 2026</span><span class="sub-text">09:00 - 12:00 WIB</span></td>
+                                <td><span class="title-text">05 Sep 2026</span><span class="sub-text">09:00 WIB</span></td>
                                 <td>
-                                    <span class="title-text">Edukasi Bahaya Kebakaran Dini</span>
-                                    <span class="sub-text">SDN 47 Kota Jambi</span>
+                                    <span class="title-text">Sosialisasi Bahaya Kebakaran di Pemukiman Padat</span>
+                                    <span class="sub-text">Kelurahan Legok</span>
                                 </td>
-                                <td><span class="title-text">Siswa & Guru</span><span class="sub-text">150 Orang</span></td>
-                                <td><span class="badge-soft-primary"><i class="fas fa-calendar-alt me-1"></i> Akan Datang</span></td>
+                                <td><span class="title-text">Warga RT 05</span><span class="sub-text">100 Orang</span></td>
+                                <td><span class="badge-soft-success status-badge"><i class="fas fa-check-circle me-1"></i> Selesai</span></td>
                                 <td class="text-center">
                                     <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
                                     <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
@@ -147,13 +146,13 @@
                             </tr>
                             <tr>
                                 <td>2</td>
-                                <td><span class="title-text">10 Sep 2026</span><span class="sub-text">13:00 - 15:30 WIB</span></td>
+                                <td><span class="title-text">15 Sep 2026</span><span class="sub-text">08:00 WIB</span></td>
                                 <td>
-                                    <span class="title-text">Simulasi APAR & Hidran</span>
-                                    <span class="sub-text">Kantor Bappeda Kota Jambi</span>
+                                    <span class="title-text">Simulasi Evakuasi Kebakaran Sekolah</span>
+                                    <span class="sub-text">SMAN 1 Kota Jambi</span>
                                 </td>
-                                <td><span class="title-text">Pegawai</span><span class="sub-text">45 Orang</span></td>
-                                <td><span class="badge-soft-success"><i class="fas fa-check-circle me-1"></i> Selesai</span></td>
+                                <td><span class="title-text">Siswa & Guru</span><span class="sub-text">300 Orang</span></td>
+                                <td><span class="badge-soft-warning status-badge"><i class="fas fa-tools me-1"></i> Persiapan</span></td>
                                 <td class="text-center">
                                     <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
                                     <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
@@ -165,5 +164,47 @@
             </div>
         </main>
     </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const tableRows = document.querySelectorAll('#tableBody tr');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+
+            if(searchInput) {
+                searchInput.addEventListener('keyup', function(e) {
+                    const term = e.target.value.toLowerCase();
+                    tableRows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        row.style.display = text.includes(term) ? '' : 'none';
+                    });
+                });
+            }
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const filterValue = this.getAttribute('data-filter');
+                    
+                    tableRows.forEach(row => {
+                        const statusBadge = row.querySelector('.status-badge');
+                        if (!statusBadge) return;
+                        
+                        const statusText = statusBadge.textContent.toLowerCase();
+                        if (filterValue === 'all') {
+                            row.style.display = '';
+                        } else if (filterValue === 'selesai' && statusText.includes('selesai')) {
+                            row.style.display = '';
+                        } else if (filterValue === 'berjalan' && !statusText.includes('selesai')) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 </html>
