@@ -202,20 +202,15 @@
         </a>
 
         <div class="user-menu">
-<div class="user-profile">
-    <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
-    <i class="fas fa-user-circle"></i>
+    <div class="user-profile">
+        <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
+        <i class="fas fa-user-circle"></i>
+    </div>
+    <form action="/logout" method="POST" style="margin: 0;">
+        @csrf
+        <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
+    </form>
 </div>
-                <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
-                <i class="fas fa-user-circle"></i>
-            </div>
-            
-            <!-- FORM LOGOUT -->
-            <form action="/logout" method="POST" style="margin: 0;">
-                @csrf
-                <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
-            </form>
-        </div>
     </nav>
 
     <!-- KONTEN UTAMA -->
