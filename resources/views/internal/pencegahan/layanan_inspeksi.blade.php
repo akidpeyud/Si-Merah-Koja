@@ -76,7 +76,7 @@
     <div class="dashboard-container">
         <aside class="sidebar">
             <a href="/internal/index" class="sidebar-item"><i class="fas fa-home"></i> Dashboard Utama</a>
-            @if(Auth::user()->role === 'pencegahan' || Auth::user()->role === 'super_user')
+            @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title">Bagian Pencegahan</div>
                 <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item active"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
                 <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
