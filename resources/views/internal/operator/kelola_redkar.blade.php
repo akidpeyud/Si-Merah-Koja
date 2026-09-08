@@ -54,7 +54,7 @@
     <nav class="navbar-internal">
         <a href="/internal/index" class="nav-brand">
             <img src="/images/simerahkoja.png" alt="Logo Simerah">
-            <span class="title">SIMERAH KOJA <span class="badge-internal">INTERNAL APP</span></span>
+              <span class="title">SIMERAH KOJA</span>
         </a>
         <div class="user-menu">
             <div class="user-profile">

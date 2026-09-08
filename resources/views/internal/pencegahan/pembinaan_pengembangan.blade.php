@@ -71,25 +71,18 @@
     <nav class="navbar-internal">
         <a href="#" class="nav-brand">
             <img src="/images/simerahkoja.png" alt="Logo Simerah" onerror="this.style.display='none'">
-            <span class="title">SIMERAH KOJA <span class="badge-internal">INTERNAL APP</span></span>
+              <span class="title">SIMERAH KOJA</span>
         </a>
-        <div class="user-menu">
-            <div class="user-profile">
-                <span class="badge-role {{ Auth::user()->role ?? '' }}">
-                    @if(Auth::user()->role === 'user')
-                        PEGAWAI
-                    @else
-                        {{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}
-                    @endif
-                </span>
-                <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
-                <i class="fas fa-user-circle"></i>
-            </div>
-            <form action="/logout" method="POST" style="margin: 0;">
-                @csrf
-                <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
-            </form>
-        </div>
+<div class="user-menu">
+    <div class="user-profile">
+        <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
+        <i class="fas fa-user-circle"></i>
+    </div>
+    <form action="/logout" method="POST" style="margin: 0;">
+        @csrf
+        <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
+    </form>
+</div>
     </nav>
     <div class="dashboard-container">
         <!-- SIDEBAR TERINTEGRASI -->
@@ -112,16 +105,6 @@
                 <a href="#" class="sidebar-item"><i class="fas fa-tools"></i> Maintenance Peralatan</a>
                 <a href="#" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
             @endif
-<<<<<<< HEAD
-
-            <!-- MODUL OPERATOR BERITA -->
-            @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
-                <div class="sidebar-title">Manajemen Berita</div>
-                <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
-                <a href="/internal/operator/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
-            @endif
-=======
->>>>>>> pencegahan
             <div class="sidebar-title">Pengaturan Akun</div>
             <a href="/internal/profil" class="sidebar-item">
                 <i class="fas fa-user-edit"></i> Profil Saya
