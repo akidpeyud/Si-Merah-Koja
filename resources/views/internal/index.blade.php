@@ -241,7 +241,7 @@
             <!-- MODUL OPERATOR BERITA (Bisa diakses oleh Operator & Super User) -->
             @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title">Manajemen Berita</div>
-                <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+                <a href="/internal/operator/kelola-berita" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
             @endif
 
             <!-- PENGATURAN UMUM -->
