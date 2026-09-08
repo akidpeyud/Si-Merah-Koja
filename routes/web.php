@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\InspeksiController; 
+use Illuminate\Support\Facades\DB; // <-- Tambahan buat manggil database langsung
 
 // Route untuk halaman utama (Homepage)
 Route::get('/', function () {
@@ -66,38 +68,41 @@ Route::get('/internal/index', function () {
 });
 Route::get('/internal/profil', [App\Http\Controllers\AuthController::class, 'showProfile'])->middleware('auth');
 Route::post('/internal/profil/update-password', [App\Http\Controllers\AuthController::class, 'updatePassword'])->middleware('auth');
-Route::get('/internal/profil', [App\Http\Controllers\AuthController::class, 'showProfile'])->middleware('auth');
-Route::post('/internal/profil/update-password', [App\Http\Controllers\AuthController::class, 'updatePassword'])->middleware('auth');
 Route::get('/internal/kelola-user', [App\Http\Controllers\AuthController::class, 'kelolaUser'])->middleware('auth');
 Route::post('/internal/kelola-user/tambah', [App\Http\Controllers\AuthController::class, 'storeUser'])->middleware('auth');
 Route::put('/internal/kelola-user/update/{id}', [AuthController::class, 'updateUser'])->middleware('auth');
-//pencegahan
+
+// === ROUTE PENCEGAHAN ===
+
+// ROUTE INI YANG UDAH DIUBAH BUAT NARIK DATA INSPEKSI
 Route::get('/internal/pencegahan/layanan-inspeksi', function () {
-    return view('internal.pencegahan.layanan_inspeksi');
+    // Tarik semua data dari tabel jadwal_inspeksis, urutkan dari yang terbaru
+    $data_inspeksi = DB::table('jadwal_inspeksis')->orderBy('id', 'desc')->get();
+    
+    // Kirim datanya ke file tampilan HTML
+    return view('internal.pencegahan.layanan_inspeksi', compact('data_inspeksi'));
 });
+
 Route::get('/internal/pencegahan/layanan-sosialisasi', function () {
-    // Ingat ya bro, karena di folder lu namanya pakai underscore
     return view('internal.pencegahan.layanan_sosialisasi');
 });
 Route::get('/internal/pencegahan/pelatihan', function () {
-    // Ingat untuk rename filenya jadi pelatihan.blade.php ya
     return view('internal.pencegahan.pelatihan');
 });
 Route::get('/internal/pencegahan/pembinaan-pengembangan', function () {
-    // Pastikan nama filenya nanti pembinaan_pengembangan.blade.php ya
     return view('internal.pencegahan.pembinaan_pengembangan');
 });
 Route::get('/internal/pencegahan/peningkatan-kapasitas', function () {
-    // Pastikan nama filenya nanti peningkatan_kapasitas.blade.php
     return view('internal.pencegahan.peningkatan_kapasitas');
 });
+
 // Route untuk nampilin form tambah inspeksi
 Route::get('/internal/pencegahan/layanan-inspeksi/tambah', function () {
     return view('internal.pencegahan.create_inspeksi');
 });
+// Route untuk MENYIMPAN data dari form ke database
+Route::post('/internal/pencegahan/layanan-inspeksi/tambah', [InspeksiController::class, 'store']);
 
-// Route untuk nyimpen data (nantinya kalau lu udah bikin controller)
-// Route::post('/internal/pencegahan/layanan-inspeksi/simpan', [InspeksiController::class, 'store']);
 // Route untuk nampilin form tambah sosialisasi
 Route::get('/internal/pencegahan/layanan-sosialisasi/tambah', function () {
     return view('internal.pencegahan.create_sosialisasi');
@@ -111,3 +116,11 @@ Route::get('/internal/pencegahan/pembinaan-pengembangan/tambah', function () {
 Route::get('/internal/pencegahan/peningkatan-kapasitas/tambah', function () {
     return view('internal.pencegahan.create_peningkatan');
 });
+// Route untuk buka halaman LIHAT data
+Route::get('/internal/pencegahan/layanan-inspeksi/lihat/{id}', [InspeksiController::class, 'show']);
+
+// Route untuk buka halaman EDIT data
+Route::get('/internal/pencegahan/layanan-inspeksi/edit/{id}', [InspeksiController::class, 'edit']);
+
+// Route untuk NYIMPAN PERUBAHAN data yang diedit
+Route::post('/internal/pencegahan/layanan-inspeksi/update/{id}', [InspeksiController::class, 'update']);
