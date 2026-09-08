@@ -239,9 +239,8 @@
             <!-- 2. BAGIAN PEMADAMAN & PENYELAMATAN -->
             @if(Auth::user()->role === 'pemadaman' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title" style="{{ Auth::user()->role === 'super_user' ? '' : 'border-top: none;' }}">Bagian Pemadaman & Penyelamatan</div>
-                <a href="#" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Laporan Darurat Masuk</a>
-                <a href="#" class="sidebar-item"><i class="fas fa-users-cog"></i> Jadwal Piket Regu</a>
-                <a href="#" class="sidebar-item"><i class="fas fa-running"></i> Data Relawan Redkar</a>
+                <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
+                <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-users-cog"></i> Data Laporan</a>
             @endif
 
             <!-- 3. BAGIAN SAPRA -->

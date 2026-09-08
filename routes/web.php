@@ -106,3 +106,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/operator/kelola-redkar', [AuthController::class, 'kelolaRedkar']);
     Route::get('/internal/operator/cetak-redkar/{id}', [AuthController::class, 'cetakRedkar']);
 });
+// === ROUTE BAGIAN PEMADAMAN & PENYELAMATAN (DAMTAN) ===
+Route::middleware(['auth'])->group(function () {
+    Route::get('/internal/damtan/input-data', function () {
+        return view('internal.damtan.input_data');
+    });
+
+    Route::get('/internal/damtan/data-laporan', function () {
+        return view('internal.damtan.data_laporan');
+    });
+});
