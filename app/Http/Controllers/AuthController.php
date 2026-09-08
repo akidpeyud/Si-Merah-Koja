@@ -44,7 +44,7 @@ class AuthController extends Controller
         return view('login.lupa_password');
     }
 
-    // Memproses reset password menggunakan Email & Nomor Kepegawaian, lalu kirim ke Email
+    // Memproses reset password
     public function processForgotPassword(Request $request)
     {
         $request->validate([
@@ -137,11 +137,11 @@ class AuthController extends Controller
         return view('internal.kelola_user', compact('users'));
     }
 
-    // Memproses penambahan user baru dari form
+    // Memproses penambahan user baru
     public function storeUser(Request $request)
     {
         if (Auth::user()->role !== 'super_user') {
-            return redirect('/internal/index')->with('error', 'Akses Ditolak! Anda tidak memiliki izin untuk menambah pengguna.');
+            return redirect('/internal/index')->with('error', 'Akses Ditolak!');
         }
 
         $request->validate([
@@ -149,9 +149,6 @@ class AuthController extends Controller
             'email' => ['required', 'email', 'unique:users,email'],
             'nomor_pegawai' => ['required', 'unique:users,nomor_pegawai'],
             'role' => ['required']
-        ], [
-            'email.unique' => 'Email ini sudah terdaftar di sistem.',
-            'nomor_pegawai.unique' => 'NIP/Nomor Pegawai ini sudah digunakan.'
         ]);
 
         $user = new User();
@@ -252,27 +249,30 @@ class AuthController extends Controller
         return back()->with('success', 'Pendaftaran relawan REDKAR berhasil dikirim! Data Anda sedang diproses.');
     }
 
-    // Menampilkan daftar pendaftar REDKAR (Khusus Operator dan Super User)
     public function kelolaRedkar()
     {
-        if (!in_array(Auth::user()->role, ['operator', 'super_user'])) {
-            return redirect('/internal/index')->with('error', 'Akses Ditolak! Halaman khusus Operator dan Super User.');
+        // Izinkan 'user' (Pegawai Internal) dan 'super_user' untuk mengakses
+        if (!in_array(Auth::user()->role, ['user', 'super_user'])) {
+            return redirect('/internal/index')->with('error', 'Akses Ditolak!');
         }
 
         $relawan = RedkarRegistration::orderBy('created_at', 'desc')->get();
         
-        return view('internal.operator.kelola_redkar', compact('relawan'));
+        // Diubah ke folder pencegahan
+        return view('internal.pencegahan.kelola_redkar', compact('relawan'));
     }
 
     // Menampilkan halaman cetak PDF untuk 1 relawan
     public function cetakRedkar($id)
     {
-        if (!in_array(Auth::user()->role, ['operator', 'super_user'])) {
+        // Izinkan 'user' dan 'super_user'
+        if (!in_array(Auth::user()->role, ['user', 'super_user'])) {
             return redirect('/internal/index')->with('error', 'Akses Ditolak!');
         }
 
         $relawan = RedkarRegistration::findOrFail($id); 
         
-        return view('internal.operator.cetak_redkar', compact('relawan'));
+        // Diubah ke folder pencegahan
+        return view('internal.pencegahan.cetak_redkar', compact('relawan'));
     }
 }

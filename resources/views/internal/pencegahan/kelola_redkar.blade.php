@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola Redkar - SIMERAH KOJA</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background-color: #f3f4f6; color: #1f2937; }
@@ -16,15 +18,10 @@
         .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
         .nav-brand img { height: 40px; }
         .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; }
-        .badge-internal { background: #10b981; color: white; font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 700; margin-left: 10px; }
-        
-        .badge-role { background: #3b82f6; color: white; font-size: 11px; padding: 4px 10px; border-radius: 50px; font-weight: 700; text-transform: uppercase; }
-        .badge-role.super_user { background: #ef4444; }
-        .badge-role.operator { background: #8b5cf6; }
-        .badge-role.user { background: #10b981; }
 
         .user-menu { display: flex; align-items: center; gap: 20px; }
         .user-profile { display: flex; align-items: center; gap: 10px; color: #e5e7eb; font-size: 14px; font-weight: 600; }
+        .user-profile i { font-size: 20px; color: #9ca3af; }
         .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
         .btn-logout:hover { background-color: #dc2626; }
 
@@ -54,18 +51,10 @@
     <nav class="navbar-internal">
         <a href="/internal/index" class="nav-brand">
             <img src="/images/simerahkoja.png" alt="Logo Simerah">
-              <span class="title">SIMERAH KOJA</span>
+            <span class="title">SIMERAH KOJA</span>
         </a>
         <div class="user-menu">
             <div class="user-profile">
-                <!-- Badge Penyesuaian Role Terintegrasi -->
-                <span class="badge-role {{ Auth::user()->role ?? '' }}">
-                    @if(Auth::user()->role === 'user')
-                        PEGAWAI
-                    @else
-                        {{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}
-                    @endif
-                </span>
                 <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
                 <i class="fas fa-user-circle"></i>
             </div>
@@ -91,6 +80,9 @@
                 <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
                 <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
                 <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
+                
+                <!-- MENU KELOLA REDKAR DIPINDAH KE PENCEGAHAN (ACTIVE) -->
+                <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item active"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
 
                 <div class="sidebar-title">Bagian Pemadaman & Penyelamatan</div>
                 <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
@@ -106,7 +98,6 @@
             @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title">Manajemen Berita</div>
                 <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
-                <a href="/internal/operator/kelola-redkar" class="sidebar-item active"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
             @endif
 
             <!-- PENGATURAN UMUM -->
@@ -162,7 +153,8 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    <a href="/internal/operator/cetak-redkar/{{ $r->id }}" target="_blank" class="btn-pdf">
+                                    <!-- URL DIUBAH KE PENCEGAHAN AGAR SESUAI DENGAN ROUTE BARU -->
+                                    <a href="/internal/pencegahan/cetak-redkar/{{ $r->id }}" target="_blank" class="btn-pdf">
                                         <i class="fas fa-file-pdf me-1"></i> PDF Biodata
                                     </a>
                                 </td>

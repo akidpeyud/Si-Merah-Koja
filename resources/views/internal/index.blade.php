@@ -71,16 +71,6 @@
         .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
         .nav-brand img { height: 40px; }
         .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; }
-        .badge-internal {
-            background: #10b981; color: white; font-size: 10px; padding: 3px 8px;
-            border-radius: 4px; font-weight: 700; margin-left: 10px; vertical-align: middle;
-        }
-        .badge-role {
-            background: #3b82f6; color: white; font-size: 11px; padding: 4px 10px;
-            border-radius: 50px; font-weight: 700; text-transform: uppercase;
-        }
-        .badge-role.super_user { background: #ef4444; }
-        .badge-role.operator { background: #8b5cf6; }
 
         .user-menu { display: flex; align-items: center; gap: 20px; }
         .user-profile { display: flex; align-items: center; gap: 10px; color: #e5e7eb; font-size: 14px; font-weight: 600; }
@@ -198,19 +188,21 @@
     <nav class="navbar-internal">
         <a href="#" class="nav-brand">
             <img src="/images/simerahkoja.png" alt="Logo Simerah">
-              <span class="title">SIMERAH KOJA</span>
+            <span class="title">SIMERAH KOJA</span>
         </a>
 
         <div class="user-menu">
-    <div class="user-profile">
-        <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
-        <i class="fas fa-user-circle"></i>
-    </div>
-    <form action="/logout" method="POST" style="margin: 0;">
-        @csrf
-        <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
-    </form>
-</div>
+            <div class="user-profile">
+                <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
+                <i class="fas fa-user-circle"></i>
+            </div>
+            
+            <!-- FORM LOGOUT -->
+            <form action="/logout" method="POST" style="margin: 0;">
+                @csrf
+                <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
+            </form>
+        </div>
     </nav>
 
     <!-- KONTEN UTAMA -->
@@ -230,6 +222,11 @@
                 <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
                 <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
                 <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
+                
+               <!-- KODE YANG BENAR UNTUK SIDEBAR -->
+                <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item">
+                <i class="fas fa-users-cog"></i> Kelola Redkar
+                </a>
 
                 <div class="sidebar-title">Bagian Pemadaman & Penyelamatan</div>
                 <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
@@ -245,7 +242,6 @@
             @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title">Manajemen Berita</div>
                 <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
-                <a href="/internal/operator/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
             @endif
 
             <!-- PENGATURAN UMUM -->

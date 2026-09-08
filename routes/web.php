@@ -29,9 +29,7 @@ Route::get('/sop', function () {
     return view('programkerja.sop');
 });
 
-Route::get('/redkar', function () {
-    return view('redkar.redkar'); 
-});
+Route::get('/internal/pencegahan/kelola-redkar', [AuthController::class, 'kelolaRedkar']);
 
 // === ROUTE LAYANAN & FASILITAS ===
 Route::get('/layanan-fasilitas/layanan_perizinan', function () {
@@ -104,3 +102,11 @@ Route::get('/internal/pencegahan/pembinaan-pengembangan/tambah', function () {
 Route::get('/internal/pencegahan/peningkatan-kapasitas/tambah', function () {
     return view('internal.pencegahan.create_peningkatan');
 });
+// RUTE PUBLIK (Tidak Perlu Login)
+Route::get('/redkar', function () {
+    // Ganti 'public.form_redkar' dengan nama file blade form pendaftaran publik Anda
+    return view('public.form_redkar'); 
+});
+Route::post('/redkar', [AuthController::class, 'storeRedkar']);
+// Rute Baru untuk Cetak Redkar di menu Pencegahan
+Route::get('/internal/pencegahan/cetak-redkar/{id}', [App\Http\Controllers\AuthController::class, 'cetakRedkar']);

@@ -95,7 +95,9 @@
                 <a href="/internal/pencegahan/pelatihan" class="sidebar-item active"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
                 <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
                 <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
-
+                <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item">
+                <i class="fas fa-users-cog"></i> Kelola Redkar
+                </a>
                 <div class="sidebar-title">Bagian Pemadaman & Penyelamatan</div>
                 <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
                 <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-users-cog"></i> Data Laporan</a>
