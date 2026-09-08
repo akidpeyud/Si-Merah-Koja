@@ -14,16 +14,21 @@
         body { background-color: #f8fafc; color: #1e293b; }
         
         /* Navbar */
-        .navbar-internal { background-color: #0f172a; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .navbar-internal { background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
         .nav-brand img { height: 40px; }
         .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 0.5px; }
         .badge-internal { background: #10b981; color: white; font-size: 10px; padding: 4px 8px; border-radius: 6px; font-weight: 700; margin-left: 10px; }
+        
         .badge-role { background: #3b82f6; color: white; font-size: 11px; padding: 4px 12px; border-radius: 50px; font-weight: 700; text-transform: uppercase; }
+        .badge-role.super_user { background: #ef4444; }
+        .badge-role.operator { background: #8b5cf6; }
+        .badge-role.user { background: #10b981; }
+
         .user-menu { display: flex; align-items: center; gap: 20px; }
         .user-profile { display: flex; align-items: center; gap: 10px; color: #f8fafc; font-size: 14px; font-weight: 600; }
         .user-profile i { font-size: 22px; color: #94a3b8; }
-        .btn-logout { background-color: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; transition: all 0.2s; }
+        .btn-logout { background-color: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; transition: all 0.2s; cursor: pointer; }
         .btn-logout:hover { background-color: #ef4444; color: white; }
 
         /* Layout */
@@ -62,7 +67,7 @@
         .badge-soft-primary { background-color: #dbeafe; color: #1d4ed8; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 12px; }
         
         /* Action Buttons */
-        .btn-action { width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; border: none; transition: all 0.2s; margin: 0 3px; }
+        .btn-action { width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; border: none; transition: all 0.2s; margin: 0 3px; cursor: pointer; }
         .btn-action-view { background-color: #eff6ff; color: #3b82f6; }
         .btn-action-view:hover { background-color: #3b82f6; color: white; }
         .btn-action-edit { background-color: #f0fdf4; color: #22c55e; }
@@ -80,7 +85,11 @@
             <div class="user-profile">
                 <!-- Kode Laravel untuk nampilin role & nama -->
                 <span class="badge-role {{ Auth::user()->role ?? '' }}">
-                    {{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}
+                    @if(Auth::user()->role === 'user')
+                        PEGAWAI
+                    @else
+                        {{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}
+                    @endif
                 </span>
                 <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
                 <i class="fas fa-user-circle"></i>
@@ -95,24 +104,50 @@
 
     <div class="dashboard-container">
         
+        <!-- SIDEBAR TERINTEGRASI -->
         <aside class="sidebar">
-            <a href="/internal/index" class="sidebar-item"><i class="fas fa-home"></i> Dashboard Utama</a>
+            <a href="/internal/index" class="sidebar-item">
+                <i class="fas fa-home"></i> Dashboard Utama
+            </a>
 
-            <!-- Kode Laravel untuk batesin hak akses menu -->
-            @if(Auth::user()->role === 'pencegahan' || Auth::user()->role === 'super_user')
+            <!-- MODUL OPERASIONAL -->
+            @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title">Bagian Pencegahan</div>
-                <!-- Semua URL asli yang bisa diklik -->
                 <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
                 <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
                 <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
                 <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
                 
-                <!-- Class active dipindah ke sini bro! -->
+                <!-- ACTIVE DI PENINGKATAN KAPASITAS -->
                 <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item active"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
+
+                <div class="sidebar-title">Bagian Pemadaman & Penyelamatan</div>
+                <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
+                <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-users-cog"></i> Data Laporan</a>
+
+                <div class="sidebar-title">Bagian Sapra</div>
+                <a href="#" class="sidebar-item"><i class="fas fa-truck-monster"></i> Kelola Armada Mobil</a>
+                <a href="#" class="sidebar-item"><i class="fas fa-tools"></i> Maintenance Peralatan</a>
+                <a href="#" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
+            @endif
+
+            <!-- MODUL OPERATOR BERITA -->
+            @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
+                <div class="sidebar-title">Manajemen Berita</div>
+                <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+                <a href="/internal/operator/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
             @endif
 
             <div class="sidebar-title">Pengaturan Akun</div>
-            <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
+            <a href="/internal/profil" class="sidebar-item">
+                <i class="fas fa-user-edit"></i> Profil Saya
+            </a>
+            
+            @if(Auth::user()->role === 'super_user')
+                <a href="/internal/kelola-user" class="sidebar-item">
+                    <i class="fas fa-users"></i> Kelola Semua Pengguna
+                </a>
+            @endif
         </aside>
 
         <main class="main-content">
