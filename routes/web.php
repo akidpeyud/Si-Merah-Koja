@@ -2,10 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BeritaController;
+use App\Models\Berita;
 
-// Route untuk halaman utama (Homepage)
+// Route untuk halaman utama (Homepage) - DIPERBARUI AGAR BERITA MUNCUL
 Route::get('/', function () {
-    return view('homepage.index');
+    $daftar_berita = Berita::orderBy('tanggal_kejadian', 'desc')->take(4)->get();
+    return view('homepage.index', compact('daftar_berita'));
 });
 
 // === ROUTE UNTUK MENU PROGRAM KERJA ===
@@ -71,7 +74,7 @@ Route::get('/internal/kelola-user', [AuthController::class, 'kelolaUser'])->midd
 Route::post('/internal/kelola-user/tambah', [AuthController::class, 'storeUser'])->middleware('auth');
 Route::put('/internal/kelola-user/update/{id}', [AuthController::class, 'updateUser'])->middleware('auth');
 
-// === ROUTE PENCEGAHAN (DARI TEMANMU) ===
+// === ROUTE PENCEGAHAN ===
 Route::get('/internal/pencegahan/layanan-inspeksi', function () {
     return view('internal.pencegahan.layanan_inspeksi');
 });
@@ -102,11 +105,16 @@ Route::get('/internal/pencegahan/pembinaan-pengembangan/tambah', function () {
 Route::get('/internal/pencegahan/peningkatan-kapasitas/tambah', function () {
     return view('internal.pencegahan.create_peningkatan');
 });
-// RUTE PUBLIK (Tidak Perlu Login)
+
+// RUTE PUBLIK REDKAR
 Route::get('/redkar', function () {
-    // Ganti 'public.form_redkar' dengan nama file blade form pendaftaran publik Anda
     return view('public.form_redkar'); 
 });
 Route::post('/redkar', [AuthController::class, 'storeRedkar']);
-// Rute Baru untuk Cetak Redkar di menu Pencegahan
-Route::get('/internal/pencegahan/cetak-redkar/{id}', [App\Http\Controllers\AuthController::class, 'cetakRedkar']);
+
+// Rute Cetak Redkar di menu Pencegahan
+Route::get('/internal/pencegahan/cetak-redkar/{id}', [AuthController::class, 'cetakRedkar']);
+
+// === RUTE BERITA (PUBLIK & INTERNAL OPERATOR) ===
+Route::get('/berita/{id}', [BeritaController::class, 'showPublic']);
+Route::get('/internal/operator/kelola-berita', [BeritaController::class, 'indexInternal']);

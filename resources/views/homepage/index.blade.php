@@ -712,7 +712,7 @@
         </div>
     </div>
 
-    <!-- SECTION 3: KEJADIAN & EVAKUASI -->
+    <!-- SECTION 3: KEJADIAN & EVAKUASI (SUDAH DINAMIS) -->
     <div class="section-container kejadian-section">
         <div class="kejadian-header-img">
            <img src="/images/mobil.png" alt="Logo mobil damkar">
@@ -725,77 +725,31 @@
         </div>
 
         <div class="kejadian-list">
-            <!-- Item 1 -->
-            <div class="kejadian-item">
-                <div class="kejadian-date">
-                    <span>09</span>
-                    <span>Aug</span>
-                </div>
-                <div class="kejadian-info">
-                    <h3>Evakuasi Pemotongan Cincin</h3>
-                    <div class="meta">
-                        <i class="fas fa-map-marker-alt"></i> Jl. AR. SALEH lorong. ABDI UTAMA<br>
-                        <i class="far fa-clock"></i> 09 Aug 2023 Jam : 09:00 WIB
+            <!-- Menampilkan data dari tabel Berita -->
+            @forelse($daftar_berita ?? [] as $berita)
+                <div class="kejadian-item">
+                    <!-- Jika kejadian hari ini/kemarin, warna kotaknya merah -->
+                    <div class="kejadian-date {{ \Carbon\Carbon::parse($berita->tanggal_kejadian)->diffInDays(now()) <= 3 ? 'red' : '' }}">
+                        <span>{{ \Carbon\Carbon::parse($berita->tanggal_kejadian)->format('d') }}</span>
+                        <span>{{ \Carbon\Carbon::parse($berita->tanggal_kejadian)->format('M') }}</span>
                     </div>
-                    <p><i class="fas fa-user"></i> Warga RT. 07 - <i class="fas fa-phone"></i> Lainnya (Ke Kantor Mako)</p>
-                    <p>Keterangan: Evakuasi Pemotongan Cincin emas.</p>
-                    <a href="#">Selengkapnya</a>
-                </div>
-            </div>
-            
-            <!-- Item 2 -->
-            <div class="kejadian-item">
-                <div class="kejadian-date">
-                    <span>08</span>
-                    <span>Aug</span>
-                </div>
-                <div class="kejadian-info">
-                    <h3>Evakuasi Sarang Tawon</h3>
-                    <div class="meta">
-                        <i class="fas fa-map-marker-alt"></i> Rt.17 Kel. Pasir Putih Kec. Jambi Selatan<br>
-                        <i class="far fa-clock"></i> 08 Aug 2023 Jam : 19:05 WIB
+                    <div class="kejadian-info">
+                        <h3>{{ $berita->judul }}</h3>
+                        <div class="meta">
+                            <i class="fas fa-map-marker-alt"></i> {{ $berita->lokasi }}<br>
+                            <i class="far fa-clock"></i> {{ \Carbon\Carbon::parse($berita->tanggal_kejadian)->format('d M Y') }} Jam : {{ \Carbon\Carbon::parse($berita->waktu_kejadian)->format('H:i') }} WIB
+                        </div>
+                        <p><i class="fas fa-user"></i> {{ $berita->pelapor }} - <i class="fas fa-phone"></i> {{ $berita->sumber_informasi }}</p>
+                        <p>Keterangan: {{ Str::limit($berita->keterangan_singkat, 80) }}</p>
+                        <a href="/berita/{{ $berita->id }}">Selengkapnya</a>
                     </div>
-                    <p><i class="fas fa-user"></i> Warga RT. 17 - <i class="fas fa-phone"></i> Lainnya (Media)</p>
-                    <p>Keterangan: Evakuasi Sarang Tawon.</p>
-                    <a href="#">Selengkapnya</a>
                 </div>
-            </div>
-            
-            <!-- Item 3 -->
-            <div class="kejadian-item">
-                <div class="kejadian-date red">
-                    <span>07</span>
-                    <span>Aug</span>
+            @empty
+                <!-- Fallback: Jika belum ada berita di database, tampilkan ini sementara -->
+                <div class="text-muted w-100" style="grid-column: span 2; text-align: center; padding: 30px;">
+                    Belum ada data kejadian atau evakuasi terbaru.
                 </div>
-                <div class="kejadian-info">
-                    <h3>Kebakaran Lahan</h3>
-                    <div class="meta">
-                        <i class="fas fa-map-marker-alt"></i> Jln. H.Ibrahim Rt.11 Lorong Laskar 29 kel. Kenali Besar<br>
-                        <i class="far fa-clock"></i> 07 Aug 2023 Jam : 15:10 WIB
-                    </div>
-                    <p><i class="fas fa-user"></i> Warga RT 11 - <i class="fas fa-phone"></i> Telepon (081122xx-xxxx)</p>
-                    <p>Keterangan: Kebakaran Lahan.</p>
-                    <a href="#">Selengkapnya</a>
-                </div>
-            </div>
-            
-            <!-- Item 4 -->
-            <div class="kejadian-item">
-                <div class="kejadian-date red">
-                    <span>01</span>
-                    <span>Aug</span>
-                </div>
-                <div class="kejadian-info">
-                    <h3>Kebakaran Sampah yang Merambat ke Lahan</h3>
-                    <div class="meta">
-                        <i class="fas fa-map-marker-alt"></i> Jln. K.M. Kukuh<br>
-                        <i class="far fa-clock"></i> 01 Aug 2023 Jam : 23:57 WIB
-                    </div>
-                    <p><i class="fas fa-user"></i> Warga RT. 14 - <i class="fas fa-phone"></i> Lainnya (Media)</p>
-                    <p>Keterangan: Menurut Pelapor Ketika Lewat Adanya Api yang Membakar Sampah.</p>
-                    <a href="#">Selengkapnya</a>
-                </div>
-            </div>
+            @endforelse
         </div>
     </div>
 
