@@ -232,10 +232,10 @@
                 <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
                 <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-users-cog"></i> Data Laporan</a>
 
-                <div class="sidebar-title">Bagian Sapra</div>
-                <a href="#" class="sidebar-item"><i class="fas fa-truck-monster"></i> Kelola Armada Mobil</a>
-                <a href="#" class="sidebar-item"><i class="fas fa-tools"></i> Maintenance Peralatan</a>
-                <a href="#" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
+               <div class="sidebar-title">Bagian Sapra</div>
+<a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-tint"></i> Data Hidrant</a>
+<a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-tools"></i> Data Hidrant Kota Jambi</a>
+<a href="/sapra/logistik" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
             @endif
 
             <!-- MODUL OPERATOR BERITA (Bisa diakses oleh Operator & Super User) -->
