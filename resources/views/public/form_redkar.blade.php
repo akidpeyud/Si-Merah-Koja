@@ -456,17 +456,17 @@
                         @csrf
                         <div class="row g-3">
                             <div class="col-12">
-                                <label class="form-label">NIK</label>
+                                <label class="form-label">NIK <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="nik" value="{{ old('nik') }}" placeholder="16 digit NIK sesuai KTP" required>
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">Nama Lengkap</label>
+                                <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="nama_lengkap" value="{{ old('nama_lengkap') }}" required>
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">Jenis Kelamin</label>
+                                <label class="form-label">Jenis Kelamin <span class="text-danger">*</span></label>
                                 <select class="form-select" name="jenis_kelamin" required>
                                     <option value="" selected disabled>Pilih Jenis Kelamin</option>
                                     <option value="L" {{ old('jenis_kelamin') == 'L' ? 'selected' : '' }}>Laki-Laki</option>
@@ -475,17 +475,17 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Tempat Lahir</label>
+                                <label class="form-label">Tempat Lahir <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="tempat_lahir" value="{{ old('tempat_lahir') }}" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Tanggal Lahir</label>
+                                <label class="form-label">Tanggal Lahir <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Status Perkawinan</label>
+                                <label class="form-label">Status Perkawinan <span class="text-danger">*</span></label>
                                 <select class="form-select" name="status_perkawinan" required>
                                     <option value="" selected disabled>Pilih Status Perkawinan</option>
                                     <option value="Belum Kawin" {{ old('status_perkawinan') == 'Belum Kawin' ? 'selected' : '' }}>Belum Kawin</option>
@@ -494,7 +494,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Agama</label>
+                                <label class="form-label">Agama <span class="text-danger">*</span></label>
                                 <select class="form-select" name="agama" required>
                                     <option value="" selected disabled>Pilih Agama</option>
                                     <option value="Islam" {{ old('agama') == 'Islam' ? 'selected' : '' }}>Islam</option>
@@ -506,45 +506,46 @@
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">Nomor Telpon (WhatsApp Aktif)</label>
+                                <label class="form-label">Nomor Telpon (WhatsApp Aktif) <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="nomor_telp" value="{{ old('nomor_telp') }}" placeholder="Contoh: 081234567890" required>
                             </div>
 
+                            <!-- UPLOAD KTP DIJADIKAN WAJIB -->
                             <div class="col-12">
-                                <label class="form-label">Kartu Tanda Penduduk (KTP)</label>
+                                <label class="form-label">Kartu Tanda Penduduk (KTP) <span class="text-danger">*</span></label>
                                 <div class="file-upload-wrapper" onclick="document.getElementById('ktp_upload').click()">
-                                    <p id="ktp_file_label"><i class="fas fa-cloud-upload-alt me-1"></i> Klik untuk unggah file KTP atau <span>Browse</span> (.jpg, .png, .pdf max 2MB)</p>
-                                    <input type="file" id="ktp_upload" name="ktp" class="d-none" accept=".jpg,.jpeg,.png,.pdf">
+                                    <p id="ktp_file_label"><i class="fas fa-cloud-upload-alt me-1"></i> Klik untuk unggah file KTP <span>(Wajib)</span> (.jpg, .png, .pdf max 2MB)</p>
+                                    <input type="file" id="ktp_upload" name="ktp" class="d-none" accept=".jpg,.jpeg,.png,.pdf" required>
                                 </div>
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">Alamat</label>
+                                <label class="form-label">Alamat <span class="text-danger">*</span></label>
                                 <textarea class="form-control" name="alamat" rows="3" required>{{ old('alamat') }}</textarea>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">RT/RW</label>
+                                <label class="form-label">RT/RW <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="rt_rw" value="{{ old('rt_rw') }}" placeholder="Contoh: RT 05 / RW 02" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Kode Pos</label>
+                                <label class="form-label">Kode Pos <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="kode_pos" value="{{ old('kode_pos') }}" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Provinsi</label>
+                                <label class="form-label">Provinsi <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control readonly-input" name="provinsi" value="JAMBI" readonly>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Kabupaten/Kota</label>
+                                <label class="form-label">Kabupaten/Kota <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control readonly-input" name="kabupaten_kota" value="KOTA JAMBI" readonly>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Kecamatan</label>
+                                <label class="form-label">Kecamatan <span class="text-danger">*</span></label>
                                 <select class="form-select" name="kecamatan" id="kecamatan" required>
                                     <option value="" selected disabled>Pilih Kecamatan</option>
                                     <option value="Alam Barajo">Alam Barajo</option>
@@ -562,19 +563,19 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Kelurahan</label>
+                                <label class="form-label">Kelurahan <span class="text-danger">*</span></label>
                                 <select class="form-select" name="kelurahan" id="kelurahan" required>
                                     <option value="" selected disabled>Pilih Kelurahan</option>
                                 </select>
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">Pekerjaan</label>
+                                <label class="form-label">Pekerjaan <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="pekerjaan" value="{{ old('pekerjaan') }}" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Pendidikan Terakhir</label>
+                                <label class="form-label">Pendidikan Terakhir <span class="text-danger">*</span></label>
                                 <select class="form-select" name="pendidikan_terakhir" required>
                                     <option value="" selected disabled>Pilih Pendidikan Terakhir</option>
                                     <option value="SMA/SMK" {{ old('pendidikan_terakhir') == 'SMA/SMK' ? 'selected' : '' }}>SMA/SMK</option>
@@ -584,7 +585,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Sehat Jasmani</label>
+                                <label class="form-label">Sehat Jasmani <span class="text-danger">*</span></label>
                                 <select class="form-select" name="sehat_jasmani" required>
                                     <option value="" selected disabled>Pilih Kondisi</option>
                                     <option value="Ya" {{ old('sehat_jasmani') == 'Ya' ? 'selected' : '' }}>Ya</option>
@@ -593,7 +594,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Buta Warna</label>
+                                <label class="form-label">Buta Warna <span class="text-danger">*</span></label>
                                 <select class="form-select" name="buta_warna" required>
                                     <option value="" selected disabled>Pilih Kondisi</option>
                                     <option value="Tidak" {{ old('buta_warna') == 'Tidak' ? 'selected' : '' }}>Tidak</option>
@@ -602,7 +603,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Golongan Darah</label>
+                                <label class="form-label">Golongan Darah <span class="text-danger">*</span></label>
                                 <select class="form-select" name="golongan_darah" required>
                                     <option value="" selected disabled>Pilih Golongan Darah</option>
                                     <option value="A" {{ old('golongan_darah') == 'A' ? 'selected' : '' }}>A</option>

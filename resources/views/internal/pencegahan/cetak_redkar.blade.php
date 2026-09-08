@@ -5,6 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biodata_REDKAR_{{ $relawan->nama_lengkap }}</title>
     <style>
+        @media print {
+    /* Mengatur ukuran kertas murni A4 dan memperkecil margin browser */
+    @page {
+        size: A4 portrait;
+        margin: 1cm; /* Margin 1cm keliling */
+    }
+
+    /* Mereset margin dan memperkecil ukuran font agar muat 1 lembar */
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 12px !important; /* Perkecil sedikit font khusus saat diprint */
+        background-color: white !important;
+    }
+
+    /* Menghilangkan shadow, border luar, atau jarak yang tidak perlu */
+    .container, .card, .cetak-container {
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Menyembunyikan tombol print agar tidak ikut tercetak */
+    .btn-print, .no-print {
+        display: none !important;
+    }
+
+    /* Memastikan tabel dan elemen penting tidak terpotong ke halaman 2 */
+    table, tr, td, th {
+        page-break-inside: avoid !important;
+        padding: 5px !important; /* Perkecil jarak dalam tabel */
+    }
+    
+    h1, h2, h3 {
+        margin-top: 0 !important;
+    }
+}
         /* Desain Khusus Kertas Dokumen A4 */
         body { font-family: 'Times New Roman', Times, serif; color: #000; background-color: #525659; margin: 0; padding: 20px; display: flex; justify-content: center; }
         .document-page { background: #fff; width: 210mm; min-height: 297mm; padding: 25mm 20mm; box-shadow: 0 0 10px rgba(0,0,0,0.5); box-sizing: border-box; }

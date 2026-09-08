@@ -204,7 +204,7 @@ class AuthController extends Controller
             'status_perkawinan' => ['required'],
             'agama' => ['required'],
             'nomor_telp' => ['required'],
-            'ktp' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'], 
+            'ktp' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
             'alamat' => ['required'],
             'rt_rw' => ['required'],
             'kode_pos' => ['required'],

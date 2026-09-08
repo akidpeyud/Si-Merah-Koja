@@ -32,18 +32,37 @@
         .sidebar-item.active { background-color: #e0f2fe; color: #0284c7; }
         .sidebar-item.active i { color: #0284c7; }
         .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #9ca3af; }
-        .sidebar-title { font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase; margin-top: 15px; margin-bottom: 5px; padding-left: 15px; border-top: 1px dashed #e5e7eb; padding-top: 15px; }
+        .sidebar-title { font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase; margin: 20px 0 10px 10px; letter-spacing: 1px; border-top: 1px dashed #e5e7eb; padding-top: 15px; }
 
         /* --- CONTENT --- */
         .main-content { flex: 1; padding: 40px 50px; background-color: #f9fafb; }
+        .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
         .page-header h1 { font-size: 28px; font-weight: 800; color: #111827; margin-bottom: 5px; }
-        .page-header p { color: #6b7280; font-size: 14px; margin-bottom: 30px; }
+        .page-header p { color: #6b7280; font-size: 14px; margin-bottom: 0; }
 
         .content-card { background: white; border-radius: 12px; border: 1px solid #e5e7eb; padding: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         .table th { background-color: #f8fafc; color: #4b5563; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; padding: 15px; border-bottom: 2px solid #e5e7eb; }
         .table td { padding: 15px; vertical-align: middle; font-size: 14px; color: #1f2937; border-bottom: 1px solid #e5e7eb; }
-        .btn-pdf { background-color: #ef4444; color: white; font-weight: 600; font-size: 12px; padding: 6px 12px; border-radius: 6px; border: none; text-decoration: none; display: inline-block; transition: 0.2s; }
+        
+        /* Tombol Aksi */
+        .btn-pdf { background-color: #ef4444; color: white; font-weight: 600; font-size: 12px; padding: 6px 12px; border-radius: 6px; border: none; text-decoration: none; display: inline-block; transition: 0.2s; width: 100%; margin-bottom: 5px; }
         .btn-pdf:hover { background-color: #dc2626; color: white; }
+        
+        .btn-print-rekap { background-color: #3b82f6; color: white; font-weight: 700; font-size: 13px; padding: 10px 20px; border-radius: 8px; border: none; transition: 0.2s; cursor: pointer; }
+        .btn-print-rekap:hover { background-color: #2563eb; color: white; }
+
+        /* CSS Print untuk tabel rekap */
+        @media print {
+            .navbar-internal, .sidebar, .btn-print-rekap, .btn-logout, .page-header p { display: none !important; }
+            .no-print-col { display: none !important; } /* Menyembunyikan kolom KTP dan Aksi Dokumen */
+            .dashboard-container { display: block; }
+            .main-content { padding: 0 !important; margin: 0 !important; background-color: white; }
+            .content-card { border: none; box-shadow: none; padding: 0; }
+            body { background-color: white; margin: 0; padding: 0; }
+            .page-header h1 { font-size: 20px; text-align: center; margin-bottom: 20px; }
+            table { width: 100% !important; border-collapse: collapse; }
+            table th, table td { border: 1px solid #000 !important; padding: 8px !important; font-size: 11px !important; }
+        }
     </style>
 </head>
 <body>
@@ -72,7 +91,7 @@
                 <i class="fas fa-home"></i> Dashboard Utama
             </a>
 
-            <!-- MODUL OPERASIONAL (Bisa diakses oleh User & Super User) -->
+            <!-- MODUL OPERASIONAL -->
             @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title">Bagian Pencegahan</div>
                 <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
@@ -81,7 +100,7 @@
                 <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
                 <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
                 
-                <!-- MENU KELOLA REDKAR DIPINDAH KE PENCEGAHAN (ACTIVE) -->
+                <!-- MENU KELOLA REDKAR -->
                 <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item active"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
 
                 <div class="sidebar-title">Bagian Pemadaman & Penyelamatan</div>
@@ -94,7 +113,7 @@
                 <a href="#" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
             @endif
 
-            <!-- MODUL OPERATOR BERITA (Bisa diakses oleh Operator & Super User) -->
+            <!-- MODUL OPERATOR BERITA -->
             @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title">Manajemen Berita</div>
                 <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
@@ -106,7 +125,6 @@
                 <i class="fas fa-user-edit"></i> Profil Saya
             </a>
             
-            <!-- Pengaturan Super User Khusus -->
             @if(Auth::user()->role === 'super_user')
                 <a href="/internal/kelola-user" class="sidebar-item">
                     <i class="fas fa-users"></i> Kelola Semua Pengguna
@@ -117,8 +135,12 @@
         <!-- MAIN AREA -->
         <main class="main-content">
             <div class="page-header">
-                <h1>Daftar Calon Relawan (REDKAR)</h1>
-                <p>Data masyarakat yang mendaftar melalui formulir publik website.</p>
+                <div>
+                    <h1>Daftar Calon Relawan (REDKAR)</h1>
+                    <p>Data masyarakat yang mendaftar melalui formulir publik website.</p>
+                </div>
+                <!-- Tombol Print Rekap -->
+                <button onclick="window.print()" class="btn-print-rekap"><i class="fas fa-print me-2"></i>Cetak Rekap</button>
             </div>
 
             <div class="content-card">
@@ -131,8 +153,9 @@
                                 <th>Nama Lengkap</th>
                                 <th>Kecamatan</th>
                                 <th>No. Telp (WA)</th>
-                                <th>KTP</th>
-                                <th class="text-center">Aksi Dokumen</th>
+                                <!-- Tambahkan class no-print-col agar hilang saat di-print -->
+                                <th class="no-print-col">KTP</th>
+                                <th class="text-center no-print-col" width="180px">Aksi Dokumen</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -145,17 +168,17 @@
                                 <td>
                                     <a href="https://wa.me/{{ preg_replace('/^0/', '62', $r->nomor_telp) }}" target="_blank" class="text-success text-decoration-none fw-bold"><i class="fab fa-whatsapp me-1"></i> {{ $r->nomor_telp }}</a>
                                 </td>
-                                <td>
+                                <td class="no-print-col">
                                     @if($r->ktp)
-                                        <a href="/storage/{{ $r->ktp }}" target="_blank" class="badge bg-info text-decoration-none"><i class="fas fa-eye me-1"></i> Lihat KTP</a>
+                                        <a href="/storage/{{ $r->ktp }}" target="_blank" class="badge bg-info text-decoration-none"><i class="fas fa-eye me-1"></i> Lihat Dokumen</a>
                                     @else
                                         <span class="badge bg-secondary">Tidak Ada</span>
                                     @endif
                                 </td>
-                                <td class="text-center">
-                                    <!-- URL DIUBAH KE PENCEGAHAN AGAR SESUAI DENGAN ROUTE BARU -->
+                                <td class="text-center no-print-col">
+                                    <!-- Tombol Buka Halaman Cetak Biodata -->
                                     <a href="/internal/pencegahan/cetak-redkar/{{ $r->id }}" target="_blank" class="btn-pdf">
-                                        <i class="fas fa-file-pdf me-1"></i> PDF Biodata
+                                        <i class="fas fa-print me-1"></i> Cetak Biodata
                                     </a>
                                 </td>
                             </tr>
