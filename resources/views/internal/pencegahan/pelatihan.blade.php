@@ -94,12 +94,8 @@
     <div class="dashboard-container">
         <!-- SIDEBAR TERINTEGRASI -->
         <aside class="sidebar">
-            <a href="/internal/index" class="sidebar-item">
-                <i class="fas fa-home"></i> Dashboard Utama
-            </a>
-
-            <!-- MODUL OPERASIONAL -->
-            @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
+            <a href="/internal/index" class="sidebar-item"><i class="fas fa-home"></i> Dashboard Utama</a>
+            @if(Auth::user()->role === 'pencegahan' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title">Bagian Pencegahan</div>
                 <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
                 <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
@@ -115,13 +111,6 @@
                 <a href="#" class="sidebar-item"><i class="fas fa-truck-monster"></i> Kelola Armada Mobil</a>
                 <a href="#" class="sidebar-item"><i class="fas fa-tools"></i> Maintenance Peralatan</a>
                 <a href="#" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
-            @endif
-
-            <!-- MODUL OPERATOR BERITA -->
-            @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
-                <div class="sidebar-title">Manajemen Berita</div>
-                <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
-                <a href="/internal/operator/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
             @endif
             <div class="sidebar-title">Pengaturan Akun</div>
             <a href="/internal/profil" class="sidebar-item">

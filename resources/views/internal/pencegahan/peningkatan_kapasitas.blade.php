@@ -12,9 +12,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background-color: #f8fafc; color: #1e293b; }
-        
-        /* Navbar */
-        .navbar-internal { background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .navbar-internal { background-color: #0f172a; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
         .nav-brand img { height: 40px; }
         .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 0.5px; }
@@ -55,10 +53,7 @@
         .sub-text { color: #64748b; font-size: 13px; }
         .badge-soft-warning { background-color: #fef3c7; color: #d97706; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 12px; }
         .badge-soft-success { background-color: #dcfce7; color: #15803d; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 12px; }
-        .badge-soft-primary { background-color: #dbeafe; color: #1d4ed8; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 12px; }
-        
-        /* Action Buttons */
-        .btn-action { width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; border: none; transition: all 0.2s; margin: 0 3px; cursor: pointer; }
+        .btn-action { width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; border: none; transition: all 0.2s; margin: 0 3px; }
         .btn-action-view { background-color: #eff6ff; color: #3b82f6; }
         .btn-action-view:hover { background-color: #3b82f6; color: white; }
         .btn-action-edit { background-color: #f0fdf4; color: #22c55e; }
@@ -73,14 +68,7 @@
         </a>
         <div class="user-menu">
             <div class="user-profile">
-                <!-- Kode Laravel untuk nampilin role & nama -->
-                <span class="badge-role {{ Auth::user()->role ?? '' }}">
-                    @if(Auth::user()->role === 'user')
-                        PEGAWAI
-                    @else
-                        {{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}
-                    @endif
-                </span>
+                <span class="badge-role {{ Auth::user()->role ?? '' }}">{{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}</span>
                 <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
                 <i class="fas fa-user-circle"></i>
             </div>
@@ -92,22 +80,18 @@
     </nav>
 
     <div class="dashboard-container">
-        
-        <!-- SIDEBAR TERINTEGRASI -->
         <aside class="sidebar">
             <a href="/internal/index" class="sidebar-item">
                 <i class="fas fa-home"></i> Dashboard Utama
             </a>
 
-            <!-- MODUL OPERASIONAL -->
-            @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
+             @if(Auth::user()->role === 'pencegahan' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title">Bagian Pencegahan</div>
                 <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
                 <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
                 <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
                 <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
                 
-                <!-- ACTIVE DI PENINGKATAN KAPASITAS -->
                 <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item active"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
 
                 <div class="sidebar-title">Bagian Pemadaman & Penyelamatan</div>

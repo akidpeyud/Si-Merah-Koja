@@ -95,16 +95,8 @@ Route::get('/internal/pencegahan/layanan-inspeksi/tambah', function () {
 Route::get('/internal/pencegahan/layanan-sosialisasi/tambah', function () {
     return view('internal.pencegahan.create_sosialisasi');
 });
-
-// === ROUTE REDKAR (KODEMU) ===
-// Rute untuk menerima data kiriman form publik
-Route::post('/redkar/daftar', [AuthController::class, 'storeRedkar']);
-
-// Rute khusus Operator / Super User (Digabung dalam 1 middleware group agar aman)
-Route::middleware(['auth'])->group(function () {
-    Route::get('/internal/operator/redkar-masuk', [AuthController::class, 'showRedkarData']);
-    Route::get('/internal/operator/kelola-redkar', [AuthController::class, 'kelolaRedkar']);
-    Route::get('/internal/operator/cetak-redkar/{id}', [AuthController::class, 'cetakRedkar']);
+Route::get('/internal/pencegahan/pelatihan/tambah', function () {
+    return view('internal.pencegahan.create_pelatihan');
 });
 Route::get('/internal/pencegahan/pembinaan-pengembangan/tambah', function () {
     return view('internal.pencegahan.create_pembinaan');
