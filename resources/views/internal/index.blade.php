@@ -223,9 +223,8 @@
                 <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
                 <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
                 
-               <!-- KODE YANG BENAR UNTUK SIDEBAR -->
                 <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item">
-                <i class="fas fa-users-cog"></i> Kelola Redkar
+                    <i class="fas fa-users-cog"></i> Kelola Redkar
                 </a>
 
                 <div class="sidebar-title">Bagian Pemadaman & Penyelamatan</div>
@@ -258,6 +257,22 @@
             @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title">Manajemen Berita</div>
                 <a href="/internal/operator/kelola-berita" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+            @endif
+            <!-- MODUL OPERATOR BERITA & KONTEN PUBLIK -->
+            @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
+                <div class="sidebar-title">Manajemen Berita & Konten</div>
+                
+                <a href="/internal/operator/kelola-berita" class="sidebar-item {{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
+                    <i class="fas fa-newspaper"></i> Input & Kelola Berita
+                </a>
+                
+                <a href="/internal/operator/infografis" class="sidebar-item {{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
+                    <i class="fas fa-image"></i> Kelola Info Grafis
+                </a>
+                
+                <a href="/internal/operator/berita-medsos" class="sidebar-item {{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
+                    <i class="fab fa-instagram"></i> Kelola Berita Medsos
+                </a>
             @endif
 
             <!-- PENGATURAN UMUM -->

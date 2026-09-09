@@ -4,14 +4,18 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\SapraController;
-
+use App\Http\Controllers\OperatorMedsosController;
 use App\Models\Berita;
+use App\Models\Infografis;
+use App\Models\BeritaMedsos;
 
-
-// Route untuk halaman utama (Homepage) - DIPERBARUI AGAR BERITA MUNCUL
+// Route untuk halaman utama (Homepage) - DINAMIS LENGKAP
 Route::get('/', function () {
     $daftar_berita = Berita::orderBy('tanggal_kejadian', 'desc')->take(4)->get();
-    return view('homepage.index', compact('daftar_berita'));
+    $daftar_infografis = Infografis::latest()->take(6)->get();
+    $daftar_medsos = BeritaMedsos::latest()->take(6)->get();
+    
+    return view('homepage.index', compact('daftar_berita', 'daftar_infografis', 'daftar_medsos'));
 });
 
 // === ROUTE UNTUK MENU PROGRAM KERJA ===
@@ -120,31 +124,53 @@ Route::get('/internal/pencegahan/cetak-redkar/{id}', [AuthController::class, 'ce
 
 // === RUTE BERITA (PUBLIK & INTERNAL OPERATOR) ===
 Route::get('/berita/{id}', [BeritaController::class, 'showPublic']);
-Route::get('/internal/operator/kelola-berita', [BeritaController::class, 'indexInternal']);
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/internal/operator/kelola-berita', [BeritaController::class, 'indexInternal']);
+    Route::get('/internal/operator/kelola-berita/tambah', [BeritaController::class, 'create']);
+    Route::post('/internal/operator/kelola-berita/store', [BeritaController::class, 'store']);
+    Route::get('/internal/operator/kelola-berita/edit/{id}', [BeritaController::class, 'edit']);
+    Route::put('/internal/operator/kelola-berita/update/{id}', [BeritaController::class, 'update']);
+    Route::delete('/internal/operator/kelola-berita/hapus/{id}', [BeritaController::class, 'destroy']);
+});
 
 // ==========================================
 // === ROUTE BAGIAN SAPRA (SARANA PRASARANA) ===
 // ==========================================
-
-// Menu Logistik
 Route::get('/sapra/logistik', [SapraController::class, 'logistik']);
 
-// Menu Data Hidrant Kota Jambi (Maintenance)
 Route::get('/sapra/data-hidrant-kota', [SapraController::class, 'dataHidrantKota']);
 Route::get('/sapra/data-hidrant-kota/cetak-pdf', [SapraController::class, 'cetakPdfKota']);
 Route::post('/sapra/data-hidrant-kota/store', [SapraController::class, 'storeHidrantKota']);
 Route::put('/sapra/data-hidrant-kota/update/{id}', [SapraController::class, 'updateHidrantKota']);
 Route::delete('/sapra/data-hidrant-kota/delete/{id}', [SapraController::class, 'destroyHidrantKota']);
 
-// Menu Data Hidrant Gedung / Pilar
 Route::get('/sapra/data_hidrant_gedung', [SapraController::class, 'dataHidrantGedung']);
 Route::post('/sapra/hidran/store', [SapraController::class, 'storeHidran']);
 Route::put('/sapra/hidran/update/{id}', [SapraController::class, 'updateHidran']);
 Route::delete('/sapra/hidran/delete/{id}', [SapraController::class, 'destroyHidran']);
 Route::get('/sapra/hidran/cetak-pdf', [SapraController::class, 'cetakPdfHidranGedung']);
-// Menu Prasarana Mako & Pos
-Route::get('/sapra/prasarana-mako', [SapraController::class, 'prasaranaMako']);
-Route::post('/sapra/prasarana-mako/store', [SapraController::class, 'storePrasaranaMako']);
-Route::put('/sapra/prasarana-mako/update/{id}', [SapraController::class, 'updatePrasaranaMako']);
-Route::delete('/sapra/prasarana-mako/delete/{id}', [SapraController::class, 'destroyPrasaranaMako']);
-Route::get('/sapra/prasarana-mako/cetak-pdf', [SapraController::class, 'cetakPdfMako']);
+
+// === RUTE KELOLA INFOGRAFIS & BERITA MEDSOS (OPERATOR) ===
+Route::middleware(['auth'])->group(function () {
+    Route::get('/internal/operator/infografis', [OperatorMedsosController::class, 'indexInfografis']);
+    Route::post('/internal/operator/infografis/store', [OperatorMedsosController::class, 'storeInfografis']);
+    Route::delete('/internal/operator/infografis/hapus/{id}', [OperatorMedsosController::class, 'destroyInfografis']);
+
+    Route::get('/internal/operator/berita-medsos', [OperatorMedsosController::class, 'indexMedsos']);
+    Route::post('/internal/operator/berita-medsos/store', [OperatorMedsosController::class, 'storeMedsos']);
+    Route::put('/internal/operator/berita-medsos/update/{id}', [OperatorMedsosController::class, 'updateMedsos']);
+    Route::delete('/internal/operator/berita-medsos/hapus/{id}', [OperatorMedsosController::class, 'destroyMedsos']);
+});
+Route::middleware(['auth'])->group(function () {
+    // Rute Kelola Info Grafis
+    Route::get('/internal/operator/infografis', [OperatorMedsosController::class, 'indexInfografis']);
+    Route::post('/internal/operator/infografis/store', [OperatorMedsosController::class, 'storeInfografis']);
+    Route::delete('/internal/operator/infografis/hapus/{id}', [OperatorMedsosController::class, 'destroyInfografis']);
+
+    // Rute Kelola Berita Medsos
+    Route::get('/internal/operator/berita-medsos', [OperatorMedsosController::class, 'indexMedsos']);
+    Route::post('/internal/operator/berita-medsos/store', [OperatorMedsosController::class, 'storeMedsos']);
+    Route::put('/internal/operator/berita-medsos/update/{id}', [OperatorMedsosController::class, 'updateMedsos']);
+    Route::delete('/internal/operator/berita-medsos/hapus/{id}', [OperatorMedsosController::class, 'destroyMedsos']);
+});
