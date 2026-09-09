@@ -118,3 +118,14 @@ Route::get('/internal/pencegahan/cetak-redkar/{id}', [AuthController::class, 'ce
 // === RUTE BERITA (PUBLIK & INTERNAL OPERATOR) ===
 Route::get('/berita/{id}', [BeritaController::class, 'showPublic']);
 Route::get('/internal/operator/kelola-berita', [BeritaController::class, 'indexInternal']);
+// === RUTE BERITA & CRUD (KHUSUS OPERATOR / SUPER USER) ===
+Route::get('/berita/{id}', [BeritaController::class, 'showPublic']); // Publik membaca detail
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/internal/operator/kelola-berita', [BeritaController::class, 'indexInternal']);
+    Route::get('/internal/operator/kelola-berita/tambah', [BeritaController::class, 'create']);
+    Route::post('/internal/operator/kelola-berita/store', [BeritaController::class, 'store']);
+    Route::get('/internal/operator/kelola-berita/edit/{id}', [BeritaController::class, 'edit']);
+    Route::put('/internal/operator/kelola-berita/update/{id}', [BeritaController::class, 'update']);
+    Route::delete('/internal/operator/kelola-berita/hapus/{id}', [BeritaController::class, 'destroy']);
+});
