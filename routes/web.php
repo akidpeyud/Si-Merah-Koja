@@ -142,3 +142,9 @@ Route::post('/sapra/hidran/store', [SapraController::class, 'storeHidran']);
 Route::put('/sapra/hidran/update/{id}', [SapraController::class, 'updateHidran']);
 Route::delete('/sapra/hidran/delete/{id}', [SapraController::class, 'destroyHidran']);
 Route::get('/sapra/hidran/cetak-pdf', [SapraController::class, 'cetakPdfHidranGedung']);
+// Menu Prasarana Mako & Pos
+Route::get('/sapra/prasarana-mako', [SapraController::class, 'prasaranaMako']);
+Route::post('/sapra/prasarana-mako/store', [SapraController::class, 'storePrasaranaMako']);
+Route::put('/sapra/prasarana-mako/update/{id}', [SapraController::class, 'updatePrasaranaMako']);
+Route::delete('/sapra/prasarana-mako/delete/{id}', [SapraController::class, 'destroyPrasaranaMako']);
+Route::get('/sapra/prasarana-mako/cetak-pdf', [SapraController::class, 'cetakPdfMako']);

@@ -7,17 +7,21 @@ use Illuminate\Support\Facades\DB;
 use App\Models\KebutuhanSarpras;
 use Barryvdh\DomPDF\Facade\Pdf;
 
-
 class SapraController extends Controller
 {
+    // ==========================================
     // === MENU LOGISTIK ===
+    // ==========================================
     public function logistik()
     {
         $dataSarpras = KebutuhanSarpras::all();
         return view('internal.sapra.logistik', compact('dataSarpras'));
     }
 
+
+    // ==========================================
     // === MENU DATA HIDRANT GEDUNG / PILAR ===
+    // ==========================================
     public function dataHidrantGedung()
     {
         $hidranPilar  = DB::table('prasaranas')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
@@ -102,20 +106,21 @@ class SapraController extends Controller
 
         return $pdf->download('Data_Hidrant_Gedung.pdf');
     }
-// Fungsi Cetak PDF Data Hidrant Gedung / Pilar
-   // Fungsi Cetak PDF Data Hidrant Gedung / Pilar
+
     public function cetakPdfHidranGedung()
     {
-        // Ubah nama variabelnya jadi $dataHidran biar cocok sama yang diminta di file blade
         $dataHidran = DB::table('prasaranas')->orderBy('no_urut', 'asc')->get();
         
-        // Render PDF mengarah ke file hidran_pdf.blade.php
         $pdf = Pdf::loadView('internal.sapra.hidran_pdf', compact('dataHidran'))
                   ->setPaper('a4', 'landscape'); 
                   
         return $pdf->download('Data_Hidrant_Gedung.pdf');
     }
+
+
+    // ==========================================
     // === MENU DATA HIDRANT KOTA JAMBI ===
+    // ==========================================
     public function dataHidrantKota(Request $request)
     {
         $query = DB::table('hidran_kota');
@@ -156,16 +161,16 @@ class SapraController extends Controller
     public function storeHidrantKota(Request $request)
     {
         DB::table('hidran_kota')->insert([
-            'jalan' => $request->jalan,
-            'kecamatan' => $request->kecamatan,
-            'kelurahan' => $request->kelurahan,
-            'rt' => $request->rt,
+            'jalan'           => $request->jalan,
+            'kecamatan'       => $request->kecamatan,
+            'kelurahan'       => $request->kelurahan,
+            'rt'              => $request->rt,
             'lokasi_terdekat' => $request->lokasi_terdekat,
-            'kode_map' => $request->kode_map,
-            'kondisi_hidran' => $request->kondisi_hidran,
-            'tekanan' => $request->tekanan,
-            'machino' => $request->machino,
-            'keterangan' => $request->keterangan,
+            'kode_map'        => $request->kode_map,
+            'kondisi_hidran'  => $request->kondisi_hidran,
+            'tekanan'         => $request->tekanan,
+            'machino'         => $request->machino,
+            'keterangan'      => $request->keterangan,
         ]);
         return redirect()->back()->with('success', 'Data Hidrant Kota berhasil ditambahkan!');
     }
@@ -173,16 +178,16 @@ class SapraController extends Controller
     public function updateHidrantKota(Request $request, $id)
     {
         DB::table('hidran_kota')->where('id', $id)->update([
-            'jalan' => $request->jalan,
-            'kecamatan' => $request->kecamatan,
-            'kelurahan' => $request->kelurahan,
-            'rt' => $request->rt,
+            'jalan'           => $request->jalan,
+            'kecamatan'       => $request->kecamatan,
+            'kelurahan'       => $request->kelurahan,
+            'rt'              => $request->rt,
             'lokasi_terdekat' => $request->lokasi_terdekat,
-            'kode_map' => $request->kode_map,
-            'kondisi_hidran' => $request->kondisi_hidran,
-            'tekanan' => $request->tekanan,
-            'machino' => $request->machino,
-            'keterangan' => $request->keterangan,
+            'kode_map'        => $request->kode_map,
+            'kondisi_hidran'  => $request->kondisi_hidran,
+            'tekanan'         => $request->tekanan,
+            'machino'         => $request->machino,
+            'keterangan'      => $request->keterangan,
         ]);
         return redirect()->back()->with('success', 'Data Hidrant Kota berhasil diperbarui!');
     }
@@ -192,4 +197,95 @@ class SapraController extends Controller
         DB::table('hidran_kota')->where('id', $id)->delete();
         return redirect()->back()->with('success', 'Data Hidrant Kota berhasil dihapus!');
     }
-}
+// ==========================================
+    // === MENU PRASARANA MAKO & POS ===
+    // ==========================================
+    
+    public function prasaranaMako()
+    {
+        $posPemadam = DB::table('pos_pemadam')->orderBy('id_pos', 'asc')->get();
+        $dataPrasarana = DB::table('prasarana')->orderBy('id_prasarana', 'asc')->get();
+
+        return view('internal.sapra.prasarana_mako', compact('posPemadam', 'dataPrasarana'));
+    }
+
+    public function storePrasaranaMako(Request $request)
+    {
+        $gambarPath = null;
+        if ($request->hasFile('gambar')) {
+            $file = $request->file('gambar');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/prasarana'), $filename); 
+            $gambarPath = 'uploads/prasarana/' . $filename;
+        }
+
+        DB::table('prasarana')->insert([
+            'id_pos'          => $request->id_pos,
+            'jenis_prasarana' => $request->jenis_prasarana,
+            'path_gambar'     => $gambarPath,
+        ]);
+
+        // Menyimpan id_pos ke session agar tab tidak reset
+        return redirect()->back()
+            ->with('success', 'Data Prasarana berhasil ditambahkan!')
+            ->with('active_tab', $request->id_pos);
+    }
+
+    public function updatePrasaranaMako(Request $request, $id)
+    {
+        $dataLama = DB::table('prasarana')->where('id_prasarana', $id)->first();
+        $gambarPath = $dataLama->path_gambar;
+
+        if ($request->hasFile('gambar')) {
+            if ($gambarPath && file_exists(public_path($gambarPath))) {
+                unlink(public_path($gambarPath));
+            }
+            $file = $request->file('gambar');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/prasarana'), $filename); 
+            $gambarPath = 'uploads/prasarana/' . $filename;
+        }
+
+        DB::table('prasarana')->where('id_prasarana', $id)->update([
+            'id_pos'          => $request->id_pos,
+            'jenis_prasarana' => $request->jenis_prasarana,
+            'path_gambar'     => $gambarPath,
+        ]);
+
+        // Menyimpan id_pos ke session agar tab tidak reset
+        return redirect()->back()
+            ->with('success', 'Data Prasarana berhasil diperbarui!')
+            ->with('active_tab', $request->id_pos);
+    }
+
+    public function destroyPrasaranaMako($id)
+    {
+        $data = DB::table('prasarana')->where('id_prasarana', $id)->first();
+        
+        // Simpan id_pos ke variabel sebelum data dihapus dari database
+        $id_pos_terakhir = $data->id_pos;
+        
+        if ($data && $data->path_gambar && file_exists(public_path($data->path_gambar))) {
+            unlink(public_path($data->path_gambar));
+        }
+
+        DB::table('prasarana')->where('id_prasarana', $id)->delete();
+
+        // Mengirimkan id_pos terakhir ke session
+        return redirect()->back()
+            ->with('success', 'Data Prasarana berhasil dihapus!')
+            ->with('active_tab', $id_pos_terakhir);
+    }
+
+    public function cetakPdfMako()
+    {
+        $posPemadam = DB::table('pos_pemadam')->orderBy('id_pos', 'asc')->get();
+        $dataPrasarana = DB::table('prasarana')->orderBy('id_prasarana', 'asc')->get();
+
+        $pdf = Pdf::loadView('internal.sapra.prasarana_mako_pdf', compact('posPemadam', 'dataPrasarana'))
+                  ->setPaper('a4', 'portrait');
+
+        return $pdf->download('Data_Prasarana_Mako_Pos.pdf');
+    }
+
+} // Pastikan kurung kurawal ini tidak terhapus!

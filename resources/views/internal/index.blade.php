@@ -232,10 +232,26 @@
                 <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
                 <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-users-cog"></i> Data Laporan</a>
 
-               <div class="sidebar-title">Bagian Sapra</div>
-<a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-tint"></i> Data Hidrant</a>
-<a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-tools"></i> Data Hidrant Kota Jambi</a>
-<a href="/sapra/logistik" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
+               <div class="sidebar-title" style="border-top: none;">Bagian Sapra</div>
+
+<a href="/sapra/data_hidrant_gedung" class="sidebar-item">
+    <i class="fas fa-clipboard-list"></i> Data Hidrant
+</a>
+
+<a href="/sapra/data-hidrant-kota" class="sidebar-item">
+    <i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi
+</a>
+
+
+
+<!-- Ganti Maintenance jadi Prasarana Mako & Pos -->
+<a href="/sapra/prasarana-mako" class="sidebar-item">
+    <i class="fas fa-building"></i> Prasarana Mako & Pos
+</a>
+
+<a href="/sapra/logistik" class="sidebar-item">
+    <i class="fas fa-box-open"></i> Logistik & Gudang
+</a>
             @endif
 
             <!-- MODUL OPERATOR BERITA (Bisa diakses oleh Operator & Super User) -->
@@ -319,15 +335,28 @@
                     <div class="stat-value">3</div>
                 </div>
                 @endif
+<!-- STATISTIK KHUSUS SAPRA -->
+@if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
+    
+    <!-- Card 1: Total Hidrant Kota -->
+    <div class="stat-card border-primary" style="border-bottom: 4px solid #3b82f6;">
+        <i class="fas fa-map-marker-alt stat-icon" style="color: #3b82f6; font-size: 24px; position: absolute; right: 20px; opacity: 0.2;"></i>
+        <div class="stat-title" style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Total Hidrant Kota</div>
+        <div class="stat-value" style="font-size: 24px; font-weight: 800; color: #0f172a;">
+            {{ \Illuminate\Support\Facades\DB::table('hidran_kota')->count() }}
+        </div>
+    </div>
 
-                <!-- STATISTIK KHUSUS SAPRA -->
-                @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
-                <div class="stat-card border-orange">
-                    <i class="fas fa-truck-monster stat-icon text-warning"></i>
-                    <div class="stat-title">Armada Aktif (Sapra)</div>
-                    <div class="stat-value">18</div>
-                </div>
-                @endif
+    <!-- Card 2: Prasarana Mako & Pos -->
+    <div class="stat-card border-orange" style="border-bottom: 4px solid #f59e0b;">
+        <i class="fas fa-building stat-icon text-warning" style="color: #f59e0b; font-size: 24px; position: absolute; right: 20px; opacity: 0.2;"></i>
+        <div class="stat-title" style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Prasarana Mako & Pos</div>
+        <div class="stat-value" style="font-size: 24px; font-weight: 800; color: #0f172a;">
+            {{ \Illuminate\Support\Facades\DB::table('prasarana')->count() }}
+        </div>
+    </div>
+
+@endif
 
             </div>
 

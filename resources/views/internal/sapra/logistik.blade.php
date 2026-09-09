@@ -102,20 +102,24 @@
 
     <!-- 3. BAGIAN SAPRA -->
     @if(in_array(Auth::user()->role, ['sapra', 'user', 'super_user']))
-        <div class="sidebar-title">Bagian Sapra</div>
-        <a href="/sapra/data_hidrant_gedung" class="sidebar-item {{ request()->is('sapra/data_hidrant_gedung') ? 'active' : '' }}">
+            <div class="sidebar-title" style="border-top: none;">Bagian Sapra</div>
+
+<a href="/sapra/data_hidrant_gedung" class="sidebar-item">
     <i class="fas fa-clipboard-list"></i> Data Hidrant
 </a>
-<a href="/sapra/data-hidrant-kota" class="sidebar-item {{ request()->is('sapra/data-hidrant-kota') ? 'active' : '' }}">
+
+<a href="/sapra/data-hidrant-kota" class="sidebar-item">
     <i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi
 </a>
-<a href="#" class="sidebar-item">
-    <i class="fas fa-truck-monster"></i> Kelola Armada Mobil
+
+
+
+<!-- Ganti Maintenance jadi Prasarana Mako & Pos -->
+<a href="/sapra/prasarana-mako" class="sidebar-item">
+    <i class="fas fa-building"></i> Prasarana Mako & Pos
 </a>
-<a href="#" class="sidebar-item">
-    <i class="fas fa-tools"></i> Maintenance Peralatan
-</a>
-<a href="/sapra/logistik" class="sidebar-item {{ request()->is('sapra/logistik*') ? 'active' : '' }}">
+
+<a href="/sapra/logistik" class="sidebar-item">
     <i class="fas fa-box-open"></i> Logistik & Gudang
 </a>
     @endif
