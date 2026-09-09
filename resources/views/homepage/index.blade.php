@@ -346,42 +346,84 @@
         .layanan-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
         .layanan-card p { font-size: 13px; color: #6b7280; line-height: 1.6; }
 
-        /* Section 3: Kejadian & Evakuasi */
+        /* =======================================================================
+           SECTION 3: KEJADIAN & EVAKUASI (DI-UPDATE DENGAN DESAIN KARTU MODERN) 
+           ======================================================================= */
         .kejadian-section {
-            max-width: 1000px; margin: 0 auto;
+            max-width: 1200px; margin: 0 auto;
         }
         .kejadian-header-img {
             text-align: center; margin-bottom: 30px;
         }
         .kejadian-header-img img { max-width: 300px; }
         
-        .kejadian-list {
+        .kejadian-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
             margin-top: 40px;
         }
-        .kejadian-item {
-            display: flex;
-            gap: 20px;
-        }
-        .kejadian-date {
-            background: #0b0f19;
-            color: white;
-            width: 70px; height: 70px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            border-radius: 8px; font-weight: 800;
-        }
-        .kejadian-date.red { background: #ef4444; }
-        .kejadian-date span:first-child { font-size: 24px; line-height: 1; }
-        .kejadian-date span:last-child { font-size: 12px; text-transform: uppercase; }
         
-        .kejadian-info h3 { font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 8px; }
-        .kejadian-info .meta { font-size: 12px; color: #6b7280; margin-bottom: 10px; }
-        .kejadian-info .meta i { color: #ef4444; margin-right: 5px; }
-        .kejadian-info p { font-size: 13px; color: #4b5563; line-height: 1.5; margin-bottom: 10px;}
-        .kejadian-info a { font-size: 12px; color: #9ca3af; text-decoration: none; font-weight: 600; transition: color 0.3s;}
-        .kejadian-info a:hover { color: #ef4444; }
+        .kejadian-card {
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid #f1f5f9;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .kejadian-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .kejadian-thumb {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            background-color: #e2e8f0;
+        }
+        .kejadian-thumb img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .kejadian-placeholder {
+            width: 100%; height: 100%; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; background: #f8fafc; color: #94a3b8;
+        }
+        .kejadian-placeholder i { font-size: 45px; margin-bottom: 10px; color: #cbd5e1; }
+        
+        .kejadian-date-badge {
+            position: absolute;
+            top: 15px; left: 15px;
+            color: white;
+            padding: 8px 15px; border-radius: 10px;
+            text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            line-height: 1;
+        }
+        .kejadian-date-badge span:first-child { font-size: 22px; font-weight: 800; display: block; margin-bottom: 2px;}
+        .kejadian-date-badge span:last-child { font-size: 11px; text-transform: uppercase; font-weight: 700;}
+        
+        .kejadian-content {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .kejadian-content h3 { 
+            font-size: 18px; font-weight: 800; color: #111827; margin-bottom: 15px; line-height: 1.4; 
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .kejadian-content .meta { font-size: 13px; color: #6b7280; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
+        .kejadian-content .meta div { display: flex; align-items: flex-start; gap: 8px; }
+        .kejadian-content .meta i { color: #ef4444; margin-top: 3px; }
+        .kejadian-content p { font-size: 14px; color: #4b5563; line-height: 1.6; margin-bottom: 20px; flex-grow: 1;}
+        .kejadian-content a { 
+            font-size: 14px; color: #ef4444; text-decoration: none; font-weight: 700; 
+            display: inline-flex; align-items: center; gap: 5px; transition: gap 0.3s;
+        }
+        .kejadian-content a:hover { gap: 10px; color: #dc2626; }
 
         /* Section 4: Video Edukasi */
         .video-section {
@@ -712,7 +754,9 @@
         </div>
     </div>
 
-    <!-- SECTION 3: KEJADIAN & EVAKUASI (SUDAH DINAMIS) -->
+    <!-- ==========================================
+         SECTION 3: KEJADIAN & EVAKUASI (UPDATED)
+         ========================================== -->
     <div class="section-container kejadian-section">
         <div class="kejadian-header-img">
            <img src="/images/mobil.png" alt="Logo mobil damkar">
@@ -724,34 +768,57 @@
             <div class="section-divider"><i class="fas fa-circle"></i></div>
         </div>
 
-        <div class="kejadian-list">
-            <!-- Menampilkan data dari tabel Berita -->
+        <div class="kejadian-grid">
             @forelse($daftar_berita ?? [] as $berita)
-                <div class="kejadian-item">
-                    <!-- Jika kejadian hari ini/kemarin, warna kotaknya merah -->
-                    <div class="kejadian-date {{ \Carbon\Carbon::parse($berita->tanggal_kejadian)->diffInDays(now()) <= 3 ? 'red' : '' }}">
-                        <span>{{ \Carbon\Carbon::parse($berita->tanggal_kejadian)->format('d') }}</span>
-                        <span>{{ \Carbon\Carbon::parse($berita->tanggal_kejadian)->format('M') }}</span>
-                    </div>
-                    <div class="kejadian-info">
-                        <h3>{{ $berita->judul }}</h3>
-                        <div class="meta">
-                            <i class="fas fa-map-marker-alt"></i> {{ $berita->lokasi }}<br>
-                            <i class="far fa-clock"></i> {{ \Carbon\Carbon::parse($berita->tanggal_kejadian)->format('d M Y') }} Jam : {{ \Carbon\Carbon::parse($berita->waktu_kejadian)->format('H:i') }} WIB
+                <div class="kejadian-card">
+                    <!-- Thumbnail Gambar -->
+                    <div class="kejadian-thumb">
+                        <!-- Kotak Tanggal Merah -->
+                        <div class="kejadian-date-badge" style="{{ \Carbon\Carbon::parse($berita->tanggal_kejadian)->diffInDays(now()) <= 3 ? 'background-color: #ef4444;' : 'background-color: #111827;' }}">
+                            <span>{{ \Carbon\Carbon::parse($berita->tanggal_kejadian)->format('d') }}</span>
+                            <span>{{ \Carbon\Carbon::parse($berita->tanggal_kejadian)->format('M') }}</span>
                         </div>
-                        <p><i class="fas fa-user"></i> {{ $berita->pelapor }} - <i class="fas fa-phone"></i> {{ $berita->sumber_informasi }}</p>
-                        <p>Keterangan: {{ Str::limit($berita->keterangan_singkat, 80) }}</p>
-                        <a href="/berita/{{ $berita->id }}">Selengkapnya</a>
+
+                        @if($berita->gambar)
+                            <img src="{{ asset('storage/' . $berita->gambar) }}" alt="{{ $berita->judul }}">
+                        @else
+                            <div class="kejadian-placeholder">
+                                <i class="fas fa-fire-extinguisher"></i>
+                                <span class="small fw-bold">Damkar Kota Jambi</span>
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- Detail Berita -->
+                    <div class="kejadian-content">
+                        <h3>{{ $berita->judul }}</h3>
+                        
+                        <div class="meta">
+                            <div title="Lokasi">
+                                <i class="fas fa-map-marker-alt"></i> 
+                                <span>{{ Str::limit($berita->lokasi, 40) }}</span>
+                            </div>
+                            <div title="Waktu Laporan">
+                                <i class="far fa-clock"></i> 
+                                <span>{{ \Carbon\Carbon::parse($berita->waktu_kejadian)->format('H:i') }} WIB - Pelapor: {{ $berita->pelapor }}</span>
+                            </div>
+                        </div>
+                        
+                        <p>{{ Str::limit($berita->keterangan_singkat ?? $berita->detail_lengkap, 90) }}</p>
+                        
+                        <a href="/berita/{{ $berita->id }}">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             @empty
-                <!-- Fallback: Jika belum ada berita di database, tampilkan ini sementara -->
-                <div class="text-muted w-100" style="grid-column: span 2; text-align: center; padding: 30px;">
-                    Belum ada data kejadian atau evakuasi terbaru.
+                <!-- Fallback Jika Kosong -->
+                <div class="text-muted w-100" style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+                    <i class="fas fa-folder-open text-muted mb-3" style="font-size: 40px;"></i>
+                    <h5 class="fw-bold">Belum ada informasi kejadian terbaru</h5>
                 </div>
             @endforelse
         </div>
     </div>
+    <!-- ========================================== -->
 
     <!-- SECTION 4: VIDEO EDUKASI -->
     <div class="section-container video-section">
@@ -788,118 +855,41 @@
             <h2 class="section-title">Info <span>Grafis</span></h2>
             <div class="section-divider"><i class="fas fa-circle"></i></div>
         </div>
-        
+             
         <div class="grafis-grid">
-            <div class="grafis-card"><img src="https://via.placeholder.com/400x400/f8fafc/9ca3af?text=Infografis+1" alt="Infografis"></div>
-            <div class="grafis-card"><img src="https://via.placeholder.com/400x400/f8fafc/9ca3af?text=Infografis+2" alt="Infografis"></div>
-            <div class="grafis-card"><img src="https://via.placeholder.com/400x400/f8fafc/9ca3af?text=Infografis+3" alt="Infografis"></div>
-            <div class="grafis-card"><img src="https://via.placeholder.com/400x400/f8fafc/9ca3af?text=Infografis+4" alt="Infografis"></div>
-            <div class="grafis-card"><img src="https://via.placeholder.com/400x400/f8fafc/9ca3af?text=Infografis+5" alt="Infografis"></div>
-            <div class="grafis-card"><img src="https://via.placeholder.com/400x400/f8fafc/9ca3af?text=Infografis+6" alt="Infografis"></div>
+            @forelse($daftar_infografis ?? [] as $info)
+                <div class="grafis-card">
+                    <img src="{{ asset('storage/' . $info->gambar) }}" alt="{{ $info->judul ?? 'Infografis' }}">
+                </div>
+            @empty
+                <div class="text-muted text-center w-100" style="grid-column: 1/-1;">Belum ada infografis yang diunggah.</div>
+            @endforelse
         </div>
-
-        <!-- Berita Media Sosial -->
+                <!-- Berita Media Sosial -->
         <div class="section-title-wrap" style="margin-top: 100px;">
             <h2 class="section-title">BERITA <span>MEDIA SOSIAL</span></h2>
             <div class="section-divider"><i class="fas fa-circle"></i></div>
         </div>
         
         <div class="berita-grid">
-            <!-- Item 1 -->
-            <div class="berita-card">
-                <img src="https://via.placeholder.com/400x300/1f2937/ffffff?text=Foto+Medsos+1" alt="Berita">
-                <div class="berita-content">
-                    <h3>Kebakaran Tumpukan Sampah 17 Oktober 2024 Kecamatan Telanaipura</h3>
-                    <div class="berita-meta">
-                        <i class="far fa-calendar-alt"></i> 04 Nov 2024 15:12:47
-                        <span>|</span>
-                        <i class="fab fa-instagram"></i> Sumber: instagram @damkarkotajambi
-                    </div>
-                    <div class="berita-footer">
-                        <a href="#">Selengkapnya</a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Item 2 -->
-            <div class="berita-card">
-                <img src="https://via.placeholder.com/400x300/1f2937/ffffff?text=Foto+Medsos+2" alt="Berita">
-                <div class="berita-content">
-                    <h3>Evakuasi Sarang Tawon 18 Oktober 2024 Kelurahan Pall Merah</h3>
-                    <div class="berita-meta">
-                        <i class="far fa-calendar-alt"></i> 04 Nov 2024 15:09:13
-                        <span>|</span>
-                        <i class="fab fa-instagram"></i> Sumber: instagram @damkarkotajambi
-                    </div>
-                    <div class="berita-footer">
-                        <a href="#">Selengkapnya</a>
+            @forelse($daftar_medsos ?? [] as $medsos)
+                <div class="berita-card">
+                    <img src="{{ asset('storage/' . $medsos->gambar) }}" alt="{{ $medsos->judul }}">
+                    <div class="berita-content">
+                        <h3>{{ $medsos->judul }}</h3>
+                        <div class="berita-meta">
+                            <i class="far fa-calendar-alt"></i> {{ \Carbon\Carbon::parse($medsos->tanggal)->format('d M Y H:i') }}
+                            <span>|</span>
+                            <i class="fab fa-instagram"></i> Sumber: {{ $medsos->sumber }}
+                        </div>
+                        <div class="berita-footer">
+                            <a href="{{ $medsos->link ?? '#' }}" target="_blank">Selengkapnya</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Item 3 -->
-            <div class="berita-card">
-                <img src="https://via.placeholder.com/400x300/1f2937/ffffff?text=Foto+Medsos+3" alt="Berita">
-                <div class="berita-content">
-                    <h3>Evakuasi Sarang Tawon 13 Oktober 2024 Kelurahan Bagan Pete</h3>
-                    <div class="berita-meta">
-                        <i class="far fa-calendar-alt"></i> 04 Nov 2024 15:05:29
-                        <span>|</span>
-                        <i class="fab fa-instagram"></i> Sumber: instagram @damkarkotajambi
-                    </div>
-                    <div class="berita-footer">
-                        <a href="#">Selengkapnya</a>
-                    </div>
-                </div>
-            </div>
-            
-             <!-- Item 4 -->
-            <div class="berita-card">
-                <img src="https://via.placeholder.com/400x300/1f2937/ffffff?text=Foto+Medsos+4" alt="Berita">
-                <div class="berita-content">
-                    <h3>Evakuasi Ular Sanca 13 Oktober 2024 Kelurahan Pasir Putih</h3>
-                    <div class="berita-meta">
-                        <i class="far fa-calendar-alt"></i> 04 Nov 2024 15:03:03
-                        <span>|</span>
-                        <i class="fab fa-instagram"></i> Sumber: instagram @damkarkotajambi
-                    </div>
-                    <div class="berita-footer">
-                        <a href="#">Selengkapnya</a>
-                    </div>
-                </div>
-            </div>
-            
-             <!-- Item 5 -->
-            <div class="berita-card">
-                <img src="https://via.placeholder.com/400x300/1f2937/ffffff?text=Foto+Medsos+5" alt="Berita">
-                <div class="berita-content">
-                    <h3>Evakuasi Sarang Tawon 12 Oktober 2024 di Lingkar Selatan</h3>
-                    <div class="berita-meta">
-                        <i class="far fa-calendar-alt"></i> 04 Nov 2024 09:12:37
-                        <span>|</span>
-                        <i class="fab fa-instagram"></i> Sumber: instagram @damkarkotajambi
-                    </div>
-                    <div class="berita-footer">
-                        <a href="#">Selengkapnya</a>
-                    </div>
-                </div>
-            </div>
-            
-             <!-- Item 6 -->
-            <div class="berita-card">
-                <img src="https://via.placeholder.com/400x300/1f2937/ffffff?text=Foto+Medsos+6" alt="Berita">
-                <div class="berita-content">
-                    <h3>Evakuasi Ular Sanca 11 OKtober 2024 di Pall Merah</h3>
-                    <div class="berita-meta">
-                        <i class="far fa-calendar-alt"></i> 04 Nov 2024 09:10:14
-                        <span>|</span>
-                        <i class="fab fa-instagram"></i> Sumber: instagram @damkarkotajambi
-                    </div>
-                    <div class="berita-footer">
-                        <a href="#">Selengkapnya</a>
-                    </div>
-                </div>
-            </div>
+            @empty
+                <div class="text-muted text-center w-100" style="grid-column: 1/-1;">Belum ada berita media sosial yang diunggah.</div>
+            @endforelse
         </div>
     </div>
 

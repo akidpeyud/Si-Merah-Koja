@@ -223,25 +223,40 @@
                 <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
                 <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
                 
-               <!-- KODE YANG BENAR UNTUK SIDEBAR -->
                 <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item">
-                <i class="fas fa-users-cog"></i> Kelola Redkar
+                    <i class="fas fa-users-cog"></i> Kelola Redkar
                 </a>
 
                 <div class="sidebar-title">Bagian Pemadaman & Penyelamatan</div>
                 <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
                 <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-users-cog"></i> Data Laporan</a>
 
-               <div class="sidebar-title">Bagian Sapra</div>
-<a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-tint"></i> Data Hidrant</a>
-<a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-tools"></i> Data Hidrant Kota Jambi</a>
-<a href="/sapra/logistik" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
+                <div class="sidebar-title">Bagian Sapra</div>
+                <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-tint"></i> Data Hidrant</a>
+                <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-tools"></i> Data Hidrant Kota Jambi</a>
+                <a href="/sapra/logistik" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
             @endif
 
             <!-- MODUL OPERATOR BERITA (Bisa diakses oleh Operator & Super User) -->
             @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title">Manajemen Berita</div>
                 <a href="/internal/operator/kelola-berita" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+            @endif
+            <!-- MODUL OPERATOR BERITA & KONTEN PUBLIK -->
+            @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
+                <div class="sidebar-title">Manajemen Berita & Konten</div>
+                
+                <a href="/internal/operator/kelola-berita" class="sidebar-item {{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
+                    <i class="fas fa-newspaper"></i> Input & Kelola Berita
+                </a>
+                
+                <a href="/internal/operator/infografis" class="sidebar-item {{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
+                    <i class="fas fa-image"></i> Kelola Info Grafis
+                </a>
+                
+                <a href="/internal/operator/berita-medsos" class="sidebar-item {{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
+                    <i class="fab fa-instagram"></i> Kelola Berita Medsos
+                </a>
             @endif
 
             <!-- PENGATURAN UMUM -->
