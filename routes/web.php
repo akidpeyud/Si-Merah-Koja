@@ -3,7 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\SapraController;
+
 use App\Models\Berita;
+
 
 // Route untuk halaman utama (Homepage) - DIPERBARUI AGAR BERITA MUNCUL
 Route::get('/', function () {
