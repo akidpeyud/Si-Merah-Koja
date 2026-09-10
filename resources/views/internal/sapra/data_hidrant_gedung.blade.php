@@ -26,14 +26,22 @@
         .btn-logout:hover { background-color: #dc2626; }
         
         .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
-        .sidebar { width: 260px; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; }
-        .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #4b5563; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 8px; transition: all 0.2s; }
+        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+        .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600; border-radius: 8px; transition: all 0.2s; }
         .sidebar-item:hover { background-color: #f8fafc; color: #0f172a; }
         .sidebar-item.active { background-color: #eff6ff; color: #2563eb; }
         .sidebar-item.active i { color: #2563eb; }
         .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #9ca3af; transition: color 0.2s; }
-        .sidebar-title { font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase; margin-top: 15px; margin-bottom: 5px; padding-left: 15px; letter-spacing: 1px; border-top: 1px dashed #e5e7eb; padding-top: 15px; }
         
+        /* --- SIDEBAR ACCORDION STYLES --- */
+        .sidebar-collapse-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 15px 15px 5px 15px; margin-top: 10px; background: transparent; border: none; border-top: 1px dashed #e5e7eb; text-align: left; font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
+        .sidebar-collapse-btn:hover { color: #4b5563; }
+        .toggle-icon { transition: transform 0.3s ease; font-size: 12px; }
+        .sidebar-collapse-btn.collapsed .toggle-icon { transform: rotate(0deg); }
+        .sidebar-collapse-btn:not(.collapsed) .toggle-icon { transform: rotate(180deg); color: #0284c7; }
+        .sidebar-collapse-btn:not(.collapsed) { color: #0284c7; }
+        .sidebar-submenu { display: flex; flex-direction: column; gap: 4px; padding-left: 10px; margin-top: 8px; }
+
         .main-content { flex: 1; padding: 40px 50px; overflow-y: auto; }
         
         /* TABEL & TABS STYLE MODERN */
@@ -56,6 +64,9 @@
         .btn-action:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .btn-edit { background-color: #f59e0b; color: white; }
         .btn-delete { background-color: #ef4444; color: white; }
+        
+        /* Input Search Focus Style */
+        #searchInput:focus { box-shadow: none; border-color: #cbd5e1; }
     </style>
 </head>
 <body>
@@ -79,67 +90,87 @@
     </nav>
 
     <div class="dashboard-container">
-       <aside class="sidebar">
-    <a href="/internal/index" class="sidebar-item">
-        <i class="fas fa-home"></i> Dashboard Utama
-    </a>
+        
+        <!-- SIDEBAR UTUH MANUAL -->
+        <aside class="sidebar" id="sidebarAccordion">
+            <a href="/internal/index" class="sidebar-item">
+                <i class="fas fa-home"></i> Dashboard Utama
+            </a>
 
-    <!-- 1. BAGIAN PENCEGAHAN -->
-    @if(in_array(Auth::user()->role, ['pencegahan', 'user', 'super_user']))
-        <div class="sidebar-title" style="border-top: none;">Bagian Pencegahan</div>
-        <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
-        <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
-        <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
-        <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
-        <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
-    @endif
+            @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
+                <!-- ACCORDION PENCEGAHAN -->
+                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePencegahan" aria-expanded="false">
+                    <span>Bagian Pencegahan</span>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+                <div class="collapse" id="collapsePencegahan" data-bs-parent="#sidebarAccordion">
+                    <div class="sidebar-submenu">
+                        <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
+                        <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
+                        <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
+                        <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
+                        <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
+                        <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
+                    </div>
+                </div>
 
-    <!-- 2. BAGIAN PEMADAMAN & PENYELAMATAN -->
-    @if(in_array(Auth::user()->role, ['pemadaman', 'user', 'super_user']))
-        <div class="sidebar-title">Bagian Pemadaman & Penyelamatan</div>
-        <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data & Laporan</a>
-        <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-file-alt"></i> Data Laporan</a>
-        <a href="#" class="sidebar-item"><i class="fas fa-users-cog"></i> Jadwal Piket Regu</a>
-        <a href="#" class="sidebar-item"><i class="fas fa-running"></i> Data Relawan Redkar</a>
-    @endif
+                <!-- ACCORDION PEMADAMAN -->
+                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="false">
+                    <span>Bagian Pemadaman</span>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+                <div class="collapse" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
+                    <div class="sidebar-submenu">
+                        <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
+                        <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-users-cog"></i> Data Laporan</a>
+                    </div>
+                </div>
 
-    <!-- 3. BAGIAN SAPRA -->
-    @if(in_array(Auth::user()->role, ['sapra', 'user', 'super_user']))
-        <div class="sidebar-title" style="border-top: none;">Bagian Sapra</div>
+                <!-- ACCORDION SAPRA (DIBUKA OTOMATIS) -->
+                <button class="sidebar-collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSapra" aria-expanded="true">
+                    <span>Bagian Sapra</span>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+                <div class="collapse show" id="collapseSapra" data-bs-parent="#sidebarAccordion">
+                    <div class="sidebar-submenu">
+                        <a href="/sapra/data_hidrant_gedung" class="sidebar-item active"><i class="fas fa-clipboard-list"></i> Data Hidrant</a>
+                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
+                        <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Mako & Pos</a>
+                        <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Mako & Pos</a>
+                        <a href="/sapra/logistik" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
+                    </div>
+                </div>
+            @endif
 
-<a href="/sapra/data_hidrant_gedung" class="sidebar-item">
-    <i class="fas fa-clipboard-list"></i> Data Hidrant
-</a>
+            @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
+                <!-- ACCORDION MANAJEMEN BERITA -->
+                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita" aria-expanded="false">
+                    <span>Manajemen Berita</span>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+                <div class="collapse" id="collapseBerita" data-bs-parent="#sidebarAccordion">
+                    <div class="sidebar-submenu">
+                        <a href="/internal/operator/kelola-berita" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+                        <a href="/internal/operator/infografis" class="sidebar-item"><i class="fas fa-image"></i> Kelola Info Grafis</a>
+                        <a href="/internal/operator/berita-medsos" class="sidebar-item"><i class="fab fa-instagram"></i> Kelola Berita Medsos</a>
+                    </div>
+                </div>
+            @endif
 
-<a href="/sapra/data-hidrant-kota" class="sidebar-item">
-    <i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi
-</a>
-
-<!-- Ganti Maintenance jadi Prasarana Mako & Pos -->
-<a href="/sapra/prasarana-mako" class="sidebar-item">
-    <i class="fas fa-building"></i> Prasarana Mako & Pos
-</a>
-
-<a href="/sapra/logistik" class="sidebar-item">
-    <i class="fas fa-box-open"></i> Logistik & Gudang
-</a>
-    @endif
-    
-    <!-- MODUL OPERATOR BERITA -->
-    @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
-        <div class="sidebar-title">Manajemen Berita</div>
-        <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
-        <a href="/internal/operator/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
-    @endif
-
-    <!-- PENGATURAN UMUM -->
-    <div class="sidebar-title">Pengaturan Akun</div>
-    <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
-    
-    @if(Auth::user()->role === 'super_user')
-        <a href="/internal/kelola-user" class="sidebar-item"><i class="fas fa-users"></i> Kelola Semua Pengguna</a>
-    @endif
-</aside>
+            <!-- ACCORDION PENGATURAN -->
+            <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePengaturan" aria-expanded="false">
+                <span>Pengaturan Akun</span>
+                <i class="fas fa-chevron-down toggle-icon"></i>
+            </button>
+            <div class="collapse" id="collapsePengaturan" data-bs-parent="#sidebarAccordion">
+                <div class="sidebar-submenu">
+                    <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
+                    @if(Auth::user()->role === 'super_user')
+                        <a href="/internal/kelola-user" class="sidebar-item"><i class="fas fa-users"></i> Kelola Semua Pengguna</a>
+                    @endif
+                </div>
+            </div>
+        </aside>
 
         <main class="main-content">
             
@@ -155,12 +186,24 @@
                     <h1 style="font-size: 26px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">Data Hidrant</h1>
                     <p style="color: #64748b; font-size: 14px; margin: 0;">Kelola data ketersediaan hidrant pilar, gedung, embung, dan danau.</p>
                 </div>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-primary fw-bold px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalTambah">
+                <div class="d-flex gap-2 align-items-center">
+                    <!-- FITUR SEARCH BAR -->
+                    <div class="input-group shadow-sm me-2" style="width: 280px; border-radius: 8px; overflow: hidden;">
+                        <span class="input-group-text bg-white border-end-0 text-muted" style="border-color: #cbd5e1;"><i class="fas fa-search"></i></span>
+                        <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari lokasi atau alamat..." style="border-color: #cbd5e1; font-size: 14px;">
+                    </div>
+                    
+                    <button class="btn btn-primary fw-bold px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalTambah" style="background-color: #0284c7; border: none;">
                         <i class="fas fa-plus me-1"></i> Tambah Data
                     </button>
-                    <a href="/sapra/hidran/cetak-pdf" class="btn btn-danger fw-bold px-4 shadow-sm">
-                        <i class="fas fa-file-pdf me-1"></i> Cetak PDF
+                    
+                    <!-- TOMBOL EXCEL BARU -->
+                    <a href="/sapra/hidran/cetak-excel" class="btn btn-success fw-bold px-3 shadow-sm" style="background-color: #10b981; border: none;">
+                        <i class="fas fa-file-excel me-1"></i> Excel
+                    </a>
+
+                    <a href="/sapra/hidran/cetak-pdf" class="btn btn-danger fw-bold px-3 shadow-sm" style="background-color: #ef4444; border: none;">
+                        <i class="fas fa-file-pdf me-1"></i> PDF
                     </a>
                 </div>
             </div>
@@ -199,10 +242,10 @@
                                 </thead>
                                 <tbody>
                                     @forelse($hidranPilar as $item)
-                                    <tr>
+                                    <tr class="data-row">
                                         <td class="text-center fw-bold text-dark">{{ $item->no_urut }}</td>
-                                        <td class="fw-bold text-dark">{{ $item->nama_gedung }}</td>
-                                        <td>{{ $item->alamat }}</td>
+                                        <td class="fw-bold text-dark data-name">{{ $item->nama_gedung }}</td>
+                                        <td class="data-address">{{ $item->alamat }}</td>
                                         <td class="text-center fw-medium">{{ $item->kode_maps ?? '-' }}</td>
                                         <td class="text-center"><span class="badge-qty">{{ $item->jumlah ?? '0' }} Unit</span></td>
                                         <td class="text-center">
@@ -236,8 +279,8 @@
                                                             </select>
                                                         </div>
                                                         <div class="mb-3">
-                                                            <label class="form-label fw-bold small">No Urut</label>
-                                                            <input type="number" class="form-control" name="no_urut" value="{{ $item->no_urut }}" required>
+                                                            <label class="form-label fw-bold small">No Urut (Otomatis dari Sistem)</label>
+                                                            <input type="number" class="form-control bg-light" name="no_urut" value="{{ $item->no_urut }}" readonly>
                                                         </div>
                                                         <div class="mb-3">
                                                             <label class="form-label fw-bold small">Nama Gedung / Lokasi</label>
@@ -307,10 +350,10 @@
                                 </thead>
                                 <tbody>
                                     @forelse($hidranGedung as $item)
-                                    <tr>
+                                    <tr class="data-row">
                                         <td class="text-center fw-bold text-dark">{{ $item->no_urut }}</td>
-                                        <td class="fw-bold text-dark">{{ $item->nama_gedung }}</td>
-                                        <td>{{ $item->alamat }}</td>
+                                        <td class="fw-bold text-dark data-name">{{ $item->nama_gedung }}</td>
+                                        <td class="data-address">{{ $item->alamat }}</td>
                                         <td class="text-center fw-medium">{{ $item->kode_maps ?? '-' }}</td>
                                         <td class="text-center"><span class="badge-qty">{{ $item->jumlah ?? '0' }} Unit</span></td>
                                         <td class="text-center">
@@ -344,8 +387,8 @@
                                                             </select>
                                                         </div>
                                                         <div class="mb-3">
-                                                            <label class="form-label fw-bold small">No Urut</label>
-                                                            <input type="number" class="form-control" name="no_urut" value="{{ $item->no_urut }}" required>
+                                                            <label class="form-label fw-bold small">No Urut (Otomatis dari Sistem)</label>
+                                                            <input type="number" class="form-control bg-light" name="no_urut" value="{{ $item->no_urut }}" readonly>
                                                         </div>
                                                         <div class="mb-3">
                                                             <label class="form-label fw-bold small">Nama Gedung</label>
@@ -415,10 +458,10 @@
                                 </thead>
                                 <tbody>
                                     @forelse($embung as $item)
-                                    <tr>
+                                    <tr class="data-row">
                                         <td class="text-center fw-bold text-dark">{{ $item->no_urut }}</td>
-                                        <td class="fw-bold text-dark">{{ $item->nama_gedung }}</td>
-                                        <td>{{ $item->alamat }}</td>
+                                        <td class="fw-bold text-dark data-name">{{ $item->nama_gedung }}</td>
+                                        <td class="data-address">{{ $item->alamat }}</td>
                                         <td class="text-center fw-medium">{{ $item->kode_maps ?? '-' }}</td>
                                         <td class="text-center"><span class="badge-area">{{ $item->luas ?? '-' }}</span></td>
                                         <td class="text-center">
@@ -452,8 +495,8 @@
                                                             </select>
                                                         </div>
                                                         <div class="mb-3">
-                                                            <label class="form-label fw-bold small">No Urut</label>
-                                                            <input type="number" class="form-control" name="no_urut" value="{{ $item->no_urut }}" required>
+                                                            <label class="form-label fw-bold small">No Urut (Otomatis dari Sistem)</label>
+                                                            <input type="number" class="form-control bg-light" name="no_urut" value="{{ $item->no_urut }}" readonly>
                                                         </div>
                                                         <div class="mb-3">
                                                             <label class="form-label fw-bold small">Nama Lokasi</label>
@@ -512,10 +555,10 @@
                                 </thead>
                                 <tbody>
                                     @forelse($danau as $item)
-                                    <tr>
+                                    <tr class="data-row">
                                         <td class="text-center fw-bold text-dark">{{ $item->no_urut }}</td>
-                                        <td class="fw-bold text-dark">{{ $item->nama_gedung }}</td>
-                                        <td>{{ $item->alamat }}</td>
+                                        <td class="fw-bold text-dark data-name">{{ $item->nama_gedung }}</td>
+                                        <td class="data-address">{{ $item->alamat }}</td>
                                         <td class="text-center fw-medium">{{ $item->kode_maps ?? '-' }}</td>
                                         <td class="text-center"><span class="badge-area">{{ $item->luas ?? '-' }}</span></td>
                                         <td class="text-center">
@@ -549,8 +592,8 @@
                                                             </select>
                                                         </div>
                                                         <div class="mb-3">
-                                                            <label class="form-label fw-bold small">No Urut</label>
-                                                            <input type="number" class="form-control" name="no_urut" value="{{ $item->no_urut }}" required>
+                                                            <label class="form-label fw-bold small">No Urut (Otomatis dari Sistem)</label>
+                                                            <input type="number" class="form-control bg-light" name="no_urut" value="{{ $item->no_urut }}" readonly>
                                                         </div>
                                                         <div class="mb-3">
                                                             <label class="form-label fw-bold small">Nama Danau</label>
@@ -618,10 +661,6 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold small">No Urut</label>
-                            <input type="number" class="form-control" name="no_urut" placeholder="Cth: 1" required>
-                        </div>
-                        <div class="mb-3">
                             <label class="form-label fw-bold small">Nama Gedung / Lokasi</label>
                             <input type="text" class="form-control" name="nama_gedung" placeholder="Masukkan nama..." required>
                         </div>
@@ -653,6 +692,25 @@
         </div>
     </div>
 
+    <!-- JAVASCRIPT UNTUK SEARCH BAR -->
+    <script>
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            let filter = this.value.toLowerCase();
+            let rows = document.querySelectorAll('.data-row');
+            
+            rows.forEach(row => {
+                let nama = row.querySelector('.data-name').textContent.toLowerCase();
+                let alamat = row.querySelector('.data-address').textContent.toLowerCase();
+                
+                if(nama.includes(filter) || alamat.includes(filter)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
