@@ -12,22 +12,22 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background-color: #f8fafc; color: #1e293b; }
-        .navbar-internal { background-color: #0f172a; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .navbar-internal { background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
         .nav-brand img { height: 40px; }
-        .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 0.5px; }
-        .badge-internal { background: #10b981; color: white; font-size: 10px; padding: 4px 8px; border-radius: 6px; font-weight: 700; margin-left: 10px; }
-        .badge-role { background: #3b82f6; color: white; font-size: 11px; padding: 4px 12px; border-radius: 50px; font-weight: 700; text-transform: uppercase; }
+        .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; }
+        .badge-internal { background: #10b981; color: white; font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 700; margin-left: 10px; }
+        .badge-role { background: #3b82f6; color: white; font-size: 11px; padding: 4px 10px; border-radius: 50px; font-weight: 700; text-transform: uppercase; }
         .user-menu { display: flex; align-items: center; gap: 20px; }
-        .user-profile { display: flex; align-items: center; gap: 10px; color: #f8fafc; font-size: 14px; font-weight: 600; }
-        .user-profile i { font-size: 22px; color: #94a3b8; }
+        .user-profile { display: flex; align-items: center; gap: 10px; color: #e5e7eb; font-size: 14px; font-weight: 600; }
         .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
-        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e2e8f0; padding: 25px 20px; display: flex; flex-direction: column; gap: 5px; }
-        .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #64748b; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 10px; transition: all 0.2s; }
-        .sidebar-item:hover { background-color: #f1f5f9; color: #0f172a; }
-        .sidebar-item.active { background-color: #eff6ff; color: #2563eb; border-left: 4px solid #2563eb; }
-        .sidebar-item i { font-size: 16px; width: 20px; text-align: center; }
-        .sidebar-title { font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin: 20px 0 10px 10px; letter-spacing: 1px; }
+        .sidebar { width: 260px; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; }
+        .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600; border-radius: 8px; transition: all 0.2s; }
+        .sidebar-item:hover { background-color: #f3f4f6; color: #111827; }
+        .sidebar-item.active { background-color: #e0f2fe; color: #0284c7; }
+        .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #9ca3af; }
+        .sidebar-title { font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase; margin-top: 15px; margin-bottom: 5px; padding-left: 15px; border-top: 1px dashed #e5e7eb; padding-top: 15px; }
+        
         .main-content { flex: 1; padding: 40px; }
         .page-header h1 { font-size: 26px; font-weight: 800; color: #0f172a; }
         
@@ -51,28 +51,70 @@
 <body>
     <nav class="navbar-internal">
         <a href="#" class="nav-brand">
-            <span class="title">SIMERAH KOJA <span class="badge-internal">INTERNAL APP</span></span>
+            <span class="title">SIMERAH KOJA </span>
         </a>
         <div class="user-menu">
             <div class="user-profile">
-                <span class="badge-role {{ Auth::user()->role ?? '' }}">{{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}</span>
+                <span class="badge-role {{ Auth::user()->role ?? '' }}">
+                    @if(Auth::user()->role === 'user')
+                        PEGAWAI
+                    @else
+                        {{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}
+                    @endif
+                </span>
                 <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
                 <i class="fas fa-user-circle"></i>
             </div>
-            <a href="/internal/pencegahan/layanan-inspeksi" class="btn btn-outline-light btn-sm" style="border-radius: 8px; font-weight: 600;">Kembali</a>
+            <a href="/internal/pencegahan/layanan-inspeksi" class="btn btn-outline-light btn-sm" style="border-radius: 8px; font-weight: 600;"><i class="fas fa-arrow-left me-1"></i> Kembali</a>
         </div>
     </nav>
 
     <div class="dashboard-container">
+        
+        <!-- SIDEBAR TERINTEGRASI -->
         <aside class="sidebar">
-            <a href="/internal/index" class="sidebar-item"><i class="fas fa-home"></i> Dashboard Utama</a>
+            <a href="/internal/index" class="sidebar-item">
+                <i class="fas fa-home"></i> Dashboard Utama
+            </a>
 
-            <div class="sidebar-title">Bagian Pencegahan</div>
-            <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item active"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
-            <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
-            <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
-            <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
-            <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
+            <!-- MODUL OPERASIONAL (Bisa diakses oleh User & Super User) -->
+            @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
+                <div class="sidebar-title">Bagian Pencegahan</div>
+                <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item active"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
+                <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
+                <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
+                <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
+                <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
+
+                <div class="sidebar-title">Bagian Pemadaman & Penyelamatan</div>
+                <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
+                <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-users-cog"></i> Data Laporan</a>
+
+                <div class="sidebar-title">Bagian Sapra</div>
+                <a href="#" class="sidebar-item"><i class="fas fa-truck-monster"></i> Kelola Armada Mobil</a>
+                <a href="#" class="sidebar-item"><i class="fas fa-tools"></i> Maintenance Peralatan</a>
+                <a href="#" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
+            @endif
+
+            <!-- MODUL OPERATOR BERITA (Bisa diakses oleh Operator & Super User) -->
+            @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
+                <div class="sidebar-title">Manajemen Berita</div>
+                <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+                <a href="/internal/operator/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
+            @endif
+
+            <!-- PENGATURAN UMUM -->
+            <div class="sidebar-title">Pengaturan Akun</div>
+            <a href="/internal/profil" class="sidebar-item">
+                <i class="fas fa-user-edit"></i> Profil Saya
+            </a>
+            
+            <!-- Pengaturan Super User Khusus -->
+            @if(Auth::user()->role === 'super_user')
+                <a href="/internal/kelola-user" class="sidebar-item">
+                    <i class="fas fa-users"></i> Kelola Semua Pengguna
+                </a>
+            @endif
         </aside>
 
         <main class="main-content">

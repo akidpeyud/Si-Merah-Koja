@@ -15,7 +15,8 @@
         .nav-brand img { height: 40px; }
         .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 0.5px; }
         .badge-internal { background: #10b981; color: white; font-size: 10px; padding: 4px 8px; border-radius: 6px; font-weight: 700; margin-left: 10px; }
-        .badge-role { background: #3b82f6; color: white; font-size: 11px; padding: 4px 12px; border-radius: 50px; font-weight: 700; text-transform: uppercase; }
+        .badge-role { background: #3b82f6; color: white; font-size: 11px; padding: 4px 10px; border-radius: 50px; font-weight: 700; text-transform: uppercase; }
+        
         .user-menu { display: flex; align-items: center; gap: 20px; }
         .user-profile { display: flex; align-items: center; gap: 10px; color: #f8fafc; font-size: 14px; font-weight: 600; }
         .user-profile i { font-size: 22px; color: #94a3b8; }
@@ -58,35 +59,51 @@
     <nav class="navbar-internal">
         <a href="#" class="nav-brand">
             <img src="/images/simerahkoja.png" alt="Logo Simerah" onerror="this.style.display='none'">
-            <span class="title">SIMERAH KOJA <span class="badge-internal">INTERNAL APP</span></span>
+              <span class="title">SIMERAH KOJA</span>
         </a>
-        <div class="user-menu">
-            <div class="user-profile">
-                <span class="badge-role {{ Auth::user()->role ?? '' }}">{{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}</span>
-                <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
-                <i class="fas fa-user-circle"></i>
-            </div>
-            <form action="/logout" method="POST" style="margin: 0;">
-                @csrf
-                <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
-            </form>
-        </div>
+<div class="user-menu">
+    <div class="user-profile">
+        <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
+        <i class="fas fa-user-circle"></i>
+    </div>
+    <form action="/logout" method="POST" style="margin: 0;">
+        @csrf
+        <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
+    </form>
+</div>
     </nav>
     <div class="dashboard-container">
         <aside class="sidebar">
             <a href="/internal/index" class="sidebar-item"><i class="fas fa-home"></i> Dashboard Utama</a>
-            
-            <!-- Menu Pencegahan (Gembok sudah dibuka) -->
-            <div class="sidebar-title">Bagian Pencegahan</div>
-            <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item active"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
-            <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
-            <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
-            <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
-            <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
-            
-            <!-- Pengaturan Akun -->
+            @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
+                <div class="sidebar-title">Bagian Pencegahan</div>
+                <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item active"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
+                <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
+                <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
+                <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
+                <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
+                <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item">
+                <i class="fas fa-users-cog"></i> Kelola Redkar
+                </a>
+                <div class="sidebar-title">Bagian Pemadaman & Penyelamatan</div>
+                <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
+                <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-users-cog"></i> Data Laporan</a>
+
+                <div class="sidebar-title">Bagian Sapra</div>
+                <a href="#" class="sidebar-item"><i class="fas fa-truck-monster"></i> Kelola Armada Mobil</a>
+                <a href="#" class="sidebar-item"><i class="fas fa-tools"></i> Maintenance Peralatan</a>
+                <a href="#" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
+            @endif
             <div class="sidebar-title">Pengaturan Akun</div>
-            <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
+            <a href="/internal/profil" class="sidebar-item">
+                <i class="fas fa-user-edit"></i> Profil Saya
+            </a>
+            
+            @if(Auth::user()->role === 'super_user')
+                <a href="/internal/kelola-user" class="sidebar-item">
+                    <i class="fas fa-users"></i> Kelola Semua Pengguna
+                </a>
+            @endif
         </aside>
 
         <main class="main-content">
@@ -131,23 +148,30 @@
                                 <th width="10%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
-                       <tbody>
-                            @forelse($data_inspeksi as $no => $item)
+                        <tbody id="tableBody">
                             <tr>
-                                <td>{{ $no + 1 }}</td>
+                                <td>1</td>
+                                <td><span class="title-text">12 Okt 2026</span><span class="sub-text">10:00 WIB</span></td>
                                 <td>
-                                    <span class="title-text">{{ $item->tanggal_inspeksi }}</span>
+                                    <span class="title-text">Inspeksi Sistem Hidran Gedung A</span>
+                                    <span class="sub-text">Gedung Walikota Jambi</span>
                                 </td>
+                                <td><span class="title-text">Tim Inspeksi 1</span><span class="sub-text">3 Orang</span></td>
+                                <td><span class="badge-soft-success status-badge"><i class="fas fa-check-circle me-1"></i> Selesai</span></td>
+                                <td class="text-center">
+                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><span class="title-text">15 Okt 2026</span><span class="sub-text">13:30 WIB</span></td>
                                 <td>
-                                    <span class="title-text">{{ $item->nama_instansi }}</span>
-                                    <span class="sub-text">{{ $item->alamat }}</span>
+                                    <span class="title-text">Pengecekan APAR dan Jalur Evakuasi</span>
+                                    <span class="sub-text">Mall WTC Batanghari</span>
                                 </td>
-                                <td>
-                                    <span class="title-text">{{ $item->tim_petugas }}</span>
-                                </td>
-                                <td>
-                                    <span class="badge badge-soft-primary">Terjadwal</span>
-                                </td>
+                                <td><span class="title-text">Tim Inspeksi 2</span><span class="sub-text">4 Orang</span></td>
+                                <td><span class="badge-soft-primary status-badge"><i class="fas fa-calendar-alt me-1"></i> Terjadwal</span></td>
                                 <td class="text-center">
                                     <a href="/internal/pencegahan/layanan-inspeksi/lihat/{{ $item->id }}" class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
                                     <a href="/internal/pencegahan/layanan-inspeksi/edit/{{ $item->id }}" class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></a>

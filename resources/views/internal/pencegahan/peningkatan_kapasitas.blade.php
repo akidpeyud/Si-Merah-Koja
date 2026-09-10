@@ -17,11 +17,16 @@
         .nav-brand img { height: 40px; }
         .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 0.5px; }
         .badge-internal { background: #10b981; color: white; font-size: 10px; padding: 4px 8px; border-radius: 6px; font-weight: 700; margin-left: 10px; }
+        
         .badge-role { background: #3b82f6; color: white; font-size: 11px; padding: 4px 12px; border-radius: 50px; font-weight: 700; text-transform: uppercase; }
+        .badge-role.super_user { background: #ef4444; }
+        .badge-role.operator { background: #8b5cf6; }
+        .badge-role.user { background: #10b981; }
+
         .user-menu { display: flex; align-items: center; gap: 20px; }
         .user-profile { display: flex; align-items: center; gap: 10px; color: #f8fafc; font-size: 14px; font-weight: 600; }
         .user-profile i { font-size: 22px; color: #94a3b8; }
-        .btn-logout { background-color: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; transition: all 0.2s; }
+        .btn-logout { background-color: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; transition: all 0.2s; cursor: pointer; }
         .btn-logout:hover { background-color: #ef4444; color: white; }
         .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
         .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e2e8f0; padding: 25px 20px; display: flex; flex-direction: column; gap: 5px; }
@@ -59,36 +64,65 @@
     <nav class="navbar-internal">
         <a href="#" class="nav-brand">
             <img src="/images/simerahkoja.png" alt="Logo Simerah" onerror="this.style.display='none'">
-            <span class="title">SIMERAH KOJA <span class="badge-internal">INTERNAL APP</span></span>
+              <span class="title">SIMERAH KOJA</span>
         </a>
-        <div class="user-menu">
-            <div class="user-profile">
-                <span class="badge-role {{ Auth::user()->role ?? '' }}">{{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}</span>
-                <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
-                <i class="fas fa-user-circle"></i>
-            </div>
-            <form action="/logout" method="POST" style="margin: 0;">
-                @csrf
-                <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
-            </form>
-        </div>
+<div class="user-menu">
+    <div class="user-profile">
+        <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
+        <i class="fas fa-user-circle"></i>
+    </div>
+    <form action="/logout" method="POST" style="margin: 0;">
+        @csrf
+        <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
+    </form>
+</div>
     </nav>
 
     <div class="dashboard-container">
         <aside class="sidebar">
-            <a href="/internal/index" class="sidebar-item"><i class="fas fa-home"></i> Dashboard Utama</a>
-            
-            <!-- Menu Pencegahan (Gembok sudah dibuka) -->
-            <div class="sidebar-title">Bagian Pencegahan</div>
-            <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
-            <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
-            <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
-            <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
-            <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
-            
-            <!-- Pengaturan Akun -->
+            <a href="/internal/index" class="sidebar-item">
+                <i class="fas fa-home"></i> Dashboard Utama
+            </a>
+
+             @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
+                <div class="sidebar-title">Bagian Pencegahan</div>
+                <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
+                <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
+                <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
+                <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
+                <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item active"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
+                <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item">
+                <i class="fas fa-users-cog"></i> Kelola Redkar
+                </a>
+                <div class="sidebar-title">Bagian Pemadaman & Penyelamatan</div>
+                <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
+                <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-users-cog"></i> Data Laporan</a>
+
+                <div class="sidebar-title">Bagian Sapra</div>
+                <a href="#" class="sidebar-item"><i class="fas fa-truck-monster"></i> Kelola Armada Mobil</a>
+                <a href="#" class="sidebar-item"><i class="fas fa-tools"></i> Maintenance Peralatan</a>
+                <a href="#" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
+            @endif
+
+            <!-- MODUL OPERATOR BERITA -->
+            @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
+                <div class="sidebar-title">Manajemen Berita</div>
+                <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+                <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item">
+                <i class="fas fa-users-cog"></i> Kelola Redkar
+                </a>
+            @endif
+
             <div class="sidebar-title">Pengaturan Akun</div>
-            <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
+            <a href="/internal/profil" class="sidebar-item">
+                <i class="fas fa-user-edit"></i> Profil Saya
+            </a>
+            
+            @if(Auth::user()->role === 'super_user')
+                <a href="/internal/kelola-user" class="sidebar-item">
+                    <i class="fas fa-users"></i> Kelola Semua Pengguna
+                </a>
+            @endif
         </aside>
 
         <main class="main-content">
@@ -137,22 +171,31 @@
                                 <th width="10%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @forelse($data_peningkatan as $no => $item)
+                        <tbody id="tableBody">
+                            <!-- Data baris tabel di sini -->
                             <tr>
-                                <td>{{ $no + 1 }}</td>
+                                <td>1</td>
+                                <td><span class="title-text">10 - 15 Okt 2026</span></td>
                                 <td>
-                                    <!-- Asumsi kolom di DB lu: tanggal_pelaksanaan -->
-                                    <span class="title-text">{{ $item->tanggal_pelaksanaan ?? '-' }}</span>
+                                    <span class="title-text">Diklat Inspektur Kebakaran Tingkat I</span>
+                                    <span class="sub-text">Kementerian Dalam Negeri</span>
                                 </td>
+                                <td><span class="title-text">Diklat Teknis</span><span class="sub-text">5 Anggota</span></td>
+                                <td><span class="badge-soft-warning status-badge"><i class="fas fa-clock me-1"></i> Menunggu</span></td>
+                                <td class="text-center">
+                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><span class="title-text">01 - 03 Sep 2026</span></td>
                                 <td>
-                                    <!-- Asumsi kolom di DB lu: nama_kegiatan dan lokasi -->
-                                    <span class="title-text">{{ $item->nama_kegiatan ?? '-' }}</span>
-                                    <span class="sub-text">{{ $item->lokasi ?? '-' }}</span>
+                                    <span class="title-text">Bimtek Penyusunan SOP Pemadaman</span>
+                                    <span class="sub-text">Pusdiklat Damkar Ciracas</span>
                                 </td>
-                                <td>
-                                    <span class="badge badge-soft-primary">Aktif</span>
-                                </td>
+                                <td><span class="title-text">Bimtek</span><span class="sub-text">2 Anggota</span></td>
+                                <td><span class="badge-soft-success status-badge"><i class="fas fa-check-circle me-1"></i> Selesai</span></td>
                                 <td class="text-center">
                                     <a href="#" class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
                                     <a href="#" class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></a>

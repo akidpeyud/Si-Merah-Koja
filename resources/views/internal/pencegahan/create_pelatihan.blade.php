@@ -45,7 +45,7 @@
 <body>
     <nav class="navbar-internal">
         <a href="#" class="nav-brand">
-            <span class="title">SIMERAH KOJA <span class="badge-internal">INTERNAL APP</span></span>
+            <span class="title">SIMERAH KOJA </span>
         </a>
         <div class="user-menu">
             <div class="user-profile">
@@ -79,7 +79,7 @@
             </div>
 
             <div class="form-card">
-                <form action="/internal/pencegahan/pelatihan/tambah" method="POST" enctype="multipart/form-data">
+                <form action="#" method="POST" enctype="multipart/form-data">
                     @csrf
                     
                     <div class="row mb-4">
