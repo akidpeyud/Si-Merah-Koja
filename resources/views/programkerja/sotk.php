@@ -392,8 +392,8 @@
                 <ul class="dropdown-menu-custom">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
-                    <li><a href="/layanan-fasilitas/pks">PKS</a></li>
                     <li><a href="/layanan-fasilitas/skk">SKK</a></li>
+
                 </ul>
             </li>  
 
