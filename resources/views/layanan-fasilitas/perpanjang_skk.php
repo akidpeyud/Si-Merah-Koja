@@ -59,9 +59,9 @@
         .breadcrumb span { color: #ef4444; margin: 0 5px;}
         .breadcrumb .active { color: #ef4444; }
 
-        /* --- IKON LAYANAN KLIKABEL --- */
+        /* --- IKON LAYANAN KLIKABEL (Disesuaikan jadi 3 kolom) --- */
         .service-icons-container {
-            max-width: 1100px; margin: -40px auto 50px; display: grid; grid-template-columns: repeat(4, 1fr);
+            max-width: 900px; margin: -40px auto 50px; display: grid; grid-template-columns: repeat(3, 1fr);
             gap: 20px; background: white; padding: 30px; border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.08); position: relative; z-index: 5;
         }
@@ -82,7 +82,6 @@
         .bg-gray { background-color: #9ca3af; }
         .bg-pink { background-color: #ec4899; }
         .bg-orange { background-color: #f97316; }
-        .bg-purple { background-color: #8b5cf6; }
         
         .service-icon-box h3 { font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 8px; transition: color 0.3s; }
         .service-icon-box p { font-size: 11px; color: #64748b; line-height: 1.5; }
@@ -111,7 +110,7 @@
         .btn-detail { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; margin-top: 5px;}
         .btn-detail:hover { background: #dc2626; }
 
-        /* CSS BARU UNTUK KOTAK TAMPILKAN DETAIL (Mekanisme) */
+        /* KOTAK TAMPILKAN DETAIL (Mekanisme) */
         .detail-content {
             display: none; 
             margin-top: 10px;
@@ -306,7 +305,7 @@
         </div>
     </div>
 
-    <!-- DERETAN IKON KLIKABEL (Perpanjang SKK yang Aktif) -->
+    <!-- DERETAN IKON KLIKABEL (Tanpa Izin Penjualan & diset 3 kolom) -->
     <div class="service-icons-container">
         <!-- RPKBGL -->
         <a href="/layanan-fasilitas/layanan_perizinan" class="service-icon-link">
@@ -332,15 +331,6 @@
                 <div class="icon-top-box bg-orange"><i class="fas fa-shield-alt"></i></div>
                 <h3>Perpanjang SKK</h3>
                 <p>Layanan Perizinan Perpanjangan Sertifikat Keamanan Kebakaran</p>
-            </div>
-        </a>
-
-        <!-- Izin Penjualan -->
-        <a href="/layanan-fasilitas/izin_penjualan" class="service-icon-link">
-            <div class="service-icon-box">
-                <div class="icon-top-box bg-purple"><i class="fas fa-fire-extinguisher"></i></div>
-                <h3>Izin Penjualan</h3>
-                <p>Layanan Perizinan Penjualan Alat-alat Pencegahan...</p>
             </div>
         </a>
     </div>
@@ -578,7 +568,6 @@
                     <li><a href="https://damkar.jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> Official Damkar</a></li>
                     <li><a href="https://jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> Website Jambikota</a></li>
                     <li><a href="https://sikoja.jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> SIKOJA</a></li>
-                  
                 </ul>
             </div>
         </div>
@@ -639,7 +628,6 @@
         function tutupModal() {
             modal.style.display = "none";
         }
-        // Menutup modal jika klik di luar kotak putih
         window.onclick = function(event) {
             if (event.target == modal) {
                 modal.style.display = "none";

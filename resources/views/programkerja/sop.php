@@ -353,10 +353,8 @@
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
                     <li><a href="/layanan-fasilitas/pks">PKS</a></li>
                     <li><a href="/layanan-fasilitas/skk">SKK</a></li>
-                    <li><a href="/layanan-fasilitas/perpanjang_skk">PERPANJANG SKK</a></li>
-                    <li><a href="/layanan-fasilitas/izin_penjualan">IZIN PENJUALAN</a></li>
                 </ul>
-            </li>
+            </li>  
             
             <li><a href="/redkar">Redkar</a></li>
             <li><a href="/login" class="btn-login">LOGIN</a></li>

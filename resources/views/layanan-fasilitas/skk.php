@@ -21,7 +21,7 @@
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px 50px; background-color: #0f172a; 
             border-bottom: 4px solid #ef4444; 
-            position: sticky; top: 0; z-index: 9999; /* Bikin nempel saat discroll */
+            position: sticky; top: 0; z-index: 9999;
         }
         .nav-logos { display: flex; gap: 15px; align-items: center; }
         .nav-logos a { display: block; text-decoration: none; }
@@ -60,9 +60,9 @@
         .breadcrumb span { color: #ef4444; margin: 0 5px;}
         .breadcrumb .active { color: #ef4444; }
 
-        /* --- IKON LAYANAN KLIKABEL --- */
+        /* --- IKON LAYANAN KLIKABEL (Disesuaikan jadi 3 kolom) --- */
         .service-icons-container {
-            max-width: 1100px; margin: -40px auto 50px; display: grid; grid-template-columns: repeat(4, 1fr);
+            max-width: 900px; margin: -40px auto 50px; display: grid; grid-template-columns: repeat(3, 1fr);
             gap: 20px; background: white; padding: 30px; border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.08); position: relative; z-index: 5;
         }
@@ -81,7 +81,6 @@
         .bg-gray { background-color: #9ca3af; }
         .bg-pink { background-color: #ec4899; }
         .bg-orange { background-color: #f97316; }
-        .bg-purple { background-color: #8b5cf6; }
         
         .service-icon-box h3 { font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 8px; transition: color 0.3s; }
         .service-icon-box p { font-size: 11px; color: #64748b; line-height: 1.5; }
@@ -123,7 +122,7 @@
         .detail-content li { font-size: 12px; color: #64748b; line-height: 1.6; margin-bottom: 8px; list-style-type: circle; }
         .detail-content li:last-child { margin-bottom: 0; }
 
-        /* --- CSS UNTUK MODAL POP-UP (LIAT DETAIL PERSYARATAN) --- */
+        /* --- CSS UNTUK MODAL POP-UP --- */
         .modal-overlay {
             display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%;
             overflow: auto; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(3px); animation: fadeIn 0.3s;
@@ -206,7 +205,6 @@
     <!-- NAVBAR TEMA GELAP -->
     <nav class="navbar">
         <div class="nav-logos">
-            <!-- LOGO KLIKABEL MENUJU HOMEPAGE -->
             <a href="/"><img src="/images/jambi.png" alt="Logo Pemkot"></a>
             <a href="/"><img src="/images/logo.png" alt="Logo Damkar"></a>
             <a href="/"><img src="/images/logo-redkar.png" alt="Logo Redkar"></a>
@@ -251,7 +249,7 @@
         </div>
     </div>
 
-    <!-- DERETAN IKON KLIKABEL -->
+    <!-- DERETAN IKON KLIKABEL (Tanpa Izin Penjualan & diset 3 kolom) -->
     <div class="service-icons-container">
         <!-- RPKBGL -->
         <a href="/layanan-fasilitas/layanan_perizinan" class="service-icon-link">
@@ -277,15 +275,6 @@
                 <div class="icon-top-box bg-orange"><i class="fas fa-shield-alt"></i></div>
                 <h3>Perpanjang SKK</h3>
                 <p>Layanan Perizinan Perpanjangan Sertifikat Keamanan Kebakaran</p>
-            </div>
-        </a>
-
-        <!-- Izin Penjualan -->
-        <a href="/layanan-fasilitas/izin_penjualan" class="service-icon-link">
-            <div class="service-icon-box">
-                <div class="icon-top-box bg-purple"><i class="fas fa-fire-extinguisher"></i></div>
-                <h3>Izin Penjualan</h3>
-                <p>Layanan Perizinan Penjualan Alat-alat Pencegahan...</p>
             </div>
         </a>
     </div>
@@ -322,7 +311,6 @@
                         <ul>
                             <li>Menginput Formulir Sertifikat Keamanan Kebakaran (SKK) secara elektronik melalui simerah.jambikota.go.id</li>
                             <li>Upload Surat Permohonan Bermaterai (<a href="#">Download Surat Permohonan</a>)</li>
-                            <!-- POPUP LIHAT DETAIL -->
                             <li>Upload Detail Persyaratan SKK Lainnya<br>
                                 <a class="link-detail" onclick="bukaModal()">(Liat Detail)</a>
                             </li>
@@ -330,7 +318,6 @@
                     </div>
                 </li>
 
-                <!-- TOMBOL DETAIL DAN KONTEN DETAIL BARU -->
                 <li class="info-item">
                     <div class="info-header">
                         <div class="icon-red"><i class="fas fa-envelope"></i></div>
@@ -523,14 +510,12 @@
                     <li><a href="https://damkar.jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> Official Damkar</a></li>
                     <li><a href="https://jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> Website Jambikota</a></li>
                     <li><a href="https://sikoja.jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> SIKOJA</a></li>
-                 
                 </ul>
             </div>
         </div>
         
         <div class="footer-copyright">
             <div>SIMERAHKOJA © 2026 / ALL RIGHTS RESERVED</div>
-            <!-- FOOTER SOCIAL LINKS -->
             <div class="footer-social">
                 <a href="mailto:damkar.jbi@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
                 <a href="https://twitter.com/damkarkotajambi" target="_blank" title="Twitter / X"><i class="fab fa-twitter"></i></a>
@@ -542,7 +527,7 @@
         </div>
     </div>
 
-    <!-- STRUKTUR MODAL POP-UP (DETAIL PERSYARATAN SKK) -->
+    <!-- STRUKTUR MODAL POP-UP -->
     <div id="modalPersyaratan" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-header">
@@ -567,7 +552,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT UNTUK MENGATUR TOMBOL TAMPILKAN DETAIL & POPUP MODAL -->
+    <!-- SCRIPT -->
     <script>
         function toggleDetail() {
             var detailDiv = document.getElementById("detailProsedur");
@@ -585,7 +570,6 @@
         function tutupModal() {
             modal.style.display = "none";
         }
-        // Menutup modal jika klik di luar kotak putih
         window.onclick = function(event) {
             if (event.target == modal) {
                 modal.style.display = "none";
