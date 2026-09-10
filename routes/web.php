@@ -123,6 +123,26 @@ Route::post('/internal/pencegahan/layanan-sosialisasi/tambah', function (Request
     DB::table('sosialisasi')->insert($data);
     return redirect('/internal/pencegahan/layanan-sosialisasi')->with('success', 'Data Sosialisasi berhasil ditambahkan!');
 });
+Route::get('/internal/pencegahan/layanan-sosialisasi/lihat/{id}', function ($id) {
+    $data = DB::table('sosialisasi')->where('id', $id)->first();
+    return view('internal.pencegahan.lihat_sosialisasi', compact('data'));
+});
+Route::get('/internal/pencegahan/layanan-sosialisasi/edit/{id}', function ($id) {
+    $data = DB::table('sosialisasi')->where('id', $id)->first();
+    return view('internal.pencegahan.edit_sosialisasi', compact('data'));
+});
+Route::post('/internal/pencegahan/layanan-sosialisasi/edit/{id}', function (Request $request, $id) {
+    $updateData = $request->except(['_token']);
+    if ($request->hasFile('surat_permohonan')) {
+        $file = $request->file('surat_permohonan');
+        $namaFile = time() . "_" . $file->getClientOriginalName();
+        $file->move(public_path('uploads/sosialisasi'), $namaFile);
+        $updateData['surat_permohonan'] = $namaFile;
+    }
+    $updateData['updated_at'] = now();
+    DB::table('sosialisasi')->where('id', $id)->update($updateData);
+    return redirect('/internal/pencegahan/layanan-sosialisasi')->with('success', 'Data Sosialisasi berhasil diperbarui!');
+});
 
 // 3. PELATIHAN
 Route::get('/internal/pencegahan/pelatihan', function () {
@@ -198,7 +218,6 @@ Route::get('/redkar', function () {
     return view('public.form_redkar'); 
 });
 Route::post('/redkar', [AuthController::class, 'storeRedkar']);
-// Rute Cetak Redkar di menu Pencegahan
 Route::get('/internal/pencegahan/cetak-redkar/{id}', [AuthController::class, 'cetakRedkar']);
 
 
@@ -252,7 +271,7 @@ Route::delete('/sapra/sarana-mako/delete/{id}', [SapraController::class, 'destro
 
 
 // ==========================================
-// === RUTE KELOLA INFOGRAFIS & BERITA MEDSOS (OPERATOR) ===
+// === RUTE KELOLA INFOGRAFIS, BERITA MEDSOS & DAMTAN (OPERATOR) ===
 // ==========================================
 Route::middleware(['auth'])->group(function () {
     // Rute Kelola Info Grafis
@@ -265,36 +284,17 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/internal/operator/berita-medsos/store', [OperatorMedsosController::class, 'storeMedsos']);
     Route::put('/internal/operator/berita-medsos/update/{id}', [OperatorMedsosController::class, 'updateMedsos']);
     Route::delete('/internal/operator/berita-medsos/hapus/{id}', [OperatorMedsosController::class, 'destroyMedsos']);
-});
-// ==========================================
-// FITUR TOMBOL MATA (LIHAT DETAIL & PDF) - SOSIALISASI
-// ==========================================
-Route::get('/internal/pencegahan/layanan-sosialisasi/lihat/{id}', function ($id) {
-    $data = \Illuminate\Support\Facades\DB::table('sosialisasi')->where('id', $id)->first();
-    return view('internal.pencegahan.lihat_sosialisasi', compact('data'));
-});
 
-// ==========================================
-// FITUR TOMBOL PENSIL (EDIT DATA) - SOSIALISASI
-// ==========================================
-Route::get('/internal/pencegahan/layanan-sosialisasi/edit/{id}', function ($id) {
-    $data = \Illuminate\Support\Facades\DB::table('sosialisasi')->where('id', $id)->first();
-    return view('internal.pencegahan.edit_sosialisasi', compact('data'));
-});
-
-Route::post('/internal/pencegahan/layanan-sosialisasi/edit/{id}', function (\Illuminate\Http\Request $request, $id) {
-    $updateData = $request->except(['_token']);
+// Rute Modul Damtan
+    Route::get('/internal/damtan/input-data', function () {
+        return view('internal.damtan.input_data');
+    });
     
-    // Sesuaikan 'surat_permohonan' kalau field upload file lu beda
-    if ($request->hasFile('surat_permohonan')) {
-        $file = $request->file('surat_permohonan');
-        $namaFile = time() . "_" . $file->getClientOriginalName();
-        $file->move(public_path('uploads/sosialisasi'), $namaFile);
-        $updateData['surat_permohonan'] = $namaFile;
-    }
+    Route::get('/internal/damtan/edit-data', function () {
+        return view('internal.damtan.edit_data');
+    });
 
-    $updateData['updated_at'] = now();
-    \Illuminate\Support\Facades\DB::table('sosialisasi')->where('id', $id)->update($updateData);
-    
-    return redirect('/internal/pencegahan/layanan-sosialisasi')->with('success', 'Data Sosialisasi berhasil diperbarui!');
+    Route::get('/internal/damtan/data-laporan', function () {
+        return view('internal.damtan.data_laporan');
+    });
 });
