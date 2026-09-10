@@ -199,11 +199,7 @@
         
         <!-- SIDEBAR TERINTEGRASI -->
         <aside class="sidebar" id="sidebarAccordion">
-<<<<<<< HEAD
-            <a href="/internal/index" class="sidebar-item active">
-=======
             <a href="/internal/index" class="sidebar-item {{ Request::is('internal/index') ? 'active' : '' }}">
->>>>>>> 910c8a5c3cad636e356ecfde73b03645913a21e4
                 <i class="fas fa-home"></i> Dashboard Utama
             </a>
 
