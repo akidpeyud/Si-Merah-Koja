@@ -75,18 +75,6 @@
     <div class="dashboard-container">
         <aside class="sidebar">
             <a href="/internal/index" class="sidebar-item"><i class="fas fa-home"></i> Dashboard Utama</a>
-<<<<<<< HEAD
-            
-            <!-- Menu Pencegahan (Gembok sudah dibuka) -->
-            <div class="sidebar-title">Bagian Pencegahan</div>
-            <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item active"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
-            <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
-            <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
-            <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
-            <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
-            
-            <!-- Pengaturan Akun -->
-=======
             @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title">Bagian Pencegahan</div>
                 <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item active"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
@@ -106,7 +94,6 @@
                 <a href="#" class="sidebar-item"><i class="fas fa-tools"></i> Maintenance Peralatan</a>
                 <a href="#" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
             @endif
->>>>>>> 9f9350cede3afe966516473ef4e8f289c1f67260
             <div class="sidebar-title">Pengaturan Akun</div>
             <a href="/internal/profil" class="sidebar-item">
                 <i class="fas fa-user-edit"></i> Profil Saya
