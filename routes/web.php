@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\SapraController;
 use App\Http\Controllers\OperatorMedsosController;
+use App\Http\Controllers\DamtanController; // <-- Tambahan Controller Damtan
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
@@ -297,4 +298,13 @@ Route::post('/internal/pencegahan/layanan-sosialisasi/edit/{id}', function (\Ill
     \Illuminate\Support\Facades\DB::table('sosialisasi')->where('id', $id)->update($updateData);
     
     return redirect('/internal/pencegahan/layanan-sosialisasi')->with('success', 'Data Sosialisasi berhasil diperbarui!');
+});
+
+// ==========================================
+// === ROUTE DAMTAN (PEMADAMAN & PENYELAMATAN) ===
+// ==========================================
+Route::middleware(['auth'])->group(function () {
+    Route::get('/internal/damtan/input-data', [DamtanController::class, 'createPenyelamatan'])->name('damtan.laporan.create');
+    Route::post('/internal/damtan/input-data/store', [DamtanController::class, 'storePenyelamatan'])->name('damtan.laporan.store');
+    Route::get('/internal/damtan/data-laporan', [DamtanController::class, 'indexPenyelamatan'])->name('damtan.laporan.index');
 });
