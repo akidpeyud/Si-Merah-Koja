@@ -42,6 +42,7 @@
         .badge-role.pencegahan { background: #3b82f6; }
         .badge-role.pemadaman { background: #ef4444; }
         .badge-role.sapra { background: #f59e0b; }
+        .badge-role.operator { background: #8b5cf6; }
 
         .user-menu { display: flex; align-items: center; gap: 20px; }
         .user-profile { display: flex; align-items: center; gap: 10px; color: #e5e7eb; font-size: 14px; font-weight: 600; }
@@ -269,6 +270,7 @@
                                 <option value="pencegahan">Bagian Pencegahan</option>
                                 <option value="pemadaman">Bagian Pemadaman & Penyelamatan (Damtan)</option>
                                 <option value="sapra">Bagian Sapra</option>
+                                <option value="operator">Operator (Input Berita)</option>
                                 <option value="super_user">Super User (Admin Penuh)</option>
                             </select>
                         </div>
@@ -316,6 +318,7 @@
                                 <option value="pencegahan" {{ $u->role == 'pencegahan' ? 'selected' : '' }}>Bagian Pencegahan</option>
                                 <option value="pemadaman" {{ $u->role == 'pemadaman' ? 'selected' : '' }}>Bagian Pemadaman & Penyelamatan (Damtan)</option>
                                 <option value="sapra" {{ $u->role == 'sapra' ? 'selected' : '' }}>Bagian Sapra</option>
+                                <option value="super_user" {{ $u->role == 'operator' ? 'selected' : '' }}>Operator Berita</option>
                                 <option value="super_user" {{ $u->role == 'super_user' ? 'selected' : '' }}>Super User (Admin Penuh)</option>
                             </select>
                         </div>

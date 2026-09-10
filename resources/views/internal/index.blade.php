@@ -80,6 +80,7 @@
             border-radius: 50px; font-weight: 700; text-transform: uppercase;
         }
         .badge-role.super_user { background: #ef4444; }
+        .badge-role.operator { background: #8b5cf6; }
 
         .user-menu { display: flex; align-items: center; gap: 20px; }
         .user-profile { display: flex; align-items: center; gap: 10px; color: #e5e7eb; font-size: 14px; font-weight: 600; }
@@ -247,6 +248,13 @@
                 <a href="#" class="sidebar-item"><i class="fas fa-truck-monster"></i> Kelola Armada Mobil</a>
                 <a href="#" class="sidebar-item"><i class="fas fa-tools"></i> Maintenance Peralatan</a>
                 <a href="#" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
+            @endif
+
+            <!-- 4. BAGIAN OPERATOR BERITA -->
+            @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
+                <div class="sidebar-title" style="{{ Auth::user()->role === 'super_user' ? '' : 'border-top: none;' }}">Manajemen Berita</div>
+                <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+                <a href="/internal/operator/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
             @endif
 
             <!-- PENGATURAN UMUM -->

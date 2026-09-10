@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Models\User;
+use App\Models\RedkarRegistration;
 
 class AuthController extends Controller
 {
@@ -178,6 +179,7 @@ class AuthController extends Controller
 
         return back()->with('success', 'Pengguna baru berhasil ditambahkan! Password default: Damkar123');
     }
+
     // Memproses update data user
     public function updateUser(Request $request, $id)
     {
@@ -207,5 +209,87 @@ class AuthController extends Controller
         $user->save();
 
         return back()->with('success', 'Data pengguna berhasil diperbarui!');
+    }
+
+    // Memproses pendaftaran relawan Redkar dari halaman publik
+    public function storeRedkar(Request $request)
+    {
+        $request->validate([
+            'nik' => ['required', 'string', 'unique:redkar_registrations,nik'],
+            'nama_lengkap' => ['required', 'string', 'max:255'],
+            'jenis_kelamin' => ['required'],
+            'tempat_lahir' => ['required'],
+            'tanggal_lahir' => ['required', 'date'],
+            'status_perkawinan' => ['required'],
+            'agama' => ['required'],
+            'nomor_telp' => ['required'],
+            'ktp' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'], // Maks 2MB
+            'alamat' => ['required'],
+            'rt_rw' => ['required'],
+            'kode_pos' => ['required'],
+            'kecamatan' => ['required'],
+            'kelurahan' => ['required'],
+            'pekerjaan' => ['required'],
+            'pendidikan_terakhir' => ['required'],
+            'sehat_jasmani' => ['required'],
+            'buta_warna' => ['required'],
+            'golongan_darah' => ['required'],
+        ]);
+
+        $ktpPath = null;
+        if ($request->hasFile('ktp')) {
+            // Simpan file KTP ke folder public/storage/ktp_redkar
+            $ktpPath = $request->file('ktp')->store('ktp_redkar', 'public');
+        }
+
+        RedkarRegistration::create([
+            'nik' => $request->nik,
+            'nama_lengkap' => $request->nama_lengkap,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'tempat_lahir' => $request->tempat_lahir,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'status_perkawinan' => $request->status_perkawinan,
+            'agama' => $request->agama,
+            'nomor_telp' => $request->nomor_telp,
+            'ktp' => $ktpPath,
+            'alamat' => $request->alamat,
+            'rt_rw' => $request->rt_rw,
+            'kode_pos' => $request->kode_pos,
+            'provinsi' => 'JAMBI',
+            'kabupaten_kota' => 'KOTA JAMBI',
+            'kecamatan' => $request->kecamatan,
+            'kelurahan' => $request->kelurahan,
+            'pekerjaan' => $request->pekerjaan,
+            'pendidikan_terakhir' => $request->pendidikan_terakhir,
+            'sehat_jasmani' => $request->sehat_jasmani,
+            'buta_warna' => $request->buta_warna,
+            'golongan_darah' => $request->golongan_darah,
+        ]);
+
+        return back()->with('success', 'Pendaftaran relawan REDKAR berhasil dikirim! Data Anda sedang diproses.');
+    }
+
+    // Menampilkan daftar pendaftar REDKAR (Khusus Operator dan Super User)
+    public function kelolaRedkar()
+    {
+        if (!in_array(Auth::user()->role, ['operator', 'super_user'])) {
+            return redirect('/internal/index')->with('error', 'Akses Ditolak! Halaman khusus Operator dan Super User.');
+        }
+
+        $relawan = RedkarRegistration::orderBy('created_at', 'desc')->get();
+        
+        return view('internal.operator.kelola_redkar', compact('relawan'));
+    }
+
+    // Menampilkan halaman cetak/download PDF untuk 1 relawan
+    public function cetakRedkar($id)
+    {
+        if (!in_array(Auth::user()->role, ['operator', 'super_user'])) {
+            return redirect('/internal/index')->with('error', 'Akses Ditolak!');
+        }
+
+        $relawan = RedkarRegistration::findOrFail($id);
+        
+        return view('internal.operator.cetak_redkar', compact('relawan'));
     }
 }
