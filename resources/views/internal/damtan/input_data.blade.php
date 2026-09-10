@@ -165,6 +165,7 @@
                 <i class="fas fa-home"></i> Dashboard Utama
             </a>
 
+            <!-- BAGIAN KHUSUS USER & SUPER USER -->
             @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
                 
                 <!-- ACCORDION PENCEGAHAN -->
@@ -211,6 +212,7 @@
                 </div>
             @endif
 
+            <!-- BAGIAN KHUSUS OPERATOR & SUPER USER -->
             @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
                 <!-- ACCORDION MANAJEMEN BERITA -->
                 <button class="sidebar-collapse-btn {{ Request::is('internal/operator*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita" aria-expanded="{{ Request::is('internal/operator*') ? 'true' : 'false' }}">

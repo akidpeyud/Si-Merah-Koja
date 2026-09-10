@@ -176,6 +176,7 @@
                 <i class="fas fa-home"></i> Dashboard Utama
             </a>
 
+            <!-- BAGIAN KHUSUS USER & SUPER USER -->
             @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
                 
                 <!-- ACCORDION PENCEGAHAN -->
@@ -202,7 +203,8 @@
                 <div class="collapse {{ Request::is('internal/damtan*') ? 'show' : '' }}" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
                         <a href="/internal/damtan/input-data" class="sidebar-item {{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
-                        <a href="/internal/damtan/data-laporan" class="sidebar-item {{ Request::is('internal/damtan/data-laporan*') ? 'active' : '' }}"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
+                        <!-- Menu Data Laporan di-set Active di halaman ini -->
+                        <a href="/internal/damtan/data-laporan" class="sidebar-item active"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
                     </div>
                 </div>
 
@@ -222,6 +224,7 @@
                 </div>
             @endif
 
+            <!-- BAGIAN KHUSUS OPERATOR & SUPER USER -->
             @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
                 <!-- ACCORDION MANAJEMEN BERITA -->
                 <button class="sidebar-collapse-btn {{ Request::is('internal/operator*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita" aria-expanded="{{ Request::is('internal/operator*') ? 'true' : 'false' }}">
@@ -341,7 +344,6 @@
                                     <td class="text-center">
                                         <!-- Tombol Lihat merender Modal -->
                                         <button class="action-btn view" title="Lihat Detail" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fas fa-eye"></i></button>
-                                        <!-- LINK SUDAH DIUBAH KE HALAMAN EDIT -->
                                         <a href="/internal/damtan/edit-data/1" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
                                         <!-- Tombol Hapus memicu fungsi JS konfirmasi -->
                                         <button class="action-btn delete" title="Hapus" onclick="hapusBaris(this)"><i class="fas fa-trash"></i></button>
@@ -364,7 +366,6 @@
                                     <td><span class="badge badge-custom bg-warning bg-opacity-10 text-warning border border-warning"><i class="fas fa-spinner fa-spin me-1"></i>Dalam Proses</span></td>
                                     <td class="text-center">
                                         <button class="action-btn view" title="Lihat Detail" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fas fa-eye"></i></button>
-                                        <!-- LINK SUDAH DIUBAH KE HALAMAN EDIT -->
                                         <a href="/internal/damtan/edit-data/2" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
                                         <button class="action-btn delete" title="Hapus" onclick="hapusBaris(this)"><i class="fas fa-trash"></i></button>
                                     </td>
@@ -386,7 +387,6 @@
                                     <td><span class="badge badge-custom bg-success bg-opacity-10 text-success border border-success"><i class="fas fa-check-circle me-1"></i>Selesai</span></td>
                                     <td class="text-center">
                                         <button class="action-btn view" title="Lihat Detail" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fas fa-eye"></i></button>
-                                        <!-- LINK SUDAH DIUBAH KE HALAMAN EDIT -->
                                         <a href="/internal/damtan/edit-data/3" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
                                         <button class="action-btn delete" title="Hapus" onclick="hapusBaris(this)"><i class="fas fa-trash"></i></button>
                                     </td>
