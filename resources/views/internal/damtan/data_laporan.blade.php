@@ -18,6 +18,23 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background-color: #f3f4f6; color: #1f2937; }
 
+        /* --- GLOBAL ALERT STYLES --- */
+        #globalSuccessAlert, #globalErrorAlert {
+            position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
+            color: white; padding: 16px 24px; border-radius: 8px; z-index: 99999;
+            display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px;
+            animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #globalSuccessAlert { background-color: #10b981; box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); }
+        #globalErrorAlert { background-color: #ef4444; box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.4); }
+        
+        .alert-icon { font-size: 22px; }
+        .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px; transition: opacity 0.2s; }
+        .btn-close-alert:hover { opacity: 1; }
+
+        @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+        @keyframes fadeOutUpCenter { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -50px); opacity: 0; } }
+
         /* --- NAVBAR INTERNAL --- */
         .navbar-internal { background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
@@ -34,15 +51,40 @@
         .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
         .btn-logout:hover { background-color: #dc2626; }
 
-        /* --- SIDEBAR --- */
+        /* --- SIDEBAR & ACCORDION STYLES --- */
         .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
-        .sidebar { width: 260px; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; }
-        .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600; border-radius: 8px; transition: all 0.2s; }
+        .sidebar {
+            width: 280px; background-color: #ffffff; border-right: 1px solid #e5e7eb;
+            padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto;
+        }
+        
+        .sidebar-item {
+            display: flex; align-items: center; gap: 15px; padding: 12px 15px;
+            color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600;
+            border-radius: 8px; transition: all 0.2s;
+        }
         .sidebar-item:hover { background-color: #f3f4f6; color: #111827; }
         .sidebar-item.active { background-color: #e0f2fe; color: #0284c7; }
         .sidebar-item.active i { color: #0284c7; }
         .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #9ca3af; }
-        .sidebar-title { font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase; margin-top: 15px; margin-bottom: 5px; padding-left: 15px; letter-spacing: 1px; border-top: 1px dashed #e5e7eb; padding-top: 15px; }
+        
+        .sidebar-collapse-btn {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; padding: 15px 15px 5px 15px; margin-top: 10px;
+            background: transparent; border: none; border-top: 1px dashed #e5e7eb;
+            text-align: left; font-size: 11px; font-weight: 800; color: #9ca3af;
+            text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s;
+        }
+        .sidebar-collapse-btn:hover { color: #4b5563; }
+        
+        .toggle-icon { transition: transform 0.3s ease; font-size: 12px; }
+        .sidebar-collapse-btn.collapsed .toggle-icon { transform: rotate(0deg); }
+        .sidebar-collapse-btn:not(.collapsed) .toggle-icon { transform: rotate(180deg); color: #0284c7; }
+        .sidebar-collapse-btn:not(.collapsed) { color: #0284c7; }
+
+        .sidebar-submenu {
+            display: flex; flex-direction: column; gap: 4px; padding-left: 10px; margin-top: 8px;
+        }
 
         /* --- MAIN AREA --- */
         .main-content { flex: 1; padding: 40px 50px; background-color: #f9fafb; }
@@ -64,21 +106,43 @@
         
         .badge-custom { padding: 6px 10px; font-weight: 600; font-size: 11px; border-radius: 6px; }
 
-        /* --- DROPDOWN HOVER KUSTOM (EFEK BIRU LEMBUT) --- */
-        .dropdown-menu {
-            padding: 8px; /* Memberi ruang di dalam kotak dropdown */
-            border-radius: 10px;
-        }
-        .dropdown-item {
-            border-radius: 6px; /* Ujung pilihan melengkung */
-            transition: all 0.2s ease-in-out;
-        }
-        .dropdown-item:hover, .dropdown-item:focus {
-            background-color: #e0f2fe !important; /* Warna biru lembut saat di-hover */
-        }
+        /* --- DROPDOWN HOVER KUSTOM --- */
+        .dropdown-menu { padding: 8px; border-radius: 10px; }
+        .dropdown-item { border-radius: 6px; transition: all 0.2s ease-in-out; }
+        .dropdown-item:hover, .dropdown-item:focus { background-color: #e0f2fe !important; }
     </style>
 </head>
 <body>
+
+    <!-- ALERT SUCCESS GLOBAL -->
+    @if(session('success'))
+        <div id="globalSuccessAlert">
+            <i class="fas fa-check-circle alert-icon"></i>
+            <span>{{ session('success') }}</span>
+            <button class="btn-close-alert" onclick="closeAlert('globalSuccessAlert')"><i class="fas fa-times"></i></button>
+        </div>
+    @endif
+
+    <!-- ALERT ERROR GLOBAL -->
+    @if(session('error'))
+        <div id="globalErrorAlert">
+            <i class="fas fa-exclamation-triangle alert-icon"></i>
+            <span>{{ session('error') }}</span>
+            <button class="btn-close-alert" onclick="closeAlert('globalErrorAlert')"><i class="fas fa-times"></i></button>
+        </div>
+    @endif
+
+    <script>
+        function closeAlert(id) {
+            let alertBox = document.getElementById(id);
+            if(alertBox) {
+                alertBox.style.animation = 'fadeOutUpCenter 0.4s ease forwards';
+                setTimeout(() => alertBox.remove(), 400); 
+            }
+        }
+        setTimeout(() => closeAlert('globalSuccessAlert'), 4000);
+        setTimeout(() => closeAlert('globalErrorAlert'), 4000);
+    </script>
 
     <!-- NAVBAR INTERNAL -->
     <nav class="navbar-internal">
@@ -106,31 +170,89 @@
     <!-- KONTEN UTAMA -->
     <div class="dashboard-container">
         
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
-            <a href="/internal/index" class="sidebar-item">
+        <!-- SIDEBAR TERINTEGRASI -->
+        <aside class="sidebar" id="sidebarAccordion">
+            <a href="/internal/index" class="sidebar-item {{ Request::is('internal/index') ? 'active' : '' }}">
                 <i class="fas fa-home"></i> Dashboard Utama
             </a>
 
-            @if(Auth::user()->role === 'pencegahan' || Auth::user()->role === 'super_user')
-                <div class="sidebar-title">Bagian Pencegahan</div>
-                <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
-                <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
+            <!-- BAGIAN KHUSUS USER & SUPER USER -->
+            @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
+                
+                <!-- ACCORDION PENCEGAHAN -->
+                <button class="sidebar-collapse-btn {{ Request::is('internal/pencegahan*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePencegahan" aria-expanded="{{ Request::is('internal/pencegahan*') ? 'true' : 'false' }}">
+                    <span>Bagian Pencegahan</span>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+                <div class="collapse {{ Request::is('internal/pencegahan*') ? 'show' : '' }}" id="collapsePencegahan" data-bs-parent="#sidebarAccordion">
+                    <div class="sidebar-submenu">
+                        <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item {{ Request::is('internal/pencegahan/layanan-inspeksi*') ? 'active' : '' }}"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
+                        <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item {{ Request::is('internal/pencegahan/layanan-sosialisasi*') ? 'active' : '' }}"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
+                        <a href="/internal/pencegahan/pelatihan" class="sidebar-item {{ Request::is('internal/pencegahan/pelatihan*') ? 'active' : '' }}"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
+                        <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item {{ Request::is('internal/pencegahan/pembinaan-pengembangan*') ? 'active' : '' }}"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
+                        <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item {{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
+                        <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item {{ Request::is('internal/pencegahan/kelola-redkar*') ? 'active' : '' }}"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
+                    </div>
+                </div>
+
+                <!-- ACCORDION PEMADAMAN (DAMTAN) -->
+                <button class="sidebar-collapse-btn {{ Request::is('internal/damtan*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="{{ Request::is('internal/damtan*') ? 'true' : 'false' }}">
+                    <span>Bagian Pemadaman</span>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+                <div class="collapse {{ Request::is('internal/damtan*') ? 'show' : '' }}" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
+                    <div class="sidebar-submenu">
+                        <a href="/internal/damtan/input-data" class="sidebar-item {{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
+                        <!-- Menu Data Laporan di-set Active di halaman ini -->
+                        <a href="/internal/damtan/data-laporan" class="sidebar-item active"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
+                    </div>
+                </div>
+
+                <!-- ACCORDION SAPRA -->
+                <button class="sidebar-collapse-btn {{ Request::is('sapra*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSapra" aria-expanded="{{ Request::is('sapra*') ? 'true' : 'false' }}">
+                    <span>Bagian Sapra</span>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+                <div class="collapse {{ Request::is('sapra*') ? 'show' : '' }}" id="collapseSapra" data-bs-parent="#sidebarAccordion">
+                    <div class="sidebar-submenu">
+                        <a href="/sapra/data_hidrant_gedung" class="sidebar-item {{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}"><i class="fas fa-clipboard-list"></i> Data Hidrant</a>
+                        <a href="/sapra/data-hidrant-kota" class="sidebar-item {{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
+                        <a href="/sapra/prasarana-mako" class="sidebar-item {{ Request::is('sapra/prasarana-mako*') ? 'active' : '' }}"><i class="fas fa-building"></i> Prasarana Mako & Pos</a>
+                        <a href="/sapra/sarana-mako" class="sidebar-item {{ Request::is('sapra/sarana-mako*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Sarana Mako & Pos</a>
+                        <a href="/sapra/logistik" class="sidebar-item {{ Request::is('sapra/logistik*') ? 'active' : '' }}"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
+                    </div>
+                </div>
             @endif
 
-            @if(Auth::user()->role === 'pemadaman' || Auth::user()->role === 'super_user')
-                <div class="sidebar-title" style="{{ Auth::user()->role === 'super_user' ? '' : 'border-top: none;' }}">Bagian Pemadaman & Penyelamatan</div>
-                <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
-                <a href="/internal/damtan/data-laporan" class="sidebar-item active"><i class="fas fa-users-cog"></i> Data Laporan</a>
+            <!-- BAGIAN KHUSUS OPERATOR & SUPER USER -->
+            @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
+                <!-- ACCORDION MANAJEMEN BERITA -->
+                <button class="sidebar-collapse-btn {{ Request::is('internal/operator*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita" aria-expanded="{{ Request::is('internal/operator*') ? 'true' : 'false' }}">
+                    <span>Manajemen Berita</span>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+                <div class="collapse {{ Request::is('internal/operator*') ? 'show' : '' }}" id="collapseBerita" data-bs-parent="#sidebarAccordion">
+                    <div class="sidebar-submenu">
+                        <a href="/internal/operator/kelola-berita" class="sidebar-item {{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+                        <a href="/internal/operator/infografis" class="sidebar-item {{ Request::is('internal/operator/infografis*') ? 'active' : '' }}"><i class="fas fa-image"></i> Kelola Info Grafis</a>
+                        <a href="/internal/operator/berita-medsos" class="sidebar-item {{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}"><i class="fab fa-instagram"></i> Kelola Berita Medsos</a>
+                    </div>
+                </div>
             @endif
 
-            @if(Auth::user()->role === 'sapra' || Auth::user()->role === 'super_user')
-                <div class="sidebar-title" style="{{ Auth::user()->role === 'super_user' ? '' : 'border-top: none;' }}">Bagian Sapra</div>
-                <a href="#" class="sidebar-item"><i class="fas fa-truck-monster"></i> Kelola Armada Mobil</a>
-            @endif
-
-            <div class="sidebar-title">Pengaturan Akun</div>
-            <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
+            <!-- ACCORDION PENGATURAN -->
+            <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePengaturan" aria-expanded="false">
+                <span>Pengaturan Akun</span>
+                <i class="fas fa-chevron-down toggle-icon"></i>
+            </button>
+            <div class="collapse" id="collapsePengaturan" data-bs-parent="#sidebarAccordion">
+                <div class="sidebar-submenu">
+                    <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
+                    @if(Auth::user()->role === 'super_user')
+                        <a href="/internal/kelola-user" class="sidebar-item"><i class="fas fa-users"></i> Kelola Semua Pengguna</a>
+                    @endif
+                </div>
+            </div>
         </aside>
 
         <!-- MAIN AREA (DATA LAPORAN) -->
@@ -222,8 +344,7 @@
                                     <td class="text-center">
                                         <!-- Tombol Lihat merender Modal -->
                                         <button class="action-btn view" title="Lihat Detail" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fas fa-eye"></i></button>
-                                        <!-- LINK SUDAH DIUBAH KE HALAMAN EDIT -->
-                                        <a href="/internal/damtan/edit-data" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
+                                        <a href="/internal/damtan/edit-data/1" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
                                         <!-- Tombol Hapus memicu fungsi JS konfirmasi -->
                                         <button class="action-btn delete" title="Hapus" onclick="hapusBaris(this)"><i class="fas fa-trash"></i></button>
                                     </td>
@@ -245,8 +366,7 @@
                                     <td><span class="badge badge-custom bg-warning bg-opacity-10 text-warning border border-warning"><i class="fas fa-spinner fa-spin me-1"></i>Dalam Proses</span></td>
                                     <td class="text-center">
                                         <button class="action-btn view" title="Lihat Detail" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fas fa-eye"></i></button>
-                                        <!-- LINK SUDAH DIUBAH KE HALAMAN EDIT -->
-                                        <a href="/internal/damtan/edit-data" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
+                                        <a href="/internal/damtan/edit-data/2" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
                                         <button class="action-btn delete" title="Hapus" onclick="hapusBaris(this)"><i class="fas fa-trash"></i></button>
                                     </td>
                                 </tr>
@@ -267,8 +387,7 @@
                                     <td><span class="badge badge-custom bg-success bg-opacity-10 text-success border border-success"><i class="fas fa-check-circle me-1"></i>Selesai</span></td>
                                     <td class="text-center">
                                         <button class="action-btn view" title="Lihat Detail" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fas fa-eye"></i></button>
-                                        <!-- LINK SUDAH DIUBAH KE HALAMAN EDIT -->
-                                        <a href="/internal/damtan/edit-data" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
+                                        <a href="/internal/damtan/edit-data/3" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
                                         <button class="action-btn delete" title="Hapus" onclick="hapusBaris(this)"><i class="fas fa-trash"></i></button>
                                     </td>
                                 </tr>

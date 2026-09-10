@@ -61,7 +61,8 @@
 
         /* --- IKON LAYANAN KLIKABEL --- */
         .service-icons-container {
-            max-width: 1100px; margin: -40px auto 50px; display: grid; grid-template-columns: repeat(4, 1fr);
+            max-width: 1100px; margin: -40px auto 50px; display: grid; 
+            grid-template-columns: repeat(3, 1fr); /* Diubah menjadi 3 kolom agar rapi karena Izin Penjualan dihapus */
             gap: 20px; background: white; padding: 30px; border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.08); position: relative; z-index: 5;
         }
@@ -80,7 +81,6 @@
         .bg-gray { background-color: #9ca3af; }
         .bg-pink { background-color: #ec4899; }
         .bg-orange { background-color: #f97316; }
-        .bg-purple { background-color: #8b5cf6; }
         
         .service-icon-box h3 { font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 8px; transition: color 0.3s; }
         .service-icon-box p { font-size: 11px; color: #64748b; line-height: 1.5; }
@@ -233,7 +233,6 @@
                 <ul class="dropdown-menu">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
-                    <li><a href="/layanan-fasilitas/perjanjian_kerjasama">PKS</a></li>
                 </ul>
             </li>
             <li><a href="/redkar">Redkar</a></li>
@@ -275,15 +274,6 @@
                 <div class="icon-top-box bg-orange"><i class="fas fa-shield-alt"></i></div>
                 <h3>Perpanjang SKK</h3>
                 <p>Layanan Perizinan Perpanjangan Sertifikat Keamanan Kebakaran</p>
-            </div>
-        </a>
-
-        <!-- Izin Penjualan -->
-        <a href="/layanan-fasilitas/izin_penjualan" class="service-icon-link">
-            <div class="service-icon-box">
-                <div class="icon-top-box bg-purple"><i class="fas fa-fire-extinguisher"></i></div>
-                <h3>Izin Penjualan</h3>
-                <p>Layanan Perizinan Penjualan Alat-alat Pencegahan...</p>
             </div>
         </a>
     </div>

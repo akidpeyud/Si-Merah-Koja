@@ -112,7 +112,7 @@
         <main class="main-content">
             <div class="page-header">
                 <a href="/internal/pencegahan/layanan-sosialisasi" class="text-decoration-none" style="color: #64748b; font-size: 14px; font-weight: 600;"><i class="fas fa-arrow-left me-2"></i> Kembali ke Data Sosialisasi</a>
-                <h1>Form Jadwal Sosialisasi Baru</h1>
+                <h1>Edit Jadwal Sosialisasi</h1>
             </div>
 
             <div class="form-card">

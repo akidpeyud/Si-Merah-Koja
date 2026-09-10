@@ -78,7 +78,7 @@
         <main class="main-content">
             <div class="page-header">
                 <a href="/internal/pencegahan/layanan-inspeksi" class="text-decoration-none" style="color: #64748b; font-size: 14px; font-weight: 600;"><i class="fas fa-arrow-left me-2"></i> Kembali ke Data Inspeksi</a>
-                <h1 class="mt-2">Form Jadwal Inspeksi Baru</h1>
+                <h1 class="mt-2">Edit Jadwal Inspeksi</h1>
             </div>
 
             <div class="form-card">

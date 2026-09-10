@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buat Pelatihan Baru - SIMERAH KOJA</title>
+    <title>Edit Pembinaan - SIMERAH KOJA</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -14,7 +14,6 @@
         body { background-color: #f8fafc; color: #1e293b; }
         .navbar-internal { background-color: #0f172a; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
-        .nav-brand img { height: 40px; }
         .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 0.5px; }
         .badge-internal { background: #10b981; color: white; font-size: 10px; padding: 4px 8px; border-radius: 6px; font-weight: 700; margin-left: 10px; }
         .badge-role { background: #3b82f6; color: white; font-size: 11px; padding: 4px 12px; border-radius: 50px; font-weight: 700; text-transform: uppercase; }
@@ -31,13 +30,11 @@
         .main-content { flex: 1; padding: 40px; }
         .page-header h1 { font-size: 26px; font-weight: 800; color: #0f172a; }
         
-        /* Form Card Styles */
         .form-card { background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; padding: 35px; margin-top: 25px; }
         .form-label { font-weight: 700; color: #334155; font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
         .form-control, .form-select { border-radius: 10px; border: 1px solid #cbd5e1; padding: 12px 15px; font-size: 14px; background-color: #f8fafc; transition: all 0.2s; }
         .form-control:focus, .form-select:focus { border-color: #3b82f6; background-color: white; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
         
-        /* File Input Customization */
         input[type=file]::file-selector-button { background-color: #e2e8f0; border: none; padding: 8px 15px; border-radius: 6px; font-weight: 600; color: #475569; cursor: pointer; margin-right: 15px; transition: all 0.2s; }
         input[type=file]::file-selector-button:hover { background-color: #cbd5e1; color: #0f172a; }
     </style>
@@ -53,7 +50,7 @@
                 <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
                 <i class="fas fa-user-circle"></i>
             </div>
-            <a href="/internal/pencegahan/pelatihan" class="btn btn-outline-light btn-sm" style="border-radius: 8px; font-weight: 600;">Kembali</a>
+            <a href="/internal/pencegahan/pembinaan-pengembangan" class="btn btn-outline-light btn-sm" style="border-radius: 8px; font-weight: 600;">Kembali</a>
         </div>
     </nav>
 
@@ -64,11 +61,10 @@
             <div class="sidebar-title">Bagian Pencegahan</div>
             <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
             <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
+            <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
             
-            <!-- ACTIVE DI PELATIHAN -->
-            <a href="/internal/pencegahan/pelatihan" class="sidebar-item active"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
+            <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item active"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
             
-            <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
             <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
             <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item"><i class="fas fa-users"></i> Kelola Redkar</a>
 
@@ -84,81 +80,77 @@
 
         <main class="main-content">
             <div class="page-header">
-                <a href="/internal/pencegahan/pelatihan" class="text-decoration-none" style="color: #64748b; font-size: 14px; font-weight: 600;"><i class="fas fa-arrow-left me-2"></i> Kembali ke Data Pelatihan</a>
-                <h1 class="mt-2">Form Buat Pelatihan Baru</h1>
+                <a href="/internal/pencegahan/pembinaan-pengembangan" class="text-decoration-none" style="color: #64748b; font-size: 14px; font-weight: 600;"><i class="fas fa-arrow-left me-2"></i> Kembali ke Data Pembinaan</a>
+                <h1 class="mt-2">Edit Data Pembinaan & Pengembangan</h1>
             </div>
 
             <div class="form-card">
-                <form action="/internal/pencegahan/pelatihan/tambah" method="POST" enctype="multipart/form-data">
+                <form action="/internal/pencegahan/pembinaan-pengembangan/edit/{{ $data->id }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     
                     <div class="row mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label"><i class="fas fa-chalkboard-teacher text-primary"></i> Nama Pelatihan</label>
-                            <input type="text" class="form-control" name="nama_pelatihan" placeholder="Contoh: Pelatihan Dasar Pemadaman Api" required>
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label class="form-label" style="font-weight: 700; color: #2563eb;"><i class="fas fa-chart-line me-2"></i>Nama Kegiatan</label>
+                            <input type="text" class="form-control p-2" name="nama_program" value="{{ $data->nama_program }}" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label"><i class="fas fa-map-marker-alt text-primary"></i> Lokasi / Tempat Pelaksanaan</label>
-                            <input type="text" class="form-control" name="lokasi" placeholder="Contoh: Mako Damkar Kota Jambi" required>
+                            <label class="form-label" style="font-weight: 700; color: #2563eb;"><i class="fas fa-map-marker-alt me-2"></i>Lokasi Pelaksanaan</label>
+                            <input type="text" class="form-control p-2" name="lokasi" value="{{ $data->lokasi }}" required>
                         </div>
                     </div>
 
                     <div class="row mb-4">
-                        <div class="col-md-4">
-                            <label class="form-label"><i class="fas fa-calendar-alt text-primary"></i> Tanggal Pelaksanaan</label>
-                            <input type="date" class="form-control" name="tanggal_pelaksanaan" required>
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <label class="form-label" style="font-weight: 700; color: #2563eb;"><i class="fas fa-calendar-alt me-2"></i>Tanggal Pelaksanaan</label>
+                            <input type="date" class="form-control p-2" name="tanggal_pelaksanaan" value="{{ $data->tanggal_pelaksanaan }}" required>
+                        </div>
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <label class="form-label" style="font-weight: 700; color: #2563eb;"><i class="fas fa-clock me-2"></i>Waktu Mulai</label>
+                            <input type="time" class="form-control p-2" name="waktu_mulai" value="{{ $data->waktu_mulai }}" required>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label"><i class="fas fa-clock text-primary"></i> Waktu Mulai</label>
-                            <input type="time" class="form-control" name="waktu_mulai" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label"><i class="fas fa-hourglass-end text-primary"></i> Waktu Selesai</label>
-                            <input type="time" class="form-control" name="waktu_selesai" required>
+                            <label class="form-label" style="font-weight: 700; color: #2563eb;"><i class="fas fa-hourglass-end me-2"></i>Waktu Selesai</label>
+                            <input type="time" class="form-control p-2" name="waktu_selesai" value="{{ $data->waktu_selesai }}" required>
                         </div>
                     </div>
 
                     <div class="row mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label"><i class="fas fa-users text-primary"></i> Kategori Peserta</label>
-                            <select class="form-select" name="kategori_peserta" required>
-                                <option value="" disabled selected>Pilih Kategori...</option>
-                                <option value="Relawan REDKAR">Relawan REDKAR</option>
-                                <option value="Internal Anggota">Internal Anggota Damkar</option>
-                                <option value="Masyarakat Umum">Masyarakat Umum</option>
-                                <option value="Instansi / Perusahaan">Instansi / Perusahaan</option>
-                            </select>
+                        <div class="col-md-6 mb-3 mb-md-0">
+                           <label class="form-label" style="font-weight: 700; color: #2563eb;"><i class="fas fa-users me-2"></i>Sasaran / Kategori Peserta</label>
+                           <input type="text" class="form-control p-2" name="sasaran_pembinaan" value="{{ $data->sasaran_pembinaan }}" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label"><i class="fas fa-user-friends text-primary"></i> Jumlah Kuota / Peserta</label>
+                            <label class="form-label" style="font-weight: 700; color: #2563eb;"><i class="fas fa-user-friends me-2"></i>Jumlah Peserta</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" name="jumlah_peserta" min="1" placeholder="Misal: 50" required>
-                                <span class="input-group-text" style="background-color: #e2e8f0; border: none; font-weight: 600; color: #475569;">Orang</span>
+                                <input type="number" class="form-control p-2" name="target_peserta" value="{{ $data->target_peserta }}" required>
+                                <span class="input-group-text bg-light">Orang</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- KOTAK UPLOAD FILE MATERI / MODUL -->
-                    <div class="mb-4 p-4" style="background-color: #f1f5f9; border-radius: 12px; border: 1px dashed #94a3b8;">
-                        <label class="form-label mb-2"><i class="fas fa-file-pdf text-danger"></i> Modul / Proposal Pelatihan (Opsional)</label>
-                        <input class="form-control" type="file" name="modul_pelatihan" accept=".pdf, .doc, .docx">
-                        <small class="text-muted" style="font-size: 13px; margin-top: 8px; display: block;">
-                            <i class="fas fa-info-circle me-1"></i> Upload file modul, materi, atau proposal diklat. Format: PDF, DOC, DOCX (Maks. 5MB).
-                        </small>
+                    <div class="mb-4 p-4" style="border: 2px dashed #cbd5e1; border-radius: 12px; background-color: #f8fafc;">
+                        <label class="form-label" style="font-weight: 700; color: #dc2626;"><i class="fas fa-file-pdf me-2"></i>Dokumen Pendukung (Opsional)</label>
+                        <input class="form-control bg-white" type="file" name="dokumen_pendukung">
+                        
+                        @if(isset($data->dokumen_pendukung) && $data->dokumen_pendukung)
+                            <div class="mt-3 p-2 bg-white rounded border border-success d-inline-block">
+                                <small class="text-success" style="font-weight: 600;"><i class="fas fa-check-circle me-1"></i> File tersimpan: {{ $data->dokumen_pendukung }}</small>
+                            </div>
+                        @endif
+                        <small class="text-muted d-block mt-2"><i class="fas fa-info-circle me-1"></i> Upload file foto kegiatan atau laporan. Format: PDF, JPG, PNG (Maks. 5MB).</small>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="form-label"><i class="fas fa-sticky-note text-primary"></i> Catatan / Keterangan (Opsional)</label>
-                        <textarea class="form-control" name="catatan" rows="3" placeholder="Misal: Peserta wajib membawa pakaian lapangan dan sepatu safety..."></textarea>
+                    <div class="mb-5">
+                        <label class="form-label" style="font-weight: 700; color: #2563eb;"><i class="fas fa-sticky-note me-2"></i>Catatan Tambahan (Opsional)</label>
+                        <textarea class="form-control p-3" name="catatan" rows="3">{{ $data->catatan }}</textarea>
                     </div>
 
-                    <div class="d-flex justify-content-end gap-3 mt-5">
-                        <a href="/internal/pencegahan/pelatihan" class="btn btn-light px-4 py-2" style="border-radius: 8px; font-weight: 600; border: 1px solid #cbd5e1;">Batal</a>
-                        <button type="submit" class="btn btn-primary px-4 py-2" style="border-radius: 8px; font-weight: 600; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);">
-                            <i class="fas fa-save me-2"></i> Simpan Data Pelatihan
+                    <div class="d-flex justify-content-end gap-3 pt-3" style="border-top: 1px solid #e2e8f0;">
+                        <a href="/internal/pencegahan/pembinaan-pengembangan" class="btn btn-light px-4 py-2" style="border-radius: 8px; font-weight: 600; border: 1px solid #cbd5e1;">Batal</a>
+                        <button type="submit" class="btn btn-primary px-4 py-2" style="border-radius: 8px; font-weight: 600; background-color: #2563eb;">
+                            <i class="fas fa-save me-2"></i> Simpan Perubahan
                         </button>
                     </div>
-
                 </form>
             </div>
         </main>
