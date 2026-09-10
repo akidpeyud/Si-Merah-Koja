@@ -161,17 +161,18 @@
                                 <th width="10%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @forelse($data_pelatihan as $no => $item)
+                        <tbody id="tableBody">
                             <tr>
                                 <td>{{ $no + 1 }}</td>
                                 <td>
                                     <span class="title-text">{{ $item->tanggal_pelaksanaan }}</span>
                                     <span class="sub-text">{{ $item->waktu_mulai }} - {{ $item->waktu_selesai ?? 'Selesai' }} WIB</span>
                                 </td>
-                                <td>
-                                    <span class="title-text">{{ $item->nama_pelatihan }}</span>
-                                    <span class="sub-text">{{ $item->lokasi }}</span>
+                                <td><span class="title-text">Relawan REDKAR</span><span class="sub-text">50 Orang</span></td>
+                                <td><span class="badge-soft-warning status-badge"><i class="fas fa-tools me-1"></i> Persiapan</span></td>
+                                <td class="text-center">
+                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
                                 </td>
                                 <td>
                                     <span class="title-text">{{ $item->kategori_peserta }}</span>
@@ -180,6 +181,8 @@
                                 <td>
                                     <span class="badge badge-soft-warning">Persiapan</span>
                                 </td>
+                                <td><span class="title-text">Internal Anggota</span><span class="sub-text">30 Orang</span></td>
+                                <td><span class="badge-soft-success status-badge"><i class="fas fa-check-circle me-1"></i> Selesai</span></td>
                                 <td class="text-center">
                                     <a href="#" class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
                                     <a href="#" class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></a>

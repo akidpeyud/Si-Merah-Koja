@@ -8,8 +8,11 @@ use App\Http\Controllers\OperatorMedsosController;
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
+<<<<<<< HEAD
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+=======
+>>>>>>> 910c8a5c3cad636e356ecfde73b03645913a21e4
 
 // Route untuk halaman utama (Homepage) - DINAMIS LENGKAP
 Route::get('/', function () {
@@ -266,6 +269,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/internal/operator/berita-medsos/update/{id}', [OperatorMedsosController::class, 'updateMedsos']);
     Route::delete('/internal/operator/berita-medsos/hapus/{id}', [OperatorMedsosController::class, 'destroyMedsos']);
 });
+<<<<<<< HEAD
 // ==========================================
 // FITUR TOMBOL MATA (LIHAT DETAIL & PDF) - SOSIALISASI
 // ==========================================
@@ -297,4 +301,24 @@ Route::post('/internal/pencegahan/layanan-sosialisasi/edit/{id}', function (\Ill
     \Illuminate\Support\Facades\DB::table('sosialisasi')->where('id', $id)->update($updateData);
     
     return redirect('/internal/pencegahan/layanan-sosialisasi')->with('success', 'Data Sosialisasi berhasil diperbarui!');
+=======
+Route::middleware(['auth'])->group(function () {
+    
+    // 1. Rute untuk halaman Input Data
+    Route::get('/internal/damtan/input-data', function () {
+        return view('internal.damtan.input_data');
+    });
+
+    // 2. Rute untuk halaman Data Laporan
+    Route::get('/internal/damtan/data-laporan', function () {
+        return view('internal.damtan.data_laporan');
+    });
+
+    // 3. Rute untuk halaman Edit Data
+    // (Membutuhkan parameter {id} agar tahu data mana yang sedang diedit)
+    Route::get('/internal/damtan/edit-data/{id}', function ($id) {
+        return view('internal.damtan.edit_data', compact('id'));
+    });
+
+>>>>>>> 910c8a5c3cad636e356ecfde73b03645913a21e4
 });

@@ -79,7 +79,7 @@
             </div>
 
             <div class="form-card">
-                <form action="/internal/pencegahan/pelatihan/tambah" method="POST" enctype="multipart/form-data">
+                <form action="#" method="POST" enctype="multipart/form-data">
                     @csrf
                     
                     <div class="row mb-4">

@@ -171,22 +171,31 @@
                                 <th width="10%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @forelse($data_peningkatan as $no => $item)
+                        <tbody id="tableBody">
+                            <!-- Data baris tabel di sini -->
                             <tr>
-                                <td>{{ $no + 1 }}</td>
+                                <td>1</td>
+                                <td><span class="title-text">10 - 15 Okt 2026</span></td>
                                 <td>
-                                    <!-- Asumsi kolom di DB lu: tanggal_pelaksanaan -->
-                                    <span class="title-text">{{ $item->tanggal_pelaksanaan ?? '-' }}</span>
+                                    <span class="title-text">Diklat Inspektur Kebakaran Tingkat I</span>
+                                    <span class="sub-text">Kementerian Dalam Negeri</span>
                                 </td>
+                                <td><span class="title-text">Diklat Teknis</span><span class="sub-text">5 Anggota</span></td>
+                                <td><span class="badge-soft-warning status-badge"><i class="fas fa-clock me-1"></i> Menunggu</span></td>
+                                <td class="text-center">
+                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><span class="title-text">01 - 03 Sep 2026</span></td>
                                 <td>
-                                    <!-- Asumsi kolom di DB lu: nama_kegiatan dan lokasi -->
-                                    <span class="title-text">{{ $item->nama_kegiatan ?? '-' }}</span>
-                                    <span class="sub-text">{{ $item->lokasi ?? '-' }}</span>
+                                    <span class="title-text">Bimtek Penyusunan SOP Pemadaman</span>
+                                    <span class="sub-text">Pusdiklat Damkar Ciracas</span>
                                 </td>
-                                <td>
-                                    <span class="badge badge-soft-primary">Aktif</span>
-                                </td>
+                                <td><span class="title-text">Bimtek</span><span class="sub-text">2 Anggota</span></td>
+                                <td><span class="badge-soft-success status-badge"><i class="fas fa-check-circle me-1"></i> Selesai</span></td>
                                 <td class="text-center">
                                     <a href="#" class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
                                     <a href="#" class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></a>

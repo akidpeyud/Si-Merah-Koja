@@ -76,6 +76,7 @@
         <aside class="sidebar">
             <a href="/internal/index" class="sidebar-item"><i class="fas fa-home"></i> Dashboard Utama</a>
 <<<<<<< HEAD
+<<<<<<< HEAD
             
             <!-- Menu Pencegahan (Gembok sudah dibuka) -->
             <div class="sidebar-title">Bagian Pencegahan</div>
@@ -87,6 +88,8 @@
             
             <!-- Pengaturan Akun -->
 =======
+=======
+>>>>>>> 910c8a5c3cad636e356ecfde73b03645913a21e4
             @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
                 <div class="sidebar-title">Bagian Pencegahan</div>
                 <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item active"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
@@ -106,7 +109,10 @@
                 <a href="#" class="sidebar-item"><i class="fas fa-tools"></i> Maintenance Peralatan</a>
                 <a href="#" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
             @endif
+<<<<<<< HEAD
 >>>>>>> 9f9350cede3afe966516473ef4e8f289c1f67260
+=======
+>>>>>>> 910c8a5c3cad636e356ecfde73b03645913a21e4
             <div class="sidebar-title">Pengaturan Akun</div>
             <a href="/internal/profil" class="sidebar-item">
                 <i class="fas fa-user-edit"></i> Profil Saya
@@ -161,23 +167,30 @@
                                 <th width="10%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
-                       <tbody>
-                            @forelse($data_inspeksi as $no => $item)
+                        <tbody id="tableBody">
                             <tr>
-                                <td>{{ $no + 1 }}</td>
+                                <td>1</td>
+                                <td><span class="title-text">12 Okt 2026</span><span class="sub-text">10:00 WIB</span></td>
                                 <td>
-                                    <span class="title-text">{{ $item->tanggal_inspeksi }}</span>
+                                    <span class="title-text">Inspeksi Sistem Hidran Gedung A</span>
+                                    <span class="sub-text">Gedung Walikota Jambi</span>
                                 </td>
+                                <td><span class="title-text">Tim Inspeksi 1</span><span class="sub-text">3 Orang</span></td>
+                                <td><span class="badge-soft-success status-badge"><i class="fas fa-check-circle me-1"></i> Selesai</span></td>
+                                <td class="text-center">
+                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><span class="title-text">15 Okt 2026</span><span class="sub-text">13:30 WIB</span></td>
                                 <td>
-                                    <span class="title-text">{{ $item->nama_instansi }}</span>
-                                    <span class="sub-text">{{ $item->alamat }}</span>
+                                    <span class="title-text">Pengecekan APAR dan Jalur Evakuasi</span>
+                                    <span class="sub-text">Mall WTC Batanghari</span>
                                 </td>
-                                <td>
-                                    <span class="title-text">{{ $item->tim_petugas }}</span>
-                                </td>
-                                <td>
-                                    <span class="badge badge-soft-primary">Terjadwal</span>
-                                </td>
+                                <td><span class="title-text">Tim Inspeksi 2</span><span class="sub-text">4 Orang</span></td>
+                                <td><span class="badge-soft-primary status-badge"><i class="fas fa-calendar-alt me-1"></i> Terjadwal</span></td>
                                 <td class="text-center">
                                     <a href="/internal/pencegahan/layanan-inspeksi/lihat/{{ $item->id }}" class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
                                     <a href="/internal/pencegahan/layanan-inspeksi/edit/{{ $item->id }}" class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></a>

@@ -161,22 +161,24 @@
                                 <th width="10%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @forelse($data_pembinaan as $no => $item)
+                        <tbody id="tableBody">
                             <tr>
                                 <td>{{ $no + 1 }}</td>
                                 <td>
                                     <!-- Asumsi kolom DB: tanggal_pelaksanaan -->
                                     <span class="title-text">{{ $item->tanggal_pelaksanaan ?? '-' }}</span>
                                 </td>
-                                <td>
-                                    <!-- Asumsi kolom DB: nama_kegiatan dan lokasi -->
-                                    <span class="title-text">{{ $item->nama_kegiatan ?? '-' }}</span>
-                                    <span class="sub-text">{{ $item->lokasi ?? '-' }}</span>
+                                <td><span class="title-text">Kesiagaan Lingkungan</span></td>
+                                <td><span class="badge-soft-primary status-badge"><i class="fas fa-sync-alt me-1"></i> Dalam Proses</span></td>
+                                <td class="text-center">
+                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
                                 </td>
                                 <td>
                                     <span class="badge badge-soft-info">Selesai</span>
                                 </td>
+                                <td><span class="title-text">Evaluasi Proteksi Gedung</span></td>
+                                <td><span class="badge-soft-success status-badge"><i class="fas fa-check-circle me-1"></i> Selesai</span></td>
                                 <td class="text-center">
                                     <a href="#" class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
                                     <a href="#" class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></a>
