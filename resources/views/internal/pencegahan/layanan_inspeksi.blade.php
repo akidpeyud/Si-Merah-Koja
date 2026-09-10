@@ -173,10 +173,15 @@
                                 <td><span class="title-text">Tim Inspeksi 2</span><span class="sub-text">4 Orang</span></td>
                                 <td><span class="badge-soft-primary status-badge"><i class="fas fa-calendar-alt me-1"></i> Terjadwal</span></td>
                                 <td class="text-center">
-                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
+                                    <a href="/internal/pencegahan/layanan-inspeksi/lihat/{{ $item->id }}" class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
+                                    <a href="/internal/pencegahan/layanan-inspeksi/edit/{{ $item->id }}" class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></a>
                                 </td>
                             </tr>
+                            @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">Belum ada data inspeksi yang tersimpan.</td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

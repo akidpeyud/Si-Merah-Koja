@@ -163,11 +163,10 @@
                         </thead>
                         <tbody id="tableBody">
                             <tr>
-                                <td>1</td>
-                                <td><span class="title-text">25 Sep 2026</span></td>
+                                <td>{{ $no + 1 }}</td>
                                 <td>
-                                    <span class="title-text">Relawan REDKAR Kec. Alam Barajo</span>
-                                    <span class="sub-text">Ketua: Bpk. Suryadi</span>
+                                    <!-- Asumsi kolom DB: tanggal_pelaksanaan -->
+                                    <span class="title-text">{{ $item->tanggal_pelaksanaan ?? '-' }}</span>
                                 </td>
                                 <td><span class="title-text">Kesiagaan Lingkungan</span></td>
                                 <td><span class="badge-soft-primary status-badge"><i class="fas fa-sync-alt me-1"></i> Dalam Proses</span></td>
@@ -175,21 +174,21 @@
                                     <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
                                     <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td><span class="title-text">05 Sep 2026</span></td>
                                 <td>
-                                    <span class="title-text">Tim K3 RSUD Abdul Manap</span>
-                                    <span class="sub-text">Rumah Sakit Daerah</span>
+                                    <span class="badge badge-soft-info">Selesai</span>
                                 </td>
                                 <td><span class="title-text">Evaluasi Proteksi Gedung</span></td>
                                 <td><span class="badge-soft-success status-badge"><i class="fas fa-check-circle me-1"></i> Selesai</span></td>
                                 <td class="text-center">
-                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
+                                    <a href="#" class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></a>
                                 </td>
                             </tr>
+                            @empty
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">Belum ada data pembinaan yang tersimpan.</td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

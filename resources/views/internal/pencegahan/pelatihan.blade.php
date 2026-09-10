@@ -163,11 +163,10 @@
                         </thead>
                         <tbody id="tableBody">
                             <tr>
-                                <td>1</td>
-                                <td><span class="title-text">20 Sep 2026</span><span class="sub-text">08:00 WIB - Selesai</span></td>
+                                <td>{{ $no + 1 }}</td>
                                 <td>
-                                    <span class="title-text">Pelatihan Dasar Pemadaman Api</span>
-                                    <span class="sub-text">Mako Damkar Kota Jambi</span>
+                                    <span class="title-text">{{ $item->tanggal_pelaksanaan }}</span>
+                                    <span class="sub-text">{{ $item->waktu_mulai }} - {{ $item->waktu_selesai ?? 'Selesai' }} WIB</span>
                                 </td>
                                 <td><span class="title-text">Relawan REDKAR</span><span class="sub-text">50 Orang</span></td>
                                 <td><span class="badge-soft-warning status-badge"><i class="fas fa-tools me-1"></i> Persiapan</span></td>
@@ -175,21 +174,25 @@
                                     <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
                                     <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td><span class="title-text">01 Sep 2026</span><span class="sub-text">08:00 - 15:00 WIB</span></td>
                                 <td>
-                                    <span class="title-text">Simulasi Water Rescue</span>
-                                    <span class="sub-text">Danau Sipin</span>
+                                    <span class="title-text">{{ $item->kategori_peserta }}</span>
+                                    <span class="sub-text">{{ $item->jumlah_peserta }} Orang</span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-soft-warning">Persiapan</span>
                                 </td>
                                 <td><span class="title-text">Internal Anggota</span><span class="sub-text">30 Orang</span></td>
                                 <td><span class="badge-soft-success status-badge"><i class="fas fa-check-circle me-1"></i> Selesai</span></td>
                                 <td class="text-center">
-                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
+                                    <a href="#" class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></a>
                                 </td>
                             </tr>
+                            @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">Belum ada data pelatihan yang tersimpan.</td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

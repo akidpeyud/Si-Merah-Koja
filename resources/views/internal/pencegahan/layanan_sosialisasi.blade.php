@@ -131,6 +131,22 @@
                 </a>
             </div>
 
+            <!-- 👇 INI BLOK ALERT NOTIFIKASI YANG DITAMBAHKAN 👇 -->
+            @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show mt-4 mb-0" role="alert" style="border-radius: 12px; font-weight: 500;">
+                <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            @endif
+
+            @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show mt-4 mb-0" role="alert" style="border-radius: 12px; font-weight: 500;">
+                <i class="fas fa-exclamation-triangle me-2"></i> {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            @endif
+            <!-- 👆 BATAS ALERT NOTIFIKASI 👆 -->
+
             <div class="content-card">
                 <div class="card-toolbar">
                     <div class="search-box">
@@ -187,10 +203,15 @@
                                 <td><span class="title-text">Siswa & Guru</span><span class="sub-text">300 Orang</span></td>
                                 <td><span class="badge-soft-warning status-badge"><i class="fas fa-tools me-1"></i> Persiapan</span></td>
                                 <td class="text-center">
-                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
+                                    <a href="#" class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></a>
                                 </td>
                             </tr>
+                            @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">Belum ada data sosialisasi yang tersimpan.</td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

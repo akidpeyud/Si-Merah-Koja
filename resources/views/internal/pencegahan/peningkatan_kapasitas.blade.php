@@ -197,10 +197,15 @@
                                 <td><span class="title-text">Bimtek</span><span class="sub-text">2 Anggota</span></td>
                                 <td><span class="badge-soft-success status-badge"><i class="fas fa-check-circle me-1"></i> Selesai</span></td>
                                 <td class="text-center">
-                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
+                                    <a href="#" class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></a>
                                 </td>
                             </tr>
+                            @empty
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">Belum ada data peningkatan kapasitas yang tersimpan.</td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
