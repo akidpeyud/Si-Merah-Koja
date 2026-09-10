@@ -188,3 +188,22 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/internal/operator/berita-medsos/update/{id}', [OperatorMedsosController::class, 'updateMedsos']);
     Route::delete('/internal/operator/berita-medsos/hapus/{id}', [OperatorMedsosController::class, 'destroyMedsos']);
 });
+Route::middleware(['auth'])->group(function () {
+    
+    // 1. Rute untuk halaman Input Data
+    Route::get('/internal/damtan/input-data', function () {
+        return view('internal.damtan.input_data');
+    });
+
+    // 2. Rute untuk halaman Data Laporan
+    Route::get('/internal/damtan/data-laporan', function () {
+        return view('internal.damtan.data_laporan');
+    });
+
+    // 3. Rute untuk halaman Edit Data
+    // (Membutuhkan parameter {id} agar tahu data mana yang sedang diedit)
+    Route::get('/internal/damtan/edit-data/{id}', function ($id) {
+        return view('internal.damtan.edit_data', compact('id'));
+    });
+
+});
