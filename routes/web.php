@@ -115,4 +115,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/damtan/data-laporan', function () {
         return view('internal.damtan.data_laporan');
     });
+
+    Route::get('/internal/damtan/edit-data', function () {
+    return view('internal.damtan.edit_data');
+    });
+
+    Route::post('/internal/damtan/input-data', function () {
+    // Simulasi: Setelah tombol ditekan, pengguna langsung dilempar ke halaman Data Laporan
+    return redirect('/internal/damtan/data-laporan');
+    });
 });
