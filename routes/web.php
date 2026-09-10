@@ -167,6 +167,14 @@ Route::post('/sapra/sarana-mako/store', [SapraController::class, 'storeSaranaMak
 Route::put('/sapra/sarana-mako/update/{id}', [SapraController::class, 'updateSaranaMako']);
 Route::delete('/sapra/sarana-mako/delete/{id}', [SapraController::class, 'destroySaranaMako']);
 
+// RUTE PRASARANA MAKO YANG HILANG
+Route::get('/sapra/prasarana-mako', [SapraController::class, 'prasaranaMako']);
+Route::get('/sapra/prasarana-mako/cetak-pdf', [SapraController::class, 'cetakPdfMako']);
+Route::post('/sapra/prasarana-mako/store', [SapraController::class, 'storePrasaranaMako']);
+Route::put('/sapra/prasarana-mako/update/{id}', [SapraController::class, 'updatePrasaranaMako']);
+Route::delete('/sapra/prasarana-mako/delete/{id}', [SapraController::class, 'destroyPrasaranaMako']);
+
+
 // === RUTE KELOLA INFOGRAFIS & BERITA MEDSOS (OPERATOR) ===
 Route::middleware(['auth'])->group(function () {
     // Rute Kelola Info Grafis
@@ -179,6 +187,4 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/internal/operator/berita-medsos/store', [OperatorMedsosController::class, 'storeMedsos']);
     Route::put('/internal/operator/berita-medsos/update/{id}', [OperatorMedsosController::class, 'updateMedsos']);
     Route::delete('/internal/operator/berita-medsos/hapus/{id}', [OperatorMedsosController::class, 'destroyMedsos']);
-  
-}
-);
+});

@@ -15,6 +15,65 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
+            /* --- SPLASH SCREEN STYLES --- */
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #0b0f19; /* Latar belakang gelap */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.splash-logo-container {
+    text-align: center;
+    animation: pulseLogo 1.5s infinite alternate;
+}
+
+.splash-logo-container img {
+    height: 100px;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.4));
+}
+
+.splash-title {
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+}
+
+.splash-spinner {
+    width: 45px;
+    height: 45px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top: 4px solid #ef4444; /* Warna merah loading */
+    border-radius: 50%;
+    animation: spinLoader 0.8s linear infinite;
+}
+
+@keyframes spinLoader {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulseLogo {
+    0% { transform: scale(0.95); opacity: 0.8; }
+    100% { transform: scale(1.05); opacity: 1; }
+}
+
+.splash-hidden {
+    opacity: 0;
+    visibility: hidden;
+}
         * {
             margin: 0;
             padding: 0;
@@ -240,7 +299,15 @@
     </style>
 </head>
 <body>
-
+<!-- SPLASH SCREEN LOADING -->
+<div id="splash-screen">
+    <div class="splash-logo-container">
+        <!-- Pastikan path gambarnya benar -->
+        <img src="/images/simerahkoja.png" alt="Logo Simerah Koja">
+        <div class="splash-title">SIMERAH KOJA</div>
+    </div>
+    <div class="splash-spinner"></div>
+</div>
     <div class="login-wrapper">
         <div class="login-card">
             
@@ -351,5 +418,19 @@
 
     <!-- Script Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    window.addEventListener('load', function() {
+        const splash = document.getElementById('splash-screen');
+        if (splash) {
+            // Tambahkan kelas untuk memicu animasi transisi (fade out)
+            splash.classList.add('splash-hidden');
+            
+            // Hapus elemen dari DOM setelah animasi selesai agar tidak menutupi klik
+            setTimeout(() => {
+                splash.remove();
+            }, 500); 
+        }
+    });
+</script>
 </body>
 </html>
