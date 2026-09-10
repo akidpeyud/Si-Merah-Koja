@@ -178,30 +178,25 @@
                                 <th width="10%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
+                        <!-- 👇 ID tableBody DITAMBAHKAN DI SINI AGAR PENCARIAN JS BERFUNGSI 👇 -->
                         <tbody id="tableBody">
+                            @forelse($data_sosialisasi as $no => $item)
                             <tr>
-                                <td>1</td>
-                                <td><span class="title-text">05 Sep 2026</span><span class="sub-text">09:00 WIB</span></td>
+                                <td>{{ $no + 1 }}</td>
                                 <td>
-                                    <span class="title-text">Sosialisasi Bahaya Kebakaran di Pemukiman Padat</span>
-                                    <span class="sub-text">Kelurahan Legok</span>
+                                    <span class="title-text">{{ $item->tanggal_pelaksanaan ?? '-' }}</span>
                                 </td>
-                                <td><span class="title-text">Warga RT 05</span><span class="sub-text">100 Orang</span></td>
-                                <td><span class="badge-soft-success status-badge"><i class="fas fa-check-circle me-1"></i> Selesai</span></td>
-                                <td class="text-center">
-                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td><span class="title-text">15 Sep 2026</span><span class="sub-text">08:00 WIB</span></td>
                                 <td>
-                                    <span class="title-text">Simulasi Evakuasi Kebakaran Sekolah</span>
-                                    <span class="sub-text">SMAN 1 Kota Jambi</span>
+                                    <span class="title-text">{{ $item->nama_kegiatan ?? '-' }}</span>
+                                    <span class="sub-text">{{ $item->lokasi ?? '-' }}</span>
                                 </td>
-                                <td><span class="title-text">Siswa & Guru</span><span class="sub-text">300 Orang</span></td>
-                                <td><span class="badge-soft-warning status-badge"><i class="fas fa-tools me-1"></i> Persiapan</span></td>
+                                <td>
+                                    <span class="title-text">{{ $item->sasaran_peserta ?? '-' }}</span>
+                                    <span class="sub-text">{{ $item->jumlah_peserta ?? '0' }} Orang</span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-soft-success status-badge">Selesai</span>
+                                </td>
                                 <td class="text-center">
                                       <!-- Tombol Mata -->
                                       <a href="/internal/pencegahan/layanan-sosialisasi/lihat/{{ $item->id }}" class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
