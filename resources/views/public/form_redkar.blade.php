@@ -15,6 +15,65 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
+        /* --- SPLASH SCREEN STYLES --- */
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #0b0f19; /* Latar belakang gelap */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.splash-logo-container {
+    text-align: center;
+    animation: pulseLogo 1.5s infinite alternate;
+}
+
+.splash-logo-container img {
+    height: 100px;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.4));
+}
+
+.splash-title {
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+}
+
+.splash-spinner {
+    width: 45px;
+    height: 45px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top: 4px solid #ef4444; /* Warna merah loading */
+    border-radius: 50%;
+    animation: spinLoader 0.8s linear infinite;
+}
+
+@keyframes spinLoader {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulseLogo {
+    0% { transform: scale(0.95); opacity: 0.8; }
+    100% { transform: scale(1.05); opacity: 1; }
+}
+
+.splash-hidden {
+    opacity: 0;
+    visibility: hidden;
+}
         * {
             margin: 0;
             padding: 0;
@@ -306,7 +365,15 @@
     </style>
 </head>
 <body>
-
+<!-- SPLASH SCREEN LOADING -->
+<div id="splash-screen">
+    <div class="splash-logo-container">
+        <!-- Pastikan path gambarnya benar -->
+        <img src="/images/simerahkoja.png" alt="Logo Simerah Koja">
+        <div class="splash-title">SIMERAH KOJA</div>
+    </div>
+    <div class="splash-spinner"></div>
+</div>
     <!-- ALERT SUKSES FLOATING -->
     @if(session('success'))
         <div id="globalSuccessAlert">
@@ -451,22 +518,22 @@
                         </div>
                     @endif
 
-                    <!-- IMPLEMENTASI LANGKAH 5: FORM ACTION & CSRF -->
-                    <form action="/redkar/daftar" method="POST" enctype="multipart/form-data">
+                    <!-- FORM ACTION DISESUAIKAN MENJADI /redkar -->
+                    <form action="/redkar" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row g-3">
                             <div class="col-12">
-                                <label class="form-label">NIK</label>
+                                <label class="form-label">NIK <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="nik" value="{{ old('nik') }}" placeholder="16 digit NIK sesuai KTP" required>
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">Nama Lengkap</label>
+                                <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="nama_lengkap" value="{{ old('nama_lengkap') }}" required>
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">Jenis Kelamin</label>
+                                <label class="form-label">Jenis Kelamin <span class="text-danger">*</span></label>
                                 <select class="form-select" name="jenis_kelamin" required>
                                     <option value="" selected disabled>Pilih Jenis Kelamin</option>
                                     <option value="L" {{ old('jenis_kelamin') == 'L' ? 'selected' : '' }}>Laki-Laki</option>
@@ -475,17 +542,17 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Tempat Lahir</label>
+                                <label class="form-label">Tempat Lahir <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="tempat_lahir" value="{{ old('tempat_lahir') }}" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Tanggal Lahir</label>
+                                <label class="form-label">Tanggal Lahir <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Status Perkawinan</label>
+                                <label class="form-label">Status Perkawinan <span class="text-danger">*</span></label>
                                 <select class="form-select" name="status_perkawinan" required>
                                     <option value="" selected disabled>Pilih Status Perkawinan</option>
                                     <option value="Belum Kawin" {{ old('status_perkawinan') == 'Belum Kawin' ? 'selected' : '' }}>Belum Kawin</option>
@@ -494,7 +561,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Agama</label>
+                                <label class="form-label">Agama <span class="text-danger">*</span></label>
                                 <select class="form-select" name="agama" required>
                                     <option value="" selected disabled>Pilih Agama</option>
                                     <option value="Islam" {{ old('agama') == 'Islam' ? 'selected' : '' }}>Islam</option>
@@ -506,45 +573,46 @@
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">Nomor Telpon (WhatsApp Aktif)</label>
+                                <label class="form-label">Nomor Telpon (WhatsApp Aktif) <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="nomor_telp" value="{{ old('nomor_telp') }}" placeholder="Contoh: 081234567890" required>
                             </div>
 
+                            <!-- UPLOAD KTP DIJADIKAN WAJIB -->
                             <div class="col-12">
-                                <label class="form-label">Kartu Tanda Penduduk (KTP)</label>
+                                <label class="form-label">Kartu Tanda Penduduk (KTP) <span class="text-danger">*</span></label>
                                 <div class="file-upload-wrapper" onclick="document.getElementById('ktp_upload').click()">
-                                    <p id="ktp_file_label"><i class="fas fa-cloud-upload-alt me-1"></i> Klik untuk unggah file KTP atau <span>Browse</span> (.jpg, .png, .pdf max 2MB)</p>
-                                    <input type="file" id="ktp_upload" name="ktp" class="d-none" accept=".jpg,.jpeg,.png,.pdf">
+                                    <p id="ktp_file_label"><i class="fas fa-cloud-upload-alt me-1"></i> Klik untuk unggah file KTP <span>(Wajib)</span> (.jpg, .png, .pdf max 2MB)</p>
+                                    <input type="file" id="ktp_upload" name="ktp" class="d-none" accept=".jpg,.jpeg,.png,.pdf" required>
                                 </div>
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">Alamat</label>
+                                <label class="form-label">Alamat <span class="text-danger">*</span></label>
                                 <textarea class="form-control" name="alamat" rows="3" required>{{ old('alamat') }}</textarea>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">RT/RW</label>
+                                <label class="form-label">RT/RW <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="rt_rw" value="{{ old('rt_rw') }}" placeholder="Contoh: RT 05 / RW 02" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Kode Pos</label>
+                                <label class="form-label">Kode Pos <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="kode_pos" value="{{ old('kode_pos') }}" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Provinsi</label>
+                                <label class="form-label">Provinsi <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control readonly-input" name="provinsi" value="JAMBI" readonly>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Kabupaten/Kota</label>
+                                <label class="form-label">Kabupaten/Kota <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control readonly-input" name="kabupaten_kota" value="KOTA JAMBI" readonly>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Kecamatan</label>
+                                <label class="form-label">Kecamatan <span class="text-danger">*</span></label>
                                 <select class="form-select" name="kecamatan" id="kecamatan" required>
                                     <option value="" selected disabled>Pilih Kecamatan</option>
                                     <option value="Alam Barajo">Alam Barajo</option>
@@ -562,19 +630,19 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Kelurahan</label>
+                                <label class="form-label">Kelurahan <span class="text-danger">*</span></label>
                                 <select class="form-select" name="kelurahan" id="kelurahan" required>
                                     <option value="" selected disabled>Pilih Kelurahan</option>
                                 </select>
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">Pekerjaan</label>
+                                <label class="form-label">Pekerjaan <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="pekerjaan" value="{{ old('pekerjaan') }}" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Pendidikan Terakhir</label>
+                                <label class="form-label">Pendidikan Terakhir <span class="text-danger">*</span></label>
                                 <select class="form-select" name="pendidikan_terakhir" required>
                                     <option value="" selected disabled>Pilih Pendidikan Terakhir</option>
                                     <option value="SMA/SMK" {{ old('pendidikan_terakhir') == 'SMA/SMK' ? 'selected' : '' }}>SMA/SMK</option>
@@ -584,7 +652,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Sehat Jasmani</label>
+                                <label class="form-label">Sehat Jasmani <span class="text-danger">*</span></label>
                                 <select class="form-select" name="sehat_jasmani" required>
                                     <option value="" selected disabled>Pilih Kondisi</option>
                                     <option value="Ya" {{ old('sehat_jasmani') == 'Ya' ? 'selected' : '' }}>Ya</option>
@@ -593,7 +661,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Buta Warna</label>
+                                <label class="form-label">Buta Warna <span class="text-danger">*</span></label>
                                 <select class="form-select" name="buta_warna" required>
                                     <option value="" selected disabled>Pilih Kondisi</option>
                                     <option value="Tidak" {{ old('buta_warna') == 'Tidak' ? 'selected' : '' }}>Tidak</option>
@@ -602,7 +670,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Golongan Darah</label>
+                                <label class="form-label">Golongan Darah <span class="text-danger">*</span></label>
                                 <select class="form-select" name="golongan_darah" required>
                                     <option value="" selected disabled>Pilih Golongan Darah</option>
                                     <option value="A" {{ old('golongan_darah') == 'A' ? 'selected' : '' }}>A</option>
@@ -720,5 +788,19 @@
             }
         });
     </script>
+    <script>
+    window.addEventListener('load', function() {
+        const splash = document.getElementById('splash-screen');
+        if (splash) {
+            // Tambahkan kelas untuk memicu animasi transisi (fade out)
+            splash.classList.add('splash-hidden');
+            
+            // Hapus elemen dari DOM setelah animasi selesai agar tidak menutupi klik
+            setTimeout(() => {
+                splash.remove();
+            }, 500); 
+        }
+    });
+</script>
 </body>
 </html>

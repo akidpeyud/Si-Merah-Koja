@@ -44,10 +44,9 @@ class AuthController extends Controller
         return view('login.lupa_password');
     }
 
-    // Memproses reset password menggunakan Email & Nomor Kepegawaian, lalu kirim ke Email
+    // Memproses reset password
     public function processForgotPassword(Request $request)
     {
-        // 1. Validasi Input
         $request->validate([
             'email' => ['required', 'email'],
             'nomor_pegawai' => ['required'],
@@ -56,7 +55,6 @@ class AuthController extends Controller
             'nomor_pegawai.required' => 'Nomor kepegawaian wajib diisi.'
         ]);
 
-        // 2. Cari user berdasarkan kombinasi email dan nomor pegawai
         $user = User::where('email', $request->email)
                     ->where('nomor_pegawai', $request->nomor_pegawai)
                     ->first();
@@ -67,14 +65,10 @@ class AuthController extends Controller
             ])->onlyInput('email', 'nomor_pegawai');
         }
 
-        // 3. Buat password sementara yang bersih
         $passwordBaru = 'Damkar' . rand(1000, 9999);
-
-        // 4. Update password baru ke database (Otomatis di-hash)
         $user->password = Hash::make($passwordBaru);
         $user->save();
 
-        // 5. Susun isi email
         $pesanEmail = "Halo " . $user->nama_lengkap . ",\n\n"
                     . "Permintaan reset password untuk akun SIMERAH KOJA Anda berhasil diverifikasi.\n"
                     . "Berikut adalah password sementara Anda:\n\n"
@@ -82,13 +76,11 @@ class AuthController extends Controller
                     . "Silakan login menggunakan password ini dan segera ubah password Anda di menu Pengaturan Akun demi keamanan.\n\n"
                     . "Salam,\nTim Administrator SIMERAH KOJA";
 
-        // Eksekusi pengiriman email
         Mail::raw($pesanEmail, function ($message) use ($user) {
             $message->to($user->email)
                     ->subject('Reset Password Akun SIMERAH KOJA');
         });
 
-        // 6. Kembalikan ke halaman login beserta alert sukses
         return redirect('/login')->with('success', 'Password baru telah dikirim ke email Anda. Silakan cek kotak masuk.');
     }
 
@@ -123,12 +115,10 @@ class AuthController extends Controller
 
         $user = Auth::user();
 
-        // Cek apakah password lama yang diinput cocok dengan di database
         if (!Hash::check($request->password_lama, $user->password)) {
             return back()->withErrors(['password_lama' => 'Password lama yang Anda masukkan salah.']);
         }
 
-        // Update ke password baru
         $user->password = Hash::make($request->password_baru);
         $user->save();
 
@@ -138,42 +128,34 @@ class AuthController extends Controller
     // Menampilkan halaman Kelola User (Khusus Super User)
     public function kelolaUser()
     {
-        // Pastikan hanya super_user yang bisa mengakses halaman ini
         if (Auth::user()->role !== 'super_user') {
             return redirect('/internal/index')->with('error', 'Akses Ditolak! Hanya Super User yang dapat mengelola pengguna.');
         }
 
-        // Ambil semua data user dari database, urutkan dari yang terbaru
         $users = User::orderBy('created_at', 'desc')->get();
         
         return view('internal.kelola_user', compact('users'));
     }
 
-    // Memproses penambahan user baru dari form
+    // Memproses penambahan user baru
     public function storeUser(Request $request)
     {
-        // PENGAMAN EKSTRA: Pastikan HANYA super_user yang bisa menyimpan data ke database
         if (Auth::user()->role !== 'super_user') {
-            return redirect('/internal/index')->with('error', 'Akses Ditolak! Anda tidak memiliki izin untuk menambah pengguna.');
+            return redirect('/internal/index')->with('error', 'Akses Ditolak!');
         }
 
-        // Validasi input
         $request->validate([
             'nama_lengkap' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
             'nomor_pegawai' => ['required', 'unique:users,nomor_pegawai'],
             'role' => ['required']
-        ], [
-            'email.unique' => 'Email ini sudah terdaftar di sistem.',
-            'nomor_pegawai.unique' => 'NIP/Nomor Pegawai ini sudah digunakan.'
         ]);
 
-        // Buat user baru
         $user = new User();
         $user->nama_lengkap = $request->nama_lengkap;
         $user->email = $request->email;
         $user->nomor_pegawai = $request->nomor_pegawai;
-        $user->password = Hash::make('Damkar123'); // Password bawaan awal (default)
+        $user->password = Hash::make('Damkar123'); 
         $user->role = $request->role;
         $user->save();
 
@@ -201,7 +183,6 @@ class AuthController extends Controller
         $user->nomor_pegawai = $request->nomor_pegawai;
         $user->role = $request->role;
 
-        // Jika password diisi, update passwordnya
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
         }
@@ -223,7 +204,7 @@ class AuthController extends Controller
             'status_perkawinan' => ['required'],
             'agama' => ['required'],
             'nomor_telp' => ['required'],
-            'ktp' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'], // Maks 2MB
+            'ktp' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
             'alamat' => ['required'],
             'rt_rw' => ['required'],
             'kode_pos' => ['required'],
@@ -238,7 +219,6 @@ class AuthController extends Controller
 
         $ktpPath = null;
         if ($request->hasFile('ktp')) {
-            // Simpan file KTP ke folder public/storage/ktp_redkar
             $ktpPath = $request->file('ktp')->store('ktp_redkar', 'public');
         }
 
@@ -269,28 +249,30 @@ class AuthController extends Controller
         return back()->with('success', 'Pendaftaran relawan REDKAR berhasil dikirim! Data Anda sedang diproses.');
     }
 
-    // Menampilkan daftar pendaftar REDKAR (Khusus Operator dan Super User)
     public function kelolaRedkar()
     {
-        if (!in_array(Auth::user()->role, ['operator', 'super_user'])) {
-            return redirect('/internal/index')->with('error', 'Akses Ditolak! Halaman khusus Operator dan Super User.');
+        // Izinkan 'user' (Pegawai Internal) dan 'super_user' untuk mengakses
+        if (!in_array(Auth::user()->role, ['user', 'super_user'])) {
+            return redirect('/internal/index')->with('error', 'Akses Ditolak!');
         }
 
         $relawan = RedkarRegistration::orderBy('created_at', 'desc')->get();
         
-        return view('internal.operator.kelola_redkar', compact('relawan'));
+        // Diubah ke folder pencegahan
+        return view('internal.pencegahan.kelola_redkar', compact('relawan'));
     }
 
-// BENAR (Mengambil 1 data spesifik berdasarkan ID)
+    // Menampilkan halaman cetak PDF untuk 1 relawan
     public function cetakRedkar($id)
     {
-        if (!in_array(Auth::user()->role, ['operator', 'super_user'])) {
+        // Izinkan 'user' dan 'super_user'
+        if (!in_array(Auth::user()->role, ['user', 'super_user'])) {
             return redirect('/internal/index')->with('error', 'Akses Ditolak!');
         }
 
-        // PASTIKAN MENGGUNAKAN findOrFail($id), BUKAN get()
         $relawan = RedkarRegistration::findOrFail($id); 
         
-        return view('internal.operator.cetak_redkar', compact('relawan'));
+        // Diubah ke folder pencegahan
+        return view('internal.pencegahan.cetak_redkar', compact('relawan'));
     }
 }
