@@ -77,17 +77,16 @@
     <div class="dashboard-container">
         <aside class="sidebar">
             <a href="/internal/index" class="sidebar-item"><i class="fas fa-home"></i> Dashboard Utama</a>
-
-            @if(Auth::user()->role === 'pencegahan' || Auth::user()->role === 'super_user')
-                <div class="sidebar-title">Bagian Pencegahan</div>
-                <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
-                <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
-                <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
-                <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
-                
-                <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item active"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
-            @endif
-
+            
+            <!-- Menu Pencegahan (Gembok sudah dibuka) -->
+            <div class="sidebar-title">Bagian Pencegahan</div>
+            <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
+            <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
+            <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
+            <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
+            <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
+            
+            <!-- Pengaturan Akun -->
             <div class="sidebar-title">Pengaturan Akun</div>
             <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
         </aside>
@@ -138,36 +137,32 @@
                                 <th width="10%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody id="tableBody">
-                            <!-- Data baris tabel di sini -->
+                        <tbody>
+                            @forelse($data_peningkatan as $no => $item)
                             <tr>
-                                <td>1</td>
-                                <td><span class="title-text">10 - 15 Okt 2026</span></td>
+                                <td>{{ $no + 1 }}</td>
                                 <td>
-                                    <span class="title-text">Diklat Inspektur Kebakaran Tingkat I</span>
-                                    <span class="sub-text">Kementerian Dalam Negeri</span>
+                                    <!-- Asumsi kolom di DB lu: tanggal_pelaksanaan -->
+                                    <span class="title-text">{{ $item->tanggal_pelaksanaan ?? '-' }}</span>
                                 </td>
-                                <td><span class="title-text">Diklat Teknis</span><span class="sub-text">5 Anggota</span></td>
-                                <td><span class="badge-soft-warning status-badge"><i class="fas fa-clock me-1"></i> Menunggu</span></td>
+                                <td>
+                                    <!-- Asumsi kolom di DB lu: nama_kegiatan dan lokasi -->
+                                    <span class="title-text">{{ $item->nama_kegiatan ?? '-' }}</span>
+                                    <span class="sub-text">{{ $item->lokasi ?? '-' }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-soft-primary">Aktif</span>
+                                </td>
                                 <td class="text-center">
-                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
+                                    <a href="#" class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></a>
                                 </td>
                             </tr>
+                            @empty
                             <tr>
-                                <td>2</td>
-                                <td><span class="title-text">01 - 03 Sep 2026</span></td>
-                                <td>
-                                    <span class="title-text">Bimtek Penyusunan SOP Pemadaman</span>
-                                    <span class="sub-text">Pusdiklat Damkar Ciracas</span>
-                                </td>
-                                <td><span class="title-text">Bimtek</span><span class="sub-text">2 Anggota</span></td>
-                                <td><span class="badge-soft-success status-badge"><i class="fas fa-check-circle me-1"></i> Selesai</span></td>
-                                <td class="text-center">
-                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
-                                </td>
+                                <td colspan="5" class="text-center text-muted py-4">Belum ada data peningkatan kapasitas yang tersimpan.</td>
                             </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

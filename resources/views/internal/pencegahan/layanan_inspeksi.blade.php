@@ -75,14 +75,16 @@
     <div class="dashboard-container">
         <aside class="sidebar">
             <a href="/internal/index" class="sidebar-item"><i class="fas fa-home"></i> Dashboard Utama</a>
-            @if(Auth::user()?->role === 'pencegahan' || Auth::user()?->role === 'super_user')
-                <div class="sidebar-title">Bagian Pencegahan</div>
-                <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item active"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
-                <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
-                <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
-                <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
-                <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
-            @endif
+            
+            <!-- Menu Pencegahan (Gembok sudah dibuka) -->
+            <div class="sidebar-title">Bagian Pencegahan</div>
+            <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item active"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
+            <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
+            <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
+            <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
+            <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
+            
+            <!-- Pengaturan Akun -->
             <div class="sidebar-title">Pengaturan Akun</div>
             <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
         </aside>
@@ -129,26 +131,34 @@
                                 <th width="10%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
-    @foreach($data_inspeksi as $no => $item)
-    <tr>
-        <td>{{ $no + 1 }}</td>
-        <td>{{ $item->tanggal_inspeksi }}</td>
-        <td>{{ $item->nama_instansi }}</td>
-        <td>{{ $item->tim_petugas }}</td>
-        <td>
-            <span class="badge bg-info text-dark">Terjadwal</span>
-        </td>
-        <td class="text-center">
-            <!-- Tombol Lihat -->
-            <a href="/internal/pencegahan/layanan-inspeksi/lihat/{{ $item->id }}" class="btn btn-sm btn-primary" title="Lihat Detail"><i class="fas fa-eye"></i></a>
-            
-            <!-- Tombol Edit -->
-            <a href="/internal/pencegahan/layanan-inspeksi/edit/{{ $item->id }}" class="btn btn-sm btn-success" title="Edit Data"><i class="fas fa-edit"></i></a>
-        </td>
-    </tr>
-    @endforeach
-</tbody>
+                       <tbody>
+                            @forelse($data_inspeksi as $no => $item)
+                            <tr>
+                                <td>{{ $no + 1 }}</td>
+                                <td>
+                                    <span class="title-text">{{ $item->tanggal_inspeksi }}</span>
+                                </td>
+                                <td>
+                                    <span class="title-text">{{ $item->nama_instansi }}</span>
+                                    <span class="sub-text">{{ $item->alamat }}</span>
+                                </td>
+                                <td>
+                                    <span class="title-text">{{ $item->tim_petugas }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-soft-primary">Terjadwal</span>
+                                </td>
+                                <td class="text-center">
+                                    <a href="/internal/pencegahan/layanan-inspeksi/lihat/{{ $item->id }}" class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
+                                    <a href="/internal/pencegahan/layanan-inspeksi/edit/{{ $item->id }}" class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></a>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">Belum ada data inspeksi yang tersimpan.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
                     </table>
                 </div>
             </div>

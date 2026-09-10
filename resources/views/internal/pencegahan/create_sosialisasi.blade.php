@@ -76,8 +76,7 @@
             </div>
 
             <div class="form-card">
-                <form action="#" method="POST" enctype="multipart/form-data">
-                    @csrf
+                <form action="/internal/pencegahan/layanan-sosialisasi/tambah" method="POST" enctype="multipart/form-data">
                     
                     <div class="row mb-4">
                         <div class="col-md-6">

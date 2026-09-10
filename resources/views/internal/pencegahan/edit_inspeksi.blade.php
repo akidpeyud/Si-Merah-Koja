@@ -83,83 +83,91 @@
 
             <div class="form-card">
                 <!-- PERHATIKAN: enctype="multipart/form-data" ditambahkan di sini -->
-                <form action="/internal/pencegahan/layanan-inspeksi/update/{{ $data->id }}" method="POST" ...>
+                <form action="/internal/pencegahan/layanan-inspeksi/edit/{{ $data->id }}" method="POST">
+                    @csrf
+                    
+                    <!-- Form Edit Data Inspeksi -->
+            <div class="form-card">
+                <!-- Perhatikan action-nya mengarah ke route edit dan bawa ID -->
+                <form action="/internal/pencegahan/layanan-inspeksi/edit/{{ $data->id }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     
                     <div class="row mb-4">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="form-label">Nama Instansi / Perusahaan</label>
-                            <input type="text" class="form-control" name="nama_instansi" placeholder="Contoh: PT. ABC Indonesia / Hotel Abadi" required>
+                            <!-- Tambahin atribut value="..." -->
+                            <input type="text" class="form-control" name="nama_instansi" value="{{ $data->nama_instansi }}" required>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label class="form-label">Tanggal Inspeksi</label>
-                            <input type="date" class="form-control" name="tanggal_inspeksi" required>
+                            <input type="date" class="form-control" name="tanggal_inspeksi" value="{{ $data->tanggal_inspeksi }}" required>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label class="form-label">Tim Petugas</label>
                             <select class="form-select" name="tim_petugas" required>
-                                <option value="" disabled selected>Pilih Tim...</option>
-                                <option value="Tim Alpha">Tim Alpha (Regu 1)</option>
-                                <option value="Tim Bravo">Tim Bravo (Regu 2)</option>
-                                <option value="Tim Charlie">Tim Charlie (Regu 3)</option>
+                                <option value="" disabled>Pilih Tim...</option>
+                                <option value="Tim Alpha" {{ $data->tim_petugas == 'Tim Alpha' ? 'selected' : '' }}>Tim Alpha</option>
+                                <option value="Tim Bravo" {{ $data->tim_petugas == 'Tim Bravo' ? 'selected' : '' }}>Tim Bravo</option>
+                                <option value="Tim Charlie" {{ $data->tim_petugas == 'Tim Charlie' ? 'selected' : '' }}>Tim Charlie</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="mb-4">
                         <label class="form-label">Alamat Lengkap Lokasi</label>
-                        <textarea class="form-control" name="alamat" rows="2" placeholder="Masukkan alamat lengkap lokasi yang akan diinspeksi..." required></textarea>
+                        <!-- Untuk Textarea, datanya ditaruh di TENGAH tag, bukan di atribut value -->
+                        <textarea class="form-control" name="alamat" rows="2" required>{{ $data->alamat }}</textarea>
                     </div>
 
-                    <div class="building-box">
-                        <h5><i class="fas fa-building text-primary"></i> Klasifikasi Bangunan / Gedung di Lokasi</h5>
-                        <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Silakan isi jumlah gedung berdasarkan klasifikasi tingginya. (Isi 0 jika tidak ada).</p>
-                        
+                    <div class="p-4 mb-4" style="background-color: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px;">
+                        <h6 class="mb-3" style="font-weight: 700; color: #3b82f6;"><i class="fas fa-building me-2"></i> Klasifikasi Bangunan / Gedung di Lokasi</h6>
                         <div class="row">
-                            <div class="col-md-4 building-item">
-                                <label class="mb-2 text-danger"><i class="fas fa-city me-1"></i> Gedung Tinggi (> 8 Lantai)</label>
+                            <div class="col-md-4">
+                                <label class="form-label text-danger">Gedung Tinggi (> 8 Lantai)</label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control" name="jml_gedung_tinggi" min="0" value="0" required>
+                                    <input type="number" class="form-control" name="jml_gedung_tinggi" value="{{ $data->jml_gedung_tinggi }}">
                                     <span class="input-group-text">Unit</span>
                                 </div>
                             </div>
-                            <div class="col-md-4 building-item">
-                                <label class="mb-2 text-warning"><i class="fas fa-building me-1"></i> Gedung Sedang (5 - 8 Lantai)</label>
+                            <div class="col-md-4">
+                                <label class="form-label text-warning">Gedung Sedang (5 - 8 Lantai)</label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control" name="jml_gedung_sedang" min="0" value="0" required>
+                                    <input type="number" class="form-control" name="jml_gedung_sedang" value="{{ $data->jml_gedung_sedang }}">
                                     <span class="input-group-text">Unit</span>
                                 </div>
                             </div>
-                            <div class="col-md-4 building-item">
-                                <label class="mb-2 text-success"><i class="fas fa-home me-1"></i> Gedung Rendah (1 - 4 Lantai)</label>
+                            <div class="col-md-4">
+                                <label class="form-label text-success">Gedung Rendah (1 - 4 Lantai)</label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control" name="jml_gedung_rendah" min="0" value="0" required>
+                                    <input type="number" class="form-control" name="jml_gedung_rendah" value="{{ $data->jml_gedung_rendah }}">
                                     <span class="input-group-text">Unit</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- KOTAK UPLOAD FILE BARU DITAMBAHKAN DI SINI -->
                     <div class="mb-4">
-                        <label class="form-label"><i class="fas fa-file-upload me-1 text-primary"></i> Dokumen Pendukung / Foto Lokasi (Opsional)</label>
-                        <input class="form-control" type="file" name="dokumen_pendukung" accept=".pdf, .jpg, .jpeg, .png">
-                        <small class="text-muted" style="font-size: 13px; margin-top: 5px; display: block;">
-                            <i class="fas fa-info-circle me-1"></i> Format yang diizinkan: PDF, JPG, PNG (Maks. 5MB). Bisa berupa Surat Permohonan Inspeksi atau foto fisik gedung.
-                        </small>
+                        <label class="form-label">Dokumen Pendukung / Foto Lokasi (Opsional)</label>
+                        <input class="form-control" type="file" name="dokumen_pendukung">
+                        @if($data->dokumen_pendukung)
+                            <small class="text-success mt-2 d-block"><i class="fas fa-check-circle me-1"></i> File saat ini: {{ $data->dokumen_pendukung }}</small>
+                        @endif
+                        <small class="text-muted">Biarkan kosong jika tidak ingin mengganti file lama.</small>
                     </div>
 
                     <div class="mb-4">
                         <label class="form-label">Catatan Tambahan (Opsional)</label>
-                        <textarea class="form-control" name="catatan" rows="3" placeholder="Misal: Perlu membawa alat ukur hidran khusus..."></textarea>
+                        <textarea class="form-control" name="catatan" rows="3">{{ $data->catatan }}</textarea>
                     </div>
 
                     <div class="d-flex justify-content-end gap-3 mt-5">
-                        <a href="/internal/pencegahan/layanan-inspeksi" class="btn btn-light px-4 py-2" style="border-radius: 8px; font-weight: 600; border: 1px solid #cbd5e1;">Batal</a>
-                        <button type="submit" class="btn btn-primary px-4 py-2" style="border-radius: 8px; font-weight: 600; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);">
-                            <i class="fas fa-save me-2"></i> Simpan Data Inspeksi
+                        <a href="/internal/pencegahan/layanan-inspeksi" class="btn btn-light px-4 py-2" style="border-radius: 8px; font-weight: 600;">Batal</a>
+                        <button type="submit" class="btn btn-primary px-4 py-2" style="border-radius: 8px; font-weight: 600;">
+                            <i class="fas fa-save me-2"></i> Update Data Inspeksi
                         </button>
                     </div>
+                </form>
+            </div>
 
                 </form>
             </div>

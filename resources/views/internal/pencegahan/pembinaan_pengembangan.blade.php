@@ -73,16 +73,18 @@
         </div>
     </nav>
     <div class="dashboard-container">
-        <aside class="sidebar">
+       <aside class="sidebar">
             <a href="/internal/index" class="sidebar-item"><i class="fas fa-home"></i> Dashboard Utama</a>
-            @if(Auth::user()->role === 'pencegahan' || Auth::user()->role === 'super_user')
-                <div class="sidebar-title">Bagian Pencegahan</div>
-                <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
-                <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
-                <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
-                <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item active"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
-                <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
-            @endif
+            
+            <!-- Menu Pencegahan (Gembok sudah dibuka) -->
+            <div class="sidebar-title">Bagian Pencegahan</div>
+            <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
+            <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
+            <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
+            <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
+            <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
+            
+            <!-- Pengaturan Akun -->
             <div class="sidebar-title">Pengaturan Akun</div>
             <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
         </aside>
@@ -129,35 +131,32 @@
                                 <th width="10%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody id="tableBody">
+                        <tbody>
+                            @forelse($data_pembinaan as $no => $item)
                             <tr>
-                                <td>1</td>
-                                <td><span class="title-text">25 Sep 2026</span></td>
+                                <td>{{ $no + 1 }}</td>
                                 <td>
-                                    <span class="title-text">Relawan REDKAR Kec. Alam Barajo</span>
-                                    <span class="sub-text">Ketua: Bpk. Suryadi</span>
+                                    <!-- Asumsi kolom DB: tanggal_pelaksanaan -->
+                                    <span class="title-text">{{ $item->tanggal_pelaksanaan ?? '-' }}</span>
                                 </td>
-                                <td><span class="title-text">Kesiagaan Lingkungan</span></td>
-                                <td><span class="badge-soft-primary status-badge"><i class="fas fa-sync-alt me-1"></i> Dalam Proses</span></td>
+                                <td>
+                                    <!-- Asumsi kolom DB: nama_kegiatan dan lokasi -->
+                                    <span class="title-text">{{ $item->nama_kegiatan ?? '-' }}</span>
+                                    <span class="sub-text">{{ $item->lokasi ?? '-' }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-soft-info">Selesai</span>
+                                </td>
                                 <td class="text-center">
-                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
+                                    <a href="#" class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></a>
                                 </td>
                             </tr>
+                            @empty
                             <tr>
-                                <td>2</td>
-                                <td><span class="title-text">05 Sep 2026</span></td>
-                                <td>
-                                    <span class="title-text">Tim K3 RSUD Abdul Manap</span>
-                                    <span class="sub-text">Rumah Sakit Daerah</span>
-                                </td>
-                                <td><span class="title-text">Evaluasi Proteksi Gedung</span></td>
-                                <td><span class="badge-soft-success status-badge"><i class="fas fa-check-circle me-1"></i> Selesai</span></td>
-                                <td class="text-center">
-                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
-                                </td>
+                                <td colspan="5" class="text-center text-muted py-4">Belum ada data pembinaan yang tersimpan.</td>
                             </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

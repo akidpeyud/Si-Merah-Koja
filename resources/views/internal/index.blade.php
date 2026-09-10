@@ -219,21 +219,19 @@
     <!-- KONTEN UTAMA -->
     <div class="dashboard-container">
         
-        <!-- SIDEBAR DENGAN LOGIKA ROLE -->
+        <!-- SIDEBAR -->
         <aside class="sidebar">
             <a href="/internal/index" class="sidebar-item active">
                 <i class="fas fa-home"></i> Dashboard Utama
             </a>
 
-            <!-- 1. BAGIAN PENCEGAHAN -->
-            @if(Auth::user()->role === 'pencegahan' || Auth::user()->role === 'super_user')
-                <div class="sidebar-title">Bagian Pencegahan</div>
-                <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
-                <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
-                <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
-                <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
-                <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
-            @endif
+            <!-- 1. BAGIAN PENCEGAHAN (Sudah dibebaskan dari kunci role) -->
+            <div class="sidebar-title">Bagian Pencegahan</div>
+            <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
+            <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
+            <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
+            <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
+            <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
 
             <!-- 2. BAGIAN PEMADAMAN & PENYELAMATAN -->
             @if(Auth::user()->role === 'pemadaman' || Auth::user()->role === 'super_user')
@@ -285,8 +283,7 @@
             <!-- Grid Statistik -->
             <div class="stats-grid">
                 
-                <!-- STATISTIK KHUSUS PENCEGAHAN -->
-                @if(Auth::user()->role === 'pencegahan' || Auth::user()->role === 'super_user')
+                <!-- STATISTIK KHUSUS PENCEGAHAN (Sudah dibebaskan dari kunci role) -->
                 <div class="stat-card border-blue">
                     <i class="fas fa-clipboard-check stat-icon text-primary"></i>
                     <div class="stat-title">Layanan Inspeksi</div>
@@ -316,7 +313,6 @@
                     <div class="stat-title">Peningkatan Kapasitas</div>
                     <div class="stat-value">3</div>
                 </div>
-                @endif
 
                 <!-- STATISTIK KHUSUS PEMADAMAN -->
                 @if(Auth::user()->role === 'pemadaman' || Auth::user()->role === 'super_user')
