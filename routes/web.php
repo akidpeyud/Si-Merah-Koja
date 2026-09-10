@@ -12,7 +12,9 @@ use App\Models\BeritaMedsos;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-// Route untuk halaman utama (Homepage) - DINAMIS LENGKAP
+// ==========================================
+// ROUTE UNTUK HALAMAN UTAMA (HOMEPAGE)
+// ==========================================
 Route::get('/', function () {
     $daftar_berita = Berita::orderBy('tanggal_kejadian', 'desc')->take(4)->get();
     $daftar_infografis = Infografis::latest()->take(6)->get();
@@ -21,16 +23,18 @@ Route::get('/', function () {
     return view('homepage.index', compact('daftar_berita', 'daftar_infografis', 'daftar_medsos'));
 });
 
-// === ROUTE UNTUK MENU PROGRAM KERJA ===
+// ==========================================
+// ROUTE UNTUK MENU PROGRAM KERJA
+// ==========================================
 Route::get('/sotk', function () { return view('programkerja.sotk'); });
 Route::get('/pelaporan', function () { return view('programkerja.pelaporan'); });
 Route::get('/perencanaan', function () { return view('programkerja.perencanaan'); });
 Route::get('/produkhukum', function () { return view('programkerja.produkhukum'); });
 Route::get('/sop', function () { return view('programkerja.sop'); });
 
-Route::get('/internal/pencegahan/kelola-redkar', [AuthController::class, 'kelolaRedkar']);
-
-// === ROUTE LAYANAN & FASILITAS ===
+// ==========================================
+// ROUTE LAYANAN & FASILITAS
+// ==========================================
 Route::get('/layanan-fasilitas/layanan_perizinan', function () { return view('layanan-fasilitas.layanan_perizinan'); });
 Route::get('/layanan-fasilitas/skk', function () { return view('layanan-fasilitas.skk'); });
 Route::get('/layanan-fasilitas/perpanjang_skk', function () { return view('layanan-fasilitas.perpanjang_skk'); });
@@ -38,13 +42,18 @@ Route::get('/layanan-fasilitas/izin_penjualan', function () { return view('layan
 Route::get('/layanan-fasilitas/edukasi_sosialisasi', function () { return view('layanan-fasilitas.edukasi_sosialisasi'); });
 Route::get('/layanan-fasilitas/pks', function () { return view('layanan-fasilitas.pks'); });
 
-// === ROUTE AUTH (LOGIN, LUPA PASSWORD, LOGOUT) ===
+// ==========================================
+// ROUTE AUTH (LOGIN, LUPA PASSWORD, LOGOUT)
+// ==========================================
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'processLogin']);
 Route::get('/lupa-password', [AuthController::class, 'showForgotPassword']);
 Route::post('/lupa-password', [AuthController::class, 'processForgotPassword']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
+// ==========================================
+// ROUTE INTERNAL & KELOLA USER
+// ==========================================
 Route::get('/internal/index', function () {
     return view('internal.index');
 });
@@ -55,10 +64,11 @@ Route::post('/internal/profil/update-password', [AuthController::class, 'updateP
 Route::get('/internal/kelola-user', [AuthController::class, 'kelolaUser'])->middleware('auth');
 Route::post('/internal/kelola-user/tambah', [AuthController::class, 'storeUser'])->middleware('auth');
 Route::put('/internal/kelola-user/update/{id}', [AuthController::class, 'updateUser'])->middleware('auth');
+Route::get('/internal/pencegahan/kelola-redkar', [AuthController::class, 'kelolaRedkar']);
 
 
 // ==========================================
-// === ROUTE PENCEGAHAN (SUPER LENGKAP) ===
+// ROUTE PENCEGAHAN (SUPER LENGKAP)
 // ==========================================
 
 // 1. LAYANAN INSPEKSI
@@ -123,6 +133,26 @@ Route::post('/internal/pencegahan/layanan-sosialisasi/tambah', function (Request
     $data['updated_at'] = now();
     DB::table('sosialisasi')->insert($data);
     return redirect('/internal/pencegahan/layanan-sosialisasi')->with('success', 'Data Sosialisasi berhasil ditambahkan!');
+});
+Route::get('/internal/pencegahan/layanan-sosialisasi/lihat/{id}', function ($id) {
+    $data = \Illuminate\Support\Facades\DB::table('sosialisasi')->where('id', $id)->first();
+    return view('internal.pencegahan.lihat_sosialisasi', compact('data'));
+});
+Route::get('/internal/pencegahan/layanan-sosialisasi/edit/{id}', function ($id) {
+    $data = \Illuminate\Support\Facades\DB::table('sosialisasi')->where('id', $id)->first();
+    return view('internal.pencegahan.edit_sosialisasi', compact('data'));
+});
+Route::post('/internal/pencegahan/layanan-sosialisasi/edit/{id}', function (\Illuminate\Http\Request $request, $id) {
+    $updateData = $request->except(['_token']);
+    if ($request->hasFile('surat_permohonan')) {
+        $file = $request->file('surat_permohonan');
+        $namaFile = time() . "_" . $file->getClientOriginalName();
+        $file->move(public_path('uploads/sosialisasi'), $namaFile);
+        $updateData['surat_permohonan'] = $namaFile;
+    }
+    $updateData['updated_at'] = now();
+    \Illuminate\Support\Facades\DB::table('sosialisasi')->where('id', $id)->update($updateData);
+    return redirect('/internal/pencegahan/layanan-sosialisasi')->with('success', 'Data Sosialisasi berhasil diperbarui!');
 });
 
 // 3. PELATIHAN
@@ -193,18 +223,15 @@ Route::post('/internal/pencegahan/peningkatan-kapasitas/tambah', function (Reque
 
 
 // ==========================================
-// RUTE PUBLIK REDKAR
+// RUTE PUBLIK & CETAK REDKAR
 // ==========================================
-Route::get('/redkar', function () {
-    return view('public.form_redkar'); 
-});
+Route::get('/redkar', function () { return view('public.form_redkar'); });
 Route::post('/redkar', [AuthController::class, 'storeRedkar']);
-// Rute Cetak Redkar di menu Pencegahan
 Route::get('/internal/pencegahan/cetak-redkar/{id}', [AuthController::class, 'cetakRedkar']);
 
 
 // ==========================================
-// === RUTE BERITA (PUBLIK & INTERNAL OPERATOR) ===
+// ROUTE BERITA (PUBLIK & INTERNAL OPERATOR)
 // ==========================================
 Route::get('/berita/{id}', [BeritaController::class, 'showPublic']);
 
@@ -219,10 +246,11 @@ Route::middleware(['auth'])->group(function () {
 
 
 // ==========================================
-// === ROUTE BAGIAN SAPRA (SARANA PRASARANA) ===
+// ROUTE BAGIAN SAPRA (SARANA PRASARANA)
 // ==========================================
 Route::get('/sapra/logistik', [SapraController::class, 'logistik']);
 
+// Data Hidrant Kota
 Route::get('/sapra/data-hidrant-kota', [SapraController::class, 'dataHidrantKota']);
 Route::get('/sapra/data-hidrant-kota/cetak-pdf', [SapraController::class, 'cetakPdfKota']);
 Route::post('/sapra/data-hidrant-kota/store', [SapraController::class, 'storeHidrantKota']);
@@ -230,6 +258,7 @@ Route::put('/sapra/data-hidrant-kota/update/{id}', [SapraController::class, 'upd
 Route::delete('/sapra/data-hidrant-kota/delete/{id}', [SapraController::class, 'destroyHidrantKota']);
 Route::get('/sapra/data-hidrant-kota/cetak-excel', [SapraController::class, 'cetakExcelKota']);
 
+// Data Hidrant Gedung
 Route::get('/sapra/data_hidrant_gedung', [SapraController::class, 'dataHidrantGedung']);
 Route::post('/sapra/hidran/store', [SapraController::class, 'storeHidran']);
 Route::put('/sapra/hidran/update/{id}', [SapraController::class, 'updateHidran']);
@@ -237,14 +266,14 @@ Route::delete('/sapra/hidran/delete/{id}', [SapraController::class, 'destroyHidr
 Route::get('/sapra/hidran/cetak-pdf', [SapraController::class, 'cetakPdfHidranGedung']);
 Route::get('/sapra/hidran/cetak-excel', [SapraController::class, 'cetakExcelHidran']);
 
-// RUTE PRASARANA MAKO
+// Prasarana Mako
 Route::get('/sapra/prasarana-mako', [SapraController::class, 'prasaranaMako']);
 Route::get('/sapra/prasarana-mako/cetak-pdf', [SapraController::class, 'cetakPdfMako']);
 Route::post('/sapra/prasarana-mako/store', [SapraController::class, 'storePrasaranaMako']);
 Route::put('/sapra/prasarana-mako/update/{id}', [SapraController::class, 'updatePrasaranaMako']);
 Route::delete('/sapra/prasarana-mako/delete/{id}', [SapraController::class, 'destroyPrasaranaMako']);
 
-// RUTE SARANA MAKO & POS 
+// Sarana Mako & Pos 
 Route::get('/sapra/sarana-mako', [SapraController::class, 'saranaMako']);
 Route::get('/sapra/sarana-mako/cetak-pdf', [SapraController::class, 'cetakPdfSaranaMako']);
 Route::post('/sapra/sarana-mako/store', [SapraController::class, 'storeSaranaMako']);
@@ -253,7 +282,7 @@ Route::delete('/sapra/sarana-mako/delete/{id}', [SapraController::class, 'destro
 
 
 // ==========================================
-// === RUTE KELOLA INFOGRAFIS & BERITA MEDSOS (OPERATOR) ===
+// ROUTE KELOLA INFOGRAFIS & BERITA MEDSOS (OPERATOR)
 // ==========================================
 Route::middleware(['auth'])->group(function () {
     // Rute Kelola Info Grafis
@@ -267,41 +296,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/internal/operator/berita-medsos/update/{id}', [OperatorMedsosController::class, 'updateMedsos']);
     Route::delete('/internal/operator/berita-medsos/hapus/{id}', [OperatorMedsosController::class, 'destroyMedsos']);
 });
-// ==========================================
-// FITUR TOMBOL MATA (LIHAT DETAIL & PDF) - SOSIALISASI
-// ==========================================
-Route::get('/internal/pencegahan/layanan-sosialisasi/lihat/{id}', function ($id) {
-    $data = \Illuminate\Support\Facades\DB::table('sosialisasi')->where('id', $id)->first();
-    return view('internal.pencegahan.lihat_sosialisasi', compact('data'));
-});
+
 
 // ==========================================
-// FITUR TOMBOL PENSIL (EDIT DATA) - SOSIALISASI
-// ==========================================
-Route::get('/internal/pencegahan/layanan-sosialisasi/edit/{id}', function ($id) {
-    $data = \Illuminate\Support\Facades\DB::table('sosialisasi')->where('id', $id)->first();
-    return view('internal.pencegahan.edit_sosialisasi', compact('data'));
-});
-
-Route::post('/internal/pencegahan/layanan-sosialisasi/edit/{id}', function (\Illuminate\Http\Request $request, $id) {
-    $updateData = $request->except(['_token']);
-    
-    // Sesuaikan 'surat_permohonan' kalau field upload file lu beda
-    if ($request->hasFile('surat_permohonan')) {
-        $file = $request->file('surat_permohonan');
-        $namaFile = time() . "_" . $file->getClientOriginalName();
-        $file->move(public_path('uploads/sosialisasi'), $namaFile);
-        $updateData['surat_permohonan'] = $namaFile;
-    }
-
-    $updateData['updated_at'] = now();
-    \Illuminate\Support\Facades\DB::table('sosialisasi')->where('id', $id)->update($updateData);
-    
-    return redirect('/internal/pencegahan/layanan-sosialisasi')->with('success', 'Data Sosialisasi berhasil diperbarui!');
-});
-
-// ==========================================
-// === ROUTE DAMTAN (PEMADAMAN & PENYELAMATAN) ===
+// ROUTE DAMTAN (PEMADAMAN & PENYELAMATAN)
 // ==========================================
 Route::middleware(['auth'])->group(function () {
     Route::get('/internal/damtan/input-data', [DamtanController::class, 'createPenyelamatan'])->name('damtan.laporan.create');
