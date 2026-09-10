@@ -298,3 +298,35 @@ Route::post('/internal/pencegahan/layanan-sosialisasi/edit/{id}', function (\Ill
     
     return redirect('/internal/pencegahan/layanan-sosialisasi')->with('success', 'Data Sosialisasi berhasil diperbarui!');
 });
+// ==========================================
+// FITUR TOMBOL MATA (LIHAT DETAIL & PDF) - PELATIHAN
+// ==========================================
+Route::get('/internal/pencegahan/pelatihan/lihat/{id}', function ($id) {
+    $data = \Illuminate\Support\Facades\DB::table('pelatihan')->where('id', $id)->first();
+    return view('internal.pencegahan.lihat_pelatihan', compact('data'));
+});
+
+// ==========================================
+// FITUR TOMBOL PENSIL (EDIT DATA) - PELATIHAN
+// ==========================================
+Route::get('/internal/pencegahan/pelatihan/edit/{id}', function ($id) {
+    $data = \Illuminate\Support\Facades\DB::table('pelatihan')->where('id', $id)->first();
+    return view('internal.pencegahan.edit_pelatihan', compact('data'));
+});
+
+Route::post('/internal/pencegahan/pelatihan/edit/{id}', function (\Illuminate\Http\Request $request, $id) {
+    $updateData = $request->except(['_token']);
+    
+    // Upload file baru jika ada
+    if ($request->hasFile('surat_permohonan')) {
+        $file = $request->file('surat_permohonan');
+        $namaFile = time() . "_" . $file->getClientOriginalName();
+        $file->move(public_path('uploads/pelatihan'), $namaFile);
+        $updateData['surat_permohonan'] = $namaFile;
+    }
+
+    $updateData['updated_at'] = now();
+    \Illuminate\Support\Facades\DB::table('pelatihan')->where('id', $id)->update($updateData);
+    
+    return redirect('/internal/pencegahan/pelatihan')->with('success', 'Data Pelatihan berhasil diperbarui!');
+});
