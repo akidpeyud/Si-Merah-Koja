@@ -144,12 +144,28 @@ Route::get('/sapra/data-hidrant-kota/cetak-pdf', [SapraController::class, 'cetak
 Route::post('/sapra/data-hidrant-kota/store', [SapraController::class, 'storeHidrantKota']);
 Route::put('/sapra/data-hidrant-kota/update/{id}', [SapraController::class, 'updateHidrantKota']);
 Route::delete('/sapra/data-hidrant-kota/delete/{id}', [SapraController::class, 'destroyHidrantKota']);
+Route::get('/sapra/data-hidrant-kota/cetak-excel', [SapraController::class, 'cetakExcelKota']);
 
 Route::get('/sapra/data_hidrant_gedung', [SapraController::class, 'dataHidrantGedung']);
 Route::post('/sapra/hidran/store', [SapraController::class, 'storeHidran']);
 Route::put('/sapra/hidran/update/{id}', [SapraController::class, 'updateHidran']);
 Route::delete('/sapra/hidran/delete/{id}', [SapraController::class, 'destroyHidran']);
 Route::get('/sapra/hidran/cetak-pdf', [SapraController::class, 'cetakPdfHidranGedung']);
+Route::get('/sapra/hidran/cetak-excel', [SapraController::class, 'cetakExcelHidran']);
+
+// RUTE PRASARANA MAKO YANG HILANG
+Route::get('/sapra/prasarana-mako', [SapraController::class, 'prasaranaMako']);
+Route::get('/sapra/prasarana-mako/cetak-pdf', [SapraController::class, 'cetakPdfMako']);
+Route::post('/sapra/prasarana-mako/store', [SapraController::class, 'storePrasaranaMako']);
+Route::put('/sapra/prasarana-mako/update/{id}', [SapraController::class, 'updatePrasaranaMako']);
+Route::delete('/sapra/prasarana-mako/delete/{id}', [SapraController::class, 'destroyPrasaranaMako']);
+
+  // RUTE SARANA MAKO & POS 
+Route::get('/sapra/sarana-mako', [SapraController::class, 'saranaMako']);
+Route::get('/sapra/sarana-mako/cetak-pdf', [SapraController::class, 'cetakPdfSaranaMako']);
+Route::post('/sapra/sarana-mako/store', [SapraController::class, 'storeSaranaMako']);
+Route::put('/sapra/sarana-mako/update/{id}', [SapraController::class, 'updateSaranaMako']);
+Route::delete('/sapra/sarana-mako/delete/{id}', [SapraController::class, 'destroySaranaMako']);
 
 // RUTE PRASARANA MAKO YANG HILANG
 Route::get('/sapra/prasarana-mako', [SapraController::class, 'prasaranaMako']);
