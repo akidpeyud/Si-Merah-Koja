@@ -161,35 +161,26 @@
                                 <th width="10%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody id="tableBody">
-                            <tr>
-                                <td>1</td>
-                                <td><span class="title-text">25 Sep 2026</span></td>
-                                <td>
-                                    <span class="title-text">Relawan REDKAR Kec. Alam Barajo</span>
-                                    <span class="sub-text">Ketua: Bpk. Suryadi</span>
-                                </td>
-                                <td><span class="title-text">Kesiagaan Lingkungan</span></td>
-                                <td><span class="badge-soft-primary status-badge"><i class="fas fa-sync-alt me-1"></i> Dalam Proses</span></td>
-                                <td class="text-center">
-                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td><span class="title-text">05 Sep 2026</span></td>
-                                <td>
-                                    <span class="title-text">Tim K3 RSUD Abdul Manap</span>
-                                    <span class="sub-text">Rumah Sakit Daerah</span>
-                                </td>
-                                <td><span class="title-text">Evaluasi Proteksi Gedung</span></td>
-                                <td><span class="badge-soft-success status-badge"><i class="fas fa-check-circle me-1"></i> Selesai</span></td>
-                                <td class="text-center">
-                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
-                                </td>
-                            </tr>
+                        <tbody>
+                           @foreach($data_pembinaan as $no => $item)
+<tr>
+    <td>{{ $no + 1 }}</td>
+    <td>{{ $item->tanggal_pelaksanaan }}</td>
+    <td>
+        <!-- Panggil nama_program, BUKAN nama_kegiatan -->
+        <strong style="color: #0f172a;">{{ $item->nama_program }}</strong><br>
+        <span class="text-muted" style="font-size: 12px;"><i class="fas fa-map-marker-alt me-1"></i> {{ $item->lokasi }}</span>
+    </td>
+    <!-- Panggil sasaran_pembinaan -->
+    <td>{{ $item->sasaran_pembinaan }}</td>
+    <td><span class="badge bg-success-subtle text-success" style="font-weight: 600;">Selesai</span></td>
+    <td class="text-center">
+        <!-- Pastikan link-nya mengarah ke route yang bener -->
+        <a href="/internal/pencegahan/pembinaan-pengembangan/lihat/{{ $item->id }}" class="btn-action btn-action-view"><i class="fas fa-eye"></i></a>
+        <a href="/internal/pencegahan/pembinaan-pengembangan/edit/{{ $item->id }}" class="btn-action btn-action-edit"><i class="fas fa-edit"></i></a>
+    </td>
+</tr>
+@endforeach
                         </tbody>
                     </table>
                 </div>

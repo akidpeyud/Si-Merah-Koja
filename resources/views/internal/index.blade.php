@@ -199,46 +199,46 @@
         
         <!-- SIDEBAR TERINTEGRASI -->
         <aside class="sidebar" id="sidebarAccordion">
-            <a href="/internal/index" class="sidebar-item active">
+            <a href="/internal/index" class="sidebar-item {{ Request::is('internal/index') ? 'active' : '' }}">
                 <i class="fas fa-home"></i> Dashboard Utama
             </a>
 
             @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
                 
                 <!-- ACCORDION PENCEGAHAN -->
-                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePencegahan" aria-expanded="false">
+                <button class="sidebar-collapse-btn {{ Request::is('internal/pencegahan*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePencegahan" aria-expanded="{{ Request::is('internal/pencegahan*') ? 'true' : 'false' }}">
                     <span>Bagian Pencegahan</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
-                <div class="collapse" id="collapsePencegahan" data-bs-parent="#sidebarAccordion">
+                <div class="collapse {{ Request::is('internal/pencegahan*') ? 'show' : '' }}" id="collapsePencegahan" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
-                        <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
-                        <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
-                        <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
-                        <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
-                        <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
-                        <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
+                        <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item {{ Request::is('internal/pencegahan/layanan-inspeksi*') ? 'active' : '' }}"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
+                        <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item {{ Request::is('internal/pencegahan/layanan-sosialisasi*') ? 'active' : '' }}"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
+                        <a href="/internal/pencegahan/pelatihan" class="sidebar-item {{ Request::is('internal/pencegahan/pelatihan*') ? 'active' : '' }}"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
+                        <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item {{ Request::is('internal/pencegahan/pembinaan-pengembangan*') ? 'active' : '' }}"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
+                        <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item {{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
+                        <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item {{ Request::is('internal/pencegahan/kelola-redkar*') ? 'active' : '' }}"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
                     </div>
                 </div>
 
-                <!-- ACCORDION PEMADAMAN -->
-                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="false">
+                <!-- ACCORDION PEMADAMAN (DAMTAN) -->
+                <button class="sidebar-collapse-btn {{ Request::is('internal/damtan*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="{{ Request::is('internal/damtan*') ? 'true' : 'false' }}">
                     <span>Bagian Pemadaman</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
-                <div class="collapse" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
+                <div class="collapse {{ Request::is('internal/damtan*') ? 'show' : '' }}" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
-                        <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
-                        <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-users-cog"></i> Data Laporan</a>
+                        <a href="/internal/damtan/input-data" class="sidebar-item {{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
+                        <a href="/internal/damtan/data-laporan" class="sidebar-item {{ Request::is('internal/damtan/data-laporan*') ? 'active' : '' }}"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
                     </div>
                 </div>
 
                 <!-- ACCORDION SAPRA -->
-                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSapra" aria-expanded="false">
+                <button class="sidebar-collapse-btn {{ Request::is('sapra*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSapra" aria-expanded="{{ Request::is('sapra*') ? 'true' : 'false' }}">
                     <span>Bagian Sapra</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
-                <div class="collapse" id="collapseSapra" data-bs-parent="#sidebarAccordion">
+                <div class="collapse {{ Request::is('sapra*') ? 'show' : '' }}" id="collapseSapra" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
                        <!-- GRUP MANAJEMEN AIR -->
 <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">MANAJEMEN AIR</span>
@@ -261,15 +261,15 @@
 
             @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
                 <!-- ACCORDION MANAJEMEN BERITA -->
-                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita" aria-expanded="false">
+                <button class="sidebar-collapse-btn {{ Request::is('internal/operator*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita" aria-expanded="{{ Request::is('internal/operator*') ? 'true' : 'false' }}">
                     <span>Manajemen Berita</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
-                <div class="collapse" id="collapseBerita" data-bs-parent="#sidebarAccordion">
+                <div class="collapse {{ Request::is('internal/operator*') ? 'show' : '' }}" id="collapseBerita" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
-                        <a href="/internal/operator/kelola-berita" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
-                        <a href="/internal/operator/infografis" class="sidebar-item"><i class="fas fa-image"></i> Kelola Info Grafis</a>
-                        <a href="/internal/operator/berita-medsos" class="sidebar-item"><i class="fab fa-instagram"></i> Kelola Berita Medsos</a>
+                        <a href="/internal/operator/kelola-berita" class="sidebar-item {{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+                        <a href="/internal/operator/infografis" class="sidebar-item {{ Request::is('internal/operator/infografis*') ? 'active' : '' }}"><i class="fas fa-image"></i> Kelola Info Grafis</a>
+                        <a href="/internal/operator/berita-medsos" class="sidebar-item {{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}"><i class="fab fa-instagram"></i> Kelola Berita Medsos</a>
                     </div>
                 </div>
             @endif
@@ -309,6 +309,41 @@
             </div>
 
             <br>
+
+            <!-- TOMBOL PINTASAN DAMTAN (AKSES CEPAT) -->
+            @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <div class="card p-3 border-0 shadow-sm rounded-4 bg-white d-flex flex-row align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-danger bg-opacity-10 text-danger p-3 rounded-3 fs-4">
+                                <i class="fas fa-fire-extinguisher"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-1 text-dark">Input Data Pemadaman</h5>
+                                <p class="text-muted small mb-0">Formulir input data kejadian</p>
+                            </div>
+                        </div>
+                        <a href="/internal/damtan/input-data" class="btn btn-danger btn-sm fw-bold px-3">Input <i class="fas fa-arrow-right ms-1"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card p-3 border-0 shadow-sm rounded-4 bg-white d-flex flex-row align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-3 fs-4">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-1 text-dark">Data Laporan</h5>
+                                <p class="text-muted small mb-0">Arsip laporan pemadaman</p>
+                            </div>
+                        </div>
+                        <a href="/internal/damtan/data-laporan" class="btn btn-primary btn-sm fw-bold px-3">Buka <i class="fas fa-arrow-right ms-1"></i></a>
+                    </div>
+                </div>
+            </div>
+            @endif
 
             <!-- Grid Statistik -->
             <div class="stats-grid">
