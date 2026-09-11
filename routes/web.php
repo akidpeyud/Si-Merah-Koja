@@ -166,6 +166,28 @@ Route::get('/sapra/sarana-mako/cetak-pdf', [SapraController::class, 'cetakPdfSar
 Route::post('/sapra/sarana-mako/store', [SapraController::class, 'storeSaranaMako']);
 Route::put('/sapra/sarana-mako/update/{id}', [SapraController::class, 'updateSaranaMako']);
 Route::delete('/sapra/sarana-mako/delete/{id}', [SapraController::class, 'destroySaranaMako']);
+// Nambah pos
+Route::get('/sapra/kelola-pos', [SapraController::class, 'kelolaPos']);
+Route::post('/sapra/kelola-pos/store', [SapraController::class, 'storePos']);
+Route::put('/sapra/kelola-pos/update/{id}', [SapraController::class, 'updatePos']);
+Route::delete('/sapra/kelola-pos/delete/{id}', [SapraController::class, 'destroyPos']);
+
+// RUTE SARANA MAKO & POS PENYELAMATAN
+Route::get('/sapra/sarana-penyelamatan', [SapraController::class, 'saranaPenyelamatan']);
+Route::post('/sapra/sarana-penyelamatan/store', [SapraController::class, 'storeSaranaPenyelamatan']);
+Route::put('/sapra/sarana-penyelamatan/update/{id}', [SapraController::class, 'updateSaranaPenyelamatan']);
+Route::delete('/sapra/sarana-penyelamatan/delete/{id}', [SapraController::class, 'destroySaranaPenyelamatan']);
+Route::get('/sapra/sarana-penyelamatan/cetak-pdf', [SapraController::class, 'cetakPdfSaranaPenyelamatan']);
+
+// Rute kebutuhan sapras
+Route::get('/sapra/kebutuhan-sarpras', [SapraController::class, 'kebutuhanSarpras']);
+Route::post('/sapra/kebutuhan-sarpras/store', [SapraController::class, 'storeKebutuhanSarpras']);
+Route::put('/sapra/kebutuhan-sarpras/update/{id}', [SapraController::class, 'updateKebutuhanSarpras']);
+Route::delete('/sapra/kebutuhan-sarpras/delete/{id}', [SapraController::class, 'destroyKebutuhanSarpras']);
+
+// Tambahan route khusus untuk Pengadaan
+Route::post('/sapra/pengadaan-sarpras/store', [SapraController::class, 'storePengadaan']);
+Route::delete('/sapra/pengadaan-sarpras/delete/{kebutuhan_id}/{tahun}', [SapraController::class, 'destroyPengadaan']);
 
 // === RUTE KELOLA INFOGRAFIS & BERITA MEDSOS (OPERATOR) ===
 Route::middleware(['auth'])->group(function () {

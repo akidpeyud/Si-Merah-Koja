@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Sarana Mako & Pos - SIMERAH KOJA</title>
+    <title>Data Sarana Penyelamatan - SIMERAH KOJA</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -29,7 +29,7 @@
         .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
         .btn-logout:hover { background-color: #dc2626; }
 
-        /* SIDEBAR STYLES */
+        /* SIDEBAR STYLES (Sama dengan sebelumnya) */
         .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
         .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
         .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600; border-radius: 8px; transition: all 0.2s; }
@@ -75,34 +75,6 @@
 
         #searchInput:focus { box-shadow: none; border-color: #cbd5e1; }
 
-        /* ==================================================
-           CSS KHUSUS UNTUK PRINT / CETAK PDF
-           ================================================== */
-        @media print {
-            .navbar-internal, .sidebar, .btn, .nav-tabs, .modal, .btn-action, .search-container {
-                display: none !important;
-            }
-            body, .main-content {
-                background-color: white !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                width: 100% !important;
-            }
-            .dashboard-container { display: block !important; }
-            .table-card { box-shadow: none !important; border: none !important; }
-            
-            table th:nth-child(4), table td:nth-child(4) {
-                display: none !important;
-            }
-
-            .tab-pane { display: none !important; }
-            .tab-pane.active { display: block !important; opacity: 1 !important; }
-
-            * {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-        }
     </style>
 </head>
 <body>
@@ -127,7 +99,7 @@
     <nav class="navbar-internal">
         <a href="/" class="nav-brand">
             <img src="/images/simerahkoja.png" alt="Logo Simerah">
-            <span class="title">SIMERAH KOJA </span>
+            <span class="title">SIMERAH KOJA</span>
         </a>
         <div class="user-menu">
             <div class="user-profile">
@@ -197,8 +169,8 @@
 <!-- GRUP FASILITAS & POS -->
 <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">FASILITAS & POS MAKO</span>
 <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pos</a>
-<a href="/sapra/sarana-mako" class="sidebar-item active"><i class="fas fa-fire-extinguisher"></i> Sarana Pos</a>
-<a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan</a>
+<a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pos</a>
+<a href="/sapra/sarana-penyelamatan" class="sidebar-item active"><i class="fas fa-life-ring"></i> Sarana Penyelamatan</a>
 <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
 
 <!-- GRUP PERENCANAAN / MUTU BAKU -->
@@ -238,22 +210,21 @@
         <main class="main-content">
             <div class="d-flex justify-content-between align-items-end mb-4">
                 <div>
-                    <h1 style="font-size: 26px; font-weight: 800; color: #111827; margin-bottom: 6px;">Data Sarana Pos</h1>
-                    <p style="color: #6b7280; font-size: 14px; margin: 0;">Manajemen dokumentasi sarana kebakaran di Markas Komando dan Pos Pemadam.</p>
+                    <h1 style="font-size: 26px; font-weight: 800; color: #111827; margin-bottom: 6px;">Data Sarana Penyelamatan</h1>
+                    <p style="color: #6b7280; font-size: 14px; margin: 0;">Manajemen dokumentasi alat dan sarana penyelamatan di Markas Komando dan Pos.</p>
                 </div>
-                <div class="d-flex gap-2 align-items-center">
-                    
-                    <!-- Search Bar (REAL TIME) -->
+               <div class="d-flex gap-2 align-items-center">
                     <div class="input-group shadow-sm me-2 search-container" style="width: 250px; border-radius: 8px; overflow: hidden;">
                         <span class="input-group-text bg-white border-end-0 text-muted" style="border-color: #cbd5e1;"><i class="fas fa-search"></i></span>
-                        <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari sarana..." style="border-color: #cbd5e1; font-size: 14px;">
+                        <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari alat rescue..." style="border-color: #cbd5e1; font-size: 14px;">
                     </div>
 
                     <button class="btn btn-primary fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalTambah" style="background-color: #0284c7; border: none; padding: 10px 16px; border-radius: 8px;">
                         <i class="fas fa-plus me-1"></i> Tambah Data
                     </button>
-
-                    <a href="/sapra/sarana-mako/cetak-pdf" class="btn btn-danger fw-bold shadow-sm" style="background-color: #ef4444; border: none; padding: 10px 16px; border-radius: 8px; text-decoration: none;">
+                    
+                    <!-- TAMBAHIN TOMBOL PDF INI DI SINI -->
+                    <a href="/sapra/sarana-penyelamatan/cetak-pdf" class="btn btn-danger fw-bold shadow-sm" style="background-color: #ef4444; border: none; padding: 10px 16px; border-radius: 8px; text-decoration: none; color: white;">
                         <i class="fas fa-file-pdf me-1"></i> PDF
                     </a>
                 </div>
@@ -289,14 +260,14 @@
                                     <thead>
                                         <tr>
                                             <th width="5%">NO</th>
-                                            <th width="35%" style="text-align: left; padding-left: 20px;">JENIS SARANA KEBAKARAN</th>
+                                            <th width="35%" style="text-align: left; padding-left: 20px;">JENIS SARANA PENYELAMATAN</th>
                                             <th width="10%">JUMLAH</th>
                                             <th width="30%">GAMBAR</th>
                                             <th width="20%">AKSI</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @php $dataFilter = $dataSarana->where('id_pos', $pos->id_pos); @endphp
+                                        @php $dataFilter = $dataPenyelamatan->where('id_pos', $pos->id_pos); @endphp
                                         
                                         @forelse($dataFilter as $index => $item)
                                             <tr class="data-row">
@@ -316,10 +287,10 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="d-flex justify-content-center gap-2">
-                                                        <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEdit{{ $item->id_sarana }}">
+                                                        <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEdit{{ $item->id_sarana_penyelamatan }}">
                                                             <i class="fas fa-edit"></i> Edit
                                                         </button>
-                                                        <form action="/sapra/sarana-mako/delete/{{ $item->id_sarana }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus sarana ini?');">
+                                                        <form action="/sapra/sarana-penyelamatan/delete/{{ $item->id_sarana_penyelamatan }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus sarana penyelamatan ini?');">
                                                             @csrf @method('DELETE')
                                                             <button type="submit" class="btn-action btn-delete"><i class="fas fa-trash-alt"></i> Hapus</button>
                                                         </form>
@@ -331,10 +302,10 @@
                                                 <td colspan="5">
                                                     <div class="p-5 text-center text-muted">
                                                         <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle mb-3" style="width: 80px; height: 80px;">
-                                                            <i class="fas fa-folder-open" style="font-size: 32px; color: #cbd5e1;"></i>
+                                                            <i class="fas fa-life-ring" style="font-size: 32px; color: #cbd5e1;"></i>
                                                         </div>
-                                                        <p class="mb-0 fw-bold text-dark">Belum ada data sarana.</p>
-                                                        <p class="small mt-1">Silakan tambah sarana untuk {{ $pos->nama_pos }}</p>
+                                                        <p class="mb-0 fw-bold text-dark">Belum ada data sarana penyelamatan.</p>
+                                                        <p class="small mt-1">Silakan tambah data untuk {{ $pos->nama_pos }}</p>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -346,14 +317,14 @@
 
                         <!-- MODAL EDIT DATA -->
                         @foreach($dataFilter as $item)
-                            <div class="modal fade" id="modalEdit{{ $item->id_sarana }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal fade" id="modalEdit{{ $item->id_sarana_penyelamatan }}" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog modal-lg">
                                     <div class="modal-content border-0 shadow">
                                         <div class="modal-header bg-light pb-3">
-                                            <h5 class="modal-title fw-bold text-dark">Edit Data Sarana</h5>
+                                            <h5 class="modal-title fw-bold text-dark">Edit Data Sarana Penyelamatan</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
-                                        <form action="/sapra/sarana-mako/update/{{ $item->id_sarana }}" method="POST" enctype="multipart/form-data">
+                                        <form action="/sapra/sarana-penyelamatan/update/{{ $item->id_sarana_penyelamatan }}" method="POST" enctype="multipart/form-data">
                                             @csrf @method('PUT')
                                             <div class="modal-body text-start p-4">
                                                 <div class="mb-3">
@@ -369,7 +340,7 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-9 mb-3">
-                                                        <label class="form-label fw-bold small text-secondary">Jenis Sarana</label>
+                                                        <label class="form-label fw-bold small text-secondary">Jenis Sarana Penyelamatan</label>
                                                         <input type="text" class="form-control border-light-subtle shadow-sm" name="jenis_sarana" value="{{ $item->jenis_sarana }}" required>
                                                     </div>
                                                     <div class="col-md-3 mb-3">
@@ -404,10 +375,10 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content border-0 shadow">
                 <div class="modal-header bg-light pb-3">
-                    <h5 class="modal-title fw-bold text-dark">Tambah Data Sarana</h5>
+                    <h5 class="modal-title fw-bold text-dark">Tambah Data Sarana Penyelamatan</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="/sapra/sarana-mako/store" method="POST" enctype="multipart/form-data">
+                <form action="/sapra/sarana-penyelamatan/store" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body text-start p-4">
                         <div class="mb-3">
@@ -421,8 +392,8 @@
                         </div>
                         <div class="row">
                             <div class="col-md-9 mb-3">
-                                <label class="form-label fw-bold small text-secondary">Jenis Sarana</label>
-                                <input type="text" class="form-control border-light-subtle shadow-sm" name="jenis_sarana" placeholder="Contoh: ALAT PELINDUNG DIRI" required>
+                                <label class="form-label fw-bold small text-secondary">Jenis Sarana Penyelamatan</label>
+                                <input type="text" class="form-control border-light-subtle shadow-sm" name="jenis_sarana" placeholder="Contoh: ALAT PELINDUNG DIRI (RESCUE)" required>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label fw-bold small text-secondary">Jumlah</label>
@@ -445,11 +416,8 @@
 
     <!-- JAVASCRIPT UNTUK SEARCH REAL-TIME -->
     <script>
-        // Fitur Pencarian
         document.getElementById('searchInput').addEventListener('keyup', function() {
             let filter = this.value.toLowerCase();
-            
-            // Cari hanya di tab yang sedang aktif
             let activeTab = document.querySelector('.tab-pane.active');
             if(!activeTab) return;
 
@@ -465,14 +433,10 @@
             });
         });
 
-        // Reset pencarian saat user ganti tab Pos/Mako
         let tabs = document.querySelectorAll('button[data-bs-toggle="tab"]');
         tabs.forEach(tab => {
             tab.addEventListener('shown.bs.tab', function (e) {
-                // Kosongkan input form
                 document.getElementById('searchInput').value = '';
-                
-                // Munculkan semua baris yang tadi sempat di-hide
                 let rows = document.querySelectorAll('.data-row');
                 rows.forEach(row => row.style.display = '');
             });
