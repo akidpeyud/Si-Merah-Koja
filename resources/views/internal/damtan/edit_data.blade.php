@@ -147,12 +147,12 @@
                 </button>
                 <div class="collapse {{ Request::is('internal/pencegahan*') ? 'show' : '' }}" id="collapsePencegahan" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
-                        <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item {{ Request::is('internal/pencegahan/layanan-inspeksi*') ? 'active' : '' }}"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
-                        <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item {{ Request::is('internal/pencegahan/layanan-sosialisasi*') ? 'active' : '' }}"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
-                        <a href="/internal/pencegahan/pelatihan" class="sidebar-item {{ Request::is('internal/pencegahan/pelatihan*') ? 'active' : '' }}"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
-                        <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item {{ Request::is('internal/pencegahan/pembinaan-pengembangan*') ? 'active' : '' }}"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
-                        <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item {{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
-                        <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item {{ Request::is('internal/pencegahan/kelola-redkar*') ? 'active' : '' }}"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
+                        <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
+                        <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
+                        <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
+                        <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
+                        <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
+                        <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
                     </div>
                 </div>
 
@@ -163,40 +163,39 @@
                 </button>
                 <div class="collapse {{ Request::is('internal/damtan*') ? 'show' : '' }}" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
-                        <a href="/internal/damtan/input-data" class="sidebar-item {{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
+                        <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
                         <!-- Menu Data Laporan di-set Active saat Edit Laporan -->
                         <a href="/internal/damtan/data-laporan" class="sidebar-item active"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
                     </div>
                 </div>
 
                 <!-- ACCORDION SAPRA -->
-                <button class="sidebar-collapse-btn {{ Request::is('sapra*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSapra" aria-expanded="{{ Request::is('sapra*') ? 'true' : 'false' }}">
+                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSapra" aria-expanded="false">
                     <span>Bagian Sapra</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
-                <div class="collapse {{ Request::is('sapra*') ? 'show' : '' }}" id="collapseSapra" data-bs-parent="#sidebarAccordion">
+                <div class="collapse" id="collapseSapra" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
-                        <a href="/sapra/data_hidrant_gedung" class="sidebar-item {{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}"><i class="fas fa-clipboard-list"></i> Data Hidrant</a>
-                        <a href="/sapra/data-hidrant-kota" class="sidebar-item {{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
-                        <a href="/sapra/prasarana-mako" class="sidebar-item {{ Request::is('sapra/prasarana-mako*') ? 'active' : '' }}"><i class="fas fa-building"></i> Prasarana Mako & Pos</a>
-                        <a href="/sapra/sarana-mako" class="sidebar-item {{ Request::is('sapra/sarana-mako*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Sarana Mako & Pos</a>
-                        <a href="/sapra/logistik" class="sidebar-item {{ Request::is('sapra/logistik*') ? 'active' : '' }}"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
+                        <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Data Hidrant</a>
+                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
+                        <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Mako & Pos</a>
+                        <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Mako & Pos</a>
+                        <a href="/sapra/logistik" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
                     </div>
                 </div>
             @endif
 
             <!-- BAGIAN KHUSUS OPERATOR & SUPER USER -->
             @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
-                <!-- ACCORDION MANAJEMEN BERITA -->
-                <button class="sidebar-collapse-btn {{ Request::is('internal/operator*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita" aria-expanded="{{ Request::is('internal/operator*') ? 'true' : 'false' }}">
+                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita" aria-expanded="false">
                     <span>Manajemen Berita</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
-                <div class="collapse {{ Request::is('internal/operator*') ? 'show' : '' }}" id="collapseBerita" data-bs-parent="#sidebarAccordion">
+                <div class="collapse" id="collapseBerita" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
-                        <a href="/internal/operator/kelola-berita" class="sidebar-item {{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
-                        <a href="/internal/operator/infografis" class="sidebar-item {{ Request::is('internal/operator/infografis*') ? 'active' : '' }}"><i class="fas fa-image"></i> Kelola Info Grafis</a>
-                        <a href="/internal/operator/berita-medsos" class="sidebar-item {{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}"><i class="fab fa-instagram"></i> Kelola Berita Medsos</a>
+                        <a href="/internal/operator/kelola-berita" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+                        <a href="/internal/operator/infografis" class="sidebar-item"><i class="fas fa-image"></i> Kelola Info Grafis</a>
+                        <a href="/internal/operator/berita-medsos" class="sidebar-item"><i class="fab fa-instagram"></i> Kelola Berita Medsos</a>
                     </div>
                 </div>
             @endif
@@ -221,7 +220,7 @@
             <div class="page-header">
                 <div>
                     <h1>Edit Data Penyelamatan</h1>
-                    <p>Memperbarui data untuk Nomor Laporan: <strong class="text-primary">REG-20240101-003</strong></p>
+                    <p>Memperbarui data untuk Nomor Laporan: <strong class="text-primary">{{ $laporan->nomor_laporan ?? 'N/A' }}</strong></p>
                 </div>
                 <div>
                     <a href="/internal/damtan/data-laporan" class="btn btn-outline-secondary fw-bold shadow-sm">
@@ -232,7 +231,6 @@
 
             <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
                 <div class="card-header bg-white pt-4 pb-0 border-bottom" style="border-bottom: 2px solid #f3f4f6 !important;">
-                    <!-- BOOTSTRAP TABS -->
                     <ul class="nav nav-tabs border-0" id="formTabs" role="tablist">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab">1. Informasi Dasar</button>
@@ -250,9 +248,9 @@
                 </div>
 
                 <div class="card-body p-4 bg-white">
-                    <form action="#" method="POST" enctype="multipart/form-data">
+                    <!-- INI BAGIAN YANG DIPERBAIKI (ACTION & METHOD) -->
+                    <form action="/internal/damtan/update-data/{{ $laporan->id }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        <!-- PENTING: Directive PUT untuk mengupdate data di Laravel -->
                         @method('PUT') 
                         
                         <div class="tab-content" id="formTabsContent">
@@ -264,13 +262,11 @@
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-6">
                                         <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Nomor Laporan (Auto)</label>
-                                        <!-- Value pre-filled -->
-                                        <input type="text" class="form-control" name="nomor_laporan" value="REG-20240101-003" readonly style="background-color: #f9fafb;">
+                                        <input type="text" class="form-control" name="nomor_laporan" value="{{ $laporan->nomor_laporan ?? '' }}" readonly style="background-color: #f9fafb;">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">ID Laporan (Auto)</label>
-                                        <!-- Value pre-filled -->
-                                        <input type="text" class="form-control" name="id_laporan" value="UUID-ANIM-789" readonly style="background-color: #f9fafb;">
+                                        <input type="text" class="form-control" name="id_laporan" value="{{ $laporan->id_laporan ?? '' }}" readonly style="background-color: #f9fafb;">
                                     </div>
                                 </div>
 
@@ -279,16 +275,15 @@
                                         <label class="form-label text-danger fw-bold" style="font-size: 13px;">Kategori Laporan (Kebakaran)</label>
                                         <select class="form-select" name="kategori_kebakaran">
                                             <option value="">-- Pilih Jenis Kebakaran --</option>
-                                            <option value="rumah_tinggal">Rumah Tinggal</option>
+                                            <option value="rumah_tinggal" {{ ($laporan->kategori_kebakaran ?? '') == 'rumah_tinggal' ? 'selected' : '' }}>Rumah Tinggal</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label text-primary fw-bold" style="font-size: 13px;">Kategori Laporan (Non-Kebakaran)</label>
                                         <select class="form-select" name="kategori_non_kebakaran">
-                                            <option value="">-- Pilih Jenis Evakuasi/Penyelamatan --</option>
-                                            <!-- Option Selected -->
-                                            <option value="animal_rescue" selected>Evakuasi Hewan (Animal Rescue)</option>
-                                            <option value="pohon_tumbang">Pohon Tumbang</option>
+                                            <option value="">-- Pilih Jenis Evakuasi --</option>
+                                            <option value="animal_rescue" {{ ($laporan->kategori_non_kebakaran ?? '') == 'animal_rescue' ? 'selected' : '' }}>Evakuasi Hewan (Animal Rescue)</option>
+                                            <option value="pohon_tumbang" {{ ($laporan->kategori_non_kebakaran ?? '') == 'pohon_tumbang' ? 'selected' : '' }}>Pohon Tumbang</option>
                                         </select>
                                     </div>
                                 </div>
@@ -298,10 +293,9 @@
                                         <label class="form-label fw-bold" style="font-size: 13px; color: #4b5563;">Kategori Kejadian Umum</label>
                                         <select class="form-select" name="kategori_kejadian">
                                             <option value="">-- Pilih Kategori Kejadian --</option>
-                                            <option value="kebakaran">Kebakaran</option>
-                                            <!-- Option Selected -->
-                                            <option value="penyelamatan_hewan" selected>Penyelamatan Hewan</option>
-                                            <option value="bencana_alam">Bencana Alam</option>
+                                            <option value="kebakaran" {{ ($laporan->kategori_kejadian ?? '') == 'kebakaran' ? 'selected' : '' }}>Kebakaran</option>
+                                            <option value="penyelamatan_hewan" {{ ($laporan->kategori_kejadian ?? '') == 'penyelamatan_hewan' ? 'selected' : '' }}>Penyelamatan Hewan</option>
+                                            <option value="bencana_alam" {{ ($laporan->kategori_kejadian ?? '') == 'bencana_alam' ? 'selected' : '' }}>Bencana Alam</option>
                                         </select>
                                     </div>
                                 </div>
@@ -309,21 +303,21 @@
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-12">
                                         <label class="form-label d-block" style="font-size: 13px; font-weight: 600; color: #4b5563;">Tingkat Prioritas</label>
+                                        @php $prio = $laporan->prioritas ?? ''; @endphp
                                         <div class="form-check form-check-inline mt-1">
-                                            <input class="form-check-input" type="radio" name="prioritas" value="rendah">
+                                            <input class="form-check-input" type="radio" name="prioritas" value="rendah" {{ $prio == 'rendah' ? 'checked' : '' }}>
                                             <label class="form-check-label text-secondary fw-bold">Rendah</label>
                                         </div>
                                         <div class="form-check form-check-inline mt-1">
-                                            <!-- Radio Checked -->
-                                            <input class="form-check-input" type="radio" name="prioritas" value="sedang" checked>
+                                            <input class="form-check-input" type="radio" name="prioritas" value="sedang" {{ $prio == 'sedang' ? 'checked' : '' }}>
                                             <label class="form-check-label text-primary fw-bold">Sedang</label>
                                         </div>
                                         <div class="form-check form-check-inline mt-1">
-                                            <input class="form-check-input" type="radio" name="prioritas" value="tinggi">
+                                            <input class="form-check-input" type="radio" name="prioritas" value="tinggi" {{ $prio == 'tinggi' ? 'checked' : '' }}>
                                             <label class="form-check-label text-warning fw-bold">Tinggi</label>
                                         </div>
                                         <div class="form-check form-check-inline mt-1">
-                                            <input class="form-check-input" type="radio" name="prioritas" value="darurat">
+                                            <input class="form-check-input" type="radio" name="prioritas" value="darurat" {{ $prio == 'darurat' ? 'checked' : '' }}>
                                             <label class="form-check-label text-danger fw-bold">Darurat</label>
                                         </div>
                                     </div>
@@ -332,37 +326,36 @@
                                 <h6 class="fw-bold text-secondary border-bottom pb-2 mb-3 mt-4" style="font-size: 14px;">Detail Waktu Operasi</h6>
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-4">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Waktu Kejadian</label>
-                                        <!-- Value pre-filled date & time format -->
-                                        <input type="datetime-local" name="waktu_kejadian" class="form-control" value="2024-01-10T16:00">
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Waktu Kejadian</label>
+                                        <input type="datetime-local" name="waktu_kejadian" class="form-control" value="{{ $laporan->waktu_kejadian ?? '' }}">
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Waktu Terima Laporan</label>
-                                        <input type="datetime-local" name="waktu_terima" class="form-control" value="2024-01-10T16:15">
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Waktu Terima Laporan</label>
+                                        <input type="datetime-local" name="waktu_terima" class="form-control" value="{{ $laporan->waktu_terima ?? '' }}">
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Waktu Berangkat Unit</label>
-                                        <input type="datetime-local" name="waktu_berangkat" class="form-control" value="2024-01-10T16:20">
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Waktu Berangkat Unit</label>
+                                        <input type="datetime-local" name="waktu_berangkat" class="form-control" value="{{ $laporan->waktu_berangkat ?? '' }}">
                                     </div>
                                     <div class="col-md-4 mt-3">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Waktu Tiba di Lokasi</label>
-                                        <input type="datetime-local" name="waktu_tiba" class="form-control" value="2024-01-10T16:30">
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Waktu Tiba di Lokasi</label>
+                                        <input type="datetime-local" name="waktu_tiba" class="form-control" value="{{ $laporan->waktu_tiba ?? '' }}">
                                     </div>
                                     <div class="col-md-4 mt-3">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Waktu Operasi Selesai</label>
-                                        <input type="datetime-local" name="waktu_selesai" class="form-control" value="2024-01-10T16:45">
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Waktu Operasi Selesai</label>
+                                        <input type="datetime-local" name="waktu_selesai" class="form-control" value="{{ $laporan->waktu_selesai ?? '' }}">
                                     </div>
                                 </div>
 
                                 <div class="row g-3">
                                     <div class="col-md-8">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Alamat Lengkap</label>
-                                        <!-- Textarea Content -->
-                                        <textarea class="form-control" name="alamat" rows="3">Jl. Pattimura No. 12, RT 09, Kecamatan Telanaipura</textarea>
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Alamat Lengkap</label>
+                                        <textarea class="form-control" name="alamat" rows="3">{{ $laporan->alamat ?? '' }}</textarea>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Titik Koordinat (Lat, Long)</label>
-                                        <input type="text" class="form-control mb-2" id="inputKoordinat" name="koordinat" value="-1.60921, 103.58231">
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Titik Koordinat (Lat, Long)</label>
+                                        @php $coords = $laporan->koordinat ?? '-1.60921, 103.58231'; @endphp
+                                        <input type="text" class="form-control mb-2" id="inputKoordinat" name="koordinat" value="{{ $coords }}">
                                         <button type="button" class="btn btn-outline-primary btn-sm w-100" data-bs-toggle="modal" data-bs-target="#mapModal">
                                             <i class="fas fa-map-marker-alt me-1"></i> Ubah Peta Interaktif
                                         </button>
@@ -378,83 +371,82 @@
                                 <div class="row g-3 mb-2">
                                     <div class="col-md-3">
                                         <label class="form-label" style="font-size: 12px; font-weight: 600;">Manusia: Selamat</label>
-                                        <input type="number" name="korban_selamat" class="form-control" value="0">
+                                        <input type="number" name="korban_selamat" class="form-control" value="{{ $teknis->korban_selamat ?? 0 }}">
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label" style="font-size: 12px; font-weight: 600;">Manusia: Luka Ringan</label>
-                                        <input type="number" name="korban_ringan" class="form-control" value="0">
+                                        <input type="number" name="korban_ringan" class="form-control" value="{{ $teknis->korban_ringan ?? 0 }}">
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label" style="font-size: 12px; font-weight: 600;">Manusia: Luka Berat</label>
-                                        <input type="number" name="korban_berat" class="form-control" value="0">
+                                        <input type="number" name="korban_berat" class="form-control" value="{{ $teknis->korban_berat ?? 0 }}">
                                     </div>
                                     <div class="col-md-3">
-                                        <label class="form-label text-danger" style="font-size: 12px; font-weight: 600;">Manusia: Meninggal Dunia</label>
-                                        <input type="number" name="korban_meninggal" class="form-control" value="0">
+                                        <label class="form-label text-danger" style="font-size: 12px; font-weight: 600;">Manusia: Meninggal</label>
+                                        <input type="number" name="korban_meninggal" class="form-control" value="{{ $teknis->korban_meninggal ?? 0 }}">
                                     </div>
                                 </div>
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-12">
                                         <label class="form-label" style="font-size: 12px; font-weight: 600;">Hewan / Aset (Jika relevan)</label>
-                                        <!-- Value -->
-                                        <input type="text" name="korban_hewan_aset" class="form-control" value="1 Ekor Ular Piton Dievakuasi">
+                                        <input type="text" name="korban_hewan_aset" class="form-control" value="{{ $teknis->korban_hewan_aset ?? '' }}">
                                     </div>
                                 </div>
 
                                 <h6 class="fw-bold text-secondary border-bottom pb-2 mb-3" style="font-size: 14px;">Detail Evakuasi & Lapangan</h6>
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-4">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Status Evakuasi</label>
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Status Evakuasi</label>
                                         <select class="form-select" name="status_evakuasi">
                                             <option value="">-- Pilih Status --</option>
-                                            <option value="selesai" selected>Selesai</option> <!-- Selected -->
-                                            <option value="dalam_proses">Dalam Proses</option>
+                                            <option value="selesai" {{ ($teknis->status_evakuasi ?? '') == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                                            <option value="dalam_proses" {{ ($teknis->status_evakuasi ?? '') == 'dalam_proses' ? 'selected' : '' }}>Dalam Proses</option>
                                         </select>
                                     </div>
                                     <div class="col-md-8">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Objek Terdampak</label>
-                                        <input type="text" name="objek_terdampak" class="form-control" value="Plafon atas rumah warga"> <!-- Value -->
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Objek Terdampak</label>
+                                        <input type="text" name="objek_terdampak" class="form-control" value="{{ $teknis->objek_terdampak ?? '' }}">
                                     </div>
                                 </div>
                                 
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-12">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Hambatan Lapangan</label>
-                                        <textarea class="form-control" name="hambatan_lapangan" rows="2">Ular bersembunyi di sela-sela rangka baja ringan atap yang sulit dijangkau alat.</textarea> <!-- Text -->
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Hambatan Lapangan</label>
+                                        <textarea class="form-control" name="hambatan_lapangan" rows="2">{{ $teknis->hambatan_lapangan ?? '' }}</textarea>
                                     </div>
                                 </div>
 
                                 <h6 class="fw-bold text-secondary border-bottom pb-2 mb-3 mt-4" style="font-size: 14px;">Alat, Logistik & Personel</h6>
-
                                 <div class="row g-3 mb-3">
                                     <div class="col-md-12">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Konsumsi Alat Umum</label>
-                                        <input type="text" name="konsumsi_alat" class="form-control" value="Tongkat penjepit ular, Lakban, Karung Goni"> <!-- Value -->
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Konsumsi Alat Umum</label>
+                                        <input type="text" name="konsumsi_alat" class="form-control" value="{{ $teknis->konsumsi_alat ?? '' }}">
                                     </div>
                                 </div>
 
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-8">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Unit Armada (Checklist)</label><br>
+                                        @php $armadaData = json_decode($teknis->armada ?? '[]'); @endphp
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Unit Armada</label><br>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" name="armada[]" value="pompa">
+                                            <input class="form-check-input" type="checkbox" name="armada[]" value="pompa" {{ is_array($armadaData) && in_array('pompa', $armadaData) ? 'checked' : '' }}>
                                             <label class="form-check-label">Unit Pompa</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" name="armada[]" value="rescue" checked> <!-- Checked -->
+                                            <input class="form-check-input" type="checkbox" name="armada[]" value="rescue" {{ is_array($armadaData) && in_array('rescue', $armadaData) ? 'checked' : '' }}>
                                             <label class="form-check-label">Unit Rescue</label>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Jumlah Personel</label>
-                                        <input type="number" name="jumlah_personel" class="form-control" value="4"> <!-- Value -->
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Jumlah Personel</label>
+                                        <input type="number" name="jumlah_personel" class="form-control" value="{{ $teknis->jumlah_personel ?? 0 }}">
                                     </div>
                                 </div>
 
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-12">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Personel yang Terlibat</label>
-                                        <textarea class="form-control" name="daftar_personel" rows="2">Budi Santoso, Andi Wijaya, Joko Anwar, Slamet</textarea> <!-- Text -->
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Personel yang Terlibat</label>
+                                        <textarea class="form-control" name="daftar_personel" rows="2">{{ $teknis->daftar_personel ?? '' }}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -464,56 +456,58 @@
                                 <h5 class="fw-bold mb-4 text-primary"><i class="fas fa-search-dollar me-2"></i>Analisis Risiko & Penyebab</h5>
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-6">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Dugaan Penyebab</label>
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Dugaan Penyebab</label>
                                         <div class="d-flex gap-2">
                                             <select class="form-select" name="dugaan_penyebab" style="width: 50%;">
                                                 <option value="">-- Pilih Penyebab --</option>
-                                                <option value="faktor_alam" selected>Faktor alam</option> <!-- Selected -->
-                                                <option value="lainnya">Lainnya</option>
+                                                <option value="faktor_alam" {{ ($dokumentasi->dugaan_penyebab ?? '') == 'faktor_alam' ? 'selected' : '' }}>Faktor alam</option>
+                                                <option value="lainnya" {{ ($dokumentasi->dugaan_penyebab ?? '') == 'lainnya' ? 'selected' : '' }}>Lainnya</option>
                                             </select>
-                                            <input type="text" class="form-control" name="dugaan_penyebab_lainnya" placeholder="Ketik jika 'Lainnya'..." style="width: 50%;">
+                                            <input type="text" class="form-control" name="dugaan_penyebab_lainnya" placeholder="Ketik jika 'Lainnya'..." value="{{ $dokumentasi->dugaan_penyebab_lainnya ?? '' }}" style="width: 50%;">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Sumber Api / Titik Awal</label>
-                                        <input type="text" name="sumber_api" class="form-control" value="-">
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Sumber Api / Titik Awal</label>
+                                        <input type="text" name="sumber_api" class="form-control" value="{{ $dokumentasi->sumber_api ?? '' }}">
                                     </div>
                                 </div>
 
                                 <h5 class="fw-bold mb-4 text-primary border-top pt-4"><i class="fas fa-handshake me-2"></i>Kerjasama Lintas Sektoral</h5>
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-12">
-                                        <label class="form-label mb-2" style="font-size: 13px; font-weight: 600; color: #4b5563;">Instansi Pendukung di Lokasi</label><br>
+                                        @php $instansiData = json_decode($dokumentasi->instansi_pendukung ?? '[]'); @endphp
+                                        <label class="form-label mb-2" style="font-size: 13px; font-weight: 600;">Instansi Pendukung di Lokasi</label><br>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="inst_pln" name="instansi_pendukung[]" value="pln">
+                                            <input class="form-check-input" type="checkbox" id="inst_pln" name="instansi_pendukung[]" value="pln" {{ is_array($instansiData) && in_array('pln', $instansiData) ? 'checked' : '' }}>
                                             <label class="form-check-label" for="inst_pln" style="font-size: 13px;">PLN</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="inst_relawan" name="instansi_pendukung[]" value="relawan_lokal" checked> <!-- Checked -->
+                                            <input class="form-check-input" type="checkbox" id="inst_relawan" name="instansi_pendukung[]" value="relawan_lokal" {{ is_array($instansiData) && in_array('relawan_lokal', $instansiData) ? 'checked' : '' }}>
                                             <label class="form-check-label" for="inst_relawan" style="font-size: 13px;">Relawan Lokal</label>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-8">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Tindakan Instansi Samping</label>
-                                        <textarea class="form-control" name="tindakan_instansi" rows="2">Relawan membantu menunjukkan rute evakuasi tercepat ke rumah warga.</textarea>
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Tindakan Instansi Samping</label>
+                                        <textarea class="form-control" name="tindakan_instansi" rows="2">{{ $dokumentasi->tindakan_instansi ?? '' }}</textarea>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Nomor Kontak Saksi/Warga</label>
-                                        <input type="text" name="kontak_saksi" class="form-control" value="0812-3456-7890">
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Nomor Kontak Saksi</label>
+                                        <input type="text" name="kontak_saksi" class="form-control" value="{{ $dokumentasi->kontak_saksi ?? '' }}">
                                     </div>
                                 </div>
 
                                 <h5 class="fw-bold mb-4 text-primary border-top pt-4"><i class="fas fa-clipboard-check me-2"></i>Evaluasi & Rekomendasi</h5>
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-4">
-                                        <label class="form-label d-block" style="font-size: 13px; font-weight: 600; color: #4b5563;">Ketepatan Alat (Skala 1-5)</label>
+                                        <label class="form-label d-block" style="font-size: 13px; font-weight: 600;">Ketepatan Alat (Skala 1-5)</label>
+                                        @php $alat = $dokumentasi->ketepatan_alat ?? 5; @endphp
                                         <div class="btn-group" role="group">
-                                            <input type="radio" class="btn-check" name="ketepatan_alat" id="alat_1" value="1">
+                                            <input type="radio" class="btn-check" name="ketepatan_alat" id="alat_1" value="1" {{ $alat == 1 ? 'checked' : '' }}>
                                             <label class="btn btn-outline-primary btn-sm" for="alat_1">1</label>
                                             
-                                            <input type="radio" class="btn-check" name="ketepatan_alat" id="alat_5" value="5" checked> <!-- Checked 5 -->
+                                            <input type="radio" class="btn-check" name="ketepatan_alat" id="alat_5" value="5" {{ $alat == 5 ? 'checked' : '' }}>
                                             <label class="btn btn-outline-primary btn-sm" for="alat_5">5</label>
                                         </div>
                                     </div>
@@ -522,13 +516,15 @@
                                 <h5 class="fw-bold mb-4 text-primary border-top pt-4"><i class="fas fa-camera me-2"></i>Dokumentasi & Catatan Akhir</h5>
                                 <div class="row g-4 mb-4">
                                     <div class="col-md-6">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Kronologi Kejadian Terperinci</label>
-                                        <textarea class="form-control" name="kronologi_lengkap" rows="5">Tim menerima laporan melalui Call Center terkait adanya ular di plafon rumah warga. Tim rescue berjumlah 4 orang diberangkatkan. Sesampainya di lokasi, ular berhasil diamankan dengan tongkat penjepit setelah membongkar sedikit bagian plafon.</textarea> <!-- Text -->
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Kronologi Kejadian Terperinci</label>
+                                        <textarea class="form-control" name="kronologi_lengkap" rows="5">{{ $dokumentasi->kronologi_lengkap ?? '' }}</textarea>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label fw-bold">Update File Dokumentasi (Biarkan kosong jika tidak diubah)</label>
+                                        <label class="form-label fw-bold">Update File Foto (Biarkan kosong jika tidak diubah)</label>
                                         <input class="form-control mb-2" type="file" name="foto[]" multiple accept="image/png, image/jpeg">
-                                        <small class="text-success"><i class="fas fa-check me-1"></i> Terdapat 3 foto yang sudah terunggah.</small>
+                                        @if(!empty($dokumentasi->foto))
+                                            <small class="text-success"><i class="fas fa-check me-1"></i> Foto sudah terunggah sebelumnya.</small>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -538,47 +534,46 @@
                                 <h5 class="fw-bold mb-4 text-primary"><i class="fas fa-paw me-2"></i>Kategori Khusus Penyelamatan Hewan</h5>
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-6">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Jenis Hewan</label>
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Jenis Hewan</label>
                                         <select class="form-select" name="jenis_hewan">
                                             <option value="">-- Pilih Jenis Hewan --</option>
-                                            <option value="ular" selected>Ular</option> <!-- Selected -->
-                                            <option value="tawon">Tawon/Vespa</option>
+                                            <option value="ular" {{ ($khusus->jenis_hewan ?? '') == 'ular' ? 'selected' : '' }}>Ular</option>
+                                            <option value="tawon" {{ ($khusus->jenis_hewan ?? '') == 'tawon' ? 'selected' : '' }}>Tawon/Vespa</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Spesies / Nama Lokal</label>
-                                        <input type="text" name="spesies_hewan" class="form-control" value="Ular Piton (Sanca Kembang)"> <!-- Value -->
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Spesies / Nama Lokal</label>
+                                        <input type="text" name="spesies_hewan" class="form-control" value="{{ $khusus->spesies_hewan ?? '' }}">
                                     </div>
                                 </div>
 
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-6">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Dimensi Hewan</label>
-                                        <input type="text" name="dimensi_hewan" class="form-control" value="Panjang ±3.5 meter, Berat ±15 Kg"> <!-- Value -->
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Dimensi Hewan</label>
+                                        <input type="text" name="dimensi_hewan" class="form-control" value="{{ $khusus->dimensi_hewan ?? '' }}">
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Status Hewan Pasca Evakuasi</label>
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Status Hewan Pasca Evakuasi</label>
                                         <select class="form-select" name="status_hewan_pasca">
                                             <option value="">-- Pilih Status --</option>
-                                            <option value="dilepasliarkan">Dilepasliarkan ke habitat</option>
-                                            <option value="diserahkan_bksda" selected>Diserahkan ke BKSDA</option> <!-- Selected -->
+                                            <option value="dilepasliarkan" {{ ($khusus->status_hewan_pasca ?? '') == 'dilepasliarkan' ? 'selected' : '' }}>Dilepasliarkan ke habitat</option>
+                                            <option value="diserahkan_bksda" {{ ($khusus->status_hewan_pasca ?? '') == 'diserahkan_bksda' ? 'selected' : '' }}>Diserahkan ke BKSDA</option>
                                         </select>
                                     </div>
                                 </div>
 
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-12">
-                                        <label class="form-label" style="font-size: 13px; font-weight: 600; color: #4b5563;">Lokasi Habitat Pelepasan / Instansi</label>
-                                        <input type="text" name="lokasi_pelepasan" class="form-control" value="Kantor BKSDA Provinsi Jambi"> <!-- Value -->
+                                        <label class="form-label" style="font-size: 13px; font-weight: 600;">Lokasi Habitat Pelepasan</label>
+                                        <input type="text" name="lokasi_pelepasan" class="form-control" value="{{ $khusus->lokasi_pelepasan ?? '' }}">
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- SUBMIT BUTTON - Berubah Menjadi Update -->
+                        <!-- SUBMIT BUTTON -->
                         <div class="d-flex justify-content-end mt-4 pt-3 border-top">
                             <a href="/internal/damtan/data-laporan" class="btn btn-light me-2 fw-bold text-secondary">Batal</a>
-                            <!-- Tombol Update -->
                             <button type="submit" class="btn btn-warning fw-bold px-4" style="color: #614000; border: none;">
                                 <i class="fas fa-save me-2"></i> Update Data Laporan
                             </button>
@@ -601,10 +596,10 @@
             <div id="map"></div>
           </div>
           <div class="modal-footer bg-light d-flex justify-content-between">
-            <span class="text-muted" style="font-size: 12px;">Geser pin merah atau klik peta untuk menentukan koordinat. <br>Koordinat saat ini: <strong id="latlngDisplay">-1.60921, 103.58231</strong></span>
+            <span class="text-muted" style="font-size: 12px;">Geser pin merah atau klik peta untuk menentukan koordinat. <br>Koordinat saat ini: <strong id="latlngDisplay">{{ $coords }}</strong></span>
             <div>
                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
-                <button type="button" class="btn btn-primary btn-sm" onclick="simpanKoordinat()">Simpan Perubahan Koordinat</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="simpanKoordinat()">Simpan Perubahan</button>
             </div>
           </div>
         </div>
@@ -619,17 +614,17 @@
         let map;
         let marker;
         const myModalEl = document.getElementById('mapModal');
+        // Gunakan titik yang ada di DB untuk setting marker
+        const mapCoords = [{{ $coords }}];
 
         myModalEl.addEventListener('shown.bs.modal', event => {
             if(!map) {
-                // Posisi Peta diatur sesuai value database (-1.60921, 103.58231)
-                map = L.map('map').setView([-1.60921, 103.58231], 15);
-                
+                map = L.map('map').setView(mapCoords, 15);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '© OpenStreetMap contributors'
                 }).addTo(map);
 
-                marker = L.marker([-1.60921, 103.58231], {draggable: true}).addTo(map);
+                marker = L.marker(mapCoords, {draggable: true}).addTo(map);
 
                 marker.on('dragend', function (e) {
                     document.getElementById('latlngDisplay').innerText = marker.getLatLng().lat.toFixed(5) + ', ' + marker.getLatLng().lng.toFixed(5);
