@@ -171,36 +171,23 @@
                                 <th width="10%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody id="tableBody">
-                            <!-- Data baris tabel di sini -->
-                            <tr>
-                                <td>1</td>
-                                <td><span class="title-text">10 - 15 Okt 2026</span></td>
-                                <td>
-                                    <span class="title-text">Diklat Inspektur Kebakaran Tingkat I</span>
-                                    <span class="sub-text">Kementerian Dalam Negeri</span>
-                                </td>
-                                <td><span class="title-text">Diklat Teknis</span><span class="sub-text">5 Anggota</span></td>
-                                <td><span class="badge-soft-warning status-badge"><i class="fas fa-clock me-1"></i> Menunggu</span></td>
-                                <td class="text-center">
-                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td><span class="title-text">01 - 03 Sep 2026</span></td>
-                                <td>
-                                    <span class="title-text">Bimtek Penyusunan SOP Pemadaman</span>
-                                    <span class="sub-text">Pusdiklat Damkar Ciracas</span>
-                                </td>
-                                <td><span class="title-text">Bimtek</span><span class="sub-text">2 Anggota</span></td>
-                                <td><span class="badge-soft-success status-badge"><i class="fas fa-check-circle me-1"></i> Selesai</span></td>
-                                <td class="text-center">
-                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
-                                </td>
-                            </tr>
+                        <tbody>
+                           @foreach($data_peningkatan as $no => $item)
+<tr>
+    <td>{{ $no + 1 }}</td>
+    <td>{{ $item->tanggal_mulai }} s/d {{ $item->tanggal_selesai }}</td>
+    <td>
+        <strong>{{ $item->nama_kegiatan }}</strong><br>
+        <span class="text-muted" style="font-size: 12px;">{{ $item->penyelenggara }}</span>
+    </td>
+    <td>{{ $item->jenis_kegiatan }}</td>
+    <td><span class="badge bg-success-subtle text-success">Selesai</span></td>
+    <td class="text-center">
+        <a href="/internal/pencegahan/peningkatan-kapasitas/lihat/{{ $item->id }}" class="btn-action btn-action-view"><i class="fas fa-eye"></i></a>
+        <a href="/internal/pencegahan/peningkatan-kapasitas/edit/{{ $item->id }}" class="btn-action btn-action-edit"><i class="fas fa-edit"></i></a>
+    </td>
+</tr>
+@endforeach
                         </tbody>
                     </table>
                 </div>

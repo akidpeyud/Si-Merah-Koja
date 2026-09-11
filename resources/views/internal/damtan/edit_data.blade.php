@@ -89,73 +89,21 @@
             display: flex; flex-direction: column; gap: 4px; padding-left: 10px; margin-top: 8px;
         }
 
-        /* --- MAIN AREA & TABS --- */
+        /* --- MAIN AREA --- */
         .main-content { flex: 1; padding: 40px 50px; background-color: #f9fafb; }
         .page-header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end;}
         .page-header h1 { font-size: 28px; font-weight: 800; color: #111827; margin-bottom: 5px; }
         .page-header p { color: #6b7280; font-size: 14px; margin: 0; }
         
+        /* Custom Tab Styles */
         .nav-tabs .nav-link { color: #6b7280; font-weight: 600; border: none; padding: 12px 20px; }
         .nav-tabs .nav-link:hover { color: #10b981; }
         .nav-tabs .nav-link.active { color: #111827 !important; border-bottom: 3px solid #10b981 !important; background: transparent; }
-
-        /* --- STYLING FORM MODERN --- */
-        .field-label {
-            font-size: 13px; font-weight: 700; color: #0284c7; margin-bottom: 8px;
-            display: inline-flex; align-items: center;
-        }
-        .field-label i { margin-right: 8px; font-size: 14px; }
-        
-        .form-control, .form-select {
-            border-radius: 8px; background-color: #f4f9ff; border: 1px solid #bfdbfe; 
-            padding: 10px 15px; font-size: 14px; color: #1e293b;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); transition: all 0.2s ease-in-out;
-        }
-        .form-control:focus, .form-select:focus { background-color: #ffffff; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
-        .input-group-text { border-radius: 8px; background-color: #e0f2fe; border: 1px solid #bfdbfe; color: #0284c7; font-weight: 700; }
-        
-        .form-check-inline {
-            padding: 8px 16px 8px 32px; border-radius: 8px; border: 1px solid transparent;
-            transition: all 0.2s ease-in-out; margin-right: 10px; margin-bottom: 5px; cursor: pointer;
-        }
-        .form-check-inline:hover { background-color: #e0f2fe; border-color: #bfdbfe; }
-        .form-check-input { cursor: pointer; margin-top: 4px; }
-        .form-check-label { cursor: pointer; width: 100%; }
 
         #map { height: 400px; width: 100%; border-radius: 8px; border: 1px solid #e5e7eb; }
     </style>
 </head>
 <body>
-
-    <!-- ALERT SUCCESS GLOBAL -->
-    @if(session('success'))
-        <div id="globalSuccessAlert">
-            <i class="fas fa-check-circle alert-icon"></i>
-            <span>{{ session('success') }}</span>
-            <button class="btn-close-alert" onclick="closeAlert('globalSuccessAlert')"><i class="fas fa-times"></i></button>
-        </div>
-    @endif
-
-    <!-- ALERT ERROR GLOBAL -->
-    @if(session('error'))
-        <div id="globalErrorAlert">
-            <i class="fas fa-exclamation-triangle alert-icon"></i>
-            <span>{{ session('error') }}</span>
-            <button class="btn-close-alert" onclick="closeAlert('globalErrorAlert')"><i class="fas fa-times"></i></button>
-        </div>
-    @endif
-
-    <script>
-        function closeAlert(id) {
-            let alertBox = document.getElementById(id);
-            if(alertBox) {
-                alertBox.style.animation = 'fadeOutUpCenter 0.4s ease forwards';
-                setTimeout(() => alertBox.remove(), 400); 
-            }
-        }
-        setTimeout(() => closeAlert('globalSuccessAlert'), 4000);
-        setTimeout(() => closeAlert('globalErrorAlert'), 4000);
-    </script>
 
     <!-- NAVBAR INTERNAL -->
     <nav class="navbar-internal">
@@ -189,6 +137,7 @@
                 <i class="fas fa-home"></i> Dashboard Utama
             </a>
 
+            <!-- BAGIAN KHUSUS USER & SUPER USER -->
             @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
                 
                 <!-- ACCORDION PENCEGAHAN -->
@@ -214,11 +163,8 @@
                 </button>
                 <div class="collapse {{ Request::is('internal/damtan*') ? 'show' : '' }}" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
-<<<<<<< Updated upstream
-                        <a href="/internal/damtan/input-data" class="sidebar-item {{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
-=======
                         <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
->>>>>>> Stashed changes
+                        <!-- Menu Data Laporan di-set Active saat Edit Laporan -->
                         <a href="/internal/damtan/data-laporan" class="sidebar-item active"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
                     </div>
                 </div>
@@ -239,6 +185,7 @@
                 </div>
             @endif
 
+            <!-- BAGIAN KHUSUS OPERATOR & SUPER USER -->
             @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
                 <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita" aria-expanded="false">
                     <span>Manajemen Berita</span>
