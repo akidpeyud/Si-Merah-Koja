@@ -74,11 +74,11 @@
     <nav class="navbar-internal">
         <a href="/" class="nav-brand">
             <img src="/images/simerahkoja.png" alt="Logo Simerah">
-            <span class="title">SIMERAH KOJA <span class="badge-internal">INTERNAL APP</span></span>
+            <span class="title">SIMERAH KOJA </span>
         </a>
         <div class="user-menu">
             <div class="user-profile">
-                <span class="badge-role {{ Auth::user()->role ?? '' }}">{{ str_replace('_', ' ', Auth::user()->role ?? 'SAPRA') }}</span>
+              
                 <span>{{ Auth::user()->nama_lengkap ?? 'Dhimas Zaky' }}</span>
                 <i class="fas fa-user-circle"></i>
             </div>
@@ -133,11 +133,20 @@
                 </button>
                 <div class="collapse show" id="collapseSapra" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
-                        <a href="/sapra/data_hidrant_gedung" class="sidebar-item active"><i class="fas fa-clipboard-list"></i> Data Hidrant</a>
-                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
-                        <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Mako & Pos</a>
-                        <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Mako & Pos</a>
-                        <a href="/sapra/logistik" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
+                        <!-- GRUP MANAJEMEN AIR -->
+                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">MANAJEMEN AIR</span>
+                        <a href="/sapra/data_hidrant_gedung" class="sidebar-item active"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
+                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota jambi</a>
+
+                        <!-- GRUP FASILITAS & POS -->
+                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">FASILITAS & POS MAKO</span>
+                        <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pos</a>
+                        <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pos</a>
+                        <a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan</a>
+                        <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
+                        <!-- GRUP PERENCANAAN / MUTU BAKU -->
+                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">PERENCANAAN PENGADAAN</span>
+                        <a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
                     </div>
                 </div>
             @endif
@@ -183,7 +192,7 @@
 
             <div class="d-flex justify-content-between align-items-end mb-4">
                 <div>
-                    <h1 style="font-size: 26px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">Data Hidrant</h1>
+                    <h1 style="font-size: 26px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">Sumber Air</h1>
                     <p style="color: #64748b; font-size: 14px; margin: 0;">Kelola data ketersediaan hidrant pilar, gedung, embung, dan danau.</p>
                 </div>
                 <div class="d-flex gap-2 align-items-center">
