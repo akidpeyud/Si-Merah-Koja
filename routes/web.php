@@ -189,6 +189,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/internal/operator/berita-medsos/hapus/{id}', [OperatorMedsosController::class, 'destroyMedsos']);
 });
 Route::middleware(['auth'])->group(function () {
+<<<<<<< Updated upstream
     
     // 1. Rute untuk halaman Input Data
     Route::get('/internal/damtan/input-data', function () {
@@ -206,4 +207,16 @@ Route::middleware(['auth'])->group(function () {
         return view('internal.damtan.edit_data', compact('id'));
     });
 
+=======
+    Route::get('/internal/damtan/input-data', [DamtanController::class, 'createPenyelamatan'])->name('damtan.laporan.create');
+    Route::post('/internal/damtan/input-data/store', [DamtanController::class, 'storePenyelamatan'])->name('damtan.laporan.store');
+    Route::get('/internal/damtan/data-laporan', [DamtanController::class, 'indexPenyelamatan'])->name('damtan.laporan.index');
+    Route::get('/internal/damtan/edit-data/{id}', [DamtanController::class, 'editPenyelamatan'])->name('damtan.laporan.edit');
+    Route::put('/internal/damtan/update-data/{id}', [DamtanController::class, 'updatePenyelamatan'])->name('damtan.laporan.update');
+    
+    // TAMBAHKAN RUTE INI UNTUK MENGHAPUS DATA
+    Route::delete('/internal/damtan/hapus-data/{id}', [DamtanController::class, 'destroyPenyelamatan']);
+    // Tambahkan baris ini di bawah rute index/edit/update/hapus Damtan Anda
+    Route::get('/internal/damtan/lihat-data/{id}', [DamtanController::class, 'showPenyelamatan']);
+>>>>>>> Stashed changes
 });

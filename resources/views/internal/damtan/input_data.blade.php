@@ -270,7 +270,7 @@
                 </div>
 
                 <div class="card-body p-4 bg-white">
-                    <form action="#" method="POST" enctype="multipart/form-data">
+                   <form action="{{ route('damtan.laporan.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="tab-content" id="formTabsContent">
                             
