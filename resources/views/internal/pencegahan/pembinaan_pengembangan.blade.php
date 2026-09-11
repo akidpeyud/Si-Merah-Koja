@@ -162,31 +162,25 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($data_pembinaan as $no => $item)
-                            <tr>
-                                <td>{{ $no + 1 }}</td>
-                                <td>
-                                    <!-- Asumsi kolom DB: tanggal_pelaksanaan -->
-                                    <span class="title-text">{{ $item->tanggal_pelaksanaan ?? '-' }}</span>
-                                </td>
-                                <td>
-                                    <!-- Asumsi kolom DB: nama_kegiatan dan lokasi -->
-                                    <span class="title-text">{{ $item->nama_kegiatan ?? '-' }}</span>
-                                    <span class="sub-text">{{ $item->lokasi ?? '-' }}</span>
-                                </td>
-                                <td>
-                                    <span class="badge badge-soft-info">Selesai</span>
-                                </td>
-                                <td class="text-center">
-                                    <a href="#" class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
-                                    <a href="#" class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></a>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="5" class="text-center text-muted py-4">Belum ada data pembinaan yang tersimpan.</td>
-                            </tr>
-                            @endforelse
+                           @foreach($data_pembinaan as $no => $item)
+<tr>
+    <td>{{ $no + 1 }}</td>
+    <td>{{ $item->tanggal_pelaksanaan }}</td>
+    <td>
+        <!-- Panggil nama_program, BUKAN nama_kegiatan -->
+        <strong style="color: #0f172a;">{{ $item->nama_program }}</strong><br>
+        <span class="text-muted" style="font-size: 12px;"><i class="fas fa-map-marker-alt me-1"></i> {{ $item->lokasi }}</span>
+    </td>
+    <!-- Panggil sasaran_pembinaan -->
+    <td>{{ $item->sasaran_pembinaan }}</td>
+    <td><span class="badge bg-success-subtle text-success" style="font-weight: 600;">Selesai</span></td>
+    <td class="text-center">
+        <!-- Pastikan link-nya mengarah ke route yang bener -->
+        <a href="/internal/pencegahan/pembinaan-pengembangan/lihat/{{ $item->id }}" class="btn-action btn-action-view"><i class="fas fa-eye"></i></a>
+        <a href="/internal/pencegahan/pembinaan-pengembangan/edit/{{ $item->id }}" class="btn-action btn-action-edit"><i class="fas fa-edit"></i></a>
+    </td>
+</tr>
+@endforeach
                         </tbody>
                     </table>
                 </div>

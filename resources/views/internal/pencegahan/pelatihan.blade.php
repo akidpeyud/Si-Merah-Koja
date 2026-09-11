@@ -181,9 +181,12 @@
                                     <span class="badge badge-soft-warning">Persiapan</span>
                                 </td>
                                 <td class="text-center">
-                                    <a href="#" class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
-                                    <a href="#" class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></a>
-                                </td>
+    <!-- Tombol Mata -->
+    <a href="/internal/pencegahan/pelatihan/lihat/{{ $item->id }}" class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
+    
+    <!-- Tombol Pensil -->
+    <a href="/internal/pencegahan/pelatihan/edit/{{ $item->id }}" class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></a>
+</td>
                             </tr>
                             @empty
                             <tr>

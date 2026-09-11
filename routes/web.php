@@ -301,8 +301,114 @@ Route::middleware(['auth'])->group(function () {
 // ==========================================
 // ROUTE DAMTAN (PEMADAMAN & PENYELAMATAN)
 // ==========================================
-Route::middleware(['auth'])->group(function () {
-    Route::get('/internal/damtan/input-data', [DamtanController::class, 'createPenyelamatan'])->name('damtan.laporan.create');
-    Route::post('/internal/damtan/input-data/store', [DamtanController::class, 'storePenyelamatan'])->name('damtan.laporan.store');
-    Route::get('/internal/damtan/data-laporan', [DamtanController::class, 'indexPenyelamatan'])->name('damtan.laporan.index');
+Route::get('/internal/pencegahan/layanan-sosialisasi/edit/{id}', function ($id) {
+    $data = \Illuminate\Support\Facades\DB::table('sosialisasi')->where('id', $id)->first();
+    return view('internal.pencegahan.edit_sosialisasi', compact('data'));
+});
+
+Route::post('/internal/pencegahan/layanan-sosialisasi/edit/{id}', function (\Illuminate\Http\Request $request, $id) {
+    $updateData = $request->except(['_token']);
+    
+    // Sesuaikan 'surat_permohonan' kalau field upload file lu beda
+    if ($request->hasFile('surat_permohonan')) {
+        $file = $request->file('surat_permohonan');
+        $namaFile = time() . "_" . $file->getClientOriginalName();
+        $file->move(public_path('uploads/sosialisasi'), $namaFile);
+        $updateData['surat_permohonan'] = $namaFile;
+    }
+
+    $updateData['updated_at'] = now();
+    \Illuminate\Support\Facades\DB::table('sosialisasi')->where('id', $id)->update($updateData);
+    
+    return redirect('/internal/pencegahan/layanan-sosialisasi')->with('success', 'Data Sosialisasi berhasil diperbarui!');
+});
+// ==========================================
+// FITUR TOMBOL MATA (LIHAT DETAIL & PDF) - PELATIHAN
+// ==========================================
+Route::get('/internal/pencegahan/pelatihan/lihat/{id}', function ($id) {
+    $data = \Illuminate\Support\Facades\DB::table('pelatihan')->where('id', $id)->first();
+    return view('internal.pencegahan.lihat_pelatihan', compact('data'));
+});
+
+// ==========================================
+// FITUR TOMBOL PENSIL (EDIT DATA) - PELATIHAN
+// ==========================================
+Route::get('/internal/pencegahan/pelatihan/edit/{id}', function ($id) {
+    $data = \Illuminate\Support\Facades\DB::table('pelatihan')->where('id', $id)->first();
+    return view('internal.pencegahan.edit_pelatihan', compact('data'));
+});
+
+Route::post('/internal/pencegahan/pelatihan/edit/{id}', function (\Illuminate\Http\Request $request, $id) {
+    $updateData = $request->except(['_token']);
+    
+    // Upload file baru jika ada
+    if ($request->hasFile('surat_permohonan')) {
+        $file = $request->file('surat_permohonan');
+        $namaFile = time() . "_" . $file->getClientOriginalName();
+        $file->move(public_path('uploads/pelatihan'), $namaFile);
+        $updateData['surat_permohonan'] = $namaFile;
+    }
+
+    $updateData['updated_at'] = now();
+    \Illuminate\Support\Facades\DB::table('pelatihan')->where('id', $id)->update($updateData);
+    
+    return redirect('/internal/pencegahan/pelatihan')->with('success', 'Data Pelatihan berhasil diperbarui!');
+});
+// ==========================================
+// FITUR TOMBOL MATA & PENSIL - PEMBINAAN & PENGEMBANGAN
+// ==========================================
+Route::get('/internal/pencegahan/pembinaan-pengembangan/lihat/{id}', function ($id) {
+    $data = \Illuminate\Support\Facades\DB::table('pembinaan')->where('id', $id)->first();
+    return view('internal.pencegahan.lihat_pembinaan', compact('data'));
+});
+
+Route::get('/internal/pencegahan/pembinaan-pengembangan/edit/{id}', function ($id) {
+    $data = \Illuminate\Support\Facades\DB::table('pembinaan')->where('id', $id)->first();
+    return view('internal.pencegahan.edit_pembinaan', compact('data'));
+});
+
+Route::post('/internal/pencegahan/pembinaan-pengembangan/edit/{id}', function (\Illuminate\Http\Request $request, $id) {
+    $updateData = $request->except(['_token']);
+    
+    // Sesuai kodingan tambah data lu, nama kolom filenya: dokumen_pendukung
+    if ($request->hasFile('dokumen_pendukung')) {
+        $file = $request->file('dokumen_pendukung');
+        $namaFile = time() . "_" . $file->getClientOriginalName();
+        $file->move(public_path('uploads/pembinaan'), $namaFile);
+        $updateData['dokumen_pendukung'] = $namaFile;
+    }
+
+    $updateData['updated_at'] = now();
+    \Illuminate\Support\Facades\DB::table('pembinaan')->where('id', $id)->update($updateData);
+    
+    return redirect('/internal/pencegahan/pembinaan-pengembangan')->with('success', 'Data Pembinaan berhasil diperbarui!');
+});
+// ==========================================
+// FITUR MATA & PENSIL - PENINGKATAN KAPASITAS
+// ==========================================
+Route::get('/internal/pencegahan/peningkatan-kapasitas/lihat/{id}', function ($id) {
+    $data = \Illuminate\Support\Facades\DB::table('peningkatan_kapasitas')->where('id', $id)->first();
+    return view('internal.pencegahan.lihat_peningkatan', compact('data'));
+});
+
+Route::get('/internal/pencegahan/peningkatan-kapasitas/edit/{id}', function ($id) {
+    $data = \Illuminate\Support\Facades\DB::table('peningkatan_kapasitas')->where('id', $id)->first();
+    return view('internal.pencegahan.edit_peningkatan', compact('data'));
+});
+
+Route::post('/internal/pencegahan/peningkatan-kapasitas/edit/{id}', function (\Illuminate\Http\Request $request, $id) {
+    $updateData = $request->except(['_token']);
+    
+    // Perhatikan nama kolom uploadnya: dokumen_terkait
+    if ($request->hasFile('dokumen_terkait')) {
+        $file = $request->file('dokumen_terkait');
+        $namaFile = time() . "_" . $file->getClientOriginalName();
+        $file->move(public_path('uploads/peningkatan'), $namaFile);
+        $updateData['dokumen_terkait'] = $namaFile;
+    }
+
+    $updateData['updated_at'] = now();
+    \Illuminate\Support\Facades\DB::table('peningkatan_kapasitas')->where('id', $id)->update($updateData);
+    
+    return redirect('/internal/pencegahan/peningkatan-kapasitas')->with('success', 'Data Peningkatan Kapasitas berhasil diperbarui!');
 });

@@ -172,31 +172,22 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($data_peningkatan as $no => $item)
-                            <tr>
-                                <td>{{ $no + 1 }}</td>
-                                <td>
-                                    <!-- Asumsi kolom di DB lu: tanggal_pelaksanaan -->
-                                    <span class="title-text">{{ $item->tanggal_pelaksanaan ?? '-' }}</span>
-                                </td>
-                                <td>
-                                    <!-- Asumsi kolom di DB lu: nama_kegiatan dan lokasi -->
-                                    <span class="title-text">{{ $item->nama_kegiatan ?? '-' }}</span>
-                                    <span class="sub-text">{{ $item->lokasi ?? '-' }}</span>
-                                </td>
-                                <td>
-                                    <span class="badge badge-soft-primary">Aktif</span>
-                                </td>
-                                <td class="text-center">
-                                    <a href="#" class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
-                                    <a href="#" class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></a>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="5" class="text-center text-muted py-4">Belum ada data peningkatan kapasitas yang tersimpan.</td>
-                            </tr>
-                            @endforelse
+                           @foreach($data_peningkatan as $no => $item)
+<tr>
+    <td>{{ $no + 1 }}</td>
+    <td>{{ $item->tanggal_mulai }} s/d {{ $item->tanggal_selesai }}</td>
+    <td>
+        <strong>{{ $item->nama_kegiatan }}</strong><br>
+        <span class="text-muted" style="font-size: 12px;">{{ $item->penyelenggara }}</span>
+    </td>
+    <td>{{ $item->jenis_kegiatan }}</td>
+    <td><span class="badge bg-success-subtle text-success">Selesai</span></td>
+    <td class="text-center">
+        <a href="/internal/pencegahan/peningkatan-kapasitas/lihat/{{ $item->id }}" class="btn-action btn-action-view"><i class="fas fa-eye"></i></a>
+        <a href="/internal/pencegahan/peningkatan-kapasitas/edit/{{ $item->id }}" class="btn-action btn-action-edit"><i class="fas fa-edit"></i></a>
+    </td>
+</tr>
+@endforeach
                         </tbody>
                     </table>
                 </div>
