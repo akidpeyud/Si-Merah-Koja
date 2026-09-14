@@ -523,29 +523,37 @@ public function cetakPdfSaranaPenyelamatan()
     // === MENU KEBUTUHAN SARPRAS (MUTU BAKU) ===
     // ==========================================
     
-    public function kebutuhanSarpras()
+   public function kebutuhanSarpras()
     {
         // 1. Ambil data Mutu Baku
         $dataKebutuhan = DB::table('kebutuhan_sarpras')->orderBy('id', 'asc')->get();
 
-        // 2. Ambil data histori pengadaan (dari struktur database baru lu)
+        // 2. Ambil data histori pengadaan untuk Tab 2
         $dataPengadaan = DB::table('pengadaan_sarpras')->orderBy('tahun', 'asc')->get();
 
-        // 3. Bikin daftar tahun otomatis (Kolom ke samping)
+        // 3. Bikin daftar tahun otomatis (Kolom ke samping Tab 2)
         $listTahun = $dataPengadaan->pluck('tahun')->unique()->sort()->values();
         if ($listTahun->isEmpty()) {
             $listTahun = collect([2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]);
         }
 
-        // 4. Kelompokkin data pengadaan biar gampang dicetak berjejer di Blade
+        // 4. Kelompokkin data pengadaan Tab 2
         $pengadaanMapped = [];
         foreach ($dataPengadaan as $p) {
             $pengadaanMapped[$p->kebutuhan_id][$p->tahun] = $p->jumlah;
         }
 
-        return view('internal.sapra.kebutuhan_sarpras', compact('dataKebutuhan', 'listTahun', 'pengadaanMapped'));
-    }
+        // 5. (BARU) Ambil data realisasi khusus tahun ini beserta tanggalnya buat permintaan Kabid
+        $tahunSekarang = date('Y');
+        $realisasiTahunIni = DB::table('pengadaan_sarpras')
+            ->select('kebutuhan_id', DB::raw('SUM(jumlah) as total_masuk'), DB::raw('MAX(created_at) as tgl_masuk'))
+            ->where('tahun', $tahunSekarang)
+            ->groupBy('kebutuhan_id')
+            ->get()
+            ->keyBy('kebutuhan_id');
 
+        return view('internal.sapra.kebutuhan_sarpras', compact('dataKebutuhan', 'listTahun', 'pengadaanMapped', 'realisasiTahunIni', 'tahunSekarang'));
+    }
     public function storeKebutuhanSarpras(Request $request)
     {
         $butuh = $request->jumlah_dibutuhkan;
@@ -662,5 +670,100 @@ public function cetakPdfSaranaPenyelamatan()
         }
 
         return redirect()->back()->with('active_tab', 'pengadaan');
+    }
+    // ==============================================
+    // === FUNGSI CETAK LAPORAN & EXCEL =============
+    // ==============================================
+    public function cetakKebutuhan(Request $request)
+    {
+        // Ambil semua data seperti biasa
+        $dataKebutuhan = DB::table('kebutuhan_sarpras')->orderBy('id', 'asc')->get();
+        $dataPengadaan = DB::table('pengadaan_sarpras')->orderBy('tahun', 'asc')->get();
+        
+        $listTahun = $dataPengadaan->pluck('tahun')->unique()->sort()->values();
+        if ($listTahun->isEmpty()) {
+            $listTahun = collect([2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]);
+        }
+
+        $pengadaanMapped = [];
+        foreach ($dataPengadaan as $p) {
+            $pengadaanMapped[$p->kebutuhan_id][$p->tahun] = $p->jumlah;
+        }
+
+        // Jika tombol Excel yang diklik, sistem bakal ngerubah HTML jadi file .xls otomatis
+        if ($request->export == 'excel') {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Data_Mutu_Baku_Simerah_".date('Y').".xls");
+        }
+
+        return view('internal.sapra.cetak_kebutuhan', compact('dataKebutuhan', 'listTahun', 'pengadaanMapped'));
+    }
+    // ==============================================
+    // === DISTRIBUSI BARANG STAFF (ANTI-NGELES) ====
+    // ==============================================
+    
+   public function distribusiStaff()
+    {
+        // 1. Ambil data, urutkan berdasarkan abjad nama, lalu waktu terbaru
+        $rawData = DB::table('distribusi_barang_staff')
+            ->orderBy('nama_penerima', 'asc')
+            ->orderBy('waktu_terima', 'desc')
+            ->get();
+            
+        // 2. KELOMPOKKAN DENGAN PINTAR (Abaikan huruf besar/kecil & spasi berlebih)
+        $dataDistribusi = $rawData->groupBy(function($item) {
+            return strtoupper(trim($item->nama_penerima));
+        });
+        
+        return view('internal.sapra.distribusi_staff', compact('dataDistribusi'));
+    }
+    public function storeDistribusiStaff(Request $request)
+    {
+        DB::table('distribusi_barang_staff')->insert([
+            'nama_penerima' => strtoupper($request->nama_penerima),
+            'nama_barang'   => strtoupper($request->nama_barang),
+            'detail_barang' => $request->detail_barang,
+            'waktu_terima'  => $request->waktu_terima, // Tgl & Jam serah terima
+            'keterangan'    => $request->keterangan,
+            'created_at'    => now(),
+            'updated_at'    => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Bukti distribusi barang ke staff berhasil dicatat!');
+    }
+
+    public function updateDistribusiStaff(Request $request, $id)
+    {
+        DB::table('distribusi_barang_staff')->where('id', $id)->update([
+            'nama_penerima' => strtoupper($request->nama_penerima),
+            'nama_barang'   => strtoupper($request->nama_barang),
+            'detail_barang' => $request->detail_barang,
+            'waktu_terima'  => $request->waktu_terima,
+            'keterangan'    => $request->keterangan,
+            'updated_at'    => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Data distribusi berhasil diperbarui!');
+    }
+
+    public function destroyDistribusiStaff($id)
+    {
+        DB::table('distribusi_barang_staff')->where('id', $id)->delete();
+        return redirect()->back()->with('success', 'Data distribusi berhasil dihapus!');
+    }
+    public function cetakDistribusiStaff()
+    {
+        // Ambil data dan kelompokkan seperti biasa
+        $rawData = DB::table('distribusi_barang_staff')
+            ->orderBy('nama_penerima', 'asc')
+            ->orderBy('waktu_terima', 'desc')
+            ->get();
+            
+        $dataDistribusi = $rawData->groupBy(function($item) {
+            return strtoupper(trim($item->nama_penerima));
+        });
+
+        // Lempar ke halaman cetak khusus
+        return view('internal.sapra.distribusi_staff_cetak', compact('dataDistribusi'));
     }
 } // Pastikan kurung kurawal ini tidak terhapus!

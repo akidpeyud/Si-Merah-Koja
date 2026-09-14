@@ -301,7 +301,16 @@ Route::delete('/sapra/kebutuhan-sarpras/delete/{id}', [SapraController::class, '
 // Tambahan route khusus untuk Pengadaan
 Route::post('/sapra/pengadaan-sarpras/store', [SapraController::class, 'storePengadaan']);
 Route::delete('/sapra/pengadaan-sarpras/delete/{kebutuhan_id}/{tahun}', [SapraController::class, 'destroyPengadaan']);
+Route::get('/sapra/kebutuhan-sarpras/cetak', [SapraController::class, 'cetakKebutuhan']);
 
+// ==========================================
+// === MENU DISTRIBUSI BARANG STAFF =========
+// ==========================================
+Route::get('/sapra/distribusi-staff', [SapraController::class, 'distribusiStaff']);
+Route::post('/sapra/distribusi-staff/store', [SapraController::class, 'storeDistribusiStaff']);
+Route::put('/sapra/distribusi-staff/update/{id}', [SapraController::class, 'updateDistribusiStaff']);
+Route::delete('/sapra/distribusi-staff/delete/{id}', [SapraController::class, 'destroyDistribusiStaff']);
+Route::get('/sapra/distribusi-staff/cetak', [SapraController::class, 'cetakDistribusiStaff']);
 
 // ==========================================
 // ROUTE KELOLA INFOGRAFIS & BERITA MEDSOS (OPERATOR)
