@@ -5,7 +5,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\SapraController;
 use App\Http\Controllers\OperatorMedsosController;
-use App\Http\Controllers\DamtanController; // <-- Tambahan Controller Damtan
+use App\Http\Controllers\DamtanController;
+use App\Http\Controllers\PermohonanController; // <-- TAMBAHAN: Import PermohonanController
+use App\Http\Controllers\PermohonanEdukasiController;
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
@@ -36,22 +38,109 @@ Route::get('/sop', function () { return view('programkerja.sop'); });
 // ROUTE LAYANAN & FASILITAS
 // ==========================================
 Route::get('/layanan-fasilitas/layanan_perizinan', function () { return view('layanan-fasilitas.layanan_perizinan'); });
+
+// <-- TAMBAHAN: Route POST permohonan.store untuk menangani form submit
+Route::post('/layanan-fasilitas/layanan_perizinan/store', [PermohonanController::class, 'store'])->name('permohonan.store');
+
 Route::get('/layanan-fasilitas/skk', function () { return view('layanan-fasilitas.skk'); });
 Route::get('/layanan-fasilitas/perpanjang_skk', function () { return view('layanan-fasilitas.perpanjang_skk'); });
 Route::get('/layanan-fasilitas/izin_penjualan', function () { return view('layanan-fasilitas.izin_penjualan'); });
 Route::get('/layanan-fasilitas/edukasi_sosialisasi', function () { return view('layanan-fasilitas.edukasi_sosialisasi'); });
 Route::get('/layanan-fasilitas/pks', function () { return view('layanan-fasilitas.pks'); });
 
-// Rute RPKBGL (Pendaftaran dan Kelola)
-Route::post('/permohonan-rpkbgl', [App\Http\Controllers\PermohonanRpkbglController::class, 'store'])->name('permohonan.store');
-Route::get('/permohonan-rpkbgl', function () {
-    return redirect('/layanan-fasilitas/layanan_perizinan');
-});
+// Route untuk menampilkan halaman Kelola RPKBGL
 Route::get('/internal/pencegahan/kelola-rpkbgl', function () {
     $permohonan = App\Models\PermohonanRpkbgl::orderBy('created_at', 'desc')->get();
-    return view('internal.kelola-rpkbgl', compact('permohonan'));
+    return view('internal.pencegahan.kelola_rpkbgl', compact('permohonan'));
 });
 
+// TAMBAHKAN ROUTE INI UNTUK UPDATE STATUS
+Route::post('/internal/pencegahan/kelola-rpkbgl/update-status/{id}', function (Illuminate\Http\Request $request, $id) {
+    App\Models\PermohonanRpkbgl::where('id', $id)->update([
+        'status_permohonan' => $request->status_permohonan
+    ]);
+    return redirect()->back()->with('success', 'Status permohonan berhasil diperbarui!');
+});
+// ROUTE UNTUK MENAMPILKAN HALAMAN DETAIL RPKBGL
+Route::get('/internal/pencegahan/kelola-rpkbgl/{id}', function ($id) {
+    $permohonan = App\Models\PermohonanRpkbgl::findOrFail($id);
+    return view('internal.pencegahan.detail_rpkbgl', compact('permohonan'));
+});
+
+Route::post('/permohonan-skk', [App\Http\Controllers\PermohonanSkkController::class, 'store'])->name('permohonan.skk.store');
+
+Route::get('/permohonan-skk', function () {
+    return redirect('/layanan-fasilitas/skk'); // Redirect jika user mencoba akses manual via URL
+});
+Route::post('/permohonan-perpanjang-skk', [App\Http\Controllers\PermohonanPerpanjangSkkController::class, 'store'])->name('permohonan.perpanjang_skk.store');
+
+Route::get('/permohonan-perpanjang-skk', function () {
+    return redirect('/layanan-fasilitas/perpanjang_skk');
+});
+
+// ==========================================
+// ROUTE KELOLA SKK & PERPANJANG SKK
+// ==========================================
+Route::get('/internal/pencegahan/kelola-skk', function () {
+    // Memanggil 2 model sekaligus untuk ditampilkan di 2 Tab berbeda
+    $skk_baru = App\Models\PermohonanSkk::orderBy('created_at', 'desc')->get();
+    $skk_perpanjang = App\Models\PermohonanPerpanjangSkk::orderBy('created_at', 'desc')->get();
+    
+    return view('internal.pencegahan.kelola_skk', compact('skk_baru', 'skk_perpanjang'));
+});
+
+// Update Status SKK Baru
+Route::post('/internal/pencegahan/kelola-skk/update-status/{id}', function (Illuminate\Http\Request $request, $id) {
+    App\Models\PermohonanSkk::where('id', $id)->update([
+        'status_permohonan' => $request->status_permohonan
+    ]);
+    return redirect()->back()->with('success', 'Status Permohonan SKK Baru berhasil diperbarui!');
+});
+
+// Update Status Perpanjang SKK
+Route::post('/internal/pencegahan/kelola-perpanjang-skk/update-status/{id}', function (Illuminate\Http\Request $request, $id) {
+    App\Models\PermohonanPerpanjangSkk::where('id', $id)->update([
+        'status_permohonan' => $request->status_permohonan
+    ]);
+    return redirect()->back()->with('success', 'Status Permohonan Perpanjangan SKK berhasil diperbarui!');
+});
+
+// ROUTE UNTUK MENAMPILKAN HALAMAN DETAIL SKK (BARU & PERPANJANGAN)
+Route::get('/internal/pencegahan/kelola-skk/{id}', function (Illuminate\Http\Request $request, $id) {
+    $tipe = $request->query('tipe', 'baru'); // default 'baru'
+    
+    if ($tipe === 'perpanjang') {
+        $permohonan = App\Models\PermohonanPerpanjangSkk::findOrFail($id);
+        $jenis_layanan = "Perpanjangan SKK";
+    } else {
+        $permohonan = App\Models\PermohonanSkk::findOrFail($id);
+        $jenis_layanan = "SKK Baru";
+    }
+    
+    return view('internal.pencegahan.detail_skk', compact('permohonan', 'tipe', 'jenis_layanan'));
+});
+
+// Route POST untuk memproses form Edukasi
+Route::post('/layanan-fasilitas/edukasi_sosialisasi/store', [App\Http\Controllers\PermohonanEdukasiController::class, 'store'])->name('permohonan.edukasi.store');
+// ==========================================
+// ROUTE KELOLA EDUKASI & SOSIALISASI
+// ==========================================
+Route::get('/internal/pencegahan/kelola-edukasi', function () {
+    $permohonan = App\Models\PermohonanEdukasi::orderBy('created_at', 'desc')->get();
+    return view('internal.pencegahan.kelola_edukasi', compact('permohonan'));
+});
+
+Route::post('/internal/pencegahan/kelola-edukasi/update-status/{id}', function (Illuminate\Http\Request $request, $id) {
+    App\Models\PermohonanEdukasi::where('id', $id)->update([
+        'status_permohonan' => $request->status_permohonan
+    ]);
+    return redirect()->back()->with('success', 'Status Permohonan Edukasi berhasil diperbarui!');
+});
+
+Route::get('/internal/pencegahan/kelola-edukasi/{id}', function ($id) {
+    $permohonan = App\Models\PermohonanEdukasi::findOrFail($id);
+    return view('internal.pencegahan.detail_edukasi', compact('permohonan'));
+});
 // ==========================================
 // ROUTE AUTH (LOGIN, LUPA PASSWORD, LOGOUT)
 // ==========================================
