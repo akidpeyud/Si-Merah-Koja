@@ -70,6 +70,16 @@
             
             <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
             <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
+            <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item"><i class="fas fa-users"></i> Kelola Redkar</a>
+
+            <div class="sidebar-title">Bagian Pemadaman & Penyelamatan</div>
+            <a href="#" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
+            <a href="#" class="sidebar-item"><i class="fas fa-file-alt"></i> Data Laporan</a>
+
+            <div class="sidebar-title">Bagian Sapra</div>
+            <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-truck"></i> Kelola Armada Mobil</a>
+            <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-tools"></i> Maintenance Peralatan</a>
+            <a href="/sapra/logistik" class="sidebar-item"><i class="fas fa-boxes"></i> Logistik & Gudang</a>
         </aside>
 
         <main class="main-content">
@@ -79,7 +89,7 @@
             </div>
 
             <div class="form-card">
-                <form action="#" method="POST" enctype="multipart/form-data">
+                <form action="/internal/pencegahan/pelatihan/tambah" method="POST" enctype="multipart/form-data">
                     @csrf
                     
                     <div class="row mb-4">

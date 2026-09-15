@@ -36,6 +36,7 @@
         .page-header h1 { font-size: 28px; font-weight: 800; color: #111827; margin-bottom: 5px; }
         .page-header p { color: #6b7280; font-size: 14px; margin: 0; }
         
+        /* Custom Tab Styles */
         .nav-tabs .nav-link { color: #6b7280; font-weight: 600; border: none; padding: 12px 20px; }
         .nav-tabs .nav-link.active { color: #111827 !important; border-bottom: 3px solid #10b981 !important; background: transparent; }
 

@@ -111,7 +111,7 @@
         .main-content { flex: 1; padding: 40px 50px; background-color: #f9fafb; }
         .page-header { margin-bottom: 30px; }
         .page-header h1 { font-size: 28px; font-weight: 800; color: #111827; margin-bottom: 5px; }
-        .page-header p { color: #6b7280; font-size: 14px; margin: 0; }
+        .page-header p { color: #6b7280; font-size: 14px; margin-bottom: 0; }
 
         .welcome-panel {
             background: linear-gradient(135deg, #1e3a8a, #111827); border-radius: 16px;
@@ -122,26 +122,57 @@
         .welcome-panel p { font-size: 14px; color: #cbd5e1; line-height: 1.6; max-width: 600px; margin-bottom: 0; }
         .welcome-icon-bg { position: absolute; right: 30px; top: -20px; font-size: 180px; opacity: 0.1; color: white; }
 
-        /* GRID STATISTIK */
+        /* GRID STATISTIK INTERAKTIF */
         .stats-grid { 
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-            gap: 20px; margin-bottom: 30px; 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 20px; 
+            margin-bottom: 30px; 
         }
         .stat-card {
-            background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            border: 1px solid #e5e7eb; display: flex; flex-direction: column; position: relative; overflow: hidden;
+            background: white; 
+            padding: 25px 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            border: 1px solid #e5e7eb; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative; 
+            overflow: hidden;
+            text-decoration: none; /* Karena sekarang berupa <a> tag */
+            color: inherit;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
         }
         .stat-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px; }
+        
+        /* Efek Hover Keren */
+        .stat-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 20px -5px rgba(0,0,0,0.1);
+            color: inherit;
+        }
+
         .border-blue::after { background-color: #3b82f6; }
         .border-red::after { background-color: #ef4444; }
         .border-orange::after { background-color: #f59e0b; }
         .border-green::after { background-color: #10b981; }
-        .border-purple::after { background-color: #8b5cf6; }
+        .border-purple::after { background-color: #a855f7; }
         .border-primary::after { background-color: #0284c7; }
+        .border-teal::after { background-color: #14b8a6; } 
         
-        .stat-title { font-size: 12px; color: #6b7280; font-weight: 600; margin-bottom: 10px; text-transform: uppercase; }
-        .stat-value { font-size: 28px; font-weight: 800; color: #111827; }
-        .stat-icon { position: absolute; top: 25px; right: 25px; font-size: 35px; opacity: 0.1; }
+        .stat-title { font-size: 11px; color: #6b7280; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;}
+        .stat-value { font-size: 26px; font-weight: 800; color: #111827; }
+        
+        /* Animasi Ikon saat di-hover */
+        .stat-icon { 
+            position: absolute; top: 22px; right: 20px; font-size: 32px; opacity: 0.1; 
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+        .stat-card:hover .stat-icon {
+            transform: scale(1.25) rotate(10deg);
+            opacity: 0.25;
+        }
     </style>
 </head>
 <body>
@@ -212,8 +243,10 @@
                 </button>
                 <div class="collapse {{ Request::is('internal/pencegahan*') ? 'show' : '' }}" id="collapsePencegahan" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
+                        <a href="/internal/pencegahan/kelola-rpkbgl" class="sidebar-item {{ Request::is('internal/pencegahan/kelola-rpkbgl*') ? 'active' : '' }}"><i class="fas fa-building"></i> Kelola RPKBGL</a>
+                        <a href="/internal/pencegahan/kelola-skk" class="sidebar-item {{ Request::is('internal/pencegahan/kelola-skk*') ? 'active' : '' }}"><i class="fas fa-shield-alt"></i> Kelola SKK</a> 
                         <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item {{ Request::is('internal/pencegahan/layanan-inspeksi*') ? 'active' : '' }}"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
-                        <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item {{ Request::is('internal/pencegahan/layanan-sosialisasi*') ? 'active' : '' }}"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
+                        <a href="/internal/pencegahan/kelola-edukasi" class="sidebar-item {{ Request::is('internal/pencegahan/kelola-edukasi*') ? 'active' : '' }}"><i class="fas fa-bullhorn"></i> Kelola Edukasi</a>
                         <a href="/internal/pencegahan/pelatihan" class="sidebar-item {{ Request::is('internal/pencegahan/pelatihan*') ? 'active' : '' }}"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
                         <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item {{ Request::is('internal/pencegahan/pembinaan-pengembangan*') ? 'active' : '' }}"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
                         <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item {{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
@@ -240,11 +273,18 @@
                 </button>
                 <div class="collapse {{ Request::is('sapra*') ? 'show' : '' }}" id="collapseSapra" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
-                        <a href="/sapra/data_hidrant_gedung" class="sidebar-item {{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}"><i class="fas fa-clipboard-list"></i> Data Hidrant</a>
-                        <a href="/sapra/data-hidrant-kota" class="sidebar-item {{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
-                        <a href="/sapra/prasarana-mako" class="sidebar-item {{ Request::is('sapra/prasarana-mako*') ? 'active' : '' }}"><i class="fas fa-building"></i> Prasarana Mako & Pos</a>
-                        <a href="/sapra/sarana-mako" class="sidebar-item {{ Request::is('sapra/sarana-mako*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Sarana Mako & Pos</a>
-                        <a href="/sapra/logistik" class="sidebar-item {{ Request::is('sapra/logistik*') ? 'active' : '' }}"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
+                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">MANAJEMEN AIR</span>
+                        <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
+                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
+
+                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">FASILITAS & POS MAKO</span>
+                        <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pos</a>
+                        <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pos</a>
+                        <a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan</a>
+                        <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
+
+                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">PERENCANAAN PENGADAAN</span>
+                        <a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
                     </div>
                 </div>
             @endif
@@ -298,100 +338,81 @@
                 @endif
             </div>
 
-            <br>
-
-            <!-- TOMBOL PINTASAN DAMTAN (AKSES CEPAT) -->
-            @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
-            <div class="row g-3 mb-4">
-                <div class="col-md-6">
-                    <div class="card p-3 border-0 shadow-sm rounded-4 bg-white d-flex flex-row align-items-center justify-content-between">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="bg-danger bg-opacity-10 text-danger p-3 rounded-3 fs-4">
-                                <i class="fas fa-fire-extinguisher"></i>
-                            </div>
-                            <div>
-                                <h5 class="fw-bold mb-1 text-dark">Input Data Pemadaman</h5>
-                                <p class="text-muted small mb-0">Formulir input data kejadian</p>
-                            </div>
-                        </div>
-                        <a href="/internal/damtan/input-data" class="btn btn-danger btn-sm fw-bold px-3">Input <i class="fas fa-arrow-right ms-1"></i></a>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="card p-3 border-0 shadow-sm rounded-4 bg-white d-flex flex-row align-items-center justify-content-between">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-3 fs-4">
-                                <i class="fas fa-clipboard-list"></i>
-                            </div>
-                            <div>
-                                <h5 class="fw-bold mb-1 text-dark">Data Laporan</h5>
-                                <p class="text-muted small mb-0">Arsip laporan pemadaman</p>
-                            </div>
-                        </div>
-                        <a href="/internal/damtan/data-laporan" class="btn btn-primary btn-sm fw-bold px-3">Buka <i class="fas fa-arrow-right ms-1"></i></a>
-                    </div>
-                </div>
-            </div>
-            @endif
-
-            <!-- Grid Statistik -->
-            <div class="stats-grid">
+            <!-- Grid Statistik (Interaktif / Bisa Diklik) -->
+            <div class="stats-grid mt-4">
                 
                 @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
-                <div class="stat-card border-blue">
+                <a href="/internal/pencegahan/kelola-rpkbgl" class="stat-card border-green">
+                    <i class="fas fa-building stat-icon text-success"></i>
+                    <div class="stat-title">Permohonan RPKBGL</div>
+                    <div class="stat-value">
+                        {{ \Illuminate\Support\Facades\DB::table('permohonan_rpkbgl')->count() }}
+                    </div>
+                </a>
+
+                <a href="/internal/pencegahan/kelola-skk" class="stat-card border-teal">
+                    <i class="fas fa-shield-alt stat-icon" style="color: #14b8a6;"></i>
+                    <div class="stat-title">Permohonan SKK (Total)</div>
+                    <div class="stat-value">
+                        {{ \Illuminate\Support\Facades\DB::table('permohonan_skk')->count() + \Illuminate\Support\Facades\DB::table('permohonan_perpanjang_skk')->count() }}
+                    </div>
+                </a>
+
+                <a href="/internal/pencegahan/kelola-edukasi" class="stat-card border-purple">
+                    <i class="fas fa-bullhorn stat-icon" style="color: #a855f7;"></i>
+                    <div class="stat-title">Permohonan Edukasi</div>
+                    <div class="stat-value">
+                        {{ \Illuminate\Support\Facades\DB::table('permohonan_edukasi')->count() }}
+                    </div>
+                </a>
+
+                <a href="/internal/pencegahan/layanan-inspeksi" class="stat-card border-blue">
                     <i class="fas fa-clipboard-check stat-icon text-primary"></i>
                     <div class="stat-title">Layanan Inspeksi</div>
                     <div class="stat-value">24</div>
-                </div>
-                
-                <div class="stat-card border-green">
-                    <i class="fas fa-bullhorn stat-icon text-success"></i>
-                    <div class="stat-title">Layanan Sosialisasi</div>
-                    <div class="stat-value">12</div>
-                </div>
+                </a>
 
-                <div class="stat-card border-purple">
+                <a href="/internal/pencegahan/pelatihan" class="stat-card border-purple">
                     <i class="fas fa-chalkboard-teacher stat-icon" style="color: #8b5cf6;"></i>
                     <div class="stat-title">Pelatihan Aktif</div>
                     <div class="stat-value">5</div>
-                </div>
+                </a>
 
-                <div class="stat-card border-orange">
+                <a href="/internal/pencegahan/pembinaan-pengembangan" class="stat-card border-orange">
                     <i class="fas fa-chart-line stat-icon text-warning"></i>
                     <div class="stat-title">Pembinaan & Pengembangan</div>
                     <div class="stat-value">8</div>
-                </div>
+                </a>
 
-                <div class="stat-card border-red">
+                <a href="/internal/pencegahan/peningkatan-kapasitas" class="stat-card border-red">
                     <i class="fas fa-level-up-alt stat-icon text-danger"></i>
                     <div class="stat-title">Peningkatan Kapasitas</div>
                     <div class="stat-value">3</div>
-                </div>
+                </a>
                 
-                <div class="stat-card border-red">
+                <a href="/internal/damtan/data-laporan" class="stat-card border-red">
                     <i class="fas fa-fire stat-icon text-danger"></i>
                     <div class="stat-title">Siaga Darurat (Pemadaman)</div>
                     <div class="stat-value">3</div>
-                </div>
+                </a>
 
-                <!-- Card 1: Total Hidrant Kota -->
-                <div class="stat-card border-primary" style="border-bottom: 4px solid #3b82f6;">
-                    <i class="fas fa-map-marker-alt stat-icon" style="color: #3b82f6; font-size: 24px; position: absolute; right: 20px; opacity: 0.2;"></i>
-                    <div class="stat-title" style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Total Hidrant Kota</div>
-                    <div class="stat-value" style="font-size: 24px; font-weight: 800; color: #0f172a;">
+                <!-- Card Total Hidrant Kota -->
+                <a href="/sapra/data-hidrant-kota" class="stat-card border-primary" style="border-bottom: 4px solid #3b82f6;">
+                    <i class="fas fa-map-marker-alt stat-icon" style="color: #3b82f6;"></i>
+                    <div class="stat-title" style="color: #64748b;">Total Hidrant Kota</div>
+                    <div class="stat-value" style="color: #0f172a;">
                         {{ \Illuminate\Support\Facades\DB::table('hidran_kota')->count() }}
                     </div>
-                </div>
+                </a>
 
-                <!-- Card 2: Prasarana Mako & Pos -->
-                <div class="stat-card border-orange" style="border-bottom: 4px solid #f59e0b;">
-                    <i class="fas fa-building stat-icon text-warning" style="color: #f59e0b; font-size: 24px; position: absolute; right: 20px; opacity: 0.2;"></i>
-                    <div class="stat-title" style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Prasarana Mako & Pos</div>
-                    <div class="stat-value" style="font-size: 24px; font-weight: 800; color: #0f172a;">
+                <!-- Card Prasarana Mako & Pos -->
+                <a href="/sapra/prasarana-mako" class="stat-card border-orange" style="border-bottom: 4px solid #f59e0b;">
+                    <i class="fas fa-building stat-icon text-warning" style="color: #f59e0b;"></i>
+                    <div class="stat-title" style="color: #64748b;">Prasarana Mako & Pos</div>
+                    <div class="stat-value" style="color: #0f172a;">
                         {{ \Illuminate\Support\Facades\DB::table('prasarana')->count() }}
                     </div>
-                </div>
+                </a>
                 @endif
 
             </div>

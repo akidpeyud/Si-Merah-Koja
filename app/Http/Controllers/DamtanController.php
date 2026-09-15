@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\Models\LaporanPenyelamatan;
+use App\Models\LpTeknisLogistik;
+use App\Models\LpDokumentasi;
+use App\Models\LpKategoriKhusus;
 
 class DamtanController extends Controller
 {
@@ -160,19 +164,15 @@ class DamtanController extends Controller
 
     public function editPenyelamatan($id)
     {
-        $laporan = DB::table('laporan_penyelamatans')->where('id', $id)->first();
-        $teknis = DB::table('lp_teknis_logistiks')->where('laporan_id', $id)->first();
-        $dokumentasi = DB::table('lp_dokumentasis')->where('laporan_id', $id)->first();
-        $khusus = DB::table('lp_kategori_khusus')->where('laporan_id', $id)->first();
-
-        if (!$laporan) {
-            return redirect('/internal/damtan/data-laporan')->with('error', 'Data tidak ditemukan.');
-        }
-
-        return view('internal.damtan.edit_data', compact('laporan', 'teknis', 'dokumentasi', 'khusus'));
+        $laporans = LaporanPenyelamatan::with(['teknisLogistik', 'dokumentasi', 'kategoriKhusus'])
+                    ->latest()
+                    ->get();
+                    
+        return view('internal.damtan.data_laporan', compact('laporans'));
     }
 
-    public function updatePenyelamatan(Request $request, $id)
+    // Menyimpan data dari form
+    public function storePenyelamatan(Request $request)
     {
         DB::table('laporan_penyelamatans')->where('id', $id)->update([
             'nama_pelapor' => $request->nama_pelapor,
@@ -231,14 +231,53 @@ class DamtanController extends Controller
                 $file->move(public_path('uploads/damtan/foto'), $namaFoto);
                 $foto_paths[] = $namaFoto;
             }
-            $json_foto = json_encode($foto_paths);
-        }
 
-        $namaVideo = $dokumentasiLama->video ?? null;
-        if ($request->hasFile('video')) {
-            $video = $request->file('video');
-            $namaVideo = time() . '_vid_' . Str::random(5) . '.' . $video->getClientOriginalExtension();
-            $video->move(public_path('uploads/damtan/video'), $namaVideo);
+            // Simpan ke Tabel Dokumentasi
+            $laporan->dokumentasi()->create([
+                'dugaan_penyebab' => $request->dugaan_penyebab,
+                'dugaan_penyebab_lainnya' => $request->dugaan_penyebab_lainnya,
+                'sumber_api' => $request->sumber_api,
+                'luas_area' => $request->luas_area,
+                'instansi_pendukung' => $request->instansi_pendukung,
+                'tindakan_instansi' => $request->tindakan_instansi,
+                'kontak_saksi' => $request->kontak_saksi,
+                'kebutuhan_tambahan' => $request->kebutuhan_tambahan,
+                'saran_mitigasi' => $request->saran_mitigasi,
+                'kronologi_lengkap' => $request->kronologi_lengkap,
+                'foto' => !empty($fotoPaths) ? $fotoPaths : null,
+                'video' => $videoPath,
+            ]);
+
+            // 4. Simpan ke Tabel Kategori Khusus
+            $laporan->kategoriKhusus()->create([
+                'jenis_hewan' => $request->jenis_hewan,
+                'spesies_hewan' => $request->spesies_hewan,
+                'dimensi_hewan' => $request->dimensi_hewan,
+                'status_hewan_pasca' => $request->status_hewan_pasca,
+                'lokasi_pelepasan' => $request->lokasi_pelepasan,
+                'jenis_objek_tumbang' => $request->jenis_objek_tumbang,
+                'dimensi_objek' => $request->dimensi_objek,
+                'status_utilitas' => $request->status_utilitas,
+                'dampak_properti' => $request->dampak_properti,
+                'kondisi_perairan' => $request->kondisi_perairan,
+                'radius_pencarian' => $request->radius_pencarian,
+                'metode_pencarian_air' => $request->metode_pencarian_air,
+                'daftar_penyelam' => $request->daftar_penyelam,
+                'jenis_benda_bahaya' => $request->jenis_benda_bahaya,
+                'kondisi_anggota_tubuh' => $request->kondisi_anggota_tubuh,
+                'alat_potong_cincin' => $request->alat_potong_cincin,
+                'cuaca_operasi' => $request->cuaca_operasi,
+                'jenis_medan' => $request->jenis_medan,
+                'akses_lokasi' => $request->akses_lokasi,
+            ]);
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Data Laporan Penyelamatan berhasil disimpan ke database!');
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('error', 'Gagal menyimpan data: ' . $e->getMessage());
         }
 
         DB::table('lp_dokumentasis')->where('laporan_id', $id)->update([

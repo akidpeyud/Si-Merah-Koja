@@ -116,8 +116,7 @@
             </div>
 
             <div class="form-card">
-                <form action="#" method="POST" enctype="multipart/form-data">
-                    @csrf
+                <form action="/internal/pencegahan/layanan-sosialisasi/tambah" method="POST" enctype="multipart/form-data">
                     
                     <div class="row mb-4">
                         <div class="col-md-6">
@@ -150,7 +149,7 @@
                             <label class="form-label"><i class="fas fa-users text-primary"></i> Sasaran Peserta</label>
                             <select class="form-select" name="sasaran_peserta" required>
                                 <option value="" disabled selected>Pilih Sasaran...</option>
-                                <option value="Gempur">Gempur</option>
+                                <option value="Gempur">Gempar</option>
                                 <option value="Dagor">Dagor</option>
                                 <option value="Siswa & Guru">Siswa & Guru Sekolah</option>
                                 <option value="Pegawai Instansi">Pegawai Instansi / Perusahaan</option>

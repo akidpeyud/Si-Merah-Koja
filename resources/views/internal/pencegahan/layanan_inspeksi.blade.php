@@ -148,35 +148,33 @@
                                 <th width="10%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody id="tableBody">
+                       <tbody>
+                            @forelse($data_inspeksi as $no => $item)
                             <tr>
-                                <td>1</td>
-                                <td><span class="title-text">12 Okt 2026</span><span class="sub-text">10:00 WIB</span></td>
+                                <td>{{ $no + 1 }}</td>
                                 <td>
-                                    <span class="title-text">Inspeksi Sistem Hidran Gedung A</span>
-                                    <span class="sub-text">Gedung Walikota Jambi</span>
+                                    <span class="title-text">{{ $item->tanggal_inspeksi }}</span>
                                 </td>
-                                <td><span class="title-text">Tim Inspeksi 1</span><span class="sub-text">3 Orang</span></td>
-                                <td><span class="badge-soft-success status-badge"><i class="fas fa-check-circle me-1"></i> Selesai</span></td>
+                                <td>
+                                    <span class="title-text">{{ $item->nama_instansi }}</span>
+                                    <span class="sub-text">{{ $item->alamat }}</span>
+                                </td>
+                                <td>
+                                    <span class="title-text">{{ $item->tim_petugas }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-soft-primary">Terjadwal</span>
+                                </td>
                                 <td class="text-center">
-                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
+                                    <a href="/internal/pencegahan/layanan-inspeksi/lihat/{{ $item->id }}" class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
+                                    <a href="/internal/pencegahan/layanan-inspeksi/edit/{{ $item->id }}" class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></a>
                                 </td>
                             </tr>
+                            @empty
                             <tr>
-                                <td>2</td>
-                                <td><span class="title-text">15 Okt 2026</span><span class="sub-text">13:30 WIB</span></td>
-                                <td>
-                                    <span class="title-text">Pengecekan APAR dan Jalur Evakuasi</span>
-                                    <span class="sub-text">Mall WTC Batanghari</span>
-                                </td>
-                                <td><span class="title-text">Tim Inspeksi 2</span><span class="sub-text">4 Orang</span></td>
-                                <td><span class="badge-soft-primary status-badge"><i class="fas fa-calendar-alt me-1"></i> Terjadwal</span></td>
-                                <td class="text-center">
-                                    <button class="btn-action btn-action-view" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                                    <button class="btn-action btn-action-edit" title="Edit Data"><i class="fas fa-edit"></i></button>
-                                </td>
+                                <td colspan="6" class="text-center text-muted py-4">Belum ada data inspeksi yang tersimpan.</td>
                             </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
