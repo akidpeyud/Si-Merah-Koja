@@ -164,11 +164,19 @@ class DamtanController extends Controller
 
     public function editPenyelamatan($id)
     {
-        $laporans = LaporanPenyelamatan::with(['teknisLogistik', 'dokumentasi', 'kategoriKhusus'])
-                    ->latest()
-                    ->get();
-                    
-        return view('internal.damtan.data_laporan', compact('laporans'));
+        // 1. Ambil data spesifik berdasarkan ID yang dipilih
+        $laporan = DB::table('laporan_penyelamatans')->where('id', $id)->first();
+        $teknis = DB::table('lp_teknis_logistiks')->where('laporan_id', $id)->first();
+        $dokumentasi = DB::table('lp_dokumentasis')->where('laporan_id', $id)->first();
+        $khusus = DB::table('lp_kategori_khusus')->where('laporan_id', $id)->first();
+
+        // 2. Jika data tidak ada, kembalikan ke halaman tabel
+        if (!$laporan) {
+            return redirect('/internal/damtan/data-laporan')->with('error', 'Data laporan tidak ditemukan.');
+        }
+
+        // 3. Tampilkan ke halaman form edit (pastikan Anda sudah membuat file edit_data.blade.php)
+        return view('internal.damtan.edit_data', compact('laporan', 'teknis', 'dokumentasi', 'khusus'));
     }
 
     // UPDATE: Telah diubah namanya agar tidak bentrok, dan dibersihkan dari blok catch yang nyasar
