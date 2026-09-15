@@ -8,32 +8,26 @@ use Illuminate\Support\Str;
 
 class DamtanController extends Controller
 {
-    // =======================================================
-    // 1. MENAMPILKAN HALAMAN TABEL DATA LAPORAN
-    // =======================================================
-    public function indexPenyelamatan()
-    {
-        $data_laporan = DB::table('laporan_penyelamatans')->orderBy('created_at', 'desc')->get();
-        return view('internal.damtan.data_laporan', compact('data_laporan'));
-    }
+   public function indexPenyelamatan()
+{
+    // Mengambil 10 data per halaman
+    $data_laporan = DB::table('laporan_penyelamatans')->orderBy('created_at', 'desc')->paginate(10);
+    return view('internal.damtan.data_laporan', compact('data_laporan'));
+}
 
-    // =======================================================
-    // 2. MENAMPILKAN FORM INPUT DATA BARU
-    // =======================================================
     public function createPenyelamatan()
     {
         return view('internal.damtan.input_data');
     }
 
-    // =======================================================
-    // 3. PROSES MENYIMPAN DATA (POST) KE 4 TABEL BERBEDA
-    // =======================================================
     public function storePenyelamatan(Request $request)
     {
-        // A. SIMPAN KE TABEL 1
+        // A. SIMPAN KE TABEL 1 (Termasuk data pelapor baru)
         $laporan_id = DB::table('laporan_penyelamatans')->insertGetId([
             'nomor_laporan' => 'REG-' . date('Ymd') . '-' . rand(1000, 9999),
             'id_laporan' => 'UUID-' . strtoupper(Str::random(8)),
+            'nama_pelapor' => $request->nama_pelapor,
+            'media_pelaporan' => $request->media_pelaporan,
             'kategori_kebakaran' => $request->kategori_kebakaran,
             'kategori_non_kebakaran' => $request->kategori_non_kebakaran,
             'rincian_kategori_non_kebakaran' => $request->rincian_kategori_non_kebakaran,
@@ -44,15 +38,19 @@ class DamtanController extends Controller
             'waktu_berangkat' => $request->waktu_berangkat,
             'waktu_tiba' => $request->waktu_tiba,
             'waktu_selesai' => $request->waktu_selesai,
+            'waktu_kembali' => $request->waktu_kembali,
             'alamat' => $request->alamat,
+            'jarak_tempuh' => $request->jarak_tempuh,
             'koordinat' => $request->koordinat,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        // B. SIMPAN KE TABEL 2
+        // B. SIMPAN KE TABEL 2 (Termasuk pimpinan, langkah penanganan)
         DB::table('lp_teknis_logistiks')->insert([
             'laporan_id' => $laporan_id,
+            'pimpinan_operasi' => $request->pimpinan_operasi,
+            'satuan_tugas' => $request->satuan_tugas,
             'korban_selamat' => $request->korban_selamat ?? 0,
             'korban_ringan' => $request->korban_ringan ?? 0,
             'korban_berat' => $request->korban_berat ?? 0,
@@ -63,6 +61,8 @@ class DamtanController extends Controller
             'metode_evakuasi' => $request->has('metode_evakuasi') ? json_encode($request->metode_evakuasi) : null,
             'metode_penyelamatan' => $request->has('metode_penyelamatan') ? json_encode($request->metode_penyelamatan) : null,
             'hambatan_lapangan' => $request->hambatan_lapangan,
+            'langkah_penanganan' => $request->langkah_penanganan,
+            'hasil_tindakan' => $request->hasil_tindakan,
             'peralatan' => $request->has('peralatan') ? json_encode($request->peralatan) : null,
             'peralatan_lain' => $request->peralatan_lain,
             'konsumsi_alat' => $request->konsumsi_alat,
@@ -76,7 +76,6 @@ class DamtanController extends Controller
             'updated_at' => now(),
         ]);
 
-        // C. PROSES UPLOAD FILE (FOTO & VIDEO)
         $json_foto = null;
         if ($request->hasFile('foto')) {
             $foto_paths = [];
@@ -95,7 +94,7 @@ class DamtanController extends Controller
             $video->move(public_path('uploads/damtan/video'), $namaVideo);
         }
 
-        // SIMPAN KE TABEL 3
+        // C. SIMPAN KE TABEL 3 (Termasuk Cara Bertindak)
         DB::table('lp_dokumentasis')->insert([
             'laporan_id' => $laporan_id,
             'dugaan_penyebab' => $request->dugaan_penyebab,
@@ -107,6 +106,7 @@ class DamtanController extends Controller
             'kontak_saksi' => $request->kontak_saksi,
             'kebutuhan_tambahan' => $request->kebutuhan_tambahan,
             'saran_mitigasi' => $request->saran_mitigasi,
+            'cara_bertindak' => $request->cara_bertindak,
             'kronologi_lengkap' => $request->kronologi_lengkap,
             'foto' => $json_foto,
             'video' => $namaVideo,
@@ -114,12 +114,13 @@ class DamtanController extends Controller
             'updated_at' => now(),
         ]);
 
-        // D. SIMPAN KE TABEL 4
+        // D. SIMPAN KE TABEL 4 (Termasuk Berat Hewan)
         DB::table('lp_kategori_khusus')->insert([
             'laporan_id' => $laporan_id,
             'jenis_hewan' => $request->jenis_hewan,
             'spesies_hewan' => $request->spesies_hewan,
             'dimensi_hewan' => $request->dimensi_hewan,
+            'berat_hewan' => $request->berat_hewan,
             'status_hewan_pasca' => $request->status_hewan_pasca,
             'lokasi_pelepasan' => $request->lokasi_pelepasan,
             'jenis_objek_tumbang' => $request->jenis_objek_tumbang,
@@ -143,11 +144,6 @@ class DamtanController extends Controller
         return redirect('/internal/damtan/data-laporan')->with('success', 'Data Penyelamatan berhasil disimpan!');
     }
 
-    // =======================================================
-    // 4. FUNGSI LIHAT, EDIT, DAN HAPUS
-    // =======================================================
-    
-    // FUNGSI BARU UNTUK HALAMAN LIHAT DATA (DETAIL)
     public function showPenyelamatan($id)
     {
         $laporan = DB::table('laporan_penyelamatans')->where('id', $id)->first();
@@ -178,8 +174,9 @@ class DamtanController extends Controller
 
     public function updatePenyelamatan(Request $request, $id)
     {
-        // A. UPDATE TABEL 1 (INFORMASI DASAR)
         DB::table('laporan_penyelamatans')->where('id', $id)->update([
+            'nama_pelapor' => $request->nama_pelapor,
+            'media_pelaporan' => $request->media_pelaporan,
             'kategori_kebakaran' => $request->kategori_kebakaran,
             'kategori_non_kebakaran' => $request->kategori_non_kebakaran,
             'rincian_kategori_non_kebakaran' => $request->rincian_kategori_non_kebakaran,
@@ -190,13 +187,16 @@ class DamtanController extends Controller
             'waktu_berangkat' => $request->waktu_berangkat,
             'waktu_tiba' => $request->waktu_tiba,
             'waktu_selesai' => $request->waktu_selesai,
+            'waktu_kembali' => $request->waktu_kembali,
             'alamat' => $request->alamat,
+            'jarak_tempuh' => $request->jarak_tempuh,
             'koordinat' => $request->koordinat,
             'updated_at' => now(),
         ]);
 
-        // B. UPDATE TABEL 2 (TEKNIS & LOGISTIK)
         DB::table('lp_teknis_logistiks')->where('laporan_id', $id)->update([
+            'pimpinan_operasi' => $request->pimpinan_operasi,
+            'satuan_tugas' => $request->satuan_tugas,
             'korban_selamat' => $request->korban_selamat ?? 0,
             'korban_ringan' => $request->korban_ringan ?? 0,
             'korban_berat' => $request->korban_berat ?? 0,
@@ -207,6 +207,8 @@ class DamtanController extends Controller
             'metode_evakuasi' => $request->has('metode_evakuasi') ? json_encode($request->metode_evakuasi) : null,
             'metode_penyelamatan' => $request->has('metode_penyelamatan') ? json_encode($request->metode_penyelamatan) : null,
             'hambatan_lapangan' => $request->hambatan_lapangan,
+            'langkah_penanganan' => $request->langkah_penanganan,
+            'hasil_tindakan' => $request->hasil_tindakan,
             'peralatan' => $request->has('peralatan') ? json_encode($request->peralatan) : null,
             'peralatan_lain' => $request->peralatan_lain,
             'konsumsi_alat' => $request->konsumsi_alat,
@@ -219,7 +221,6 @@ class DamtanController extends Controller
             'updated_at' => now(),
         ]);
 
-        // C. PROSES UPLOAD FILE (Jika ada foto baru) & UPDATE TABEL 3
         $dokumentasiLama = DB::table('lp_dokumentasis')->where('laporan_id', $id)->first();
         
         $json_foto = $dokumentasiLama->foto ?? null;
@@ -250,17 +251,18 @@ class DamtanController extends Controller
             'kontak_saksi' => $request->kontak_saksi,
             'kebutuhan_tambahan' => $request->kebutuhan_tambahan,
             'saran_mitigasi' => $request->saran_mitigasi,
+            'cara_bertindak' => $request->cara_bertindak,
             'kronologi_lengkap' => $request->kronologi_lengkap,
             'foto' => $json_foto,
             'video' => $namaVideo,
             'updated_at' => now(),
         ]);
 
-        // D. UPDATE TABEL 4 (KATEGORI KHUSUS)
         DB::table('lp_kategori_khusus')->where('laporan_id', $id)->update([
             'jenis_hewan' => $request->jenis_hewan,
             'spesies_hewan' => $request->spesies_hewan,
             'dimensi_hewan' => $request->dimensi_hewan,
+            'berat_hewan' => $request->berat_hewan,
             'status_hewan_pasca' => $request->status_hewan_pasca,
             'lokasi_pelepasan' => $request->lokasi_pelepasan,
             'jenis_objek_tumbang' => $request->jenis_objek_tumbang,

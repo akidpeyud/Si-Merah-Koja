@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\SapraController;
 use App\Http\Controllers\OperatorMedsosController;
+use App\Http\Controllers\DamtanController; // <-- INI YANG DITAMBAHKAN
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
@@ -153,27 +154,19 @@ Route::delete('/sapra/hidran/delete/{id}', [SapraController::class, 'destroyHidr
 Route::get('/sapra/hidran/cetak-pdf', [SapraController::class, 'cetakPdfHidranGedung']);
 Route::get('/sapra/hidran/cetak-excel', [SapraController::class, 'cetakExcelHidran']);
 
-// RUTE PRASARANA MAKO YANG HILANG
+// RUTE PRASARANA MAKO
 Route::get('/sapra/prasarana-mako', [SapraController::class, 'prasaranaMako']);
 Route::get('/sapra/prasarana-mako/cetak-pdf', [SapraController::class, 'cetakPdfMako']);
 Route::post('/sapra/prasarana-mako/store', [SapraController::class, 'storePrasaranaMako']);
 Route::put('/sapra/prasarana-mako/update/{id}', [SapraController::class, 'updatePrasaranaMako']);
 Route::delete('/sapra/prasarana-mako/delete/{id}', [SapraController::class, 'destroyPrasaranaMako']);
 
-  // RUTE SARANA MAKO & POS 
+// RUTE SARANA MAKO & POS 
 Route::get('/sapra/sarana-mako', [SapraController::class, 'saranaMako']);
 Route::get('/sapra/sarana-mako/cetak-pdf', [SapraController::class, 'cetakPdfSaranaMako']);
 Route::post('/sapra/sarana-mako/store', [SapraController::class, 'storeSaranaMako']);
 Route::put('/sapra/sarana-mako/update/{id}', [SapraController::class, 'updateSaranaMako']);
 Route::delete('/sapra/sarana-mako/delete/{id}', [SapraController::class, 'destroySaranaMako']);
-
-// RUTE PRASARANA MAKO YANG HILANG
-Route::get('/sapra/prasarana-mako', [SapraController::class, 'prasaranaMako']);
-Route::get('/sapra/prasarana-mako/cetak-pdf', [SapraController::class, 'cetakPdfMako']);
-Route::post('/sapra/prasarana-mako/store', [SapraController::class, 'storePrasaranaMako']);
-Route::put('/sapra/prasarana-mako/update/{id}', [SapraController::class, 'updatePrasaranaMako']);
-Route::delete('/sapra/prasarana-mako/delete/{id}', [SapraController::class, 'destroyPrasaranaMako']);
-
 
 // === RUTE KELOLA INFOGRAFIS & BERITA MEDSOS (OPERATOR) ===
 Route::middleware(['auth'])->group(function () {
@@ -188,35 +181,14 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/internal/operator/berita-medsos/update/{id}', [OperatorMedsosController::class, 'updateMedsos']);
     Route::delete('/internal/operator/berita-medsos/hapus/{id}', [OperatorMedsosController::class, 'destroyMedsos']);
 });
+
+// === RUTE DAMTAN ===
 Route::middleware(['auth'])->group(function () {
-<<<<<<< Updated upstream
-    
-    // 1. Rute untuk halaman Input Data
-    Route::get('/internal/damtan/input-data', function () {
-        return view('internal.damtan.input_data');
-    });
-
-    // 2. Rute untuk halaman Data Laporan
-    Route::get('/internal/damtan/data-laporan', function () {
-        return view('internal.damtan.data_laporan');
-    });
-
-    // 3. Rute untuk halaman Edit Data
-    // (Membutuhkan parameter {id} agar tahu data mana yang sedang diedit)
-    Route::get('/internal/damtan/edit-data/{id}', function ($id) {
-        return view('internal.damtan.edit_data', compact('id'));
-    });
-
-=======
     Route::get('/internal/damtan/input-data', [DamtanController::class, 'createPenyelamatan'])->name('damtan.laporan.create');
     Route::post('/internal/damtan/input-data/store', [DamtanController::class, 'storePenyelamatan'])->name('damtan.laporan.store');
     Route::get('/internal/damtan/data-laporan', [DamtanController::class, 'indexPenyelamatan'])->name('damtan.laporan.index');
     Route::get('/internal/damtan/edit-data/{id}', [DamtanController::class, 'editPenyelamatan'])->name('damtan.laporan.edit');
     Route::put('/internal/damtan/update-data/{id}', [DamtanController::class, 'updatePenyelamatan'])->name('damtan.laporan.update');
-    
-    // TAMBAHKAN RUTE INI UNTUK MENGHAPUS DATA
     Route::delete('/internal/damtan/hapus-data/{id}', [DamtanController::class, 'destroyPenyelamatan']);
-    // Tambahkan baris ini di bawah rute index/edit/update/hapus Damtan Anda
     Route::get('/internal/damtan/lihat-data/{id}', [DamtanController::class, 'showPenyelamatan']);
->>>>>>> Stashed changes
 });
