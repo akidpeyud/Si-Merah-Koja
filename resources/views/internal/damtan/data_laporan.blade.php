@@ -325,73 +325,125 @@
                                     <th class="text-center" width="15%">Aksi</th>
                                 </tr>
                             </thead>
-                            <!-- ID tableBody ditambahkan untuk fungsi JS -->
+                            
+                            <!-- DATA DINAMIS DARI DATABASE -->
                             <tbody id="tableBody">
-                                <!-- Data Dummy 1 -->
+                                @forelse($data_laporan as $index => $row)
                                 <tr>
-                                    <td class="text-center text-muted">1</td>
-                                    <td><strong>REG-20240101-001</strong></td>
+                                    <td class="text-center text-muted">{{ $index + 1 }}</td>
+                                    <td><strong>{{ $row->nomor_laporan }}</strong></td>
                                     <td>
-                                        <div class="text-dark fw-bold">12 Jan 2024</div>
-                                        <div class="text-muted" style="font-size: 12px;"><i class="far fa-clock me-1"></i> 14:30 WIB</div>
+                                        <div class="text-dark fw-bold">
+                                            {{ $row->waktu_kejadian ? \Carbon\Carbon::parse($row->waktu_kejadian)->format('d M Y') : '-' }}
+                                        </div>
+                                        <div class="text-muted" style="font-size: 12px;">
+                                            <i class="far fa-clock me-1"></i> 
+                                            {{ $row->waktu_kejadian ? \Carbon\Carbon::parse($row->waktu_kejadian)->format('H:i') : '-' }} WIB
+                                        </div>
                                     </td>
                                     <td class="kategori-cell">
-                                        <div class="fw-bold text-danger">Kebakaran</div>
-                                        <div class="text-muted" style="font-size: 12px;">Rumah Tinggal</div>
+                                        @if(strtolower($row->kategori_kejadian) == 'kebakaran')
+                                            <div class="fw-bold text-danger">Kebakaran</div>
+                                            <div class="text-muted" style="font-size: 12px; text-transform: capitalize;">
+                                                {{ str_replace('_', ' ', $row->kategori_kebakaran ?? '-') }}
+                                            </div>
+                                        @else
+                                            <div class="fw-bold text-primary">Non-Kebakaran</div>
+                                            <div class="text-muted" style="font-size: 12px; text-transform: capitalize;">
+                                                {{ str_replace('_', ' ', $row->kategori_non_kebakaran ?? $row->kategori_kejadian) }}
+                                            </div>
+                                        @endif
                                     </td>
-                                    <td><span class="badge badge-custom bg-danger text-white">Darurat</span></td>
-                                    <td><span class="badge badge-custom bg-success bg-opacity-10 text-success border border-success"><i class="fas fa-check-circle me-1"></i>Selesai</span></td>
+                                    <td>
+                                        @php
+                                            $badgeClass = 'bg-secondary text-white';
+                                            if($row->prioritas == 'rendah') $badgeClass = 'bg-secondary text-white';
+                                            if($row->prioritas == 'sedang') $badgeClass = 'bg-primary text-white';
+                                            if($row->prioritas == 'tinggi') $badgeClass = 'bg-warning text-dark';
+                                            if($row->prioritas == 'darurat') $badgeClass = 'bg-danger text-white';
+                                        @endphp
+                                        <span class="badge badge-custom {{ $badgeClass }}" style="text-transform: capitalize;">
+                                            {{ $row->prioritas ?? 'Biasa' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-custom bg-success bg-opacity-10 text-success border border-success">
+                                            <i class="fas fa-check-circle me-1"></i>Terekam
+                                        </span>
+                                    </td>
                                     <td class="text-center">
-                                        <!-- Tombol Lihat merender Modal -->
-                                        <button class="action-btn view" title="Lihat Detail" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fas fa-eye"></i></button>
-                                        <a href="/internal/damtan/edit-data/1" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
-                                        <!-- Tombol Hapus memicu fungsi JS konfirmasi -->
-                                        <button class="action-btn delete" title="Hapus" onclick="hapusBaris(this)"><i class="fas fa-trash"></i></button>
-                                    </td>
-                                </tr>
+                                        <!-- Tombol Modal Dinamis -->
+                                        <a href="/internal/damtan/lihat-data/{{ $row->id }}" class="action-btn view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
+                                        <a href="/internal/damtan/edit-data/{{ $row->id }}" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
+                                        
+                                        <!-- Tombol Hapus Dinamis yang terhubung ke Controller -->
+                                        <form action="/internal/damtan/hapus-data/{{ $row->id }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus laporan {{ $row->nomor_laporan }} secara permanen?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="action-btn delete" title="Hapus"><i class="fas fa-trash"></i></button>
+                                        </form>
 
-                                <!-- Data Dummy 2 -->
-                                <tr>
-                                    <td class="text-center text-muted">2</td>
-                                    <td><strong>REG-20240101-002</strong></td>
-                                    <td>
-                                        <div class="text-dark fw-bold">11 Jan 2024</div>
-                                        <div class="text-muted" style="font-size: 12px;"><i class="far fa-clock me-1"></i> 09:15 WIB</div>
-                                    </td>
-                                    <td class="kategori-cell">
-                                        <div class="fw-bold text-primary">Non-Kebakaran</div>
-                                        <div class="text-muted" style="font-size: 12px;">Pohon Tumbang</div>
-                                    </td>
-                                    <td><span class="badge badge-custom bg-warning text-dark">Tinggi</span></td>
-                                    <td><span class="badge badge-custom bg-warning bg-opacity-10 text-warning border border-warning"><i class="fas fa-spinner fa-spin me-1"></i>Dalam Proses</span></td>
-                                    <td class="text-center">
-                                        <button class="action-btn view" title="Lihat Detail" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fas fa-eye"></i></button>
-                                        <a href="/internal/damtan/edit-data/2" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
-                                        <button class="action-btn delete" title="Hapus" onclick="hapusBaris(this)"><i class="fas fa-trash"></i></button>
-                                    </td>
-                                </tr>
+                                        <!-- ================= MODAL LIHAT DETAIL DINAMIS ================= -->
+                                        <div class="modal fade text-start" id="detailModal{{ $row->id }}" tabindex="-1" aria-labelledby="detailModalLabel{{ $row->id }}" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                <div class="modal-content border-0 shadow">
+                                                    <div class="modal-header" style="background-color: #111827; color: white;">
+                                                        <h5 class="modal-title fw-bold" id="detailModalLabel{{ $row->id }}"><i class="fas fa-file-alt me-2 text-success"></i> Detail Laporan Penyelamatan</h5>
+                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body p-4 bg-light">
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-6">
+                                                                <p class="text-muted mb-1" style="font-size: 12px;">Nomor Laporan</p>
+                                                                <h6 class="fw-bold text-primary">{{ $row->nomor_laporan }}</h6>
+                                                            </div>
+                                                            <div class="col-md-6 text-md-end">
+                                                                <p class="text-muted mb-1" style="font-size: 12px;">Status Evakuasi</p>
+                                                                <span class="badge bg-success">Terekam</span>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="card border-0 shadow-sm mb-3">
+                                                            <div class="card-body">
+                                                                <h6 class="fw-bold border-bottom pb-2 mb-3">Informasi Lokasi & Waktu</h6>
+                                                                <p class="mb-1" style="font-size: 14px;"><strong>Kategori:</strong> <span style="text-transform: capitalize;">{{ str_replace('_', ' ', $row->kategori_kejadian ?? '-') }}</span></p>
+                                                                <p class="mb-1" style="font-size: 14px;"><strong>Prioritas:</strong> <span style="text-transform: capitalize;">{{ $row->prioritas ?? 'Biasa' }}</span></p>
+                                                                <p class="mb-1" style="font-size: 14px;"><strong>Alamat:</strong> {{ $row->alamat ?? '-' }}</p>
+                                                                <p class="mb-1" style="font-size: 14px;"><strong>Koordinat:</strong> {{ $row->koordinat ?? '-' }}</p>
+                                                                <p class="mb-0" style="font-size: 14px;"><strong>Waktu Kejadian:</strong> {{ $row->waktu_kejadian ? \Carbon\Carbon::parse($row->waktu_kejadian)->format('d F Y, H:i') : '-' }} WIB</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="modal-footer bg-white">
+                                                        <button type="button" class="btn btn-light fw-bold px-4" data-bs-dismiss="modal">Tutup</button>
+                                                        
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-primary fw-bold px-4 dropdown-toggle shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #0284c7; border: none;">
+                                                                <i class="fas fa-print me-2"></i> Cetak Laporan
+                                                            </button>
+                                                            <ul class="dropdown-menu dropdown-menu-end border-0 shadow">
+                                                                <li><a class="dropdown-item py-2 text-danger fw-bold" href="#"><i class="fas fa-file-pdf me-2"></i> Cetak PDF</a></li>
+                                                                <li><a class="dropdown-item py-2 text-success fw-bold" href="#"><i class="fas fa-file-excel me-2"></i> Ekspor Excel</a></li>
+                                                                <li><a class="dropdown-item py-2 text-primary fw-bold" href="#"><i class="fas fa-file-word me-2"></i> Ekspor Word</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- ================= END MODAL DINAMIS ================= -->
 
-                                <!-- Data Dummy 3 -->
-                                <tr>
-                                    <td class="text-center text-muted">3</td>
-                                    <td><strong>REG-20240101-003</strong></td>
-                                    <td>
-                                        <div class="text-dark fw-bold">10 Jan 2024</div>
-                                        <div class="text-muted" style="font-size: 12px;"><i class="far fa-clock me-1"></i> 16:45 WIB</div>
-                                    </td>
-                                    <td class="kategori-cell">
-                                        <div class="fw-bold text-primary">Non-Kebakaran</div>
-                                        <div class="text-muted" style="font-size: 12px;">Penyelamatan Hewan (Ular)</div>
-                                    </td>
-                                    <td><span class="badge badge-custom bg-primary text-white">Sedang</span></td>
-                                    <td><span class="badge badge-custom bg-success bg-opacity-10 text-success border border-success"><i class="fas fa-check-circle me-1"></i>Selesai</span></td>
-                                    <td class="text-center">
-                                        <button class="action-btn view" title="Lihat Detail" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fas fa-eye"></i></button>
-                                        <a href="/internal/damtan/edit-data/3" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
-                                        <button class="action-btn delete" title="Hapus" onclick="hapusBaris(this)"><i class="fas fa-trash"></i></button>
                                     </td>
                                 </tr>
-                                
+                                @empty
+                                <tr>
+                                    <td colspan="7" class="text-center py-5 text-muted">
+                                        <i class="fas fa-folder-open mb-3" style="font-size: 24px;"></i><br>
+                                        Belum ada data laporan yang diinput ke dalam sistem.
+                                    </td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -399,7 +451,7 @@
                 
                 <!-- Pagination -->
                 <div class="card-footer bg-white p-3 d-flex justify-content-between align-items-center border-top">
-                    <span class="text-muted" style="font-size: 13px;" id="dataCount">Menampilkan 3 laporan</span>
+                    <span class="text-muted" style="font-size: 13px;" id="dataCount">Menampilkan {{ count($data_laporan) }} laporan</span>
                     <ul class="pagination pagination-sm mb-0">
                         <li class="page-item disabled"><a class="page-link" href="#">Sebelumnya</a></li>
                         <li class="page-item active"><a class="page-link" href="#" style="background-color: #10b981; border-color: #10b981;">1</a></li>
@@ -410,76 +462,6 @@
 
         </main>
     </div>
-
-    <!-- ================= MODAL LIHAT DETAIL ================= -->
-    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header" style="background-color: #111827; color: white;">
-                    <h5 class="modal-title fw-bold" id="detailModalLabel"><i class="fas fa-file-alt me-2 text-success"></i> Detail Laporan Penyelamatan</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4 bg-light">
-                    <!-- Simulasi Data Detail Laporan -->
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <p class="text-muted mb-1" style="font-size: 12px;">Nomor Laporan</p>
-                            <h6 class="fw-bold">REG-20240101-001</h6>
-                        </div>
-                        <div class="col-md-6 text-md-end">
-                            <p class="text-muted mb-1" style="font-size: 12px;">Status Evakuasi</p>
-                            <span class="badge bg-success">Selesai</span>
-                        </div>
-                    </div>
-                    
-                    <div class="card border-0 shadow-sm mb-3">
-                        <div class="card-body">
-                            <h6 class="fw-bold border-bottom pb-2 mb-3">1. Informasi Dasar</h6>
-                            <table class="table table-borderless table-sm mb-0" style="font-size: 14px;">
-                                <tr><td width="35%" class="text-muted">Kategori</td><td>: <strong>Kebakaran (Rumah Tinggal)</strong></td></tr>
-                                <tr><td class="text-muted">Waktu Kejadian</td><td>: 12 Januari 2024 - 14:30 WIB</td></tr>
-                                <tr><td class="text-muted">Alamat Lokasi</td><td>: Jl. Pangeran Diponegoro, RT 05, Kec. Pasar Jambi</td></tr>
-                                <tr><td class="text-muted">Prioritas</td><td>: <span class="text-danger fw-bold">Darurat</span></td></tr>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="card border-0 shadow-sm mb-3">
-                        <div class="card-body">
-                            <h6 class="fw-bold border-bottom pb-2 mb-3">2. Dampak & Logistik</h6>
-                            <table class="table table-borderless table-sm mb-0" style="font-size: 14px;">
-                                <tr><td width="35%" class="text-muted">Korban Jiwa/Luka</td><td>: Tidak Ada</td></tr>
-                                <tr><td class="text-muted">Armada Turun</td><td>: Unit Pompa, Unit Tangki</td></tr>
-                                <tr><td class="text-muted">Jumlah Personel</td><td>: 8 Orang</td></tr>
-                            </table>
-                        </div>
-                    </div>
-
-                    <p class="text-muted text-center mt-4" style="font-size: 12px;">
-                        <em>*Ini adalah pratinjau antarmuka. Data akan disesuaikan dengan database nanti.</em>
-                    </p>
-                </div>
-                
-                <div class="modal-footer bg-white">
-                    <button type="button" class="btn btn-light fw-bold px-4" data-bs-dismiss="modal">Tutup</button>
-                    
-                    <!-- Tombol Cetak Dropdown Baru -->
-                    <div class="dropdown">
-                        <button class="btn btn-primary fw-bold px-4 dropdown-toggle shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #0284c7; border: none;">
-                            <i class="fas fa-print me-2"></i> Cetak Laporan
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow">
-                            <li><a class="dropdown-item py-2 text-danger fw-bold" href="#"><i class="fas fa-file-pdf me-2"></i> Cetak PDF</a></li>
-                            <li><a class="dropdown-item py-2 text-success fw-bold" href="#"><i class="fas fa-file-excel me-2"></i> Ekspor Excel</a></li>
-                            <li><a class="dropdown-item py-2 text-primary fw-bold" href="#"><i class="fas fa-file-word me-2"></i> Ekspor Word</a></li>
-                        </ul>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <!-- ================= END MODAL ================= -->
 
     <!-- Script Bootstrap & Fungsi Search/Filter JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -497,6 +479,9 @@
                 let visibleCount = 0;
 
                 for (let i = 0; i < rows.length; i++) {
+                    if (rows[i].getElementsByTagName('td').length === 1) {
+                        continue; // Lewati baris "Belum ada data"
+                    }
                     const rowText = rows[i].textContent.toLowerCase();
                     // Mengambil teks dari kolom Kategori (kolom ke-4, index 3)
                     const categoryCellText = rows[i].getElementsByTagName('td')[3].textContent.toLowerCase(); 
@@ -516,7 +501,6 @@
                 document.getElementById('dataCount').innerText = "Menampilkan " + visibleCount + " laporan";
             }
 
-            // Jalankan fungsi filterTable setiap kali user mengetik atau mengganti dropdown
             searchInput.addEventListener('keyup', filterTable);
             filterKategori.addEventListener('change', filterTable);
         });
@@ -525,23 +509,7 @@
         function resetFilter() {
             document.getElementById('searchInput').value = "";
             document.getElementById('filterKategori').value = "";
-            // Trigger event keyup untuk mengembalikan tabel seperti semula
             document.getElementById('searchInput').dispatchEvent(new Event('keyup'));
-        }
-
-        // FUNGSI 3: KONFIRMASI HAPUS DATA
-        function hapusBaris(button) {
-            // Memunculkan pop-up konfirmasi standar browser
-            if (confirm("AWAS! Apakah Anda yakin ingin menghapus data laporan ini? Tindakan ini tidak dapat dibatalkan.")) {
-                // Jika ditekan 'OK', hapus baris tabel (TR) secara visual
-                const row = button.closest('tr');
-                row.remove();
-                
-                // Update ulang jumlah data
-                document.getElementById('searchInput').dispatchEvent(new Event('keyup'));
-                
-                // (Nantinya kode penghapusan ke database diletakkan di sini)
-            }
         }
     </script>
 </body>
