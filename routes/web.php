@@ -5,9 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\SapraController;
 use App\Http\Controllers\OperatorMedsosController;
-use App\Http\Controllers\DamtanController;
-use App\Http\Controllers\PermohonanController; // <-- TAMBAHAN: Import PermohonanController
-use App\Http\Controllers\PermohonanEdukasiController;
+use App\Http\Controllers\DamtanController; // <-- INI YANG DITAMBAHKAN
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;

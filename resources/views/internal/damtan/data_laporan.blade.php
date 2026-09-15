@@ -110,6 +110,10 @@
         .dropdown-menu { padding: 8px; border-radius: 10px; }
         .dropdown-item { border-radius: 6px; transition: all 0.2s ease-in-out; }
         .dropdown-item:hover, .dropdown-item:focus { background-color: #e0f2fe !important; }
+
+        /* Perbaikan Tampilan Pagination Laravel Bootstrap 5 */
+        .pagination-container nav ul.pagination { margin-bottom: 0 !important; }
+        .pagination-container nav p { display: none; /* Sembunyikan text "Showing 1 to 10 of x results" bawaan */ }
     </style>
 </head>
 <body>
@@ -330,7 +334,8 @@
                             <tbody id="tableBody">
                                 @forelse($data_laporan as $index => $row)
                                 <tr>
-                                    <td class="text-center text-muted">{{ $index + 1 }}</td>
+                                    <!-- Logika penomoran dilanjutkan secara otomatis sesuai halaman pagination -->
+                                    <td class="text-center text-muted">{{ $data_laporan->firstItem() + $index }}</td>
                                     <td><strong>{{ $row->nomor_laporan }}</strong></td>
                                     <td>
                                         <div class="text-dark fw-bold">
@@ -449,14 +454,14 @@
                     </div>
                 </div>
                 
-                <!-- Pagination -->
+                <!-- Pagination Menggunakan Bawaan Laravel -->
                 <div class="card-footer bg-white p-3 d-flex justify-content-between align-items-center border-top">
-                    <span class="text-muted" style="font-size: 13px;" id="dataCount">Menampilkan {{ count($data_laporan) }} laporan</span>
-                    <ul class="pagination pagination-sm mb-0">
-                        <li class="page-item disabled"><a class="page-link" href="#">Sebelumnya</a></li>
-                        <li class="page-item active"><a class="page-link" href="#" style="background-color: #10b981; border-color: #10b981;">1</a></li>
-                        <li class="page-item disabled"><a class="page-link" href="#">Selanjutnya</a></li>
-                    </ul>
+                    <span class="text-muted" style="font-size: 13px;" id="dataCount">
+                        Menampilkan {{ $data_laporan->firstItem() ?? 0 }} - {{ $data_laporan->lastItem() ?? 0 }} dari total {{ $data_laporan->total() }} laporan
+                    </span>
+                    <div class="pagination-container mb-0">
+                        {{ $data_laporan->links('pagination::bootstrap-5') }}
+                    </div>
                 </div>
             </div>
 
@@ -466,7 +471,8 @@
     <!-- Script Bootstrap & Fungsi Search/Filter JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // FUNGSI 1: SEARCH & FILTER FRONTEND
+        // FUNGSI 1: SEARCH & FILTER FRONTEND 
+        // (Catatan: Ini akan memfilter data yang ada di halaman aktif saat ini saja)
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('searchInput');
             const filterKategori = document.getElementById('filterKategori');
@@ -476,14 +482,12 @@
             function filterTable() {
                 const searchTerm = searchInput.value.toLowerCase();
                 const categoryTerm = filterKategori.value.toLowerCase();
-                let visibleCount = 0;
 
                 for (let i = 0; i < rows.length; i++) {
                     if (rows[i].getElementsByTagName('td').length === 1) {
                         continue; // Lewati baris "Belum ada data"
                     }
                     const rowText = rows[i].textContent.toLowerCase();
-                    // Mengambil teks dari kolom Kategori (kolom ke-4, index 3)
                     const categoryCellText = rows[i].getElementsByTagName('td')[3].textContent.toLowerCase(); 
 
                     const matchesSearch = rowText.includes(searchTerm);
@@ -491,14 +495,10 @@
 
                     if (matchesSearch && matchesCategory) {
                         rows[i].style.display = '';
-                        visibleCount++;
                     } else {
                         rows[i].style.display = 'none';
                     }
                 }
-                
-                // Update teks jumlah data di footer
-                document.getElementById('dataCount').innerText = "Menampilkan " + visibleCount + " laporan";
             }
 
             searchInput.addEventListener('keyup', filterTable);

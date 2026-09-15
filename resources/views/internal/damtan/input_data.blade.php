@@ -289,6 +289,31 @@
                                     </div>
                                 </div>
 
+                                <!-- DATA PELAPOR -->
+                                <div class="row g-4 mb-4 border-bottom pb-4">
+                                    <div class="col-md-4">
+                                        <label class="field-label"><i class="fas fa-user"></i> Nama Pelapor</label>
+                                        <input type="text" class="form-control" name="nama_pelapor" placeholder="Cth: Bapak Iskandar">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="field-label"><i class="fas fa-headset"></i> Layanan Pelaporan</label>
+                                        <select class="form-select" name="media_pelaporan">
+                                            <option selected value="">-- Pilih Layanan --</option>
+                                            <option value="whatsapp">Layanan WA Damkar</option>
+                                            <option value="telepon">Telepon Call Center</option>
+                                            <option value="langsung">Datang Langsung ke Mako/Pos</option>
+                                            <option value="instansi_lain">Laporan Instansi Lain</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="field-label"><i class="fas fa-route"></i> Jarak Tempuh</label>
+                                        <div class="input-group">
+                                            <input type="number" step="0.1" name="jarak_tempuh" class="form-control" placeholder="Cth: 4.1">
+                                            <span class="input-group-text">Km</span>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="row g-4 mb-4">
                                     <div class="col-md-6">
                                         <label class="field-label text-danger"><i class="fas fa-fire"></i> Kategori Laporan (Kebakaran)</label>
@@ -369,13 +394,18 @@
                                         <label class="field-label"><i class="fas fa-truck-moving"></i> Waktu Berangkat Unit</label>
                                         <input type="datetime-local" name="waktu_berangkat" class="form-control">
                                     </div>
-                                    <div class="col-md-6 mt-4">
+                                    
+                                    <div class="col-md-4 mt-4">
                                         <label class="field-label"><i class="fas fa-map-marker-alt"></i> Waktu Tiba di Lokasi</label>
                                         <input type="datetime-local" name="waktu_tiba" class="form-control">
                                     </div>
-                                    <div class="col-md-6 mt-4">
+                                    <div class="col-md-4 mt-4">
                                         <label class="field-label"><i class="fas fa-flag-checkered"></i> Waktu Operasi Selesai</label>
                                         <input type="datetime-local" name="waktu_selesai" class="form-control">
+                                    </div>
+                                    <div class="col-md-4 mt-4">
+                                        <label class="field-label"><i class="fas fa-building"></i> Waktu Kembali ke Mako</label>
+                                        <input type="datetime-local" name="waktu_kembali" class="form-control">
                                     </div>
                                 </div>
 
@@ -400,6 +430,18 @@
                             <div class="tab-pane fade" id="teknis" role="tabpanel">
                                 <h5 class="section-title"><i class="fas fa-tools"></i> Teknis Penyelamatan & Logistik</h5>
                                 
+                                <!-- DATA PIMPINAN -->
+                                <div class="row g-4 mb-5 border-bottom pb-4">
+                                    <div class="col-md-6">
+                                        <label class="field-label"><i class="fas fa-user-shield"></i> Pimpinan Operasi</label>
+                                        <input type="text" name="pimpinan_operasi" class="form-control" placeholder="Cth: Danru 4 Mako">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="field-label"><i class="fas fa-users-cog"></i> Satuan Tugas / Regu</label>
+                                        <input type="text" name="satuan_tugas" class="form-control" placeholder="Cth: Pleton 1 Mako">
+                                    </div>
+                                </div>
+
                                 <h6 class="fw-bold text-secondary border-bottom pb-2 mb-3">Status Korban Manusia & Aset</h6>
                                 <div class="row g-4 mb-4">
                                     <div class="col-md-3">
@@ -488,6 +530,20 @@
                                     <div class="col-md-12">
                                         <label class="field-label"><i class="fas fa-exclamation-triangle"></i> Hambatan Lapangan</label>
                                         <textarea class="form-control" name="hambatan_lapangan" rows="2" placeholder="Tuliskan hambatan spesifik saat operasi di lapangan..."></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- DATA LANGKAH & HASIL TINDAKAN -->
+                                <div class="row g-4 mb-4">
+                                    <div class="col-md-12">
+                                        <label class="field-label"><i class="fas fa-tasks"></i> Langkah Penanganan</label>
+                                        <textarea class="form-control" name="langkah_penanganan" rows="2" placeholder="Cth: Ular Sanca Berhasil Di Evakuasi Dengan Menggunakan Stik Hook..."></textarea>
+                                    </div>
+                                </div>
+                                <div class="row g-4 mb-4 border-bottom pb-4">
+                                    <div class="col-md-12">
+                                        <label class="field-label"><i class="fas fa-check-double"></i> Hasil Tindakan</label>
+                                        <input type="text" name="hasil_tindakan" class="form-control" placeholder="Cth: Evakuasi berhasil dengan aman dan lancar">
                                     </div>
                                 </div>
 
@@ -603,10 +659,10 @@
                                     </div>
                                 </div>
 
-                                <div class="row g-4 mb-4">
-                                    <div class="col-md-6">
+                                <div class="row g-4 mb-4 border-bottom pb-4">
+                                    <div class="col-md-12">
                                         <label class="field-label"><i class="fas fa-ruler-combined"></i> Luas Area Terdampak</label>
-                                        <div class="input-group">
+                                        <div class="input-group" style="width: 50%;">
                                             <input type="number" name="luas_area" class="form-control" placeholder="0">
                                             <span class="input-group-text">m²</span>
                                         </div>
@@ -650,7 +706,7 @@
                                     </div>
                                 </div>
 
-                                <div class="row g-4 mb-4">
+                                <div class="row g-4 mb-4 border-bottom pb-4">
                                     <div class="col-md-6">
                                         <label class="field-label"><i class="fas fa-plus-circle"></i> Kebutuhan Tambahan</label>
                                         <textarea class="form-control" name="kebutuhan_tambahan" rows="2" placeholder="Dibutuhkan drone thermal..."></textarea>
@@ -658,6 +714,17 @@
                                     <div class="col-md-6">
                                         <label class="field-label"><i class="fas fa-lightbulb"></i> Saran Mitigasi Warga</label>
                                         <textarea class="form-control" name="saran_mitigasi" rows="2" placeholder="Sosialisasi APAR..."></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- DATA CARA BERTINDAK -->
+                                <div class="row g-4 mb-4">
+                                    <div class="col-md-12">
+                                        <label class="field-label"><i class="fas fa-hands-helping"></i> Cara Bertindak</label>
+                                        <select class="form-select" name="cara_bertindak">
+                                            <option selected value="5T">5 T (Terencana, Terukur, Terarah, Terlayani & Tuntas)</option>
+                                            <option value="lainnya">Lainnya...</option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -696,15 +763,26 @@
                                             <option value="biawak">Biawak</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-8">
                                         <label class="field-label"><i class="fas fa-tag"></i> Spesies/Lokal</label>
                                         <input type="text" name="spesies_hewan" class="form-control" placeholder="Cth: King Cobra">
                                     </div>
-                                    <div class="col-md-4">
+                                    
+                                    <div class="col-md-6 mt-3">
                                         <label class="field-label"><i class="fas fa-ruler"></i> Dimensi</label>
                                         <input type="text" name="dimensi_hewan" class="form-control" placeholder="Panjang ±3 meter">
                                     </div>
-                                    <div class="col-md-6">
+                                    
+                                    <!-- DATA BERAT HEWAN -->
+                                    <div class="col-md-6 mt-3">
+                                        <label class="field-label"><i class="fas fa-balance-scale"></i> Berat Hewan</label>
+                                        <div class="input-group">
+                                            <input type="number" step="0.1" name="berat_hewan" class="form-control" placeholder="Cth: 5">
+                                            <span class="input-group-text">Kg</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mt-3">
                                         <label class="field-label"><i class="fas fa-share-square"></i> Status Pasca Evakuasi</label>
                                         <select class="form-select" name="status_hewan_pasca">
                                             <option selected value="">-- Pilih --</option>
@@ -713,7 +791,7 @@
                                             <option value="mati">Mati</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 mt-3">
                                         <label class="field-label"><i class="fas fa-tree"></i> Lokasi Pelepasan</label>
                                         <input type="text" name="lokasi_pelepasan" class="form-control" placeholder="Habitat...">
                                     </div>
@@ -745,7 +823,7 @@
                                             <option value="pipa_pdam">Pipa PDAM bocor</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-12 mt-3">
                                         <label class="field-label"><i class="fas fa-house-damage"></i> Dampak Properti</label>
                                         <textarea class="form-control" name="dampak_properti" rows="2" placeholder="Menutup jalan, menimpa pagar..."></textarea>
                                     </div>
@@ -776,7 +854,7 @@
                                             <option value="penyisiran">Penyisiran Perahu</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-12 mt-3">
                                         <label class="field-label"><i class="fas fa-swimmer"></i> Daftar Penyelam</label>
                                         <input type="text" name="daftar_penyelam" class="form-control" placeholder="Nama bersertifikasi...">
                                     </div>
