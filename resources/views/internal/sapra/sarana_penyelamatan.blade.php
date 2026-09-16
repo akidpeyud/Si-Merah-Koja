@@ -148,8 +148,7 @@
                     <div class="sidebar-submenu">
                         <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data & Laporan</a>
                         <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-file-alt"></i> Data Laporan</a>
-                        <a href="#" class="sidebar-item"><i class="fas fa-users-cog"></i> Jadwal Piket Regu</a>
-                        <a href="#" class="sidebar-item"><i class="fas fa-running"></i> Data Relawan Redkar</a>
+                       
                     </div>
                 </div>
             @endif
@@ -168,9 +167,10 @@
 
 <!-- GRUP FASILITAS & POS -->
 <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">FASILITAS & POS MAKO</span>
-<a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pos</a>
-<a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pos</a>
-<a href="/sapra/sarana-penyelamatan" class="sidebar-item active"><i class="fas fa-life-ring"></i> Sarana Penyelamatan</a>
+<a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam kebakaran</a>
+<a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pemadam kebakaran</a>
+<a href="/sapra/sarana-penyelamatan" class="sidebar-item active"><i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi</a>
+   <a href="/sapra/sarana-pemeriksaan" class="sidebar-item"><i class="fas fa-search"></i>Sarana Pemeriksaan Proteksi Kebakaran</a>
 <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
 
 <!-- GRUP LOGISTIK & DISTRIBUSI -->
@@ -210,8 +210,8 @@
         <main class="main-content">
             <div class="d-flex justify-content-between align-items-end mb-4">
                 <div>
-                    <h1 style="font-size: 26px; font-weight: 800; color: #111827; margin-bottom: 6px;">Data Sarana Penyelamatan</h1>
-                    <p style="color: #6b7280; font-size: 14px; margin: 0;">Manajemen dokumentasi alat dan sarana penyelamatan di Markas Komando dan Pos.</p>
+                    <h1 style="font-size: 26px; font-weight: 800; color: #111827; margin-bottom: 6px;">Data Sarana Penyelamatan & Evakuasi</h1>
+                    <p style="color: #6b7280; font-size: 14px; margin: 0;">Manajemen dokumentasi alat dan sarana penyelamatan & Evakuasi.</p>
                 </div>
                <div class="d-flex gap-2 align-items-center">
                     <div class="input-group shadow-sm me-2 search-container" style="width: 250px; border-radius: 8px; overflow: hidden;">

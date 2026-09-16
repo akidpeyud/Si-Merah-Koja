@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Prasarana Mako & Pos - SIMERAH KOJA</title>
+    <title>Data Sarana Pemeriksaan - SIMERAH KOJA</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -19,9 +19,8 @@
         @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
 
         /* NAVBAR */
-        .navbar-internal { background-color: #0f172a; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; transition: opacity 0.3s;}
-        .nav-brand:hover { opacity: 0.8; }
+        .navbar-internal { background-color: #0f172a; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; }
+        .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
         .nav-brand img { height: 40px; }
         .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; }
         .user-menu { display: flex; align-items: center; gap: 20px; }
@@ -41,7 +40,7 @@
         .sidebar-item.active i { color: #0284c7; }
         .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #94a3b8; transition: color 0.2s; }
 
-        /* Tombol Accordion */
+        /* Tombol Accordion (Bagian Pencegahan, Pemadaman, dll) */
         .sidebar-collapse-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 12px 15px; background: transparent; border: none; text-align: left; font-size: 11.5px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s; border-radius: 8px; }
         .sidebar-collapse-btn:hover { color: #475569; }
         .sidebar-collapse-btn:not(.collapsed) { color: #0284c7; }
@@ -70,50 +69,19 @@
         .info-card { background: linear-gradient(to right, #ffffff, #f8fafc); border-left: 4px solid #0284c7; border-radius: 8px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 4px -1px rgba(0,0,0,0.05); }
         .info-card h5 { font-size: 17px; font-weight: 800; color: #0f172a; margin-bottom: 10px; text-transform: uppercase; }
         .info-card p { font-size: 13.5px; color: #475569; margin: 0 0 6px 0; display: flex; align-items: center; gap: 10px; font-weight: 500; }
-        .info-card p:last-child { margin-bottom: 0; }
 
         .table-card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #e5e7eb; }
         .table-custom { margin-bottom: 0; font-size: 13.5px; }
         .table-custom thead th { background-color: #0f172a; color: #f8fafc; font-weight: 600; padding: 16px 12px; text-align: center; font-size: 11.5px; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: none; }
         .table-custom tbody td { padding: 18px 12px; color: #475569; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
         
-        .img-prasarana { width: 180px; height: 120px; object-fit: cover; border-radius: 6px; transition: transform 0.2s; }
-        .img-wrapper { display: inline-block; padding: 4px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #f8fafc; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .img-wrapper:hover .img-prasarana { transform: scale(1.03); }
+        .img-prasarana { width: 100px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid #e2e8f0; }
 
-        .btn-action { padding: 8px 12px; font-size: 12.5px; border-radius: 6px; font-weight: 700; border: none; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-action { padding: 8px 12px; font-size: 12.5px; border-radius: 6px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
         .btn-edit { background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
-        .btn-edit:hover { background-color: #e2e8f0; color: #0f172a; }
         .btn-delete { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
-        .btn-delete:hover { background-color: #fecaca; color: #991b1b; }
-
+        
         #searchInput:focus { box-shadow: none; border-color: #cbd5e1; }
-
-        @media print {
-            .navbar-internal, .sidebar, .btn, .nav-tabs, .modal, .btn-action, .search-container {
-                display: none !important;
-            }
-            body, .main-content {
-                background-color: white !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                width: 100% !important;
-            }
-            .dashboard-container { display: block !important; }
-            .table-card { box-shadow: none !important; border: none !important; }
-            
-            table th:nth-child(4), table td:nth-child(4) {
-                display: none !important;
-            }
-
-            .tab-pane { display: none !important; }
-            .tab-pane.active { display: block !important; opacity: 1 !important; }
-
-            * {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-        }
     </style>
 </head>
 <body>
@@ -124,21 +92,13 @@
             <span>{{ session('success') }}</span>
             <button class="btn-close-alert" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
         </div>
-        <script>
-            setTimeout(() => {
-                let alertBox = document.getElementById('globalSuccessAlert');
-                if(alertBox) {
-                    alertBox.style.animation = 'fadeOutUpCenter 0.4s ease forwards';
-                    setTimeout(() => alertBox.remove(), 400); 
-                }
-            }, 4000);
-        </script>
+        <script>setTimeout(() => document.getElementById('globalSuccessAlert')?.remove(), 4000);</script>
     @endif
 
     <nav class="navbar-internal">
         <a href="/" class="nav-brand">
             <img src="/images/simerahkoja.png" alt="Logo Simerah">
-            <span class="title">SIMERAH KOJA </span>
+            <span class="title">SIMERAH KOJA</span>
         </a>
         <div class="user-menu">
             <div class="user-profile">
@@ -157,14 +117,16 @@
         <!-- SIDEBAR FULL PERSIS DESAIN TERBARU -->
         <aside class="sidebar" id="sidebarAccordion">
             
+            <!-- Dashboard Utama -->
             <a href="/internal/index" class="sidebar-item">
                 <i class="fas fa-home"></i> Dashboard Utama
             </a>
 
             <div class="sidebar-separator"></div>
 
+            <!-- BAGIAN PENCEGAHAN -->
             @if(in_array(Auth::user()->role, ['pencegahan', 'user', 'super_user']))
-                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePencegahan" aria-expanded="false">
+                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePencegahan">
                     <span>BAGIAN PENCEGAHAN</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
@@ -181,8 +143,9 @@
                 <div class="sidebar-separator"></div>
             @endif
 
+            <!-- BAGIAN PEMADAMAN -->
             @if(in_array(Auth::user()->role, ['pemadaman', 'user', 'super_user']))
-                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="false">
+                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman">
                     <span>BAGIAN PEMADAMAN</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
@@ -191,12 +154,12 @@
                         <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data & Laporan</a>
                         <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-file-alt"></i> Data Laporan</a>
                         <a href="#" class="sidebar-item"><i class="fas fa-users-cog"></i> Jadwal Piket Regu</a>
-                        <a href="#" class="sidebar-item"><i class="fas fa-running"></i> Data Relawan Redkar</a>
                     </div>
                 </div>
                 <div class="sidebar-separator"></div>
             @endif
 
+            <!-- BAGIAN SAPRA -->
             @if(in_array(Auth::user()->role, ['sapra', 'user', 'super_user']))
                 <button class="sidebar-collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSapra" aria-expanded="true">
                     <span>BAGIAN SAPRA</span>
@@ -204,21 +167,22 @@
                 </button>
                 <div class="collapse show" id="collapseSapra" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
+                        
+                        <!-- MANAJEMEN AIR -->
                         <span class="sidebar-heading" style="text-transform: uppercase;">MANAJEMEN AIR</span>
                         <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
-                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
+                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota jambi</a>
 
+                        <!-- Sarana dan prasarana -->
                         <span class="sidebar-heading" style="text-transform: none;">Sarana dan prasarana</span>
                         <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam Kebakaran</a>
-                        
-                        <!-- ACTIVE ADA DI SINI KARENA INI HALAMAN PRASARANA -->
-                        <a href="/sapra/prasarana-mako" class="sidebar-item active"><i class="fas fa-building"></i> Prasarana Pemadam Kebakaran</a>
-                        
+                        <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pemadam Kebakaran</a>
                         <a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi</a>
-                        <a href="/sapra/sarana-pemeriksaan" class="sidebar-item"><i class="fas fa-search"></i> Sarana Pemeriksaan Proteksi Kebakaran</a>
+                        <a href="/sapra/sarana-pemeriksaan" class="sidebar-item active"><i class="fas fa-search"></i> Sarana Pemeriksaan Proteksi Kebakaran</a>
                         
                         <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
 
+                        <!-- LOGISTIK & DISTRIBUSI -->
                         <span class="sidebar-heading" style="text-transform: uppercase;">LOGISTIK & DISTRIBUSI</span>
                         <a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
                         <a href="/sapra/distribusi-staff" class="sidebar-item"><i class="fas fa-user-check"></i> Distribusi Barang Staff</a>
@@ -227,21 +191,9 @@
                 <div class="sidebar-separator"></div>
             @endif
 
-            @if(in_array(Auth::user()->role, ['operator', 'super_user']))
-                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita" aria-expanded="false">
-                    <span>Manajemen Berita</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </button>
-                <div class="collapse" id="collapseBerita" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">
-                        <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
-                        <a href="/internal/operator/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
-                    </div>
-                </div>
-            @endif
-
-            <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePengaturan" aria-expanded="false">
-                <span>Pengaturan Akun</span>
+            <!-- PENGATURAN AKUN -->
+            <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePengaturan">
+                <span>PENGATURAN AKUN</span>
                 <i class="fas fa-chevron-down toggle-icon"></i>
             </button>
             <div class="collapse" id="collapsePengaturan" data-bs-parent="#sidebarAccordion">
@@ -252,27 +204,30 @@
                     @endif
                 </div>
             </div>
+
         </aside>
+        <!-- SELESAI SIDEBAR UTUH -->
 
         <main class="main-content">
             <div class="d-flex justify-content-between align-items-end mb-4">
                 <div>
-                    <h1 style="font-size: 26px; font-weight: 800; color: #111827; margin-bottom: 6px;">Data Prasarana Pemadam Kebakaran</h1>
-                    <p style="color: #6b7280; font-size: 14px; margin: 0;">Manajemen dokumentasi visual prasarana Pemadam kebakaran.</p>
+                    <h1 style="font-size: 26px; font-weight: 800; color: #111827; margin-bottom: 6px;">Data Sarana Pemeriksaan Proteksi Kebakaran</h1>
+                    <p style="color: #64748b; font-size: 14px; margin: 0;">Manajemen dokumentasi alat seperti Walkie Talkie dan Head Tester di tiap pos.</p>
                 </div>
                 <div class="d-flex gap-2 align-items-center">
                     
                     <!-- Search Bar -->
                     <div class="input-group shadow-sm me-2 search-container" style="width: 250px; border-radius: 8px; overflow: hidden;">
                         <span class="input-group-text bg-white border-end-0 text-muted" style="border-color: #cbd5e1;"><i class="fas fa-search"></i></span>
-                        <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari prasarana..." style="border-color: #cbd5e1; font-size: 14px;">
+                        <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari alat pemeriksaan..." style="border-color: #cbd5e1; font-size: 14px;">
                     </div>
 
                     <button class="btn btn-primary fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalTambah" style="background-color: #0284c7; border: none; padding: 10px 16px; border-radius: 8px;">
                         <i class="fas fa-plus me-1"></i> Tambah Data
                     </button>
 
-                    <a href="/sapra/prasarana-mako/cetak-pdf" class="btn btn-danger fw-bold shadow-sm" style="background-color: #ef4444; border: none; padding: 10px 16px; border-radius: 8px; text-decoration: none;">
+                    <!-- Tombol PDF -->
+                    <a href="/sapra/sarana-pemeriksaan/cetak" class="btn btn-danger fw-bold shadow-sm" style="background-color: #ef4444; border: none; padding: 10px 16px; border-radius: 8px; text-decoration: none;">
                         <i class="fas fa-file-pdf me-1"></i> PDF
                     </a>
                 </div>
@@ -310,72 +265,106 @@
                             <p><i class="fas fa-map text-success" style="width: 20px;"></i> Kode Map: <span class="badge bg-light text-dark border ms-1">{{ $pos->kode_map ?? '-' }}</span></p>
                         </div>
 
-                        <!-- TABEL DATA PRASARANA -->
+                        <!-- TABEL DATA -->
                         <div class="table-card">
                             <div class="table-responsive">
                                 <table class="table table-custom">
                                     <thead>
                                         <tr>
                                             <th width="5%">NO</th>
-                                            <th width="40%" style="text-align: left; padding-left: 20px;">JENIS PRASARANA</th>
-                                            <th width="35%">GAMBAR</th>
+                                            <th width="35%" style="text-align: left; padding-left: 20px;">JENIS SARANA PEMERIKSAAN</th>
+                                            <th width="15%">JUMLAH</th>
+                                            <th width="25%">GAMBAR</th>
                                             <th width="20%">AKSI</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @php $dataFilter = $dataPrasarana->where('id_pos', $pos->id_pos); @endphp
+                                        @php $dataFilter = $dataPemeriksaan->where('id_pos', $pos->id_pos); @endphp
                                         
                                         @forelse($dataFilter as $index => $item)
                                             <tr class="data-row">
                                                 <td class="text-center fw-bold text-dark">{{ $loop->iteration }}</td>
-                                                
-                                                <!-- KOLOM NAMA BARANG & BADGE LUAS -->
-                                                <td class="data-name" style="padding-left: 20px;">
-                                                    <div class="fw-bold text-dark" style="font-size: 14px; text-transform: uppercase;">{{ $item->jenis_prasarana }}</div>
-                                                    
-                                                    <!-- Logika Munculin Luas kalau ada isinya -->
-                                                    @if($item->luas_bangunan)
-                                                        <div class="mt-1" style="font-size: 11px; font-weight: 600; color: #64748b;">
-                                                            <span class="badge bg-light text-secondary border" style="padding: 4px 8px;">
-                                                                <i class="fas fa-expand-arrows-alt me-1"></i> Luas: {{ $item->luas_bangunan }}
-                                                            </span>
-                                                        </div>
-                                                    @endif
+                                                <td class="fw-bold text-dark data-name" style="padding-left: 20px; font-size: 14px; text-transform: uppercase;">{{ $item->jenis_sarana }}</td>
+                                                <td class="text-center">
+                                                    <span class="badge text-primary bg-light border fw-bold px-3 py-2" style="font-size: 15px;">{{ $item->jumlah }} Unit</span>
                                                 </td>
-
                                                 <td class="text-center">
                                                    @if($item->path_gambar && file_exists(public_path($item->path_gambar)))
-                                                    <div class="img-wrapper">
                                                         <a href="{{ asset($item->path_gambar) }}" target="_blank">
-                                                            <img src="{{ asset($item->path_gambar) }}" alt="{{ $item->jenis_prasarana }}" class="img-prasarana" onerror="this.onerror=null; this.src='https://via.placeholder.com/200x130?text=Gambar+Hilang';">
+                                                            <img src="{{ asset($item->path_gambar) }}" alt="{{ $item->jenis_sarana }}" class="img-prasarana" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=Error';">
                                                         </a>
-                                                    </div>
                                                     @else
                                                         <span class="badge bg-light text-secondary border py-2 px-3"><i class="fas fa-image me-1"></i> Tidak ada gambar</span>
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="d-flex justify-content-center gap-2">
-                                                        <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEdit{{ $item->id_prasarana }}">
+                                                        <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEdit{{ $item->id_sarana_pemeriksaan }}">
                                                             <i class="fas fa-edit"></i> Edit
                                                         </button>
-                                                        
-                                                        <form action="/sapra/prasarana-mako/delete/{{ $item->id_prasarana }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus prasarana ini? Gambar akan ikut terhapus permanen.');">
+                                                        <form action="/sapra/sarana-pemeriksaan/delete/{{ $item->id_sarana_pemeriksaan }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini? Gambar akan ikut terhapus permanen.');">
                                                             @csrf @method('DELETE')
                                                             <button type="submit" class="btn-action btn-delete"><i class="fas fa-trash-alt"></i> Hapus</button>
                                                         </form>
                                                     </div>
                                                 </td>
                                             </tr>
+
+                                            <!-- MODAL EDIT DATA -->
+                                            <div class="modal fade" id="modalEdit{{ $item->id_sarana_pemeriksaan }}" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content border-0 shadow">
+                                                        <div class="modal-header bg-light pb-3">
+                                                            <h5 class="modal-title fw-bold text-dark">Edit Data Sarana Pemeriksaan</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <form action="/sapra/sarana-pemeriksaan/update/{{ $item->id_sarana_pemeriksaan }}" method="POST" enctype="multipart/form-data">
+                                                            @csrf @method('PUT')
+                                                            <div class="modal-body text-start p-4">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-secondary">Pilih Lokasi / Pos</label>
+                                                                    <select class="form-select border-light-subtle shadow-sm" name="id_pos" required>
+                                                                        <option value="">-- Pilih Lokasi --</option>
+                                                                        @foreach($posPemadam as $posOption)
+                                                                            <option value="{{ $posOption->id_pos }}" {{ $posOption->id_pos == $item->id_pos ? 'selected' : '' }}>
+                                                                                {{ strtoupper($posOption->nama_pos) }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-8 mb-3">
+                                                                        <label class="form-label fw-bold small text-secondary">Jenis Alat Pemeriksaan</label>
+                                                                        <input type="text" class="form-control border-light-subtle shadow-sm" name="jenis_sarana" value="{{ $item->jenis_sarana }}" required>
+                                                                    </div>
+                                                                    <div class="col-md-4 mb-3">
+                                                                        <label class="form-label fw-bold small text-secondary">Jumlah Stok</label>
+                                                                        <input type="number" class="form-control border-light-subtle shadow-sm" name="jumlah" value="{{ $item->jumlah }}" required>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-secondary">Ganti Gambar (Opsional)</label>
+                                                                    <input type="file" class="form-control border-light-subtle shadow-sm" name="gambar" accept="image/*">
+                                                                    <small class="text-muted mt-2 d-block"><i class="fas fa-info-circle me-1"></i> Biarkan kosong jika tidak ingin mengganti gambar.</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer bg-light pt-3">
+                                                                <button type="button" class="btn btn-light fw-bold border shadow-sm" data-bs-dismiss="modal">Batal</button>
+                                                                <button type="submit" class="btn btn-primary fw-bold shadow-sm px-4" style="background-color: #0284c7; border: none;">Simpan Perubahan</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         @empty
                                             <tr>
-                                                <td colspan="4">
+                                                <td colspan="5">
                                                     <div class="p-5 text-center text-muted">
                                                         <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle mb-3" style="width: 80px; height: 80px;">
                                                             <i class="fas fa-folder-open" style="font-size: 32px; color: #cbd5e1;"></i>
                                                         </div>
-                                                        <p class="mb-0 fw-bold text-dark">Belum ada data prasarana.</p>
-                                                        <p class="small mt-1">Silakan tambah prasarana untuk {{ $pos->nama_pos }}</p>
+                                                        <p class="mb-0 fw-bold text-dark">Belum ada data sarana pemeriksaan.</p>
+                                                        <p class="small mt-1">Silakan tambah data untuk {{ $pos->nama_pos }}</p>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -384,57 +373,6 @@
                                 </table>
                             </div>
                         </div>
-
-                        <!-- MODAL EDIT DATA -->
-                        @foreach($dataFilter as $item)
-                            <div class="modal fade" id="modalEdit{{ $item->id_prasarana }}" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content border-0 shadow">
-                                        <div class="modal-header bg-light pb-3">
-                                            <h5 class="modal-title fw-bold text-dark">Edit Data Prasarana</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <form action="/sapra/prasarana-mako/update/{{ $item->id_prasarana }}" method="POST" enctype="multipart/form-data">
-                                            @csrf @method('PUT')
-                                            <div class="modal-body text-start p-4">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold small text-secondary">Pilih Lokasi / Pos</label>
-                                                    <select class="form-select border-light-subtle shadow-sm" name="id_pos" required>
-                                                        <option value="">-- Pilih Lokasi --</option>
-                                                        @foreach($posPemadam as $posOption)
-                                                            <option value="{{ $posOption->id_pos }}" {{ $posOption->id_pos == $item->id_pos ? 'selected' : '' }}>
-                                                                {{ $posOption->nama_pos }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold small text-secondary">Jenis Prasarana</label>
-                                                    <input type="text" class="form-control border-light-subtle shadow-sm" name="jenis_prasarana" value="{{ $item->jenis_prasarana }}" required>
-                                                </div>
-                                                
-                                                <!-- INPUTAN LUAS BANGUNAN (BARU) -->
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold small text-secondary">Luas Tanah / Bangunan <span class="text-muted fw-normal">(Opsional)</span></label>
-                                                    <input type="text" class="form-control border-light-subtle shadow-sm" name="luas_bangunan" value="{{ $item->luas_bangunan }}" placeholder="Cth: 150 M² atau 2 Hektar">
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold small text-secondary">Ganti Gambar (Opsional)</label>
-                                                    <input type="file" class="form-control border-light-subtle shadow-sm" name="gambar" accept="image/*">
-                                                    <small class="text-muted mt-2 d-block"><i class="fas fa-info-circle me-1"></i> Biarkan kosong jika tidak ingin mengganti gambar.</small>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer bg-light pt-3">
-                                                <button type="button" class="btn btn-light fw-bold border shadow-sm" data-bs-dismiss="modal">Batal</button>
-                                                <button type="submit" class="btn btn-primary fw-bold shadow-sm px-4" style="background-color: #0284c7; border: none;">Simpan Perubahan</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                        <!-- AKHIR MODAL EDIT -->
 
                     </div>
                 @endforeach
@@ -447,36 +385,35 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content border-0 shadow">
                 <div class="modal-header bg-light pb-3">
-                    <h5 class="modal-title fw-bold text-dark">Tambah Data Prasarana</h5>
+                    <h5 class="modal-title fw-bold text-dark">Tambah Data Sarana Pemeriksaan</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="/sapra/prasarana-mako/store" method="POST" enctype="multipart/form-data">
+                <form action="/sapra/sarana-pemeriksaan/store" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body text-start p-4">
                         <div class="mb-3">
                             <label class="form-label fw-bold small text-secondary">Pilih Lokasi / Pos</label>
                             <select class="form-select border-light-subtle shadow-sm" name="id_pos" required>
                                 <option value="">-- Pilih Lokasi --</option>
-                                @foreach($posPemadam as $posOption)
-                                    <option value="{{ $posOption->id_pos }}">{{ $posOption->nama_pos }}</option>
+                                @foreach($posPemadam as $pos)
+                                    <option value="{{ $pos->id_pos }}">{{ strtoupper($pos->nama_pos) }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small text-secondary">Jenis Prasarana</label>
-                            <input type="text" class="form-control border-light-subtle shadow-sm" name="jenis_prasarana" placeholder="Contoh: Gedung Kantor Utama" required>
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label class="form-label fw-bold small text-secondary">Jenis Alat Pemeriksaan (Cth: Walkie Talkie)</label>
+                                <input type="text" class="form-control border-light-subtle shadow-sm" name="jenis_sarana" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold small text-secondary">Jumlah Tersedia</label>
+                                <input type="number" class="form-control border-light-subtle shadow-sm" name="jumlah" value="1" min="1" required>
+                            </div>
                         </div>
-
-                        <!-- INPUTAN LUAS BANGUNAN (BARU) -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small text-secondary">Luas Tanah / Bangunan <span class="text-muted fw-normal">(Opsional)</span></label>
-                            <input type="text" class="form-control border-light-subtle shadow-sm" name="luas_bangunan" placeholder="Cth: 150 M² atau 2 Hektar">
-                        </div>
-
                         <div class="mb-3">
                             <label class="form-label fw-bold small text-secondary">Upload Gambar</label>
-                            <input type="file" class="form-control border-light-subtle shadow-sm" name="gambar" accept="image/*" required>
-                            <small class="text-muted mt-2 d-block"><i class="fas fa-info-circle me-1"></i> Format: JPG, PNG. Maksimal 2MB.</small>
+                            <input type="file" class="form-control border-light-subtle shadow-sm" name="gambar" accept="image/*">
+                            <small class="text-muted mt-2 d-block"><i class="fas fa-info-circle me-1"></i> Format: JPG, PNG. Maksimal 2MB (Opsional).</small>
                         </div>
                     </div>
                     <div class="modal-footer bg-light pt-3">

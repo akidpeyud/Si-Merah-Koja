@@ -139,7 +139,7 @@
                         <a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan</a>
                         <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
 
-                       <!-- GRUP LOGISTIK & DISTRIBUSI -->
+                        <!-- GRUP LOGISTIK & DISTRIBUSI -->
                         <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">LOGISTIK & DISTRIBUSI</span>
                         <a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
                         <a href="/sapra/distribusi-staff" class="sidebar-item active"><i class="fas fa-user-check"></i> Distribusi Barang Staff</a> </div>
@@ -172,7 +172,8 @@
                         <a href="/internal/kelola-user" class="sidebar-item"><i class="fas fa-users"></i> Kelola Semua Pengguna</a>
                     @endif
                 </div>
-            </div>        </aside>
+            </div>        
+        </aside>
 
         <!-- MAIN AREA DISTRIBUSI -->
         <main class="main-content">
@@ -190,7 +191,9 @@
                     <a href="/sapra/distribusi-staff/cetak" target="_blank" class="btn fw-bold shadow-sm text-white d-flex align-items-center me-2" style="background-color: #ef4444; border: none; padding: 10px 16px; border-radius: 8px; transition: 0.2s;">
                         <i class="fas fa-file-pdf me-2 fs-5"></i> PDF
                     </a>
-                    <button class="btn btn-primary fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalTambah" style="background-color: #0284c7; border: none; padding: 10px 16px; border-radius: 8px;">
+                    
+                    <!-- TOMBOL INPUT UTAMA (data-nama KOSONG) -->
+                    <button class="btn btn-primary fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalTambah" data-nama="" style="background-color: #0284c7; border: none; padding: 10px 16px; border-radius: 8px;">
                         <i class="fas fa-user-plus me-1"></i> Input Distribusi Baru
                     </button>
                 </div>
@@ -222,6 +225,11 @@
                                             </div>
                                             <span class="fw-bolder text-dark" style="font-size: 15px; letter-spacing: 0.5px; text-transform: uppercase;">{{ $nama }}</span>
                                             <span class="badge bg-primary ms-3 rounded-pill px-3 py-2 shadow-sm" style="font-size: 11px;"><i class="fas fa-box-open me-1"></i> {{ count($items) }} Total Barang</span>
+                                            
+                                            <!-- TOMBOL TAMBAH BARANG INLINE (data-nama NYA TERISI) -->
+                                            <button class="btn btn-sm btn-outline-primary ms-auto fw-bold rounded-pill px-3 shadow-sm" style="font-size: 11px; border-width: 2px;" data-bs-toggle="modal" data-bs-target="#modalTambah" data-nama="{{ $nama }}">
+                                                <i class="fas fa-plus me-1"></i> TAMBAH BARANG
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -355,7 +363,8 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-bold small text-secondary">Nama Staff Penerima</label>
-                            <input type="text" class="form-control border-light-subtle shadow-sm" name="nama_penerima" placeholder="Contoh: Agus Wiyoto" required>
+                            <!-- TAMBAHAN ID DISINI BIAR BISA DITANGKAP SAMA JAVASCRIPT -->
+                            <input type="text" class="form-control border-light-subtle shadow-sm" name="nama_penerima" id="inputNamaPenerima" placeholder="Contoh: Agus Wiyoto" required>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -385,8 +394,32 @@
         </div>
     </div>
 
-    <!-- SCRIPT SEARCH CANGGIH -->
     <script>
+        // FUNGSI JAVASCRIPT BUAT BIKIN MODAL TAMBAH JADI PINTER
+        let modalTambah = document.getElementById('modalTambah')
+        modalTambah.addEventListener('show.bs.modal', function (event) {
+            // Tangkap tombol mana yang nge-klik modal ini
+            let button = event.relatedTarget
+            // Ambil data-nama dari tombol itu (Bisa nama staff, bisa kosong)
+            let nama = button.getAttribute('data-nama')
+            // Ambil input form namanya
+            let inputNama = document.getElementById('inputNamaPenerima')
+            
+            // Masukin namanya ke form
+            inputNama.value = nama;
+
+            if(nama !== '') {
+                // Kalo dipencet dari baris nama orang, field namanya di-lock (readonly)
+                inputNama.setAttribute('readonly', 'true');
+                inputNama.style.backgroundColor = '#f1f5f9'; // Warna abu-abu soft
+            } else {
+                // Kalo dipencet dari tombol atas, field namanya bebas diisi
+                inputNama.removeAttribute('readonly');
+                inputNama.style.backgroundColor = '#ffffff'; // Balik putih
+            }
+        });
+
+        // SCRIPT SEARCH CANGGIH
         document.getElementById('searchInput').addEventListener('keyup', function() {
             let filter = this.value.toLowerCase();
             let groups = document.querySelectorAll('.staff-group');
