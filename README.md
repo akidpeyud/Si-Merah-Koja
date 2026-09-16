@@ -1,0 +1,5 @@
+# Si-Merah-Koja
+
+![Work in Progress](https://img.shields.io/badge/Status-Work_in_Progress-orange?style=flat-square)
+
+This project is still on process.
