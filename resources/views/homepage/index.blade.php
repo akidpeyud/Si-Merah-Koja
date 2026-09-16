@@ -7,19 +7,29 @@
     
     <!-- Google Fonts & Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Tambahan Bootstrap 5 CSS untuk fungsionalitas Modal Popup -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+        html { scroll-behavior: smooth; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: #f8fafc; color: #1f2937; overflow-x: hidden; }
+
+        /* --- ANIMASI MUNCUL DARI BAWAH (FADE UP) --- */
+        .fade-up, .hero-fade-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.165, 0.84, 0.44, 1), transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
+        .fade-up.visible, .hero-fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Delay untuk memunculkan elemen secara bergantian */
+        .delay-1 { transition-delay: 0.15s; }
+        .delay-2 { transition-delay: 0.3s; }
+        .delay-3 { transition-delay: 0.45s; }
 
         /* --- SPLASH SCREEN STYLES --- */
         #splash-screen {
@@ -36,38 +46,27 @@
         @keyframes pulseLogo { 0% { transform: scale(0.95); opacity: 0.8; } 100% { transform: scale(1.05); opacity: 1; } }
         .splash-hidden { opacity: 0; visibility: hidden; }
 
-        /* --- STYLES DARI HEADER --- */
+        /* --- HERO SECTION --- */
         .hero-section {
-            position: relative;
-            min-height: 100vh;
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            z-index: 1; 
+            position: relative; min-height: 100vh; color: #ffffff;
+            display: flex; flex-direction: column; z-index: 1; 
         }
-        
         .hero-section::before, .hero-section::after {
             content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background-size: cover; background-position: center; z-index: -1; 
         }
-        .hero-section::before {
-            background-image: linear-gradient(rgba(11, 15, 25, 0.75), rgba(11, 15, 25, 0.9)), url('/images/background1.jpg');
-        }
+        .hero-section::before { background-image: linear-gradient(rgba(11, 15, 25, 0.75), rgba(11, 15, 25, 0.9)), url('/images/background1.jpg'); }
         .hero-section::after {
             background-image: linear-gradient(rgba(11, 15, 25, 0.75), rgba(11, 15, 25, 0.9)), url('/images/background2.jpeg');
             animation: gantiBackground 9s infinite; 
         }
-        @keyframes gantiBackground {
-            0%, 40% { opacity: 0; }     
-            50%, 90% { opacity: 1; }    
-            100% { opacity: 0; }        
-        }
+        @keyframes gantiBackground { 0%, 40% { opacity: 0; } 50%, 90% { opacity: 1; } 100% { opacity: 0; } }
 
         /* --- NAVBAR STICKY --- */
         .navbar-custom {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 50px; background-color: #111827; border-bottom: 4px solid #ef4444;
-            position: sticky; top: 0; z-index: 9999; 
+            padding: 15px 50px; background-color: rgba(17, 24, 39, 0.95); border-bottom: 4px solid #ef4444;
+            backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 9999; 
         }
         .nav-logos { display: flex; gap: 15px; align-items: center; }
         .nav-logos img { height: 40px; transition: transform 0.3s; }
@@ -82,8 +81,8 @@
         
         /* Dropdown Menu */
         .dropdown-menu-custom { display: none; position: absolute; top: 100%; left: 0; background-color: #111827; min-width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-radius: 0 0 8px 8px; overflow: hidden; z-index: 10; margin-top: 0; border: 1px solid #1f293b; border-top: none; padding: 0; }
-        .dropdown-custom:hover .dropdown-menu-custom { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .dropdown-custom:hover .dropdown-menu-custom { display: block; animation: fadeInMenu 0.3s ease; }
+        @keyframes fadeInMenu { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .dropdown-menu-custom li { list-style: none; padding-bottom: 0; margin-bottom: 0; }
         .dropdown-menu-custom li a { color: #e5e7eb; padding: 14px 20px; display: block; font-size: 13px; border-bottom: 1px solid #1f293b; font-weight: 600; }
         .dropdown-menu-custom li:last-child a { border-bottom: none; }
@@ -107,7 +106,7 @@
         .icon-darurat { font-size: 26px; margin-bottom: 5px; animation: kedipIkon 1s infinite alternate; }
         @keyframes kedipIkon { 0% { opacity: 0.7; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1.1); text-shadow: 0 0 10px white; } }
 
-        /* --- POPUP MENU (Animasi Memantul/Bounce) --- */
+        /* POPUP MENU DARURAT */
         .emergency-popup { visibility: hidden; opacity: 0; position: absolute; bottom: 140%; left: 50%; transform: translateX(-50%) scale(0.7); transform-origin: bottom center; background-color: #1f2937; min-width: 220px; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); z-index: 100; text-align: left; border: 1px solid #374151; padding: 10px; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
         .emergency-btn-container:hover .emergency-popup { visibility: visible; opacity: 1; transform: translateX(-50%) scale(1); bottom: 115%; }
         .emergency-popup a { display: flex; align-items: center; padding: 12px 16px; text-decoration: none; font-weight: 700; font-size: 13px; border-radius: 8px; color: #e5e7eb; margin-bottom: 5px; transition: all 0.2s ease; position: relative; overflow: hidden; }
@@ -120,127 +119,138 @@
         .text-wa i { color: #22c55e; } .text-telp i { color: #0ea5e9; } .text-112 i { color: #ef4444; }
         .emergency-popup::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -8px; border-width: 8px; border-style: solid; border-color: #1f2937 transparent transparent transparent; }
 
-        /* --- STYLES UNTUK KONTEN DI BAWAH --- */
-        .section-container { padding: 80px 5%; background-color: #ffffff; color: #1f2937; }
+        /* --- STYLES UNTUK KONTEN BAWAH --- */
+        .section-container { padding: 90px 5%; background-color: #ffffff; color: #1f2937; }
         .section-title-wrap { text-align: center; margin-bottom: 60px; }
         .section-subtitle { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
         .section-title { font-size: 32px; font-weight: 800; color: #111827; }
         .section-title span { color: #ef4444; }
         .section-divider { display: flex; align-items: center; justify-content: center; margin-top: 10px; }
-        .section-divider::before, .section-divider::after { content: ""; height: 1px; width: 40px; background-color: #d1d5db; }
+        .section-divider::before, .section-divider::after { content: ""; height: 2px; width: 40px; background-color: #e5e7eb; border-radius: 2px; }
         .section-divider i { color: #ef4444; font-size: 8px; margin: 0 10px; }
 
-        .about-section { display: flex; align-items: center; justify-content: space-between; max-width: 1100px; margin: 0 auto; gap: 50px; }
+        .about-section { display: flex; align-items: center; justify-content: space-between; max-width: 1100px; margin: 0 auto; gap: 60px; }
         .about-text { flex: 1; text-align: left; }
         .about-text .section-title-wrap { text-align: left; margin-bottom: 30px; }
         .about-text .section-divider { justify-content: flex-start; }
         .about-text p { color: #4b5563; line-height: 1.8; font-size: 15px; margin-bottom: 20px; }
-        .about-quote { margin-top: 40px; padding-top: 30px; border-top: 1px solid #ef4444; position: relative; }
-        .about-quote h3 { font-size: 24px; font-style: italic; color: #9ca3af; font-weight: 700; line-height: 1.4; }
-        .about-quote p { font-size: 14px; color: #1f2937; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px; font-weight: 600; }
-        .about-quote .quote-icon { position: absolute; bottom: -20px; right: 20px; color: #ef4444; font-size: 40px; background: #ffffff; padding: 0 10px; }
-        .about-image { flex: 1; text-align: center; }
-        .about-image img { width: 100%; max-width: 400px; }
+        .about-quote { margin-top: 40px; padding-top: 30px; border-top: 1px dashed #cbd5e1; position: relative; }
+        .about-quote h3 { font-size: 22px; font-style: italic; color: #64748b; font-weight: 700; line-height: 1.5; }
+        .about-quote p { font-size: 13px; color: #1f2937; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px; font-weight: 800; }
+        .about-quote .quote-icon { position: absolute; bottom: -20px; right: 20px; color: #ef4444; font-size: 40px; background: #ffffff; padding: 0 10px; opacity: 0.2; }
+        .about-image { flex: 1; text-align: center; position: relative; }
+        .about-image img { width: 100%; max-width: 380px; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.1)); }
 
-        .layanan-section { background-color: #f8fafc; }
-        .layanan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
-        .layanan-card { display: block; text-decoration: none; color: inherit; background: #ffffff; padding: 30px 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); text-align: left; transition: transform 0.3s ease, box-shadow 0.3s ease; }
-        .layanan-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-        .layanan-icon { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 30px; color: white; margin-bottom: 20px; }
-        .icon-gray { background: #9ca3af; } .icon-pink { background: #ec4899; } .icon-orange { background: #f97316; } .icon-purple { background: #8b5cf6; } .icon-red { background: #ef4444; } .icon-yellow { background: #eab308; } .icon-blue { background: #3b82f6; }
-        .layanan-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
-        .layanan-card p { font-size: 13px; color: #6b7280; line-height: 1.6; }
+        .layanan-section { background-color: #f8fafc; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; }
+        .layanan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1100px; margin: 0 auto; }
+        .layanan-card { display: block; text-decoration: none; color: inherit; background: #ffffff; padding: 35px 25px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); text-align: left; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid #ffffff; }
+        .layanan-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); border-color: #e5e7eb; }
+        .layanan-icon { width: 65px; height: 65px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 32px; color: white; margin-bottom: 25px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .icon-gray { background: linear-gradient(135deg, #9ca3af, #6b7280); } 
+        .icon-pink { background: linear-gradient(135deg, #f472b6, #db2777); } 
+        .icon-orange { background: linear-gradient(135deg, #fb923c, #ea580c); } 
+        .icon-red { background: linear-gradient(135deg, #f87171, #dc2626); } 
+        .icon-yellow { background: linear-gradient(135deg, #facc15, #ca8a04); } 
+        .icon-blue { background: linear-gradient(135deg, #60a5fa, #2563eb); }
+        .layanan-card h3 { font-size: 19px; font-weight: 800; margin-bottom: 10px; color: #111827; }
+        .layanan-card p { font-size: 14px; color: #64748b; line-height: 1.6; }
 
         .kejadian-section { max-width: 1200px; margin: 0 auto; }
-        .kejadian-header-img { text-align: center; margin-bottom: 30px; }
-        .kejadian-header-img img { max-width: 300px; }
+        .kejadian-header-img { text-align: center; margin-bottom: -10px; }
+        .kejadian-header-img img { max-width: 250px; }
         .kejadian-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-top: 40px; }
-        .kejadian-card { background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column; text-decoration: none; color: inherit; }
-        .kejadian-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-        .kejadian-thumb { position: relative; width: 100%; height: 220px; background-color: #e2e8f0; }
-        .kejadian-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .kejadian-card { background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column; text-decoration: none; color: inherit; }
+        .kejadian-card:hover { transform: translateY(-8px); box-shadow: 0 20px 30px rgba(0,0,0,0.1); }
+        .kejadian-thumb { position: relative; width: 100%; height: 220px; background-color: #e2e8f0; overflow: hidden;}
+        .kejadian-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s;}
+        .kejadian-card:hover .kejadian-thumb img { transform: scale(1.05); }
         .kejadian-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; color: #94a3b8; }
         .kejadian-placeholder i { font-size: 45px; margin-bottom: 10px; color: #cbd5e1; }
-        .kejadian-date-badge { position: absolute; top: 15px; left: 15px; color: white; padding: 8px 15px; border-radius: 10px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); line-height: 1; }
+        .kejadian-date-badge { position: absolute; top: 15px; left: 15px; color: white; padding: 10px 15px; border-radius: 12px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); line-height: 1; backdrop-filter: blur(5px); }
         .kejadian-date-badge span:first-child { font-size: 22px; font-weight: 800; display: block; margin-bottom: 2px;}
         .kejadian-date-badge span:last-child { font-size: 11px; text-transform: uppercase; font-weight: 700;}
         .kejadian-content { padding: 25px; display: flex; flex-direction: column; flex-grow: 1; }
         .kejadian-content h3 { font-size: 18px; font-weight: 800; color: #111827; margin-bottom: 15px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .kejadian-content .meta { font-size: 13px; color: #6b7280; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
+        .kejadian-content .meta { font-size: 13px; color: #6b7280; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px;}
         .kejadian-content .meta div { display: flex; align-items: flex-start; gap: 8px; }
         .kejadian-content .meta i { color: #ef4444; margin-top: 3px; }
         .kejadian-content p { font-size: 14px; color: #4b5563; line-height: 1.6; margin-bottom: 20px; flex-grow: 1;}
         .kejadian-content span.baca { font-size: 14px; color: #ef4444; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; transition: gap 0.3s; }
         .kejadian-card:hover span.baca { gap: 10px; color: #dc2626; }
 
-        .video-section { background-color: #7f1d1d; color: white; }
+        .video-section { background-color: #0f172a; color: white; padding-top: 100px; padding-bottom: 100px; }
         .video-section .section-title, .video-section .section-subtitle { color: white; }
-        .video-section .section-divider::before, .video-section .section-divider::after { background-color: rgba(255,255,255,0.3); }
+        .video-section .section-divider::before, .video-section .section-divider::after { background-color: rgba(255,255,255,0.2); }
         .video-section .section-divider i { color: white; }
-        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; max-width: 1200px; margin: 0 auto; }
-        .video-card { position: relative; background: #000; border: 4px solid #ffffff; aspect-ratio: 16/9; overflow: hidden; border-radius: 4px; }
-        .video-card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; transition: opacity 0.3s; }
-        .video-card:hover img { opacity: 0.4; }
-        .video-play-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 40px; cursor: pointer; transition: transform 0.3s; }
-        .video-card:hover .video-play-btn { transform: translate(-50%, -50%) scale(1.1); }
+        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .video-card { position: relative; background: #000; border: 4px solid transparent; aspect-ratio: 16/9; overflow: hidden; border-radius: 12px; transition: border 0.3s, transform 0.3s; }
+        .video-card:hover { border-color: #ef4444; transform: translateY(-5px); }
+        .video-card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: opacity 0.3s; }
+        .video-card:hover img { opacity: 0.3; }
+        .video-play-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 45px; cursor: pointer; transition: transform 0.3s; text-shadow: 0 4px 10px rgba(0,0,0,0.5);}
+        .video-card:hover .video-play-btn { transform: translate(-50%, -50%) scale(1.1); color: #ef4444; }
 
-        /* --- STYLES INFOGRAFIS (UPDATED INTERAKTIF) --- */
-        .grafis-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1100px; margin: 0 auto; }
-        .grafis-card { position: relative; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.3s; }
-        .grafis-card:hover { transform: scale(1.03); }
+        /* --- STYLES INFOGRAFIS --- */
+        .grafis-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; max-width: 1100px; margin: 0 auto; }
+        .grafis-card { position: relative; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.3s; }
+        .grafis-card:hover { transform: scale(1.02) translateY(-5px); box-shadow: 0 20px 25px rgba(0,0,0,0.1); }
         .grafis-card img { width: 100%; display: block; object-fit: cover; }
-        .overlay-zoom { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; border-radius: 8px; }
+        .overlay-zoom { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; backdrop-filter: blur(2px); }
         .grafis-card:hover .overlay-zoom { opacity: 1; }
         
         .berita-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; max-width: 1100px; margin: 80px auto 0; }
-        .berita-card { background: white; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+        .berita-card { background: white; border: 1px solid #f1f5f9; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); border-radius: 16px; overflow: hidden; transition: transform 0.3s;}
+        .berita-card:hover { transform: translateY(-5px); }
         .berita-card img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
-        .berita-content { padding: 20px; }
-        .berita-content h3 { font-size: 15px; font-weight: 700; margin-bottom: 10px; line-height: 1.4; color: #1f2937; }
-        .berita-meta { font-size: 11px; color: #9ca3af; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-        .berita-meta i { color: #6b7280; }
-        .berita-footer { border-top: 1px solid #f3f4f6; padding-top: 15px; text-align: right; }
-        .berita-footer a { font-size: 12px; color: #9ca3af; text-decoration: none; font-weight: 600; }
-        .berita-footer a:hover { color: #ef4444; }
+        .berita-content { padding: 25px; }
+        .berita-content h3 { font-size: 16px; font-weight: 800; margin-bottom: 12px; line-height: 1.5; color: #111827; }
+        .berita-meta { font-size: 12px; color: #64748b; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .berita-meta i { color: #cbd5e1; }
+        .berita-footer { border-top: 1px dashed #e5e7eb; padding-top: 15px; text-align: right; }
+        .berita-footer a { font-size: 13px; color: #ef4444; text-decoration: none; font-weight: 700; }
+        .berita-footer a:hover { color: #dc2626; text-decoration: underline; }
 
-        .giat-section { background-color: #0b0f19; color: white; padding: 80px 5%; }
-        .giat-container { display: flex; max-width: 1000px; margin: 0 auto; align-items: center; gap: 60px; }
+        .giat-section { background-color: #f1f5f9; padding: 100px 5%; border-top: 1px solid #e5e7eb;}
+        .giat-container { display: flex; max-width: 1100px; margin: 0 auto; align-items: center; gap: 80px; }
         .giat-image { flex: 1; text-align: center; }
-        .giat-image img { max-width: 300px; }
-        .giat-content { flex: 1; }
-        .giat-content h2 { font-size: 32px; font-weight: 800; margin-bottom: 10px; line-height: 1.2; }
+        .giat-image img { max-width: 350px; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.1)); }
+        .giat-content { flex: 1.2; }
+        .giat-content h2 { font-size: 32px; font-weight: 800; margin-bottom: 10px; line-height: 1.3; color: #111827; }
         .giat-content .section-divider { justify-content: flex-start; margin-bottom: 40px; }
         .giat-list { display: flex; flex-direction: column; gap: 30px; }
-        .giat-item { display: flex; gap: 20px; border-bottom: 1px solid #1f2937; padding-bottom: 30px; }
+        .giat-item { display: flex; gap: 25px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 30px; transition: transform 0.3s; }
+        .giat-item:hover { transform: translateX(10px); }
         .giat-item:last-child { border-bottom: none; padding-bottom: 0; }
-        .giat-date { background: #ef4444; color: white; min-width: 70px; height: 70px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; font-weight: 800; }
-        .giat-date span:first-child { font-size: 24px; line-height: 1; }
-        .giat-date span:last-child { font-size: 12px; text-transform: uppercase; }
-        .giat-text h3 { font-size: 16px; font-weight: 700; margin-bottom: 10px; line-height: 1.4;}
-        .giat-text p { font-size: 12px; color: #9ca3af; line-height: 1.6; margin-bottom: 15px;}
-        .giat-text a { font-size: 11px; color: #6b7280; text-decoration: none; font-weight: 600; }
-        .giat-text a:hover { color: #ffffff; }
+        .giat-date { background: #111827; color: white; min-width: 75px; height: 75px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 12px; font-weight: 800; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .giat-date span:first-child { font-size: 26px; line-height: 1; color: #ef4444; }
+        .giat-date span:last-child { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;}
+        .giat-text h3 { font-size: 17px; font-weight: 800; margin-bottom: 10px; line-height: 1.4; color: #111827;}
+        .giat-text p { font-size: 14px; color: #4b5563; line-height: 1.6; margin-bottom: 15px;}
+        .giat-text a { font-size: 13px; color: #ef4444; text-decoration: none; font-weight: 700; }
+        .giat-text a:hover { color: #dc2626; text-decoration: underline; }
 
-        .footer-bottom { background-color: #1a1a1a; color: #9ca3af; padding: 50px 5%; font-size: 13px; }
-        .footer-grid { display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 40px; max-width: 1100px; margin: 0 auto 40px; }
+        .footer-bottom { background-color: #111827; color: #9ca3af; padding: 60px 5% 40px; font-size: 14px; }
+        .footer-grid { display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 50px; max-width: 1100px; margin: 0 auto 50px; }
         .footer-logo { text-align: center; }
-        .footer-logo img { height: 120px; margin-bottom: 15px; }
-        .footer-about h3 { color: white; font-size: 18px; margin-bottom: 20px; font-weight: 700;}
-        .footer-about p { line-height: 1.8; font-size: 12px; margin-bottom: 20px;}
-        .footer-map-container { position: relative; width: 100%; height: 120px; background: #333; border-radius: 8px; overflow: hidden; margin-bottom: 15px;}
+        .footer-logo img { height: 130px; margin-bottom: 20px; }
+        .footer-about h3 { color: white; font-size: 18px; margin-bottom: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;}
+        .footer-about p { line-height: 1.8; font-size: 14px; margin-bottom: 20px;}
+        .footer-map-container { position: relative; width: 100%; height: 150px; background: #333; border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);}
         .footer-map-container iframe { width: 100%; height: 100%; border: none;}
         .footer-find { font-weight: 700; color: white; margin-bottom: 20px; }
-        .footer-find i { color: #ef4444; margin-right: 5px;}
-        .footer-links h3 { color: white; font-size: 18px; margin-bottom: 20px; font-weight: 700;}
+        .footer-find i { color: #ef4444; margin-right: 8px;}
+        .footer-links h3 { color: white; font-size: 18px; margin-bottom: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;}
         .footer-links ul { list-style: none; padding-left: 0;}
-        .footer-links li { margin-bottom: 12px; }
-        .footer-links a { color: #9ca3af; text-decoration: none; transition: color 0.3s; display: flex; align-items: center; gap: 10px;}
-        .footer-links a i { font-size: 10px; color: #4b5563;}
-        .footer-links a:hover { color: white; }
-        .footer-copyright { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto; padding-top: 20px; border-top: 1px solid #333; }
-        .footer-social { display: flex; gap: 5px; }
-        .footer-social a { width: 35px; height: 35px; background: #333; color: white; display: flex; align-items: center; justify-content: center; border-radius: 4px; text-decoration: none; transition: background 0.3s; }
-        .footer-social a:hover { background: #ef4444; }
+        .footer-links li { margin-bottom: 15px; }
+        .footer-links a { color: #9ca3af; text-decoration: none; transition: color 0.3s; display: flex; align-items: center; gap: 12px; font-weight: 500;}
+        .footer-links a i { font-size: 12px; color: #4b5563;}
+        .footer-links a:hover { color: #ef4444; }
+        .footer-links a:hover i { color: #ef4444; }
+        
+        .footer-copyright { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto; padding-top: 30px; border-top: 1px solid #1f2937; }
+        .footer-social { display: flex; gap: 10px; }
+        .footer-social a { width: 40px; height: 40px; background: #1f2937; color: white; display: flex; align-items: center; justify-content: center; border-radius: 8px; text-decoration: none; transition: background 0.3s, transform 0.3s; }
+        .footer-social a:hover { background: #ef4444; transform: translateY(-3px);}
     </style>
 </head>
 <body>
@@ -289,9 +299,9 @@
             <li class="dropdown-custom">
                 <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
                 <ul class="dropdown-menu-custom">
-                    <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
-                    <li><a href="/layanan-fasilitas/perjanjian_kerjasama">PKS</a></li>
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">Layanan Perizinan</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi Dan Sosialisasi</a></li>
+                    <li><a href="/layanan-fasilitas/informasi_layanan">Informasi Layanan</a></li>
                 </ul>
             </li>
             <li><a href="/redkar">Redkar</a></li>
@@ -302,20 +312,20 @@
     <!-- HERO SECTION (HOME) -->
     <div class="hero-section">
         <div class="main-content">
-            <div class="center-logos">
+            <div class="center-logos hero-fade-up">
                 <img src="/images/jambi.png" alt="Logo Pemkot">
                 <img src="/images/logo.png" alt="Logo Damkar">
                 <img src="/images/logo-redkar.png" alt="Logo Redkar">
             </div>
             
-            <h1 class="title-simerah">SIMERAH KOJA</h1>
+            <h1 class="title-simerah hero-fade-up delay-1">SIMERAH KOJA</h1>
             
-            <p class="subtitle">
+            <p class="subtitle hero-fade-up delay-2">
                 SISTEM INFORMASI PENANGGULANGAN KEBAKARAN<br>
                 DAN PENYELAMATAN DAERAH KOTA JAMBI
             </p>
 
-            <div class="emergency-btn-container">
+            <div class="emergency-btn-container hero-fade-up delay-3">
                 <div class="btn-darurat">
                     <i class="fas fa-bullhorn icon-darurat"></i>
                     <span>TOMBOL<br>DARURAT<br>LAPOR</span>
@@ -339,7 +349,7 @@
     <!-- SECTION 1: TENTANG SIMERAH KOJA -->
     <div class="section-container">
         <div class="about-section">
-            <div class="about-text">
+            <div class="about-text fade-up">
                 <div class="section-title-wrap">
                     <div class="section-subtitle">Sistem Informasi Pemadam Kebakaran & Penyelamatan</div>
                     <h2 class="section-title">Tentang <span>SIMERAH</span> KOJA</h2>
@@ -347,7 +357,6 @@
                 </div>
                 
                 <p>SIMERAH KOJA adalah Sistem Informasi Penanggulangan Kebakaran dan Penyelamatan Daerah Kota Jambi yang berbasis digitalisasi dalam rangka memberikan kemudahan pelayanan publik kepada masyarakat antara lain pelayanan pemadaman, penyelamatan, perizinan, edukasi dan pemeriksaan proteksi kebakaran.</p>
-                
                 <p>SIMERAH KOJA merupakan sistem informasi pemerintahan berbasis elektronik yang terintegrasi pada dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi untuk mendukung program Smart City Kota Jambi.</p>
 
                 <div class="about-quote">
@@ -357,7 +366,7 @@
                 </div>
             </div>
             
-            <div class="about-image">
+            <div class="about-image fade-up delay-2">
                 <img src="/images/simerahkoja.png" alt="Logo Besar Simerah Koja">
             </div>
         </div>
@@ -365,80 +374,68 @@
 
     <!-- SECTION 2: LAYANAN & FASILITAS -->
     <div class="section-container layanan-section">
-        <div class="section-title-wrap">
+        <div class="section-title-wrap fade-up">
             <div class="section-subtitle">Sistem Layanan Kebakaran Dan Penyelamatan Utama</div>
             <h2 class="section-title">LAYANAN & <span>FASILITAS</span></h2>
             <div class="section-divider"><i class="fas fa-circle"></i></div>
         </div>
 
         <div class="layanan-grid">
-            <a href="/layanan-fasilitas/layanan_perizinan" class="layanan-card">
+            <a href="/layanan-fasilitas/layanan_perizinan" class="layanan-card fade-up">
                 <div class="layanan-icon icon-gray"><i class="far fa-building"></i></div>
                 <h3>RPKBGL</h3>
                 <p>Layanan Perizinan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan.</p>
             </a>
             
-            <a href="/layanan-fasilitas/skk" class="layanan-card">
+            <a href="/layanan-fasilitas/skk" class="layanan-card fade-up delay-1">
                 <div class="layanan-icon icon-pink"><i class="fas fa-user-shield"></i></div>
-                <h3>SKK</h3>
-                <p>Layanan Perizinan Penerbitan Sertifikat Keamanan Kebakaran.</p>
+                <h3>SKK Baru</h3>
+                <p>Layanan Perizinan Penerbitan Sertifikat Keamanan Kebakaran Bangunan Baru.</p>
             </a>
             
-            <a href="/layanan-fasilitas/perpanjang_skk" class="layanan-card">
+            <a href="/layanan-fasilitas/perpanjang_skk" class="layanan-card fade-up delay-2">
                 <div class="layanan-icon icon-orange"><i class="fas fa-fire-extinguisher"></i></div>
                 <h3>Perpanjang SKK</h3>
-                <p>Layanan Perizinan Perpanjangan Sertifikat Keamanan Kebakaran.</p>
+                <p>Layanan Perizinan Perpanjangan Sertifikat Keamanan Kebakaran Tahunan.</p>
             </a>
             
-            <a href="/layanan-fasilitas/izin_penjualan" class="layanan-card">
-                <div class="layanan-icon icon-purple"><i class="fas fa-file-invoice"></i></div>
-                <h3>Izin Penjualan</h3>
-                <p>Layanan Perizinan Penjualan Alat-alat Pencegahan, Pemadaman Kebakaran dan Penyelamatan.</p>
-            </a>
-            
-            <a href="/redkar" class="layanan-card">
+            <a href="/redkar" class="layanan-card fade-up">
                 <div class="layanan-icon icon-red"><i class="fas fa-running"></i></div>
                 <h3>REDKAR</h3>
-                <p>Kumpulan Relawan Pemadam Kebakaran Kota Jambi.</p>
+                <p>Informasi dan Kumpulan Relawan Pemadam Kebakaran Kota Jambi.</p>
             </a>
             
-            <a href="/layanan-fasilitas/perjanjian_kerjasama" class="layanan-card">
+            <a href="/layanan-fasilitas/perjanjian_kerjasama" class="layanan-card fade-up delay-1">
                 <div class="layanan-icon icon-yellow"><i class="fas fa-handshake"></i></div>
                 <h3>PKS</h3>
-                <p>Daftar Perjanjian Kerjasama dengan Instansi Terkait.</p>
+                <p>Daftar Perjanjian Kerjasama dengan Instansi Terkait & Pihak Ketiga.</p>
             </a>
             
-            <a href="/layanan-fasilitas/edukasi_sosialisasi" class="layanan-card">
+            <a href="/layanan-fasilitas/edukasi_sosialisasi" class="layanan-card fade-up delay-2">
                 <div class="layanan-icon icon-blue"><i class="fas fa-chalkboard-teacher"></i></div>
                 <h3>Edukasi Sosialisasi</h3>
-                <p>Edukasi dan Sosialisasi untuk masyarakat baik instansi maupun pendidikan.</p>
-            </a>
-            
-            <a href="#" class="layanan-card">
-                <div class="layanan-icon icon-orange"><i class="fas fa-mobile-alt"></i></div>
-                <h3>Media Edukasi</h3>
-                <p>Media Edukasi berupa info grafis, modul pembelajaran, dan video edukasi lainnya.</p>
+                <p>Pengajuan Layanan Edukasi dan Sosialisasi untuk sekolah, instansi, maupun masyarakat.</p>
             </a>
         </div>
     </div>
 
     <!-- SECTION 3: KEJADIAN & EVAKUASI -->
     <div class="section-container kejadian-section">
-        <div class="kejadian-header-img">
+        <div class="kejadian-header-img fade-up">
            <img src="/images/mobil.png" alt="Logo mobil damkar">
         </div>
         
-        <div class="section-title-wrap">
+        <div class="section-title-wrap fade-up">
             <div class="section-subtitle">Dapatkan Informasi Terbaru tentang Kejadian di Kota Jambi</div>
             <h2 class="section-title">Kejadian & <span>Evakuasi</span></h2>
             <div class="section-divider"><i class="fas fa-circle"></i></div>
         </div>
 
         <div class="kejadian-grid">
-            @forelse($daftar_berita ?? [] as $berita)
-                <a href="/berita/{{ $berita->id }}" class="kejadian-card">
+            @forelse($daftar_berita ?? [] as $index => $berita)
+                <a href="/berita/{{ $berita->id }}" class="kejadian-card fade-up delay-{{ $index % 3 + 1 }}">
                     <div class="kejadian-thumb">
-                        <div class="kejadian-date-badge" style="{{ \Carbon\Carbon::parse($berita->tanggal_kejadian)->diffInDays(now()) <= 3 ? 'background-color: #ef4444;' : 'background-color: #111827;' }}">
+                        <div class="kejadian-date-badge" style="{{ \Carbon\Carbon::parse($berita->tanggal_kejadian)->diffInDays(now()) <= 3 ? 'background-color: rgba(239,68,68,0.9);' : 'background-color: rgba(17,24,39,0.9);' }}">
                             <span>{{ \Carbon\Carbon::parse($berita->tanggal_kejadian)->format('d') }}</span>
                             <span>{{ \Carbon\Carbon::parse($berita->tanggal_kejadian)->format('M') }}</span>
                         </div>
@@ -462,7 +459,7 @@
                     </div>
                 </a>
             @empty
-                <div class="text-muted w-100" style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+                <div class="text-muted w-100 fade-up" style="grid-column: 1 / -1; text-align: center; padding: 50px;">
                     <i class="fas fa-folder-open text-muted mb-3" style="font-size: 40px;"></i>
                     <h5 class="fw-bold">Belum ada informasi kejadian terbaru</h5>
                 </div>
@@ -472,42 +469,42 @@
 
     <!-- SECTION 4: VIDEO EDUKASI -->
     <div class="section-container video-section">
-        <div class="section-title-wrap">
+        <div class="section-title-wrap fade-up">
             <div class="section-subtitle">Kami memberi Anda tindakan praktis, saran, dan sumber daya.</div>
             <h2 class="section-title">Video Edukasi</h2>
             <div class="section-divider"><i class="fas fa-circle"></i></div>
         </div>
         <div class="video-grid">
-            <div class="video-card"><img src="https://via.placeholder.com/300x170/333333/ffffff?text=Thumbnail+Video+1" alt="Video Edukasi"><i class="far fa-play-circle video-play-btn"></i></div>
-            <div class="video-card"><img src="https://via.placeholder.com/300x170/333333/ffffff?text=Thumbnail+Video+2" alt="Video Edukasi"><i class="far fa-play-circle video-play-btn"></i></div>
-            <div class="video-card"><img src="https://via.placeholder.com/300x170/333333/ffffff?text=Thumbnail+Video+3" alt="Video Edukasi"><i class="far fa-play-circle video-play-btn"></i></div>
-            <div class="video-card"><img src="https://via.placeholder.com/300x170/333333/ffffff?text=Thumbnail+Video+4" alt="Video Edukasi"><i class="far fa-play-circle video-play-btn"></i></div>
+            <div class="video-card fade-up"><img src="https://via.placeholder.com/300x170/333333/ffffff?text=Thumbnail+Video+1" alt="Video Edukasi"><i class="far fa-play-circle video-play-btn"></i></div>
+            <div class="video-card fade-up delay-1"><img src="https://via.placeholder.com/300x170/333333/ffffff?text=Thumbnail+Video+2" alt="Video Edukasi"><i class="far fa-play-circle video-play-btn"></i></div>
+            <div class="video-card fade-up delay-2"><img src="https://via.placeholder.com/300x170/333333/ffffff?text=Thumbnail+Video+3" alt="Video Edukasi"><i class="far fa-play-circle video-play-btn"></i></div>
+            <div class="video-card fade-up delay-3"><img src="https://via.placeholder.com/300x170/333333/ffffff?text=Thumbnail+Video+4" alt="Video Edukasi"><i class="far fa-play-circle video-play-btn"></i></div>
         </div>
     </div>
 
-    <!-- SECTION 5: INFO GRAFIS & BERITA MEDIA SOSIAL (TERBARU DENGAN POPUP) -->
+    <!-- SECTION 5: INFO GRAFIS & BERITA MEDIA SOSIAL -->
     <div class="section-container">
         
         <!-- Info Grafis -->
-        <div class="section-title-wrap">
+        <div class="section-title-wrap fade-up">
             <h2 class="section-title">Info <span>Grafis</span></h2>
             <div class="section-divider"><i class="fas fa-circle"></i></div>
         </div>
              
         <div class="grafis-grid">
-            @forelse($daftar_infografis ?? [] as $info)
-                <div class="grafis-card" data-bs-toggle="modal" data-bs-target="#modalInfografis" onclick="showInfografis('{{ asset('storage/' . $info->gambar) }}', '{{ $info->judul ?? 'Infografis' }}')">
+            @forelse($daftar_infografis ?? [] as $index => $info)
+                <div class="grafis-card fade-up delay-{{ $index % 3 + 1 }}" data-bs-toggle="modal" data-bs-target="#modalInfografis" onclick="showInfografis('{{ asset('storage/' . $info->gambar) }}', '{{ $info->judul ?? 'Infografis' }}')">
                     <img src="{{ asset('storage/' . $info->gambar) }}" alt="{{ $info->judul ?? 'Infografis' }}">
                     <div class="overlay-zoom">
                         <i class="fas fa-search-plus text-white" style="font-size: 30px;"></i>
                     </div>
                 </div>
             @empty
-                <div class="text-muted text-center w-100" style="grid-column: 1/-1;">Belum ada infografis yang diunggah.</div>
+                <div class="text-muted text-center w-100 fade-up" style="grid-column: 1/-1;">Belum ada infografis yang diunggah.</div>
             @endforelse
         </div>
 
-        <!-- MODAL POPUP UNTUK INFOGRAFIS -->
+        <!-- MODAL POPUP INFOGRAFIS -->
         <div class="modal fade" id="modalInfografis" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content bg-transparent border-0">
@@ -516,21 +513,21 @@
                     </div>
                     <div class="modal-body text-center p-0">
                         <img id="popupImage" src="" alt="Popup" class="img-fluid rounded shadow-lg" style="max-height: 80vh; object-fit: contain;">
-                        <h5 id="popupTitle" class="text-white mt-3 fw-bold text-shadow"></h5>
+                        <h5 id="popupTitle" class="text-white mt-3 fw-bold" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8);"></h5>
                     </div>
                 </div>
             </div>
         </div>
         
         <!-- Berita Media Sosial -->
-        <div class="section-title-wrap" style="margin-top: 100px;">
-            <h2 class="section-title">BERITA <span>MEDIA SOSIAL</span></h2>
+        <div class="section-title-wrap fade-up" style="margin-top: 100px;">
+            <h2 class="section-title">MEDIA <span>INFORMASI</span></h2>
             <div class="section-divider"><i class="fas fa-circle"></i></div>
         </div>
         
         <div class="berita-grid">
-            @forelse($daftar_medsos ?? [] as $medsos)
-                <div class="berita-card">
+            @forelse($daftar_medsos ?? [] as $index => $medsos)
+                <div class="berita-card fade-up delay-{{ $index % 3 + 1 }}">
                     <img src="{{ asset('storage/' . $medsos->gambar) }}" alt="{{ $medsos->judul }}">
                     <div class="berita-content">
                         <h3>{{ $medsos->judul }}</h3>
@@ -540,12 +537,12 @@
                             <i class="fab fa-instagram"></i> Sumber: {{ $medsos->sumber }}
                         </div>
                         <div class="berita-footer">
-                            <a href="{{ $medsos->link ?? '#' }}" target="_blank">Selengkapnya</a>
+                            <a href="{{ $medsos->link ?? '#' }}" target="_blank">Selengkapnya <i class="fas fa-angle-right ms-1"></i></a>
                         </div>
                     </div>
                 </div>
             @empty
-                <div class="text-muted text-center w-100" style="grid-column: 1/-1;">Belum ada berita media sosial yang diunggah.</div>
+                <div class="text-muted text-center w-100 fade-up" style="grid-column: 1/-1;">Belum ada berita media sosial yang diunggah.</div>
             @endforelse
         </div>
     </div>
@@ -553,11 +550,11 @@
     <!-- SECTION 6: GIAT DISDAMKARTAN -->
     <div class="giat-section">
         <div class="giat-container">
-            <div class="giat-image">
+            <div class="giat-image fade-up">
                 <img src="/images/damkar.png" alt="damkar">
             </div> 
             
-            <div class="giat-content">
+            <div class="giat-content fade-up delay-1">
                 <h2>GIAT DISDAMKARTAN<br>KOTA JAMBI</h2>
                 <div class="section-divider"><i class="fas fa-circle"></i></div>
                 
@@ -569,7 +566,7 @@
                         <div class="giat-text">
                             <h3>Bapak Walikota Jambi memberikan Bantuan Kepada Korban Kebakaran & Bencana Alam</h3>
                             <p>Pada hari Kamis Tanggal 07 Juli 2022 Pukul 15.30 WIB sampai dengan selesai di Dinas Pemadam Kebakaran Kota Jambi. Bapak Walikota Jambi di dampingi Kepala Disdamkar.</p>
-                            <a href="#">Selengkapnya</a>
+                            <a href="#">Selengkapnya <i class="fas fa-angle-right ms-1"></i></a>
                         </div>
                     </div>
                     
@@ -580,7 +577,7 @@
                         <div class="giat-text">
                             <h3>Kegiatan Peningkatan Kapasitas Aparatur Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi</h3>
                             <p>Kegiatan Peningkatan Kapasitas Aparatur Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi dengan Materi Tentang Penyelamatan Beda Ketinggian/Evakuasi Korban.</p>
-                            <a href="#">Selengkapnya</a>
+                            <a href="#">Selengkapnya <i class="fas fa-angle-right ms-1"></i></a>
                         </div>
                     </div>
                 </div>
@@ -614,9 +611,9 @@
             <div class="footer-links">
                 <h3>Link Terkait</h3>
                 <ul>
-                    <li><a href="https://damkar.jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> Official Damkar</a></li>
-                    <li><a href="https://jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> Website Jambikota</a></li>
-                    <li><a href="https://sikoja.jambikota.go.id/" target="_blank"><i class="fas fa-angle-double-right"></i> SIKOJA</a></li>
+                    <li><a href="https://damkar.jambikota.go.id/" target="_blank"><i class="fas fa-angle-right"></i> Official Damkar</a></li>
+                    <li><a href="https://jambikota.go.id/" target="_blank"><i class="fas fa-angle-right"></i> Website Jambikota</a></li>
+                    <li><a href="https://sikoja.jambikota.go.id/" target="_blank"><i class="fas fa-angle-right"></i> SIKOJA</a></li>
                 </ul>
             </div>
         </div>
@@ -639,14 +636,22 @@
 
     <!-- Skrip Internal untuk Animasi Halaman & Interaksi -->
     <script>
-        // 1. Logika untuk menghilangkan Splash Screen
+        // 1. Logika untuk menghilangkan Splash Screen & Memicu Animasi Hero
         window.addEventListener('load', function() {
             const splash = document.getElementById('splash-screen');
             if (splash) {
                 splash.classList.add('splash-hidden');
                 setTimeout(() => {
                     splash.remove();
-                }, 500);
+                    // Jalankan animasi bagian atas (hero) HANYA setelah loading selesai
+                    document.querySelectorAll('.hero-fade-up').forEach(el => {
+                        el.classList.add('visible');
+                    });
+                }, 500); // 500ms adalah waktu transisi splash screen menghilang
+            } else {
+                document.querySelectorAll('.hero-fade-up').forEach(el => {
+                    el.classList.add('visible');
+                });
             }
         });
 
@@ -655,6 +660,27 @@
             document.getElementById('popupImage').src = imgSrc;
             document.getElementById('popupTitle').innerText = title;
         }
+
+        // 3. Logika Intersection Observer untuk Efek Muncul dari Bawah (Fade Up)
+        document.addEventListener("DOMContentLoaded", function() {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15 // Elemen akan muncul ketika 15% terlihat di layar
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target); // Stop observe agar animasi tidak terulang
+                    }
+                });
+            }, observerOptions);
+
+            const fadeElements = document.querySelectorAll('.fade-up');
+            fadeElements.forEach(el => observer.observe(el));
+        });
     </script>
 </body>
 </html>

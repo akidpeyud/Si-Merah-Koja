@@ -5,7 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\SapraController;
 use App\Http\Controllers\OperatorMedsosController;
-use App\Http\Controllers\DamtanController; // <-- INI YANG DITAMBAHKAN
+use App\Http\Controllers\DamtanController;
+use App\Http\Controllers\RedkarController; // <-- TAMBAHAN: Import RedkarController
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
@@ -42,9 +43,8 @@ Route::post('/layanan-fasilitas/layanan_perizinan/store', [PermohonanController:
 
 Route::get('/layanan-fasilitas/skk', function () { return view('layanan-fasilitas.skk'); });
 Route::get('/layanan-fasilitas/perpanjang_skk', function () { return view('layanan-fasilitas.perpanjang_skk'); });
-Route::get('/layanan-fasilitas/izin_penjualan', function () { return view('layanan-fasilitas.izin_penjualan'); });
 Route::get('/layanan-fasilitas/edukasi_sosialisasi', function () { return view('layanan-fasilitas.edukasi_sosialisasi'); });
-Route::get('/layanan-fasilitas/pks', function () { return view('layanan-fasilitas.pks'); });
+Route::get('/layanan-fasilitas/informasi_layanan', function () { return view('layanan-fasilitas.informasi_layanan'); });
 
 // Route untuk menampilkan halaman Kelola RPKBGL
 Route::get('/internal/pencegahan/kelola-rpkbgl', function () {
@@ -382,9 +382,11 @@ Route::post('/internal/pencegahan/peningkatan-kapasitas/edit/{id}', function (\I
 // RUTE PUBLIK & CETAK REDKAR
 // ==========================================
 Route::get('/redkar', function () { return view('public.form_redkar'); });
-Route::post('/redkar', [AuthController::class, 'storeRedkar']);
-Route::get('/internal/pencegahan/cetak-redkar/{id}', [AuthController::class, 'cetakRedkar']);
 
+// <-- FIX: MENGARAHKAN KE RedkarController BUKAN AuthController
+Route::post('/redkar', [RedkarController::class, 'store']);
+
+Route::get('/internal/pencegahan/cetak-redkar/{id}', [RedkarController::class, 'cetakRedkar']);
 // ==========================================
 // ROUTE BERITA (PUBLIK & INTERNAL OPERATOR)
 // ==========================================
@@ -481,3 +483,9 @@ Route::get('/internal/damtan/edit-data/{id}', [DamtanController::class, 'editPen
 Route::put('/internal/damtan/update-data/{id}', [DamtanController::class, 'updatePenyelamatan'])->name('damtan.laporan.update');
 Route::delete('/internal/damtan/hapus-data/{id}', [DamtanController::class, 'destroyPenyelamatan']);
 Route::get('/internal/damtan/lihat-data/{id}', [DamtanController::class, 'showPenyelamatan']);
+Route::post('/internal/pencegahan/verifikasi-redkar/{id}', [RedkarController::class, 'verifikasiRedkar']);
+Route::get('/internal/pencegahan/edit-redkar/{id}', [RedkarController::class, 'editRedkar']);
+Route::put('/internal/pencegahan/update-redkar/{id}', [RedkarController::class, 'updateRedkar']);
+Route::delete('/internal/pencegahan/hapus-redkar/{id}', [RedkarController::class, 'hapusRedkar']);
+Route::get('/internal/pencegahan/tambah-redkar', [RedkarController::class, 'createRedkar']);
+Route::post('/internal/pencegahan/simpan-redkar-offline', [RedkarController::class, 'storeRedkarOffline']);

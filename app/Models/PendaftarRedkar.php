@@ -9,10 +9,17 @@ class PendaftarRedkar extends Model
 {
     use HasFactory;
 
-    // Menentukan nama tabel jika diperlukan (opsional, Laravel otomatis mendeteksi 'pendaftar_redkars')
-    protected $table = 'pendaftar_redkars';
+    protected $table = 'redkar_registrations';
+
+    // BAGIAN PENTING: Mencegah PHP/Laravel mengubah ID string menjadi angka 0
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
+        'id',                        
+        'username',                  
+        'password',                  
         'nik',
         'nama_lengkap',
         'jenis_kelamin',
@@ -31,9 +38,14 @@ class PendaftarRedkar extends Model
         'kelurahan',
         'pekerjaan',
         'pendidikan_terakhir',
+        'latar_belakang_pendidikan', 
         'sehat_jasmani',
-        'buta_warna',
         'golongan_darah',
         'status_pendaftaran',
+        'status_akun',
+    ];
+
+    protected $hidden = [
+        'password',
     ];
 }
