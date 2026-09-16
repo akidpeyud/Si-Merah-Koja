@@ -7,10 +7,8 @@
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
     <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -106,14 +104,50 @@
         
         .badge-custom { padding: 6px 10px; font-weight: 600; font-size: 11px; border-radius: 6px; }
 
-        /* --- DROPDOWN HOVER KUSTOM --- */
-        .dropdown-menu { padding: 8px; border-radius: 10px; }
-        .dropdown-item { border-radius: 6px; transition: all 0.2s ease-in-out; }
-        .dropdown-item:hover, .dropdown-item:focus { background-color: #e0f2fe !important; }
-
         /* Perbaikan Tampilan Pagination Laravel Bootstrap 5 */
         .pagination-container nav ul.pagination { margin-bottom: 0 !important; }
-        .pagination-container nav p { display: none; /* Sembunyikan text "Showing 1 to 10 of x results" bawaan */ }
+        .pagination-container nav p { display: none; }
+
+       /* --- STYLES KHUSUS UNTUK CETAK PDF --- */
+        @page {
+            /* Menghapus header/footer URL & Tanggal bawaan browser */
+            margin: 0; 
+        }
+
+        @media print {
+            /* Sembunyikan elemen yang tidak perlu dicetak */
+            .navbar-internal, .sidebar, .page-header, .card-header, .card-footer,
+            .btn, .dropdown, form, .modal, .action-btn, #globalSuccessAlert, #globalErrorAlert {
+                display: none !important;
+            }
+
+            /* Atur ulang background dan margin kertas agar tidak mepet ujung */
+            body { 
+                background-color: white !important; 
+                font-size: 12px; 
+                margin: 1.5cm !important; /* Jarak aman kertas */
+                -webkit-print-color-adjust: exact; 
+            }
+            
+            .dashboard-container { display: block; }
+            .main-content { padding: 0 !important; margin: 0 !important; background-color: white !important; }
+            .card { box-shadow: none !important; border: none !important; border-radius: 0 !important; }
+            .card-body { padding: 0 !important; }
+
+            /* Tampilkan header cetak khusus (Awalnya hidden) */
+            #print-header { display: block !important; text-align: center; margin-bottom: 20px; border-bottom: 2px solid black; padding-bottom: 10px; }
+            #print-header h2 { font-size: 20px; margin: 0 0 5px 0; font-weight: bold; color: black; }
+            #print-header p { font-size: 12px; margin: 0; color: black; }
+
+            /* Format tabel cetak */
+            .table { width: 100% !important; border-collapse: collapse; margin-bottom: 20px; }
+            .table th, .table td { border: 1px solid black !important; padding: 8px !important; text-align: left; }
+            .table th { background-color: #f2f2f2 !important; font-weight: bold; color: black !important; }
+            
+            /* Sembunyikan kolom aksi saat dicetak */
+            th:last-child, td:last-child { display: none !important; }
+        }
+    </style>
     </style>
 </head>
 <body>
@@ -152,18 +186,13 @@
     <nav class="navbar-internal">
         <a href="#" class="nav-brand">
             <img src="/images/simerahkoja.png" alt="Logo Simerah">
-            <span class="title">SIMERAH KOJA <span class="badge-internal">INTERNAL APP</span></span>
+            <span class="title">SIMERAH KOJA</span>
         </a>
-
         <div class="user-menu">
             <div class="user-profile">
-                <span class="badge-role {{ Auth::user()->role ?? '' }}">
-                    {{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}
-                </span>
                 <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
                 <i class="fas fa-user-circle"></i>
             </div>
-            
             <form action="/logout" method="POST" style="margin: 0;">
                 @csrf
                 <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
@@ -267,17 +296,10 @@
                     <p>Daftar seluruh laporan kejadian yang telah diinput ke dalam sistem.</p>
                 </div>
                 <div>
-                    <!-- Tombol Ekspor Dropdown -->
-                    <div class="dropdown d-inline-block me-2">
-                        <button class="btn btn-outline-secondary fw-bold shadow-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-download me-2"></i> Ekspor Semua
-                        </button>
-                        <ul class="dropdown-menu border-0 shadow-sm">
-                            <li><a class="dropdown-item py-2 text-danger fw-bold" href="#" onclick="window.print()"><i class="fas fa-file-pdf me-2"></i> Format PDF</a></li>
-                            <li><a class="dropdown-item py-2 text-success fw-bold" href="#" onclick="window.print()"><i class="fas fa-file-excel me-2"></i> Format Excel</a></li>
-                            <li><a class="dropdown-item py-2 text-primary fw-bold" href="#" onclick="window.print()"><i class="fas fa-file-word me-2"></i> Format Word</a></li>
-                        </ul>
-                    </div>
+                   <!-- Tombol Ekspor Langsung -->
+                    <button class="btn btn-outline-secondary fw-bold shadow-sm me-2" type="button" onclick="window.print()">
+                        <i class="fas fa-download me-2"></i> Ekspor Semua
+                    </button>
 
                     <a href="/internal/damtan/input-data" class="btn btn-primary fw-bold shadow-sm" style="background-color: #10b981; border: none;">
                         <i class="fas fa-plus me-2"></i> Buat Laporan Baru
@@ -293,12 +315,10 @@
                         <div class="col-md-4">
                             <div class="input-group">
                                 <span class="input-group-text bg-white text-muted border-end-0"><i class="fas fa-search"></i></span>
-                                <!-- ID searchInput ditambahkan untuk fungsi JS -->
                                 <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari nomor laporan, lokasi, dsb...">
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <!-- ID filterKategori ditambahkan untuk fungsi JS -->
                             <select id="filterKategori" class="form-select">
                                 <option value="">Semua Kategori</option>
                                 <option value="Kebakaran">Kebakaran</option>
@@ -317,6 +337,14 @@
                 <!-- Table Content -->
                 <div class="card-body p-0">
                     <div class="table-responsive">
+                        
+                        <!-- Header khusus cetak PDF (Awalnya tersembunyi via CSS) -->
+                        <div id="print-header" style="display: none;">
+                            <h2>REKAPITULASI DATA LAPORAN PENYELAMATAN</h2>
+                            <p>Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi</p>
+                            <p>Dicetak pada: {{ date('d F Y') }}</p>
+                        </div>
+
                         <table class="table align-middle mb-0">
                             <thead>
                                 <tr>
@@ -334,7 +362,6 @@
                             <tbody id="tableBody">
                                 @forelse($data_laporan as $index => $row)
                                 <tr>
-                                    <!-- Logika penomoran dilanjutkan secara otomatis sesuai halaman pagination -->
                                     <td class="text-center text-muted">{{ $data_laporan->firstItem() + $index }}</td>
                                     <td><strong>{{ $row->nomor_laporan }}</strong></td>
                                     <td>
@@ -377,68 +404,28 @@
                                         </span>
                                     </td>
                                     <td class="text-center">
-                                        <!-- Tombol Modal Dinamis -->
                                         <a href="/internal/damtan/lihat-data/{{ $row->id }}" class="action-btn view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
                                         <a href="/internal/damtan/edit-data/{{ $row->id }}" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
-                                        
-                                        <!-- Tombol Hapus Dinamis yang terhubung ke Controller -->
                                         <form action="/internal/damtan/hapus-data/{{ $row->id }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus laporan {{ $row->nomor_laporan }} secara permanen?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="action-btn delete" title="Hapus"><i class="fas fa-trash"></i></button>
                                         </form>
 
-                                        <!-- ================= MODAL LIHAT DETAIL DINAMIS ================= -->
-                                        <div class="modal fade text-start" id="detailModal{{ $row->id }}" tabindex="-1" aria-labelledby="detailModalLabel{{ $row->id }}" aria-hidden="true">
+                                        <!-- MODAL LIHAT DETAIL DINAMIS -->
+                                        <div class="modal fade text-start" id="detailModal{{ $row->id }}" tabindex="-1" aria-hidden="true">
                                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                                 <div class="modal-content border-0 shadow">
                                                     <div class="modal-header" style="background-color: #111827; color: white;">
-                                                        <h5 class="modal-title fw-bold" id="detailModalLabel{{ $row->id }}"><i class="fas fa-file-alt me-2 text-success"></i> Detail Laporan Penyelamatan</h5>
-                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        <h5 class="modal-title fw-bold"><i class="fas fa-file-alt me-2 text-success"></i> Detail Laporan</h5>
+                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                                     </div>
                                                     <div class="modal-body p-4 bg-light">
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-6">
-                                                                <p class="text-muted mb-1" style="font-size: 12px;">Nomor Laporan</p>
-                                                                <h6 class="fw-bold text-primary">{{ $row->nomor_laporan }}</h6>
-                                                            </div>
-                                                            <div class="col-md-6 text-md-end">
-                                                                <p class="text-muted mb-1" style="font-size: 12px;">Status Evakuasi</p>
-                                                                <span class="badge bg-success">Terekam</span>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <div class="card border-0 shadow-sm mb-3">
-                                                            <div class="card-body">
-                                                                <h6 class="fw-bold border-bottom pb-2 mb-3">Informasi Lokasi & Waktu</h6>
-                                                                <p class="mb-1" style="font-size: 14px;"><strong>Kategori:</strong> <span style="text-transform: capitalize;">{{ str_replace('_', ' ', $row->kategori_kejadian ?? '-') }}</span></p>
-                                                                <p class="mb-1" style="font-size: 14px;"><strong>Prioritas:</strong> <span style="text-transform: capitalize;">{{ $row->prioritas ?? 'Biasa' }}</span></p>
-                                                                <p class="mb-1" style="font-size: 14px;"><strong>Alamat:</strong> {{ $row->alamat ?? '-' }}</p>
-                                                                <p class="mb-1" style="font-size: 14px;"><strong>Koordinat:</strong> {{ $row->koordinat ?? '-' }}</p>
-                                                                <p class="mb-0" style="font-size: 14px;"><strong>Waktu Kejadian:</strong> {{ $row->waktu_kejadian ? \Carbon\Carbon::parse($row->waktu_kejadian)->format('d F Y, H:i') : '-' }} WIB</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div class="modal-footer bg-white">
-                                                        <button type="button" class="btn btn-light fw-bold px-4" data-bs-dismiss="modal">Tutup</button>
-                                                        
-                                                        <div class="dropdown">
-                                                            <button class="btn btn-primary fw-bold px-4 dropdown-toggle shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #0284c7; border: none;">
-                                                                <i class="fas fa-print me-2"></i> Cetak Laporan
-                                                            </button>
-                                                            <ul class="dropdown-menu dropdown-menu-end border-0 shadow">
-                                                                <li><a class="dropdown-item py-2 text-danger fw-bold" href="#"><i class="fas fa-file-pdf me-2"></i> Cetak PDF</a></li>
-                                                                <li><a class="dropdown-item py-2 text-success fw-bold" href="#"><i class="fas fa-file-excel me-2"></i> Ekspor Excel</a></li>
-                                                                <li><a class="dropdown-item py-2 text-primary fw-bold" href="#"><i class="fas fa-file-word me-2"></i> Ekspor Word</a></li>
-                                                            </ul>
-                                                        </div>
+                                                        <p>Rincian laporan dapat dilihat pada menu aksi.</p>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- ================= END MODAL DINAMIS ================= -->
-
                                     </td>
                                 </tr>
                                 @empty
@@ -472,7 +459,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // FUNGSI 1: SEARCH & FILTER FRONTEND 
-        // (Catatan: Ini akan memfilter data yang ada di halaman aktif saat ini saja)
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('searchInput');
             const filterKategori = document.getElementById('filterKategori');
@@ -484,20 +470,15 @@
                 const categoryTerm = filterKategori.value.toLowerCase();
 
                 for (let i = 0; i < rows.length; i++) {
-                    if (rows[i].getElementsByTagName('td').length === 1) {
-                        continue; // Lewati baris "Belum ada data"
-                    }
+                    if (rows[i].getElementsByTagName('td').length === 1) continue; 
+                    
                     const rowText = rows[i].textContent.toLowerCase();
                     const categoryCellText = rows[i].getElementsByTagName('td')[3].textContent.toLowerCase(); 
 
                     const matchesSearch = rowText.includes(searchTerm);
                     const matchesCategory = categoryTerm === "" || categoryCellText.includes(categoryTerm);
 
-                    if (matchesSearch && matchesCategory) {
-                        rows[i].style.display = '';
-                    } else {
-                        rows[i].style.display = 'none';
-                    }
+                    rows[i].style.display = (matchesSearch && matchesCategory) ? '' : 'none';
                 }
             }
 

@@ -50,11 +50,13 @@ class DamtanController extends Controller
             'updated_at' => now(),
         ]);
 
-        // B. SIMPAN KE TABEL 2 (Termasuk pimpinan, langkah penanganan)
+        // B. SIMPAN KE TABEL 2 (Teknis & Logistik)
         DB::table('lp_teknis_logistiks')->insert([
             'laporan_id' => $laporan_id,
             'pimpinan_operasi' => $request->pimpinan_operasi,
+            'pendamping_operasi' => $request->pendamping_operasi, // <-- TAMBAHAN BARU
             'satuan_tugas' => $request->satuan_tugas,
+            'tim_respontime' => $request->tim_respontime,         // <-- TAMBAHAN BARU
             'korban_selamat' => $request->korban_selamat ?? 0,
             'korban_ringan' => $request->korban_ringan ?? 0,
             'korban_berat' => $request->korban_berat ?? 0,
@@ -98,7 +100,7 @@ class DamtanController extends Controller
             $video->move(public_path('uploads/damtan/video'), $namaVideo);
         }
 
-        // C. SIMPAN KE TABEL 3 (Termasuk Cara Bertindak)
+        // C. SIMPAN KE TABEL 3 (Dokumentasi)
         DB::table('lp_dokumentasis')->insert([
             'laporan_id' => $laporan_id,
             'dugaan_penyebab' => $request->dugaan_penyebab,
@@ -118,7 +120,7 @@ class DamtanController extends Controller
             'updated_at' => now(),
         ]);
 
-        // D. SIMPAN KE TABEL 4 (Termasuk Berat Hewan)
+        // D. SIMPAN KE TABEL 4 (Khusus)
         DB::table('lp_kategori_khusus')->insert([
             'laporan_id' => $laporan_id,
             'jenis_hewan' => $request->jenis_hewan,
@@ -164,22 +166,18 @@ class DamtanController extends Controller
 
     public function editPenyelamatan($id)
     {
-        // 1. Ambil data spesifik berdasarkan ID yang dipilih
         $laporan = DB::table('laporan_penyelamatans')->where('id', $id)->first();
         $teknis = DB::table('lp_teknis_logistiks')->where('laporan_id', $id)->first();
         $dokumentasi = DB::table('lp_dokumentasis')->where('laporan_id', $id)->first();
         $khusus = DB::table('lp_kategori_khusus')->where('laporan_id', $id)->first();
 
-        // 2. Jika data tidak ada, kembalikan ke halaman tabel
         if (!$laporan) {
             return redirect('/internal/damtan/data-laporan')->with('error', 'Data laporan tidak ditemukan.');
         }
 
-        // 3. Tampilkan ke halaman form edit (pastikan Anda sudah membuat file edit_data.blade.php)
         return view('internal.damtan.edit_data', compact('laporan', 'teknis', 'dokumentasi', 'khusus'));
     }
 
-    // UPDATE: Telah diubah namanya agar tidak bentrok, dan dibersihkan dari blok catch yang nyasar
     public function updatePenyelamatan(Request $request, $id)
     {
         DB::table('laporan_penyelamatans')->where('id', $id)->update([
@@ -204,7 +202,9 @@ class DamtanController extends Controller
 
         DB::table('lp_teknis_logistiks')->where('laporan_id', $id)->update([
             'pimpinan_operasi' => $request->pimpinan_operasi,
+            'pendamping_operasi' => $request->pendamping_operasi, // <-- TAMBAHAN BARU
             'satuan_tugas' => $request->satuan_tugas,
+            'tim_respontime' => $request->tim_respontime,         // <-- TAMBAHAN BARU
             'korban_selamat' => $request->korban_selamat ?? 0,
             'korban_ringan' => $request->korban_ringan ?? 0,
             'korban_berat' => $request->korban_berat ?? 0,

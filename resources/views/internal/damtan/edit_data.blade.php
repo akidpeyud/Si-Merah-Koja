@@ -14,23 +14,62 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background-color: #f3f4f6; color: #1f2937; }
 
-        .navbar-internal { background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        /* --- NAVBAR INTERNAL --- */
+        .navbar-internal {
+            background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981;
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
         .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
         .nav-brand img { height: 40px; }
         .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; }
-        .badge-internal { background: #10b981; color: white; font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 700; margin-left: 10px; vertical-align: middle; }
-        .badge-role { background: #3b82f6; color: white; font-size: 11px; padding: 4px 10px; border-radius: 50px; font-weight: 700; text-transform: uppercase; }
+
         .user-menu { display: flex; align-items: center; gap: 20px; }
         .user-profile { display: flex; align-items: center; gap: 10px; color: #e5e7eb; font-size: 14px; font-weight: 600; }
-        .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .user-profile i { font-size: 20px; color: #9ca3af; }
         
+        .btn-logout {
+            background-color: #ef4444; color: white; border: none; padding: 8px 20px;
+            border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-logout:hover { background-color: #dc2626; }
+
+        /* --- SIDEBAR & ACCORDION STYLES --- */
         .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
-        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
-        .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600; border-radius: 8px; transition: all 0.2s; }
+        .sidebar {
+            width: 280px; background-color: #ffffff; border-right: 1px solid #e5e7eb;
+            padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto;
+        }
+        
+        .sidebar-item {
+            display: flex; align-items: center; gap: 15px; padding: 12px 15px;
+            color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600;
+            border-radius: 8px; transition: all 0.2s;
+        }
         .sidebar-item:hover { background-color: #f3f4f6; color: #111827; }
         .sidebar-item.active { background-color: #e0f2fe; color: #0284c7; }
+        .sidebar-item.active i { color: #0284c7; }
         .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #9ca3af; }
+        
+        .sidebar-collapse-btn {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; padding: 15px 15px 5px 15px; margin-top: 10px;
+            background: transparent; border: none; border-top: 1px dashed #e5e7eb;
+            text-align: left; font-size: 11px; font-weight: 800; color: #9ca3af;
+            text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s;
+        }
+        .sidebar-collapse-btn:hover { color: #4b5563; }
+        
+        .toggle-icon { transition: transform 0.3s ease; font-size: 12px; }
+        .sidebar-collapse-btn.collapsed .toggle-icon { transform: rotate(0deg); }
+        .sidebar-collapse-btn:not(.collapsed) .toggle-icon { transform: rotate(180deg); color: #0284c7; }
+        .sidebar-collapse-btn:not(.collapsed) { color: #0284c7; }
 
+        .sidebar-submenu {
+            display: flex; flex-direction: column; gap: 4px; padding-left: 10px; margin-top: 8px;
+        }
+
+        /* --- KONTEN UTAMA --- */
         .main-content { flex: 1; padding: 40px 50px; background-color: #f9fafb; }
         .page-header { margin-bottom: 30px; }
         .page-header h1 { font-size: 28px; font-weight: 800; color: #111827; margin-bottom: 5px; }
@@ -56,14 +95,14 @@
 </head>
 <body>
 
+    <!-- NAVBAR INTERNAL -->
     <nav class="navbar-internal">
         <a href="#" class="nav-brand">
             <img src="/images/simerahkoja.png" alt="Logo Simerah">
-            <span class="title">SIMERAH KOJA <span class="badge-internal">INTERNAL APP</span></span>
+            <span class="title">SIMERAH KOJA</span>
         </a>
         <div class="user-menu">
             <div class="user-profile">
-                <span class="badge-role {{ Auth::user()->role ?? '' }}">{{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}</span>
                 <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
                 <i class="fas fa-user-circle"></i>
             </div>
@@ -75,10 +114,96 @@
     </nav>
 
     <div class="dashboard-container">
-        <aside class="sidebar">
-            <a href="/internal/index" class="sidebar-item"><i class="fas fa-home"></i> Dashboard Utama</a>
-            <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
-            <a href="/internal/damtan/data-laporan" class="sidebar-item active"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
+        
+        <!-- SIDEBAR TERINTEGRASI -->
+        <aside class="sidebar" id="sidebarAccordion">
+            <a href="/internal/index" class="sidebar-item {{ Request::is('internal/index') ? 'active' : '' }}">
+                <i class="fas fa-home"></i> Dashboard Utama
+            </a>
+
+            @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
+                
+                <!-- ACCORDION PENCEGAHAN -->
+                <button class="sidebar-collapse-btn {{ Request::is('internal/pencegahan*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePencegahan" aria-expanded="{{ Request::is('internal/pencegahan*') ? 'true' : 'false' }}">
+                    <span>Bagian Pencegahan</span>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+                <div class="collapse {{ Request::is('internal/pencegahan*') ? 'show' : '' }}" id="collapsePencegahan" data-bs-parent="#sidebarAccordion">
+                    <div class="sidebar-submenu">
+                        <a href="/internal/pencegahan/kelola-rpkbgl" class="sidebar-item {{ Request::is('internal/pencegahan/kelola-rpkbgl*') ? 'active' : '' }}"><i class="fas fa-building"></i> Kelola RPKBGL</a>
+                        <a href="/internal/pencegahan/kelola-skk" class="sidebar-item {{ Request::is('internal/pencegahan/kelola-skk*') ? 'active' : '' }}"><i class="fas fa-shield-alt"></i> Kelola SKK</a> 
+                        <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item {{ Request::is('internal/pencegahan/layanan-inspeksi*') ? 'active' : '' }}"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
+                        <a href="/internal/pencegahan/kelola-edukasi" class="sidebar-item {{ Request::is('internal/pencegahan/kelola-edukasi*') ? 'active' : '' }}"><i class="fas fa-bullhorn"></i> Kelola Edukasi</a>
+                        <a href="/internal/pencegahan/pelatihan" class="sidebar-item {{ Request::is('internal/pencegahan/pelatihan*') ? 'active' : '' }}"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
+                        <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item {{ Request::is('internal/pencegahan/pembinaan-pengembangan*') ? 'active' : '' }}"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
+                        <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item {{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
+                        <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item {{ Request::is('internal/pencegahan/kelola-redkar*') ? 'active' : '' }}"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
+                    </div>
+                </div>
+
+                <!-- ACCORDION PEMADAMAN (DAMTAN) -->
+                <button class="sidebar-collapse-btn {{ Request::is('internal/damtan*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="{{ Request::is('internal/damtan*') ? 'true' : 'false' }}">
+                    <span>Bagian Pemadaman</span>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+                <div class="collapse {{ Request::is('internal/damtan*') ? 'show' : '' }}" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
+                    <div class="sidebar-submenu">
+                        <a href="/internal/damtan/input-data" class="sidebar-item {{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
+                        <a href="/internal/damtan/data-laporan" class="sidebar-item {{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
+                    </div>
+                </div>
+
+                <!-- ACCORDION SAPRA -->
+                <button class="sidebar-collapse-btn {{ Request::is('sapra*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSapra" aria-expanded="{{ Request::is('sapra*') ? 'true' : 'false' }}">
+                    <span>Bagian Sapra</span>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+                <div class="collapse {{ Request::is('sapra*') ? 'show' : '' }}" id="collapseSapra" data-bs-parent="#sidebarAccordion">
+                    <div class="sidebar-submenu">
+                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">MANAJEMEN AIR</span>
+                        <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
+                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
+
+                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">FASILITAS & POS MAKO</span>
+                        <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pos</a>
+                        <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pos</a>
+                        <a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan</a>
+                        <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
+
+                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">PERENCANAAN PENGADAAN</span>
+                        <a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
+                    </div>
+                </div>
+            @endif
+
+            @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
+                <!-- ACCORDION MANAJEMEN BERITA -->
+                <button class="sidebar-collapse-btn {{ Request::is('internal/operator*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita" aria-expanded="{{ Request::is('internal/operator*') ? 'true' : 'false' }}">
+                    <span>Manajemen Berita</span>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+                <div class="collapse {{ Request::is('internal/operator*') ? 'show' : '' }}" id="collapseBerita" data-bs-parent="#sidebarAccordion">
+                    <div class="sidebar-submenu">
+                        <a href="/internal/operator/kelola-berita" class="sidebar-item {{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+                        <a href="/internal/operator/infografis" class="sidebar-item {{ Request::is('internal/operator/infografis*') ? 'active' : '' }}"><i class="fas fa-image"></i> Kelola Info Grafis</a>
+                        <a href="/internal/operator/berita-medsos" class="sidebar-item {{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}"><i class="fab fa-instagram"></i> Kelola Berita Medsos</a>
+                    </div>
+                </div>
+            @endif
+
+            <!-- ACCORDION PENGATURAN -->
+            <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePengaturan" aria-expanded="false">
+                <span>Pengaturan Akun</span>
+                <i class="fas fa-chevron-down toggle-icon"></i>
+            </button>
+            <div class="collapse" id="collapsePengaturan" data-bs-parent="#sidebarAccordion">
+                <div class="sidebar-submenu">
+                    <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
+                    @if(Auth::user()->role === 'super_user')
+                        <a href="/internal/kelola-user" class="sidebar-item"><i class="fas fa-users"></i> Kelola Semua Pengguna</a>
+                    @endif
+                </div>
+            </div>
         </aside>
 
         <main class="main-content">
@@ -258,14 +383,23 @@
                             <div class="tab-pane fade" id="teknis" role="tabpanel">
                                 <h5 class="section-title"><i class="fas fa-tools"></i> Teknis Penyelamatan & Logistik</h5>
                                 
+                                <!-- TAMBAHAN 4 KOLOM -->
                                 <div class="row g-4 mb-5 border-bottom pb-4">
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <label class="field-label"><i class="fas fa-user-shield"></i> Pimpinan Operasi</label>
-                                        <input type="text" name="pimpinan_operasi" class="form-control" value="{{ $teknis->pimpinan_operasi ?? '' }}">
+                                        <input type="text" name="pimpinan_operasi" class="form-control" value="{{ $teknis->pimpinan_operasi ?? '' }}" placeholder="Cth: Danru 4 Mako">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
+                                        <label class="field-label"><i class="fas fa-user-friends"></i> Pendamping Operasi</label>
+                                        <input type="text" name="pendamping_operasi" class="form-control" value="{{ $teknis->pendamping_operasi ?? '' }}" placeholder="Opsional...">
+                                    </div>
+                                    <div class="col-md-3">
                                         <label class="field-label"><i class="fas fa-users-cog"></i> Satuan Tugas / Regu</label>
-                                        <input type="text" name="satuan_tugas" class="form-control" value="{{ $teknis->satuan_tugas ?? '' }}">
+                                        <input type="text" name="satuan_tugas" class="form-control" value="{{ $teknis->satuan_tugas ?? '' }}" placeholder="Cth: Pleton 1 Mako">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="field-label"><i class="fas fa-stopwatch"></i> Tim Respon Time</label>
+                                        <input type="text" name="tim_respontime" class="form-control" value="{{ $teknis->tim_respontime ?? '' }}" placeholder="Cth: 15 Menit">
                                     </div>
                                 </div>
 
@@ -290,7 +424,7 @@
                                 </div>
                                 <div class="row g-4 mb-4">
                                     <div class="col-md-12">
-                                        <label class="field-label"><i class="fas fa-cat"></i> Hewan / Aset</label>
+                                        <label class="field-label"><i class="fas fa-cat"></i> Hewan / Aset (Jika relevan)</label>
                                         <input type="text" name="korban_hewan_aset" class="form-control" value="{{ $teknis->korban_hewan_aset ?? '' }}">
                                     </div>
                                 </div>

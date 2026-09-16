@@ -137,18 +137,13 @@
     <nav class="navbar-internal">
         <a href="#" class="nav-brand">
             <img src="/images/simerahkoja.png" alt="Logo Simerah">
-            <span class="title">SIMERAH KOJA <span class="badge-internal">INTERNAL APP</span></span>
+            <span class="title">SIMERAH KOJA</span>
         </a>
-
         <div class="user-menu">
             <div class="user-profile">
-                <span class="badge-role {{ Auth::user()->role ?? '' }}">
-                    {{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}
-                </span>
                 <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
                 <i class="fas fa-user-circle"></i>
             </div>
-            
             <form action="/logout" method="POST" style="margin: 0;">
                 @csrf
                 <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
@@ -430,15 +425,23 @@
                             <div class="tab-pane fade" id="teknis" role="tabpanel">
                                 <h5 class="section-title"><i class="fas fa-tools"></i> Teknis Penyelamatan & Logistik</h5>
                                 
-                                <!-- DATA PIMPINAN -->
+                                <!-- DATA PIMPINAN (Diubah menjadi 4 kolom) -->
                                 <div class="row g-4 mb-5 border-bottom pb-4">
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <label class="field-label"><i class="fas fa-user-shield"></i> Pimpinan Operasi</label>
                                         <input type="text" name="pimpinan_operasi" class="form-control" placeholder="Cth: Danru 4 Mako">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
+                                        <label class="field-label"><i class="fas fa-user-friends"></i> Pendamping Operasi</label>
+                                        <input type="text" name="pendamping_operasi" class="form-control" placeholder="Opsional...">
+                                    </div>
+                                    <div class="col-md-3">
                                         <label class="field-label"><i class="fas fa-users-cog"></i> Satuan Tugas / Regu</label>
                                         <input type="text" name="satuan_tugas" class="form-control" placeholder="Cth: Pleton 1 Mako">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="field-label"><i class="fas fa-stopwatch"></i> Tim Respon Time</label>
+                                        <input type="text" name="tim_respontime" class="form-control" placeholder="Cth: 15 Menit">
                                     </div>
                                 </div>
 
