@@ -458,6 +458,23 @@ Route::delete('/sapra/kebutuhan-sarpras/delete/{id}', [SapraController::class, '
 // Tambahan route khusus untuk Pengadaan
 Route::post('/sapra/pengadaan-sarpras/store', [SapraController::class, 'storePengadaan']);
 Route::delete('/sapra/pengadaan-sarpras/delete/{kebutuhan_id}/{tahun}', [SapraController::class, 'destroyPengadaan']);
+Route::get('/sapra/kebutuhan-sarpras/cetak', [SapraController::class, 'cetakKebutuhan']);
+
+// ==========================================
+// === MENU DISTRIBUSI BARANG STAFF =========
+// ==========================================
+Route::get('/sapra/distribusi-staff', [SapraController::class, 'distribusiStaff']);
+Route::post('/sapra/distribusi-staff/store', [SapraController::class, 'storeDistribusiStaff']);
+Route::put('/sapra/distribusi-staff/update/{id}', [SapraController::class, 'updateDistribusiStaff']);
+Route::delete('/sapra/distribusi-staff/delete/{id}', [SapraController::class, 'destroyDistribusiStaff']);
+Route::get('/sapra/distribusi-staff/cetak', [SapraController::class, 'cetakDistribusiStaff']);
+
+// SARANA PEMERIKSAAN PROTEKSI
+Route::get('/sapra/sarana-pemeriksaan', [SapraController::class, 'saranaPemeriksaan']);
+Route::post('/sapra/sarana-pemeriksaan/store', [SapraController::class, 'storeSaranaPemeriksaan']);
+Route::put('/sapra/sarana-pemeriksaan/update/{id}', [SapraController::class, 'updateSaranaPemeriksaan']);
+Route::delete('/sapra/sarana-pemeriksaan/delete/{id}', [SapraController::class, 'destroySaranaPemeriksaan']);
+Route::get('/sapra/sarana-pemeriksaan/cetak', [SapraController::class, 'cetakPdfSaranaPemeriksaan']);
 
 // ==========================================
 // ROUTE KELOLA INFOGRAFIS & BERITA MEDSOS (OPERATOR)

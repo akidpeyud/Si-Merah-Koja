@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\DB;
 use App\Models\KebutuhanSarpras;
 use Barryvdh\DomPDF\Facade\Pdf;
 
-
 class SapraController extends Controller
 {
     // ==========================================
@@ -21,7 +20,6 @@ class SapraController extends Controller
         $dataSarpras = KebutuhanSarpras::all();
         return view('internal.sapra.logistik', compact('dataSarpras'));
     }
-
 
     // ==========================================
     // === MENU DATA HIDRANT GEDUNG / PILAR ===
@@ -58,7 +56,7 @@ class SapraController extends Controller
 
         DB::table('prasaranas')->insert([
             'kategori'    => $request->kategori,
-            'no_urut'     => $noUrutBaru, // Masukkan nomor yang dihitung otomatis
+            'no_urut'     => $noUrutBaru, 
             'nama_gedung' => $request->nama_gedung,
             'alamat'      => $request->alamat,
             'kode_maps'   => $request->kode_maps,
@@ -124,10 +122,9 @@ class SapraController extends Controller
         $pdf = Pdf::loadView('internal.sapra.hidran_pdf', compact('dataHidran'))
                   ->setPaper('a4', 'landscape'); 
                   
-        return $pdf->download('Data_Hidrant_Gedung.pdf');
+        return $pdf->download('Data_Sumber_Air.pdf');
     }
 
-    // Ini fungsi baru yang dicari sama web.php
     public function cetakExcelHidran()
     {
         return Excel::download(new HidranExport, 'Data_Hidrant_Danau_Embung.xlsx');
@@ -172,10 +169,11 @@ class SapraController extends Controller
                   ->setPaper('a4', 'landscape');
         return $pdf->download('Data_Hidrant_Kota_Jambi.pdf');
     }
+    
     public function cetakExcelKota()
-{
-    return Excel::download(new HidranKotaExport, 'Data_Hidrant_Kota_Jambi.xlsx');
-}
+    {
+        return Excel::download(new HidranKotaExport, 'Data_Hidrant_Kota_Jambi.xlsx');
+    }
 
     public function storeHidrantKota(Request $request)
     {
@@ -216,7 +214,8 @@ class SapraController extends Controller
         DB::table('hidran_kota')->where('id', $id)->delete();
         return redirect()->back()->with('success', 'Data Hidrant Kota berhasil dihapus!');
     }
-// ==========================================
+
+    // ==========================================
     // === MENU PRASARANA MAKO & POS ===
     // ==========================================
     
@@ -241,10 +240,10 @@ class SapraController extends Controller
         DB::table('prasarana')->insert([
             'id_pos'          => $request->id_pos,
             'jenis_prasarana' => $request->jenis_prasarana,
+            'luas_bangunan'   => $request->luas_bangunan,
             'path_gambar'     => $gambarPath,
         ]);
 
-        // Menyimpan id_pos ke session agar tab tidak reset
         return redirect()->back()
             ->with('success', 'Data Prasarana berhasil ditambahkan!')
             ->with('active_tab', $request->id_pos);
@@ -268,10 +267,10 @@ class SapraController extends Controller
         DB::table('prasarana')->where('id_prasarana', $id)->update([
             'id_pos'          => $request->id_pos,
             'jenis_prasarana' => $request->jenis_prasarana,
+            'luas_bangunan'   => $request->luas_bangunan,
             'path_gambar'     => $gambarPath,
         ]);
 
-        // Menyimpan id_pos ke session agar tab tidak reset
         return redirect()->back()
             ->with('success', 'Data Prasarana berhasil diperbarui!')
             ->with('active_tab', $request->id_pos);
@@ -281,7 +280,6 @@ class SapraController extends Controller
     {
         $data = DB::table('prasarana')->where('id_prasarana', $id)->first();
         
-        // Simpan id_pos ke variabel sebelum data dihapus dari database
         $id_pos_terakhir = $data->id_pos;
         
         if ($data && $data->path_gambar && file_exists(public_path($data->path_gambar))) {
@@ -290,7 +288,6 @@ class SapraController extends Controller
 
         DB::table('prasarana')->where('id_prasarana', $id)->delete();
 
-        // Mengirimkan id_pos terakhir ke session
         return redirect()->back()
             ->with('success', 'Data Prasarana berhasil dihapus!')
             ->with('active_tab', $id_pos_terakhir);
@@ -306,6 +303,7 @@ class SapraController extends Controller
 
         return $pdf->download('Data_Prasarana_Mako_Pos.pdf');
     }
+
     // ==========================================
     // === MENU SARANA MAKO & POS ===
     // ==========================================
@@ -331,6 +329,9 @@ class SapraController extends Controller
         DB::table('sarana_kebakaran')->insert([
             'id_pos'       => $request->id_pos,
             'jenis_sarana' => $request->jenis_sarana,
+            'tahun'        => $request->tahun,     
+            'plat_nomor'   => $request->plat_nomor, // <-- PLAT NOMOR
+            'no_stnk'      => $request->no_stnk,   
             'jumlah'       => $request->jumlah,
             'path_gambar'  => $gambarPath,
         ]);
@@ -358,6 +359,9 @@ class SapraController extends Controller
         DB::table('sarana_kebakaran')->where('id_sarana', $id)->update([
             'id_pos'       => $request->id_pos,
             'jenis_sarana' => $request->jenis_sarana,
+            'tahun'        => $request->tahun,     
+            'plat_nomor'   => $request->plat_nomor, // <-- PLAT NOMOR
+            'no_stnk'      => $request->no_stnk,   
             'jumlah'       => $request->jumlah,
             'path_gambar'  => $gambarPath,
         ]);
@@ -391,8 +395,9 @@ class SapraController extends Controller
         $pdf = Pdf::loadView('internal.sapra.sarana_mako_pdf', compact('posPemadam', 'dataSarana'))
                   ->setPaper('a4', 'portrait');
 
-        return $pdf->download('Data_Sarana_Mako_Pos.pdf');
+        return $pdf->download('Data_Sarana.pdf');
     }
+
     // ==========================================
     // === MENU SARANA PENYELAMATAN (RESCUE) ===
     // ==========================================
@@ -411,7 +416,6 @@ class SapraController extends Controller
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
             $filename = time() . '_' . $file->getClientOriginalName();
-            // Simpan gambar ke folder public/uploads/penyelamatan
             $file->move(public_path('uploads/penyelamatan'), $filename); 
             $gambarPath = 'uploads/penyelamatan/' . $filename;
         }
@@ -434,7 +438,6 @@ class SapraController extends Controller
         $gambarPath = $dataLama->path_gambar;
 
         if ($request->hasFile('gambar')) {
-            // Hapus gambar lama jika ada
             if ($gambarPath && file_exists(public_path($gambarPath))) {
                 unlink(public_path($gambarPath));
             }
@@ -461,7 +464,6 @@ class SapraController extends Controller
         $data = DB::table('sarana_penyelamatan')->where('id_sarana_penyelamatan', $id)->first();
         $id_pos_terakhir = $data->id_pos;
         
-        // Hapus file gambar fisik dari folder
         if ($data && $data->path_gambar && file_exists(public_path($data->path_gambar))) {
             unlink(public_path($data->path_gambar));
         }
@@ -472,7 +474,8 @@ class SapraController extends Controller
             ->with('success', 'Data Sarana Penyelamatan berhasil dihapus!')
             ->with('active_tab', $id_pos_terakhir);
     }
-public function cetakPdfSaranaPenyelamatan()
+
+    public function cetakPdfSaranaPenyelamatan()
     {
         $posPemadam = DB::table('pos_pemadam')->orderBy('id_pos', 'asc')->get();
         $dataPenyelamatan = DB::table('sarana_penyelamatan')->orderBy('id_sarana_penyelamatan', 'asc')->get();
@@ -482,6 +485,7 @@ public function cetakPdfSaranaPenyelamatan()
 
         return $pdf->download('Data_Sarana_Penyelamatan_Mako_Pos.pdf');
     }
+
     // ==========================================
     // === MENU KELOLA DATA POS ===
     // ==========================================
@@ -495,7 +499,7 @@ public function cetakPdfSaranaPenyelamatan()
     public function storePos(Request $request)
     {
         DB::table('pos_pemadam')->insert([
-            'nama_pos' => strtoupper($request->nama_pos), // Otomatis huruf besar
+            'nama_pos' => strtoupper($request->nama_pos), 
             'alamat'   => $request->alamat,
             'kode_map' => $request->kode_map,
         ]);
@@ -519,148 +523,291 @@ public function cetakPdfSaranaPenyelamatan()
         DB::table('pos_pemadam')->where('id_pos', $id)->delete();
         return redirect()->back()->with('success', 'Pos Pemadam berhasil dihapus!');
     }
-   // ==========================================
+
+    // ==========================================
     // === MENU KEBUTUHAN SARPRAS (MUTU BAKU) ===
     // ==========================================
     
     public function kebutuhanSarpras()
     {
-        // 1. Ambil data Mutu Baku
         $dataKebutuhan = DB::table('kebutuhan_sarpras')->orderBy('id', 'asc')->get();
-
-        // 2. Ambil data histori pengadaan (dari struktur database baru lu)
         $dataPengadaan = DB::table('pengadaan_sarpras')->orderBy('tahun', 'asc')->get();
 
-        // 3. Bikin daftar tahun otomatis (Kolom ke samping)
         $listTahun = $dataPengadaan->pluck('tahun')->unique()->sort()->values();
         if ($listTahun->isEmpty()) {
-            $listTahun = collect([2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]);
+            $listTahun = collect([date('Y')]);
         }
 
-        // 4. Kelompokkin data pengadaan biar gampang dicetak berjejer di Blade
         $pengadaanMapped = [];
         foreach ($dataPengadaan as $p) {
-            $pengadaanMapped[$p->kebutuhan_id][$p->tahun] = $p->jumlah;
+            if(!isset($pengadaanMapped[$p->kebutuhan_id][$p->tahun])) {
+                $pengadaanMapped[$p->kebutuhan_id][$p->tahun] = 0;
+            }
+            $pengadaanMapped[$p->kebutuhan_id][$p->tahun] += $p->jumlah; 
         }
 
-        return view('internal.sapra.kebutuhan_sarpras', compact('dataKebutuhan', 'listTahun', 'pengadaanMapped'));
+        $tahunSekarang = date('Y');
+        
+        foreach($dataKebutuhan as $item) {
+            $totalStok = $dataPengadaan->where('kebutuhan_id', $item->id)->sum('jumlah');
+            
+            $item->jumlah_tersedia = $totalStok;
+            
+            $kurang = $item->jumlah_dibutuhkan - $totalStok;
+            $item->jumlah_belum_tersedia = $kurang < 0 ? 0 : $kurang;
+        }
+
+        $realisasiTahunIni = DB::table('pengadaan_sarpras')
+            ->select('kebutuhan_id', DB::raw('SUM(jumlah) as total_masuk'), DB::raw('MAX(created_at) as tgl_masuk'))
+            ->where('tahun', $tahunSekarang)
+            ->groupBy('kebutuhan_id')
+            ->get()
+            ->keyBy('kebutuhan_id');
+
+        return view('internal.sapra.kebutuhan_sarpras', compact('dataKebutuhan', 'listTahun', 'pengadaanMapped', 'realisasiTahunIni', 'tahunSekarang'));
     }
 
     public function storeKebutuhanSarpras(Request $request)
     {
-        $butuh = $request->jumlah_dibutuhkan;
-        $sedia = $request->jumlah_tersedia;
-        $belumSedia = $butuh - $sedia;
-        $belumSedia = $belumSedia < 0 ? 0 : $belumSedia;
-
         DB::table('kebutuhan_sarpras')->insert([
             'uraian'                => strtoupper($request->uraian),
-            'jumlah_dibutuhkan'     => $butuh,
-            'jumlah_tersedia'       => $sedia,
-            'jumlah_belum_tersedia' => $belumSedia,
+            'jumlah_dibutuhkan'     => $request->jumlah_dibutuhkan,
+            'jumlah_tersedia'       => 0, 
+            'jumlah_belum_tersedia' => $request->jumlah_dibutuhkan,
             'created_at'            => now(),
             'updated_at'            => now(),
         ]);
 
-        return redirect()->back()->with('success', 'Data Mutu Baku berhasil ditambahkan!')->with('active_tab', 'mutubaku');
+        return redirect()->back()->with('success', 'Barang baru ditambahkan! Silakan isi Stok di Tab Riwayat Pengadaan.')->with('active_tab', 'mutubaku');
     }
 
     public function updateKebutuhanSarpras(Request $request, $id)
     {
-        $butuh = $request->jumlah_dibutuhkan;
-        $sedia = $request->jumlah_tersedia;
-        $belumSedia = $butuh - $sedia;
-        $belumSedia = $belumSedia < 0 ? 0 : $belumSedia;
-
         DB::table('kebutuhan_sarpras')->where('id', $id)->update([
-            'uraian'                => strtoupper($request->uraian),
-            'jumlah_dibutuhkan'     => $butuh,
-            'jumlah_tersedia'       => $sedia,
-            'jumlah_belum_tersedia' => $belumSedia,
-            'updated_at'            => now(),
+            'uraian'            => strtoupper($request->uraian),
+            'jumlah_dibutuhkan' => $request->jumlah_dibutuhkan,
+            'updated_at'        => now(),
         ]);
 
-        return redirect()->back()->with('success', 'Data Mutu Baku berhasil diperbarui!')->with('active_tab', 'mutubaku');
+        return redirect()->back()->with('success', 'Target Mutu Baku berhasil diperbarui!')->with('active_tab', 'mutubaku');
     }
 
     public function destroyKebutuhanSarpras($id)
     {
         DB::table('kebutuhan_sarpras')->where('id', $id)->delete();
-        return redirect()->back()->with('success', 'Data Mutu Baku berhasil dihapus!')->with('active_tab', 'mutubaku');
+        DB::table('pengadaan_sarpras')->where('kebutuhan_id', $id)->delete();
+        
+        return redirect()->back()->with('success', 'Data Mutu Baku dan riwayat pengadaannya berhasil dihapus!')->with('active_tab', 'mutubaku');
     }
 
     // ==============================================
-    // === FUNGSI OTOMATISASI PENGADAAN (NEW!) ======
+    // === FUNGSI OTOMATISASI PENGADAAN ======
     // ==============================================
     public function storePengadaan(Request $request)
     {
-        $kebutuhan_id = $request->kebutuhan_id;
-        $tahun        = $request->tahun;
-        $jumlah_masuk = $request->jumlah;
-
-        // Simpan histori pengadaan
         DB::table('pengadaan_sarpras')->insert([
-            'kebutuhan_id' => $kebutuhan_id,
-            'tahun'        => $tahun,
-            'jumlah'       => $jumlah_masuk,
+            'kebutuhan_id' => $request->kebutuhan_id,
+            'tahun'        => $request->tahun,
+            'jumlah'       => $request->jumlah,
             'created_at'   => now(),
             'updated_at'   => now(),
         ]);
 
-        // Panggil data Mutu Baku untuk dihitung ulang
-        $kebutuhan = DB::table('kebutuhan_sarpras')->where('id', $kebutuhan_id)->first();
+        return redirect()->back()
+            ->with('success', 'Riwayat pengadaan masuk! Mutu Baku (Stok Tersedia) otomatis terupdate.')
+            ->with('active_tab', 'pengadaan');
+    }
 
-        // Logika hitung otomatis stok
-        $sediaBaru      = $kebutuhan->jumlah_tersedia + $jumlah_masuk;
-        $belumSediaBaru = $kebutuhan->jumlah_dibutuhkan - $sediaBaru;
-        $belumSediaBaru = $belumSediaBaru < 0 ? 0 : $belumSediaBaru;
+    public function destroyPengadaan($kebutuhan_id, $tahun)
+    {
+        DB::table('pengadaan_sarpras')
+            ->where('kebutuhan_id', $kebutuhan_id)
+            ->where('tahun', $tahun)
+            ->delete();
 
-        // Update Mutu Baku
-        DB::table('kebutuhan_sarpras')->where('id', $kebutuhan_id)->update([
-            'jumlah_tersedia'       => $sediaBaru,
-            'jumlah_belum_tersedia' => $belumSediaBaru,
-            'updated_at'            => now(),
+        return redirect()->back()
+            ->with('success', 'Riwayat pengadaan tahun '.$tahun.' dibatalkan! Stok otomatis kembali.')
+            ->with('active_tab', 'pengadaan');
+    }
+
+    // ==============================================
+    // === FUNGSI CETAK LAPORAN & EXCEL =============
+    // ==============================================
+    public function cetakKebutuhan(Request $request)
+    {
+        $dataKebutuhan = DB::table('kebutuhan_sarpras')->orderBy('id', 'asc')->get();
+        $dataPengadaan = DB::table('pengadaan_sarpras')->orderBy('tahun', 'asc')->get();
+        
+        $listTahun = $dataPengadaan->pluck('tahun')->unique()->sort()->values();
+        if ($listTahun->isEmpty()) {
+            $listTahun = collect([date('Y')]);
+        }
+
+        $pengadaanMapped = [];
+        foreach ($dataPengadaan as $p) {
+            if(!isset($pengadaanMapped[$p->kebutuhan_id][$p->tahun])) {
+                $pengadaanMapped[$p->kebutuhan_id][$p->tahun] = 0;
+            }
+            $pengadaanMapped[$p->kebutuhan_id][$p->tahun] += $p->jumlah;
+        }
+
+        foreach($dataKebutuhan as $item) {
+            $totalStok = $dataPengadaan->where('kebutuhan_id', $item->id)->sum('jumlah');
+            $item->jumlah_tersedia = $totalStok;
+            $kurang = $item->jumlah_dibutuhkan - $totalStok;
+            $item->jumlah_belum_tersedia = $kurang < 0 ? 0 : $kurang;
+        }
+
+        if ($request->export == 'excel') {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Data_Mutu_Baku_Simerah_".date('Y').".xls");
+        }
+
+        return view('internal.sapra.cetak_kebutuhan', compact('dataKebutuhan', 'listTahun', 'pengadaanMapped'));
+    }
+
+    // ==============================================
+    // === DISTRIBUSI BARANG STAFF ====
+    // ==============================================
+    
+    public function distribusiStaff()
+    {
+        $rawData = DB::table('distribusi_barang_staff')
+            ->orderBy('nama_penerima', 'asc')
+            ->orderBy('waktu_terima', 'desc')
+            ->get();
+            
+        $dataDistribusi = $rawData->groupBy(function($item) {
+            return strtoupper(trim($item->nama_penerima));
+        });
+        
+        return view('internal.sapra.distribusi_staff', compact('dataDistribusi'));
+    }
+
+    public function storeDistribusiStaff(Request $request)
+    {
+        DB::table('distribusi_barang_staff')->insert([
+            'nama_penerima' => strtoupper($request->nama_penerima),
+            'nama_barang'   => strtoupper($request->nama_barang),
+            'detail_barang' => $request->detail_barang,
+            'waktu_terima'  => $request->waktu_terima, 
+            'keterangan'    => $request->keterangan,
+            'created_at'    => now(),
+            'updated_at'    => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Bukti distribusi barang ke staff berhasil dicatat!');
+    }
+
+    public function updateDistribusiStaff(Request $request, $id)
+    {
+        DB::table('distribusi_barang_staff')->where('id', $id)->update([
+            'nama_penerima' => strtoupper($request->nama_penerima),
+            'nama_barang'   => strtoupper($request->nama_barang),
+            'detail_barang' => $request->detail_barang,
+            'waktu_terima'  => $request->waktu_terima,
+            'keterangan'    => $request->keterangan,
+            'updated_at'    => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Data distribusi berhasil diperbarui!');
+    }
+
+    public function destroyDistribusiStaff($id)
+    {
+        DB::table('distribusi_barang_staff')->where('id', $id)->delete();
+        return redirect()->back()->with('success', 'Data distribusi berhasil dihapus!');
+    }
+
+    public function cetakDistribusiStaff()
+    {
+        $rawData = DB::table('distribusi_barang_staff')
+            ->orderBy('nama_penerima', 'asc')
+            ->orderBy('waktu_terima', 'desc')
+            ->get();
+            
+        $dataDistribusi = $rawData->groupBy(function($item) {
+            return strtoupper(trim($item->nama_penerima));
+        });
+
+        return view('internal.sapra.distribusi_staff_cetak', compact('dataDistribusi'));
+    }
+    
+    // ==========================================
+    // === MENU SARANA PEMERIKSAAN PROTEKSI ===
+    // ==========================================
+    
+    public function saranaPemeriksaan()
+    {
+        $posPemadam = DB::table('pos_pemadam')->orderBy('id_pos', 'asc')->get();
+        $dataPemeriksaan = DB::table('sarana_pemeriksaan')->orderBy('id_sarana_pemeriksaan', 'asc')->get();
+
+        return view('internal.sapra.sarana_pemeriksaan', compact('posPemadam', 'dataPemeriksaan'));
+    }
+
+    public function storeSaranaPemeriksaan(Request $request)
+    {
+        $gambarPath = null;
+        if ($request->hasFile('gambar')) {
+            $file = $request->file('gambar');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/pemeriksaan'), $filename); 
+            $gambarPath = 'uploads/pemeriksaan/' . $filename;
+        }
+
+        DB::table('sarana_pemeriksaan')->insert([
+            'id_pos'       => $request->id_pos,
+            'jenis_sarana' => $request->jenis_sarana,
+            'jumlah'       => $request->jumlah,
+            'path_gambar'  => $gambarPath,
         ]);
 
         return redirect()->back()
-            ->with('success', 'Riwayat pengadaan berhasil ditambahkan! Stok Mutu Baku otomatis bertambah.')
-            ->with('active_tab', 'pengadaan');
+            ->with('success', 'Data Sarana Pemeriksaan berhasil ditambahkan!')
+            ->with('active_tab', $request->id_pos);
     }
-    public function destroyPengadaan($kebutuhan_id, $tahun)
+
+    public function updateSaranaPemeriksaan(Request $request, $id)
     {
-        // 1. Cari data pengadaan yang mau dihapus
-        $pengadaan = DB::table('pengadaan_sarpras')
-            ->where('kebutuhan_id', $kebutuhan_id)
-            ->where('tahun', $tahun)
-            ->first();
+        $dataLama = DB::table('sarana_pemeriksaan')->where('id_sarana_pemeriksaan', $id)->first();
+        $gambarPath = $dataLama->path_gambar;
 
-        if ($pengadaan) {
-            $jumlah_batal = $pengadaan->jumlah;
-
-            // 2. Hapus data dari tabel pengadaan
-            DB::table('pengadaan_sarpras')->where('id', $pengadaan->id)->delete();
-
-            // 3. Panggil data Mutu Baku untuk di-Rollback (dikurangi lagi)
-            $kebutuhan = DB::table('kebutuhan_sarpras')->where('id', $kebutuhan_id)->first();
-            
-            $sediaBaru = $kebutuhan->jumlah_tersedia - $jumlah_batal;
-            $sediaBaru = $sediaBaru < 0 ? 0 : $sediaBaru; // Cegah stok minus
-
-            $belumSediaBaru = $kebutuhan->jumlah_dibutuhkan - $sediaBaru;
-            $belumSediaBaru = $belumSediaBaru < 0 ? 0 : $belumSediaBaru;
-
-            // 4. Update ulang Mutu Baku ke kondisi semula
-            DB::table('kebutuhan_sarpras')->where('id', $kebutuhan_id)->update([
-                'jumlah_tersedia'       => $sediaBaru,
-                'jumlah_belum_tersedia' => $belumSediaBaru,
-                'updated_at'            => now(),
-            ]);
-
-            return redirect()->back()
-                ->with('success', 'Riwayat pengadaan '.$tahun.' dibatalkan! Stok otomatis disesuaikan kembali.')
-                ->with('active_tab', 'pengadaan');
+        if ($request->hasFile('gambar')) {
+            if ($gambarPath && file_exists(public_path($gambarPath))) {
+                unlink(public_path($gambarPath));
+            }
+            $file = $request->file('gambar');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/pemeriksaan'), $filename); 
+            $gambarPath = 'uploads/pemeriksaan/' . $filename;
         }
 
-        return redirect()->back()->with('active_tab', 'pengadaan');
+        DB::table('sarana_pemeriksaan')->where('id_sarana_pemeriksaan', $id)->update([
+            'id_pos'       => $request->id_pos,
+            'jenis_sarana' => $request->jenis_sarana,
+            'jumlah'       => $request->jumlah,
+            'path_gambar'  => $gambarPath,
+        ]);
+
+        return redirect()->back()
+            ->with('success', 'Data Sarana Pemeriksaan berhasil diperbarui!')
+            ->with('active_tab', $request->id_pos);
     }
-} // Pastikan kurung kurawal ini tidak terhapus!
+
+    public function destroySaranaPemeriksaan($id)
+    {
+        $data = DB::table('sarana_pemeriksaan')->where('id_sarana_pemeriksaan', $id)->first();
+        $id_pos_terakhir = $data->id_pos;
+        
+        if ($data && $data->path_gambar && file_exists(public_path($data->path_gambar))) {
+            unlink(public_path($data->path_gambar));
+        }
+
+        DB::table('sarana_pemeriksaan')->where('id_sarana_pemeriksaan', $id)->delete();
+
+        return redirect()->back()
+            ->with('success', 'Data Sarana Pemeriksaan berhasil dihapus!')
+            ->with('active_tab', $id_pos_terakhir);
+    }
+    
+}

@@ -131,9 +131,8 @@
         </a>
         <div class="user-menu">
             <div class="user-profile">
-                
                 <span>{{ Auth::user()->nama_lengkap ?? 'Dhimas Zaky Abiyyu' }}</span>
-                <i class="fas fa-user-circle"></i>
+                <i class="fas fa-user-circle" style="font-size: 20px; color: #9ca3af;"></i>
             </div>
             <form action="/logout" method="POST" style="margin: 0;">
                 @csrf
@@ -176,8 +175,7 @@
                     <div class="sidebar-submenu">
                         <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data & Laporan</a>
                         <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-file-alt"></i> Data Laporan</a>
-                        <a href="#" class="sidebar-item"><i class="fas fa-users-cog"></i> Jadwal Piket Regu</a>
-                        <a href="#" class="sidebar-item"><i class="fas fa-running"></i> Data Relawan Redkar</a>
+                        
                     </div>
                 </div>
             @endif
@@ -189,21 +187,20 @@
                 </button>
                 <div class="collapse show" id="collapseSapra" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
-                       <!-- GRUP MANAJEMEN AIR -->
-<span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">MANAJEMEN AIR</span>
-<a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
-<a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
+                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">MANAJEMEN AIR</span>
+                        <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
+                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
 
-<!-- GRUP FASILITAS & POS -->
-<span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">FASILITAS & POS MAKO</span>
-<a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pos</a>
-<a href="/sapra/sarana-mako" class="sidebar-item active"><i class="fas fa-fire-extinguisher"></i> Sarana Pos</a>
-<a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan</a>
-<a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
+                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">SARANA DAN PRASARANA</span>
+                        <a href="/sapra/sarana-mako" class="sidebar-item active"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam Kebakaran</a>
+                        <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pemadam kebakaran</a>
+                        <a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi</a>
+                        <a href="/sapra/sarana-pemeriksaan" class="sidebar-item"><i class="fas fa-search"></i>Sarana Pemeriksaan Proteksi Kebakaran</a>
+                        <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
 
-<!-- GRUP PERENCANAAN / MUTU BAKU -->
-<span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">PERENCANAAN PENGADAAN</span>
-<a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
+                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">LOGISTIK & DISTRIBUSI</span>
+                        <a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
+                        <a href="/sapra/distribusi-staff" class="sidebar-item"><i class="fas fa-user-check"></i> Distribusi Barang Staff</a>
                     </div>
                 </div>
             @endif
@@ -238,7 +235,7 @@
         <main class="main-content">
             <div class="d-flex justify-content-between align-items-end mb-4">
                 <div>
-                    <h1 style="font-size: 26px; font-weight: 800; color: #111827; margin-bottom: 6px;">Data Sarana Pos</h1>
+                    <h1 style="font-size: 26px; font-weight: 800; color: #111827; margin-bottom: 6px;">Data Sarana Pemadam Kebakaran</h1>
                     <p style="color: #6b7280; font-size: 14px; margin: 0;">Manajemen dokumentasi sarana kebakaran di Markas Komando dan Pos Pemadam.</p>
                 </div>
                 <div class="d-flex gap-2 align-items-center">
@@ -266,7 +263,7 @@
                     @php $isActive = $activeTab ? ($pos->id_pos == $activeTab) : $loop->first; @endphp
                     <li class="nav-item" role="presentation">
                         <button class="nav-link {{ $isActive ? 'active' : '' }}" id="tab-{{ $pos->id_pos }}" data-bs-toggle="tab" data-bs-target="#content-{{ $pos->id_pos }}" type="button" role="tab">
-                            {{ $pos->nama_pos }}
+                            {{ strtoupper($pos->nama_pos) }}
                         </button>
                     </li>
                 @endforeach
@@ -301,7 +298,37 @@
                                         @forelse($dataFilter as $index => $item)
                                             <tr class="data-row">
                                                 <td class="text-center fw-bold text-dark">{{ $loop->iteration }}</td>
-                                                <td class="fw-bold text-dark" style="padding-left: 20px;">{{ $item->jenis_sarana }}</td>
+                                                
+                                                <!-- KOLOM NAMA BARANG & BADGE STNK/PLAT/TAHUN -->
+                                                <td class="data-name" style="padding-left: 20px; padding-top: 15px; padding-bottom: 15px;">
+                                                    <div class="fw-bold text-dark" style="font-size: 14.5px; text-transform: uppercase; margin-bottom: 8px;">
+                                                        {{ $item->jenis_sarana }}
+                                                    </div>
+                                                    
+                                                    <!-- Logika Munculin Tahun, Plat, & STNK -->
+                                                    @if($item->tahun || $item->plat_nomor || $item->no_stnk)
+                                                        <div class="d-flex flex-wrap gap-2">
+                                                            @if($item->tahun) 
+                                                                <span class="badge bg-white border shadow-sm" style="font-size: 12.5px; padding: 7px 12px; color: #475569; font-weight: 600;">
+                                                                    <i class="fas fa-calendar-alt text-primary me-1"></i> Thn: <span class="text-dark fw-bold">{{ $item->tahun }}</span>
+                                                                </span> 
+                                                            @endif
+                                                            
+                                                            @if($item->plat_nomor) 
+                                                                <span class="badge bg-white border shadow-sm" style="font-size: 12.5px; padding: 7px 12px; color: #475569; font-weight: 600;">
+                                                                    <i class="fas fa-car text-success me-1"></i> Plat: <span class="text-dark fw-bold" style="text-transform: uppercase;">{{ $item->plat_nomor }}</span>
+                                                                </span> 
+                                                            @endif
+
+                                                            @if($item->no_stnk) 
+                                                                <span class="badge bg-white border shadow-sm" style="font-size: 12.5px; padding: 7px 12px; color: #475569; font-weight: 600;">
+                                                                    <i class="fas fa-id-card text-danger me-1"></i> STNK: <span class="text-dark fw-bold" style="text-transform: uppercase;">{{ $item->no_stnk }}</span>
+                                                                </span> 
+                                                            @endif
+                                                        </div>
+                                                    @endif
+                                                </td>
+                                                
                                                 <td class="text-center fw-bold text-primary" style="font-size: 15px;">{{ $item->jumlah }}</td>
                                                 <td class="text-center">
                                                     @if($item->path_gambar && file_exists(public_path($item->path_gambar)))
@@ -362,7 +389,7 @@
                                                         <option value="">-- Pilih Lokasi --</option>
                                                         @foreach($posPemadam as $posOption)
                                                             <option value="{{ $posOption->id_pos }}" {{ $posOption->id_pos == $item->id_pos ? 'selected' : '' }}>
-                                                                {{ $posOption->nama_pos }}
+                                                                {{ strtoupper($posOption->nama_pos) }}
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -377,6 +404,23 @@
                                                         <input type="number" class="form-control border-light-subtle shadow-sm" name="jumlah" value="{{ $item->jumlah }}" required>
                                                     </div>
                                                 </div>
+                                                
+                                                <!-- INPUTAN BARU TAHUN, PLAT & STNK (EDIT) -->
+                                                <div class="row">
+                                                    <div class="col-md-4 mb-3">
+                                                        <label class="form-label fw-bold small text-secondary">Tahun <span class="text-muted fw-normal">(Ops)</span></label>
+                                                        <input type="text" class="form-control border-light-subtle shadow-sm" name="tahun" value="{{ $item->tahun }}" placeholder="Cth: 2022">
+                                                    </div>
+                                                    <div class="col-md-4 mb-3">
+                                                        <label class="form-label fw-bold small text-secondary">Plat Nomor <span class="text-muted fw-normal">(Ops)</span></label>
+                                                        <input type="text" class="form-control border-light-subtle shadow-sm" name="plat_nomor" value="{{ $item->plat_nomor }}" placeholder="Cth: BH 1234 XX">
+                                                    </div>
+                                                    <div class="col-md-4 mb-3">
+                                                        <label class="form-label fw-bold small text-secondary">No. STNK <span class="text-muted fw-normal">(Ops)</span></label>
+                                                        <input type="text" class="form-control border-light-subtle shadow-sm" name="no_stnk" value="{{ $item->no_stnk }}" placeholder="Cth: 12345678">
+                                                    </div>
+                                                </div>
+
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold small text-secondary">Ganti Gambar (Opsional)</label>
                                                     <input type="file" class="form-control border-light-subtle shadow-sm" name="gambar" accept="image/*">
@@ -399,7 +443,7 @@
         </main>
     </div>
 
-    <!-- MODAL TAMBAH DATA -->
+    <!-- MODAL TAMBAH DATA (YANG SUDAH DIBERSIHKAN DARI ERROR) -->
     <div class="modal fade" id="modalTambah" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content border-0 shadow">
@@ -415,7 +459,7 @@
                             <select class="form-select border-light-subtle shadow-sm" name="id_pos" required>
                                 <option value="">-- Pilih Lokasi --</option>
                                 @foreach($posPemadam as $pos)
-                                    <option value="{{ $pos->id_pos }}">{{ $pos->nama_pos }}</option>
+                                    <option value="{{ $pos->id_pos }}">{{ strtoupper($pos->nama_pos) }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -429,6 +473,23 @@
                                 <input type="number" class="form-control border-light-subtle shadow-sm" name="jumlah" value="1" required>
                             </div>
                         </div>
+
+                        <!-- INPUTAN BARU TAHUN, PLAT & STNK (TAMBAH DATA - BEBAS ERROR) -->
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold small text-secondary">Tahun <span class="text-muted fw-normal">(Ops)</span></label>
+                                <input type="text" class="form-control border-light-subtle shadow-sm" name="tahun" placeholder="Cth: 2022">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold small text-secondary">Plat Nomor <span class="text-muted fw-normal">(Ops)</span></label>
+                                <input type="text" class="form-control border-light-subtle shadow-sm" name="plat_nomor" placeholder="Cth: BH 1234 XX">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold small text-secondary">No. STNK <span class="text-muted fw-normal">(Ops)</span></label>
+                                <input type="text" class="form-control border-light-subtle shadow-sm" name="no_stnk" placeholder="Cth: 12345678">
+                            </div>
+                        </div>
+
                         <div class="mb-3">
                             <label class="form-label fw-bold small text-secondary">Upload Gambar</label>
                             <input type="file" class="form-control border-light-subtle shadow-sm" name="gambar" accept="image/*" required>
@@ -445,16 +506,12 @@
 
     <!-- JAVASCRIPT UNTUK SEARCH REAL-TIME -->
     <script>
-        // Fitur Pencarian
         document.getElementById('searchInput').addEventListener('keyup', function() {
             let filter = this.value.toLowerCase();
-            
-            // Cari hanya di tab yang sedang aktif
             let activeTab = document.querySelector('.tab-pane.active');
             if(!activeTab) return;
 
             let rows = activeTab.querySelectorAll('.data-row');
-            
             rows.forEach(row => {
                 let textContent = row.textContent.toLowerCase();
                 if(textContent.includes(filter)) {
@@ -465,14 +522,10 @@
             });
         });
 
-        // Reset pencarian saat user ganti tab Pos/Mako
         let tabs = document.querySelectorAll('button[data-bs-toggle="tab"]');
         tabs.forEach(tab => {
             tab.addEventListener('shown.bs.tab', function (e) {
-                // Kosongkan input form
                 document.getElementById('searchInput').value = '';
-                
-                // Munculkan semua baris yang tadi sempat di-hide
                 let rows = document.querySelectorAll('.data-row');
                 rows.forEach(row => row.style.display = '');
             });
