@@ -79,6 +79,8 @@
         .btn-delete { background-color: #ef4444; color: white; }
         
         #searchInput:focus { box-shadow: none; border-color: #cbd5e1; }
+        
+        .badge.btn-hover:hover { background-color: #f8fafc !important; opacity: 0.8; }
     </style>
 </head>
 <body>
@@ -166,11 +168,6 @@
                     <div class="sidebar-submenu">
                         
                         <!-- MANAJEMEN AIR -->
-                        <span class="sidebar-heading" style="text-transform: uppercase;">MANAJEMEN AIR</span>
-                        <!-- ACTIVE ADA DI SINI KARENA INI HALAMAN SUMBER AIR -->
-                        <a href="/sapra/data_hidrant_gedung" class="sidebar-item active"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
-                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota jambi</a>
-
                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">SARANA DAN PRASARANA</span>
                         <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam Kebakaran</a>
                         <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pemadam Kebakaran</a>
@@ -178,6 +175,10 @@
                         <a href="/sapra/sarana-pemeriksaan" class="sidebar-item"><i class="fas fa-search"></i> Sarana Pemeriksaan Proteksi Kebakaran</a>    
                         <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
                         
+                        <!-- ACTIVE ADA DI SINI KARENA INI HALAMAN SUMBER AIR -->
+                          <span class="sidebar-heading" style="text-transform: uppercase;">MANAJEMEN AIR</span>
+                        <a href="/sapra/data_hidrant_gedung" class="sidebar-item active"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
+                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota jambi</a>
 
                         <!-- LOGISTIK & DISTRIBUSI -->
                         <span class="sidebar-heading" style="text-transform: uppercase;">LOGISTIK & DISTRIBUSI</span>
@@ -286,7 +287,18 @@
                                         <td class="text-center fw-bold text-dark">{{ $item->no_urut }}</td>
                                         <td class="fw-bold text-dark data-name">{{ $item->nama_gedung }}</td>
                                         <td class="data-address">{{ $item->alamat }}</td>
-                                        <td class="text-center fw-medium">{{ $item->kode_maps ?? '-' }}</td>
+                                        
+                                        <!-- KODE MAPS CLICKABLE -->
+                                        <td class="text-center align-middle">
+                                            @if($item->kode_maps)
+                                                <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($item->kode_maps) }}" target="_blank" class="badge bg-light btn-hover text-primary border shadow-sm text-decoration-none px-3 py-2" style="font-size: 12px; transition: 0.2s;">
+                                                    <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ $item->kode_maps }}
+                                                </a>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                        
                                         <td class="text-center"><span class="badge-qty">{{ $item->jumlah ?? '0' }} Unit</span></td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center gap-2">
@@ -347,7 +359,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer bg-light">
-                                                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">Batal</button>
+                                                        <button type="button" class="btn-secondary fw-bold" data-bs-dismiss="modal">Batal</button>
                                                         <button type="submit" class="btn btn-primary fw-bold px-4">Simpan Perubahan</button>
                                                     </div>
                                                 </form>
@@ -395,7 +407,18 @@
                                         <td class="text-center fw-bold text-dark">{{ $item->no_urut }}</td>
                                         <td class="fw-bold text-dark data-name">{{ $item->nama_gedung }}</td>
                                         <td class="data-address">{{ $item->alamat }}</td>
-                                        <td class="text-center fw-medium">{{ $item->kode_maps ?? '-' }}</td>
+                                        
+                                        <!-- KODE MAPS CLICKABLE -->
+                                        <td class="text-center align-middle">
+                                            @if($item->kode_maps)
+                                                <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($item->kode_maps) }}" target="_blank" class="badge bg-light btn-hover text-primary border shadow-sm text-decoration-none px-3 py-2" style="font-size: 12px; transition: 0.2s;">
+                                                    <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ $item->kode_maps }}
+                                                </a>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                        
                                         <td class="text-center"><span class="badge-qty">{{ $item->jumlah ?? '0' }} Unit</span></td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center gap-2">
@@ -503,7 +526,18 @@
                                         <td class="text-center fw-bold text-dark">{{ $item->no_urut }}</td>
                                         <td class="fw-bold text-dark data-name">{{ $item->nama_gedung }}</td>
                                         <td class="data-address">{{ $item->alamat }}</td>
-                                        <td class="text-center fw-medium">{{ $item->kode_maps ?? '-' }}</td>
+                                        
+                                        <!-- KODE MAPS CLICKABLE -->
+                                        <td class="text-center align-middle">
+                                            @if($item->kode_maps)
+                                                <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($item->kode_maps) }}" target="_blank" class="badge bg-light btn-hover text-primary border shadow-sm text-decoration-none px-3 py-2" style="font-size: 12px; transition: 0.2s;">
+                                                    <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ $item->kode_maps }}
+                                                </a>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                        
                                         <td class="text-center"><span class="badge-area">{{ $item->luas ?? '-' }}</span></td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center gap-2">
@@ -601,7 +635,18 @@
                                         <td class="text-center fw-bold text-dark">{{ $item->no_urut }}</td>
                                         <td class="fw-bold text-dark data-name">{{ $item->nama_gedung }}</td>
                                         <td class="data-address">{{ $item->alamat }}</td>
-                                        <td class="text-center fw-medium">{{ $item->kode_maps ?? '-' }}</td>
+                                        
+                                        <!-- KODE MAPS CLICKABLE -->
+                                        <td class="text-center align-middle">
+                                            @if($item->kode_maps)
+                                                <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($item->kode_maps) }}" target="_blank" class="badge bg-light btn-hover text-primary border shadow-sm text-decoration-none px-3 py-2" style="font-size: 12px; transition: 0.2s;">
+                                                    <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ $item->kode_maps }}
+                                                </a>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                        
                                         <td class="text-center"><span class="badge-area">{{ $item->luas ?? '-' }}</span></td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center gap-2">
