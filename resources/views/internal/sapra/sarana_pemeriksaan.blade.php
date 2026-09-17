@@ -166,21 +166,19 @@
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
                 <div class="collapse show" id="collapseSapra" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">
-                        
-                        <!-- MANAJEMEN AIR -->
-                        <span class="sidebar-heading" style="text-transform: uppercase;">MANAJEMEN AIR</span>
-                        <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
-                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota jambi</a>
-
-                        <!-- Sarana dan prasarana -->
+                    <div class="sidebar-submenu">                
+                     <!-- Sarana dan prasarana -->
                         <span class="sidebar-heading" style="text-transform: none;">Sarana dan prasarana</span>
                         <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam Kebakaran</a>
                         <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pemadam Kebakaran</a>
                         <a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi</a>
-                        <a href="/sapra/sarana-pemeriksaan" class="sidebar-item active"><i class="fas fa-search"></i> Sarana Pemeriksaan Proteksi Kebakaran</a>
-                        
+                        <a href="/sapra/sarana-pemeriksaan" class="sidebar-item active"><i class="fas fa-search"></i> Sarana Pemeriksaan Proteksi Kebakaran</a>                        
                         <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
+
+                          <!-- MANAJEMEN AIR -->
+                        <span class="sidebar-heading" style="text-transform: uppercase;">MANAJEMEN AIR</span>
+                        <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
+                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota jambi</a>
 
                         <!-- LOGISTIK & DISTRIBUSI -->
                         <span class="sidebar-heading" style="text-transform: uppercase;">LOGISTIK & DISTRIBUSI</span>
