@@ -54,9 +54,9 @@ class DamtanController extends Controller
         DB::table('lp_teknis_logistiks')->insert([
             'laporan_id' => $laporan_id,
             'pimpinan_operasi' => $request->pimpinan_operasi,
-            'pendamping_operasi' => $request->pendamping_operasi, // <-- TAMBAHAN BARU
+            'pendamping_operasi' => $request->pendamping_operasi,
             'satuan_tugas' => $request->satuan_tugas,
-            'tim_respontime' => $request->tim_respontime,         // <-- TAMBAHAN BARU
+            'tim_respontime' => $request->tim_respontime,
             'korban_selamat' => $request->korban_selamat ?? 0,
             'korban_ringan' => $request->korban_ringan ?? 0,
             'korban_berat' => $request->korban_berat ?? 0,
@@ -202,9 +202,9 @@ class DamtanController extends Controller
 
         DB::table('lp_teknis_logistiks')->where('laporan_id', $id)->update([
             'pimpinan_operasi' => $request->pimpinan_operasi,
-            'pendamping_operasi' => $request->pendamping_operasi, // <-- TAMBAHAN BARU
+            'pendamping_operasi' => $request->pendamping_operasi,
             'satuan_tugas' => $request->satuan_tugas,
-            'tim_respontime' => $request->tim_respontime,         // <-- TAMBAHAN BARU
+            'tim_respontime' => $request->tim_respontime,
             'korban_selamat' => $request->korban_selamat ?? 0,
             'korban_ringan' => $request->korban_ringan ?? 0,
             'korban_berat' => $request->korban_berat ?? 0,
@@ -301,5 +301,51 @@ class DamtanController extends Controller
         DB::table('laporan_penyelamatans')->where('id', $id)->delete();
         
         return redirect()->back()->with('success', 'Data Keseluruhan berhasil dihapus secara permanen!');
+    }
+
+    // ==========================================
+    // FUNGSI UNTUK SURAT KETERANGAN KORBAN
+    // ==========================================
+
+    public function createSurat()
+    {
+        return view('internal.damtan.input_surat');
+    }
+
+    public function storeSurat(Request $request)
+    {
+        $surat_id = DB::table('surat_korbans')->insertGetId([
+            'nomor_surat' => '364/..../Damkartan/' . date('Y'),
+            'nama_korban' => $request->nama_korban,
+            'status_kepemilikan' => $request->status_kepemilikan,
+            'nik' => $request->nik,
+            'pekerjaan' => $request->pekerjaan,
+            'tempat_lahir' => $request->tempat_lahir,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'status_perkawinan' => $request->status_perkawinan,
+            'alamat' => $request->alamat,
+            'objek_terbakar' => $request->objek_terbakar,
+            'hari_kejadian' => $request->hari_kejadian,
+            'tanggal_kejadian' => $request->tanggal_kejadian,
+            'waktu_kejadian' => $request->waktu_kejadian,
+            'tembusan_camat' => $request->tembusan_camat,
+            'tembusan_lurah' => $request->tembusan_lurah,
+            'tanggal_surat' => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return redirect('/internal/surat-korban/cetak/' . $surat_id)->with('success', 'Surat Keterangan Korban berhasil dibuat!');
+    }
+
+    public function cetakSurat($id)
+    {
+        $surat = DB::table('surat_korbans')->where('id', $id)->first();
+        
+        if (!$surat) {
+            return redirect()->back()->with('error', 'Data surat tidak ditemukan.');
+        }
+
+        return view('internal.damtan.cetak_surat', compact('surat'));
     }
 }

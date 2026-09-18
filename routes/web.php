@@ -7,6 +7,7 @@ use App\Http\Controllers\SapraController;
 use App\Http\Controllers\OperatorMedsosController;
 use App\Http\Controllers\DamtanController;
 use App\Http\Controllers\RedkarController; 
+use App\Http\Controllers\SuratKorbanController;
 use App\Http\Controllers\PermohonanController;
 use App\Models\Berita;
 use App\Models\Infografis;
@@ -74,10 +75,13 @@ Route::get('/login-redkar', function () {
 Route::post('/login-redkar', [RedkarController::class, 'processLoginRedkar']);
 Route::post('/logout-redkar', [RedkarController::class, 'logoutRedkar'])->name('logout.redkar');
 
-// Dashboard Relawan Redkar (Hanya bisa diakses jika sudah login lewat guard 'redkar')
+// Dashboard Relawan Redkar
 Route::get('/redkar/dashboard', function () {
     return view('redkar.halaman_utama'); 
 })->name('redkar.dashboard')->middleware('auth:redkar');
+
+// Profil Relawan Redkar
+Route::get('/redkar/profil', [RedkarController::class, 'profilRedkar'])->name('redkar.profil')->middleware('auth:redkar');
 
 
 // ==========================================
@@ -530,10 +534,8 @@ Route::get('/internal/damtan/edit-data/{id}', [DamtanController::class, 'editPen
 Route::put('/internal/damtan/update-data/{id}', [DamtanController::class, 'updatePenyelamatan'])->name('damtan.laporan.update')->middleware('auth');
 Route::delete('/internal/damtan/hapus-data/{id}', [DamtanController::class, 'destroyPenyelamatan'])->middleware('auth');
 Route::get('/internal/damtan/lihat-data/{id}', [DamtanController::class, 'showPenyelamatan'])->middleware('auth');
-// Dashboard Relawan Redkar
-Route::get('/redkar/dashboard', function () {
-    return view('redkar.halaman_utama'); 
-})->name('redkar.dashboard')->middleware('auth:redkar');
 
-// TAMBAHKAN RUTE PROFIL INI:
-Route::get('/redkar/profil', [RedkarController::class, 'profilRedkar'])->name('redkar.profil')->middleware('auth:redkar');
+// --- ROUTE SURAT KORBAN KEBAKARAN (BARU) ---
+Route::get('/internal/surat-korban/create', [DamtanController::class, 'createSurat'])->middleware('auth');
+Route::post('/internal/surat-korban/store', [DamtanController::class, 'storeSurat'])->middleware('auth');
+Route::get('/internal/surat-korban/cetak/{id}', [DamtanController::class, 'cetakSurat'])->middleware('auth');

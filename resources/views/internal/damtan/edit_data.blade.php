@@ -262,7 +262,7 @@
                                     <div class="col-md-4">
                                         <label class="field-label"><i class="fas fa-route"></i> Jarak Tempuh</label>
                                         <div class="input-group">
-                                            <input type="number" step="0.1" name="jarak_tempuh" class="form-control" value="{{ $laporan->jarak_tempuh ?? '' }}">
+                                            <input type="number" step="0.1" min="0" name="jarak_tempuh" class="form-control" value="{{ $laporan->jarak_tempuh ?? '' }}">
                                             <span class="input-group-text">Km</span>
                                         </div>
                                     </div>
@@ -383,7 +383,6 @@
                             <div class="tab-pane fade" id="teknis" role="tabpanel">
                                 <h5 class="section-title"><i class="fas fa-tools"></i> Teknis Penyelamatan & Logistik</h5>
                                 
-                                <!-- TAMBAHAN 4 KOLOM -->
                                 <div class="row g-4 mb-5 border-bottom pb-4">
                                     <div class="col-md-3">
                                         <label class="field-label"><i class="fas fa-user-shield"></i> Pimpinan Operasi</label>
@@ -407,24 +406,24 @@
                                 <div class="row g-4 mb-4">
                                     <div class="col-md-3">
                                         <label class="field-label"><i class="fas fa-user-check"></i> Selamat</label>
-                                        <input type="number" name="korban_selamat" class="form-control" value="{{ $teknis->korban_selamat ?? 0 }}">
+                                        <input type="number" min="0" name="korban_selamat" class="form-control" value="{{ $teknis->korban_selamat ?? 0 }}">
                                     </div>
                                     <div class="col-md-3">
                                         <label class="field-label"><i class="fas fa-user-injured"></i> Luka Ringan</label>
-                                        <input type="number" name="korban_ringan" class="form-control" value="{{ $teknis->korban_ringan ?? 0 }}">
+                                        <input type="number" min="0" name="korban_ringan" class="form-control" value="{{ $teknis->korban_ringan ?? 0 }}">
                                     </div>
                                     <div class="col-md-3">
                                         <label class="field-label"><i class="fas fa-procedures"></i> Luka Berat</label>
-                                        <input type="number" name="korban_berat" class="form-control" value="{{ $teknis->korban_berat ?? 0 }}">
+                                        <input type="number" min="0" name="korban_berat" class="form-control" value="{{ $teknis->korban_berat ?? 0 }}">
                                     </div>
                                     <div class="col-md-3">
                                         <label class="field-label text-danger"><i class="fas fa-user-times"></i> Meninggal Dunia</label>
-                                        <input type="number" name="korban_meninggal" class="form-control" value="{{ $teknis->korban_meninggal ?? 0 }}">
+                                        <input type="number" min="0" name="korban_meninggal" class="form-control" value="{{ $teknis->korban_meninggal ?? 0 }}">
                                     </div>
                                 </div>
                                 <div class="row g-4 mb-4">
                                     <div class="col-md-12">
-                                        <label class="field-label"><i class="fas fa-cat"></i> Hewan / Aset (Jika relevan)</label>
+                                        <label class="field-label"><i class="fas fa-cat"></i> Hewan / Aset</label>
                                         <input type="text" name="korban_hewan_aset" class="form-control" value="{{ $teknis->korban_hewan_aset ?? '' }}">
                                     </div>
                                 </div>
@@ -542,21 +541,21 @@
                                     <div class="col-md-4">
                                         <label class="field-label"><i class="fas fa-tint"></i> Liter Air Digunakan</label>
                                         <div class="input-group">
-                                            <input type="number" name="liter_air" class="form-control" value="{{ $teknis->liter_air ?? 0 }}">
+                                            <input type="number" min="0" name="liter_air" class="form-control" value="{{ $teknis->liter_air ?? 0 }}">
                                             <span class="input-group-text">L</span>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="field-label"><i class="fas fa-soap"></i> Liter Foam</label>
                                         <div class="input-group">
-                                            <input type="number" name="liter_foam" class="form-control" value="{{ $teknis->liter_foam ?? 0 }}">
+                                            <input type="number" min="0" name="liter_foam" class="form-control" value="{{ $teknis->liter_foam ?? 0 }}">
                                             <span class="input-group-text">L</span>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="field-label"><i class="fas fa-gas-pump"></i> Liter BBM Unit</label>
                                         <div class="input-group">
-                                            <input type="number" name="liter_bbm" class="form-control" value="{{ $teknis->liter_bbm ?? 0 }}">
+                                            <input type="number" min="0" name="liter_bbm" class="form-control" value="{{ $teknis->liter_bbm ?? 0 }}">
                                             <span class="input-group-text">L</span>
                                         </div>
                                     </div>
@@ -585,7 +584,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <label class="field-label"><i class="fas fa-users"></i> Jumlah Personel</label>
-                                        <input type="number" name="jumlah_personel" class="form-control" value="{{ $teknis->jumlah_personel ?? 0 }}">
+                                        <input type="number" min="0" name="jumlah_personel" class="form-control" value="{{ $teknis->jumlah_personel ?? 0 }}">
                                     </div>
                                 </div>
 
@@ -627,7 +626,7 @@
                                     <div class="col-md-12">
                                         <label class="field-label"><i class="fas fa-ruler-combined"></i> Luas Area Terdampak</label>
                                         <div class="input-group" style="width: 50%;">
-                                            <input type="number" name="luas_area" class="form-control" value="{{ $dokumentasi->luas_area ?? '' }}">
+                                            <input type="number" min="0" step="0.1" name="luas_area" class="form-control" value="{{ $dokumentasi->luas_area ?? '' }}">
                                             <span class="input-group-text">m²</span>
                                         </div>
                                     </div>
@@ -739,7 +738,7 @@
                                     <div class="col-md-6 mt-3">
                                         <label class="field-label"><i class="fas fa-balance-scale"></i> Berat Hewan</label>
                                         <div class="input-group">
-                                            <input type="number" step="0.1" name="berat_hewan" class="form-control" value="{{ $khusus->berat_hewan ?? '' }}">
+                                            <input type="number" step="0.1" min="0" name="berat_hewan" class="form-control" value="{{ $khusus->berat_hewan ?? '' }}">
                                             <span class="input-group-text">Kg</span>
                                         </div>
                                     </div>
@@ -772,7 +771,7 @@
                                     <div class="col-md-4">
                                         <label class="field-label"><i class="fas fa-expand-arrows-alt"></i> Dimensi Objek</label>
                                         <div class="input-group">
-                                            <input type="number" name="dimensi_objek" class="form-control" value="{{ $khusus->dimensi_objek ?? '' }}">
+                                            <input type="number" min="0" name="dimensi_objek" class="form-control" value="{{ $khusus->dimensi_objek ?? '' }}">
                                             <span class="input-group-text">cm</span>
                                         </div>
                                     </div>
@@ -803,7 +802,7 @@
                                     <div class="col-md-4">
                                         <label class="field-label"><i class="fas fa-search-location"></i> Radius</label>
                                         <div class="input-group">
-                                            <input type="number" name="radius_pencarian" class="form-control" value="{{ $khusus->radius_pencarian ?? '' }}">
+                                            <input type="number" min="0" name="radius_pencarian" class="form-control" value="{{ $khusus->radius_pencarian ?? '' }}">
                                             <span class="input-group-text">m</span>
                                         </div>
                                     </div>
