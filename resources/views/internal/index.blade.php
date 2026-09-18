@@ -139,7 +139,7 @@
             flex-direction: column; 
             position: relative; 
             overflow: hidden;
-            text-decoration: none; /* Karena sekarang berupa <a> tag */
+            text-decoration: none; 
             color: inherit;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
@@ -255,14 +255,16 @@
                 </div>
 
                 <!-- ACCORDION PEMADAMAN (DAMTAN) -->
-                <button class="sidebar-collapse-btn {{ Request::is('internal/damtan*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="{{ Request::is('internal/damtan*') ? 'true' : 'false' }}">
+                <button class="sidebar-collapse-btn {{ Request::is('internal/damtan*') || Request::is('internal/surat*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="{{ Request::is('internal/damtan*') || Request::is('internal/surat*') ? 'true' : 'false' }}">
                     <span>Bagian Pemadaman</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
-                <div class="collapse {{ Request::is('internal/damtan*') ? 'show' : '' }}" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
+                <div class="collapse {{ Request::is('internal/damtan*') || Request::is('internal/surat*') ? 'show' : '' }}" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
                         <a href="/internal/damtan/input-data" class="sidebar-item {{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
                         <a href="/internal/damtan/data-laporan" class="sidebar-item {{ Request::is('internal/damtan/data-laporan*') ? 'active' : '' }}"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
+                        <!-- Menu Baru Untuk Surat -->
+                        <a href="/internal/surat-korban/create" class="sidebar-item {{ Request::is('internal/surat*') ? 'active' : '' }}"><i class="fas fa-file-signature"></i> Buat Surat Korban</a>
                     </div>
                 </div>
 
@@ -286,7 +288,7 @@
                         <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
                         <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
 
-<!-- GRUP LOGISTIK & DISTRIBUSI -->
+                        <!-- GRUP LOGISTIK & DISTRIBUSI -->
                         <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">LOGISTIK & DISTRIBUSI</span>
                         <a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
                         <a href="/sapra/distribusi-staff" class="sidebar-item"><i class="fas fa-user-check"></i> Distribusi Barang Staff</a>
@@ -401,9 +403,18 @@
                     <div class="stat-value">3</div>
                 </a>
 
+                <!-- Card Tambahan: Surat Keterangan Korban -->
+                <a href="/internal/surat-korban/create" class="stat-card border-blue" style="border-bottom: 4px solid #3b82f6;">
+                    <i class="fas fa-file-signature stat-icon" style="color: #3b82f6;"></i>
+                    <div class="stat-title" style="color: #64748b;">Surat Korban Terbit</div>
+                    <div class="stat-value" style="color: #0f172a;">
+                        {{ \Illuminate\Support\Facades\DB::table('surat_korbans')->count() }}
+                    </div>
+                </a>
+
                 <!-- Card Total Hidrant Kota -->
-                <a href="/sapra/data-hidrant-kota" class="stat-card border-primary" style="border-bottom: 4px solid #3b82f6;">
-                    <i class="fas fa-map-marker-alt stat-icon" style="color: #3b82f6;"></i>
+                <a href="/sapra/data-hidrant-kota" class="stat-card border-primary" style="border-bottom: 4px solid #0284c7;">
+                    <i class="fas fa-map-marker-alt stat-icon" style="color: #0284c7;"></i>
                     <div class="stat-title" style="color: #64748b;">Total Hidrant Kota</div>
                     <div class="stat-value" style="color: #0f172a;">
                         {{ \Illuminate\Support\Facades\DB::table('hidran_kota')->count() }}

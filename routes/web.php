@@ -7,6 +7,7 @@ use App\Http\Controllers\SapraController;
 use App\Http\Controllers\OperatorMedsosController;
 use App\Http\Controllers\DamtanController;
 use App\Http\Controllers\RedkarController; // <-- TAMBAHAN: Import RedkarController
+use App\Http\Controllers\SuratKorbanController; // <-- TAMBAHAN BARU UNTUK SURAT
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
@@ -39,7 +40,7 @@ Route::get('/sop', function () { return view('programkerja.sop'); });
 Route::get('/layanan-fasilitas/layanan_perizinan', function () { return view('layanan-fasilitas.layanan_perizinan'); });
 
 // <-- TAMBAHAN: Route POST permohonan.store untuk menangani form submit
-Route::post('/layanan-fasilitas/layanan_perizinan/store', [PermohonanController::class, 'store'])->name('permohonan.store');
+Route::post('/layanan-fasilitas/layanan_perizinan/store', [App\Http\Controllers\PermohonanController::class, 'store'])->name('permohonan.store');
 
 Route::get('/layanan-fasilitas/skk', function () { return view('layanan-fasilitas.skk'); });
 Route::get('/layanan-fasilitas/perpanjang_skk', function () { return view('layanan-fasilitas.perpanjang_skk'); });
@@ -382,11 +383,9 @@ Route::post('/internal/pencegahan/peningkatan-kapasitas/edit/{id}', function (\I
 // RUTE PUBLIK & CETAK REDKAR
 // ==========================================
 Route::get('/redkar', function () { return view('public.form_redkar'); });
-
-// <-- FIX: MENGARAHKAN KE RedkarController BUKAN AuthController
 Route::post('/redkar', [RedkarController::class, 'store']);
-
 Route::get('/internal/pencegahan/cetak-redkar/{id}', [RedkarController::class, 'cetakRedkar']);
+
 // ==========================================
 // ROUTE BERITA (PUBLIK & INTERNAL OPERATOR)
 // ==========================================
@@ -506,3 +505,7 @@ Route::put('/internal/pencegahan/update-redkar/{id}', [RedkarController::class, 
 Route::delete('/internal/pencegahan/hapus-redkar/{id}', [RedkarController::class, 'hapusRedkar']);
 Route::get('/internal/pencegahan/tambah-redkar', [RedkarController::class, 'createRedkar']);
 Route::post('/internal/pencegahan/simpan-redkar-offline', [RedkarController::class, 'storeRedkarOffline']);
+// --- ROUTE SURAT KORBAN KEBAKARAN (BARU) ---
+Route::get('/internal/surat-korban/create', [DamtanController::class, 'createSurat']);
+Route::post('/internal/surat-korban/store', [DamtanController::class, 'storeSurat']);
+Route::get('/internal/surat-korban/cetak/{id}', [DamtanController::class, 'cetakSurat']);
