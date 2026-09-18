@@ -301,7 +301,7 @@
                 <ul class="dropdown-menu-custom">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">Layanan Perizinan</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi Dan Sosialisasi</a></li>
-                    <li><a href="/layanan-fasilitas/informasi_layanan">Informasi Layanan</a></li>
+                    <li><a href="/informasi-layanan">INFORMASI LAYANAN</a></li>
                 </ul>
             </li>
             <li><a href="/redkar">Redkar</a></li>

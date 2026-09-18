@@ -12,6 +12,7 @@ use App\Models\Infografis;
 use App\Models\BeritaMedsos;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\PublicController;
 
 // ==========================================
 // ROUTE UNTUK HALAMAN UTAMA (HOMEPAGE)
@@ -506,3 +507,9 @@ Route::put('/internal/pencegahan/update-redkar/{id}', [RedkarController::class, 
 Route::delete('/internal/pencegahan/hapus-redkar/{id}', [RedkarController::class, 'hapusRedkar']);
 Route::get('/internal/pencegahan/tambah-redkar', [RedkarController::class, 'createRedkar']);
 Route::post('/internal/pencegahan/simpan-redkar-offline', [RedkarController::class, 'storeRedkarOffline']);
+
+// Route untuk halaman publik Informasi Layanan (SAPRA)
+Route::get('/informasi-layanan', [PublicController::class, 'informasiLayanan']);
+Route::get('/informasi-prasarana', [PublicController::class, 'informasiPrasarana']);
+Route::get('/informasi-penyelamatan', [PublicController::class, 'informasiPenyelamatan']);
+Route::get('/informasi-pemeriksaan', [PublicController::class, 'informasiPemeriksaan']);

@@ -54,19 +54,22 @@
         /* --- MAIN AREA & TABLE STYLES --- */
         .main-content { flex: 1; padding: 40px 50px; background-color: #f9fafb; overflow-y: auto; }
         .table-card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #e5e7eb; }
-        .table-custom { margin-bottom: 0; font-size: 12.5px; white-space: nowrap; }
-        .table-custom thead th { background-color: #111827; color: #f8fafc; font-weight: 600; padding: 16px 12px; border-bottom: none; text-align: center; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; }
-        .table-custom tbody td { padding: 12px; color: #4b5563; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
+        .table-custom { margin-bottom: 0; font-size: 12px; white-space: nowrap; }
+        .table-custom thead th { background-color: #111827; color: #f8fafc; font-weight: 600; padding: 16px 10px; border-bottom: none; text-align: center; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; }
+        .table-custom tbody td { padding: 12px 10px; color: #4b5563; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
         .table-custom tbody tr:hover { background-color: #f8fafc; }
         
-        /* STATUS BADGES */
-        .status-badge { padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; }
-        .bg-baik { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-        .bg-rusak { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-        .bg-sedang { background-color: #fef9c3; color: #854d0e; border: 1px solid #fef08a; }
-        .bg-kuat { background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
-        .bg-lemah { background-color: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
-        .bg-null { background-color: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+        /* --- UPDATE: STATUS BADGES (LEBIH MENCOLOK & PAKE IKON) --- */
+        .status-badge { padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 5px; justify-content: center; min-width: 85px; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        
+        /* Warna Solid Baru */
+        .bg-baik { background-color: #10b981; border: 1px solid #059669; } /* Hijau Solid */
+        .bg-rusak { background-color: #ef4444; border: 1px solid #b91c1c; } /* Merah Solid */
+        .bg-kuat { background-color: #0284c7; border: 1px solid #0369a1; } /* Biru Solid */
+        .bg-sedang { background-color: #f59e0b; border: 1px solid #d97706; } /* Kuning Solid */
+        .bg-lemah { background-color: #f97316; border: 1px solid #c2410c; } /* Oranye Solid */
+        
+        .bg-null { background-color: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; box-shadow: none; font-weight: 600; }
 
         .btn-action { padding: 6px 10px; font-size: 12px; border-radius: 6px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; }
         .btn-action:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
@@ -74,6 +77,10 @@
         .btn-delete { background-color: #ef4444; color: white; }
 
         #searchInput:focus { box-shadow: none; border-color: #cbd5e1; }
+        
+        /* Hover buat link Map */
+        .map-link { transition: all 0.2s; }
+        .map-link:hover { transform: translateY(-2px); background-color: #f1f5f9 !important; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1) !important; }
     </style>
 </head>
 <body>
@@ -177,24 +184,25 @@
    <!-- GRUP MANAJEMEN AIR -->
 <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">MANAJEMEN AIR</span>
 <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
+<!-- ACTIVE ADA DI SINI -->
 <a href="/sapra/data-hidrant-kota" class="sidebar-item active"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
 
 
 <!-- GRUP LOGISTIK & DISTRIBUSI -->
                         <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">LOGISTIK & DISTRIBUSI</span>
                         <a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
-                        <a href="/sapra/distribusi-staff" class="sidebar-item"><i class="fas fa-user-check"></i> Distribusi Barang Staff</a>                 </div>
+                        <a href="/sapra/distribusi-staff" class="sidebar-item"><i class="fas fa-user-check"></i> Distribusi Barang Staff</a>                </div>
                 </div>
             @endif
 
-            @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
+            @if(in_array(Auth::user()->role, ['operator', 'super_user']))
                 <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita" aria-expanded="false">
                     <span>Manajemen Berita</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
                 <div class="collapse" id="collapseBerita" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
-                        <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+                        <a href="/internal/operator/kelola-berita" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
                         <a href="/internal/operator/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
                     </div>
                 </div>
@@ -249,16 +257,16 @@
                     <table class="table table-custom">
                         <thead>
                             <tr>
-                                <th width="16%" style="text-align: left; padding-left: 20px;">JALAN</th>
-                                <th width="14%" style="text-align: left;">KECAMATAN / KELURAHAN</th>
+                                <th width="15%" style="text-align: left; padding-left: 20px;">JALAN</th>
+                                <th width="13%" style="text-align: left;">KECAMATAN / KELURAHAN</th>
                                 <th width="4%">RT</th>
                                 <th width="14%" style="text-align: left;">LOKASI TERDEKAT</th>
-                                <th width="7%">KODE MAP</th>
-                                <th width="7%">KONDISI</th>
-                                <th width="7%">TEKANAN</th>
-                                <th width="7%">MACHINO</th>
-                                <th width="18%" style="text-align: left;">KETERANGAN</th>
-                                <th width="6%">AKSI</th>
+                                <th width="9%">KODE MAP</th>
+                                <th width="9%">KONDISI</th>
+                                <th width="9%">TEKANAN</th>
+                                <th width="9%">MACHINO</th>
+                                <th width="13%" style="text-align: left;">KETERANGAN</th>
+                                <th width="5%">AKSI</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
@@ -271,11 +279,24 @@
                                 </td>
                                 <td class="text-center">{{ $item->rt ?? '-' }}</td>
                                 <td class="text-wrap" style="min-width: 130px;">{{ $item->lokasi_terdekat }}</td>
-                                <td class="text-center fw-medium text-secondary">{{ $item->kode_map ?? '-' }}</td>
+                                
+                                <!-- KODE MAP KLIK-ABLE -->
+                                <td class="text-center align-middle">
+                                    @if($item->kode_map)
+                                        <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($item->kode_map) }}" target="_blank" class="badge bg-white text-primary border shadow-sm text-decoration-none px-2 py-1 map-link" style="font-size: 11px;">
+                                            <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ $item->kode_map }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
                                 
                                 <td class="text-center data-kondisi">
                                     @php $kondisi = strtolower(trim($item->kondisi_hidran)); @endphp
                                     <span class="status-badge {{ $kondisi == 'baik' ? 'bg-baik' : ($kondisi == 'rusak' ? 'bg-rusak' : 'bg-null') }}">
+                                        @if($kondisi == 'baik') <i class="fas fa-check-circle"></i> 
+                                        @elseif($kondisi == 'rusak') <i class="fas fa-times-circle"></i> 
+                                        @endif
                                         {{ $item->kondisi_hidran ?? '-' }}
                                     </span>
                                 </td>
@@ -283,6 +304,10 @@
                                 <td class="text-center data-tekanan">
                                     @php $tekanan = strtolower(trim($item->tekanan)); @endphp
                                     <span class="status-badge {{ $tekanan == 'kuat' ? 'bg-kuat' : ($tekanan == 'sedang' ? 'bg-sedang' : ($tekanan == 'lemah' ? 'bg-lemah' : 'bg-null') )}}">
+                                        @if($tekanan == 'kuat') <i class="fas fa-check-circle"></i>
+                                        @elseif($tekanan == 'sedang') <i class="fas fa-info-circle"></i>
+                                        @elseif($tekanan == 'lemah') <i class="fas fa-exclamation-triangle"></i>
+                                        @endif
                                         {{ $item->tekanan ?? '-' }}
                                     </span>
                                 </td>
@@ -290,11 +315,14 @@
                                 <td class="text-center data-machino">
                                     @php $machino = strtolower(trim($item->machino)); @endphp
                                     <span class="status-badge {{ $machino == 'baik' ? 'bg-baik' : ($machino == 'rusak' ? 'bg-rusak' : 'bg-null') }}">
+                                        @if($machino == 'baik') <i class="fas fa-check-circle"></i>
+                                        @elseif($machino == 'rusak') <i class="fas fa-times-circle"></i>
+                                        @endif
                                         {{ $item->machino ?? '-' }}
                                     </span>
                                 </td>
                                 
-                                <td class="text-wrap text-muted data-keterangan" style="min-width: 180px; font-size: 11.5px;">{{ $item->keterangan }}</td>
+                                <td class="text-wrap text-muted data-keterangan" style="min-width: 160px; font-size: 11px;">{{ $item->keterangan }}</td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-1">
                                         <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEdit{{ $item->id }}"><i class="fas fa-edit"></i></button>
@@ -462,13 +490,13 @@
                     let keteranganText = row.querySelector('.data-keterangan').textContent.trim().toLowerCase();
 
                     // Cek Kondisi
-                    if(kondisiText === 'baik') stats.baik++;
-                    if(kondisiText === 'rusak') stats.rusak++;
+                    if(kondisiText.includes('baik')) stats.baik++;
+                    if(kondisiText.includes('rusak')) stats.rusak++;
 
                     // Cek Tekanan
-                    if(tekananText === 'kuat') stats.kuat++;
-                    if(tekananText === 'sedang') stats.sedang++;
-                    if(tekananText === 'lemah') stats.lemah++;
+                    if(tekananText.includes('kuat')) stats.kuat++;
+                    if(tekananText.includes('sedang')) stats.sedang++;
+                    if(tekananText.includes('lemah')) stats.lemah++;
 
                     // Cek Keterangan
                     if(keteranganText.includes('tidak bisa dipakai')) {
