@@ -40,7 +40,7 @@
         .sidebar-item.active i { color: #0284c7; }
         .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #94a3b8; transition: color 0.2s; }
 
-        /* Tombol Accordion (Bagian Pencegahan, Pemadaman, dll) */
+        /* Tombol Accordion */
         .sidebar-collapse-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 12px 15px; background: transparent; border: none; text-align: left; font-size: 11.5px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s; border-radius: 8px; }
         .sidebar-collapse-btn:hover { color: #475569; }
         .sidebar-collapse-btn:not(.collapsed) { color: #0284c7; }
@@ -51,7 +51,7 @@
         /* Garis Putus-putus antar bidang */
         .sidebar-separator { border-top: 1.5px dashed #e2e8f0; margin: 10px 15px; }
         
-        /* Label Judul Kecil (Manajemen Air, Sarana Prasarana) */
+        /* Label Judul Kecil */
         .sidebar-heading { display: block; font-size: 11px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 12px; margin-bottom: 6px; letter-spacing: 0.5px; }
 
         .sidebar-submenu { display: flex; flex-direction: column; gap: 2px; padding-left: 5px; margin-top: 4px; }
@@ -82,6 +82,9 @@
         .btn-delete { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
         
         #searchInput:focus { box-shadow: none; border-color: #cbd5e1; }
+        
+        /* Tambahan Hover untuk Tombol Map */
+        .badge.btn-hover:hover { background-color: #f1f5f9 !important; opacity: 0.8; transform: translateY(-1px); }
     </style>
 </head>
 <body>
@@ -260,7 +263,18 @@
                         <div class="info-card">
                             <h5>{{ $pos->nama_pos }}</h5>
                             <p><i class="fas fa-map-marker-alt text-danger" style="width: 20px;"></i> {{ $pos->alamat ?? 'Alamat belum diatur' }}</p>
-                            <p><i class="fas fa-map text-success" style="width: 20px;"></i> Kode Map: <span class="badge bg-light text-dark border ms-1">{{ $pos->kode_map ?? '-' }}</span></p>
+                            
+                            <!-- DI SINI KODE MAPS JADI KLIK-ABLE -->
+                            <p class="mb-0 d-flex align-items-center">
+                                <i class="fas fa-map text-success" style="width: 20px;"></i> Kode Map: 
+                                @if($pos->kode_map)
+                                    <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($pos->kode_map) }}" target="_blank" class="badge bg-white text-primary border shadow-sm text-decoration-none ms-2 px-3 py-2 btn-hover" style="font-size: 11px; transition: 0.2s;">
+                                        <i class="fas fa-location-arrow text-danger me-1"></i> {{ $pos->kode_map }}
+                                    </a>
+                                @else
+                                    <span class="badge bg-light text-dark border ms-2 px-3 py-1">-</span>
+                                @endif
+                            </p>
                         </div>
 
                         <!-- TABEL DATA -->

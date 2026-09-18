@@ -9,6 +9,7 @@ use App\Http\Controllers\DamtanController;
 use App\Http\Controllers\RedkarController; 
 use App\Http\Controllers\SuratKorbanController;
 use App\Http\Controllers\PermohonanController;
+use App\Http\Controllers\PublicController;
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
@@ -60,6 +61,15 @@ Route::post('/layanan-fasilitas/edukasi_sosialisasi/store', [App\Http\Controller
 
 
 // ==========================================
+// RUTE INFORMASI LAYANAN PUBLIK (SAPRA)
+// ==========================================
+Route::get('/informasi-layanan', [PublicController::class, 'informasiLayanan']);
+Route::get('/informasi-prasarana', [PublicController::class, 'informasiPrasarana']);
+Route::get('/informasi-penyelamatan', [PublicController::class, 'informasiPenyelamatan']);
+Route::get('/informasi-pemeriksaan', [PublicController::class, 'informasiPemeriksaan']);
+
+
+// ==========================================
 // RUTE PUBLIK REDKAR & LOGIN REDKAR
 // ==========================================
 // Form pendaftaran publik (calon relawan)
@@ -87,7 +97,6 @@ Route::get('/redkar/profil', [RedkarController::class, 'profilRedkar'])->name('r
 // ==========================================
 // ROUTE AUTH (LOGIN INTERNAL PEGAWAI, LUPA PASSWORD, LOGOUT)
 // ==========================================
-// Rute default 'login' penting ada untuk sistem autentikasi bawaan Laravel
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'processLogin']);
 Route::get('/lupa-password', [AuthController::class, 'showForgotPassword']);

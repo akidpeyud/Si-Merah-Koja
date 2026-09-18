@@ -81,6 +81,9 @@
         .btn-delete:hover { background-color: #fecaca; color: #991b1b; }
 
         #searchInput:focus { box-shadow: none; border-color: #cbd5e1; }
+        
+        /* Tambahan Hover untuk Tombol Map */
+        .badge.btn-hover:hover { background-color: #f1f5f9 !important; opacity: 0.8; transform: translateY(-1px); }
 
         @media print {
             .navbar-internal, .sidebar, .btn, .nav-tabs, .modal, .btn-action, .search-container {
@@ -224,7 +227,7 @@
                 </button>
                 <div class="collapse" id="collapseBerita" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
-                        <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+                        <a href="/internal/operator/kelola-berita" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
                         <a href="/internal/operator/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
                     </div>
                 </div>
@@ -294,7 +297,18 @@
                         <div class="info-card">
                             <h5>{{ $pos->nama_pos }}</h5>
                             <p><i class="fas fa-map-marker-alt text-danger" style="width: 20px;"></i> {{ $pos->alamat ?? 'Alamat belum diatur' }}</p>
-                            <p><i class="fas fa-map text-success" style="width: 20px;"></i> Kode Map: <span class="badge bg-light text-dark border ms-1">{{ $pos->kode_map ?? '-' }}</span></p>
+                            
+                            <!-- DI SINI KODE MAPS JADI KLIK-ABLE -->
+                            <p class="mb-0 d-flex align-items-center">
+                                <i class="fas fa-map text-success" style="width: 20px;"></i> Kode Map: 
+                                @if($pos->kode_map)
+                                    <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($pos->kode_map) }}" target="_blank" class="badge bg-white text-primary border shadow-sm text-decoration-none ms-2 px-3 py-2 btn-hover" style="font-size: 11px; transition: 0.2s;">
+                                        <i class="fas fa-location-arrow text-danger me-1"></i> {{ $pos->kode_map }}
+                                    </a>
+                                @else
+                                    <span class="badge bg-light text-dark border ms-2 px-3 py-1">-</span>
+                                @endif
+                            </p>
                         </div>
 
                         <!-- TABEL DATA PRASARANA -->
@@ -318,20 +332,20 @@
                                                 <td class="text-center fw-bold text-dark">{{ $loop->iteration }}</td>
                                                 
                                               <!-- KOLOM 2: NAMA BARANG & BADGE LUAS -->
-<td class="data-name" style="padding-left: 20px; padding-top: 15px; padding-bottom: 15px;">
-    <div class="fw-bold text-dark" style="font-size: 14.5px; text-transform: uppercase; margin-bottom: 8px;">
-        {{ $item->jenis_prasarana }}
-    </div>
-    
-    <!-- Logika Munculin Luas kalau ada isinya (DIBIKIN LEBIH GEDE & RAPI) -->
-    @if($item->luas_bangunan)
-        <div>
-            <span class="badge bg-white border shadow-sm" style="font-size: 12.5px; padding: 7px 12px; color: #475569; font-weight: 600;">
-                <i class="fas fa-expand-arrows-alt text-primary me-1"></i> Luas: <span class="text-dark fw-bold">{{ $item->luas_bangunan }}</span>
-            </span>
-        </div>
-    @endif
-</td>
+                                                <td class="data-name" style="padding-left: 20px; padding-top: 15px; padding-bottom: 15px;">
+                                                    <div class="fw-bold text-dark" style="font-size: 14.5px; text-transform: uppercase; margin-bottom: 8px;">
+                                                        {{ $item->jenis_prasarana }}
+                                                    </div>
+                                                    
+                                                    <!-- Logika Munculin Luas kalau ada isinya -->
+                                                    @if($item->luas_bangunan)
+                                                        <div>
+                                                            <span class="badge bg-white border shadow-sm" style="font-size: 12.5px; padding: 7px 12px; color: #475569; font-weight: 600;">
+                                                                <i class="fas fa-expand-arrows-alt text-primary me-1"></i> Luas: <span class="text-dark fw-bold">{{ $item->luas_bangunan }}</span>
+                                                            </span>
+                                                        </div>
+                                                    @endif
+                                                </td>
                                                 <!-- KOLOM 3: GAMBAR -->
                                                 <td class="text-center">
                                                    @if($item->path_gambar && file_exists(public_path($item->path_gambar)))
