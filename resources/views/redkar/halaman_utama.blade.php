@@ -726,7 +726,10 @@
 
         </div>
     </nav>
-
+<div class="welcome-label">
+                        <i class="fas fa-fire-flame-curved"></i>
+                        CEK REVISI DI GRUP!!!!!!!!!!!!!!!!!!!!
+                    </div>
 
     <!-- =========================================
          MAIN CONTENT
