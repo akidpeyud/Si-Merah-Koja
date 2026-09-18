@@ -3,15 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class PendaftarRedkar extends Model
+class PendaftarRedkar extends Authenticatable
 {
     use HasFactory;
 
     protected $table = 'redkar_registrations';
 
-    // BAGIAN PENTING: Mencegah PHP/Laravel mengubah ID string menjadi angka 0
+    // Mencegah PHP/Laravel mengubah ID string menjadi angka 0
     protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'string';
@@ -48,4 +48,21 @@ class PendaftarRedkar extends Model
     protected $hidden = [
         'password',
     ];
+
+    // ========================================================
+    // PERBAIKAN: Menonaktifkan fitur remember_token bawaan
+    // karena tabel redkar_registrations tidak punya kolom tersebut.
+    // ========================================================
+    public function getRememberTokenName()
+    {
+        return null; // Mematikan remember token
+    }
+
+    public function setAttribute($key, $value)
+    {
+        $isRememberTokenAttribute = $key == $this->getRememberTokenName();
+        if (!$isRememberTokenAttribute) {
+            parent::setAttribute($key, $value);
+        }
+    }
 }

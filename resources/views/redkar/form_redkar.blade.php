@@ -54,7 +54,6 @@
             position: relative;
             overflow: hidden;
         }
-        /* Aksen garis atas pada popup */
         .success-popup-box::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background-color: #ef4444;
         }
@@ -95,8 +94,8 @@
         .nav-links li { position: relative; padding-bottom: 15px; margin-bottom: -15px; }
         .nav-links a { color: #f8fafc; text-decoration: none; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s ease; }
         .nav-links a:hover { color: #ef4444; }
-        .nav-links .btn-login { background-color: #ef4444; color: #ffffff; padding: 8px 24px; border-radius: 50px; margin-left: 10px; }
-        .nav-links .btn-login:hover { background-color: #dc2626; color: #ffffff; }
+        .nav-links .btn-login { background-color: transparent; color: #ef4444; border: 1px solid #ef4444; padding: 8px 24px; border-radius: 50px; margin-left: 10px; transition: 0.3s;}
+        .nav-links .btn-login:hover { background-color: #ef4444; color: #ffffff; }
 
         /* DROPDOWN CUSTOM */
         .dropdown-menu-custom { display: none; position: absolute; top: 100%; left: 0; background-color: #1f2937; min-width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-radius: 8px; overflow: hidden; z-index: 10; margin-top: 0; border: 1px solid #374151; padding: 0; }
@@ -138,10 +137,13 @@
         .file-upload-wrapper p { margin: 0; font-size: 13px; font-weight: 600; color: #6b7280; }
         .file-upload-wrapper p span { text-decoration: underline; color: #111827; }
         
-        .btn-submit { background-color: #ef4444; color: white; font-weight: 700; font-size: 13px; padding: 12px 30px; border: none; border-radius: 6px; transition: background 0.3s; width: 100%; }
+        .btn-submit { background-color: #ef4444; color: white; font-weight: 700; font-size: 13px; padding: 12px 30px; border: none; border-radius: 6px; transition: background 0.3s; width: 100%; display: flex; align-items: center; justify-content: center; }
         .btn-submit:hover:not(:disabled) { background-color: #dc2626; }
         .btn-submit:disabled { background-color: #fca5a5; cursor: not-allowed; }
         
+        .btn-login-outline { background-color: transparent; color: #111827; border: 1px solid #d1d5db; font-weight: 700; font-size: 13px; padding: 12px 30px; border-radius: 6px; transition: all 0.3s; width: 100%; display: flex; align-items: center; justify-content: center; text-decoration: none; }
+        .btn-login-outline:hover { background-color: #f3f4f6; color: #000; border-color: #9ca3af; }
+
         .readonly-input { background-color: #f3f4f6; cursor: not-allowed; }
 
         /* --- FOOTER STYLES --- */
@@ -247,7 +249,8 @@
             </ul>
         </li>
         <li><a href="/redkar" style="color: #ef4444;">Redkar</a></li>
-        <li><a href="/login" class="btn-login">LOGIN</a></li>
+        <!-- REVISI 1: Tautan Navbar Mengarah ke /login-redkar -->
+        <li><a href="/login-redkar" class="btn-login">LOGIN REDKAR</a></li>
     </ul>
 </nav>
 
@@ -304,13 +307,15 @@
             </div>
         </div>
 
-        <!-- Kanan: Form Pendaftaran (Diperbarui) -->
+        <!-- Kanan: Form Pendaftaran -->
         <div class="col-lg-8">
             <div class="form-card">
-                <div class="form-title">
+                <div class="form-title position-relative">
                     <img src="/images/logo.png" alt="Logo Damkar">
                     <img src="/images/logo-redkar.png" alt="Logo Redkar">
                     <h2>Biodata REDKAR</h2>
+                    <!-- REVISI 2: Tautan Pengingat Mengarah ke /login-redkar -->
+                    <p class="text-muted mt-2" style="font-size: 13px;">Sudah pernah mendaftar? <a href="/login-redkar" class="text-danger fw-bold text-decoration-none">Masuk ke Akun Anda</a></p>
                 </div>
 
                 <!-- ALERT JIKA TERDAPAT ERROR VALIDASI -->
@@ -526,9 +531,23 @@
                             </div>
                         </div>
 
-                        <div class="col-12 mt-4 mb-2">
-                            <button type="submit" class="btn-submit" id="btn_submit_redkar"><i class="fas fa-paper-plane me-2"></i>KIRIM PENDAFTARAN REDKAR</button>
+                        <!-- ACTION BUTTONS: DAFTAR & LOGIN (Diletakkan Berdampingan) -->
+                        <div class="col-12 mt-5 mb-2 border-top pt-4">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn-submit" id="btn_submit_redkar">
+                                        <i class="fas fa-paper-plane me-2"></i> KIRIM PENDAFTARAN REDKAR
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <!-- REVISI 3: Tautan Tombol Mengarah ke /login-redkar -->
+                                    <a href="/login-redkar" class="btn-login-outline">
+                                        <i class="fas fa-sign-in-alt me-2"></i> SUDAH PUNYA AKUN? MASUK DI SINI
+                                    </a>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
                 </form>
             </div>
