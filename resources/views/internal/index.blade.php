@@ -21,9 +21,12 @@
             box-sizing: border-box;
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
+
+        /* 1. KUNCI BODY BIAR GAK BISA DI-SCROLL KESELURUHAN */
         body {
             background-color: #f3f4f6;
             color: #1f2937;
+            overflow: hidden; 
         }
 
         /* --- GLOBAL ALERT STYLES --- */
@@ -54,9 +57,10 @@
 
         /* --- NAVBAR INTERNAL --- */
         .navbar-internal {
-            background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981;
+            background-color: #111827; padding: 0 50px; border-bottom: 4px solid #10b981;
             display: flex; justify-content: space-between; align-items: center;
             position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            height: 74px; /* 2. KASIH TINGGI PASTI BUAT NAVBAR */
         }
         .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
         .nav-brand img { height: 40px; }
@@ -72,13 +76,26 @@
         }
         .btn-logout:hover { background-color: #dc2626; }
 
-        /* --- SIDEBAR & ACCORDION STYLES --- */
-        .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
-        .sidebar {
-            width: 280px; background-color: #ffffff; border-right: 1px solid #e5e7eb;
-            padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto;
+        /* --- SIDEBAR & MAIN AREA (INDEPENDENT SCROLLING) --- */
+        .dashboard-container { 
+            display: flex; 
+            height: calc(100vh - 74px); /* 3. TINGGI SISA DARI LAYAR - NAVBAR */
         }
         
+        .sidebar {
+            width: 280px; background-color: #ffffff; border-right: 1px solid #e5e7eb;
+            padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; 
+            height: 100%; /* 4. TINGGI FULL */
+            overflow-y: auto; /* 5. SCROLL KHUSUS SIDEBAR */
+        }
+        
+        .main-content { 
+            flex: 1; padding: 40px 50px; background-color: #f9fafb; 
+            height: 100%; /* 6. TINGGI FULL */
+            overflow-y: auto; /* 7. SCROLL KHUSUS KONTEN KANAN */
+        }
+
+        /* --- SIDEBAR ITEM STYLES --- */
         .sidebar-item {
             display: flex; align-items: center; gap: 15px; padding: 12px 15px;
             color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600;
@@ -107,8 +124,7 @@
             display: flex; flex-direction: column; gap: 4px; padding-left: 10px; margin-top: 8px;
         }
 
-        /* --- MAIN AREA --- */
-        .main-content { flex: 1; padding: 40px 50px; background-color: #f9fafb; }
+        /* --- DASHBOARD HEADER --- */
         .page-header { margin-bottom: 30px; }
         .page-header h1 { font-size: 28px; font-weight: 800; color: #111827; margin-bottom: 5px; }
         .page-header p { color: #6b7280; font-size: 14px; margin-bottom: 0; }
@@ -146,7 +162,6 @@
         }
         .stat-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px; }
         
-        /* Efek Hover Keren */
         .stat-card:hover {
             transform: translateY(-6px);
             box-shadow: 0 12px 20px -5px rgba(0,0,0,0.1);
@@ -164,7 +179,6 @@
         .stat-title { font-size: 11px; color: #6b7280; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;}
         .stat-value { font-size: 26px; font-weight: 800; color: #111827; }
         
-        /* Animasi Ikon saat di-hover */
         .stat-icon { 
             position: absolute; top: 22px; right: 20px; font-size: 32px; opacity: 0.1; 
             transition: transform 0.4s ease, opacity 0.4s ease;
@@ -370,63 +384,6 @@
                     <div class="stat-title">Permohonan Edukasi</div>
                     <div class="stat-value">
                         {{ \Illuminate\Support\Facades\DB::table('permohonan_edukasi')->count() }}
-                    </div>
-                </a>
-
-                <a href="/internal/pencegahan/layanan-inspeksi" class="stat-card border-blue">
-                    <i class="fas fa-clipboard-check stat-icon text-primary"></i>
-                    <div class="stat-title">Layanan Inspeksi</div>
-                    <div class="stat-value">24</div>
-                </a>
-
-                <a href="/internal/pencegahan/pelatihan" class="stat-card border-purple">
-                    <i class="fas fa-chalkboard-teacher stat-icon" style="color: #8b5cf6;"></i>
-                    <div class="stat-title">Pelatihan Aktif</div>
-                    <div class="stat-value">5</div>
-                </a>
-
-                <a href="/internal/pencegahan/pembinaan-pengembangan" class="stat-card border-orange">
-                    <i class="fas fa-chart-line stat-icon text-warning"></i>
-                    <div class="stat-title">Pembinaan & Pengembangan</div>
-                    <div class="stat-value">8</div>
-                </a>
-
-                <a href="/internal/pencegahan/peningkatan-kapasitas" class="stat-card border-red">
-                    <i class="fas fa-level-up-alt stat-icon text-danger"></i>
-                    <div class="stat-title">Peningkatan Kapasitas</div>
-                    <div class="stat-value">3</div>
-                </a>
-                
-                <a href="/internal/damtan/data-laporan" class="stat-card border-red">
-                    <i class="fas fa-fire stat-icon text-danger"></i>
-                    <div class="stat-title">Siaga Darurat (Pemadaman)</div>
-                    <div class="stat-value">3</div>
-                </a>
-
-                <!-- Card Tambahan: Surat Keterangan Korban -->
-                <a href="/internal/surat-korban/create" class="stat-card border-blue" style="border-bottom: 4px solid #3b82f6;">
-                    <i class="fas fa-file-signature stat-icon" style="color: #3b82f6;"></i>
-                    <div class="stat-title" style="color: #64748b;">Surat Korban Terbit</div>
-                    <div class="stat-value" style="color: #0f172a;">
-                        {{ \Illuminate\Support\Facades\DB::table('surat_korbans')->count() }}
-                    </div>
-                </a>
-
-                <!-- Card Total Hidrant Kota -->
-                <a href="/sapra/data-hidrant-kota" class="stat-card border-primary" style="border-bottom: 4px solid #0284c7;">
-                    <i class="fas fa-map-marker-alt stat-icon" style="color: #0284c7;"></i>
-                    <div class="stat-title" style="color: #64748b;">Total Hidrant Kota</div>
-                    <div class="stat-value" style="color: #0f172a;">
-                        {{ \Illuminate\Support\Facades\DB::table('hidran_kota')->count() }}
-                    </div>
-                </a>
-
-                <!-- Card Prasarana Mako & Pos -->
-                <a href="/sapra/prasarana-mako" class="stat-card border-orange" style="border-bottom: 4px solid #f59e0b;">
-                    <i class="fas fa-building stat-icon text-warning" style="color: #f59e0b;"></i>
-                    <div class="stat-title" style="color: #64748b;">Prasarana Mako & Pos</div>
-                    <div class="stat-value" style="color: #0f172a;">
-                        {{ \Illuminate\Support\Facades\DB::table('prasarana')->count() }}
                     </div>
                 </a>
                 @endif

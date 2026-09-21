@@ -301,7 +301,7 @@
                 <ul class="dropdown-menu-custom">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">Layanan Perizinan</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi Dan Sosialisasi</a></li>
-                    <li><a href="/layanan-fasilitas/informasi_layanan">Informasi Layanan</a></li>
+                    <li><a href="/informasi-layanan">INFORMASI LAYANAN</a></li>
                 </ul>
             </li>
             <li><a href="/redkar">Redkar</a></li>
@@ -455,7 +455,7 @@
                             <div title="Waktu Laporan"><i class="far fa-clock"></i> <span>{{ \Carbon\Carbon::parse($berita->waktu_kejadian)->format('H:i') }} WIB - Pelapor: {{ $berita->pelapor }}</span></div>
                         </div>
                         <p>{{ Str::limit($berita->keterangan_singkat ?? $berita->detail_lengkap, 90) }}</p>
-                        <span class="baca">Baca Selengkapnya <i class="fas fa-arrow-right"></i></span>
+                        <span class="berita_detail">Baca Selengkapnya <i class="fas fa-arrow-right"></i></span>
                     </div>
                 </a>
             @empty

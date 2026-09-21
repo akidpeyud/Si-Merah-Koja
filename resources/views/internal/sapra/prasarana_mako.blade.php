@@ -11,15 +11,17 @@
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: #f8fafc; color: #1e293b; }
+        
+        /* 1. KUNCI BODY BIAR GAK BISA DI-SCROLL KESELURUHAN */
+        body { background-color: #f8fafc; color: #1e293b; overflow: hidden; }
 
         /* ALERT STYLES */
         #globalSuccessAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); background-color: #10b981; color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s; }
         #globalSuccessAlert .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px; }
         @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
 
-        /* NAVBAR */
-        .navbar-internal { background-color: #0f172a; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        /* 2. KASIH TINGGI PASTI BUAT NAVBAR */
+        .navbar-internal { background-color: #0f172a; padding: 0 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); height: 74px; }
         .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; transition: opacity 0.3s;}
         .nav-brand:hover { opacity: 0.8; }
         .nav-brand img { height: 40px; }
@@ -29,10 +31,17 @@
         .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
         .btn-logout:hover { background-color: #dc2626; }
 
-        /* SIDEBAR STYLES */
-        .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
-        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e2e8f0; padding: 30px 15px; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; }
+        /* --- LAYOUT UTAMA (INDEPENDENT SCROLLING) --- */
+        /* 3. TINGGI SISA DARI LAYAR - NAVBAR */
+        .dashboard-container { display: flex; height: calc(100vh - 74px); }
         
+        /* 4. TINGGI FULL & SCROLL KHUSUS SIDEBAR */
+        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e2e8f0; padding: 30px 15px; display: flex; flex-direction: column; gap: 4px; height: 100%; overflow-y: auto; flex-shrink: 0; }
+        
+        /* 5. SCROLL KHUSUS KONTEN KANAN */
+        .main-content { flex: 1; padding: 40px 50px; background-color: #f8fafc; height: 100%; overflow-y: auto; }
+
+        /* SIDEBAR STYLES */
         .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #475569; text-decoration: none; font-size: 13.5px; font-weight: 600; border-radius: 8px; transition: all 0.2s; margin-bottom: 2px; }
         .sidebar-item:hover { background-color: #f1f5f9; color: #0f172a; }
         .sidebar-item.active { background-color: #eff6ff; color: #0284c7; }
@@ -51,8 +60,6 @@
         .sidebar-submenu { display: flex; flex-direction: column; gap: 2px; padding-left: 5px; margin-top: 4px; }
 
         /* MAIN CONTENT & TABS */
-        .main-content { flex: 1; padding: 40px 50px; overflow-y: auto; background-color: #f8fafc; }
-
         .nav-tabs { border-bottom: 2px solid #e2e8f0; margin-bottom: 25px; flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; gap: 10px; }
         .nav-tabs .nav-link { color: #64748b; font-weight: 700; font-size: 12.5px; text-transform: uppercase; border: none; padding: 12px 24px; transition: all 0.2s; position: relative; background: transparent; }
         .nav-tabs .nav-link:hover { color: #0f172a; }
@@ -67,7 +74,10 @@
 
         .table-card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #e5e7eb; }
         .table-custom { margin-bottom: 0; font-size: 13.5px; }
-        .table-custom thead th { background-color: #0f172a; color: #f8fafc; font-weight: 600; padding: 16px 12px; text-align: center; font-size: 11.5px; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: none; }
+        
+        /* 6. HEADER TABLE STICKY BIAR ENAK PAS SCROLL DATA */
+        .table-custom thead th { background-color: #0f172a; color: #f8fafc; font-weight: 600; padding: 16px 12px; text-align: center; font-size: 11.5px; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: none; position: sticky; top: 0; z-index: 10; } 
+        
         .table-custom tbody td { padding: 18px 12px; color: #475569; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
         
         .img-prasarana { width: 180px; height: 120px; object-fit: cover; border-radius: 6px; transition: transform 0.2s; }
@@ -81,31 +91,19 @@
         .btn-delete:hover { background-color: #fecaca; color: #991b1b; }
 
         #searchInput:focus { box-shadow: none; border-color: #cbd5e1; }
+        
+        /* Tambahan Hover untuk Tombol Map */
+        .badge.btn-hover:hover { background-color: #f1f5f9 !important; opacity: 0.8; transform: translateY(-1px); }
 
         @media print {
-            .navbar-internal, .sidebar, .btn, .nav-tabs, .modal, .btn-action, .search-container {
-                display: none !important;
-            }
-            body, .main-content {
-                background-color: white !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                width: 100% !important;
-            }
-            .dashboard-container { display: block !important; }
+            .navbar-internal, .sidebar, .btn, .nav-tabs, .modal, .btn-action, .search-container { display: none !important; }
+            body, .main-content { background-color: white !important; padding: 0 !important; margin: 0 !important; width: 100% !important; overflow: visible !important; height: auto !important;}
+            .dashboard-container { display: block !important; height: auto !important; }
             .table-card { box-shadow: none !important; border: none !important; }
-            
-            table th:nth-child(4), table td:nth-child(4) {
-                display: none !important;
-            }
-
+            table th:nth-child(4), table td:nth-child(4) { display: none !important; }
             .tab-pane { display: none !important; }
             .tab-pane.active { display: block !important; opacity: 1 !important; }
-
-            * {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
     </style>
 </head>
@@ -183,7 +181,6 @@
                     <div class="sidebar-submenu">
                         <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data & Laporan</a>
                         <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-file-alt"></i> Data Laporan</a>
-  
                     </div>
                 </div>
                 <div class="sidebar-separator"></div>
@@ -196,16 +193,16 @@
                 </button>
                 <div class="collapse show" id="collapseSapra" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
-                      
                         <span class="sidebar-heading" style="text-transform: none;">Sarana dan prasarana</span>
                         <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam Kebakaran</a>
+                        
                         <!-- ACTIVE ADA DI SINI KARENA INI HALAMAN PRASARANA -->
                         <a href="/sapra/prasarana-mako" class="sidebar-item active"><i class="fas fa-building"></i> Prasarana Pemadam Kebakaran</a>                      
                         <a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi</a>
                         <a href="/sapra/sarana-pemeriksaan" class="sidebar-item"><i class="fas fa-search"></i> Sarana Pemeriksaan Proteksi Kebakaran</a>              
                         <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
 
-                          <span class="sidebar-heading" style="text-transform: uppercase;">MANAJEMEN AIR</span>
+                        <span class="sidebar-heading" style="text-transform: uppercase;">MANAJEMEN AIR</span>
                         <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
                         <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
 
@@ -224,7 +221,7 @@
                 </button>
                 <div class="collapse" id="collapseBerita" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
-                        <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+                        <a href="/internal/operator/kelola-berita" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
                         <a href="/internal/operator/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
                     </div>
                 </div>
@@ -236,7 +233,7 @@
             </button>
             <div class="collapse" id="collapsePengaturan" data-bs-parent="#sidebarAccordion">
                 <div class="sidebar-submenu">
-                    <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
+                    <a href="/profile" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
                     @if(Auth::user()->role === 'super_user')
                         <a href="/internal/kelola-user" class="sidebar-item"><i class="fas fa-users"></i> Kelola Semua Pengguna</a>
                     @endif
@@ -294,7 +291,18 @@
                         <div class="info-card">
                             <h5>{{ $pos->nama_pos }}</h5>
                             <p><i class="fas fa-map-marker-alt text-danger" style="width: 20px;"></i> {{ $pos->alamat ?? 'Alamat belum diatur' }}</p>
-                            <p><i class="fas fa-map text-success" style="width: 20px;"></i> Kode Map: <span class="badge bg-light text-dark border ms-1">{{ $pos->kode_map ?? '-' }}</span></p>
+                            
+                            <!-- DI SINI KODE MAPS JADI KLIK-ABLE -->
+                            <p class="mb-0 d-flex align-items-center">
+                                <i class="fas fa-map text-success" style="width: 20px;"></i> Kode Map: 
+                                @if($pos->kode_map)
+                                    <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($pos->kode_map) }}" target="_blank" class="badge bg-white text-primary border shadow-sm text-decoration-none ms-2 px-3 py-2 btn-hover" style="font-size: 11px; transition: 0.2s;">
+                                        <i class="fas fa-location-arrow text-danger me-1"></i> {{ $pos->kode_map }}
+                                    </a>
+                                @else
+                                    <span class="badge bg-light text-dark border ms-2 px-3 py-1">-</span>
+                                @endif
+                            </p>
                         </div>
 
                         <!-- TABEL DATA PRASARANA -->
@@ -318,20 +326,20 @@
                                                 <td class="text-center fw-bold text-dark">{{ $loop->iteration }}</td>
                                                 
                                               <!-- KOLOM 2: NAMA BARANG & BADGE LUAS -->
-<td class="data-name" style="padding-left: 20px; padding-top: 15px; padding-bottom: 15px;">
-    <div class="fw-bold text-dark" style="font-size: 14.5px; text-transform: uppercase; margin-bottom: 8px;">
-        {{ $item->jenis_prasarana }}
-    </div>
-    
-    <!-- Logika Munculin Luas kalau ada isinya (DIBIKIN LEBIH GEDE & RAPI) -->
-    @if($item->luas_bangunan)
-        <div>
-            <span class="badge bg-white border shadow-sm" style="font-size: 12.5px; padding: 7px 12px; color: #475569; font-weight: 600;">
-                <i class="fas fa-expand-arrows-alt text-primary me-1"></i> Luas: <span class="text-dark fw-bold">{{ $item->luas_bangunan }}</span>
-            </span>
-        </div>
-    @endif
-</td>
+                                                <td class="data-name" style="padding-left: 20px; padding-top: 15px; padding-bottom: 15px;">
+                                                    <div class="fw-bold text-dark" style="font-size: 14.5px; text-transform: uppercase; margin-bottom: 8px;">
+                                                        {{ $item->jenis_prasarana }}
+                                                    </div>
+                                                    
+                                                    <!-- Logika Munculin Luas kalau ada isinya -->
+                                                    @if($item->luas_bangunan)
+                                                        <div>
+                                                            <span class="badge bg-white border shadow-sm" style="font-size: 12.5px; padding: 7px 12px; color: #475569; font-weight: 600;">
+                                                                <i class="fas fa-expand-arrows-alt text-primary me-1"></i> Luas: <span class="text-dark fw-bold">{{ $item->luas_bangunan }}</span>
+                                                            </span>
+                                                        </div>
+                                                    @endif
+                                                </td>
                                                 <!-- KOLOM 3: GAMBAR -->
                                                 <td class="text-center">
                                                    @if($item->path_gambar && file_exists(public_path($item->path_gambar)))

@@ -11,15 +11,17 @@
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: #f8fafc; color: #1e293b; }
+        
+        /* 1. KUNCI BODY BIAR TIDAK SCROLL KESELURUHAN */
+        body { background-color: #f8fafc; color: #1e293b; overflow: hidden; }
 
         /* ALERT STYLES */
         #globalSuccessAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); background-color: #10b981; color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s; }
         #globalSuccessAlert .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px; }
         @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
 
-        /* NAVBAR */
-        .navbar-internal { background-color: #0f172a; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; }
+        /* 2. TINGGI TETAP NAVBAR */
+        .navbar-internal { background-color: #0f172a; padding: 0 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; height: 74px; }
         .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
         .nav-brand img { height: 40px; }
         .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; }
@@ -28,19 +30,22 @@
         .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
         .btn-logout:hover { background-color: #dc2626; }
 
-        /* SIDEBAR STYLES (SESUAI DESAIN BARU) */
-        .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
-        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e2e8f0; padding: 30px 15px; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; }
+        /* --- LAYOUT UTAMA (INDEPENDENT SCROLLING) --- */
+        /* 3. TINGGI SISA DARI LAYAR - NAVBAR */
+        .dashboard-container { display: flex; height: calc(100vh - 74px); }
         
+        /* 4. TINGGI FULL & SCROLL MANDIRI UNTUK SIDEBAR */
+        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e2e8f0; padding: 30px 15px; display: flex; flex-direction: column; gap: 4px; height: 100%; overflow-y: auto; flex-shrink: 0; }
+        
+        /* 5. SCROLL MANDIRI UNTUK KONTEN UTAMA */
+        .main-content { flex: 1; padding: 40px 50px; background-color: #f8fafc; height: 100%; overflow-y: auto; }
+
         .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #475569; text-decoration: none; font-size: 13.5px; font-weight: 600; border-radius: 8px; transition: all 0.2s; margin-bottom: 2px; }
         .sidebar-item:hover { background-color: #f1f5f9; color: #0f172a; }
-        
-        /* State Active untuk Menu Terpilih */
         .sidebar-item.active { background-color: #eff6ff; color: #0284c7; }
         .sidebar-item.active i { color: #0284c7; }
         .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #94a3b8; transition: color 0.2s; }
 
-        /* Tombol Accordion (Bagian Pencegahan, Pemadaman, dll) */
         .sidebar-collapse-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 12px 15px; background: transparent; border: none; text-align: left; font-size: 11.5px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s; border-radius: 8px; }
         .sidebar-collapse-btn:hover { color: #475569; }
         .sidebar-collapse-btn:not(.collapsed) { color: #0284c7; }
@@ -48,16 +53,9 @@
         .sidebar-collapse-btn.collapsed .toggle-icon { transform: rotate(0deg); }
         .sidebar-collapse-btn:not(.collapsed) .toggle-icon { transform: rotate(180deg); color: #0284c7; }
 
-        /* Garis Putus-putus antar bidang */
         .sidebar-separator { border-top: 1.5px dashed #e2e8f0; margin: 10px 15px; }
-        
-        /* Label Judul Kecil (Manajemen Air, Sarana Prasarana) */
         .sidebar-heading { display: block; font-size: 11px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 12px; margin-bottom: 6px; letter-spacing: 0.5px; }
-
         .sidebar-submenu { display: flex; flex-direction: column; gap: 2px; padding-left: 5px; margin-top: 4px; }
-
-        /* MAIN CONTENT & TABS */
-        .main-content { flex: 1; padding: 40px 50px; overflow-y: auto; background-color: #f8fafc; }
 
         .nav-tabs { border-bottom: 2px solid #e2e8f0; margin-bottom: 25px; flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; gap: 10px; }
         .nav-tabs .nav-link { color: #64748b; font-weight: 700; font-size: 12.5px; text-transform: uppercase; border: none; padding: 12px 24px; transition: all 0.2s; position: relative; background: transparent; }
@@ -65,14 +63,15 @@
         .nav-tabs .nav-link.active { color: #0284c7; background: transparent; }
         .nav-tabs .nav-link.active::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 3px; background-color: #0284c7; border-radius: 3px 3px 0 0; }
 
-        /* INFO CARD & TABLE */
         .info-card { background: linear-gradient(to right, #ffffff, #f8fafc); border-left: 4px solid #0284c7; border-radius: 8px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 4px -1px rgba(0,0,0,0.05); }
         .info-card h5 { font-size: 17px; font-weight: 800; color: #0f172a; margin-bottom: 10px; text-transform: uppercase; }
         .info-card p { font-size: 13.5px; color: #475569; margin: 0 0 6px 0; display: flex; align-items: center; gap: 10px; font-weight: 500; }
 
         .table-card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #e5e7eb; }
         .table-custom { margin-bottom: 0; font-size: 13.5px; }
-        .table-custom thead th { background-color: #0f172a; color: #f8fafc; font-weight: 600; padding: 16px 12px; text-align: center; font-size: 11.5px; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: none; }
+        
+        /* 6. HEADER TABEL STICKY */
+        .table-custom thead th { background-color: #0f172a; color: #f8fafc; font-weight: 600; padding: 16px 12px; text-align: center; font-size: 11.5px; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: none; position: sticky; top: 0; z-index: 10; }
         .table-custom tbody td { padding: 18px 12px; color: #475569; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
         
         .img-prasarana { width: 100px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid #e2e8f0; }
@@ -82,6 +81,18 @@
         .btn-delete { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
         
         #searchInput:focus { box-shadow: none; border-color: #cbd5e1; }
+        .badge.btn-hover:hover { background-color: #f1f5f9 !important; opacity: 0.8; transform: translateY(-1px); }
+
+        @media print {
+            .navbar-internal, .sidebar, .btn, .nav-tabs, .modal, .btn-action, .search-container { display: none !important; }
+            body, .main-content { background-color: white !important; padding: 0 !important; margin: 0 !important; width: 100% !important; overflow: visible !important; height: auto !important; }
+            .dashboard-container { display: block !important; height: auto !important; }
+            .table-card { box-shadow: none !important; border: none !important; }
+            table th:nth-child(4), table td:nth-child(4) { display: none !important; }
+            .tab-pane { display: none !important; }
+            .tab-pane.active { display: block !important; opacity: 1 !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
     </style>
 </head>
 <body>
@@ -167,7 +178,6 @@
                 </button>
                 <div class="collapse show" id="collapseSapra" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">                
-                     <!-- Sarana dan prasarana -->
                         <span class="sidebar-heading" style="text-transform: none;">Sarana dan prasarana</span>
                         <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam Kebakaran</a>
                         <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pemadam Kebakaran</a>
@@ -175,7 +185,7 @@
                         <a href="/sapra/sarana-pemeriksaan" class="sidebar-item active"><i class="fas fa-search"></i> Sarana Pemeriksaan Proteksi Kebakaran</a>                        
                         <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
 
-                          <!-- MANAJEMEN AIR -->
+                        <!-- MANAJEMEN AIR -->
                         <span class="sidebar-heading" style="text-transform: uppercase;">MANAJEMEN AIR</span>
                         <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
                         <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota jambi</a>
@@ -204,7 +214,6 @@
             </div>
 
         </aside>
-        <!-- SELESAI SIDEBAR UTUH -->
 
         <main class="main-content">
             <div class="d-flex justify-content-between align-items-end mb-4">
@@ -260,7 +269,18 @@
                         <div class="info-card">
                             <h5>{{ $pos->nama_pos }}</h5>
                             <p><i class="fas fa-map-marker-alt text-danger" style="width: 20px;"></i> {{ $pos->alamat ?? 'Alamat belum diatur' }}</p>
-                            <p><i class="fas fa-map text-success" style="width: 20px;"></i> Kode Map: <span class="badge bg-light text-dark border ms-1">{{ $pos->kode_map ?? '-' }}</span></p>
+                            
+                            <!-- DI SINI KODE MAPS JADI KLIK-ABLE -->
+                            <p class="mb-0 d-flex align-items-center">
+                                <i class="fas fa-map text-success" style="width: 20px;"></i> Kode Map: 
+                                @if($pos->kode_map)
+                                    <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($pos->kode_map) }}" target="_blank" class="badge bg-white text-primary border shadow-sm text-decoration-none ms-2 px-3 py-2 btn-hover" style="font-size: 11px; transition: 0.2s;">
+                                        <i class="fas fa-location-arrow text-danger me-1"></i> {{ $pos->kode_map }}
+                                    </a>
+                                @else
+                                    <span class="badge bg-light text-dark border ms-2 px-3 py-1">-</span>
+                                @endif
+                            </p>
                         </div>
 
                         <!-- TABEL DATA -->
