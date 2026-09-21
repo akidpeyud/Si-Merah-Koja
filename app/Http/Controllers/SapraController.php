@@ -26,10 +26,10 @@ class SapraController extends Controller
     // ==========================================
     public function dataHidrantGedung()
     {
-        $hidranPilar  = DB::table('prasaranas')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
-        $hidranGedung = DB::table('prasaranas')->where('kategori', 'Hidrant Gedung')->orderBy('no_urut', 'asc')->get();
-        $embung       = DB::table('prasaranas')->where('kategori', 'Embung')->orderBy('no_urut', 'asc')->get();
-        $danau        = DB::table('prasaranas')->where('kategori', 'Danau')->orderBy('no_urut', 'asc')->get();
+        $hidranPilar  = DB::table('prasarana')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
+        $hidranGedung = DB::table('prasarana')->where('kategori', 'Hidrant Gedung')->orderBy('no_urut', 'asc')->get();
+        $embung       = DB::table('prasarana')->where('kategori', 'Embung')->orderBy('no_urut', 'asc')->get();
+        $danau        = DB::table('prasarana')->where('kategori', 'Danau')->orderBy('no_urut', 'asc')->get();
 
         return view('internal.sapra.data_hidrant_gedung', compact(
             'hidranPilar', 'hidranGedung', 'embung', 'danau'
@@ -48,13 +48,13 @@ class SapraController extends Controller
         ]);
 
         // CEK NO URUT OTOMATIS: Ambil angka terbesar di kategori ini, lalu tambah 1
-        $noUrutTerakhir = DB::table('prasaranas')
+        $noUrutTerakhir = DB::table('prasarana')
                             ->where('kategori', $request->kategori)
                             ->max('no_urut');
                             
         $noUrutBaru = $noUrutTerakhir ? $noUrutTerakhir + 1 : 1;
 
-        DB::table('prasaranas')->insert([
+        DB::table('prasarana')->insert([
             'kategori'    => $request->kategori,
             'no_urut'     => $noUrutBaru, 
             'nama_gedung' => $request->nama_gedung,
@@ -81,7 +81,7 @@ class SapraController extends Controller
             'luas'        => 'nullable|string|max:100',
         ]);
 
-        DB::table('prasaranas')->where('id', $id)->update([
+        DB::table('prasarana')->where('id', $id)->update([
             'kategori'    => $request->kategori,
             'no_urut'     => $request->no_urut,
             'nama_gedung' => $request->nama_gedung,
@@ -97,16 +97,16 @@ class SapraController extends Controller
 
     public function destroyHidran($id)
     {
-        DB::table('prasaranas')->where('id', $id)->delete();
+        DB::table('prasarana')->where('id', $id)->delete();
         return redirect()->back()->with('success', 'Data berhasil dihapus!');
     }
 
     public function cetakPdfHidran()
     {
-        $hidranPilar  = DB::table('prasaranas')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
-        $hidranGedung = DB::table('prasaranas')->where('kategori', 'Hidrant Gedung')->orderBy('no_urut', 'asc')->get();
-        $embung       = DB::table('prasaranas')->where('kategori', 'Embung')->orderBy('no_urut', 'asc')->get();
-        $danau        = DB::table('prasaranas')->where('kategori', 'Danau')->orderBy('no_urut', 'asc')->get();
+        $hidranPilar  = DB::table('prasarana')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
+        $hidranGedung = DB::table('prasarana')->where('kategori', 'Hidrant Gedung')->orderBy('no_urut', 'asc')->get();
+        $embung       = DB::table('prasarana')->where('kategori', 'Embung')->orderBy('no_urut', 'asc')->get();
+        $danau        = DB::table('prasarana')->where('kategori', 'Danau')->orderBy('no_urut', 'asc')->get();
 
         $pdf = Pdf::loadView('internal.sapra.hidran_gedung_pdf', compact(
             'hidranPilar', 'hidranGedung', 'embung', 'danau'
@@ -117,7 +117,7 @@ class SapraController extends Controller
 
    public function cetakPdfHidranGedung()
     {
-        $dataHidran = DB::table('prasaranas')->orderBy('no_urut', 'asc')->get();
+        $dataHidran = DB::table('prasarana')->orderBy('no_urut', 'asc')->get();
         
         $pdf = Pdf::loadView('internal.sapra.hidran_pdf', compact('dataHidran'))
                   ->setPaper('a4', 'landscape'); 
