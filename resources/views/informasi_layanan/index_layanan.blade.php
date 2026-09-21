@@ -251,7 +251,7 @@
 
                 <!-- Paragraf 3 -->
                 <p style="color: #64748b; font-size: 16px; font-weight: 500;">
-                    untuk melihat detail galeri armada, prasarana pos, sarana penyelamatan, dan alat<br>pemeriksaan.
+                    untuk melihat detail galeri armada, prasarana pos, sarana penyelamatan, dan lainnya<br>
                 </p>
             </div>
         </div>

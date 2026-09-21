@@ -11,15 +11,17 @@
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: #f8fafc; color: #1e293b; }
+        
+        /* 1. KUNCI BODY BIAR GAK BISA DI-SCROLL KESELURUHAN */
+        body { background-color: #f8fafc; color: #1e293b; overflow: hidden; }
 
         /* ALERT STYLES */
         #globalSuccessAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); background-color: #10b981; color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s; }
         #globalSuccessAlert .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px; }
         @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
 
-        /* NAVBAR */
-        .navbar-internal { background-color: #0f172a; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        /* 2. TINGGI TETAP UNTUK NAVBAR */
+        .navbar-internal { background-color: #0f172a; padding: 0 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); height: 74px; }
         .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
         .nav-brand img { height: 40px; }
         .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; }
@@ -28,10 +30,16 @@
         .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
         .btn-logout:hover { background-color: #dc2626; }
 
-        /* SIDEBAR STYLES (SESUAI DESAIN BARU) */
-        .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
-        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e2e8f0; padding: 30px 15px; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; }
+        /* --- LAYOUT UTAMA (INDEPENDENT SCROLLING) --- */
+        /* 3. TINGGI SISA DARI LAYAR - NAVBAR */
+        .dashboard-container { display: flex; height: calc(100vh - 74px); }
         
+        /* 4. SCROLL MANDIRI UNTUK SIDEBAR */
+        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e2e8f0; padding: 30px 15px; display: flex; flex-direction: column; gap: 4px; height: 100%; overflow-y: auto; flex-shrink: 0; }
+        
+        /* 5. SCROLL MANDIRI UNTUK KONTEN UTAMA */
+        .main-content { flex: 1; padding: 40px 50px; overflow-y: auto; height: 100%; }
+
         .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #475569; text-decoration: none; font-size: 13.5px; font-weight: 600; border-radius: 8px; transition: all 0.2s; margin-bottom: 2px; }
         .sidebar-item:hover { background-color: #f1f5f9; color: #0f172a; }
         
@@ -55,12 +63,13 @@
         .sidebar-heading { display: block; font-size: 11px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 12px; margin-bottom: 6px; letter-spacing: 0.5px; }
         .sidebar-submenu { display: flex; flex-direction: column; gap: 2px; padding-left: 5px; margin-top: 4px; }
 
-        .main-content { flex: 1; padding: 40px 50px; overflow-y: auto; }
-        
         /* TABEL & TABS STYLE MODERN */
         .table-card { background: white; border-radius: 0 12px 12px 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #e5e7eb; }
         .table-custom { margin-bottom: 0; font-size: 13px; }
-        .table-custom thead th { background-color: #0f172a; color: #f8fafc; font-weight: 600; padding: 16px; border-bottom: none; text-align: center; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; }
+        
+        /* 6. HEADER TABEL STICKY */
+        .table-custom thead th { background-color: #0f172a; color: #f8fafc; font-weight: 600; padding: 16px; border-bottom: none; text-align: center; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; position: sticky; top: 0; z-index: 10; }
+        
         .table-custom tbody td { padding: 14px 16px; color: #475569; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
         .table-custom tbody tr:hover { background-color: #f8fafc; }
         
@@ -81,6 +90,37 @@
         #searchInput:focus { box-shadow: none; border-color: #cbd5e1; }
         
         .badge.btn-hover:hover { background-color: #f8fafc !important; opacity: 0.8; }
+
+        /* ==================================================
+           CSS KHUSUS UNTUK PRINT / CETAK PDF
+           ================================================== */
+        @media print {
+            .navbar-internal, .sidebar, .btn, .nav-tabs, .modal, .btn-action, .search-container {
+                display: none !important;
+            }
+            body, .main-content {
+                background-color: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+                overflow: visible !important;
+                height: auto !important;
+            }
+            .dashboard-container { display: block !important; height: auto !important;}
+            .table-card { box-shadow: none !important; border: none !important; }
+            
+            table th:last-child, table td:last-child {
+                display: none !important;
+            }
+
+            .tab-pane { display: none !important; }
+            .tab-pane.active { display: block !important; opacity: 1 !important; }
+
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -167,8 +207,8 @@
                 <div class="collapse show" id="collapseSapra" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
                         
-                        <!-- MANAJEMEN AIR -->
-                       <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">SARANA DAN PRASARANA</span>
+                        <!-- MANAJEMEN SARANA DAN PRASARANA -->
+                       <span class="sidebar-heading" style="text-transform: uppercase;">SARANA DAN PRASARANA</span>
                         <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam Kebakaran</a>
                         <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pemadam Kebakaran</a>
                         <a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi</a>
