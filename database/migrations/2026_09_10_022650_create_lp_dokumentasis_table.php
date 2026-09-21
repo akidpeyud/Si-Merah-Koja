@@ -21,6 +21,10 @@ return new class extends Migration {
             $table->string('kontak_saksi', 20)->nullable();
             $table->text('kebutuhan_tambahan')->nullable();
             $table->text('saran_mitigasi')->nullable();
+            
+            // Kolom baru yang ditambahkan
+            $table->text('cara_bertindak')->nullable();
+            
             $table->text('kronologi_lengkap')->nullable();
             
             $table->json('foto')->nullable();
