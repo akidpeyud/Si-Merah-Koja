@@ -11,35 +11,41 @@
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: #f8fafc; color: #1e293b; }
+        
+        /* 1. KUNCI BODY BIAR GAK BISA DI-SCROLL KESELURUHAN */
+        body { background-color: #f8fafc; color: #1e293b; overflow: hidden; }
 
         #globalSuccessAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); background-color: #10b981; color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s; }
         #globalSuccessAlert .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px; }
         @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
 
-        .navbar-internal { background-color: #0f172a; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; }
-        .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
+        /* 2. TINGGI TETAP NAVBAR */
+        .navbar-internal { background-color: #0f172a; padding: 0 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); height: 74px; }
+        .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; transition: opacity 0.3s;}
+        .nav-brand:hover { opacity: 0.8; }
         .nav-brand img { height: 40px; }
         .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; }
         .user-menu { display: flex; align-items: center; gap: 20px; }
         .user-profile { display: flex; align-items: center; gap: 10px; color: #e5e7eb; font-size: 14px; font-weight: 600; }
-        .badge-role { background: #3b82f6; color: white; font-size: 11px; padding: 4px 10px; border-radius: 50px; font-weight: 700; text-transform: uppercase; }
         .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
         .btn-logout:hover { background-color: #dc2626; }
 
-        /* SIDEBAR STYLES (SESUAI DESAIN BARU) */
-        .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
-        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e2e8f0; padding: 30px 15px; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; }
+        /* --- LAYOUT UTAMA (INDEPENDENT SCROLLING) --- */
+        /* 3. TINGGI SISA DARI LAYAR - NAVBAR */
+        .dashboard-container { display: flex; height: calc(100vh - 74px); }
         
+        /* 4. SCROLL MANDIRI UNTUK SIDEBAR */
+        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e2e8f0; padding: 30px 15px; display: flex; flex-direction: column; gap: 4px; height: 100%; overflow-y: auto; flex-shrink: 0; }
+        
+        /* 5. SCROLL MANDIRI UNTUK KONTEN UTAMA */
+        .main-content { flex: 1; padding: 40px 50px; background-color: #f8fafc; height: 100%; overflow-y: auto; }
+
         .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #475569; text-decoration: none; font-size: 13.5px; font-weight: 600; border-radius: 8px; transition: all 0.2s; margin-bottom: 2px; }
         .sidebar-item:hover { background-color: #f1f5f9; color: #0f172a; }
-        
-        /* State Active untuk Menu Terpilih */
         .sidebar-item.active { background-color: #eff6ff; color: #0284c7; }
         .sidebar-item.active i { color: #0284c7; }
         .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #94a3b8; transition: color 0.2s; }
 
-        /* Tombol Accordion */
         .sidebar-collapse-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 12px 15px; background: transparent; border: none; text-align: left; font-size: 11.5px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s; border-radius: 8px; }
         .sidebar-collapse-btn:hover { color: #475569; }
         .sidebar-collapse-btn:not(.collapsed) { color: #0284c7; }
@@ -47,17 +53,10 @@
         .sidebar-collapse-btn.collapsed .toggle-icon { transform: rotate(0deg); }
         .sidebar-collapse-btn:not(.collapsed) .toggle-icon { transform: rotate(180deg); color: #0284c7; }
 
-        /* Garis Putus-putus antar bidang */
         .sidebar-separator { border-top: 1.5px dashed #e2e8f0; margin: 10px 15px; }
-        
-        /* Label Judul Kecil (Manajemen Air, Sarana Prasarana) */
         .sidebar-heading { display: block; font-size: 11px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 12px; margin-bottom: 6px; letter-spacing: 0.5px; }
-
         .sidebar-submenu { display: flex; flex-direction: column; gap: 2px; padding-left: 5px; margin-top: 4px; }
 
-        /* MAIN CONTENT & TABS */
-        .main-content { flex: 1; padding: 40px 50px; overflow-y: auto; background-color: #f8fafc; }
-        
         .nav-tabs { border-bottom: 2px solid #e2e8f0; margin-bottom: 20px; }
         .nav-tabs .nav-link { font-weight: 700; color: #64748b; border: none; padding: 12px 24px; transition: all 0.3s; margin-bottom: -2px; }
         .nav-tabs .nav-link:hover { color: #0284c7; }
@@ -65,7 +64,10 @@
 
         .table-card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #e5e7eb; }
         .table-custom { margin-bottom: 0; font-size: 13.5px; }
-        .table-custom thead th { background-color: #0f172a; color: #f8fafc; font-weight: 600; padding: 16px 12px; text-align: center; font-size: 11.5px; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: none; }
+        
+        /* 6. HEADER TABEL STICKY */
+        .table-custom thead th { background-color: #0f172a; color: #f8fafc; font-weight: 600; padding: 16px 12px; text-align: center; font-size: 11.5px; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: none; position: sticky; top: 0; z-index: 10; }
+        
         .table-custom tbody td { padding: 14px 12px; color: #475569; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
         
         .badge-qty { display: inline-block; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 14px; min-width: 50px; text-align: center; }
@@ -81,6 +83,20 @@
         .btn-delete:hover { background-color: #fecaca; color: #991b1b; }
 
         #searchInput:focus { box-shadow: none; border-color: #cbd5e1; }
+
+        /* ==================================================
+           CSS KHUSUS UNTUK PRINT / CETAK PDF
+           ================================================== */
+        @media print {
+            .navbar-internal, .sidebar, .btn, .nav-tabs, .modal, .btn-action, .search-container, .dropdown { display: none !important; }
+            body, .main-content { background-color: white !important; padding: 0 !important; margin: 0 !important; width: 100% !important; overflow: visible !important; height: auto !important;}
+            .dashboard-container { display: block !important; height: auto !important; }
+            .table-card { box-shadow: none !important; border: none !important; }
+            table th:last-child, table td:last-child { display: none !important; }
+            .tab-pane { display: none !important; }
+            .tab-pane.active { display: block !important; opacity: 1 !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
     </style>
 </head>
 <body>
@@ -101,7 +117,6 @@
         </a>
         <div class="user-menu">
             <div class="user-profile">
-             
                 <span>{{ Auth::user()->nama_lengkap ?? 'Dhimas Zaky Abiyyu' }}</span>
                 <i class="fas fa-user-circle" style="font-size: 20px; color: #9ca3af;"></i>
             </div>
@@ -153,7 +168,6 @@
                     <div class="sidebar-submenu">
                         <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data & Laporan</a>
                         <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
-                      
                     </div>
                 </div>
                 <div class="sidebar-separator"></div>
@@ -167,28 +181,24 @@
                 </button>
                 <div class="collapse show" id="collapseSapra" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
-                       
-
-                        <!-- Sarana dan prasarana -->
                         <span class="sidebar-heading" style="text-transform: none;">SARANA DAN PRASARANA</span>
                         <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam Kebakaran</a>
                         <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pemadam Kebakaran</a>
                         <a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi</a>
-                        <a href="/sapra/sarana-pemeriksaan" class="sidebar-item"><i class="fas fa-search"></i> Sarana Pemeriksaan Proteksi Kebakaran</a>
+                        <a href="/sapra/sarana-pemeriksaan" class="sidebar-item"><i class="fas fa-search"></i>Sarana Pemeriksaan Proteksi Kebakaran</a>
                         <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
-
-                         
+   
                         <!-- MANAJEMEN AIR -->
                         <span class="sidebar-heading" style="text-transform: uppercase;">MANAJEMEN AIR</span>
                         <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
-                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota jambi</a>
+                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
 
                         <!-- LOGISTIK & DISTRIBUSI -->
                         <span class="sidebar-heading" style="text-transform: uppercase;">LOGISTIK & DISTRIBUSI</span>
                         
                         <!-- ACTIVE ADA DI SINI KARENA INI HALAMAN MUTU BAKU -->
                         <a href="/sapra/kebutuhan-sarpras" class="sidebar-item active"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
-                        <a href="/sapra/distribusi-staff" class="sidebar-item"><i class="fas fa-user-check"></i> Distribusi Barang Staff</a>
+                        <a href="/sapra/distribusi-staff" class="sidebar-item"><i class="fas fa-user-check"></i> Distribusi Barang Staff</a>                
                     </div>
                 </div>
                 <div class="sidebar-separator"></div>
@@ -217,15 +227,13 @@
             </button>
             <div class="collapse" id="collapsePengaturan" data-bs-parent="#sidebarAccordion">
                 <div class="sidebar-submenu">
-                    <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
+                    <a href="/profile" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
                     @if(Auth::user()->role === 'super_user')
                         <a href="/internal/kelola-user" class="sidebar-item"><i class="fas fa-users"></i> Kelola Semua Pengguna</a>
                     @endif
                 </div>
             </div>
-
         </aside>
-        <!-- SELESAI SIDEBAR UTUH -->
 
         <main class="main-content">
             <div class="d-flex justify-content-between align-items-end mb-4">

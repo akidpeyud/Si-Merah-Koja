@@ -809,5 +809,14 @@ class SapraController extends Controller
             ->with('success', 'Data Sarana Pemeriksaan berhasil dihapus!')
             ->with('active_tab', $id_pos_terakhir);
     }
-    
+    public function cetakPdfSaranaPemeriksaan()
+    {
+        $posPemadam = DB::table('pos_pemadam')->orderBy('id_pos', 'asc')->get();
+        $dataPemeriksaan = DB::table('sarana_pemeriksaan')->orderBy('id_sarana_pemeriksaan', 'asc')->get();
+
+        $pdf = Pdf::loadView('internal.sapra.sarana_pemeriksaan_pdf', compact('posPemadam', 'dataPemeriksaan'))
+                  ->setPaper('a4', 'portrait');
+
+        return $pdf->download('Data_Sarana_Pemeriksaan_Mako_Pos.pdf');
+    }
 }
