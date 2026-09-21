@@ -8,12 +8,10 @@ return new class extends Migration
 {
     public function up()
     {
-        // 8 Tabel Baru Sesuai File Excel
+        // Hanya menyisakan tabel yang belum dibuat di file migrasi lain
         $tables = [
-            'fireman_hood',
             'handy_talky',
             'masker_asap',
-            'sepatu_safety',
             'baju_driver_dan_baju_mekanik',
             'baju_tahan_panas_dan_helm_pemadam_kebakaran',
             'filter_atau_catridge_masker_asap',
@@ -37,9 +35,12 @@ return new class extends Migration
     public function down()
     {
         $tables = [
-            'fireman_hood', 'handy_talky', 'masker_asap', 'sepatu_safety',
-            'baju_driver_dan_baju_mekanik', 'baju_tahan_panas_dan_helm_pemadam_kebakaran',
-            'filter_atau_catridge_masker_asap', 'fire_blanket'
+            'handy_talky',
+            'masker_asap',
+            'baju_driver_dan_baju_mekanik',
+            'baju_tahan_panas_dan_helm_pemadam_kebakaran',
+            'filter_atau_catridge_masker_asap',
+            'fire_blanket'
         ];
 
         foreach ($tables as $tableName) {
