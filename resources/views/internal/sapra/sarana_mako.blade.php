@@ -11,13 +11,16 @@
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: #f3f4f6; color: #1f2937; }
+        
+        /* 1. KUNCI BODY BIAR GAK BISA DI-SCROLL KESELURUHAN */
+        body { background-color: #f3f4f6; color: #1f2937; overflow: hidden; }
 
         #globalSuccessAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); background-color: #10b981; color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s; }
         #globalSuccessAlert .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px; }
         @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
 
-        .navbar-internal { background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; }
+        /* 2. KASIH TINGGI PASTI BUAT NAVBAR */
+        .navbar-internal { background-color: #111827; padding: 0 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; height: 74px; }
         .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; transition: opacity 0.3s;}
         .nav-brand:hover { opacity: 0.8; }
         .nav-brand img { height: 40px; }
@@ -29,9 +32,16 @@
         .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
         .btn-logout:hover { background-color: #dc2626; }
 
-        /* SIDEBAR STYLES */
-        .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
-        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+        /* --- LAYOUT UTAMA (INDEPENDENT SCROLLING) --- */
+        /* 3. TINGGI SISA DARI LAYAR - NAVBAR */
+        .dashboard-container { display: flex; height: calc(100vh - 74px); }
+        
+        /* 4. TINGGI FULL & SCROLL KHUSUS SIDEBAR */
+        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; height: 100%; overflow-y: auto; flex-shrink: 0; }
+        
+        /* 5. SCROLL KHUSUS KONTEN KANAN */
+        .main-content { flex: 1; padding: 40px 50px; height: 100%; overflow-y: auto; }
+
         .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600; border-radius: 8px; transition: all 0.2s; }
         .sidebar-item:hover { background-color: #f8fafc; color: #0f172a; }
         .sidebar-item.active { background-color: #eff6ff; color: #0284c7; }
@@ -44,8 +54,6 @@
         .sidebar-collapse-btn:not(.collapsed) .toggle-icon { transform: rotate(180deg); color: #0284c7; }
         .sidebar-collapse-btn:not(.collapsed) { color: #0284c7; }
         .sidebar-submenu { display: flex; flex-direction: column; gap: 4px; padding-left: 10px; margin-top: 8px; }
-
-        .main-content { flex: 1; padding: 40px 50px; overflow-y: auto; }
 
         .nav-tabs { border-bottom: 2px solid #e2e8f0; margin-bottom: 25px; flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; gap: 10px; }
         .nav-tabs .nav-link { color: #64748b; font-weight: 700; font-size: 12.5px; text-transform: uppercase; border: none; padding: 12px 24px; transition: all 0.2s; position: relative; background: transparent; }
@@ -60,7 +68,7 @@
 
         .table-card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #e5e7eb; }
         .table-custom { margin-bottom: 0; font-size: 13.5px; }
-        .table-custom thead th { background-color: #111827; color: #f8fafc; font-weight: 600; padding: 16px 12px; text-align: center; font-size: 11.5px; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: none; }
+        .table-custom thead th { background-color: #111827; color: #f8fafc; font-weight: 600; padding: 16px 12px; text-align: center; font-size: 11.5px; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: none; position: sticky; top: 0; z-index: 10; } /* Biar header tabel sticky juga pas scroll data */
         .table-custom tbody td { padding: 18px 12px; color: #4b5563; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
         
         .img-sarana { width: 180px; height: 120px; object-fit: cover; border-radius: 6px; transition: transform 0.2s; }
@@ -74,8 +82,6 @@
         .btn-delete:hover { background-color: #fecaca; color: #991b1b; }
 
         #searchInput:focus { box-shadow: none; border-color: #cbd5e1; }
-        
-        /* Tambahan Hover untuk Tombol Map */
         .badge.btn-hover:hover { background-color: #f1f5f9 !important; opacity: 0.8; transform: translateY(-1px); }
 
         /* ==================================================
@@ -90,8 +96,10 @@
                 padding: 0 !important;
                 margin: 0 !important;
                 width: 100% !important;
+                overflow: visible !important; /* balikin overflow saat print */
+                height: auto !important; /* balikin height saat print */
             }
-            .dashboard-container { display: block !important; }
+            .dashboard-container { display: block !important; height: auto !important; }
             .table-card { box-shadow: none !important; border: none !important; }
             
             table th:nth-child(4), table td:nth-child(4) {
@@ -126,7 +134,7 @@
         </a>
         <div class="user-menu">
             <div class="user-profile">
-                <span class="badge-role {{ Auth::user()->role ?? '' }}">{{ str_replace('_', ' ', Auth::user()->role ?? 'SAPRA') }}</span>
+              
                 <span>{{ Auth::user()->nama_lengkap ?? 'Dhimas Zaky Abiyyu' }}</span>
                 <i class="fas fa-user-circle"></i>
             </div>
@@ -278,6 +286,7 @@
                     @php $isActive = $activeTab ? ($pos->id_pos == $activeTab) : $loop->first; @endphp
                     <div class="tab-pane fade {{ $isActive ? 'show active' : '' }}" id="content-{{ $pos->id_pos }}" role="tabpanel">
                         
+                        <!-- INFO POS DAN MAPS -->
                         <div class="info-card">
                             <h5>{{ $pos->nama_pos }}</h5>
                             <p><i class="fas fa-map-marker-alt text-danger" style="width: 20px;"></i> {{ $pos->alamat ?? 'Alamat belum diatur' }}</p>
@@ -458,7 +467,7 @@
         </main>
     </div>
 
-    <!-- MODAL TAMBAH DATA (YANG SUDAH DIBERSIHKAN DARI ERROR) -->
+    <!-- MODAL TAMBAH DATA -->
     <div class="modal fade" id="modalTambah" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content border-0 shadow">
@@ -489,7 +498,7 @@
                             </div>
                         </div>
 
-                        <!-- INPUTAN BARU TAHUN, PLAT & STNK (TAMBAH DATA - BEBAS ERROR) -->
+                        <!-- INPUTAN BARU TAHUN, PLAT & STNK -->
                         <div class="row">
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-bold small text-secondary">Tahun <span class="text-muted fw-normal">(Ops)</span></label>
