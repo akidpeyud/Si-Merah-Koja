@@ -96,7 +96,7 @@
         
         /* Badges & Buttons */
         .badge-soft-blue { background-color: #e0f2fe; color: #0284c7; padding: 6px 12px; font-weight: 700; border-radius: 6px; border: 1px solid #bae6fd; }
-        .btn-action { width: 32px; height: 32px; display: inline-flex; justify-content: center; align-items: center; border-radius: 6px; font-size: 13px; color: white; border: none; margin-right: 5px; }
+        .btn-action { width: 32px; height: 32px; display: inline-flex; justify-content: center; align-items: center; border-radius: 6px; font-size: 13px; color: white; border: none; margin-right: 5px; text-decoration: none;}
         .btn-edit { background-color: #f59e0b; }
         .btn-delete { background-color: #ef4444; }
 
@@ -217,9 +217,9 @@
                         <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
                         <input type="text" class="form-control border-start-0 ps-0" placeholder="Cari nama atau NIK...">
                     </div>
-                    <a href="/internal/pencegahan/peningkatan-kapasitas/tambah" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #0284c7; padding: 9px 16px;">
-    <i class="fas fa-plus"></i> Tambah Data
-</a>
+                    <a href="/internal/pencegahan/peningkatan-kapasitas/tambah?jenis=DIKLAT F1" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #0284c7; padding: 9px 16px;">
+                        <i class="fas fa-plus"></i> Tambah Data
+                    </a>
                     <a href="#" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #10b981; padding: 9px 16px;">
                         <i class="fas fa-file-excel"></i> Excel
                     </a>
@@ -228,36 +228,37 @@
                     </a>
                 </div>
             </div>
-<!-- TABS MENYAMPING SAKTI UNTUK SEMUA HALAMAN -->
-<ul class="nav custom-nav-tabs">
-    <li class="nav-item">
-        <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas">Semua Data</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diksar') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diksar">DIKSAR</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-f1') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-f1">DIKLAT F1</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-f2') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-f2">DIKLAT F2</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-rescue') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-rescue">DIKLAT RESCUE</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-mfr') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-mfr">DIKLAT MFR</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-operator') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-operator">DIKLAT OPERATOR</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-inspektur') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-inspektur">DIKLAT INSPEKTUR</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-ppl') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-ppl">DIKLAT PPL</a>
-    </li>
-</ul>
+
+            <!-- TABS MENYAMPING SAKTI UNTUK SEMUA HALAMAN -->
+            <ul class="nav custom-nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas">Semua Data</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diksar') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diksar">DIKSAR</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-f1') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-f1">DIKLAT F1</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-f2') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-f2">DIKLAT F2</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-rescue') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-rescue">DIKLAT RESCUE</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-mfr') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-mfr">DIKLAT MFR</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-operator') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-operator">DIKLAT OPERATOR</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-inspektur') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-inspektur">DIKLAT INSPEKTUR</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-ppl') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-ppl">DIKLAT PPL</a>
+                </li>
+            </ul>
 
             <!-- TABEL 21 KOLOM SESUAI EXCEL ASLI LU -->
             <div class="table-wrapper">
@@ -289,93 +290,49 @@
                                 <th class="sticky-action text-center" width="100px">AKSI</th>
                             </tr>
                         </thead>
+                        
+                        <!-- DATANYA UDAH DINAMIS NARIK DARI CONTROLLER -->
                         <tbody>
-                            <!-- CONTOH DATA 1 (MENGAMBIL REFERENSI FOTO EXCEL LU) -->
+                            @foreach ($data_diklat as $index => $item)
                             <tr>
-                                <td class="text-center fw-bold">1</td>
-                                <td><div class="fw-bold text-dark">SUHERMANTO, SE</div></td>
-                                <td>Jambi</td>
-                                <td>1972/08/30</td>
-                                <td>157102300872002</td>
-                                <td>Kasi Peningkatan Kapasitas</td>
-                                <td>Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi</td>
-                                <td>Kepala Dinas Pemadam Kebakaran Provinsi DKI Jakarta</td>
-                                <td>4 s/d 29 Agust 2003</td>
-                                <td class="text-center"><span class="badge-soft-blue">200</span></td>
-                                <td>PUSDIKLAT DKI Jakarta</td>
-                                <td>DKI Jakarta</td>
-                                <td>Jakarta Timur</td>
-                                <td>No. 225/1.784.08.</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td><span class="badge bg-primary">Inspektur Kebakaran TK.I</span></td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td class="sticky-action text-center">
-                                    <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
-                                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                                <td class="text-center fw-bold">{{ $index + 1 }}</td>
+                                <td><div class="fw-bold text-dark">{{ $item->nama }}</div></td>
+                                <td>{{ $item->tempat_lahir }}</td>
+                                <td>{{ $item->tgl_lahir }}</td>
+                                <td>{{ $item->nik }}</td>
+                                <td>{{ $item->jabatan }}</td>
+                                <td>{{ $item->instansi }}</td>
+                                <td>{{ $item->ditandatangani_oleh }}</td>
+                                <td>{{ $item->tanggal_pelaksanaan }}</td>
+                                <td class="text-center"><span class="badge-soft-blue">{{ $item->jumlah_jam_pelajaran }}</span></td>
+                                <td>{{ $item->instansi_penyelenggara }}</td>
+                                <td>{{ $item->provinsi }}</td>
+                                <td>{{ $item->kota }}</td>
+                                <td>{{ $item->nomor_sertifikat }}</td>
+                                <td>{{ $item->kode_verifikasi }}</td>
+                                <td>{{ $item->persentasi_penilaian }}</td>
+                                <td><span class="badge bg-primary">{{ $item->jenis_diklat }}</span></td>
+                                <td>{{ $item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
+                                <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
+                                <td>{{ $item->ttl }}</td>
+                                <td>{{ $item->ket }}</td>
+                                <td class="sticky-action text-center" style="white-space: nowrap;">
+                                    <!-- Tombol Edit -->
+                                    <a href="/internal/pencegahan/peningkatan-kapasitas/edit/diklat-f1/{{ $item->id }}" class="btn-action btn-edit" title="Edit Data" style="position: relative; z-index: 10;">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    
+                                    <!-- Tombol Hapus -->
+                                    <form action="/internal/pencegahan/peningkatan-kapasitas/hapus/diklat-f1/{{ $item->id }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                                        @csrf 
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-action btn-delete" title="Hapus Data" style="position: relative; z-index: 10;">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
-                            
-                            <!-- CONTOH DATA 2 -->
-                            <tr>
-                                <td class="text-center fw-bold">2</td>
-                                <td><div class="fw-bold text-dark">TRI HASTATI M, SP</div></td>
-                                <td>Jambi</td>
-                                <td>1972/02/27</td>
-                                <td>157107670272006</td>
-                                <td>Analis Kebakaran Ahli Muda</td>
-                                <td>Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi</td>
-                                <td>Kepala Dinas Pemadam Kebakaran dan Penanggulangan Bencana Provinsi DKI Jakarta</td>
-                                <td>4 s/d 29 Nov 2019</td>
-                                <td class="text-center"><span class="badge-soft-blue">200</span></td>
-                                <td>PUSDIKLAT DKI Jakarta</td>
-                                <td>DKI Jakarta</td>
-                                <td>Jakarta Timur</td>
-                                <td>No. 00001903/DIKLAT TEKNIS/6000/083/LAN-Pem Prov DKI.Jakarta/2019</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td><span class="badge bg-primary">Inspektur Kebakaran TK.I</span></td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td class="sticky-action text-center">
-                                    <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
-                                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-
-                            <!-- CONTOH DATA 3 -->
-                            <tr>
-                                <td class="text-center fw-bold">3</td>
-                                <td><div class="fw-bold text-dark">MUHAMMAD HAPIS, SE</div></td>
-                                <td>Jambi</td>
-                                <td>1979/07/17</td>
-                                <td>157107170779012</td>
-                                <td>Staf</td>
-                                <td>Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi</td>
-                                <td>Kepala Dinas Pemadam Kebakaran dan Penanggulangan Bencana Provinsi DKI Jakarta</td>
-                                <td>11 s/d 15 Mei 2009</td>
-                                <td class="text-center"><span class="badge-soft-blue">45</span></td>
-                                <td>PUSDIKLAT DKI Jakarta</td>
-                                <td>DKI Jakarta</td>
-                                <td>Jakarta Timur</td>
-                                <td>No. 273/V.09/-084.31</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td><span class="badge bg-primary">Pendidikan dan Pelatihan Pemadam</span></td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td class="sticky-action text-center">
-                                    <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
-                                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
