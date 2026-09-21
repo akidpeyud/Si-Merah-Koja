@@ -404,8 +404,6 @@ Route::middleware(['auth'])->group(function () {
 
 // ==========================================
 // ROUTE BAGIAN SAPRA (SARANA PRASARANA)
-// ==========================================
-Route::get('/sapra/logistik', [SapraController::class, 'logistik']);
 
 // Data Hidrant Kota
 Route::get('/sapra/data-hidrant-kota', [SapraController::class, 'dataHidrantKota']);
@@ -508,8 +506,10 @@ Route::delete('/internal/pencegahan/hapus-redkar/{id}', [RedkarController::class
 Route::get('/internal/pencegahan/tambah-redkar', [RedkarController::class, 'createRedkar']);
 Route::post('/internal/pencegahan/simpan-redkar-offline', [RedkarController::class, 'storeRedkarOffline']);
 
-// Route untuk halaman publik Informasi Layanan (SAPRA)
-Route::get('/informasi-layanan', [PublicController::class, 'informasiLayanan']);
+// Halaman Landing Umum (Kosongan)
+Route::get('/informasi-layanan', [PublicController::class, 'indexLayanan']);
+// Halaman Spesifik Sarana Pemadam
+Route::get('/informasi-sarana', [PublicController::class, 'informasiSarana']);
 Route::get('/informasi-prasarana', [PublicController::class, 'informasiPrasarana']);
 Route::get('/informasi-penyelamatan', [PublicController::class, 'informasiPenyelamatan']);
 Route::get('/informasi-pemeriksaan', [PublicController::class, 'informasiPemeriksaan']);

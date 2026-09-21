@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Informasi Alat Pemeriksaan - SIMERAH KOJA</title>
+    <title>Informasi Layanan & Fasilitas - SIMERAH KOJA</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
@@ -55,7 +55,7 @@
         .breadcrumb .active { color: #ef4444; }
 
         /* --- LAYOUT UTAMA --- */
-        .content-wrapper { max-width: 1400px; margin: 50px auto 80px; display: flex; gap: 30px; padding: 0 20px; }
+        .content-wrapper { max-width: 1400px; margin: 50px auto 80px; display: flex; gap: 30px; padding: 0 20px; min-height: 50vh; }
 
         /* --- SIDEBAR KIRI --- */
         .sidebar { width: 300px; flex-shrink: 0; }
@@ -90,51 +90,25 @@
         .public-submenu li a.active { background-color: #ef4444; color: white; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2); }
         .public-submenu li a.active i { color: white; }
 
-        /* --- KONTEN KANAN (GALERI PUBLIK) --- */
-        .data-container { flex-grow: 1; }
+        /* --- KONTEN KANAN (AREA LANDING) --- */
+        .data-container { flex-grow: 1; display: flex; flex-direction: column; }
         
-        .header-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;}
-        .data-title { font-size: 24px; font-weight: 800; color: #0f172a; line-height: 1.3; margin-bottom: 5px;}
-        
-        .search-box { position: relative; width: 300px; }
-        .search-box input { width: 100%; padding: 12px 20px 12px 45px; border-radius: 50px; border: 1px solid #cbd5e1; font-size: 14px; outline: none; transition: 0.3s; background: #f8fafc;}
-        .search-box input:focus { border-color: #ef4444; background: white; box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1); }
-        .search-box i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 16px;}
-
-        /* TABS BOOTSTRAP OVERRIDE */
-        .nav-tabs { border-bottom: 2px solid #e2e8f0; margin-bottom: 25px; flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; gap: 10px; border: none; padding-bottom: 5px;}
-        .nav-tabs .nav-link { color: #64748b; font-weight: 700; font-size: 14px; border: 1px solid #cbd5e1; border-radius: 50px; padding: 10px 24px; background: white; transition: 0.3s; }
-        .nav-tabs .nav-link:hover { color: #0f172a; border-color: #94a3b8; background: #f8fafc;}
-        .nav-tabs .nav-link.active { color: white; border-color: #ef4444; background: #ef4444; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
-
-        /* KARTU INFO LOKASI POS */
-        .pos-info-card { background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;}
-        .pos-info-left h5 { font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 8px; text-transform: uppercase; display: flex; align-items: center; gap: 10px;}
-        .pos-info-left h5 i { color: #ef4444; font-size: 22px; }
-        .pos-info-left p { font-size: 14px; color: #64748b; margin: 0; font-weight: 500; display: flex; align-items: center; gap: 8px;}
-        .btn-map { background: #fef2f2; color: #ef4444; border: 1px solid #fca5a5; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 700; text-decoration: none; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px;}
-        .btn-map:hover { background: #ef4444; color: white; border-color: #ef4444; }
-
-        /* --- GRID GALLERY LAYOUT --- */
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        
-        .gallery-card { background: white; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 10px 20px rgba(0,0,0,0.04); transition: transform 0.3s ease, box-shadow 0.3s ease; }
-        .gallery-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); border-color: #cbd5e1; }
-        
-        .gallery-img-wrapper { width: 100%; height: 200px; background: #f8fafc; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;}
-        .gallery-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
-        .gallery-card:hover .gallery-img-wrapper img { transform: scale(1.1); }
-        .gallery-img-wrapper i { font-size: 40px; color: #cbd5e1; }
-        
-        .gallery-content { padding: 20px; }
-        .gallery-title { font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 12px; line-height: 1.4; text-transform: uppercase;}
-        
-        .gallery-meta { display: flex; flex-wrap: wrap; gap: 8px; }
-        .meta-badge { background: #f1f5f9; color: #475569; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #e2e8f0;}
-        .meta-badge i { color: #ef4444; }
+        .welcome-card {
+            background: white; 
+            padding: 80px 40px; 
+            text-align: center; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+            border: 1px solid #e2e8f0; 
+            height: 100%; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center;
+        }
 
         /* --- FOOTER --- */
-        .footer-bottom { background-color: #1a1a1a; color: #9ca3af; padding: 50px 5%; font-size: 13px; margin-top: 50px;}
+        .footer-bottom { background-color: #1a1a1a; color: #9ca3af; padding: 50px 5%; font-size: 13px; margin-top: auto;}
         .footer-grid { display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 40px; max-width: 1200px; margin: 0 auto 40px; }
         .footer-logo { text-align: center; }
         .footer-logo img { height: 120px; margin-bottom: 15px; }
@@ -181,7 +155,7 @@
                     <li><a href="/perencanaan">PERENCANAAN</a></li>
                     <li><a href="/pelaporan">PELAPORAN</a></li>
                     <li><a href="/sop">SOP</a></li>
-                       <li><a href="/produkhukum">PRODUK HUKUM</a></li>
+                    <li><a href="/produkhukum">PRODUK HUKUM</a></li>
                 </ul>
             </li>
             <li class="dropdown">
@@ -208,7 +182,7 @@
     <!-- LAYOUT FORM & SIDEBAR -->
     <div class="content-wrapper">
         
-        <!-- KIRI: SIDEBAR AKORDION -->
+        <!-- KIRI: SIDEBAR AKORDION IDENTIK -->
         <div class="sidebar">
             <h3 class="sidebar-title">Kategori Publikasi</h3>
             <div class="decor-line"><i class="fas fa-circle"></i></div>
@@ -223,16 +197,15 @@
                 <div class="public-accordion-item">
                     <button class="public-accordion-btn">BAGIAN PEMADAMAN <i class="fas fa-chevron-down"></i></button>
                 </div>
-                
-                <!-- SAPRA (AKTIF) -->
+           <!-- SAPRA (Tertutup Default) -->
                 <div class="public-accordion-item">
-                    <button class="public-accordion-btn active" onclick="document.getElementById('menuSapra').classList.toggle('show')">
-                        BAGIAN SAPRA <i class="fas fa-chevron-up"></i>
+                    <button class="public-accordion-btn" onclick="document.getElementById('menuSapra').classList.toggle('show')">
+                        BAGIAN SAPRA <i class="fas fa-chevron-down"></i>
                     </button>
-                    <!-- Sub-menu Sapra Canggih -->
-                    <ul class="public-submenu show" id="menuSapra">
+                    <!-- Sub-menu Sapra -->
+                    <ul class="public-submenu" id="menuSapra">
                         <li>
-                            <a href="/informasi-layanan" class="{{ request()->is('informasi-layanan') ? 'active' : '' }}">
+                            <a href="/informasi-sarana" class="{{ request()->is('informasi-sarana') ? 'active' : '' }}">
                                 <i class="fas fa-fire-extinguisher"></i> Sarana Pemadam
                             </a>
                         </li>
@@ -256,92 +229,36 @@
             </div>
         </div>
 
-        <!-- KANAN: KONTEN GALERI (Tampilan Publik Modern) -->
+        <!-- KANAN: AREA LANDING SESUAI REFERENSI DESAIN -->
         <div class="data-container">
-            
-            <div class="header-card">
-                <div>
-                    <!-- Judul Diset Untuk Pemeriksaan -->
-                    <h2 class="data-title text-danger">SARANA PEMERIKSAAN PROTEKSI KEBAKARAN</h2>
-                    <p class="text-muted mb-0" style="font-weight: 500;">Galeri publik transparansi data ketersediaan alat seperti Walkie Talkie dan Head Tester di tiap pos.</p>
-                </div>
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Cari alat pemeriksaan...">
-                </div>
+            <div class="welcome-card">
+                <img src="/images/logo.png" alt="Logo Damkar" style="height: 100px; margin-bottom: 25px;">
+                
+                <!-- Judul Diperbarui (General) -->
+                <h2 style="font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 15px;">
+                    Selamat Datang di Informasi Layanan Publik
+                </h2>
+                
+                <!-- Paragraf 1 -->
+                <p style="color: #64748b; font-size: 16px; font-weight: 500; margin-bottom: 30px;">
+                    Portal transparansi informasi fasilitas dan aset pada Dinas Pemadam Kebakaran dan<br>Penyelamatan Kota Jambi.
+                </p>
+
+                <!-- Paragraf 2 (Instruksi Merah) -->
+                <p style="color: #ef4444; font-size: 18px; font-weight: 700; margin-bottom: 10px;">
+                    Silakan pilih menu kategori di sebelah kiri
+                </p>
+
+                <!-- Paragraf 3 -->
+                <p style="color: #64748b; font-size: 16px; font-weight: 500;">
+                    untuk melihat detail galeri armada, prasarana pos, sarana penyelamatan, dan alat<br>pemeriksaan.
+                </p>
             </div>
-
-            <!-- TABS POS MENGGUNAKAN BOOTSTRAP -->
-            <ul class="nav nav-tabs" id="posTabs" role="tablist">
-                @foreach($posPemadam as $pos)
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link {{ $loop->first ? 'active' : '' }}" id="tab-{{ $pos->id_pos }}" data-bs-toggle="tab" data-bs-target="#content-{{ $pos->id_pos }}" type="button" role="tab">
-                            {{ strtoupper($pos->nama_pos) }}
-                        </button>
-                    </li>
-                @endforeach
-            </ul>
-
-            <div class="tab-content" id="posTabsContent">
-                @foreach($posPemadam as $pos)
-                    <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="content-{{ $pos->id_pos }}" role="tabpanel">
-                        
-                        <!-- INFO POS DAN MAPS -->
-                        <div class="pos-info-card">
-                            <div class="pos-info-left">
-                                <h5><i class="fas fa-warehouse"></i> {{ $pos->nama_pos }}</h5>
-                                <p><i class="fas fa-map-marker-alt"></i> {{ $pos->alamat ?? 'Alamat belum tersedia' }}</p>
-                            </div>
-                            @if($pos->kode_map)
-                                <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($pos->kode_map) }}" target="_blank" class="btn-map">
-                                    <i class="fas fa-location-arrow"></i> Lihat di Google Maps
-                                </a>
-                            @endif
-                        </div>
-
-                        <!-- GALERI GRID SYSTEM -->
-                        <div class="gallery-grid">
-                            <!-- Menggunakan variabel $dataPemeriksaan dari Controller -->
-                            @php $dataFilter = $dataPemeriksaan->where('id_pos', $pos->id_pos); @endphp
-                            
-                            @forelse($dataFilter as $item)
-                                <div class="gallery-card data-row">
-                                    <div class="gallery-img-wrapper">
-                                        @if($item->path_gambar && file_exists(public_path($item->path_gambar)))
-                                            <a href="{{ asset($item->path_gambar) }}" target="_blank" style="display:block; width:100%; height:100%;">
-                                                <img src="{{ asset($item->path_gambar) }}" alt="Gambar Alat Pemeriksaan">
-                                            </a>
-                                        @else
-                                            <i class="fas fa-image"></i>
-                                        @endif
-                                    </div>
-                                    <div class="gallery-content">
-                                        <div class="gallery-title data-name">{{ $item->jenis_sarana }}</div>
-                                        <div class="gallery-meta">
-                                            <!-- Tanpa Keterangan Jumlah (Kerahasiaan) -->
-                                            <span class="meta-badge"><i class="fas fa-check-circle"></i> Tersedia di Pos Ini</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            @empty
-                                <div style="grid-column: 1 / -1; background: white; padding: 60px 20px; text-align: center; border-radius: 12px; border: 1px dashed #cbd5e1;">
-                                    <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle mb-3" style="width: 80px; height: 80px;">
-                                        <i class="fas fa-box-open" style="font-size: 32px; color: #94a3b8;"></i>
-                                    </div>
-                                    <h4 style="font-weight: 800; color: #475569; margin-bottom: 5px;">Data Kosong</h4>
-                                    <p class="text-muted mb-0">Belum ada galeri alat pemeriksaan untuk pos ini.</p>
-                                </div>
-                            @endforelse
-                        </div>
-
-                    </div>
-                @endforeach
-            </div>
-
         </div>
+
     </div>
 
-    <!-- FOOTER -->
+    <!-- FOOTER IDENTIK -->
     <div class="footer-bottom">
         <div class="footer-grid">
             <div class="footer-about">
@@ -388,35 +305,19 @@
         </div>
     </div>
 
-    <!-- SCRIPT SEARCH CANGGIH -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.getElementById('searchInput').addEventListener('keyup', function() {
-            let filter = this.value.toLowerCase();
-            let activeTab = document.querySelector('.tab-pane.active');
-            if(!activeTab) return;
-
-            let cards = activeTab.querySelectorAll('.gallery-card');
-            
-            cards.forEach(card => {
-                let textContent = card.querySelector('.gallery-title').textContent.toLowerCase();
-                if(textContent.includes(filter)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-
-        // Reset pencarian saat ganti tab pos
-        let tabs = document.querySelectorAll('button[data-bs-toggle="tab"]');
-        tabs.forEach(tab => {
-            tab.addEventListener('shown.bs.tab', function (e) {
-                document.getElementById('searchInput').value = '';
-                let cards = document.querySelectorAll('.gallery-card');
-                cards.forEach(card => card.style.display = 'block');
-            });
+        // Mengatur agar accordian bagian yang aktif (berdasarkan URL) tetap terbuka saat di-refresh
+        document.addEventListener("DOMContentLoaded", function() {
+            let activeLink = document.querySelector('.public-submenu a.active');
+            if(activeLink) {
+                let submenu = activeLink.closest('.public-submenu');
+                let btn = submenu.previousElementSibling;
+                submenu.classList.add('show');
+                btn.classList.add('active');
+                btn.innerHTML = btn.innerHTML.replace('fa-chevron-down', 'fa-chevron-up');
+            }
         });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
