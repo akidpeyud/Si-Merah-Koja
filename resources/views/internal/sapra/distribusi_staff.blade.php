@@ -11,13 +11,16 @@
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: #f3f4f6; color: #1f2937; }
+        
+        /* 1. KUNCI BODY BIAR GAK BISA DI-SCROLL KESELURUHAN */
+        body { background-color: #f3f4f6; color: #1f2937; overflow: hidden; }
 
         #globalSuccessAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); background-color: #10b981; color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s; }
         #globalSuccessAlert .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px; }
         @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
 
-        .navbar-internal { background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; }
+        /* 2. TINGGI TETAP NAVBAR */
+        .navbar-internal { background-color: #111827; padding: 0 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; height: 74px; }
         .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
         .nav-brand img { height: 40px; }
         .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; }
@@ -26,8 +29,16 @@
         .badge-role { background: #3b82f6; color: white; font-size: 11px; padding: 4px 10px; border-radius: 50px; font-weight: 700; text-transform: uppercase; }
         .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; }
 
-        .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
-        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+        /* --- LAYOUT UTAMA (INDEPENDENT SCROLLING) --- */
+        /* 3. TINGGI SISA DARI LAYAR - NAVBAR */
+        .dashboard-container { display: flex; height: calc(100vh - 74px); }
+        
+        /* 4. SCROLL MANDIRI UNTUK SIDEBAR */
+        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; height: 100%; overflow-y: auto; flex-shrink: 0; }
+        
+        /* 5. SCROLL MANDIRI UNTUK KONTEN UTAMA */
+        .main-content { flex: 1; padding: 40px 50px; overflow-y: auto; height: 100%; background-color: #f9fafb; }
+
         .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600; border-radius: 8px; transition: all 0.2s; }
         .sidebar-item:hover { background-color: #f8fafc; color: #0f172a; }
         .sidebar-item.active { background-color: #eff6ff; color: #0284c7; }
@@ -37,11 +48,12 @@
         .sidebar-collapse-btn:not(.collapsed) { color: #0284c7; }
         .sidebar-submenu { display: flex; flex-direction: column; gap: 4px; padding-left: 10px; margin-top: 8px; }
 
-        .main-content { flex: 1; padding: 40px 50px; overflow-y: auto; }
-        
         .table-card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #e5e7eb; }
         .table-custom { margin-bottom: 0; font-size: 13.5px; }
-        .table-custom thead th { color: #f8fafc; font-weight: 600; padding: 16px 12px; text-align: center; font-size: 11.5px; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: none; }
+        
+        /* 6. HEADER TABEL STICKY */
+        .table-custom thead th { background-color: #111827; color: #f8fafc; font-weight: 600; padding: 16px 12px; text-align: center; font-size: 11.5px; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: none; position: sticky; top: 0; z-index: 10; }
+        
         .table-custom tbody td { padding: 14px 12px; color: #4b5563; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
 
         .btn-action { padding: 8px 12px; font-size: 12.5px; border-radius: 6px; font-weight: 700; border: none; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
@@ -53,6 +65,18 @@
         #searchInput:focus { box-shadow: none; border-color: #cbd5e1; }
         
         .badge-barang { background-color: #e0f2fe; color: #0284c7; padding: 6px 12px; border-radius: 6px; font-weight: 800; border: 1px solid #bae6fd; font-size: 12.5px; }
+
+        /* ==================================================
+           CSS KHUSUS UNTUK PRINT / CETAK PDF
+           ================================================== */
+        @media print {
+            .navbar-internal, .sidebar, .btn, .modal, .search-container, .dropdown { display: none !important; }
+            body, .main-content { background-color: white !important; padding: 0 !important; margin: 0 !important; width: 100% !important; overflow: visible !important; height: auto !important;}
+            .dashboard-container { display: block !important; height: auto !important;}
+            .table-card { box-shadow: none !important; border: none !important; }
+            table th:last-child, table td:last-child { display: none !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
     </style>
 </head>
 <body>
@@ -74,7 +98,7 @@
         <div class="user-menu">
             <div class="user-profile">
                 <span>{{ Auth::user()->nama_lengkap ?? 'Dhimas Zaky Abiyyu' }}</span>
-                <i class="fas fa-user-circle"></i>
+                <i class="fas fa-user-circle" style="font-size: 20px; color: #9ca3af;"></i>
             </div>
             <form action="/logout" method="POST" style="margin: 0;">
                 @csrf
@@ -128,12 +152,11 @@
                 </button>
                 <div class="collapse show" id="collapseSapra" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu" style="padding-left:0;">
-                       
-
                         <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">FASILITAS & POS MAKO</span>
-                        <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pos</a>
-                        <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pos</a>
-                        <a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan</a>
+                                        <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam Kebakaran</a>
+                        <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pemadam Kebakaran</a>     
+                        <a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi</a>
+                        <a href="/sapra/sarana-pemeriksaan" class="sidebar-item"><i class="fas fa-search"></i>Sarana Pemeriksaan Proteksi Kebakaran</a>
                         <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
 
                          <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">MANAJEMEN AIR</span>
@@ -143,7 +166,10 @@
                         <!-- GRUP LOGISTIK & DISTRIBUSI -->
                         <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">LOGISTIK & DISTRIBUSI</span>
                         <a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
-                        <a href="/sapra/distribusi-staff" class="sidebar-item active"><i class="fas fa-user-check"></i> Distribusi Barang Staff</a> </div>
+                        
+                        <!-- ACTIVE ADA DI SINI -->
+                        <a href="/sapra/distribusi-staff" class="sidebar-item active"><i class="fas fa-user-check"></i> Distribusi Barang Staff</a> 
+                    </div>
                 </div>
             @endif
 
@@ -247,10 +273,10 @@
                                         </td>
                                         
                                         <!-- Info Barang -->
-                                        <td class="data-barang py-3">
+                                        <td class="data-barang py-3 text-center">
                                             <span class="badge-barang shadow-sm">{{ $item->nama_barang }}</span>
                                             @if($item->detail_barang)
-                                                <div class="text-muted mt-2 fw-medium" style="font-size: 12px; margin-left: 5px;">
+                                                <div class="text-muted mt-2 fw-medium" style="font-size: 12px;">
                                                     <i class="fas fa-caret-right text-secondary me-1"></i> {{ $item->detail_barang }}
                                                 </div>
                                             @endif

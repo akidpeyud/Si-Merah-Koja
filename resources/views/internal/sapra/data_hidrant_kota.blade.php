@@ -11,7 +11,9 @@
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: #f3f4f6; color: #1f2937; }
+        
+        /* 1. KUNCI BODY BIAR GAK BISA DI-SCROLL KESELURUHAN */
+        body { background-color: #f3f4f6; color: #1f2937; overflow: hidden; }
 
         /* --- GLOBAL ALERT STYLES --- */
         #globalSuccessAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); background-color: #10b981; color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4), 0 8px 10px -6px rgba(16, 185, 129, 0.1); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -21,8 +23,8 @@
         @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
         @keyframes fadeOutUpCenter { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -50px); opacity: 0; } }
 
-        /* --- NAVBAR INTERNAL --- */
-        .navbar-internal { background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        /* 2. TINGGI TETAP UNTUK NAVBAR */
+        .navbar-internal { background-color: #111827; padding: 0 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); height: 74px; }
         .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; transition: opacity 0.3s;}
         .nav-brand:hover { opacity: 0.8; }
         .nav-brand img { height: 40px; }
@@ -35,12 +37,19 @@
         .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
         .btn-logout:hover { background-color: #dc2626; }
 
-        /* --- SIDEBAR ACCORDION STYLES --- */
-        .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
-        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+        /* --- LAYOUT UTAMA (INDEPENDENT SCROLLING) --- */
+        /* 3. TINGGI SISA DARI LAYAR - NAVBAR */
+        .dashboard-container { display: flex; height: calc(100vh - 74px); }
+        
+        /* 4. SCROLL MANDIRI UNTUK SIDEBAR */
+        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; height: 100%; overflow-y: auto; flex-shrink: 0; }
+        
+        /* 5. SCROLL MANDIRI UNTUK KONTEN UTAMA */
+        .main-content { flex: 1; padding: 40px 50px; background-color: #f9fafb; height: 100%; overflow-y: auto; }
+
         .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600; border-radius: 8px; transition: all 0.2s; }
         .sidebar-item:hover { background-color: #f8fafc; color: #0f172a; }
-        .sidebar-item.active { background-color: #eff6ff; color: #0284c7; }
+        .sidebar-item.active { background-color: #e0f2fe; color: #0284c7; }
         .sidebar-item.active i { color: #0284c7; }
         .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #9ca3af; transition: color 0.2s; }
         .sidebar-collapse-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 15px 15px 5px 15px; margin-top: 10px; background: transparent; border: none; border-top: 1px dashed #e5e7eb; text-align: left; font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
@@ -52,10 +61,11 @@
         .sidebar-submenu { display: flex; flex-direction: column; gap: 4px; padding-left: 10px; margin-top: 8px; }
 
         /* --- MAIN AREA & TABLE STYLES --- */
-        .main-content { flex: 1; padding: 40px 50px; background-color: #f9fafb; overflow-y: auto; }
         .table-card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #e5e7eb; }
         .table-custom { margin-bottom: 0; font-size: 12px; white-space: nowrap; }
-        .table-custom thead th { background-color: #111827; color: #f8fafc; font-weight: 600; padding: 16px 10px; border-bottom: none; text-align: center; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; }
+        
+        /* 6. HEADER TABEL DIBIKIN STICKY BIAR ENAK PAS SCROLL BAWAH */
+        .table-custom thead th { background-color: #111827; color: #f8fafc; font-weight: 600; padding: 16px 10px; border-bottom: none; text-align: center; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; position: sticky; top: 0; z-index: 10;}
         .table-custom tbody td { padding: 12px 10px; color: #4b5563; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
         .table-custom tbody tr:hover { background-color: #f8fafc; }
         
@@ -81,6 +91,27 @@
         /* Hover buat link Map */
         .map-link { transition: all 0.2s; }
         .map-link:hover { transform: translateY(-2px); background-color: #f1f5f9 !important; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1) !important; }
+
+        /* ==================================================
+           CSS KHUSUS UNTUK PRINT / CETAK PDF
+           ================================================== */
+        @media print {
+            .navbar-internal, .sidebar, .btn, .modal, .search-container {
+                display: none !important;
+            }
+            body, .main-content {
+                background-color: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+                overflow: visible !important;
+                height: auto !important;
+            }
+            .dashboard-container { display: block !important; height: auto !important; }
+            .table-card { box-shadow: none !important; border: none !important; }
+            table th:last-child, table td:last-child { display: none !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
     </style>
 </head>
 <body>
@@ -113,7 +144,6 @@
 
         <div class="user-menu">
             <div class="user-profile">
-                
                 <span>{{ Auth::user()->nama_lengkap ?? 'Dhimas Zaky Abiyyu' }}</span>
                 <i class="fas fa-user-circle"></i>
             </div>
@@ -203,7 +233,8 @@
                 <div class="collapse" id="collapseBerita" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
                         <a href="/internal/operator/kelola-berita" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
-                        <a href="/internal/operator/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
+                        <a href="/internal/operator/infografis" class="sidebar-item"><i class="fas fa-image"></i> Kelola Info Grafis</a>
+                        <a href="/internal/operator/berita-medsos" class="sidebar-item"><i class="fab fa-instagram"></i> Kelola Berita Medsos</a>
                     </div>
                 </div>
             @endif
