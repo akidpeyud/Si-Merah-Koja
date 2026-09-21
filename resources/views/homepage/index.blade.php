@@ -7,6 +7,7 @@
     <meta name="description" content="SIMERAH KOJA, Sistem Informasi Penanggulangan Kebakaran dan Penyelamatan Daerah Kota Jambi. Lapor kebakaran, ajukan perizinan proteksi kebakaran, dan ikuti kejadian terbaru.">
     <title>SIMERAH KOJA - Damkar Kota Jambi</title>
 
+    <link rel="icon" href="/images/simerahkoja.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
