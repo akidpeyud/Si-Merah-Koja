@@ -11,41 +11,47 @@
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: #f3f4f6; color: #1f2937; }
+        body { background-color: #f8fafc; color: #1e293b; overflow: hidden; }
 
+        /* ALERT STYLES */
         #globalSuccessAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); background-color: #10b981; color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s; }
         #globalSuccessAlert .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px; }
         @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
 
-        .navbar-internal { background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; }
+        /* NAVBAR */
+        .navbar-internal { background-color: #0f172a; padding: 0 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); height: 74px; }
         .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; transition: opacity 0.3s;}
         .nav-brand:hover { opacity: 0.8; }
         .nav-brand img { height: 40px; }
         .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; }
-        .badge-internal { background: #10b981; color: white; font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 700; margin-left: 10px; }
         .user-menu { display: flex; align-items: center; gap: 20px; }
         .user-profile { display: flex; align-items: center; gap: 10px; color: #e5e7eb; font-size: 14px; font-weight: 600; }
-        .badge-role { background: #3b82f6; color: white; font-size: 11px; padding: 4px 10px; border-radius: 50px; font-weight: 700; text-transform: uppercase; }
         .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
         .btn-logout:hover { background-color: #dc2626; }
 
         /* SIDEBAR STYLES */
-        .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
-        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
-        .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600; border-radius: 8px; transition: all 0.2s; }
-        .sidebar-item:hover { background-color: #f8fafc; color: #0f172a; }
+        .dashboard-container { display: flex; height: calc(100vh - 74px); }
+        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e2e8f0; padding: 30px 15px; display: flex; flex-direction: column; gap: 4px; height: 100%; overflow-y: auto; flex-shrink: 0; }
+        
+        .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #475569; text-decoration: none; font-size: 13.5px; font-weight: 600; border-radius: 8px; transition: all 0.2s; margin-bottom: 2px; }
+        .sidebar-item:hover { background-color: #f1f5f9; color: #0f172a; }
         .sidebar-item.active { background-color: #eff6ff; color: #0284c7; }
         .sidebar-item.active i { color: #0284c7; }
-        .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #9ca3af; transition: color 0.2s; }
-        .sidebar-collapse-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 15px 15px 5px 15px; margin-top: 10px; background: transparent; border: none; border-top: 1px dashed #e5e7eb; text-align: left; font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
-        .sidebar-collapse-btn:hover { color: #4b5563; }
+        .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #94a3b8; transition: color 0.2s; }
+
+        .sidebar-collapse-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 12px 15px; background: transparent; border: none; text-align: left; font-size: 11.5px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s; border-radius: 8px; }
+        .sidebar-collapse-btn:hover { color: #475569; }
+        .sidebar-collapse-btn:not(.collapsed) { color: #0284c7; }
         .toggle-icon { transition: transform 0.3s ease; font-size: 12px; }
         .sidebar-collapse-btn.collapsed .toggle-icon { transform: rotate(0deg); }
         .sidebar-collapse-btn:not(.collapsed) .toggle-icon { transform: rotate(180deg); color: #0284c7; }
-        .sidebar-collapse-btn:not(.collapsed) { color: #0284c7; }
-        .sidebar-submenu { display: flex; flex-direction: column; gap: 4px; padding-left: 10px; margin-top: 8px; }
 
-        .main-content { flex: 1; padding: 40px 50px; overflow-y: auto; }
+        .sidebar-separator { border-top: 1.5px dashed #e2e8f0; margin: 10px 15px; }
+        .sidebar-heading { display: block; font-size: 11px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 12px; margin-bottom: 6px; letter-spacing: 0.5px; }
+        .sidebar-submenu { display: flex; flex-direction: column; gap: 2px; padding-left: 5px; margin-top: 4px; }
+
+        /* MAIN CONTENT & TABS */
+        .main-content { flex: 1; padding: 40px 50px; background-color: #f8fafc; height: 100%; overflow-y: auto; }
 
         .nav-tabs { border-bottom: 2px solid #e2e8f0; margin-bottom: 25px; flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; gap: 10px; }
         .nav-tabs .nav-link { color: #64748b; font-weight: 700; font-size: 12.5px; text-transform: uppercase; border: none; padding: 12px 24px; transition: all 0.2s; position: relative; background: transparent; }
@@ -53,6 +59,7 @@
         .nav-tabs .nav-link.active { color: #0284c7; background: transparent; }
         .nav-tabs .nav-link.active::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 3px; background-color: #0284c7; border-radius: 3px 3px 0 0; }
 
+        /* INFO CARD & TABLE */
         .info-card { background: linear-gradient(to right, #ffffff, #f8fafc); border-left: 4px solid #0284c7; border-radius: 8px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 4px -1px rgba(0,0,0,0.05); }
         .info-card h5 { font-size: 17px; font-weight: 800; color: #0f172a; margin-bottom: 10px; text-transform: uppercase; }
         .info-card p { font-size: 13.5px; color: #475569; margin: 0 0 6px 0; display: flex; align-items: center; gap: 10px; font-weight: 500; }
@@ -60,8 +67,8 @@
 
         .table-card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #e5e7eb; }
         .table-custom { margin-bottom: 0; font-size: 13.5px; }
-        .table-custom thead th { background-color: #111827; color: #f8fafc; font-weight: 600; padding: 16px 12px; text-align: center; font-size: 11.5px; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: none; }
-        .table-custom tbody td { padding: 18px 12px; color: #4b5563; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
+        .table-custom thead th { background-color: #0f172a; color: #f8fafc; font-weight: 600; padding: 16px 12px; text-align: center; font-size: 11.5px; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: none; position: sticky; top: 0; z-index: 10;}
+        .table-custom tbody td { padding: 18px 12px; color: #475569; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
         
         .img-sarana { width: 180px; height: 120px; object-fit: cover; border-radius: 6px; transition: transform 0.2s; }
         .img-wrapper { display: inline-block; padding: 4px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #f8fafc; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
@@ -74,10 +81,18 @@
         .btn-delete:hover { background-color: #fecaca; color: #991b1b; }
 
         #searchInput:focus { box-shadow: none; border-color: #cbd5e1; }
-
-        /* Tambahan Hover untuk Tombol Map */
         .badge.btn-hover:hover { background-color: #f1f5f9 !important; opacity: 0.8; transform: translateY(-1px); }
 
+        @media print {
+            .navbar-internal, .sidebar, .btn, .nav-tabs, .modal, .btn-action, .search-container { display: none !important; }
+            body, .main-content { background-color: white !important; padding: 0 !important; margin: 0 !important; width: 100% !important; overflow: visible !important; height: auto !important;}
+            .dashboard-container { display: block !important; height: auto !important;}
+            .table-card { box-shadow: none !important; border: none !important; }
+            table th:nth-child(4), table td:nth-child(4) { display: none !important; }
+            .tab-pane { display: none !important; }
+            .tab-pane.active { display: block !important; opacity: 1 !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
     </style>
 </head>
 <body>
@@ -106,9 +121,8 @@
         </a>
         <div class="user-menu">
             <div class="user-profile">
-                
                 <span>{{ Auth::user()->nama_lengkap ?? 'Dhimas Zaky Abiyyu' }}</span>
-                <i class="fas fa-user-circle"></i>
+                <i class="fas fa-user-circle" style="font-size: 20px; color: #9ca3af;"></i>
             </div>
             <form action="/logout" method="POST" style="margin: 0;">
                 @csrf
@@ -125,9 +139,11 @@
                 <i class="fas fa-home"></i> Dashboard Utama
             </a>
 
+            <div class="sidebar-separator"></div>
+
             @if(in_array(Auth::user()->role, ['pencegahan', 'user', 'super_user']))
                 <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePencegahan" aria-expanded="false">
-                    <span>Bagian Pencegahan</span>
+                    <span>BAGIAN PENCEGAHAN</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
                 <div class="collapse" id="collapsePencegahan" data-bs-parent="#sidebarAccordion">
@@ -140,49 +156,53 @@
                         <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
                     </div>
                 </div>
+                <div class="sidebar-separator"></div>
             @endif
 
             @if(in_array(Auth::user()->role, ['pemadaman', 'user', 'super_user']))
                 <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="false">
-                    <span>Bagian Pemadaman</span>
+                    <span>BAGIAN PEMADAMAN</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
                 <div class="collapse" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
                         <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data & Laporan</a>
                         <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-file-alt"></i> Data Laporan</a>
-                       
                     </div>
                 </div>
+                <div class="sidebar-separator"></div>
             @endif
 
             @if(in_array(Auth::user()->role, ['sapra', 'user', 'super_user']))
                 <button class="sidebar-collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSapra" aria-expanded="true">
-                    <span>Bagian Sapra</span>
+                    <span>BAGIAN SAPRA</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
                 <div class="collapse show" id="collapseSapra" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
 
                         <!-- GRUP FASILITAS & POS -->
-                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">FASILITAS & POS MAKO</span>
+                        <span class="sidebar-heading" style="text-transform: none;">Sarana dan prasarana</span>
                         <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam kebakaran</a>
                         <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pemadam kebakaran</a>
+                        
+                        <!-- ACTIVE ADA DI SINI KARENA INI HALAMAN SARANA PENYELAMATAN -->
                         <a href="/sapra/sarana-penyelamatan" class="sidebar-item active"><i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi</a>
                         <a href="/sapra/sarana-pemeriksaan" class="sidebar-item"><i class="fas fa-search"></i>Sarana Pemeriksaan Proteksi Kebakaran</a>
                         <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
 
                         <!-- GRUP MANAJEMEN AIR -->
-                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">MANAJEMEN AIR</span>
+                        <span class="sidebar-heading" style="text-transform: uppercase;">MANAJEMEN AIR</span>
                         <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
                         <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
 
                         <!-- GRUP LOGISTIK & DISTRIBUSI -->
-                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">LOGISTIK & DISTRIBUSI</span>
+                        <span class="sidebar-heading" style="text-transform: uppercase;">LOGISTIK & DISTRIBUSI</span>
                         <a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
                         <a href="/sapra/distribusi-staff" class="sidebar-item"><i class="fas fa-user-check"></i> Distribusi Barang Staff</a>
                     </div>
                 </div>
+                <div class="sidebar-separator"></div>
             @endif
 
             @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
@@ -204,7 +224,7 @@
             </button>
             <div class="collapse" id="collapsePengaturan" data-bs-parent="#sidebarAccordion">
                 <div class="sidebar-submenu">
-                    <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
+                    <a href="/profile" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
                     @if(Auth::user()->role === 'super_user')
                         <a href="/internal/kelola-user" class="sidebar-item"><i class="fas fa-users"></i> Kelola Semua Pengguna</a>
                     @endif
@@ -228,7 +248,6 @@
                         <i class="fas fa-plus me-1"></i> Tambah Data
                     </button>
                     
-                    <!-- TOMBOL PDF -->
                     <a href="/sapra/sarana-penyelamatan/cetak-pdf" class="btn btn-danger fw-bold shadow-sm" style="background-color: #ef4444; border: none; padding: 10px 16px; border-radius: 8px; text-decoration: none; color: white;">
                         <i class="fas fa-file-pdf me-1"></i> PDF
                     </a>
@@ -253,6 +272,7 @@
                     @php $isActive = $activeTab ? ($pos->id_pos == $activeTab) : $loop->first; @endphp
                     <div class="tab-pane fade {{ $isActive ? 'show active' : '' }}" id="content-{{ $pos->id_pos }}" role="tabpanel">
                         
+                        <!-- INFO POS DAN MAPS -->
                         <div class="info-card">
                             <h5>{{ $pos->nama_pos }}</h5>
                             <p><i class="fas fa-map-marker-alt text-danger" style="width: 20px;"></i> {{ $pos->alamat ?? 'Alamat belum diatur' }}</p>
@@ -283,12 +303,13 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <!-- FIX: Ubah $dataPemeriksaan menjadi $dataPenyelamatan sesuai dengan Controller -->
                                         @php $dataFilter = $dataPenyelamatan->where('id_pos', $pos->id_pos); @endphp
                                         
                                         @forelse($dataFilter as $index => $item)
                                             <tr class="data-row">
                                                 <td class="text-center fw-bold text-dark">{{ $loop->iteration }}</td>
-                                                <td class="fw-bold text-dark" style="padding-left: 20px;">{{ $item->jenis_sarana }}</td>
+                                                <td class="fw-bold text-dark data-name" style="padding-left: 20px; font-size: 14.5px; text-transform: uppercase;">{{ $item->jenis_sarana }}</td>
                                                 <td class="text-center fw-bold text-primary" style="font-size: 15px;">{{ $item->jumlah }}</td>
                                                 <td class="text-center">
                                                     @if($item->path_gambar && file_exists(public_path($item->path_gambar)))
@@ -332,6 +353,7 @@
                         </div>
 
                         <!-- MODAL EDIT DATA -->
+                        <!-- FIX: Ubah juga foreach di modal menggunakan filter dari $dataPenyelamatan -->
                         @foreach($dataFilter as $item)
                             <div class="modal fade" id="modalEdit{{ $item->id_sarana_penyelamatan }}" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog modal-lg">
@@ -401,8 +423,8 @@
                             <label class="form-label fw-bold small text-secondary">Pilih Lokasi / Pos</label>
                             <select class="form-select border-light-subtle shadow-sm" name="id_pos" required>
                                 <option value="">-- Pilih Lokasi --</option>
-                                @foreach($posPemadam as $pos)
-                                    <option value="{{ $pos->id_pos }}">{{ $pos->nama_pos }}</option>
+                                @foreach($posPemadam as $posOption)
+                                    <option value="{{ $posOption->id_pos }}">{{ $posOption->nama_pos }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -440,7 +462,7 @@
             let rows = activeTab.querySelectorAll('.data-row');
             
             rows.forEach(row => {
-                let textContent = row.textContent.toLowerCase();
+                let textContent = row.querySelector('.data-name').textContent.toLowerCase();
                 if(textContent.includes(filter)) {
                     row.style.display = '';
                 } else {
