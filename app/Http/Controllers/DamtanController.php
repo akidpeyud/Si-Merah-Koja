@@ -28,6 +28,7 @@ class DamtanController extends Controller
     {
         // A. SIMPAN KE TABEL 1 (Termasuk data pelapor baru)
         $laporan_id = DB::table('laporan_penyelamatans')->insertGetId([
+            'user_id' => auth()->id() ?? 1, // Telah ditambahkan user_id (menggunakan 1 jika belum ada fitur login)
             'nomor_laporan' => 'REG-' . date('Ymd') . '-' . rand(1000, 9999),
             'id_laporan' => 'UUID-' . strtoupper(Str::random(8)),
             'nama_pelapor' => $request->nama_pelapor,
