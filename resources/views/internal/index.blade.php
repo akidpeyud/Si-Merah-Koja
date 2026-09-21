@@ -269,14 +269,16 @@
                 </div>
 
                 <!-- ACCORDION PEMADAMAN (DAMTAN) -->
-                <button class="sidebar-collapse-btn {{ Request::is('internal/damtan*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="{{ Request::is('internal/damtan*') ? 'true' : 'false' }}">
+                <button class="sidebar-collapse-btn {{ Request::is('internal/damtan*') || Request::is('internal/surat*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="{{ Request::is('internal/damtan*') || Request::is('internal/surat*') ? 'true' : 'false' }}">
                     <span>Bagian Pemadaman</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
-                <div class="collapse {{ Request::is('internal/damtan*') ? 'show' : '' }}" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
+                <div class="collapse {{ Request::is('internal/damtan*') || Request::is('internal/surat*') ? 'show' : '' }}" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
                         <a href="/internal/damtan/input-data" class="sidebar-item {{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
                         <a href="/internal/damtan/data-laporan" class="sidebar-item {{ Request::is('internal/damtan/data-laporan*') ? 'active' : '' }}"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
+                        <!-- Menu Baru Untuk Surat -->
+                        <a href="/internal/surat-korban/create" class="sidebar-item {{ Request::is('internal/surat*') ? 'active' : '' }}"><i class="fas fa-file-signature"></i> Buat Surat Korban</a>
                     </div>
                 </div>
 

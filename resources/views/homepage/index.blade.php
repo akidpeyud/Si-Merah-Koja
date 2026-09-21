@@ -455,7 +455,7 @@
                             <div title="Waktu Laporan"><i class="far fa-clock"></i> <span>{{ \Carbon\Carbon::parse($berita->waktu_kejadian)->format('H:i') }} WIB - Pelapor: {{ $berita->pelapor }}</span></div>
                         </div>
                         <p>{{ Str::limit($berita->keterangan_singkat ?? $berita->detail_lengkap, 90) }}</p>
-                        <span class="baca">Baca Selengkapnya <i class="fas fa-arrow-right"></i></span>
+                        <span class="berita_detail">Baca Selengkapnya <i class="fas fa-arrow-right"></i></span>
                     </div>
                 </a>
             @empty

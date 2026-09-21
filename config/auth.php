@@ -42,6 +42,12 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        // GUARD KHUSUS UNTUK REDKAR
+        'redkar' => [
+            'driver' => 'session',
+            'provider' => 'redkar',
+        ],
     ],
 
     /*
@@ -64,13 +70,14 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', User::class),
+            'model' => App\Models\User::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        // PROVIDER KHUSUS UNTUK REDKAR
+        'redkar' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\PendaftarRedkar::class,
+        ],
     ],
 
     /*
