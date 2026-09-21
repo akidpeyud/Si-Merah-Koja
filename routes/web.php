@@ -448,8 +448,6 @@ Route::middleware(['auth'])->group(function () {
 
 // ==========================================
 // ROUTE BAGIAN SAPRA (SARANA PRASARANA)
-// ==========================================
-Route::get('/sapra/logistik', [SapraController::class, 'logistik'])->middleware('auth');
 
 // Data Hidrant Kota
 Route::get('/sapra/data-hidrant-kota', [SapraController::class, 'dataHidrantKota'])->middleware('auth');
@@ -544,6 +542,13 @@ Route::put('/internal/damtan/update-data/{id}', [DamtanController::class, 'updat
 Route::delete('/internal/damtan/hapus-data/{id}', [DamtanController::class, 'destroyPenyelamatan'])->middleware('auth');
 Route::get('/internal/damtan/lihat-data/{id}', [DamtanController::class, 'showPenyelamatan'])->middleware('auth');
 
+// Halaman Landing Umum (Kosongan)
+Route::get('/informasi-layanan', [PublicController::class, 'indexLayanan']);
+// Halaman Spesifik Sarana Pemadam
+Route::get('/informasi-sarana', [PublicController::class, 'informasiSarana']);
+Route::get('/informasi-prasarana', [PublicController::class, 'informasiPrasarana']);
+Route::get('/informasi-penyelamatan', [PublicController::class, 'informasiPenyelamatan']);
+Route::get('/informasi-pemeriksaan', [PublicController::class, 'informasiPemeriksaan']);
 // --- ROUTE SURAT KORBAN KEBAKARAN (BARU) ---
 Route::get('/internal/surat-korban/create', [DamtanController::class, 'createSurat'])->middleware('auth');
 Route::post('/internal/surat-korban/store', [DamtanController::class, 'storeSurat'])->middleware('auth');

@@ -248,7 +248,7 @@
                         </li>
                         <li>
                             <a href="/informasi-pemeriksaan" class="{{ request()->is('informasi-pemeriksaan') ? 'active' : '' }}">
-                                <i class="fas fa-search"></i> Alat Pemeriksaan
+                                <i class="fas fa-search"></i> Sarana Pemeriksaan
                             </a>
                         </li>
                     </ul>
