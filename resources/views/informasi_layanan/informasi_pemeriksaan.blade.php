@@ -55,10 +55,14 @@
         .breadcrumb .active { color: #ef4444; }
 
         /* --- LAYOUT UTAMA --- */
-        .content-wrapper { max-width: 1400px; margin: 50px auto 80px; display: flex; gap: 30px; padding: 0 20px; }
+        .content-wrapper { max-width: 1400px; margin: 50px auto 80px; display: flex; gap: 30px; padding: 0 20px; align-items: flex-start;}
 
-        /* --- SIDEBAR KIRI --- */
-        .sidebar { width: 300px; flex-shrink: 0; }
+        /* --- SIDEBAR KIRI (STICKY) --- */
+        .sidebar { 
+            width: 300px; flex-shrink: 0; 
+            position: sticky; top: 100px; /* Bikin Sidebar diem pas di-scroll */
+            z-index: 10;
+        }
         .sidebar-title { font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 5px; text-transform: uppercase; }
         .decor-line { display: flex; align-items: center; margin-bottom: 25px; }
         .decor-line::before { content: ""; height: 3px; width: 40px; background: #ef4444; border-radius: 5px;}
@@ -91,7 +95,7 @@
         .public-submenu li a.active i { color: white; }
 
         /* --- KONTEN KANAN (GALERI PUBLIK) --- */
-        .data-container { flex-grow: 1; }
+        .data-container { flex-grow: 1; min-width: 0; }
         
         .header-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;}
         .data-title { font-size: 24px; font-weight: 800; color: #0f172a; line-height: 1.3; margin-bottom: 5px;}
@@ -161,9 +165,10 @@
     <!-- NAVBAR TEMA GELAP -->
     <nav class="navbar">
        <div class="nav-logos">
-            <a href="/"><img src="/images/jambi.png" alt="Logo Pemkot"></a>
-            <a href="/"><img src="/images/logo.png" alt="Logo Damkar"></a>
-            <a href="/"><img src="/images/logo-redkar.png" alt="Logo Redkar"></a>
+            <!-- HREF DIUBAH AGAR BALIK KE HALAMAN INFORMASI BUKAN / (INDEX INTERNAL/UTAMA) -->
+            <a href="/informasi-layanan"><img src="/images/jambi.png" alt="Logo Pemkot"></a>
+            <a href="/informasi-layanan"><img src="/images/logo.png" alt="Logo Damkar"></a>
+            <a href="/informasi-layanan"><img src="/images/logo-redkar.png" alt="Logo Redkar"></a>
         </div> 
         <ul class="nav-links">
             <li class="dropdown">
@@ -208,7 +213,7 @@
     <!-- LAYOUT FORM & SIDEBAR -->
     <div class="content-wrapper">
         
-        <!-- KIRI: SIDEBAR AKORDION -->
+        <!-- KIRI: SIDEBAR AKORDION (PILIHAN BIDANG) -->
         <div class="sidebar">
             <h3 class="sidebar-title">Kategori Publikasi</h3>
             <div class="decor-line"><i class="fas fa-circle"></i></div>
@@ -232,7 +237,7 @@
                     <!-- Sub-menu Sapra Canggih -->
                     <ul class="public-submenu show" id="menuSapra">
                         <li>
-                            <a href="/informasi-layanan" class="{{ request()->is('informasi-layanan') ? 'active' : '' }}">
+                            <a href="/informasi-sarana" class="{{ request()->is('informasi-sarana') ? 'active' : '' }}">
                                 <i class="fas fa-fire-extinguisher"></i> Sarana Pemadam
                             </a>
                         </li>
@@ -248,7 +253,7 @@
                         </li>
                         <li>
                             <a href="/informasi-pemeriksaan" class="{{ request()->is('informasi-pemeriksaan') ? 'active' : '' }}">
-                                <i class="fas fa-search"></i> Sarana Pemeriksaan
+                                <i class="fas fa-search"></i> Alat Pemeriksaan
                             </a>
                         </li>
                     </ul>

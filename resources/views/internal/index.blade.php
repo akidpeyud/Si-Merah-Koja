@@ -386,36 +386,6 @@
                         {{ \Illuminate\Support\Facades\DB::table('permohonan_edukasi')->count() }}
                     </div>
                 </a>
-
-                <a href="/internal/pencegahan/layanan-inspeksi" class="stat-card border-blue">
-                    <i class="fas fa-clipboard-check stat-icon text-primary"></i>
-                    <div class="stat-title">Layanan Inspeksi</div>
-                    <div class="stat-value">24</div>
-                </a>
-
-                <a href="/internal/pencegahan/pelatihan" class="stat-card border-purple">
-                    <i class="fas fa-chalkboard-teacher stat-icon" style="color: #8b5cf6;"></i>
-                    <div class="stat-title">Pelatihan Aktif</div>
-                    <div class="stat-value">5</div>
-                </a>
-
-                <a href="/internal/pencegahan/pembinaan-pengembangan" class="stat-card border-orange">
-                    <i class="fas fa-chart-line stat-icon text-warning"></i>
-                    <div class="stat-title">Pembinaan & Pengembangan</div>
-                    <div class="stat-value">8</div>
-                </a>
-
-                <a href="/internal/pencegahan/peningkatan-kapasitas" class="stat-card border-red">
-                    <i class="fas fa-level-up-alt stat-icon text-danger"></i>
-                    <div class="stat-title">Peningkatan Kapasitas</div>
-                    <div class="stat-value">3</div>
-                </a>
-                
-                <a href="/internal/damtan/data-laporan" class="stat-card border-red">
-                    <i class="fas fa-fire stat-icon text-danger"></i>
-                    <div class="stat-title">Siaga Darurat (Pemadaman)</div>
-                    <div class="stat-value">3</div>
-                </a>
                 @endif
 
             </div>
