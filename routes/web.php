@@ -178,6 +178,101 @@ Route::get('/internal/pencegahan/layanan-inspeksi', function () {
 Route::get('/internal/pencegahan/layanan-inspeksi/tambah', function () {
     return view('internal.pencegahan.create_inspeksi');
 });
+Route::get('/internal/pencegahan/inspeksi-kebakaran', function () {
+    return view('internal.pencegahan.pencegahan_inspeksi'); // Sesuaikan nama file blade lu
+});
+// =======================================================
+// ROUTE SEMUA TAB PENINGKATAN KAPASITAS APARATUR
+// =======================================================
+
+// 1. Semua Data (Bawaan)
+Route::get('/internal/pencegahan/peningkatan-kapasitas', function () {
+    $data_peningkatan = DB::table('peningkatan_kapasitas')->orderBy('id', 'desc')->get();
+    return view('internal.pencegahan.peningkatan_kapasitas', compact('data_peningkatan'));
+});
+
+// 2. DIKSAR
+Route::get('/internal/pencegahan/peningkatan-kapasitas/diksar', function () {
+    return view('internal.pencegahan.diksar'); 
+});
+
+// 3. DIKLAT F1
+Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f1', function () {
+    return view('internal.pencegahan.diklat_f1'); 
+});
+
+// 4. DIKLAT F2
+Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f2', function () {
+    return view('internal.pencegahan.diklat_f2'); 
+});
+
+// 5. DIKLAT RESCUE
+Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-rescue', function () {
+    return view('internal.pencegahan.diklat_rescue'); 
+});
+
+// 6. DIKLAT MFA
+Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-mfr', function () {
+    return view('internal.pencegahan.diklat_mfa'); 
+});
+
+// 7. DIKLAT OPERATOR
+Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-operator', function () {
+    return view('internal.pencegahan.diklat_operator'); 
+});
+
+// 8. DIKLAT INSPEKTUR
+Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-inspektur', function () {
+    return view('internal.pencegahan.diklat_inspektur'); 
+});
+
+// 9. DIKLAT PPL
+Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-ppl', function () {
+    return view('internal.pencegahan.diklat_ppl'); 
+});
+// ROUTE TAMBAH DATA DIKLAT
+Route::get('/internal/pencegahan/peningkatan-kapasitas/tambah', function () {
+    return view('internal.pencegahan.tambah_diklat'); 
+});
+// ROUTE MENU PENCEGAHAN KEBAKARAN DAN INSPEKSI (SEMUA DATA)
+Route::get('/internal/pencegahan/inspeksi-kebakaran', function () {
+    return view('internal.pencegahan.pencegahan_inspeksi'); 
+});
+
+// ROUTE TAB: INSPEKSI BANGUNAN GEDUNG DAN LINGKUNGAN
+Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan', function () {
+    return view('internal.pencegahan.inspeksi_bangunan'); 
+});
+// ROUTE TAMBAH DATA INSPEKSI BANGUNAN
+Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan/tambah', function () {
+    return view('internal.pencegahan.tambah_inspeksi_bangunan'); 
+});
+// ROUTE TAB: FIRE DRILL
+Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill', function () {
+    return view('internal.pencegahan.fire_drill'); 
+});
+Route::get('/internal/pencegahan/inspeksi-kebakaran', function () {
+    return view('internal.pencegahan.pencegahan_inspeksi'); 
+});
+
+Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan', function () {
+    return view('internal.pencegahan.inspeksi_bangunan'); 
+});
+
+Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill', function () {
+    return view('internal.pencegahan.fire_drill'); 
+});
+// =======================================================
+// ROUTE PEMBERDAYAAN MASYARAKAT DAN DUNIA USAHA
+// =======================================================
+Route::get('/internal/pencegahan/pemberdayaan-masyarakat', function () {
+    return view('internal.pencegahan.pemberdayaan_masyarakat'); 
+});
+
+Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga', function () {
+    return view('internal.pencegahan.pelatihan_keluarga'); 
+});
+
 Route::post('/internal/pencegahan/layanan-inspeksi/tambah', function (Request $request) {
     $data = $request->except(['_token']);
     if ($request->hasFile('dokumen_pendukung')) {
@@ -342,9 +437,6 @@ Route::post('/internal/pencegahan/pembinaan-pengembangan/edit/{id}', function (\
 Route::get('/internal/pencegahan/peningkatan-kapasitas', function () {
     $data_peningkatan = DB::table('peningkatan_kapasitas')->orderBy('id', 'desc')->get();
     return view('internal.pencegahan.peningkatan_kapasitas', compact('data_peningkatan'));
-});
-Route::get('/internal/pencegahan/peningkatan-kapasitas/tambah', function () {
-    return view('internal.pencegahan.create_peningkatan');
 });
 Route::post('/internal/pencegahan/peningkatan-kapasitas/tambah', function (Request $request) {
     $data = $request->except(['_token']);

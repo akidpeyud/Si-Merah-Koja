@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Data Diklat - SIMERAH KOJA</title>
+    <title>Tambah Inspeksi Bangunan - SIMERAH KOJA</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -55,9 +55,14 @@
 
         /* Form Customization */
         .form-label { font-weight: 600; font-size: 13px; color: #475569; margin-bottom: 8px; }
-        .form-control, .form-select { border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 15px; font-size: 14px; color: #334155; }
-        .form-control:focus, .form-select:focus { border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
-        .section-title { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 1px dashed #e2e8f0; display: flex; align-items: center; gap: 8px; }
+        .form-control { border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 15px; font-size: 14px; color: #334155; }
+        .form-control:focus { border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
+        .form-control[type="file"] { padding: 8px 15px; }
+        
+        .section-title { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 15px; margin-top: 25px; padding-bottom: 8px; border-bottom: 1px dashed #e2e8f0; display: flex; align-items: center; gap: 8px; }
+        .section-title.first { margin-top: 0; }
+        
+        .upload-group { background-color: #f8fafc; border: 1px dashed #cbd5e1; padding: 20px; border-radius: 8px; margin-bottom: 15px; }
         
         .btn-save { background-color: #0d6efd; color: white; padding: 10px 24px; font-weight: 600; font-size: 14px; border-radius: 6px; border: none; transition: background-color 0.2s; }
         .btn-save:hover { background-color: #0b5ed7; }
@@ -85,7 +90,7 @@
     </nav>
 
     <div class="dashboard-container">
-        <!-- SIDEBAR -->
+        <!-- SIDEBAR UTUH -->
         <aside class="sidebar" id="sidebarAccordion">
             <a href="/internal/index" class="sidebar-item"><i class="fas fa-home"></i> Dashboard Utama</a>
 
@@ -96,15 +101,30 @@
             </button>
             <div class="collapse show" id="collapsePencegahan" data-bs-parent="#sidebarAccordion">
                 <div class="sidebar-submenu">
-                    <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item active" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">PENINGKATAN KAPASITAS APARATUR</a>
-                    <a href="/internal/pencegahan/inspeksi-kebakaran" class="sidebar-item" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">PENCEGAHAN KEBAKARAN DAN INSPEKSI</a>
+                    <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">PENINGKATAN KAPASITAS APARATUR</a>
+                    <!-- YANG AKTIF KARENA MASIH DI MODUL INSPEKSI -->
+                    <a href="/internal/pencegahan/inspeksi-kebakaran" class="sidebar-item active" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">PENCEGAHAN KEBAKARAN DAN INSPEKSI</a>
                     <a href="#" class="sidebar-item" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">PEMBERDAYAAN MASYARAKAT DAN DUNIA USAHA</a>
                 </div>
             </div>
 
             <!-- ACCORDION PEMADAMAN & LAINNYA -->
             <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman"><span>Bagian Pemadaman</span><i class="fas fa-chevron-down toggle-icon"></i></button>
+            <div class="collapse" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
+                <div class="sidebar-submenu">
+                    <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
+                    <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
+                </div>
+            </div>
+
             <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSapra"><span>Bagian Sapra</span><i class="fas fa-chevron-down toggle-icon"></i></button>
+            <div class="collapse" id="collapseSapra" data-bs-parent="#sidebarAccordion">
+                <div class="sidebar-submenu">
+                    <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
+                    <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
+                </div>
+            </div>
+            
             <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita"><span>Manajemen Berita</span><i class="fas fa-chevron-down toggle-icon"></i></button>
         </aside>
 
@@ -112,116 +132,79 @@
         <main class="main-content">
             
             <a href="javascript:history.back()" class="back-link">
-                <i class="fas fa-arrow-left"></i> Kembali ke Data Diklat
+                <i class="fas fa-arrow-left"></i> Kembali ke Data Inspeksi Bangunan
             </a>
 
-            <h1 class="fw-bolder text-dark mb-0" style="font-size: 24px;">Form Data Diklat Baru</h1>
+            <h1 class="fw-bolder text-dark mb-0" style="font-size: 24px;">Form Tambah Inspeksi Bangunan</h1>
 
             <div class="form-wrapper">
-                <form action="#" method="POST">
+                <!-- PENTING: enctype="multipart/form-data" WAJIB ADA BIAR BISA UPLOAD FILE -->
+                <form action="#" method="POST" enctype="multipart/form-data">
                     @csrf
                     
-                    <!-- SECTION 1: DATA PEGAWAI -->
-                    <div class="section-title text-primary"><i class="fas fa-user-tie"></i> Data Pegawai / Aparatur</div>
-                    <div class="row g-3 mb-4">
+                    <!-- SECTION 1: DATA BANGUNAN (SESUAI FOTO LU) -->
+                    <div class="section-title text-primary first"><i class="fas fa-building"></i> Informasi Bangunan & Usaha</div>
+                    <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Nama Lengkap</label>
-                            <input type="text" class="form-control" name="nama" placeholder="Contoh: Budi Santoso" required>
+                            <label class="form-label">Nama Bangunan</label>
+                            <input type="text" class="form-control" name="nama_bangunan" placeholder="Contoh: Hotel Infinity" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Nomor Induk Kependudukan (NIK)</label>
-                            <input type="text" class="form-control" name="nik" placeholder="Masukkan 16 digit NIK" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Tempat Lahir</label>
-                            <input type="text" class="form-control" name="tempat_lahir" placeholder="Contoh: Jambi">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Tanggal Lahir</label>
-                            <input type="date" class="form-control" name="tgl_lahir">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Jabatan</label>
-                            <input type="text" class="form-control" name="jabatan" placeholder="Contoh: Danru / Anggota">
+                            <label class="form-label">Jenis Usaha</label>
+                            <input type="text" class="form-control" name="jenis_usaha" placeholder="Contoh: Hotel / Mall / Rumah Sakit" required>
                         </div>
                         <div class="col-md-12">
-                            <label class="form-label">Instansi / Perangkat Daerah</label>
-                            <input type="text" class="form-control" name="instansi_daerah" placeholder="Contoh: Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi">
+                            <label class="form-label">Alamat Lengkap</label>
+                            <textarea class="form-control" name="alamat" rows="2" placeholder="Masukkan alamat lengkap lokasi..." required></textarea>
                         </div>
                     </div>
 
-                    <!-- SECTION 2: DETAIL DIKLAT -->
-                    <div class="section-title text-success"><i class="fas fa-certificate"></i> Detail Sertifikasi & Pelaksanaan</div>
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-4">
-                            <label class="form-label">Jenis Diklat</label>
-                            <select class="form-select" name="jenis_diklat" required>
-                                <option value="" selected disabled>Pilih Kategori...</option>
-                                <option value="DIKSAR">DIKSAR</option>
-                                <option value="DIKLAT F1">DIKLAT F1</option>
-                                <option value="DIKLAT F2">DIKLAT F2</option>
-                                <option value="DIKLAT RESCUE">DIKLAT RESCUE</option>
-                                <option value="DIKLAT MFR">DIKLAT MFR</option>
-                                <option value="DIKLAT OPERATOR">DIKLAT OPERATOR</option>
-                                <option value="DIKLAT INSPEKTUR">DIKLAT INSPEKTUR</option>
-                                <option value="DIKLAT PPL">DIKLAT PPL</option>
-                            </select>
-                        </div>
-                        <div class="col-md-5">
-                            <label class="form-label">Nomor Sertifikat</label>
-                            <input type="text" class="form-control" name="nomor_sertifikat" placeholder="No. 112/DIKLAT-F1/2026">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Jumlah Jam (JP)</label>
-                            <div class="input-group">
-                                <input type="number" class="form-control" name="jumlah_jp" placeholder="0">
-                                <span class="input-group-text bg-light">JP</span>
+                    <!-- SECTION 2: DOKUMEN UPLOAD 1 SAMPAI 5 (SESUAI FOTO LU) -->
+                    <div class="section-title text-success"><i class="fas fa-file-upload"></i> Upload Dokumen Inspeksi</div>
+                    
+                    <div class="upload-group">
+                        <div class="row g-4">
+                            <!-- 1. Surat Perintah Tugas -->
+                            <div class="col-md-6">
+                                <label class="form-label">1. Surat Perintah Tugas</label>
+                                <input class="form-control" type="file" name="surat_perintah_tugas" accept=".pdf,.jpg,.jpeg,.png">
+                                <small class="text-muted" style="font-size: 12px;">Format: PDF/JPG/PNG</small>
+                            </div>
+
+                            <!-- 2. Berita Acara -->
+                            <div class="col-md-6">
+                                <label class="form-label">2. Berita Acara</label>
+                                <input class="form-control" type="file" name="berita_acara" accept=".pdf,.jpg,.jpeg,.png">
+                                <small class="text-muted" style="font-size: 12px;">Format: PDF/JPG/PNG</small>
+                            </div>
+
+                            <!-- 3. Hasil Penilaian -->
+                            <div class="col-md-6">
+                                <label class="form-label">3. Hasil Penilaian</label>
+                                <input class="form-control" type="file" name="hasil_penilaian" accept=".pdf,.jpg,.jpeg,.png">
+                                <small class="text-muted" style="font-size: 12px;">Format: PDF/JPG/PNG</small>
+                            </div>
+
+                            <!-- 4. Rekomendasi -->
+                            <div class="col-md-6">
+                                <label class="form-label">4. Rekomendasi</label>
+                                <input class="form-control" type="file" name="rekomendasi" accept=".pdf,.jpg,.jpeg,.png">
+                                <small class="text-muted" style="font-size: 12px;">Format: PDF/JPG/PNG</small>
+                            </div>
+
+                            <!-- 5. SKK -->
+                            <div class="col-md-12">
+                                <label class="form-label">5. SKK (Sertifikat Keselamatan Kebakaran)</label>
+                                <input class="form-control" type="file" name="skk" accept=".pdf,.jpg,.jpeg,.png">
+                                <small class="text-muted" style="font-size: 12px;">Format: PDF/JPG/PNG</small>
                             </div>
                         </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">Instansi Penyelenggara</label>
-                            <input type="text" class="form-control" name="penyelenggara" placeholder="Contoh: PUSDIKLAT DKI Jakarta">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Provinsi</label>
-                            <input type="text" class="form-control" name="provinsi" placeholder="Contoh: DKI Jakarta">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Kota / Kabupaten</label>
-                            <input type="text" class="form-control" name="kota" placeholder="Contoh: Jakarta Timur">
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">Tanggal Pelaksanaan</label>
-                            <input type="text" class="form-control" name="tgl_pelaksanaan" placeholder="Contoh: 12 s/d 28 Agustus 2026">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Ditanda Tangani Oleh</label>
-                            <input type="text" class="form-control" name="ditanda_tangani" placeholder="Contoh: Kepala Dinas Pemadam Kebakaran">
-                        </div>
                     </div>
 
-                    <!-- SECTION 3: INFO TAMBAHAN -->
-                    <div class="section-title text-secondary"><i class="fas fa-list-alt"></i> Informasi Tambahan</div>
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label">Kode Verifikasi (Opsional)</label>
-                            <input type="text" class="form-control" name="kode_verifikasi" placeholder="-">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Persentase Penilaian (Opsional)</label>
-                            <input type="text" class="form-control" name="persentase_penilaian" placeholder="-">
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label">Keterangan / Catatan Tambahan</label>
-                            <textarea class="form-control" name="keterangan" rows="3" placeholder="Masukkan catatan tambahan jika ada..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="d-flex justify-content-end gap-2 mt-2 pt-3" style="border-top: 1px dashed #e2e8f0;">
+                    <!-- TOMBOL SIMPAN -->
+                    <div class="d-flex justify-content-end gap-2 mt-4 pt-3" style="border-top: 1px solid #e2e8f0;">
                         <a href="javascript:history.back()" class="btn btn-cancel">Batal</a>
-                        <button type="submit" class="btn btn-save"><i class="fas fa-save me-2"></i> Simpan Data Diklat</button>
+                        <button type="submit" class="btn btn-save"><i class="fas fa-save me-2"></i> Simpan Data Inspeksi</button>
                     </div>
 
                 </form>

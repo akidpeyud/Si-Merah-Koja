@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peningkatan Kapasitas Aparatur - SIMERAH KOJA</title>
+    <title>Pencegahan Kebakaran & Inspeksi - SIMERAH KOJA</title>
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -72,7 +72,7 @@
         }
         .btn-logout:hover { background-color: #dc2626; }
 
-        /* --- SIDEBAR & ACCORDION STYLES ASLI LU --- */
+        /* --- SIDEBAR & ACCORDION STYLES --- */
         .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
         .sidebar {
             width: 320px; background-color: #ffffff; border-right: 1px solid #e5e7eb;
@@ -107,7 +107,7 @@
             display: flex; flex-direction: column; gap: 4px; padding-left: 10px; margin-top: 8px;
         }
 
-        /* --- MAIN AREA (BAGIAN KANAN) --- */
+        /* --- MAIN AREA (TABEL & TAB MENYAMPING) --- */
         .main-content { flex: 1; padding: 40px 50px; background-color: #f9fafb; overflow-x: hidden; }
         
         /* Custom Tabs Menyamping */
@@ -157,36 +157,6 @@
 </head>
 <body>
 
-    <!-- ALERT SUCCESS GLOBAL -->
-    @if(session('success'))
-        <div id="globalSuccessAlert">
-            <i class="fas fa-check-circle alert-icon"></i>
-            <span>{{ session('success') }}</span>
-            <button class="btn-close-alert" onclick="closeAlert('globalSuccessAlert')"><i class="fas fa-times"></i></button>
-        </div>
-    @endif
-
-    <!-- ALERT ERROR GLOBAL -->
-    @if(session('error'))
-        <div id="globalErrorAlert">
-            <i class="fas fa-exclamation-triangle alert-icon"></i>
-            <span>{{ session('error') }}</span>
-            <button class="btn-close-alert" onclick="closeAlert('globalErrorAlert')"><i class="fas fa-times"></i></button>
-        </div>
-    @endif
-
-    <script>
-        function closeAlert(id) {
-            let alertBox = document.getElementById(id);
-            if(alertBox) {
-                alertBox.style.animation = 'fadeOutUpCenter 0.4s ease forwards';
-                setTimeout(() => alertBox.remove(), 400); 
-            }
-        }
-        setTimeout(() => closeAlert('globalSuccessAlert'), 4000);
-        setTimeout(() => closeAlert('globalErrorAlert'), 4000);
-    </script>
-
     <!-- NAVBAR INTERNAL -->
     <nav class="navbar-internal">
         <a href="#" class="nav-brand">
@@ -208,7 +178,7 @@
     <!-- KONTEN UTAMA -->
     <div class="dashboard-container">
         
-        <!-- SIDEBAR TERINTEGRASI ASLI LU -->
+        <!-- SIDEBAR TERINTEGRASI -->
         <aside class="sidebar" id="sidebarAccordion">
             <a href="/internal/index" class="sidebar-item">
                 <i class="fas fa-home"></i> Dashboard Utama
@@ -216,29 +186,29 @@
 
             @if(Auth::user()?->role === 'user' || Auth::user()?->role === 'super_user' || true)
                 
-               <!-- ACCORDION PENCEGAHAN -->
-<button class="sidebar-collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePencegahan" aria-expanded="true">
-    <span>Bagian Pencegahan</span>
-    <i class="fas fa-chevron-down toggle-icon"></i>
-</button>
-<div class="collapse show" id="collapsePencegahan" data-bs-parent="#sidebarAccordion">
-    <div class="sidebar-submenu">
-        
-        <!-- LINK MENU 1 (Aktif karena lagi di halaman ini) -->
-        <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item active" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">
-            PENINGKATAN KAPASITAS APARATUR
-        </a>
-        
-        <!-- LINK MENU 2 (Ngarah ke file inspeksi) -->
-        <a href="/internal/pencegahan/inspeksi-kebakaran" class="sidebar-item" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">
-            PENCEGAHAN KEBAKARAN DAN INSPEKSI
-        </a>
-        
-        <a href="#" class="sidebar-item" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">
-            PEMBERDAYAAN MASYARAKAT DAN DUNIA USAHA
-        </a>
-    </div>
-</div>
+                <!-- ACCORDION PENCEGAHAN (CUMA 3 MENU) -->
+                <button class="sidebar-collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePencegahan" aria-expanded="true">
+                    <span>Bagian Pencegahan</span>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+                <div class="collapse show" id="collapsePencegahan" data-bs-parent="#sidebarAccordion">
+                    <div class="sidebar-submenu">
+                        <!-- LINK MENU 1 -->
+                        <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">
+                            PENINGKATAN KAPASITAS APARATUR
+                        </a>
+                        
+                        <!-- LINK MENU 2 (YANG LAGI AKTIF DI HALAMAN INI) -->
+                        <a href="/internal/pencegahan/inspeksi-kebakaran" class="sidebar-item active" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">
+                            PENCEGAHAN KEBAKARAN DAN INSPEKSI
+                        </a>
+                        
+                        <!-- LINK MENU 3 -->
+                        <a href="/internal/pencegahan/pemberdayaan-masyarakat" class="sidebar-item" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">
+                            PEMBERDAYAAN MASYARAKAT DAN DUNIA USAHA
+                        </a>
+                    </div>
+                </div>
 
                 <!-- ACCORDION PEMADAMAN (DAMTAN) -->
                 <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="false">
@@ -303,23 +273,22 @@
             </div>
         </aside>
 
-        <!-- MAIN AREA (BAGIAN KANAN - TABEL DAN TAB MENYAMPING) -->
+        <!-- MAIN AREA (BAGIAN KANAN) -->
         <main class="main-content">
             
             <div class="d-flex justify-content-between align-items-end mb-3 flex-wrap gap-3">
                 <div>
-                    <h1 class="fw-bolder text-dark mb-2" style="font-size: 28px;">Peningkatan Kapasitas Aparatur</h1>
-                    <p class="text-muted mb-0" style="font-size: 15px;">Kelola data diklat dan peningkatan kapasitas aparatur pemadam kebakaran.</p>
+                    <!-- JUDUL HALAMAN -->
+                    <h1 class="fw-bolder text-dark mb-2" style="font-size: 28px;">Pencegahan Kebakaran & Inspeksi</h1>
+                    <p class="text-muted mb-0" style="font-size: 15px;">Kelola data inspeksi bangunan gedung, lingkungan, dan pelaksanaan fire drill.</p>
                 </div>
                 
                 <div class="d-flex align-items-center gap-2">
-                    <!-- Search Input -->
                     <div class="input-group" style="width: 260px;">
                         <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
-                        <input type="text" class="form-control border-start-0 ps-0" placeholder="Cari nama atau sertifikat...">
+                        <input type="text" class="form-control border-start-0 ps-0" placeholder="Cari nama atau ST...">
                     </div>
                     
-                    <!-- Buttons -->
                     <a href="#" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #0284c7; padding: 9px 16px;">
                         <i class="fas fa-plus"></i> Tambah Data
                     </a>
@@ -331,37 +300,25 @@
                     </a>
                 </div>
             </div>
-
-         <!-- TABS MENYAMPING SAKTI UNTUK SEMUA HALAMAN -->
+<!-- TABS MENYAMPING SAKTI UNTUK SEMUA HALAMAN INSPEKSI -->
 <ul class="nav custom-nav-tabs">
     <li class="nav-item">
-        <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas">Semua Data</a>
+        <a class="nav-link {{ Request::is('internal/pencegahan/inspeksi-kebakaran') ? 'active' : '' }}" href="/internal/pencegahan/inspeksi-kebakaran">
+            Semua Data
+        </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diksar') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diksar">DIKSAR</a>
+        <a class="nav-link {{ Request::is('internal/pencegahan/inspeksi-kebakaran/bangunan') ? 'active' : '' }}" href="/internal/pencegahan/inspeksi-kebakaran/bangunan">
+            INSPEKSI BANGUNAN GEDUNG DAN LINGKUNGAN
+        </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-f1') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-f1">DIKLAT F1</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-f2') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-f2">DIKLAT F2</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-rescue') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-rescue">DIKLAT RESCUE</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-mfr') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-mfr">DIKLAT MFR</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-operator') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-operator">DIKLAT OPERATOR</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-inspektur') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-inspektur">DIKLAT INSPEKTUR</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-ppl') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-ppl">DIKLAT PPL</a>
+        <a class="nav-link {{ Request::is('internal/pencegahan/inspeksi-kebakaran/fire-drill') ? 'active' : '' }}" href="/internal/pencegahan/inspeksi-kebakaran/fire-drill">
+            FIRE DRILL
+        </a>
     </li>
 </ul>
+
             <!-- TABEL DATA -->
             <div class="table-custom mt-4">
                 <div class="table-responsive">
@@ -369,30 +326,53 @@
                         <thead>
                             <tr>
                                 <th width="5%" class="text-center">NO</th>
-                                <th width="25%">NAMA APARATUR</th>
-                                <th width="30%">NOMOR SERTIFIKAT</th>
-                                <th width="15%" class="text-center">JUMLAH JP</th>
-                                <th width="15%">TAHUN & PEJABAT</th>
+                                <th width="20%">SURAT TUGAS (ST)</th>
+                                <th width="25%">NAMA BANGUNAN</th>
+                                <th width="25%">ALAMAT</th>
+                                <th width="15%" class="text-center">DOKUMEN</th>
                                 <th width="10%" class="text-center">AKSI</th>
                             </tr>
                         </thead>
                         <tbody>
+                            <!-- Data Dummy 1 -->
                             <tr>
                                 <td class="text-center fw-bold text-dark">1</td>
                                 <td>
-                                    <div class="fw-bold text-dark" style="font-size: 15px;">Budi Santoso</div>
-                                    <span class="badge bg-primary mt-1 px-2 py-1">DIKSAR</span>
+                                    <div class="fw-bold text-dark" style="font-size: 15px;">094/ST-INSP/2026</div>
+                                    <small class="text-muted"><i class="fas fa-calendar-alt me-1"></i> 15 September 2026</small>
                                 </td>
                                 <td>
-                                    <div style="color: #334155; font-weight: 600;">112/DIKLAT-DAMKAR/2026</div>
-                                    <small class="text-muted"><i class="fas fa-calendar-alt me-1"></i> 12 Agustus 2026</small>
+                                    <div class="fw-bold text-dark" style="font-size: 14px;">Hotel Infinity Jambi</div>
+                                    <span class="badge bg-primary mt-1 px-2 py-1" style="font-size: 10px;">INSPEKSI</span>
+                                </td>
+                                <td>
+                                    <div style="color: #334155; font-size: 13px;">Jl. Sultan Thaha No.60, Beringin, Kec. Ps. Jambi</div>
                                 </td>
                                 <td class="text-center">
-                                    <span class="badge-soft-blue">40 JP</span>
+                                    <span class="badge-soft-blue"><i class="fas fa-file-alt me-1"></i> BA & Rekomendasi</span>
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            
+                            <!-- Data Dummy 2 -->
+                            <tr>
+                                <td class="text-center fw-bold text-dark">2</td>
+                                <td>
+                                    <div class="fw-bold text-dark" style="font-size: 15px;">098/ST-FD/2026</div>
+                                    <small class="text-muted"><i class="fas fa-calendar-alt me-1"></i> 10 Oktober 2026</small>
                                 </td>
                                 <td>
-                                    <div class="fw-bold text-dark">2026</div>
-                                    <small class="text-muted">Gubernur Jambi</small>
+                                    <div class="fw-bold text-dark" style="font-size: 14px;">RSUD Raden Mattaher</div>
+                                    <span class="badge bg-danger mt-1 px-2 py-1" style="font-size: 10px;">FIRE DRILL</span>
+                                </td>
+                                <td>
+                                    <div style="color: #334155; font-size: 13px;">Jl. Letjen Suprapto No.31, Telanaipura</div>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge-soft-blue"><i class="fas fa-file-alt me-1"></i> Dokumen Lengkap</span>
                                 </td>
                                 <td class="text-center">
                                     <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
