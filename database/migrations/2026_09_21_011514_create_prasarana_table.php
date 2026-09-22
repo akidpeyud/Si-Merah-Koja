@@ -9,18 +9,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('prasarana', function (Blueprint $table) {
-            $table->id(); // 1. id (otomatis jadi primary key)
-            $table->integer('no_urut')->nullable(); // 2. no_urut
-            $table->string('nama_gedung')->nullable(); // 3. nama_gedung
-            $table->text('alamat')->nullable(); // 4. alamat
-            $table->string('kode_maps')->nullable(); // 5. kode_maps
-            $table->integer('jumlah')->nullable(); // 6. jumlah
+            // 1. id_prasarana (Primary Key, Auto Increment)
+            $table->integer('id_prasarana', true); 
             
-            // 7. created_at & 8. updated_at
-            $table->timestamps(); 
+            // 2. id_pos (Index / Foreign Key)
+            $table->integer('id_pos')->nullable()->index('id_pos'); 
             
-            $table->string('kategori', 100)->nullable(); // 9. kategori
-            $table->string('luas', 100)->nullable(); // 10. luas
+            // 3. jenis_prasarana (Varchar)
+            $table->string('jenis_prasarana')->nullable(); 
+            
+            // 4. luas_bangunan (Varchar)
+            $table->string('luas_bangunan')->nullable(); 
+            
+            // 5. path_gambar (Varchar)
+            $table->string('path_gambar')->nullable(); 
+            
         });
     }
 
