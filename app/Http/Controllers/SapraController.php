@@ -24,17 +24,17 @@ class SapraController extends Controller
     // ==========================================
     // === MENU DATA HIDRANT GEDUNG / PILAR ===
     // ==========================================
-    public function dataHidrantGedung()
-    {
-        $hidranPilar  = DB::table('prasarana')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
-        $hidranGedung = DB::table('prasarana')->where('kategori', 'Hidrant Gedung')->orderBy('no_urut', 'asc')->get();
-        $embung       = DB::table('prasarana')->where('kategori', 'Embung')->orderBy('no_urut', 'asc')->get();
-        $danau        = DB::table('prasarana')->where('kategori', 'Danau')->orderBy('no_urut', 'asc')->get();
+   public function dataHidrantGedung()
+{
+    $hidranPilar  = DB::table('prasaranas')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
+    $hidranGedung = DB::table('prasaranas')->where('kategori', 'Hidrant Gedung')->orderBy('no_urut', 'asc')->get();
+    $embung       = DB::table('prasaranas')->where('kategori', 'Embung')->orderBy('no_urut', 'asc')->get();
+    $danau        = DB::table('prasaranas')->where('kategori', 'Danau')->orderBy('no_urut', 'asc')->get();
 
-        return view('internal.sapra.data_hidrant_gedung', compact(
-            'hidranPilar', 'hidranGedung', 'embung', 'danau'
-        ));
-    }
+    return view('internal.sapra.data_hidrant_gedung', compact(
+        'hidranPilar', 'hidranGedung', 'embung', 'danau'
+    ));
+}
 
     public function storeHidran(Request $request)
     {
