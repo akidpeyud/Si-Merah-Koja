@@ -171,7 +171,7 @@
             background:
                 radial-gradient(55% 90% at 0% 100%, rgba(229,57,45,.4), transparent 70%),
                 linear-gradient(100deg, rgba(13,27,42,.97) 0%, rgba(13,27,42,.86) 55%, rgba(13,27,42,.7) 100%),
-                url('/images/background1.jpg') center / cover no-repeat;
+                url('/images/background1.png') center / cover no-repeat;
         }
         .crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: .9rem; color: rgba(255,255,255,.7); margin-bottom: clamp(18px, 3vw, 28px); }
         .crumbs li { display: inline-flex; align-items: center; gap: 10px; }

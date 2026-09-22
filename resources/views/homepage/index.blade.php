@@ -9,7 +9,7 @@
     // Isi dengan link Google Play jika aplikasi sudah tersedia. Kosong = badge disembunyikan.
     $play_store_url = "";
 
-    // Data Video Edukasi (JANGAN DIHAPUS BIAR TIDAK ERROR)
+    // Data Video Edukasi
     $video_edukasi = [
         ['yt' => '', 'judul' => 'Cara memakai APAR dengan benar'],
         ['yt' => '', 'judul' => 'Langkah evakuasi saat terjadi kebakaran'],
@@ -52,7 +52,7 @@
             --font-body: 'Instrument Sans', system-ui, sans-serif;
 
             --r-lg: 28px;
-            --r-md: 16px;
+            --r-md: 18px;
             --r-sm: 10px;
             --wrap: 1200px;
             --header-h: 64px;
@@ -82,7 +82,7 @@
         .bg-paper { background: var(--paper); }
         .bg-ink { background: var(--ink); color: #fff; }
 
-        .sec-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px 32px; margin-bottom: clamp(32px, 5vw, 56px); }
+        .sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: clamp(32px, 5vw, 56px); }
         .sec-head h2 {
             font-family: var(--font-display);
             font-weight: 700;
@@ -105,9 +105,6 @@
         .btn-light:hover { background: var(--amber); }
         .btn-ghost { border: 1.5px solid rgba(255,255,255,.35); color: #fff; }
         .btn-ghost:hover { border-color: #fff; background: rgba(255,255,255,.08); }
-        
-        .btn-outline { background: #fff; border: 1px solid var(--line); color: var(--ink); padding: 10px 20px; font-size: 0.9rem;}
-        .btn-outline:hover { border-color: var(--ink); background: var(--paper); }
 
         /* ==========================================================
            HEADER
@@ -191,7 +188,7 @@
             display: flex; flex-direction: column;
         }
         .hero-bg { position: absolute; inset: 0; z-index: -2; background-size: cover; background-position: center; }
-        .hero-bg.b1 { background-image: url('/images/background1.jpg'); }
+        .hero-bg.b1 { background-image: url('/images/background1.png'); }
         .hero-bg.b2 { background-image: url('/images/background2.jpeg'); animation: crossfade 14s infinite ease-in-out; }
         @keyframes crossfade { 0%, 40% { opacity: 0; } 50%, 90% { opacity: 1; } 100% { opacity: 0; } }
         .hero::before {
@@ -209,6 +206,7 @@
         }
         .hero-logos { display: flex; align-items: center; gap: 18px; margin-bottom: clamp(24px, 4vw, 40px); }
         .hero-logos img { height: clamp(44px, 6vw, 60px); width: auto; filter: drop-shadow(0 6px 14px rgba(0,0,0,.35)); }
+        
         .hero h1 {
             font-family: var(--font-display); font-weight: 800; font-stretch: 82%;
             font-size: clamp(3.4rem, 10.5vw, 8rem); line-height: .9; letter-spacing: -0.035em;
@@ -301,49 +299,6 @@
         .quote figcaption { position: relative; margin-top: 24px; display: flex; align-items: center; gap: 14px; font-weight: 600; color: rgba(255,255,255,.8); }
         .quote figcaption::before { content: ""; width: 36px; height: 2px; background: var(--amber); }
         @media (max-width: 860px) { .about { grid-template-columns: 1fr; } .about-art { max-width: 380px; } }
-
-        /* ==========================================================
-           LAYANAN (bento)
-           ========================================================== */
-        .bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
-        .svc {
-            position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: 40px;
-            padding: clamp(22px, 3vw, 32px); border-radius: var(--r-md); background: #fff; border: 1px solid var(--line);
-            min-height: 220px; transition: border-color .25s, transform .25s, box-shadow .25s;
-        }
-        .svc:hover { border-color: var(--ink); transform: translateY(-4px); box-shadow: 0 18px 36px -18px rgba(13,27,42,.35); }
-        .svc-ico { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; font-size: 1.35rem; background: var(--paper); color: var(--ink); transition: background .25s, color .25s; }
-        .svc:hover .svc-ico { background: var(--ink); color: #fff; }
-        .svc h3 { font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.45rem; line-height: 1.15; letter-spacing: -0.015em; margin-bottom: 8px; }
-        .svc p { color: var(--steel); font-size: .96rem; max-width: 44ch; }
-        .svc-go { position: absolute; top: clamp(22px, 3vw, 32px); right: clamp(22px, 3vw, 32px); font-size: .9rem; color: var(--steel); transition: transform .25s, color .25s; }
-        .svc:hover .svc-go { transform: translate(3px, -3px); color: var(--signal-d); }
-        .svc.w4 { grid-column: span 4; } .svc.w2 { grid-column: span 2; } .svc.w6 { grid-column: span 6; }
-
-        .svc.feature { background: var(--ink); border-color: var(--ink); color: #fff; min-height: 300px; }
-        .svc.feature .svc-ico { background: var(--signal); color: #fff; }
-        .svc.feature p, .svc.feature .svc-go { color: rgba(255,255,255,.7); }
-        .svc.feature h3 { font-size: clamp(1.8rem, 3.2vw, 2.6rem); }
-        .svc.feature:hover { border-color: var(--signal); }
-        .svc.feature:hover .svc-ico { background: var(--signal-d); }
-
-        .svc.wide { flex-direction: row; align-items: center; min-height: 0; background: #fff4f2; border-color: #f7c9c4; }
-        .svc.wide .svc-ico { background: var(--signal); color: #fff; }
-        .svc.wide > div:last-of-type { flex: 1; }
-        .svc.wide h3 { margin-bottom: 4px; }
-        .svc.wide:hover { border-color: var(--signal); box-shadow: 0 18px 36px -18px rgba(229,57,45,.35); }
-        .svc.wide:hover .svc-ico { background: var(--signal-d); }
-
-        @media (max-width: 900px) {
-            .svc.w4, .svc.w2 { grid-column: span 3; }
-            .svc.feature { grid-column: span 6; }
-        }
-        @media (max-width: 620px) {
-            .bento { grid-template-columns: 1fr; }
-            .svc.w4, .svc.w2, .svc.w6, .svc.feature { grid-column: auto; }
-            .svc { min-height: 0; gap: 28px; }
-            .svc.wide { flex-direction: column; align-items: flex-start; }
-        }
 
         /* ==========================================================
            KEJADIAN & EVAKUASI
@@ -575,7 +530,7 @@
                 </ul>
             </li>
             <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan &amp; fasilitas <i class="fas fa-chevron-down"></i></button>
+                <button class="menu-trigger" type="button" aria-expanded="false">Layanan<i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">Layanan perizinan</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
@@ -634,11 +589,27 @@
                 </a>
                 <img src="/images/logo-redkar.png" alt="Logo Redkar">
             </div>
-            <h1 id="judul-hero" class="rise d1">SIMERAH<br>KOJA</h1>
-            <p class="hero-full rise d2">Sistem Informasi Penanggulangan Kebakaran dan Penyelamatan Daerah Kota Jambi</p>
+            
+            <div class="hero-title-wrapper rise d1" style="display: flex; align-items: center; gap: clamp(16px, 3vw, 28px); margin-bottom: 8px;">
+                <img src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA" style="height: clamp(80px, 12vw, 140px); width: auto; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); flex: none;">
+                <h1 id="judul-hero" style="margin: 0;">
+                    <span style="color: var(--signal);">SIMERAH</span><br>KOJA
+                </h1>
+            </div>
+
+            <p class="hero-full rise d2">
+                <span style="color: var(--signal);">S</span>istem 
+                <span style="color: var(--signal);">I</span>nfor<span style="color: var(--signal);">m</span>asi 
+                P<span style="color: var(--signal);">e</span>nanggulangan 
+                Kebaka<span style="color: var(--signal);">r</span>an 
+                dan Penyelam<span style="color: var(--signal);">a</span>tan 
+                Daera<span style="color: var(--signal);">h</span> 
+                <span style="color: var(--signal);">Ko</span>ta 
+                <span style="color: var(--signal);">Ja</span>mbi
+            </p>
             <p class="hero-lead rise d2">Lapor kebakaran dan penyelamatan langsung ke petugas, atau urus perizinan proteksi kebakaran secara digital.</p>
             <div class="hero-cta rise d3">
-                <a class="btn btn-light" href="#layanan">Lihat layanan <i class="fas fa-arrow-down"></i></a>
+                <a class="btn btn-light" href="#kejadian">Lihat kejadian <i class="fas fa-arrow-down"></i></a>
                 <a class="btn btn-ghost" href="#kejadian">Kejadian terbaru</a>
             </div>
         </div>
@@ -723,76 +694,8 @@
     </div>
 </section>
 
-<!-- ==================== LAYANAN & FASILITAS ==================== -->
-<section class="section bg-paper" id="layanan">
-    <div class="wrap">
-        <div class="sec-head">
-            <div>
-                <h2>Layanan &amp; fasilitas</h2>
-                <p>Layanan utama kebakaran dan penyelamatan yang bisa Anda ajukan secara online.</p>
-            </div>
-        </div>
-
-        <div class="bento">
-            <a href="/layanan-fasilitas/layanan_perizinan" class="svc feature w4">
-                <i class="fas fa-arrow-up-right-from-square svc-go"></i>
-                <div class="svc-ico"><i class="far fa-building"></i></div>
-                <div>
-                    <h3>RPKBGL</h3>
-                    <p>Layanan perizinan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan.</p>
-                </div>
-            </a>
-
-            <a href="/layanan-fasilitas/skk" class="svc w2">
-                <i class="fas fa-arrow-up-right-from-square svc-go"></i>
-                <div class="svc-ico"><i class="fas fa-user-shield"></i></div>
-                <div>
-                    <h3>SKK baru</h3>
-                    <p>Penerbitan Sertifikat Keamanan Kebakaran untuk bangunan baru.</p>
-                </div>
-            </a>
-
-            <a href="/layanan-fasilitas/perpanjang_skk" class="svc w2">
-                <i class="fas fa-arrow-up-right-from-square svc-go"></i>
-                <div class="svc-ico"><i class="fas fa-fire-extinguisher"></i></div>
-                <div>
-                    <h3>Perpanjang SKK</h3>
-                    <p>Perpanjangan Sertifikat Keamanan Kebakaran tahunan.</p>
-                </div>
-            </a>
-
-            <a href="/redkar" class="svc w2">
-                <i class="fas fa-arrow-up-right-from-square svc-go"></i>
-                <div class="svc-ico"><i class="fas fa-running"></i></div>
-                <div>
-                    <h3>REDKAR</h3>
-                    <p>Informasi dan kumpulan relawan pemadam kebakaran Kota Jambi.</p>
-                </div>
-            </a>
-
-            <a href="/informasi-layanan" class="svc w2">
-                <i class="fas fa-arrow-up-right-from-square svc-go"></i>
-                <div class="svc-ico"><i class="fas fa-handshake"></i></div>
-                <div>
-                    <h3>Informasi Layanan</h3>
-                    <p>Daftar informasi dan layanan publik beserta instansi terkait.</p>
-                </div>
-            </a>
-
-            <a href="/layanan-fasilitas/edukasi_sosialisasi" class="svc wide w6">
-                <div class="svc-ico"><i class="fas fa-chalkboard-teacher"></i></div>
-                <div>
-                    <h3>Edukasi dan sosialisasi</h3>
-                    <p>Ajukan layanan edukasi dan sosialisasi untuk sekolah, instansi, maupun masyarakat.</p>
-                </div>
-                <i class="fas fa-arrow-right" style="color: var(--signal-d);"></i>
-            </a>
-        </div>
-    </div>
-</section>
-
 <!-- ==================== KEJADIAN & EVAKUASI ==================== -->
-<section class="section" id="kejadian">
+<section class="section bg-paper" id="kejadian">
     <div class="wrap">
         <div class="sec-head">
             <div>
@@ -875,7 +778,7 @@
 </section>
 
 <!-- ==================== INFO GRAFIS & MEDIA INFORMASI ==================== -->
-<section class="section bg-paper" id="infografis">
+<section class="section" id="infografis">
     <div class="wrap">
         <div class="sec-head">
             <div>
@@ -916,67 +819,52 @@
 
         @php
             $daftarMedsos    = collect($daftar_medsos ?? []);
-            $kategoriMedsos = $daftarMedsos->pluck('kategori')->filter()->unique('id')->sortBy('nama_kategori')->values();
-
-            $ikonSumber = function ($sumber) {
-                $s = strtolower($sumber ?? '');
-                if (str_contains($s, 'instagram')) return 'fab fa-instagram';
-                if (str_contains($s, 'youtube'))   return 'fab fa-youtube';
-                if (str_contains($s, 'tiktok'))    return 'fab fa-tiktok';
-                if (str_contains($s, 'facebook'))  return 'fab fa-facebook-f';
-                if (str_contains($s, 'twitter'))   return 'fab fa-twitter';
-                return 'fas fa-share-nodes';
-            };
         @endphp
 
-        <!-- FILTER KATEGORI TANPA PAGAR & AUTO-FIX TYPO -->
-        @if($daftarMedsos->count() && $kategoriMedsos->count() > 1)
-        <div class="media-filter" role="tablist" aria-label="Filter kategori media informasi">
-            <button type="button" class="pill is-active" data-filter="all" role="tab" aria-selected="true">Semua</button>
-            @foreach($kategoriMedsos as $kat)
-                @php $namaKatClean = str_replace('Lainya', 'Lainnya', $kat->nama_kategori); @endphp
-                <button type="button" class="pill" data-filter="{{ $kat->id }}" role="tab" aria-selected="false">{{ $namaKatClean }}</button>
-            @endforeach
-        </div>
-        @endif
-
         <!-- GRID BERITA (LEBIH KECIL, 4 KOLOM, BADGE MELAYANG DI ATAS FOTO) -->
-        <div class="media-grid" data-media-grid>
+        <div class="media-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
             @forelse($daftarMedsos as $medsos)
-                @php $namaKatCard = str_replace('Lainya', 'Lainnya', $medsos->kategori->nama_kategori ?? 'Informasi'); @endphp
-                <article class="media-card" data-kategori="{{ $medsos->kategori_id }}">
-                    <div class="media-thumb">
+                @php 
+                    $namaKatCard = str_replace('Lainya', 'Lainnya', $medsos->kategori->nama_kategori ?? 'Informasi'); 
+                    
+                    $s = strtolower($medsos->sumber ?? '');
+                    $ikonSumber = 'fas fa-share-nodes';
+                    if (str_contains($s, 'instagram')) $ikonSumber = 'fab fa-instagram';
+                    if (str_contains($s, 'youtube'))   $ikonSumber = 'fab fa-youtube';
+                    if (str_contains($s, 'tiktok'))    $ikonSumber = 'fab fa-tiktok';
+                    if (str_contains($s, 'facebook'))  $ikonSumber = 'fab fa-facebook-f';
+                    if (str_contains($s, 'twitter'))   $ikonSumber = 'fab fa-twitter';
+                @endphp
+                
+                <article class="media-card" style="display: flex; flex-direction: column; background: #fff; border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line); transition: transform .3s, box-shadow .3s;">
+                    <div style="position: relative; background: var(--paper); aspect-ratio: 4 / 3; overflow: hidden;">
                         @if($medsos->kategori)
-                            <span class="media-tag">{{ $namaKatCard }}</span>
+                            <span style="position: absolute; top: 12px; left: 12px; padding: 4px 12px; border-radius: 6px; font-size: .7rem; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; background: rgba(255, 255, 255, 0.95); color: var(--signal-d); z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.08); backdrop-filter: blur(4px);">{{ $namaKatCard }}</span>
                         @endif
-                        <img src="{{ asset('storage/' . $medsos->gambar) }}" alt="{{ $medsos->judul }}" loading="lazy">
+                        <img src="{{ asset('storage/' . $medsos->gambar) }}" alt="{{ $medsos->judul }}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s;">
                     </div>
-                    <div class="media-body">
-                        <h3>{{ $medsos->judul }}</h3>
-                        <div class="media-meta">
-                            <span><i class="far fa-calendar-alt"></i>{{ \Carbon\Carbon::parse($medsos->tanggal)->locale('id')->translatedFormat('d M Y, H:i') }}</span>
-                            <span><i class="{{ $ikonSumber($medsos->sumber) }}"></i>{{ $medsos->sumber }}</span>
+                    <div style="display: flex; flex-direction: column; flex: 1; padding: 18px 20px 20px;">
+                        <h3 style="font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.05rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 12px; transition: color 0.2s;">{{ $medsos->judul }}</h3>
+                        <div style="margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .8rem; color: var(--steel); font-weight: 500;">
+                            <span style="display: flex; align-items: center; gap: 6px;"><i class="far fa-calendar-alt"></i>{{ \Carbon\Carbon::parse($medsos->tanggal)->locale('id')->translatedFormat('d M Y, H:i') }}</span>
+                            <span style="display: flex; align-items: center; gap: 6px;"><i class="{{ $ikonSumber }}" style="color: {{ str_contains($s, 'youtube') ? '#ff0000' : (str_contains($s, 'instagram') ? '#d6249f' : 'inherit') }}"></i>{{ $medsos->sumber }}</span>
                         </div>
-                        <a href="{{ $medsos->link ?? '#' }}" target="_blank" rel="noopener">Selengkapnya <i class="fas fa-angle-right"></i></a>
+                        <a href="{{ $medsos->link ?? '#' }}" target="_blank" rel="noopener" style="margin-top: auto; font-weight: 700; font-size: .88rem; color: var(--signal-d); display: inline-flex; gap: 6px; align-items: center; transition: gap 0.2s;">Selengkapnya <i class="fas fa-angle-right"></i></a>
                     </div>
                 </article>
             @empty
-                <div class="empty">
-                    <i class="far fa-newspaper"></i>
+                <div class="empty" style="grid-column: 1 / -1; text-align: center; padding: 64px 24px; border: 1.5px dashed var(--line); border-radius: var(--r-md); color: var(--steel); background: #fff;">
+                    <i class="far fa-newspaper" style="font-size: 3rem; color: var(--line); margin-bottom: 12px;"></i>
                     <h3>Belum ada berita media sosial</h3>
                     <p>Unggahan terbaru akan tampil di sini.</p>
                 </div>
             @endforelse
         </div>
-
-        @if($daftarMedsos->count())
-            <p class="media-empty-filter" data-media-empty hidden>Belum ada media pada kategori ini.</p>
-        @endif
     </div>
 </section>
 
 <!-- ==================== GIAT DISDAMKARTAN ==================== -->
-<section class="section" id="giat">
+<section class="section bg-paper" id="giat">
     <div class="wrap">
         <div class="giat">
             <div class="giat-art">
@@ -1173,50 +1061,33 @@
         });
     });
 
-    vDialog.querySelector('.dlg-close').addEventListener('click', function () {
-        vFrame.src = '';
-        vDialog.close();
-    });
-    vDialog.addEventListener('click', function (e) {
-        if (e.target === vDialog) {
-            vFrame.src = '';
-            vDialog.close();
-        }
-    });
+    /* ---------- Filter kategori media informasi ---------- */
+    var mediaFilter = document.querySelector('.media-filter');
+    if (mediaFilter) {
+        var mediaCards = document.querySelectorAll('[data-media-grid] .media-card');
+        var mediaEmpty = document.querySelector('[data-media-empty]');
 
-    /* ---------- Filter Media Informasi (AJAX/JS Client-side) ---------- */
-    const pills = document.querySelectorAll('.media-filter .pill');
-    const cards = document.querySelectorAll('[data-media-grid] .media-card');
-    const emptyMsg = document.querySelector('[data-media-empty]');
+        mediaFilter.addEventListener('click', function (e) {
+            var btn = e.target.closest('.pill');
+            if (!btn) return;
 
-    pills.forEach(function (pill) {
-        pill.addEventListener('click', function () {
-            pills.forEach(p => {
+            mediaFilter.querySelectorAll('.pill').forEach(function (p) {
                 p.classList.remove('is-active');
                 p.setAttribute('aria-selected', 'false');
             });
-            pill.classList.add('is-active');
-            pill.setAttribute('aria-selected', 'true');
+            btn.classList.add('is-active');
+            btn.setAttribute('aria-selected', 'true');
 
-            const filter = pill.getAttribute('data-filter');
-            let visibleCount = 0;
-
-            cards.forEach(function (card) {
-                const kat = card.getAttribute('data-kategori');
-                if (filter === 'all' || kat === filter) {
-                    card.style.display = '';
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
+            var filter = btn.dataset.filter;
+            var visible = 0;
+            mediaCards.forEach(function (c) {
+                var show = filter === 'all' || c.dataset.kategori === filter;
+                c.style.display = show ? '' : 'none';
+                if (show) visible++;
             });
-
-            if (emptyMsg) {
-                emptyMsg.hidden = (visibleCount > 0);
-            }
+            if (mediaEmpty) mediaEmpty.hidden = visible !== 0;
         });
-    });
-
+    }
 })();
 </script>
 </body>
