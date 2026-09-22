@@ -48,8 +48,8 @@
 
     <style>
         /* ==========================================================
-           TOKENS
-           ========================================================== */
+        TOKENS
+        ========================================================== */
         :root {
             --ink: #0d1b2a;
             --ink-2: #132a43;
@@ -87,8 +87,8 @@
         .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: clamp(16px, 4vw, 32px); padding-right: clamp(16px, 4vw, 32px); }
 
         /* ==========================================================
-           HEADER NAVBAR
-           ========================================================== */
+        HEADER NAVBAR
+        ========================================================== */
         .site-header {
             position: sticky; top: 0; z-index: 60;
             background: rgba(13, 27, 42, .85); -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4);
@@ -117,6 +117,15 @@
         .dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
         .dropdown a { display: block; padding: 11px 14px; border-radius: var(--r-sm); font-size: .92rem; color: rgba(255,255,255,.85); }
         .dropdown a:hover, .dropdown a[aria-current="page"] { background: rgba(255,255,255,.1); color: #fff; }
+
+        /* Tombol Logout Dropdown */
+        .dropdown .btn-logout {
+            width: 100%; text-align: left; padding: 11px 14px; border-radius: var(--r-sm); 
+            font-size: .92rem; color: #ff8b8b; display: flex; align-items: center; gap: 8px; 
+            transition: background .2s, color .2s; cursor: pointer;
+        }
+        .dropdown .btn-logout:hover { background: rgba(255, 255, 255, .1); color: #ffb8b8; }
+
         .has-drop.open .dropdown { display: block; }
         @media (hover: hover) and (min-width: 992px) { .has-drop:hover .dropdown { display: block; } }
 
@@ -140,8 +149,8 @@
         }
 
         /* ==========================================================
-           HERO HALAMAN
-           ========================================================== */
+        HERO HALAMAN
+        ========================================================== */
         .page-hero {
             position: relative; isolation: isolate; color: #fff; background: var(--ink); overflow: hidden;
             padding: clamp(36px, 6vw, 72px) 0 clamp(72px, 10vw, 112px);
@@ -166,8 +175,8 @@
         @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 
         /* ==========================================================
-           LAYOUT KONTEN
-           ========================================================== */
+        LAYOUT KONTEN
+        ========================================================== */
         .page-body { background: var(--paper); padding-bottom: clamp(64px, 9vw, 112px); padding-top: 40px;}
         .perizinan-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; }
         @media (min-width: 992px) { .perizinan-layout { grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); gap: 32px; } }
@@ -202,8 +211,8 @@
         .steps li:last-child::before { background: var(--signal); }
 
         /* ==========================================================
-           FORMULIR
-           ========================================================== */
+        FORMULIR
+        ========================================================== */
         .form-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
         .form-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; padding: 18px clamp(18px, 3vw, 32px); border-bottom: 1px solid var(--line); }
         .form-title { display: flex; align-items: center; gap: 14px; min-width: 0; }
@@ -274,8 +283,8 @@
         .btn-primary:disabled { background: #fca5a5; cursor: not-allowed; box-shadow: none; }
 
         /* ==========================================================
-           FOOTER
-           ========================================================== */
+        FOOTER
+        ========================================================== */
         .footer { background: var(--ink); color: rgba(255,255,255,.7); padding: clamp(56px, 8vw, 96px) 0 32px; }
         .footer-grid { display: grid; grid-template-columns: 1.1fr 1.2fr .8fr; gap: clamp(32px, 5vw, 64px); }
         .footer h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: #fff; margin-bottom: 16px; }
@@ -301,8 +310,8 @@
         @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr; } }
         
         /* ==========================================================
-           TOMBOL LAPOR MENGAMBANG
-           ========================================================== */
+        TOMBOL LAPOR MENGAMBANG
+        ========================================================== */
         .beacon { position: relative; width: 12px; height: 12px; border-radius: 50%; background: #fff; flex: none; }
         .beacon::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #fff; animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
         @keyframes ping { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(3.2); opacity: 0; } }
@@ -390,7 +399,28 @@
                 </ul>
             </li>
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
-            <li><a class="menu-link btn-login" href="/login">Masuk</a></li>
+            
+            <!-- LOGIKA TOMBOL MASUK DAN KELUAR UNTUK PEMOHON -->
+            @if(session()->has('pemohon_id'))
+                <li class="has-drop">
+                    <button class="menu-trigger btn-login" type="button" aria-expanded="false">
+                        <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <ul class="dropdown">
+                        <li>
+                            <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
+                                @csrf
+                                <button type="submit" class="btn-logout">
+                                    <i class="fas fa-sign-out-alt"></i> Keluar
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            @else
+                <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
+            @endif
+
         </ul>
     </nav>
 </header>
@@ -739,7 +769,7 @@
         fabBtn.setAttribute('aria-expanded', open);
     });
 
-    /* ---------- Area unggah berkas (Dropzone KTP) ---------- */
+    /* ---------- Area unggah berkas ---------- */
     function fmtSize(b) { return b < 1048576 ? Math.max(1, Math.round(b / 1024)) + ' KB' : (b / 1048576).toFixed(1) + ' MB'; }
     document.querySelectorAll('[data-dropzone]').forEach(function (dz) {
         var input = dz.querySelector('input[type="file"]');

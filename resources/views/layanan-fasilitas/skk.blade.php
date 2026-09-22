@@ -2,14 +2,14 @@
     /* ------------------------------------------------------------
        PENGATURAN HALAMAN
        ------------------------------------------------------------ */
+    // Menu "Perpanjang SKK" dihapus dari tab atas karena sudah digabung ke form ini
     $layanan = [
-        'rpkbgl'         => ['url' => '/layanan-fasilitas/layanan_perizinan', 'label' => 'RPKBGL',         'ico' => 'fa-building',      'ket' => 'Layanan perizinan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan'],
-        'skk'            => ['url' => '/layanan-fasilitas/skk',               'label' => 'SKK',            'ico' => 'fa-user-shield',   'ket' => 'Layanan perizinan penerbitan Sertifikat Keamanan Kebakaran'],
-        'perpanjang_skk' => ['url' => '/layanan-fasilitas/perpanjang_skk',    'label' => 'Perpanjang SKK', 'ico' => 'fa-shield-halved', 'ket' => 'Layanan perizinan perpanjangan Sertifikat Keamanan Kebakaran'],
+        'rpkbgl' => ['url' => '/layanan-fasilitas/layanan_perizinan', 'label' => 'RPKBGL', 'ico' => 'fa-building', 'ket' => 'Layanan perizinan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan'],
+        'skk'    => ['url' => '/layanan-fasilitas/skk',                'label' => 'SKK (Baru & Perpanjangan)', 'ico' => 'fa-user-shield', 'ket' => 'Layanan perizinan penerbitan & perpanjangan Sertifikat Keamanan Kebakaran'],
     ];
     $tab_aktif = 'skk';
 
-    // Data wilayah Kota Jambi (satu sumber, dipakai untuk isi dropdown di server dan di JavaScript)
+    // Data wilayah Kota Jambi
     $dataWilayah = [
         'Alam Barajo'   => ['Bagan Pete', 'Beliung', 'Kenali Besar', 'Mayang Mangurai', 'Pinang Merah', 'Rawa Sari', 'Simpang Rimbo'],
         'Danau Sipin'   => ['Legok', 'Murni', 'Selamat', 'Solok Sipin', 'Sungai Putri'],
@@ -23,10 +23,11 @@
         'Pelayangan'    => ['Arab Melayu', 'Jelmu', 'Mudung Laut', 'Tahtul Yaman', 'Tanjung Johor', 'Tengah'],
         'Telanaipura'   => ['Aur Kenali', 'Buluran Kenali', 'Pematang Sulur', 'Penyengat Rendah', 'Simpang Empat Sipin', 'Telanaipura', 'Teluk Kenali'],
     ];
-    $kategori_list = ['Rumah Tinggal', 'Komersial', 'Industri', 'Fasilitas Umum'];
+    $kategori_list = ['Rumah Tinggal', 'Komersial (Mall/Toko)', 'Fasilitas Layanan Kesehatan', 'Perkantoran', 'Hotel / Penginapan', 'Pabrik / Gudang', 'Pendidikan', 'Fasilitas Umum Lainnya'];
 
     $oldKec = old('kecamatan');
     $oldKel = old('kelurahan');
+    $oldJenis = old('jenis_permohonan'); // Menyimpan pilihan radio button jika terjadi error
 
     // Penanda kolom galat: kelas is-invalid dan pesan galat per kolom
     $inv = function ($n) use ($errors) { return $errors->has($n) ? ' is-invalid' : ''; };
@@ -43,7 +44,6 @@
     $wa_link   = "https://wa.me/" . $no_whatsapp . "?text=" . $pesan_wa;
     $maps_link = "https://www.google.com/maps/place/6PC59JJ2%2BQ76/@-1.6180875,103.6006406,871m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-1.6180875!4d103.6006406?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D";
 
-    // Isi dengan link Google Play jika aplikasi sudah tersedia. Kosong = badge disembunyikan.
     $play_store_url = "";
 @endphp
 <!DOCTYPE html>
@@ -52,7 +52,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-    <meta name="description" content="Ajukan Sertifikat Keamanan Kebakaran (SKK) secara daring di Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.">
+    <meta name="description" content="Ajukan dan perpanjang Sertifikat Keamanan Kebakaran (SKK) secara daring di Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.">
     <title>SKK - Layanan perizinan | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
 
@@ -63,7 +63,7 @@
 
     <style>
         /* ==========================================================
-           TOKENS (sama dengan halaman utama & Program kerja)
+           TOKENS
            ========================================================== */
         :root {
             --ink: #0d1b2a;
@@ -148,6 +148,15 @@
         .dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
         .dropdown a { display: block; padding: 11px 14px; border-radius: var(--r-sm); font-size: .92rem; color: rgba(255,255,255,.85); }
         .dropdown a:hover, .dropdown a[aria-current="page"] { background: rgba(255,255,255,.1); color: #fff; }
+
+        /* Tombol Logout Dropdown */
+        .dropdown .btn-logout {
+            width: 100%; text-align: left; padding: 11px 14px; border-radius: var(--r-sm); 
+            font-size: .92rem; color: #ff8b8b; display: flex; align-items: center; gap: 8px; 
+            transition: background .2s, color .2s; cursor: pointer;
+        }
+        .dropdown .btn-logout:hover { background: rgba(255, 255, 255, .1); color: #ffb8b8; }
+
         .has-drop.open .dropdown { display: block; }
         @media (hover: hover) and (min-width: 992px) {
             .has-drop:hover .dropdown { display: block; }
@@ -196,10 +205,6 @@
             font-size: clamp(2.8rem, 8vw, 5.5rem); line-height: .95; letter-spacing: -0.035em;
         }
         .page-hero p { margin-top: 18px; max-width: 56ch; color: rgba(255,255,255,.75); font-size: clamp(1rem, 1.5vw, 1.15rem); }
-
-        .rise { animation: rise .8s cubic-bezier(.16,.84,.3,1) both; }
-        .rise.d1 { animation-delay: .08s; } .rise.d2 { animation-delay: .18s; } .rise.d3 { animation-delay: .3s; }
-        @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 
         /* ==========================================================
            TAB LAYANAN (menempel di tepi hero)
@@ -285,7 +290,7 @@
         .steps li:last-child::before { background: var(--signal); }
 
         /* ==========================================================
-           FORMULIR
+           FORMULIR & RADIO BUTTON
            ========================================================== */
         .form-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
         .form-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; padding: 18px clamp(18px, 3vw, 32px); border-bottom: 1px solid var(--line); }
@@ -300,6 +305,14 @@
         .alert i { margin-top: 3px; }
         .alert.err { background: #fdeceb; color: #8f1d15; border: 1px solid #f5c3bf; }
         .alert ul { display: grid; gap: 2px; margin-top: 4px; padding-left: 18px; list-style: disc; }
+
+        /* Custom Radio Buttons untuk Jenis Layanan */
+        .radio-group { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 8px; }
+        .radio-card { flex: 1; min-width: 200px; display: flex; align-items: center; gap: 12px; padding: 14px 18px; border: 1px solid var(--line); border-radius: 14px; cursor: pointer; transition: all .2s; }
+        .radio-card:hover { border-color: var(--steel); background: var(--paper); }
+        .radio-card input[type="radio"] { width: 18px; height: 18px; accent-color: var(--signal); cursor: pointer; }
+        .radio-card span { font-weight: 600; font-size: .95rem; color: var(--ink); }
+        .radio-card:has(input:checked) { border-color: var(--signal); background: #fdeceb; }
 
         .fs { border: 0; min-width: 0; }
         .fs legend { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 0; width: 100%; font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.15rem; letter-spacing: -0.01em; }
@@ -366,7 +379,7 @@
         @media (max-width: 640px) { .form-actions .btn { width: 100%; } }
 
         /* ==========================================================
-           NOTIFIKASI SUKSES
+           NOTIFIKASI SUKSES & MODAL
            ========================================================== */
         .toast {
             position: fixed; z-index: 80; left: 50%; top: calc(var(--header-h) + 16px);
@@ -383,9 +396,6 @@
         @keyframes toastIn { from { opacity: 0; transform: translate(-50%, -16px); } to { opacity: 1; transform: translate(-50%, 0); } }
         @keyframes toastOut { from { opacity: 1; transform: translate(-50%, 0); } to { opacity: 0; transform: translate(-50%, -16px); } }
 
-        /* ==========================================================
-           MODAL PERSYARATAN
-           ========================================================== */
         .modal {
             margin: auto; padding: 0; border: 0; border-radius: var(--r-lg);
             width: min(760px, calc(100vw - 24px)); max-height: min(88vh, 820px);
@@ -414,9 +424,7 @@
         .req-list ul ul li::before { background: transparent; border: 1.5px solid var(--steel); }
         .req-list b { font-weight: 600; }
 
-        /* ==========================================================
-           FOOTER
-           ========================================================== */
+        /* FOOTER & FAB */
         .footer { background: var(--ink); color: rgba(255,255,255,.7); padding: clamp(56px, 8vw, 96px) 0 32px; }
         .footer-grid { display: grid; grid-template-columns: 1.1fr 1.2fr .8fr; gap: clamp(32px, 5vw, 64px); }
         .footer h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: #fff; margin-bottom: 16px; }
@@ -444,9 +452,6 @@
         .social a:hover { background: var(--signal); transform: translateY(-3px); }
         @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr; } }
 
-        /* ==========================================================
-           TOMBOL LAPOR MENGAMBANG
-           ========================================================== */
         .beacon { position: relative; width: 12px; height: 12px; border-radius: 50%; background: #fff; flex: none; }
         .beacon::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #fff; animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
         @keyframes ping { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(3.2); opacity: 0; } }
@@ -461,9 +466,6 @@
         .sos-sheet a i { width: 22px; text-align: center; font-size: 1.15rem; }
         .sos-sheet .wa i { color: #25d366; } .sos-sheet .tel i { color: #38bdf8; } .sos-sheet .n112 i { color: #f87171; }
 
-        /* ==========================================================
-           REDUCED MOTION
-           ========================================================== */
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
             *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -515,13 +517,34 @@
             <li class="has-drop current">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan &amp; fasilitas <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="/layanan-fasilitas/layanan_perizinan" aria-current="page">Layanan perizinan</a></li>
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">Layanan perizinan</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
             </li>
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
-            <li><a class="menu-link btn-login" href="/login">Masuk</a></li>
+            
+            <!-- LOGIKA TOMBOL MASUK DAN KELUAR UNTUK PEMOHON -->
+            @if(session()->has('pemohon_id'))
+                <li class="has-drop">
+                    <button class="menu-trigger btn-login" type="button" aria-expanded="false">
+                        <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <ul class="dropdown">
+                        <li>
+                            <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
+                                @csrf
+                                <button type="submit" class="btn-logout">
+                                    <i class="fas fa-sign-out-alt"></i> Keluar
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            @else
+                <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
+            @endif
+
         </ul>
     </nav>
 </header>
@@ -539,7 +562,7 @@
             </ol>
         </nav>
         <h1 class="rise d1">Layanan perizinan</h1>
-        <p class="rise d2">Ajukan rekomendasi proteksi kebakaran, sertifikat keamanan kebakaran, dan perpanjangannya secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+        <p class="rise d2">Ajukan dan perpanjang Sertifikat Keamanan Kebakaran (SKK) secara daring di Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
 </section>
 
@@ -606,12 +629,12 @@
                 <section class="side-card">
                     <div class="card-head">
                         <span class="c-ico"><i class="fas fa-clipboard-check"></i></span>
-                        <h2>Persyaratan</h2>
+                        <h2>Persyaratan Utama</h2>
                     </div>
                     <ol class="checklist">
                         <li>
                             <span class="ck-ico"><i class="fas fa-pen-to-square"></i></span>
-                            <div>Isi formulir Sertifikat Keamanan Kebakaran (SKK) secara elektronik melalui <strong>simerah.jambikota.go.id</strong></div>
+                            <div>Pilih dan isi formulir Pembuatan Baru atau Perpanjangan Sertifikat Keamanan Kebakaran (SKK)</div>
                         </li>
                         <li>
                             <span class="ck-ico"><i class="fas fa-file-signature"></i></span>
@@ -621,9 +644,15 @@
                             </div>
                         </li>
                         <li>
+                            <span class="ck-ico"><i class="fas fa-file-shield"></i></span>
+                            <div>
+                                Jika <b>Perpanjangan</b>, wajib unggah berkas Sertifikat (SKK) tahun sebelumnya.
+                            </div>
+                        </li>
+                        <li>
                             <span class="ck-ico"><i class="fas fa-folder-open"></i></span>
                             <div>
-                                Unggah detail persyaratan SKK lainnya
+                                Unggah detail persyaratan SKK lainnya (IMB, NIB, dll)
                                 <br><button type="button" class="tool" data-open-modal><i class="fas fa-list-ul"></i> Lihat detail</button>
                             </div>
                         </li>
@@ -657,8 +686,8 @@
                     <div class="form-title">
                         <i class="fas fa-certificate"></i>
                         <div>
-                            <h2>Formulir SKK</h2>
-                            <p>Sertifikat Keamanan Kebakaran (SKK)</p>
+                            <h2>Formulir Permohonan SKK</h2>
+                            <p>Sertifikat Keamanan Kebakaran (Baru & Perpanjangan)</p>
                         </div>
                     </div>
                     <span class="form-note"><span class="req" aria-hidden="true">*</span> wajib diisi</span>
@@ -682,7 +711,27 @@
                     @endif
 
                     <fieldset class="fs">
-                        <legend><i class="fas fa-user"></i> Data pemohon</legend>
+                        <legend><i class="fas fa-list-check"></i> Jenis Permohonan</legend>
+                        <div class="fields">
+                            <div class="field full">
+                                <label class="label">Pilih Jenis Layanan SKK <span class="req" aria-hidden="true">*</span></label>
+                                <div class="radio-group">
+                                    <label class="radio-card">
+                                        <input type="radio" name="jenis_permohonan" value="Baru" required onchange="toggleSkkLama()" @if($oldJenis == 'Baru' || empty($oldJenis)) checked @endif>
+                                        <span>Pembuatan SKK Baru</span>
+                                    </label>
+                                    <label class="radio-card">
+                                        <input type="radio" name="jenis_permohonan" value="Perpanjangan" required onchange="toggleSkkLama()" @if($oldJenis == 'Perpanjangan') checked @endif>
+                                        <span>Perpanjangan SKK</span>
+                                    </label>
+                                </div>
+                                {!! $fe('jenis_permohonan') !!}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="fs">
+                        <legend><i class="fas fa-user"></i> Data Pemohon / Pemilik Gedung</legend>
                         <div class="fields">
                             <div class="field full">
                                 <label class="label" for="nama_pemohon">Nama pemohon <span class="req" aria-hidden="true">*</span></label>
@@ -704,21 +753,21 @@
                     </fieldset>
 
                     <fieldset class="fs">
-                        <legend><i class="fas fa-briefcase"></i> Data usaha</legend>
+                        <legend><i class="fas fa-briefcase"></i> Data Usaha / Perusahaan</legend>
                         <div class="fields">
                             <div class="field full">
-                                <label class="label" for="nama_usaha">Nama usaha <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="nama_usaha">Nama Instansi / Perusahaan <span class="req" aria-hidden="true">*</span></label>
                                 <input class="input{{ $inv('nama_usaha') }}" type="text" id="nama_usaha" name="nama_usaha" value="{{ old('nama_usaha') }}" autocomplete="organization" required aria-describedby="hint-usaha">
-                                <p class="hint" id="hint-usaha">PT, CV, UD, lembaga, toko, instansi, atau lainnya.</p>
+                                <p class="hint" id="hint-usaha">PT, CV, Lembaga, atau Perorangan pengelola gedung.</p>
                                 {!! $fe('nama_usaha') !!}
                             </div>
                             <div class="field">
-                                <label class="label" for="nik_pemilik_usaha">NIK pemilik usaha <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="nik_pemilik_usaha">NIK Pemilik Usaha <span class="req" aria-hidden="true">*</span></label>
                                 <input class="input{{ $inv('nik_pemilik_usaha') }}" type="text" id="nik_pemilik_usaha" name="nik_pemilik_usaha" value="{{ old('nik_pemilik_usaha') }}" inputmode="numeric" pattern="[0-9]{16}" maxlength="16" placeholder="16 digit NIK" required>
                                 {!! $fe('nik_pemilik_usaha') !!}
                             </div>
                             <div class="field">
-                                <label class="label" for="alamat_pemilik_usaha">Alamat pemilik usaha <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="alamat_pemilik_usaha">Alamat Pemilik Usaha <span class="req" aria-hidden="true">*</span></label>
                                 <input class="input{{ $inv('alamat_pemilik_usaha') }}" type="text" id="alamat_pemilik_usaha" name="alamat_pemilik_usaha" value="{{ old('alamat_pemilik_usaha') }}" autocomplete="street-address" required>
                                 {!! $fe('alamat_pemilik_usaha') !!}
                             </div>
@@ -726,12 +775,17 @@
                     </fieldset>
 
                     <fieldset class="fs">
-                        <legend><i class="fas fa-building"></i> Data bangunan</legend>
+                        <legend><i class="fas fa-building"></i> Data Bangunan Gedung</legend>
                         <div class="fields">
+                            <div class="field full">
+                                <label class="label" for="nama_bangunan">Nama Bangunan Gedung <span class="req" aria-hidden="true">*</span></label>
+                                <input class="input{{ $inv('nama_bangunan') }}" type="text" id="nama_bangunan" name="nama_bangunan" value="{{ old('nama_bangunan') }}" placeholder="Contoh: Gedung Perkantoran Abadi / Mall Jambi" required>
+                                {!! $fe('nama_bangunan') !!}
+                            </div>
                             <div class="field">
-                                <label class="label" for="kategori_bangunan">Kategori bangunan <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="kategori_bangunan">Fungsi Bangunan Gedung <span class="req" aria-hidden="true">*</span></label>
                                 <select class="input{{ $inv('kategori_bangunan') }}" id="kategori_bangunan" name="kategori_bangunan" required>
-                                    <option value="" disabled @if(!old('kategori_bangunan')) selected @endif>Pilih kategori bangunan</option>
+                                    <option value="" disabled @if(!old('kategori_bangunan')) selected @endif>Pilih fungsi bangunan</option>
                                     @foreach($kategori_list as $kat)
                                         <option value="{{ $kat }}" @if(old('kategori_bangunan') === $kat) selected @endif>{{ $kat }}</option>
                                     @endforeach
@@ -739,7 +793,17 @@
                                 {!! $fe('kategori_bangunan') !!}
                             </div>
                             <div class="field">
-                                <label class="label" for="alamat_bangunan">Alamat bangunan <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="konstruksi_bangunan">Konstruksi Bangunan <span class="req" aria-hidden="true">*</span></label>
+                                <input class="input{{ $inv('konstruksi_bangunan') }}" type="text" id="konstruksi_bangunan" name="konstruksi_bangunan" value="{{ old('konstruksi_bangunan') }}" placeholder="Contoh: Cor Beton Bertulang / Baja" required>
+                                {!! $fe('konstruksi_bangunan') !!}
+                            </div>
+                            <div class="field full">
+                                <label class="label" for="nomor_imb">Nomor IMB / PBG <span class="req" aria-hidden="true">*</span></label>
+                                <input class="input{{ $inv('nomor_imb') }}" type="text" id="nomor_imb" name="nomor_imb" value="{{ old('nomor_imb') }}" placeholder="Masukkan Nomor Izin Mendirikan Bangunan" required>
+                                {!! $fe('nomor_imb') !!}
+                            </div>
+                            <div class="field full">
+                                <label class="label" for="alamat_bangunan">Alamat Lengkap Bangunan Gedung <span class="req" aria-hidden="true">*</span></label>
                                 <input class="input{{ $inv('alamat_bangunan') }}" type="text" id="alamat_bangunan" name="alamat_bangunan" value="{{ old('alamat_bangunan') }}" required>
                                 {!! $fe('alamat_bangunan') !!}
                             </div>
@@ -770,7 +834,7 @@
                             <div class="field full">
                                 <div class="fields-3">
                                     <div class="field">
-                                        <label class="label" for="luas_lahan">Luas lahan <span class="req" aria-hidden="true">*</span></label>
+                                        <label class="label" for="luas_lahan">Luas Tanah / Lahan <span class="req" aria-hidden="true">*</span></label>
                                         <div class="unit">
                                             <input class="input{{ $inv('luas_lahan') }}" type="number" id="luas_lahan" name="luas_lahan" value="{{ old('luas_lahan') }}" min="0" step="0.01" inputmode="decimal" required>
                                             <span aria-hidden="true">m&sup2;</span>
@@ -778,7 +842,7 @@
                                         {!! $fe('luas_lahan') !!}
                                     </div>
                                     <div class="field">
-                                        <label class="label" for="luas_bangunan">Luas bangunan <span class="req" aria-hidden="true">*</span></label>
+                                        <label class="label" for="luas_bangunan">Luas Bangunan <span class="req" aria-hidden="true">*</span></label>
                                         <div class="unit">
                                             <input class="input{{ $inv('luas_bangunan') }}" type="number" id="luas_bangunan" name="luas_bangunan" value="{{ old('luas_bangunan') }}" min="0" step="0.01" inputmode="decimal" required>
                                             <span aria-hidden="true">m&sup2;</span>
@@ -786,12 +850,12 @@
                                         {!! $fe('luas_bangunan') !!}
                                     </div>
                                     <div class="field">
-                                        <label class="label" for="tinggi_bangunan">Tinggi bangunan <span class="req" aria-hidden="true">*</span></label>
+                                        <label class="label" for="jumlah_lantai">Jumlah Lantai Bangunan <span class="req" aria-hidden="true">*</span></label>
                                         <div class="unit">
-                                            <input class="input{{ $inv('tinggi_bangunan') }}" type="number" id="tinggi_bangunan" name="tinggi_bangunan" value="{{ old('tinggi_bangunan') }}" min="0" step="0.01" inputmode="decimal" required>
-                                            <span aria-hidden="true">m</span>
+                                            <input class="input{{ $inv('jumlah_lantai') }}" type="number" id="jumlah_lantai" name="jumlah_lantai" value="{{ old('jumlah_lantai') }}" min="1" step="1" inputmode="numeric" required>
+                                            <span aria-hidden="true">Lantai</span>
                                         </div>
-                                        {!! $fe('tinggi_bangunan') !!}
+                                        {!! $fe('jumlah_lantai') !!}
                                     </div>
                                 </div>
                             </div>
@@ -799,8 +863,23 @@
                     </fieldset>
 
                     <fieldset class="fs">
-                        <legend><i class="fas fa-paperclip"></i> Berkas</legend>
+                        <legend><i class="fas fa-paperclip"></i> Berkas Pendukung</legend>
                         <div class="fields">
+
+                            <!-- Kolom Dinamis: Khusus SKK Perpanjangan -->
+                            <div class="field full" id="field_skk_lama" style="display: none;">
+                                <span class="label" id="lbl-skklama">Sertifikat Keamanan Kebakaran (SKK) Tahun Lalu <span class="req" aria-hidden="true">*</span></span>
+                                <label class="dropzone{{ $inv('file_skk_lama') }}" data-dropzone data-max="5">
+                                    <input type="file" id="file_skk_lama" name="file_skk_lama" accept=".pdf,.jpg,.jpeg,.png" aria-labelledby="lbl-skklama">
+                                    <span class="dz-ico"><i class="fas fa-file-shield"></i></span>
+                                    <span class="dz-text"><strong>Tarik berkas SKK lama</strong> atau <u>pilih dari perangkat</u></span>
+                                    <ul class="dz-files" aria-live="polite"></ul>
+                                </label>
+                                <p class="hint" style="color:var(--signal-d); font-weight:600;"><i class="fas fa-info-circle"></i> Wajib dilampirkan untuk permohonan Perpanjangan SKK.</p>
+                                <p class="field-err dz-msg" role="alert"></p>
+                                {!! $fe('file_skk_lama') !!}
+                            </div>
+                            
                             <div class="field full">
                                 <span class="label" id="lbl-surat">Surat permohonan bermaterai <span class="req" aria-hidden="true">*</span></span>
                                 <label class="dropzone{{ $inv('file_surat_permohonan') }}" data-dropzone data-max="5">
@@ -813,6 +892,7 @@
                                 <p class="field-err dz-msg" role="alert"></p>
                                 {!! $fe('file_surat_permohonan') !!}
                             </div>
+                            
                             <div class="field full">
                                 <span class="label" id="lbl-lain">Persyaratan lainnya</span>
                                 <label class="dropzone{{ $inv('file_persyaratan_lainnya') }}" data-dropzone data-max="10">
@@ -844,10 +924,13 @@
 <!-- ==================== MODAL PERSYARATAN ==================== -->
 <dialog class="modal" id="modalPersyaratan" aria-labelledby="modalTitle">
     <div class="modal-head">
-        <h2 id="modalTitle">Detail persyaratan SKK lainnya</h2>
+        <h2 id="modalTitle">Detail persyaratan SKK & Perpanjangan</h2>
         <button type="button" class="modal-x" data-close aria-label="Tutup"><i class="fas fa-times"></i></button>
     </div>
     <div class="modal-body">
+        <div style="margin-bottom: 15px; padding: 10px; background: #fffbe6; border-left: 4px solid #ffb627; font-size: 0.9rem;">
+            <b>Khusus Perpanjangan:</b> Anda diwajibkan untuk mengunggah dokumen <b>SKK Tahun Lalu</b> pada kolom yang tersedia di formulir, di samping berkas persyaratan di bawah ini.
+        </div>
         <ol class="req-list">
             <li>Menginput Formulir Sertifikat Keamanan Kebakaran secara elektronik melalui simerah.jambikota.go.id</li>
             <li>
@@ -1083,6 +1166,39 @@
         (dataWilayah[kec.value] || []).forEach(function (nama) {
             kel.add(new Option(nama, nama));
         });
+    });
+
+    /* ---------- Logika Tampil/Sembunyi Form SKK Lama ---------- */
+    window.toggleSkkLama = function() {
+        var radios = document.getElementsByName('jenis_permohonan');
+        var isPerpanjang = false;
+        
+        for (var i = 0; i < radios.length; i++) {
+            if (radios[i].checked && radios[i].value === 'Perpanjangan') {
+                isPerpanjang = true;
+                break;
+            }
+        }
+        
+        var wrap = document.getElementById('field_skk_lama');
+        var input = document.getElementById('file_skk_lama');
+        
+        if(isPerpanjang) {
+            wrap.style.display = 'block';
+            input.setAttribute('required', 'required');
+        } else {
+            wrap.style.display = 'none';
+            input.removeAttribute('required');
+            input.value = ''; // Mengosongkan file jika user batal memilih perpanjang
+            var list = wrap.querySelector('.dz-files');
+            if(list) list.innerHTML = ''; // Mengosongkan UI list file
+            wrap.querySelector('.dropzone').classList.remove('has-files', 'is-invalid');
+        }
+    };
+    
+    // Panggil saat halaman pertama kali dimuat (berguna saat ada validasi error back dari Laravel)
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleSkkLama();
     });
 
     /* ---------- Area unggah berkas ---------- */
