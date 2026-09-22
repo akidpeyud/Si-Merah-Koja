@@ -447,7 +447,11 @@
                             <td>{{ $item->persentasi_penilaian ?? $item->persentase_penilaian ?? '-' }}</td>
                             <td>{{ $item->jenis_diklat ?? '-' }}</td>
                             <td>{{ (!empty($item->created_at) && trim($item->created_at) !== '-' && trim($item->created_at) !== '') ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
+<<<<<<< HEAD
                             <td>{{ (!empty($item->updated_at) && trim($item->updated_at) !== '-' && trim($item->updated_at) !== '') ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
+=======
+<td>{{ (!empty($item->updated_at) && trim($item->updated_at) !== '-' && trim($item->updated_at) !== '') ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                             <td>{{ $item->ttl ?? '-' }}</td><td>{{ $item->ket ?? $item->keterangan ?? '-' }}</td>
                             <td class="text-center d-flex justify-content-center gap-1">
                                 <a href="/internal/pencegahan/peningkatan-kapasitas/edit/diklat-rescue/{{ $item->id }}" class="btn-action btn-edit"><i class="fas fa-edit"></i></a>

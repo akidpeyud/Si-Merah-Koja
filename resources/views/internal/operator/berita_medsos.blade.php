@@ -78,13 +78,21 @@
                             <tr>
                                 <th style="width: 5%;">No</th>
                                 <th style="width: 15%;">Foto</th>
+<<<<<<< HEAD
                                 <th style="width: 35%;">Judul Berita</th>
+=======
+                                <th style="width: 35%;">Judul Berita & Kategori</th>
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                 <th style="width: 25%;">Tanggal & Sumber</th>
                                 <th style="width: 20%;" class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
+<<<<<<< HEAD
                             @forelse($medsos as $index => $item)
+=======
+                            @forelse($medsos ?? [] as $index => $item)
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                             <tr>
                                 <td>{{ $index + 1 }}</td>
                                 <td>
@@ -92,6 +100,13 @@
                                 </td>
                                 <td>
                                     <span class="fw-bold d-block">{{ $item->judul }}</span>
+<<<<<<< HEAD
+=======
+                                    <span class="badge bg-secondary mb-1">
+                                        <i class="fas fa-tag me-1"></i> {{ $item->kategori->nama_kategori ?? 'Tanpa Kategori' }}
+                                    </span>
+                                    <br>
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                     @if($item->link)
                                         <a href="{{ $item->link }}" target="_blank" class="small text-primary text-decoration-none"><i class="fas fa-external-link-alt me-1"></i> Lihat Tautan</a>
                                     @endif
@@ -127,6 +142,22 @@
                                                     <label class="form-label fw-bold">Judul Berita</label>
                                                     <input type="text" class="form-control" name="judul" value="{{ $item->judul }}" required>
                                                 </div>
+<<<<<<< HEAD
+=======
+                                                
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Kategori Berita <span class="text-danger">*</span></label>
+                                                    <select class="form-select" name="kategori_id" required>
+                                                        <option value="">-- Pilih Kategori --</option>
+                                                        @foreach($kategori ?? [] as $kat)
+                                                            <option value="{{ $kat->id }}" {{ $item->kategori_id == $kat->id ? 'selected' : '' }}>
+                                                                {{ $kat->nama_kategori }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Tanggal & Waktu</label>
                                                     <input type="datetime-local" class="form-control" name="tanggal" value="{{ \Carbon\Carbon::parse($item->tanggal)->format('Y-m-d\TH:i') }}" required>
@@ -164,6 +195,7 @@
         </main>
     </div>
 
+<<<<<<< HEAD
     <!-- Modal Tambah Berita Medsos -->
     <div class="modal fade" id="modalTambah" tabindex="-1">
         <div class="modal-dialog">
@@ -198,6 +230,70 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+=======
+    <!-- Modal Tambah Berita Medsos (Sistem Hybrid) -->
+    <div class="modal fade" id="modalTambah" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="/internal/operator/berita-medsos/store" method="POST" id="formTambahOtomatis" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold"><i class="fas fa-share-alt me-1 text-danger"></i> Tambah Medsos (Hybrid)</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <!-- BAGIAN INPUT LINK -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Link Tautan Postingan <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="url" class="form-control" id="inputLink" name="link" placeholder="Paste link Instagram/Berita di sini..." required>
+                                <button class="btn btn-primary fw-bold" type="button" id="btnTarikData">Tarik Data</button>
+                            </div>
+                            <small class="text-muted"><i class="fas fa-info-circle me-1"></i> Klik "Tarik Data" untuk fitur otomatis.</small>
+                        </div>
+
+                        <!-- HIDDEN INPUT URL GAMBAR (Diisi otomatis oleh JS) -->
+                        <input type="hidden" name="gambar_url" id="inputGambarUrl">
+
+                        <!-- KOTAK PREVIEW GAMBAR -->
+                        <div class="mb-4 d-none text-center p-3 border rounded bg-light" id="previewArea">
+                            <h6 class="text-muted fw-bold mb-2"><i class="fas fa-image me-2"></i>Gambar Otomatis Ditemukan:</h6>
+                            <img src="" id="imgPreview" alt="Preview Gambar" style="max-height: 150px; border-radius: 8px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Judul Berita <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="inputJudul" name="judul" placeholder="Isi judul manual jika Tarik Data gagal..." required>
+                        </div>
+
+                        <!-- KOLOM UPLOAD MANUAL -->
+                        <div class="mb-3 p-3 bg-light border border-dashed rounded" id="uploadManualArea">
+                            <label class="form-label fw-bold">Upload Foto Manual</label>
+                            <input type="file" class="form-control" id="inputGambarManual" name="gambar_manual" accept=".jpg,.jpeg,.png">
+                            <small class="text-danger fw-bold d-block mt-1">Wajib diisi jika Tarik Data dari link di atas gagal!</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Kategori Berita <span class="text-danger">*</span></label>
+                            <select class="form-select" name="kategori_id" required>
+                                <option value="">-- Pilih Kategori --</option>
+                                @foreach($kategori ?? [] as $kat)
+                                    <option value="{{ $kat->id }}">{{ $kat->nama_kategori }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tanggal & Waktu <span class="text-danger">*</span></label>
+                            <input type="datetime-local" class="form-control" name="tanggal" value="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                        <!-- Tombol tidak pernah didisable agar tidak merepotkan operator -->
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                         <button type="submit" class="btn btn-danger btn-sm fw-bold">Simpan Berita</button>
                     </div>
                 </form>
@@ -206,5 +302,68 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<<<<<<< HEAD
+=======
+    
+    <!-- SCRIPT TARIK DATA LINK -->
+    <script>
+        document.getElementById('btnTarikData').addEventListener('click', function() {
+            let urlInput = document.getElementById('inputLink').value;
+            let btn = this;
+
+            if(!urlInput) {
+                alert("Mohon paste link postingan terlebih dahulu!");
+                return;
+            }
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+            btn.disabled = true;
+
+            fetch('/internal/fetch-link-preview', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ url: urlInput })
+            })
+            .then(async response => {
+                const isJson = response.headers.get('content-type')?.includes('application/json');
+                const data = isJson ? await response.json() : null;
+                
+                // Menangkap pesan error asli jika ada masalah jaringan
+                if (!response.ok) {
+                    throw new Error((data && data.error) ? data.error : 'Server website tujuan menolak permintaan.');
+                }
+                return data;
+            })
+            .then(data => {
+                btn.innerHTML = 'Tarik Data';
+                btn.disabled = false;
+                
+                if(data && data.title) {
+                    document.getElementById('inputJudul').value = data.title;
+                }
+
+                if(data && data.image) {
+                    document.getElementById('imgPreview').src = data.image;
+                    document.getElementById('inputGambarUrl').value = data.image; 
+                    document.getElementById('previewArea').classList.remove('d-none');
+                    // Reset dan sembunyikan input manual agar tidak bentrok
+                    document.getElementById('inputGambarManual').value = ''; 
+                    document.getElementById('uploadManualArea').style.opacity = '0.5';
+                } else {
+                    alert("Informasi: Gambar tidak bisa dideteksi secara otomatis. Silakan upload gambar secara manual.");
+                }
+            })
+            .catch(error => {
+                btn.innerHTML = 'Tarik Data';
+                btn.disabled = false;
+                // Pemberitahuan agar pengguna memakai cara manual
+                alert('TARIK DATA OTOMATIS GAGAL (' + error.message + ')\n\nJangan khawatir! Silakan ketik Judul dan Upload Foto secara MANUAL di form.');
+            });
+        });
+    </script>
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
 </body>
 </html>
