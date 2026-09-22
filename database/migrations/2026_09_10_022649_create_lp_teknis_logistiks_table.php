@@ -11,6 +11,12 @@ return new class extends Migration {
             // Relasi ke tabel utama
             $table->foreignId('laporan_id')->constrained('laporan_penyelamatans')->onDelete('cascade');
             
+            // Kolom baru yang ditambahkan
+            $table->string('pimpinan_operasi')->nullable();
+            $table->string('pendamping_operasi')->nullable();
+            $table->string('satuan_tugas')->nullable();
+            $table->string('tim_respontime')->nullable();
+            
             $table->integer('korban_selamat')->default(0);
             $table->integer('korban_ringan')->default(0);
             $table->integer('korban_berat')->default(0);
@@ -22,6 +28,10 @@ return new class extends Migration {
             $table->json('metode_evakuasi')->nullable();
             $table->json('metode_penyelamatan')->nullable();
             $table->text('hambatan_lapangan')->nullable();
+            
+            // Kolom baru yang ditambahkan
+            $table->text('langkah_penanganan')->nullable();
+            $table->text('hasil_tindakan')->nullable();
             
             $table->json('peralatan')->nullable();
             $table->string('peralatan_lain')->nullable();
