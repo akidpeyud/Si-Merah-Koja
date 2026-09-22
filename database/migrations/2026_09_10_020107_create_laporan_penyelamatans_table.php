@@ -14,6 +14,11 @@ return new class extends Migration
             // Tab 1: Informasi Dasar
             $table->string('nomor_laporan')->unique();
             $table->uuid('id_laporan')->unique();
+            
+            // Kolom baru yang ditambahkan berdasarkan request form
+            $table->string('nama_pelapor')->nullable();
+            $table->string('media_pelaporan')->nullable();
+            
             $table->string('kategori_kebakaran')->nullable();
             $table->string('kategori_non_kebakaran')->nullable();
             $table->string('rincian_kategori_non_kebakaran')->nullable();
@@ -24,7 +29,15 @@ return new class extends Migration
             $table->dateTime('waktu_berangkat')->nullable();
             $table->dateTime('waktu_tiba')->nullable();
             $table->dateTime('waktu_selesai')->nullable();
+            
+            // Kolom baru yang ditambahkan berdasarkan request form
+            $table->dateTime('waktu_kembali')->nullable();
+            
             $table->text('alamat')->nullable();
+            
+            // Kolom baru yang ditambahkan berdasarkan request form
+            $table->string('jarak_tempuh')->nullable();
+            
             $table->string('koordinat')->nullable();
 
             // Tab 2: Teknis & Logistik

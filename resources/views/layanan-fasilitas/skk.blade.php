@@ -9,7 +9,7 @@
     ];
     $tab_aktif = 'skk';
 
-    // Data wilayah Kota Jambi (satu sumber, dipakai untuk isi dropdown di server dan di JavaScript)
+    // Data wilayah Kota Jambi
     $dataWilayah = [
         'Alam Barajo'   => ['Bagan Pete', 'Beliung', 'Kenali Besar', 'Mayang Mangurai', 'Pinang Merah', 'Rawa Sari', 'Simpang Rimbo'],
         'Danau Sipin'   => ['Legok', 'Murni', 'Selamat', 'Solok Sipin', 'Sungai Putri'],
@@ -23,7 +23,7 @@
         'Pelayangan'    => ['Arab Melayu', 'Jelmu', 'Mudung Laut', 'Tahtul Yaman', 'Tanjung Johor', 'Tengah'],
         'Telanaipura'   => ['Aur Kenali', 'Buluran Kenali', 'Pematang Sulur', 'Penyengat Rendah', 'Simpang Empat Sipin', 'Telanaipura', 'Teluk Kenali'],
     ];
-    $kategori_list = ['Rumah Tinggal', 'Komersial', 'Industri', 'Fasilitas Umum'];
+    $kategori_list = ['Rumah Tinggal', 'Komersial (Mall/Toko)', 'Fasilitas Layanan Kesehatan', 'Perkantoran', 'Hotel / Penginapan', 'Pabrik / Gudang', 'Pendidikan', 'Fasilitas Umum Lainnya'];
 
     $oldKec = old('kecamatan');
     $oldKel = old('kelurahan');
@@ -43,7 +43,6 @@
     $wa_link   = "https://wa.me/" . $no_whatsapp . "?text=" . $pesan_wa;
     $maps_link = "https://www.google.com/maps/place/6PC59JJ2%2BQ76/@-1.6180875,103.6006406,871m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-1.6180875!4d103.6006406?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D";
 
-    // Isi dengan link Google Play jika aplikasi sudah tersedia. Kosong = badge disembunyikan.
     $play_store_url = "";
 @endphp
 <!DOCTYPE html>
@@ -63,7 +62,7 @@
 
     <style>
         /* ==========================================================
-           TOKENS (sama dengan halaman utama & Program kerja)
+           TOKENS
            ========================================================== */
         :root {
             --ink: #0d1b2a;
@@ -515,7 +514,7 @@
             <li class="has-drop current">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan &amp; fasilitas <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="/layanan-fasilitas/layanan_perizinan" aria-current="page">Layanan perizinan</a></li>
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">Layanan perizinan</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
@@ -682,7 +681,7 @@
                     @endif
 
                     <fieldset class="fs">
-                        <legend><i class="fas fa-user"></i> Data pemohon</legend>
+                        <legend><i class="fas fa-user"></i> Data Pemohon / Pemilik Gedung</legend>
                         <div class="fields">
                             <div class="field full">
                                 <label class="label" for="nama_pemohon">Nama pemohon <span class="req" aria-hidden="true">*</span></label>
@@ -704,21 +703,21 @@
                     </fieldset>
 
                     <fieldset class="fs">
-                        <legend><i class="fas fa-briefcase"></i> Data usaha</legend>
+                        <legend><i class="fas fa-briefcase"></i> Data Usaha / Perusahaan</legend>
                         <div class="fields">
                             <div class="field full">
-                                <label class="label" for="nama_usaha">Nama usaha <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="nama_usaha">Nama Instansi / Perusahaan <span class="req" aria-hidden="true">*</span></label>
                                 <input class="input{{ $inv('nama_usaha') }}" type="text" id="nama_usaha" name="nama_usaha" value="{{ old('nama_usaha') }}" autocomplete="organization" required aria-describedby="hint-usaha">
-                                <p class="hint" id="hint-usaha">PT, CV, UD, lembaga, toko, instansi, atau lainnya.</p>
+                                <p class="hint" id="hint-usaha">PT, CV, Lembaga, atau Perorangan pengelola gedung.</p>
                                 {!! $fe('nama_usaha') !!}
                             </div>
                             <div class="field">
-                                <label class="label" for="nik_pemilik_usaha">NIK pemilik usaha <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="nik_pemilik_usaha">NIK Pemilik Usaha <span class="req" aria-hidden="true">*</span></label>
                                 <input class="input{{ $inv('nik_pemilik_usaha') }}" type="text" id="nik_pemilik_usaha" name="nik_pemilik_usaha" value="{{ old('nik_pemilik_usaha') }}" inputmode="numeric" pattern="[0-9]{16}" maxlength="16" placeholder="16 digit NIK" required>
                                 {!! $fe('nik_pemilik_usaha') !!}
                             </div>
                             <div class="field">
-                                <label class="label" for="alamat_pemilik_usaha">Alamat pemilik usaha <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="alamat_pemilik_usaha">Alamat Pemilik Usaha <span class="req" aria-hidden="true">*</span></label>
                                 <input class="input{{ $inv('alamat_pemilik_usaha') }}" type="text" id="alamat_pemilik_usaha" name="alamat_pemilik_usaha" value="{{ old('alamat_pemilik_usaha') }}" autocomplete="street-address" required>
                                 {!! $fe('alamat_pemilik_usaha') !!}
                             </div>
@@ -726,12 +725,17 @@
                     </fieldset>
 
                     <fieldset class="fs">
-                        <legend><i class="fas fa-building"></i> Data bangunan</legend>
+                        <legend><i class="fas fa-building"></i> Data Bangunan Gedung</legend>
                         <div class="fields">
+                            <div class="field full">
+                                <label class="label" for="nama_bangunan">Nama Bangunan Gedung <span class="req" aria-hidden="true">*</span></label>
+                                <input class="input{{ $inv('nama_bangunan') }}" type="text" id="nama_bangunan" name="nama_bangunan" value="{{ old('nama_bangunan') }}" placeholder="Contoh: Gedung Perkantoran Abadi / Mall Jambi" required>
+                                {!! $fe('nama_bangunan') !!}
+                            </div>
                             <div class="field">
-                                <label class="label" for="kategori_bangunan">Kategori bangunan <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="kategori_bangunan">Fungsi Bangunan Gedung <span class="req" aria-hidden="true">*</span></label>
                                 <select class="input{{ $inv('kategori_bangunan') }}" id="kategori_bangunan" name="kategori_bangunan" required>
-                                    <option value="" disabled @if(!old('kategori_bangunan')) selected @endif>Pilih kategori bangunan</option>
+                                    <option value="" disabled @if(!old('kategori_bangunan')) selected @endif>Pilih fungsi bangunan</option>
                                     @foreach($kategori_list as $kat)
                                         <option value="{{ $kat }}" @if(old('kategori_bangunan') === $kat) selected @endif>{{ $kat }}</option>
                                     @endforeach
@@ -739,7 +743,17 @@
                                 {!! $fe('kategori_bangunan') !!}
                             </div>
                             <div class="field">
-                                <label class="label" for="alamat_bangunan">Alamat bangunan <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="konstruksi_bangunan">Konstruksi Bangunan <span class="req" aria-hidden="true">*</span></label>
+                                <input class="input{{ $inv('konstruksi_bangunan') }}" type="text" id="konstruksi_bangunan" name="konstruksi_bangunan" value="{{ old('konstruksi_bangunan') }}" placeholder="Contoh: Cor Beton Bertulang / Baja" required>
+                                {!! $fe('konstruksi_bangunan') !!}
+                            </div>
+                            <div class="field full">
+                                <label class="label" for="nomor_imb">Nomor IMB / PBG <span class="req" aria-hidden="true">*</span></label>
+                                <input class="input{{ $inv('nomor_imb') }}" type="text" id="nomor_imb" name="nomor_imb" value="{{ old('nomor_imb') }}" placeholder="Masukkan Nomor Izin Mendirikan Bangunan" required>
+                                {!! $fe('nomor_imb') !!}
+                            </div>
+                            <div class="field full">
+                                <label class="label" for="alamat_bangunan">Alamat Lengkap Bangunan Gedung <span class="req" aria-hidden="true">*</span></label>
                                 <input class="input{{ $inv('alamat_bangunan') }}" type="text" id="alamat_bangunan" name="alamat_bangunan" value="{{ old('alamat_bangunan') }}" required>
                                 {!! $fe('alamat_bangunan') !!}
                             </div>
@@ -770,7 +784,7 @@
                             <div class="field full">
                                 <div class="fields-3">
                                     <div class="field">
-                                        <label class="label" for="luas_lahan">Luas lahan <span class="req" aria-hidden="true">*</span></label>
+                                        <label class="label" for="luas_lahan">Luas Tanah / Lahan <span class="req" aria-hidden="true">*</span></label>
                                         <div class="unit">
                                             <input class="input{{ $inv('luas_lahan') }}" type="number" id="luas_lahan" name="luas_lahan" value="{{ old('luas_lahan') }}" min="0" step="0.01" inputmode="decimal" required>
                                             <span aria-hidden="true">m&sup2;</span>
@@ -778,7 +792,7 @@
                                         {!! $fe('luas_lahan') !!}
                                     </div>
                                     <div class="field">
-                                        <label class="label" for="luas_bangunan">Luas bangunan <span class="req" aria-hidden="true">*</span></label>
+                                        <label class="label" for="luas_bangunan">Luas Bangunan <span class="req" aria-hidden="true">*</span></label>
                                         <div class="unit">
                                             <input class="input{{ $inv('luas_bangunan') }}" type="number" id="luas_bangunan" name="luas_bangunan" value="{{ old('luas_bangunan') }}" min="0" step="0.01" inputmode="decimal" required>
                                             <span aria-hidden="true">m&sup2;</span>
@@ -786,12 +800,12 @@
                                         {!! $fe('luas_bangunan') !!}
                                     </div>
                                     <div class="field">
-                                        <label class="label" for="tinggi_bangunan">Tinggi bangunan <span class="req" aria-hidden="true">*</span></label>
+                                        <label class="label" for="jumlah_lantai">Jumlah Lantai Bangunan <span class="req" aria-hidden="true">*</span></label>
                                         <div class="unit">
-                                            <input class="input{{ $inv('tinggi_bangunan') }}" type="number" id="tinggi_bangunan" name="tinggi_bangunan" value="{{ old('tinggi_bangunan') }}" min="0" step="0.01" inputmode="decimal" required>
-                                            <span aria-hidden="true">m</span>
+                                            <input class="input{{ $inv('jumlah_lantai') }}" type="number" id="jumlah_lantai" name="jumlah_lantai" value="{{ old('jumlah_lantai') }}" min="1" step="1" inputmode="numeric" required>
+                                            <span aria-hidden="true">Lantai</span>
                                         </div>
-                                        {!! $fe('tinggi_bangunan') !!}
+                                        {!! $fe('jumlah_lantai') !!}
                                     </div>
                                 </div>
                             </div>
@@ -799,7 +813,7 @@
                     </fieldset>
 
                     <fieldset class="fs">
-                        <legend><i class="fas fa-paperclip"></i> Berkas</legend>
+                        <legend><i class="fas fa-paperclip"></i> Berkas Pendukung</legend>
                         <div class="fields">
                             <div class="field full">
                                 <span class="label" id="lbl-surat">Surat permohonan bermaterai <span class="req" aria-hidden="true">*</span></span>
