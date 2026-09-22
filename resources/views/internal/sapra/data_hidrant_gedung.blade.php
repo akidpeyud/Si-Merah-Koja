@@ -192,7 +192,8 @@
                     <div class="sidebar-submenu">
                         <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data & Laporan</a>
                         <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-file-alt"></i> Data Laporan</a>
-                    
+                     <!-- Menu Baru Untuk Surat -->
+                        <a href="/internal/surat-korban/create" class="sidebar-item {{ Request::is('internal/surat*') ? 'active' : '' }}"><i class="fas fa-file-signature"></i> Buat Surat Korban</a>
                     </div>
                 </div>
                 <div class="sidebar-separator"></div>
@@ -212,7 +213,7 @@
                         <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam Kebakaran</a>
                         <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pemadam Kebakaran</a>
                         <a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi</a>
-                        <a href="/sapra/sarana-pemeriksaan" class="sidebar-item"><i class="fas fa-search"></i> Sarana Pemeriksaan Proteksi Kebakaran</a>    
+                        <a href="/sapra/sarana-pemeriksaan" class="sidebar-item"><i class="fas fa-search"></i> Sarana Pemeriksaan Proteksi Kebakaran</a>   
                         <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
                         
                         <!-- ACTIVE ADA DI SINI KARENA INI HALAMAN SUMBER AIR -->
@@ -342,8 +343,8 @@
                                         <td class="text-center"><span class="badge-qty">{{ $item->jumlah ?? '0' }} Unit</span></td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center gap-2">
-                                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEdit{{ $item->id }}"><i class="fas fa-edit"></i></button>
-                                                <form action="/sapra/hidran/delete/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin hapus data ini?');">
+                                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEdit{{ $item->id_prasarana }}"><i class="fas fa-edit"></i></button>
+                                                <form action="/sapra/hidran/delete/{{ $item->id_prasarana }}" method="POST" onsubmit="return confirm('Yakin hapus data ini?');">
                                                     @csrf @method('DELETE')
                                                     <button type="submit" class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
                                                 </form>
@@ -351,14 +352,14 @@
                                         </td>
                                     </tr>
                                     <!-- MODAL EDIT -->
-                                    <div class="modal fade" id="modalEdit{{ $item->id }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal fade" id="modalEdit{{ $item->id_prasarana }}" tabindex="-1" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content border-0 shadow">
                                                 <div class="modal-header bg-light">
                                                     <h5 class="modal-title fw-bold text-dark">Edit Data Hidrant Pilar</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
-                                                <form action="/sapra/hidran/update/{{ $item->id }}" method="POST">
+                                                <form action="/sapra/hidran/update/{{ $item->id_prasarana }}" method="POST">
                                                     @csrf @method('PUT')
                                                     <div class="modal-body text-start">
                                                         <div class="mb-3">
@@ -462,8 +463,8 @@
                                         <td class="text-center"><span class="badge-qty">{{ $item->jumlah ?? '0' }} Unit</span></td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center gap-2">
-                                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEditGedung{{ $item->id }}"><i class="fas fa-edit"></i></button>
-                                                <form action="/sapra/hidran/delete/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin hapus data ini?');">
+                                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEditGedung{{ $item->id_prasarana }}"><i class="fas fa-edit"></i></button>
+                                                <form action="/sapra/hidran/delete/{{ $item->id_prasarana }}" method="POST" onsubmit="return confirm('Yakin hapus data ini?');">
                                                     @csrf @method('DELETE')
                                                     <button type="submit" class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
                                                 </form>
@@ -471,14 +472,14 @@
                                         </td>
                                     </tr>
                                     <!-- MODAL EDIT -->
-                                    <div class="modal fade" id="modalEditGedung{{ $item->id }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal fade" id="modalEditGedung{{ $item->id_prasarana }}" tabindex="-1" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content border-0 shadow">
                                                 <div class="modal-header bg-light">
                                                     <h5 class="modal-title fw-bold text-dark">Edit Data Hidrant Gedung</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
-                                                <form action="/sapra/hidran/update/{{ $item->id }}" method="POST">
+                                                <form action="/sapra/hidran/update/{{ $item->id_prasarana }}" method="POST">
                                                     @csrf @method('PUT')
                                                     <div class="modal-body text-start">
                                                         <div class="mb-3">
@@ -581,8 +582,8 @@
                                         <td class="text-center"><span class="badge-area">{{ $item->luas ?? '-' }}</span></td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center gap-2">
-                                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEditEmbung{{ $item->id }}"><i class="fas fa-edit"></i></button>
-                                                <form action="/sapra/hidran/delete/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin hapus data ini?');">
+                                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEditEmbung{{ $item->id_prasarana }}"><i class="fas fa-edit"></i></button>
+                                                <form action="/sapra/hidran/delete/{{ $item->id_prasarana }}" method="POST" onsubmit="return confirm('Yakin hapus data ini?');">
                                                     @csrf @method('DELETE')
                                                     <button type="submit" class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
                                                 </form>
@@ -590,14 +591,14 @@
                                         </td>
                                     </tr>
                                     <!-- MODAL EDIT -->
-                                    <div class="modal fade" id="modalEditEmbung{{ $item->id }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal fade" id="modalEditEmbung{{ $item->id_prasarana }}" tabindex="-1" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content border-0 shadow">
                                                 <div class="modal-header bg-light">
                                                     <h5 class="modal-title fw-bold text-dark">Edit Data Embung</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
-                                                <form action="/sapra/hidran/update/{{ $item->id }}" method="POST">
+                                                <form action="/sapra/hidran/update/{{ $item->id_prasarana }}" method="POST">
                                                     @csrf @method('PUT')
                                                     <div class="modal-body text-start">
                                                         <div class="mb-3">
@@ -690,8 +691,8 @@
                                         <td class="text-center"><span class="badge-area">{{ $item->luas ?? '-' }}</span></td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center gap-2">
-                                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEditDanau{{ $item->id }}"><i class="fas fa-edit"></i></button>
-                                                <form action="/sapra/hidran/delete/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin hapus data ini?');">
+                                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEditDanau{{ $item->id_prasarana }}"><i class="fas fa-edit"></i></button>
+                                                <form action="/sapra/hidran/delete/{{ $item->id_prasarana }}" method="POST" onsubmit="return confirm('Yakin hapus data ini?');">
                                                     @csrf @method('DELETE')
                                                     <button type="submit" class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
                                                 </form>
@@ -699,14 +700,14 @@
                                         </td>
                                     </tr>
                                     <!-- MODAL EDIT -->
-                                    <div class="modal fade" id="modalEditDanau{{ $item->id }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal fade" id="modalEditDanau{{ $item->id_prasarana }}" tabindex="-1" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content border-0 shadow">
                                                 <div class="modal-header bg-light">
                                                     <h5 class="modal-title fw-bold text-dark">Edit Data Danau</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
-                                                <form action="/sapra/hidran/update/{{ $item->id }}" method="POST">
+                                                <form action="/sapra/hidran/update/{{ $item->id_prasarana }}" method="POST">
                                                     @csrf @method('PUT')
                                                     <div class="modal-body text-start">
                                                         <div class="mb-3">
