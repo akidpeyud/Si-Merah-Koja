@@ -181,6 +181,8 @@
                     <div class="sidebar-submenu">
                         <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data & Laporan</a>
                         <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-file-alt"></i> Data Laporan</a>
+                     <!-- Menu Baru Untuk Surat -->
+                        <a href="/internal/surat-korban/create" class="sidebar-item {{ Request::is('internal/surat*') ? 'active' : '' }}"><i class="fas fa-file-signature"></i> Buat Surat Korban</a>
                     </div>
                 </div>
                 <div class="sidebar-separator"></div>

@@ -13,6 +13,7 @@ use App\Http\Controllers\RedkarController;
 use App\Http\Controllers\SuratKorbanController;
 use App\Http\Controllers\PermohonanController;
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\KabarDamkarController;
 use App\Http\Controllers\PencegahanController;
 use App\Models\Berita;
 use App\Models\Infografis;
@@ -627,5 +628,12 @@ Route::get('/pemohon/login', function () {
     return view('pemohon.login'); 
 })->name('pemohon.login');
 
-Route::post('/pemohon/login', [App\Http\Controllers\PemohonAuthController::class, 'login']);
-Route::post('/pemohon/logout', [App\Http\Controllers\PemohonAuthController::class, 'logout'])->name('pemohon.logout');
+Route::delete('/internal/pencegahan/peningkatan-kapasitas/hapus/{jenis}/{id}', function ($jenis, $id) {
+    $tabel = 'tbl_' . str_replace('-', '_', $jenis);
+    \Illuminate\Support\Facades\DB::table($tabel)->where('id', $id)->delete();
+    return redirect()->back()->with('success', 'Data berhasil dihapus!');
+});
+
+
+// Route untuk halaman Publik Media Informasi
+Route::get('/media-informasi', [KabarDamkarController::class, 'indexMediaInformasi'])->name('media.informasi');

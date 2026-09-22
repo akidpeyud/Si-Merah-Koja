@@ -71,6 +71,12 @@
                 </div>
             @endif
 
+            @php
+                // Deklarasikan variabel yang sudah dibersihkan agar Blade compiler tidak error
+                $medsosData = $medsos ?? [];
+                $kategoriData = $kategori ?? [];
+            @endphp
+
             <div class="card-box">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
@@ -84,7 +90,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($medsos ?? [] as $index => $item)
+                            @forelse($medsosData as $index => $item)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
                                 <td>
@@ -106,7 +112,7 @@
                                 </td>
                                 <td class="text-center">
                                     <button class="btn btn-warning btn-sm text-white fw-bold px-2 me-1" data-bs-toggle="modal" data-bs-target="#modalEdit{{ $item->id }}"><i class="fas fa-edit"></i></button>
-                                    
+
                                     <form action="/internal/operator/berita-medsos/hapus/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus berita ini?')" style="display:inline;">
                                         @csrf
                                         @method('DELETE')
@@ -131,12 +137,12 @@
                                                     <label class="form-label fw-bold">Judul Berita</label>
                                                     <input type="text" class="form-control" name="judul" value="{{ $item->judul }}" required>
                                                 </div>
-                                                
+
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Kategori Berita <span class="text-danger">*</span></label>
                                                     <select class="form-select" name="kategori_id" required>
                                                         <option value="">-- Pilih Kategori --</option>
-                                                        @foreach($kategori ?? [] as $kat)
+                                                        @foreach($kategoriData as $kat)
                                                             <option value="{{ $kat->id }}" {{ $item->kategori_id == $kat->id ? 'selected' : '' }}>
                                                                 {{ $kat->nama_kategori }}
                                                             </option>
@@ -191,19 +197,19 @@
                         <h5 class="modal-title fw-bold"><i class="fas fa-share-alt me-1 text-danger"></i> Tambah Medsos (Hybrid)</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    
+
                     <div class="modal-body">
                         <!-- BAGIAN INPUT LINK -->
                         <div class="mb-4">
                             <label class="form-label fw-bold">Link Tautan Postingan <span class="text-danger">*</span></label>
                             <div class="input-group">
-                                <input type="url" class="form-control" id="inputLink" name="link" placeholder="Paste link Instagram/Berita di sini..." required>
+                                <input type="url" class="form-control" id="inputLink" name="link" placeholder="Paste link YouTube/Instagram/Berita di sini..." required>
                                 <button class="btn btn-primary fw-bold" type="button" id="btnTarikData">Tarik Data</button>
                             </div>
-                            <small class="text-muted"><i class="fas fa-info-circle me-1"></i> Klik "Tarik Data" untuk fitur otomatis.</small>
+                            <small class="text-muted"><i class="fas fa-info-circle me-1"></i> Klik "Tarik Data" untuk ekstrak gambar otomatis.</small>
                         </div>
 
-                        <!-- HIDDEN INPUT URL GAMBAR (Diisi otomatis oleh JS) -->
+                        <!-- HIDDEN INPUT URL GAMBAR -->
                         <input type="hidden" name="gambar_url" id="inputGambarUrl">
 
                         <!-- KOTAK PREVIEW GAMBAR -->
@@ -211,7 +217,7 @@
                             <h6 class="text-muted fw-bold mb-2"><i class="fas fa-image me-2"></i>Gambar Otomatis Ditemukan:</h6>
                             <img src="" id="imgPreview" alt="Preview Gambar" style="max-height: 150px; border-radius: 8px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
                         </div>
-                        
+
                         <div class="mb-3">
                             <label class="form-label fw-bold">Judul Berita <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="inputJudul" name="judul" placeholder="Isi judul manual jika Tarik Data gagal..." required>
@@ -228,7 +234,7 @@
                             <label class="form-label fw-bold">Kategori Berita <span class="text-danger">*</span></label>
                             <select class="form-select" name="kategori_id" required>
                                 <option value="">-- Pilih Kategori --</option>
-                                @foreach($kategori ?? [] as $kat)
+                                @foreach($kategoriData as $kat)
                                     <option value="{{ $kat->id }}">{{ $kat->nama_kategori }}</option>
                                 @endforeach
                             </select>
@@ -239,10 +245,9 @@
                             <input type="datetime-local" class="form-control" name="tanggal" value="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}" required>
                         </div>
                     </div>
-                    
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
-                        <!-- Tombol tidak pernah didisable agar tidak merepotkan operator -->
                         <button type="submit" class="btn btn-danger btn-sm fw-bold">Simpan Berita</button>
                     </div>
                 </form>
@@ -251,11 +256,11 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- SCRIPT TARIK DATA LINK -->
+
+    <!-- SCRIPT TARIK DATA LINK (SUPPORT YOUTUBE) -->
     <script>
         document.getElementById('btnTarikData').addEventListener('click', function() {
-            let urlInput = document.getElementById('inputLink').value;
+            let urlInput = document.getElementById('inputLink').value.trim();
             let btn = this;
 
             if(!urlInput) {
@@ -266,6 +271,39 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
             btn.disabled = true;
 
+            // CEK JIKA ITU LINK YOUTUBE
+            let isYouTube = false;
+            let videoId = '';
+
+            let ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+            let match = urlInput.match(ytRegex);
+
+            if (match && match[1].length === 11) {
+                isYouTube = true;
+                videoId = match[1];
+            }
+
+            // JIKA YOUTUBE, LAKUKAN PENARIKAN LOKAL
+            if (isYouTube) {
+                let thumbUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+
+                document.getElementById('imgPreview').src = thumbUrl;
+                document.getElementById('inputGambarUrl').value = thumbUrl;
+                document.getElementById('previewArea').classList.remove('d-none');
+
+                if(document.getElementById('inputJudul').value === '') {
+                    document.getElementById('inputJudul').value = "Video YouTube";
+                }
+
+                document.getElementById('inputGambarManual').value = '';
+                document.getElementById('uploadManualArea').style.opacity = '0.5';
+
+                btn.innerHTML = 'Tarik Data';
+                btn.disabled = false;
+                return;
+            }
+
+            // JIKA BUKAN YOUTUBE, FETCH SERVER
             fetch('/internal/fetch-link-preview', {
                 method: 'POST',
                 headers: {
@@ -277,37 +315,34 @@
             .then(async response => {
                 const isJson = response.headers.get('content-type')?.includes('application/json');
                 const data = isJson ? await response.json() : null;
-                
-                // Menangkap pesan error asli jika ada masalah jaringan
+
                 if (!response.ok) {
-                    throw new Error((data && data.error) ? data.error : 'Server website tujuan menolak permintaan.');
+                    throw new Error((data && data.error) ? data.error : 'Server website tujuan menolak permintaan (403/Blocked).');
                 }
                 return data;
             })
             .then(data => {
                 btn.innerHTML = 'Tarik Data';
                 btn.disabled = false;
-                
+
                 if(data && data.title) {
                     document.getElementById('inputJudul').value = data.title;
                 }
 
                 if(data && data.image) {
                     document.getElementById('imgPreview').src = data.image;
-                    document.getElementById('inputGambarUrl').value = data.image; 
+                    document.getElementById('inputGambarUrl').value = data.image;
                     document.getElementById('previewArea').classList.remove('d-none');
-                    // Reset dan sembunyikan input manual agar tidak bentrok
-                    document.getElementById('inputGambarManual').value = ''; 
+                    document.getElementById('inputGambarManual').value = '';
                     document.getElementById('uploadManualArea').style.opacity = '0.5';
                 } else {
-                    alert("Informasi: Gambar tidak bisa dideteksi secara otomatis. Silakan upload gambar secara manual.");
+                    alert("Informasi: Gambar tidak bisa dideteksi secara otomatis dari situs ini. Silakan upload gambar secara manual.");
                 }
             })
             .catch(error => {
                 btn.innerHTML = 'Tarik Data';
                 btn.disabled = false;
-                // Pemberitahuan agar pengguna memakai cara manual
-                alert('TARIK DATA OTOMATIS GAGAL (' + error.message + ')\n\nJangan khawatir! Silakan ketik Judul dan Upload Foto secara MANUAL di form.');
+                alert('TARIK DATA OTOMATIS GAGAL (' + error.message + ')\n\nSilakan ketik Judul dan Upload Foto secara MANUAL di form.');
             });
         });
     </script>
