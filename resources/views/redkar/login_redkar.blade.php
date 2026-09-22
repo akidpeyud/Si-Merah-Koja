@@ -22,7 +22,7 @@
 
         body {
             /* Background layar penuh dengan overlay gelap elegan */
-            background-image: linear-gradient(rgba(17, 24, 39, 0.75), rgba(17, 24, 39, 0.9)), url('/images/background1.jpg');
+            background-image: linear-gradient(rgba(17, 24, 39, 0.75), rgba(17, 24, 39, 0.9)), url('/images/background1.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
