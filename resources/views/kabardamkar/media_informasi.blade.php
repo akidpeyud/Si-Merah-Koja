@@ -131,7 +131,7 @@
             content:"";position:absolute;inset:0;z-index:-2;
             background:
                 linear-gradient(105deg,rgba(7,20,33,.97) 0%,rgba(8,24,39,.88) 45%,rgba(8,24,39,.62) 100%),
-                url('/images/background1.jpg') center/cover no-repeat;
+                url('/images/background1.png') center/cover no-repeat;
         }
         .page-hero::after{
             content:"";position:absolute;z-index:-1;inset:auto -10% -50% -10%;height:280px;
