@@ -13,9 +13,8 @@
          $url_surat_permohonan : link unduh templat surat permohonan
        ------------------------------------------------------------ */
     $layanan = [
-        'rpkbgl'         => ['url' => '/layanan-fasilitas/layanan_perizinan', 'label' => 'RPKBGL',         'ico' => 'fa-building',      'ket' => 'Layanan perizinan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan'],
-        'skk'            => ['url' => '/layanan-fasilitas/skk',               'label' => 'SKK',            'ico' => 'fa-user-shield',   'ket' => 'Layanan perizinan penerbitan Sertifikat Keamanan Kebakaran'],
-        'perpanjang_skk' => ['url' => '/layanan-fasilitas/perpanjang_skk',    'label' => 'Perpanjang SKK', 'ico' => 'fa-shield-halved', 'ket' => 'Layanan perizinan perpanjangan Sertifikat Keamanan Kebakaran'],
+        'rpkbgl' => ['url' => '/layanan-fasilitas/layanan_perizinan', 'label' => 'RPKBGL', 'ico' => 'fa-building', 'ket' => 'Layanan perizinan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan'],
+        'skk'    => ['url' => '/layanan-fasilitas/skk',                'label' => 'SKK (Baru & Perpanjangan)', 'ico' => 'fa-user-shield', 'ket' => 'Layanan perizinan penerbitan & perpanjangan Sertifikat Keamanan Kebakaran'],
     ];
     $tab_aktif = $tab_aktif ?? 'rpkbgl';
 
@@ -143,6 +142,15 @@
         .dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
         .dropdown a { display: block; padding: 11px 14px; border-radius: var(--r-sm); font-size: .92rem; color: rgba(255,255,255,.85); }
         .dropdown a:hover, .dropdown a[aria-current="page"] { background: rgba(255,255,255,.1); color: #fff; }
+        
+        /* Tambahan Style untuk Tombol Logout Dropdown */
+        .dropdown .btn-logout {
+            width: 100%; text-align: left; padding: 11px 14px; border-radius: var(--r-sm); 
+            font-size: .92rem; color: #ff8b8b; display: flex; align-items: center; gap: 8px; 
+            transition: background .2s, color .2s; cursor: pointer;
+        }
+        .dropdown .btn-logout:hover { background: rgba(255, 255, 255, .1); color: #ffb8b8; }
+
         .has-drop.open .dropdown { display: block; }
         @media (hover: hover) and (min-width: 992px) {
             .has-drop:hover .dropdown { display: block; }
@@ -485,7 +493,29 @@
                 </ul>
             </li>
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
-            <li><a class="menu-link btn-login" href="/login">Masuk</a></li>
+            
+            <!-- LOGIKA TOMBOL MASUK DAN KELUAR -->
+            @if(session()->has('pemohon_id'))
+                <li class="has-drop">
+                    <button class="menu-trigger btn-login" type="button" aria-expanded="false">
+                        <!-- strtok digunakan agar yg tampil hanya nama panggilan (kata pertama) -->
+                        <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <ul class="dropdown">
+                        <li>
+                            <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
+                                @csrf
+                                <button type="submit" class="btn-logout">
+                                    <i class="fas fa-sign-out-alt"></i> Keluar
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            @else
+                <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
+            @endif
+
         </ul>
     </nav>
 </header>
