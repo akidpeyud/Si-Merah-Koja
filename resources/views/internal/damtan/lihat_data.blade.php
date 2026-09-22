@@ -15,6 +15,26 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background-color: #f3f4f6; color: #1f2937; }
 
+        /* --- PENGATURAN KOP SURAT PDF --- */
+        .tabel-kop { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
+        .tabel-kop td { vertical-align: middle; }
+        .tabel-kop img { width: 80px; height: auto; }
+        .kop-text { text-align: center; }
+        .kop-text h2 { margin: 0; font-size: 14pt; font-weight: normal; font-family: 'Times New Roman', Times, serif; color: #000; }
+        .kop-text h1 { margin: 0; font-size: 16pt; font-weight: bold; line-height: 1.1; font-family: 'Times New Roman', Times, serif; color: #000; }
+        .kop-text p { margin: 2px 0 0 0; font-size: 10pt; font-family: 'Times New Roman', Times, serif; color: #000; }
+
+        .garis-kop {
+            border-top: 3px solid black;
+            border-bottom: 1px solid black;
+            height: 2px;
+            margin-top: 5px;
+            margin-bottom: 20px;
+        }
+
+        .judul-laporan { text-align: center; margin-bottom: 25px; line-height: 1.2; font-family: 'Times New Roman', Times, serif; color: #000; }
+        .judul-laporan h3 { margin: 0; font-size: 14pt; font-weight: bold; text-decoration: underline; }
+
         /* --- NAVBAR INTERNAL --- */
         .navbar-internal {
             background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981;
@@ -165,6 +185,7 @@
                     <div class="sidebar-submenu">
                         <a href="/internal/damtan/input-data" class="sidebar-item {{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
                         <a href="/internal/damtan/data-laporan" class="sidebar-item {{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') ? 'active' : '' }}"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
+                        <a href="/internal/surat-korban/create" class="sidebar-item {{ Request::is('internal/surat*') ? 'active' : '' }}"><i class="fas fa-file-signature"></i> Buat Surat Korban</a>
                     </div>
                 </div>
 
@@ -174,18 +195,23 @@
                 </button>
                 <div class="collapse {{ Request::is('sapra*') ? 'show' : '' }}" id="collapseSapra" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
-                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">MANAJEMEN AIR</span>
+                      
+                        <!-- Sarana dan prasarana -->
+                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">SARANA DAN PRASARANA</span>
+                        <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam Kebakaran</a>
+                        <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pemadam Kebakaran</a>
+                        <a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi</a>
+                        <a href="/sapra/sarana-pemeriksaan" class="sidebar-item"><i class="fas fa-search"></i> Sarana Pemeriksaan Proteksi Kebakaran</a>    
+                        <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
+                        
+                          <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">MANAJEMEN AIR</span>
                         <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
                         <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
 
-                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">FASILITAS & POS MAKO</span>
-                        <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pos</a>
-                        <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pos</a>
-                        <a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan</a>
-                        <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
-
-                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">PERENCANAAN PENGADAAN</span>
+                        <!-- GRUP LOGISTIK & DISTRIBUSI -->
+                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">LOGISTIK & DISTRIBUSI</span>
                         <a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
+                        <a href="/sapra/distribusi-staff" class="sidebar-item"><i class="fas fa-user-check"></i> Distribusi Barang Staff</a>
                     </div>
                 </div>
             @endif
@@ -224,9 +250,29 @@
 
             <div class="detail-card" id="report-content">
                 
-                <div id="pdf-header" style="display: none; text-align: center; margin-bottom: 25px; border-bottom: 3px double #111827; padding-bottom: 15px;">
-                    <h2 style="margin: 0; font-weight: 800; color: #111827; font-size: 22px;">LAPORAN DATA PENYELAMATAN & KEBAKARAN</h2>
-                    <p style="margin: 5px 0 0 0; font-size: 13px; font-weight: 600; color: #4b5563;">Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi</p>
+                <!-- KOP SURAT PDF -->
+                <div id="pdf-header" style="display: none;">
+                    <table class="tabel-kop">
+                        <tr>
+                            <td style="width: 15%; text-align: left;">
+                                <img src="{{ asset('images/jambi.png') }}" alt="Logo.png">
+                            </td>
+                            <td style="width: 70%;" class="kop-text">
+                                <h2>PEMERINTAH KOTA JAMBI</h2>
+                                <h1>DINAS PEMADAM KEBAKARAN<br>DAN PENYELAMATAN</h1>
+                                <p>Jl. Hos. Cokroaminoto No. 113 Telp. 0741-41171<br>JAMBI</p>
+                            </td>
+                            <td style="width: 15%; text-align: right;">
+                                <img src="{{ asset('images/logo.png') }}" alt="Logo Damkar" style="width: 100px; height: auto;">
+                        </td>
+                        </tr>
+                    </table>
+                    
+                    <div class="garis-kop"></div>
+
+                    <div class="judul-laporan">
+                        <h3>LAPORAN DATA PENYELAMATAN & KEBAKARAN</h3>
+                    </div>
                 </div>
 
                 <!-- TAB 1: INFORMASI DASAR -->
