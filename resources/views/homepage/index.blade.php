@@ -1,3 +1,22 @@
+<?php
+    $no_whatsapp    = "628117113113";
+    $no_telepon     = "074141171";
+    $telepon_tampil = "(0741) 41171";
+    $pesan_wa = "Terimakasih%20telah%20menghubungi%20%F0%9F%94%A5%F0%9F%94%A5%F0%9F%94%A5..%0ASistem%20Informasi%20Penanggulangan%20Kebakaran%20dan%20Penyelamatan%20Daerah%20Kota%20Jambi%20(SIMERAH%20KOJA)%0A%0AMohon%20Isi%20Laporan%20Pengaduan%3A%20%0A%0ANama%20Pelapor%20%20%20%3A%0ANo.%20HP%20Pelapor%20%3A%0AAlamat%20Pelapor%20%3A%0AJenis%20Laporan%20%20%20%3A%20%20(Kebakaran%2FEvakuasi)%0A%0AAlamat%20Kejadian%20%3A%0A%0AKirim%20Peta%20Lokasi%20kejadian%20(Google%20Maps)%20%3A%0A%0AKirim%20Foto%20%26%20Video%20Kejadian%20%3A%0A%0ALaporan%20akan%20segera%20kami%20tindaklanjuti%20%F0%9F%9A%92%F0%9F%9A%92%F0%9F%9A%92%0ASalam%20YUDHA%20BRAMA%20JAYA%20Dinas%20Pemadam%20Kebakaran%20%26%20Penyelamatan%20Kota%20Jambi.";
+    $wa_link   = "https://wa.me/" . $no_whatsapp . "?text=" . $pesan_wa;
+    $maps_link = "https://www.google.com/maps/place/6PC59JJ2%2BQ76/@-1.6180875,103.6006406,871m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-1.6180875!4d103.6006406?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D";
+
+    // Isi dengan link Google Play jika aplikasi sudah tersedia. Kosong = badge disembunyikan.
+    $play_store_url = "";
+
+    // Data Video Edukasi (JANGAN DIHAPUS BIAR TIDAK ERROR)
+    $video_edukasi = [
+        ['yt' => '', 'judul' => 'Cara memakai APAR dengan benar'],
+        ['yt' => '', 'judul' => 'Langkah evakuasi saat terjadi kebakaran'],
+        ['yt' => '', 'judul' => 'Mencegah kebakaran akibat korsleting listrik'],
+        ['yt' => '', 'judul' => 'Pertolongan pertama pada luka bakar'],
+    ];
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -33,7 +52,7 @@
             --font-body: 'Instrument Sans', system-ui, sans-serif;
 
             --r-lg: 28px;
-            --r-md: 18px;
+            --r-md: 16px;
             --r-sm: 10px;
             --wrap: 1200px;
             --header-h: 64px;
@@ -63,7 +82,7 @@
         .bg-paper { background: var(--paper); }
         .bg-ink { background: var(--ink); color: #fff; }
 
-        .sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: clamp(32px, 5vw, 56px); }
+        .sec-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px 32px; margin-bottom: clamp(32px, 5vw, 56px); }
         .sec-head h2 {
             font-family: var(--font-display);
             font-weight: 700;
@@ -86,6 +105,9 @@
         .btn-light:hover { background: var(--amber); }
         .btn-ghost { border: 1.5px solid rgba(255,255,255,.35); color: #fff; }
         .btn-ghost:hover { border-color: #fff; background: rgba(255,255,255,.08); }
+        
+        .btn-outline { background: #fff; border: 1px solid var(--line); color: var(--ink); padding: 10px 20px; font-size: 0.9rem;}
+        .btn-outline:hover { border-color: var(--ink); background: var(--paper); }
 
         /* ==========================================================
            HEADER
@@ -187,7 +209,6 @@
         .hero-lead { margin-top: 14px; max-width: 46ch; color: rgba(255,255,255,.7); font-size: clamp(1rem, 1.5vw, 1.15rem); }
         .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
 
-        /* Satu momen animasi terarah: urutan muncul saat halaman dibuka */
         .rise { animation: rise .8s cubic-bezier(.16,.84,.3,1) both; }
         .rise.d1 { animation-delay: .08s; } .rise.d2 { animation-delay: .18s; }
         .rise.d3 { animation-delay: .28s; } .rise.d4 { animation-delay: .4s; }
@@ -273,7 +294,7 @@
         @media (max-width: 860px) { .about { grid-template-columns: 1fr; } .about-art { max-width: 380px; } }
 
         /* ==========================================================
-           LAYANAN (bento) - DIPERBAIKI HOVER DAN BORDER
+           LAYANAN (bento)
            ========================================================== */
         .bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
         .svc {
@@ -281,38 +302,29 @@
             padding: clamp(22px, 3vw, 32px); border-radius: var(--r-md); background: #fff; border: 1px solid var(--line);
             min-height: 220px; transition: border-color .25s, transform .25s, box-shadow .25s;
         }
-        
-        /* HOVER UNTUK KARTU WARNA TERANG (SKK, dll) */
         .svc:hover { border-color: var(--ink); transform: translateY(-4px); box-shadow: 0 18px 36px -18px rgba(13,27,42,.35); }
-        
         .svc-ico { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; font-size: 1.35rem; background: var(--paper); color: var(--ink); transition: background .25s, color .25s; }
-        
-        /* Ganti warna icon saat di hover untuk kartu terang */
         .svc:hover .svc-ico { background: var(--ink); color: #fff; }
-        
         .svc h3 { font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.45rem; line-height: 1.15; letter-spacing: -0.015em; margin-bottom: 8px; }
         .svc p { color: var(--steel); font-size: .96rem; max-width: 44ch; }
         .svc-go { position: absolute; top: clamp(22px, 3vw, 32px); right: clamp(22px, 3vw, 32px); font-size: .9rem; color: var(--steel); transition: transform .25s, color .25s; }
         .svc:hover .svc-go { transform: translate(3px, -3px); color: var(--signal-d); }
-        
         .svc.w4 { grid-column: span 4; } .svc.w2 { grid-column: span 2; } .svc.w6 { grid-column: span 6; }
-        
-        /* HOVER UNTUK KARTU WARNA GELAP (RPKBGL) */
+
         .svc.feature { background: var(--ink); border-color: var(--ink); color: #fff; min-height: 300px; }
         .svc.feature .svc-ico { background: var(--signal); color: #fff; }
         .svc.feature p, .svc.feature .svc-go { color: rgba(255,255,255,.7); }
         .svc.feature h3 { font-size: clamp(1.8rem, 3.2vw, 2.6rem); }
         .svc.feature:hover { border-color: var(--signal); }
         .svc.feature:hover .svc-ico { background: var(--signal-d); }
-        
-        /* HOVER UNTUK KARTU WIDE BAWAH SENDIRI (Edukasi) */
+
         .svc.wide { flex-direction: row; align-items: center; min-height: 0; background: #fff4f2; border-color: #f7c9c4; }
         .svc.wide .svc-ico { background: var(--signal); color: #fff; }
         .svc.wide > div:last-of-type { flex: 1; }
         .svc.wide h3 { margin-bottom: 4px; }
         .svc.wide:hover { border-color: var(--signal); box-shadow: 0 18px 36px -18px rgba(229,57,45,.35); }
         .svc.wide:hover .svc-ico { background: var(--signal-d); }
-        
+
         @media (max-width: 900px) {
             .svc.w4, .svc.w2 { grid-column: span 3; }
             .svc.feature { grid-column: span 6; }
@@ -391,18 +403,44 @@
         @media (hover: none) { .grafis-item .zoom { opacity: 1; transform: none; } }
 
         .sub-head { margin: clamp(64px, 9vw, 112px) 0 clamp(28px, 4vw, 48px); }
-        .media-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
-        .media-card { display: flex; flex-direction: column; background: #fff; border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line); }
-        .media-card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
-        .media-body { display: flex; flex-direction: column; flex: 1; padding: 20px 22px 22px; }
-        .media-body h3 { font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.1rem; line-height: 1.3; }
-        .media-meta { margin: 12px 0 16px; display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .84rem; color: var(--steel); }
-        .media-meta i { margin-right: 6px; }
+
+        /* Media Filter (Clean Pill tanpa #) */
+        .media-filter { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: clamp(20px, 3vw, 28px); }
+        .pill { padding: 9px 18px; border-radius: 999px; background: #fff; border: 1px solid var(--line); font-weight: 600; font-size: .87rem; color: var(--steel); transition: background .2s, color .2s, border-color .2s; }
+        .pill:hover { border-color: #b8c3d0; color: var(--ink); }
+        .pill.is-active { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+        /* Media Card (Lebih kecil = 250px) */
+        .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .media-card { display: flex; flex-direction: column; background: #fff; border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line); transition: transform .3s, box-shadow .3s; }
+        .media-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px -15px rgba(13,27,42,.15); border-color: transparent;}
+        
+        .media-thumb { position: relative; background: var(--paper); aspect-ratio: 4 / 3; overflow: hidden; }
+        .media-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s;}
+        .media-card:hover .media-thumb img { transform: scale(1.05); }
+        
+        /* Floating Badge Modern */
+        .media-tag { 
+            position: absolute; top: 12px; left: 12px; padding: 4px 12px; border-radius: 6px; 
+            font-size: .7rem; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; 
+            background: rgba(255, 255, 255, 0.95); color: var(--signal-d); z-index: 2;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08); backdrop-filter: blur(4px);
+        }
+        
+        .media-body { display: flex; flex-direction: column; flex: 1; padding: 18px 20px 20px; }
+        .media-body h3 { font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.05rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 12px; transition: color 0.2s;}
+        .media-card:hover .media-body h3 { color: var(--signal); }
+        
+        .media-meta { margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .8rem; color: var(--steel); font-weight: 500;}
+        .media-meta span { display: flex; align-items: center; gap: 6px; }
         .media-meta .fa-instagram { color: #d6249f; }
-        .media-body a { margin-top: auto; font-weight: 700; font-size: .9rem; color: var(--signal-d); display: inline-flex; gap: 8px; align-items: center; }
-        .media-body a:hover { text-decoration: underline; text-underline-offset: 4px; }
-        @media (max-width: 960px) { .media-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-        @media (max-width: 620px) { .media-grid { grid-template-columns: 1fr; } }
+        .media-meta .fa-youtube { color: #ff0000; }
+        .media-meta .fa-tiktok { color: #111; }
+        
+        .media-body a { margin-top: auto; font-weight: 700; font-size: .88rem; color: var(--signal-d); display: inline-flex; gap: 6px; align-items: center; transition: gap 0.2s; }
+        .media-card:hover .media-body a { gap: 10px; }
+        
+        .media-empty-filter { grid-column: 1 / -1; text-align: center; padding: 48px 24px; border: 1.5px dashed var(--line); border-radius: var(--r-md); color: var(--steel); }
 
         /* ==========================================================
            GIAT
@@ -449,7 +487,7 @@
         @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr; } }
 
         /* ==========================================================
-           TOMBOL LAPOR MENGAMBANG (muncul setelah panel hero lewat)
+           TOMBOL LAPOR MENGAMBANG
            ========================================================== */
         .sos-fab { position: fixed; right: clamp(14px, 3vw, 28px); bottom: clamp(14px, 3vw, 28px); z-index: 70; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; opacity: 0; visibility: hidden; transform: translateY(16px); transition: opacity .3s, transform .3s, visibility .3s; }
         .sos-fab.show { opacity: 1; visibility: visible; transform: none; }
@@ -487,26 +525,6 @@
     </style>
 </head>
 <body>
-
-<?php
-    $no_whatsapp = "628117113113";
-    $no_telepon  = "074141171";
-    $telepon_tampil = "(0741) 41171";
-    $pesan_wa = "Terimakasih%20telah%20menghubungi%20%F0%9F%94%A5%F0%9F%94%A5%F0%9F%94%A5..%0ASistem%20Informasi%20Penanggulangan%20Kebakaran%20dan%20Penyelamatan%20Daerah%20Kota%20Jambi%20(SIMERAH%20KOJA)%0A%0AMohon%20Isi%20Laporan%20Pengaduan%3A%20%0A%0ANama%20Pelapor%20%20%20%3A%0ANo.%20HP%20Pelapor%20%3A%0AAlamat%20Pelapor%20%3A%0AJenis%20Laporan%20%20%20%3A%20%20(Kebakaran%2FEvakuasi)%0A%0AAlamat%20Kejadian%20%3A%0A%0AKirim%20Peta%20Lokasi%20kejadian%20(Google%20Maps)%20%3A%0A%0AKirim%20Foto%20%26%20Video%20Kejadian%20%3A%0A%0ALaporan%20akan%20segera%20kami%20tindaklanjuti%20%F0%9F%9A%92%F0%9F%9A%92%F0%9F%9A%92%0ASalam%20YUDHA%20BRAMA%20JAYA%20Dinas%20Pemadam%20Kebakaran%20%26%20Penyelamatan%20Kota%20Jambi.";
-    $wa_link = "https://wa.me/" . $no_whatsapp . "?text=" . $pesan_wa;
-    $maps_link = "https://www.google.com/maps/place/6PC59JJ2%2BQ76/@-1.6180875,103.6006406,871m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-1.6180875!4d103.6006406?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D";
-
-    /*
-      Video edukasi: isi 'yt' dengan ID video YouTube (bagian setelah "v=" pada URL).
-      Selama 'yt' kosong, kartu tampil sebagai "Segera hadir". Judul di bawah hanya contoh.
-    */
-    $video_edukasi = [
-        ['yt' => '', 'judul' => 'Cara memakai APAR dengan benar'],
-        ['yt' => '', 'judul' => 'Langkah evakuasi saat terjadi kebakaran'],
-        ['yt' => '', 'judul' => 'Mencegah kebakaran akibat korsleting listrik'],
-        ['yt' => '', 'judul' => 'Pertolongan pertama pada luka bakar'],
-    ];
-?>
 
 <!-- ==================== HEADER ==================== -->
 <header class="site-header" id="siteHeader">
@@ -546,6 +564,15 @@
                     <li><a href="/layanan-fasilitas/layanan_perizinan">Layanan perizinan</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
+                </ul>
+            </li>
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="/video-edukasi">Video Edukasi</a></li>
+                    <li><a href="/info-grafis">Info Grafis</a></li>
+                    <li><a href="/media-informasi">Media Informasi</a></li>
+                    <li><a href="/giat-disdamkartan">Giat Disdamkartan</a></li>
                 </ul>
             </li>
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
@@ -801,7 +828,7 @@
                         @endif
                         <div class="vid-play"><span><i class="fas fa-play"></i></span></div>
                     </div>
-                    <h3>{{ $v['judul'] }}</h3>
+                    <h3 class="mt-2">{{ $v['judul'] }}</h3>
                 </button>
             @endforeach
         </div>
@@ -837,22 +864,59 @@
             @endforelse
         </div>
 
-        <div class="sec-head sub-head">
+        <!-- HEADER MEDIA INFORMASI + TOMBOL LIHAT LAINNYA -->
+        <div class="sec-head sub-head" style="flex-wrap: wrap;">
             <div>
                 <h2>Media informasi</h2>
                 <p>Kabar terbaru dari media sosial Damkar Kota Jambi.</p>
             </div>
+            <a href="/media-informasi" class="btn btn-outline">
+                Lihat lainnya <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
 
-        <div class="media-grid">
-            @forelse($daftar_medsos ?? [] as $medsos)
-                <article class="media-card">
-                    <img src="{{ asset('storage/' . $medsos->gambar) }}" alt="{{ $medsos->judul }}" loading="lazy">
+        @php
+            $daftarMedsos   = collect($daftar_medsos ?? []);
+            $kategoriMedsos = $daftarMedsos->pluck('kategori')->filter()->unique('id')->sortBy('nama_kategori')->values();
+
+            $ikonSumber = function ($sumber) {
+                $s = strtolower($sumber ?? '');
+                if (str_contains($s, 'instagram')) return 'fab fa-instagram';
+                if (str_contains($s, 'youtube'))   return 'fab fa-youtube';
+                if (str_contains($s, 'tiktok'))    return 'fab fa-tiktok';
+                if (str_contains($s, 'facebook'))  return 'fab fa-facebook-f';
+                if (str_contains($s, 'twitter'))   return 'fab fa-twitter';
+                return 'fas fa-share-nodes';
+            };
+        @endphp
+
+        <!-- FILTER KATEGORI TANPA PAGAR & AUTO-FIX TYPO -->
+        @if($daftarMedsos->count() && $kategoriMedsos->count() > 1)
+        <div class="media-filter" role="tablist" aria-label="Filter kategori media informasi">
+            <button type="button" class="pill is-active" data-filter="all" role="tab" aria-selected="true">Semua</button>
+            @foreach($kategoriMedsos as $kat)
+                @php $namaKatClean = str_replace('Lainya', 'Lainnya', $kat->nama_kategori); @endphp
+                <button type="button" class="pill" data-filter="{{ $kat->id }}" role="tab" aria-selected="false">{{ $namaKatClean }}</button>
+            @endforeach
+        </div>
+        @endif
+
+        <!-- GRID BERITA (LEBIH KECIL, 4 KOLOM, BADGE MELAYANG DI ATAS FOTO) -->
+        <div class="media-grid" data-media-grid>
+            @forelse($daftarMedsos as $medsos)
+                @php $namaKatCard = str_replace('Lainya', 'Lainnya', $medsos->kategori->nama_kategori ?? 'Informasi'); @endphp
+                <article class="media-card" data-kategori="{{ $medsos->kategori_id }}">
+                    <div class="media-thumb">
+                        @if($medsos->kategori)
+                            <span class="media-tag">{{ $namaKatCard }}</span>
+                        @endif
+                        <img src="{{ asset('storage/' . $medsos->gambar) }}" alt="{{ $medsos->judul }}" loading="lazy">
+                    </div>
                     <div class="media-body">
                         <h3>{{ $medsos->judul }}</h3>
                         <div class="media-meta">
                             <span><i class="far fa-calendar-alt"></i>{{ \Carbon\Carbon::parse($medsos->tanggal)->locale('id')->translatedFormat('d M Y, H:i') }}</span>
-                            <span><i class="fab fa-instagram"></i>{{ $medsos->sumber }}</span>
+                            <span><i class="{{ $ikonSumber($medsos->sumber) }}"></i>{{ $medsos->sumber }}</span>
                         </div>
                         <a href="{{ $medsos->link ?? '#' }}" target="_blank" rel="noopener">Selengkapnya <i class="fas fa-angle-right"></i></a>
                     </div>
@@ -865,6 +929,10 @@
                 </div>
             @endforelse
         </div>
+
+        @if($daftarMedsos->count())
+            <p class="media-empty-filter" data-media-empty hidden>Belum ada media pada kategori ini.</p>
+        @endif
     </div>
 </section>
 
@@ -1088,6 +1156,34 @@
             videoDialog.showModal();
         });
     });
+
+    /* ---------- Filter kategori media informasi ---------- */
+    var mediaFilter = document.querySelector('.media-filter');
+    if (mediaFilter) {
+        var mediaCards = document.querySelectorAll('[data-media-grid] .media-card');
+        var mediaEmpty = document.querySelector('[data-media-empty]');
+
+        mediaFilter.addEventListener('click', function (e) {
+            var btn = e.target.closest('.pill');
+            if (!btn) return;
+
+            mediaFilter.querySelectorAll('.pill').forEach(function (p) {
+                p.classList.remove('is-active');
+                p.setAttribute('aria-selected', 'false');
+            });
+            btn.classList.add('is-active');
+            btn.setAttribute('aria-selected', 'true');
+
+            var filter = btn.dataset.filter;
+            var visible = 0;
+            mediaCards.forEach(function (c) {
+                var show = filter === 'all' || c.dataset.kategori === filter;
+                c.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
+            if (mediaEmpty) mediaEmpty.hidden = visible !== 0;
+        });
+    }
 })();
 </script>
 </body>

@@ -10,6 +10,7 @@ use App\Http\Controllers\RedkarController;
 use App\Http\Controllers\SuratKorbanController;
 use App\Http\Controllers\PermohonanController;
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\KabarDamkarController;
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
@@ -931,3 +932,7 @@ Route::delete('/internal/pencegahan/peningkatan-kapasitas/hapus/{jenis}/{id}', f
     \Illuminate\Support\Facades\DB::table($tabel)->where('id', $id)->delete();
     return redirect()->back()->with('success', 'Data berhasil dihapus!');
 });
+
+
+// Route untuk halaman Publik Media Informasi
+Route::get('/media-informasi', [KabarDamkarController::class, 'indexMediaInformasi'])->name('media.informasi');
