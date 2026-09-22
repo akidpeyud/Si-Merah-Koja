@@ -273,7 +273,7 @@
         @media (max-width: 860px) { .about { grid-template-columns: 1fr; } .about-art { max-width: 380px; } }
 
         /* ==========================================================
-           LAYANAN (bento)
+           LAYANAN (bento) - DIPERBAIKI HOVER DAN BORDER
            ========================================================== */
         .bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
         .svc {
@@ -281,22 +281,38 @@
             padding: clamp(22px, 3vw, 32px); border-radius: var(--r-md); background: #fff; border: 1px solid var(--line);
             min-height: 220px; transition: border-color .25s, transform .25s, box-shadow .25s;
         }
+        
+        /* HOVER UNTUK KARTU WARNA TERANG (SKK, dll) */
         .svc:hover { border-color: var(--ink); transform: translateY(-4px); box-shadow: 0 18px 36px -18px rgba(13,27,42,.35); }
-        .svc-ico { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; font-size: 1.35rem; background: var(--paper); color: var(--ink); }
+        
+        .svc-ico { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; font-size: 1.35rem; background: var(--paper); color: var(--ink); transition: background .25s, color .25s; }
+        
+        /* Ganti warna icon saat di hover untuk kartu terang */
+        .svc:hover .svc-ico { background: var(--ink); color: #fff; }
+        
         .svc h3 { font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.45rem; line-height: 1.15; letter-spacing: -0.015em; margin-bottom: 8px; }
         .svc p { color: var(--steel); font-size: .96rem; max-width: 44ch; }
         .svc-go { position: absolute; top: clamp(22px, 3vw, 32px); right: clamp(22px, 3vw, 32px); font-size: .9rem; color: var(--steel); transition: transform .25s, color .25s; }
         .svc:hover .svc-go { transform: translate(3px, -3px); color: var(--signal-d); }
+        
         .svc.w4 { grid-column: span 4; } .svc.w2 { grid-column: span 2; } .svc.w6 { grid-column: span 6; }
+        
+        /* HOVER UNTUK KARTU WARNA GELAP (RPKBGL) */
         .svc.feature { background: var(--ink); border-color: var(--ink); color: #fff; min-height: 300px; }
         .svc.feature .svc-ico { background: var(--signal); color: #fff; }
         .svc.feature p, .svc.feature .svc-go { color: rgba(255,255,255,.7); }
         .svc.feature h3 { font-size: clamp(1.8rem, 3.2vw, 2.6rem); }
         .svc.feature:hover { border-color: var(--signal); }
+        .svc.feature:hover .svc-ico { background: var(--signal-d); }
+        
+        /* HOVER UNTUK KARTU WIDE BAWAH SENDIRI (Edukasi) */
         .svc.wide { flex-direction: row; align-items: center; min-height: 0; background: #fff4f2; border-color: #f7c9c4; }
         .svc.wide .svc-ico { background: var(--signal); color: #fff; }
         .svc.wide > div:last-of-type { flex: 1; }
         .svc.wide h3 { margin-bottom: 4px; }
+        .svc.wide:hover { border-color: var(--signal); box-shadow: 0 18px 36px -18px rgba(229,57,45,.35); }
+        .svc.wide:hover .svc-ico { background: var(--signal-d); }
+        
         @media (max-width: 900px) {
             .svc.w4, .svc.w2 { grid-column: span 3; }
             .svc.feature { grid-column: span 6; }
@@ -688,12 +704,12 @@
                 </div>
             </a>
 
-            <a href="/layanan-fasilitas/perjanjian_kerjasama" class="svc w2">
+            <a href="/informasi-layanan" class="svc w2">
                 <i class="fas fa-arrow-up-right-from-square svc-go"></i>
                 <div class="svc-ico"><i class="fas fa-handshake"></i></div>
                 <div>
-                    <h3>PKS</h3>
-                    <p>Daftar perjanjian kerja sama dengan instansi terkait dan pihak ketiga.</p>
+                    <h3>Informasi Layanan</h3>
+                    <p>Daftar informasi dan layanan publik beserta instansi terkait.</p>
                 </div>
             </a>
 
