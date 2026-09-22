@@ -149,6 +149,15 @@
         .dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
         .dropdown a { display: block; padding: 11px 14px; border-radius: var(--r-sm); font-size: .92rem; color: rgba(255,255,255,.85); }
         .dropdown a:hover { background: rgba(255,255,255,.08); color: #fff; }
+        
+        /* Tombol Logout Dropdown */
+        .dropdown .btn-logout {
+            width: 100%; text-align: left; padding: 11px 14px; border-radius: var(--r-sm); 
+            font-size: .92rem; color: #ff8b8b; display: flex; align-items: center; gap: 8px; 
+            transition: background .2s, color .2s; cursor: pointer;
+        }
+        .dropdown .btn-logout:hover { background: rgba(255, 255, 255, .1); color: #ffb8b8; }
+
         .has-drop.open .dropdown { display: block; }
         @media (hover: hover) and (min-width: 992px) {
             .has-drop:hover .dropdown { display: block; }
@@ -529,11 +538,18 @@
 <!-- ==================== HEADER ==================== -->
 <header class="site-header" id="siteHeader">
     <nav class="nav" aria-label="Navigasi utama">
-        <a href="/" class="brand" aria-label="SIMERAH KOJA, beranda">
-            <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
-            <img src="/images/logo.png" alt="Logo Damkar">
-            <img src="/images/logo-redkar.png" alt="Logo Redkar">
-        </a>
+        <div class="brand">
+            <a href="/" aria-label="SIMERAH KOJA, beranda">
+                <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
+            </a>
+            <!-- KLIK LOGO DAMKAR KE LOGIN INTERNAL -->
+            <a href="/login" title="Login Internal Pegawai">
+                <img src="/images/logo.png" alt="Logo Damkar">
+            </a>
+            <a href="/redkar" aria-label="Redkar">
+                <img src="/images/logo-redkar.png" alt="Logo Redkar">
+            </a>
+        </div>
 
         <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="menu">
             <i class="fas fa-bars"></i>
@@ -576,7 +592,28 @@
                 </ul>
             </li>
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
-            <li><a class="menu-link btn-login" href="/login">Masuk</a></li>
+
+            <!-- TOMBOL LOGIN / LOGOUT PEMOHON -->
+            @if(session()->has('pemohon_id'))
+                <li class="has-drop">
+                    <button class="menu-trigger btn-login" type="button" aria-expanded="false">
+                        <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <ul class="dropdown">
+                        <li>
+                            <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
+                                @csrf
+                                <button type="submit" class="btn-logout">
+                                    <i class="fas fa-sign-out-alt"></i> Keluar
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            @else
+                <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
+            @endif
+
         </ul>
     </nav>
 </header>
@@ -592,7 +629,9 @@
         <div>
             <div class="hero-logos rise">
                 <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
-                <img src="/images/logo.png" alt="Logo Damkar">
+                <a href="/login" title="Login Internal Pegawai">
+                    <img src="/images/logo.png" alt="Logo Damkar">
+                </a>
                 <img src="/images/logo-redkar.png" alt="Logo Redkar">
             </div>
             <h1 id="judul-hero" class="rise d1">SIMERAH<br>KOJA</h1>
@@ -876,7 +915,7 @@
         </div>
 
         @php
-            $daftarMedsos   = collect($daftar_medsos ?? []);
+            $daftarMedsos    = collect($daftar_medsos ?? []);
             $kategoriMedsos = $daftarMedsos->pluck('kategori')->filter()->unique('id')->sortBy('nama_kategori')->values();
 
             $ikonSumber = function ($sumber) {
@@ -1033,15 +1072,17 @@
 </div>
 
 <!-- ==================== DIALOG ==================== -->
-<dialog id="lightbox" aria-label="Pratinjau infografis">
-    <button class="dlg-close" type="button" aria-label="Tutup" data-close><i class="fas fa-times"></i></button>
-    <img id="lightboxImg" src="" alt="">
-    <p id="lightboxTitle"></p>
+<dialog id="lightbox">
+    <button type="button" class="dlg-close" aria-label="Tutup"><i class="fas fa-times"></i></button>
+    <img src="" alt="">
+    <p></p>
 </dialog>
 
-<dialog id="videoDialog" aria-label="Pemutar video edukasi">
-    <button class="dlg-close" type="button" aria-label="Tutup" data-close><i class="fas fa-times"></i></button>
-    <div class="video-frame" id="videoFrame"></div>
+<dialog id="videoDialog">
+    <button type="button" class="dlg-close" aria-label="Tutup"><i class="fas fa-times"></i></button>
+    <div class="video-frame">
+        <iframe src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
 </dialog>
 
 <script>
@@ -1082,15 +1123,6 @@
         if (!e.target.closest('.has-drop')) closeDrops(null);
     });
 
-    header.querySelectorAll('.dropdown a, .menu-link').forEach(function (a) {
-        a.addEventListener('click', function () {
-            header.classList.remove('nav-open');
-            toggle.setAttribute('aria-expanded', 'false');
-            toggle.querySelector('i').className = 'fas fa-bars';
-            closeDrops(null);
-        });
-    });
-
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') closeDrops(null);
     });
@@ -1098,92 +1130,93 @@
     /* ---------- Tombol lapor mengambang ---------- */
     var fab = document.getElementById('sosFab');
     var fabBtn = fab.querySelector('.sos-fab-btn');
-    var panel = document.getElementById('lapor');
 
-    if ('IntersectionObserver' in window && panel) {
-        new IntersectionObserver(function (entries) {
-            var visible = entries[0].isIntersecting;
-            fab.classList.toggle('show', !visible);
-            if (visible) { fab.classList.remove('open'); fabBtn.setAttribute('aria-expanded', 'false'); }
-        }).observe(panel);
-    } else {
-        fab.classList.add('show');
+    function updateFab() {
+        var show = window.scrollY > 320;
+        fab.classList.toggle('show', show);
+        if (!show) { fab.classList.remove('open'); fabBtn.setAttribute('aria-expanded', 'false'); }
     }
+    window.addEventListener('scroll', updateFab, { passive: true });
+    updateFab();
 
     fabBtn.addEventListener('click', function () {
         var open = fab.classList.toggle('open');
         fabBtn.setAttribute('aria-expanded', open);
     });
 
-    /* ---------- Dialog umum ---------- */
-    function wireDialog(dlg, onClose) {
-        dlg.addEventListener('click', function (e) {
-            if (e.target === dlg || e.target.closest('[data-close]')) dlg.close();
-        });
-        dlg.addEventListener('close', function () { if (onClose) onClose(); });
-    }
-
-    /* ---------- Infografis ---------- */
+    /* ---------- Dialog Lightbox Infografis ---------- */
     var lightbox = document.getElementById('lightbox');
-    var lbImg = document.getElementById('lightboxImg');
-    var lbTitle = document.getElementById('lightboxTitle');
-    wireDialog(lightbox, function () { lbImg.src = ''; });
+    var lbImg = lightbox.querySelector('img');
+    var lbTxt = lightbox.querySelector('p');
 
     document.querySelectorAll('[data-lightbox]').forEach(function (btn) {
         btn.addEventListener('click', function () {
-            lbImg.src = btn.dataset.src;
-            lbImg.alt = btn.dataset.title;
-            lbTitle.textContent = btn.dataset.title;
+            lbImg.src = btn.getAttribute('data-src');
+            lbImg.alt = btn.getAttribute('data-title');
+            lbTxt.textContent = btn.getAttribute('data-title');
             lightbox.showModal();
         });
     });
 
-    /* ---------- Video edukasi ---------- */
-    var videoDialog = document.getElementById('videoDialog');
-    var videoFrame = document.getElementById('videoFrame');
-    wireDialog(videoDialog, function () { videoFrame.innerHTML = ''; });
+    lightbox.querySelector('.dlg-close').addEventListener('click', function () { lightbox.close(); });
+    lightbox.addEventListener('click', function (e) { if (e.target === lightbox) lightbox.close(); });
 
-    document.querySelectorAll('.vid[data-yt]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            var id = btn.dataset.yt;
-            if (!id) return;
-            var iframe = document.createElement('iframe');
-            iframe.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) + '?autoplay=1&rel=0';
-            iframe.title = btn.dataset.title;
-            iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
-            iframe.allowFullscreen = true;
-            videoFrame.appendChild(iframe);
-            videoDialog.showModal();
+    /* ---------- Dialog Video Edukasi ---------- */
+    var vDialog = document.getElementById('videoDialog');
+    var vFrame = vDialog.querySelector('iframe');
+
+    document.querySelectorAll('.vid:not([disabled])').forEach(function (v) {
+        v.addEventListener('click', function () {
+            var yt = v.getAttribute('data-yt');
+            vFrame.src = 'https://www.youtube-nocookie.com/embed/' + yt + '?autoplay=1';
+            vDialog.showModal();
         });
     });
 
-    /* ---------- Filter kategori media informasi ---------- */
-    var mediaFilter = document.querySelector('.media-filter');
-    if (mediaFilter) {
-        var mediaCards = document.querySelectorAll('[data-media-grid] .media-card');
-        var mediaEmpty = document.querySelector('[data-media-empty]');
+    vDialog.querySelector('.dlg-close').addEventListener('click', function () {
+        vFrame.src = '';
+        vDialog.close();
+    });
+    vDialog.addEventListener('click', function (e) {
+        if (e.target === vDialog) {
+            vFrame.src = '';
+            vDialog.close();
+        }
+    });
 
-        mediaFilter.addEventListener('click', function (e) {
-            var btn = e.target.closest('.pill');
-            if (!btn) return;
+    /* ---------- Filter Media Informasi (AJAX/JS Client-side) ---------- */
+    const pills = document.querySelectorAll('.media-filter .pill');
+    const cards = document.querySelectorAll('[data-media-grid] .media-card');
+    const emptyMsg = document.querySelector('[data-media-empty]');
 
-            mediaFilter.querySelectorAll('.pill').forEach(function (p) {
+    pills.forEach(function (pill) {
+        pill.addEventListener('click', function () {
+            pills.forEach(p => {
                 p.classList.remove('is-active');
                 p.setAttribute('aria-selected', 'false');
             });
-            btn.classList.add('is-active');
-            btn.setAttribute('aria-selected', 'true');
+            pill.classList.add('is-active');
+            pill.setAttribute('aria-selected', 'true');
 
-            var filter = btn.dataset.filter;
-            var visible = 0;
-            mediaCards.forEach(function (c) {
-                var show = filter === 'all' || c.dataset.kategori === filter;
-                c.style.display = show ? '' : 'none';
-                if (show) visible++;
+            const filter = pill.getAttribute('data-filter');
+            let visibleCount = 0;
+
+            cards.forEach(function (card) {
+                const kat = card.getAttribute('data-kategori');
+                if (filter === 'all' || kat === filter) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
             });
-            if (mediaEmpty) mediaEmpty.hidden = visible !== 0;
+
+            if (emptyMsg) {
+                emptyMsg.hidden = (visibleCount > 0);
+            }
         });
-    }
+    });
+
 })();
 </script>
 </body>

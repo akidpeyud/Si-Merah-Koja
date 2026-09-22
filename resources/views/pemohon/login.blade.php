@@ -418,7 +418,6 @@
                                 Ingat Saya
                             </label>
                         </div>
-                        <a href="/lupa-password" class="forgot-password">Lupa Password?</a>
                     </div>
 
                     <!-- Tombol Login -->
