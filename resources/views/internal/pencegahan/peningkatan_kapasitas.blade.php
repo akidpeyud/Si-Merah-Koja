@@ -348,8 +348,8 @@
                             <td>{{ $item->kode_verifikasi ?? $item->kode_verivikasi ?? '-' }}</td>
                             <td>{{ $item->persentasi_penilaian ?? $item->persentase_penilaian ?? '-' }}</td>
                             <td>{{ $item->jenis_diklat ?? '-' }}</td>
-                            <td>{{ $item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
+                            <td>{{ (!empty($item->created_at) && trim($item->created_at) !== '-' && trim($item->created_at) !== '') ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
+                            <td>{{ (!empty($item->updated_at) && trim($item->updated_at) !== '-' && trim($item->updated_at) !== '') ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
                             <td>{{ $item->ttl ?? '-' }}</td><td>{{ $item->ket ?? $item->keterangan ?? '-' }}</td>
                             <td class="text-center d-flex justify-content-center gap-1">
                                 <a href="/internal/pencegahan/peningkatan-kapasitas/edit/diklat-f1/{{ $item->id }}" class="btn-action btn-edit"><i class="fas fa-edit"></i></a>
@@ -397,8 +397,8 @@
                             <td>{{ $item->kode_verifikasi ?? $item->kode_verivikasi ?? '-' }}</td>
                             <td>{{ $item->persentasi_penilaian ?? $item->persentase_penilaian ?? '-' }}</td>
                             <td>{{ $item->jenis_diklat ?? '-' }}</td>
-                            <td>{{ $item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
+                            <td>{{ (!empty($item->created_at) && trim($item->created_at) !== '-' && trim($item->created_at) !== '') ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
+                            <td>{{ (!empty($item->updated_at) && trim($item->updated_at) !== '-' && trim($item->updated_at) !== '') ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
                             <td>{{ $item->ttl ?? '-' }}</td><td>{{ $item->ket ?? $item->keterangan ?? '-' }}</td>
                             <td class="text-center d-flex justify-content-center gap-1">
                                 <a href="/internal/pencegahan/peningkatan-kapasitas/edit/diklat-f2/{{ $item->id }}" class="btn-action btn-edit"><i class="fas fa-edit"></i></a>
@@ -446,8 +446,8 @@
                             <td>{{ $item->kode_verifikasi ?? $item->kode_verivikasi ?? '-' }}</td>
                             <td>{{ $item->persentasi_penilaian ?? $item->persentase_penilaian ?? '-' }}</td>
                             <td>{{ $item->jenis_diklat ?? '-' }}</td>
-                            <td>{{ $item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
+                            <td>{{ (!empty($item->created_at) && trim($item->created_at) !== '-' && trim($item->created_at) !== '') ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
+                            <td>{{ (!empty($item->updated_at) && trim($item->updated_at) !== '-' && trim($item->updated_at) !== '') ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
                             <td>{{ $item->ttl ?? '-' }}</td><td>{{ $item->ket ?? $item->keterangan ?? '-' }}</td>
                             <td class="text-center d-flex justify-content-center gap-1">
                                 <a href="/internal/pencegahan/peningkatan-kapasitas/edit/diklat-rescue/{{ $item->id }}" class="btn-action btn-edit"><i class="fas fa-edit"></i></a>
