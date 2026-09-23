@@ -4,12 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-    <title>Data Laporan Penyelamatan | SIMERAH KOJA</title>
+    <title>Edit Surat Korban | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
-    
-    <!-- PRELOAD LOGO AGAR TIDAK TELAT LOADING SAAT DI-PRINT -->
-    <link rel="preload" href="/images/logo.png" as="image">
-    <link rel="preload" href="/images/jambi.png" as="image">
 
     <!-- Fonts (Sesuai UI/UX Dashboard Utama) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -171,14 +167,15 @@
         }
 
         /* ==========================================================
-           MAIN CONTENT & TABLE STYLING
+           MAIN CONTENT & FORM STYLING
            ========================================================== */
         .content { flex: 1; min-width: 0; padding: clamp(20px, 3vw, 40px) clamp(18px, 3vw, 44px) 60px; }
         
-        .page-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 15px; }
-        .page-header h1 { font-family: var(--font-display); font-weight: 800; font-stretch: 88%; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.15; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 6px;}
-        .page-header p { color: var(--steel); font-size: .95rem; margin: 0; }
+        .page-head { margin-bottom: 24px; }
+        .page-head h1 { font-family: var(--font-display); font-weight: 800; font-stretch: 88%; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.15; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 6px;}
+        .page-head p { color: var(--steel); font-size: .95rem; margin: 0; }
 
+        /* Custom Card Form */
         .card-custom {
             background: #fff;
             border: 1px solid var(--line);
@@ -187,15 +184,18 @@
             box-shadow: 0 10px 30px -10px rgba(13,27,42,.05);
         }
 
-        /* Form Filter Styles */
+        /* Form Elements */
+        .field-label { font-size: .85rem; font-weight: 700; color: var(--ink-3); margin-bottom: 8px; display: inline-flex; align-items: center; }
+        .field-label i { margin-right: 8px; font-size: .9rem; color: var(--steel); }
+
         .form-control, .form-select {
             font-family: var(--font-body);
             font-size: .95rem;
             color: var(--ink);
             background-color: var(--paper);
             border: 1px solid var(--line);
-            border-radius: 10px;
-            padding: 10px 16px;
+            border-radius: 12px;
+            padding: 12px 16px;
             transition: all 0.2s ease-in-out;
             box-shadow: none;
         }
@@ -204,62 +204,55 @@
             border-color: var(--blue);
             box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
         }
-        .input-group-text { background-color: var(--paper); border: 1px solid var(--line); color: var(--steel); }
-        .input-group > .form-control { border-top-right-radius: 0; border-bottom-right-radius: 0; }
-        .input-group > .input-group-text { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+        .form-control::placeholder { color: #9ca3af; }
+        
+        .section-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px dashed var(--line);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.25rem;
+        }
+        .section-title i {
+            color: var(--blue);
+            background: rgba(37, 99, 235, 0.1);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 1.05rem;
+        }
 
         /* Buttons */
         .btn-custom-primary {
-            background-color: var(--blue); color: #fff; font-family: var(--font-body); font-weight: 700;
-            border: none; padding: 10px 24px; border-radius: 10px; transition: background 0.2s; text-decoration: none;
+            background-color: var(--blue);
+            color: #fff;
+            font-family: var(--font-body);
+            font-weight: 700;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 12px;
+            transition: background 0.2s;
         }
         .btn-custom-primary:hover { background-color: #1d4ed8; color: #fff; }
         
         .btn-custom-light {
-            background-color: var(--paper); color: var(--ink); font-family: var(--font-body); font-weight: 700;
-            border: 1px solid var(--line); padding: 10px 24px; border-radius: 10px; transition: background 0.2s;
+            background-color: var(--paper);
+            color: var(--ink);
+            font-family: var(--font-body);
+            font-weight: 700;
+            border: 1px solid var(--line);
+            padding: 12px 28px;
+            border-radius: 12px;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
         }
         .btn-custom-light:hover { background-color: #e2e8f0; color: var(--ink); }
-
-        /* Table Custom Styles */
-        .table { margin-bottom: 0; }
-        .table th { background-color: rgba(243, 245, 248, 0.6); color: var(--ink-3); font-weight: 700; font-size: 13px; padding: 16px; border-bottom: 1px solid var(--line); font-family: var(--font-display); }
-        .table td { padding: 16px; font-size: 14px; color: var(--ink); vertical-align: middle; border-bottom: 1px solid var(--line); }
-        .table tbody tr:hover { background-color: rgba(243, 245, 248, 0.3); }
-        .action-btn { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: none; font-size: 13px; transition: all 0.2s; text-decoration: none;}
-        .action-btn.view { background-color: #eff6ff; color: var(--blue); }
-        .action-btn.view:hover { background-color: #dbeafe; }
-        .action-btn.edit { background-color: #fefce8; color: var(--amber); margin: 0 5px; }
-        .action-btn.edit:hover { background-color: #fef08a; }
-        .action-btn.delete { background-color: #fef2f2; color: var(--signal); }
-        .action-btn.delete:hover { background-color: #fecaca; }
-        
-        .badge-custom { padding: 6px 12px; font-weight: 600; font-size: 11px; border-radius: 8px; }
-
-        /* Pagination */
-        .pagination-container nav ul.pagination { margin-bottom: 0 !important; }
-        .pagination-container nav p { display: none; }
-
-        /* --- STYLES KHUSUS UNTUK CETAK PDF --- */
-        @page { margin: 0; }
-        @media print {
-            .topbar, .sidebar, .sidebar-backdrop, .page-header, .card-header, .card-footer,
-            .btn, .dropdown, form, .modal, .action-btn, #globalSuccessAlert, #globalErrorAlert {
-                display: none !important;
-            }
-
-            body { background-color: white !important; font-size: 12px; margin: 1.5cm !important; -webkit-print-color-adjust: exact; }
-            .shell { display: block; }
-            .content { padding: 0 !important; margin: 0 !important; }
-            .card-custom { box-shadow: none !important; border: none !important; border-radius: 0 !important; }
-            .card-body { padding: 0 !important; }
-
-            /* Format tabel cetak */
-            .table { width: 100% !important; border-collapse: collapse; margin-bottom: 20px; }
-            .table th, .table td { border: 1px solid black !important; padding: 8px !important; text-align: left; }
-            .table th { background-color: #f2f2f2 !important; font-weight: bold; color: black !important; text-align: left !important; }
-            th:last-child, td:last-child { display: none !important; }
-        }
     </style>
 </head>
 <body>
@@ -347,7 +340,7 @@
                 </div>
             </details>
 
-<!-- ACCORDION PEMADAMAN (DAMTAN) -->
+ <!-- ACCORDION PEMADAMAN (DAMTAN) -->
             <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
                 <summary>Bagian pemadaman <i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
@@ -365,7 +358,7 @@
                     </a>
                 </div>
             </details>
-            
+
             <details class="side-group" {{ Request::is('sapra*') ? 'open' : '' }}>
                 <summary>Bagian sapra <i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
@@ -411,254 +404,153 @@
         </details>
     </aside>
 
-    <!-- ==================== KONTEN UTAMA ==================== -->
+    <!-- ==================== KONTEN UTAMA & FORM ==================== -->
     <main class="content">
-        <div class="page-header">
-            <div>
-                <h1>Data Laporan Penyelamatan</h1>
-                <p>Daftar seluruh laporan kejadian yang telah diinput ke dalam sistem.</p>
-            </div>
-            <div class="d-flex gap-2">
-                <button class="btn-custom-light shadow-sm" type="button" onclick="window.print()">
-                    <i class="fas fa-download me-2"></i> Ekspor Semua
-                </button>
-                <a href="/internal/damtan/input-data" class="btn-custom-primary shadow-sm">
-                    <i class="fas fa-plus me-2"></i> Buat Laporan Baru
-                </a>
-            </div>
+
+        <div class="page-head">
+            <h1>Edit Surat Keterangan</h1>
+            <p>Perbarui informasi Surat Keterangan Korban Kebakaran Nomor: <strong>{{ $surat->nomor_surat }}</strong></p>
         </div>
 
         <div class="card-custom">
-            <!-- Filter & Search Bar -->
-            <div class="card-header bg-white p-4 border-bottom border-light">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0"><i class="fas fa-search"></i></span>
-                            <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari nomor laporan, lokasi, dsb...">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <select id="filterKategori" class="form-select">
-                            <option value="">Semua Kategori</option>
-                            <option value="Kebakaran">Kebakaran</option>
-                            <option value="Non-Kebakaran">Non-Kebakaran</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <input type="date" class="form-control">
-                    </div>
-                    <div class="col-md-2 text-end">
-                        <button class="btn-custom-light w-100 p-2" onclick="resetFilter()"><i class="fas fa-sync-alt me-2"></i>Reset</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Table Content -->
-            <div class="card-body p-0">
-                <div class="table-responsive">
+            <div class="card-body p-4 p-md-5">
+                <form action="/internal/surat-korban/update/{{ $surat->id }}" method="POST">
+                    @csrf
+                    @method('PUT')
                     
-                    <!-- HEADER KHUSUS CETAK PDF MENGGUNAKAN FLEXBOX ANTI-ERROR BOOTSTRAP -->
-                    <div id="print-header" class="d-none d-print-block" style="width: 100%; margin-bottom: 20px;">
-                        <div style="display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; margin-bottom: 15px;">
-                            
-                            <!-- Logo Kiri -->
-                            <div style="width: 15% !important; text-align: left !important;">
-                                <img src="/images/jambi.png" style="width: 80px; height: auto;">
-                            </div>
-                            
-                            <!-- Teks Tengah Dipaksa Center -->
-                            <div style="width: 70% !important; text-align: center !important;">
-                                <div style="font-size: 14pt; color: #000; margin-bottom: 2px; font-family: 'Times New Roman', Times, serif;">PEMERINTAH KOTA JAMBI</div>
-                                <div style="font-size: 16pt; font-weight: bold; color: #000; line-height: 1.1; margin-bottom: 5px; font-family: 'Times New Roman', Times, serif;">DINAS PEMADAM KEBAKARAN<br>DAN PENYELAMATAN</div>
-                                <div style="font-size: 10pt; color: #000; font-family: 'Times New Roman', Times, serif;">Jl. Hos. Cokroaminoto No. 113 Telp. 0741-41171<br>JAMBI</div>
-                            </div>
-                            
-                            <!-- Logo Kanan -->
-                            <div style="width: 15% !important; text-align: right !important;">
-                                <img src="/images/logo.png" style="width: 100px; height: auto;">
-                            </div>
+                    <!-- BAGIAN A: DATA DIRI -->
+                    <h5 class="section-title"><i class="fas fa-user"></i> Data Diri Korban</h5>
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-6">
+                            <label class="field-label"><i class="fas fa-user"></i> Nama Lengkap</label>
+                            <input type="text" name="nama_korban" class="form-control" value="{{ $surat->nama_korban }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="field-label"><i class="fas fa-home"></i> Status Kepemilikan</label>
+                            <input type="text" name="status_kepemilikan" class="form-control" value="{{ $surat->status_kepemilikan }}" required>
                         </div>
                         
-                        <!-- Garis Ganda -->
-                        <div style="border-top: 3px solid black !important; border-bottom: 1px solid black !important; height: 2px !important; width: 100% !important; margin-bottom: 15px !important;"></div>
+                        <div class="col-md-6">
+                            <label class="field-label"><i class="fas fa-id-card"></i> NIK (Nomor Induk Kependudukan)</label>
+                            <input type="number" name="nik" class="form-control" value="{{ $surat->nik }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="field-label"><i class="fas fa-briefcase"></i> Pekerjaan</label>
+                            <input type="text" name="pekerjaan" class="form-control" value="{{ $surat->pekerjaan }}" required>
+                        </div>
                         
-                        <h3 style="text-align: center !important; font-weight: bold; margin-bottom: 5px; font-size: 16px; color: black; font-family: 'Times New Roman', Times, serif;">REKAPITULASI DATA LAPORAN PENYELAMATAN</h3>
-                        <p style="text-align: center !important; font-size: 12px; margin-bottom: 15px; color: black; font-family: 'Times New Roman', Times, serif;">Dicetak pada: {{ date('d F Y') }}</p>
+                        <div class="col-md-4">
+                            <label class="field-label"><i class="fas fa-map-marker-alt"></i> Tempat Lahir</label>
+                            <input type="text" name="tempat_lahir" class="form-control" value="{{ $surat->tempat_lahir }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="field-label"><i class="fas fa-calendar-alt"></i> Tanggal Lahir</label>
+                            <input type="date" name="tanggal_lahir" class="form-control" value="{{ $surat->tanggal_lahir }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="field-label"><i class="fas fa-ring"></i> Status Perkawinan</label>
+                            <select class="form-select" name="status_perkawinan" required>
+                                <option value="" disabled>-- Pilih --</option>
+                                <option value="Kawin Tercatat" {{ $surat->status_perkawinan == 'Kawin Tercatat' ? 'selected' : '' }}>Kawin Tercatat</option>
+                                <option value="Belum Kawin" {{ $surat->status_perkawinan == 'Belum Kawin' ? 'selected' : '' }}>Belum Kawin</option>
+                                <option value="Cerai Hidup" {{ $surat->status_perkawinan == 'Cerai Hidup' ? 'selected' : '' }}>Cerai Hidup</option>
+                                <option value="Cerai Mati" {{ $surat->status_perkawinan == 'Cerai Mati' ? 'selected' : '' }}>Cerai Mati</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <label class="field-label"><i class="fas fa-map-signs"></i> Alamat Lengkap</label>
+                            <textarea name="alamat" class="form-control" rows="3" required>{{ $surat->alamat }}</textarea>
+                        </div>
                     </div>
-                    <!-- AKHIR HEADER CETAK -->
 
-                    <table class="table align-middle mb-0">
-                        <thead>
-                            <tr>
-                                <th class="text-center" width="5%">No</th>
-                                <th width="15%">No. Laporan</th>
-                                <th width="20%">Waktu Kejadian</th>
-                                <th width="20%">Kategori Kejadian</th>
-                                <th width="10%">Prioritas</th>
-                                <th width="15%">Status Evakuasi</th>
-                                <th class="text-center" width="15%">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody">
-                            @forelse($data_laporan as $index => $row)
-                            <tr>
-                                <td class="text-center text-muted">{{ $data_laporan->firstItem() + $index }}</td>
-                                <td><strong>{{ $row->nomor_laporan }}</strong></td>
-                                <td>
-                                    <div class="text-dark fw-bold">
-                                        {{ $row->waktu_kejadian ? \Carbon\Carbon::parse($row->waktu_kejadian)->format('d M Y') : '-' }}
-                                    </div>
-                                    <div class="text-muted" style="font-size: 12px;">
-                                        <i class="far fa-clock me-1"></i> 
-                                        {{ $row->waktu_kejadian ? \Carbon\Carbon::parse($row->waktu_kejadian)->format('H:i') : '-' }} WIB
-                                    </div>
-                                </td>
-                                <td class="kategori-cell">
-                                    @if(strtolower($row->kategori_kejadian) == 'kebakaran')
-                                        <div class="fw-bold text-danger">Kebakaran</div>
-                                        <div class="text-muted" style="font-size: 12px; text-transform: capitalize;">
-                                            {{ str_replace('_', ' ', $row->kategori_kebakaran ?? '-') }}
-                                        </div>
-                                    @else
-                                        <div class="fw-bold text-primary">Non-Kebakaran</div>
-                                        <div class="text-muted" style="font-size: 12px; text-transform: capitalize;">
-                                            {{ str_replace('_', ' ', $row->kategori_non_kebakaran ?? $row->kategori_kejadian) }}
-                                        </div>
-                                    @endif
-                                </td>
-                                <td>
-                                    @php
-                                        $badgeClass = 'bg-secondary text-white';
-                                        if($row->prioritas == 'rendah') $badgeClass = 'bg-secondary text-white';
-                                        if($row->prioritas == 'sedang') $badgeClass = 'bg-primary text-white';
-                                        if($row->prioritas == 'tinggi') $badgeClass = 'bg-warning text-dark';
-                                        if($row->prioritas == 'darurat') $badgeClass = 'bg-danger text-white';
-                                    @endphp
-                                    <span class="badge badge-custom {{ $badgeClass }}" style="text-transform: capitalize;">
-                                        {{ $row->prioritas ?? 'Biasa' }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="badge badge-custom bg-success bg-opacity-10 text-success border border-success">
-                                        <i class="fas fa-check-circle me-1"></i>Terekam
-                                    </span>
-                                </td>
-                                <td class="text-center">
-                                    <a href="/internal/damtan/lihat-data/{{ $row->id }}" class="action-btn view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
-                                    <a href="/internal/damtan/edit-data/{{ $row->id }}" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
-                                    <form action="/internal/damtan/hapus-data/{{ $row->id }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus laporan {{ $row->nomor_laporan }} secara permanen?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="action-btn delete" title="Hapus"><i class="fas fa-trash"></i></button>
-                                    </form>
+                    <!-- BAGIAN B: DETAIL KEJADIAN -->
+                    <h5 class="section-title"><i class="fas fa-file-signature"></i> Detail Kejadian & Surat</h5>
+                    <div class="row g-4 mb-4 p-4 rounded border" style="background: rgba(243, 245, 248, 0.5);">
+                        <div class="col-md-12">
+                            <label class="field-label"><i class="fas fa-fire"></i> Objek Terbakar</label>
+                            <input type="text" name="objek_terbakar" class="form-control" value="{{ $surat->objek_terbakar }}" required>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label class="field-label"><i class="fas fa-calendar-day"></i> Hari Kejadian</label>
+                            <select class="form-select" name="hari_kejadian" required>
+                                <option value="" disabled>-- Pilih Hari --</option>
+                                <option value="Senin" {{ $surat->hari_kejadian == 'Senin' ? 'selected' : '' }}>Senin</option>
+                                <option value="Selasa" {{ $surat->hari_kejadian == 'Selasa' ? 'selected' : '' }}>Selasa</option>
+                                <option value="Rabu" {{ $surat->hari_kejadian == 'Rabu' ? 'selected' : '' }}>Rabu</option>
+                                <option value="Kamis" {{ $surat->hari_kejadian == 'Kamis' ? 'selected' : '' }}>Kamis</option>
+                                <option value="Jumat" {{ $surat->hari_kejadian == 'Jumat' ? 'selected' : '' }}>Jumat</option>
+                                <option value="Sabtu" {{ $surat->hari_kejadian == 'Sabtu' ? 'selected' : '' }}>Sabtu</option>
+                                <option value="Minggu" {{ $surat->hari_kejadian == 'Minggu' ? 'selected' : '' }}>Minggu</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="field-label"><i class="fas fa-calendar"></i> Tanggal Kejadian</label>
+                            <input type="date" name="tanggal_kejadian" class="form-control" value="{{ $surat->tanggal_kejadian }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="field-label"><i class="fas fa-clock"></i> Waktu Kejadian (WIB)</label>
+                            <input type="time" name="waktu_kejadian" class="form-control" value="{{ $surat->waktu_kejadian }}" required>
+                        </div>
+                    </div>
 
-                                    <!-- MODAL LIHAT DETAIL DINAMIS -->
-                                    <div class="modal fade text-start" id="detailModal{{ $row->id }}" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog modal-lg modal-dialog-centered">
-                                            <div class="modal-content border-0 shadow">
-                                                <div class="modal-header" style="background-color: var(--ink); color: white;">
-                                                    <h5 class="modal-title fw-bold" style="color: white;"><i class="fas fa-file-alt me-2 text-success"></i> Detail Laporan</h5>
-                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body p-4 bg-light">
-                                                    <p>Rincian laporan dapat dilihat pada menu aksi.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="7" class="text-center py-5 text-muted">
-                                    <i class="fas fa-folder-open mb-3" style="font-size: 24px;"></i><br>
-                                    Belum ada data laporan yang diinput ke dalam sistem.
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <div class="card-footer bg-white p-4 d-flex justify-content-between align-items-center border-top">
-                <span class="text-muted" style="font-size: 13px;" id="dataCount">
-                    Menampilkan {{ $data_laporan->firstItem() ?? 0 }} - {{ $data_laporan->lastItem() ?? 0 }} dari total {{ $data_laporan->total() }} laporan
-                </span>
-                <div class="pagination-container mb-0">
-                    {{ $data_laporan->links('pagination::bootstrap-5') }}
-                </div>
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <label class="field-label"><i class="fas fa-user-tie"></i> Tembusan Camat</label>
+                            <input type="text" name="tembusan_camat" class="form-control" value="{{ $surat->tembusan_camat }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="field-label"><i class="fas fa-user-tie"></i> Tembusan Lurah</label>
+                            <input type="text" name="tembusan_lurah" class="form-control" value="{{ $surat->tembusan_lurah }}">
+                        </div>
+                    </div>
+
+                    <!-- SUBMIT BUTTON -->
+                    <div class="d-flex justify-content-end mt-5 pt-4 border-top">
+                        <a href="/internal/surat-korban/data" class="btn-custom-light me-3">Batal</a>
+                        <button type="submit" class="btn-custom-primary shadow-sm">
+                            <i class="fas fa-save me-2"></i> Simpan Perubahan
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </main>
 </div>
 
-<!-- Script Bootstrap & Fungsi Search/Filter JavaScript -->
+<!-- ==================== SCRIPTS ==================== -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    (function () {
-        'use strict';
-        /* ---------- Sidebar (Mobile Toggle) ---------- */
-        var toggle = document.getElementById('sideToggle');
-        var backdrop = document.getElementById('sideBackdrop');
-        function closeSide() {
-            document.body.classList.remove('side-open');
-            if(toggle) toggle.setAttribute('aria-expanded', 'false');
-        }
-        if (toggle) {
-            toggle.addEventListener('click', function () {
-                var open = document.body.classList.toggle('side-open');
-                toggle.setAttribute('aria-expanded', open);
-            });
-        }
-        if (backdrop) backdrop.addEventListener('click', closeSide);
-        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
+(function () {
+    'use strict';
+    /* ---------- Sidebar (Mobile Toggle) ---------- */
+    var toggle = document.getElementById('sideToggle');
+    var backdrop = document.getElementById('sideBackdrop');
 
-        /* ---------- Eksklusivitas Accordion Sidebar ---------- */
-        var groups = document.querySelectorAll('.side-group');
-        groups.forEach(function (g) {
-            g.addEventListener('toggle', function () {
-                if (g.open) {
-                    groups.forEach(function (o) { if (o !== g) o.open = false; });
-                }
-            });
-        });
-    })();
-
-    /* ---------- FUNGSI SEARCH & FILTER ---------- */
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('searchInput');
-        const filterKategori = document.getElementById('filterKategori');
-        const tableBody = document.getElementById('tableBody');
-        const rows = tableBody.getElementsByTagName('tr');
-
-        function filterTable() {
-            const searchTerm = searchInput.value.toLowerCase();
-            const categoryTerm = filterKategori.value.toLowerCase();
-
-            for (let i = 0; i < rows.length; i++) {
-                if (rows[i].getElementsByTagName('td').length === 1) continue; 
-                
-                const rowText = rows[i].textContent.toLowerCase();
-                const categoryCellText = rows[i].getElementsByTagName('td')[3].textContent.toLowerCase(); 
-
-                const matchesSearch = rowText.includes(searchTerm);
-                const matchesCategory = categoryTerm === "" || categoryCellText.includes(categoryTerm);
-
-                rows[i].style.display = (matchesSearch && matchesCategory) ? '' : 'none';
-            }
-        }
-
-        searchInput.addEventListener('keyup', filterTable);
-        filterKategori.addEventListener('change', filterTable);
-    });
-
-    function resetFilter() {
-        document.getElementById('searchInput').value = "";
-        document.getElementById('filterKategori').value = "";
-        document.getElementById('searchInput').dispatchEvent(new Event('keyup'));
+    function closeSide() {
+        document.body.classList.remove('side-open');
+        if(toggle) toggle.setAttribute('aria-expanded', 'false');
     }
+    if (toggle) {
+        toggle.addEventListener('click', function () {
+            var open = document.body.classList.toggle('side-open');
+            toggle.setAttribute('aria-expanded', open);
+        });
+    }
+    if (backdrop) backdrop.addEventListener('click', closeSide);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
+
+    /* ---------- Eksklusivitas Accordion Sidebar ---------- */
+    var groups = document.querySelectorAll('.side-group');
+    groups.forEach(function (g) {
+        g.addEventListener('toggle', function () {
+            if (g.open) {
+                groups.forEach(function (o) { if (o !== g) o.open = false; });
+            }
+        });
+    });
+})();
 </script>
 </body>
 </html>
