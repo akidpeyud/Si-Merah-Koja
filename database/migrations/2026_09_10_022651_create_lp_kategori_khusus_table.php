@@ -15,10 +15,13 @@ return new class extends Migration {
             $table->string('jenis_hewan')->nullable();
             $table->string('spesies_hewan')->nullable();
             $table->string('dimensi_hewan')->nullable();
+<<<<<<< HEAD
+=======
             
             // Kolom baru yang ditambahkan
             $table->string('berat_hewan')->nullable(); 
             
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
             $table->string('status_hewan_pasca')->nullable();
             $table->string('lokasi_pelepasan')->nullable();
             

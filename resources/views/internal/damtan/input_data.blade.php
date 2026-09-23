@@ -4,6 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Penginputan Data - SIMERAH KOJA</title>
+<<<<<<< HEAD
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+=======
 <link rel="icon" href="/images/simerahkoja.png" type="image/png">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -11,6 +23,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
     <!-- Leaflet CSS (Untuk Peta) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
@@ -18,11 +31,37 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background-color: #f3f4f6; color: #1f2937; }
 
+<<<<<<< HEAD
+        /* --- GLOBAL ALERT STYLES --- */
+        #globalSuccessAlert, #globalErrorAlert {
+            position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
+            color: white; padding: 16px 24px; border-radius: 8px; z-index: 99999;
+            display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px;
+            animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #globalSuccessAlert { background-color: #10b981; box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); }
+        #globalErrorAlert { background-color: #ef4444; box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.4); }
+        
+        .alert-icon { font-size: 22px; }
+        .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px; transition: opacity 0.2s; }
+        .btn-close-alert:hover { opacity: 1; }
+
+        @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+        @keyframes fadeOutUpCenter { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -50px); opacity: 0; } }
+
+=======
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
         /* --- NAVBAR INTERNAL --- */
         .navbar-internal { background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
         .nav-brand img { height: 40px; }
         .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; }
+<<<<<<< HEAD
+        .badge-internal { background: #10b981; color: white; font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 700; margin-left: 10px; vertical-align: middle; }
+        .badge-role { background: #3b82f6; color: white; font-size: 11px; padding: 4px 10px; border-radius: 50px; font-weight: 700; text-transform: uppercase; }
+        .badge-role.super_user { background: #ef4444; }
+=======
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
 
         .user-menu { display: flex; align-items: center; gap: 20px; }
         .user-profile { display: flex; align-items: center; gap: 10px; color: #e5e7eb; font-size: 14px; font-weight: 600; }
@@ -33,21 +72,53 @@
 
         /* --- SIDEBAR & ACCORDION STYLES --- */
         .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
+<<<<<<< HEAD
+        .sidebar {
+            width: 280px; background-color: #ffffff; border-right: 1px solid #e5e7eb;
+            padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto;
+        }
+        
+        .sidebar-item {
+            display: flex; align-items: center; gap: 15px; padding: 12px 15px;
+            color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600;
+            border-radius: 8px; transition: all 0.2s;
+        }
+=======
         .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
         
         .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600; border-radius: 8px; transition: all 0.2s; }
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
         .sidebar-item:hover { background-color: #f3f4f6; color: #111827; }
         .sidebar-item.active { background-color: #e0f2fe; color: #0284c7; }
         .sidebar-item.active i { color: #0284c7; }
         .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #9ca3af; }
         
+<<<<<<< HEAD
+        .sidebar-collapse-btn {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; padding: 15px 15px 5px 15px; margin-top: 10px;
+            background: transparent; border: none; border-top: 1px dashed #e5e7eb;
+            text-align: left; font-size: 11px; font-weight: 800; color: #9ca3af;
+            text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s;
+        }
+        .sidebar-collapse-btn:hover { color: #4b5563; }
+        
+=======
         .sidebar-collapse-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 15px 15px 5px 15px; margin-top: 10px; background: transparent; border: none; border-top: 1px dashed #e5e7eb; text-align: left; font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
         .sidebar-collapse-btn:hover { color: #4b5563; }
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
         .toggle-icon { transition: transform 0.3s ease; font-size: 12px; }
         .sidebar-collapse-btn.collapsed .toggle-icon { transform: rotate(0deg); }
         .sidebar-collapse-btn:not(.collapsed) .toggle-icon { transform: rotate(180deg); color: #0284c7; }
         .sidebar-collapse-btn:not(.collapsed) { color: #0284c7; }
+<<<<<<< HEAD
+
+        .sidebar-submenu {
+            display: flex; flex-direction: column; gap: 4px; padding-left: 10px; margin-top: 8px;
+        }
+=======
         .sidebar-submenu { display: flex; flex-direction: column; gap: 4px; padding-left: 10px; margin-top: 8px; }
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
 
         /* --- MAIN AREA & TABS --- */
         .main-content { flex: 1; padding: 40px 50px; background-color: #f9fafb; }
@@ -60,6 +131,32 @@
         .nav-tabs .nav-link.active { color: #111827 !important; border-bottom: 3px solid #10b981 !important; background: transparent; }
 
         /* --- STYLING FORM MODERN --- */
+<<<<<<< HEAD
+        .field-label {
+            font-size: 13px; font-weight: 700; color: #0284c7; margin-bottom: 8px;
+            display: inline-flex; align-items: center;
+        }
+        .field-label i { margin-right: 8px; font-size: 14px; }
+        
+        .form-control, .form-select {
+            border-radius: 8px; background-color: #f4f9ff; border: 1px solid #bfdbfe; 
+            padding: 10px 15px; font-size: 14px; color: #1e293b;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); transition: all 0.2s ease-in-out;
+        }
+        .form-control:focus, .form-select:focus { background-color: #ffffff; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
+        .input-group-text { border-radius: 8px; background-color: #e0f2fe; border: 1px solid #bfdbfe; color: #0284c7; font-weight: 700; }
+        
+        .section-title {
+            font-weight: 800; color: #111827; margin-bottom: 25px; padding-bottom: 15px;
+            border-bottom: 2px solid #f3f4f6; display: flex; align-items: center; gap: 12px;
+        }
+        .section-title i { color: #10b981; background: #d1fae5; padding: 10px; border-radius: 8px; font-size: 16px; }
+
+        .form-check-inline {
+            padding: 8px 16px 8px 32px; border-radius: 8px; border: 1px solid transparent;
+            transition: all 0.2s ease-in-out; margin-right: 10px; margin-bottom: 5px; cursor: pointer;
+        }
+=======
         .field-label { font-size: 13px; font-weight: 700; color: #0284c7; margin-bottom: 8px; display: inline-flex; align-items: center; }
         .field-label i { margin-right: 8px; font-size: 14px; }
         
@@ -71,6 +168,7 @@
         .section-title i { color: #10b981; background: #d1fae5; padding: 10px; border-radius: 8px; font-size: 16px; }
 
         .form-check-inline { padding: 8px 16px 8px 32px; border-radius: 8px; border: 1px solid transparent; transition: all 0.2s ease-in-out; margin-right: 10px; margin-bottom: 5px; cursor: pointer; }
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
         .form-check-inline:hover { background-color: #e0f2fe; border-color: #bfdbfe; }
         .form-check-input { cursor: pointer; margin-top: 4px; }
         .form-check-label { cursor: pointer; width: 100%; }
@@ -84,6 +182,20 @@
     <nav class="navbar-internal">
         <a href="#" class="nav-brand">
             <img src="/images/simerahkoja.png" alt="Logo Simerah">
+<<<<<<< HEAD
+            <span class="title">SIMERAH KOJA <span class="badge-internal">INTERNAL APP</span></span>
+        </a>
+
+        <div class="user-menu">
+            <div class="user-profile">
+                <span class="badge-role {{ Auth::user()->role ?? '' }}">
+                    {{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}
+                </span>
+                <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
+                <i class="fas fa-user-circle"></i>
+            </div>
+            
+=======
             <span class="title">SIMERAH KOJA</span>
         </a>
         <div class="user-menu">
@@ -91,6 +203,7 @@
                 <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
                 <i class="fas fa-user-circle"></i>
             </div>
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
             <form action="/logout" method="POST" style="margin: 0;">
                 @csrf
                 <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
@@ -109,6 +222,10 @@
 
             <!-- BAGIAN KHUSUS USER & SUPER USER -->
             @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
+<<<<<<< HEAD
+                
+=======
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                 <!-- ACCORDION PENCEGAHAN -->
                 <button class="sidebar-collapse-btn {{ Request::is('internal/pencegahan*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePencegahan" aria-expanded="{{ Request::is('internal/pencegahan*') ? 'true' : 'false' }}">
                     <span>Bagian Pencegahan</span>
@@ -126,6 +243,17 @@
                 </div>
 
                 <!-- ACCORDION PEMADAMAN (DAMTAN) -->
+<<<<<<< HEAD
+                <button class="sidebar-collapse-btn {{ Request::is('internal/damtan*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="{{ Request::is('internal/damtan*') ? 'true' : 'false' }}">
+                    <span>Bagian Pemadaman</span>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+                <div class="collapse {{ Request::is('internal/damtan*') ? 'show' : '' }}" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
+                    <div class="sidebar-submenu">
+                        <a href="/internal/damtan/input-data" class="sidebar-item {{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
+                        <a href="/internal/damtan/data-laporan" class="sidebar-item {{ Request::is('internal/damtan/data-laporan*') ? 'active' : '' }}"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
+                    </div>
+=======
                 <button class="sidebar-collapse-btn {{ Request::is('internal/damtan*') || Request::is('internal/surat*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="{{ Request::is('internal/damtan*') || Request::is('internal/surat*') ? 'true' : 'false' }}">
                     <span>Bagian Pemadaman</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
@@ -136,6 +264,7 @@
                         <a href="/internal/damtan/data-laporan" class="sidebar-item {{ Request::is('internal/damtan/data-laporan*') ? 'active' : '' }}"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
                         <a href="/internal/surat-korban/create" class="sidebar-item {{ Request::is('internal/surat*') ? 'active' : '' }}"><i class="fas fa-file-signature"></i> Buat Surat Korban</a>
                 </div>
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                 </div>
 
                 <!-- ACCORDION SAPRA -->
@@ -145,6 +274,7 @@
                 </button>
                 <div class="collapse {{ Request::is('sapra*') ? 'show' : '' }}" id="collapseSapra" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
+<<<<<<< HEAD
                       
                         <!-- Sarana dan prasarana -->
                         <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">SARANA DAN PRASARANA</span>
@@ -155,19 +285,37 @@
                         <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
                         
                           <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">MANAJEMEN AIR</span>
+=======
+<<<<<<< HEAD
+                        <a href="/sapra/data_hidrant_gedung" class="sidebar-item {{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}"><i class="fas fa-clipboard-list"></i> Data Hidrant</a>
+                        <a href="/sapra/data-hidrant-kota" class="sidebar-item {{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
+                        <a href="/sapra/prasarana-mako" class="sidebar-item {{ Request::is('sapra/prasarana-mako*') ? 'active' : '' }}"><i class="fas fa-building"></i> Prasarana Mako & Pos</a>
+                        <a href="/sapra/sarana-mako" class="sidebar-item {{ Request::is('sapra/sarana-mako*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Sarana Mako & Pos</a>
+                        <a href="/sapra/logistik" class="sidebar-item {{ Request::is('sapra/logistik*') ? 'active' : '' }}"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
+=======
+                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">MANAJEMEN AIR</span>
+>>>>>>> 54d349b2f34ba1d90fd3fbf4f615f46b7fe9ffd6
                         <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
                         <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
 
                         <!-- GRUP LOGISTIK & DISTRIBUSI -->
                         <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">LOGISTIK & DISTRIBUSI</span>
                         <a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
+<<<<<<< HEAD
                         <a href="/sapra/distribusi-staff" class="sidebar-item"><i class="fas fa-user-check"></i> Distribusi Barang Staff</a>
+=======
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
+>>>>>>> 54d349b2f34ba1d90fd3fbf4f615f46b7fe9ffd6
                     </div>
                 </div>
             @endif
 
             <!-- BAGIAN KHUSUS OPERATOR & SUPER USER -->
             @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
+<<<<<<< HEAD
+                <!-- ACCORDION MANAJEMEN BERITA -->
+=======
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                 <button class="sidebar-collapse-btn {{ Request::is('internal/operator*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita" aria-expanded="{{ Request::is('internal/operator*') ? 'true' : 'false' }}">
                     <span>Manajemen Berita</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
@@ -234,6 +382,13 @@
                                 <div class="row g-4 mb-4">
                                     <div class="col-md-6">
                                         <label class="field-label"><i class="fas fa-hashtag"></i> Nomor Laporan (Auto)</label>
+<<<<<<< HEAD
+                                        <input type="text" class="form-control" name="nomor_laporan" value="REG-20240101-001" readonly style="background-color: #e2e8f0;">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="field-label"><i class="fas fa-fingerprint"></i> ID Laporan (Auto)</label>
+                                        <input type="text" class="form-control" name="id_laporan" value="UUID-8A7B6C" readonly style="background-color: #e2e8f0;">
+=======
                                         <input type="text" class="form-control" name="nomor_laporan" value="REG-{{ date('Ymd') }}-XXXX" readonly style="background-color: #e2e8f0;">
                                     </div>
                                     <div class="col-md-6">
@@ -265,6 +420,7 @@
                                             <input type="number" step="0.1" min="0" name="jarak_tempuh" class="form-control" placeholder="Cth: 4.1">
                                             <span class="input-group-text">Km</span>
                                         </div>
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                     </div>
                                 </div>
 
@@ -317,7 +473,11 @@
                                     <div class="col-md-12">
                                         <label class="field-label w-100"><i class="fas fa-exclamation-circle"></i> Tingkat Prioritas</label>
                                         <div class="form-check form-check-inline mt-1">
+<<<<<<< HEAD
+                                            <input class="form-check-input" type="radio" name="prioritas" id="prio1" value="rendah">
+=======
                                             <input class="form-check-input" type="radio" name="prioritas" id="prio1" value="rendah" checked>
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                             <label class="form-check-label text-secondary fw-bold" for="prio1">Rendah</label>
                                         </div>
                                         <div class="form-check form-check-inline mt-1">
@@ -348,6 +508,16 @@
                                         <label class="field-label"><i class="fas fa-truck-moving"></i> Waktu Berangkat Unit</label>
                                         <input type="datetime-local" name="waktu_berangkat" class="form-control">
                                     </div>
+<<<<<<< HEAD
+                                    <div class="col-md-6 mt-4">
+                                        <label class="field-label"><i class="fas fa-map-marker-alt"></i> Waktu Tiba di Lokasi</label>
+                                        <input type="datetime-local" name="waktu_tiba" class="form-control">
+                                    </div>
+                                    <div class="col-md-6 mt-4">
+                                        <label class="field-label"><i class="fas fa-flag-checkered"></i> Waktu Operasi Selesai</label>
+                                        <input type="datetime-local" name="waktu_selesai" class="form-control">
+                                    </div>
+=======
                                     
                                     <div class="col-md-4 mt-4">
                                         <label class="field-label"><i class="fas fa-map-marker-alt"></i> Waktu Tiba di Lokasi</label>
@@ -361,6 +531,7 @@
                                         <label class="field-label"><i class="fas fa-building"></i> Waktu Kembali ke Mako</label>
                                         <input type="datetime-local" name="waktu_kembali" class="form-control">
                                     </div>
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                 </div>
 
                                 <div class="row g-4">
@@ -384,6 +555,8 @@
                             <div class="tab-pane fade" id="teknis" role="tabpanel">
                                 <h5 class="section-title"><i class="fas fa-tools"></i> Teknis Penyelamatan & Logistik</h5>
                                 
+<<<<<<< HEAD
+=======
                                 <!-- DATA PIMPINAN & REGU (4 Kolom) -->
                                 <div class="row g-4 mb-5 border-bottom pb-4">
                                     <div class="col-md-3">
@@ -404,10 +577,26 @@
                                     </div>
                                 </div>
 
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                 <h6 class="fw-bold text-secondary border-bottom pb-2 mb-3">Status Korban Manusia & Aset</h6>
                                 <div class="row g-4 mb-4">
                                     <div class="col-md-3">
                                         <label class="field-label"><i class="fas fa-user-check"></i> Selamat</label>
+<<<<<<< HEAD
+                                        <input type="number" name="korban_selamat" class="form-control" value="0">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="field-label"><i class="fas fa-user-injured"></i> Luka Ringan</label>
+                                        <input type="number" name="korban_ringan" class="form-control" value="0">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="field-label"><i class="fas fa-procedures"></i> Luka Berat</label>
+                                        <input type="number" name="korban_berat" class="form-control" value="0">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="field-label text-danger"><i class="fas fa-user-times"></i> Meninggal Dunia</label>
+                                        <input type="number" name="korban_meninggal" class="form-control" value="0">
+=======
                                         <!-- Tambahan MIN 0 -->
                                         <input type="number" min="0" name="korban_selamat" class="form-control" value="0">
                                     </div>
@@ -422,6 +611,7 @@
                                     <div class="col-md-3">
                                         <label class="field-label text-danger"><i class="fas fa-user-times"></i> Meninggal Dunia</label>
                                         <input type="number" min="0" name="korban_meninggal" class="form-control" value="0">
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                     </div>
                                 </div>
                                 <div class="row g-4 mb-4">
@@ -496,6 +686,8 @@
                                     </div>
                                 </div>
 
+<<<<<<< HEAD
+=======
                                 <!-- DATA LANGKAH & HASIL TINDAKAN -->
                                 <div class="row g-4 mb-4">
                                     <div class="col-md-12">
@@ -510,6 +702,7 @@
                                     </div>
                                 </div>
 
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                 <h6 class="fw-bold text-secondary border-bottom pb-2 mb-3 mt-5">Alat, Logistik & Personel</h6>
                                 <div class="row g-4 mb-4">
                                     <div class="col-md-12">
@@ -542,21 +735,33 @@
                                     <div class="col-md-4">
                                         <label class="field-label"><i class="fas fa-tint"></i> Liter Air Digunakan</label>
                                         <div class="input-group">
+<<<<<<< HEAD
+                                            <input type="number" name="liter_air" class="form-control" placeholder="0">
+=======
                                             <input type="number" min="0" name="liter_air" class="form-control" placeholder="0">
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                             <span class="input-group-text">L</span>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="field-label"><i class="fas fa-soap"></i> Liter Foam</label>
                                         <div class="input-group">
+<<<<<<< HEAD
+                                            <input type="number" name="liter_foam" class="form-control" placeholder="0">
+=======
                                             <input type="number" min="0" name="liter_foam" class="form-control" placeholder="0">
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                             <span class="input-group-text">L</span>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="field-label"><i class="fas fa-gas-pump"></i> Liter BBM Unit</label>
                                         <div class="input-group">
+<<<<<<< HEAD
+                                            <input type="number" name="liter_bbm" class="form-control" placeholder="0">
+=======
                                             <input type="number" min="0" name="liter_bbm" class="form-control" placeholder="0">
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                             <span class="input-group-text">L</span>
                                         </div>
                                     </div>
@@ -584,7 +789,11 @@
                                     </div>
                                     <div class="col-md-4">
                                         <label class="field-label"><i class="fas fa-users"></i> Jumlah Personel</label>
+<<<<<<< HEAD
+                                        <input type="number" name="jumlah_personel" class="form-control" placeholder="0">
+=======
                                         <input type="number" min="0" name="jumlah_personel" class="form-control" placeholder="0">
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                     </div>
                                 </div>
 
@@ -622,12 +831,20 @@
                                     </div>
                                 </div>
 
+<<<<<<< HEAD
+                                <div class="row g-4 mb-4">
+                                    <div class="col-md-6">
+                                        <label class="field-label"><i class="fas fa-ruler-combined"></i> Luas Area Terdampak</label>
+                                        <div class="input-group">
+                                            <input type="number" name="luas_area" class="form-control" placeholder="0">
+=======
                                 <div class="row g-4 mb-4 border-bottom pb-4">
                                     <div class="col-md-12">
                                         <label class="field-label"><i class="fas fa-ruler-combined"></i> Luas Area Terdampak</label>
                                         <div class="input-group" style="width: 50%;">
                                             <!-- Tambahan MIN 0 -->
                                             <input type="number" min="0" step="0.1" name="luas_area" class="form-control" placeholder="0">
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                             <span class="input-group-text">m²</span>
                                         </div>
                                     </div>
@@ -670,7 +887,11 @@
                                     </div>
                                 </div>
 
+<<<<<<< HEAD
+                                <div class="row g-4 mb-4">
+=======
                                 <div class="row g-4 mb-4 border-bottom pb-4">
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                     <div class="col-md-6">
                                         <label class="field-label"><i class="fas fa-plus-circle"></i> Kebutuhan Tambahan</label>
                                         <textarea class="form-control" name="kebutuhan_tambahan" rows="2" placeholder="Dibutuhkan drone thermal..."></textarea>
@@ -681,6 +902,8 @@
                                     </div>
                                 </div>
 
+<<<<<<< HEAD
+=======
                                 <!-- DATA CARA BERTINDAK -->
                                 <div class="row g-4 mb-4">
                                     <div class="col-md-12">
@@ -692,6 +915,7 @@
                                     </div>
                                 </div>
 
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                 <h6 class="fw-bold text-secondary border-bottom pb-2 mb-3 mt-5">Dokumentasi Akhir</h6>
                                 <div class="row g-4 mb-4">
                                     <div class="col-md-6">
@@ -727,6 +951,17 @@
                                             <option value="biawak">Biawak</option>
                                         </select>
                                     </div>
+<<<<<<< HEAD
+                                    <div class="col-md-4">
+                                        <label class="field-label"><i class="fas fa-tag"></i> Spesies/Lokal</label>
+                                        <input type="text" name="spesies_hewan" class="form-control" placeholder="Cth: King Cobra">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="field-label"><i class="fas fa-ruler"></i> Dimensi</label>
+                                        <input type="text" name="dimensi_hewan" class="form-control" placeholder="Panjang ±3 meter">
+                                    </div>
+                                    <div class="col-md-6">
+=======
                                     <div class="col-md-8">
                                         <label class="field-label"><i class="fas fa-tag"></i> Spesies/Lokal</label>
                                         <input type="text" name="spesies_hewan" class="form-control" placeholder="Cth: King Cobra">
@@ -747,6 +982,7 @@
                                     </div>
 
                                     <div class="col-md-6 mt-3">
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                         <label class="field-label"><i class="fas fa-share-square"></i> Status Pasca Evakuasi</label>
                                         <select class="form-select" name="status_hewan_pasca">
                                             <option selected value="">-- Pilih --</option>
@@ -755,7 +991,11 @@
                                             <option value="mati">Mati</option>
                                         </select>
                                     </div>
+<<<<<<< HEAD
+                                    <div class="col-md-6">
+=======
                                     <div class="col-md-6 mt-3">
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                         <label class="field-label"><i class="fas fa-tree"></i> Lokasi Pelepasan</label>
                                         <input type="text" name="lokasi_pelepasan" class="form-control" placeholder="Habitat...">
                                     </div>
@@ -775,7 +1015,11 @@
                                     <div class="col-md-4">
                                         <label class="field-label"><i class="fas fa-expand-arrows-alt"></i> Dimensi Objek</label>
                                         <div class="input-group">
+<<<<<<< HEAD
+                                            <input type="number" name="dimensi_objek" class="form-control" placeholder="0">
+=======
                                             <input type="number" min="0" step="0.1" name="dimensi_objek" class="form-control" placeholder="0">
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                             <span class="input-group-text">cm</span>
                                         </div>
                                     </div>
@@ -787,7 +1031,11 @@
                                             <option value="pipa_pdam">Pipa PDAM bocor</option>
                                         </select>
                                     </div>
+<<<<<<< HEAD
+                                    <div class="col-md-12">
+=======
                                     <div class="col-md-12 mt-3">
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                         <label class="field-label"><i class="fas fa-house-damage"></i> Dampak Properti</label>
                                         <textarea class="form-control" name="dampak_properti" rows="2" placeholder="Menutup jalan, menimpa pagar..."></textarea>
                                     </div>
@@ -806,7 +1054,11 @@
                                     <div class="col-md-4">
                                         <label class="field-label"><i class="fas fa-search-location"></i> Radius</label>
                                         <div class="input-group">
+<<<<<<< HEAD
+                                            <input type="number" name="radius_pencarian" class="form-control" placeholder="0">
+=======
                                             <input type="number" min="0" name="radius_pencarian" class="form-control" placeholder="0">
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                             <span class="input-group-text">m</span>
                                         </div>
                                     </div>
@@ -818,7 +1070,11 @@
                                             <option value="penyisiran">Penyisiran Perahu</option>
                                         </select>
                                     </div>
+<<<<<<< HEAD
+                                    <div class="col-md-12">
+=======
                                     <div class="col-md-12 mt-3">
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                         <label class="field-label"><i class="fas fa-swimmer"></i> Daftar Penyelam</label>
                                         <input type="text" name="daftar_penyelam" class="form-control" placeholder="Nama bersertifikasi...">
                                     </div>
@@ -863,7 +1119,11 @@
                                         </select>
                                     </div>
                                     <div class="col-md-4 mt-4">
+<<<<<<< HEAD
+                                        <label class="field-label"><i class="fas fa-road"></i> Aksesibilitas Lokasi</label>
+=======
                                         <label class="field-label"><i class="fas fa-road"></i> Akses Lokasi</label>
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                         <select class="form-select" name="akses_lokasi">
                                             <option selected value="">-- Pilih --</option>
                                             <option value="kendaraan_berat">Bisa dilalui Roda 4+</option>

@@ -4,16 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Hidrant Kota Jambi - SIMERAH KOJA</title>
+<<<<<<< HEAD
+
+=======
 <link rel="icon" href="/images/simerahkoja.png" type="image/png">
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+<<<<<<< HEAD
+        body { background-color: #f3f4f6; color: #1f2937; }
+=======
         
         /* 1. KUNCI BODY BIAR GAK BISA DI-SCROLL KESELURUHAN */
         body { background-color: #f3f4f6; color: #1f2937; overflow: hidden; }
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
 
         /* --- GLOBAL ALERT STYLES --- */
         #globalSuccessAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); background-color: #10b981; color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4), 0 8px 10px -6px rgba(16, 185, 129, 0.1); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -23,8 +31,13 @@
         @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
         @keyframes fadeOutUpCenter { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -50px); opacity: 0; } }
 
+<<<<<<< HEAD
+        /* --- NAVBAR INTERNAL --- */
+        .navbar-internal { background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+=======
         /* 2. TINGGI TETAP UNTUK NAVBAR */
         .navbar-internal { background-color: #111827; padding: 0 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); height: 74px; }
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
         .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; transition: opacity 0.3s;}
         .nav-brand:hover { opacity: 0.8; }
         .nav-brand img { height: 40px; }
@@ -37,6 +50,14 @@
         .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
         .btn-logout:hover { background-color: #dc2626; }
 
+<<<<<<< HEAD
+        /* --- SIDEBAR ACCORDION STYLES --- */
+        .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
+        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+        .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600; border-radius: 8px; transition: all 0.2s; }
+        .sidebar-item:hover { background-color: #f8fafc; color: #0f172a; }
+        .sidebar-item.active { background-color: #eff6ff; color: #0284c7; }
+=======
         /* --- LAYOUT UTAMA (INDEPENDENT SCROLLING) --- */
         /* 3. TINGGI SISA DARI LAYAR - NAVBAR */
         .dashboard-container { display: flex; height: calc(100vh - 74px); }
@@ -50,6 +71,7 @@
         .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600; border-radius: 8px; transition: all 0.2s; }
         .sidebar-item:hover { background-color: #f8fafc; color: #0f172a; }
         .sidebar-item.active { background-color: #e0f2fe; color: #0284c7; }
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
         .sidebar-item.active i { color: #0284c7; }
         .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #9ca3af; transition: color 0.2s; }
         .sidebar-collapse-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 15px 15px 5px 15px; margin-top: 10px; background: transparent; border: none; border-top: 1px dashed #e5e7eb; text-align: left; font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
@@ -61,6 +83,23 @@
         .sidebar-submenu { display: flex; flex-direction: column; gap: 4px; padding-left: 10px; margin-top: 8px; }
 
         /* --- MAIN AREA & TABLE STYLES --- */
+<<<<<<< HEAD
+        .main-content { flex: 1; padding: 40px 50px; background-color: #f9fafb; overflow-y: auto; }
+        .table-card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #e5e7eb; }
+        .table-custom { margin-bottom: 0; font-size: 12.5px; white-space: nowrap; }
+        .table-custom thead th { background-color: #111827; color: #f8fafc; font-weight: 600; padding: 16px 12px; border-bottom: none; text-align: center; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; }
+        .table-custom tbody td { padding: 12px; color: #4b5563; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
+        .table-custom tbody tr:hover { background-color: #f8fafc; }
+        
+        /* STATUS BADGES */
+        .status-badge { padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; }
+        .bg-baik { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .bg-rusak { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .bg-sedang { background-color: #fef9c3; color: #854d0e; border: 1px solid #fef08a; }
+        .bg-kuat { background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+        .bg-lemah { background-color: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+        .bg-null { background-color: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+=======
         .table-card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #e5e7eb; }
         .table-custom { margin-bottom: 0; font-size: 12px; white-space: nowrap; }
         
@@ -80,6 +119,7 @@
         .bg-lemah { background-color: #f97316; border: 1px solid #c2410c; } /* Oranye Solid */
         
         .bg-null { background-color: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; box-shadow: none; font-weight: 600; }
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
 
         .btn-action { padding: 6px 10px; font-size: 12px; border-radius: 6px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; }
         .btn-action:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
@@ -87,6 +127,8 @@
         .btn-delete { background-color: #ef4444; color: white; }
 
         #searchInput:focus { box-shadow: none; border-color: #cbd5e1; }
+<<<<<<< HEAD
+=======
         
         /* Hover buat link Map */
         .map-link { transition: all 0.2s; }
@@ -112,6 +154,7 @@
             table th:last-child, table td:last-child { display: none !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
     </style>
 </head>
 <body>
@@ -144,6 +187,10 @@
 
         <div class="user-menu">
             <div class="user-profile">
+<<<<<<< HEAD
+                
+=======
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                 <span>{{ Auth::user()->nama_lengkap ?? 'Dhimas Zaky Abiyyu' }}</span>
                 <i class="fas fa-user-circle"></i>
             </div>
@@ -190,7 +237,12 @@
                     <div class="sidebar-submenu">
                         <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data & Laporan</a>
                         <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-file-alt"></i> Data Laporan</a>
+<<<<<<< HEAD
+                        <a href="#" class="sidebar-item"><i class="fas fa-users-cog"></i> Jadwal Piket Regu</a>
+                        <a href="#" class="sidebar-item"><i class="fas fa-running"></i> Data Relawan Redkar</a>
+=======
                     
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                     </div>
                 </div>
             @endif
@@ -202,6 +254,28 @@
                 </button>
                 <div class="collapse show" id="collapseSapra" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
+<<<<<<< HEAD
+                       <!-- GRUP MANAJEMEN AIR -->
+<span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">MANAJEMEN AIR</span>
+<a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
+<a href="/sapra/data-hidrant-kota" class="sidebar-item active"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
+
+<!-- GRUP FASILITAS & POS -->
+<span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">FASILITAS & POS MAKO</span>
+<a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pos</a>
+<a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pos</a>
+<a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan</a>
+<a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
+
+<!-- GRUP PERENCANAAN / MUTU BAKU -->
+<span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">PERENCANAAN PENGADAAN</span>
+<a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
+                    </div>
+                </div>
+            @endif
+
+            @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
+=======
                     
 <!-- GRUP FASILITAS & POS -->
 <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">SARANA DAN PRASARANA</span>
@@ -226,15 +300,21 @@
             @endif
 
             @if(in_array(Auth::user()->role, ['operator', 'super_user']))
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                 <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita" aria-expanded="false">
                     <span>Manajemen Berita</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
                 <div class="collapse" id="collapseBerita" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
+<<<<<<< HEAD
+                        <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+                        <a href="/internal/operator/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
+=======
                         <a href="/internal/operator/kelola-berita" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
                         <a href="/internal/operator/infografis" class="sidebar-item"><i class="fas fa-image"></i> Kelola Info Grafis</a>
                         <a href="/internal/operator/berita-medsos" class="sidebar-item"><i class="fab fa-instagram"></i> Kelola Berita Medsos</a>
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                     </div>
                 </div>
             @endif
@@ -288,6 +368,18 @@
                     <table class="table table-custom">
                         <thead>
                             <tr>
+<<<<<<< HEAD
+                                <th width="16%" style="text-align: left; padding-left: 20px;">JALAN</th>
+                                <th width="14%" style="text-align: left;">KECAMATAN / KELURAHAN</th>
+                                <th width="4%">RT</th>
+                                <th width="14%" style="text-align: left;">LOKASI TERDEKAT</th>
+                                <th width="7%">KODE MAP</th>
+                                <th width="7%">KONDISI</th>
+                                <th width="7%">TEKANAN</th>
+                                <th width="7%">MACHINO</th>
+                                <th width="18%" style="text-align: left;">KETERANGAN</th>
+                                <th width="6%">AKSI</th>
+=======
                                 <th width="15%" style="text-align: left; padding-left: 20px;">JALAN</th>
                                 <th width="13%" style="text-align: left;">KECAMATAN / KELURAHAN</th>
                                 <th width="4%">RT</th>
@@ -298,6 +390,7 @@
                                 <th width="9%">MACHINO</th>
                                 <th width="13%" style="text-align: left;">KETERANGAN</th>
                                 <th width="5%">AKSI</th>
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                             </tr>
                         </thead>
                         <tbody id="tableBody">
@@ -310,6 +403,9 @@
                                 </td>
                                 <td class="text-center">{{ $item->rt ?? '-' }}</td>
                                 <td class="text-wrap" style="min-width: 130px;">{{ $item->lokasi_terdekat }}</td>
+<<<<<<< HEAD
+                                <td class="text-center fw-medium text-secondary">{{ $item->kode_map ?? '-' }}</td>
+=======
                                 
                                 <!-- KODE MAP KLIK-ABLE -->
                                 <td class="text-center align-middle">
@@ -321,13 +417,17 @@
                                         <span class="text-muted">-</span>
                                     @endif
                                 </td>
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                 
                                 <td class="text-center data-kondisi">
                                     @php $kondisi = strtolower(trim($item->kondisi_hidran)); @endphp
                                     <span class="status-badge {{ $kondisi == 'baik' ? 'bg-baik' : ($kondisi == 'rusak' ? 'bg-rusak' : 'bg-null') }}">
+<<<<<<< HEAD
+=======
                                         @if($kondisi == 'baik') <i class="fas fa-check-circle"></i> 
                                         @elseif($kondisi == 'rusak') <i class="fas fa-times-circle"></i> 
                                         @endif
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                         {{ $item->kondisi_hidran ?? '-' }}
                                     </span>
                                 </td>
@@ -335,10 +435,13 @@
                                 <td class="text-center data-tekanan">
                                     @php $tekanan = strtolower(trim($item->tekanan)); @endphp
                                     <span class="status-badge {{ $tekanan == 'kuat' ? 'bg-kuat' : ($tekanan == 'sedang' ? 'bg-sedang' : ($tekanan == 'lemah' ? 'bg-lemah' : 'bg-null') )}}">
+<<<<<<< HEAD
+=======
                                         @if($tekanan == 'kuat') <i class="fas fa-check-circle"></i>
                                         @elseif($tekanan == 'sedang') <i class="fas fa-info-circle"></i>
                                         @elseif($tekanan == 'lemah') <i class="fas fa-exclamation-triangle"></i>
                                         @endif
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                         {{ $item->tekanan ?? '-' }}
                                     </span>
                                 </td>
@@ -346,14 +449,21 @@
                                 <td class="text-center data-machino">
                                     @php $machino = strtolower(trim($item->machino)); @endphp
                                     <span class="status-badge {{ $machino == 'baik' ? 'bg-baik' : ($machino == 'rusak' ? 'bg-rusak' : 'bg-null') }}">
+<<<<<<< HEAD
+=======
                                         @if($machino == 'baik') <i class="fas fa-check-circle"></i>
                                         @elseif($machino == 'rusak') <i class="fas fa-times-circle"></i>
                                         @endif
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                         {{ $item->machino ?? '-' }}
                                     </span>
                                 </td>
                                 
+<<<<<<< HEAD
+                                <td class="text-wrap text-muted data-keterangan" style="min-width: 180px; font-size: 11.5px;">{{ $item->keterangan }}</td>
+=======
                                 <td class="text-wrap text-muted data-keterangan" style="min-width: 160px; font-size: 11px;">{{ $item->keterangan }}</td>
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-1">
                                         <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEdit{{ $item->id }}"><i class="fas fa-edit"></i></button>
@@ -521,6 +631,15 @@
                     let keteranganText = row.querySelector('.data-keterangan').textContent.trim().toLowerCase();
 
                     // Cek Kondisi
+<<<<<<< HEAD
+                    if(kondisiText === 'baik') stats.baik++;
+                    if(kondisiText === 'rusak') stats.rusak++;
+
+                    // Cek Tekanan
+                    if(tekananText === 'kuat') stats.kuat++;
+                    if(tekananText === 'sedang') stats.sedang++;
+                    if(tekananText === 'lemah') stats.lemah++;
+=======
                     if(kondisiText.includes('baik')) stats.baik++;
                     if(kondisiText.includes('rusak')) stats.rusak++;
 
@@ -528,6 +647,7 @@
                     if(tekananText.includes('kuat')) stats.kuat++;
                     if(tekananText.includes('sedang')) stats.sedang++;
                     if(tekananText.includes('lemah')) stats.lemah++;
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
 
                     // Cek Keterangan
                     if(keteranganText.includes('tidak bisa dipakai')) {

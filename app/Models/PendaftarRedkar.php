@@ -3,6 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+<<<<<<< HEAD
+use Illuminate\Database\Eloquent\Model;
+
+class PendaftarRedkar extends Model
+{
+    use HasFactory;
+
+    // Menentukan nama tabel jika diperlukan (opsional, Laravel otomatis mendeteksi 'pendaftar_redkars')
+    protected $table = 'pendaftar_redkars';
+
+    protected $fillable = [
+=======
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class PendaftarRedkar extends Authenticatable
@@ -20,6 +32,7 @@ class PendaftarRedkar extends Authenticatable
         'id',                        
         'username',                  
         'password',                  
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
         'nik',
         'nama_lengkap',
         'jenis_kelamin',
@@ -38,6 +51,13 @@ class PendaftarRedkar extends Authenticatable
         'kelurahan',
         'pekerjaan',
         'pendidikan_terakhir',
+<<<<<<< HEAD
+        'sehat_jasmani',
+        'buta_warna',
+        'golongan_darah',
+        'status_pendaftaran',
+    ];
+=======
         'latar_belakang_pendidikan', 
         'sehat_jasmani',
         'golongan_darah',
@@ -65,4 +85,5 @@ class PendaftarRedkar extends Authenticatable
             parent::setAttribute($key, $value);
         }
     }
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
 }

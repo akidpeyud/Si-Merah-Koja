@@ -3,73 +3,76 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\DiklatF1;
-use App\Models\DiklatF2;
-use App\Models\DiklatInspektur;
-use App\Models\DiklatMfr;
-use App\Models\DiklatRescue;
-use App\Models\DiklatOperator;
-use App\Models\DiklatPpl;
+use Illuminate\Support\Facades\DB; 
 
 class PencegahanController extends Controller
 {
-    // ... kodingan lu (termasuk function F1, F2, dan Inspektur) di bawahnya ...
+    // =========================================================================
+    // BAGIAN PENINGKATAN KAPASITAS (DIKLAT)
+    // =========================================================================
+
+    public function indexDiksar()
+    {
+        $data_diklat = DB::table('tbl_diksar')->orderBy('id', 'desc')->get();
+        return view('internal.pencegahan.diksar', compact('data_diklat'));
+    }
+
     public function indexDiklatF1()
     {
-        $data_diklat = DiklatF1::all(); 
+        $data_diklat = DB::table('tbl_diklat_f1')->orderBy('id', 'desc')->get();
         return view('internal.pencegahan.diklat_f1', compact('data_diklat'));
     }
 
-    
     public function indexDiklatF2()
     {
-        $data_diklat = DiklatF2::all(); 
-        // Menggunakan variabel yang sama ($data_diklat) agar HTML tidak perlu diubah
+        $data_diklat = DB::table('tbl_diklat_f2')->orderBy('id', 'desc')->get();
         return view('internal.pencegahan.diklat_f2', compact('data_diklat'));
     }
 
     public function indexDiklatInspektur()
     {
-        $data_diklat = DiklatInspektur::all(); 
+        $data_diklat = DB::table('tbl_diklat_inspektur')->orderBy('id', 'desc')->get();
         return view('internal.pencegahan.diklat_inspektur', compact('data_diklat'));
     }
-    // TAMBAHKAN FUNCTION INI
+
     public function indexDiklatMfr()
     {
-        $data_diklat = DiklatMfr::all(); 
+        $data_diklat = DB::table('tbl_diklat_mfr')->orderBy('id', 'desc')->get();
         return view('internal.pencegahan.diklat_mfr', compact('data_diklat'));
     }
+
     public function indexDiklatRescue()
     {
-        $data_diklat = DiklatRescue::all(); 
+        $data_diklat = DB::table('tbl_diklat_rescue')->orderBy('id', 'desc')->get();
         return view('internal.pencegahan.diklat_rescue', compact('data_diklat'));
     }
+
     public function indexDiklatOperator()
     {
-        $data_diklat = DiklatOperator::all(); 
+        $data_diklat = DB::table('tbl_diklat_operator')->orderBy('id', 'desc')->get();
         return view('internal.pencegahan.diklat_operator', compact('data_diklat'));
     }
+
     public function indexDiklatPpl()
     {
-        $data_diklat = DiklatPpl::all(); 
+        $data_diklat = DB::table('tbl_diklat_ppl')->orderBy('id', 'desc')->get();
         return view('internal.pencegahan.diklat_ppl', compact('data_diklat'));
     }
-    // TAMBAHKAN FUNCTION INI UNTUK HALAMAN UTAMA "PENINGKATAN KAPASITAS"
+
+    // Halaman Utama "Peningkatan Kapasitas" yang menarik semua data
     public function indexPeningkatanKapasitas()
     {
-        // 1. Tarik semua data dari masing-masing model
-        $dataF1        = DiklatF1::all();
-        $dataF2        = DiklatF2::all();
-        $dataInspektur = DiklatInspektur::all();
-        $dataMfr       = DiklatMfr::all();
-        $dataRescue    = DiklatRescue::all();
-        $dataOperator  = DiklatOperator::all();
-        $dataPpl       = DiklatPpl::all();
-        // Tambahkan model Diksar jika ada: $dataDiksar = Diksar::all();
+        $dataDiksar    = DB::table('tbl_diksar')->orderBy('id', 'desc')->get();
+        $dataF1        = DB::table('tbl_diklat_f1')->orderBy('id', 'desc')->get();
+        $dataF2        = DB::table('tbl_diklat_f2')->orderBy('id', 'desc')->get();
+        $dataInspektur = DB::table('tbl_diklat_inspektur')->orderBy('id', 'desc')->get();
+        $dataMfr       = DB::table('tbl_diklat_mfr')->orderBy('id', 'desc')->get();
+        $dataRescue    = DB::table('tbl_diklat_rescue')->orderBy('id', 'desc')->get();
+        $dataOperator  = DB::table('tbl_diklat_operator')->orderBy('id', 'desc')->get();
+        $dataPpl       = DB::table('tbl_diklat_ppl')->orderBy('id', 'desc')->get();
 
-        // 2. Kirim semuanya ke file blade utama tempat tab "Semua Data" berada
-        // Pastikan nama view-nya sesuai dengan file utamamu (misal: 'internal.pencegahan.peningkatan_kapasitas')
         return view('internal.pencegahan.peningkatan_kapasitas', compact(
+            'dataDiksar',
             'dataF1', 
             'dataF2', 
             'dataInspektur', 
@@ -78,5 +81,20 @@ class PencegahanController extends Controller
             'dataOperator', 
             'dataPpl'
         ));
+    }
+
+    // =========================================================================
+    // BAGIAN PENCEGAHAN DAN INSPEKSI BANGUNAN
+    // =========================================================================
+
+    public function createInspeksiBangunan()
+    {
+        // Pastikan nama file blade-nya 'tambah_inspeksi_bangunan.blade.php'
+        return view('internal.pencegahan.tambah_inspeksi_bangunan');
+    }
+
+    public function storeInspeksiBangunan(Request $request)
+    {
+        // Logika untuk menyimpan data ke database nanti
     }
 }
