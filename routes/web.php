@@ -164,9 +164,14 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/internal/damtan/hapus-data/{id}', [DamtanController::class, 'destroyPenyelamatan']);
     Route::get('/internal/damtan/lihat-data/{id}', [DamtanController::class, 'showPenyelamatan']);
     
+    // --- FITUR KELOLA SURAT KORBAN (BARU DITAMBAHKAN) ---
+    Route::get('/internal/surat-korban/data', [DamtanController::class, 'indexSurat'])->name('surat-korban.data');
     Route::get('/internal/surat-korban/create', [DamtanController::class, 'createSurat']);
     Route::post('/internal/surat-korban/store', [DamtanController::class, 'storeSurat']);
     Route::get('/internal/surat-korban/cetak/{id}', [DamtanController::class, 'cetakSurat']);
+    Route::get('/internal/surat-korban/edit/{id}', [DamtanController::class, 'editSurat']);
+    Route::put('/internal/surat-korban/update/{id}', [DamtanController::class, 'updateSurat']);
+    Route::delete('/internal/surat-korban/delete/{id}', [DamtanController::class, 'destroySurat']);
 
     // --- D. SAPRA (SARANA PRASARANA) ---
     Route::get('/sapra/data-hidrant-kota', [SapraController::class, 'dataHidrantKota']);
