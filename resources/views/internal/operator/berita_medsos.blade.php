@@ -84,16 +84,13 @@
                             <tr>
                                 <th style="width: 5%;">No</th>
                                 <th style="width: 15%;">Foto</th>
-<<<<<<< HEAD
-                                <th style="width: 35%;">Judul Berita</th>
-=======
                                 <th style="width: 35%;">Judul Berita & Kategori</th>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                 <th style="width: 25%;">Tanggal & Sumber</th>
                                 <th style="width: 20%;" class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
+<<<<<<< HEAD
 <<<<<<< HEAD
                             @forelse($medsosData as $index => $item)
 =======
@@ -103,6 +100,9 @@
                             @forelse($medsos ?? [] as $index => $item)
 >>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
 >>>>>>> 54d349b2f34ba1d90fd3fbf4f615f46b7fe9ffd6
+=======
+                            @forelse($medsosData as $index => $item)
+>>>>>>> 9d64ab909d89535ce270e48403a9dcabc77c2bff
                             <tr>
                                 <td>{{ $index + 1 }}</td>
                                 <td>
@@ -110,13 +110,10 @@
                                 </td>
                                 <td>
                                     <span class="fw-bold d-block">{{ $item->judul }}</span>
-<<<<<<< HEAD
-=======
                                     <span class="badge bg-secondary mb-1">
                                         <i class="fas fa-tag me-1"></i> {{ $item->kategori->nama_kategori ?? 'Tanpa Kategori' }}
                                     </span>
                                     <br>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                     @if($item->link)
                                         <a href="{{ $item->link }}" target="_blank" class="small text-primary text-decoration-none"><i class="fas fa-external-link-alt me-1"></i> Lihat Tautan</a>
                                     @endif
@@ -153,12 +150,16 @@
                                                     <input type="text" class="form-control" name="judul" value="{{ $item->judul }}" required>
                                                 </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 <<<<<<< HEAD
 =======
                                                 
 >>>>>>> 54d349b2f34ba1d90fd3fbf4f615f46b7fe9ffd6
+=======
+
+>>>>>>> 9d64ab909d89535ce270e48403a9dcabc77c2bff
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Kategori Berita <span class="text-danger">*</span></label>
                                                     <select class="form-select" name="kategori_id" required>
@@ -171,7 +172,6 @@
                                                     </select>
                                                 </div>
 
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Tanggal & Waktu</label>
                                                     <input type="datetime-local" class="form-control" name="tanggal" value="{{ \Carbon\Carbon::parse($item->tanggal)->format('Y-m-d\TH:i') }}" required>
@@ -209,42 +209,6 @@
         </main>
     </div>
 
-<<<<<<< HEAD
-    <!-- Modal Tambah Berita Medsos -->
-    <div class="modal fade" id="modalTambah" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form action="/internal/operator/berita-medsos/store" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="modal-header">
-                        <h5 class="modal-title fw-bold"><i class="fas fa-plus-circle me-1 text-danger"></i> Tambah Berita Medsos Baru</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Judul Berita <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="judul" placeholder="Cth: Evakuasi Ular Sanca di Pall Merah" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Tanggal & Waktu <span class="text-danger">*</span></label>
-                            <input type="datetime-local" class="form-control" name="tanggal" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Sumber Akun <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="sumber" value="instagram @damkarkotajambi" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Link Tautan Postingan (Opsional)</label>
-                            <input type="url" class="form-control" name="link" placeholder="https://instagram.com/p/...">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Foto Dokumentasi <span class="text-danger">*</span></label>
-                            <input type="file" class="form-control" name="gambar" accept=".jpg,.jpeg,.png" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
-=======
     <!-- Modal Tambah Berita Medsos (Sistem Hybrid) -->
     <div class="modal fade" id="modalTambah" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog">
@@ -307,10 +271,13 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                         <!-- Tombol tidak pernah didisable agar tidak merepotkan operator -->
 >>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
 >>>>>>> 54d349b2f34ba1d90fd3fbf4f615f46b7fe9ffd6
+=======
+>>>>>>> 9d64ab909d89535ce270e48403a9dcabc77c2bff
                         <button type="submit" class="btn btn-danger btn-sm fw-bold">Simpan Berita</button>
                     </div>
                 </form>
@@ -320,6 +287,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     <!-- SCRIPT TARIK DATA LINK (SUPPORT YOUTUBE) -->
 =======
@@ -328,6 +296,10 @@
     
     <!-- SCRIPT TARIK DATA LINK -->
 >>>>>>> 54d349b2f34ba1d90fd3fbf4f615f46b7fe9ffd6
+=======
+
+    <!-- SCRIPT TARIK DATA LINK (SUPPORT YOUTUBE) -->
+>>>>>>> 9d64ab909d89535ce270e48403a9dcabc77c2bff
     <script>
         document.getElementById('btnTarikData').addEventListener('click', function() {
             let urlInput = document.getElementById('inputLink').value.trim();
@@ -416,6 +388,5 @@
             });
         });
     </script>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
 </body>
 </html>

@@ -124,10 +124,8 @@
                 <div class="sidebar-submenu">
                     <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">PENINGKATAN KAPASITAS APARATUR</a>
                     <a href="/internal/pencegahan/inspeksi-kebakaran" class="sidebar-item" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">PENCEGAHAN KEBAKARAN DAN INSPEKSI</a>
-                    
-                    <!-- MENU 3 AKTIF -->
-                    <a href="/internal/pencegahan/pemberdayaan-masyarakat" class="sidebar-item active" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">
-                        PEMBERDAYAAN MASYARAKAT DAN DUNIA USAHA
+                    <a href="/internal/pencegahan/pemberdayaan-masyarakat" class="sidebar-item" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">PEMBERDAYAAN MASYARAKAT DAN DUNIA USAHA</a>
+
                     </a>
                 </div>
             </div>
@@ -174,10 +172,10 @@
                         <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
                         <input type="text" class="form-control border-start-0 ps-0" placeholder="Cari kelurahan atau posyandu...">
                     </div>
-                    
-                    <a href="#" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #0284c7; padding: 9px 16px;">
-                        <i class="fas fa-plus"></i> Tambah Data
-                    </a>
+                                       <!-- Ubah bagian ini -->
+<a href="/internal/pencegahan/pemberdayaan-masyarakat/create" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #0284c7; padding: 9px 16px;">
+    <i class="fas fa-plus"></i> Tambah Data
+</a>
                     <a href="#" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #10b981; padding: 9px 16px;">
                         <i class="fas fa-file-excel"></i> Excel
                     </a>
@@ -222,49 +220,53 @@
                                 <th class="text-center" width="100px">LAKI-LAKI</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <!-- Data Baris 1 dari Excel Lu -->
-                            <tr>
-                                <td class="text-center fw-bold">1</td>
-                                <td>19 Januari 2026</td>
-                                <td class="text-center text-muted">-</td>
-                                <td>5</td>
-                                <td>Rawasari</td>
-                                <td>Alam Barajo</td>
-                                <td class="text-center fw-bold">23</td>
-                                <td class="text-center fw-bold">8</td>
-                                <td>
-                                    <a href="#" class="text-decoration-none" style="color: #0284c7;">
-                                        <i class="fas fa-camera me-1"></i> 20260119 - RT 05 KEL. RAWASARI
-                                    </a>
-                                </td>
-                                <td class="sticky-action text-center">
-                                    <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
-                                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            
-                            <!-- Data Baris 2 dari Excel Lu -->
-                            <tr>
-                                <td class="text-center fw-bold">2</td>
-                                <td>06 Februari 2026</td>
-                                <td>Posyandu Beringin</td>
-                                <td>03, 12, 14, 15, 16, 17, 18 dan 19</td>
-                                <td>Kenali Asam Bawah</td>
-                                <td>Kota Baru</td>
-                                <td class="text-center fw-bold">29</td>
-                                <td class="text-center fw-bold">1</td>
-                                <td>
-                                    <a href="#" class="text-decoration-none" style="color: #0284c7;">
-                                        <i class="fas fa-camera me-1"></i> 20260206 - POSYANDU BERINGIN
-                                    </a>
-                                </td>
-                                <td class="sticky-action text-center">
-                                    <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
-                                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                        </tbody>
+                       <tbody>
+    @forelse($data_sosialisasi as $index => $item)
+    <tr class="align-middle">
+        <td class="text-center fw-bold">{{ $index + 1 }}</td>
+        
+        <!-- Format tanggal, misal: 19 Januari 2026 -->
+        <td>{{ \Carbon\Carbon::parse($item->tanggal_pelaksanaan)->translatedFormat('d F Y') }}</td>
+        
+        <!-- Posyandu, jika kosong tampilkan strip (-) -->
+        <td>{{ $item->posyandu ? $item->posyandu : '-' }}</td>
+        
+        <td class="text-center">{{ $item->rt }}</td>
+        <td>{{ $item->kelurahan }}</td>
+        <td>{{ $item->kecamatan }}</td>
+        
+        <td class="text-center fw-bold">{{ $item->peserta_perempuan }}</td>
+        <td class="text-center fw-bold">{{ $item->peserta_laki_laki }}</td>
+        
+        <td class="text-center">
+            @if($item->foto_video)
+                <a href="/uploads/pemberdayaan/{{ $item->foto_video }}" target="_blank" class="text-primary text-decoration-none fw-bold">
+                    <i class="fas fa-camera me-1"></i> {{ $item->foto_video }}
+                </a>
+            @else
+                <span class="text-muted">-</span>
+            @endif
+        </td>
+        
+        <td class="text-center">
+            <a href="/internal/pencegahan/pemberdayaan-masyarakat/edit/{{ $item->id }}" class="btn btn-warning btn-sm">
+                <i class="fas fa-edit"></i>
+            </a>
+            <form action="/internal/pencegahan/pemberdayaan-masyarakat/hapus/{{ $item->id }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger btn-sm">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </form>
+        </td>
+    </tr>
+    @empty
+    <tr>
+        <td colspan="10" class="text-center text-muted py-4">Belum ada data sosialisasi dan edukasi.</td>
+    </tr>
+    @endforelse
+</tbody>
                     </table>
                 </div>
             </div>

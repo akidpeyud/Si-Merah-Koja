@@ -4,14 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class PemberdayaanController extends Controller
 {
     // 1. TAMPILKAN SEMUA DATA (INDEX)
     public function index()
     {
-        $data_pemberdayaan = DB::table('tbl_pemberdayaan')->orderBy('id', 'desc')->get();
-        return view('internal.pencegahan.pemberdayaan_masyarakat', compact('data_pemberdayaan'));
+        // Narik data dari tabel sosialisasi_edukasi
+        $data_sosialisasi = DB::table('sosialisasi_edukasi')
+                            ->orderBy('tanggal_pelaksanaan', 'desc')
+                            ->get();
+                            
+        return view('internal.pencegahan.pemberdayaan_masyarakat', compact('data_sosialisasi'));
     }
 
     // 2. TAMPILKAN FORM TAMBAH DATA (CREATE)
@@ -23,47 +28,80 @@ class PemberdayaanController extends Controller
     // 3. PROSES SIMPAN DATA KE DATABASE (STORE)
     public function store(Request $request)
     {
-        DB::table('tbl_pemberdayaan')->insert([
-            'nama_kegiatan' => $request->nama_kegiatan,
-            'tanggal'       => $request->tanggal,
-            'lokasi'        => $request->lokasi,
-            'keterangan'    => $request->keterangan,
-            'created_at'    => now(),
-            'updated_at'    => now(),
-        ]);
+        $data = [
+            // PERBAIKAN: Otomatis mencari input bernama 'tanggal_pelaksanaan' atau 'tanggal'
+            'tanggal_pelaksanaan' => $request->tanggal_pelaksanaan ?? $request->tanggal,
+            'kecamatan'           => $request->kecamatan,
+            'kelurahan'           => $request->kelurahan,
+            'rt'                  => $request->rt,
+            'posyandu'            => $request->posyandu,
+            'peserta_perempuan'   => $request->peserta_perempuan ?? 0,
+            'peserta_laki_laki'   => $request->peserta_laki_laki ?? 0,
+            'created_at'          => now(),
+            'updated_at'          => now(),
+        ];
+
+        // Cek kalau user upload foto/video
+        if ($request->hasFile('foto_video')) {
+            $file = $request->file('foto_video');
+            $namaFile = time() . "_" . $file->getClientOriginalName();
+            $file->move(public_path('uploads/pemberdayaan'), $namaFile);
+            $data['foto_video'] = $namaFile;
+        }
+
+        DB::table('sosialisasi_edukasi')->insert($data);
 
         return redirect('/internal/pencegahan/pemberdayaan-masyarakat')
-            ->with('success', 'Data pemberdayaan berhasil ditambahkan!');
+            ->with('success', 'Data Sosialisasi & Edukasi berhasil ditambahkan!');
     }
 
     // 4. TAMPILKAN FORM EDIT DATA (EDIT)
     public function edit($id)
     {
-        $data = DB::table('tbl_pemberdayaan')->where('id', $id)->first();
+        $data = DB::table('sosialisasi_edukasi')->where('id', $id)->first();
+        
+        if (!$data) {
+            return redirect('/internal/pencegahan/pemberdayaan-masyarakat')->with('error', 'Data tidak ditemukan!');
+        }
+
         return view('internal.pencegahan.edit_pemberdayaan', compact('data'));
     }
 
     // 5. PROSES UPDATE DATA KE DATABASE (UPDATE)
     public function update(Request $request, $id)
     {
-        DB::table('tbl_pemberdayaan')->where('id', $id)->update([
-            'nama_kegiatan' => $request->nama_kegiatan,
-            'tanggal'       => $request->tanggal,
-            'lokasi'        => $request->lokasi,
-            'keterangan'    => $request->keterangan,
-            'updated_at'    => now(),
-        ]);
+        $updateData = [
+            // PERBAIKAN: Sama seperti di atas
+            'tanggal_pelaksanaan' => $request->tanggal_pelaksanaan ?? $request->tanggal,
+            'kecamatan'           => $request->kecamatan,
+            'kelurahan'           => $request->kelurahan,
+            'rt'                  => $request->rt,
+            'posyandu'            => $request->posyandu,
+            'peserta_perempuan'   => $request->peserta_perempuan ?? 0,
+            'peserta_laki_laki'   => $request->peserta_laki_laki ?? 0,
+            'updated_at'          => now(),
+        ];
+
+        // Cek kalau user upload foto/video baru untuk mengganti yang lama
+        if ($request->hasFile('foto_video')) {
+            $file = $request->file('foto_video');
+            $namaFile = time() . "_" . $file->getClientOriginalName();
+            $file->move(public_path('uploads/pemberdayaan'), $namaFile);
+            $updateData['foto_video'] = $namaFile;
+        }
+
+        DB::table('sosialisasi_edukasi')->where('id', $id)->update($updateData);
 
         return redirect('/internal/pencegahan/pemberdayaan-masyarakat')
-            ->with('success', 'Data pemberdayaan berhasil diperbarui!');
+            ->with('success', 'Data Sosialisasi & Edukasi berhasil diperbarui!');
     }
 
     // 6. PROSES HAPUS DATA (DESTROY)
     public function destroy($id)
     {
-        DB::table('tbl_pemberdayaan')->where('id', $id)->delete();
+        DB::table('sosialisasi_edukasi')->where('id', $id)->delete();
 
         return redirect('/internal/pencegahan/pemberdayaan-masyarakat')
-            ->with('success', 'Data pemberdayaan berhasil dihapus!');
+            ->with('success', 'Data Sosialisasi & Edukasi berhasil dihapus!');
     }
 }
