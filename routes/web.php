@@ -589,25 +589,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-ppl', [PencegahanController::class, 'indexDiklatPpl']);
 
 });
-// ==========================================
-// 2. RUTE AKUN PEMOHON (MASYARAKAT / PERUSAHAAN)
-// ==========================================
-Route::get('/pemohon/register', function () { 
-    return view('pemohon.register'); 
-})->name('pemohon.register');
-
-Route::post('/pemohon/register', [App\Http\Controllers\PemohonAuthController::class, 'register']);
-
-Route::get('/pemohon/login', function () { 
-    return view('pemohon.login'); 
-})->name('pemohon.login');
-
-Route::delete('/internal/pencegahan/peningkatan-kapasitas/hapus/{jenis}/{id}', function ($jenis, $id) {
-    $tabel = 'tbl_' . str_replace('-', '_', $jenis);
-    \Illuminate\Support\Facades\DB::table($tabel)->where('id', $id)->delete();
-    return redirect()->back()->with('success', 'Data berhasil dihapus!');
-});
-
 
 // Route untuk halaman Publik Media Informasi
 Route::get('/media-informasi', [KabarDamkarController::class, 'indexMediaInformasi'])->name('media.informasi');
