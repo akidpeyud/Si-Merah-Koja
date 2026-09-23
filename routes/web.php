@@ -158,9 +158,14 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/internal/damtan/hapus-data/{id}', [DamtanController::class, 'destroyPenyelamatan']);
     Route::get('/internal/damtan/lihat-data/{id}', [DamtanController::class, 'showPenyelamatan']);
     
+    // --- FITUR KELOLA SURAT KORBAN (BARU DITAMBAHKAN) ---
+    Route::get('/internal/surat-korban/data', [DamtanController::class, 'indexSurat'])->name('surat-korban.data');
     Route::get('/internal/surat-korban/create', [DamtanController::class, 'createSurat']);
     Route::post('/internal/surat-korban/store', [DamtanController::class, 'storeSurat']);
     Route::get('/internal/surat-korban/cetak/{id}', [DamtanController::class, 'cetakSurat']);
+    Route::get('/internal/surat-korban/edit/{id}', [DamtanController::class, 'editSurat']);
+    Route::put('/internal/surat-korban/update/{id}', [DamtanController::class, 'updateSurat']);
+    Route::delete('/internal/surat-korban/delete/{id}', [DamtanController::class, 'destroySurat']);
 
     // --- D. SAPRA (SARANA PRASARANA) ---
     Route::get('/sapra/data-hidrant-kota', [SapraController::class, 'dataHidrantKota']);
@@ -579,6 +584,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill', [App\Http\Controllers\PencegahanController::class, 'indexFireDrill']);
     Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan', [App\Http\Controllers\PencegahanController::class, 'indexInspeksiBangunan']);
     Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill', [App\Http\Controllers\PencegahanController::class, 'indexFireDrill']);
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan', function () { return view('internal.pencegahan.inspeksi_bangunan'); });
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan/tambah', function () { return view('internal.pencegahan.tambah_inspeksi_bangunan'); });
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill', function () { return view('internal.pencegahan.fire_drill'); });
 
     // Layanan Inspeksi
     Route::get('/internal/pencegahan/layanan-inspeksi', function () { 
@@ -755,6 +763,8 @@ Route::middleware(['auth'])->group(function () {
     // Pemberdayaan Masyarakat
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat', [App\Http\Controllers\PemberdayaanController::class, 'index']);
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga', [App\Http\Controllers\PencegahanController::class, 'indexPelatihanKeluarga'])->name('pelatihan_keluarga.index');
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat', function () { return view('internal.pencegahan.pemberdayaan_masyarakat'); });
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga', function () { return view('internal.pencegahan.pelatihan_keluarga'); });
 
     // Peningkatan Kapasitas Aparatur (Multi Tabel)
     Route::get('/internal/pencegahan/peningkatan-kapasitas', function () {
@@ -867,3 +877,25 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-ppl', [PencegahanController::class, 'indexDiklatPpl']);
 
 });
+// ==========================================
+// 2. RUTE AKUN PEMOHON (MASYARAKAT / PERUSAHAAN)
+// ==========================================
+Route::get('/pemohon/register', function () { 
+    return view('pemohon.register'); 
+})->name('pemohon.register');
+
+Route::post('/pemohon/register', [App\Http\Controllers\PemohonAuthController::class, 'register']);
+
+Route::get('/pemohon/login', function () { 
+    return view('pemohon.login'); 
+})->name('pemohon.login');
+
+Route::delete('/internal/pencegahan/peningkatan-kapasitas/hapus/{jenis}/{id}', function ($jenis, $id) {
+    $tabel = 'tbl_' . str_replace('-', '_', $jenis);
+    \Illuminate\Support\Facades\DB::table($tabel)->where('id', $id)->delete();
+    return redirect()->back()->with('success', 'Data berhasil dihapus!');
+});
+
+
+// Route untuk halaman Publik Media Informasi
+Route::get('/media-informasi', [KabarDamkarController::class, 'indexMediaInformasi'])->name('media.informasi');

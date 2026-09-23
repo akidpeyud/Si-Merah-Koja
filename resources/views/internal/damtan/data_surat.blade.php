@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-    <title>Buat Surat Keterangan Korban | SIMERAH KOJA</title>
+    <title>Kelola Surat Korban | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
+    
+    <!-- PRELOAD LOGO AGAR TIDAK TELAT LOADING SAAT DI-PRINT -->
+    <link rel="preload" href="/images/logo.png" as="image">
+    <link rel="preload" href="/images/jambi.png" as="image">
 
     <!-- Fonts (Sesuai UI/UX Dashboard Utama) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,7 +18,6 @@
     
     <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -63,6 +66,25 @@
         ul, ol { list-style: none; padding: 0; margin: 0; }
         button { font: inherit; cursor: pointer; }
         
+        /* ==========================================================
+           GLOBAL ALERTS
+           ========================================================== */
+        #globalSuccessAlert, #globalErrorAlert {
+            position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
+            color: white; padding: 16px 24px; border-radius: 8px; z-index: 99999;
+            display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px;
+            animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #globalSuccessAlert { background-color: #10b981; box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); }
+        #globalErrorAlert { background-color: #ef4444; box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.4); }
+        
+        .alert-icon { font-size: 22px; }
+        .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px; transition: opacity 0.2s; }
+        .btn-close-alert:hover { opacity: 1; }
+
+        @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+        @keyframes fadeOutUpCenter { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -50px); opacity: 0; } }
+
         /* ==========================================================
            TOPBAR
            ========================================================== */
@@ -149,15 +171,14 @@
         }
 
         /* ==========================================================
-           MAIN CONTENT & FORM STYLING
+           MAIN CONTENT & TABLE STYLING
            ========================================================== */
         .content { flex: 1; min-width: 0; padding: clamp(20px, 3vw, 40px) clamp(18px, 3vw, 44px) 60px; }
         
-        .page-head { margin-bottom: 24px; }
-        .page-head h1 { font-family: var(--font-display); font-weight: 800; font-stretch: 88%; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.15; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 6px;}
-        .page-head p { color: var(--steel); font-size: .95rem; margin: 0; }
+        .page-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 15px; }
+        .page-header h1 { font-family: var(--font-display); font-weight: 800; font-stretch: 88%; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.15; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 6px;}
+        .page-header p { color: var(--steel); font-size: .95rem; margin: 0; }
 
-        /* Custom Card Form */
         .card-custom {
             background: #fff;
             border: 1px solid var(--line);
@@ -166,18 +187,15 @@
             box-shadow: 0 10px 30px -10px rgba(13,27,42,.05);
         }
 
-        /* Form Elements */
-        .field-label { font-size: .85rem; font-weight: 700; color: var(--ink-3); margin-bottom: 8px; display: inline-flex; align-items: center; }
-        .field-label i { margin-right: 8px; font-size: .9rem; color: var(--steel); }
-
+        /* Form Filter Styles */
         .form-control, .form-select {
             font-family: var(--font-body);
             font-size: .95rem;
             color: var(--ink);
             background-color: var(--paper);
             border: 1px solid var(--line);
-            border-radius: 12px;
-            padding: 12px 16px;
+            border-radius: 10px;
+            padding: 10px 16px;
             transition: all 0.2s ease-in-out;
             box-shadow: none;
         }
@@ -186,55 +204,93 @@
             border-color: var(--blue);
             box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
         }
-        .form-control::placeholder { color: #9ca3af; }
-        
-        .section-title {
-            font-family: var(--font-display);
-            font-weight: 700;
-            color: var(--ink);
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 1px dashed var(--line);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.25rem;
-        }
-        .section-title i {
-            color: var(--blue);
-            background: rgba(37, 99, 235, 0.1);
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 1.05rem;
-        }
+        .input-group-text { background-color: var(--paper); border: 1px solid var(--line); color: var(--steel); }
+        .input-group > .form-control { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+        .input-group > .input-group-text { border-top-left-radius: 0; border-bottom-left-radius: 0; }
 
         /* Buttons */
         .btn-custom-primary {
-            background-color: var(--blue);
-            color: #fff;
-            font-family: var(--font-body);
-            font-weight: 700;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 12px;
-            transition: background 0.2s;
+            background-color: var(--blue); color: #fff; font-family: var(--font-body); font-weight: 700;
+            border: none; padding: 10px 24px; border-radius: 10px; transition: background 0.2s; text-decoration: none;
         }
         .btn-custom-primary:hover { background-color: #1d4ed8; color: #fff; }
         
         .btn-custom-light {
-            background-color: var(--paper);
-            color: var(--ink);
-            font-family: var(--font-body);
-            font-weight: 700;
-            border: 1px solid var(--line);
-            padding: 12px 28px;
-            border-radius: 12px;
-            transition: background 0.2s;
+            background-color: var(--paper); color: var(--ink); font-family: var(--font-body); font-weight: 700;
+            border: 1px solid var(--line); padding: 10px 24px; border-radius: 10px; transition: background 0.2s;
         }
         .btn-custom-light:hover { background-color: #e2e8f0; color: var(--ink); }
+
+        /* Table Custom Styles */
+        .table { margin-bottom: 0; }
+        .table th { background-color: rgba(243, 245, 248, 0.6); color: var(--ink-3); font-weight: 700; font-size: 13px; padding: 16px; border-bottom: 1px solid var(--line); font-family: var(--font-display); }
+        .table td { padding: 16px; font-size: 14px; color: var(--ink); vertical-align: middle; border-bottom: 1px solid var(--line); }
+        .table tbody tr:hover { background-color: rgba(243, 245, 248, 0.3); }
+        .action-btn { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: none; font-size: 13px; transition: all 0.2s; text-decoration: none;}
+        .action-btn.view { background-color: #eff6ff; color: var(--blue); }
+        .action-btn.view:hover { background-color: #dbeafe; }
+        .action-btn.edit { background-color: #fefce8; color: var(--amber); margin: 0 5px; }
+        .action-btn.edit:hover { background-color: #fef08a; }
+        .action-btn.delete { background-color: #fef2f2; color: var(--signal); }
+        .action-btn.delete:hover { background-color: #fecaca; }
+
+        /* Pagination */
+        .pagination-container nav ul.pagination { margin-bottom: 0 !important; }
+        .pagination-container nav p { display: none; }
+
+        /* --- STYLES KHUSUS UNTUK CETAK PDF --- */
+        @page { margin: 0; }
+        @media print {
+            .topbar, .sidebar, .sidebar-backdrop, .page-header, .card-header, .card-footer,
+            .btn, .dropdown, form, .modal, .action-btn, #globalSuccessAlert, #globalErrorAlert {
+                display: none !important;
+            }
+
+            body { background-color: white !important; font-size: 12px; margin: 1.5cm !important; -webkit-print-color-adjust: exact; }
+            .shell { display: block; }
+            .content { padding: 0 !important; margin: 0 !important; }
+            .card-custom { box-shadow: none !important; border: none !important; border-radius: 0 !important; }
+            .card-body { padding: 0 !important; }
+
+            /* Format tabel cetak */
+            .table { width: 100% !important; border-collapse: collapse; margin-bottom: 20px; }
+            .table th, .table td { border: 1px solid black !important; padding: 8px !important; text-align: left; }
+            .table th { background-color: #f2f2f2 !important; font-weight: bold; color: black !important; text-align: left !important; }
+            th:last-child, td:last-child { display: none !important; }
+        }
     </style>
 </head>
 <body>
+
+<!-- ALERT SUCCESS GLOBAL -->
+@if(session('success'))
+    <div id="globalSuccessAlert">
+        <i class="fas fa-check-circle alert-icon"></i>
+        <span>{{ session('success') }}</span>
+        <button class="btn-close-alert" onclick="closeAlert('globalSuccessAlert')"><i class="fas fa-times"></i></button>
+    </div>
+@endif
+
+<!-- ALERT ERROR GLOBAL -->
+@if(session('error'))
+    <div id="globalErrorAlert">
+        <i class="fas fa-exclamation-triangle alert-icon"></i>
+        <span>{{ session('error') }}</span>
+        <button class="btn-close-alert" onclick="closeAlert('globalErrorAlert')"><i class="fas fa-times"></i></button>
+    </div>
+@endif
+
+<script>
+    function closeAlert(id) {
+        let alertBox = document.getElementById(id);
+        if(alertBox) {
+            alertBox.style.animation = 'fadeOutUpCenter 0.4s ease forwards';
+            setTimeout(() => alertBox.remove(), 400); 
+        }
+    }
+    setTimeout(() => closeAlert('globalSuccessAlert'), 4000);
+    setTimeout(() => closeAlert('globalErrorAlert'), 4000);
+</script>
 
 <!-- ==================== TOPBAR ==================== -->
 <header class="topbar">
@@ -289,7 +345,7 @@
                 </div>
             </details>
 
-            <!-- ACCORDION PEMADAMAN (DAMTAN) -->
+ <!-- ACCORDION PEMADAMAN (DAMTAN) -->
             <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
                 <summary>Bagian pemadaman <i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
@@ -353,153 +409,191 @@
         </details>
     </aside>
 
-    <!-- ==================== KONTEN UTAMA & FORM ==================== -->
+    <!-- ==================== KONTEN UTAMA ==================== -->
     <main class="content">
-
-        <div class="page-head">
-            <h1>Pembuatan Surat Keterangan</h1>
-            <p>Formulir penerbitan Surat Keterangan Korban Kebakaran resmi Disdamkartan.</p>
+        <div class="page-header">
+            <div>
+                <h1>Kelola Surat Korban</h1>
+                <p>Daftar seluruh Surat Keterangan Kejadian yang telah diterbitkan.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn-custom-light shadow-sm" type="button" onclick="window.print()">
+                    <i class="fas fa-download me-2"></i> Ekspor Semua
+                </button>
+                <a href="/internal/surat-korban/create" class="btn-custom-primary shadow-sm">
+                    <i class="fas fa-plus me-2"></i> Buat Surat Baru
+                </a>
+            </div>
         </div>
 
         <div class="card-custom">
-            <div class="card-body p-4 p-md-5">
-                <form action="/internal/surat-korban/store" method="POST">
-                    @csrf
+            <!-- Filter & Search Bar -->
+            <div class="card-header bg-white p-4 border-bottom border-light">
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0"><i class="fas fa-search"></i></span>
+                            <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari nomor surat, nama korban...">
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end ms-auto">
+                        <button class="btn-custom-light w-100 py-2 border-light fw-bold" onclick="resetFilter()"><i class="fas fa-sync-alt me-2"></i>Reset Filter</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Content -->
+            <div class="card-body p-0">
+                <div class="table-responsive">
                     
-                    <!-- BAGIAN A: DATA DIRI -->
-                    <h5 class="section-title"><i class="fas fa-user"></i> Data Diri Korban</h5>
-                    <div class="row g-4 mb-5">
-                        <div class="col-md-6">
-                            <label class="field-label"><i class="fas fa-user"></i> Nama Lengkap</label>
-                            <input type="text" name="nama_korban" class="form-control" placeholder="Cth: MAHILLI" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="field-label"><i class="fas fa-home"></i> Status Kepemilikan</label>
-                            <input type="text" name="status_kepemilikan" class="form-control" placeholder="Cth: Pemilik Bangunan" required>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label class="field-label"><i class="fas fa-id-card"></i> NIK (Nomor Induk Kependudukan)</label>
-                            <input type="number" name="nik" class="form-control" placeholder="Cth: 1571023112590461" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="field-label"><i class="fas fa-briefcase"></i> Pekerjaan</label>
-                            <input type="text" name="pekerjaan" class="form-control" placeholder="Cth: Pensiunan" required>
-                        </div>
-                        
-                        <div class="col-md-4">
-                            <label class="field-label"><i class="fas fa-map-marker-alt"></i> Tempat Lahir</label>
-                            <input type="text" name="tempat_lahir" class="form-control" placeholder="Cth: Lubuk Resam" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="field-label"><i class="fas fa-calendar-alt"></i> Tanggal Lahir</label>
-                            <input type="date" name="tanggal_lahir" class="form-control" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="field-label"><i class="fas fa-ring"></i> Status Perkawinan</label>
-                            <select class="form-select" name="status_perkawinan" required>
-                                <option value="" disabled selected>-- Pilih --</option>
-                                <option value="Kawin Tercatat">Kawin Tercatat</option>
-                                <option value="Belum Kawin">Belum Kawin</option>
-                                <option value="Cerai Hidup">Cerai Hidup</option>
-                                <option value="Cerai Mati">Cerai Mati</option>
-                            </select>
+                    <!-- HEADER KHUSUS CETAK PDF MENGGUNAKAN FLEXBOX ANTI-ERROR BOOTSTRAP -->
+                    <div id="print-header" class="d-none d-print-block" style="width: 100%; margin-bottom: 20px;">
+                        <div style="display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; margin-bottom: 15px;">
+                            
+                            <!-- Logo Kiri -->
+                            <div style="width: 15% !important; text-align: left !important;">
+                                <img src="/images/jambi.png" style="width: 80px; height: auto;">
+                            </div>
+                            
+                            <!-- Teks Tengah Dipaksa Center -->
+                            <div style="width: 70% !important; text-align: center !important;">
+                                <div style="font-size: 14pt; color: #000; margin-bottom: 2px; font-family: 'Times New Roman', Times, serif;">PEMERINTAH KOTA JAMBI</div>
+                                <div style="font-size: 16pt; font-weight: bold; color: #000; line-height: 1.1; margin-bottom: 5px; font-family: 'Times New Roman', Times, serif;">DINAS PEMADAM KEBAKARAN<br>DAN PENYELAMATAN</div>
+                                <div style="font-size: 10pt; color: #000; font-family: 'Times New Roman', Times, serif;">Jl. Hos. Cokroaminoto No. 113 Telp. 0741-41171<br>JAMBI</div>
+                            </div>
+                            
+                            <!-- Logo Kanan -->
+                            <div style="width: 15% !important; text-align: right !important;">
+                                <img src="/images/logo.png" style="width: 100px; height: auto;">
+                            </div>
                         </div>
                         
-                        <div class="col-md-12">
-                            <label class="field-label"><i class="fas fa-map-signs"></i> Alamat Lengkap</label>
-                            <textarea name="alamat" class="form-control" rows="3" required placeholder="Jl. HM. Yusuf Nasri RT. 07 Kel. Wijaya Pura Kec. Jambi Selatan..."></textarea>
-                        </div>
+                        <!-- Garis Ganda -->
+                        <div style="border-top: 3px solid black !important; border-bottom: 1px solid black !important; height: 2px !important; width: 100% !important; margin-bottom: 15px !important;"></div>
+                        
+                        <h3 style="text-align: center !important; font-weight: bold; margin-bottom: 5px; font-size: 16px; color: black; font-family: 'Times New Roman', Times, serif;">REKAPITULASI SURAT KETERANGAN KEJADIAN</h3>
+                        <p style="text-align: center !important; font-size: 12px; margin-bottom: 15px; color: black; font-family: 'Times New Roman', Times, serif;">Dicetak pada: {{ date('d F Y') }}</p>
                     </div>
+                    <!-- AKHIR HEADER CETAK -->
 
-                    <!-- BAGIAN B: DETAIL KEJADIAN -->
-                    <h5 class="section-title"><i class="fas fa-file-signature"></i> Detail Kejadian & Surat</h5>
-                    <div class="row g-4 mb-4 p-4 rounded border" style="background: rgba(243, 245, 248, 0.5);">
-                        <div class="col-md-12">
-                            <label class="field-label"><i class="fas fa-fire"></i> Objek Terbakar</label>
-                            <input type="text" name="objek_terbakar" class="form-control" placeholder="Cth: Bangunan / Rumah Tinggal" required>
-                        </div>
-                        
-                        <div class="col-md-4">
-                            <label class="field-label"><i class="fas fa-calendar-day"></i> Hari Kejadian</label>
-                            <select class="form-select" name="hari_kejadian" required>
-                                <option value="" disabled selected>-- Pilih Hari --</option>
-                                <option value="Senin">Senin</option>
-                                <option value="Selasa">Selasa</option>
-                                <option value="Rabu">Rabu</option>
-                                <option value="Kamis">Kamis</option>
-                                <option value="Jumat">Jumat</option>
-                                <option value="Sabtu">Sabtu</option>
-                                <option value="Minggu">Minggu</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="field-label"><i class="fas fa-calendar"></i> Tanggal Kejadian</label>
-                            <input type="date" name="tanggal_kejadian" class="form-control" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="field-label"><i class="fas fa-clock"></i> Waktu Kejadian (WIB)</label>
-                            <input type="time" name="waktu_kejadian" class="form-control" required>
-                        </div>
-                    </div>
-
-                    <div class="row g-4 mb-4">
-                        <div class="col-md-6">
-                            <label class="field-label"><i class="fas fa-user-tie"></i> Tembusan Camat</label>
-                            <input type="text" name="tembusan_camat" class="form-control" placeholder="Cth: Jambi Selatan">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="field-label"><i class="fas fa-user-tie"></i> Tembusan Lurah</label>
-                            <input type="text" name="tembusan_lurah" class="form-control" placeholder="Cth: Wijaya Pura">
-                        </div>
-                    </div>
-
-                    <!-- SUBMIT BUTTON -->
-                    <div class="d-flex justify-content-end mt-5 pt-4 border-top">
-                        <button type="reset" class="btn-custom-light me-3">Reset Form</button>
-                        <button type="submit" class="btn-custom-primary shadow-sm">
-                            <i class="fas fa-file-pdf me-2"></i> Simpan & Buat Surat
-                        </button>
-                    </div>
-                </form>
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-center" width="5%">No</th>
+                                <th width="25%">Nomor Surat</th>
+                                <th width="35%">Nama Korban / Instansi</th>
+                                <th width="20%">Tanggal Diterbitkan</th>
+                                <th class="text-center" width="15%">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            @forelse($surat as $index => $row)
+                            <tr>
+                                <td class="text-center text-muted">{{ $surat->firstItem() + $index }}</td>
+                                <td><strong>{{ $row->nomor_surat }}</strong></td>
+                                <td class="text-capitalize">{{ $row->nama_korban }}</td>
+                                <td>
+                                    <div class="text-dark fw-bold">
+                                        {{ $row->created_at ? \Carbon\Carbon::parse($row->created_at)->format('d M Y') : '-' }}
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <!-- Tombol Cetak PDF -->
+                                    <a href="/internal/surat-korban/cetak/{{ $row->id }}" class="action-btn view" target="_blank" title="Cetak Surat"><i class="fas fa-print"></i></a>
+                                    <!-- Tombol Edit -->
+                                    <a href="/internal/surat-korban/edit/{{ $row->id }}" class="action-btn edit" title="Edit Surat"><i class="fas fa-edit"></i></a>
+                                    <!-- Tombol Hapus -->
+                                    <form action="/internal/surat-korban/delete/{{ $row->id }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus surat nomor {{ $row->nomor_surat }} secara permanen?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="action-btn delete" title="Hapus"><i class="fas fa-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="fas fa-envelope-open-text mb-3" style="font-size: 24px;"></i><br>
+                                    Belum ada surat keterangan korban yang diterbitkan.
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card-footer bg-white p-4 d-flex justify-content-between align-items-center border-top">
+                <span class="text-muted" style="font-size: 13px;" id="dataCount">
+                    Menampilkan {{ $surat->firstItem() ?? 0 }} - {{ $surat->lastItem() ?? 0 }} dari total {{ $surat->total() }} surat
+                </span>
+                <div class="pagination-container mb-0">
+                    {{ $surat->links('pagination::bootstrap-5') }}
+                </div>
             </div>
         </div>
     </main>
 </div>
 
-<!-- ==================== SCRIPTS ==================== -->
+<!-- Script Bootstrap & Fungsi Search/Filter JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-(function () {
-    'use strict';
+    (function () {
+        'use strict';
+        /* ---------- Sidebar (Mobile Toggle) ---------- */
+        var toggle = document.getElementById('sideToggle');
+        var backdrop = document.getElementById('sideBackdrop');
+        function closeSide() {
+            document.body.classList.remove('side-open');
+            if(toggle) toggle.setAttribute('aria-expanded', 'false');
+        }
+        if (toggle) {
+            toggle.addEventListener('click', function () {
+                var open = document.body.classList.toggle('side-open');
+                toggle.setAttribute('aria-expanded', open);
+            });
+        }
+        if (backdrop) backdrop.addEventListener('click', closeSide);
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
 
-    /* ---------- Sidebar (Mobile Toggle) ---------- */
-    var toggle = document.getElementById('sideToggle');
-    var backdrop = document.getElementById('sideBackdrop');
-
-    function closeSide() {
-        document.body.classList.remove('side-open');
-        if(toggle) toggle.setAttribute('aria-expanded', 'false');
-    }
-    if (toggle) {
-        toggle.addEventListener('click', function () {
-            var open = document.body.classList.toggle('side-open');
-            toggle.setAttribute('aria-expanded', open);
+        /* ---------- Eksklusivitas Accordion Sidebar ---------- */
+        var groups = document.querySelectorAll('.side-group');
+        groups.forEach(function (g) {
+            g.addEventListener('toggle', function () {
+                if (g.open) {
+                    groups.forEach(function (o) { if (o !== g) o.open = false; });
+                }
+            });
         });
-    }
-    if (backdrop) backdrop.addEventListener('click', closeSide);
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
+    })();
 
-    /* ---------- Eksklusivitas Accordion Sidebar (hanya satu grup terbuka) ---------- */
-    var groups = document.querySelectorAll('.side-group');
-    groups.forEach(function (g) {
-        g.addEventListener('toggle', function () {
-            if (g.open) {
-                groups.forEach(function (o) { if (o !== g) o.open = false; });
+    /* ---------- FUNGSI SEARCH FRONTEND ---------- */
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const tableBody = document.getElementById('tableBody');
+        const rows = tableBody.getElementsByTagName('tr');
+
+        function filterTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+
+            for (let i = 0; i < rows.length; i++) {
+                // Abaikan baris "Belum ada data"
+                if (rows[i].getElementsByTagName('td').length === 1) continue; 
+                
+                const rowText = rows[i].textContent.toLowerCase();
+                const matchesSearch = rowText.includes(searchTerm);
+
+                rows[i].style.display = matchesSearch ? '' : 'none';
             }
-        });
+        }
+
+        searchInput.addEventListener('keyup', filterTable);
     });
-})();
+
+    function resetFilter() {
+        document.getElementById('searchInput').value = "";
+        document.getElementById('searchInput').dispatchEvent(new Event('keyup'));
+    }
 </script>
 </body>
 </html>

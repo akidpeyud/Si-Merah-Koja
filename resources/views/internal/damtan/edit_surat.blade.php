@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-    <title>Buat Surat Keterangan Korban | SIMERAH KOJA</title>
+    <title>Edit Surat Korban | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
 
     <!-- Fonts (Sesuai UI/UX Dashboard Utama) -->
@@ -14,7 +14,6 @@
     
     <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -63,6 +62,25 @@
         ul, ol { list-style: none; padding: 0; margin: 0; }
         button { font: inherit; cursor: pointer; }
         
+        /* ==========================================================
+           GLOBAL ALERTS
+           ========================================================== */
+        #globalSuccessAlert, #globalErrorAlert {
+            position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
+            color: white; padding: 16px 24px; border-radius: 8px; z-index: 99999;
+            display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px;
+            animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #globalSuccessAlert { background-color: #10b981; box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); }
+        #globalErrorAlert { background-color: #ef4444; box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.4); }
+        
+        .alert-icon { font-size: 22px; }
+        .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px; transition: opacity 0.2s; }
+        .btn-close-alert:hover { opacity: 1; }
+
+        @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+        @keyframes fadeOutUpCenter { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -50px); opacity: 0; } }
+
         /* ==========================================================
            TOPBAR
            ========================================================== */
@@ -230,11 +248,44 @@
             padding: 12px 28px;
             border-radius: 12px;
             transition: background 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
         }
         .btn-custom-light:hover { background-color: #e2e8f0; color: var(--ink); }
     </style>
 </head>
 <body>
+
+<!-- ALERT SUCCESS GLOBAL -->
+@if(session('success'))
+    <div id="globalSuccessAlert">
+        <i class="fas fa-check-circle alert-icon"></i>
+        <span>{{ session('success') }}</span>
+        <button class="btn-close-alert" onclick="closeAlert('globalSuccessAlert')"><i class="fas fa-times"></i></button>
+    </div>
+@endif
+
+<!-- ALERT ERROR GLOBAL -->
+@if(session('error'))
+    <div id="globalErrorAlert">
+        <i class="fas fa-exclamation-triangle alert-icon"></i>
+        <span>{{ session('error') }}</span>
+        <button class="btn-close-alert" onclick="closeAlert('globalErrorAlert')"><i class="fas fa-times"></i></button>
+    </div>
+@endif
+
+<script>
+    function closeAlert(id) {
+        let alertBox = document.getElementById(id);
+        if(alertBox) {
+            alertBox.style.animation = 'fadeOutUpCenter 0.4s ease forwards';
+            setTimeout(() => alertBox.remove(), 400); 
+        }
+    }
+    setTimeout(() => closeAlert('globalSuccessAlert'), 4000);
+    setTimeout(() => closeAlert('globalErrorAlert'), 4000);
+</script>
 
 <!-- ==================== TOPBAR ==================== -->
 <header class="topbar">
@@ -289,7 +340,7 @@
                 </div>
             </details>
 
-            <!-- ACCORDION PEMADAMAN (DAMTAN) -->
+ <!-- ACCORDION PEMADAMAN (DAMTAN) -->
             <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
                 <summary>Bagian pemadaman <i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
@@ -357,58 +408,59 @@
     <main class="content">
 
         <div class="page-head">
-            <h1>Pembuatan Surat Keterangan</h1>
-            <p>Formulir penerbitan Surat Keterangan Korban Kebakaran resmi Disdamkartan.</p>
+            <h1>Edit Surat Keterangan</h1>
+            <p>Perbarui informasi Surat Keterangan Korban Kebakaran Nomor: <strong>{{ $surat->nomor_surat }}</strong></p>
         </div>
 
         <div class="card-custom">
             <div class="card-body p-4 p-md-5">
-                <form action="/internal/surat-korban/store" method="POST">
+                <form action="/internal/surat-korban/update/{{ $surat->id }}" method="POST">
                     @csrf
+                    @method('PUT')
                     
                     <!-- BAGIAN A: DATA DIRI -->
                     <h5 class="section-title"><i class="fas fa-user"></i> Data Diri Korban</h5>
                     <div class="row g-4 mb-5">
                         <div class="col-md-6">
                             <label class="field-label"><i class="fas fa-user"></i> Nama Lengkap</label>
-                            <input type="text" name="nama_korban" class="form-control" placeholder="Cth: MAHILLI" required>
+                            <input type="text" name="nama_korban" class="form-control" value="{{ $surat->nama_korban }}" required>
                         </div>
                         <div class="col-md-6">
                             <label class="field-label"><i class="fas fa-home"></i> Status Kepemilikan</label>
-                            <input type="text" name="status_kepemilikan" class="form-control" placeholder="Cth: Pemilik Bangunan" required>
+                            <input type="text" name="status_kepemilikan" class="form-control" value="{{ $surat->status_kepemilikan }}" required>
                         </div>
                         
                         <div class="col-md-6">
                             <label class="field-label"><i class="fas fa-id-card"></i> NIK (Nomor Induk Kependudukan)</label>
-                            <input type="number" name="nik" class="form-control" placeholder="Cth: 1571023112590461" required>
+                            <input type="number" name="nik" class="form-control" value="{{ $surat->nik }}" required>
                         </div>
                         <div class="col-md-6">
                             <label class="field-label"><i class="fas fa-briefcase"></i> Pekerjaan</label>
-                            <input type="text" name="pekerjaan" class="form-control" placeholder="Cth: Pensiunan" required>
+                            <input type="text" name="pekerjaan" class="form-control" value="{{ $surat->pekerjaan }}" required>
                         </div>
                         
                         <div class="col-md-4">
                             <label class="field-label"><i class="fas fa-map-marker-alt"></i> Tempat Lahir</label>
-                            <input type="text" name="tempat_lahir" class="form-control" placeholder="Cth: Lubuk Resam" required>
+                            <input type="text" name="tempat_lahir" class="form-control" value="{{ $surat->tempat_lahir }}" required>
                         </div>
                         <div class="col-md-4">
                             <label class="field-label"><i class="fas fa-calendar-alt"></i> Tanggal Lahir</label>
-                            <input type="date" name="tanggal_lahir" class="form-control" required>
+                            <input type="date" name="tanggal_lahir" class="form-control" value="{{ $surat->tanggal_lahir }}" required>
                         </div>
                         <div class="col-md-4">
                             <label class="field-label"><i class="fas fa-ring"></i> Status Perkawinan</label>
                             <select class="form-select" name="status_perkawinan" required>
-                                <option value="" disabled selected>-- Pilih --</option>
-                                <option value="Kawin Tercatat">Kawin Tercatat</option>
-                                <option value="Belum Kawin">Belum Kawin</option>
-                                <option value="Cerai Hidup">Cerai Hidup</option>
-                                <option value="Cerai Mati">Cerai Mati</option>
+                                <option value="" disabled>-- Pilih --</option>
+                                <option value="Kawin Tercatat" {{ $surat->status_perkawinan == 'Kawin Tercatat' ? 'selected' : '' }}>Kawin Tercatat</option>
+                                <option value="Belum Kawin" {{ $surat->status_perkawinan == 'Belum Kawin' ? 'selected' : '' }}>Belum Kawin</option>
+                                <option value="Cerai Hidup" {{ $surat->status_perkawinan == 'Cerai Hidup' ? 'selected' : '' }}>Cerai Hidup</option>
+                                <option value="Cerai Mati" {{ $surat->status_perkawinan == 'Cerai Mati' ? 'selected' : '' }}>Cerai Mati</option>
                             </select>
                         </div>
                         
                         <div class="col-md-12">
                             <label class="field-label"><i class="fas fa-map-signs"></i> Alamat Lengkap</label>
-                            <textarea name="alamat" class="form-control" rows="3" required placeholder="Jl. HM. Yusuf Nasri RT. 07 Kel. Wijaya Pura Kec. Jambi Selatan..."></textarea>
+                            <textarea name="alamat" class="form-control" rows="3" required>{{ $surat->alamat }}</textarea>
                         </div>
                     </div>
 
@@ -417,48 +469,48 @@
                     <div class="row g-4 mb-4 p-4 rounded border" style="background: rgba(243, 245, 248, 0.5);">
                         <div class="col-md-12">
                             <label class="field-label"><i class="fas fa-fire"></i> Objek Terbakar</label>
-                            <input type="text" name="objek_terbakar" class="form-control" placeholder="Cth: Bangunan / Rumah Tinggal" required>
+                            <input type="text" name="objek_terbakar" class="form-control" value="{{ $surat->objek_terbakar }}" required>
                         </div>
                         
                         <div class="col-md-4">
                             <label class="field-label"><i class="fas fa-calendar-day"></i> Hari Kejadian</label>
                             <select class="form-select" name="hari_kejadian" required>
-                                <option value="" disabled selected>-- Pilih Hari --</option>
-                                <option value="Senin">Senin</option>
-                                <option value="Selasa">Selasa</option>
-                                <option value="Rabu">Rabu</option>
-                                <option value="Kamis">Kamis</option>
-                                <option value="Jumat">Jumat</option>
-                                <option value="Sabtu">Sabtu</option>
-                                <option value="Minggu">Minggu</option>
+                                <option value="" disabled>-- Pilih Hari --</option>
+                                <option value="Senin" {{ $surat->hari_kejadian == 'Senin' ? 'selected' : '' }}>Senin</option>
+                                <option value="Selasa" {{ $surat->hari_kejadian == 'Selasa' ? 'selected' : '' }}>Selasa</option>
+                                <option value="Rabu" {{ $surat->hari_kejadian == 'Rabu' ? 'selected' : '' }}>Rabu</option>
+                                <option value="Kamis" {{ $surat->hari_kejadian == 'Kamis' ? 'selected' : '' }}>Kamis</option>
+                                <option value="Jumat" {{ $surat->hari_kejadian == 'Jumat' ? 'selected' : '' }}>Jumat</option>
+                                <option value="Sabtu" {{ $surat->hari_kejadian == 'Sabtu' ? 'selected' : '' }}>Sabtu</option>
+                                <option value="Minggu" {{ $surat->hari_kejadian == 'Minggu' ? 'selected' : '' }}>Minggu</option>
                             </select>
                         </div>
                         <div class="col-md-4">
                             <label class="field-label"><i class="fas fa-calendar"></i> Tanggal Kejadian</label>
-                            <input type="date" name="tanggal_kejadian" class="form-control" required>
+                            <input type="date" name="tanggal_kejadian" class="form-control" value="{{ $surat->tanggal_kejadian }}" required>
                         </div>
                         <div class="col-md-4">
                             <label class="field-label"><i class="fas fa-clock"></i> Waktu Kejadian (WIB)</label>
-                            <input type="time" name="waktu_kejadian" class="form-control" required>
+                            <input type="time" name="waktu_kejadian" class="form-control" value="{{ $surat->waktu_kejadian }}" required>
                         </div>
                     </div>
 
                     <div class="row g-4 mb-4">
                         <div class="col-md-6">
                             <label class="field-label"><i class="fas fa-user-tie"></i> Tembusan Camat</label>
-                            <input type="text" name="tembusan_camat" class="form-control" placeholder="Cth: Jambi Selatan">
+                            <input type="text" name="tembusan_camat" class="form-control" value="{{ $surat->tembusan_camat }}">
                         </div>
                         <div class="col-md-6">
                             <label class="field-label"><i class="fas fa-user-tie"></i> Tembusan Lurah</label>
-                            <input type="text" name="tembusan_lurah" class="form-control" placeholder="Cth: Wijaya Pura">
+                            <input type="text" name="tembusan_lurah" class="form-control" value="{{ $surat->tembusan_lurah }}">
                         </div>
                     </div>
 
                     <!-- SUBMIT BUTTON -->
                     <div class="d-flex justify-content-end mt-5 pt-4 border-top">
-                        <button type="reset" class="btn-custom-light me-3">Reset Form</button>
+                        <a href="/internal/surat-korban/data" class="btn-custom-light me-3">Batal</a>
                         <button type="submit" class="btn-custom-primary shadow-sm">
-                            <i class="fas fa-file-pdf me-2"></i> Simpan & Buat Surat
+                            <i class="fas fa-save me-2"></i> Simpan Perubahan
                         </button>
                     </div>
                 </form>
@@ -472,7 +524,6 @@
 <script>
 (function () {
     'use strict';
-
     /* ---------- Sidebar (Mobile Toggle) ---------- */
     var toggle = document.getElementById('sideToggle');
     var backdrop = document.getElementById('sideBackdrop');
@@ -490,7 +541,7 @@
     if (backdrop) backdrop.addEventListener('click', closeSide);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
 
-    /* ---------- Eksklusivitas Accordion Sidebar (hanya satu grup terbuka) ---------- */
+    /* ---------- Eksklusivitas Accordion Sidebar ---------- */
     var groups = document.querySelectorAll('.side-group');
     groups.forEach(function (g) {
         g.addEventListener('toggle', function () {
