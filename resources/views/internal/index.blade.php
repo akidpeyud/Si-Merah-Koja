@@ -10,36 +10,61 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         /* ==========================================================
-           TOKENS
+           DESIGN TOKENS
+           Palet inti: ink (navy gelap) sebagai warna utama, navy
+           (biru dongker medium) sebagai aksen interaktif/dekoratif —
+           tombol, status aktif menu, ikon judul seksi — dan signal
+           (merah) sebagai satu-satunya aksen darurat, dipakai konsisten
+           hanya untuk status siaga/urgent, bukan didekorasi ke semua tempat.
            ========================================================== */
         :root {
             --ink: #0d1b2a;
             --ink-2: #132a43;
             --ink-3: #1d3856;
-            --paper: #f3f5f8;
+            --paper: #f7f9fc;
             --white: #ffffff;
+
+            --navy: #1e3a5f;
+            --navy-d: #14283f;
+            --navy-tint: rgba(30, 58, 95, .09);
+
             --signal: #e5392d;
             --signal-d: #c22b20;
+            --signal-tint: rgba(229, 57, 45, .09);
+
             --amber: #ffb627;
-            --green: #16a34a;
-            --teal: #0d9488;
-            --blue: #2563eb;
-            --purple: #9333ea;
-            --steel: #5b6c7f;
-            --line: #dbe2ea;
+            --success: #10b981;
+            --info: #2f6fed;
+            --info-tint: rgba(47, 111, 237, .09);
+            --ink-tint: rgba(13, 27, 42, .055);
+
+            --steel: #64748b;
+            --steel-soft: #94a3b8;
+            --line: #e6eaf1;
 
             --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
             --font-body: 'Instrument Sans', system-ui, sans-serif;
 
-            --r-lg: 22px;
-            --r-md: 16px;
+            --r-lg: 20px;
+            --r-md: 14px;
             --r-sm: 10px;
+
             --sidebar-w: 272px;
-            --topbar-h: 66px;
+            --topbar-h: 72px;
+
+            /* Skala shadow tunggal, dicampur dgn warna ink (bukan hitam polos)
+               supaya terasa satu keluarga dgn palet, bukan default rgba(0,0,0,.1) */
+            --shadow-xs: 0 1px 2px rgba(13, 27, 42, .05);
+            --shadow-sm: 0 2px 8px -2px rgba(13, 27, 42, .08);
+            --shadow-md: 0 12px 24px -8px rgba(13, 27, 42, .12);
+            --shadow-lg: 0 24px 48px -16px rgba(13, 27, 42, .18);
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -54,7 +79,7 @@
         }
         img { max-width: 100%; display: block; }
         a { color: inherit; text-decoration: none; }
-        ul, ol { list-style: none; }
+        ul, ol { list-style: none; margin: 0; padding: 0; }
         button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
         :focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; border-radius: 6px; }
 
@@ -65,12 +90,12 @@
         .toast {
             display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px;
             border-radius: 999px; background: #fff; border: 1px solid var(--line);
-            box-shadow: 0 20px 40px -16px rgba(13,27,42,.5); font-weight: 600; font-size: .92rem;
+            box-shadow: var(--shadow-md); font-weight: 600; font-size: .92rem;
             animation: toastIn .45s cubic-bezier(.16,.84,.3,1) both;
         }
         .toast.leaving { animation: toastOut .3s ease forwards; }
         .toast-ico { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: .78rem; }
-        .toast.ok .toast-ico { background: var(--green); }
+        .toast.ok .toast-ico { background: var(--success); }
         .toast.err .toast-ico { background: var(--signal); }
         .toast-x { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); transition: background .2s, color .2s; }
         .toast-x:hover { background: var(--ink); color: #fff; }
@@ -83,25 +108,26 @@
         .topbar {
             position: sticky; top: 0; z-index: 60; height: var(--topbar-h);
             display: flex; align-items: center; justify-content: space-between; gap: 16px;
-            padding: 0 20px 0 clamp(16px, 2vw, 24px); background: rgba(255,255,255,.85);
-            -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+            padding: 0 28px; background: rgba(255,255,255,.86);
+            -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--line);
         }
         .topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
-        .side-toggle { display: none; width: 40px; height: 40px; border-radius: 12px; align-items: center; justify-content: center; font-size: 1.05rem; }
+        .side-toggle { display: none; width: 40px; height: 40px; border-radius: 12px; align-items: center; justify-content: center; font-size: 1.05rem; transition: background .2s; }
         .side-toggle:hover { background: var(--paper); }
         .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
         .brand img { height: 34px; width: auto; flex: none; }
-        .brand span { font-family: var(--font-display); font-weight: 800; font-stretch: 90%; font-size: 1.05rem; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .brand span { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: 1.08rem; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         .topbar-right { display: flex; align-items: center; gap: 14px; }
-        .user-chip { display: flex; align-items: center; gap: 10px; padding: 6px 14px 6px 6px; border-radius: 999px; background: var(--paper); }
-        .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: .85rem; flex: none; }
+        .user-chip { display: flex; align-items: center; gap: 10px; padding: 6px 16px 6px 6px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: .9rem; flex: none; }
         .user-meta { display: grid; line-height: 1.25; }
-        .user-meta strong { font-size: .85rem; font-weight: 700; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .user-meta small { font-size: .72rem; color: var(--steel); text-transform: capitalize; }
-        .btn-logout { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border-radius: 999px; background: var(--signal); color: #fff; font-weight: 700; font-size: .85rem; transition: background .2s; }
-        .btn-logout:hover { background: var(--signal-d); }
+        .user-meta strong { font-size: .85rem; font-weight: 700; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); }
+        .user-meta small { font-size: .74rem; color: var(--steel); text-transform: capitalize; font-weight: 500; }
+        .btn-logout { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border-radius: 999px; background: var(--navy); color: #fff; font-weight: 600; font-size: .85rem; transition: background .2s, transform .1s; border: none; }
+        .btn-logout:hover { background: var(--navy-d); }
+        .btn-logout:active { transform: scale(.98); }
 
         @media (max-width: 900px) {
             .side-toggle { display: inline-flex; }
@@ -118,34 +144,50 @@
             height: calc(100vh - var(--topbar-h)); overflow-y: auto;
             background: #fff; border-right: 1px solid var(--line);
             padding: 20px 14px 32px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--line) transparent;
         }
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-track { background: transparent; }
+        .sidebar::-webkit-scrollbar-thumb { background-color: var(--line); border-radius: 20px; }
+
         .side-link {
-            display: flex; align-items: center; gap: 13px; padding: 12px 14px; border-radius: 13px;
-            font-size: .87rem; font-weight: 600; color: var(--ink); transition: background .2s, color .2s;
+            display: flex; align-items: center; gap: 14px; padding: 11px 14px; border-radius: var(--r-sm);
+            font-size: .9rem; font-weight: 600; color: var(--ink); transition: background .2s, color .2s;
+            margin-bottom: 4px;
         }
         .side-link:hover { background: var(--paper); }
         .side-link.active { background: var(--ink); color: #fff; }
-        .side-link i { width: 18px; text-align: center; font-size: .95rem; color: var(--steel); }
+        .side-link i { width: 20px; text-align: center; font-size: 1rem; color: var(--steel); transition: color .2s; }
+        .side-link:hover i { color: var(--ink); }
         .side-link.active i { color: var(--amber); }
 
         .side-group + .side-group { margin-top: 6px; }
         .side-group summary {
-            list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px;
-            padding: 12px 14px; border-radius: 13px; font-size: .78rem; font-weight: 800;
-            letter-spacing: .04em; text-transform: uppercase; color: var(--steel); transition: background .2s, color .2s;
+            list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px;
+            padding: 11px 14px; border-radius: var(--r-sm); font-size: .8rem; font-weight: 700;
+            letter-spacing: .04em; text-transform: uppercase; color: var(--navy); transition: background .2s;
+            user-select: none;
         }
         .side-group summary::-webkit-details-marker { display: none; }
-        .side-group summary:hover { background: var(--paper); color: var(--ink); }
-        .side-group[open] > summary { color: var(--signal-d); }
-        .side-group summary .chev { margin-left: auto; font-size: .68rem; transition: transform .2s; }
+        .side-group summary:hover { background: var(--paper); }
+        .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); }
+        .side-group summary .grp-label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .side-group summary .chev { flex: none; font-size: .7rem; transition: transform .25s ease; }
         .side-group[open] summary .chev { transform: rotate(180deg); }
 
-        .side-sub { display: grid; gap: 2px; padding: 4px 2px 8px 10px; border-left: 2px solid var(--line); margin: 2px 0 4px 22px; }
-        .side-sub a { display: flex; align-items: flex-start; gap: 11px; padding: 9px 12px; border-radius: 11px; font-size: .82rem; font-weight: 600; line-height: 1.4; color: var(--steel); transition: background .2s, color .2s; }
-        .side-sub a:hover { background: var(--paper); color: var(--ink); }
-        .side-sub a.active { background: #fdeceb; color: var(--signal-d); }
-        .side-sub a i { width: 16px; text-align: center; font-size: .85rem; margin-top: 2px; color: inherit; opacity: .75; }
-        .side-kicker { padding: 14px 12px 4px; font-size: .68rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: #a9b6c4; }
+        .side-sub { display: grid; gap: 3px; padding: 6px 4px 10px 12px; border-left: 2px solid var(--line); margin: 2px 0 8px 22px; }
+        .side-sub a {
+            display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: var(--r-sm);
+            font-size: .85rem; font-weight: 500; line-height: 1.4; color: var(--steel);
+            transition: background .2s, color .2s, transform .2s;
+        }
+        .side-sub a:hover { background: var(--paper); color: var(--ink); transform: translateX(2px); }
+        .side-sub a.active { background: var(--navy-tint); color: var(--navy-d); font-weight: 600; }
+        .side-sub a i { width: 18px; text-align: center; font-size: .9rem; opacity: .75; }
+        .side-sub a:hover i, .side-sub a.active i { opacity: 1; }
+
+        .side-kicker { padding: 18px 14px 6px; font-size: .7rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--steel-soft); }
 
         .sidebar-backdrop { display: none; }
 
@@ -153,7 +195,7 @@
             .sidebar {
                 position: fixed; z-index: 90; top: var(--topbar-h); left: 0;
                 height: calc(100dvh - var(--topbar-h)); transform: translateX(-100%);
-                transition: transform .3s ease; box-shadow: 24px 0 48px -24px rgba(13,27,42,.4);
+                transition: transform .3s cubic-bezier(.4,0,.2,1); box-shadow: var(--shadow-lg);
             }
             body.side-open .sidebar { transform: none; }
             .sidebar-backdrop {
@@ -166,16 +208,44 @@
         /* ==========================================================
            KONTEN UTAMA
            ========================================================== */
-        .content { flex: 1; min-width: 0; padding: clamp(20px, 3vw, 40px) clamp(18px, 3vw, 44px) 60px; }
+        .content { flex: 1; min-width: 0; padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 80px; }
 
-        .page-head { margin-bottom: 24px; }
-        .page-head h1 { font-family: var(--font-display); font-weight: 800; font-stretch: 88%; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.15; letter-spacing: -0.02em; }
-        .page-head p { margin-top: 6px; color: var(--steel); font-size: .95rem; }
+        .page-head { margin-bottom: 28px; }
+        .page-head h1 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 4px; color: var(--ink); }
+        .page-head p { color: var(--steel); font-size: .98rem; }
 
+        /* Welcome banner */
         .welcome {
             position: relative; overflow: hidden; border-radius: var(--r-lg);
-            background: linear-gradient(120deg, var(--ink-2), var(--ink) 60%);
-            padding: clamp(26px, 4vw, 40px); color: #fff; margin-bottom: 28px;
+            background: linear-gradient(135deg, var(--ink), var(--ink-2));
+            padding: clamp(28px, 4.5vw, 40px); color: #fff; margin-bottom: 36px;
+            box-shadow: var(--shadow-md);
+        }
+        .welcome::after {
+            content: ""; position: absolute; right: -8%; top: -50%; width: 60%; aspect-ratio: 1;
+            background: radial-gradient(closest-side, rgba(30,58,95,.18), transparent 70%); pointer-events: none;
+        }
+        .welcome-badge {
+            position: relative; display: inline-flex; align-items: center; gap: 8px;
+            padding: 7px 14px; border-radius: 999px; background: rgba(255,255,255,.12);
+            font-size: .82rem; font-weight: 600; margin-bottom: 18px; border: 1px solid rgba(255,255,255,.14);
+        }
+        .welcome-badge i { color: var(--amber); font-size: .78rem; }
+        .welcome h2 { position: relative; font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.35rem, 2.6vw, 1.75rem); line-height: 1.3; letter-spacing: -0.01em; max-width: 42ch; margin-bottom: 6px; }
+        .welcome p { position: relative; max-width: 58ch; color: rgba(255,255,255,.75); font-size: 1rem; }
+
+        /* Section headings — category header 1 baris, ikon navy blue */
+        .section-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: nowrap; }
+        .section-heading-ico { flex: none; width: 30px; height: 30px; border-radius: 9px; background: var(--navy); color: #fff; display: grid; place-items: center; font-size: .78rem; }
+        .section-heading h3 { flex: none; font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: 1rem; color: var(--ink); letter-spacing: -0.01em; white-space: nowrap; }
+        .section-heading .line { flex: 1 1 auto; min-width: 24px; height: 1px; background: linear-gradient(to right, var(--line), transparent 90%); }
+
+        /* Stat cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+            margin-bottom: 44px;
         }
         .welcome::after {
             content: ""; position: absolute; right: -6%; top: -30%; width: 60%; aspect-ratio: 1;
@@ -191,24 +261,44 @@
 
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
         .stat-card {
-            position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 14px;
-            padding: 20px; background: #fff; border: 1px solid var(--line); border-radius: var(--r-md);
-            transition: transform .25s, box-shadow .25s, border-color .25s;
+            display: flex; flex-direction: column; align-items: flex-start;
+            padding: 22px; background: #fff; border-radius: var(--r-md);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow-xs);
+            transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease;
+            position: relative;
         }
-        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 20px 36px -18px rgba(13,27,42,.32); border-color: transparent; }
-        .stat-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-        .stat-ico { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; font-size: 1.05rem; color: #fff; flex: none; }
-        .stat-arrow { color: var(--steel); font-size: .8rem; opacity: 0; transform: translate(-3px, 3px); transition: opacity .2s, transform .2s; }
-        .stat-card:hover .stat-arrow { opacity: 1; transform: none; }
-        .stat-title { font-size: .78rem; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; color: var(--steel); }
-        .stat-value { font-family: var(--font-display); font-weight: 800; font-stretch: 85%; font-size: 1.9rem; line-height: 1; letter-spacing: -0.01em; }
+        .stat-card:hover {
+            box-shadow: var(--shadow-sm);
+            border-color: #d7dee9;
+            transform: translateY(-2px);
+        }
+        .stat-card::after {
+            content: "\f061";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute; top: 22px; right: 20px;
+            color: var(--steel-soft); font-size: .8rem;
+            opacity: 0; transform: translateX(-6px);
+            transition: opacity .2s ease, transform .2s ease;
+        }
+        .stat-card:hover::after { opacity: 1; transform: translateX(0); }
 
-        .ic-green  { background: var(--green); }
-        .ic-teal   { background: var(--teal); }
-        .ic-purple { background: var(--purple); }
-        .ic-blue   { background: var(--blue); }
-        .ic-orange { background: var(--amber); color: var(--ink); }
-        .ic-red    { background: var(--signal); }
+        .stat-ico {
+            width: 46px; height: 46px; border-radius: var(--r-sm);
+            display: grid; place-items: center; font-size: 1.1rem;
+            margin-bottom: 18px;
+        }
+        .stat-title { font-size: .76rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--steel); margin-bottom: 6px; line-height: 1.4; }
+        .stat-value { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: 1.9rem; line-height: 1; color: var(--ink); letter-spacing: -0.01em; }
+
+        /* Palet ikon dibatasi 3 warna bermakna, bukan warna acak per kartu:
+           - primer (navy tint)  -> data administratif/permohonan (default)
+           - danger (merah tint) -> status siaga/darurat aktif
+           - info (biru tint)    -> data sarana & sumber air */
+        .ic-primary { background: var(--ink-tint); color: var(--ink-3); }
+        .ic-danger  { background: var(--signal-tint); color: var(--signal-d); }
+        .ic-info    { background: var(--info-tint); color: var(--info); }
 
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
@@ -276,51 +366,96 @@
 
             <div class="side-kicker">Modul operasional</div>
 
+            <!-- BAGIAN PENCEGAHAN -->
             <details class="side-group" {{ Request::is('internal/pencegahan*') ? 'open' : '' }}>
-                <summary>Bagian pencegahan <i class="fas fa-chevron-down chev"></i></summary>
+                <summary><i class="fas fa-shield-halved grp-ico"></i><span class="grp-label">Bagian pencegahan</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
+                    <!-- Menu Sesuai Foto -->
                     <a href="/internal/pencegahan/peningkatan-kapasitas" class="{{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}">
-                        <i class="fas fa-level-up-alt"></i> Peningkatan kapasitas aparatur
+                        <i class="fas fa-arrow-trend-up"></i> Peningkatan Kapasitas Aparatur
                     </a>
                     <a href="/internal/pencegahan/inspeksi-kebakaran" class="{{ Request::is('internal/pencegahan/inspeksi-kebakaran*') ? 'active' : '' }}">
-                        <i class="fas fa-magnifying-glass"></i> Pencegahan kebakaran dan inspeksi
+                        <i class="fas fa-magnifying-glass-chart"></i> Pencegahan Kebakaran dan Inspeksi
                     </a>
-                    <a href="#">
-                        <i class="fas fa-people-group"></i> Pemberdayaan masyarakat dan dunia usaha
+                    <a href="/internal/pencegahan/pemberdayaan-masyarakat" class="{{ Request::is('internal/pencegahan/pemberdayaan-masyarakat*') ? 'active' : '' }}">
+                        <i class="fas fa-handshake-angle"></i> Pemberdayaan Masyarakat dan Dunia Usaha
+                    </a>
+
+                    <!-- Menu Kelola -->
+                    <a href="/internal/pencegahan/kelola-edukasi" class="{{ Request::is('internal/pencegahan/kelola-edukasi*') ? 'active' : '' }}">
+                        <i class="fas fa-bullhorn"></i> Kelola Edukasi
+                    </a>
+                    <a href="/internal/pencegahan/kelola-redkar" class="{{ Request::is('internal/pencegahan/kelola-redkar*') ? 'active' : '' }}">
+                        <i class="fas fa-users-rectangle"></i> Kelola Redkar
+                    </a>
+                    <a href="/internal/pencegahan/kelola-rpkbgl" class="{{ Request::is('internal/pencegahan/kelola-rpkbgl*') ? 'active' : '' }}">
+                        <i class="fas fa-building-circle-check"></i> Kelola RPKBGL
+                    </a>
+                    <a href="/internal/pencegahan/kelola-skk" class="{{ Request::is('internal/pencegahan/kelola-skk*') ? 'active' : '' }}">
+                        <i class="fas fa-file-shield"></i> Kelola SKK
                     </a>
                 </div>
             </details>
 
-            <details class="side-group" {{ Request::is('internal/damtan*') ? 'open' : '' }}>
-                <summary>Bagian pemadaman <i class="fas fa-chevron-down chev"></i></summary>
+            <!-- BAGIAN PEMADAMAN -->
+            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
+                <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
-                        <i class="fas fa-fire-extinguisher"></i> Input data
+                        <i class="fas fa-fire-extinguisher"></i> Input Data
                     </a>
                     <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') ? 'active' : '' }}">
-                        <i class="fas fa-clipboard-list"></i> Data laporan
+                        <i class="fas fa-clipboard-list"></i> Data Laporan
+                    </a>
+                    <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban*') ? 'active' : '' }}">
+                        <i class="fas fa-file-signature"></i> Buat Surat Korban
                     </a>
                 </div>
             </details>
 
+            <!-- BAGIAN KEPEGAWAIAN -->
+            <details class="side-group" {{ Request::is('internal/kepegawaian*') ? 'open' : '' }}>
+                <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
+                <div class="side-sub">
+                    <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
+                        <i class="fas fa-user-tie"></i> Data Urut Kepegawaian
+                    </a>
+                </div>
+            </details>
+
+            <!-- BAGIAN SAPRA -->
             <details class="side-group" {{ Request::is('sapra*') ? 'open' : '' }}>
-                <summary>Bagian sapra <i class="fas fa-chevron-down chev"></i></summary>
+                <summary><i class="fas fa-warehouse grp-ico"></i><span class="grp-label">Bagian sapra</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <span class="side-kicker" style="padding-left:2px;">Sarana &amp; Prasarana</span>
-                     <a href="/sapra/sarana-mako" class="{{ Request::is('sapra/sarana-mako*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam Kebakaran</a>
-                    <a href="/sapra/prasarana-mako" class="{{ Request::is('sapra/prasarana-mako*') ? 'active' : '' }}"><i class="fas fa-building"></i> Prasarana pemadam Kebakaran</a>
-                    <a href="/sapra/sarana-penyelamatan" class="{{ Request::is('sapra/sarana-penyelamatan*') ? 'active' : '' }}"><i class="fas fa-life-ring"></i> Sarana penyelamatan & Evakuasi</a>
-                          <a href="/sapra/sarana-pemeriksaan" class="sidebar-item"><i class="fas fa-search"></i> Sarana Pemeriksaan Proteksi Kebakaran</a> 
-                    <a href="/sapra/kelola-pos" class="{{ Request::is('sapra/kelola-pos*') ? 'active' : '' }}"><i class="fas fa-warehouse"></i> Kelola data pos</a>
+                       <a href="/sapra/sarana-mako"><i class="fas fa-fire-extinguisher"></i> Sarana pemadam kebakaran</a>
+                    <a href="/sapra/prasarana-mako"><i class="fas fa-building"></i> Prasarana pemadam kebakaran</a>
+                    <a href="/sapra/sarana-penyelamatan" class="{{ Request::is('sapra/sarana-penyelamatan*') ? 'active' : '' }}">
+                        <i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi
 
-                      <span class="side-kicker" style="padding-left:2px;">Manajemen air</span>
-                    <a href="/sapra/data_hidrant_gedung" class="{{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}"><i class="fas fa-droplet"></i> Sumber air</a>
-                    <a href="/sapra/data-hidrant-kota" class="{{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}"><i class="fas fa-map-marker-alt"></i> Data hidrant Kota Jambi</a>
+                    </a>
+                    <a href="/sapra/sarana-pemeriksaan" class="{{ Request::is('sapra/sarana-pemeriksaan*') ? 'active' : '' }}">
+                        <i class="fas fa-search-location"></i> Sarana Pemeriksaan Proteksi Kebakaran
+                    </a>
+                    <a href="/sapra/kelola-pos" class="{{ Request::is('sapra/kelola-pos*') ? 'active' : '' }}">
+                        <i class="fas fa-warehouse"></i> Kelola Data Pos
+                    </a>
 
-                    <!-- LOGISTIK & DISTRIBUSI -->
-                         <span class="side-kicker" style="padding-left:2px;">Logistik & Distribusi</span>
-                        <a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
-                        <a href="/sapra/distribusi-staff" class="sidebar-item"><i class="fas fa-user-check"></i> Distribusi Barang Staff</a>
+                    <span class="side-kicker" style="padding-left:2px;">Manajemen Air</span>
+                    <a href="/sapra/data_hidrant_gedung" class="{{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}">
+                        <i class="fas fa-droplet"></i> Sumber Air
+                    </a>
+                    <a href="/sapra/data-hidrant-kota" class="{{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}">
+                        <i class="fas fa-map-location-dot"></i> Data Hidrant Kota Jambi
+                    </a>
+
+                    <span class="side-kicker" style="padding-left:2px;">Logistik & Distribusi</span>
+                    <a href="/sapra/kebutuhan-sarpras" class="{{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}">
+                        <i class="fas fa-boxes-stacked"></i> Mutu Baku Kebutuhan
+                    </a>
+                    <a href="/sapra/distribusi-staff" class="{{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}">
+                        <i class="fas fa-people-carry-box"></i> Distribusi Barang Staff
+                    </a>
                 </div>
             </details>
         @endif
@@ -328,22 +463,35 @@
         @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
             <div class="side-kicker">Konten publik</div>
             <details class="side-group" {{ Request::is('internal/operator*') ? 'open' : '' }}>
-                <summary>Manajemen berita <i class="fas fa-chevron-down chev"></i></summary>
+                <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen berita</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
-                    <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}"><i class="fas fa-newspaper"></i> Input &amp; kelola berita</a>
-                    <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}"><i class="far fa-image"></i> Kelola info grafis</a>
-                    <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}"><i class="fab fa-instagram"></i> Kelola berita medsos</a>
+                    <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
+                        <i class="far fa-newspaper"></i> Input &amp; Kelola Berita
+                    </a>
+                    <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
+                        <i class="far fa-image"></i> Kelola Info Grafis
+                    </a>
+                    <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
+                        <i class="fab fa-instagram"></i> Kelola Berita Medsos
+                    </a>
                 </div>
             </details>
         @endif
 
         <div class="side-kicker">Akun</div>
-        <details class="side-group" {{ Request::is('internal/profil*') || Request::is('internal/kelola-user*') ? 'open' : '' }}>
-            <summary>Pengaturan akun <i class="fas fa-chevron-down chev"></i></summary>
+        <details class="side-group" {{ Request::is('internal/profil*') || Request::is('internal/kelola-user*') || Request::is('internal/kelola-pemohon*') ? 'open' : '' }}>
+            <summary><i class="fas fa-user-gear grp-ico"></i><span class="grp-label">Pengaturan akun</span><i class="fas fa-chevron-down chev"></i></summary>
             <div class="side-sub">
-                <a href="/internal/profil" class="{{ Request::is('internal/profil*') ? 'active' : '' }}"><i class="fas fa-user-pen"></i> Profil saya</a>
+                <a href="/internal/profil" class="{{ Request::is('internal/profil*') ? 'active' : '' }}">
+                    <i class="fas fa-user-pen"></i> Profil Saya
+                </a>
                 @if(Auth::user()->role === 'super_user')
-                    <a href="/internal/kelola-user" class="{{ Request::is('internal/kelola-user*') ? 'active' : '' }}"><i class="fas fa-users-gear"></i> Kelola semua pengguna</a>
+                    <a href="/internal/kelola-user" class="{{ Request::is('internal/kelola-user*') ? 'active' : '' }}">
+                        <i class="fas fa-users-gear"></i> Kelola Semua Pengguna
+                    </a>
+                    <a href="/internal/kelola-pemohon" class="{{ Request::is('internal/kelola-pemohon*') ? 'active' : '' }}">
+                        <i class="fas fa-address-book"></i> Kelola Akun Pemohon
+                    </a>
                 @endif
             </div>
         </details>
@@ -369,122 +517,117 @@
         </section>
 
         @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
-        <div class="stats-head">
-            <h3>Ringkasan modul</h3>
+
+        <!-- ==============================================
+             STAT CARDS DIKELOMPOKKAN PER BAGIAN
+             Warna ikon dibatasi 3 makna (navy = data administratif,
+             merah = status darurat aktif, biru = sarana air), bukan
+             warna berbeda-beda tiap kartu.
+             ============================================== -->
+
+        <!-- 1. BAGIAN PENCEGAHAN -->
+        <div class="mb-5">
+            <div class="section-heading">
+                <span class="section-heading-ico"><i class="fas fa-shield-halved"></i></span>
+                <h3>Bagian Pencegahan</h3>
+                <span class="line"></span>
+            </div>
+
+            <div class="stats-grid">
+                <a href="/internal/pencegahan/kelola-rpkbgl" class="stat-card">
+                    <div class="stat-ico ic-primary"><i class="fas fa-building"></i></div>
+                    <div>
+                        <div class="stat-title">Permohonan RPKBGL</div>
+                        <div class="stat-value">
+                            {{ \Illuminate\Support\Facades\Schema::hasTable('permohonan_rpkbgl') ? \Illuminate\Support\Facades\DB::table('permohonan_rpkbgl')->count() : 0 }}
+                        </div>
+                    </div>
+                </a>
+
+                <a href="/internal/pencegahan/kelola-skk" class="stat-card">
+                    <div class="stat-ico ic-primary"><i class="fas fa-shield-halved"></i></div>
+                    <div>
+                        <div class="stat-title">Permohonan SKK (Total)</div>
+                        <div class="stat-value">
+                            @php
+                                $skkBaru = \Illuminate\Support\Facades\Schema::hasTable('permohonan_skk') ? \Illuminate\Support\Facades\DB::table('permohonan_skk')->count() : 0;
+                                $skkPerpanjang = \Illuminate\Support\Facades\Schema::hasTable('permohonan_perpanjang_skk') ? \Illuminate\Support\Facades\DB::table('permohonan_perpanjang_skk')->count() : 0;
+                            @endphp
+                            {{ $skkBaru + $skkPerpanjang }}
+                        </div>
+                    </div>
+                </a>
+
+                <a href="/internal/pencegahan/kelola-edukasi" class="stat-card">
+                    <div class="stat-ico ic-primary"><i class="fas fa-bullhorn"></i></div>
+                    <div>
+                        <div class="stat-title">Permohonan Edukasi</div>
+                        <div class="stat-value">
+                            {{ \Illuminate\Support\Facades\Schema::hasTable('permohonan_edukasi') ? \Illuminate\Support\Facades\DB::table('permohonan_edukasi')->count() : 0 }}
+                        </div>
+                    </div>
+                </a>
+
+                <a href="/internal/pencegahan/kelola-redkar" class="stat-card">
+                    <div class="stat-ico ic-primary"><i class="fas fa-users"></i></div>
+                    <div>
+                        <div class="stat-title">Kelola Redkar</div>
+                        <div class="stat-value">
+                            {{ \Illuminate\Support\Facades\Schema::hasTable('redkar') ? \Illuminate\Support\Facades\DB::table('redkar')->count() : 0 }}
+                        </div>
+                    </div>
+                </a>
+            </div>
         </div>
-        <div class="stats-grid">
 
-            <a href="/internal/pencegahan/kelola-rpkbgl" class="stat-card">
-                <div class="stat-top">
-                    <span class="stat-ico ic-green"><i class="fas fa-building"></i></span>
-                    <i class="fas fa-arrow-right stat-arrow"></i>
-                </div>
-                <div>
-                    <div class="stat-title">Permohonan RPKBGL</div>
-                    <div class="stat-value">{{ \Illuminate\Support\Facades\DB::table('permohonan_rpkbgl')->count() }}</div>
-                </div>
-            </a>
+        <!-- 2. BAGIAN PEMADAMAN -->
+        <div class="mb-5">
+            <div class="section-heading">
+                <span class="section-heading-ico"><i class="fas fa-fire-extinguisher"></i></span>
+                <h3>Bagian Pemadaman</h3>
+                <span class="line"></span>
+            </div>
 
-            <a href="/internal/pencegahan/kelola-skk" class="stat-card">
-                <div class="stat-top">
-                    <span class="stat-ico ic-teal"><i class="fas fa-shield-halved"></i></span>
-                    <i class="fas fa-arrow-right stat-arrow"></i>
-                </div>
-                <div>
-                    <div class="stat-title">Permohonan SKK (total)</div>
-                    <div class="stat-value">{{ \Illuminate\Support\Facades\DB::table('permohonan_skk')->count() + \Illuminate\Support\Facades\DB::table('permohonan_perpanjang_skk')->count() }}</div>
-                </div>
-            </a>
+            <div class="stats-grid">
+                <a href="/internal/damtan/data-laporan" class="stat-card">
+                    <div class="stat-ico ic-danger"><i class="fas fa-fire"></i></div>
+                    <div>
+                        <div class="stat-title">Siaga Darurat (Pemadaman)</div>
+                        <div class="stat-value">0</div>
+                    </div>
+                </a>
 
-            <a href="/internal/pencegahan/kelola-edukasi" class="stat-card">
-                <div class="stat-top">
-                    <span class="stat-ico ic-purple"><i class="fas fa-bullhorn"></i></span>
-                    <i class="fas fa-arrow-right stat-arrow"></i>
-                </div>
-                <div>
-                    <div class="stat-title">Permohonan edukasi</div>
-                    <div class="stat-value">{{ \Illuminate\Support\Facades\DB::table('permohonan_edukasi')->count() }}</div>
-                </div>
-            </a>
-
-            <a href="/internal/pencegahan/layanan-inspeksi" class="stat-card">
-                <div class="stat-top">
-                    <span class="stat-ico ic-blue"><i class="fas fa-clipboard-check"></i></span>
-                    <i class="fas fa-arrow-right stat-arrow"></i>
-                </div>
-                <div>
-                    <div class="stat-title">Layanan inspeksi</div>
-                    <div class="stat-value">24</div>
-                </div>
-            </a>
-
-            <a href="/internal/pencegahan/pelatihan" class="stat-card">
-                <div class="stat-top">
-                    <span class="stat-ico ic-purple"><i class="fas fa-chalkboard-user"></i></span>
-                    <i class="fas fa-arrow-right stat-arrow"></i>
-                </div>
-                <div>
-                    <div class="stat-title">Pelatihan aktif</div>
-                    <div class="stat-value">5</div>
-                </div>
-            </a>
-
-            <a href="/internal/pencegahan/pembinaan-pengembangan" class="stat-card">
-                <div class="stat-top">
-                    <span class="stat-ico ic-orange"><i class="fas fa-chart-line"></i></span>
-                    <i class="fas fa-arrow-right stat-arrow"></i>
-                </div>
-                <div>
-                    <div class="stat-title">Pembinaan &amp; pengembangan</div>
-                    <div class="stat-value">8</div>
-                </div>
-            </a>
-
-            <a href="/internal/pencegahan/peningkatan-kapasitas" class="stat-card">
-                <div class="stat-top">
-                    <span class="stat-ico ic-red"><i class="fas fa-arrow-trend-up"></i></span>
-                    <i class="fas fa-arrow-right stat-arrow"></i>
-                </div>
-                <div>
-                    <div class="stat-title">Peningkatan kapasitas</div>
-                    <div class="stat-value">3</div>
-                </div>
-            </a>
-
-            <a href="/internal/damtan/data-laporan" class="stat-card">
-                <div class="stat-top">
-                    <span class="stat-ico ic-red"><i class="fas fa-fire"></i></span>
-                    <i class="fas fa-arrow-right stat-arrow"></i>
-                </div>
-                <div>
-                    <div class="stat-title">Siaga darurat (pemadaman)</div>
-                    <div class="stat-value">3</div>
-                </div>
-            </a>
-
-            <a href="/sapra/data-hidrant-kota" class="stat-card">
-                <div class="stat-top">
-                    <span class="stat-ico ic-blue"><i class="fas fa-map-marker-alt"></i></span>
-                    <i class="fas fa-arrow-right stat-arrow"></i>
-                </div>
-                <div>
-                    <div class="stat-title">Total hidrant kota</div>
-                    <div class="stat-value">{{ \Illuminate\Support\Facades\DB::table('hidran_kota')->count() }}</div>
-                </div>
-            </a>
-
-            <a href="/sapra/prasarana-mako" class="stat-card">
-                <div class="stat-top">
-                    <span class="stat-ico ic-orange"><i class="fas fa-warehouse"></i></span>
-                    <i class="fas fa-arrow-right stat-arrow"></i>
-                </div>
-                <div>
-                    <div class="stat-title">Prasarana mako &amp; pos</div>
-                    <div class="stat-value">{{ \Illuminate\Support\Facades\DB::table('prasarana')->count() }}</div>
-                </div>
-            </a>
-
+                <a href="/internal/surat-korban/create" class="stat-card">
+                    <div class="stat-ico ic-primary"><i class="fas fa-file-signature"></i></div>
+                    <div>
+                        <div class="stat-title">Surat Korban Terbit</div>
+                        <div class="stat-value">0</div>
+                    </div>
+                </a>
+            </div>
         </div>
+
+        <!-- 3. BAGIAN SAPRA -->
+        <div class="mb-4">
+            <div class="section-heading">
+                <span class="section-heading-ico"><i class="fas fa-warehouse"></i></span>
+                <h3>Bagian Sarana &amp; Prasarana</h3>
+                <span class="line"></span>
+            </div>
+
+            <div class="stats-grid">
+                <a href="/sapra/data-hidrant-kota" class="stat-card">
+                    <div class="stat-ico ic-info"><i class="fas fa-map-marker-alt"></i></div>
+                    <div>
+                        <div class="stat-title">Total Hidrant Kota</div>
+                        <div class="stat-value">
+                            {{ \Illuminate\Support\Facades\Schema::hasTable('hidran_kota') ? \Illuminate\Support\Facades\DB::table('hidran_kota')->count() : 0 }}
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
         @endif
 
     </main>
@@ -511,13 +654,15 @@
 
     function closeSide() {
         document.body.classList.remove('side-open');
-        toggle.setAttribute('aria-expanded', 'false');
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
     }
-    toggle.addEventListener('click', function () {
-        var open = document.body.classList.toggle('side-open');
-        toggle.setAttribute('aria-expanded', open);
-    });
-    backdrop.addEventListener('click', closeSide);
+    if (toggle) {
+        toggle.addEventListener('click', function () {
+            var open = document.body.classList.toggle('side-open');
+            toggle.setAttribute('aria-expanded', open);
+        });
+    }
+    if (backdrop) backdrop.addEventListener('click', closeSide);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
 
     /* ---------- Hanya satu grup sidebar terbuka pada satu waktu ---------- */

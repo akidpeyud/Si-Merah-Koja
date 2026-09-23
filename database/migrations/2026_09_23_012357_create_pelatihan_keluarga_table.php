@@ -11,22 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pelatihan_keluargas', function (Blueprint $table) {
+        Schema::create('pelatihan_keluarga', function (Blueprint $table) {
             $table->id();
             
-            // Disarankan menggunakan date, format harinya (Kamis, dll) bisa di-handle oleh Carbon di blade
-            $table->date('tanggal_pelaksanaan'); 
-            
-            $table->string('posyandu')->nullable(); // Nullable karena di view ada yang strip "-"
-            
-            // Menggunakan string karena RT bisa berisi banyak nomor seperti "01, 03, 05, 06..."
-            $table->string('rt'); 
-            $table->string('kelurahan');
+            // Informasi Pelaksanaan
+            $table->date('tanggal_pelaksanaan');
             $table->string('kecamatan');
+            $table->string('kelurahan');
+            
+            // Menggunakan string untuk RT karena di input ada contoh: "01, 03, 05, 06"
+            $table->string('rt'); 
+            
+            // Posyandu bersifat opsional (boleh dikosongkan)
+            $table->string('posyandu')->nullable(); 
             
             // Jumlah Peserta
             $table->integer('peserta_perempuan')->default(0);
             $table->integer('peserta_laki_laki')->default(0);
+            
+            // Dokumen/Media (Foto dan Video di tabel dashboard)
             
             $table->timestamps();
         });
@@ -37,6 +40,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pelatihan_keluargas');
+        Schema::dropIfExists('pelatihan_keluarga');
     }
 };

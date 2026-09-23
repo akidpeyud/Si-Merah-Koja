@@ -30,21 +30,11 @@ Route::get('/', function () {
 });
 
 // Program Kerja
-Route::get('/sotk', function () { 
-    return view('programkerja.sotk'); 
-});
-Route::get('/pelaporan', function () { 
-    return view('programkerja.pelaporan'); 
-});
-Route::get('/perencanaan', function () { 
-    return view('programkerja.perencanaan'); 
-});
-Route::get('/produkhukum', function () { 
-    return view('programkerja.produkhukum'); 
-});
-Route::get('/sop', function () { 
-    return view('programkerja.sop'); 
-});
+Route::get('/sotk', function () { return view('programkerja.sotk'); });
+Route::get('/pelaporan', function () { return view('programkerja.pelaporan'); });
+Route::get('/perencanaan', function () { return view('programkerja.perencanaan'); });
+Route::get('/produkhukum', function () { return view('programkerja.produkhukum'); });
+Route::get('/sop', function () { return view('programkerja.sop'); });
 
 // Informasi Layanan (Publik)
 Route::get('/informasi-layanan', [PublicController::class, 'indexLayanan']);
@@ -62,32 +52,29 @@ Route::get('/pemohon/register', function () {
     return view('pemohon.register'); 
 })->name('pemohon.register');
 
+Route::post('/pemohon/register', [App\Http\Controllers\PemohonAuthController::class, 'register']);
+
 Route::get('/pemohon/login', function () { 
     return view('pemohon.login'); 
 })->name('pemohon.login');
+
+Route::post('/pemohon/login', [App\Http\Controllers\PemohonAuthController::class, 'login']);
+Route::post('/pemohon/logout', [App\Http\Controllers\PemohonAuthController::class, 'logout'])->name('pemohon.logout');
 
 
 // ==========================================
 // 3. RUTE WAJIB LOGIN PEMOHON 
 // ==========================================
-// Menggunakan Middleware File 'CekLoginPemohon'
 Route::middleware([CekLoginPemohon::class])->group(function () {
-    
     // --- Layanan Perizinan & SKK ---
-    Route::get('/layanan-fasilitas/layanan_perizinan', function () { 
-        return view('layanan-fasilitas.layanan_perizinan'); 
-    });
+    Route::get('/layanan-fasilitas/layanan_perizinan', function () { return view('layanan-fasilitas.layanan_perizinan'); });
     Route::post('/layanan-fasilitas/layanan_perizinan/store', [PermohonanController::class, 'store'])->name('permohonan.store');
 
-    Route::get('/layanan-fasilitas/skk', function () { 
-        return view('layanan-fasilitas.skk'); 
-    });
+    Route::get('/layanan-fasilitas/skk', function () { return view('layanan-fasilitas.skk'); });
     Route::post('/permohonan-skk', [App\Http\Controllers\PermohonanSkkController::class, 'store'])->name('permohonan.skk.store');
     
     // --- Layanan Edukasi & Sosialisasi ---
-    Route::get('/layanan-fasilitas/edukasi_sosialisasi', function () { 
-        return view('layanan-fasilitas.edukasi_sosialisasi'); 
-    });
+    Route::get('/layanan-fasilitas/edukasi_sosialisasi', function () { return view('layanan-fasilitas.edukasi_sosialisasi'); });
     Route::post('/layanan-fasilitas/edukasi_sosialisasi/store', [App\Http\Controllers\PermohonanEdukasiController::class, 'store'])->name('permohonan.edukasi.store');
 
     // --- Pendaftaran Redkar ---
@@ -99,16 +86,12 @@ Route::middleware([CekLoginPemohon::class])->group(function () {
 // ==========================================
 // 4. RUTE LOGIN & DASHBOARD REDKAR
 // ==========================================
-Route::get('/login-redkar', function () { 
-    return view('redkar.login_redkar'); 
-})->name('login.redkar');
+Route::get('/login-redkar', function () { return view('redkar.login_redkar'); })->name('login.redkar');
 Route::post('/login-redkar', [RedkarController::class, 'processLoginRedkar']);
 Route::post('/logout-redkar', [RedkarController::class, 'logoutRedkar'])->name('logout.redkar');
 
 Route::middleware('auth:redkar')->group(function () {
-    Route::get('/redkar/dashboard', function () { 
-        return view('redkar.halaman_utama'); 
-    })->name('redkar.dashboard');
+    Route::get('/redkar/dashboard', function () { return view('redkar.halaman_utama'); })->name('redkar.dashboard');
     Route::get('/redkar/profil', [RedkarController::class, 'profilRedkar'])->name('redkar.profil');
 });
 
@@ -129,14 +112,24 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::middleware(['auth'])->group(function () {
     
     // --- A. DASBOR & KELOLA USER ---
-    Route::get('/internal/index', function () { 
-        return view('internal.index'); 
-    });
+    Route::get('/internal/index', function () { return view('internal.index'); });
     Route::get('/internal/profil', [AuthController::class, 'showProfile']);
     Route::post('/internal/profil/update-password', [AuthController::class, 'updatePassword']);
     Route::get('/internal/kelola-user', [AuthController::class, 'kelolaUser']);
     Route::post('/internal/kelola-user/tambah', [AuthController::class, 'storeUser']);
     Route::put('/internal/kelola-user/update/{id}', [AuthController::class, 'updateUser']);
+
+    // MENGHUBUNGKAN KE VIEW KELOLA PEMOHON BERDASARKAN GAMBAR
+    Route::get('/internal/kelola-pemohon', function () {
+        // Path view: resources/views/pemohon/kelola_pemohon.blade.php
+        return view('pemohon.kelola_pemohon');
+    })->name('internal.pemohon');
+
+    // MENGHUBUNGKAN DUK YANG TADI KELUAR JALUR
+    Route::get('/internal/kepegawaian/duk', function () {
+        // Path view: resources/views/internal/kepegawaian/duk.blade.php
+        return view('internal.kepegawaian.duk'); 
+    })->name('internal.duk');
 
     // --- B. OPERATOR MEDSOS ---
     Route::get('/internal/operator/kelola-berita', [BeritaController::class, 'indexInternal']);
@@ -299,18 +292,10 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Inspeksi Kebakaran & Fire Drill
-    Route::get('/internal/pencegahan/inspeksi-kebakaran', function () { 
-        return view('internal.pencegahan.pencegahan_inspeksi'); 
-    });
-    Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan', function () { 
-        return view('internal.pencegahan.inspeksi_bangunan'); 
-    });
-    Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan/tambah', function () { 
-        return view('internal.pencegahan.tambah_inspeksi_bangunan'); 
-    });
-    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill', function () { 
-        return view('internal.pencegahan.fire_drill'); 
-    });
+    Route::get('/internal/pencegahan/inspeksi-kebakaran', function () { return view('internal.pencegahan.pencegahan_inspeksi'); });
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan', function () { return view('internal.pencegahan.inspeksi_bangunan'); });
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan/tambah', function () { return view('internal.pencegahan.tambah_inspeksi_bangunan'); });
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill', function () { return view('internal.pencegahan.fire_drill'); });
 
     // Layanan Inspeksi
     Route::get('/internal/pencegahan/layanan-inspeksi', function () { 
@@ -318,9 +303,7 @@ Route::middleware(['auth'])->group(function () {
             'data_inspeksi' => DB::table('jadwal_inspeksis')->orderBy('id', 'desc')->get()
         ]); 
     });
-    Route::get('/internal/pencegahan/layanan-inspeksi/tambah', function () { 
-        return view('internal.pencegahan.create_inspeksi'); 
-    });
+    Route::get('/internal/pencegahan/layanan-inspeksi/tambah', function () { return view('internal.pencegahan.create_inspeksi'); });
     Route::post('/internal/pencegahan/layanan-inspeksi/tambah', function (Request $request) { 
         $data = $request->except(['_token']); 
         if ($request->hasFile('dokumen_pendukung')) { 
@@ -363,9 +346,7 @@ Route::middleware(['auth'])->group(function () {
             'data_sosialisasi' => DB::table('sosialisasi')->orderBy('id', 'desc')->get()
         ]); 
     });
-    Route::get('/internal/pencegahan/layanan-sosialisasi/tambah', function () { 
-        return view('internal.pencegahan.create_sosialisasi'); 
-    });
+    Route::get('/internal/pencegahan/layanan-sosialisasi/tambah', function () { return view('internal.pencegahan.create_sosialisasi'); });
     Route::post('/internal/pencegahan/layanan-sosialisasi/tambah', function (Request $request) { 
         $data = $request->except(['_token']); 
         if ($request->hasFile('surat_permohonan')) { 
@@ -408,9 +389,7 @@ Route::middleware(['auth'])->group(function () {
             'data_pelatihan' => DB::table('pelatihan')->orderBy('id', 'desc')->get()
         ]); 
     });
-    Route::get('/internal/pencegahan/pelatihan/tambah', function () { 
-        return view('internal.pencegahan.create_pelatihan'); 
-    });
+    Route::get('/internal/pencegahan/pelatihan/tambah', function () { return view('internal.pencegahan.create_pelatihan'); });
     Route::post('/internal/pencegahan/pelatihan/tambah', function (Request $request) { 
         $data = $request->except(['_token']); 
         if ($request->hasFile('surat_permohonan')) { 
@@ -453,9 +432,7 @@ Route::middleware(['auth'])->group(function () {
             'data_pembinaan' => DB::table('pembinaan')->orderBy('id', 'desc')->get()
         ]); 
     });
-    Route::get('/internal/pencegahan/pembinaan-pengembangan/tambah', function () { 
-        return view('internal.pencegahan.create_pembinaan'); 
-    });
+    Route::get('/internal/pencegahan/pembinaan-pengembangan/tambah', function () { return view('internal.pencegahan.create_pembinaan'); });
     Route::post('/internal/pencegahan/pembinaan-pengembangan/tambah', function (Request $request) { 
         $data = $request->except(['_token']); 
         if ($request->hasFile('dokumen_pendukung')) { 
@@ -493,12 +470,8 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Pemberdayaan Masyarakat
-    Route::get('/internal/pencegahan/pemberdayaan-masyarakat', function () { 
-        return view('internal.pencegahan.pemberdayaan_masyarakat'); 
-    });
-    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga', function () { 
-        return view('internal.pencegahan.pelatihan_keluarga'); 
-    });
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat', function () { return view('internal.pencegahan.pemberdayaan_masyarakat'); });
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga', function () { return view('internal.pencegahan.pelatihan_keluarga'); });
 
     // Peningkatan Kapasitas Aparatur (Multi Tabel)
     Route::get('/internal/pencegahan/peningkatan-kapasitas', function () {
@@ -516,9 +489,7 @@ Route::middleware(['auth'])->group(function () {
         ));
     });
 
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/tambah', function () { 
-        return view('internal.pencegahan.tambah_diklat'); 
-    });
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/tambah', function () { return view('internal.pencegahan.tambah_diklat'); });
 
     Route::post('/internal/pencegahan/peningkatan-kapasitas/tambah', function (Request $request) {
         $jenis = strtoupper($request->jenis_diklat);
@@ -603,9 +574,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Halaman Index Masing-masing Diklat (Controller Based)
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diksar', function () { 
-        return view('internal.pencegahan.diksar'); 
-    });
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/diksar', function () { return view('internal.pencegahan.diksar'); });
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f1', [PencegahanController::class, 'indexDiklatF1']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f2', [PencegahanController::class, 'indexDiklatF2']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-inspektur', [PencegahanController::class, 'indexDiklatInspektur']);
@@ -615,25 +584,3 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-ppl', [PencegahanController::class, 'indexDiklatPpl']);
 
 });
-// ==========================================
-// 2. RUTE AKUN PEMOHON (MASYARAKAT / PERUSAHAAN)
-// ==========================================
-Route::get('/pemohon/register', function () { 
-    return view('pemohon.register'); 
-})->name('pemohon.register');
-
-Route::post('/pemohon/register', [App\Http\Controllers\PemohonAuthController::class, 'register']);
-
-Route::get('/pemohon/login', function () { 
-    return view('pemohon.login'); 
-})->name('pemohon.login');
-
-Route::delete('/internal/pencegahan/peningkatan-kapasitas/hapus/{jenis}/{id}', function ($jenis, $id) {
-    $tabel = 'tbl_' . str_replace('-', '_', $jenis);
-    \Illuminate\Support\Facades\DB::table($tabel)->where('id', $id)->delete();
-    return redirect()->back()->with('success', 'Data berhasil dihapus!');
-});
-
-
-// Route untuk halaman Publik Media Informasi
-Route::get('/media-informasi', [KabarDamkarController::class, 'indexMediaInformasi'])->name('media.informasi');
