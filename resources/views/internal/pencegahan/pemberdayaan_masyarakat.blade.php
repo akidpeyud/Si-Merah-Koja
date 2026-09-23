@@ -124,10 +124,8 @@
                 <div class="sidebar-submenu">
                     <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">PENINGKATAN KAPASITAS APARATUR</a>
                     <a href="/internal/pencegahan/inspeksi-kebakaran" class="sidebar-item" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">PENCEGAHAN KEBAKARAN DAN INSPEKSI</a>
-                    
-                    <!-- MENU 3 AKTIF -->
-                    <a href="/internal/pencegahan/pemberdayaan-masyarakat" class="sidebar-item active" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">
-                        PEMBERDAYAAN MASYARAKAT DAN DUNIA USAHA
+                    <a href="/internal/pencegahan/pemberdayaan-masyarakat" class="sidebar-item" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">PEMBERDAYAAN MASYARAKAT DAN DUNIA USAHA</a>
+
                     </a>
                 </div>
             </div>
@@ -174,10 +172,10 @@
                         <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
                         <input type="text" class="form-control border-start-0 ps-0" placeholder="Cari kelurahan atau posyandu...">
                     </div>
-                    
-                    <a href="#" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #0284c7; padding: 9px 16px;">
-                        <i class="fas fa-plus"></i> Tambah Data
-                    </a>
+                                       <!-- Ubah bagian ini -->
+<a href="/internal/pencegahan/pemberdayaan-masyarakat/create" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #0284c7; padding: 9px 16px;">
+    <i class="fas fa-plus"></i> Tambah Data
+</a>
                     <a href="#" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #10b981; padding: 9px 16px;">
                         <i class="fas fa-file-excel"></i> Excel
                     </a>

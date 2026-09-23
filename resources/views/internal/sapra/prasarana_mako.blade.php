@@ -4,42 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Prasarana Mako & Pos - SIMERAH KOJA</title>
-<<<<<<< HEAD
-
-=======
-<link rel="icon" href="/images/simerahkoja.png" type="image/png">
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-<<<<<<< HEAD
         body { background-color: #f3f4f6; color: #1f2937; }
-=======
-        
-        /* 1. KUNCI BODY BIAR GAK BISA DI-SCROLL KESELURUHAN */
-        body { background-color: #f8fafc; color: #1e293b; overflow: hidden; }
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
 
         /* ALERT STYLES */
         #globalSuccessAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); background-color: #10b981; color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s; }
         #globalSuccessAlert .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px; }
         @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
 
-<<<<<<< HEAD
         /* NAVBAR */
         .navbar-internal { background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; }
-=======
-        /* 2. KASIH TINGGI PASTI BUAT NAVBAR */
-        .navbar-internal { background-color: #0f172a; padding: 0 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); height: 74px; }
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
         .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; transition: opacity 0.3s;}
         .nav-brand:hover { opacity: 0.8; }
         .nav-brand img { height: 40px; }
         .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; }
-<<<<<<< HEAD
         .badge-internal { background: #10b981; color: white; font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 700; margin-left: 10px; }
         .user-menu { display: flex; align-items: center; gap: 20px; }
         .user-profile { display: flex; align-items: center; gap: 10px; color: #e5e7eb; font-size: 14px; font-weight: 600; }
@@ -67,42 +50,6 @@
         /* MAIN CONTENT & TABS */
         .main-content { flex: 1; padding: 40px 50px; overflow-y: auto; }
 
-=======
-        .user-menu { display: flex; align-items: center; gap: 20px; }
-        .user-profile { display: flex; align-items: center; gap: 10px; color: #e5e7eb; font-size: 14px; font-weight: 600; }
-        .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-        .btn-logout:hover { background-color: #dc2626; }
-
-        /* --- LAYOUT UTAMA (INDEPENDENT SCROLLING) --- */
-        /* 3. TINGGI SISA DARI LAYAR - NAVBAR */
-        .dashboard-container { display: flex; height: calc(100vh - 74px); }
-        
-        /* 4. TINGGI FULL & SCROLL KHUSUS SIDEBAR */
-        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e2e8f0; padding: 30px 15px; display: flex; flex-direction: column; gap: 4px; height: 100%; overflow-y: auto; flex-shrink: 0; }
-        
-        /* 5. SCROLL KHUSUS KONTEN KANAN */
-        .main-content { flex: 1; padding: 40px 50px; background-color: #f8fafc; height: 100%; overflow-y: auto; }
-
-        /* SIDEBAR STYLES */
-        .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #475569; text-decoration: none; font-size: 13.5px; font-weight: 600; border-radius: 8px; transition: all 0.2s; margin-bottom: 2px; }
-        .sidebar-item:hover { background-color: #f1f5f9; color: #0f172a; }
-        .sidebar-item.active { background-color: #eff6ff; color: #0284c7; }
-        .sidebar-item.active i { color: #0284c7; }
-        .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #94a3b8; transition: color 0.2s; }
-
-        .sidebar-collapse-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 12px 15px; background: transparent; border: none; text-align: left; font-size: 11.5px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s; border-radius: 8px; }
-        .sidebar-collapse-btn:hover { color: #475569; }
-        .sidebar-collapse-btn:not(.collapsed) { color: #0284c7; }
-        .toggle-icon { transition: transform 0.3s ease; font-size: 12px; }
-        .sidebar-collapse-btn.collapsed .toggle-icon { transform: rotate(0deg); }
-        .sidebar-collapse-btn:not(.collapsed) .toggle-icon { transform: rotate(180deg); color: #0284c7; }
-
-        .sidebar-separator { border-top: 1.5px dashed #e2e8f0; margin: 10px 15px; }
-        .sidebar-heading { display: block; font-size: 11px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 12px; margin-bottom: 6px; letter-spacing: 0.5px; }
-        .sidebar-submenu { display: flex; flex-direction: column; gap: 2px; padding-left: 5px; margin-top: 4px; }
-
-        /* MAIN CONTENT & TABS */
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
         .nav-tabs { border-bottom: 2px solid #e2e8f0; margin-bottom: 25px; flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; gap: 10px; }
         .nav-tabs .nav-link { color: #64748b; font-weight: 700; font-size: 12.5px; text-transform: uppercase; border: none; padding: 12px 24px; transition: all 0.2s; position: relative; background: transparent; }
         .nav-tabs .nav-link:hover { color: #0f172a; }
@@ -117,16 +64,8 @@
 
         .table-card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #e5e7eb; }
         .table-custom { margin-bottom: 0; font-size: 13.5px; }
-<<<<<<< HEAD
         .table-custom thead th { background-color: #111827; color: #f8fafc; font-weight: 600; padding: 16px 12px; text-align: center; font-size: 11.5px; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: none; }
         .table-custom tbody td { padding: 18px 12px; color: #4b5563; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
-=======
-        
-        /* 6. HEADER TABLE STICKY BIAR ENAK PAS SCROLL DATA */
-        .table-custom thead th { background-color: #0f172a; color: #f8fafc; font-weight: 600; padding: 16px 12px; text-align: center; font-size: 11.5px; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: none; position: sticky; top: 0; z-index: 10; } 
-        
-        .table-custom tbody td { padding: 18px 12px; color: #475569; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
         
         .img-prasarana { width: 180px; height: 120px; object-fit: cover; border-radius: 6px; transition: transform 0.2s; }
         .img-wrapper { display: inline-block; padding: 4px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #f8fafc; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
@@ -139,7 +78,6 @@
         .btn-delete:hover { background-color: #fecaca; color: #991b1b; }
 
         #searchInput:focus { box-shadow: none; border-color: #cbd5e1; }
-<<<<<<< HEAD
 
         /* ==================================================
            CSS KHUSUS UNTUK PRINT / CETAK PDF
@@ -170,21 +108,6 @@
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
-=======
-        
-        /* Tambahan Hover untuk Tombol Map */
-        .badge.btn-hover:hover { background-color: #f1f5f9 !important; opacity: 0.8; transform: translateY(-1px); }
-
-        @media print {
-            .navbar-internal, .sidebar, .btn, .nav-tabs, .modal, .btn-action, .search-container { display: none !important; }
-            body, .main-content { background-color: white !important; padding: 0 !important; margin: 0 !important; width: 100% !important; overflow: visible !important; height: auto !important;}
-            .dashboard-container { display: block !important; height: auto !important; }
-            .table-card { box-shadow: none !important; border: none !important; }
-            table th:nth-child(4), table td:nth-child(4) { display: none !important; }
-            .tab-pane { display: none !important; }
-            .tab-pane.active { display: block !important; opacity: 1 !important; }
-            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
         }
     </style>
 </head>
@@ -215,11 +138,7 @@
         <div class="user-menu">
             <div class="user-profile">
                 <span>{{ Auth::user()->nama_lengkap ?? 'Dhimas Zaky Abiyyu' }}</span>
-<<<<<<< HEAD
                 <i class="fas fa-user-circle"></i>
-=======
-                <i class="fas fa-user-circle" style="font-size: 20px; color: #9ca3af;"></i>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
             </div>
             <form action="/logout" method="POST" style="margin: 0;">
                 @csrf
@@ -230,29 +149,15 @@
 
     <div class="dashboard-container">
         
-<<<<<<< HEAD
         <!-- SIDEBAR UTUH MANUAL -->
         <aside class="sidebar" id="sidebarAccordion">
-=======
-        <!-- SIDEBAR -->
-        <aside class="sidebar" id="sidebarAccordion">
-            
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
             <a href="/internal/index" class="sidebar-item">
                 <i class="fas fa-home"></i> Dashboard Utama
             </a>
 
-<<<<<<< HEAD
             @if(in_array(Auth::user()->role, ['pencegahan', 'user', 'super_user']))
                 <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePencegahan" aria-expanded="false">
                     <span>Bagian Pencegahan</span>
-=======
-            <div class="sidebar-separator"></div>
-
-            @if(in_array(Auth::user()->role, ['pencegahan', 'user', 'super_user']))
-                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePencegahan" aria-expanded="false">
-                    <span>BAGIAN PENCEGAHAN</span>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
                 <div class="collapse" id="collapsePencegahan" data-bs-parent="#sidebarAccordion">
@@ -265,26 +170,17 @@
                         <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
                     </div>
                 </div>
-<<<<<<< HEAD
-=======
-                <div class="sidebar-separator"></div>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
             @endif
 
             @if(in_array(Auth::user()->role, ['pemadaman', 'user', 'super_user']))
                 <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="false">
-<<<<<<< HEAD
                     <span>Bagian Pemadaman</span>
-=======
-                    <span>BAGIAN PEMADAMAN</span>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
                 <div class="collapse" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
                         <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data & Laporan</a>
                         <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-file-alt"></i> Data Laporan</a>
-<<<<<<< HEAD
                         <a href="#" class="sidebar-item"><i class="fas fa-users-cog"></i> Jadwal Piket Regu</a>
                         <a href="#" class="sidebar-item"><i class="fas fa-running"></i> Data Relawan Redkar</a>
                     </div>
@@ -295,21 +191,10 @@
                 <!-- ACCORDION SAPRA (DIBUKA OTOMATIS) -->
                 <button class="sidebar-collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSapra" aria-expanded="true">
                     <span>Bagian Sapra</span>
-=======
-                    </div>
-                </div>
-                <div class="sidebar-separator"></div>
-            @endif
-
-            @if(in_array(Auth::user()->role, ['sapra', 'user', 'super_user']))
-                <button class="sidebar-collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSapra" aria-expanded="true">
-                    <span>BAGIAN SAPRA</span>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
                 <div class="collapse show" id="collapseSapra" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
-<<<<<<< HEAD
                         <!-- GRUP MANAJEMEN AIR -->
 <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">MANAJEMEN AIR</span>
 <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
@@ -330,41 +215,13 @@
             @endif
 
             @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
-=======
-                        <span class="sidebar-heading" style="text-transform: none;">Sarana dan prasarana</span>
-                        <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam Kebakaran</a>
-                        
-                        <!-- ACTIVE ADA DI SINI KARENA INI HALAMAN PRASARANA -->
-                        <a href="/sapra/prasarana-mako" class="sidebar-item active"><i class="fas fa-building"></i> Prasarana Pemadam Kebakaran</a>                      
-                        <a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi</a>
-                        <a href="/sapra/sarana-pemeriksaan" class="sidebar-item"><i class="fas fa-search"></i> Sarana Pemeriksaan Proteksi Kebakaran</a>              
-                        <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
-
-                        <span class="sidebar-heading" style="text-transform: uppercase;">MANAJEMEN AIR</span>
-                        <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
-                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
-
-                        <span class="sidebar-heading" style="text-transform: uppercase;">LOGISTIK & DISTRIBUSI</span>
-                        <a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
-                        <a href="/sapra/distribusi-staff" class="sidebar-item"><i class="fas fa-user-check"></i> Distribusi Barang Staff</a>
-                    </div>
-                </div>
-                <div class="sidebar-separator"></div>
-            @endif
-
-            @if(in_array(Auth::user()->role, ['operator', 'super_user']))
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                 <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita" aria-expanded="false">
                     <span>Manajemen Berita</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
                 <div class="collapse" id="collapseBerita" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
-<<<<<<< HEAD
                         <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
-=======
-                        <a href="/internal/operator/kelola-berita" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                         <a href="/internal/operator/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
                     </div>
                 </div>
@@ -376,11 +233,7 @@
             </button>
             <div class="collapse" id="collapsePengaturan" data-bs-parent="#sidebarAccordion">
                 <div class="sidebar-submenu">
-<<<<<<< HEAD
                     <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
-=======
-                    <a href="/profile" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                     @if(Auth::user()->role === 'super_user')
                         <a href="/internal/kelola-user" class="sidebar-item"><i class="fas fa-users"></i> Kelola Semua Pengguna</a>
                     @endif
@@ -391,20 +244,12 @@
         <main class="main-content">
             <div class="d-flex justify-content-between align-items-end mb-4">
                 <div>
-<<<<<<< HEAD
                     <h1 style="font-size: 26px; font-weight: 800; color: #111827; margin-bottom: 6px;">Data Prasarana Pos</h1>
                     <p style="color: #6b7280; font-size: 14px; margin: 0;">Manajemen dokumentasi visual prasarana Markas Komando dan Pos Pemadam.</p>
                 </div>
                 <div class="d-flex gap-2 align-items-center">
                     
                     <!-- Search Bar -->
-=======
-                    <h1 style="font-size: 26px; font-weight: 800; color: #111827; margin-bottom: 6px;">Data Prasarana Pemadam Kebakaran</h1>
-                    <p style="color: #6b7280; font-size: 14px; margin: 0;">Manajemen dokumentasi visual prasarana Pemadam kebakaran.</p>
-                </div>
-                <div class="d-flex gap-2 align-items-center">
-                    
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                     <div class="input-group shadow-sm me-2 search-container" style="width: 250px; border-radius: 8px; overflow: hidden;">
                         <span class="input-group-text bg-white border-end-0 text-muted" style="border-color: #cbd5e1;"><i class="fas fa-search"></i></span>
                         <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari prasarana..." style="border-color: #cbd5e1; font-size: 14px;">
@@ -414,10 +259,7 @@
                         <i class="fas fa-plus me-1"></i> Tambah Data
                     </button>
 
-<<<<<<< HEAD
                     <!-- Hanya Tombol PDF -->
-=======
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                     <a href="/sapra/prasarana-mako/cetak-pdf" class="btn btn-danger fw-bold shadow-sm" style="background-color: #ef4444; border: none; padding: 10px 16px; border-radius: 8px; text-decoration: none;">
                         <i class="fas fa-file-pdf me-1"></i> PDF
                     </a>
@@ -428,10 +270,7 @@
                 $activeTab = session('active_tab'); 
             @endphp
 
-<<<<<<< HEAD
             <!-- TABS LOKASI DINAMIS -->
-=======
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
             <ul class="nav nav-tabs" id="posTabs" role="tablist">
                 @foreach($posPemadam as $pos)
                     @php 
@@ -439,20 +278,13 @@
                     @endphp
                     <li class="nav-item" role="presentation">
                         <button class="nav-link {{ $isActive ? 'active' : '' }}" id="tab-{{ $pos->id_pos }}" data-bs-toggle="tab" data-bs-target="#content-{{ $pos->id_pos }}" type="button" role="tab">
-<<<<<<< HEAD
                             {{ $pos->nama_pos }}
-=======
-                            {{ strtoupper($pos->nama_pos) }}
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                         </button>
                     </li>
                 @endforeach
             </ul>
 
-<<<<<<< HEAD
             <!-- ISI DARI MASING-MASING TAB -->
-=======
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
             <div class="tab-content" id="posTabsContent">
                 @foreach($posPemadam as $pos)
                     @php 
@@ -463,22 +295,7 @@
                         <div class="info-card">
                             <h5>{{ $pos->nama_pos }}</h5>
                             <p><i class="fas fa-map-marker-alt text-danger" style="width: 20px;"></i> {{ $pos->alamat ?? 'Alamat belum diatur' }}</p>
-<<<<<<< HEAD
                             <p><i class="fas fa-map text-success" style="width: 20px;"></i> Kode Map: <span class="badge bg-light text-dark border ms-1">{{ $pos->kode_map ?? '-' }}</span></p>
-=======
-                            
-                            <!-- DI SINI KODE MAPS JADI KLIK-ABLE -->
-                            <p class="mb-0 d-flex align-items-center">
-                                <i class="fas fa-map text-success" style="width: 20px;"></i> Kode Map: 
-                                @if($pos->kode_map)
-                                    <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($pos->kode_map) }}" target="_blank" class="badge bg-white text-primary border shadow-sm text-decoration-none ms-2 px-3 py-2 btn-hover" style="font-size: 11px; transition: 0.2s;">
-                                        <i class="fas fa-location-arrow text-danger me-1"></i> {{ $pos->kode_map }}
-                                    </a>
-                                @else
-                                    <span class="badge bg-light text-dark border ms-2 px-3 py-1">-</span>
-                                @endif
-                            </p>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                         </div>
 
                         <!-- TABEL DATA PRASARANA -->
@@ -498,30 +315,8 @@
                                         
                                         @forelse($dataFilter as $index => $item)
                                             <tr class="data-row">
-<<<<<<< HEAD
                                                 <td class="text-center fw-bold text-dark">{{ $loop->iteration }}</td>
                                                 <td class="fw-bold text-dark data-name" style="padding-left: 20px;">{{ $item->jenis_prasarana }}</td>
-=======
-                                                <!-- KOLOM 1: NO -->
-                                                <td class="text-center fw-bold text-dark">{{ $loop->iteration }}</td>
-                                                
-                                              <!-- KOLOM 2: NAMA BARANG & BADGE LUAS -->
-                                                <td class="data-name" style="padding-left: 20px; padding-top: 15px; padding-bottom: 15px;">
-                                                    <div class="fw-bold text-dark" style="font-size: 14.5px; text-transform: uppercase; margin-bottom: 8px;">
-                                                        {{ $item->jenis_prasarana }}
-                                                    </div>
-                                                    
-                                                    <!-- Logika Munculin Luas kalau ada isinya -->
-                                                    @if($item->luas_bangunan)
-                                                        <div>
-                                                            <span class="badge bg-white border shadow-sm" style="font-size: 12.5px; padding: 7px 12px; color: #475569; font-weight: 600;">
-                                                                <i class="fas fa-expand-arrows-alt text-primary me-1"></i> Luas: <span class="text-dark fw-bold">{{ $item->luas_bangunan }}</span>
-                                                            </span>
-                                                        </div>
-                                                    @endif
-                                                </td>
-                                                <!-- KOLOM 3: GAMBAR -->
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                                 <td class="text-center">
                                                    @if($item->path_gambar && file_exists(public_path($item->path_gambar)))
                                                     <div class="img-wrapper">
@@ -533,11 +328,6 @@
                                                         <span class="badge bg-light text-secondary border py-2 px-3"><i class="fas fa-image me-1"></i> Tidak ada gambar</span>
                                                     @endif
                                                 </td>
-<<<<<<< HEAD
-=======
-
-                                                <!-- KOLOM 4: AKSI -->
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                                 <td class="text-center">
                                                     <div class="d-flex justify-content-center gap-2">
                                                         <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEdit{{ $item->id_prasarana }}">
@@ -596,15 +386,6 @@
                                                     <label class="form-label fw-bold small text-secondary">Jenis Prasarana</label>
                                                     <input type="text" class="form-control border-light-subtle shadow-sm" name="jenis_prasarana" value="{{ $item->jenis_prasarana }}" required>
                                                 </div>
-<<<<<<< HEAD
-=======
-                                                
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold small text-secondary">Luas Tanah / Bangunan <span class="text-muted fw-normal">(Opsional)</span></label>
-                                                    <input type="text" class="form-control border-light-subtle shadow-sm" name="luas_bangunan" value="{{ $item->luas_bangunan }}" placeholder="Cth: 150 M² atau 2 Hektar">
-                                                </div>
-
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold small text-secondary">Ganti Gambar (Opsional)</label>
                                                     <input type="file" class="form-control border-light-subtle shadow-sm" name="gambar" accept="image/*">
@@ -620,10 +401,7 @@
                                 </div>
                             </div>
                         @endforeach
-<<<<<<< HEAD
                         <!-- AKHIR MODAL EDIT -->
-=======
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
 
                     </div>
                 @endforeach
@@ -646,13 +424,8 @@
                             <label class="form-label fw-bold small text-secondary">Pilih Lokasi / Pos</label>
                             <select class="form-select border-light-subtle shadow-sm" name="id_pos" required>
                                 <option value="">-- Pilih Lokasi --</option>
-<<<<<<< HEAD
                                 @foreach($posPemadam as $pos)
                                     <option value="{{ $pos->id_pos }}">{{ $pos->nama_pos }}</option>
-=======
-                                @foreach($posPemadam as $posOption)
-                                    <option value="{{ $posOption->id_pos }}">{{ $posOption->nama_pos }}</option>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                 @endforeach
                             </select>
                         </div>
@@ -660,15 +433,6 @@
                             <label class="form-label fw-bold small text-secondary">Jenis Prasarana</label>
                             <input type="text" class="form-control border-light-subtle shadow-sm" name="jenis_prasarana" placeholder="Contoh: Gedung Kantor Utama" required>
                         </div>
-<<<<<<< HEAD
-=======
-
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small text-secondary">Luas Tanah / Bangunan <span class="text-muted fw-normal">(Opsional)</span></label>
-                            <input type="text" class="form-control border-light-subtle shadow-sm" name="luas_bangunan" placeholder="Cth: 150 M² atau 2 Hektar">
-                        </div>
-
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                         <div class="mb-3">
                             <label class="form-label fw-bold small text-secondary">Upload Gambar</label>
                             <input type="file" class="form-control border-light-subtle shadow-sm" name="gambar" accept="image/*" required>

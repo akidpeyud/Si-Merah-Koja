@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Laporan - SIMERAH KOJA</title>
-<<<<<<< HEAD
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -12,13 +11,6 @@
     <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
-=======
-<link rel="icon" href="/images/simerahkoja.png" type="image/png">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Bootstrap 5.3 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -114,57 +106,10 @@
         
         .badge-custom { padding: 6px 10px; font-weight: 600; font-size: 11px; border-radius: 6px; }
 
-<<<<<<< HEAD
         /* --- DROPDOWN HOVER KUSTOM --- */
         .dropdown-menu { padding: 8px; border-radius: 10px; }
         .dropdown-item { border-radius: 6px; transition: all 0.2s ease-in-out; }
         .dropdown-item:hover, .dropdown-item:focus { background-color: #e0f2fe !important; }
-=======
-        /* Perbaikan Tampilan Pagination Laravel Bootstrap 5 */
-        .pagination-container nav ul.pagination { margin-bottom: 0 !important; }
-        .pagination-container nav p { display: none; }
-
-       /* --- STYLES KHUSUS UNTUK CETAK PDF --- */
-        @page {
-            /* Menghapus header/footer URL & Tanggal bawaan browser */
-            margin: 0; 
-        }
-
-        @media print {
-            /* Sembunyikan elemen yang tidak perlu dicetak */
-            .navbar-internal, .sidebar, .page-header, .card-header, .card-footer,
-            .btn, .dropdown, form, .modal, .action-btn, #globalSuccessAlert, #globalErrorAlert {
-                display: none !important;
-            }
-
-            /* Atur ulang background dan margin kertas agar tidak mepet ujung */
-            body { 
-                background-color: white !important; 
-                font-size: 12px; 
-                margin: 1.5cm !important; /* Jarak aman kertas */
-                -webkit-print-color-adjust: exact; 
-            }
-            
-            .dashboard-container { display: block; }
-            .main-content { padding: 0 !important; margin: 0 !important; background-color: white !important; }
-            .card { box-shadow: none !important; border: none !important; border-radius: 0 !important; }
-            .card-body { padding: 0 !important; }
-
-            /* Tampilkan header cetak khusus (Awalnya hidden) */
-            #print-header { display: block !important; text-align: center; margin-bottom: 20px; border-bottom: 2px solid black; padding-bottom: 10px; }
-            #print-header h2 { font-size: 20px; margin: 0 0 5px 0; font-weight: bold; color: black; }
-            #print-header p { font-size: 12px; margin: 0; color: black; }
-
-            /* Format tabel cetak */
-            .table { width: 100% !important; border-collapse: collapse; margin-bottom: 20px; }
-            .table th, .table td { border: 1px solid black !important; padding: 8px !important; text-align: left; }
-            .table th { background-color: #f2f2f2 !important; font-weight: bold; color: black !important; }
-            
-            /* Sembunyikan kolom aksi saat dicetak */
-            th:last-child, td:last-child { display: none !important; }
-        }
-    </style>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
     </style>
 </head>
 <body>
@@ -203,7 +148,6 @@
     <nav class="navbar-internal">
         <a href="#" class="nav-brand">
             <img src="/images/simerahkoja.png" alt="Logo Simerah">
-<<<<<<< HEAD
             <span class="title">SIMERAH KOJA <span class="badge-internal">INTERNAL APP</span></span>
         </a>
 
@@ -216,15 +160,6 @@
                 <i class="fas fa-user-circle"></i>
             </div>
             
-=======
-            <span class="title">SIMERAH KOJA</span>
-        </a>
-        <div class="user-menu">
-            <div class="user-profile">
-                <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
-                <i class="fas fa-user-circle"></i>
-            </div>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
             <form action="/logout" method="POST" style="margin: 0;">
                 @csrf
                 <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
@@ -261,7 +196,6 @@
                 </div>
 
                 <!-- ACCORDION PEMADAMAN (DAMTAN) -->
-<<<<<<< HEAD
                 <button class="sidebar-collapse-btn {{ Request::is('internal/damtan*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="{{ Request::is('internal/damtan*') ? 'true' : 'false' }}">
                     <span>Bagian Pemadaman</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
@@ -271,17 +205,6 @@
                         <a href="/internal/damtan/input-data" class="sidebar-item {{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
                         <!-- Menu Data Laporan di-set Active di halaman ini -->
                         <a href="/internal/damtan/data-laporan" class="sidebar-item active"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
-=======
-                <button class="sidebar-collapse-btn {{ Request::is('internal/damtan*') || Request::is('internal/surat*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="{{ Request::is('internal/damtan*') || Request::is('internal/surat*') ? 'true' : 'false' }}">
-                    <span>Bagian Pemadaman</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </button>
-                <div class="collapse {{ Request::is('internal/damtan*') || Request::is('internal/surat*') ? 'show' : '' }}" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">
-                        <a href="/internal/damtan/input-data" class="sidebar-item {{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
-                        <a href="/internal/damtan/data-laporan" class="sidebar-item {{ Request::is('internal/damtan/data-laporan*') ? 'active' : '' }}"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
-                        <a href="/internal/surat-korban/create" class="sidebar-item {{ Request::is('internal/surat*') ? 'active' : '' }}"><i class="fas fa-file-signature"></i> Buat Surat Korban</a>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                     </div>
                 </div>
 
@@ -340,7 +263,6 @@
                     <p>Daftar seluruh laporan kejadian yang telah diinput ke dalam sistem.</p>
                 </div>
                 <div>
-<<<<<<< HEAD
                     <!-- Tombol Ekspor Dropdown -->
                     <div class="dropdown d-inline-block me-2">
                         <button class="btn btn-outline-secondary fw-bold shadow-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -352,12 +274,6 @@
                             <li><a class="dropdown-item py-2 text-primary fw-bold" href="#" onclick="window.print()"><i class="fas fa-file-word me-2"></i> Format Word</a></li>
                         </ul>
                     </div>
-=======
-                   <!-- Tombol Ekspor Langsung -->
-                    <button class="btn btn-outline-secondary fw-bold shadow-sm me-2" type="button" onclick="window.print()">
-                        <i class="fas fa-download me-2"></i> Ekspor Semua
-                    </button>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
 
                     <a href="/internal/damtan/input-data" class="btn btn-primary fw-bold shadow-sm" style="background-color: #10b981; border: none;">
                         <i class="fas fa-plus me-2"></i> Buat Laporan Baru
@@ -373,18 +289,12 @@
                         <div class="col-md-4">
                             <div class="input-group">
                                 <span class="input-group-text bg-white text-muted border-end-0"><i class="fas fa-search"></i></span>
-<<<<<<< HEAD
                                 <!-- ID searchInput ditambahkan untuk fungsi JS -->
-=======
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                 <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari nomor laporan, lokasi, dsb...">
                             </div>
                         </div>
                         <div class="col-md-3">
-<<<<<<< HEAD
                             <!-- ID filterKategori ditambahkan untuk fungsi JS -->
-=======
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                             <select id="filterKategori" class="form-select">
                                 <option value="">Semua Kategori</option>
                                 <option value="Kebakaran">Kebakaran</option>
@@ -403,17 +313,6 @@
                 <!-- Table Content -->
                 <div class="card-body p-0">
                     <div class="table-responsive">
-<<<<<<< HEAD
-=======
-                        
-                        <!-- Header khusus cetak PDF (Awalnya tersembunyi via CSS) -->
-                        <div id="print-header" style="display: none;">
-                            <h2>REKAPITULASI DATA LAPORAN PENYELAMATAN</h2>
-                            <p>Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi</p>
-                            <p>Dicetak pada: {{ date('d F Y') }}</p>
-                        </div>
-
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                         <table class="table align-middle mb-0">
                             <thead>
                                 <tr>
@@ -431,11 +330,7 @@
                             <tbody id="tableBody">
                                 @forelse($data_laporan as $index => $row)
                                 <tr>
-<<<<<<< HEAD
                                     <td class="text-center text-muted">{{ $index + 1 }}</td>
-=======
-                                    <td class="text-center text-muted">{{ $data_laporan->firstItem() + $index }}</td>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                     <td><strong>{{ $row->nomor_laporan }}</strong></td>
                                     <td>
                                         <div class="text-dark fw-bold">
@@ -477,23 +372,17 @@
                                         </span>
                                     </td>
                                     <td class="text-center">
-<<<<<<< HEAD
                                         <!-- Tombol Modal Dinamis -->
                                         <a href="/internal/damtan/lihat-data/{{ $row->id }}" class="action-btn view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
                                         <a href="/internal/damtan/edit-data/{{ $row->id }}" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
                                         
                                         <!-- Tombol Hapus Dinamis yang terhubung ke Controller -->
-=======
-                                        <a href="/internal/damtan/lihat-data/{{ $row->id }}" class="action-btn view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
-                                        <a href="/internal/damtan/edit-data/{{ $row->id }}" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                         <form action="/internal/damtan/hapus-data/{{ $row->id }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus laporan {{ $row->nomor_laporan }} secara permanen?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="action-btn delete" title="Hapus"><i class="fas fa-trash"></i></button>
                                         </form>
 
-<<<<<<< HEAD
                                         <!-- ================= MODAL LIHAT DETAIL DINAMIS ================= -->
                                         <div class="modal fade text-start" id="detailModal{{ $row->id }}" tabindex="-1" aria-labelledby="detailModalLabel{{ $row->id }}" aria-hidden="true">
                                             <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -539,27 +428,12 @@
                                                                 <li><a class="dropdown-item py-2 text-primary fw-bold" href="#"><i class="fas fa-file-word me-2"></i> Ekspor Word</a></li>
                                                             </ul>
                                                         </div>
-=======
-                                        <!-- MODAL LIHAT DETAIL DINAMIS -->
-                                        <div class="modal fade text-start" id="detailModal{{ $row->id }}" tabindex="-1" aria-hidden="true">
-                                            <div class="modal-dialog modal-lg modal-dialog-centered">
-                                                <div class="modal-content border-0 shadow">
-                                                    <div class="modal-header" style="background-color: #111827; color: white;">
-                                                        <h5 class="modal-title fw-bold"><i class="fas fa-file-alt me-2 text-success"></i> Detail Laporan</h5>
-                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                                    </div>
-                                                    <div class="modal-body p-4 bg-light">
-                                                        <p>Rincian laporan dapat dilihat pada menu aksi.</p>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-<<<<<<< HEAD
                                         <!-- ================= END MODAL DINAMIS ================= -->
 
-=======
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                                     </td>
                                 </tr>
                                 @empty
@@ -575,7 +449,6 @@
                     </div>
                 </div>
                 
-<<<<<<< HEAD
                 <!-- Pagination -->
                 <div class="card-footer bg-white p-3 d-flex justify-content-between align-items-center border-top">
                     <span class="text-muted" style="font-size: 13px;" id="dataCount">Menampilkan {{ count($data_laporan) }} laporan</span>
@@ -584,16 +457,6 @@
                         <li class="page-item active"><a class="page-link" href="#" style="background-color: #10b981; border-color: #10b981;">1</a></li>
                         <li class="page-item disabled"><a class="page-link" href="#">Selanjutnya</a></li>
                     </ul>
-=======
-                <!-- Pagination Menggunakan Bawaan Laravel -->
-                <div class="card-footer bg-white p-3 d-flex justify-content-between align-items-center border-top">
-                    <span class="text-muted" style="font-size: 13px;" id="dataCount">
-                        Menampilkan {{ $data_laporan->firstItem() ?? 0 }} - {{ $data_laporan->lastItem() ?? 0 }} dari total {{ $data_laporan->total() }} laporan
-                    </span>
-                    <div class="pagination-container mb-0">
-                        {{ $data_laporan->links('pagination::bootstrap-5') }}
-                    </div>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                 </div>
             </div>
 
@@ -603,11 +466,7 @@
     <!-- Script Bootstrap & Fungsi Search/Filter JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-<<<<<<< HEAD
         // FUNGSI 1: SEARCH & FILTER FRONTEND
-=======
-        // FUNGSI 1: SEARCH & FILTER FRONTEND 
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('searchInput');
             const filterKategori = document.getElementById('filterKategori');
@@ -617,7 +476,6 @@
             function filterTable() {
                 const searchTerm = searchInput.value.toLowerCase();
                 const categoryTerm = filterKategori.value.toLowerCase();
-<<<<<<< HEAD
                 let visibleCount = 0;
 
                 for (let i = 0; i < rows.length; i++) {
@@ -626,19 +484,11 @@
                     }
                     const rowText = rows[i].textContent.toLowerCase();
                     // Mengambil teks dari kolom Kategori (kolom ke-4, index 3)
-=======
-
-                for (let i = 0; i < rows.length; i++) {
-                    if (rows[i].getElementsByTagName('td').length === 1) continue; 
-                    
-                    const rowText = rows[i].textContent.toLowerCase();
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
                     const categoryCellText = rows[i].getElementsByTagName('td')[3].textContent.toLowerCase(); 
 
                     const matchesSearch = rowText.includes(searchTerm);
                     const matchesCategory = categoryTerm === "" || categoryCellText.includes(categoryTerm);
 
-<<<<<<< HEAD
                     if (matchesSearch && matchesCategory) {
                         rows[i].style.display = '';
                         visibleCount++;
@@ -649,10 +499,6 @@
                 
                 // Update teks jumlah data di footer
                 document.getElementById('dataCount').innerText = "Menampilkan " + visibleCount + " laporan";
-=======
-                    rows[i].style.display = (matchesSearch && matchesCategory) ? '' : 'none';
-                }
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
             }
 
             searchInput.addEventListener('keyup', filterTable);

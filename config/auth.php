@@ -42,15 +42,6 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-<<<<<<< HEAD
-=======
-
-        // GUARD KHUSUS UNTUK REDKAR
-        'redkar' => [
-            'driver' => 'session',
-            'provider' => 'redkar',
-        ],
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
     ],
 
     /*
@@ -73,7 +64,6 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-<<<<<<< HEAD
             'model' => env('AUTH_MODEL', User::class),
         ],
 
@@ -81,16 +71,6 @@ return [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
-=======
-            'model' => App\Models\User::class,
-        ],
-
-        // PROVIDER KHUSUS UNTUK REDKAR
-        'redkar' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\PendaftarRedkar::class,
-        ],
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
     ],
 
     /*
@@ -134,8 +114,4 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
-<<<<<<< HEAD
 ];
-=======
-];
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
