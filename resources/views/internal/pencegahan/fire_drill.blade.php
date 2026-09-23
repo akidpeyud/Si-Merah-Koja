@@ -186,9 +186,10 @@
                         <input type="text" class="form-control border-start-0 ps-0" placeholder="Cari instansi...">
                     </div>
                     
-                    <a href="#" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #0284c7; padding: 9px 16px;">
-                        <i class="fas fa-plus"></i> Tambah Data
-                    </a>
+                    <a href="{{ route('fire_drill.create') }}" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #0284c7; padding: 9px 16px;">
+    <i class="fas fa-plus"></i> Tambah Data
+</a>
+                    
                     <a href="#" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #10b981; padding: 9px 16px;">
                         <i class="fas fa-file-excel"></i> Excel
                     </a>
@@ -234,34 +235,43 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="text-center fw-bold">1</td>
-                                <td><div class="fw-bold text-dark">PT. PLN UPT Jambi</div><span class="badge bg-success mt-1" style="font-size: 10px;">2025</span></td>
-                                <td>3 & 4 Februari 2025</td>
-                                <td>Aula PLN UPT Jambi</td>
-                                <td class="text-center">37</td>
-                                <td class="text-center">3</td>
-                                <td class="text-center fw-bold text-primary">40</td>
-                                <td class="sticky-action text-center">
-                                    <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
-                                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
+    @forelse($data_fire_drill as $index => $item)
+    <tr>
+        <td>{{ $index + 1 }}</td>
+        <td>
+            <strong>{{ $item->nama_instansi }}</strong><br>
+            <span class="badge bg-success" style="font-size: 10px;">{{ $item->tahun }}</span>
+        </td>
+        <td>{{ $item->tanggal_pelaksanaan }}</td>
+        <td>{{ $item->tempat_pelaksanaan }}</td>
+        <td class="text-center">{{ $item->peserta_laki_laki }}</td>
+        <td class="text-center">{{ $item->peserta_perempuan }}</td>
+        <td class="text-center text-primary fw-bold">{{ $item->total_peserta }}</td>
+        
+        <td class="text-center">
+            <div class="d-flex gap-1 justify-content-center">
+                <!-- Tombol Edit -->
+                <a href="{{ route('fire_drill.edit', $item->id) }}" class="btn btn-warning btn-sm text-white" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </a>
 
-                            <tr>
-                                <td class="text-center fw-bold">2</td>
-                                <td><div class="fw-bold text-dark">PT. Pertamina Gas Central Sumatera</div><span class="badge bg-success mt-1" style="font-size: 10px;">2025</span></td>
-                                <td>26 & 27 Februari 2025</td>
-                                <td>Dinas Pemadam Kebakaran Kota Jambi</td>
-                                <td class="text-center">30</td>
-                                <td class="text-center">0</td>
-                                <td class="text-center fw-bold text-primary">30</td>
-                                <td class="sticky-action text-center">
-                                    <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
-                                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                        </tbody>
+                <!-- Tombol Hapus -->
+                <form action="{{ route('fire_drill.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm" title="Hapus">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </td>
+    </tr>
+    @empty
+    <tr>
+        <td colspan="8" class="text-center py-4 text-muted">Belum ada data Fire Drill.</td>
+    </tr>
+    @endforelse
+</tbody>
                     </table>
                 </div>
             </div>
@@ -283,38 +293,44 @@
                                 <th class="sticky-action text-center" width="100px">AKSI</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td class="text-center fw-bold">1</td>
-                                <td><div class="fw-bold text-dark">PT. HUTAMA-WIKA-BAP KSO</div><span class="badge bg-warning mt-1 text-dark" style="font-size: 10px;">2024</span></td>
-                                <td>3 Februari 2024</td>
-                                <td>Kantor HUTAMA-WIKA-BAP KSO Paal 18 Sebapo.</td>
-                                <td class="text-center fw-bold text-primary">50</td>
-                                <td class="sticky-action text-center">
-                                    <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
-                                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td class="text-center fw-bold">2</td>
-                                <td><div class="fw-bold text-dark">PT. PLN (Persero) UPT Jambi</div><span class="badge bg-warning mt-1 text-dark" style="font-size: 10px;">2024</span></td>
-                                <td>5 & 6 Februari 2024</td>
-                                <td>Kantor PT. PLN (Persera) UPT Jambi..</td>
-                                <td class="text-center fw-bold text-primary">35</td>
-                                <td class="sticky-action text-center">
-                                    <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
-                                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            
-                            <!-- Baris Jumlah Total Khusus 2023-2024 -->
-                            <tr class="row-total">
-                                <td colspan="4" class="text-center" style="font-size: 14px; letter-spacing: 1px;">JUMLAH TOTAL</td>
-                                <td class="text-center text-danger" style="font-size: 16px;">803</td>
-                                <td class="sticky-action text-center bg-light"></td>
-                            </tr>
-                        </tbody>
+                       <tbody>
+    @forelse($data_fire_drill as $index => $item)
+    <tr>
+        <td>{{ $index + 1 }}</td>
+        <td>
+            <strong>{{ $item->nama_instansi }}</strong><br>
+            <span class="badge bg-success" style="font-size: 10px;">{{ $item->tahun }}</span>
+        </td>
+        <td>{{ $item->tanggal_pelaksanaan }}</td>
+        <td>{{ $item->tempat_pelaksanaan }}</td>
+        <td class="text-center">{{ $item->peserta_laki_laki }}</td>
+        <td class="text-center">{{ $item->peserta_perempuan }}</td>
+        <td class="text-center text-primary fw-bold">{{ $item->total_peserta }}</td>
+        
+        <td class="text-center">
+            <div class="d-flex gap-1 justify-content-center">
+                <!-- Tombol Edit -->
+                <a href="{{ route('fire_drill.edit', $item->id) }}" class="btn btn-warning btn-sm text-white" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </a>
+
+                <!-- Tombol Hapus -->
+                <form action="{{ route('fire_drill.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm" title="Hapus">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </td>
+    </tr>
+    @empty
+    <tr>
+        <td colspan="8" class="text-center py-4 text-muted">Belum ada data Fire Drill.</td>
+    </tr>
+    @endforelse
+</tbody>
                     </table>
                 </div>
             </div>

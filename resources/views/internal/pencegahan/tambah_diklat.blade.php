@@ -162,9 +162,8 @@
             <h1 class="fw-bolder text-dark mb-0" style="font-size: 24px;">Form Tambah Peningkatan Kapasitas</h1>
 
             <div class="form-wrapper">
-                <form action="#" method="POST">
-                    @csrf
-                    
+                <form action="/internal/pencegahan/peningkatan-kapasitas/simpan" method="POST">
+                  @csrf
                     <!-- SECTION 1: DATA PEGAWAI -->
                     <div class="section-title text-primary first"><i class="fas fa-user-tie"></i> Data Pegawai / Aparatur</div>
                     <div class="row g-3">
