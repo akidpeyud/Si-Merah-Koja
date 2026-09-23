@@ -318,18 +318,16 @@
                                 <td>{{ $item->ket }}</td>
                                 <td class="sticky-action text-center" style="white-space: nowrap;">
                                     <!-- Tombol Edit -->
-                                    <a href="/internal/pencegahan/peningkatan-kapasitas/edit/diklat-f1/{{ $item->id }}" class="btn-action btn-edit" title="Edit Data" style="position: relative; z-index: 10;">
+                                    <a href="/internal/pencegahan/peningkatan-kapasitas/edit/{{ strtolower(str_replace(' ', '-', $judul_diklat)) }}/{{ $item->id }}" class="btn btn-warning btn-sm">Edit</a>
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     
                                     <!-- Tombol Hapus -->
-                                    <form action="/internal/pencegahan/peningkatan-kapasitas/hapus/diklat-f1/{{ $item->id }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                                        @csrf 
-                                        @method('DELETE')
-                                        <button type="submit" class="btn-action btn-delete" title="Hapus Data" style="position: relative; z-index: 10;">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
+                                    <form action="/internal/pencegahan/peningkatan-kapasitas/hapus/{{ strtolower(str_replace(' ', '-', $judul_diklat)) }}/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');" style="display:inline-block;">
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+</form>
                                 </td>
                             </tr>
                             @endforeach
