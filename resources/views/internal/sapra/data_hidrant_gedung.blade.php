@@ -1,865 +1,654 @@
+@php
+    /* ------------------------------------------------------------
+       Konfigurasi tab. Satu definisi dipakai untuk merender tombol
+       tab, tabel, dan modal edit per baris — supaya ke-4 kategori
+       tidak perlu ditulis berulang empat kali.
+       ------------------------------------------------------------ */
+    $tabsData = [
+        [
+            'key' => 'pilar', 'label' => 'Hidrant pilar', 'kategori' => 'Hidrant Pilar',
+            'data' => $hidranPilar, 'name_label' => 'Nama gedung / lokasi',
+            'qty_label' => 'Jumlah', 'qty_field' => 'jumlah', 'qty_unit' => 'unit',
+            'qty_kind' => 'jumlah', 'badge' => 'chip-blue', 'total' => true,
+        ],
+        [
+            'key' => 'gedung', 'label' => 'Hidrant gedung', 'kategori' => 'Hidrant Gedung',
+            'data' => $hidranGedung, 'name_label' => 'Nama gedung',
+            'qty_label' => 'Jumlah', 'qty_field' => 'jumlah', 'qty_unit' => 'unit',
+            'qty_kind' => 'jumlah', 'badge' => 'chip-blue', 'total' => true,
+        ],
+        [
+            'key' => 'embung', 'label' => 'Embung / kolam', 'kategori' => 'Embung',
+            'data' => $embung, 'name_label' => 'Nama lokasi',
+            'qty_label' => 'Kapasitas air', 'qty_field' => 'luas', 'qty_unit' => '',
+            'qty_kind' => 'luas', 'badge' => 'chip-green', 'total' => false,
+        ],
+        [
+            'key' => 'danau', 'label' => 'Danau', 'kategori' => 'Danau',
+            'data' => $danau, 'name_label' => 'Nama danau',
+            'qty_label' => 'Kapasitas air', 'qty_field' => 'luas', 'qty_unit' => '',
+            'qty_kind' => 'luas', 'badge' => 'chip-green', 'total' => false,
+        ],
+    ];
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sumber Air - SIMERAH KOJA</title>
-<link rel="icon" href="/images/simerahkoja.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <meta name="theme-color" content="#0d1b2a">
+    <title>Sumber air | SIMERAH KOJA</title>
+    <link rel="icon" href="/images/simerahkoja.png" type="image/png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        
-        /* 1. KUNCI BODY BIAR GAK BISA DI-SCROLL KESELURUHAN */
-        body { background-color: #f8fafc; color: #1e293b; overflow: hidden; }
+        /* ==========================================================
+           TOKENS
+           ========================================================== */
+        :root {
+            --ink: #0d1b2a; --ink-2: #132a43; --ink-3: #1d3856;
+            --paper: #f3f5f8; --white: #ffffff;
+            --signal: #e5392d; --signal-d: #c22b20; --amber: #ffb627;
+            --green: #16a34a; --blue: #2563eb; --steel: #5b6c7f; --line: #dbe2ea;
+            --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+            --font-body: 'Instrument Sans', system-ui, sans-serif;
+            --r-lg: 22px; --r-md: 16px; --r-sm: 10px;
+            --sidebar-w: 272px; --topbar-h: 66px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-body); font-size: 1rem; line-height: 1.6; color: var(--ink); background: var(--paper); -webkit-font-smoothing: antialiased; }
+        body:has(dialog[open]) { overflow: hidden; }
+        img { max-width: 100%; display: block; }
+        a { color: inherit; text-decoration: none; }
+        ul, ol { list-style: none; }
+        button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+        table { border-collapse: collapse; width: 100%; }
+        :focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; border-radius: 6px; }
 
-        /* ALERT STYLES */
-        #globalSuccessAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); background-color: #10b981; color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s; }
-        #globalSuccessAlert .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px; }
-        @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+        /* ==========================================================
+           TOAST
+           ========================================================== */
+        .toast-wrap { position: fixed; z-index: 200; top: 18px; left: 50%; transform: translateX(-50%); display: grid; gap: 10px; width: max-content; max-width: calc(100vw - 24px); }
+        .toast { display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px; border-radius: 999px; background: #fff; border: 1px solid var(--line); box-shadow: 0 20px 40px -16px rgba(13,27,42,.5); font-weight: 600; font-size: .92rem; animation: toastIn .45s cubic-bezier(.16,.84,.3,1) both; }
+        .toast.leaving { animation: toastOut .3s ease forwards; }
+        .toast-ico { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: .78rem; background: var(--green); }
+        .toast-x { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); transition: background .2s, color .2s; }
+        .toast-x:hover { background: var(--ink); color: #fff; }
+        @keyframes toastIn { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+        @keyframes toastOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-14px); } }
 
-        /* 2. TINGGI TETAP UNTUK NAVBAR */
-        .navbar-internal { background-color: #0f172a; padding: 0 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1030; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); height: 74px; }
-        .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
-        .nav-brand img { height: 40px; }
-        .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; }
-        .user-menu { display: flex; align-items: center; gap: 20px; }
-        .user-profile { display: flex; align-items: center; gap: 10px; color: #e5e7eb; font-size: 14px; font-weight: 600; }
-        .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-        .btn-logout:hover { background-color: #dc2626; }
+        /* ==========================================================
+           TOPBAR
+           ========================================================== */
+        .topbar { position: sticky; top: 0; z-index: 60; height: var(--topbar-h); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 20px 0 clamp(16px, 2vw, 24px); background: rgba(255,255,255,.85); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+        .topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+        .side-toggle { display: none; width: 40px; height: 40px; border-radius: 12px; align-items: center; justify-content: center; font-size: 1.05rem; }
+        .side-toggle:hover { background: var(--paper); }
+        .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .brand img { height: 34px; width: auto; flex: none; }
+        .brand span { font-family: var(--font-display); font-weight: 800; font-stretch: 90%; font-size: 1.05rem; letter-spacing: -0.01em; white-space: nowrap; }
+        .topbar-right { display: flex; align-items: center; gap: 14px; }
+        .user-chip { display: flex; align-items: center; gap: 10px; padding: 6px 14px 6px 6px; border-radius: 999px; background: var(--paper); }
+        .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: .85rem; flex: none; }
+        .user-meta { display: grid; line-height: 1.25; }
+        .user-meta strong { font-size: .85rem; font-weight: 700; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .btn-logout { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border-radius: 999px; background: var(--signal); color: #fff; font-weight: 700; font-size: .85rem; transition: background .2s; }
+        .btn-logout:hover { background: var(--signal-d); }
+        @media (max-width: 900px) { .side-toggle { display: inline-flex; } .user-meta { display: none; } }
 
-        /* --- LAYOUT UTAMA (INDEPENDENT SCROLLING) --- */
-        /* 3. TINGGI SISA DARI LAYAR - NAVBAR */
-        .dashboard-container { display: flex; height: calc(100vh - 74px); }
-        
-        /* 4. SCROLL MANDIRI UNTUK SIDEBAR */
-        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e2e8f0; padding: 30px 15px; display: flex; flex-direction: column; gap: 4px; height: 100%; overflow-y: auto; flex-shrink: 0; }
-        
-        /* 5. SCROLL MANDIRI UNTUK KONTEN UTAMA */
-        .main-content { flex: 1; padding: 40px 50px; overflow-y: auto; height: 100%; }
+        /* ==========================================================
+           SHELL: SIDEBAR + KONTEN
+           ========================================================== */
+        .shell { display: flex; align-items: flex-start; min-height: calc(100vh - var(--topbar-h)); }
+        .sidebar { width: var(--sidebar-w); flex: none; position: sticky; top: var(--topbar-h); height: calc(100vh - var(--topbar-h)); overflow-y: auto; background: #fff; border-right: 1px solid var(--line); padding: 20px 14px 32px; }
+        .side-link { display: flex; align-items: center; gap: 13px; padding: 12px 14px; border-radius: 13px; font-size: .87rem; font-weight: 600; color: var(--ink); transition: background .2s, color .2s; }
+        .side-link:hover { background: var(--paper); }
+        .side-link.active { background: var(--ink); color: #fff; }
+        .side-link i { width: 18px; text-align: center; font-size: .95rem; color: var(--steel); }
+        .side-link.active i { color: var(--amber); }
+        .side-group + .side-group { margin-top: 6px; }
+        .side-group summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 13px; font-size: .78rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--steel); transition: background .2s, color .2s; }
+        .side-group summary::-webkit-details-marker { display: none; }
+        .side-group summary:hover { background: var(--paper); color: var(--ink); }
+        .side-group[open] > summary { color: var(--signal-d); }
+        .side-group summary .chev { margin-left: auto; font-size: .68rem; transition: transform .2s; }
+        .side-group[open] summary .chev { transform: rotate(180deg); }
+        .side-sub { display: grid; gap: 2px; padding: 4px 2px 8px 10px; border-left: 2px solid var(--line); margin: 2px 0 4px 22px; }
+        .side-sub a { display: flex; align-items: flex-start; gap: 11px; padding: 9px 12px; border-radius: 11px; font-size: .82rem; font-weight: 600; line-height: 1.4; color: var(--steel); transition: background .2s, color .2s; }
+        .side-sub a:hover { background: var(--paper); color: var(--ink); }
+        .side-sub a.active { background: #fdeceb; color: var(--signal-d); }
+        .side-sub a i { width: 16px; text-align: center; font-size: .85rem; margin-top: 2px; }
+        .side-kicker { padding: 14px 12px 4px; font-size: .68rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: #a9b6c4; }
+        .side-divider { height: 1px; background: var(--line); margin: 10px 10px; }
+        .sidebar-backdrop { display: none; }
+        @media (max-width: 900px) {
+            .sidebar { position: fixed; z-index: 90; top: var(--topbar-h); left: 0; height: calc(100dvh - var(--topbar-h)); transform: translateX(-100%); transition: transform .3s ease; box-shadow: 24px 0 48px -24px rgba(13,27,42,.4); }
+            body.side-open .sidebar { transform: none; }
+            .sidebar-backdrop { display: block; position: fixed; inset: var(--topbar-h) 0 0 0; z-index: 80; background: rgba(13,27,42,.4); opacity: 0; pointer-events: none; transition: opacity .3s; }
+            body.side-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
+        }
 
-        .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #475569; text-decoration: none; font-size: 13.5px; font-weight: 600; border-radius: 8px; transition: all 0.2s; margin-bottom: 2px; }
-        .sidebar-item:hover { background-color: #f1f5f9; color: #0f172a; }
-        
-        /* State Active untuk Menu Terpilih */
-        .sidebar-item.active { background-color: #eff6ff; color: #0284c7; }
-        .sidebar-item.active i { color: #0284c7; }
-        .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #94a3b8; transition: color 0.2s; }
+        .content { flex: 1; min-width: 0; padding: clamp(20px, 3vw, 36px) clamp(18px, 3vw, 40px) 60px; }
 
-        /* Tombol Accordion */
-        .sidebar-collapse-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 12px 15px; background: transparent; border: none; text-align: left; font-size: 11.5px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s; border-radius: 8px; }
-        .sidebar-collapse-btn:hover { color: #475569; }
-        .sidebar-collapse-btn:not(.collapsed) { color: #0284c7; }
-        .toggle-icon { transition: transform 0.3s ease; font-size: 12px; }
-        .sidebar-collapse-btn.collapsed .toggle-icon { transform: rotate(0deg); }
-        .sidebar-collapse-btn:not(.collapsed) .toggle-icon { transform: rotate(180deg); color: #0284c7; }
+        /* ==========================================================
+           TOOLBAR HALAMAN
+           ========================================================== */
+        .page-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+        .page-toolbar h1 { font-family: var(--font-display); font-weight: 800; font-stretch: 88%; font-size: clamp(1.5rem, 3vw, 1.9rem); line-height: 1.15; letter-spacing: -0.02em; }
+        .page-toolbar p { margin-top: 4px; color: var(--steel); font-size: .92rem; }
+        .toolbar-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 
-        /* Garis Putus-putus antar bidang */
-        .sidebar-separator { border-top: 1.5px dashed #e2e8f0; margin: 10px 15px; }
-        
-        /* Label Judul Kecil */
-        .sidebar-heading { display: block; font-size: 11px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 12px; margin-bottom: 6px; letter-spacing: 0.5px; }
-        .sidebar-submenu { display: flex; flex-direction: column; gap: 2px; padding-left: 5px; margin-top: 4px; }
+        .search { position: relative; width: 250px; max-width: 100%; }
+        .search i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--steel); font-size: .85rem; pointer-events: none; }
+        .search input { width: 100%; height: 42px; padding: 0 14px 0 40px; border-radius: 999px; border: 1.5px solid var(--line); background: #fff; font: inherit; font-size: .88rem; color: var(--ink); transition: border-color .2s, box-shadow .2s; }
+        .search input:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(255,182,39,.4); }
 
-        /* TABEL & TABS STYLE MODERN */
-        .table-card { background: white; border-radius: 0 12px 12px 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #e5e7eb; }
-        .table-custom { margin-bottom: 0; font-size: 13px; }
-        
-        /* 6. HEADER TABEL STICKY */
-        .table-custom thead th { background-color: #0f172a; color: #f8fafc; font-weight: 600; padding: 16px; border-bottom: none; text-align: center; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; position: sticky; top: 0; z-index: 10; }
-        
-        .table-custom tbody td { padding: 14px 16px; color: #475569; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
-        .table-custom tbody tr:hover { background-color: #f8fafc; }
-        
-        /* Badges untuk angka */
-        .badge-qty { background: #eff6ff; color: #0284c7; padding: 6px 12px; border-radius: 6px; font-weight: 700; border: 1px solid #bae6fd; display: inline-block; }
-        .badge-area { background: #f0fdf4; color: #16a34a; padding: 6px 12px; border-radius: 6px; font-weight: 700; border: 1px solid #bbf7d0; display: inline-block; }
+        .btn { display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 18px; border-radius: 999px; font-weight: 700; font-size: .86rem; transition: background .2s, transform .2s; white-space: nowrap; }
+        .btn:active { transform: scale(.97); }
+        .btn-primary { background: var(--blue); color: #fff; }
+        .btn-primary:hover { background: #1d4fd6; }
+        .btn-outline { background: #fff; border: 1.5px solid var(--line); color: var(--ink); }
+        .btn-outline:hover { border-color: var(--ink); }
+        .btn-outline.green i { color: var(--green); }
+        .btn-outline.red i { color: var(--signal); }
 
-        .nav-tabs { border-bottom: 2px solid #e2e8f0; }
-        .nav-tabs .nav-link { font-weight: 700; color: #64748b; border: none; padding: 12px 24px; transition: all 0.3s; margin-bottom: -2px; }
-        .nav-tabs .nav-link:hover { color: #10b981; }
-        .nav-tabs .nav-link.active { color: #10b981; border-bottom: 3px solid #10b981; background-color: transparent; }
+        /* ==========================================================
+           TAB
+           ========================================================== */
+        .tabs { display: flex; gap: 6px; padding: 7px; width: max-content; max-width: 100%; background: #fff; border: 1px solid var(--line); border-radius: 999px; box-shadow: 0 10px 24px -18px rgba(13,27,42,.4); overflow-x: auto; scrollbar-width: none; margin-bottom: 20px; }
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; padding: 10px 18px; border-radius: 999px; font-weight: 700; font-size: .86rem; color: var(--steel); transition: background .2s, color .2s; }
+        .tab:hover { background: var(--paper); color: var(--ink); }
+        .tab[aria-selected="true"] { background: var(--ink); color: #fff; }
 
-        .btn-action { padding: 6px 12px; font-size: 13px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; }
-        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .btn-edit { background-color: #f59e0b; color: white; }
-        .btn-delete { background-color: #ef4444; color: white; }
-        
-        #searchInput:focus { box-shadow: none; border-color: #cbd5e1; }
-        
-        .badge.btn-hover:hover { background-color: #f8fafc !important; opacity: 0.8; }
+        /* ==========================================================
+           TABEL
+           ========================================================== */
+        .panel[hidden] { display: none; }
+        .table-wrap { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
+        .table-scroll { overflow-x: auto; }
+        .data-table { font-size: .85rem; min-width: 720px; }
+        .data-table thead th { background: var(--ink); color: #fff; padding: 14px 16px; font-weight: 700; font-size: .7rem; letter-spacing: .04em; text-transform: uppercase; text-align: left; white-space: nowrap; }
+        .data-table thead th.c { text-align: center; }
+        .data-table tbody td { padding: 13px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; color: var(--ink); }
+        .data-table tbody td.c { text-align: center; }
+        .data-table tbody tr:hover { background: var(--paper); }
+        .data-table tbody tr:last-child td { border-bottom: 0; }
+        .cell-name { font-weight: 700; }
+        .cell-empty { text-align: center; padding: 48px 16px; color: var(--steel); font-weight: 600; }
+        .row-total td { background: var(--paper); font-weight: 800; border-top: 2px solid var(--line); }
+        .row-total td:first-child { text-align: right; }
 
-        /* ==================================================
-           CSS KHUSUS UNTUK PRINT / CETAK PDF
-           ================================================== */
+        .chip { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: .8rem; border: 1px solid transparent; }
+        .chip-blue { background: #eff6ff; color: var(--blue); border-color: #bfdbfe; }
+        .chip-green { background: #f0fdf4; color: var(--green); border-color: #bbf7d0; }
+        .chip-total { background: var(--blue); color: #fff; border-color: transparent; }
+        .chip-muted { color: var(--steel); }
+
+        .maps-chip { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); font-size: .78rem; font-weight: 700; color: var(--blue); transition: background .2s, color .2s; }
+        .maps-chip:hover { background: var(--ink); color: #fff; }
+        .maps-chip i { color: var(--signal); }
+        .maps-chip:hover i { color: var(--amber); }
+
+        .row-actions { display: inline-flex; gap: 6px; }
+        .icon-btn { width: 32px; height: 32px; border-radius: 9px; display: inline-grid; place-items: center; font-size: .82rem; color: #fff; transition: filter .2s, transform .2s; }
+        .icon-btn:hover { filter: brightness(.92); transform: translateY(-1px); }
+        .icon-btn.edit { background: var(--amber); color: var(--ink); }
+        .icon-btn.delete { background: var(--signal); }
+
+        /* ==========================================================
+           DIALOG (TAMBAH / EDIT)
+           ========================================================== */
+        dialog.sheet { margin: auto; padding: 0; border: 0; border-radius: var(--r-lg); width: min(480px, calc(100vw - 24px)); max-height: min(90vh, 720px); background: #fff; color: var(--ink); overflow: hidden; box-shadow: 0 32px 80px rgba(0,0,0,.45); }
+        dialog.sheet[open] { display: flex; flex-direction: column; animation: pop .22s cubic-bezier(.16,.84,.3,1); }
+        dialog.sheet::backdrop { background: rgba(13,27,42,.6); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+        @keyframes pop { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+        .sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 18px 22px; border-bottom: 1px solid var(--line); }
+        .sheet-head h2 { font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.1rem; letter-spacing: -0.01em; }
+        .sheet-x { flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); transition: background .2s, color .2s; }
+        .sheet-x:hover { background: var(--ink); color: #fff; }
+        .sheet-body { padding: 20px 22px; overflow-y: auto; display: grid; gap: 16px; }
+        .sheet-foot { padding: 14px 22px; border-top: 1px solid var(--line); background: var(--paper); display: flex; justify-content: flex-end; gap: 10px; }
+
+        .f-label { display: block; margin-bottom: 6px; font-size: .82rem; font-weight: 700; }
+        .f-input { display: block; width: 100%; height: 44px; padding: 0 14px; border: 1.5px solid var(--line); border-radius: 12px; background: #fff; font: inherit; font-size: .92rem; color: var(--ink); transition: border-color .2s, box-shadow .2s; }
+        textarea.f-input { height: auto; padding: 10px 14px; resize: vertical; min-height: 72px; }
+        .f-input:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(255,182,39,.4); }
+        .f-input:disabled, .f-input[readonly] { background: var(--paper); color: var(--steel); }
+        select.f-input { appearance: none; -webkit-appearance: none; padding-right: 40px; cursor: pointer; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%235b6c7f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 14px center; }
+        .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .f-hint { margin-top: 4px; font-size: .76rem; color: var(--steel); }
+
+        .btn-cancel { height: 42px; padding: 0 18px; border-radius: 999px; background: var(--paper); font-weight: 700; font-size: .86rem; transition: background .2s; }
+        .btn-cancel:hover { background: var(--line); }
+        .btn-save { height: 42px; padding: 0 22px; border-radius: 999px; background: var(--ink); color: #fff; font-weight: 700; font-size: .86rem; transition: background .2s; }
+        .btn-save:hover { background: var(--ink-3); }
+
+        /* ==========================================================
+           CETAK
+           ========================================================== */
         @media print {
-            .navbar-internal, .sidebar, .btn, .nav-tabs, .modal, .btn-action, .search-container {
-                display: none !important;
-            }
-            body, .main-content {
-                background-color: white !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                width: 100% !important;
-                overflow: visible !important;
-                height: auto !important;
-            }
-            .dashboard-container { display: block !important; height: auto !important;}
-            .table-card { box-shadow: none !important; border: none !important; }
-            
-            table th:last-child, table td:last-child {
-                display: none !important;
-            }
+            .topbar, .sidebar, .sidebar-backdrop, .page-toolbar .toolbar-actions, .tabs, .row-actions, dialog, .toast-wrap { display: none !important; }
+            body { background: #fff !important; }
+            .shell { display: block !important; }
+            .content { padding: 0 !important; }
+            .table-wrap { border: none !important; box-shadow: none !important; }
+            .panel { display: none !important; }
+            .panel[data-print-active] { display: block !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
 
-            .tab-pane { display: none !important; }
-            .tab-pane.active { display: block !important; opacity: 1 !important; }
-
-            * {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after { animation: none !important; transition: none !important; }
         }
     </style>
 </head>
 <body>
 
+<div class="toast-wrap" id="toastWrap" aria-live="polite">
     @if(session('success'))
-        <div id="globalSuccessAlert">
-            <i class="fas fa-check-circle alert-icon"></i>
+        <div class="toast" data-toast>
+            <span class="toast-ico"><i class="fas fa-check"></i></span>
             <span>{{ session('success') }}</span>
-            <button class="btn-close-alert" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+            <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
         </div>
-        <script>setTimeout(() => document.getElementById('globalSuccessAlert')?.remove(), 4000);</script>
     @endif
+</div>
 
-    <nav class="navbar-internal">
-        <a href="/" class="nav-brand">
-            <img src="/images/simerahkoja.png" alt="Logo Simerah">
-            <span class="title">SIMERAH KOJA</span>
+<!-- ==================== TOPBAR ==================== -->
+<header class="topbar">
+    <div class="topbar-left">
+        <button class="side-toggle" type="button" id="sideToggle" aria-label="Buka menu" aria-expanded="false" aria-controls="sidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+        <a href="/internal/index" class="brand">
+            <img src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA">
+            <span>SIMERAH KOJA</span>
         </a>
-        <div class="user-menu">
-            <div class="user-profile">
-                <span>{{ Auth::user()->nama_lengkap ?? 'Dhimas Zaky Abiyyu' }}</span>
-                <i class="fas fa-user-circle" style="font-size: 20px; color: #9ca3af;"></i>
-            </div>
-            <form action="/logout" method="POST" style="margin: 0;">
-                @csrf
-                <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
-            </form>
+    </div>
+    <div class="topbar-right">
+        <div class="user-chip">
+            <span class="user-avatar">{{ strtoupper(substr(Auth::user()->nama_lengkap ?? 'D', 0, 1)) }}</span>
+            <div class="user-meta"><strong>{{ Auth::user()->nama_lengkap ?? 'Dhimas Zaky Abiyyu' }}</strong></div>
         </div>
-    </nav>
+        <form action="/logout" method="POST" style="margin:0;">
+            @csrf
+            <button type="submit" class="btn-logout"><i class="fas fa-arrow-right-from-bracket"></i> Keluar</button>
+        </form>
+    </div>
+</header>
 
-    <div class="dashboard-container">
-        
-        <!-- SIDEBAR FULL PERSIS DESAIN TERBARU -->
-        <aside class="sidebar" id="sidebarAccordion">
-            
-            <!-- Dashboard Utama -->
-            <a href="/internal/index" class="sidebar-item">
-                <i class="fas fa-home"></i> Dashboard Utama
-            </a>
+<div class="shell">
+    <div class="sidebar-backdrop" id="sideBackdrop"></div>
 
-            <div class="sidebar-separator"></div>
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar" id="sidebar" aria-label="Navigasi internal">
 
-            <!-- BAGIAN PENCEGAHAN -->
-            @if(in_array(Auth::user()->role, ['pencegahan', 'user', 'super_user']))
-                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePencegahan">
-                    <span>BAGIAN PENCEGAHAN</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </button>
-                <div class="collapse" id="collapsePencegahan" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">
-                        <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
-                        <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
-                        <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
-                        <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
-                        <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
-                        <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
-                    </div>
+        <a href="/internal/index" class="side-link"><i class="fas fa-house"></i> Dashboard utama</a>
+        <div class="side-divider"></div>
+
+        @if(in_array(Auth::user()->role, ['pencegahan', 'user', 'super_user']))
+            <details class="side-group">
+                <summary>Bagian pencegahan <i class="fas fa-chevron-down chev"></i></summary>
+                <div class="side-sub">
+                    <a href="/internal/pencegahan/layanan-inspeksi"><i class="fas fa-clipboard-check"></i> Layanan inspeksi</a>
+                    <a href="/internal/pencegahan/layanan-sosialisasi"><i class="fas fa-bullhorn"></i> Layanan sosialisasi</a>
+                    <a href="/internal/pencegahan/pelatihan"><i class="fas fa-chalkboard-user"></i> Pelatihan</a>
+                    <a href="/internal/pencegahan/pembinaan-pengembangan"><i class="fas fa-chart-line"></i> Pembinaan &amp; pengembangan</a>
+                    <a href="/internal/pencegahan/peningkatan-kapasitas"><i class="fas fa-level-up-alt"></i> Peningkatan kapasitas</a>
+                    <a href="/internal/pencegahan/kelola-redkar"><i class="fas fa-users-gear"></i> Kelola Redkar</a>
                 </div>
-                <div class="sidebar-separator"></div>
-            @endif
+            </details>
+            <div class="side-divider"></div>
+        @endif
 
-            <!-- BAGIAN PEMADAMAN -->
-            @if(in_array(Auth::user()->role, ['pemadaman', 'user', 'super_user']))
-                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman">
-                    <span>BAGIAN PEMADAMAN</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </button>
-                <div class="collapse" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">
-                        <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data & Laporan</a>
-                        <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-file-alt"></i> Data Laporan</a>
-                     <!-- Menu Baru Untuk Surat -->
-                        <a href="/internal/surat-korban/create" class="sidebar-item {{ Request::is('internal/surat*') ? 'active' : '' }}"><i class="fas fa-file-signature"></i> Buat Surat Korban</a>
-                    </div>
+        @if(in_array(Auth::user()->role, ['pemadaman', 'user', 'super_user']))
+            <details class="side-group">
+                <summary>Bagian pemadaman <i class="fas fa-chevron-down chev"></i></summary>
+                <div class="side-sub">
+                    <a href="/internal/damtan/input-data"><i class="fas fa-fire-extinguisher"></i> Input data &amp; laporan</a>
+                    <a href="/internal/damtan/data-laporan"><i class="fas fa-file-lines"></i> Data laporan</a>
+                    <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat*') ? 'active' : '' }}"><i class="fas fa-file-signature"></i> Buat surat korban</a>
                 </div>
-                <div class="sidebar-separator"></div>
-            @endif
+            </details>
+            <div class="side-divider"></div>
+        @endif
 
-            <!-- BAGIAN SAPRA -->
-            @if(in_array(Auth::user()->role, ['sapra', 'user', 'super_user']))
-                <button class="sidebar-collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSapra" aria-expanded="true">
-                    <span>BAGIAN SAPRA</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </button>
-                <div class="collapse show" id="collapseSapra" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">
-                        
-                        <!-- MANAJEMEN SARANA DAN PRASARANA -->
-                       <span class="sidebar-heading" style="text-transform: uppercase;">SARANA DAN PRASARANA</span>
-                        <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam Kebakaran</a>
-                        <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pemadam Kebakaran</a>
-                        <a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi</a>
-                        <a href="/sapra/sarana-pemeriksaan" class="sidebar-item"><i class="fas fa-search"></i> Sarana Pemeriksaan Proteksi Kebakaran</a>   
-                        <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
-                        
-                        <!-- ACTIVE ADA DI SINI KARENA INI HALAMAN SUMBER AIR -->
-                          <span class="sidebar-heading" style="text-transform: uppercase;">MANAJEMEN AIR</span>
-                        <a href="/sapra/data_hidrant_gedung" class="sidebar-item active"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
-                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota jambi</a>
+        @if(in_array(Auth::user()->role, ['sapra', 'user', 'super_user']))
+            <details class="side-group" open>
+                <summary>Bagian sapra <i class="fas fa-chevron-down chev"></i></summary>
+                <div class="side-sub">
+                    <span class="side-kicker" style="padding-left:2px;">Sarana dan prasarana</span>
+                    <a href="/sapra/sarana-mako"><i class="fas fa-fire-extinguisher"></i> Sarana pemadam kebakaran</a>
+                    <a href="/sapra/prasarana-mako"><i class="fas fa-building"></i> Prasarana pemadam kebakaran</a>
+                    <a href="/sapra/sarana-penyelamatan"><i class="fas fa-life-ring"></i> Sarana penyelamatan &amp; evakuasi</a>
+                    <a href="/sapra/sarana-pemeriksaan"><i class="fas fa-magnifying-glass"></i> Sarana pemeriksaan proteksi kebakaran</a>
+                    <a href="/sapra/kelola-pos"><i class="fas fa-warehouse"></i> Kelola data pos</a>
 
-                        <!-- LOGISTIK & DISTRIBUSI -->
-                        <span class="sidebar-heading" style="text-transform: uppercase;">LOGISTIK & DISTRIBUSI</span>
-                        <a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
-                        <a href="/sapra/distribusi-staff" class="sidebar-item"><i class="fas fa-user-check"></i> Distribusi Barang Staff</a>
-                    </div>
+                    <span class="side-kicker" style="padding-left:2px;">Manajemen air</span>
+                    <a href="/sapra/data_hidrant_gedung" class="active"><i class="fas fa-droplet"></i> Sumber air</a>
+                    <a href="/sapra/data-hidrant-kota"><i class="fas fa-map-marker-alt"></i> Data hidrant Kota Jambi</a>
+
+                    <span class="side-kicker" style="padding-left:2px;">Logistik &amp; distribusi</span>
+                    <a href="/sapra/kebutuhan-sarpras"><i class="fas fa-clipboard-check"></i> Mutu baku kebutuhan</a>
+                    <a href="/sapra/distribusi-staff"><i class="fas fa-user-check"></i> Distribusi barang staff</a>
                 </div>
-                <div class="sidebar-separator"></div>
-            @endif
+            </details>
+            <div class="side-divider"></div>
+        @endif
 
-            <!-- MANAJEMEN BERITA -->
-            @if(in_array(Auth::user()->role, ['operator', 'super_user']))
-                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita" aria-expanded="false">
-                    <span>Manajemen Berita</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </button>
-                <div class="collapse" id="collapseBerita" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">
-                        <a href="/internal/operator/kelola-berita" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
-                        <a href="/internal/operator/infografis" class="sidebar-item"><i class="fas fa-image"></i> Kelola Info Grafis</a>
-                        <a href="/internal/operator/berita-medsos" class="sidebar-item"><i class="fab fa-instagram"></i> Kelola Berita Medsos</a>
-                    </div>
+        @if(in_array(Auth::user()->role, ['operator', 'super_user']))
+            <details class="side-group">
+                <summary>Manajemen berita <i class="fas fa-chevron-down chev"></i></summary>
+                <div class="side-sub">
+                    <a href="/internal/operator/kelola-berita"><i class="fas fa-newspaper"></i> Input &amp; kelola berita</a>
+                    <a href="/internal/operator/infografis"><i class="far fa-image"></i> Kelola info grafis</a>
+                    <a href="/internal/operator/berita-medsos"><i class="fab fa-instagram"></i> Kelola berita medsos</a>
                 </div>
-                <div class="sidebar-separator"></div>
-            @endif
+            </details>
+            <div class="side-divider"></div>
+        @endif
 
-            <!-- PENGATURAN AKUN -->
-            <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePengaturan">
-                <span>PENGATURAN AKUN</span>
-                <i class="fas fa-chevron-down toggle-icon"></i>
-            </button>
-            <div class="collapse" id="collapsePengaturan" data-bs-parent="#sidebarAccordion">
-                <div class="sidebar-submenu">
-                    <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
-                    @if(Auth::user()->role === 'super_user')
-                        <a href="/internal/kelola-user" class="sidebar-item"><i class="fas fa-users"></i> Kelola Semua Pengguna</a>
-                    @endif
+        <details class="side-group">
+            <summary>Pengaturan akun <i class="fas fa-chevron-down chev"></i></summary>
+            <div class="side-sub">
+                <a href="/internal/profil"><i class="fas fa-user-pen"></i> Profil saya</a>
+                @if(Auth::user()->role === 'super_user')
+                    <a href="/internal/kelola-user"><i class="fas fa-users-gear"></i> Kelola semua pengguna</a>
+                @endif
+            </div>
+        </details>
+    </aside>
+
+    <!-- ==================== KONTEN ==================== -->
+    <main class="content">
+
+        <div class="page-toolbar">
+            <div>
+                <h1>Sumber air</h1>
+                <p>Kelola data ketersediaan hidrant pilar, gedung, embung, dan danau.</p>
+            </div>
+            <div class="toolbar-actions">
+                <label class="search">
+                    <span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Cari lokasi atau alamat</span>
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Cari lokasi atau alamat" autocomplete="off">
+                </label>
+                <button type="button" class="btn btn-primary" data-open="dlgTambah"><i class="fas fa-plus"></i> Tambah data</button>
+                <a href="/sapra/hidran/cetak-excel" class="btn btn-outline green"><i class="fas fa-file-excel"></i> Excel</a>
+                <a href="/sapra/hidran/cetak-pdf" class="btn btn-outline red"><i class="fas fa-file-pdf"></i> PDF</a>
+            </div>
+        </div>
+
+        <!-- Tab -->
+        <nav class="tabs" role="tablist" aria-label="Kategori sumber air">
+            @foreach($tabsData as $i => $t)
+                <button type="button" class="tab" role="tab" data-tab="panel-{{ $t['key'] }}" aria-selected="{{ $i === 0 ? 'true' : 'false' }}">{{ $t['label'] }}</button>
+            @endforeach
+        </nav>
+
+        @foreach($tabsData as $i => $t)
+            <div class="panel" id="panel-{{ $t['key'] }}" role="tabpanel" @if($i !== 0) hidden @endif @if($i === 0) data-print-active @endif>
+                <div class="table-wrap">
+                    <div class="table-scroll">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th class="c" style="width:5%">No</th>
+                                    <th style="width:24%">{{ $t['name_label'] }}</th>
+                                    <th style="width:33%">Alamat</th>
+                                    <th class="c" style="width:15%">Kode maps</th>
+                                    <th class="c" style="width:13%">{{ $t['qty_label'] }}</th>
+                                    <th class="c" style="width:10%">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($t['data'] as $item)
+                                <tr class="data-row" data-tab="{{ $t['key'] }}">
+                                    <td class="c">{{ $item->no_urut }}</td>
+                                    <td class="cell-name data-name">{{ $item->nama_gedung }}</td>
+                                    <td class="data-address">{{ $item->alamat }}</td>
+                                    <td class="c">
+                                        @if($item->kode_maps)
+                                            <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($item->kode_maps) }}" target="_blank" rel="noopener" class="maps-chip">
+                                                <i class="fas fa-map-marker-alt"></i> {{ $item->kode_maps }}
+                                            </a>
+                                        @else
+                                            <span class="chip-muted">&mdash;</span>
+                                        @endif
+                                    </td>
+                                    <td class="c">
+                                        @if($t['qty_kind'] === 'jumlah')
+                                            <span class="chip {{ $t['badge'] }}">{{ $item->jumlah ?? '0' }} {{ $t['qty_unit'] }}</span>
+                                        @else
+                                            <span class="chip {{ $t['badge'] }}">{{ $item->luas ?? '—' }}</span>
+                                        @endif
+                                    </td>
+                                    <td class="c">
+                                        <div class="row-actions">
+                                            <button type="button" class="icon-btn edit" data-open="dlgEdit{{ $item->id }}" aria-label="Edit"><i class="fas fa-pen"></i></button>
+                                            <form action="/sapra/hidran/delete/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin hapus data ini?');">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="icon-btn delete" aria-label="Hapus"><i class="fas fa-trash"></i></button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Dialog edit -->
+                                <dialog class="sheet" id="dlgEdit{{ $item->id }}">
+                                    <div class="sheet-head">
+                                        <h2>Edit data {{ $t['label'] }}</h2>
+                                        <button type="button" class="sheet-x" data-close aria-label="Tutup"><i class="fas fa-times"></i></button>
+                                    </div>
+                                    <form action="/sapra/hidran/update/{{ $item->id }}" method="POST">
+                                        @csrf @method('PUT')
+                                        <div class="sheet-body">
+                                            <div>
+                                                <label class="f-label" for="kategori{{ $item->id }}">Kategori (pindah tab)</label>
+                                                <select class="f-input" id="kategori{{ $item->id }}" name="kategori" required>
+                                                    @foreach(['Hidrant Pilar', 'Hidrant Gedung', 'Embung', 'Danau'] as $opt)
+                                                        <option value="{{ $opt }}" {{ $item->kategori == $opt ? 'selected' : '' }}>{{ $opt === 'Embung' ? 'Embung / kolam' : $opt }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="f-label" for="no_urut{{ $item->id }}">No urut</label>
+                                                <input class="f-input" type="number" id="no_urut{{ $item->id }}" name="no_urut" value="{{ $item->no_urut }}" readonly>
+                                                <p class="f-hint">Diisi otomatis oleh sistem.</p>
+                                            </div>
+                                            <div>
+                                                <label class="f-label" for="nama_gedung{{ $item->id }}">{{ $t['name_label'] }}</label>
+                                                <input class="f-input" type="text" id="nama_gedung{{ $item->id }}" name="nama_gedung" value="{{ $item->nama_gedung }}" required>
+                                            </div>
+                                            <div>
+                                                <label class="f-label" for="alamat{{ $item->id }}">Alamat lengkap</label>
+                                                <textarea class="f-input" id="alamat{{ $item->id }}" name="alamat" rows="2" required>{{ $item->alamat }}</textarea>
+                                            </div>
+                                            <div>
+                                                <label class="f-label" for="kode_maps{{ $item->id }}">Kode maps</label>
+                                                <input class="f-input" type="text" id="kode_maps{{ $item->id }}" name="kode_maps" value="{{ $item->kode_maps }}">
+                                            </div>
+                                            <div class="f-row">
+                                                <div>
+                                                    <label class="f-label" for="jumlah{{ $item->id }}">Jumlah (unit)</label>
+                                                    <input class="f-input" type="number" id="jumlah{{ $item->id }}" name="jumlah" value="{{ $item->jumlah }}" {{ $t['qty_kind'] === 'luas' ? 'disabled placeholder=—' : '' }}>
+                                                </div>
+                                                <div>
+                                                    <label class="f-label" for="luas{{ $item->id }}">Kapasitas air (liter/m&sup3;)</label>
+                                                    <input class="f-input" type="text" id="luas{{ $item->id }}" name="luas" value="{{ $item->luas }}" {{ $t['qty_kind'] === 'jumlah' ? 'disabled placeholder=—' : '' }}>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sheet-foot">
+                                            <button type="button" class="btn-cancel" data-close>Batal</button>
+                                            <button type="submit" class="btn-save">Simpan perubahan</button>
+                                        </div>
+                                    </form>
+                                </dialog>
+                                @empty
+                                <tr><td colspan="6" class="cell-empty">Belum ada data {{ $t['label'] }} tersimpan.</td></tr>
+                                @endforelse
+
+                                @if($t['total'] && $t['data']->count() > 0)
+                                <tr class="row-total">
+                                    <td colspan="4">Total keseluruhan</td>
+                                    <td class="c"><span class="chip chip-total">{{ $t['data']->sum('jumlah') }} {{ $t['qty_unit'] }}</span></td>
+                                    <td></td>
+                                </tr>
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
+        @endforeach
 
-        </aside>
+    </main>
+</div>
 
-        <main class="main-content">
-            <div class="d-flex justify-content-between align-items-end mb-4">
+<!-- ==================== DIALOG TAMBAH (GLOBAL) ==================== -->
+<dialog class="sheet" id="dlgTambah">
+    <div class="sheet-head">
+        <h2>Tambah data baru</h2>
+        <button type="button" class="sheet-x" data-close aria-label="Tutup"><i class="fas fa-times"></i></button>
+    </div>
+    <form action="/sapra/hidran/store" method="POST">
+        @csrf
+        <div class="sheet-body">
+            <div>
+                <label class="f-label" for="pilihKategoriTambah">Pilih kategori</label>
+                <select class="f-input" id="pilihKategoriTambah" name="kategori" required>
+                    <option value="">— Pilih kategori —</option>
+                    <option value="Hidrant Pilar">Hidrant Pilar</option>
+                    <option value="Hidrant Gedung">Hidrant Gedung</option>
+                    <option value="Embung">Embung / kolam</option>
+                    <option value="Danau">Danau</option>
+                </select>
+            </div>
+            <div>
+                <label class="f-label" for="tambahNama">Nama gedung / lokasi</label>
+                <input class="f-input" type="text" id="tambahNama" name="nama_gedung" placeholder="Masukkan nama" required>
+            </div>
+            <div>
+                <label class="f-label" for="tambahAlamat">Alamat lengkap</label>
+                <textarea class="f-input" id="tambahAlamat" name="alamat" rows="2" placeholder="Masukkan alamat" required></textarea>
+            </div>
+            <div>
+                <label class="f-label" for="tambahMaps">Kode maps</label>
+                <input class="f-input" type="text" id="tambahMaps" name="kode_maps" placeholder="Contoh: 9HM5+6X">
+            </div>
+            <div class="f-row">
                 <div>
-                    <h1 style="font-size: 26px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">Sumber Air</h1>
-                    <p style="color: #64748b; font-size: 14px; margin: 0;">Kelola data ketersediaan hidrant pilar, gedung, embung, dan danau.</p>
+                    <label class="f-label" for="inputTambahJumlah">Jumlah (hidrant)</label>
+                    <input class="f-input" type="number" id="inputTambahJumlah" name="jumlah" placeholder="Contoh: 5">
                 </div>
-                <div class="d-flex gap-2 align-items-center">
-                    <!-- FITUR SEARCH BAR -->
-                    <div class="input-group shadow-sm me-2" style="width: 280px; border-radius: 8px; overflow: hidden;">
-                        <span class="input-group-text bg-white border-end-0 text-muted" style="border-color: #cbd5e1;"><i class="fas fa-search"></i></span>
-                        <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari lokasi atau alamat..." style="border-color: #cbd5e1; font-size: 14px;">
-                    </div>
-                    
-                    <button class="btn btn-primary fw-bold px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalTambah" style="background-color: #0284c7; border: none;">
-                        <i class="fas fa-plus me-1"></i> Tambah Data
-                    </button>
-                    
-                    <!-- TOMBOL EXCEL BARU -->
-                    <a href="/sapra/hidran/cetak-excel" class="btn btn-success fw-bold px-3 shadow-sm" style="background-color: #10b981; border: none;">
-                        <i class="fas fa-file-excel me-1"></i> Excel
-                    </a>
-
-                    <a href="/sapra/hidran/cetak-pdf" class="btn btn-danger fw-bold px-3 shadow-sm" style="background-color: #ef4444; border: none;">
-                        <i class="fas fa-file-pdf me-1"></i> PDF
-                    </a>
+                <div>
+                    <label class="f-label" for="inputTambahLuas">Kapasitas air (embung/danau)</label>
+                    <input class="f-input" type="text" id="inputTambahLuas" name="luas" placeholder="Contoh: 50.000 liter">
                 </div>
-            </div>
-
-            <ul class="nav nav-tabs" id="sapraTabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#pilar" type="button">Hidrant Pilar</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#gedung" type="button">Hidrant Gedung</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#embung" type="button">Embung / Kolam</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#danau" type="button">Danau</button>
-                </li>
-            </ul>
-
-            <div class="tab-content mt-4">
-                
-                <!-- TAB HIDRANT PILAR -->
-                <div class="tab-pane fade show active" id="pilar">
-                    <div class="table-card">
-                        <div class="table-responsive">
-                            <table class="table table-custom">
-                                <thead>
-                                    <tr>
-                                        <th width="5%">NO</th>
-                                        <th width="25%" style="text-align: left;">NAMA GEDUNG / LOKASI</th>
-                                        <th width="35%" style="text-align: left;">ALAMAT</th>
-                                        <th width="15%">KODE MAPS</th>
-                                        <th width="10%">JUMLAH</th>
-                                        <th width="10%">AKSI</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($hidranPilar as $item)
-                                    <tr class="data-row">
-                                        <td class="text-center fw-bold text-dark">{{ $item->no_urut }}</td>
-                                        <td class="fw-bold text-dark data-name">{{ $item->nama_gedung }}</td>
-                                        <td class="data-address">{{ $item->alamat }}</td>
-                                        
-                                        <!-- KODE MAPS CLICKABLE -->
-                                        <td class="text-center align-middle">
-                                            @if($item->kode_maps)
-                                                <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($item->kode_maps) }}" target="_blank" class="badge bg-light btn-hover text-primary border shadow-sm text-decoration-none px-3 py-2" style="font-size: 12px; transition: 0.2s;">
-                                                    <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ $item->kode_maps }}
-                                                </a>
-                                            @else
-                                                <span class="text-muted">-</span>
-                                            @endif
-                                        </td>
-                                        
-                                        <td class="text-center"><span class="badge-qty">{{ $item->jumlah ?? '0' }} Unit</span></td>
-                                        <td class="text-center">
-                                            <div class="d-flex justify-content-center gap-2">
-                                                <button class="btn-action btn-edit" data-bs-toggle="modal"data-bs-target="#modalEdit{{ $item->id }}"><i class="fas fa-edit"></i></button>
-                                                <form action="/sapra/hidran/delete/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin hapus data ini?');">
-                                                    @csrf @method('DELETE')
-                                                    <button type="submit" class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <!-- MODAL EDIT -->
-                                    <div class="modal fade" id="modalEdit{{ $item->id }}" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content border-0 shadow">
-                                                <div class="modal-header bg-light">
-                                                    <h5 class="modal-title fw-bold text-dark">Edit Data Hidrant Pilar</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <form action="/sapra/hidran/update/{{ $item->id }}" method="POST">
-                                                    @csrf @method('PUT')
-                                                    <div class="modal-body text-start">
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold small">Kategori Pindah Tab</label>
-                                                            <select class="form-select" name="kategori" required>
-                                                                <option value="Hidrant Pilar" {{ $item->kategori == 'Hidrant Pilar' ? 'selected' : '' }}>Hidrant Pilar</option>
-                                                                <option value="Hidrant Gedung" {{ $item->kategori == 'Hidrant Gedung' ? 'selected' : '' }}>Hidrant Gedung</option>
-                                                                <option value="Embung" {{ $item->kategori == 'Embung' ? 'selected' : '' }}>Embung / Kolam</option>
-                                                                <option value="Danau" {{ $item->kategori == 'Danau' ? 'selected' : '' }}>Danau</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold small">No Urut (Otomatis dari Sistem)</label>
-                                                            <input type="number" class="form-control bg-light" name="no_urut" value="{{ $item->no_urut }}" readonly>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold small">Nama Gedung / Lokasi</label>
-                                                            <input type="text" class="form-control" name="nama_gedung" value="{{ $item->nama_gedung }}" required>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold small">Alamat Lengkap</label>
-                                                            <textarea class="form-control" name="alamat" rows="2" required>{{ $item->alamat }}</textarea>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold small">Kode Maps</label>
-                                                            <input type="text" class="form-control" name="kode_maps" value="{{ $item->kode_maps }}">
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-6 mb-3">
-                                                                <label class="form-label fw-bold small text-primary">Jumlah (Unit)</label>
-                                                                <input type="number" class="form-control" name="jumlah" value="{{ $item->jumlah }}">
-                                                            </div>
-                                                            <div class="col-6 mb-3">
-                                                                <!-- Hanya Tampilan saja untuk Pilar, tidak relevan -->
-                                                                <label class="form-label fw-bold small text-muted">Kapasitas Air</label>
-                                                                <input type="text" class="form-control" name="luas" value="{{ $item->luas }}" disabled placeholder="-">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer bg-light">
-                                                        <button type="button" class="btn-secondary fw-bold" data-bs-dismiss="modal">Batal</button>
-                                                        <button type="submit" class="btn btn-primary fw-bold px-4">Simpan Perubahan</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @empty
-                                    <tr><td colspan="6" class="text-center py-5 text-muted fw-medium">Belum ada data Hidrant Pilar tersimpan.</td></tr>
-                                    @endforelse
-                                    @if($hidranPilar->count() > 0)
-                                    <tr style="background-color: #f1f5f9; border-top: 2px solid #cbd5e1;">
-                                        <td colspan="4" class="text-end fw-bold text-dark pe-4">TOTAL KESELURUHAN :</td>
-                                        <td class="text-center">
-                                            <span class="badge-qty" style="background-color: #0284c7; color: white; border: none; box-shadow: 0 2px 4px rgba(2,132,199,0.2);">
-                                                {{ $hidranPilar->sum('jumlah') }} Unit
-                                            </span>
-                                        </td>
-                                        <td></td>
-                                    </tr>
-                                    @endif
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TAB HIDRANT GEDUNG -->
-                <div class="tab-pane fade" id="gedung">
-                    <div class="table-card">
-                        <div class="table-responsive">
-                            <table class="table table-custom">
-                                <thead>
-                                    <tr>
-                                        <th width="5%">NO</th>
-                                        <th width="25%" style="text-align: left;">NAMA GEDUNG</th>
-                                        <th width="35%" style="text-align: left;">ALAMAT</th>
-                                        <th width="15%">KODE MAPS</th>
-                                        <th width="10%">JUMLAH</th>
-                                        <th width="10%">AKSI</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($hidranGedung as $item)
-                                    <tr class="data-row">
-                                        <td class="text-center fw-bold text-dark">{{ $item->no_urut }}</td>
-                                        <td class="fw-bold text-dark data-name">{{ $item->nama_gedung }}</td>
-                                        <td class="data-address">{{ $item->alamat }}</td>
-                                        
-                                        <!-- KODE MAPS CLICKABLE -->
-                                        <td class="text-center align-middle">
-                                            @if($item->kode_maps)
-                                                <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($item->kode_maps) }}" target="_blank" class="badge bg-light btn-hover text-primary border shadow-sm text-decoration-none px-3 py-2" style="font-size: 12px; transition: 0.2s;">
-                                                    <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ $item->kode_maps }}
-                                                </a>
-                                            @else
-                                                <span class="text-muted">-</span>
-                                            @endif
-                                        </td>
-                                        
-                                        <td class="text-center"><span class="badge-qty">{{ $item->jumlah ?? '0' }} Unit</span></td>
-                                        <td class="text-center">
-                                            <div class="d-flex justify-content-center gap-2">
-                                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEditGedung{{ $item->id }}"><i class="fas fa-edit"></i></button>
-                                                <form action="/sapra/hidran/delete/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin hapus data ini?');">
-                                                    @csrf @method('DELETE')
-                                                    <button type="submit" class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <!-- MODAL EDIT -->
-                                    <div class="modal fade" id="modalEditGedung{{ $item->id }}" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content border-0 shadow">
-                                                <div class="modal-header bg-light">
-                                                    <h5 class="modal-title fw-bold text-dark">Edit Data Hidrant Gedung</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <form action="/sapra/hidran/update/{{ $item->id }}" method="POST">
-                                                    @csrf @method('PUT')
-                                                    <div class="modal-body text-start">
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold small">Kategori Pindah Tab</label>
-                                                            <select class="form-select" name="kategori" required>
-                                                                <option value="Hidrant Pilar" {{ $item->kategori == 'Hidrant Pilar' ? 'selected' : '' }}>Hidrant Pilar</option>
-                                                                <option value="Hidrant Gedung" {{ $item->kategori == 'Hidrant Gedung' ? 'selected' : '' }}>Hidrant Gedung</option>
-                                                                <option value="Embung" {{ $item->kategori == 'Embung' ? 'selected' : '' }}>Embung / Kolam</option>
-                                                                <option value="Danau" {{ $item->kategori == 'Danau' ? 'selected' : '' }}>Danau</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold small">No Urut (Otomatis dari Sistem)</label>
-                                                            <input type="number" class="form-control bg-light" name="no_urut" value="{{ $item->no_urut }}" readonly>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold small">Nama Gedung</label>
-                                                            <input type="text" class="form-control" name="nama_gedung" value="{{ $item->nama_gedung }}" required>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold small">Alamat Lengkap</label>
-                                                            <textarea class="form-control" name="alamat" rows="2" required>{{ $item->alamat }}</textarea>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold small">Kode Maps</label>
-                                                            <input type="text" class="form-control" name="kode_maps" value="{{ $item->kode_maps }}">
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-6 mb-3">
-                                                                <label class="form-label fw-bold small text-primary">Jumlah (Unit)</label>
-                                                                <input type="number" class="form-control" name="jumlah" value="{{ $item->jumlah }}">
-                                                            </div>
-                                                            <div class="col-6 mb-3">
-                                                                <label class="form-label fw-bold small text-muted">Kapasitas Air</label>
-                                                                <input type="text" class="form-control" name="luas" value="{{ $item->luas }}" disabled placeholder="-">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer bg-light">
-                                                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">Batal</button>
-                                                        <button type="submit" class="btn btn-primary fw-bold px-4">Simpan Perubahan</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @empty
-                                    <tr><td colspan="6" class="text-center py-5 text-muted fw-medium">Belum ada data Hidrant Gedung tersimpan.</td></tr>
-                                    @endforelse
-                                    @if($hidranGedung->count() > 0)
-                                    <tr style="background-color: #f1f5f9; border-top: 2px solid #cbd5e1;">
-                                        <td colspan="4" class="text-end fw-bold text-dark pe-4">TOTAL KESELURUHAN :</td>
-                                        <td class="text-center">
-                                            <span class="badge-qty" style="background-color: #0284c7; color: white; border: none; box-shadow: 0 2px 4px rgba(2,132,199,0.2);">
-                                                {{ $hidranGedung->sum('jumlah') }} Unit
-                                            </span>
-                                        </td>
-                                        <td></td>
-                                    </tr>
-                                    @endif
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TAB EMBUNG (Ubah LUAS jadi KAPASITAS AIR) -->
-                <div class="tab-pane fade" id="embung">
-                    <div class="table-card">
-                        <div class="table-responsive">
-                            <table class="table table-custom">
-                                <thead>
-                                    <tr>
-                                        <th width="5%">NO</th>
-                                        <th width="25%" style="text-align: left;">NAMA LOKASI</th>
-                                        <th width="35%" style="text-align: left;">ALAMAT</th>
-                                        <th width="15%">KODE MAPS</th>
-                                        <th width="10%">KAPASITAS AIR</th> 
-                                        <th width="10%">AKSI</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($embung as $item)
-                                    <tr class="data-row">
-                                        <td class="text-center fw-bold text-dark">{{ $item->no_urut }}</td>
-                                        <td class="fw-bold text-dark data-name">{{ $item->nama_gedung }}</td>
-                                        <td class="data-address">{{ $item->alamat }}</td>
-                                        
-                                        <!-- KODE MAPS CLICKABLE -->
-                                        <td class="text-center align-middle">
-                                            @if($item->kode_maps)
-                                                <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($item->kode_maps) }}" target="_blank" class="badge bg-light btn-hover text-primary border shadow-sm text-decoration-none px-3 py-2" style="font-size: 12px; transition: 0.2s;">
-                                                    <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ $item->kode_maps }}
-                                                </a>
-                                            @else
-                                                <span class="text-muted">-</span>
-                                            @endif
-                                        </td>
-                                        
-                                        <td class="text-center"><span class="badge-area">{{ $item->luas ?? '-' }}</span></td>
-                                        <td class="text-center">
-                                            <div class="d-flex justify-content-center gap-2">
-                                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEditEmbung{{ $item->id }}"><i class="fas fa-edit"></i></button>
-                                                <form action="/sapra/hidran/delete/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin hapus data ini?');">
-                                                    @csrf @method('DELETE')
-                                                    <button type="submit" class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <!-- MODAL EDIT -->
-                                    <div class="modal fade" id="modalEditEmbung{{ $item->id }}" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content border-0 shadow">
-                                                <div class="modal-header bg-light">
-                                                    <h5 class="modal-title fw-bold text-dark">Edit Data Embung</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <form action="/sapra/hidran/update/{{ $item->id }}" method="POST">
-                                                    @csrf @method('PUT')
-                                                    <div class="modal-body text-start">
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold small">Kategori Pindah Tab</label>
-                                                            <select class="form-select" name="kategori" required>
-                                                                <option value="Hidrant Pilar" {{ $item->kategori == 'Hidrant Pilar' ? 'selected' : '' }}>Hidrant Pilar</option>
-                                                                <option value="Hidrant Gedung" {{ $item->kategori == 'Hidrant Gedung' ? 'selected' : '' }}>Hidrant Gedung</option>
-                                                                <option value="Embung" {{ $item->kategori == 'Embung' ? 'selected' : '' }}>Embung / Kolam</option>
-                                                                <option value="Danau" {{ $item->kategori == 'Danau' ? 'selected' : '' }}>Danau</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold small">No Urut (Otomatis dari Sistem)</label>
-                                                            <input type="number" class="form-control bg-light" name="no_urut" value="{{ $item->no_urut }}" readonly>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold small">Nama Lokasi</label>
-                                                            <input type="text" class="form-control" name="nama_gedung" value="{{ $item->nama_gedung }}" required>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold small">Alamat Lengkap</label>
-                                                            <textarea class="form-control" name="alamat" rows="2" required>{{ $item->alamat }}</textarea>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold small">Kode Maps</label>
-                                                            <input type="text" class="form-control" name="kode_maps" value="{{ $item->kode_maps }}">
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-6 mb-3">
-                                                                <label class="form-label fw-bold small text-muted">Jumlah (Unit)</label>
-                                                                <input type="number" class="form-control" name="jumlah" value="{{ $item->jumlah }}" disabled placeholder="-">
-                                                            </div>
-                                                            <div class="col-6 mb-3">
-                                                                <label class="form-label fw-bold small text-success">Kapasitas Air (Liter/m³)</label>
-                                                                <!-- Tetap name="luas" agar db tidak error -->
-                                                                <input type="text" class="form-control" name="luas" value="{{ $item->luas }}">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer bg-light">
-                                                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">Batal</button>
-                                                        <button type="submit" class="btn btn-primary fw-bold px-4">Simpan Perubahan</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @empty
-                                    <tr><td colspan="6" class="text-center py-5 text-muted fw-medium">Belum ada data Embung tersimpan.</td></tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TAB DANAU (Ubah LUAS jadi KAPASITAS AIR) -->
-                <div class="tab-pane fade" id="danau">
-                    <div class="table-card">
-                        <div class="table-responsive">
-                            <table class="table table-custom">
-                                <thead>
-                                    <tr>
-                                        <th width="5%">NO</th>
-                                        <th width="25%" style="text-align: left;">NAMA DANAU</th>
-                                        <th width="35%" style="text-align: left;">ALAMAT</th>
-                                        <th width="15%">KODE MAPS</th>
-                                        <th width="10%">KAPASITAS AIR</th>
-                                        <th width="10%">AKSI</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($danau as $item)
-                                    <tr class="data-row">
-                                        <td class="text-center fw-bold text-dark">{{ $item->no_urut }}</td>
-                                        <td class="fw-bold text-dark data-name">{{ $item->nama_gedung }}</td>
-                                        <td class="data-address">{{ $item->alamat }}</td>
-                                        
-                                        <!-- KODE MAPS CLICKABLE -->
-                                        <td class="text-center align-middle">
-                                            @if($item->kode_maps)
-                                                <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($item->kode_maps) }}" target="_blank" class="badge bg-light btn-hover text-primary border shadow-sm text-decoration-none px-3 py-2" style="font-size: 12px; transition: 0.2s;">
-                                                    <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ $item->kode_maps }}
-                                                </a>
-                                            @else
-                                                <span class="text-muted">-</span>
-                                            @endif
-                                        </td>
-                                        
-                                        <td class="text-center"><span class="badge-area">{{ $item->luas ?? '-' }}</span></td>
-                                        <td class="text-center">
-                                            <div class="d-flex justify-content-center gap-2">
-                                                <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEditDanau{{ $item->id }}"><i class="fas fa-edit"></i></button>
-                                                <form action="/sapra/hidran/delete/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin hapus data ini?');">
-                                                    @csrf @method('DELETE')
-                                                    <button type="submit" class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <!-- MODAL EDIT -->
-                                    <div class="modal fade" id="modalEditDanau{{ $item->id }}" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content border-0 shadow">
-                                                <div class="modal-header bg-light">
-                                                    <h5 class="modal-title fw-bold text-dark">Edit Data Danau</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <form action="/sapra/hidran/update/{{ $item->id }}" method="POST">
-                                                    @csrf @method('PUT')
-                                                    <div class="modal-body text-start">
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold small">Kategori Pindah Tab</label>
-                                                            <select class="form-select" name="kategori" required>
-                                                                <option value="Hidrant Pilar" {{ $item->kategori == 'Hidrant Pilar' ? 'selected' : '' }}>Hidrant Pilar</option>
-                                                                <option value="Hidrant Gedung" {{ $item->kategori == 'Hidrant Gedung' ? 'selected' : '' }}>Hidrant Gedung</option>
-                                                                <option value="Embung" {{ $item->kategori == 'Embung' ? 'selected' : '' }}>Embung / Kolam</option>
-                                                                <option value="Danau" {{ $item->kategori == 'Danau' ? 'selected' : '' }}>Danau</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold small">No Urut (Otomatis dari Sistem)</label>
-                                                            <input type="number" class="form-control bg-light" name="no_urut" value="{{ $item->no_urut }}" readonly>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold small">Nama Danau</label>
-                                                            <input type="text" class="form-control" name="nama_gedung" value="{{ $item->nama_gedung }}" required>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold small">Alamat Lengkap</label>
-                                                            <textarea class="form-control" name="alamat" rows="2" required>{{ $item->alamat }}</textarea>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold small">Kode Maps</label>
-                                                            <input type="text" class="form-control" name="kode_maps" value="{{ $item->kode_maps }}">
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-6 mb-3">
-                                                                <label class="form-label fw-bold small text-muted">Jumlah (Unit)</label>
-                                                                <input type="number" class="form-control" name="jumlah" value="{{ $item->jumlah }}" disabled placeholder="-">
-                                                            </div>
-                                                            <div class="col-6 mb-3">
-                                                                <label class="form-label fw-bold small text-success">Kapasitas Air (Liter/m³)</label>
-                                                                <!-- Tetap name="luas" agar db tidak error -->
-                                                                <input type="text" class="form-control" name="luas" value="{{ $item->luas }}">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer bg-light">
-                                                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">Batal</button>
-                                                        <button type="submit" class="btn btn-primary fw-bold px-4">Simpan Perubahan</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @empty
-                                    <tr><td colspan="6" class="text-center py-5 text-muted fw-medium">Belum ada data Danau tersimpan.</td></tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </main>
-    </div>
-
-    <!-- MODAL TAMBAH DATA (Global) -->
-    <div class="modal fade" id="modalTambah" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-light">
-                    <h5 class="modal-title fw-bold text-dark">Tambah Data Baru</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form action="/sapra/hidran/store" method="POST">
-                    @csrf
-                    <div class="modal-body text-start">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small">Pilih Kategori Tab</label>
-                            <select class="form-select" name="kategori" id="pilihKategoriTambah" required>
-                                <option value="">-- Pilih Kategori --</option>
-                                <option value="Hidrant Pilar">Hidrant Pilar</option>
-                                <option value="Hidrant Gedung">Hidrant Gedung</option>
-                                <option value="Embung">Embung / Kolam</option>
-                                <option value="Danau">Danau</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small">Nama Gedung / Lokasi</label>
-                            <input type="text" class="form-control" name="nama_gedung" placeholder="Masukkan nama..." required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small">Alamat Lengkap</label>
-                            <textarea class="form-control" name="alamat" rows="2" placeholder="Masukkan alamat..." required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small">Kode Maps</label>
-                            <input type="text" class="form-control" name="kode_maps" placeholder="Cth: 9HM5+6X">
-                        </div>
-                        <div class="row">
-                            <div class="col-6 mb-3">
-                                <label class="form-label fw-bold small text-primary" id="labelTambahJumlah">Jumlah (Untuk Hidrant)</label>
-                                <input type="number" class="form-control" name="jumlah" id="inputTambahJumlah" placeholder="Cth: 5">
-                            </div>
-                            <div class="col-6 mb-3">
-                                <label class="form-label fw-bold small text-success" id="labelTambahLuas">Kapasitas Air (Embung/Danau)</label>
-                                <input type="text" class="form-control" name="luas" id="inputTambahLuas" placeholder="Cth: 50.000 Liter">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer bg-light">
-                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary fw-bold px-4">Simpan Data</button>
-                    </div>
-                </form>
             </div>
         </div>
-    </div>
+        <div class="sheet-foot">
+            <button type="button" class="btn-cancel" data-close>Batal</button>
+            <button type="submit" class="btn-save">Simpan data</button>
+        </div>
+    </form>
+</dialog>
 
-    <!-- JAVASCRIPT UNTUK SEARCH BAR & LOGIKA FORM TAMBAH -->
-    <script>
-        document.getElementById('searchInput').addEventListener('keyup', function() {
-            let filter = this.value.toLowerCase();
-            let rows = document.querySelectorAll('.data-row');
-            
-            rows.forEach(row => {
-                let nama = row.querySelector('.data-name').textContent.toLowerCase();
-                let alamat = row.querySelector('.data-address').textContent.toLowerCase();
-                
-                if(nama.includes(filter) || alamat.includes(filter)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+<script>
+(function () {
+    'use strict';
+
+    /* ---------- Notifikasi ---------- */
+    document.querySelectorAll('[data-toast]').forEach(function (t) {
+        var hide = function () { t.classList.add('leaving'); setTimeout(function () { t.remove(); }, 350); };
+        var x = t.querySelector('[data-toast-close]');
+        if (x) x.addEventListener('click', hide);
+        setTimeout(hide, 4500);
+    });
+
+    /* ---------- Sidebar (mobile) ---------- */
+    var toggle = document.getElementById('sideToggle');
+    var backdrop = document.getElementById('sideBackdrop');
+    function closeSide() { document.body.classList.remove('side-open'); toggle.setAttribute('aria-expanded', 'false'); }
+    toggle.addEventListener('click', function () {
+        var open = document.body.classList.toggle('side-open');
+        toggle.setAttribute('aria-expanded', open);
+    });
+    backdrop.addEventListener('click', closeSide);
+
+    var groups = document.querySelectorAll('.side-group');
+    groups.forEach(function (g) {
+        g.addEventListener('toggle', function () {
+            if (g.open) groups.forEach(function (o) { if (o !== g) o.open = false; });
+        });
+    });
+
+    /* ---------- Tab ---------- */
+    var tabs = document.querySelectorAll('.tab');
+    tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            tabs.forEach(function (t) { t.setAttribute('aria-selected', 'false'); });
+            tab.setAttribute('aria-selected', 'true');
+            document.querySelectorAll('.panel').forEach(function (p) {
+                var active = p.id === tab.dataset.tab;
+                p.hidden = !active;
+                if (active) { p.setAttribute('data-print-active', ''); } else { p.removeAttribute('data-print-active'); }
             });
         });
+    });
 
-        // Script untuk mengatur disable/enable input di modal Tambah berdasarkan kategori
-        document.getElementById('pilihKategoriTambah').addEventListener('change', function() {
-            let kategori = this.value;
-            let inputJumlah = document.getElementById('inputTambahJumlah');
-            let inputLuas = document.getElementById('inputTambahLuas');
-            
-            if (kategori === 'Hidrant Pilar' || kategori === 'Hidrant Gedung') {
-                inputJumlah.disabled = false;
-                inputLuas.disabled = true;
-                inputLuas.value = '';
-            } else if (kategori === 'Embung' || kategori === 'Danau') {
-                inputJumlah.disabled = true;
-                inputJumlah.value = '';
-                inputLuas.disabled = false;
-            } else {
-                inputJumlah.disabled = false;
-                inputLuas.disabled = false;
-            }
+    /* ---------- Dialog (tambah & edit) ---------- */
+    document.querySelectorAll('[data-open]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var dlg = document.getElementById(btn.dataset.open);
+            if (dlg && dlg.showModal) dlg.showModal();
         });
-    </script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    });
+    document.querySelectorAll('dialog').forEach(function (dlg) {
+        dlg.addEventListener('click', function (e) {
+            if (e.target === dlg || e.target.closest('[data-close]')) dlg.close();
+        });
+    });
+
+    /* ---------- Pencarian ---------- */
+    var search = document.getElementById('searchInput');
+    if (search) {
+        search.addEventListener('input', function () {
+            var q = search.value.trim().toLowerCase();
+            document.querySelectorAll('.data-row').forEach(function (row) {
+                var nama = row.querySelector('.data-name').textContent.toLowerCase();
+                var alamat = row.querySelector('.data-address').textContent.toLowerCase();
+                row.style.display = (nama.indexOf(q) !== -1 || alamat.indexOf(q) !== -1) ? '' : 'none';
+            });
+        });
+    }
+
+    /* ---------- Toggle field jumlah/luas di dialog Tambah ---------- */
+    var pilihKategori = document.getElementById('pilihKategoriTambah');
+    var inputJumlah = document.getElementById('inputTambahJumlah');
+    var inputLuas = document.getElementById('inputTambahLuas');
+    pilihKategori.addEventListener('change', function () {
+        var kat = pilihKategori.value;
+        if (kat === 'Hidrant Pilar' || kat === 'Hidrant Gedung') {
+            inputJumlah.disabled = false;
+            inputLuas.disabled = true; inputLuas.value = '';
+        } else if (kat === 'Embung' || kat === 'Danau') {
+            inputJumlah.disabled = true; inputJumlah.value = '';
+            inputLuas.disabled = false;
+        } else {
+            inputJumlah.disabled = false;
+            inputLuas.disabled = false;
+        }
+    });
+})();
+</script>
 </body>
 </html>
