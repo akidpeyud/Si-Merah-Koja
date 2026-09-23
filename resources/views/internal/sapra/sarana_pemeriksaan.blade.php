@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Sarana Pemeriksaan - SIMERAH KOJA</title>
-<link rel="icon" href="/images/simerahkoja.png" type="image/png">
+    <link rel="icon" href="/images/simerahkoja.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -88,7 +88,7 @@
             body, .main-content { background-color: white !important; padding: 0 !important; margin: 0 !important; width: 100% !important; overflow: visible !important; height: auto !important; }
             .dashboard-container { display: block !important; height: auto !important; }
             .table-card { box-shadow: none !important; border: none !important; }
-            table th:nth-child(4), table td:nth-child(4) { display: none !important; }
+            table th:nth-child(5), table td:nth-child(5) { display: none !important; }
             .tab-pane { display: none !important; }
             .tab-pane.active { display: block !important; opacity: 1 !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
@@ -113,7 +113,7 @@
         </a>
         <div class="user-menu">
             <div class="user-profile">
-                <span>{{ Auth::user()->nama_lengkap ?? 'Dhimas Zaky Abiyyu' }}</span>
+                <span>{{ Auth::user()->nama_lengkap ?? 'Admin' }}</span>
                 <i class="fas fa-user-circle" style="font-size: 20px; color: #9ca3af;"></i>
             </div>
             <form action="/logout" method="POST" style="margin: 0;">
@@ -125,20 +125,15 @@
 
     <div class="dashboard-container">
         
-        <!-- SIDEBAR FULL PERSIS DESAIN TERBARU -->
+        <!-- ================= FULL SIDEBAR TERINTEGRASI ================= -->
         <aside class="sidebar" id="sidebarAccordion">
-            
-            <!-- Dashboard Utama -->
             <a href="/internal/index" class="sidebar-item">
                 <i class="fas fa-home"></i> Dashboard Utama
             </a>
 
-            <div class="sidebar-separator"></div>
-
-            <!-- BAGIAN PENCEGAHAN -->
             @if(in_array(Auth::user()->role, ['pencegahan', 'user', 'super_user']))
-                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePencegahan">
-                    <span>BAGIAN PENCEGAHAN</span>
+                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePencegahan" aria-expanded="false">
+                    <span>Bagian Pencegahan</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
                 <div class="collapse" id="collapsePencegahan" data-bs-parent="#sidebarAccordion">
@@ -154,54 +149,63 @@
                 <div class="sidebar-separator"></div>
             @endif
 
-            <!-- BAGIAN PEMADAMAN -->
             @if(in_array(Auth::user()->role, ['pemadaman', 'user', 'super_user']))
-                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman">
-                    <span>BAGIAN PEMADAMAN</span>
+                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="false">
+                    <span>Bagian Pemadaman</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
                 <div class="collapse" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
                     <div class="sidebar-submenu">
                         <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data & Laporan</a>
                         <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-file-alt"></i> Data Laporan</a>
-                        <a href="#" class="sidebar-item"><i class="fas fa-users-cog"></i> Jadwal Piket Regu</a>
+                        <a href="/internal/surat-korban/create" class="sidebar-item {{ Request::is('internal/surat*') ? 'active' : '' }}"><i class="fas fa-file-signature"></i> Buat Surat Korban</a>
                     </div>
                 </div>
                 <div class="sidebar-separator"></div>
             @endif
 
-            <!-- BAGIAN SAPRA -->
             @if(in_array(Auth::user()->role, ['sapra', 'user', 'super_user']))
                 <button class="sidebar-collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSapra" aria-expanded="true">
-                    <span>BAGIAN SAPRA</span>
+                    <span>Bagian Sapra</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
                 <div class="collapse show" id="collapseSapra" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">                
-                        <span class="sidebar-heading" style="text-transform: none;">Sarana dan prasarana</span>
+                    <div class="sidebar-submenu">
+                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">SARANA DAN PRASARANA</span>
                         <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam Kebakaran</a>
                         <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pemadam Kebakaran</a>
                         <a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi</a>
-                        <a href="/sapra/sarana-pemeriksaan" class="sidebar-item active"><i class="fas fa-search"></i> Sarana Pemeriksaan Proteksi Kebakaran</a>                        
+                        <!-- ACTIVE ADA DI SINI -->
+                        <a href="/sapra/sarana-pemeriksaan" class="sidebar-item active"><i class="fas fa-search"></i>Sarana Pemeriksaan Proteksi</a>
                         <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
 
-                        <!-- MANAJEMEN AIR -->
-                        <span class="sidebar-heading" style="text-transform: uppercase;">MANAJEMEN AIR</span>
+                         <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">MANAJEMEN AIR</span>
                         <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
-                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota jambi</a>
-
-                        <!-- LOGISTIK & DISTRIBUSI -->
-                        <span class="sidebar-heading" style="text-transform: uppercase;">LOGISTIK & DISTRIBUSI</span>
+                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota</a>
+                        
+                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">LOGISTIK & DISTRIBUSI</span>
                         <a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
-                        <a href="/sapra/distribusi-staff" class="sidebar-item"><i class="fas fa-user-check"></i> Distribusi Barang Staff</a>
+                        <a href="/sapra/distribusi-staff" class="sidebar-item"><i class="fas fa-user-check"></i> Distribusi Barang Staff</a> 
                     </div>
                 </div>
                 <div class="sidebar-separator"></div>
             @endif
 
-            <!-- PENGATURAN AKUN -->
-            <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePengaturan">
-                <span>PENGATURAN AKUN</span>
+            @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
+                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita" aria-expanded="false">
+                    <span>Manajemen Berita</span>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+                <div class="collapse" id="collapseBerita" data-bs-parent="#sidebarAccordion">
+                    <div class="sidebar-submenu">
+                        <a href="/internal/operator/kelola-berita" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
+                        <a href="/internal/operator/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
+                    </div>
+                </div>
+            @endif
+
+            <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePengaturan" aria-expanded="false">
+                <span>Pengaturan Akun</span>
                 <i class="fas fa-chevron-down toggle-icon"></i>
             </button>
             <div class="collapse" id="collapsePengaturan" data-bs-parent="#sidebarAccordion">
@@ -212,9 +216,10 @@
                     @endif
                 </div>
             </div>
-
         </aside>
+        <!-- ================= END FULL SIDEBAR ================= -->
 
+        <!-- KONTEN UTAMA SARANA PEMERIKSAAN -->
         <main class="main-content">
             <div class="d-flex justify-content-between align-items-end mb-4">
                 <div>
@@ -222,7 +227,6 @@
                     <p style="color: #64748b; font-size: 14px; margin: 0;">Manajemen dokumentasi alat seperti Walkie Talkie dan Head Tester di tiap pos.</p>
                 </div>
                 <div class="d-flex gap-2 align-items-center">
-                    
                     <!-- Search Bar -->
                     <div class="input-group shadow-sm me-2 search-container" style="width: 250px; border-radius: 8px; overflow: hidden;">
                         <span class="input-group-text bg-white border-end-0 text-muted" style="border-color: #cbd5e1;"><i class="fas fa-search"></i></span>

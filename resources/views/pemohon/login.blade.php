@@ -1,10 +1,23 @@
+@php
+    // Logika untuk mendeteksi URL tujuan pengguna sebelum dilempar ke halaman login
+    $urlTujuan = session('url.intended', '');
+    $namaLayanan = "Layanan Publik"; // Teks default
+
+    if (str_contains($urlTujuan, 'perizinan') || str_contains($urlTujuan, 'skk')) {
+        $namaLayanan = "Layanan Perizinan";
+    } elseif (str_contains($urlTujuan, 'edukasi')) {
+        $namaLayanan = "Layanan Edukasi & Sosialisasi";
+    } elseif (str_contains($urlTujuan, 'redkar')) {
+        $namaLayanan = "Pendaftaran Relawan Kebakaran (REDKAR)";
+    }
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - SIMERAH KOJA</title>
-<link rel="icon" href="/images/simerahkoja.png" type="image/png">
+    <link rel="icon" href="/images/simerahkoja.png" type="image/png">
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -15,65 +28,66 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-            /* --- SPLASH SCREEN STYLES --- */
-#splash-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: #0b0f19; /* Latar belakang gelap */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 99999;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
-}
+        /* --- SPLASH SCREEN STYLES --- */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #0b0f19; /* Latar belakang gelap */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
 
-.splash-logo-container {
-    text-align: center;
-    animation: pulseLogo 1.5s infinite alternate;
-}
+        .splash-logo-container {
+            text-align: center;
+            animation: pulseLogo 1.5s infinite alternate;
+        }
 
-.splash-logo-container img {
-    height: 100px;
-    margin-bottom: 20px;
-    filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.4));
-}
+        .splash-logo-container img {
+            height: 100px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.4));
+        }
 
-.splash-title {
-    color: #ffffff;
-    font-weight: 800;
-    font-size: 20px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 25px;
-}
+        .splash-title {
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 20px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+        }
 
-.splash-spinner {
-    width: 45px;
-    height: 45px;
-    border: 4px solid rgba(255, 255, 255, 0.1);
-    border-top: 4px solid #ef4444; /* Warna merah loading */
-    border-radius: 50%;
-    animation: spinLoader 0.8s linear infinite;
-}
+        .splash-spinner {
+            width: 45px;
+            height: 45px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #ef4444; /* Warna merah loading */
+            border-radius: 50%;
+            animation: spinLoader 0.8s linear infinite;
+        }
 
-@keyframes spinLoader {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+        @keyframes spinLoader {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
-@keyframes pulseLogo {
-    0% { transform: scale(0.95); opacity: 0.8; }
-    100% { transform: scale(1.05); opacity: 1; }
-}
+        @keyframes pulseLogo {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            100% { transform: scale(1.05); opacity: 1; }
+        }
 
-.splash-hidden {
-    opacity: 0;
-    visibility: hidden;
-}
+        .splash-hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -120,16 +134,24 @@
         }
 
         .login-header img {
-            height: 130px; 
+            height: 110px; /* Sedikit dikecilkan agar proporsional untuk logo Damkar */
             margin-bottom: 20px;
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
         }
 
         .login-header p {
             color: #9ca3af;
-            font-size: 12px;
+            font-size: 13px;
             line-height: 1.5;
             margin: 0;
+        }
+
+        .login-header strong {
+            color: #ffffff;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 5px;
         }
 
         .login-body {
@@ -243,7 +265,7 @@
             border: none;
             border-radius: 6px;
             width: 100%;
-            margin-top: 5px; /* Disesuaikan agar tidak terlalu jauh */
+            margin-top: 5px; 
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -296,25 +318,44 @@
             background-color: #ef4444;
             border-color: #ef4444;
         }
+
+        .register-link {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4b5563;
+        }
+        .register-link a {
+            color: #ef4444;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .register-link a:hover {
+            color: #dc2626;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
+
 <!-- SPLASH SCREEN LOADING -->
 <div id="splash-screen">
     <div class="splash-logo-container">
-        <!-- Pastikan path gambarnya benar -->
-        <img src="/images/simerahkoja.png" alt="Logo Simerah Koja">
+        <img src="/images/logo.png" alt="Logo Damkar">
         <div class="splash-title">SIMERAH KOJA</div>
     </div>
     <div class="splash-spinner"></div>
 </div>
+
     <div class="login-wrapper">
         <div class="login-card">
             
-            <!-- HEADER BERSERTA LOGO -->
+            <!-- HEADER BERSERTA LOGO DINAMIS -->
             <div class="login-header">
-                <img src="/images/simerahkoja.png" alt="Logo Simerah Koja">
-                <p>Sistem Informasi Penanggulangan Kebakaran dan Penyelamatan Daerah Kota Jambi</p>
+                <img src="/images/logo.png" alt="Logo Damkar Kota Jambi">
+                <strong>Portal {{ $namaLayanan }}</strong>
+                <p>Dinas Pemadam Kebakaran dan Penyelamatan<br>Daerah Kota Jambi</p>
             </div>
 
             <!-- FORM BODY -->
@@ -323,20 +364,18 @@
                 
                 <!-- INTEGRASI ALERT LARAVEL -->
                 
-                <!-- 1. Alert Error (Email/Password Salah) -->
+                <!-- 1. Alert Error (Email/Password Salah / Tendangan Middleware) -->
                 @if($errors->any())
                     <div class="custom-alert custom-alert-error" id="errorAlert">
                         <i class="fas fa-exclamation-circle alert-icon"></i>
                         <div>
-                            @foreach($errors->all() as $error)
-                                <span>{{ $error }}</span><br>
-                            @endforeach
+                            <span>{{ $errors->first() }}</span>
                         </div>
                         <button type="button" class="btn-close-alert" onclick="document.getElementById('errorAlert').style.display='none'">&times;</button>
                     </div>
                 @endif
 
-                <!-- 2. Alert Success (Berhasil Ubah Password / Logout) -->
+                <!-- 2. Alert Success (Berhasil Daftar / Logout) -->
                 @if(session('success'))
                     <div class="custom-alert custom-alert-success" id="successAlert">
                         <i class="fas fa-check-circle alert-icon"></i>
@@ -347,8 +386,8 @@
                     </div>
                 @endif
 
-                <form action="/login" method="POST">
-                    @csrf <!-- Jangan lupa tag ini untuk keamanan form Laravel -->
+                <form action="{{ url('/pemohon/login') }}" method="POST">
+                    @csrf 
                     
                     <!-- Input Email -->
                     <div class="mb-3">
@@ -359,7 +398,7 @@
                         </div>
                     </div>
 
-<!-- Input Password dengan Tombol Mata -->
+                    <!-- Input Password dengan Tombol Mata -->
                     <div class="mb-3">
                         <label class="form-label">Password</label>
                         <div class="input-group">
@@ -379,13 +418,17 @@
                                 Ingat Saya
                             </label>
                         </div>
-                        <a href="/lupa-password" class="forgot-password">Lupa Password?</a>
                     </div>
 
                     <!-- Tombol Login -->
                     <button type="submit" class="btn-submit">LOGIN</button>
 
                 </form>
+
+                <!-- Daftar Akun Baru -->
+                <div class="register-link">
+                    Belum punya akun? <a href="{{ url('/pemohon/register') }}">Daftar Sekarang</a>
+                </div>
 
                 <!-- Kembali ke Beranda -->
                 <a href="/" class="back-to-home">
@@ -395,6 +438,7 @@
             </div>
         </div>
     </div>
+    
     <script>
         const togglePassword = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('passwordInput');
