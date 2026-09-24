@@ -3,449 +3,745 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola SKK - SIMERAH KOJA</title>
+    <meta name="theme-color" content="#0d1b2a">
+    <title>Kelola SKK | SIMERAH KOJA</title>
+    <link rel="icon" href="/images/simerahkoja.png" type="image/png">
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: #f3f4f6; color: #1f2937; }
+        :root {
+            --ink: #0d1b2a;
+            --ink-2: #132a43;
+            --ink-3: #1d3856;
+            --paper: #f7f9fc;
+            --white: #ffffff;
 
-        /* --- GLOBAL ALERT STYLES --- */
-        #globalSuccessAlert {
-            position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
-            background-color: #10b981; color: white; padding: 16px 24px; border-radius: 8px;
-            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); z-index: 99999;
-            display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px;
-            animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --navy: #1e3a5f;
+            --navy-d: #14283f;
+            --navy-tint: rgba(30, 58, 95, .09);
+
+            --signal: #e5392d;
+            --signal-d: #c22b20;
+            --signal-tint: rgba(229, 57, 45, .09);
+
+            --amber: #ffb627;
+            --success: #10b981;
+            --info: #2f6fed;
+            --info-tint: rgba(47, 111, 237, .09);
+            --ink-tint: rgba(13, 27, 42, .055);
+
+            --steel: #64748b;
+            --steel-soft: #94a3b8;
+            --line: #e6eaf1;
+
+            --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+            --font-body: 'Instrument Sans', system-ui, sans-serif;
+
+            --r-lg: 20px;
+            --r-md: 14px;
+            --r-sm: 10px;
+
+            --sidebar-w: 272px;
+            --topbar-h: 72px;
+
+            --shadow-xs: 0 1px 2px rgba(13, 27, 42, .05);
+            --shadow-sm: 0 2px 8px -2px rgba(13, 27, 42, .08);
+            --shadow-md: 0 12px 24px -8px rgba(13, 27, 42, .12);
+            --shadow-lg: 0 24px 48px -16px rgba(13, 27, 42, .18);
         }
-        #globalSuccessAlert .alert-icon { font-size: 22px; }
-        .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; margin-left: 10px; cursor: pointer; }
-        @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
-        @keyframes fadeOutUpCenter { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -50px); opacity: 0; } }
 
-        /* --- NAVBAR INTERNAL --- */
-        .navbar-internal { background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
-        .nav-brand img { height: 40px; }
-        .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; }
-        .badge-internal { background: #10b981; color: white; font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 700; margin-left: 10px; vertical-align: middle; }
-        .badge-role { background: #3b82f6; color: white; font-size: 11px; padding: 4px 10px; border-radius: 50px; font-weight: 700; text-transform: uppercase; }
-        .badge-role.super_user { background: #ef4444; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--ink);
+            background: var(--paper);
+            -webkit-font-smoothing: antialiased;
+        }
+        img { max-width: 100%; display: block; }
+        a { color: inherit; text-decoration: none; }
+        ul, ol { list-style: none; margin: 0; padding: 0; }
+        button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+        :focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; border-radius: 6px; }
 
-        .user-menu { display: flex; align-items: center; gap: 20px; }
-        .user-profile { display: flex; align-items: center; gap: 10px; color: #e5e7eb; font-size: 14px; font-weight: 600; }
-        .user-profile i { font-size: 20px; color: #9ca3af; }
-        .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-        .btn-logout:hover { background-color: #dc2626; }
+        /* ==========================================================
+           NOTIFIKASI (TOAST)
+           ========================================================== */
+        .toast-wrap { position: fixed; z-index: 200; top: 18px; left: 50%; transform: translateX(-50%); display: grid; gap: 10px; width: max-content; max-width: calc(100vw - 24px); }
+        .toast {
+            display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px;
+            border-radius: 999px; background: #fff; border: 1px solid var(--line);
+            box-shadow: var(--shadow-md); font-weight: 600; font-size: .92rem;
+            animation: toastIn .45s cubic-bezier(.16,.84,.3,1) both;
+        }
+        .toast.leaving { animation: toastOut .3s ease forwards; }
+        .toast-ico { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: .78rem; }
+        .toast.ok .toast-ico { background: var(--success); }
+        .toast.err .toast-ico { background: var(--signal); }
+        .toast-x { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); transition: background .2s, color .2s; }
+        .toast-x:hover { background: var(--ink); color: #fff; }
+        @keyframes toastIn { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+        @keyframes toastOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-14px); } }
 
-        /* --- SIDEBAR --- */
-        .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
-        .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
-        .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600; border-radius: 8px; transition: all 0.2s; }
-        .sidebar-item:hover { background-color: #f3f4f6; color: #111827; }
-        .sidebar-item.active { background-color: #e0f2fe; color: #0284c7; }
-        .sidebar-item.active i { color: #0284c7; }
-        .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #9ca3af; }
-        .sidebar-collapse-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 15px 15px 5px 15px; margin-top: 10px; background: transparent; border: none; border-top: 1px dashed #e5e7eb; text-align: left; font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
-        .sidebar-collapse-btn:hover { color: #4b5563; }
-        .toggle-icon { transition: transform 0.3s ease; font-size: 12px; }
-        .sidebar-collapse-btn.collapsed .toggle-icon { transform: rotate(0deg); }
-        .sidebar-collapse-btn:not(.collapsed) .toggle-icon { transform: rotate(180deg); color: #0284c7; }
-        .sidebar-collapse-btn:not(.collapsed) { color: #0284c7; }
-        .sidebar-submenu { display: flex; flex-direction: column; gap: 4px; padding-left: 10px; margin-top: 8px; }
+        /* ==========================================================
+           TOPBAR
+           ========================================================== */
+        .topbar {
+            position: sticky; top: 0; z-index: 60; height: var(--topbar-h);
+            display: flex; align-items: center; justify-content: space-between; gap: 16px;
+            padding: 0 28px; background: rgba(255,255,255,.86);
+            -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--line);
+        }
+        .topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+        .side-toggle { display: none; width: 40px; height: 40px; border-radius: 12px; align-items: center; justify-content: center; font-size: 1.05rem; transition: background .2s; }
+        .side-toggle:hover { background: var(--paper); }
+        .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .brand img { height: 34px; width: auto; flex: none; }
+        .brand span { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: 1.08rem; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* --- MAIN AREA & TABLE --- */
-        .main-content { flex: 1; padding: 40px 50px; background-color: #f9fafb; overflow-x: hidden; }
-        .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
-        .page-header h1 { font-size: 28px; font-weight: 800; color: #111827; margin-bottom: 5px; }
-        .page-header p { color: #6b7280; font-size: 14px; margin-bottom: 0; }
+        .topbar-right { display: flex; align-items: center; gap: 14px; }
+        .user-chip { display: flex; align-items: center; gap: 10px; padding: 6px 16px 6px 6px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: .9rem; flex: none; }
+        .user-meta { display: grid; line-height: 1.25; }
+        .user-meta strong { font-size: .85rem; font-weight: 700; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); }
+        .user-meta small { font-size: .74rem; color: var(--steel); text-transform: capitalize; font-weight: 500; }
+        .btn-logout { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border-radius: 999px; background: var(--navy); color: #fff; font-weight: 600; font-size: .85rem; transition: background .2s, transform .1s; border: none; }
+        .btn-logout:hover { background: var(--navy-d); }
+        .btn-logout:active { transform: scale(.98); }
 
-        .content-card { background: white; border-radius: 12px; border: 1px solid #e5e7eb; padding: 0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden;}
-        
+        @media (max-width: 900px) {
+            .side-toggle { display: inline-flex; }
+            .user-meta { display: none; }
+        }
+
+        /* ==========================================================
+           SHELL: SIDEBAR + KONTEN
+           ========================================================== */
+        .shell { display: flex; align-items: flex-start; min-height: calc(100vh - var(--topbar-h)); }
+
+        .sidebar {
+            width: var(--sidebar-w); flex: none; position: sticky; top: var(--topbar-h);
+            height: calc(100vh - var(--topbar-h)); overflow-y: auto;
+            background: #fff; border-right: 1px solid var(--line);
+            padding: 20px 14px 32px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--line) transparent;
+        }
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-track { background: transparent; }
+        .sidebar::-webkit-scrollbar-thumb { background-color: var(--line); border-radius: 20px; }
+
+        .side-link {
+            display: flex; align-items: center; gap: 14px; padding: 11px 14px; border-radius: var(--r-sm);
+            font-size: .9rem; font-weight: 600; color: var(--ink); transition: background .2s, color .2s;
+            margin-bottom: 4px;
+        }
+        .side-link:hover { background: var(--paper); }
+        .side-link.active { background: var(--ink); color: #fff; }
+        .side-link i { width: 20px; text-align: center; font-size: 1rem; color: var(--steel); transition: color .2s; }
+        .side-link:hover i { color: var(--ink); }
+        .side-link.active i { color: var(--amber); }
+
+        .side-group + .side-group { margin-top: 6px; }
+        .side-group summary {
+            list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px;
+            padding: 11px 14px; border-radius: var(--r-sm); font-size: .8rem; font-weight: 700;
+            letter-spacing: .04em; text-transform: uppercase; color: var(--navy); transition: background .2s;
+            user-select: none;
+        }
+        .side-group summary::-webkit-details-marker { display: none; }
+        .side-group summary:hover { background: var(--paper); }
+        .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); }
+        .side-group summary .grp-label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .side-group summary .chev { flex: none; font-size: .7rem; transition: transform .25s ease; }
+        .side-group[open] summary .chev { transform: rotate(180deg); }
+
+        .side-sub { display: grid; gap: 3px; padding: 6px 4px 10px 12px; border-left: 2px solid var(--line); margin: 2px 0 8px 22px; }
+        .side-sub a {
+            display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: var(--r-sm);
+            font-size: .85rem; font-weight: 500; line-height: 1.4; color: var(--steel);
+            transition: background .2s, color .2s, transform .2s;
+        }
+        .side-sub a:hover { background: var(--paper); color: var(--ink); transform: translateX(2px); }
+        .side-sub a.active { background: var(--navy-tint); color: var(--navy-d); font-weight: 600; }
+        .side-sub a i { width: 18px; text-align: center; font-size: .9rem; opacity: .75; }
+        .side-sub a:hover i, .side-sub a.active i { opacity: 1; }
+
+        .side-kicker { padding: 18px 14px 6px; font-size: .7rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--steel-soft); }
+
+        .sidebar-backdrop { display: none; }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                position: fixed; z-index: 90; top: var(--topbar-h); left: 0;
+                height: calc(100dvh - var(--topbar-h)); transform: translateX(-100%);
+                transition: transform .3s cubic-bezier(.4,0,.2,1); box-shadow: var(--shadow-lg);
+            }
+            body.side-open .sidebar { transform: none; }
+            .sidebar-backdrop {
+                display: block; position: fixed; inset: var(--topbar-h) 0 0 0; z-index: 80;
+                background: rgba(13,27,42,.4); opacity: 0; pointer-events: none; transition: opacity .3s;
+            }
+            body.side-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
+        }
+
+        /* ==========================================================
+           KONTEN UTAMA & TABEL KELOLA
+           ========================================================== */
+        .content { flex: 1; min-width: 0; padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 80px; }
+
+        .page-head { margin-bottom: 28px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
+        .page-head h1 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 4px; color: var(--ink); }
+        .page-head p { color: var(--steel); font-size: .98rem; }
+
+        .content-card {
+            background: #fff; border-radius: var(--r-lg); border: 1px solid var(--line);
+            padding: 0; box-shadow: var(--shadow-sm); width: 100%; overflow: hidden;
+        }
+
         /* Nav Tabs Custom */
-        .nav-tabs { background-color: #f8fafc; border-bottom: 2px solid #e5e7eb; padding: 10px 20px 0 20px; }
-        .nav-tabs .nav-link { color: #64748b; font-weight: 700; font-size: 14px; border: none; padding: 12px 25px; margin-bottom: -2px; border-bottom: 3px solid transparent; transition: all 0.2s;}
-        .nav-tabs .nav-link:hover { color: #0f172a; border-color: #cbd5e1; }
-        .nav-tabs .nav-link.active { color: #0284c7; background: transparent; border-bottom: 3px solid #0284c7; }
+        .nav-tabs { background-color: var(--paper); border-bottom: 2px solid var(--line); padding: 10px 20px 0 20px; }
+        .nav-tabs .nav-link { color: var(--steel); font-weight: 700; font-size: 0.9rem; border: none; padding: 12px 25px; margin-bottom: -2px; border-bottom: 3px solid transparent; transition: all 0.2s; }
+        .nav-tabs .nav-link:hover { color: var(--ink); border-color: var(--steel-soft); }
+        .nav-tabs .nav-link.active { color: var(--info); background: transparent; border-bottom: 3px solid var(--info); }
         .tab-content { padding: 25px; }
 
-        .table th { background-color: #f8fafc; color: #4b5563; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; padding: 15px 10px; border-bottom: 2px solid #e5e7eb; }
-        .table td { padding: 15px 10px; vertical-align: middle; font-size: 13px; color: #1f2937; border-bottom: 1px solid #e5e7eb; }
-        
-        .badge-status { padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; display: inline-block;}
+        .table th { background-color: var(--paper); color: var(--navy); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; padding: 15px 12px; border-bottom: 2px solid var(--line); }
+        .table td { padding: 15px 12px; vertical-align: middle; font-size: 0.92rem; color: var(--ink); border-bottom: 1px solid var(--line); }
+
+        .badge-status { padding: 6px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; display: inline-block; }
         .status-pending { background-color: #fef3c7; color: #d97706; }
         .status-diproses { background-color: #dbeafe; color: #2563eb; }
         .status-memenuhi { background-color: #d1fae5; color: #059669; }
         .status-tidak-memenuhi { background-color: #fee2e2; color: #dc2626; }
-        
-        .btn-print-rekap { background-color: #3b82f6; color: white; font-weight: 700; font-size: 13px; padding: 10px 20px; border-radius: 8px; border: none; transition: 0.2s; cursor: pointer; }
-        .btn-print-rekap:hover { background-color: #2563eb; color: white; }
+
+        .btn-add { background-color: var(--success); color: white; font-weight: 700; font-size: 0.88rem; padding: 10px 20px; border-radius: 999px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: background .2s; }
+        .btn-add:hover { background-color: #059669; color: white; }
+
+        .btn-print-rekap { background-color: var(--info); color: white; font-weight: 700; font-size: 0.88rem; padding: 10px 20px; border-radius: 999px; border: none; transition: background .2s; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-print-rekap:hover { background-color: #1d55c7; color: white; }
 
         /* --- STYLING TOMBOL AKSI --- */
         .btn-action-group { display: flex; flex-direction: column; gap: 6px; }
         .btn-action { 
             display: inline-flex; align-items: center; justify-content: center; 
-            width: 100%; padding: 7px 10px; border-radius: 6px; 
-            font-weight: 700; font-size: 11px; border: none; text-decoration: none; 
+            width: 100%; padding: 7px 10px; border-radius: 8px; 
+            font-weight: 700; font-size: 0.78rem; border: none; text-decoration: none; 
             transition: all 0.2s; cursor: pointer; color: white;
         }
-        .btn-action i { font-size: 12px; }
+        .btn-action i { font-size: 0.78rem; }
         .btn-action:hover { opacity: 0.9; color: white; transform: translateY(-1px); }
-        .bg-detail { background-color: #3b82f6; }
-        .bg-status { background-color: #10b981; }
-        .bg-cetak { background-color: #64748b; }
+        .bg-detail { background-color: var(--info); }
+        .bg-status { background-color: var(--success); }
+        .bg-cetak { background-color: var(--steel); }
 
+        /* CSS Print */
         @media print {
-            .navbar-internal, .sidebar, .btn-print-rekap, .btn-logout, .page-header p, .nav-tabs { display: none !important; }
+            .topbar, .sidebar, .btn-print-rekap, .btn-logout, .page-head p, .nav-tabs, .btn-add { display: none !important; }
             .no-print-col { display: none !important; } 
-            .dashboard-container { display: block; }
-            .main-content { padding: 0 !important; margin: 0 !important; background-color: white; }
+            .shell { display: block; }
+            .content { padding: 0 !important; margin: 0 !important; background-color: white; }
             .content-card { border: none; box-shadow: none; padding: 0; }
             body { background-color: white; margin: 0; padding: 0; }
-            .page-header h1 { font-size: 20px; text-align: center; margin-bottom: 20px; }
+            .page-head h1 { font-size: 18px; text-align: center; margin-bottom: 20px; }
             table { width: 100% !important; border-collapse: collapse; }
-            table th, table td { border: 1px solid #000 !important; padding: 8px !important; font-size: 11px !important; }
-            .tab-pane { display: block !important; opacity: 1 !important; visibility: visible !important; } /* Force show tabs for print */
+            table th, table td { border: 1px solid #000 !important; padding: 8px !important; font-size: 10px !important; }
+            .tab-pane { display: block !important; opacity: 1 !important; visibility: visible !important; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ALERT SUCCESS GLOBAL -->
+<div class="toast-wrap" id="toastWrap" aria-live="polite">
     @if(session('success'))
-        <div id="globalSuccessAlert">
-            <i class="fas fa-check-circle alert-icon"></i>
+        <div class="toast ok" data-toast>
+            <span class="toast-ico"><i class="fas fa-check"></i></span>
             <span>{{ session('success') }}</span>
-            <button class="btn-close-alert" onclick="closeAlert('globalSuccessAlert')"><i class="fas fa-times"></i></button>
+            <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
         </div>
-        <script>
-            function closeAlert(id) {
-                let alertBox = document.getElementById(id);
-                if(alertBox) {
-                    alertBox.style.animation = 'fadeOutUpCenter 0.4s ease forwards';
-                    setTimeout(() => alertBox.remove(), 400); 
-                }
-            }
-            setTimeout(() => closeAlert('globalSuccessAlert'), 4000);
-        </script>
     @endif
+    @if(session('error'))
+        <div class="toast err" data-toast>
+            <span class="toast-ico"><i class="fas fa-triangle-exclamation"></i></span>
+            <span>{{ session('error') }}</span>
+            <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
+        </div>
+    @endif
+</div>
 
-    <!-- NAVBAR INTERNAL -->
-    <nav class="navbar-internal">
-        <a href="#" class="nav-brand">
-            <img src="/images/simerahkoja.png" alt="Logo Simerah">
-            <span class="title">SIMERAH KOJA <span class="badge-internal">INTERNAL APP</span></span>
+<!-- ==================== TOPBAR ==================== -->
+<header class="topbar">
+    <div class="topbar-left">
+        <button class="side-toggle" type="button" id="sideToggle" aria-label="Buka menu" aria-expanded="false" aria-controls="sidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+        <a href="/internal/index" class="brand">
+            <img src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA">
+            <span>SIMERAH KOJA</span>
+        </a>
+    </div>
+    <div class="topbar-right">
+        <div class="user-chip">
+            <span class="user-avatar">{{ strtoupper(substr(Auth::user()->nama_lengkap ?? 'R', 0, 1)) }}</span>
+            <div class="user-meta">
+                <strong>{{ Auth::user()->nama_lengkap ?? 'Rekan kerja' }}</strong>
+                <small>{{ str_replace('_', ' ', Auth::user()->role ?? '') }}</small>
+            </div>
+        </div>
+        <form action="/logout" method="POST" style="margin:0;">
+            @csrf
+            <button type="submit" class="btn-logout"><i class="fas fa-arrow-right-from-bracket"></i> Keluar</button>
+        </form>
+    </div>
+</header>
+
+<div class="shell">
+
+    <div class="sidebar-backdrop" id="sideBackdrop"></div>
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar" id="sidebar" aria-label="Navigasi internal">
+
+        <a href="/internal/index" class="side-link {{ Request::is('internal/index') ? 'active' : '' }}">
+            <i class="fas fa-house"></i> Dashboard utama
         </a>
 
-        <div class="user-menu">
-            <div class="user-profile">
-                <span class="badge-role {{ Auth::user()->role ?? '' }}">
-                    {{ str_replace('_', ' ', Auth::user()->role ?? 'PEGAWAI') }}
-                </span>
-                <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
-                <i class="fas fa-user-circle"></i>
+        @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
+
+            <div class="side-kicker">Modul operasional</div>
+
+            <!-- BAGIAN PENCEGAHAN -->
+            <details class="side-group" {{ Request::is('internal/pencegahan*') ? 'open' : '' }}>
+                <summary><i class="fas fa-shield-halved grp-ico"></i><span class="grp-label">Bagian pencegahan</span><i class="fas fa-chevron-down chev"></i></summary>
+                <div class="side-sub">
+                    <a href="/internal/pencegahan/peningkatan-kapasitas" class="{{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}">
+                        <i class="fas fa-arrow-trend-up"></i> Peningkatan Kapasitas Aparatur
+                    </a>
+                    <a href="/internal/pencegahan/inspeksi-kebakaran" class="{{ Request::is('internal/pencegahan/inspeksi-kebakaran*') ? 'active' : '' }}">
+                        <i class="fas fa-magnifying-glass-chart"></i> Pencegahan Kebakaran dan Inspeksi
+                    </a>
+                    <a href="/internal/pencegahan/pemberdayaan-masyarakat" class="{{ Request::is('internal/pencegahan/pemberdayaan-masyarakat*') ? 'active' : '' }}">
+                        <i class="fas fa-handshake-angle"></i> Pemberdayaan Masyarakat dan Dunia Usaha
+                    </a>
+                    <a href="/internal/pencegahan/kelola-edukasi" class="{{ Request::is('internal/pencegahan/kelola-edukasi*') ? 'active' : '' }}">
+                        <i class="fas fa-bullhorn"></i> Kelola Edukasi
+                    </a>
+                    <a href="/internal/pencegahan/kelola-redkar" class="{{ Request::is('internal/pencegahan/kelola-redkar*') ? 'active' : '' }}">
+                        <i class="fas fa-users-rectangle"></i> Kelola Redkar
+                    </a>
+                    <a href="/internal/pencegahan/kelola-rpkbgl" class="{{ Request::is('internal/pencegahan/kelola-rpkbgl*') ? 'active' : '' }}">
+                        <i class="fas fa-building-circle-check"></i> Kelola RPKBGL
+                    </a>
+                    <a href="/internal/pencegahan/kelola-skk" class="{{ Request::is('internal/pencegahan/kelola-skk*') ? 'active' : '' }}">
+                        <i class="fas fa-file-shield"></i> Kelola SKK
+                    </a>
+                </div>
+            </details>
+
+            <!-- BAGIAN PEMADAMAN -->
+            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
+                <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
+                <div class="side-sub">
+                    <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
+                        <i class="fas fa-fire-extinguisher"></i> Input Data
+                    </a>
+                    <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') ? 'active' : '' }}">
+                        <i class="fas fa-clipboard-list"></i> Data Laporan
+                    </a>
+                    <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban*') ? 'active' : '' }}">
+                        <i class="fas fa-file-signature"></i> Buat Surat Korban
+                    </a>
+                </div>
+            </details>
+
+            <!-- BAGIAN KEPEGAWAIAN -->
+            <details class="side-group" {{ Request::is('internal/kepegawaian*') ? 'open' : '' }}>
+                <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
+                <div class="side-sub">
+                    <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
+                        <i class="fas fa-user-tie"></i> Data Urut Kepegawaian
+                    </a>
+                </div>
+            </details>
+
+            <!-- BAGIAN SAPRA -->
+            <details class="side-group" {{ Request::is('sapra*') ? 'open' : '' }}>
+                <summary><i class="fas fa-warehouse grp-ico"></i><span class="grp-label">Bagian sapra</span><i class="fas fa-chevron-down chev"></i></summary>
+                <div class="side-sub">
+                    <span class="side-kicker" style="padding-left:2px;">Sarana &amp; Prasarana</span>
+                    <a href="/sapra/sarana-penyelamatan" class="{{ Request::is('sapra/sarana-penyelamatan*') ? 'active' : '' }}">
+                        <i class="fas fa-life-ring"></i> Sarana Penyelamatan &amp; Evakuasi
+                    </a>
+                    <a href="/sapra/sarana-pemeriksaan" class="{{ Request::is('sapra/sarana-pemeriksaan*') ? 'active' : '' }}">
+                        <i class="fas fa-search-location"></i> Sarana Pemeriksaan Proteksi Kebakaran
+                    </a>
+                    <a href="/sapra/kelola-pos" class="{{ Request::is('sapra/kelola-pos*') ? 'active' : '' }}">
+                        <i class="fas fa-warehouse"></i> Kelola Data Pos
+                    </a>
+
+                    <span class="side-kicker" style="padding-left:2px;">Manajemen Air</span>
+                    <a href="/sapra/data_hidrant_gedung" class="{{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}">
+                        <i class="fas fa-droplet"></i> Sumber Air
+                    </a>
+                    <a href="/sapra/data-hidrant-kota" class="{{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}">
+                        <i class="fas fa-map-location-dot"></i> Data Hidrant Kota Jambi
+                    </a>
+
+                    <span class="side-kicker" style="padding-left:2px;">Logistik &amp; Distribusi</span>
+                    <a href="/sapra/kebutuhan-sarpras" class="{{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}">
+                        <i class="fas fa-boxes-stacked"></i> Mutu Baku Kebutuhan
+                    </a>
+                    <a href="/sapra/distribusi-staff" class="{{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}">
+                        <i class="fas fa-people-carry-box"></i> Distribusi Barang Staff
+                    </a>
+                </div>
+            </details>
+        @endif
+
+        @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
+            <div class="side-kicker">Konten publik</div>
+            <details class="side-group" {{ Request::is('internal/operator*') ? 'open' : '' }}>
+                <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen berita</span><i class="fas fa-chevron-down chev"></i></summary>
+                <div class="side-sub">
+                    <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
+                        <i class="far fa-newspaper"></i> Input &amp; Kelola Berita
+                    </a>
+                    <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
+                        <i class="far fa-image"></i> Kelola Info Grafis
+                    </a>
+                    <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
+                        <i class="fab fa-instagram"></i> Kelola Berita Medsos
+                    </a>
+                </div>
+            </details>
+        @endif
+
+        <div class="side-kicker">Akun</div>
+        <details class="side-group" {{ Request::is('internal/profil*') || Request::is('internal/kelola-user*') || Request::is('internal/kelola-pemohon*') ? 'open' : '' }}>
+            <summary><i class="fas fa-user-gear grp-ico"></i><span class="grp-label">Pengaturan akun</span><i class="fas fa-chevron-down chev"></i></summary>
+            <div class="side-sub">
+                <a href="/internal/profil" class="{{ Request::is('internal/profil*') ? 'active' : '' }}">
+                    <i class="fas fa-user-pen"></i> Profil Saya
+                </a>
+                @if(Auth::user()->role === 'super_user')
+                    <a href="/internal/kelola-user" class="{{ Request::is('internal/kelola-user*') ? 'active' : '' }}">
+                        <i class="fas fa-users-gear"></i> Kelola Semua Pengguna
+                    </a>
+                    <a href="/internal/kelola-pemohon" class="{{ Request::is('internal/kelola-pemohon*') ? 'active' : '' }}">
+                        <i class="fas fa-address-book"></i> Kelola Akun Pemohon
+                    </a>
+                @endif
             </div>
-            <form action="/logout" method="POST" style="margin: 0;">
-                @csrf
-                <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
-            </form>
+        </details>
+
+    </aside>
+
+    <!-- ==================== KONTEN UTAMA ==================== -->
+    <main class="content">
+
+        <div class="page-head">
+            <div>
+                <h1>Daftar Permohonan SKK</h1>
+                <p>Kelola pengajuan Sertifikat Keamanan Kebakaran (Baru &amp; Perpanjangan).</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{{ route('skk.create') }}" class="btn-add"><i class="fas fa-plus"></i> Tambah SKK</a>
+                <button onclick="window.print()" class="btn-print-rekap shadow-sm"><i class="fas fa-print me-2"></i>Cetak Rekap</button>
+            </div>
         </div>
-    </nav>
 
-    <!-- KONTEN UTAMA -->
-    <div class="dashboard-container">
-        
-        <!-- SIDEBAR TERINTEGRASI -->
-        <aside class="sidebar" id="sidebarAccordion">
-            <a href="/internal/index" class="sidebar-item">
-                <i class="fas fa-home"></i> Dashboard Utama
-            </a>
+        <div class="content-card">
+            <!-- NAV TABS UNTUK MEMISAHKAN SKK BARU DAN PERPANJANG -->
+            <ul class="nav nav-tabs" id="skkTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="baru-tab" data-bs-toggle="tab" data-bs-target="#baru" type="button" role="tab"><i class="fas fa-certificate me-2"></i>SKK Baru</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="perpanjang-tab" data-bs-toggle="tab" data-bs-target="#perpanjang" type="button" role="tab"><i class="fas fa-sync-alt me-2"></i>Perpanjangan SKK</button>
+                </li>
+            </ul>
 
-            @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
-                <!-- ACCORDION PENCEGAHAN (Sedang Aktif) -->
-                <button class="sidebar-collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePencegahan" aria-expanded="true">
-                    <span>Bagian Pencegahan</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </button>
-                <div class="collapse show" id="collapsePencegahan" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">
-                        <a href="/internal/pencegahan/kelola-rpkbgl" class="sidebar-item"><i class="fas fa-building"></i> Kelola RPKBGL</a>
-                        <!-- MENU KELOLA SKK BARU -->
-                        <a href="/internal/pencegahan/kelola-skk" class="sidebar-item active"><i class="fas fa-shield-alt"></i> Kelola SKK</a>
-                        
-                        <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
-                        <a href="/internal/pencegahan/layanan-sosialisasi" class="sidebar-item"><i class="fas fa-bullhorn"></i> Layanan Sosialisasi</a>
-                        <a href="/internal/pencegahan/pelatihan" class="sidebar-item"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
-                        <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
-                        <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
-                        <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
-                    </div>
-                </div>
+            <div class="tab-content" id="skkTabContent">
+                
+                <!-- ================= TAB 1: SKK BARU ================= -->
+                <div class="tab-pane fade show active" id="baru" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Pemohon</th>
+                                    <th>Usaha &amp; Lokasi</th>
+                                    <th>Kategori</th>
+                                    <th>Status</th>
+                                    <th class="no-print-col text-center">Lampiran</th>
+                                    <th class="text-center no-print-col" width="160px">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($skk_baru as $p)
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold">{{ $p->created_at->format('d M Y') }}</div>
+                                        <div class="text-muted" style="font-size: 11px;">{{ $p->created_at->format('H:i') }} WIB</div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold text-primary">{{ $p->nama_pemohon }}</div>
+                                        <a href="https://wa.me/{{ preg_replace('/^0/', '62', $p->no_whatsapp) }}" target="_blank" class="text-success text-decoration-none" style="font-size: 11px; font-weight:600;"><i class="fab fa-whatsapp"></i> {{ $p->no_whatsapp }}</a><br>
+                                        <span class="text-muted" style="font-size: 11px;">NIK: {{ $p->nik_pemilik_usaha }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold text-dark">{{ $p->nama_usaha }}</div>
+                                        <div class="text-muted" style="font-size: 11px;">Kec. {{ $p->kecamatan }} - Kel. {{ $p->kelurahan }}</div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold">{{ $p->kategori_bangunan }}</div>
+                                    </td>
+                                    <td>
+                                        @if($p->status_permohonan == 'Pending') <span class="badge-status status-pending">Pending</span>
+                                        @elseif($p->status_permohonan == 'Diproses') <span class="badge-status status-diproses">Diproses</span>
+                                        @elseif($p->status_permohonan == 'Memenuhi Syarat') <span class="badge-status status-memenuhi">Memenuhi Syarat</span>
+                                        @else <span class="badge-status status-tidak-memenuhi">Tidak Memenuhi</span>
+                                        @endif
+                                    </td>
+                                    <td class="no-print-col text-center">
+                                        <!-- Tombol Surat: Selalu ada, jika kosong/offline_registered memunculkan alert "Lampiran Kosong" -->
+                                        @if($p->file_surat_permohonan && $p->file_surat_permohonan !== 'offline_registered')
+                                            <a href="{{ asset('storage/' . $p->file_surat_permohonan) }}" target="_blank" class="badge bg-danger text-decoration-none mb-1"><i class="fas fa-file-pdf"></i> Surat</a>
+                                        @else
+                                            <a href="javascript:void(0);" onclick="alert('Lampiran Kosong');" class="badge bg-secondary text-decoration-none mb-1" style="opacity: 0.65;"><i class="fas fa-file-pdf"></i> Surat</a>
+                                        @endif
 
-                <!-- ACCORDION PEMADAMAN -->
-                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="false">
-                    <span>Bagian Pemadaman</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </button>
-                <div class="collapse" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">
-                        <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
-                        <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
-                    </div>
-                </div>
-
-                <!-- ACCORDION SAPRA -->
-                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSapra" aria-expanded="false">
-                    <span>Bagian Sapra</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </button>
-                <div class="collapse" id="collapseSapra" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">
-                        <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Data Hidrant</a>
-                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
-                        <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Mako & Pos</a>
-                        <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Mako & Pos</a>
-                        <a href="/sapra/logistik" class="sidebar-item"><i class="fas fa-box-open"></i> Logistik & Gudang</a>
-                    </div>
-                </div>
-            @endif
-
-            <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePengaturan" aria-expanded="false">
-                <span>Pengaturan Akun</span>
-                <i class="fas fa-chevron-down toggle-icon"></i>
-            </button>
-            <div class="collapse" id="collapsePengaturan" data-bs-parent="#sidebarAccordion">
-                <div class="sidebar-submenu">
-                    <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
-                </div>
-            </div>
-        </aside>
-
-        <!-- MAIN AREA -->
-        <main class="main-content">
-            <div class="page-header">
-                <div>
-                    <h1>Daftar Permohonan SKK</h1>
-                    <p>Kelola pengajuan Sertifikat Keamanan Kebakaran (Baru & Perpanjangan).</p>
-                </div>
-                <div>
-                    <button onclick="window.print()" class="btn-print-rekap shadow-sm"><i class="fas fa-print me-2"></i>Cetak Rekap</button>
-                </div>
-            </div>
-
-            <div class="content-card">
-                <!-- NAV TABS UNTUK MEMISAHKAN SKK BARU DAN PERPANJANG -->
-                <ul class="nav nav-tabs" id="skkTab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="baru-tab" data-bs-toggle="tab" data-bs-target="#baru" type="button" role="tab"><i class="fas fa-certificate me-2"></i>SKK Baru</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="perpanjang-tab" data-bs-toggle="tab" data-bs-target="#perpanjang" type="button" role="tab"><i class="fas fa-sync-alt me-2"></i>Perpanjangan SKK</button>
-                    </li>
-                </ul>
-
-                <div class="tab-content" id="skkTabContent">
-                    
-                    <!-- ================= TAB 1: SKK BARU ================= -->
-                    <div class="tab-pane fade show active" id="baru" role="tabpanel">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>Tanggal</th>
-                                        <th>Pemohon</th>
-                                        <th>Usaha & Lokasi</th>
-                                        <th>Kategori</th>
-                                        <th>Status</th>
-                                        <th class="no-print-col text-center">Lampiran</th>
-                                        <th class="text-center no-print-col" width="140px">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($skk_baru as $p)
-                                    <tr>
-                                        <td>
-                                            <div class="fw-bold">{{ $p->created_at->format('d M Y') }}</div>
-                                            <div class="text-muted" style="font-size: 11px;">{{ $p->created_at->format('H:i') }} WIB</div>
-                                        </td>
-                                        <td>
-                                            <div class="fw-bold text-primary">{{ $p->nama_pemohon }}</div>
-                                            <a href="https://wa.me/{{ preg_replace('/^0/', '62', $p->no_whatsapp) }}" target="_blank" class="text-success text-decoration-none" style="font-size: 11px; font-weight:600;"><i class="fab fa-whatsapp"></i> {{ $p->no_whatsapp }}</a><br>
-                                            <span class="text-muted" style="font-size: 11px;">NIK: {{ $p->nik_pemilik_usaha }}</span>
-                                        </td>
-                                        <td>
-                                            <div class="fw-bold text-dark">{{ $p->nama_usaha }}</div>
-                                            <div class="text-muted" style="font-size: 11px;">Kec. {{ $p->kecamatan }} - Kel. {{ $p->kelurahan }}</div>
-                                        </td>
-                                        <td>
-                                            <div class="fw-bold">{{ $p->kategori_bangunan }}</div>
-                                        </td>
-                                        <td>
-                                            @if($p->status_permohonan == 'Pending') <span class="badge-status status-pending">Pending</span>
-                                            @elseif($p->status_permohonan == 'Diproses') <span class="badge-status status-diproses">Diproses</span>
-                                            @elseif($p->status_permohonan == 'Memenuhi Syarat') <span class="badge-status status-memenuhi">Memenuhi Syarat</span>
-                                            @else <span class="badge-status status-tidak-memenuhi">Tidak Memenuhi</span>
-                                            @endif
-                                        </td>
-                                        <td class="no-print-col text-center">
-                                            @if($p->file_surat_permohonan) <a href="{{ asset('storage/' . $p->file_surat_permohonan) }}" target="_blank" class="badge bg-danger text-decoration-none mb-1"><i class="fas fa-file-pdf"></i> Surat</a> @endif
-                                            @if($p->file_persyaratan_lainnya) <br><a href="{{ asset('storage/' . $p->file_persyaratan_lainnya) }}" target="_blank" class="badge bg-secondary text-decoration-none"><i class="fas fa-paperclip"></i> Syarat</a> @endif
-                                        </td>
-                                        <td class="no-print-col">
-                                            <div class="btn-action-group">
-                                                <a href="/internal/pencegahan/kelola-skk/{{ $p->id }}?tipe=baru" class="btn-action bg-detail"><i class="fas fa-search me-1"></i> Detail</a>
-                                                <button type="button" class="btn-action bg-status" data-bs-toggle="modal" data-bs-target="#modalStatusBaru{{ $p->id }}"><i class="fas fa-edit me-1"></i> Status</button>
-                                                <a href="/internal/pencegahan/kelola-skk/{{ $p->id }}?tipe=baru&auto_print=true" target="_blank" class="btn-action bg-cetak"><i class="fas fa-print me-1"></i> Cetak</a>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <!-- MODAL UPDATE STATUS SKK BARU -->
-                                    <div class="modal fade" id="modalStatusBaru{{ $p->id }}" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title fw-bold" style="font-size: 16px;">Update Status SKK Baru</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <form action="/internal/pencegahan/kelola-skk/update-status/{{ $p->id }}" method="POST">
-                                                    @csrf
-                                                    <div class="modal-body text-start">
-                                                        <p class="mb-3 text-muted" style="font-size: 13px;">Ubah status berkas pengajuan <strong>{{ $p->nama_usaha }}</strong>.</p>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold" style="font-size: 13px;">Pilih Status Baru</label>
-                                                            <select name="status_permohonan" class="form-select" required>
-                                                                <option value="Pending" {{ $p->status_permohonan == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                                                <option value="Diproses" {{ $p->status_permohonan == 'Diproses' ? 'selected' : '' }}>Diproses Tim Inspeksi</option>
-                                                                <option value="Memenuhi Syarat" {{ $p->status_permohonan == 'Memenuhi Syarat' ? 'selected' : '' }}>Memenuhi Syarat / Diterima</option>
-                                                                <option value="Tidak Memenuhi Syarat" {{ $p->status_permohonan == 'Tidak Memenuhi Syarat' ? 'selected' : '' }}>Tidak Memenuhi Syarat / Ditolak</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
-                                                        <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-save me-1"></i> Simpan Perubahan</button>
-                                                    </div>
+                                        <!-- Tombol Syarat: Selalu ada, jika kosong memunculkan alert "Lampiran Kosong" -->
+                                        @if($p->file_persyaratan_lainnya)
+                                            <br><a href="{{ asset('storage/' . $p->file_persyaratan_lainnya) }}" target="_blank" class="badge bg-secondary text-decoration-none"><i class="fas fa-paperclip"></i> Syarat</a>
+                                        @else
+                                            <br><a href="javascript:void(0);" onclick="alert('Lampiran Kosong');" class="badge bg-secondary text-decoration-none" style="opacity: 0.65;"><i class="fas fa-paperclip"></i> Syarat</a>
+                                        @endif
+                                    </td>
+                                    <td class="no-print-col">
+                                        <div class="btn-action-group">
+                                            <a href="/internal/pencegahan/kelola-skk/{{ $p->id }}?tipe=baru" class="btn-action bg-detail"><i class="fas fa-search me-1"></i> Detail</a>
+                                            <button type="button" class="btn-action bg-status" data-bs-toggle="modal" data-bs-target="#modalStatusBaru{{ $p->id }}"><i class="fas fa-edit me-1"></i> Status</button>
+                                            
+                                            <!-- TOMBOL CRUD (EDIT & HAPUS) -->
+                                            <div class="d-flex gap-1">
+                                                <a href="{{ route('skk.edit', $p->id) }}" class="btn-action flex-grow-1" style="background-color: var(--amber); color: var(--ink);"><i class="fas fa-pencil-alt me-1"></i> Edit</a>
+                                                <form action="{{ route('skk.destroy', $p->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data permohonan SKK ini?');" style="flex-grow: 1; margin:0;">
+                                                    @csrf @method('DELETE')
+                                                    <button type="submit" class="btn-action w-100" style="background-color: var(--signal);"><i class="fas fa-trash me-1"></i> Hapus</button>
                                                 </form>
                                             </div>
+
+                                            <a href="/internal/pencegahan/kelola-skk/{{ $p->id }}?tipe=baru&auto_print=true" target="_blank" class="btn-action bg-cetak"><i class="fas fa-print me-1"></i> Cetak</a>
                                         </div>
-                                    </div>
-                                    @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center py-5 text-muted"><i class="fas fa-folder-open mb-2" style="font-size: 30px; color:#cbd5e1;"></i><br>Belum ada pengajuan SKK Baru.</td>
-                                    </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                                    </td>
+                                </tr>
 
-
-                    <!-- ================= TAB 2: PERPANJANG SKK ================= -->
-                    <div class="tab-pane fade" id="perpanjang" role="tabpanel">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>Tanggal</th>
-                                        <th>Pemohon</th>
-                                        <th>Usaha & Lokasi</th>
-                                        <th>Kategori</th>
-                                        <th>Status</th>
-                                        <th class="no-print-col text-center">Lampiran</th>
-                                        <th class="text-center no-print-col" width="140px">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($skk_perpanjang as $p)
-                                    <tr>
-                                        <td>
-                                            <div class="fw-bold">{{ $p->created_at->format('d M Y') }}</div>
-                                            <div class="text-muted" style="font-size: 11px;">{{ $p->created_at->format('H:i') }} WIB</div>
-                                        </td>
-                                        <td>
-                                            <div class="fw-bold text-primary">{{ $p->nama_pemohon }}</div>
-                                            <a href="https://wa.me/{{ preg_replace('/^0/', '62', $p->no_whatsapp) }}" target="_blank" class="text-success text-decoration-none" style="font-size: 11px; font-weight:600;"><i class="fab fa-whatsapp"></i> {{ $p->no_whatsapp }}</a><br>
-                                            <span class="text-muted" style="font-size: 11px;">NIK: {{ $p->nik_pemilik_usaha }}</span>
-                                        </td>
-                                        <td>
-                                            <div class="fw-bold text-dark">{{ $p->nama_usaha }}</div>
-                                            <div class="text-muted" style="font-size: 11px;">Kec. {{ $p->kecamatan }} - Kel. {{ $p->kelurahan }}</div>
-                                        </td>
-                                        <td>
-                                            <div class="fw-bold">{{ $p->kategori_bangunan }}</div>
-                                        </td>
-                                        <td>
-                                            @if($p->status_permohonan == 'Pending') <span class="badge-status status-pending">Pending</span>
-                                            @elseif($p->status_permohonan == 'Diproses') <span class="badge-status status-diproses">Diproses</span>
-                                            @elseif($p->status_permohonan == 'Memenuhi Syarat') <span class="badge-status status-memenuhi">Memenuhi Syarat</span>
-                                            @else <span class="badge-status status-tidak-memenuhi">Tidak Memenuhi</span>
-                                            @endif
-                                        </td>
-                                        <td class="no-print-col text-center">
-                                            @if($p->file_surat_permohonan) <a href="{{ asset('storage/' . $p->file_surat_permohonan) }}" target="_blank" class="badge bg-danger text-decoration-none mb-1"><i class="fas fa-file-pdf"></i> Surat</a> @endif
-                                            @if($p->file_persyaratan_lainnya) <br><a href="{{ asset('storage/' . $p->file_persyaratan_lainnya) }}" target="_blank" class="badge bg-secondary text-decoration-none"><i class="fas fa-paperclip"></i> Syarat</a> @endif
-                                        </td>
-                                        <td class="no-print-col">
-                                            <div class="btn-action-group">
-                                                <a href="/internal/pencegahan/kelola-skk/{{ $p->id }}?tipe=perpanjang" class="btn-action bg-detail"><i class="fas fa-search me-1"></i> Detail</a>
-                                                <button type="button" class="btn-action bg-status" data-bs-toggle="modal" data-bs-target="#modalStatusPerpanjang{{ $p->id }}"><i class="fas fa-edit me-1"></i> Status</button>
-                                                <a href="/internal/pencegahan/kelola-skk/{{ $p->id }}?tipe=perpanjang&auto_print=true" target="_blank" class="btn-action bg-cetak"><i class="fas fa-print me-1"></i> Cetak</a>
+                                <!-- MODAL UPDATE STATUS SKK BARU -->
+                                <div class="modal fade" id="modalStatusBaru{{ $p->id }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title fw-bold" style="font-size: 16px;">Update Status SKK Baru</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                                        </td>
-                                    </tr>
-
-                                    <!-- MODAL UPDATE STATUS PERPANJANG SKK -->
-                                    <div class="modal fade" id="modalStatusPerpanjang{{ $p->id }}" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title fw-bold" style="font-size: 16px;">Update Status Perpanjangan SKK</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <form action="/internal/pencegahan/kelola-skk/update-status/{{ $p->id }}" method="POST">
+                                                @csrf
+                                                <div class="modal-body text-start">
+                                                    <p class="mb-3 text-muted" style="font-size: 13px;">Ubah status berkas pengajuan <strong>{{ $p->nama_usaha }}</strong>.</p>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold" style="font-size: 13px;">Pilih Status Baru</label>
+                                                        <select name="status_permohonan" class="form-select" required>
+                                                            <option value="Pending" {{ $p->status_permohonan == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                                            <option value="Diproses" {{ $p->status_permohonan == 'Diproses' ? 'selected' : '' }}>Diproses Tim Inspeksi</option>
+                                                            <option value="Memenuhi Syarat" {{ $p->status_permohonan == 'Memenuhi Syarat' ? 'selected' : '' }}>Memenuhi Syarat / Diterima</option>
+                                                            <option value="Tidak Memenuhi Syarat" {{ $p->status_permohonan == 'Tidak Memenuhi Syarat' ? 'selected' : '' }}>Tidak Memenuhi Syarat / Ditolak</option>
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                                <form action="/internal/pencegahan/kelola-perpanjang-skk/update-status/{{ $p->id }}" method="POST">
-                                                    @csrf
-                                                    <div class="modal-body text-start">
-                                                        <p class="mb-3 text-muted" style="font-size: 13px;">Ubah status berkas perpanjangan <strong>{{ $p->nama_usaha }}</strong>.</p>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold" style="font-size: 13px;">Pilih Status Baru</label>
-                                                            <select name="status_permohonan" class="form-select" required>
-                                                                <option value="Pending" {{ $p->status_permohonan == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                                                <option value="Diproses" {{ $p->status_permohonan == 'Diproses' ? 'selected' : '' }}>Diproses Tim Inspeksi</option>
-                                                                <option value="Memenuhi Syarat" {{ $p->status_permohonan == 'Memenuhi Syarat' ? 'selected' : '' }}>Memenuhi Syarat / Diterima</option>
-                                                                <option value="Tidak Memenuhi Syarat" {{ $p->status_permohonan == 'Tidak Memenuhi Syarat' ? 'selected' : '' }}>Tidak Memenuhi Syarat / Ditolak</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
-                                                        <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-save me-1"></i> Simpan Perubahan</button>
-                                                    </div>
-                                                </form>
-                                            </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                                                    <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-save me-1"></i> Simpan Perubahan</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
-                                    @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center py-5 text-muted"><i class="fas fa-folder-open mb-2" style="font-size: 30px; color:#cbd5e1;"></i><br>Belum ada pengajuan Perpanjang SKK.</td>
-                                    </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
+                                </div>
+                                @empty
+                                <tr>
+                                    <td colspan="7" class="text-center py-5 text-muted"><i class="fas fa-folder-open mb-2" style="font-size: 30px; color:#cbd5e1;"></i><br>Belum ada pengajuan SKK Baru.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ================= TAB 2: PERPANJANG SKK ================= -->
+                <div class="tab-pane fade" id="perpanjang" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Pemohon</th>
+                                    <th>Usaha &amp; Lokasi</th>
+                                    <th>Kategori</th>
+                                    <th>Status</th>
+                                    <th class="no-print-col text-center">Lampiran</th>
+                                    <th class="text-center no-print-col" width="140px">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($skk_perpanjang as $p)
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold">{{ $p->created_at->format('d M Y') }}</div>
+                                        <div class="text-muted" style="font-size: 11px;">{{ $p->created_at->format('H:i') }} WIB</div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold text-primary">{{ $p->nama_pemohon }}</div>
+                                        <a href="https://wa.me/{{ preg_replace('/^0/', '62', $p->no_whatsapp) }}" target="_blank" class="text-success text-decoration-none" style="font-size: 11px; font-weight:600;"><i class="fab fa-whatsapp"></i> {{ $p->no_whatsapp }}</a><br>
+                                        <span class="text-muted" style="font-size: 11px;">NIK: {{ $p->nik_pemilik_usaha }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold text-dark">{{ $p->nama_usaha }}</div>
+                                        <div class="text-muted" style="font-size: 11px;">Kec. {{ $p->kecamatan }} - Kel. {{ $p->kelurahan }}</div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold">{{ $p->kategori_bangunan }}</div>
+                                    </td>
+                                    <td>
+                                        @if($p->status_permohonan == 'Pending') <span class="badge-status status-pending">Pending</span>
+                                        @elseif($p->status_permohonan == 'Diproses') <span class="badge-status status-diproses">Diproses</span>
+                                        @elseif($p->status_permohonan == 'Memenuhi Syarat') <span class="badge-status status-memenuhi">Memenuhi Syarat</span>
+                                        @else <span class="badge-status status-tidak-memenuhi">Tidak Memenuhi</span>
+                                        @endif
+                                    </td>
+                                    <td class="no-print-col text-center">
+                                        <!-- Tombol Surat: Selalu ada, jika kosong memunculkan alert "Lampiran Kosong" -->
+                                        @if($p->file_surat_permohonan && $p->file_surat_permohonan !== 'offline_registered')
+                                            <a href="{{ asset('storage/' . $p->file_surat_permohonan) }}" target="_blank" class="badge bg-danger text-decoration-none mb-1"><i class="fas fa-file-pdf"></i> Surat</a>
+                                        @else
+                                            <a href="javascript:void(0);" onclick="alert('Lampiran Kosong');" class="badge bg-secondary text-decoration-none mb-1" style="opacity: 0.65;"><i class="fas fa-file-pdf"></i> Surat</a>
+                                        @endif
+
+                                        <!-- Tombol Syarat: Selalu ada, jika kosong memunculkan alert "Lampiran Kosong" -->
+                                        @if($p->file_persyaratan_lainnya)
+                                            <br><a href="{{ asset('storage/' . $p->file_persyaratan_lainnya) }}" target="_blank" class="badge bg-secondary text-decoration-none"><i class="fas fa-paperclip"></i> Syarat</a>
+                                        @else
+                                            <br><a href="javascript:void(0);" onclick="alert('Lampiran Kosong');" class="badge bg-secondary text-decoration-none" style="opacity: 0.65;"><i class="fas fa-paperclip"></i> Syarat</a>
+                                        @endif
+                                    </td>
+                                    <td class="no-print-col">
+                                        <div class="btn-action-group">
+                                            <a href="/internal/pencegahan/kelola-skk/{{ $p->id }}?tipe=perpanjang" class="btn-action bg-detail"><i class="fas fa-search me-1"></i> Detail</a>
+                                            <button type="button" class="btn-action bg-status" data-bs-toggle="modal" data-bs-target="#modalStatusPerpanjang{{ $p->id }}"><i class="fas fa-edit me-1"></i> Status</button>
+                                            <a href="/internal/pencegahan/kelola-skk/{{ $p->id }}?tipe=perpanjang&auto_print=true" target="_blank" class="btn-action bg-cetak"><i class="fas fa-print me-1"></i> Cetak</a>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- MODAL UPDATE STATUS PERPANJANG SKK -->
+                                <div class="modal fade" id="modalStatusPerpanjang{{ $p->id }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title fw-bold" style="font-size: 16px;">Update Status Perpanjangan SKK</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form action="/internal/pencegahan/kelola-perpanjang-skk/update-status/{{ $p->id }}" method="POST">
+                                                @csrf
+                                                <div class="modal-body text-start">
+                                                    <p class="mb-3 text-muted" style="font-size: 13px;">Ubah status berkas perpanjangan <strong>{{ $p->nama_usaha }}</strong>.</p>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold" style="font-size: 13px;">Pilih Status Baru</label>
+                                                        <select name="status_permohonan" class="form-select" required>
+                                                            <option value="Pending" {{ $p->status_permohonan == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                                            <option value="Diproses" {{ $p->status_permohonan == 'Diproses' ? 'selected' : '' }}>Diproses Tim Inspeksi</option>
+                                                            <option value="Memenuhi Syarat" {{ $p->status_permohonan == 'Memenuhi Syarat' ? 'selected' : '' }}>Memenuhi Syarat / Diterima</option>
+                                                            <option value="Tidak Memenuhi Syarat" {{ $p->status_permohonan == 'Tidak Memenuhi Syarat' ? 'selected' : '' }}>Tidak Memenuhi Syarat / Ditolak</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                                                    <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-save me-1"></i> Simpan Perubahan</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                @empty
+                                <tr>
+                                    <td colspan="7" class="text-center py-5 text-muted"><i class="fas fa-folder-open mb-2" style="font-size: 30px; color:#cbd5e1;"></i><br>Belum ada pengajuan Perpanjang SKK.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
             </div>
-        </main>
-    </div>
+        </div>
+    </main>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    /* ---------- Notifikasi ---------- */
+    document.querySelectorAll('[data-toast]').forEach(function (t) {
+        var hide = function () {
+            t.classList.add('leaving');
+            setTimeout(function () { t.remove(); }, 350);
+        };
+        var x = t.querySelector('[data-toast-close]');
+        if (x) x.addEventListener('click', hide);
+        setTimeout(hide, 4500);
+    });
+
+    /* ---------- Sidebar (mobile) ---------- */
+    var toggle = document.getElementById('sideToggle');
+    var backdrop = document.getElementById('sideBackdrop');
+
+    function closeSide() {
+        document.body.classList.remove('side-open');
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+    }
+    if (toggle) {
+        toggle.addEventListener('click', function () {
+            var open = document.body.classList.toggle('side-open');
+            toggle.setAttribute('aria-expanded', open);
+        });
+    }
+    if (backdrop) backdrop.addEventListener('click', closeSide);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
+
+    /* ---------- Hanya satu grup sidebar terbuka pada satu waktu ---------- */
+    var groups = document.querySelectorAll('.side-group');
+    groups.forEach(function (g) {
+        g.addEventListener('toggle', function () {
+            if (g.open) {
+                groups.forEach(function (o) { if (o !== g) o.open = false; });
+            }
+        });
+    });
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

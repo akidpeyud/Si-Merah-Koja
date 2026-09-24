@@ -2,7 +2,6 @@
     /* ------------------------------------------------------------
        PENGATURAN HALAMAN
        ------------------------------------------------------------ */
-    // Menu "Perpanjang SKK" dihapus dari tab atas karena sudah digabung ke form ini
     $layanan = [
         'rpkbgl' => ['url' => '/layanan-fasilitas/layanan_perizinan', 'label' => 'RPKBGL', 'ico' => 'fa-building', 'ket' => 'Layanan perizinan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan'],
         'skk'    => ['url' => '/layanan-fasilitas/skk',                'label' => 'SKK (Baru & Perpanjangan)', 'ico' => 'fa-user-shield', 'ket' => 'Layanan perizinan penerbitan & perpanjangan Sertifikat Keamanan Kebakaran'],
@@ -27,9 +26,8 @@
 
     $oldKec = old('kecamatan');
     $oldKel = old('kelurahan');
-    $oldJenis = old('jenis_permohonan'); // Menyimpan pilihan radio button jika terjadi error
+    $oldJenis = old('jenis_permohonan');
 
-    // Penanda kolom galat: kelas is-invalid dan pesan galat per kolom
     $inv = function ($n) use ($errors) { return $errors->has($n) ? ' is-invalid' : ''; };
     $fe  = function ($n) use ($errors) {
         return $errors->has($n)
@@ -62,9 +60,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* ==========================================================
-           TOKENS
-           ========================================================== */
         :root {
             --ink: #0d1b2a;
             --ink-2: #132a43;
@@ -108,9 +103,6 @@
 
         .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: clamp(16px, 4vw, 32px); padding-right: clamp(16px, 4vw, 32px); }
 
-        /* ==========================================================
-           HEADER
-           ========================================================== */
         .site-header {
             position: sticky; top: 0; z-index: 60;
             background: rgba(13, 27, 42, .85);
@@ -149,7 +141,6 @@
         .dropdown a { display: block; padding: 11px 14px; border-radius: var(--r-sm); font-size: .92rem; color: rgba(255,255,255,.85); }
         .dropdown a:hover, .dropdown a[aria-current="page"] { background: rgba(255,255,255,.1); color: #fff; }
 
-        /* Tombol Logout Dropdown */
         .dropdown .btn-logout {
             width: 100%; text-align: left; padding: 11px 14px; border-radius: var(--r-sm); 
             font-size: .92rem; color: #ff8b8b; display: flex; align-items: center; gap: 8px; 
@@ -181,9 +172,6 @@
             .menu .btn-login { margin: 8px 0 0; justify-content: center; padding: 14px; }
         }
 
-        /* ==========================================================
-           HERO HALAMAN
-           ========================================================== */
         .page-hero {
             position: relative; isolation: isolate; color: #fff; background: var(--ink); overflow: hidden;
             padding: clamp(36px, 6vw, 72px) 0 clamp(72px, 10vw, 112px);
@@ -206,9 +194,6 @@
         }
         .page-hero p { margin-top: 18px; max-width: 56ch; color: rgba(255,255,255,.75); font-size: clamp(1rem, 1.5vw, 1.15rem); }
 
-        /* ==========================================================
-           TAB LAYANAN (menempel di tepi hero)
-           ========================================================== */
         .page-body { background: var(--paper); padding-bottom: clamp(64px, 9vw, 112px); }
         .tabs-wrap { position: relative; z-index: 2; margin-top: -30px; }
         .tabs {
@@ -228,9 +213,6 @@
         .tab[aria-current="page"] { background: var(--ink); color: #fff; }
         .tab[aria-current="page"] i { color: var(--amber); }
 
-        /* ==========================================================
-           RINGKASAN LAYANAN
-           ========================================================== */
         .c-ico { flex: none; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--paper); color: var(--signal-d); font-size: 1rem; }
 
         .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 28px; }
@@ -240,9 +222,6 @@
         .fact strong, .fact a { display: block; font-weight: 600; font-size: .95rem; line-height: 1.4; }
         .fact a:hover { color: var(--signal-d); text-decoration: underline; text-underline-offset: 4px; }
 
-        /* ==========================================================
-           LAYOUT KONTEN
-           ========================================================== */
         .perizinan-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; margin-top: 24px; align-items: start; }
         @media (min-width: 992px) {
             .perizinan-layout { grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); gap: 32px; }
@@ -273,7 +252,6 @@
         .tool { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 38px; margin-top: 8px; padding: 0 16px; border-radius: 999px; background: var(--paper); font-size: .88rem; font-weight: 600; transition: background .2s, color .2s; }
         .tool:hover { background: var(--ink); color: #fff; }
 
-        /* Mekanisme (details) */
         .disclose summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; min-height: 40px; padding: 0 18px; border-radius: 999px; background: var(--paper); font-size: .9rem; font-weight: 600; transition: background .2s, color .2s; }
         .disclose summary::-webkit-details-marker { display: none; }
         .disclose summary:hover { background: var(--ink); color: #fff; }
@@ -289,9 +267,6 @@
         .steps li:last-child::after { display: none; }
         .steps li:last-child::before { background: var(--signal); }
 
-        /* ==========================================================
-           FORMULIR & RADIO BUTTON
-           ========================================================== */
         .form-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
         .form-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; padding: 18px clamp(18px, 3vw, 32px); border-bottom: 1px solid var(--line); }
         .form-title { display: flex; align-items: center; gap: 14px; min-width: 0; }
@@ -306,7 +281,6 @@
         .alert.err { background: #fdeceb; color: #8f1d15; border: 1px solid #f5c3bf; }
         .alert ul { display: grid; gap: 2px; margin-top: 4px; padding-left: 18px; list-style: disc; }
 
-        /* Custom Radio Buttons untuk Jenis Layanan */
         .radio-group { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 8px; }
         .radio-card { flex: 1; min-width: 200px; display: flex; align-items: center; gap: 12px; padding: 14px 18px; border: 1px solid var(--line); border-radius: 14px; cursor: pointer; transition: all .2s; }
         .radio-card:hover { border-color: var(--steel); background: var(--paper); }
@@ -320,10 +294,10 @@
         .fs legend i { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: #fdeceb; color: var(--signal-d); font-size: .85rem; }
 
         .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 20px; }
-        .fields-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px 20px; }
+        .fields-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px 20px; }
         .field { min-width: 0; }
         .field.full { grid-column: 1 / -1; }
-        @media (max-width: 640px) { .fields, .fields-3 { grid-template-columns: minmax(0, 1fr); } }
+        @media (max-width: 768px) { .fields, .fields-4 { grid-template-columns: minmax(0, 1fr); } }
 
         .label { display: block; margin-bottom: 8px; font-size: .9rem; font-weight: 600; line-height: 1.35; }
         .req { color: var(--signal-d); margin-left: 2px; }
@@ -350,7 +324,6 @@
         .unit .input { padding-right: 54px; }
         .unit span { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: .88rem; font-weight: 600; color: var(--steel); pointer-events: none; }
 
-        /* Area unggah berkas */
         .dropzone {
             position: relative; display: grid; justify-items: center; gap: 8px; text-align: center;
             padding: 26px 20px; border: 2px dashed #b8c3d0; border-radius: var(--r-md);
@@ -378,9 +351,6 @@
         .form-actions p { font-size: .88rem; color: var(--steel); }
         @media (max-width: 640px) { .form-actions .btn { width: 100%; } }
 
-        /* ==========================================================
-           NOTIFIKASI SUKSES & MODAL
-           ========================================================== */
         .toast {
             position: fixed; z-index: 80; left: 50%; top: calc(var(--header-h) + 16px);
             transform: translateX(-50%); width: max-content; max-width: calc(100vw - 28px);
@@ -424,7 +394,6 @@
         .req-list ul ul li::before { background: transparent; border: 1.5px solid var(--steel); }
         .req-list b { font-weight: 600; }
 
-        /* FOOTER & FAB */
         .footer { background: var(--ink); color: rgba(255,255,255,.7); padding: clamp(56px, 8vw, 96px) 0 32px; }
         .footer-grid { display: grid; grid-template-columns: 1.1fr 1.2fr .8fr; gap: clamp(32px, 5vw, 64px); }
         .footer h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: #fff; margin-bottom: 16px; }
@@ -515,17 +484,15 @@
                 </ul>
             </li>
             <li class="has-drop current">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan<i class="fas fa-chevron-down"></i></button>
+                <button class="menu-trigger" type="button" aria-expanded="false">Layanan &amp; fasilitas <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
-                    <li><a href="/layanan-fasilitas/skk">SKK & Perpanjang SKK</a></li>
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">Layanan perizinan</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
             </li>
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
             
-            <!-- LOGIKA TOMBOL MASUK DAN KELUAR UNTUK PEMOHON -->
             @if(session()->has('pemohon_id'))
                 <li class="has-drop">
                     <button class="menu-trigger btn-login" type="button" aria-expanded="false">
@@ -568,7 +535,6 @@
 </section>
 
 <div class="page-body">
-    <!-- Tab layanan -->
     <div class="wrap tabs-wrap">
         <nav class="tabs" aria-label="Jenis layanan perizinan">
             @foreach($layanan as $key => $l)
@@ -581,7 +547,6 @@
 
     <div class="wrap">
 
-        <!-- Ringkasan -->
         <div class="facts">
             <div class="fact">
                 <span class="c-ico"><i class="fas fa-clock"></i></span>
@@ -832,10 +797,12 @@
                                 </select>
                                 {!! $fe('kelurahan') !!}
                             </div>
+                            
+                            <!-- SPESIFIKASI BANGUNAN (Termasuk Tinggi Bangunan yang baru ditambahkan) -->
                             <div class="field full">
-                                <div class="fields-3">
+                                <div class="fields-4">
                                     <div class="field">
-                                        <label class="label" for="luas_lahan">Luas Tanah / Lahan <span class="req" aria-hidden="true">*</span></label>
+                                        <label class="label" for="luas_lahan">Luas Tanah <span class="req" aria-hidden="true">*</span></label>
                                         <div class="unit">
                                             <input class="input{{ $inv('luas_lahan') }}" type="number" id="luas_lahan" name="luas_lahan" value="{{ old('luas_lahan') }}" min="0" step="0.01" inputmode="decimal" required>
                                             <span aria-hidden="true">m&sup2;</span>
@@ -851,12 +818,20 @@
                                         {!! $fe('luas_bangunan') !!}
                                     </div>
                                     <div class="field">
-                                        <label class="label" for="jumlah_lantai">Jumlah Lantai Bangunan <span class="req" aria-hidden="true">*</span></label>
+                                        <label class="label" for="jumlah_lantai">Jumlah Lantai <span class="req" aria-hidden="true">*</span></label>
                                         <div class="unit">
                                             <input class="input{{ $inv('jumlah_lantai') }}" type="number" id="jumlah_lantai" name="jumlah_lantai" value="{{ old('jumlah_lantai') }}" min="1" step="1" inputmode="numeric" required>
                                             <span aria-hidden="true">Lantai</span>
                                         </div>
                                         {!! $fe('jumlah_lantai') !!}
+                                    </div>
+                                    <div class="field">
+                                        <label class="label" for="tinggi_bangunan">Tinggi Bangunan <span class="req" aria-hidden="true">*</span></label>
+                                        <div class="unit">
+                                            <input class="input{{ $inv('tinggi_bangunan') }}" type="number" id="tinggi_bangunan" name="tinggi_bangunan" value="{{ old('tinggi_bangunan') }}" min="0" step="0.01" inputmode="decimal" required>
+                                            <span aria-hidden="true">Meter</span>
+                                        </div>
+                                        {!! $fe('tinggi_bangunan') !!}
                                     </div>
                                 </div>
                             </div>
@@ -1074,7 +1049,6 @@
 (function () {
     'use strict';
 
-    /* ---------- Navigasi ---------- */
     var header = document.getElementById('siteHeader');
     var toggle = header.querySelector('.nav-toggle');
     var drops = header.querySelectorAll('.has-drop');
@@ -1112,7 +1086,6 @@
         if (e.key === 'Escape') closeDrops(null);
     });
 
-    /* ---------- Tombol lapor mengambang (muncul setelah scroll) ---------- */
     var fab = document.getElementById('sosFab');
     var fabBtn = fab.querySelector('.sos-fab-btn');
 
@@ -1129,7 +1102,6 @@
         fabBtn.setAttribute('aria-expanded', open);
     });
 
-    /* ---------- Notifikasi sukses ---------- */
     var toast = document.getElementById('toast');
     if (toast) {
         var hideToast = function () {
@@ -1140,7 +1112,6 @@
         setTimeout(hideToast, 5000);
     }
 
-    /* ---------- Modal persyaratan ---------- */
     var dlg = document.getElementById('modalPersyaratan');
 
     function openDlg() { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); }
@@ -1150,11 +1121,9 @@
         b.addEventListener('click', openDlg);
     });
     dlg.addEventListener('click', function (e) {
-        // klik di area gelap (backdrop) atau tombol tutup
         if (e.target === dlg || e.target.closest('[data-close]')) closeDlg();
     });
 
-    /* ---------- Kelurahan mengikuti kecamatan ---------- */
     var dataWilayah = @json($dataWilayah);
     var kec = document.getElementById('kecamatan');
     var kel = document.getElementById('kelurahan');
@@ -1169,7 +1138,6 @@
         });
     });
 
-    /* ---------- Logika Tampil/Sembunyi Form SKK Lama ---------- */
     window.toggleSkkLama = function() {
         var radios = document.getElementsByName('jenis_permohonan');
         var isPerpanjang = false;
@@ -1190,19 +1158,17 @@
         } else {
             wrap.style.display = 'none';
             input.removeAttribute('required');
-            input.value = ''; // Mengosongkan file jika user batal memilih perpanjang
+            input.value = '';
             var list = wrap.querySelector('.dz-files');
-            if(list) list.innerHTML = ''; // Mengosongkan UI list file
+            if(list) list.innerHTML = '';
             wrap.querySelector('.dropzone').classList.remove('has-files', 'is-invalid');
         }
     };
     
-    // Panggil saat halaman pertama kali dimuat (berguna saat ada validasi error back dari Laravel)
     document.addEventListener('DOMContentLoaded', function() {
         toggleSkkLama();
     });
 
-    /* ---------- Area unggah berkas ---------- */
     function fmtSize(b) {
         return b < 1048576 ? Math.max(1, Math.round(b / 1024)) + ' KB' : (b / 1048576).toFixed(1) + ' MB';
     }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-    <title>Detail {{ $jenis_layanan }} | SIMERAH KOJA</title>
+    <title>Tambah Permohonan SKK | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -178,59 +178,51 @@
         }
 
         /* ==========================================================
-           KONTEN UTAMA & DETAIL CARD STYLES
+           KONTEN UTAMA & FORM STYLES
            ========================================================== */
         .content { flex: 1; min-width: 0; padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 80px; }
 
-        .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; }
-        .page-header h1 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 4px; color: var(--ink); }
-        .page-header p { color: var(--steel); font-size: .98rem; }
+        .page-head { margin-bottom: 32px; text-align: center; }
+        .page-head h1 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 6px; color: var(--ink); }
+        .page-head p { color: var(--steel); font-size: .98rem; }
 
-        .detail-card { 
-            background: #fff; border-radius: var(--r-lg); border: 1px solid var(--line); 
-            padding: clamp(24px, 4vw, 36px); box-shadow: var(--shadow-sm); width: 100%; margin-bottom: 20px; 
+        .content-card {
+            background: #fff; border-radius: var(--r-lg); border: 1px solid var(--line);
+            padding: clamp(28px, 4vw, 40px); box-shadow: var(--shadow-sm); width: 100%; max-width: 1000px; margin: 0 auto;
         }
-        .detail-section-title { 
-            font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--navy); 
-            border-bottom: 2px solid var(--navy-tint); padding-bottom: 8px; margin-bottom: 20px; margin-top: 32px; 
-        }
-        .detail-section-title:first-child { margin-top: 0; }
-        
-        .detail-label { font-size: 0.78rem; font-weight: 700; color: var(--steel); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
-        .detail-value { font-size: 0.98rem; font-weight: 600; color: var(--ink); margin-bottom: 20px; }
-        
-        .badge-status { padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 700; display: inline-block; }
-        .status-pending { background-color: #fef3c7; color: #d97706; }
-        .status-diproses { background-color: #dbeafe; color: #2563eb; }
-        .status-memenuhi { background-color: #d1fae5; color: #059669; }
-        .status-tidak-memenuhi { background-color: #fee2e2; color: #dc2626; }
-        
-        .btn-download-doc { 
-            background-color: var(--paper); border: 1px solid var(--line); padding: 12px 16px; 
-            border-radius: var(--r-sm); display: inline-flex; align-items: center; gap: 12px; 
-            color: var(--ink); text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: background .2s, border-color .2s; 
-        }
-        .btn-download-doc:hover { background-color: var(--line); border-color: var(--steel-soft); color: var(--ink); }
-        .btn-download-doc i { color: var(--signal); font-size: 1.25rem; }
 
-        /* --- CSS PRINT RULES --- */
-        @media print {
-            .topbar, .sidebar, .btn-logout, .no-print { display: none !important; }
-            .shell { display: block; width: 100%; }
-            .content { padding: 0 !important; margin: 0 !important; background-color: white; width: 100%; }
-            .detail-card { border: none !important; box-shadow: none !important; padding: 0 !important; width: 100%; }
-            body { background-color: white; margin: 0; padding: 0; color: black; }
-            .d-print-block { display: block !important; }
-            .row { display: flex !important; flex-wrap: wrap !important; }
-            .col-md-6 { width: 50% !important; flex: 0 0 auto !important; }
-            .col-md-3 { width: 25% !important; flex: 0 0 auto !important; }
-            .col-md-12 { width: 100% !important; flex: 0 0 auto !important; }
-            .detail-section-title { color: black !important; border-bottom: 2px solid #000 !important; margin-top: 20px; }
-            .detail-label { color: #444 !important; font-size: 11px !important; }
-            .detail-value { color: black !important; font-size: 14px !important; margin-bottom: 15px !important; }
-            .detail-section-title i { display: none !important; }
-            .badge-status { border: 1px solid #000; background: transparent !important; color: black !important; padding: 4px 8px; border-radius: 4px; }
+        .section-title {
+            font-family: var(--font-display); font-weight: 700; font-size: 1.05rem;
+            color: var(--navy); text-transform: uppercase; letter-spacing: 0.04em;
+            margin-top: 36px; margin-bottom: 20px; padding-bottom: 8px; border-bottom: 2px solid var(--navy-tint);
         }
+        .section-title:first-of-type { margin-top: 0; }
+
+        .form-label { font-size: 0.85rem; font-weight: 700; color: var(--ink); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.03em; }
+        .form-control, .form-select {
+            font-size: 0.95rem; padding: 12px 16px; border-radius: var(--r-sm); border: 1px solid var(--line);
+            background-color: #fff; color: var(--ink); transition: border-color .2s, box-shadow .2s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-tint); background-color: #fff;
+        }
+
+        .btn-submit {
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            background-color: var(--success); color: white; font-weight: 700; font-size: 0.95rem;
+            padding: 14px 28px; border: none; border-radius: 999px; width: 100%; transition: background .2s, transform .1s;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        }
+        .btn-submit:hover { background-color: #059669; }
+        .btn-submit:active { transform: scale(0.98); }
+
+        .btn-back {
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            background-color: var(--paper); color: var(--steel); font-weight: 600; font-size: 0.95rem;
+            padding: 14px 28px; border: 1px solid var(--line); border-radius: 999px; width: 100%;
+            text-decoration: none; text-align: center; transition: background .2s, color .2s;
+        }
+        .btn-back:hover { background-color: var(--line); color: var(--ink); }
     </style>
 </head>
 <body>
@@ -404,180 +396,108 @@
 
     <!-- ==================== KONTEN UTAMA ==================== -->
     <main class="content">
-        <div class="page-header no-print">
-            <div>
-                <h1>Detail {{ $jenis_layanan }}</h1>
-                <p>Menampilkan rincian data permohonan dari <strong>{{ $permohonan->nama_pemohon }}</strong></p>
-            </div>
-            <div class="d-flex gap-2">
-                <button onclick="window.print()" class="btn btn-primary fw-bold shadow-sm no-print" style="border-radius: 999px; padding: 10px 20px;">
-                    <i class="fas fa-print me-2"></i> Cetak Form
-                </button>
-                <a href="/internal/pencegahan/kelola-skk" class="btn btn-outline-secondary fw-bold shadow-sm no-print" style="border-radius: 999px; padding: 10px 20px;">
-                    <i class="fas fa-arrow-left me-2"></i> Kembali
-                </a>
-            </div>
+
+        <div class="page-head">
+            <h1>Tambah Permohonan SKK Baru</h1>
+            <p>Input data pengajuan Sertifikat Keamanan Kebakaran secara manual oleh petugas.</p>
         </div>
 
-        <!-- HEADER KHUSUS PRINT -->
-        <div class="d-none d-print-block text-center mb-4 pb-3" style="border-bottom: 3px solid #000;">
-            <h3 class="fw-bold mb-1" style="font-size: 22px; text-transform: uppercase;">Data Permohonan {{ $jenis_layanan }}</h3>
-            <p class="mb-0" style="font-size: 14px;">Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi</p>
+        @if($errors->any())
+            <div class="alert alert-danger mx-auto mb-4" style="max-width: 1000px;">
+                <ul class="mb-0">
+                    @foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach
+                </ul>
+            </div>
+        @endif
+
+        <div class="content-card">
+            <form action="{{ route('skk.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="row g-3">
+                    <div class="col-12"><div class="section-title mt-0">1. Data Pemohon</div></div>
+                    <div class="col-md-12"><label class="form-label">Nama Pemohon *</label><input type="text" class="form-control" name="nama_pemohon" value="{{ old('nama_pemohon') }}" required></div>
+                    <div class="col-md-6"><label class="form-label">Email *</label><input type="email" class="form-control" name="email_pemohon" value="{{ old('email_pemohon') }}" required></div>
+                    <div class="col-md-6"><label class="form-label">No. WhatsApp *</label><input type="text" class="form-control" name="no_whatsapp" value="{{ old('no_whatsapp') }}" required></div>
+
+                    <div class="col-12"><div class="section-title">2. Data Usaha &amp; Pemilik</div></div>
+                    <div class="col-md-12"><label class="form-label">Nama Usaha / Perusahaan *</label><input type="text" class="form-control" name="nama_usaha" value="{{ old('nama_usaha') }}" required></div>
+                    <div class="col-md-6"><label class="form-label">NIK Pemilik Usaha (Max 30 Karakter) *</label><input type="text" class="form-control" name="nik_pemilik_usaha" value="{{ old('nik_pemilik_usaha') }}" maxlength="30" required></div>
+                    <div class="col-md-6"><label class="form-label">Alamat Pemilik Usaha *</label><input type="text" class="form-control" name="alamat_pemilik_usaha" value="{{ old('alamat_pemilik_usaha') }}" required></div>
+
+                    <div class="col-12"><div class="section-title">3. Data Bangunan Gedung</div></div>
+                    <div class="col-md-12">
+                        <label class="form-label">Kategori Bangunan *</label>
+                        <select class="form-select" name="kategori_bangunan" required>
+                            <option value="" disabled selected>Pilih Kategori Bangunan</option>
+                            <option value="Rumah Tinggal" {{ old('kategori_bangunan') == 'Rumah Tinggal' ? 'selected' : '' }}>Rumah Tinggal</option>
+                            <option value="Komersial (Mall/Toko)" {{ old('kategori_bangunan') == 'Komersial (Mall/Toko)' ? 'selected' : '' }}>Komersial (Mall/Toko)</option>
+                            <option value="Fasilitas Layanan Kesehatan" {{ old('kategori_bangunan') == 'Fasilitas Layanan Kesehatan' ? 'selected' : '' }}>Fasilitas Layanan Kesehatan</option>
+                            <option value="Perkantoran" {{ old('kategori_bangunan') == 'Perkantoran' ? 'selected' : '' }}>Perkantoran</option>
+                            <option value="Hotel / Penginapan" {{ old('kategori_bangunan') == 'Hotel / Penginapan' ? 'selected' : '' }}>Hotel / Penginapan</option>
+                            <option value="Pabrik / Gudang" {{ old('kategori_bangunan') == 'Pabrik / Gudang' ? 'selected' : '' }}>Pabrik / Gudang</option>
+                            <option value="Pendidikan" {{ old('kategori_bangunan') == 'Pendidikan' ? 'selected' : '' }}>Pendidikan</option>
+                        </select>
+                    </div>
+                    <div class="col-12"><label class="form-label">Alamat Lengkap Bangunan *</label><textarea class="form-control" name="alamat_bangunan" rows="2" required>{{ old('alamat_bangunan') }}</textarea></div>
+                    <div class="col-md-6"><label class="form-label">Kecamatan *</label><input type="text" class="form-control" name="kecamatan" value="{{ old('kecamatan') }}" required></div>
+                    <div class="col-md-6"><label class="form-label">Kelurahan *</label><input type="text" class="form-control" name="kelurahan" value="{{ old('kelurahan') }}" required></div>
+                    <div class="col-md-4"><label class="form-label">Luas Tanah (m²) *</label><input type="number" step="0.01" class="form-control" name="luas_lahan" value="{{ old('luas_lahan') }}" required></div>
+                    <div class="col-md-4"><label class="form-label">Luas Bangunan (m²) *</label><input type="number" step="0.01" class="form-control" name="luas_bangunan" value="{{ old('luas_bangunan') }}" required></div>
+                    <div class="col-md-4"><label class="form-label">Tinggi Bangunan (Meter) *</label><input type="number" step="0.01" class="form-control" name="tinggi_bangunan" value="{{ old('tinggi_bangunan') }}" required></div>
+
+                    <div class="col-12"><div class="section-title">4. Status &amp; Dokumen</div></div>
+                    <div class="col-md-6">
+                        <label class="form-label">Status Permohonan *</label>
+                        <select class="form-select" name="status_permohonan" required>
+                            <option value="Pending" {{ old('status_permohonan') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="Diproses" {{ old('status_permohonan') == 'Diproses' ? 'selected' : '' }}>Diproses</option>
+                            <option value="Memenuhi Syarat" {{ old('status_permohonan') == 'Memenuhi Syarat' ? 'selected' : '' }}>Memenuhi Syarat</option>
+                            <option value="Tidak Memenuhi Syarat" {{ old('status_permohonan') == 'Tidak Memenuhi Syarat' ? 'selected' : '' }}>Tidak Memenuhi Syarat</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6"><label class="form-label">Upload Surat Permohonan (Opsional)</label><input type="file" class="form-control" name="file_surat_permohonan" accept=".pdf,.jpg,.png"></div>
+
+                    <div class="col-12 mt-4">
+                        <div class="row g-3">
+                            <div class="col-md-6"><button type="submit" class="btn-submit"><i class="fas fa-save me-2"></i> Simpan Data SKK</button></div>
+                            <div class="col-md-6"><a href="/internal/pencegahan/kelola-skk" class="btn-back"><i class="fas fa-arrow-left me-2"></i> Batal / Kembali</a></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
-
-        <div class="detail-card">
-            
-            <div class="row">
-                <div class="col-md-6">
-                    <h3 class="detail-section-title"><i class="fas fa-user-circle text-primary me-2"></i>Informasi Pemohon</h3>
-                    
-                    <div class="detail-label">Nama Pemohon</div>
-                    <div class="detail-value">{{ $permohonan->nama_pemohon }}</div>
-
-                    <div class="detail-label">Alamat Email</div>
-                    <div class="detail-value">{{ $permohonan->email_pemohon }}</div>
-
-                    <div class="detail-label">Nomor WhatsApp</div>
-                    <div class="detail-value">
-                        {{ $permohonan->no_whatsapp }}
-                        <a href="https://wa.me/{{ preg_replace('/^0/', '62', $permohonan->no_whatsapp) }}" target="_blank" class="ms-2 badge bg-success text-decoration-none no-print">Hubungi <i class="fab fa-whatsapp"></i></a>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <h3 class="detail-section-title"><i class="fas fa-store text-warning me-2"></i>Informasi Usaha</h3>
-
-                    <div class="detail-label">Nama Usaha / Instansi</div>
-                    <div class="detail-value">{{ $permohonan->nama_usaha }}</div>
-
-                    <div class="detail-label">NIK Pemilik Usaha</div>
-                    <div class="detail-value">{{ $permohonan->nik_pemilik_usaha }}</div>
-
-                    <div class="detail-label">Alamat Pemilik Usaha</div>
-                    <div class="detail-value">{{ $permohonan->alamat_pemilik_usaha }}</div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-12">
-                    <h3 class="detail-section-title"><i class="fas fa-building text-success me-2"></i>Rincian Bangunan</h3>
-                </div>
-                <div class="col-md-3">
-                    <div class="detail-label">Kategori Bangunan</div>
-                    <div class="detail-value">{{ $permohonan->kategori_bangunan }}</div>
-                </div>
-                <div class="col-md-3">
-                    <div class="detail-label">Luas Lahan (m²)</div>
-                    <div class="detail-value">{{ $permohonan->luas_lahan }} m²</div>
-                </div>
-                <div class="col-md-3">
-                    <div class="detail-label">Luas Bangunan (m²)</div>
-                    <div class="detail-value">{{ $permohonan->luas_bangunan }} m²</div>
-                </div>
-                <div class="col-md-3">
-                    <div class="detail-label">Tinggi Bangunan (m)</div>
-                    <div class="detail-value">{{ $permohonan->tinggi_bangunan }} m</div>
-                </div>
-                <div class="col-md-12">
-                    <div class="detail-label">Alamat Lengkap Bangunan</div>
-                    <div class="detail-value">
-                        {{ $permohonan->alamat_bangunan }}<br>
-                        Kecamatan {{ $permohonan->kecamatan }}, Kelurahan {{ $permohonan->kelurahan }}
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <h3 class="detail-section-title"><i class="fas fa-info-circle text-danger me-2"></i>Status Permohonan</h3>
-                    <div class="detail-label">Status Saat Ini</div>
-                    <div class="detail-value">
-                        @if($permohonan->status_permohonan == 'Pending')
-                            <span class="badge-status status-pending">Pending</span>
-                        @elseif($permohonan->status_permohonan == 'Diproses')
-                            <span class="badge-status status-diproses">Diproses Tim</span>
-                        @elseif($permohonan->status_permohonan == 'Memenuhi Syarat')
-                            <span class="badge-status status-memenuhi">Memenuhi Syarat</span>
-                        @else
-                            <span class="badge-status status-tidak-memenuhi">Tidak Memenuhi Syarat</span>
-                        @endif
-                    </div>
-                    <div class="detail-label">Tanggal Pengajuan</div>
-                    <div class="detail-value">{{ $permohonan->created_at->format('d F Y, H:i') }} WIB</div>
-                </div>
-
-                <div class="col-md-6 no-print">
-                    <h3 class="detail-section-title"><i class="fas fa-folder-open text-info me-2"></i>Berkas Lampiran</h3>
-                    <div class="d-flex flex-column gap-2">
-                        @if($permohonan->file_surat_permohonan && $permohonan->file_surat_permohonan !== 'offline_registered')
-                            <a href="{{ asset('storage/' . $permohonan->file_surat_permohonan) }}" target="_blank" class="btn-download-doc">
-                                <i class="fas fa-file-pdf"></i>
-                                <div>
-                                    <div style="line-height: 1;">Lihat Surat Permohonan</div>
-                                    <small class="text-muted fw-normal" style="font-size: 11px;">Berkas Wajib</small>
-                                </div>
-                            </a>
-                        @endif
-
-                        @if($permohonan->file_persyaratan_lainnya)
-                            <a href="{{ asset('storage/' . $permohonan->file_persyaratan_lainnya) }}" target="_blank" class="btn-download-doc">
-                                <i class="fas fa-file-archive" style="color: #8b5cf6;"></i>
-                                <div>
-                                    <div style="line-height: 1;">Lihat Persyaratan Lainnya</div>
-                                    <small class="text-muted fw-normal" style="font-size: 11px;">Lampiran Opsional</small>
-                                </div>
-                            </a>
-                        @else
-                            <div class="text-muted" style="font-size: 13px; font-weight: 500;">
-                                <i class="fas fa-minus-circle me-1"></i> Tidak ada berkas lampiran tambahan.
-                            </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
     </main>
 </div>
 
-<!-- Script Bootstrap & Auto Print -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    (function () {
-        'use strict';
-        var toggle = document.getElementById('sideToggle');
-        var backdrop = document.getElementById('sideBackdrop');
+(function () {
+    'use strict';
+    var toggle = document.getElementById('sideToggle');
+    var backdrop = document.getElementById('sideBackdrop');
 
-        function closeSide() {
-            document.body.classList.remove('side-open');
-            if (toggle) toggle.setAttribute('aria-expanded', 'false');
-        }
-        if (toggle) {
-            toggle.addEventListener('click', function () {
-                var open = document.body.classList.toggle('side-open');
-                toggle.setAttribute('aria-expanded', open);
-            });
-        }
-        if (backdrop) backdrop.addEventListener('click', closeSide);
-        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
-
-        var groups = document.querySelectorAll('.side-group');
-        groups.forEach(function (g) {
-            g.addEventListener('toggle', function () {
-                if (g.open) {
-                    groups.forEach(function (o) { if (o !== g) o.open = false; });
-                }
-            });
+    function closeSide() {
+        document.body.classList.remove('side-open');
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+    }
+    if (toggle) {
+        toggle.addEventListener('click', function () {
+            var open = document.body.classList.toggle('side-open');
+            toggle.setAttribute('aria-expanded', open);
         });
+    }
+    if (backdrop) backdrop.addEventListener('click', closeSide);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
 
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if(urlParams.has('auto_print')) {
-                setTimeout(function() { window.print(); }, 500);
+    var groups = document.querySelectorAll('.side-group');
+    groups.forEach(function (g) {
+        g.addEventListener('toggle', function () {
+            if (g.open) {
+                groups.forEach(function (o) { if (o !== g) o.open = false; });
             }
-        }
-    })();
+        });
+    });
+})();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

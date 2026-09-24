@@ -10,16 +10,16 @@ class CekLoginPemohon
 {
     public function handle(Request $request, Closure $next)
     {
-        // Izinkan masuk jika memenuhi salah satu syarat berikut:
-        // 1. Sudah login sebagai Pegawai Internal (Admin/Superuser/Operator)
-        // 2. Sudah login sebagai Relawan Redkar (Guard redkar)
-        // 3. Sudah login sebagai Pemohon Masyarakat (Session pemohon_id)
+        // Periksa apakah pengguna sudah login melalui salah satu akses yang diizinkan:
+        // 1. Pegawai Internal (Auth default)
+        // 2. Relawan Redkar (Guard redkar)
+        // 3. Pemohon Masyarakat (Session pemohon_id)
         if (Auth::check() || Auth::guard('redkar')->check() || session()->has('pemohon_id')) {
             return $next($request);
         }
 
-        // Jika belum login sama sekali, tendang ke halaman login pemohon
+        // Jika belum login sama sekali, arahkan ke halaman login pemohon dengan pesan flash
         return redirect()->route('pemohon.login')
-            ->withErrors(['Silakan masuk atau daftar akun terlebih dahulu untuk mengakses layanan ini.']);
+            ->with('error', 'Silakan masuk atau daftar akun terlebih dahulu untuk mengakses layanan ini.');
     }
 }
