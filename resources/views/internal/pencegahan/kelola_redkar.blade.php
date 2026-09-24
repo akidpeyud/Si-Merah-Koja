@@ -212,9 +212,36 @@
         .table th { background-color: var(--paper); color: var(--navy); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; padding: 14px 16px; border-bottom: 2px solid var(--line); }
         .table td { padding: 14px 16px; vertical-align: middle; font-size: 0.92rem; color: var(--ink); border-bottom: 1px solid var(--line); }
 
+        /* Custom Badge Status Style (Mengikuti Foto Referensi) */
+        .badge-status {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 8px; /* Rounded rectangle */
+            color: #fff;
+            letter-spacing: 0.2px;
+        }
+        .badge-success { background-color: #198754; }
+        .badge-danger { background-color: #dc3545; }
+        .badge-warning { background-color: #ffc107; color: #000; }
+        
+        .badge-akun {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 8px;
+            border-radius: 6px; /* Rounded rectangle kecil */
+            color: #fff;
+            letter-spacing: 0.3px;
+        }
+
         /* Tombol Aksi */
         .btn-add { background-color: var(--success); color: white; font-weight: 700; font-size: 0.88rem; padding: 10px 20px; border-radius: 999px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: background .2s; }
         .btn-add:hover { background-color: #059669; color: white; }
+
+        .btn-status { background-color: var(--success); color: white; font-weight: 700; font-size: 0.78rem; padding: 6px 10px; border-radius: 8px; border: none; transition: background .2s; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+        .btn-status:hover { background-color: #059669; color: white; }
 
         .btn-edit { background-color: var(--amber); color: var(--ink); font-weight: 700; font-size: 0.78rem; padding: 6px 12px; border-radius: 8px; border: none; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; transition: background .2s; }
         .btn-edit:hover { background-color: #e59f1f; color: var(--ink); }
@@ -452,9 +479,9 @@
                             <th>Nama Lengkap</th>
                             <th>Kecamatan</th>
                             <th>No. Telp (WA)</th>
-                            <th>Status</th>
-                            <th class="no-print-col">KTP</th>
-                            <th class="text-center no-print-col" width="180px">Aksi</th>
+                            <th>Status Pendaftaran</th>
+                            <th class="no-print-col text-center">Berkas KTP</th>
+                            <th class="text-center no-print-col" width="220px">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -462,29 +489,48 @@
                         <tr>
                             <td style="font-size: 13px;">{{ $r->created_at->format('d M Y, H:i') }}</td>
                             <td class="fw-bold">{{ $r->nik }}</td>
-                            <td>{{ $r->nama_lengkap }}</td>
+                            <td>
+                                <div class="fw-bold text-dark mb-1">{{ $r->nama_lengkap }}</div>
+                                <!-- Status Akun (Login) menggunakan style Badge yang seragam -->
+                                @if($r->status_akun == 'Aktif')
+                                    <span class="badge-akun badge-success">
+                                        <i class="fas fa-user-check me-1"></i> Akun Aktif
+                                    </span>
+                                @else
+                                    <span class="badge-akun badge-danger">
+                                        <i class="fas fa-user-lock me-1"></i> Akun Nonaktif
+                                    </span>
+                                @endif
+                            </td>
                             <td>{{ $r->kecamatan }}</td>
                             <td>
                                 <a href="https://wa.me/{{ preg_replace('/^0/', '62', $r->nomor_telp) }}" target="_blank" class="text-success text-decoration-none fw-bold"><i class="fab fa-whatsapp me-1"></i> {{ $r->nomor_telp }}</a>
                             </td>
                             <td>
+                                <!-- Status Pendaftaran menggunakan style Badge yang seragam -->
                                 @if($r->status_pendaftaran == 'Diterima')
-                                    <span class="badge bg-success">Diterima</span>
+                                    <span class="badge-status badge-success">Diterima</span>
                                 @elseif($r->status_pendaftaran == 'Ditolak')
-                                    <span class="badge bg-danger">Ditolak</span>
+                                    <span class="badge-status badge-danger">Ditolak</span>
                                 @else
-                                    <span class="badge bg-warning text-dark">Pending</span>
+                                    <span class="badge-status badge-warning">Pending</span>
                                 @endif
                             </td>
-                            <td class="no-print-col">
+                            <td class="no-print-col text-center">
                                 @if($r->file_ktp && $r->file_ktp !== 'offline_registered')
-                                    <a href="/storage/{{ $r->file_ktp }}" target="_blank" class="badge bg-info text-decoration-none"><i class="fas fa-eye me-1"></i> Lihat Dokumen</a>
+                                    <a href="/storage/{{ $r->file_ktp }}" target="_blank" class="badge bg-info text-decoration-none"><i class="fas fa-eye me-1"></i> KTP</a>
                                 @else
                                     <span class="badge bg-secondary">Offline / Tidak Ada</span>
                                 @endif
                             </td>
                             <td class="text-center no-print-col">
-                                <div class="d-flex justify-content-center gap-1">
+                                <div class="d-flex justify-content-center flex-wrap gap-1">
+                                    
+                                    <!-- TOMBOL VERIFIKASI / STATUS REDKAR -->
+                                    <button type="button" class="btn-status" data-bs-toggle="modal" data-bs-target="#modalStatusRedkar{{ $r->id }}" title="Verifikasi Pendaftaran">
+                                        <i class="fas fa-user-check"></i> Status
+                                    </button>
+
                                     <a href="/internal/pencegahan/edit-redkar/{{ $r->id }}" class="btn-edit" title="Edit Data">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>
@@ -501,6 +547,48 @@
                                 </div>
                             </td>
                         </tr>
+
+                        <!-- ==================== MODAL VERIFIKASI STATUS REDKAR ==================== -->
+                        <div class="modal fade" id="modalStatusRedkar{{ $r->id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title fw-bold" style="font-size: 16px;">Verifikasi Akun REDKAR</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <!-- Arahkan action ini ke fungsi update status redkar di controller Anda -->
+                                    <form action="/internal/pencegahan/update-status-redkar/{{ $r->id }}" method="POST">
+                                        @csrf
+                                        <div class="modal-body text-start">
+                                            <p class="mb-3 text-muted" style="font-size: 13px;">Ubah status pendaftaran relawan atas nama <strong>{{ $r->nama_lengkap }}</strong>. <br><em>Catatan: Akun Relawan baru bisa melakukan login ke dalam sistem jika status pendaftaran "Diterima" dan status akun "Aktif".</em></p>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold" style="font-size: 13px;">Status Pendaftaran</label>
+                                                <select name="status_pendaftaran" class="form-select" required>
+                                                    <option value="Pending" {{ $r->status_pendaftaran == 'Pending' ? 'selected' : '' }}>Pending (Menunggu)</option>
+                                                    <option value="Diterima" {{ $r->status_pendaftaran == 'Diterima' ? 'selected' : '' }}>Diterima (Verifikasi)</option>
+                                                    <option value="Ditolak" {{ $r->status_pendaftaran == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold" style="font-size: 13px;">Status Akun (Akses Login)</label>
+                                                <select name="status_akun" class="form-select" required>
+                                                    <option value="Aktif" {{ $r->status_akun == 'Aktif' ? 'selected' : '' }}>Aktif (Bisa Login)</option>
+                                                    <option value="Nonaktif" {{ $r->status_akun == 'Nonaktif' ? 'selected' : '' }}>Nonaktif (Tidak Bisa Login)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                                            <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-save me-1"></i> Simpan Verifikasi</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ====================================================================== -->
+
                         @empty
                         <tr>
                             <td colspan="8" class="text-center py-4 text-muted">Belum ada data relawan yang terdaftar.</td>

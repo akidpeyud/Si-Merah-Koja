@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\PendaftarRedkar;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth; // <-- PENTING: Tambahkan ini untuk fungsi Login/Logout
+use Illuminate\Support\Facades\Auth;
 
 class RedkarController extends Controller
 {
@@ -17,7 +17,6 @@ class RedkarController extends Controller
     // Menampilkan halaman form pendaftaran publik
     public function index()
     {
-        // Mengarah ke file resources/views/redkar/form_redkar.blade.php
         return view('redkar.form_redkar'); 
     }
 
@@ -94,26 +93,36 @@ class RedkarController extends Controller
     // --- PROSES LOGIN REDKAR ---
     public function processLoginRedkar(Request $request)
     {
-        $request->validate([
+        $credentials = $request->validate([
             'username' => 'required',
             'password' => 'required'
         ]);
 
-        $relawan = PendaftarRedkar::where('username', $request->username)->first();
+        // Gunakan fungsi 'attempt' dari guard redkar agar session terekam sempurna
+        if (Auth::guard('redkar')->attempt($credentials, $request->has('remember'))) {
+            
+            // Regenerasi session untuk mencegah serangan session fixation
+            $request->session()->regenerate();
+            
+            // Ambil data user yang sedang login
+            $relawan = Auth::guard('redkar')->user();
+            
+            // Cek apakah akun aktif dan pendaftaran sudah diterima
+            if ($relawan->status_akun !== 'Aktif' || $relawan->status_pendaftaran !== 'Diterima') {
+                // Keluarkan paksa jika belum diverifikasi
+                Auth::guard('redkar')->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
 
-        if ($relawan) {
-            if (Hash::check($request->password, $relawan->password)) {
-                
-                if ($relawan->status_akun !== 'Aktif') {
-                    return back()->with('error', 'Mohon maaf, akun Anda belum diverifikasi oleh admin atau sedang dinonaktifkan.');
-                }
-
-                Auth::guard('redkar')->login($relawan, $request->has('remember'));
-                
-                return redirect()->route('redkar.dashboard')->with('success', 'Selamat datang kembali, ' . $relawan->nama_lengkap . '!');
+                return back()->with('error', 'Mohon maaf, akun Anda belum diverifikasi oleh admin atau sedang dinonaktifkan.');
             }
+            
+            // Jika lolos semua, redirect ke dashboard
+            // Pastikan parameter di dalam intended() adalah URL dashboard redkar Anda
+            return redirect()->intended('/redkar/dashboard')->with('success', 'Selamat datang kembali, ' . $relawan->nama_lengkap . '!');
         }
 
+        // Jika salah password / username
         return back()->with('error', 'Username atau Password yang Anda masukkan salah.');
     }
 
@@ -124,29 +133,32 @@ class RedkarController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login.redkar')->with('success', 'Anda telah berhasil keluar dari dasbor relawan.');
+        return redirect('/login-redkar')->with('success', 'Anda telah berhasil keluar dari dasbor relawan.');
     }
 
+    // --- HALAMAN PROFIL REDKAR ---
+    public function profilRedkar()
+    {
+        $user = Auth::guard('redkar')->user();
+        return view('redkar.profil', compact('user'));
+    }
 
     // ====================================================
     // AREA INTERNAL (ADMIN / PEGAWAI)
     // ====================================================
 
-    // --- TAMBAHAN METHOD INI AGAR RUTE KELOLA REDKAR TERBACA ---
     public function kelolaRedkarInternal()
     {
         $relawan = PendaftarRedkar::orderBy('created_at', 'desc')->get();
         return view('internal.pencegahan.kelola_redkar', compact('relawan'));
     }
 
-    // Method khusus untuk cetak PDF (Menerima parameter $id dari URL)
     public function cetakRedkar($id)
     {
         $relawan = PendaftarRedkar::findOrFail($id);
         return view('internal.pencegahan.cetak_redkar', compact('relawan'));
     }
 
-    // Method untuk verifikasi / aktivasi akun Redkar oleh admin
     public function verifikasiRedkar(Request $request, $id)
     {
         $relawan = PendaftarRedkar::findOrFail($id);
@@ -163,14 +175,12 @@ class RedkarController extends Controller
         return back()->with('success', 'Status akun dan pendaftaran relawan ' . $relawan->nama_lengkap . ' berhasil diperbarui!');
     }
 
-    // Menampilkan form edit relawan
     public function editRedkar($id)
     {
         $relawan = PendaftarRedkar::findOrFail($id);
         return view('internal.pencegahan.edit_redkar', compact('relawan'));
     }
 
-    // Memproses update data relawan secara lengkap
     public function updateRedkar(Request $request, $id)
     {
         $relawan = PendaftarRedkar::findOrFail($id);
@@ -195,7 +205,7 @@ class RedkarController extends Controller
             'pekerjaan_lainnya'         => 'nullable|string|max:255|required_if:jenis_pekerjaan,Lainnya',
             'sehat_jasmani'             => 'required|in:Ya,Tidak',
             'golongan_darah'            => 'required|in:A,B,AB,O,Tidak Tahu',
-            'status_pendaftaran'       => 'required|in:Pending,Diterima,Ditolak',
+            'status_pendaftaran'        => 'required|in:Pending,Diterima,Ditolak',
             'foto_ktp'                  => 'nullable|file|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -223,7 +233,6 @@ class RedkarController extends Controller
         return redirect('/internal/pencegahan/kelola-redkar')->with('success', 'Data relawan atas nama ' . $relawan->nama_lengkap . ' berhasil diperbarui!');
     }
 
-    // Menghapus data relawan
     public function hapusRedkar($id)
     {
         $relawan = PendaftarRedkar::findOrFail($id);
@@ -237,13 +246,11 @@ class RedkarController extends Controller
         return back()->with('success', 'Data relawan berhasil dihapus dari sistem.');
     }
 
-    // Menampilkan form tambah relawan offline oleh pegawai
     public function createRedkar()
     {
         return view('internal.pencegahan.tambah_redkar');
     }
 
-    // Memproses penyimpanan data relawan offline
     public function storeRedkarOffline(Request $request)
     {
         $validatedData = $request->validate([
@@ -299,12 +306,5 @@ class RedkarController extends Controller
         PendaftarRedkar::create($validatedData);
 
         return redirect('/internal/pencegahan/kelola-redkar')->with('success', 'Data relawan offline berhasil ditambahkan ke sistem!');
-    }
-
-    // --- HALAMAN PROFIL REDKAR ---
-    public function profilRedkar()
-    {
-        $user = Auth::guard('redkar')->user();
-        return view('redkar.profil', compact('user'));
     }
 }
