@@ -135,8 +135,8 @@
         .menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger { background: rgba(255,255,255,.1); color: #fff; }
         .menu-trigger i { font-size: .65rem; transition: transform .2s; }
         .has-drop.open > .menu-trigger i { transform: rotate(180deg); }
-        .menu .btn-login { background: transparent; border: 1px solid var(--signal); color: #fff; margin-left: 10px; font-weight: 600; padding: 8px 22px; }
-        .menu .btn-login:hover { background: var(--signal); }
+        .menu .btn-login { background: var(--signal); color: #fff; margin-left: 10px; font-weight: 600; padding: 9px 22px; }
+        .menu .btn-login:hover { background: var(--signal-d); }
 
         .dropdown {
             display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 250px;
@@ -151,7 +151,7 @@
         .dropdown .btn-logout {
             width: 100%; text-align: left; padding: 11px 14px; border-radius: var(--r-sm); 
             font-size: .92rem; color: #ff8b8b; display: flex; align-items: center; gap: 8px; 
-            transition: background .2s, color .2s; cursor: pointer; border: none; background: transparent;
+            transition: background .2s, color .2s; cursor: pointer;
         }
         .dropdown .btn-logout:hover { background: rgba(255, 255, 255, .1); color: #ffb8b8; }
 
@@ -490,100 +490,88 @@
 </head>
 <body>
 
-    <!-- SPLASH SCREEN LOADING -->
-    <div id="splash-screen">
-        <div class="splash-logo-container">
-            <img src="/images/simerahkoja.png" alt="Logo Simerah Koja">
-            <div class="splash-title">SIMERAH KOJA</div>
+<!-- ==================== HEADER ==================== -->
+<header class="site-header" id="siteHeader">
+    <nav class="nav" aria-label="Navigasi utama">
+        <div class="brand">
+            <a href="/" aria-label="SIMERAH KOJA, beranda">
+                <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
+            </a>
+            <!-- KLIK LOGO DAMKAR KE LOGIN INTERNAL -->
+            <a href="/login" title="Login Internal Pegawai">
+                <img src="/images/logo.png" alt="Logo Damkar">
+            </a>
+            <a href="/redkar" aria-label="Redkar">
+                <img src="/images/logo-redkar.png" alt="Logo Redkar">
+            </a>
         </div>
-        <div class="splash-spinner"></div>
-    </div>
 
-    <!-- ==================== HEADER ==================== -->
-    <header class="site-header" id="siteHeader">
-        <nav class="nav" aria-label="Navigasi utama">
-            <div class="brand">
-                <a href="/" aria-label="SIMERAH KOJA, beranda">
-                    <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
-                </a>
-                <!-- KLIK LOGO DAMKAR KE LOGIN INTERNAL -->
-                 <a href="/login" title="Login Internal Pegawai">
-                    <img src="/images/logo.png" alt="Logo Damkar">
-                </a>
-                <a href="/redkar" aria-label="Redkar">
-                    <img src="/images/logo-redkar.png" alt="Logo Redkar">
-                </a>
-            </div>
+        <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="menu">
+            <i class="fas fa-bars"></i>
+        </button>
 
-            <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="menu">
-                <i class="fas fa-bars"></i>
-            </button>
+        <ul class="menu" id="menu">
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Layanan kedaruratan <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="{{ $wa_link }}" target="_blank" rel="noopener">WhatsApp</a></li>
+                    <li><a href="tel:{{ $no_telepon }}">Telepon</a></li>
+                    <li><a href="tel:112">Call Center 112</a></li>
+                </ul>
+            </li>
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Program kerja <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="/sotk">SOTK</a></li>
+                    <li><a href="/perencanaan">Perencanaan</a></li>
+                    <li><a href="/pelaporan">Pelaporan</a></li>
+                    <li><a href="/sop">SOP</a></li>
+                    <li><a href="/produkhukum">Produk hukum</a></li>
+                </ul>
+            </li>
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Layanan<i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">Layanan perizinan</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
+                    <li><a href="/informasi-layanan">Informasi layanan</a></li>
+                </ul>
+            </li>
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="/video-edukasi">Video Edukasi</a></li>
+                    <li><a href="/info-grafis">Info Grafis</a></li>
+                    <li><a href="/media-informasi">Media Informasi</a></li>
+                    <li><a href="/giat-disdamkartan">Giat Disdamkartan</a></li>
+                </ul>
+            </li>
+            <li><a class="menu-link" href="/redkar">Redkar</a></li>
 
-            <ul class="menu" id="menu">
+            <!-- TOMBOL LOGIN / LOGOUT PEMOHON -->
+            @if(session()->has('pemohon_id'))
                 <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Layanan kedaruratan <i class="fas fa-chevron-down"></i></button>
+                    <button class="menu-trigger btn-login" type="button" aria-expanded="false">
+                        <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
+                    </button>
                     <ul class="dropdown">
-                        <li><a href="{{ $wa_link }}" target="_blank" rel="noopener">WhatsApp</a></li>
-                        <li><a href="tel:{{ $no_telepon }}">Telepon</a></li>
-                        <li><a href="tel:112">Call Center 112</a></li>
+                        <li>
+                            <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
+                                @csrf
+                                <button type="submit" class="btn-logout">
+                                    <i class="fas fa-sign-out-alt"></i> Keluar
+                                </button>
+                            </form>
+                        </li>
                     </ul>
                 </li>
-                <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Program kerja <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/sotk">SOTK</a></li>
-                        <li><a href="/perencanaan">Perencanaan</a></li>
-                        <li><a href="/pelaporan">Pelaporan</a></li>
-                        <li><a href="/sop">SOP</a></li>
-                        <li><a href="/produkhukum">Produk hukum</a></li>
-                    </ul>
-                </li>
-                <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Layanan<i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
-                        <li><a href="/layanan-fasilitas/skk">SKK & Perpanjang SKK</a></li>
-                        <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
-                        <li><a href="/informasi-layanan">Informasi layanan</a></li>
-                    </ul>
-                </li>
-                <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/video-edukasi">Video Edukasi</a></li>
-                        <li><a href="/info-grafis">Info Grafis</a></li>
-                        <li><a href="/media-informasi">Media Informasi</a></li>
-                        <li><a href="/giat-disdamkartan">Giat Disdamkartan</a></li>
-                    </ul>
-                </li>
-                <li><a class="menu-link" href="/redkar">Redkar</a></li>
+            @else
+                <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
+            @endif
 
-                <!-- TOMBOL LOGIN / LOGOUT PEMOHON -->
-                @if(session()->has('pemohon_id') || Auth::guard('pemohon')->check())
-                    <li class="has-drop">
-                        <button class="menu-trigger btn-login" type="button" aria-expanded="false" style="background-color: transparent; border: 1px solid var(--signal);">
-                            <i class="fas fa-user-circle"></i> 
-                            {{ strtok(session('pemohon_nama', Auth::guard('pemohon')->user()->nama_lengkap ?? 'Akun Saya'), " ") }} 
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                        <ul class="dropdown">
-                            <li><a href="/layanan-fasilitas/layanan_perizinan"><i class="fas fa-file-alt"></i> Layanan Perizinan</a></li>
-                            <li>
-                                <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
-                                    @csrf
-                                    <button type="submit" class="btn-logout" style="width: 100%; text-align: left; padding: 11px 14px; border: none; background: transparent; color: #ff8b8b; display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                        <i class="fas fa-sign-out-alt"></i> Keluar
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                @else
-                    <li><a href="{{ route('pemohon.login') }}" class="btn text-white" style="background-color: #ef4444;">Masuk</a></li>
-                @endif
-            </ul>
-        </nav>
-    </header>
+        </ul>
+    </nav>
+</header>
 
 <main>
 
@@ -824,7 +812,7 @@
                 <h2>Media informasi</h2>
                 <p>Kabar terbaru dari media sosial Damkar Kota Jambi.</p>
             </div>
-            <a href="/media-informasi" class="btn btn-outline" style="border: 1px solid var(--steel); color: var(--ink);">
+            <a href="/media-informasi" class="btn btn-outline">
                 Lihat lainnya <i class="fas fa-arrow-right"></i>
             </a>
         </div>
@@ -1100,12 +1088,6 @@
             if (mediaEmpty) mediaEmpty.hidden = visible !== 0;
         });
     }
-
-    // Menghilangkan splash screen
-    window.addEventListener('load', function() {
-        const splash = document.getElementById('splash-screen');
-        if (splash) { splash.classList.add('splash-hidden'); setTimeout(() => { splash.remove(); }, 500); }
-    });
 })();
 </script>
 </body>
