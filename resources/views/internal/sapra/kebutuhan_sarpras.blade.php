@@ -397,7 +397,7 @@
                     <span class="side-sub-kicker">LOGISTIK &amp; DISTRIBUSI</span>
                     <!-- ACTIVE karena ini halaman Mutu Baku Kebutuhan -->
                     <a href="/sapra/kebutuhan-sarpras" class="side-a active"><i class="fas fa-clipboard-check"></i> Mutu baku kebutuhan</a>
-                    <a href="/sapra/distribusi-staff" class="side-a {{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}"><i class="fas fa-people-carry-box"></i> Distribusi barang staff</a>
+                    <a href="/sapra/distribusi-staff" class="side-a {{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}"><i class="fas fa-people-carry-box"></i> Serah Terima Barang</a>
                 </div>
             </details>
         @endif

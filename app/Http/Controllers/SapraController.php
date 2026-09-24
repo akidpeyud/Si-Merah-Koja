@@ -117,7 +117,6 @@ class SapraController extends Controller
 
     public function cetakPdfHidranGedung()
     {
-        // BENAR: Ambil dari prasaranas, bukan prasarana
         $hidranPilar  = DB::table('prasaranas')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
         $hidranGedung = DB::table('prasaranas')->where('kategori', 'Hidrant Gedung')->orderBy('no_urut', 'asc')->get();
         $embung       = DB::table('prasaranas')->where('kategori', 'Embung')->orderBy('no_urut', 'asc')->get();
@@ -537,6 +536,8 @@ class SapraController extends Controller
     {
         $dataKebutuhan = DB::table('kebutuhan_sarpras')->orderBy('id', 'asc')->get();
         $dataPengadaan = DB::table('pengadaan_sarpras')->orderBy('tahun', 'asc')->get();
+        // Ambil data distribusi untuk menghitung stok keluar otomatis
+        $dataDistribusi = DB::table('distribusi_barang_staff')->get(); 
 
         $listTahun = $dataPengadaan->pluck('tahun')->unique()->sort()->values();
         if ($listTahun->isEmpty()) {
@@ -554,11 +555,18 @@ class SapraController extends Controller
         $tahunSekarang = date('Y');
         
         foreach($dataKebutuhan as $item) {
-            $totalStok = $dataPengadaan->where('kebutuhan_id', $item->id)->sum('jumlah');
+            // Stok Masuk = Jumlah dari tabel pengadaan
+            $totalMasuk = $dataPengadaan->where('kebutuhan_id', $item->id)->sum('jumlah');
             
-            $item->jumlah_tersedia = $totalStok;
+            // Stok Keluar = Jumlah dari tabel distribusi berdasarkan ID Mutu Baku
+            $totalKeluar = $dataDistribusi->where('kebutuhan_id', $item->id)->sum('jumlah');
             
-            $kurang = $item->jumlah_dibutuhkan - $totalStok;
+            // Sisa Stok
+            $sisaStok = $totalMasuk - $totalKeluar;
+            $item->jumlah_tersedia = $sisaStok;
+            
+            // Hitung Kekurangan
+            $kurang = $item->jumlah_dibutuhkan - $sisaStok;
             $item->jumlah_belum_tersedia = $kurang < 0 ? 0 : $kurang;
         }
 
@@ -601,8 +609,10 @@ class SapraController extends Controller
     {
         DB::table('kebutuhan_sarpras')->where('id', $id)->delete();
         DB::table('pengadaan_sarpras')->where('kebutuhan_id', $id)->delete();
+        // Hapus juga riwayat distribusinya kalau mutu baku dihapus, biar data bersih
+        DB::table('distribusi_barang_staff')->where('kebutuhan_id', $id)->delete();
         
-        return redirect()->back()->with('success', 'Data Mutu Baku dan riwayat pengadaannya berhasil dihapus!')->with('active_tab', 'mutubaku');
+        return redirect()->back()->with('success', 'Data Mutu Baku, pengadaan, dan riwayat distribusinya berhasil dihapus!')->with('active_tab', 'mutubaku');
     }
 
     // ==============================================
@@ -642,6 +652,7 @@ class SapraController extends Controller
     {
         $dataKebutuhan = DB::table('kebutuhan_sarpras')->orderBy('id', 'asc')->get();
         $dataPengadaan = DB::table('pengadaan_sarpras')->orderBy('tahun', 'asc')->get();
+        $dataDistribusi = DB::table('distribusi_barang_staff')->get(); 
         
         $listTahun = $dataPengadaan->pluck('tahun')->unique()->sort()->values();
         if ($listTahun->isEmpty()) {
@@ -657,9 +668,13 @@ class SapraController extends Controller
         }
 
         foreach($dataKebutuhan as $item) {
-            $totalStok = $dataPengadaan->where('kebutuhan_id', $item->id)->sum('jumlah');
-            $item->jumlah_tersedia = $totalStok;
-            $kurang = $item->jumlah_dibutuhkan - $totalStok;
+            $totalMasuk = $dataPengadaan->where('kebutuhan_id', $item->id)->sum('jumlah');
+            $totalKeluar = $dataDistribusi->where('kebutuhan_id', $item->id)->sum('jumlah');
+            
+            $sisaStok = $totalMasuk - $totalKeluar;
+            
+            $item->jumlah_tersedia = $sisaStok;
+            $kurang = $item->jumlah_dibutuhkan - $sisaStok;
             $item->jumlah_belum_tersedia = $kurang < 0 ? 0 : $kurang;
         }
 
@@ -686,14 +701,23 @@ class SapraController extends Controller
             return strtoupper(trim($item->nama_penerima));
         });
         
-        return view('internal.sapra.distribusi_staff', compact('dataDistribusi'));
+        // Kirim data barang untuk dropdown agar namanya pas sama Mutu Baku
+        $dataBarang = DB::table('kebutuhan_sarpras')->orderBy('uraian', 'asc')->get();
+        
+        return view('internal.sapra.distribusi_staff', compact('dataDistribusi', 'dataBarang'));
     }
 
     public function storeDistribusiStaff(Request $request)
     {
+        // Cari nama barang aslinya di mutu baku berdasarkan ID yang dipilih
+        $barangMutuBaku = DB::table('kebutuhan_sarpras')->where('id', $request->kebutuhan_id)->first();
+        $namaBarangAsli = $barangMutuBaku ? $barangMutuBaku->uraian : 'BARANG TIDAK DIKETAHUI';
+
         DB::table('distribusi_barang_staff')->insert([
             'nama_penerima' => strtoupper($request->nama_penerima),
-            'nama_barang'   => strtoupper($request->nama_barang),
+            'kebutuhan_id'  => $request->kebutuhan_id, 
+            'nama_barang'   => strtoupper($namaBarangAsli),
+            'jumlah'        => $request->jumlah,       
             'detail_barang' => $request->detail_barang,
             'waktu_terima'  => $request->waktu_terima, 
             'keterangan'    => $request->keterangan,
@@ -701,27 +725,32 @@ class SapraController extends Controller
             'updated_at'    => now(),
         ]);
 
-        return redirect()->back()->with('success', 'Bukti distribusi barang ke staff berhasil dicatat!');
+        return redirect()->back()->with('success', 'Bukti distribusi barang dicatat! Stok Mutu Baku otomatis dikurangi.');
     }
 
     public function updateDistribusiStaff(Request $request, $id)
     {
+        $barangMutuBaku = DB::table('kebutuhan_sarpras')->where('id', $request->kebutuhan_id)->first();
+        $namaBarangAsli = $barangMutuBaku ? $barangMutuBaku->uraian : 'BARANG TIDAK DIKETAHUI';
+
         DB::table('distribusi_barang_staff')->where('id', $id)->update([
             'nama_penerima' => strtoupper($request->nama_penerima),
-            'nama_barang'   => strtoupper($request->nama_barang),
+            'kebutuhan_id'  => $request->kebutuhan_id,
+            'nama_barang'   => strtoupper($namaBarangAsli),
+            'jumlah'        => $request->jumlah,
             'detail_barang' => $request->detail_barang,
             'waktu_terima'  => $request->waktu_terima,
             'keterangan'    => $request->keterangan,
             'updated_at'    => now(),
         ]);
 
-        return redirect()->back()->with('success', 'Data distribusi berhasil diperbarui!');
+        return redirect()->back()->with('success', 'Data distribusi diperbarui! Stok Mutu Baku telah disesuaikan.');
     }
 
     public function destroyDistribusiStaff($id)
     {
         DB::table('distribusi_barang_staff')->where('id', $id)->delete();
-        return redirect()->back()->with('success', 'Data distribusi berhasil dihapus!');
+        return redirect()->back()->with('success', 'Data distribusi dihapus! Stok dikembalikan ke Mutu Baku.');
     }
 
     public function cetakDistribusiStaff()

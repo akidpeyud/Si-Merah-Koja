@@ -147,7 +147,7 @@
         .search input { width: 100%; height: 42px; padding: 0 14px 0 40px; border-radius: 999px; border: 1.5px solid var(--line); background: #fff; font: inherit; font-size: .88rem; color: var(--ink); transition: border-color .2s, box-shadow .2s; }
         .search input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-tint); }
 
-        .btn { display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 18px; border-radius: 999px; font-weight: 700; font-size: .86rem; transition: background .2s, transform .2s, box-shadow .2s; white-space: nowrap; }
+        .btn { display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 18px; border-radius: 999px; font-weight: 700; font-size: .86rem; transition: background .2s, transform .2s, box-shadow .2s; white-space: nowrap; border: none;}
         .btn:active { transform: scale(.98); }
         .btn-primary { background: var(--navy); color: #fff; box-shadow: 0 4px 6px -1px rgba(37,99,235,0.1); }
         .btn-primary:hover { background: var(--navy-d); box-shadow: 0 6px 8px -1px rgba(37,99,235,0.2); }
@@ -185,6 +185,7 @@
         .tree-line { border-right: 2px solid var(--line); background: #f8fafc !important; }
 
         .chip-barang { display: inline-block; background: #eff6ff; color: var(--blue); padding: 6px 12px; border-radius: 6px; font-weight: 800; border: 1px solid #bfdbfe; font-size: .8rem; }
+        .chip-qty { background: #fff; color: var(--blue-d); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; margin-left: 6px; border: 1px solid #bfdbfe;}
         .detail-txt { font-size: .75rem; color: var(--steel); font-weight: 600; margin-top: 6px; }
         .time-date { font-weight: 700; color: var(--ink); }
         .time-clock { font-size: .75rem; color: var(--steel); font-weight: 600; margin-top: 4px; }
@@ -193,7 +194,7 @@
         .cell-empty { text-align: center; padding: 48px 16px; color: var(--steel-soft); font-weight: 600; }
 
         .row-actions { display: inline-flex; gap: 6px; justify-content: center; }
-        .icon-btn { width: 32px; height: 32px; border-radius: 9px; display: inline-grid; place-items: center; font-size: .82rem; color: #fff; transition: filter .2s, transform .2s; }
+        .icon-btn { width: 32px; height: 32px; border-radius: 9px; display: inline-grid; place-items: center; font-size: .82rem; color: #fff; transition: filter .2s, transform .2s; border: none; cursor: pointer;}
         .icon-btn:hover { filter: brightness(.92); transform: translateY(-1px); }
         .icon-btn.edit { background: var(--amber); color: var(--ink); }
         .icon-btn.delete { background: var(--signal); }
@@ -207,7 +208,7 @@
         @keyframes pop { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
         .sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 18px 24px; border-bottom: 1px solid var(--line); }
         .sheet-head h2 { font-family: var(--font-display); font-weight: 800; font-stretch: 90%; font-size: 1.15rem; letter-spacing: -0.01em; color: var(--ink); }
-        .sheet-x { flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); transition: background .2s, color .2s; color: var(--steel); }
+        .sheet-x { flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); transition: background .2s, color .2s; color: var(--steel); border: none; cursor: pointer;}
         .sheet-x:hover { background: var(--signal-tint); color: var(--signal-d); }
         .sheet-body { padding: 24px; overflow-y: auto; display: grid; gap: 16px; }
         .sheet-foot { padding: 16px 24px; border-top: 1px solid var(--line); background: var(--paper); display: flex; justify-content: flex-end; gap: 10px; }
@@ -215,6 +216,7 @@
         .f-label { display: block; margin-bottom: 6px; font-size: .8rem; font-weight: 800; color: var(--ink); text-transform: uppercase; letter-spacing: .04em; }
         .f-optional { font-weight: 500; color: var(--steel); text-transform: none; }
         .f-input { display: block; width: 100%; height: 44px; padding: 0 14px; border: 1.5px solid var(--line); border-radius: 12px; background: #fff; font: inherit; font-size: .92rem; color: var(--ink); transition: border-color .2s, box-shadow .2s; }
+        select.f-input { appearance: none; padding-right: 40px; cursor: pointer; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%235b6c7f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 14px center; }
         textarea.f-input { padding-top: 12px; padding-bottom: 12px; height: auto; min-height: 80px; resize: vertical; }
         .f-input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-tint); }
         .f-input[readonly] { cursor: not-allowed; }
@@ -224,28 +226,10 @@
         .f-alert { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: 12px; font-size: .82rem; line-height: 1.45; }
         .f-alert.info { background: #eff6ff; color: #1e3a8a; border: 1px solid #bfdbfe; }
 
-        .btn-cancel { height: 42px; padding: 0 18px; border-radius: 999px; background: var(--paper); color: var(--ink); font-weight: 700; font-size: .86rem; transition: background .2s; }
+        .btn-cancel { height: 42px; padding: 0 18px; border-radius: 999px; background: var(--paper); color: var(--ink); font-weight: 700; font-size: .86rem; transition: background .2s; border: none; cursor: pointer;}
         .btn-cancel:hover { background: var(--line); }
-        .btn-save { height: 42px; padding: 0 22px; border-radius: 999px; background: var(--navy); color: #fff; font-weight: 700; font-size: .86rem; transition: background .2s; }
+        .btn-save { height: 42px; padding: 0 22px; border-radius: 999px; background: var(--navy); color: #fff; font-weight: 700; font-size: .86rem; transition: background .2s; border: none; cursor: pointer;}
         .btn-save:hover { background: var(--navy-d); }
-
-        /* ==========================================================
-           CETAK
-           ========================================================== */
-        @media print {
-            .topbar, .sidebar, .sidebar-backdrop, .page-toolbar .toolbar-actions, .row-actions, dialog, .toast-wrap, .btn-outline { display: none !important; }
-            body { background: #fff !important; }
-            .shell { display: block !important; }
-            .content { padding: 0 !important; overflow: visible !important; height: auto !important; }
-            .table-wrap { border: none !important; box-shadow: none !important; }
-            .data-table thead th:last-child, .data-table tbody td:last-child { display: none !important; }
-            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            html { scroll-behavior: auto; }
-            *, *::before, *::after { animation: none !important; transition: none !important; }
-        }
     </style>
 </head>
 <body>
@@ -368,7 +352,7 @@
                     <a href="/sapra/kebutuhan-sarpras" class="side-a {{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}"><i class="fas fa-clipboard-check"></i> Mutu baku kebutuhan</a>
 
                     <!-- ACTIVE karena ini halaman Distribusi Barang Staff -->
-                    <a href="/sapra/distribusi-staff" class="side-a active"><i class="fas fa-user-check"></i> Distribusi barang staff</a>
+                    <a href="/sapra/distribusi-staff" class="side-a active"><i class="fas fa-user-check"></i> Serah Terima Barang</a>
                 </div>
             </details>
         @endif
@@ -473,7 +457,7 @@
 
                                     <!-- Info Barang -->
                                     <td class="c data-barang">
-                                        <span class="chip-barang">{{ $item->nama_barang }}</span>
+                                        <span class="chip-barang">{{ $item->nama_barang }} <span class="chip-qty">{{ $item->jumlah ?? 1 }} Unit</span></span>
                                         @if($item->detail_barang)
                                             <div class="detail-txt"><i class="fas fa-caret-right"></i> {{ $item->detail_barang }}</div>
                                         @endif
@@ -494,7 +478,7 @@
                                     <td class="c">
                                         <div class="row-actions">
                                             <button type="button" class="icon-btn edit" data-open="dlgEdit{{ $item->id }}" aria-label="Edit"><i class="fas fa-pen"></i></button>
-                                            <form action="/sapra/distribusi-staff/delete/{{ $item->id }}" method="POST" style="margin:0;" onsubmit="return confirm('Yakin ingin menghapus data penerimaan ini?');">
+                                            <form action="/sapra/distribusi-staff/delete/{{ $item->id }}" method="POST" style="margin:0;" onsubmit="return confirm('Yakin ingin menghapus data penerimaan ini? Stok Mutu Baku akan dikembalikan otomatis.');">
                                                 @csrf @method('DELETE')
                                                 <button type="submit" class="icon-btn delete" aria-label="Hapus"><i class="fas fa-trash-alt"></i></button>
                                             </form>
@@ -517,17 +501,28 @@
                                             </div>
                                             <div class="f-row">
                                                 <div>
-                                                    <label class="f-label" for="editBarang{{ $item->id }}">Jenis Barang</label>
-                                                    <input class="f-input" type="text" id="editBarang{{ $item->id }}" name="nama_barang" value="{{ $item->nama_barang }}" required>
+                                                    <label class="f-label" for="editBarang{{ $item->id }}">Jenis Barang (Dari Mutu Baku)</label>
+                                                    <select class="f-input" id="editBarang{{ $item->id }}" name="kebutuhan_id" required>
+                                                        <option value="">— Pilih Barang —</option>
+                                                        @foreach($dataBarang as $barang)
+                                                            <option value="{{ $barang->id }}" {{ $item->kebutuhan_id == $barang->id ? 'selected' : '' }}>{{ $barang->uraian }}</option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
+                                                <div>
+                                                    <label class="f-label" for="editJumlah{{ $item->id }}">Jumlah Diberikan</label>
+                                                    <input class="f-input" type="number" id="editJumlah{{ $item->id }}" name="jumlah" value="{{ $item->jumlah ?? 1 }}" min="1" required>
+                                                </div>
+                                            </div>
+                                            <div class="f-row">
                                                 <div>
                                                     <label class="f-label" for="editDetail{{ $item->id }}">Detail <span class="f-optional">(Warna/Ukuran)</span></label>
                                                     <input class="f-input" type="text" id="editDetail{{ $item->id }}" name="detail_barang" value="{{ $item->detail_barang }}">
                                                 </div>
-                                            </div>
-                                            <div>
-                                                <label class="f-label" for="editWaktu{{ $item->id }}">Waktu Serah Terima</label>
-                                                <input class="f-input" type="datetime-local" id="editWaktu{{ $item->id }}" name="waktu_terima" value="{{ \Carbon\Carbon::parse($item->waktu_terima)->format('Y-m-d\TH:i') }}" required>
+                                                <div>
+                                                    <label class="f-label" for="editWaktu{{ $item->id }}">Waktu Serah Terima</label>
+                                                    <input class="f-input" type="datetime-local" id="editWaktu{{ $item->id }}" name="waktu_terima" value="{{ \Carbon\Carbon::parse($item->waktu_terima)->format('Y-m-d\TH:i') }}" required>
+                                                </div>
                                             </div>
                                             <div>
                                                 <label class="f-label" for="editKet{{ $item->id }}">Keterangan Tambahan</label>
@@ -579,17 +574,29 @@
             </div>
             <div class="f-row">
                 <div>
-                    <label class="f-label" for="tambahJenis">Jenis Barang</label>
-                    <input class="f-input" type="text" id="tambahJenis" name="nama_barang" placeholder="Contoh: Baju Tahan Panas" required>
+                    <label class="f-label" for="tambahJenis">Jenis Barang (Dari Mutu Baku)</label>
+                    <select class="f-input" id="tambahJenis" name="kebutuhan_id" required>
+                        <option value="">— Pilih Barang —</option>
+                        @foreach($dataBarang as $barang)
+                            <option value="{{ $barang->id }}">{{ $barang->uraian }}</option>
+                        @endforeach
+                    </select>
+                    <p class="f-hint" style="font-size: 0.75rem; color: var(--signal); margin-top: 4px;">*Akan memotong stok secara otomatis.</p>
                 </div>
+                <div>
+                    <label class="f-label" for="tambahJumlah">Jumlah Diberikan</label>
+                    <input class="f-input" type="number" id="tambahJumlah" name="jumlah" value="1" min="1" required>
+                </div>
+            </div>
+            <div class="f-row">
                 <div>
                     <label class="f-label" for="tambahDetail">Detail <span class="f-optional">(Warna/Ukuran)</span></label>
                     <input class="f-input" type="text" id="tambahDetail" name="detail_barang" placeholder="Contoh: Coklat / Uk. 42">
                 </div>
-            </div>
-            <div>
-                <label class="f-label" for="tambahWaktu">Waktu Serah Terima</label>
-                <input class="f-input" type="datetime-local" id="tambahWaktu" name="waktu_terima" value="{{ date('Y-m-d\TH:i') }}" required>
+                <div>
+                    <label class="f-label" for="tambahWaktu">Waktu Serah Terima</label>
+                    <input class="f-input" type="datetime-local" id="tambahWaktu" name="waktu_terima" value="{{ date('Y-m-d\TH:i') }}" required>
+                </div>
             </div>
             <div>
                 <label class="f-label" for="tambahKet">Keterangan Tambahan</label>
