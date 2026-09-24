@@ -247,6 +247,19 @@
             gap: 16px;
             margin-bottom: 44px;
         }
+        .welcome::after {
+            content: ""; position: absolute; right: -6%; top: -30%; width: 60%; aspect-ratio: 1;
+            background: radial-gradient(closest-side, rgba(229,57,45,.4), transparent); pointer-events: none;
+        }
+        .welcome-badge { position: relative; display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; background: rgba(255,255,255,.1); font-size: .78rem; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; margin-bottom: 16px; }
+        .welcome-badge i { color: var(--amber); }
+        .welcome h2 { position: relative; font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.35rem, 2.6vw, 1.75rem); line-height: 1.25; letter-spacing: -0.015em; max-width: 34ch; }
+        .welcome p { position: relative; margin-top: 10px; max-width: 58ch; color: rgba(255,255,255,.72); font-size: .95rem; line-height: 1.6; }
+
+        .stats-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+        .stats-head h3 { font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.1rem; letter-spacing: -0.01em; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
         .stat-card {
             display: flex; flex-direction: column; align-items: flex-start;
             padding: 22px; background: #fff; border-radius: var(--r-md);
@@ -415,8 +428,11 @@
                 <summary><i class="fas fa-warehouse grp-ico"></i><span class="grp-label">Bagian sapra</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <span class="side-kicker" style="padding-left:2px;">Sarana &amp; Prasarana</span>
+                       <a href="/sapra/sarana-mako"><i class="fas fa-fire-extinguisher"></i> Sarana pemadam kebakaran</a>
+                    <a href="/sapra/prasarana-mako"><i class="fas fa-building"></i> Prasarana pemadam kebakaran</a>
                     <a href="/sapra/sarana-penyelamatan" class="{{ Request::is('sapra/sarana-penyelamatan*') ? 'active' : '' }}">
                         <i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi
+
                     </a>
                     <a href="/sapra/sarana-pemeriksaan" class="{{ Request::is('sapra/sarana-pemeriksaan*') ? 'active' : '' }}">
                         <i class="fas fa-search-location"></i> Sarana Pemeriksaan Proteksi Kebakaran

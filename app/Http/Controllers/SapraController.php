@@ -26,10 +26,10 @@ class SapraController extends Controller
     // ==========================================
     public function dataHidrantGedung()
     {
-        $hidranPilar  = DB::table('prasarana')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
-        $hidranGedung = DB::table('prasarana')->where('kategori', 'Hidrant Gedung')->orderBy('no_urut', 'asc')->get();
-        $embung       = DB::table('prasarana')->where('kategori', 'Embung')->orderBy('no_urut', 'asc')->get();
-        $danau        = DB::table('prasarana')->where('kategori', 'Danau')->orderBy('no_urut', 'asc')->get();
+        $hidranPilar  = DB::table('prasaranas')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
+        $hidranGedung = DB::table('prasaranas')->where('kategori', 'Hidrant Gedung')->orderBy('no_urut', 'asc')->get();
+        $embung       = DB::table('prasaranas')->where('kategori', 'Embung')->orderBy('no_urut', 'asc')->get();
+        $danau        = DB::table('prasaranas')->where('kategori', 'Danau')->orderBy('no_urut', 'asc')->get();
 
         return view('internal.sapra.data_hidrant_gedung', compact(
             'hidranPilar', 'hidranGedung', 'embung', 'danau'
@@ -48,15 +48,15 @@ class SapraController extends Controller
         ]);
 
         // CEK NO URUT OTOMATIS: Ambil angka terbesar di kategori ini, lalu tambah 1
-        $noUrutTerakhir = DB::table('prasarana')
+        $noUrutTerakhir = DB::table('prasaranas')
                             ->where('kategori', $request->kategori)
                             ->max('no_urut');
                             
         $noUrutBaru = $noUrutTerakhir ? $noUrutTerakhir + 1 : 1;
 
-        DB::table('prasarana')->insert([
+        DB::table('prasaranas')->insert([
             'kategori'    => $request->kategori,
-            'no_urut'     => $noUrutBaru, 
+            'no_urut'     => $noUrutBaru, // Masukkan nomor yang dihitung otomatis
             'nama_gedung' => $request->nama_gedung,
             'alamat'      => $request->alamat,
             'kode_maps'   => $request->kode_maps,
@@ -81,7 +81,7 @@ class SapraController extends Controller
             'luas'        => 'nullable|string|max:100',
         ]);
 
-        DB::table('prasarana')->where('id', $id)->update([
+        DB::table('prasaranas')->where('id', $id)->update([
             'kategori'    => $request->kategori,
             'no_urut'     => $request->no_urut,
             'nama_gedung' => $request->nama_gedung,
@@ -97,16 +97,16 @@ class SapraController extends Controller
 
     public function destroyHidran($id)
     {
-        DB::table('prasarana')->where('id', $id)->delete();
+        DB::table('prasaranas')->where('id', $id)->delete();
         return redirect()->back()->with('success', 'Data berhasil dihapus!');
     }
 
     public function cetakPdfHidran()
     {
-        $hidranPilar  = DB::table('prasarana')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
-        $hidranGedung = DB::table('prasarana')->where('kategori', 'Hidrant Gedung')->orderBy('no_urut', 'asc')->get();
-        $embung       = DB::table('prasarana')->where('kategori', 'Embung')->orderBy('no_urut', 'asc')->get();
-        $danau        = DB::table('prasarana')->where('kategori', 'Danau')->orderBy('no_urut', 'asc')->get();
+        $hidranPilar  = DB::table('prasaranas')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
+        $hidranGedung = DB::table('prasaranas')->where('kategori', 'Hidrant Gedung')->orderBy('no_urut', 'asc')->get();
+        $embung       = DB::table('prasaranas')->where('kategori', 'Embung')->orderBy('no_urut', 'asc')->get();
+        $danau        = DB::table('prasaranas')->where('kategori', 'Danau')->orderBy('no_urut', 'asc')->get();
 
         $pdf = Pdf::loadView('internal.sapra.hidran_gedung_pdf', compact(
             'hidranPilar', 'hidranGedung', 'embung', 'danau'
@@ -115,12 +115,16 @@ class SapraController extends Controller
         return $pdf->download('Data_Hidrant_Gedung.pdf');
     }
 
-   public function cetakPdfHidranGedung()
+    public function cetakPdfHidranGedung()
     {
-        $dataHidran = DB::table('prasarana')->orderBy('no_urut', 'asc')->get();
+        $hidranPilar  = DB::table('prasaranas')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
+        $hidranGedung = DB::table('prasaranas')->where('kategori', 'Hidrant Gedung')->orderBy('no_urut', 'asc')->get();
+        $embung       = DB::table('prasaranas')->where('kategori', 'Embung')->orderBy('no_urut', 'asc')->get();
+        $danau        = DB::table('prasaranas')->where('kategori', 'Danau')->orderBy('no_urut', 'asc')->get();
         
-        $pdf = Pdf::loadView('internal.sapra.hidran_pdf', compact('dataHidran'))
-                  ->setPaper('a4', 'landscape'); 
+        $pdf = Pdf::loadView('internal.sapra.hidran_pdf', compact(
+            'hidranPilar', 'hidranGedung', 'embung', 'danau'
+        ))->setPaper('a4', 'landscape'); 
                   
         return $pdf->download('Data_Sumber_Air.pdf');
     }
@@ -169,7 +173,7 @@ class SapraController extends Controller
                   ->setPaper('a4', 'landscape');
         return $pdf->download('Data_Hidrant_Kota_Jambi.pdf');
     }
-    
+
     public function cetakExcelKota()
     {
         return Excel::download(new HidranKotaExport, 'Data_Hidrant_Kota_Jambi.xlsx');
@@ -244,6 +248,7 @@ class SapraController extends Controller
             'path_gambar'     => $gambarPath,
         ]);
 
+        // Menyimpan id_pos ke session agar tab tidak reset
         return redirect()->back()
             ->with('success', 'Data Prasarana berhasil ditambahkan!')
             ->with('active_tab', $request->id_pos);
@@ -271,6 +276,7 @@ class SapraController extends Controller
             'path_gambar'     => $gambarPath,
         ]);
 
+        // Menyimpan id_pos ke session agar tab tidak reset
         return redirect()->back()
             ->with('success', 'Data Prasarana berhasil diperbarui!')
             ->with('active_tab', $request->id_pos);
@@ -280,6 +286,7 @@ class SapraController extends Controller
     {
         $data = DB::table('prasarana')->where('id_prasarana', $id)->first();
         
+        // Simpan id_pos ke variabel sebelum data dihapus dari database
         $id_pos_terakhir = $data->id_pos;
         
         if ($data && $data->path_gambar && file_exists(public_path($data->path_gambar))) {
@@ -288,6 +295,7 @@ class SapraController extends Controller
 
         DB::table('prasarana')->where('id_prasarana', $id)->delete();
 
+        // Mengirimkan id_pos terakhir ke session
         return redirect()->back()
             ->with('success', 'Data Prasarana berhasil dihapus!')
             ->with('active_tab', $id_pos_terakhir);
@@ -395,7 +403,7 @@ class SapraController extends Controller
         $pdf = Pdf::loadView('internal.sapra.sarana_mako_pdf', compact('posPemadam', 'dataSarana'))
                   ->setPaper('a4', 'portrait');
 
-        return $pdf->download('Data_Sarana.pdf');
+        return $pdf->download('Data_Sarana_Mako_Pos.pdf');
     }
 
     // ==========================================
@@ -416,6 +424,7 @@ class SapraController extends Controller
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
             $filename = time() . '_' . $file->getClientOriginalName();
+            // Simpan gambar ke folder public/uploads/penyelamatan
             $file->move(public_path('uploads/penyelamatan'), $filename); 
             $gambarPath = 'uploads/penyelamatan/' . $filename;
         }
@@ -438,6 +447,7 @@ class SapraController extends Controller
         $gambarPath = $dataLama->path_gambar;
 
         if ($request->hasFile('gambar')) {
+            // Hapus gambar lama jika ada
             if ($gambarPath && file_exists(public_path($gambarPath))) {
                 unlink(public_path($gambarPath));
             }
@@ -464,6 +474,7 @@ class SapraController extends Controller
         $data = DB::table('sarana_penyelamatan')->where('id_sarana_penyelamatan', $id)->first();
         $id_pos_terakhir = $data->id_pos;
         
+        // Hapus file gambar fisik dari folder
         if ($data && $data->path_gambar && file_exists(public_path($data->path_gambar))) {
             unlink(public_path($data->path_gambar));
         }
@@ -499,7 +510,7 @@ class SapraController extends Controller
     public function storePos(Request $request)
     {
         DB::table('pos_pemadam')->insert([
-            'nama_pos' => strtoupper($request->nama_pos), 
+            'nama_pos' => strtoupper($request->nama_pos), // Otomatis huruf besar
             'alamat'   => $request->alamat,
             'kode_map' => $request->kode_map,
         ]);
@@ -532,6 +543,8 @@ class SapraController extends Controller
     {
         $dataKebutuhan = DB::table('kebutuhan_sarpras')->orderBy('id', 'asc')->get();
         $dataPengadaan = DB::table('pengadaan_sarpras')->orderBy('tahun', 'asc')->get();
+        // Ambil data distribusi untuk menghitung stok keluar otomatis
+        $dataDistribusi = DB::table('distribusi_barang_staff')->get(); 
 
         $listTahun = $dataPengadaan->pluck('tahun')->unique()->sort()->values();
         if ($listTahun->isEmpty()) {
@@ -549,11 +562,18 @@ class SapraController extends Controller
         $tahunSekarang = date('Y');
         
         foreach($dataKebutuhan as $item) {
-            $totalStok = $dataPengadaan->where('kebutuhan_id', $item->id)->sum('jumlah');
+            // Stok Masuk = Jumlah dari tabel pengadaan
+            $totalMasuk = $dataPengadaan->where('kebutuhan_id', $item->id)->sum('jumlah');
             
-            $item->jumlah_tersedia = $totalStok;
+            // Stok Keluar = Jumlah dari tabel distribusi berdasarkan ID Mutu Baku
+            $totalKeluar = $dataDistribusi->where('kebutuhan_id', $item->id)->sum('jumlah');
             
-            $kurang = $item->jumlah_dibutuhkan - $totalStok;
+            // Sisa Stok
+            $sisaStok = $totalMasuk - $totalKeluar;
+            $item->jumlah_tersedia = $sisaStok;
+            
+            // Hitung Kekurangan
+            $kurang = $item->jumlah_dibutuhkan - $sisaStok;
             $item->jumlah_belum_tersedia = $kurang < 0 ? 0 : $kurang;
         }
 
@@ -596,8 +616,10 @@ class SapraController extends Controller
     {
         DB::table('kebutuhan_sarpras')->where('id', $id)->delete();
         DB::table('pengadaan_sarpras')->where('kebutuhan_id', $id)->delete();
+        // Hapus juga riwayat distribusinya kalau mutu baku dihapus, biar data bersih
+        DB::table('distribusi_barang_staff')->where('kebutuhan_id', $id)->delete();
         
-        return redirect()->back()->with('success', 'Data Mutu Baku dan riwayat pengadaannya berhasil dihapus!')->with('active_tab', 'mutubaku');
+        return redirect()->back()->with('success', 'Data Mutu Baku, pengadaan, dan riwayat distribusinya berhasil dihapus!')->with('active_tab', 'mutubaku');
     }
 
     // ==============================================
@@ -637,6 +659,7 @@ class SapraController extends Controller
     {
         $dataKebutuhan = DB::table('kebutuhan_sarpras')->orderBy('id', 'asc')->get();
         $dataPengadaan = DB::table('pengadaan_sarpras')->orderBy('tahun', 'asc')->get();
+        $dataDistribusi = DB::table('distribusi_barang_staff')->get(); 
         
         $listTahun = $dataPengadaan->pluck('tahun')->unique()->sort()->values();
         if ($listTahun->isEmpty()) {
@@ -652,9 +675,13 @@ class SapraController extends Controller
         }
 
         foreach($dataKebutuhan as $item) {
-            $totalStok = $dataPengadaan->where('kebutuhan_id', $item->id)->sum('jumlah');
-            $item->jumlah_tersedia = $totalStok;
-            $kurang = $item->jumlah_dibutuhkan - $totalStok;
+            $totalMasuk = $dataPengadaan->where('kebutuhan_id', $item->id)->sum('jumlah');
+            $totalKeluar = $dataDistribusi->where('kebutuhan_id', $item->id)->sum('jumlah');
+            
+            $sisaStok = $totalMasuk - $totalKeluar;
+            
+            $item->jumlah_tersedia = $sisaStok;
+            $kurang = $item->jumlah_dibutuhkan - $sisaStok;
             $item->jumlah_belum_tersedia = $kurang < 0 ? 0 : $kurang;
         }
 
@@ -681,14 +708,23 @@ class SapraController extends Controller
             return strtoupper(trim($item->nama_penerima));
         });
         
-        return view('internal.sapra.distribusi_staff', compact('dataDistribusi'));
+        // Kirim data barang untuk dropdown agar namanya pas sama Mutu Baku
+        $dataBarang = DB::table('kebutuhan_sarpras')->orderBy('uraian', 'asc')->get();
+        
+        return view('internal.sapra.distribusi_staff', compact('dataDistribusi', 'dataBarang'));
     }
 
     public function storeDistribusiStaff(Request $request)
     {
+        // Cari nama barang aslinya di mutu baku berdasarkan ID yang dipilih
+        $barangMutuBaku = DB::table('kebutuhan_sarpras')->where('id', $request->kebutuhan_id)->first();
+        $namaBarangAsli = $barangMutuBaku ? $barangMutuBaku->uraian : 'BARANG TIDAK DIKETAHUI';
+
         DB::table('distribusi_barang_staff')->insert([
             'nama_penerima' => strtoupper($request->nama_penerima),
-            'nama_barang'   => strtoupper($request->nama_barang),
+            'kebutuhan_id'  => $request->kebutuhan_id, 
+            'nama_barang'   => strtoupper($namaBarangAsli),
+            'jumlah'        => $request->jumlah,       
             'detail_barang' => $request->detail_barang,
             'waktu_terima'  => $request->waktu_terima, 
             'keterangan'    => $request->keterangan,
@@ -696,27 +732,32 @@ class SapraController extends Controller
             'updated_at'    => now(),
         ]);
 
-        return redirect()->back()->with('success', 'Bukti distribusi barang ke staff berhasil dicatat!');
+        return redirect()->back()->with('success', 'Bukti distribusi barang dicatat! Stok Mutu Baku otomatis dikurangi.');
     }
 
     public function updateDistribusiStaff(Request $request, $id)
     {
+        $barangMutuBaku = DB::table('kebutuhan_sarpras')->where('id', $request->kebutuhan_id)->first();
+        $namaBarangAsli = $barangMutuBaku ? $barangMutuBaku->uraian : 'BARANG TIDAK DIKETAHUI';
+
         DB::table('distribusi_barang_staff')->where('id', $id)->update([
             'nama_penerima' => strtoupper($request->nama_penerima),
-            'nama_barang'   => strtoupper($request->nama_barang),
+            'kebutuhan_id'  => $request->kebutuhan_id,
+            'nama_barang'   => strtoupper($namaBarangAsli),
+            'jumlah'        => $request->jumlah,
             'detail_barang' => $request->detail_barang,
             'waktu_terima'  => $request->waktu_terima,
             'keterangan'    => $request->keterangan,
             'updated_at'    => now(),
         ]);
 
-        return redirect()->back()->with('success', 'Data distribusi berhasil diperbarui!');
+        return redirect()->back()->with('success', 'Data distribusi diperbarui! Stok Mutu Baku telah disesuaikan.');
     }
 
     public function destroyDistribusiStaff($id)
     {
         DB::table('distribusi_barang_staff')->where('id', $id)->delete();
-        return redirect()->back()->with('success', 'Data distribusi berhasil dihapus!');
+        return redirect()->back()->with('success', 'Data distribusi dihapus! Stok dikembalikan ke Mutu Baku.');
     }
 
     public function cetakDistribusiStaff()
@@ -809,6 +850,7 @@ class SapraController extends Controller
             ->with('success', 'Data Sarana Pemeriksaan berhasil dihapus!')
             ->with('active_tab', $id_pos_terakhir);
     }
+
     public function cetakPdfSaranaPemeriksaan()
     {
         $posPemadam = DB::table('pos_pemadam')->orderBy('id_pos', 'asc')->get();

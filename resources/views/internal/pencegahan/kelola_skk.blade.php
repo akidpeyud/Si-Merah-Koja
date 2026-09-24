@@ -13,8 +13,7 @@
 
     <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
@@ -232,7 +231,6 @@
         .btn-print-rekap { background-color: var(--info); color: white; font-weight: 700; font-size: 0.88rem; padding: 10px 20px; border-radius: 999px; border: none; transition: background .2s; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
         .btn-print-rekap:hover { background-color: #1d55c7; color: white; }
 
-        /* --- STYLING TOMBOL AKSI --- */
         .btn-action-group { display: flex; flex-direction: column; gap: 6px; }
         .btn-action { 
             display: inline-flex; align-items: center; justify-content: center; 

@@ -2,94 +2,108 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Laporan Data Sarana Mako & Pos</title>
+    <title>Data Sarana Mako & Pos</title>
     <style>
-        body { font-family: sans-serif; font-size: 12px; color: #333; }
+        body { font-family: sans-serif; font-size: 12px; }
         h2, h4 { text-align: center; margin: 5px 0; }
-        .pos-title { font-size: 14px; font-weight: bold; margin-top: 20px; background-color: #e2e8f0; padding: 8px; text-transform: uppercase; border-left: 4px solid #0284c7; }
+        .pos-title { font-size: 14px; font-weight: bold; margin-top: 20px; background-color: #f0f0f0; padding: 5px; text-transform: uppercase; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #94a3b8; padding: 8px; text-align: left; vertical-align: middle; }
-        th { background-color: #1e293b; color: white; text-align: center; font-size: 11px; letter-spacing: 0.5px; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; vertical-align: middle; }
+        th { background-color: #333; color: white; text-align: center; }
         .text-center { text-align: center; }
-        /* Gambar dibikin 150px biar seimbang sama tabel Prasarana */
-        .img-sarana { width: 150px; height: auto; border-radius: 4px; border: 1px solid #ccc; padding: 2px; }
-        
-        /* Tambahan untuk styling Tahun, Plat, & STNK */
-        .sarana-name { font-weight: bold; font-size: 13px; text-transform: uppercase; margin-bottom: 3px; }
-        .sarana-meta { font-size: 11px; color: #475569; margin-top: 4px; }
+        .img-sarana { width: 120px; height: auto; border-radius: 4px; }
     </style>
 </head>
 <body>
-    <h2>LAPORAN DATA SARANA MARKAS KOMANDO & POS</h2>
+    <h2>DATA SARANA MARKAS KOMANDO & POS</h2>
     <h4>DINAS PEMADAM KEBAKARAN DAN PENYELAMATAN KOTA JAMBI</h4>
-    <hr style="margin-bottom: 20px; border: 1px solid #0f172a;">
+    <hr style="margin-bottom: 20px;">
 
+    <!-- KOP SURAT MENGGUNAKAN TEKNIK BASE64 AGAR TERBACA DI DOMPDF -->
+    <table class="kop-surat">
+        <tr>
+            <td class="kop-logo">
+                @php
+                    $jambiPath = public_path('images/jambi.png');
+                    $jambiLogo = file_exists($jambiPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($jambiPath)) : '';
+                @endphp
+                @if($jambiLogo)
+                    <img src="{{ $jambiLogo }}" alt="Logo Kota Jambi">
+                @else
+                    <span style="font-size:10px;">(Logo Jambi)</span>
+                @endif
+            </td>
+            <td class="kop-teks">
+                <div class="pemerintah">PEMERINTAH KOTA JAMBI</div>
+                <div class="dinas">DINAS PEMADAM KEBAKARAN DAN<br>PENYELAMATAN KOTA JAMBI</div>
+                <div class="alamat">Jl. HOS Cokroaminoto No. 113 Telp. 0741-41171</div>
+            </td>
+            <td class="kop-logo">
+                @php
+                    // MENGGUNAKAN LOGO.PNG
+                    $logoPath = public_path('images/logo.png');
+                    $logoFile = file_exists($logoPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath)) : '';
+                @endphp
+                @if($logoFile)
+                    <img src="{{ $logoFile }}" alt="Logo Instansi">
+                @else
+                    <span style="font-size:10px;">(Logo Instansi)</span>
+                @endif
+            </td>
+        </tr>
+    </table>
+
+    <!-- JUDUL LAPORAN -->
+    <div class="doc-title">
+        <h3>DATA SARANA PEMADAM KEBAKARAN</h3>
+    </div>
+
+    <!-- LOOPING UNTUK SETIAP POS -->
     @foreach($posPemadam as $pos)
         <div class="pos-title">{{ $pos->nama_pos }}</div>
-        <p style="margin: 6px 0; font-size: 11px;">
-            <strong>Alamat:</strong> {{ $pos->alamat ?? '-' }} &nbsp;|&nbsp; 
-            <strong>Kode Map:</strong> {{ $pos->kode_map ?? '-' }}
-        </p>
+        <p style="margin: 5px 0;"><strong>Alamat:</strong> {{ $pos->alamat ?? '-' }} | <strong>Kode Map:</strong> {{ $pos->kode_map ?? '-' }}</p>
 
-        <table>
-            <thead>
-                <tr>
-                    <th width="5%">NO</th>
-                    <th width="40%">JENIS SARANA KEBAKARAN</th>
-                    <th width="15%">JUMLAH</th>
-                    <th width="40%">GAMBAR</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php $dataFilter = $dataSarana->where('id_pos', $pos->id_pos); @endphp
-                
-                @forelse($dataFilter as $item)
+        <!-- Pembungkus page-break-inside avoid DIHAPUS agar tabel mengalir ke atas -->
+        <div>
+            <div class="section-title">{{ $pos->nama_pos }}</div>
+            <div style="font-size: 10px; padding: 4px 8px; border: 1px solid #000; border-top: none; border-bottom: none; background-color: #f8fafc; page-break-after: avoid;">
+                <strong>Alamat:</strong> {{ $pos->alamat ?? '-' }} &nbsp;|&nbsp; <strong>Kode Map:</strong> {{ $pos->kode_map ?? '-' }}
+            </div>
+            
+            <table class="data-table">
+                <thead>
                     <tr>
                         <td class="text-center">{{ $loop->iteration }}</td>
-                        <td>
-                            <!-- Nama Barang -->
-                            <div class="sarana-name">{{ $item->jenis_sarana }}</div>
-                            
-                            <!-- Munculin Tahun, Plat Nomor, & STNK secara dinamis -->
-                            @if($item->tahun || $item->plat_nomor || $item->no_stnk)
-                                <div class="sarana-meta">
-                                    @php
-                                        $metaDetails = [];
-                                        
-                                        if(!empty($item->tahun)) {
-                                            $metaDetails[] = "Tahun: " . $item->tahun;
-                                        }
-                                        if(!empty($item->plat_nomor)) {
-                                            $metaDetails[] = "Plat: <span style='text-transform: uppercase;'>" . $item->plat_nomor . "</span>";
-                                        }
-                                        if(!empty($item->no_stnk)) {
-                                            $metaDetails[] = "STNK: <span style='text-transform: uppercase;'>" . $item->no_stnk . "</span>";
-                                        }
-                                    @endphp
-                                    
-                                    <!-- Menampilkan array dengan pemisah garis '|' -->
-                                    {!! implode(' &nbsp;|&nbsp; ', $metaDetails) !!}
-                                </div>
-                            @endif
-                        </td>
-                        <td class="text-center" style="font-size: 14px;"><strong>{{ $item->jumlah }}</strong> Unit</td>
+                        <td>{{ $item->jenis_sarana }}</td>
+                        <td class="text-center"><strong>{{ $item->jumlah }}</strong></td>
                         <td class="text-center">
                             @if($item->path_gambar && file_exists(public_path($item->path_gambar)))
                                 <img src="{{ public_path($item->path_gambar) }}" class="img-sarana">
                             @else
-                                <i style="color: #94a3b8; font-size: 11px;">Tidak ada gambar</i>
+                                <i>Tidak ada gambar</i>
                             @endif
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="text-center" style="padding: 15px; color: #64748b;">
-                            Belum ada data sarana untuk pos ini.
-                        </td>
+                        <td colspan="4" class="text-center">Belum ada data sarana untuk pos ini.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     @endforeach
+
+    <!-- FORMAT TANDA TANGAN -->
+    <div class="ttd-container">
+        <div class="ttd-box">
+            <p>Jambi, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <p>Mengetahui,</p>
+            <br><br><br><br>
+            <p style="font-weight: bold; text-decoration: underline;">(Nama Kepala Bidang)</p>
+            <p>NIP. .....................................</p>
+        </div>
+        <div class="clear"></div>
+    </div>
+
 </body>
 </html>
