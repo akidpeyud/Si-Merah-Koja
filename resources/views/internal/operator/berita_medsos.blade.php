@@ -90,7 +90,19 @@
                             </tr>
                         </thead>
                         <tbody>
+<<<<<<< HEAD
+<<<<<<< HEAD
                             @forelse($medsosData as $index => $item)
+=======
+<<<<<<< HEAD
+                            @forelse($medsos as $index => $item)
+=======
+                            @forelse($medsos ?? [] as $index => $item)
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
+>>>>>>> 54d349b2f34ba1d90fd3fbf4f615f46b7fe9ffd6
+=======
+                            @forelse($medsosData as $index => $item)
+>>>>>>> 9d64ab909d89535ce270e48403a9dcabc77c2bff
                             <tr>
                                 <td>{{ $index + 1 }}</td>
                                 <td>
@@ -137,7 +149,17 @@
                                                     <label class="form-label fw-bold">Judul Berita</label>
                                                     <input type="text" class="form-control" name="judul" value="{{ $item->judul }}" required>
                                                 </div>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+=======
+                                                
+>>>>>>> 54d349b2f34ba1d90fd3fbf4f615f46b7fe9ffd6
+=======
+
+>>>>>>> 9d64ab909d89535ce270e48403a9dcabc77c2bff
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Kategori Berita <span class="text-danger">*</span></label>
                                                     <select class="form-select" name="kategori_id" required>
@@ -248,6 +270,14 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+                        <!-- Tombol tidak pernah didisable agar tidak merepotkan operator -->
+>>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
+>>>>>>> 54d349b2f34ba1d90fd3fbf4f615f46b7fe9ffd6
+=======
+>>>>>>> 9d64ab909d89535ce270e48403a9dcabc77c2bff
                         <button type="submit" class="btn btn-danger btn-sm fw-bold">Simpan Berita</button>
                     </div>
                 </form>
@@ -256,8 +286,20 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<<<<<<< HEAD
+<<<<<<< HEAD
 
     <!-- SCRIPT TARIK DATA LINK (SUPPORT YOUTUBE) -->
+=======
+<<<<<<< HEAD
+=======
+    
+    <!-- SCRIPT TARIK DATA LINK -->
+>>>>>>> 54d349b2f34ba1d90fd3fbf4f615f46b7fe9ffd6
+=======
+
+    <!-- SCRIPT TARIK DATA LINK (SUPPORT YOUTUBE) -->
+>>>>>>> 9d64ab909d89535ce270e48403a9dcabc77c2bff
     <script>
         document.getElementById('btnTarikData').addEventListener('click', function() {
             let urlInput = document.getElementById('inputLink').value.trim();

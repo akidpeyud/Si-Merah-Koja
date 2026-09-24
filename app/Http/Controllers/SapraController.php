@@ -56,7 +56,7 @@ class SapraController extends Controller
 
         DB::table('prasaranas')->insert([
             'kategori'    => $request->kategori,
-            'no_urut'     => $noUrutBaru, 
+            'no_urut'     => $noUrutBaru, // Masukkan nomor yang dihitung otomatis
             'nama_gedung' => $request->nama_gedung,
             'alamat'      => $request->alamat,
             'kode_maps'   => $request->kode_maps,
@@ -174,7 +174,7 @@ class SapraController extends Controller
                   ->setPaper('a4', 'landscape');
         return $pdf->download('Data_Hidrant_Kota_Jambi.pdf');
     }
-    
+
     public function cetakExcelKota()
     {
         return Excel::download(new HidranKotaExport, 'Data_Hidrant_Kota_Jambi.xlsx');
@@ -249,6 +249,7 @@ class SapraController extends Controller
             'path_gambar'     => $gambarPath,
         ]);
 
+        // Menyimpan id_pos ke session agar tab tidak reset
         return redirect()->back()
             ->with('success', 'Data Prasarana berhasil ditambahkan!')
             ->with('active_tab', $request->id_pos);
@@ -276,6 +277,7 @@ class SapraController extends Controller
             'path_gambar'     => $gambarPath,
         ]);
 
+        // Menyimpan id_pos ke session agar tab tidak reset
         return redirect()->back()
             ->with('success', 'Data Prasarana berhasil diperbarui!')
             ->with('active_tab', $request->id_pos);
@@ -285,6 +287,7 @@ class SapraController extends Controller
     {
         $data = DB::table('prasarana')->where('id_prasarana', $id)->first();
         
+        // Simpan id_pos ke variabel sebelum data dihapus dari database
         $id_pos_terakhir = $data->id_pos;
         
         if ($data && $data->path_gambar && file_exists(public_path($data->path_gambar))) {
@@ -293,6 +296,7 @@ class SapraController extends Controller
 
         DB::table('prasarana')->where('id_prasarana', $id)->delete();
 
+        // Mengirimkan id_pos terakhir ke session
         return redirect()->back()
             ->with('success', 'Data Prasarana berhasil dihapus!')
             ->with('active_tab', $id_pos_terakhir);
@@ -400,7 +404,7 @@ class SapraController extends Controller
         $pdf = Pdf::loadView('internal.sapra.sarana_mako_pdf', compact('posPemadam', 'dataSarana'))
                   ->setPaper('a4', 'portrait');
 
-        return $pdf->download('Data_Sarana.pdf');
+        return $pdf->download('Data_Sarana_Mako_Pos.pdf');
     }
 
     // ==========================================
@@ -421,6 +425,7 @@ class SapraController extends Controller
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
             $filename = time() . '_' . $file->getClientOriginalName();
+            // Simpan gambar ke folder public/uploads/penyelamatan
             $file->move(public_path('uploads/penyelamatan'), $filename); 
             $gambarPath = 'uploads/penyelamatan/' . $filename;
         }
@@ -443,6 +448,7 @@ class SapraController extends Controller
         $gambarPath = $dataLama->path_gambar;
 
         if ($request->hasFile('gambar')) {
+            // Hapus gambar lama jika ada
             if ($gambarPath && file_exists(public_path($gambarPath))) {
                 unlink(public_path($gambarPath));
             }
@@ -469,6 +475,7 @@ class SapraController extends Controller
         $data = DB::table('sarana_penyelamatan')->where('id_sarana_penyelamatan', $id)->first();
         $id_pos_terakhir = $data->id_pos;
         
+        // Hapus file gambar fisik dari folder
         if ($data && $data->path_gambar && file_exists(public_path($data->path_gambar))) {
             unlink(public_path($data->path_gambar));
         }
@@ -504,7 +511,7 @@ class SapraController extends Controller
     public function storePos(Request $request)
     {
         DB::table('pos_pemadam')->insert([
-            'nama_pos' => strtoupper($request->nama_pos), 
+            'nama_pos' => strtoupper($request->nama_pos), // Otomatis huruf besar
             'alamat'   => $request->alamat,
             'kode_map' => $request->kode_map,
         ]);
@@ -814,6 +821,7 @@ class SapraController extends Controller
             ->with('success', 'Data Sarana Pemeriksaan berhasil dihapus!')
             ->with('active_tab', $id_pos_terakhir);
     }
+
     public function cetakPdfSaranaPemeriksaan()
     {
         $posPemadam = DB::table('pos_pemadam')->orderBy('id_pos', 'asc')->get();
