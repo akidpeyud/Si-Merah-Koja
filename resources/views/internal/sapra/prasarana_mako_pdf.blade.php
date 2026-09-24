@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Cetak Data Sarana Pemeriksaan</title>
+    <title>Cetak Data Prasarana Pemadam Kebakaran</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -79,7 +79,7 @@
             margin-bottom: 0;
             border: 1px solid #000;
             border-bottom: none;
-            page-break-after: avoid; /* Pastikan judul nempel dengan tabel di bawahnya */
+            page-break-after: avoid; /* Memastikan judul nempel ke tabel */
         }
 
         table.data-table {
@@ -87,7 +87,7 @@
             border-collapse: collapse;
             margin-bottom: 20px;
             page-break-before: auto;
-            page-break-inside: auto; /* Biarkan tabel memecah halaman secara alami */
+            page-break-inside: auto; /* Membiarkan tabel pecah baris natural */
         }
         table.data-table th, table.data-table td {
             border: 1px solid #000;
@@ -100,7 +100,7 @@
             font-weight: bold;
             font-size: 10px;
         }
-        /* Mencegah baris terpotong separuh teksnya saat pindah halaman */
+        /* Mencegah satu baris (<tr>) terpotong setengah teksnya */
         table.data-table tr {
             page-break-inside: avoid;
             page-break-after: auto;
@@ -109,8 +109,10 @@
         .text-center { text-align: center; }
         .fw-bold { font-weight: bold; }
         
-        .img-container { width: 120px; height: 80px; text-align: center; margin: 0 auto; }
+        .img-container { width: 140px; height: 90px; text-align: center; margin: 0 auto; }
         .img-container img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; border: 1px solid #ccc; padding: 2px;}
+        
+        .sarana-meta { font-size: 10px; color: #444; margin-top: 4px; }
 
         .ttd-container {
             width: 100%;
@@ -132,7 +134,7 @@
 </head>
 <body>
 
-    <!-- KOP SURAT MENGGUNAKAN TEKNIK BASE64 AGAR TERBACA DI DOMPDF -->
+    <!-- KOP SURAT MENGGUNAKAN TEKNIK BASE64 -->
     <table class="kop-surat">
         <tr>
             <td class="kop-logo">
@@ -167,16 +169,16 @@
 
     <!-- JUDUL LAPORAN -->
     <div class="doc-title">
-        <h3>DATA SARANA PEMERIKSAAN PROTEKSI KEBAKARAN</h3>
+        <h3>DATA PRASARANA PEMADAM KEBAKARAN</h3>
     </div>
 
     <!-- LOOPING UNTUK SETIAP POS -->
     @foreach($posPemadam as $pos)
         @php 
-            $dataFilter = $dataPemeriksaan->where('id_pos', $pos->id_pos); 
+            $dataFilter = $dataPrasarana->where('id_pos', $pos->id_pos); 
         @endphp
 
-        <!-- Pembungkus tanpa 'page-break-inside: avoid' agar tabel mengalir secara natural -->
+        <!-- Pembungkus tanpa 'page-break-inside: avoid' agar tabel mengalir -->
         <div>
             <div class="section-title">{{ $pos->nama_pos }}</div>
             <div style="font-size: 10px; padding: 4px 8px; border: 1px solid #000; border-top: none; border-bottom: none; background-color: #f8fafc; page-break-after: avoid;">
@@ -187,9 +189,8 @@
                 <thead>
                     <tr>
                         <th width="5%">NO</th>
-                        <th width="45%">JENIS SARANA PEMERIKSAAN</th>
-                        <th width="15%">JUMLAH</th>
-                        <th width="35%">GAMBAR</th>
+                        <th width="55%">JENIS PRASARANA</th>
+                        <th width="40%">GAMBAR</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -197,9 +198,14 @@
                         <tr>
                             <td class="text-center">{{ $loop->iteration }}</td>
                             <td>
-                                <div class="fw-bold" style="font-size: 12px; text-transform: uppercase;">{{ $item->jenis_sarana }}</div>
+                                <div class="fw-bold" style="font-size: 12px; text-transform: uppercase;">{{ $item->jenis_prasarana }}</div>
+                                
+                                @if($item->luas_bangunan)
+                                    <div class="sarana-meta">
+                                        Luas: <strong>{{ $item->luas_bangunan }}</strong>
+                                    </div>
+                                @endif
                             </td>
-                            <td class="text-center" style="font-size: 12px;"><b>{{ $item->jumlah }}</b> Unit</td>
                             <td class="text-center">
                                 @if($item->path_gambar && file_exists(public_path($item->path_gambar)))
                                     <div class="img-container">
@@ -218,7 +224,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center" style="color: #777;">Belum ada data sarana pemeriksaan untuk pos ini.</td>
+                            <td colspan="3" class="text-center" style="color: #777;">Belum ada data prasarana pemadam untuk pos ini.</td>
                         </tr>
                     @endforelse
                 </tbody>
