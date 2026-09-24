@@ -83,17 +83,23 @@ Route::middleware([CekLoginPemohon::class])->group(function () {
 
 
 // ==========================================
-// 4. RUTE LOGIN & DASHBOARD REDKAR
+// RUTE LOGIN & DASHBOARD REDKAR
 // ==========================================
-Route::get('/login-redkar', function () { return view('redkar.login_redkar'); })->name('login.redkar');
+Route::get('/login-redkar', function () { 
+    return view('redkar.login_redkar'); 
+})->name('login.redkar');
+
 Route::post('/login-redkar', [RedkarController::class, 'processLoginRedkar']);
 Route::post('/logout-redkar', [RedkarController::class, 'logoutRedkar'])->name('logout.redkar');
 
-Route::middleware('auth:redkar')->group(function () {
-    Route::get('/redkar/dashboard', function () { return view('redkar.halaman_utama'); })->name('redkar.dashboard');
+// Area khusus yang dilindungi guard redkar
+Route::middleware(['auth:redkar'])->group(function () {
+    Route::get('/redkar/dashboard', function () { 
+        return view('redkar.halaman_utama'); // Dikembalikan ke view dashboard asli
+    })->name('redkar.dashboard');
+    
     Route::get('/redkar/profil', [RedkarController::class, 'profilRedkar'])->name('redkar.profil');
 });
-
 
 // ==========================================
 // 5. RUTE AUTH INTERNAL (ADMIN & PEGAWAI)

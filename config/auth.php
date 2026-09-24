@@ -27,16 +27,10 @@ return [
             'provider' => 'users',
         ],
 
-        // GUARD KHUSUS UNTUK REDKAR
+        // Guard khusus untuk Redkar
         'redkar' => [
             'driver' => 'session',
-            'provider' => 'redkar',
-        ],
-
-        // GUARD KHUSUS UNTUK PEMOHON PUBLIK
-        'pemohon' => [
-            'driver' => 'session',
-            'provider' => 'pemohons',
+            'provider' => 'redkar_users',
         ],
     ],
 
@@ -49,19 +43,18 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
 
-        // PROVIDER KHUSUS UNTUK REDKAR
-        'redkar' => [
+        // Provider khusus untuk Redkar (Sesuai dengan nama di guard atas)
+        'redkar_users' => [
             'driver' => 'eloquent',
             'model' => App\Models\PendaftarRedkar::class,
         ],
 
-        // PROVIDER KHUSUS UNTUK PEMOHON PUBLIK
+        // Provider khusus untuk Pemohon Publik (jika diperlukan)
         'pemohons' => [
             'driver' => 'eloquent',
-            // Pastikan nama model pemohon Anda sesuai (misal: Pemohon atau PemohonPublik)
             'model' => App\Models\Pemohon::class, 
         ],
     ],
