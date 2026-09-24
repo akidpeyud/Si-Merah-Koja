@@ -47,9 +47,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* ==========================================================
-           TOKENS
-           ========================================================== */
         :root {
             --ink: #0d1b2a;
             --ink-2: #132a43;
@@ -86,16 +83,11 @@
 
         .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: clamp(16px, 4vw, 32px); padding-right: clamp(16px, 4vw, 32px); }
 
-        /* ==========================================================
-           SPLASH SCREEN (UPDATED LOGO & CENTERING)
-           ========================================================== */
+        /* SPLASH SCREEN */
         #splash-screen {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0; /* Menggunakan inset absolute agar fix di tengah */
-            background-color: var(--ink); 
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center; 
-            z-index: 999999;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            position: fixed; inset: 0; background-color: var(--ink); 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            z-index: 999999; transition: opacity 0.5s ease, visibility 0.5s ease;
         }
         .splash-logo-container { text-align: center; animation: pulseLogo 1.5s infinite alternate; }
         .splash-logo-container img { height: 110px; width: auto; margin: 0 auto 15px auto; display: block; filter: drop-shadow(0 0 15px rgba(229, 57, 45, 0.4)); }
@@ -105,17 +97,15 @@
         @keyframes pulseLogo { 0% { transform: scale(0.95); opacity: 0.8; } 100% { transform: scale(1.05); opacity: 1; } }
         .splash-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
-        /* ==========================================================
-           HEADER NAVBAR
-           ========================================================== */
+        /* HEADER NAVBAR */
         .site-header {
             position: sticky; top: 0; z-index: 60;
             background: rgba(13, 27, 42, .85); -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4);
             border-bottom: 1px solid rgba(255,255,255,.08);
         }
         .nav { max-width: var(--wrap); margin: 0 auto; height: var(--header-h); padding: 0 clamp(16px, 4vw, 32px); display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-        .brand { display: flex; align-items: center; gap: 12px; }
-        .brand img { height: 38px; width: auto; }
+        .brand { display: flex; align-items: center; gap: 10px; }
+        .brand img { height: 34px; width: auto; }
         .menu { display: flex; align-items: center; gap: 2px; }
         .menu > li { position: relative; }
         .menu-link, .menu-trigger {
@@ -131,13 +121,44 @@
         .dropdown {
             display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 250px;
             background: var(--ink-2); border: 1px solid rgba(255,255,255,.1);
-            border-radius: var(--r-md); padding: 6px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
+            border-radius: var(--r-md); padding: 6px; box-shadow: 0 24px 48px rgba(0,0,0,.45); z-index: 100;
         }
         .dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
         .dropdown a { display: block; padding: 11px 14px; border-radius: var(--r-sm); font-size: .92rem; color: rgba(255,255,255,.85); }
-        .dropdown a:hover, .dropdown a[aria-current="page"] { background: rgba(255,255,255,.1); color: #fff; }
+        .dropdown a:hover { background: rgba(255,255,255,.1); color: #fff; }
+        
+        .dropdown .btn-logout {
+            width: 100%; text-align: left; padding: 11px 14px; border-radius: var(--r-sm); 
+            font-size: .92rem; color: #ff8b8b; display: flex; align-items: center; gap: 8px; 
+            transition: background .2s, color .2s; cursor: pointer;
+        }
+        .dropdown .btn-logout:hover { background: rgba(255, 255, 255, .1); color: #ffb8b8; }
+
         .has-drop.open .dropdown { display: block; }
         @media (hover: hover) and (min-width: 992px) { .has-drop:hover .dropdown { display: block; } }
+
+        /* USER CHIP / DROPDOWN KHUSUS REDKAR */
+        .user-dropdown-wrap { position: relative; display: inline-block; margin-left: 8px; }
+        .user-pill-btn {
+            display: inline-flex; align-items: center; gap: 8px; padding: 7px 16px; border-radius: 999px;
+            background: var(--signal); color: #fff; font-weight: 700; font-size: .9rem; border: none; cursor: pointer;
+            box-shadow: 0 4px 12px rgba(229, 57, 45, 0.3); transition: background .2s;
+        }
+        .user-pill-btn:hover { background: var(--signal-d); }
+        .user-pill-btn i.fa-chevron-down { font-size: .7rem; transition: transform .2s; }
+        .user-dropdown-wrap.open .user-pill-btn i.fa-chevron-down { transform: rotate(180deg); }
+        
+        .user-dropdown-menu {
+            display: none; position: absolute; top: calc(100% + 8px); right: 0; min-width: 200px;
+            background: var(--ink-2); border: 1px solid rgba(255,255,255,.12); border-radius: var(--r-sm);
+            padding: 6px; box-shadow: 0 16px 32px rgba(0,0,0,.4); z-index: 100;
+        }
+        .user-dropdown-wrap.open .user-dropdown-menu { display: block; }
+        .user-dropdown-menu a, .user-dropdown-menu button {
+            display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 14px;
+            border-radius: 8px; font-size: .88rem; color: #fff; text-align: left; background: transparent; border: 0;
+        }
+        .user-dropdown-menu a:hover, .user-dropdown-menu button:hover { background: rgba(255,255,255,.1); }
 
         .nav-toggle { display: none; width: 44px; height: 44px; border-radius: 12px; color: #fff; font-size: 1.15rem; }
         .nav-toggle:hover { background: rgba(255,255,255,.1); }
@@ -158,9 +179,7 @@
             .menu .btn-login { margin: 8px 0 0; justify-content: center; padding: 14px; }
         }
 
-        /* ==========================================================
-           HERO HALAMAN
-           ========================================================== */
+        /* HERO HALAMAN */
         .page-hero {
             position: relative; isolation: isolate; color: #fff; background: var(--ink); overflow: hidden;
             padding: clamp(36px, 6vw, 72px) 0 clamp(72px, 10vw, 112px);
@@ -183,9 +202,7 @@
         .rise.d1 { animation-delay: .08s; } .rise.d2 { animation-delay: .18s; }
         @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 
-        /* ==========================================================
-           LAYOUT KONTEN
-           ========================================================== */
+        /* LAYOUT KONTEN */
         .page-body { background: var(--paper); padding-bottom: clamp(64px, 9vw, 112px); padding-top: 40px;}
         .perizinan-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; }
         @media (min-width: 992px) { .perizinan-layout { grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); gap: 32px; } }
@@ -200,9 +217,7 @@
         .checklist li { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 14px; align-items: start; font-size: .93rem; line-height: 1.5; }
         .ck-ico { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: #fdeceb; color: var(--signal-d); font-size: .9rem; }
 
-        /* ==========================================================
-           FORMULIR
-           ========================================================== */
+        /* FORMULIR */
         .form-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
         .form-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; padding: 18px clamp(18px, 3vw, 32px); border-bottom: 1px solid var(--line); }
         .form-title { display: flex; align-items: center; gap: 14px; min-width: 0; }
@@ -275,9 +290,7 @@
         .btn-outline { background: transparent; border: 1px solid var(--line); color: var(--ink); }
         .btn-outline:hover { background: var(--paper); border-color: var(--steel); }
 
-        /* ==========================================================
-           FOOTER
-           ========================================================== */
+        /* FOOTER */
         .footer { background: var(--ink); color: rgba(255,255,255,.7); padding: clamp(56px, 8vw, 96px) 0 32px; }
         .footer-grid { display: grid; grid-template-columns: 1.1fr 1.2fr .8fr; gap: clamp(32px, 5vw, 64px); }
         .footer h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: #fff; margin-bottom: 16px; }
@@ -302,9 +315,7 @@
         .social a:hover { background: var(--signal); transform: translateY(-3px); }
         @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr; } }
         
-        /* ==========================================================
-           TOMBOL LAPOR MENGAMBANG
-           ========================================================== */
+        /* TOMBOL LAPOR MENGAMBANG */
         .beacon { position: relative; width: 12px; height: 12px; border-radius: 50%; background: #fff; flex: none; }
         .beacon::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #fff; animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
         @keyframes ping { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(3.2); opacity: 0; } }
@@ -321,8 +332,7 @@
 
         /* POPUP SUCCESS */
         #success-popup-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: rgba(13, 27, 42, 0.85); backdrop-filter: blur(4px);
+            position: fixed; inset: 0; background-color: rgba(13, 27, 42, 0.85); backdrop-filter: blur(4px);
             display: flex; align-items: center; justify-content: center; z-index: 999999;
             animation: fadeInOverlay 0.3s ease forwards;
         }
@@ -400,8 +410,49 @@
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
             </li>
-            <li class="current"><a class="menu-link" href="/redkar" style="color: var(--signal);">Redkar</a></li>
-            <li><a class="menu-link btn-login" href="/login-redkar">Masuk Redkar</a></li>
+
+            <!-- TOMBOL AKUN REDKAR (MODEL DROPDOWN) -->
+            @auth('redkar')
+                <li>
+                    <div class="user-dropdown-wrap" id="userDropdownWrap">
+                        <button class="user-pill-btn" type="button" id="userPillBtn" style="background-color: var(--amber); color: var(--ink);">
+                            <i class="fas fa-user-shield"></i> {{ Auth::guard('redkar')->user()->nama_lengkap ?? 'Redkar' }} <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="user-dropdown-menu">
+                            <a href="{{ route('redkar.dashboard') }}"><i class="fas fa-gauge-high"></i> Dashboard</a>
+                            <a href="{{ route('redkar.profil') }}"><i class="fas fa-user-pen"></i> Profil Saya</a>
+                            <form action="{{ route('logout.redkar') }}" method="POST">
+                                @csrf
+                                <button type="submit"><i class="fas fa-right-from-bracket"></i> Keluar</button>
+                            </form>
+                        </div>
+                    </div>
+                </li>
+            @else
+                <!-- HANYA TOMBOL MASUK REDKAR (Menu Teks Redkar Dihapus) -->
+                <li><a class="menu-link" href="/login-redkar" style="color: var(--amber); font-weight: 700;">Masuk Redkar</a></li>
+            @endauth
+
+            <!-- TOMBOL AKUN PEMOHON PUBLIK -->
+            @if(session()->has('pemohon_id'))
+                <li class="has-drop">
+                    <button class="menu-trigger btn-login" type="button" aria-expanded="false">
+                        <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <ul class="dropdown">
+                        <li>
+                            <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
+                                @csrf
+                                <button type="submit" class="btn-logout">
+                                    <i class="fas fa-sign-out-alt"></i> Keluar
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            @else
+                <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
+            @endif
         </ul>
     </nav>
 </header>
@@ -809,6 +860,19 @@
         });
     });
 
+    /* ---------- User Dropdown Toggle (Khusus Redkar) ---------- */
+    var userWrap = document.getElementById('userDropdownWrap');
+    if (userWrap) {
+        var userBtn = document.getElementById('userPillBtn');
+        userBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            userWrap.classList.toggle('open');
+        });
+        document.addEventListener('click', function () {
+            userWrap.classList.remove('open');
+        });
+    }
+
     /* ---------- Tombol lapor mengambang ---------- */
     var fab = document.getElementById('sosFab');
     var fabBtn = fab.querySelector('.sos-fab-btn');
@@ -853,9 +917,7 @@
         });
     });
 
-    /* ---------- Form Interactivity Sesuai Request Lama ---------- */
-    
-    // 1. Logika Umur Otomatis
+    /* ---------- Form Interactivity ---------- */
     const inputTglLahir = document.getElementById('tanggal_lahir');
     const inputUmur = document.getElementById('umur_display');
     const alertUmur = document.getElementById('alert_umur');
@@ -879,7 +941,6 @@
         }
     });
 
-    // 2. Select Jenis Pekerjaan (Memunculkan Input Lainnya)
     const selectPekerjaan = document.getElementById('jenis_pekerjaan');
     const containerLainnya = document.getElementById('pekerjaan_lainnya_container');
     const inputLainnya = document.getElementById('pekerjaan_lainnya_input');
@@ -892,7 +953,6 @@
         }
     });
 
-    // 3. Dropdown Kelurahan
     const dataWilayah = @json($dataWilayah);
     const kec = document.getElementById('kecamatan');
     const kel = document.getElementById('kelurahan');
@@ -905,7 +965,6 @@
         });
     });
 
-    // Splash Screen Logic
     window.addEventListener('load', function() {
         const splash = document.getElementById('splash-screen');
         if (splash) { splash.classList.add('splash-hidden'); setTimeout(() => { splash.remove(); }, 500); }

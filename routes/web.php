@@ -15,6 +15,7 @@ use App\Http\Controllers\PermohonanController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\KabarDamkarController;
 use App\Http\Controllers\PencegahanController;
+use App\Http\Controllers\SkkAdminController;
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
@@ -43,6 +44,7 @@ Route::get('/informasi-prasarana', [PublicController::class, 'informasiPrasarana
 Route::get('/informasi-penyelamatan', [PublicController::class, 'informasiPenyelamatan']);
 Route::get('/informasi-pemeriksaan', [PublicController::class, 'informasiPemeriksaan']);
 Route::get('/berita/{id}', [BeritaController::class, 'showPublic']);
+Route::get('/media-informasi', [KabarDamkarController::class, 'indexMediaInformasi'])->name('media.informasi');
 
 
 // ==========================================
@@ -66,18 +68,15 @@ Route::post('/pemohon/logout', [App\Http\Controllers\PemohonAuthController::clas
 // 3. RUTE WAJIB LOGIN PEMOHON 
 // ==========================================
 Route::middleware([CekLoginPemohon::class])->group(function () {
-    // --- Layanan Perizinan & SKK ---
     Route::get('/layanan-fasilitas/layanan_perizinan', function () { return view('layanan-fasilitas.layanan_perizinan'); });
     Route::post('/layanan-fasilitas/layanan_perizinan/store', [PermohonanController::class, 'store'])->name('permohonan.store');
 
     Route::get('/layanan-fasilitas/skk', function () { return view('layanan-fasilitas.skk'); });
     Route::post('/permohonan-skk', [App\Http\Controllers\PermohonanSkkController::class, 'store'])->name('permohonan.skk.store');
     
-    // --- Layanan Edukasi & Sosialisasi ---
     Route::get('/layanan-fasilitas/edukasi_sosialisasi', function () { return view('layanan-fasilitas.edukasi_sosialisasi'); });
     Route::post('/layanan-fasilitas/edukasi_sosialisasi/store', [App\Http\Controllers\PermohonanEdukasiController::class, 'store'])->name('permohonan.edukasi.store');
 
-    // --- Pendaftaran Redkar ---
     Route::get('/redkar', [RedkarController::class, 'index'])->name('redkar.register');
     Route::post('/redkar', [RedkarController::class, 'store']);
 });
@@ -119,15 +118,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/internal/kelola-user/tambah', [AuthController::class, 'storeUser']);
     Route::put('/internal/kelola-user/update/{id}', [AuthController::class, 'updateUser']);
 
-    // MENGHUBUNGKAN KE VIEW KELOLA PEMOHON BERDASARKAN GAMBAR
     Route::get('/internal/kelola-pemohon', function () {
-        // Path view: resources/views/pemohon/kelola_pemohon.blade.php
         return view('pemohon.kelola_pemohon');
     })->name('internal.pemohon');
 
-    // MENGHUBUNGKAN DUK YANG TADI KELUAR JALUR
     Route::get('/internal/kepegawaian/duk', function () {
-        // Path view: resources/views/internal/kepegawaian/duk.blade.php
         return view('internal.kepegawaian.duk'); 
     })->name('internal.duk');
 
@@ -157,9 +152,14 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/internal/damtan/hapus-data/{id}', [DamtanController::class, 'destroyPenyelamatan']);
     Route::get('/internal/damtan/lihat-data/{id}', [DamtanController::class, 'showPenyelamatan']);
     
+    // Fitur Kelola Surat Korban
+    Route::get('/internal/surat-korban/data', [DamtanController::class, 'indexSurat'])->name('surat-korban.data');
     Route::get('/internal/surat-korban/create', [DamtanController::class, 'createSurat']);
     Route::post('/internal/surat-korban/store', [DamtanController::class, 'storeSurat']);
     Route::get('/internal/surat-korban/cetak/{id}', [DamtanController::class, 'cetakSurat']);
+    Route::get('/internal/surat-korban/edit/{id}', [DamtanController::class, 'editSurat']);
+    Route::put('/internal/surat-korban/update/{id}', [DamtanController::class, 'updateSurat']);
+    Route::delete('/internal/surat-korban/delete/{id}', [DamtanController::class, 'destroySurat']);
 
     // --- D. SAPRA (SARANA PRASARANA) ---
     Route::get('/sapra/data-hidrant-kota', [SapraController::class, 'dataHidrantKota']);
@@ -222,9 +222,9 @@ Route::middleware(['auth'])->group(function () {
 
     // --- E. PENCEGAHAN ---
     
-    // Kelola Redkar
-    Route::get('/internal/pencegahan/kelola-redkar', [AuthController::class, 'kelolaRedkar']);
-    Route::post('/internal/pencegahan/verifikasi-redkar/{id}', [RedkarController::class, 'verifikasiRedkar']);
+    // Kelola Redkar - Disesuaikan URL method POST Verifikasi agar cocok dengan Form Modal
+    Route::get('/internal/pencegahan/kelola-redkar', [RedkarController::class, 'kelolaRedkarInternal']);
+    Route::post('/internal/pencegahan/update-status-redkar/{id}', [RedkarController::class, 'verifikasiRedkar']);
     Route::get('/internal/pencegahan/edit-redkar/{id}', [RedkarController::class, 'editRedkar']);
     Route::put('/internal/pencegahan/update-redkar/{id}', [RedkarController::class, 'updateRedkar']);
     Route::delete('/internal/pencegahan/hapus-redkar/{id}', [RedkarController::class, 'hapusRedkar']);
@@ -248,13 +248,19 @@ Route::middleware(['auth'])->group(function () {
         ]); 
     });
 
-    // Kelola SKK
+    // Kelola SKK & CRUD Admin SKK
     Route::get('/internal/pencegahan/kelola-skk', function () { 
         return view('internal.pencegahan.kelola_skk', [
             'skk_baru' => App\Models\PermohonanSkk::orderBy('created_at', 'desc')->get(), 
             'skk_perpanjang' => App\Models\PermohonanPerpanjangSkk::orderBy('created_at', 'desc')->get()
         ]); 
     });
+    Route::get('/internal/pencegahan/kelola-skk/tambah', [SkkAdminController::class, 'create'])->name('skk.create');
+    Route::post('/internal/pencegahan/kelola-skk/store', [SkkAdminController::class, 'store'])->name('skk.store');
+    Route::get('/internal/pencegahan/kelola-skk/edit/{id}', [SkkAdminController::class, 'edit'])->name('skk.edit');
+    Route::put('/internal/pencegahan/kelola-skk/update/{id}', [SkkAdminController::class, 'update'])->name('skk.update');
+    Route::delete('/internal/pencegahan/kelola-skk/hapus/{id}', [SkkAdminController::class, 'destroy'])->name('skk.destroy');
+
     Route::post('/internal/pencegahan/kelola-skk/update-status/{id}', function (Illuminate\Http\Request $request, $id) { 
         App\Models\PermohonanSkk::where('id', $id)->update(['status_permohonan' => $request->status_permohonan]); 
         return redirect()->back()->with('success', 'Status Permohonan SKK Baru berhasil diperbarui!'); 
@@ -579,7 +585,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f2', [PencegahanController::class, 'indexDiklatF2']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-inspektur', [PencegahanController::class, 'indexDiklatInspektur']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-mfr', [PencegahanController::class, 'indexDiklatMfr']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-rescue', [PencegahanController::class, 'indexDiklatRescue']);
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-rescue', [PencegahanController::class, 'indexDiklatRescue']); // Typo diperbaiki
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-operator', [PencegahanController::class, 'indexDiklatOperator']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-ppl', [PencegahanController::class, 'indexDiklatPpl']);
 

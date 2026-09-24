@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-    <title>Data Laporan Penyelamatan | SIMERAH KOJA</title>
+    <title>Kelola Surat Korban | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
     
     <!-- PRELOAD LOGO AGAR TIDAK TELAT LOADING SAAT DI-PRINT -->
@@ -116,6 +116,7 @@
             .user-meta { display: none; }
         }
 
+        
         /* ==========================================================
            SHELL & SIDEBAR
            ========================================================== */
@@ -233,8 +234,6 @@
         .action-btn.edit:hover { background-color: #fef08a; }
         .action-btn.delete { background-color: #fef2f2; color: var(--signal); }
         .action-btn.delete:hover { background-color: #fecaca; }
-        
-        .badge-custom { padding: 6px 12px; font-weight: 600; font-size: 11px; border-radius: 8px; }
 
         /* Pagination */
         .pagination-container nav ul.pagination { margin-bottom: 0 !important; }
@@ -347,7 +346,7 @@
                 </div>
             </details>
 
-<!-- ACCORDION PEMADAMAN (DAMTAN) -->
+ <!-- ACCORDION PEMADAMAN (DAMTAN) -->
             <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
                 <summary>Bagian pemadaman <i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
@@ -365,7 +364,7 @@
                     </a>
                 </div>
             </details>
-            
+
             <details class="side-group" {{ Request::is('sapra*') ? 'open' : '' }}>
                 <summary>Bagian sapra <i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
@@ -415,15 +414,15 @@
     <main class="content">
         <div class="page-header">
             <div>
-                <h1>Data Laporan Penyelamatan</h1>
-                <p>Daftar seluruh laporan kejadian yang telah diinput ke dalam sistem.</p>
+                <h1>Kelola Surat Korban</h1>
+                <p>Daftar seluruh Surat Keterangan Kejadian yang telah diterbitkan.</p>
             </div>
             <div class="d-flex gap-2">
                 <button class="btn-custom-light shadow-sm" type="button" onclick="window.print()">
                     <i class="fas fa-download me-2"></i> Ekspor Semua
                 </button>
-                <a href="/internal/damtan/input-data" class="btn-custom-primary shadow-sm">
-                    <i class="fas fa-plus me-2"></i> Buat Laporan Baru
+                <a href="/internal/surat-korban/create" class="btn-custom-primary shadow-sm">
+                    <i class="fas fa-plus me-2"></i> Buat Surat Baru
                 </a>
             </div>
         </div>
@@ -432,24 +431,14 @@
             <!-- Filter & Search Bar -->
             <div class="card-header bg-white p-4 border-bottom border-light">
                 <div class="row g-3">
-                    <div class="col-md-4">
+                    <div class="col-md-8">
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0"><i class="fas fa-search"></i></span>
-                            <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari nomor laporan, lokasi, dsb...">
+                            <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari nomor surat, nama korban...">
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <select id="filterKategori" class="form-select">
-                            <option value="">Semua Kategori</option>
-                            <option value="Kebakaran">Kebakaran</option>
-                            <option value="Non-Kebakaran">Non-Kebakaran</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <input type="date" class="form-control">
-                    </div>
-                    <div class="col-md-2 text-end">
-                        <button class="btn-custom-light w-100 p-2" onclick="resetFilter()"><i class="fas fa-sync-alt me-2"></i>Reset</button>
+                    <div class="col-md-4 text-end ms-auto">
+                        <button class="btn-custom-light w-100 py-2 border-light fw-bold" onclick="resetFilter()"><i class="fas fa-sync-alt me-2"></i>Reset Filter</button>
                     </div>
                 </div>
             </div>
@@ -483,7 +472,7 @@
                         <!-- Garis Ganda -->
                         <div style="border-top: 3px solid black !important; border-bottom: 1px solid black !important; height: 2px !important; width: 100% !important; margin-bottom: 15px !important;"></div>
                         
-                        <h3 style="text-align: center !important; font-weight: bold; margin-bottom: 5px; font-size: 16px; color: black; font-family: 'Times New Roman', Times, serif;">REKAPITULASI DATA LAPORAN PENYELAMATAN</h3>
+                        <h3 style="text-align: center !important; font-weight: bold; margin-bottom: 5px; font-size: 16px; color: black; font-family: 'Times New Roman', Times, serif;">REKAPITULASI SURAT KETERANGAN KEJADIAN</h3>
                         <p style="text-align: center !important; font-size: 12px; margin-bottom: 15px; color: black; font-family: 'Times New Roman', Times, serif;">Dicetak pada: {{ date('d F Y') }}</p>
                     </div>
                     <!-- AKHIR HEADER CETAK -->
@@ -492,88 +481,41 @@
                         <thead>
                             <tr>
                                 <th class="text-center" width="5%">No</th>
-                                <th width="15%">No. Laporan</th>
-                                <th width="20%">Waktu Kejadian</th>
-                                <th width="20%">Kategori Kejadian</th>
-                                <th width="10%">Prioritas</th>
-                                <th width="15%">Status Evakuasi</th>
+                                <th width="25%">Nomor Surat</th>
+                                <th width="35%">Nama Korban / Instansi</th>
+                                <th width="20%">Tanggal Diterbitkan</th>
                                 <th class="text-center" width="15%">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
-                            @forelse($data_laporan as $index => $row)
+                            @forelse($surat as $index => $row)
                             <tr>
-                                <td class="text-center text-muted">{{ $data_laporan->firstItem() + $index }}</td>
-                                <td><strong>{{ $row->nomor_laporan }}</strong></td>
+                                <td class="text-center text-muted">{{ $surat->firstItem() + $index }}</td>
+                                <td><strong>{{ $row->nomor_surat }}</strong></td>
+                                <td class="text-capitalize">{{ $row->nama_korban }}</td>
                                 <td>
                                     <div class="text-dark fw-bold">
-                                        {{ $row->waktu_kejadian ? \Carbon\Carbon::parse($row->waktu_kejadian)->format('d M Y') : '-' }}
+                                        {{ $row->created_at ? \Carbon\Carbon::parse($row->created_at)->format('d M Y') : '-' }}
                                     </div>
-                                    <div class="text-muted" style="font-size: 12px;">
-                                        <i class="far fa-clock me-1"></i> 
-                                        {{ $row->waktu_kejadian ? \Carbon\Carbon::parse($row->waktu_kejadian)->format('H:i') : '-' }} WIB
-                                    </div>
-                                </td>
-                                <td class="kategori-cell">
-                                    @if(strtolower($row->kategori_kejadian) == 'kebakaran')
-                                        <div class="fw-bold text-danger">Kebakaran</div>
-                                        <div class="text-muted" style="font-size: 12px; text-transform: capitalize;">
-                                            {{ str_replace('_', ' ', $row->kategori_kebakaran ?? '-') }}
-                                        </div>
-                                    @else
-                                        <div class="fw-bold text-primary">Non-Kebakaran</div>
-                                        <div class="text-muted" style="font-size: 12px; text-transform: capitalize;">
-                                            {{ str_replace('_', ' ', $row->kategori_non_kebakaran ?? $row->kategori_kejadian) }}
-                                        </div>
-                                    @endif
-                                </td>
-                                <td>
-                                    @php
-                                        $badgeClass = 'bg-secondary text-white';
-                                        if($row->prioritas == 'rendah') $badgeClass = 'bg-secondary text-white';
-                                        if($row->prioritas == 'sedang') $badgeClass = 'bg-primary text-white';
-                                        if($row->prioritas == 'tinggi') $badgeClass = 'bg-warning text-dark';
-                                        if($row->prioritas == 'darurat') $badgeClass = 'bg-danger text-white';
-                                    @endphp
-                                    <span class="badge badge-custom {{ $badgeClass }}" style="text-transform: capitalize;">
-                                        {{ $row->prioritas ?? 'Biasa' }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="badge badge-custom bg-success bg-opacity-10 text-success border border-success">
-                                        <i class="fas fa-check-circle me-1"></i>Terekam
-                                    </span>
                                 </td>
                                 <td class="text-center">
-                                    <a href="/internal/damtan/lihat-data/{{ $row->id }}" class="action-btn view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
-                                    <a href="/internal/damtan/edit-data/{{ $row->id }}" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
-                                    <form action="/internal/damtan/hapus-data/{{ $row->id }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus laporan {{ $row->nomor_laporan }} secara permanen?')">
+                                    <!-- Tombol Cetak PDF -->
+                                    <a href="/internal/surat-korban/cetak/{{ $row->id }}" class="action-btn view" target="_blank" title="Cetak Surat"><i class="fas fa-print"></i></a>
+                                    <!-- Tombol Edit -->
+                                    <a href="/internal/surat-korban/edit/{{ $row->id }}" class="action-btn edit" title="Edit Surat"><i class="fas fa-edit"></i></a>
+                                    <!-- Tombol Hapus -->
+                                    <form action="/internal/surat-korban/delete/{{ $row->id }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus surat nomor {{ $row->nomor_surat }} secara permanen?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="action-btn delete" title="Hapus"><i class="fas fa-trash"></i></button>
                                     </form>
-
-                                    <!-- MODAL LIHAT DETAIL DINAMIS -->
-                                    <div class="modal fade text-start" id="detailModal{{ $row->id }}" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog modal-lg modal-dialog-centered">
-                                            <div class="modal-content border-0 shadow">
-                                                <div class="modal-header" style="background-color: var(--ink); color: white;">
-                                                    <h5 class="modal-title fw-bold" style="color: white;"><i class="fas fa-file-alt me-2 text-success"></i> Detail Laporan</h5>
-                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body p-4 bg-light">
-                                                    <p>Rincian laporan dapat dilihat pada menu aksi.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="7" class="text-center py-5 text-muted">
-                                    <i class="fas fa-folder-open mb-3" style="font-size: 24px;"></i><br>
-                                    Belum ada data laporan yang diinput ke dalam sistem.
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="fas fa-envelope-open-text mb-3" style="font-size: 24px;"></i><br>
+                                    Belum ada surat keterangan korban yang diterbitkan.
                                 </td>
                             </tr>
                             @endforelse
@@ -584,10 +526,10 @@
             
             <div class="card-footer bg-white p-4 d-flex justify-content-between align-items-center border-top">
                 <span class="text-muted" style="font-size: 13px;" id="dataCount">
-                    Menampilkan {{ $data_laporan->firstItem() ?? 0 }} - {{ $data_laporan->lastItem() ?? 0 }} dari total {{ $data_laporan->total() }} laporan
+                    Menampilkan {{ $surat->firstItem() ?? 0 }} - {{ $surat->lastItem() ?? 0 }} dari total {{ $surat->total() }} surat
                 </span>
                 <div class="pagination-container mb-0">
-                    {{ $data_laporan->links('pagination::bootstrap-5') }}
+                    {{ $surat->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </div>
@@ -626,37 +568,31 @@
         });
     })();
 
-    /* ---------- FUNGSI SEARCH & FILTER ---------- */
+    /* ---------- FUNGSI SEARCH FRONTEND ---------- */
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('searchInput');
-        const filterKategori = document.getElementById('filterKategori');
         const tableBody = document.getElementById('tableBody');
         const rows = tableBody.getElementsByTagName('tr');
 
         function filterTable() {
             const searchTerm = searchInput.value.toLowerCase();
-            const categoryTerm = filterKategori.value.toLowerCase();
 
             for (let i = 0; i < rows.length; i++) {
+                // Abaikan baris "Belum ada data"
                 if (rows[i].getElementsByTagName('td').length === 1) continue; 
                 
                 const rowText = rows[i].textContent.toLowerCase();
-                const categoryCellText = rows[i].getElementsByTagName('td')[3].textContent.toLowerCase(); 
-
                 const matchesSearch = rowText.includes(searchTerm);
-                const matchesCategory = categoryTerm === "" || categoryCellText.includes(categoryTerm);
 
-                rows[i].style.display = (matchesSearch && matchesCategory) ? '' : 'none';
+                rows[i].style.display = matchesSearch ? '' : 'none';
             }
         }
 
         searchInput.addEventListener('keyup', filterTable);
-        filterKategori.addEventListener('change', filterTable);
     });
 
     function resetFilter() {
         document.getElementById('searchInput').value = "";
-        document.getElementById('filterKategori').value = "";
         document.getElementById('searchInput').dispatchEvent(new Event('keyup'));
     }
 </script>

@@ -391,10 +391,11 @@
                 </ul>
             </li>
             <li class="has-drop current">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan &amp; fasilitas <i class="fas fa-chevron-down"></i></button>
+                <button class="menu-trigger" type="button" aria-expanded="false">Layanan<i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="/layanan-fasilitas/layanan_perizinan">Layanan perizinan</a></li>
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi" aria-current="page">Edukasi dan sosialisasi</a></li>
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
+                    <li><a href="/layanan-fasilitas/skk">SKK & Perpanjang SKK</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
             </li>

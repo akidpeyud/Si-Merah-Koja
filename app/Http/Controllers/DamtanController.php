@@ -349,4 +349,55 @@ class DamtanController extends Controller
 
         return view('internal.damtan.cetak_surat', compact('surat'));
     }
+
+    // ==========================================
+    // TAMBAHAN: KELOLA SURAT KORBAN
+    // ==========================================
+
+    public function indexSurat()
+    {
+        // Mengambil semua data surat dari database dengan pagination (10 data per halaman)
+        $surat = DB::table('surat_korbans')->orderBy('created_at', 'desc')->paginate(10);
+        return view('internal.damtan.data_surat', compact('surat'));
+    }
+
+    public function editSurat($id)
+    {
+        $surat = DB::table('surat_korbans')->where('id', $id)->first();
+        
+        if (!$surat) {
+            return redirect('/internal/surat-korban/data')->with('error', 'Data surat tidak ditemukan.');
+        }
+
+        return view('internal.damtan.edit_surat', compact('surat'));
+    }
+
+    public function updateSurat(Request $request, $id)
+    {
+        DB::table('surat_korbans')->where('id', $id)->update([
+            'nama_korban' => $request->nama_korban,
+            'status_kepemilikan' => $request->status_kepemilikan,
+            'nik' => $request->nik,
+            'pekerjaan' => $request->pekerjaan,
+            'tempat_lahir' => $request->tempat_lahir,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'status_perkawinan' => $request->status_perkawinan,
+            'alamat' => $request->alamat,
+            'objek_terbakar' => $request->objek_terbakar,
+            'hari_kejadian' => $request->hari_kejadian,
+            'tanggal_kejadian' => $request->tanggal_kejadian,
+            'waktu_kejadian' => $request->waktu_kejadian,
+            'tembusan_camat' => $request->tembusan_camat,
+            'tembusan_lurah' => $request->tembusan_lurah,
+            'updated_at' => now(),
+        ]);
+
+        return redirect('/internal/surat-korban/data')->with('success', 'Data Surat Keterangan Korban berhasil diperbarui!');
+    }
+
+    public function destroySurat($id)
+    {
+        DB::table('surat_korbans')->where('id', $id)->delete();
+        return redirect('/internal/surat-korban/data')->with('success', 'Data surat berhasil dihapus secara permanen!');
+    }
 }
