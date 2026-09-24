@@ -20,6 +20,14 @@ class PencegahanController extends Controller
     // ==========================================
     // BAGIAN PENINGKATAN KAPASITAS (DIKLAT)
     // ==========================================
+    public function indexDiksar()
+    {
+        // Pastikan nama tabel lu bener 'tbl_diksar'
+        $data_diklat = DB::table('tbl_diksar')->orderBy('id', 'desc')->get();
+        $judul_diklat = "DIKSAR";
+        
+        return view('internal.pencegahan.diksar', compact('data_diklat', 'judul_diklat'));
+    }
     public function indexDiklatF1()
     {
         $data_diklat = DB::table('tbl_diklat_f1')->orderBy('id', 'desc')->get();
@@ -68,7 +76,7 @@ class PencegahanController extends Controller
         $judul_diklat = "DIKLAT PPL";
         return view('internal.pencegahan.diklat_f1', compact('data_diklat', 'judul_diklat'));
     }
-
+    
     public function indexPeningkatanKapasitas()
     {
         $dataDiksar    = \Illuminate\Support\Facades\Schema::hasTable('tbl_diksar') ? DB::table('tbl_diksar')->orderBy('id', 'desc')->get() : [];
@@ -131,6 +139,78 @@ class PencegahanController extends Controller
         return redirect('/internal/pencegahan/peningkatan-kapasitas')->with('success', 'Data Peningkatan Kapasitas berhasil ditambahkan!');
     }
 
+    // ==========================================
+    // FUNGSI DOWNLOAD EXCEL & PDF (DIKLAT)
+    // ==========================================
+    public function cetakExcel($jenis)
+    {
+        $map = [
+            'diksar' => 'tbl_diksar', 
+            'diklat-f1' => 'tbl_diklat_f1', 
+            'diklat-f2' => 'tbl_diklat_f2', 
+            'diklat-rescue' => 'tbl_diklat_rescue', 
+            'diklat-mfr' => 'tbl_diklat_mfr', 
+            'diklat-operator' => 'tbl_diklat_operator', 
+            'diklat-inspektur' => 'tbl_diklat_inspektur', 
+            'diklat-ppl' => 'tbl_diklat_ppl'
+        ];
+        $tabel = $map[$jenis] ?? 'tbl_diklat_f1';
+        $data = DB::table($tabel)->orderBy('id', 'desc')->get();
+
+        $filename = "Data_" . strtoupper(str_replace('-', '_', $jenis)) . "_" . date('Ymd') . ".csv";
+        
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['NO', 'NAMA', 'TEMPAT LAHIR', 'TGL LAHIR', 'NIK', 'JABATAN', 'INSTANSI', 'DITANDA TANGANI OLEH', 'TANGGAL'];
+
+        $callback = function() use($data, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+            foreach ($data as $index => $row) {
+                fputcsv($file, [
+                    $index + 1,
+                    $row->nama ?? '-',
+                    $row->tempat_lahir ?? '-',
+                    $row->tgl_lahir ?? '-',
+                    $row->nik ?? '-',
+                    $row->jabatan ?? '-',
+                    $row->instansi ?? '-',
+                    $row->ditandatangani_oleh ?? '-',
+                    $row->tanggal_pelaksanaan ?? '-'
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function cetakPdf($jenis)
+    {
+        $map = [
+            'diksar' => 'tbl_diksar', 
+            'diklat-f1' => 'tbl_diklat_f1', 
+            'diklat-f2' => 'tbl_diklat_f2', 
+            'diklat-rescue' => 'tbl_diklat_rescue', 
+            'diklat-mfr' => 'tbl_diklat_mfr', 
+            'diklat-operator' => 'tbl_diklat_operator', 
+            'diklat-inspektur' => 'tbl_diklat_inspektur', 
+            'diklat-ppl' => 'tbl_diklat_ppl'
+        ];
+        $tabel = $map[$jenis] ?? 'tbl_diklat_f1';
+        $data = DB::table($tabel)->orderBy('id', 'asc')->get();
+        
+        $judul = strtoupper(str_replace('-', ' ', $jenis));
+
+        return view('internal.pencegahan.cetak_pdf_diklat', compact('data', 'judul'));
+    }
+
 
     // ==========================================
     // BAGIAN INSPEKSI BANGUNAN
@@ -138,7 +218,8 @@ class PencegahanController extends Controller
     public function index()
     {
         $data_inspeksi = InspeksiBangunan::all();
-        return view('internal.pencegahan.inspeksi_kebakaran', compact('data_inspeksi'));
+        // Ubah kata 'inspeksi_kebakaran' jadi 'inspeksi_bangunan'
+        return view('internal.pencegahan.inspeksi_bangunan', compact('data_inspeksi'));
     }
 
     public function indexInspeksiBangunan()
@@ -307,5 +388,88 @@ class PencegahanController extends Controller
         $item->delete();
 
         return redirect()->back()->with('success', 'Data berhasil dihapus!');
+    }
+    // ==========================================
+    // FUNGSI DOWNLOAD EXCEL & PDF (INSPEKSI BANGUNAN)
+    // ==========================================
+    public function cetakExcelInspeksi()
+    {
+        $data = InspeksiBangunan::orderBy('tanggal_inspeksi', 'desc')->get();
+        $filename = "Data_Inspeksi_Bangunan_" . date('Ymd') . ".csv";
+        
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['NO', 'NAMA TEMPAT/BANGUNAN', 'TANGGAL INSPEKSI', 'JENIS USAHA'];
+
+        $callback = function() use($data, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+            foreach ($data as $index => $row) {
+                fputcsv($file, [
+                    $index + 1,
+                    $row->nama_tempat ?? '-',
+                    $row->tanggal_inspeksi ?? '-',
+                    $row->jenis_usaha ?? '-'
+                ]);
+            }
+            fclose($file);
+        };
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function cetakPdfInspeksi()
+    {
+        $data = InspeksiBangunan::orderBy('tanggal_inspeksi', 'asc')->get();
+        return view('internal.pencegahan.cetak_pdf_inspeksi', compact('data'));
+    }
+
+    // ==========================================
+    // FUNGSI DOWNLOAD EXCEL & PDF (FIRE DRILL)
+    // ==========================================
+    public function cetakExcelFireDrill()
+    {
+        $data = FireDrill::orderBy('tanggal_pelaksanaan', 'desc')->get();
+        $filename = "Data_Fire_Drill_" . date('Ymd') . ".csv";
+        
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['NO', 'NAMA INSTANSI', 'TAHUN', 'TANGGAL PELAKSANAAN', 'TEMPAT PELAKSANAAN', 'PESERTA LAKI-LAKI', 'PESERTA PEREMPUAN', 'TOTAL PESERTA'];
+
+        $callback = function() use($data, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+            foreach ($data as $index => $row) {
+                fputcsv($file, [
+                    $index + 1,
+                    $row->nama_instansi ?? '-',
+                    $row->tahun ?? '-',
+                    $row->tanggal_pelaksanaan ?? '-',
+                    $row->tempat_pelaksanaan ?? '-',
+                    $row->peserta_laki_laki ?? '0',
+                    $row->peserta_perempuan ?? '0',
+                    $row->total_peserta ?? '0'
+                ]);
+            }
+            fclose($file);
+        };
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function cetakPdfFireDrill()
+    {
+        $data = FireDrill::orderBy('tanggal_pelaksanaan', 'asc')->get();
+        return view('internal.pencegahan.cetak_pdf_fire_drill', compact('data'));
     }
 }
