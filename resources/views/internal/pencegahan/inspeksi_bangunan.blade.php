@@ -130,9 +130,9 @@
                     <a href="/internal/pencegahan/inspeksi-kebakaran" class="sidebar-item active" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">
                         PENCEGAHAN KEBAKARAN DAN INSPEKSI
                     </a>
-                    <a href="#" class="sidebar-item" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">
-                        PEMBERDAYAAN MASYARAKAT DAN DUNIA USAHA
-                    </a>
+                   <a href="#" class="sidebar-item" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">
+                        PEMBERDAYAAN MASYARAKAT DAN DUNIA USAHA</a>    
+                </a>
                 </div>
             </div>
 
@@ -189,10 +189,11 @@
                         <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
                         <input type="text" class="form-control border-start-0 ps-0" placeholder="Cari nama tempat...">
                     </div>
-                    
-                   <a href="/internal/pencegahan/inspeksi-kebakaran/bangunan/tambah" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #0284c7; padding: 9px 16px;">
+ <!-- Ubah href pada tombol Tambah Data -->
+<a href="/internal/pencegahan/inspeksi-kebakaran/bangunan/tambah" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #0284c7; padding: 9px 16px;">
     <i class="fas fa-plus"></i> Tambah Data
 </a>
+                   
                     <a href="#" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #10b981; padding: 9px 16px;">
                         <i class="fas fa-file-excel"></i> Excel
                     </a>
@@ -235,51 +236,38 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Data sesuai foto excel lu -->
-                            <tr>
-                                <td class="text-center fw-bold">1</td>
-                                <td><div class="fw-bold text-dark">INFINITY HOTEL</div></td>
-                                <td>6 FEBRUARI 2025</td>
-                                <td>HOTEL</td>
-                                <td class="sticky-action text-center">
-                                    <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
-                                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td class="text-center fw-bold">2</td>
-                                <td><div class="fw-bold text-dark">RSUD RADEN MATAHER</div></td>
-                                <td>13 FEBRUARI 2025</td>
-                                <td>RUMAH SAKIT</td>
-                                <td class="sticky-action text-center">
-                                    <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
-                                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
+    @forelse($data_inspeksi as $index => $item)
+    <tr>
+        <td>{{ $index + 1 }}</td>
+        <td>{{ $item->nama_tempat }}</td>
+        <td>{{ $item->tanggal_inspeksi }}</td>
+        <td>{{ $item->jenis_usaha }}</td>
+        
+        <!-- Kolom AKSI harus berada di dalam tag <tr> yang sama di ujung kanan -->
+        <td class="text-center">
+            <div class="d-flex gap-1 justify-content-center">
+                <!-- Tombol Edit Kuning -->
+                <a href="{{ route('inspeksi.edit', $item->id) }}" class="btn btn-warning btn-sm text-white" style="border-radius: 6px;" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </a>
 
-                            <tr>
-                                <td class="text-center fw-bold">3</td>
-                                <td><div class="fw-bold text-dark">PT. Trona sentosa lestari</div></td>
-                                <td>20 FEBRUARI 2025</td>
-                                <td>Mall</td>
-                                <td class="sticky-action text-center">
-                                    <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
-                                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="text-center fw-bold">4</td>
-                                <td><div class="fw-bold text-dark">Mandala</div></td>
-                                <td>4 MARET 2025</td>
-                                <td>MALL</td>
-                                <td class="sticky-action text-center">
-                                    <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
-                                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                        </tbody>
+                <!-- Tombol Delete Merah -->
+                <form action="{{ route('inspeksi.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm" style="border-radius: 6px;" title="Hapus">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </td>
+    </tr>
+    @empty
+    <tr>
+        <td colspan="5" class="text-center py-4 text-muted">Belum ada data inspeksi.</td>
+    </tr>
+    @endforelse
+</tbody>
                     </table>
                 </div>
             </div>

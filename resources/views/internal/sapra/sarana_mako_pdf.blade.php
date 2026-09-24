@@ -2,137 +2,22 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Cetak Data Sarana Pemadam Kebakaran</title>
+    <title>Data Sarana Mako & Pos</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            color: #000;
-            font-size: 11px;
-            margin: 0;
-            padding: 10px 20px;
-        }
-
-        /* =======================================================
-           KOP SURAT STYLES
-           ======================================================= */
-        table.kop-surat {
-            width: 100%;
-            border-collapse: collapse;
-            border-bottom: 3px double #000;
-            margin-bottom: 20px;
-        }
-        table.kop-surat td {
-            border: none;
-            padding: 5px;
-            vertical-align: middle;
-        }
-        .kop-logo {
-            width: 15%;
-            text-align: center;
-        }
-        .kop-logo img {
-            width: 75px;
-            height: auto;
-        }
-        .kop-teks {
-            width: 70%;
-            text-align: center;
-            line-height: 1.3;
-        }
-        .kop-teks .pemerintah {
-            font-size: 14px;
-            font-weight: normal;
-            color: #000;
-        }
-        .kop-teks .dinas {
-            font-size: 18px;
-            font-weight: bold;
-            color: #000;
-            margin: 3px 0;
-        }
-        .kop-teks .alamat {
-            font-size: 11px;
-            font-weight: normal;
-            color: #000;
-        }
-
-        /* =======================================================
-           JUDUL DOKUMEN & TABEL DATA
-           ======================================================= */
-        .doc-title {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .doc-title h3 {
-            margin: 0 0 5px 0;
-            font-size: 14px;
-            text-transform: uppercase;
-        }
-
-        .section-title {
-            font-size: 12px;
-            font-weight: bold;
-            background-color: #0d1b2a;
-            color: #ffffff;
-            padding: 6px 10px;
-            margin-top: 15px;
-            margin-bottom: 0;
-            border: 1px solid #000;
-            border-bottom: none;
-            page-break-after: avoid; /* Pastikan judul nempel dengan tabel di bawahnya */
-        }
-
-        table.data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-            page-break-before: auto;
-            page-break-inside: auto; /* Biarkan tabel memecah halaman secara alami */
-        }
-        table.data-table th, table.data-table td {
-            border: 1px solid #000;
-            padding: 7px;
-            vertical-align: middle;
-        }
-        table.data-table th {
-            background-color: #e2e8f0;
-            text-align: center;
-            font-weight: bold;
-            font-size: 10px;
-        }
-        /* Mencegah baris terpotong separuh teksnya saat pindah halaman */
-        table.data-table tr {
-            page-break-inside: avoid;
-            page-break-after: auto;
-        }
-        
+        body { font-family: sans-serif; font-size: 12px; }
+        h2, h4 { text-align: center; margin: 5px 0; }
+        .pos-title { font-size: 14px; font-weight: bold; margin-top: 20px; background-color: #f0f0f0; padding: 5px; text-transform: uppercase; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; vertical-align: middle; }
+        th { background-color: #333; color: white; text-align: center; }
         .text-center { text-align: center; }
-        .fw-bold { font-weight: bold; }
-        
-        .img-container { width: 120px; height: 80px; text-align: center; margin: 0 auto; }
-        .img-container img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; border: 1px solid #ccc; padding: 2px;}
-        
-        .sarana-meta { font-size: 10px; color: #444; margin-top: 4px; }
-
-        .ttd-container {
-            width: 100%;
-            margin-top: 40px;
-            page-break-inside: avoid;
-        }
-        .ttd-box {
-            float: right;
-            width: 250px;
-            text-align: center;
-        }
-        .clear { clear: both; }
-
-        @media print {
-            body { padding: 0; }
-            @page { size: landscape; margin: 1cm; }
-        }
+        .img-sarana { width: 120px; height: auto; border-radius: 4px; }
     </style>
 </head>
 <body>
+    <h2>DATA SARANA MARKAS KOMANDO & POS</h2>
+    <h4>DINAS PEMADAM KEBAKARAN DAN PENYELAMATAN KOTA JAMBI</h4>
+    <hr style="margin-bottom: 20px;">
 
     <!-- KOP SURAT MENGGUNAKAN TEKNIK BASE64 AGAR TERBACA DI DOMPDF -->
     <table class="kop-surat">
@@ -175,9 +60,8 @@
 
     <!-- LOOPING UNTUK SETIAP POS -->
     @foreach($posPemadam as $pos)
-        @php 
-            $dataFilter = $dataSarana->where('id_pos', $pos->id_pos); 
-        @endphp
+        <div class="pos-title">{{ $pos->nama_pos }}</div>
+        <p style="margin: 5px 0;"><strong>Alamat:</strong> {{ $pos->alamat ?? '-' }} | <strong>Kode Map:</strong> {{ $pos->kode_map ?? '-' }}</p>
 
         <!-- Pembungkus page-break-inside avoid DIHAPUS agar tabel mengalir ke atas -->
         <div>
@@ -189,62 +73,24 @@
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th width="5%">NO</th>
-                        <th width="45%">JENIS SARANA KEBAKARAN</th>
-                        <th width="15%">JUMLAH</th>
-                        <th width="35%">GAMBAR</th>
+                        <td class="text-center">{{ $loop->iteration }}</td>
+                        <td>{{ $item->jenis_sarana }}</td>
+                        <td class="text-center"><strong>{{ $item->jumlah }}</strong></td>
+                        <td class="text-center">
+                            @if($item->path_gambar && file_exists(public_path($item->path_gambar)))
+                                <img src="{{ public_path($item->path_gambar) }}" class="img-sarana">
+                            @else
+                                <i>Tidak ada gambar</i>
+                            @endif
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @forelse($dataFilter as $item)
-                        <tr>
-                            <td class="text-center">{{ $loop->iteration }}</td>
-                            <td>
-                                <div class="fw-bold" style="font-size: 12px; text-transform: uppercase;">{{ $item->jenis_sarana }}</div>
-                                
-                                @if($item->tahun || $item->plat_nomor || $item->no_stnk)
-                                    <div class="sarana-meta">
-                                        @php
-                                            $metaDetails = [];
-                                            if(!empty($item->tahun)) {
-                                                $metaDetails[] = "Tahun: " . $item->tahun;
-                                            }
-                                            if(!empty($item->plat_nomor)) {
-                                                $metaDetails[] = "Plat: <span style='text-transform: uppercase;'>" . $item->plat_nomor . "</span>";
-                                            }
-                                            if(!empty($item->no_stnk)) {
-                                                $metaDetails[] = "STNK: <span style='text-transform: uppercase;'>" . $item->no_stnk . "</span>";
-                                            }
-                                        @endphp
-                                        {!! implode(' &nbsp;|&nbsp; ', $metaDetails) !!}
-                                    </div>
-                                @endif
-                            </td>
-                            <td class="text-center" style="font-size: 12px;"><b>{{ $item->jumlah }}</b> Unit</td>
-                            <td class="text-center">
-                                @if($item->path_gambar && file_exists(public_path($item->path_gambar)))
-                                    <div class="img-container">
-                                        @php
-                                            $path = public_path($item->path_gambar);
-                                            $type = pathinfo($path, PATHINFO_EXTENSION);
-                                            $data = file_get_contents($path);
-                                            $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-                                        @endphp
-                                        <img src="{{ $base64 }}" alt="Gambar">
-                                    </div>
-                                @else
-                                    <span style="color: #999; font-style: italic; font-size: 10px;">Tidak ada gambar</span>
-                                @endif
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center" style="color: #777;">Belum ada data sarana pemadam untuk pos ini.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                @empty
+                    <tr>
+                        <td colspan="4" class="text-center">Belum ada data sarana untuk pos ini.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     @endforeach
 
     <!-- FORMAT TANDA TANGAN -->

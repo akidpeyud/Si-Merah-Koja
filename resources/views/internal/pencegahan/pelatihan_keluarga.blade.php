@@ -173,10 +173,9 @@
                         <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
                         <input type="text" class="form-control border-start-0 ps-0" placeholder="Cari kelurahan atau RT...">
                     </div>
-                    
-                    <a href="#" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #0284c7; padding: 9px 16px;">
-                        <i class="fas fa-plus"></i> Tambah Data
-                    </a>
+                    <a href="{{ route('pelatihan_keluarga.create') }}" class="btn btn-primary">
+    <i class="fas fa-plus"></i> Tambah Data
+</a>
                     <a href="#" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #10b981; padding: 9px 16px;">
                         <i class="fas fa-file-excel"></i> Excel
                     </a>
@@ -223,39 +222,45 @@
                                 <th class="text-center" width="100px">LAKI-LAKI</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <!-- Data Baris 1 dari Excel Lu -->
-                            <tr>
-                                <td class="text-center fw-bold">1</td>
-                                <td>Kamis, 20 Maret 2025</td>
-                                <td class="text-center text-muted">-</td>
-                                <td>01, 03, 05, 06, 07, 09, 10, 12 dan 14</td>
-                                <td>Kasang Jaya</td>
-                                <td>Jambi Timur</td>
-                                <td class="text-center fw-bold">30</td>
-                                <td class="text-center fw-bold">13</td>
-                                <td class="sticky-action text-center">
-                                    <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
-                                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            
-                            <!-- Data Baris 2 dari Excel Lu -->
-                            <tr>
-                                <td class="text-center fw-bold">2</td>
-                                <td>Kamis, 10 April 2025</td>
-                                <td class="text-center text-muted">-</td>
-                                <td>11</td>
-                                <td>Sulanjana</td>
-                                <td>Jambi Timur</td>
-                                <td class="text-center fw-bold">17</td>
-                                <td class="text-center fw-bold">8</td>
-                                <td class="sticky-action text-center">
-                                    <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
-                                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                        </tbody>
+                     
+
+<!-- Bagian Body Tabel -->
+<tbody>
+    @forelse($data_pelatihan as $index => $item)
+    <tr>
+        <td class="text-center">{{ $index + 1 }}</td>
+        
+        <!-- Format Tanggal menjadi Hari, Tanggal Bulan Tahun -->
+        <td>{{ \Carbon\Carbon::parse($item->tanggal_pelaksanaan)->translatedFormat('l, d F Y') }}</td>
+        
+        <td class="text-center">{{ $item->posyandu ?? '-' }}</td>
+        <td>{{ $item->rt }}</td>
+        <td>{{ $item->kelurahan }}</td>
+        <td>{{ $item->kecamatan }}</td>
+        <td class="text-center">{{ $item->peserta_perempuan }}</td>
+        <td class="text-center">{{ $item->peserta_laki_laki }}</td>
+        
+        <td class="text-center">
+            <div class="d-flex gap-1 justify-content-center">
+                <a href="{{ route('pelatihan_keluarga.edit', $item->id) }}" class="btn btn-warning btn-sm text-white">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <form action="{{ route('pelatihan_keluarga.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </td>
+    </tr>
+    @empty
+    <tr>
+        <td colspan="9" class="text-center py-4 text-muted">Belum ada data Pelatihan.</td>
+    </tr>
+    @endforelse
+</tbody>
                     </table>
                 </div>
             </div>
