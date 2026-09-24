@@ -126,11 +126,19 @@
         .dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
         .dropdown a { display: block; padding: 11px 14px; border-radius: var(--r-sm); font-size: .92rem; color: rgba(255,255,255,.85); }
         .dropdown a:hover { background: rgba(255,255,255,.1); color: #fff; }
+        
+        .dropdown .btn-logout {
+            width: 100%; text-align: left; padding: 11px 14px; border-radius: var(--r-sm); 
+            font-size: .92rem; color: #ff8b8b; display: flex; align-items: center; gap: 8px; 
+            transition: background .2s, color .2s; cursor: pointer;
+        }
+        .dropdown .btn-logout:hover { background: rgba(255, 255, 255, .1); color: #ffb8b8; }
+
         .has-drop.open .dropdown { display: block; }
         @media (hover: hover) and (min-width: 992px) { .has-drop:hover .dropdown { display: block; } }
 
-        /* USER CHIP / DROPDOWN SESUAI PERMINTAAN FOTO */
-        .user-dropdown-wrap { position: relative; display: inline-block; }
+        /* USER CHIP / DROPDOWN KHUSUS REDKAR */
+        .user-dropdown-wrap { position: relative; display: inline-block; margin-left: 8px; }
         .user-pill-btn {
             display: inline-flex; align-items: center; gap: 8px; padding: 7px 16px; border-radius: 999px;
             background: var(--signal); color: #fff; font-weight: 700; font-size: .9rem; border: none; cursor: pointer;
@@ -152,7 +160,7 @@
         }
         .user-dropdown-menu a:hover, .user-dropdown-menu button:hover { background: rgba(255,255,255,.1); }
 
-        .nav-toggle { display: none; width: 44px; height: 44px; border-radius: 12px; color: #fff; font-size: 1.15nsrem; }
+        .nav-toggle { display: none; width: 44px; height: 44px; border-radius: 12px; color: #fff; font-size: 1.15rem; }
         .nav-toggle:hover { background: rgba(255,255,255,.1); }
 
         @media (max-width: 991px) {
@@ -402,14 +410,13 @@
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
             </li>
-            <li class="current"><a class="menu-link" href="/redkar" style="color: var(--signal);">Redkar</a></li>
-            
-            <!-- TOMBOL AKUN REDKAR (MODEL DROPDOWN SEPERTI FOTO ANDA) -->
+
+            <!-- TOMBOL AKUN REDKAR (MODEL DROPDOWN) -->
             @auth('redkar')
                 <li>
                     <div class="user-dropdown-wrap" id="userDropdownWrap">
-                        <button class="user-pill-btn" type="button" id="userPillBtn">
-                            <i class="fas fa-user-circle"></i> {{ Auth::guard('redkar')->user()->nama_lengkap ?? 'Redkar' }} <i class="fas fa-chevron-down"></i>
+                        <button class="user-pill-btn" type="button" id="userPillBtn" style="background-color: var(--amber); color: var(--ink);">
+                            <i class="fas fa-user-shield"></i> {{ Auth::guard('redkar')->user()->nama_lengkap ?? 'Redkar' }} <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="user-dropdown-menu">
                             <a href="{{ route('redkar.dashboard') }}"><i class="fas fa-gauge-high"></i> Dashboard</a>
@@ -422,8 +429,30 @@
                     </div>
                 </li>
             @else
-                <li><a class="menu-link btn-login" href="/login-redkar">Masuk Redkar</a></li>
+                <!-- HANYA TOMBOL MASUK REDKAR (Menu Teks Redkar Dihapus) -->
+                <li><a class="menu-link" href="/login-redkar" style="color: var(--amber); font-weight: 700;">Masuk Redkar</a></li>
             @endauth
+
+            <!-- TOMBOL AKUN PEMOHON PUBLIK -->
+            @if(session()->has('pemohon_id'))
+                <li class="has-drop">
+                    <button class="menu-trigger btn-login" type="button" aria-expanded="false">
+                        <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <ul class="dropdown">
+                        <li>
+                            <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
+                                @csrf
+                                <button type="submit" class="btn-logout">
+                                    <i class="fas fa-sign-out-alt"></i> Keluar
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            @else
+                <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
+            @endif
         </ul>
     </nav>
 </header>
@@ -831,7 +860,7 @@
         });
     });
 
-    /* ---------- User Dropdown Toggle (Sesuai Foto) ---------- */
+    /* ---------- User Dropdown Toggle (Khusus Redkar) ---------- */
     var userWrap = document.getElementById('userDropdownWrap');
     if (userWrap) {
         var userBtn = document.getElementById('userPillBtn');
