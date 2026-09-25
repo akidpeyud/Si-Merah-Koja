@@ -861,4 +861,5 @@ class SapraController extends Controller
 
         return $pdf->download('Data_Sarana_Pemeriksaan_Mako_Pos.pdf');
     }
+    
 }

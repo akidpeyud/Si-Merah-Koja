@@ -16,14 +16,16 @@ class CekLoginPemohon
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // 1. Cek apakah ada session ID pemohon
-        if (!session()->has('pemohon_id')) {
-            // Jika belum login, simpan rute yang mau diakses, lalu lempar ke form login
-            session(['url.intended' => url()->current()]);
-            return redirect()->route('pemohon.login')->with('error', 'Silakan masuk terlebih dahulu untuk mengakses layanan ini.');
+        // Periksa apakah pengguna sudah login melalui salah satu akses yang diizinkan:
+        // 1. Pegawai Internal (Auth default)
+        // 2. Relawan Redkar (Guard redkar)
+        // 3. Pemohon Masyarakat (Session pemohon_id)
+        if (Auth::check() || Auth::guard('redkar')->check() || session()->has('pemohon_id')) {
+            return $next($request);
         }
 
-        // 2. Jika sudah login, lanjut ke rute yang diminta
-        return $next($request);
+        // Jika belum login sama sekali, arahkan ke halaman login pemohon dengan pesan flash
+        return redirect()->route('pemohon.login')
+            ->with('error', 'Silakan masuk atau daftar akun terlebih dahulu untuk mengakses layanan ini.');
     }
 }

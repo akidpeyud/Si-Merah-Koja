@@ -9,7 +9,7 @@
        Dari controller kirim $kategori_aktif = 'slug-halaman-ini-milik-kategori-mana'
        agar sidebar otomatis terbuka dan menyorot menu yang sedang dilihat.
        ------------------------------------------------------------ */
-    $kategori = [
+   $kategori = [
         'pencegahan' => [
             'label' => 'Bagian pencegahan',
             'items' => [],
@@ -21,15 +21,16 @@
         'sapra' => [
             'label' => 'Bagian sapra',
             'items' => [
-                ['url' => '/informasi-sarana',       'label' => 'Sarana pemadam',       'ico' => 'fa-fire-extinguisher'],
-                ['url' => '/informasi-prasarana',    'label' => 'Prasarana pemadam',    'ico' => 'fa-building'],
-                ['url' => '/informasi-penyelamatan', 'label' => 'Sarana penyelamatan',  'ico' => 'fa-life-ring'],
-                ['url' => '/informasi-pemeriksaan',  'label' => 'Sarana pemeriksaan',   'ico' => 'fa-magnifying-glass'],
+                ['url' => '/informasi-sarana',       'label' => 'Sarana pemadam',      'ico' => 'fa-fire-extinguisher'],
+                ['url' => '/informasi-prasarana',    'label' => 'Prasarana pemadam',   'ico' => 'fa-building'],
+                ['url' => '/informasi-penyelamatan', 'label' => 'Sarana penyelamatan', 'ico' => 'fa-life-ring'],
+                ['url' => '/informasi-pemeriksaan',  'label' => 'Sarana pemeriksaan',  'ico' => 'fa-magnifying-glass'],
+                ['url' => '/sumber-air',             'label' => 'Sumber Air',          'ico' => 'fa-droplet'],
+                ['url' => '/hidrant-kota',           'label' => 'Data Hidrant Kota Jambi', 'ico' => 'fa-map-location-dot'],
             ],
         ],
-    ];
-    $kategori_aktif = $kategori_aktif ?? null; // contoh: 'sapra'
-    $halaman_aktif  = $halaman_aktif ?? null;  // contoh: '/informasi-sarana'
+    ];$kategori_aktif = $kategori_aktif ?? null; // Otomatis ngebuka menu Sapra
+    $halaman_aktif  = $halaman_aktif ?? null;  // contoh: '/publik/sapra/sarana-pemadam'
 
     // Menu Program kerja (dipakai oleh dropdown di header)
     $tabs = [
@@ -338,6 +339,21 @@
                     <?php endforeach; ?>
                 </ul>
             </li>
+            
+            <!-- MENU BAGIAN SAPRA DIHEADER PUBLIK -->
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Bagian Sapra <i class="fas fa-chevron-down"></i></button>
+              <ul class="dropdown">
+                    <li><a href="/informasi-sarana">Sarana pemadam</a></li>
+                    <li><a href="/informasi-prasarana">Prasarana pemadam</a></li>
+                    <li><a href="/informasi-penyelamatan">Sarana penyelamatan</a></li>
+                    <li><a href="/informasi-pemeriksaan">Sarana pemeriksaan</a></li>
+                    <li><a href="/sumber-air">Sumber Air</a></li>
+                    <li><a href="/hidrant-kota">Data Hidrant Kota Jambi</a></li>
+                </ul>
+            </li>
+            <!-- AKHIR MENU BAGIAN SAPRA DIHEADER PUBLIK -->
+
             <li class="has-drop current">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan &amp; fasilitas <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">

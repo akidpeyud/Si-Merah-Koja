@@ -34,6 +34,36 @@
             color: #1f2937;
         }
 
+        /* --- NOTIFIKASI TOAST (Sama seperti Kelola Redkar) --- */
+        .toast-wrap { 
+            position: fixed; z-index: 9999; top: 20px; left: 50%; 
+            transform: translateX(-50%); display: grid; gap: 10px; 
+            width: max-content; max-width: calc(100vw - 24px); 
+        }
+        .toast {
+            display: flex; align-items: flex-start; gap: 12px; padding: 12px 12px 12px 16px;
+            border-radius: 20px; background: #fff; border: 1px solid #d1d5db;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            font-weight: 600; font-size: 13.5px; color: #1f2937;
+            animation: toastIn .45s cubic-bezier(.16,.84,.3,1) both;
+        }
+        .toast.ok { border-radius: 999px; align-items: center; } /* Membulat jika sukses */
+        .toast.leaving { animation: toastOut .3s ease forwards; }
+        
+        .toast-ico { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: 12px; margin-top: 2px; }
+        .toast.ok .toast-ico { background: #10b981; margin-top: 0; }
+        .toast.err .toast-ico { background: #ef4444; }
+        
+        .toast-content { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 28px; padding-top: 3px; }
+        .toast.ok .toast-content { padding-top: 0; }
+        .toast-content ul { margin: 4px 0 0 0; padding-left: 18px; font-weight: 500; font-size: 12.5px; color: #ef4444; }
+        
+        .toast-x { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: #f3f4f6; color: #6b7280; transition: background .2s, color .2s; border: none; cursor: pointer; }
+        .toast-x:hover { background: #111827; color: #fff; }
+        
+        @keyframes toastIn { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+        @keyframes toastOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-14px); } }
+
         /* --- LOGIN CARD STYLES --- */
         .login-card {
             background-color: #ffffff;
@@ -105,85 +135,41 @@
         .bottom-links a:hover { color: #ef4444; }
 
         @keyframes slideUpFade { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        /* --- POPUP NOTIFIKASI STYLES (SUKSES & ERROR) --- */
-        .popup-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: rgba(17, 24, 39, 0.85); backdrop-filter: blur(4px);
-            display: flex; align-items: center; justify-content: center; z-index: 999999;
-            animation: fadeInOverlay 0.3s ease forwards;
-        }
-        .popup-box {
-            background: #ffffff; border-radius: 16px; padding: 40px 30px; text-align: center;
-            max-width: 420px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            animation: popInBox 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            position: relative; overflow: hidden;
-        }
-        .popup-box.success::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background-color: #10b981; }
-        .popup-box.error::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background-color: #ef4444; }
-        
-        .popup-icon {
-            width: 80px; height: 80px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto 20px;
-        }
-        .popup-box.success .popup-icon { background-color: #ecfdf5; color: #10b981; box-shadow: 0 0 20px rgba(16, 185, 129, 0.15); }
-        .popup-box.error .popup-icon { background-color: #fef2f2; color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.15); }
-        
-        .popup-title { color: #111827; font-size: 22px; font-weight: 800; margin-bottom: 10px; letter-spacing: 0.5px; }
-        .popup-message { color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 30px; padding: 0 10px; }
-        
-        .btn-close-popup {
-            color: #ffffff; border: none; padding: 14px 30px; border-radius: 50px; font-weight: 700; font-size: 14px;
-            cursor: pointer; transition: all 0.3s; width: 100%; letter-spacing: 1px;
-        }
-        .popup-box.success .btn-close-popup { background-color: #10b981; }
-        .popup-box.success .btn-close-popup:hover { background-color: #059669; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3); }
-        
-        .popup-box.error .btn-close-popup { background-color: #ef4444; }
-        .popup-box.error .btn-close-popup:hover { background-color: #dc2626; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3); }
-
-        @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes popInBox { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        @keyframes fadeOutOverlay { from { opacity: 1; } to { opacity: 0; } }
-        @keyframes popOutBox { from { transform: scale(1); opacity: 1; } to { transform: scale(0.7); opacity: 0; } }
     </style>
 </head>
 <body>
 
-    <!-- ALERT SUKSES POPUP -->
-    @if(session('success'))
-        <div class="popup-overlay" id="success-popup-overlay">
-            <div class="popup-box success" id="success-popup-box">
-                <div class="popup-icon"><i class="fas fa-check"></i></div>
-                <div class="popup-title">BERHASIL!</div>
-                <div class="popup-message">{{ session('success') }}</div>
-                <button class="btn-close-popup" onclick="closePopup('success-popup-overlay', 'success-popup-box')">OKE, TERIMA KASIH</button>
+    <!-- NOTIFIKASI TOAST (Sama seperti halaman Kelola Redkar) -->
+    <div class="toast-wrap" id="toastWrap" aria-live="polite">
+        @if(session('success'))
+            <div class="toast ok" data-toast>
+                <span class="toast-ico"><i class="fas fa-check"></i></span>
+                <div class="toast-content">{{ session('success') }}</div>
+                <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
             </div>
-        </div>
-    @endif
-
-    <!-- ALERT ERROR POPUP (Gagal Login atau Kolom Kosong) -->
-    @if(session('error') || $errors->any())
-        <div class="popup-overlay" id="error-popup-overlay">
-            <div class="popup-box error" id="error-popup-box">
-                <div class="popup-icon"><i class="fas fa-times"></i></div>
-                <div class="popup-title">GAGAL MASUK!</div>
-                <div class="popup-message">
+        @endif
+        
+        @if(session('error') || $errors->any())
+            <div class="toast err" data-toast>
+                <span class="toast-ico"><i class="fas fa-triangle-exclamation"></i></span>
+                <div class="toast-content">
                     @if(session('error'))
-                        {{ session('error') }}
+                        <span>{{ session('error') }}</span>
                     @endif
+                    
                     @if($errors->any())
-                        <ul style="list-style:none; padding:0; margin:0;">
+                        @if(!session('error')) <span>Gagal Masuk:</span> @endif
+                        <ul>
                             @foreach($errors->all() as $err)
                                 <li>{{ $err }}</li>
                             @endforeach
                         </ul>
                     @endif
                 </div>
-                <button class="btn-close-popup" onclick="closePopup('error-popup-overlay', 'error-popup-box')">COBA LAGI</button>
+                <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
             </div>
-        </div>
-    @endif
+        @endif
+    </div>
 
     <div class="login-card">
         <!-- HEADER GELAP -->
@@ -243,18 +229,18 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Fungsi untuk menutup popup animasi
-    function closePopup(overlayId, boxId) {
-        let overlay = document.getElementById(overlayId);
-        let box = document.getElementById(boxId);
-        if(overlay && box) { 
-            overlay.style.animation = 'fadeOutOverlay 0.4s ease forwards'; 
-            box.style.animation = 'popOutBox 0.4s ease forwards'; 
-            setTimeout(() => overlay.remove(), 400); 
-        }
-    }
+    /* ---------- Notifikasi Toast Logic ---------- */
+    document.querySelectorAll('[data-toast]').forEach(function (t) {
+        var hide = function () {
+            t.classList.add('leaving');
+            setTimeout(function () { t.remove(); }, 350);
+        };
+        var x = t.querySelector('[data-toast-close]');
+        if (x) x.addEventListener('click', hide);
+        setTimeout(hide, 6000); // Otomatis hilang setelah 6 detik
+    });
 
-    // Fungsi untuk menampilkan/menyembunyikan password
+    /* ---------- Fungsi Toggle Password ---------- */
     function togglePassword() {
         const passwordInput = document.getElementById("password_input");
         const eyeIcon = document.getElementById("eye_icon");
