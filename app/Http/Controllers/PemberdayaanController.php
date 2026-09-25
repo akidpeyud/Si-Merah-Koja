@@ -8,14 +8,26 @@ use Carbon\Carbon;
 
 class PemberdayaanController extends Controller
 {
-    // 1. TAMPILKAN SEMUA DATA (INDEX)
+    // 1. TAMPILKAN SEMUA DATA (INDEX) -> UNTUK TAB "SEMUA DATA" (STAT CARDS)
     public function index()
     {
-        // Narik data dari tabel sosialisasi_edukasi
+        // Hitung total data untuk dimunculkan di kotak-kotak ringkasan (Stat Cards)
+        $total_sosialisasi = DB::table('sosialisasi_edukasi')->count();
+        // Asumsi nama tabel untuk pelatihan keluarga adalah 'pelatihan_keluarga'. Sesuaikan kalau beda!
+        $total_pelatihan = DB::table('pelatihan_keluarga')->count(); 
+
+        return view('internal.pencegahan.pemberdayaan_masyarakat', compact('total_sosialisasi', 'total_pelatihan'));
+    }
+
+    // 1.B TAMPILKAN TABEL -> UNTUK TAB "SOSIALISASI DAN EDUKASI"
+    public function sosialisasi()
+    {
+        // Ambil data sosialisasi dari database
         $data_sosialisasi = DB::table('sosialisasi_edukasi')
                             ->orderBy('tanggal_pelaksanaan', 'desc')
                             ->get();
                             
+        // Kirim data ke view pemberdayaan_masyarakat
         return view('internal.pencegahan.pemberdayaan_masyarakat', compact('data_sosialisasi'));
     }
 
@@ -24,7 +36,7 @@ class PemberdayaanController extends Controller
     {
         return view('internal.pencegahan.create_pemberdayaan');
     }
-
+    
     // 3. PROSES SIMPAN DATA KE DATABASE (STORE)
     public function store(Request $request)
     {
