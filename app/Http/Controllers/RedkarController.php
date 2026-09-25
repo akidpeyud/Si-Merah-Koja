@@ -300,4 +300,3 @@ class RedkarController extends Controller
     }
     }
 
-}
