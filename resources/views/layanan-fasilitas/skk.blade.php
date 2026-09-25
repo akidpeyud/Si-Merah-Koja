@@ -65,44 +65,36 @@
             --steel: #5b6c7f;
             --line: #dbe2ea;
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+            --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+            --font-body: 'Instrument Sans', system-ui, sans-serif;
 
-        /* --- GLOBAL ALERT STYLES --- */
-        #globalSuccessAlert {
-            position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
-            background-color: #10b981; color: white; padding: 16px 24px; border-radius: 8px;
-            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); z-index: 99999;
-            display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px;
-            animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --r-lg: 28px;
+            --r-md: 18px;
+            --r-sm: 10px;
+            --wrap: 1200px;
+            --header-h: 64px;
         }
-        #globalSuccessAlert .alert-icon { font-size: 22px; }
-        .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; margin-left: 10px; cursor: pointer; }
-        @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
-        @keyframes fadeOutUpCenter { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -50px); opacity: 0; } }
 
-        .alert-danger { background-color: #fef2f2; color: #991b1b; padding: 15px; border-radius: 8px; border: 1px solid #f87171; margin-bottom: 25px; font-size: 13px; }
-        .alert-danger ul { padding-left: 20px; margin-top: 5px; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            line-height: 1.65;
+            color: var(--ink);
+            background: var(--white);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        body:has(dialog[open]) { overflow: hidden; }
+        img { max-width: 100%; display: block; }
+        a { color: inherit; text-decoration: none; }
+        ul, ol { list-style: none; }
+        button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 
-        /* --- NAVBAR TEMA GELAP (STICKY) --- */
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 50px; background-color: #0f172a; border-bottom: 4px solid #ef4444; position: sticky; top: 0; z-index: 9999; }
-        .nav-logos { display: flex; gap: 15px; align-items: center; }
-        .nav-logos a { display: block; text-decoration: none; }
-        .nav-logos img { height: 40px; transition: transform 0.3s; }
-        .nav-logos img:hover { transform: scale(1.05); }
-        .nav-links { list-style: none; display: flex; gap: 30px; align-items: center; }
-        .nav-links li { position: relative; padding-bottom: 15px; margin-bottom: -15px; }
-        .nav-links a { color: #f8fafc; text-decoration: none; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s ease; }
-        .nav-links a:hover { color: #ef4444; }
-        .nav-links .btn-login { background-color: #ef4444; color: #ffffff; padding: 8px 24px; border-radius: 50px; margin-left: 10px; }
-        .nav-links .btn-login:hover { background-color: #dc2626; color: #ffffff; }
+        :focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; border-radius: 6px; }
 
-        .dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background-color: #0f172a; min-width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-radius: 0 0 8px 8px; overflow: hidden; z-index: 10; margin-top: 0; border: 1px solid #1e293b; border-top: none; }
-        .dropdown:hover .dropdown-menu { display: block; animation: fadeIn 0.2s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        .dropdown-menu li { list-style: none; padding-bottom: 0; margin-bottom: 0; }
-        .dropdown-menu li a { color: #cbd5e1; padding: 14px 20px; display: block; font-size: 13px; border-bottom: 1px solid #1e293b; font-weight: 600; }
-        .dropdown-menu li:last-child a { border-bottom: none; }
-        .dropdown-menu li a:hover { background-color: #1e293b; color: #ef4444; padding-left: 26px; }
+        .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: clamp(16px, 4vw, 32px); padding-right: clamp(16px, 4vw, 32px); }
 
         .site-header {
             position: sticky; top: 0; z-index: 60;
@@ -119,27 +111,28 @@
         .brand { display: flex; align-items: center; gap: 12px; }
         .brand img { height: 38px; width: auto; }
 
-        /* --- IKON LAYANAN KLIKABEL --- */
-        .service-icons-container { max-width: 900px; margin: -40px auto 50px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); position: relative; z-index: 5; }
-        .service-icon-link { text-decoration: none; display: block; }
-        .service-icon-box { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 10px; transition: transform 0.3s ease; }
-        .service-icon-box:hover { transform: translateY(-5px); }
-        .icon-top-box { width: 70px; height: 70px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 35px; color: white; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .bg-gray { background-color: #9ca3af; }
-        .bg-pink { background-color: #ec4899; }
-        .bg-orange { background-color: #f97316; }
-        .service-icon-box h3 { font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 8px; transition: color 0.3s; }
-        .service-icon-box p { font-size: 11px; color: #64748b; line-height: 1.5; }
-        .service-icon-link.active .service-icon-box h3 { color: #ef4444; }
+        .menu { display: flex; align-items: center; gap: 2px; }
+        .menu > li { position: relative; }
+        .menu-link, .menu-trigger {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 9px 14px; border-radius: 999px;
+            color: rgba(255,255,255,.88); font-size: .92rem; font-weight: 500;
+            transition: background .2s, color .2s;
+        }
+        .menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger, .menu > li.current > .menu-trigger { background: rgba(255,255,255,.1); color: #fff; }
+        .menu-trigger i { font-size: .65rem; transition: transform .2s; }
+        .has-drop.open > .menu-trigger i { transform: rotate(180deg); }
+        .menu .btn-login { background: var(--signal); color: #fff; margin-left: 10px; font-weight: 600; padding: 9px 22px; }
+        .menu .btn-login:hover { background: var(--signal-d); }
 
-        /* --- LAYOUT FORM & SIDEBAR --- */
-        .content-wrapper { max-width: 1200px; margin: 0 auto 80px; display: flex; gap: 40px; padding: 0 20px; }
-        .sidebar { width: 300px; flex-shrink: 0; }
-        .sidebar-title { font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 5px; }
-        .decor-line { display: flex; align-items: center; margin-bottom: 25px; }
-        .decor-line::before { content: ""; height: 2px; width: 30px; background: #ef4444; }
-        .decor-line i { color: #ef4444; font-size: 6px; margin: 0 5px; }
-        .decor-line::after { content: ""; height: 2px; width: 10px; background: #ef4444; }
+        .dropdown {
+            display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 250px;
+            background: var(--ink-2); border: 1px solid rgba(255,255,255,.1);
+            border-radius: var(--r-md); padding: 6px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
+        }
+        .dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
+        .dropdown a { display: block; padding: 11px 14px; border-radius: var(--r-sm); font-size: .92rem; color: rgba(255,255,255,.85); }
+        .dropdown a:hover, .dropdown a[aria-current="page"] { background: rgba(255,255,255,.1); color: #fff; }
 
         .dropdown .btn-logout {
             width: 100%; text-align: left; padding: 11px 14px; border-radius: var(--r-sm); 
@@ -148,30 +141,29 @@
         }
         .dropdown .btn-logout:hover { background: rgba(255, 255, 255, .1); color: #ffb8b8; }
 
-        .detail-content { display: none; margin-top: 10px; padding: 15px; border: 1px solid #e2e8f0; border-radius: 6px; background-color: #f8fafc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .detail-content ul { padding-left: 20px; margin: 0; }
-        .detail-content li { font-size: 12px; color: #64748b; line-height: 1.6; margin-bottom: 8px; list-style-type: circle; }
-        .detail-content li:last-child { margin-bottom: 0; }
+        .has-drop.open .dropdown { display: block; }
+        @media (hover: hover) and (min-width: 992px) {
+            .has-drop:hover .dropdown { display: block; }
+        }
 
-        /* --- MODAL POP-UP --- */
-        .modal-overlay { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(3px); animation: fadeIn 0.3s; }
-        .modal-box { background-color: #ffffff; margin: 5vh auto; padding: 0; border-radius: 8px; width: 85%; max-width: 800px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative; }
-        .modal-header { padding: 20px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
-        .modal-header h2 { font-size: 22px; font-weight: 800; color: #1f2937; }
-        .modal-close-icon { color: #9ca3af; font-size: 28px; font-weight: bold; cursor: pointer; background: none; border: none; line-height: 1; }
-        .modal-close-icon:hover { color: #111827; }
-        .modal-body { padding: 25px 20px; font-size: 13px; color: #4b5563; line-height: 1.8; max-height: 60vh; overflow-y: auto; }
-        .modal-body ol { padding-left: 20px; }
-        .modal-body li { margin-bottom: 15px; }
-        .modal-footer { padding: 15px 20px; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-start; }
-        .btn-modal-tutup { background: #ef4444; color: white; border: none; padding: 10px 24px; border-radius: 6px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.3s;}
-        .btn-modal-tutup:hover { background: #dc2626; }
-        .link-detail { color: #ef4444; font-weight: 600; cursor: pointer; text-decoration: none; }
-        .link-detail:hover { text-decoration: underline; }
+        .nav-toggle { display: none; width: 44px; height: 44px; border-radius: 12px; color: #fff; font-size: 1.15rem; }
+        .nav-toggle:hover { background: rgba(255,255,255,.1); }
 
-        .sidebar-social { padding-left: 39px; display: flex; gap: 8px; margin-top: 20px; }
-        .sidebar-social a { background: #94a3b8; color: white; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px; text-decoration: none; font-size: 13px; transition: 0.3s; }
-        .sidebar-social a:hover { background: #ef4444; }
+        @media (max-width: 991px) {
+            .nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
+            .menu {
+                display: none; position: fixed; top: var(--header-h); left: 0; right: 0;
+                max-height: calc(100dvh - var(--header-h)); overflow-y: auto;
+                flex-direction: column; align-items: stretch; gap: 4px;
+                padding: 16px clamp(16px, 4vw, 32px) 28px; background: var(--ink);
+                border-bottom: 1px solid rgba(255,255,255,.1);
+            }
+            .nav-open .menu { display: flex; }
+            .menu-link, .menu-trigger { width: 100%; justify-content: space-between; padding: 14px 16px; border-radius: 14px; font-size: 1rem; }
+            .dropdown { position: static; margin: 2px 0 8px 12px; box-shadow: none; background: transparent; border: 0; border-left: 2px solid rgba(255,255,255,.12); border-radius: 0; }
+            .dropdown::before { display: none; }
+            .menu .btn-login { margin: 8px 0 0; justify-content: center; padding: 14px; }
+        }
 
         .page-hero {
             position: relative; isolation: isolate; color: #fff; background: var(--ink); overflow: hidden;
@@ -440,6 +432,145 @@
             html { scroll-behavior: auto; }
             *, *::before, *::after { animation: none !important; transition: none !important; }
         }
+        #globalSuccessAlert .alert-icon { font-size: 22px; }
+        .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; margin-left: 10px; cursor: pointer; }
+        @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+        @keyframes fadeOutUpCenter { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -50px); opacity: 0; } }
+
+        .alert-danger { background-color: #fef2f2; color: #991b1b; padding: 15px; border-radius: 8px; border: 1px solid #f87171; margin-bottom: 25px; font-size: 13px; }
+        .alert-danger ul { padding-left: 20px; margin-top: 5px; }
+
+        /* --- NAVBAR TEMA GELAP (STICKY) --- */
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 50px; background-color: #0f172a; border-bottom: 4px solid #ef4444; position: sticky; top: 0; z-index: 9999; }
+        .nav-logos { display: flex; gap: 15px; align-items: center; }
+        .nav-logos a { display: block; text-decoration: none; }
+        .nav-logos img { height: 40px; transition: transform 0.3s; }
+        .nav-logos img:hover { transform: scale(1.05); }
+        .nav-links { list-style: none; display: flex; gap: 30px; align-items: center; }
+        .nav-links li { position: relative; padding-bottom: 15px; margin-bottom: -15px; }
+        .nav-links a { color: #f8fafc; text-decoration: none; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s ease; }
+        .nav-links a:hover { color: #ef4444; }
+        .nav-links .btn-login { background-color: #ef4444; color: #ffffff; padding: 8px 24px; border-radius: 50px; margin-left: 10px; }
+        .nav-links .btn-login:hover { background-color: #dc2626; color: #ffffff; }
+
+        .dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background-color: #0f172a; min-width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-radius: 0 0 8px 8px; overflow: hidden; z-index: 10; margin-top: 0; border: 1px solid #1e293b; border-top: none; }
+        .dropdown:hover .dropdown-menu { display: block; animation: fadeIn 0.2s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .dropdown-menu li { list-style: none; padding-bottom: 0; margin-bottom: 0; }
+        .dropdown-menu li a { color: #cbd5e1; padding: 14px 20px; display: block; font-size: 13px; border-bottom: 1px solid #1e293b; font-weight: 600; }
+        .dropdown-menu li:last-child a { border-bottom: none; }
+        .dropdown-menu li a:hover { background-color: #1e293b; color: #ef4444; padding-left: 26px; }
+
+        /* --- HERO SECTION --- */
+        .page-hero { background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)), url('/images/background1.jpg'); background-size: cover; background-position: center; padding: 80px 20px; text-align: center; color: white; border-bottom: 4px solid #ef4444; }
+        .page-hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 15px; letter-spacing: 1px; }
+        .breadcrumb { font-size: 14px; font-weight: 600; color: #cbd5e1; justify-content: center; display: flex; align-items: center; }
+        .breadcrumb a { color: #38bdf8; text-decoration: none; transition: 0.3s; }
+        .breadcrumb a:hover { color: #bae6fd; text-decoration: underline; }
+        .breadcrumb span { color: #ef4444; margin: 0 5px;}
+        .breadcrumb .active { color: #ef4444; }
+
+        /* --- IKON LAYANAN KLIKABEL --- */
+        .service-icons-container { max-width: 900px; margin: -40px auto 50px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); position: relative; z-index: 5; }
+        .service-icon-link { text-decoration: none; display: block; }
+        .service-icon-box { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 10px; transition: transform 0.3s ease; }
+        .service-icon-box:hover { transform: translateY(-5px); }
+        .icon-top-box { width: 70px; height: 70px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 35px; color: white; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .bg-gray { background-color: #9ca3af; }
+        .bg-pink { background-color: #ec4899; }
+        .bg-orange { background-color: #f97316; }
+        .service-icon-box h3 { font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 8px; transition: color 0.3s; }
+        .service-icon-box p { font-size: 11px; color: #64748b; line-height: 1.5; }
+        .service-icon-link.active .service-icon-box h3 { color: #ef4444; }
+
+        /* --- LAYOUT FORM & SIDEBAR --- */
+        .content-wrapper { max-width: 1200px; margin: 0 auto 80px; display: flex; gap: 40px; padding: 0 20px; }
+        .sidebar { width: 300px; flex-shrink: 0; }
+        .sidebar-title { font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 5px; }
+        .decor-line { display: flex; align-items: center; margin-bottom: 25px; }
+        .decor-line::before { content: ""; height: 2px; width: 30px; background: #ef4444; }
+        .decor-line i { color: #ef4444; font-size: 6px; margin: 0 5px; }
+        .decor-line::after { content: ""; height: 2px; width: 10px; background: #ef4444; }
+
+        .info-list { list-style: none; }
+        .info-item { margin-bottom: 25px; }
+        .info-header { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 10px; }
+        .info-header .icon-red { background: #ef4444; color: white; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 12px; flex-shrink: 0; margin-top: 2px; }
+        .info-header h4 { font-size: 15px; font-weight: 700; color: #1e293b; line-height: 1.4;}
+        .info-body { padding-left: 39px; font-size: 12px; color: #64748b; line-height: 1.6; }
+        .info-body ul { padding-left: 15px; margin-bottom: 10px; }
+        .info-body a { color: #ef4444; text-decoration: none; font-weight: 600; }
+        
+        .btn-detail { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; margin-top: 5px; transition: 0.3s;}
+        .btn-detail:hover { background: #dc2626; }
+
+        .detail-content { display: none; margin-top: 10px; padding: 15px; border: 1px solid #e2e8f0; border-radius: 6px; background-color: #f8fafc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .detail-content ul { padding-left: 20px; margin: 0; }
+        .detail-content li { font-size: 12px; color: #64748b; line-height: 1.6; margin-bottom: 8px; list-style-type: circle; }
+        .detail-content li:last-child { margin-bottom: 0; }
+
+        /* --- MODAL POP-UP --- */
+        .modal-overlay { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(3px); animation: fadeIn 0.3s; }
+        .modal-box { background-color: #ffffff; margin: 5vh auto; padding: 0; border-radius: 8px; width: 85%; max-width: 800px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative; }
+        .modal-header { padding: 20px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h2 { font-size: 22px; font-weight: 800; color: #1f2937; }
+        .modal-close-icon { color: #9ca3af; font-size: 28px; font-weight: bold; cursor: pointer; background: none; border: none; line-height: 1; }
+        .modal-close-icon:hover { color: #111827; }
+        .modal-body { padding: 25px 20px; font-size: 13px; color: #4b5563; line-height: 1.8; max-height: 60vh; overflow-y: auto; }
+        .modal-body ol { padding-left: 20px; }
+        .modal-body li { margin-bottom: 15px; }
+        .modal-footer { padding: 15px 20px; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-start; }
+        .btn-modal-tutup { background: #ef4444; color: white; border: none; padding: 10px 24px; border-radius: 6px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.3s;}
+        .btn-modal-tutup:hover { background: #dc2626; }
+        .link-detail { color: #ef4444; font-weight: 600; cursor: pointer; text-decoration: none; }
+        .link-detail:hover { text-decoration: underline; }
+
+        .sidebar-social { padding-left: 39px; display: flex; gap: 8px; margin-top: 20px; }
+        .sidebar-social a { background: #94a3b8; color: white; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px; text-decoration: none; font-size: 13px; transition: 0.3s; }
+        .sidebar-social a:hover { background: #ef4444; }
+
+        /* Form */
+        .form-container { flex-grow: 1; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e5e7eb; }
+        .form-title { font-size: 22px; font-weight: 800; color: #0f172a; line-height: 1.3; margin-bottom: 5px;}
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 700; color: #1e293b; margin-bottom: 8px; }
+        .text-danger { color: #ef4444; }
+        .form-control { width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; color: #334155; outline: none; transition: border-color 0.3s; background-color: #f8fafc; }
+        .form-control:focus { border-color: #ef4444; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1); }
+        select.form-control { appearance: auto; }
+
+        .file-drop-area { border: 2px dashed #cbd5e1; background-color: #f8fafc; border-radius: 8px; padding: 30px; text-align: center; color: #64748b; font-size: 13px; font-weight: 600; transition: 0.3s; cursor: pointer; }
+        .file-drop-area:hover { border-color: #ef4444; background-color: #fef2f2; }
+        .file-drop-area p { margin: 0; }
+        .file-drop-area span { color: #111827; text-decoration: underline; }
+        .powered-by { text-align: right; font-size: 10px; color: #94a3b8; margin-top: 5px; }
+
+        .btn-submit { background-color: #ef4444; color: white; border: none; padding: 12px 35px; width: 100%; font-size: 14px; font-weight: 800; border-radius: 6px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-submit:hover { background-color: #dc2626; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
+
+        /* --- FOOTER --- */
+        .footer-bottom { background-color: #1a1a1a; color: #9ca3af; padding: 50px 5%; font-size: 13px; }
+        .footer-grid { display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 40px; max-width: 1100px; margin: 0 auto 40px; }
+        .footer-logo { text-align: center; }
+        .footer-logo img { height: 120px; margin-bottom: 15px; }
+        .footer-about h3 { color: white; font-size: 18px; margin-bottom: 20px; font-weight: 700;}
+        .footer-about p { line-height: 1.8; font-size: 12px; margin-bottom: 20px;}
+        .footer-map-container { position: relative; width: 100%; height: 120px; background: #333; border-radius: 8px; overflow: hidden; margin-bottom: 15px;}
+        .footer-map-container iframe { width: 100%; height: 100%; border: none;}
+        .footer-find { font-weight: 700; color: white; margin-bottom: 20px; }
+        .footer-find i { color: #ef4444; margin-right: 5px;}
+        .footer-download p { font-size: 12px; color: #ef4444; margin-bottom: 10px; }
+        .footer-download img { height: 40px; cursor: pointer;}
+        .footer-links h3 { color: white; font-size: 18px; margin-bottom: 20px; font-weight: 700;}
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a { color: #9ca3af; text-decoration: none; transition: color 0.3s; display: flex; align-items: center; gap: 10px;}
+        .footer-links a:hover { color: white; }
+        .footer-copyright { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto; padding-top: 20px; border-top: 1px solid #333; }
+        
+        .footer-social { display: flex; gap: 5px; }
+        .footer-social a { width: 35px; height: 35px; background: #333; color: white; display: flex; align-items: center; justify-content: center; border-radius: 4px; text-decoration: none; font-size: 13px; transition: 0.3s; }
+        .footer-social a:hover { background: #ef4444; }
     </style>
 </head>
 <body>
@@ -527,9 +658,6 @@
 
         </ul>
     </nav>
-</header>
-
-<main>
 
 <!-- ==================== HERO HALAMAN ==================== -->
 <section class="page-hero">
@@ -573,352 +701,6 @@
                     <small>Produk layanan</small>
                     <strong>Sertifikat Keamanan Kebakaran</strong>
                 </div>
-            </div>
-            <div class="fact">
-                <span class="c-ico"><i class="fab fa-whatsapp"></i></span>
-                <div>
-                    <small>Pengaduan layanan</small>
-                    <a href="https://wa.me/{{ $no_whatsapp }}" target="_blank" rel="noopener">WhatsApp +62 8117113113</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="perizinan-layout">
-
-            <!-- Informasi -->
-            <aside class="info-stack" aria-label="Informasi layanan">
-                <a class="jump" href="#formulir"><i class="fas fa-arrow-down"></i> Langsung ke formulir</a>
-
-                <section class="side-card">
-                    <div class="card-head">
-                        <span class="c-ico"><i class="fas fa-scale-balanced"></i></span>
-                        <h2>Dasar hukum</h2>
-                    </div>
-                    <ul class="law-list">
-                        <li>UU No 28 Thn 2002</li>
-                        <li>Permen Tenaga Kerja dan Transmigrasi No Per.04/MEN/1980</li>
-                        <li>Permen PU No 26/PRT/M/2007</li>
-                        <li>Permen PU No 20/PRT/M/2009</li>
-                        <li>Permendagri No 114 Thn 2018</li>
-                    </ul>
-                    <a class="card-link" href="/produkhukum"><i class="fas fa-file-pdf"></i> Lihat produk hukum</a>
-                </section>
-
-                <section class="side-card">
-                    <div class="card-head">
-                        <span class="c-ico"><i class="fas fa-clipboard-check"></i></span>
-                        <h2>Persyaratan Utama</h2>
-                    </div>
-                    <ol class="checklist">
-                        <li>
-                            <span class="ck-ico"><i class="fas fa-pen-to-square"></i></span>
-                            <div>Pilih dan isi formulir Pembuatan Baru atau Perpanjangan Sertifikat Keamanan Kebakaran (SKK)</div>
-                        </li>
-                        <li>
-                            <span class="ck-ico"><i class="fas fa-file-signature"></i></span>
-                            <div>
-                                Unggah surat permohonan bermaterai
-                                <br><span class="muted">Templat surat permohonan belum tersedia</span>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="ck-ico"><i class="fas fa-file-shield"></i></span>
-                            <div>
-                                Jika <b>Perpanjangan</b>, wajib unggah berkas Sertifikat (SKK) tahun sebelumnya.
-                            </div>
-                        </li>
-                        <li>
-                            <span class="ck-ico"><i class="fas fa-folder-open"></i></span>
-                            <div>
-                                Unggah detail persyaratan SKK lainnya (IMB, NIB, dll)
-                                <br><button type="button" class="tool" data-open-modal><i class="fas fa-list-ul"></i> Lihat detail</button>
-                            </div>
-                        </li>
-                    </ol>
-                </section>
-
-                <section class="side-card">
-                    <div class="card-head">
-                        <span class="c-ico"><i class="fas fa-route"></i></span>
-                        <h2>Sistem, mekanisme, dan prosedur</h2>
-                    </div>
-                    <details class="disclose">
-                        <summary>
-                            <span class="when-closed">Tampilkan detail</span><span class="when-open">Sembunyikan detail</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </summary>
-                        <ol class="steps">
-                            <li>Pemohon mendaftar secara daring, lalu mengunggah kelengkapan berkas yang dipersyaratkan</li>
-                            <li>Tim Inspeksi memeriksa proteksi aktif kebakaran gedung pemohon</li>
-                            <li>Tim Inspeksi merekomendasikan kepada Kepala Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi untuk menerima atau menolak permohonan, berdasarkan hasil inspeksi lapangan</li>
-                            <li>Kepala Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi memberikan jawaban berdasarkan hasil rekomendasi Tim Inspeksi</li>
-                            <li>Sistem mengirim notifikasi lewat WhatsApp</li>
-                        </ol>
-                    </details>
-                </section>
-            </aside>
-
-            <!-- Formulir -->
-            <section class="form-panel" id="formulir" aria-label="Formulir permohonan">
-                <div class="form-bar">
-                    <div class="form-title">
-                        <i class="fas fa-certificate"></i>
-                        <div>
-                            <h2>Formulir Permohonan SKK</h2>
-                            <p>Sertifikat Keamanan Kebakaran (Baru & Perpanjangan)</p>
-                        </div>
-                    </div>
-                    <span class="form-note"><span class="req" aria-hidden="true">*</span> wajib diisi</span>
-                </div>
-
-                <form class="form-body" action="{{ route('permohonan.skk.store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-
-                    @if($errors->any())
-                        <div class="alert err" role="alert">
-                            <i class="fas fa-triangle-exclamation"></i>
-                            <div>
-                                Mohon periksa kembali form Anda:
-                                <ul>
-                                    @foreach($errors->all() as $err)
-                                        <li>{{ $err }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </div>
-                    @endif
-
-                    <fieldset class="fs">
-                        <legend><i class="fas fa-list-check"></i> Jenis Permohonan</legend>
-                        <div class="fields">
-                            <div class="field full">
-                                <label class="label">Pilih Jenis Layanan SKK <span class="req" aria-hidden="true">*</span></label>
-                                <div class="radio-group">
-                                    <label class="radio-card">
-                                        <input type="radio" name="jenis_permohonan" value="Baru" required onchange="toggleSkkLama()" @if($oldJenis == 'Baru' || empty($oldJenis)) checked @endif>
-                                        <span>Pembuatan SKK Baru</span>
-                                    </label>
-                                    <label class="radio-card">
-                                        <input type="radio" name="jenis_permohonan" value="Perpanjangan" required onchange="toggleSkkLama()" @if($oldJenis == 'Perpanjangan') checked @endif>
-                                        <span>Perpanjangan SKK</span>
-                                    </label>
-                                </div>
-                                {!! $fe('jenis_permohonan') !!}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    <fieldset class="fs">
-                        <legend><i class="fas fa-user"></i> Data Pemohon / Pemilik Gedung</legend>
-                        <div class="fields">
-                            <div class="field full">
-                                <label class="label" for="nama_pemohon">Nama pemohon <span class="req" aria-hidden="true">*</span></label>
-                                <input class="input{{ $inv('nama_pemohon') }}" type="text" id="nama_pemohon" name="nama_pemohon" value="{{ old('nama_pemohon') }}" autocomplete="name" required>
-                                {!! $fe('nama_pemohon') !!}
-                            </div>
-                            <div class="field">
-                                <label class="label" for="email_pemohon">Email pemohon <span class="req" aria-hidden="true">*</span></label>
-                                <input class="input{{ $inv('email_pemohon') }}" type="email" id="email_pemohon" name="email_pemohon" value="{{ old('email_pemohon') }}" autocomplete="email" required>
-                                {!! $fe('email_pemohon') !!}
-                            </div>
-                            <div class="field">
-                                <label class="label" for="no_whatsapp">Nomor WhatsApp <span class="req" aria-hidden="true">*</span></label>
-                                <input class="input{{ $inv('no_whatsapp') }}" type="tel" id="no_whatsapp" name="no_whatsapp" value="{{ old('no_whatsapp') }}" inputmode="tel" autocomplete="tel" placeholder="Contoh: 08123456789" required aria-describedby="hint-wa">
-                                <p class="hint" id="hint-wa">Notifikasi status permohonan dikirim ke nomor ini.</p>
-                                {!! $fe('no_whatsapp') !!}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    <fieldset class="fs">
-                        <legend><i class="fas fa-briefcase"></i> Data Usaha / Perusahaan</legend>
-                        <div class="fields">
-                            <div class="field full">
-                                <label class="label" for="nama_usaha">Nama Instansi / Perusahaan <span class="req" aria-hidden="true">*</span></label>
-                                <input class="input{{ $inv('nama_usaha') }}" type="text" id="nama_usaha" name="nama_usaha" value="{{ old('nama_usaha') }}" autocomplete="organization" required aria-describedby="hint-usaha">
-                                <p class="hint" id="hint-usaha">PT, CV, Lembaga, atau Perorangan pengelola gedung.</p>
-                                {!! $fe('nama_usaha') !!}
-                            </div>
-                            <div class="field">
-                                <label class="label" for="nik_pemilik_usaha">NIK Pemilik Usaha <span class="req" aria-hidden="true">*</span></label>
-                                <input class="input{{ $inv('nik_pemilik_usaha') }}" type="text" id="nik_pemilik_usaha" name="nik_pemilik_usaha" value="{{ old('nik_pemilik_usaha') }}" inputmode="numeric" pattern="[0-9]{16}" maxlength="16" placeholder="16 digit NIK" required>
-                                {!! $fe('nik_pemilik_usaha') !!}
-                            </div>
-                            <div class="field">
-                                <label class="label" for="alamat_pemilik_usaha">Alamat Pemilik Usaha <span class="req" aria-hidden="true">*</span></label>
-                                <input class="input{{ $inv('alamat_pemilik_usaha') }}" type="text" id="alamat_pemilik_usaha" name="alamat_pemilik_usaha" value="{{ old('alamat_pemilik_usaha') }}" autocomplete="street-address" required>
-                                {!! $fe('alamat_pemilik_usaha') !!}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    <fieldset class="fs">
-                        <legend><i class="fas fa-building"></i> Data Bangunan Gedung</legend>
-                        <div class="fields">
-                            <div class="field full">
-                                <label class="label" for="nama_bangunan">Nama Bangunan Gedung <span class="req" aria-hidden="true">*</span></label>
-                                <input class="input{{ $inv('nama_bangunan') }}" type="text" id="nama_bangunan" name="nama_bangunan" value="{{ old('nama_bangunan') }}" placeholder="Contoh: Gedung Perkantoran Abadi / Mall Jambi" required>
-                                {!! $fe('nama_bangunan') !!}
-                            </div>
-                            <div class="field">
-                                <label class="label" for="kategori_bangunan">Fungsi Bangunan Gedung <span class="req" aria-hidden="true">*</span></label>
-                                <select class="input{{ $inv('kategori_bangunan') }}" id="kategori_bangunan" name="kategori_bangunan" required>
-                                    <option value="" disabled @if(!old('kategori_bangunan')) selected @endif>Pilih fungsi bangunan</option>
-                                    @foreach($kategori_list as $kat)
-                                        <option value="{{ $kat }}" @if(old('kategori_bangunan') === $kat) selected @endif>{{ $kat }}</option>
-                                    @endforeach
-                                </select>
-                                {!! $fe('kategori_bangunan') !!}
-                            </div>
-                            <div class="field">
-                                <label class="label" for="konstruksi_bangunan">Konstruksi Bangunan <span class="req" aria-hidden="true">*</span></label>
-                                <input class="input{{ $inv('konstruksi_bangunan') }}" type="text" id="konstruksi_bangunan" name="konstruksi_bangunan" value="{{ old('konstruksi_bangunan') }}" placeholder="Contoh: Cor Beton Bertulang / Baja" required>
-                                {!! $fe('konstruksi_bangunan') !!}
-                            </div>
-                            <div class="field full">
-                                <label class="label" for="nomor_imb">Nomor IMB / PBG <span class="req" aria-hidden="true">*</span></label>
-                                <input class="input{{ $inv('nomor_imb') }}" type="text" id="nomor_imb" name="nomor_imb" value="{{ old('nomor_imb') }}" placeholder="Masukkan Nomor Izin Mendirikan Bangunan" required>
-                                {!! $fe('nomor_imb') !!}
-                            </div>
-                            <div class="field full">
-                                <label class="label" for="alamat_bangunan">Alamat Lengkap Bangunan Gedung <span class="req" aria-hidden="true">*</span></label>
-                                <input class="input{{ $inv('alamat_bangunan') }}" type="text" id="alamat_bangunan" name="alamat_bangunan" value="{{ old('alamat_bangunan') }}" required>
-                                {!! $fe('alamat_bangunan') !!}
-                            </div>
-                            <div class="field">
-                                <label class="label" for="kecamatan">Kecamatan <span class="req" aria-hidden="true">*</span></label>
-                                <select class="input{{ $inv('kecamatan') }}" id="kecamatan" name="kecamatan" required>
-                                    <option value="" disabled @if(!$oldKec) selected @endif>Pilih kecamatan</option>
-                                    @foreach(array_keys($dataWilayah) as $kc)
-                                        <option value="{{ $kc }}" @if($oldKec === $kc) selected @endif>{{ $kc }}</option>
-                                    @endforeach
-                                </select>
-                                {!! $fe('kecamatan') !!}
-                            </div>
-                            <div class="field">
-                                <label class="label" for="kelurahan">Kelurahan <span class="req" aria-hidden="true">*</span></label>
-                                <select class="input{{ $inv('kelurahan') }}" id="kelurahan" name="kelurahan" required>
-                                    @if($oldKec && isset($dataWilayah[$oldKec]))
-                                        <option value="" disabled @if(!$oldKel) selected @endif>Pilih kelurahan</option>
-                                        @foreach($dataWilayah[$oldKec] as $kl)
-                                            <option value="{{ $kl }}" @if($oldKel === $kl) selected @endif>{{ $kl }}</option>
-                                        @endforeach
-                                    @else
-                                        <option value="" disabled selected>Pilih kecamatan terlebih dahulu</option>
-                                    @endif
-                                </select>
-                                {!! $fe('kelurahan') !!}
-                            </div>
-                            
-                            <!-- SPESIFIKASI BANGUNAN (Termasuk Tinggi Bangunan yang baru ditambahkan) -->
-                            <div class="field full">
-                                <div class="fields-4">
-                                    <div class="field">
-                                        <label class="label" for="luas_lahan">Luas Tanah <span class="req" aria-hidden="true">*</span></label>
-                                        <div class="unit">
-                                            <input class="input{{ $inv('luas_lahan') }}" type="number" id="luas_lahan" name="luas_lahan" value="{{ old('luas_lahan') }}" min="0" step="0.01" inputmode="decimal" required>
-                                            <span aria-hidden="true">m&sup2;</span>
-                                        </div>
-                                        {!! $fe('luas_lahan') !!}
-                                    </div>
-                                    <div class="field">
-                                        <label class="label" for="luas_bangunan">Luas Bangunan <span class="req" aria-hidden="true">*</span></label>
-                                        <div class="unit">
-                                            <input class="input{{ $inv('luas_bangunan') }}" type="number" id="luas_bangunan" name="luas_bangunan" value="{{ old('luas_bangunan') }}" min="0" step="0.01" inputmode="decimal" required>
-                                            <span aria-hidden="true">m&sup2;</span>
-                                        </div>
-                                        {!! $fe('luas_bangunan') !!}
-                                    </div>
-                                    <div class="field">
-                                        <label class="label" for="jumlah_lantai">Jumlah Lantai <span class="req" aria-hidden="true">*</span></label>
-                                        <div class="unit">
-                                            <input class="input{{ $inv('jumlah_lantai') }}" type="number" id="jumlah_lantai" name="jumlah_lantai" value="{{ old('jumlah_lantai') }}" min="1" step="1" inputmode="numeric" required>
-                                            <span aria-hidden="true">Lantai</span>
-                                        </div>
-                                        {!! $fe('jumlah_lantai') !!}
-                                    </div>
-                                    <div class="field">
-                                        <label class="label" for="tinggi_bangunan">Tinggi Bangunan <span class="req" aria-hidden="true">*</span></label>
-                                        <div class="unit">
-                                            <input class="input{{ $inv('tinggi_bangunan') }}" type="number" id="tinggi_bangunan" name="tinggi_bangunan" value="{{ old('tinggi_bangunan') }}" min="0" step="0.01" inputmode="decimal" required>
-                                            <span aria-hidden="true">Meter</span>
-                                        </div>
-                                        {!! $fe('tinggi_bangunan') !!}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    <fieldset class="fs">
-                        <legend><i class="fas fa-paperclip"></i> Berkas Pendukung</legend>
-                        <div class="fields">
-
-                            <!-- Kolom Dinamis: Khusus SKK Perpanjangan -->
-                            <div class="field full" id="field_skk_lama" style="display: none;">
-                                <span class="label" id="lbl-skklama">Sertifikat Keamanan Kebakaran (SKK) Tahun Lalu <span class="req" aria-hidden="true">*</span></span>
-                                <label class="dropzone{{ $inv('file_skk_lama') }}" data-dropzone data-max="5">
-                                    <input type="file" id="file_skk_lama" name="file_skk_lama" accept=".pdf,.jpg,.jpeg,.png" aria-labelledby="lbl-skklama">
-                                    <span class="dz-ico"><i class="fas fa-file-shield"></i></span>
-                                    <span class="dz-text"><strong>Tarik berkas SKK lama</strong> atau <u>pilih dari perangkat</u></span>
-                                    <ul class="dz-files" aria-live="polite"></ul>
-                                </label>
-                                <p class="hint" style="color:var(--signal-d); font-weight:600;"><i class="fas fa-info-circle"></i> Wajib dilampirkan untuk permohonan Perpanjangan SKK.</p>
-                                <p class="field-err dz-msg" role="alert"></p>
-                                {!! $fe('file_skk_lama') !!}
-                            </div>
-                            
-                            <div class="field full">
-                                <span class="label" id="lbl-surat">Surat permohonan bermaterai <span class="req" aria-hidden="true">*</span></span>
-                                <label class="dropzone{{ $inv('file_surat_permohonan') }}" data-dropzone data-max="5">
-                                    <input type="file" id="file_surat" name="file_surat_permohonan" accept=".pdf,.jpg,.jpeg,.png" required aria-labelledby="lbl-surat" aria-describedby="hint-surat">
-                                    <span class="dz-ico"><i class="fas fa-cloud-arrow-up"></i></span>
-                                    <span class="dz-text"><strong>Tarik berkas ke sini</strong> atau <u>pilih dari perangkat</u></span>
-                                    <ul class="dz-files" aria-live="polite"></ul>
-                                </label>
-                                <p class="hint" id="hint-surat">Format PDF, JPG, atau PNG. Maksimal 5 MB.</p>
-                                <p class="field-err dz-msg" role="alert"></p>
-                                {!! $fe('file_surat_permohonan') !!}
-                            </div>
-                            
-                            <div class="field full">
-                                <span class="label" id="lbl-lain">Persyaratan lainnya</span>
-                                <label class="dropzone{{ $inv('file_persyaratan_lainnya') }}" data-dropzone data-max="10">
-                                    <input type="file" id="file_lain" name="file_persyaratan_lainnya" accept=".pdf,.zip,.rar" aria-labelledby="lbl-lain" aria-describedby="hint-lain">
-                                    <span class="dz-ico"><i class="fas fa-cloud-arrow-up"></i></span>
-                                    <span class="dz-text"><strong>Tarik berkas ke sini</strong> atau <u>pilih dari perangkat</u></span>
-                                    <ul class="dz-files" aria-live="polite"></ul>
-                                </label>
-                                <p class="hint" id="hint-lain">Format PDF atau ZIP, maksimal 10 MB. Daftar berkas yang diminta ada di <button type="button" class="text-link" data-open-modal>detail persyaratan</button>.</p>
-                                <p class="field-err dz-msg" role="alert"></p>
-                                {!! $fe('file_persyaratan_lainnya') !!}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Kirim permohonan</button>
-                        <p>Permohonan diproses dalam 14 hari kerja.</p>
-                    </div>
-                </form>
-            </section>
-
-    <!-- HERO SECTION -->
-    <div class="page-hero">
-        <h1>LAYANAN PERIZINAN</h1>
-        <div class="breadcrumb">
-            <a href="/">Home</a> <span>&raquo;</span> PERIZINAN <span>&raquo;</span> <span class="active">SKK</span>
-        </div>
-    </div>
-
-    <!-- DERETAN IKON KLIKABEL -->
-    <div class="service-icons-container">
-        <!-- RPKBGL -->
-        <a href="/layanan-fasilitas/layanan_perizinan" class="service-icon-link">
-            <div class="service-icon-box">
-                <div class="icon-top-box bg-gray"><i class="fas fa-building"></i></div>
-                <h3>RPKBGL</h3>
-                <p>Layanan Perizinan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan</p>
             </div>
         </a>
         
@@ -1089,16 +871,103 @@
                     <input type="text" class="form-control" name="alamat_pemilik_usaha" value="{{ old('alamat_pemilik_usaha') }}" required>
                 </div>
 
-                <div class="form-group">
-                    <label>Kategori Bangunan <span class="text-danger">*</span></label>
-                    <select class="form-control" name="kategori_bangunan" required>
-                        <option value="" selected disabled>Pilih Kategori Bangunan</option>
-                        <option value="Rumah Tinggal" {{ old('kategori_bangunan') == 'Rumah Tinggal' ? 'selected' : '' }}>Rumah Tinggal</option>
-                        <option value="Komersial" {{ old('kategori_bangunan') == 'Komersial' ? 'selected' : '' }}>Komersial</option>
-                        <option value="Industri" {{ old('kategori_bangunan') == 'Industri' ? 'selected' : '' }}>Industri</option>
-                        <option value="Fasilitas Umum" {{ old('kategori_bangunan') == 'Fasilitas Umum' ? 'selected' : '' }}>Fasilitas Umum</option>
-                    </select>
-                </div>
+                    <fieldset class="fs">
+                        <legend><i class="fas fa-building"></i> Data Bangunan Gedung</legend>
+                        <div class="fields">
+                            <div class="field full">
+                                <label class="label" for="nama_bangunan">Nama Bangunan Gedung <span class="req" aria-hidden="true">*</span></label>
+                                <input class="input{{ $inv('nama_bangunan') }}" type="text" id="nama_bangunan" name="nama_bangunan" value="{{ old('nama_bangunan') }}" placeholder="Contoh: Gedung Perkantoran Abadi / Mall Jambi" required>
+                                {!! $fe('nama_bangunan') !!}
+                            </div>
+                            <div class="field">
+                                <label class="label" for="kategori_bangunan">Fungsi Bangunan Gedung <span class="req" aria-hidden="true">*</span></label>
+                                <select class="input{{ $inv('kategori_bangunan') }}" id="kategori_bangunan" name="kategori_bangunan" required>
+                                    <option value="" disabled @if(!old('kategori_bangunan')) selected @endif>Pilih fungsi bangunan</option>
+                                    @foreach($kategori_list as $kat)
+                                        <option value="{{ $kat }}" @if(old('kategori_bangunan') === $kat) selected @endif>{{ $kat }}</option>
+                                    @endforeach
+                                </select>
+                                {!! $fe('kategori_bangunan') !!}
+                            </div>
+                            <div class="field">
+                                <label class="label" for="konstruksi_bangunan">Konstruksi Bangunan <span class="req" aria-hidden="true">*</span></label>
+                                <input class="input{{ $inv('konstruksi_bangunan') }}" type="text" id="konstruksi_bangunan" name="konstruksi_bangunan" value="{{ old('konstruksi_bangunan') }}" placeholder="Contoh: Cor Beton Bertulang / Baja" required>
+                                {!! $fe('konstruksi_bangunan') !!}
+                            </div>
+                            <div class="field full">
+                                <label class="label" for="nomor_imb">Nomor IMB / PBG <span class="req" aria-hidden="true">*</span></label>
+                                <input class="input{{ $inv('nomor_imb') }}" type="text" id="nomor_imb" name="nomor_imb" value="{{ old('nomor_imb') }}" placeholder="Masukkan Nomor Izin Mendirikan Bangunan" required>
+                                {!! $fe('nomor_imb') !!}
+                            </div>
+                            <div class="field full">
+                                <label class="label" for="alamat_bangunan">Alamat Lengkap Bangunan Gedung <span class="req" aria-hidden="true">*</span></label>
+                                <input class="input{{ $inv('alamat_bangunan') }}" type="text" id="alamat_bangunan" name="alamat_bangunan" value="{{ old('alamat_bangunan') }}" required>
+                                {!! $fe('alamat_bangunan') !!}
+                            </div>
+                            <div class="field">
+                                <label class="label" for="kecamatan">Kecamatan <span class="req" aria-hidden="true">*</span></label>
+                                <select class="input{{ $inv('kecamatan') }}" id="kecamatan" name="kecamatan" required>
+                                    <option value="" disabled @if(!$oldKec) selected @endif>Pilih kecamatan</option>
+                                    @foreach(array_keys($dataWilayah) as $kc)
+                                        <option value="{{ $kc }}" @if($oldKec === $kc) selected @endif>{{ $kc }}</option>
+                                    @endforeach
+                                </select>
+                                {!! $fe('kecamatan') !!}
+                            </div>
+                            <div class="field">
+                                <label class="label" for="kelurahan">Kelurahan <span class="req" aria-hidden="true">*</span></label>
+                                <select class="input{{ $inv('kelurahan') }}" id="kelurahan" name="kelurahan" required>
+                                    @if($oldKec && isset($dataWilayah[$oldKec]))
+                                        <option value="" disabled @if(!$oldKel) selected @endif>Pilih kelurahan</option>
+                                        @foreach($dataWilayah[$oldKec] as $kl)
+                                            <option value="{{ $kl }}" @if($oldKel === $kl) selected @endif>{{ $kl }}</option>
+                                        @endforeach
+                                    @else
+                                        <option value="" disabled selected>Pilih kecamatan terlebih dahulu</option>
+                                    @endif
+                                </select>
+                                {!! $fe('kelurahan') !!}
+                            </div>
+                            
+                            <!-- SPESIFIKASI BANGUNAN (Termasuk Tinggi Bangunan yang baru ditambahkan) -->
+                            <div class="field full">
+                                <div class="fields-4">
+                                    <div class="field">
+                                        <label class="label" for="luas_lahan">Luas Tanah <span class="req" aria-hidden="true">*</span></label>
+                                        <div class="unit">
+                                            <input class="input{{ $inv('luas_lahan') }}" type="number" id="luas_lahan" name="luas_lahan" value="{{ old('luas_lahan') }}" min="0" step="0.01" inputmode="decimal" required>
+                                            <span aria-hidden="true">m&sup2;</span>
+                                        </div>
+                                        {!! $fe('luas_lahan') !!}
+                                    </div>
+                                    <div class="field">
+                                        <label class="label" for="luas_bangunan">Luas Bangunan <span class="req" aria-hidden="true">*</span></label>
+                                        <div class="unit">
+                                            <input class="input{{ $inv('luas_bangunan') }}" type="number" id="luas_bangunan" name="luas_bangunan" value="{{ old('luas_bangunan') }}" min="0" step="0.01" inputmode="decimal" required>
+                                            <span aria-hidden="true">m&sup2;</span>
+                                        </div>
+                                        {!! $fe('luas_bangunan') !!}
+                                    </div>
+                                    <div class="field">
+                                        <label class="label" for="jumlah_lantai">Jumlah Lantai <span class="req" aria-hidden="true">*</span></label>
+                                        <div class="unit">
+                                            <input class="input{{ $inv('jumlah_lantai') }}" type="number" id="jumlah_lantai" name="jumlah_lantai" value="{{ old('jumlah_lantai') }}" min="1" step="1" inputmode="numeric" required>
+                                            <span aria-hidden="true">Lantai</span>
+                                        </div>
+                                        {!! $fe('jumlah_lantai') !!}
+                                    </div>
+                                    <div class="field">
+                                        <label class="label" for="tinggi_bangunan">Tinggi Bangunan <span class="req" aria-hidden="true">*</span></label>
+                                        <div class="unit">
+                                            <input class="input{{ $inv('tinggi_bangunan') }}" type="number" id="tinggi_bangunan" name="tinggi_bangunan" value="{{ old('tinggi_bangunan') }}" min="0" step="0.01" inputmode="decimal" required>
+                                            <span aria-hidden="true">Meter</span>
+                                        </div>
+                                        {!! $fe('tinggi_bangunan') !!}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
 
                 <div class="form-group">
                     <label>Alamat Bangunan <span class="text-danger">*</span></label>
@@ -1239,36 +1108,45 @@
         </div>
     </div>
 
-<script>
-(function () {
-    'use strict';
+    <!-- SCRIPT (DROPDOWN WILAYAH, MODAL, DAN PREVIEW FILE) -->
+    <script>
+        // Data Wilayah Kecamatan & Kelurahan Kota Jambi
+        const dataWilayah = {
+            "Alam Barajo": ["Bagan Pete", "Beliung", "Kenali Besar", "Mayang Mangurai", "Pinang Merah", "Rawa Sari", "Simpang Rimbo"],
+            "Danau Sipin": ["Legok", "Murni", "Selamat", "Solok Sipin", "Sungai Putri"],
+            "Danau Teluk": ["Olak Kemang", "Pasir Panjang", "Tanjung Pasir", "Tanjung Raden", "Ulu Gedong"],
+            "Jambi Selatan": ["Pakuan Baru", "Pasir Putih", "Tambak Sari", "The Hok", "Wijaya Pura"],
+            "Jambi Timur": ["Budiman", "Kasang", "Kasang Jaya", "Rajawali", "Sejinjang", "Sulanjana", "Talang Banjar", "Tanjung Pinang", "Tanjung Sari"],
+            "Jelutung": ["Cempaka Putih", "Handil Jaya", "Jelutung", "Kebun Handil", "Lebak Bandung", "Payo Lebar", "Talang Jauh"],
+            "Kota Baru": ["Kenali Asam", "Kenali Asam Atas", "Kenali Asam Bawah", "Paal Lima", "Simpang Tiga Sipin", "Sukakarya", "Talang Gulo"],
+            "Paal Merah": ["Bakung Jaya", "Eka Jaya", "Lingkar Selatan", "Paal Merah", "Payo Selincah", "Talang Bakung"],
+            "Pasar Jambi": ["Beringin", "Orang Kayo Hitam", "Pasar Jambi", "Sungai Asam"],
+            "Pelayangan": ["Arab Melayu", "Jelmu", "Mudung Laut", "Tahtul Yaman", "Tanjung Johor", "Tengah"],
+            "Telanaipura": ["Aur Kenali", "Buluran Kenali", "Pematang Sulur", "Penyengat Rendah", "Simpang Empat Sipin", "Telanaipura", "Teluk Kenali"]
+        };
 
     var header = document.getElementById('siteHeader');
     var toggle = header.querySelector('.nav-toggle');
     var drops = header.querySelectorAll('.has-drop');
 
-    function closeDrops(except) {
-        drops.forEach(function (li) {
-            if (li !== except) {
-                li.classList.remove('open');
-                li.querySelector('.menu-trigger').setAttribute('aria-expanded', 'false');
+            kelurahanSelect.innerHTML = '<option value="" selected disabled>Pilih Kelurahan</option>';
+
+            if (kecamatan && dataWilayah[kecamatan]) {
+                dataWilayah[kecamatan].forEach(function(kelurahan) {
+                    const option = document.createElement('option');
+                    option.value = kelurahan;
+                    option.textContent = kelurahan;
+                    kelurahanSelect.appendChild(option);
+                });
             }
         });
-    }
 
-    toggle.addEventListener('click', function () {
-        var open = header.classList.toggle('nav-open');
-        toggle.setAttribute('aria-expanded', open);
-        toggle.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
-        toggle.querySelector('i').className = open ? 'fas fa-times' : 'fas fa-bars';
-    });
-
-    drops.forEach(function (li) {
-        var btn = li.querySelector('.menu-trigger');
-        btn.addEventListener('click', function () {
-            var open = li.classList.toggle('open');
-            btn.setAttribute('aria-expanded', open);
-            closeDrops(li);
+        // Script Menampilkan Nama File
+        document.getElementById('file_surat').addEventListener('change', function() {
+            const fileLabel = document.getElementById('label_file_surat');
+            if (this.files && this.files[0]) {
+                fileLabel.innerHTML = `<span style="color:#10b981"><i class="fas fa-check-circle"></i> File: <strong>${this.files[0].name}</strong></span>`;
+            }
         });
     });
 
@@ -1302,10 +1180,14 @@
             toast.classList.add('leaving');
             setTimeout(function () { toast.remove(); }, 400);
         };
+        toast.querySelector('[data-toast-close]').addEventListener('click', hideToast);
+        setTimeout(hideToast, 5000);
+    }
 
     var dlg = document.getElementById('modalPersyaratan');
 
-            kelurahanSelect.innerHTML = '<option value="" selected disabled>Pilih Kelurahan</option>';
+    function openDlg() { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); }
+    function closeDlg() { if (dlg.close) dlg.close(); else dlg.removeAttribute('open'); }
 
     document.querySelectorAll('[data-open-modal]').forEach(function (b) {
         b.addEventListener('click', openDlg);
@@ -1380,15 +1262,16 @@
             if (msg) msg.textContent = '';
             dz.classList.remove('is-invalid');
 
-            var files = Array.prototype.slice.call(input.files);
-            var terlalubesar = files.some(function (f) { return maxMb && f.size > maxMb * 1048576; });
-
-            if (terlalubesar) {
-                input.value = '';
-                dz.classList.remove('has-files');
-                dz.classList.add('is-invalid');
-                if (msg) msg.textContent = 'Ukuran berkas melebihi ' + maxMb + ' MB. Pilih berkas yang lebih kecil.';
-                return;
+        var modal = document.getElementById("modalPersyaratan");
+        function bukaModal() {
+            modal.style.display = "block";
+        }
+        function tutupModal() {
+            modal.style.display = "none";
+        }
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
             }
         }
     </script>

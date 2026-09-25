@@ -80,7 +80,7 @@ class RedkarController extends Controller
         $validatedData['status_akun'] = 'Nonaktif'; 
         $validatedData['status_pendaftaran'] = 'Pending';
 
-        // 6. Buat ID kustom berbasis NIK (Contoh: RDK-1571060202870001)
+        // 6. Buat ID kustom berbasis NIK
         $validatedData['id'] = 'RDK-' . $validatedData['nik'];
 
         // 7. Simpan data ke database
@@ -90,42 +90,33 @@ class RedkarController extends Controller
         return back()->with('success', 'Pendaftaran REDKAR berhasil dikirim! Silakan tunggu konfirmasi admin.');
     }
 
-    // --- PROSES LOGIN REDKAR ---
-    public function processLoginRedkar(Request $request)
+   public function processLoginRedkar(Request $request)
     {
-        $credentials = $request->validate([
+        $request->validate([
             'username' => 'required',
             'password' => 'required'
         ]);
 
-        // Gunakan fungsi 'attempt' dari guard redkar agar session terekam sempurna
-        if (Auth::guard('redkar')->attempt($credentials, $request->has('remember'))) {
-            
-            // Regenerasi session untuk mencegah serangan session fixation
-            $request->session()->regenerate();
-            
-            // Ambil data user yang sedang login
-            $relawan = Auth::guard('redkar')->user();
-            
-            // Cek apakah akun aktif dan pendaftaran sudah diterima
-            if ($relawan->status_akun !== 'Aktif' || $relawan->status_pendaftaran !== 'Diterima') {
-                // Keluarkan paksa jika belum diverifikasi
-                Auth::guard('redkar')->logout();
-                $request->session()->invalidate();
-                $request->session()->regenerateToken();
+        $relawan = PendaftarRedkar::where('username', $request->username)->first();
 
-                return back()->with('error', 'Mohon maaf, akun Anda belum diverifikasi oleh admin atau sedang dinonaktifkan.');
-            }
-            
-            // Jika lolos semua, redirect ke dashboard
-            // Pastikan parameter di dalam intended() adalah URL dashboard redkar Anda
-            return redirect()->intended('/redkar/dashboard')->with('success', 'Selamat datang kembali, ' . $relawan->nama_lengkap . '!');
+        if (!$relawan) {
+            return back()->withInput()->with('error', 'Username tidak terdaftar di sistem.');
         }
 
-        // Jika salah password / username
-        return back()->with('error', 'Username atau Password yang Anda masukkan salah.');
-    }
+        if (!Hash::check($request->password, $relawan->password)) {
+            return back()->withInput()->with('error', 'Password yang Anda masukkan salah.');
+        }
 
+        // --- UBAH DI SINI: HANYA CEK STATUS AKUN YANG AKTIF ---
+        if ($relawan->status_akun !== 'Aktif') {
+            return back()->withInput()->with('error', 'Mohon maaf, akun Anda belum diaktifkan oleh admin.');
+        }
+
+        Auth::guard('redkar')->login($relawan);
+        $request->session()->regenerate();
+        
+        return redirect()->to('/redkar/dashboard')->with('success', 'Selamat datang kembali, ' . $relawan->nama_lengkap . '!');
+    }
     // --- PROSES LOGOUT REDKAR ---
     public function logoutRedkar(Request $request)
     {
