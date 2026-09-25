@@ -490,254 +490,6 @@
 </head>
 <body>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-    <!-- SPLASH SCREEN LOADING -->
-    <div id="splash-screen">
-        <div class="splash-logo-container">
-            <img src="/images/simerahkoja.png" alt="Logo Simerah Koja">
-            <div class="splash-title">SIMERAH KOJA</div>
-        </div>
-        <div class="splash-spinner"></div>
-    </div>
-
-    <?php
-        $no_whatsapp = "628117113113"; 
-        $no_telepon  = "074141171";
-        $pesan_wa = "Terimakasih%20telah%20menghubungi%20%F0%9F%94%A5%F0%9F%94%A5%F0%9F%94%A5..%0ASistem%20Informasi%20Penanggulangan%20Kebakaran%20dan%20Penyelamatan%20Daerah%20Kota%20Jambi%20(SIMERAH%20KOJA)%0A%0AMohon%20Isi%20Laporan%20Pengaduan%3A%20%0A%0ANama%20Pelapor%20%20%20%3A%0ANo.%20HP%20Pelapor%20%3A%0AAlamat%20Pelapor%20%3A%0AJenis%20Laporan%20%20%20%3A%20%20(Kebakaran%2FEvakuasi)%0A%0AAlamat%20Kejadian%20%3A%0A%0AKirim%20Peta%20Lokasi%20kejadian%20(Google%20Maps)%20%3A%0A%0AKirim%20Foto%20%26%20Video%20Kejadian%20%3A%0A%0ALaporan%20akan%20segera%20kami%20tindaklanjuti%20%F0%9F%9A%92%F0%9F%9A%92%F0%9F%9A%92%0ASalam%20YUDHA%20BRAMA%20JAYA%20Dinas%20Pemadam%20Kebakaran%20%26%20Penyelamatan%20Kota%20Jambi.";
-    ?>
-
-    <!-- NAVBAR TEMA GELAP -->
-    <nav class="navbar-custom">
-        <div class="nav-logos">
-            <img src="/images/jambi.png" alt="Logo Pemkot">
-            <img src="/images/logo.png" alt="Logo Damkar">
-            <img src="/images/logo-redkar.png" alt="Logo Redkar">
-        </div>
-        <ul class="nav-links">
-            <li class="dropdown-custom">
-                <a href="#">Layanan Kedaruratan <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-                <ul class="dropdown-menu-custom">
-                    <li><a href="https://wa.me/<?php echo $no_whatsapp; ?>?text=<?php echo $pesan_wa; ?>" target="_blank">WHATSAPP</a></li>
-                    <li><a href="tel:<?php echo $no_telepon; ?>">TELEPHONE</a></li>
-                    <li><a href="tel:112">CALL CENTER 112</a></li>
-                </ul>
-            </li>
-            <li class="dropdown-custom">
-                <a href="#">Program Kerja <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-                <ul class="dropdown-menu-custom">
-                    <li><a href="/sotk">SOTK</a></li>
-                    <li><a href="/perencanaan">PERENCANAAN</a></li>
-                    <li><a href="/pelaporan">PELAPORAN</a></li>
-                    <li><a href="/sop">SOP</a></li>
-                    <li><a href="/produkhukum">PRODUK HUKUM</a></li>
-                </ul>
-            </li>
-            <li class="dropdown-custom">
-                <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-                <ul class="dropdown-menu-custom">
-                    <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
-                    <li><a href="/layanan-fasilitas/perjanjian_kerjasama">PKS</a></li>
-                </ul>
-            </li>
-            <li><a href="/redkar">Redkar</a></li>
-            <li><a href="/login" class="btn-login">LOGIN</a></li>
-        </ul>
-    </nav>
-
-    <!-- HERO SECTION (HOME) -->
-    <div class="hero-section">
-        <div class="main-content">
-            <div class="center-logos">
-                <img src="/images/jambi.png" alt="Logo Pemkot">
-                <img src="/images/logo.png" alt="Logo Damkar">
-                <img src="/images/logo-redkar.png" alt="Logo Redkar">
-            </div>
-            
-            <h1 class="title-simerah">SIMERAH KOJA</h1>
-            
-            <p class="subtitle">
-                SISTEM INFORMASI PENANGGULANGAN KEBAKARAN<br>
-                DAN PENYELAMATAN DAERAH KOTA JAMBI
-            </p>
-
-            <div class="emergency-btn-container">
-                <div class="btn-darurat">
-                    <i class="fas fa-bullhorn icon-darurat"></i>
-                    <span>TOMBOL<br>DARURAT<br>LAPOR</span>
-                </div>
-                
-                <div class="emergency-popup">
-                    <a href="https://wa.me/<?php echo $no_whatsapp; ?>?text=<?php echo $pesan_wa; ?>" target="_blank" class="text-wa">
-                        <i class="fab fa-whatsapp"></i> <span>WHATSAPP</span>
-                    </a>
-                    <a href="tel:<?php echo $no_telepon; ?>" class="text-telp">
-                        <i class="fas fa-phone-alt"></i> <span>TELEPHONE</span>
-                    </a>
-                    <a href="tel:112" class="text-112">
-                        <i class="fas fa-headset"></i> <span>CALL CENTER 112</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- SECTION 1: TENTANG SIMERAH KOJA -->
-    <div class="section-container">
-        <div class="about-section">
-            <div class="about-text">
-                <div class="section-title-wrap">
-                    <div class="section-subtitle">Sistem Informasi Pemadam Kebakaran & Penyelamatan</div>
-                    <h2 class="section-title">Tentang <span>SIMERAH</span> KOJA</h2>
-                    <div class="section-divider"><i class="fas fa-circle"></i></div>
-                </div>
-                
-                <p>SIMERAH KOJA adalah Sistem Informasi Penanggulangan Kebakaran dan Penyelamatan Daerah Kota Jambi yang berbasis digitalisasi dalam rangka memberikan kemudahan pelayanan publik kepada masyarakat antara lain pelayanan pemadaman, penyelamatan, perizinan, edukasi dan pemeriksaan proteksi kebakaran.</p>
-                
-                <p>SIMERAH KOJA merupakan sistem informasi pemerintahan berbasis elektronik yang terintegrasi pada dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi untuk mendukung program Smart City Kota Jambi.</p>
-
-                <div class="about-quote">
-                    <h3>Pantang Pulang Sebelum Padam, Walaupun Nyawa Taruhannya... Pulang Dengan Selamat, Pulang Dengan Cidera, Pulang Tinggal Nama</h3>
-                    <p>— Satria Biru Yudha Brama Jaya</p>
-                    <i class="fas fa-quote-right quote-icon"></i>
-                </div>
-            </div>
-            
-            <div class="about-image">
-                <img src="/images/simerahkoja.png" alt="Logo Besar Simerah Koja">
-            </div>
-        </div>
-    </div>
-
-    <!-- SECTION 2: LAYANAN & FASILITAS -->
-    <div class="section-container layanan-section">
-        <div class="section-title-wrap">
-            <div class="section-subtitle">Sistem Layanan Kebakaran Dan Penyelamatan Utama</div>
-            <h2 class="section-title">LAYANAN & <span>FASILITAS</span></h2>
-            <div class="section-divider"><i class="fas fa-circle"></i></div>
-        </div>
-
-        <div class="layanan-grid">
-            <a href="/layanan-fasilitas/layanan_perizinan" class="layanan-card">
-                <div class="layanan-icon icon-gray"><i class="far fa-building"></i></div>
-                <h3>RPKBGL</h3>
-                <p>Layanan Perizinan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan.</p>
-            </a>
-            
-            <a href="/layanan-fasilitas/skk" class="layanan-card">
-                <div class="layanan-icon icon-pink"><i class="fas fa-user-shield"></i></div>
-                <h3>SKK</h3>
-                <p>Layanan Perizinan Penerbitan Sertifikat Keamanan Kebakaran.</p>
-            </a>
-            
-            <a href="/layanan-fasilitas/perpanjang_skk" class="layanan-card">
-                <div class="layanan-icon icon-orange"><i class="fas fa-fire-extinguisher"></i></div>
-                <h3>Perpanjang SKK</h3>
-                <p>Layanan Perizinan Perpanjangan Sertifikat Keamanan Kebakaran.</p>
-            </a>
-            
-            <a href="/layanan-fasilitas/izin_penjualan" class="layanan-card">
-                <div class="layanan-icon icon-purple"><i class="fas fa-file-invoice"></i></div>
-                <h3>Izin Penjualan</h3>
-                <p>Layanan Perizinan Penjualan Alat-alat Pencegahan, Pemadaman Kebakaran dan Penyelamatan.</p>
-            </a>
-            
-            <a href="/redkar" class="layanan-card">
-                <div class="layanan-icon icon-red"><i class="fas fa-running"></i></div>
-                <h3>REDKAR</h3>
-                <p>Kumpulan Relawan Pemadam Kebakaran Kota Jambi.</p>
-            </a>
-            
-            <a href="/layanan-fasilitas/perjanjian_kerjasama" class="layanan-card">
-                <div class="layanan-icon icon-yellow"><i class="fas fa-handshake"></i></div>
-                <h3>PKS</h3>
-                <p>Daftar Perjanjian Kerjasama dengan Instansi Terkait.</p>
-            </a>
-            
-            <a href="/layanan-fasilitas/edukasi_sosialisasi" class="layanan-card">
-                <div class="layanan-icon icon-blue"><i class="fas fa-chalkboard-teacher"></i></div>
-                <h3>Edukasi Sosialisasi</h3>
-                <p>Edukasi dan Sosialisasi untuk masyarakat baik instansi maupun pendidikan.</p>
-            </a>
-            
-            <a href="#" class="layanan-card">
-                <div class="layanan-icon icon-orange"><i class="fas fa-mobile-alt"></i></div>
-                <h3>Media Edukasi</h3>
-                <p>Media Edukasi berupa info grafis, modul pembelajaran, dan video edukasi lainnya.</p>
-            </a>
-        </div>
-    </div>
-
-    <!-- SECTION 3: KEJADIAN & EVAKUASI -->
-    <div class="section-container kejadian-section">
-        <div class="kejadian-header-img">
-           <img src="/images/mobil.png" alt="Logo mobil damkar">
-        </div>
-        
-        <div class="section-title-wrap">
-            <div class="section-subtitle">Dapatkan Informasi Terbaru tentang Kejadian di Kota Jambi</div>
-            <h2 class="section-title">Kejadian & <span>Evakuasi</span></h2>
-            <div class="section-divider"><i class="fas fa-circle"></i></div>
-        </div>
-
-        <div class="kejadian-grid">
-            @forelse($daftar_berita ?? [] as $berita)
-                <a href="/berita/{{ $berita->id }}" class="kejadian-card">
-                    <div class="kejadian-thumb">
-                        <div class="kejadian-date-badge" style="{{ \Carbon\Carbon::parse($berita->tanggal_kejadian)->diffInDays(now()) <= 3 ? 'background-color: #ef4444;' : 'background-color: #111827;' }}">
-                            <span>{{ \Carbon\Carbon::parse($berita->tanggal_kejadian)->format('d') }}</span>
-                            <span>{{ \Carbon\Carbon::parse($berita->tanggal_kejadian)->format('M') }}</span>
-                        </div>
-                        @if($berita->gambar)
-                            <img src="{{ asset('storage/' . $berita->gambar) }}" alt="{{ $berita->judul }}">
-                        @else
-                            <div class="kejadian-placeholder">
-                                <i class="fas fa-fire-extinguisher"></i>
-                                <span class="small fw-bold">Damkar Kota Jambi</span>
-                            </div>
-                        @endif
-                    </div>
-                    <div class="kejadian-content">
-                        <h3>{{ $berita->judul }}</h3>
-                        <div class="meta">
-                            <div title="Lokasi"><i class="fas fa-map-marker-alt"></i> <span>{{ Str::limit($berita->lokasi, 40) }}</span></div>
-                            <div title="Waktu Laporan"><i class="far fa-clock"></i> <span>{{ \Carbon\Carbon::parse($berita->waktu_kejadian)->format('H:i') }} WIB - Pelapor: {{ $berita->pelapor }}</span></div>
-                        </div>
-                        <p>{{ Str::limit($berita->keterangan_singkat ?? $berita->detail_lengkap, 90) }}</p>
-                        <span class="baca">Baca Selengkapnya <i class="fas fa-arrow-right"></i></span>
-                    </div>
-                </a>
-            @empty
-                <div class="text-muted w-100" style="grid-column: 1 / -1; text-align: center; padding: 50px;">
-                    <i class="fas fa-folder-open text-muted mb-3" style="font-size: 40px;"></i>
-                    <h5 class="fw-bold">Belum ada informasi kejadian terbaru</h5>
-=======
-<?php
-    $no_whatsapp = "628117113113";
-    $no_telepon  = "074141171";
-    $telepon_tampil = "(0741) 41171";
-    $pesan_wa = "Terimakasih%20telah%20menghubungi%20%F0%9F%94%A5%F0%9F%94%A5%F0%9F%94%A5..%0ASistem%20Informasi%20Penanggulangan%20Kebakaran%20dan%20Penyelamatan%20Daerah%20Kota%20Jambi%20(SIMERAH%20KOJA)%0A%0AMohon%20Isi%20Laporan%20Pengaduan%3A%20%0A%0ANama%20Pelapor%20%20%20%3A%0ANo.%20HP%20Pelapor%20%3A%0AAlamat%20Pelapor%20%3A%0AJenis%20Laporan%20%20%20%3A%20%20(Kebakaran%2FEvakuasi)%0A%0AAlamat%20Kejadian%20%3A%0A%0AKirim%20Peta%20Lokasi%20kejadian%20(Google%20Maps)%20%3A%0A%0AKirim%20Foto%20%26%20Video%20Kejadian%20%3A%0A%0ALaporan%20akan%20segera%20kami%20tindaklanjuti%20%F0%9F%9A%92%F0%9F%9A%92%F0%9F%9A%92%0ASalam%20YUDHA%20BRAMA%20JAYA%20Dinas%20Pemadam%20Kebakaran%20%26%20Penyelamatan%20Kota%20Jambi.";
-    $wa_link = "https://wa.me/" . $no_whatsapp . "?text=" . $pesan_wa;
-    $maps_link = "https://www.google.com/maps/place/6PC59JJ2%2BQ76/@-1.6180875,103.6006406,871m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-1.6180875!4d103.6006406?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D";
-
-    /*
-      Video edukasi: isi 'yt' dengan ID video YouTube (bagian setelah "v=" pada URL).
-      Selama 'yt' kosong, kartu tampil sebagai "Segera hadir". Judul di bawah hanya contoh.
-    */
-    $video_edukasi = [
-        ['yt' => '', 'judul' => 'Cara memakai APAR dengan benar'],
-        ['yt' => '', 'judul' => 'Langkah evakuasi saat terjadi kebakaran'],
-        ['yt' => '', 'judul' => 'Mencegah kebakaran akibat korsleting listrik'],
-        ['yt' => '', 'judul' => 'Pertolongan pertama pada luka bakar'],
-    ];
-?>
-
->>>>>>> 54d349b2f34ba1d90fd3fbf4f615f46b7fe9ffd6
-=======
->>>>>>> 9d64ab909d89535ce270e48403a9dcabc77c2bff
 <!-- ==================== HEADER ==================== -->
 <header class="site-header" id="siteHeader">
     <nav class="nav" aria-label="Navigasi utama">
@@ -746,7 +498,7 @@
                 <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
             </a>
             <!-- KLIK LOGO DAMKAR KE LOGIN INTERNAL -->
-             <a href="/login" title="Login Internal Pegawai">
+            <a href="/login" title="Login Internal Pegawai">
                 <img src="/images/logo.png" alt="Logo Damkar">
             </a>
             <a href="/redkar" aria-label="Redkar">
@@ -780,8 +532,7 @@
             <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan<i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
-                    <li><a href="/layanan-fasilitas/skk">SKK & Perpanjang SKK</a></li>
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">Layanan perizinan</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
@@ -815,7 +566,7 @@
                     </ul>
                 </li>
             @else
-             <a href="{{ route('login') }}" class="btn text-white" style="background-color: #ef4444;">Masuk</a>
+                <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
             @endif
 
         </ul>

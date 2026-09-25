@@ -121,7 +121,7 @@
                     <p>Jl. Hos. Cokroaminoto No. 113 Telp. 0741-41171<br>JAMBI</p>
                 </td>
                 <td style="width: 15%; text-align: right;">
-                   <img src="{{ asset('images/logo.png') }}" alt="Logo Damkar" style="width: 100px; height: auto;">
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo Damkar" style="width: 100px; height: auto;">
                 </td>
             </tr>
         </table>

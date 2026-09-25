@@ -77,27 +77,25 @@
 </head>
 <body>
 
+<div class="toast-wrap" id="toastWrap" aria-live="polite">
     @if(session('success'))
-        <div id="globalSuccessAlert">
-            <i class="fas fa-check-circle alert-icon"></i>
+        <div class="toast" data-toast>
+            <span class="toast-ico"><i class="fas fa-check"></i></span>
             <span>{{ session('success') }}</span>
-            <button class="btn-close-alert" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+            <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
         </div>
-        <script>
-            setTimeout(() => {
-                let alertBox = document.getElementById('globalSuccessAlert');
-                if(alertBox) {
-                    alertBox.style.animation = 'fadeOutUpCenter 0.4s ease forwards';
-                    setTimeout(() => alertBox.remove(), 400); 
-                }
-            }, 4000);
-        </script>
     @endif
+</div>
 
-    <nav class="navbar-internal">
-        <a href="/" class="nav-brand">
-            <img src="/images/simerahkoja.png" alt="Logo Simerah">
-            <span class="title">SIMERAH KOJA</span>
+<!-- ==================== TOPBAR ==================== -->
+<header class="topbar">
+    <div class="topbar-left">
+        <button class="side-toggle" type="button" id="sideToggle" aria-label="Buka menu" aria-expanded="false" aria-controls="sidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+        <a href="/internal/index" class="brand">
+            <img src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA">
+            <span>SIMERAH KOJA</span>
         </a>
         <div class="user-menu">
             <div class="user-profile">
@@ -105,10 +103,6 @@
                 <span>{{ Auth::user()->nama_lengkap ?? 'Dhimas Zaky Abiyyu' }}</span>
                 <i class="fas fa-user-circle"></i>
             </div>
-            <form action="/logout" method="POST" style="margin: 0;">
-                @csrf
-                <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
-            </form>
         </div>
     </nav>
 
@@ -146,27 +140,57 @@
                     <div class="sidebar-submenu">
                         <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data & Laporan</a>
                         <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-file-alt"></i> Data Laporan</a>
-<<<<<<< HEAD
-<<<<<<< HEAD
-                         <!-- Menu Baru Untuk Surat -->
-                        <a href="/internal/surat-korban/create" class="sidebar-item {{ Request::is('internal/surat*') ? 'active' : '' }}"><i class="fas fa-file-signature"></i> Buat Surat Korban</a>                   
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 9d64ab909d89535ce270e48403a9dcabc77c2bff
                         <a href="#" class="sidebar-item"><i class="fas fa-users-cog"></i> Jadwal Piket Regu</a>
                         <a href="#" class="sidebar-item"><i class="fas fa-running"></i> Data Relawan Redkar</a>
                     </div>
                 </div>
 <<<<<<< HEAD
+            </details>
+        @endif
+
+        <details class="side-group" {{ Request::is('internal/kepegawaian*') ? 'open' : '' }}>
+            <summary>
+                <i class="fas fa-user-tie grp-ico"></i>
+                <span class="grp-label">KEPEGAWAIAN</span>
+                <i class="fas fa-chevron-down chev"></i>
+            </summary>
+            <div class="side-sub">
+                <a href="/internal/kepegawaian/duk" class="side-a {{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}"><i class="fas fa-user-tie"></i> Data Urut Kepegawaian</a>
+            </div>
+        </details>
+
+        @if(in_array(Auth::user()->role, ['sapra', 'user', 'super_user']))
+            <details class="side-group" {{ Request::is('sapra*') ? 'open' : '' }}>
+                <summary>
+                    <i class="fas fa-warehouse grp-ico"></i>
+                    <span class="grp-label">BAGIAN SAPRA</span>
+                    <i class="fas fa-chevron-down chev"></i>
+                </summary>
+                <div class="side-sub">
+                    <span class="side-sub-kicker">SARANA &amp; PRASARANA</span>
+
+                    <a href="/sapra/sarana-mako" class="side-a {{ Request::is('sapra/sarana-mako*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Sarana pemadam kebakaran</a>
+                    <a href="/sapra/prasarana-mako" class="side-a {{ Request::is('sapra/prasarana-mako*') ? 'active' : '' }}"><i class="fas fa-building"></i> Prasarana pemadam kebakaran</a>
+
+                    <!-- ACTIVE karena ini halaman Sarana Penyelamatan -->
+                    <a href="/sapra/sarana-penyelamatan" class="side-a active"><i class="fas fa-life-ring"></i> Sarana penyelamatan &amp; evakuasi</a>
+
+                    <a href="/sapra/sarana-pemeriksaan" class="side-a {{ Request::is('sapra/sarana-pemeriksaan*') ? 'active' : '' }}"><i class="fas fa-search"></i> Sarana pemeriksaan proteksi kebakaran</a>
+                    <a href="/sapra/kelola-pos" class="side-a {{ Request::is('sapra/kelola-pos*') ? 'active' : '' }}"><i class="fas fa-warehouse"></i> Kelola data pos</a>
+
+                    <span class="side-sub-kicker">MANAJEMEN AIR</span>
+                    <a href="/sapra/data_hidrant_gedung" class="side-a {{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}"><i class="fas fa-droplet"></i> Sumber air</a>
+                    <a href="/sapra/data-hidrant-kota" class="side-a {{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}"><i class="fas fa-map-marker-alt"></i> Data hidrant Kota Jambi</a>
+
+                    <span class="side-sub-kicker">LOGISTIK &amp; DISTRIBUSI</span>
+                    <a href="/sapra/kebutuhan-sarpras" class="side-a {{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}"><i class="fas fa-clipboard-check"></i> Mutu baku kebutuhan</a>
+                    <a href="/sapra/distribusi-staff" class="side-a {{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}"><i class="fas fa-people-carry-box"></i>Serah Terima Barang</a>
 =======
->>>>>>> 54d349b2f34ba1d90fd3fbf4f615f46b7fe9ffd6
                     </div>
+>>>>>>> 564918155729b149c2bfa260c20d0a2eb0b2f080
                 </div>
                 <div class="sidebar-separator"></div>
->>>>>>> 7800cb3e9effe44e5ed2c2ab0d8e2c1b18246573
-=======
->>>>>>> 9d64ab909d89535ce270e48403a9dcabc77c2bff
+
             @endif
 
             @if(in_array(Auth::user()->role, ['sapra', 'user', 'super_user']))
@@ -218,9 +242,28 @@
                     @if(Auth::user()->role === 'super_user')
                         <a href="/internal/kelola-user" class="sidebar-item"><i class="fas fa-users"></i> Kelola Semua Pengguna</a>
                     @endif
+
                 </div>
+            </details>
+        @endif
+
+        <div class="side-divider"></div>
+
+        <div class="side-kicker">AKUN</div>
+        <details class="side-group" {{ Request::is('internal/profil*') || Request::is('internal/kelola-user*') ? 'open' : '' }}>
+            <summary>
+                <i class="fas fa-user-gear grp-ico"></i>
+                <span class="grp-label">PENGATURAN AKUN</span>
+                <i class="fas fa-chevron-down chev"></i>
+            </summary>
+            <div class="side-sub">
+                <a href="/internal/profil" class="side-a {{ Request::is('internal/profil*') ? 'active' : '' }}"><i class="fas fa-user-pen"></i> Profil saya</a>
+                @if(Auth::user()->role === 'super_user')
+                    <a href="/internal/kelola-user" class="side-a {{ Request::is('internal/kelola-user*') ? 'active' : '' }}"><i class="fas fa-users-gear"></i> Kelola pengguna</a>
+                @endif
             </div>
-        </aside>
+        </details>
+    </aside>
 
         <main class="main-content">
             <div class="d-flex justify-content-between align-items-end mb-4">
@@ -244,6 +287,7 @@
                     </a>
                 </div>
             </div>
+        </div>
 
             @php $activeTab = session('active_tab'); @endphp
 
@@ -339,59 +383,86 @@
                                             <h5 class="modal-title fw-bold text-dark">Edit Data Sarana Penyelamatan</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
-                                        <form action="/sapra/sarana-penyelamatan/update/{{ $item->id_sarana_penyelamatan }}" method="POST" enctype="multipart/form-data">
-                                            @csrf @method('PUT')
-                                            <div class="modal-body text-start p-4">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold small text-secondary">Pilih Lokasi / Pos</label>
-                                                    <select class="form-select border-light-subtle shadow-sm" name="id_pos" required>
-                                                        <option value="">-- Pilih Lokasi --</option>
-                                                        @foreach($posPemadam as $posOption)
-                                                            <option value="{{ $posOption->id_pos }}" {{ $posOption->id_pos == $item->id_pos ? 'selected' : '' }}>
-                                                                {{ $posOption->nama_pos }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-9 mb-3">
-                                                        <label class="form-label fw-bold small text-secondary">Jenis Sarana Penyelamatan</label>
-                                                        <input type="text" class="form-control border-light-subtle shadow-sm" name="jenis_sarana" value="{{ $item->jenis_sarana }}" required>
-                                                    </div>
-                                                    <div class="col-md-3 mb-3">
-                                                        <label class="form-label fw-bold small text-secondary">Jumlah</label>
-                                                        <input type="number" class="form-control border-light-subtle shadow-sm" name="jumlah" value="{{ $item->jumlah }}" required>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold small text-secondary">Ganti Gambar (Opsional)</label>
-                                                    <input type="file" class="form-control border-light-subtle shadow-sm" name="gambar" accept="image/*">
-                                                    <small class="text-muted mt-2 d-block"><i class="fas fa-info-circle me-1"></i> Biarkan kosong jika tidak ingin mengganti gambar.</small>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer bg-light pt-3">
-                                                <button type="button" class="btn btn-light fw-bold border shadow-sm" data-bs-dismiss="modal">Batal</button>
-                                                <button type="submit" class="btn btn-primary fw-bold shadow-sm px-4" style="background-color: #0284c7; border: none;">Simpan Perubahan</button>
-                                            </div>
-                                        </form>
+                                    </td>
+                                </tr>
+
+                                <!-- Dialog edit -->
+                                <dialog class="sheet" id="dlgEdit{{ $item->id_sarana_penyelamatan }}">
+                                    <div class="sheet-head">
+                                        <h2>Edit Data Sarana Penyelamatan</h2>
+                                        <button type="button" class="sheet-x" data-close aria-label="Tutup"><i class="fas fa-times"></i></button>
                                     </div>
-                                </div>
-                            </div>
-                        @endforeach
-
+                                    <form action="/sapra/sarana-penyelamatan/update/{{ $item->id_sarana_penyelamatan }}" method="POST" enctype="multipart/form-data">
+                                        @csrf @method('PUT')
+                                        <div class="sheet-body">
+                                            <div>
+                                                <label class="f-label" for="id_pos{{ $item->id_sarana_penyelamatan }}">Pilih lokasi / pos</label>
+                                                <select class="f-input" id="id_pos{{ $item->id_sarana_penyelamatan }}" name="id_pos" required>
+                                                    <option value="">— Pilih lokasi —</option>
+                                                    @foreach($posPemadam as $posOption)
+                                                        <option value="{{ $posOption->id_pos }}" {{ $posOption->id_pos == $item->id_pos ? 'selected' : '' }}>{{ strtoupper($posOption->nama_pos) }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="f-row">
+                                                <div>
+                                                    <label class="f-label" for="jenis{{ $item->id_sarana_penyelamatan }}">Jenis sarana</label>
+                                                    <input class="f-input" type="text" id="jenis{{ $item->id_sarana_penyelamatan }}" name="jenis_sarana" value="{{ $item->jenis_sarana }}" required>
+                                                </div>
+                                                <div>
+                                                    <label class="f-label" for="jumlah{{ $item->id_sarana_penyelamatan }}">Jumlah</label>
+                                                    <input class="f-input" type="number" id="jumlah{{ $item->id_sarana_penyelamatan }}" name="jumlah" value="{{ $item->jumlah }}" required>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label class="f-label" for="gambar{{ $item->id_sarana_penyelamatan }}">Ganti gambar <span class="f-optional">(opsional)</span></label>
+                                                <input class="f-input" type="file" id="gambar{{ $item->id_sarana_penyelamatan }}" name="gambar" accept="image/*">
+                                                <p class="f-hint">Biarkan kosong jika tidak ingin mengganti gambar.</p>
+                                            </div>
+                                        </div>
+                                        <div class="sheet-foot">
+                                            <button type="button" class="btn-cancel" data-close>Batal</button>
+                                            <button type="submit" class="btn-save">Simpan perubahan</button>
+                                        </div>
+                                    </form>
+                                </dialog>
+                                @empty
+                                <tr>
+                                    <td colspan="5" class="cell-empty">Belum ada data sarana penyelamatan untuk {{ $pos->nama_pos }}.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
                     </div>
-                @endforeach
+                </div>
             </div>
-        </main>
-    </div>
+        @endforeach
 
-    <!-- MODAL TAMBAH DATA -->
-    <div class="modal fade" id="modalTambah" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-light pb-3">
-                    <h5 class="modal-title fw-bold text-dark">Tambah Data Sarana Penyelamatan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </main>
+</div>
+
+<!-- ==================== DIALOG TAMBAH (GLOBAL) ==================== -->
+<dialog class="sheet" id="dlgTambah">
+    <div class="sheet-head">
+        <h2>Tambah data sarana penyelamatan</h2>
+        <button type="button" class="sheet-x" data-close aria-label="Tutup"><i class="fas fa-times"></i></button>
+    </div>
+    <form action="/sapra/sarana-penyelamatan/store" method="POST" enctype="multipart/form-data">
+        @csrf
+        <div class="sheet-body">
+            <div>
+                <label class="f-label" for="tambahIdPos">Pilih lokasi / pos</label>
+                <select class="f-input" id="tambahIdPos" name="id_pos" required>
+                    <option value="">— Pilih lokasi —</option>
+                    @foreach($posPemadam as $pos)
+                        <option value="{{ $pos->id_pos }}">{{ strtoupper($pos->nama_pos) }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="f-row">
+                <div>
+                    <label class="f-label" for="tambahJenis">Jenis sarana</label>
+                    <input class="f-input" type="text" id="tambahJenis" name="jenis_sarana" placeholder="Contoh: Perahu Karet" required>
                 </div>
                 <form action="/sapra/sarana-penyelamatan/store" method="POST" enctype="multipart/form-data">
                     @csrf
@@ -446,18 +517,41 @@
                     row.style.display = 'none';
                 }
             });
-        });
 
-        let tabs = document.querySelectorAll('button[data-bs-toggle="tab"]');
-        tabs.forEach(tab => {
-            tab.addEventListener('shown.bs.tab', function (e) {
-                document.getElementById('searchInput').value = '';
-                let rows = document.querySelectorAll('.data-row');
-                rows.forEach(row => row.style.display = '');
+            if (searchInput) {
+                searchInput.value = '';
+                document.querySelectorAll('.data-row').forEach(function (row) { row.style.display = ''; });
+            }
+        });
+    });
+
+    /* ---------- Modal / Dialog ---------- */
+    document.querySelectorAll('[data-open]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var dlg = document.getElementById(btn.dataset.open);
+            if (dlg && dlg.showModal) dlg.showModal();
+        });
+    });
+
+    document.querySelectorAll('dialog').forEach(function (dlg) {
+        dlg.addEventListener('click', function (e) {
+            if (e.target === dlg || e.target.closest('[data-close]')) dlg.close();
+        });
+    });
+
+    /* ---------- Live Search Table ---------- */
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            var q = searchInput.value.trim().toLowerCase();
+            var activePanel = document.querySelector('.panel:not([hidden])');
+            if (!activePanel) return;
+
+            activePanel.querySelectorAll('.data-row').forEach(function (row) {
+                row.style.display = row.textContent.toLowerCase().indexOf(q) !== -1 ? '' : 'none';
             });
         });
-    </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    }
+})();
+</script>
 </body>
 </html>

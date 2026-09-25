@@ -19,23 +19,59 @@
     <h4>DINAS PEMADAM KEBAKARAN DAN PENYELAMATAN KOTA JAMBI</h4>
     <hr style="margin-bottom: 20px;">
 
+    <!-- KOP SURAT MENGGUNAKAN TEKNIK BASE64 AGAR TERBACA DI DOMPDF -->
+    <table class="kop-surat">
+        <tr>
+            <td class="kop-logo">
+                @php
+                    $jambiPath = public_path('images/jambi.png');
+                    $jambiLogo = file_exists($jambiPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($jambiPath)) : '';
+                @endphp
+                @if($jambiLogo)
+                    <img src="{{ $jambiLogo }}" alt="Logo Kota Jambi">
+                @else
+                    <span style="font-size:10px;">(Logo Jambi)</span>
+                @endif
+            </td>
+            <td class="kop-teks">
+                <div class="pemerintah">PEMERINTAH KOTA JAMBI</div>
+                <div class="dinas">DINAS PEMADAM KEBAKARAN DAN<br>PENYELAMATAN KOTA JAMBI</div>
+                <div class="alamat">Jl. HOS Cokroaminoto No. 113 Telp. 0741-41171</div>
+            </td>
+            <td class="kop-logo">
+                @php
+                    // MENGGUNAKAN LOGO.PNG
+                    $logoPath = public_path('images/logo.png');
+                    $logoFile = file_exists($logoPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath)) : '';
+                @endphp
+                @if($logoFile)
+                    <img src="{{ $logoFile }}" alt="Logo Instansi">
+                @else
+                    <span style="font-size:10px;">(Logo Instansi)</span>
+                @endif
+            </td>
+        </tr>
+    </table>
+
+    <!-- JUDUL LAPORAN -->
+    <div class="doc-title">
+        <h3>DATA SARANA PEMADAM KEBAKARAN</h3>
+    </div>
+
+    <!-- LOOPING UNTUK SETIAP POS -->
     @foreach($posPemadam as $pos)
         <div class="pos-title">{{ $pos->nama_pos }}</div>
         <p style="margin: 5px 0;"><strong>Alamat:</strong> {{ $pos->alamat ?? '-' }} | <strong>Kode Map:</strong> {{ $pos->kode_map ?? '-' }}</p>
 
-        <table>
-            <thead>
-                <tr>
-                    <th width="5%">NO</th>
-                    <th width="40%">JENIS SARANA KEBAKARAN</th>
-                    <th width="15%">JUMLAH</th>
-                    <th width="40%">GAMBAR</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php $dataFilter = $dataSarana->where('id_pos', $pos->id_pos); @endphp
-                
-                @forelse($dataFilter as $item)
+        <!-- Pembungkus page-break-inside avoid DIHAPUS agar tabel mengalir ke atas -->
+        <div>
+            <div class="section-title">{{ $pos->nama_pos }}</div>
+            <div style="font-size: 10px; padding: 4px 8px; border: 1px solid #000; border-top: none; border-bottom: none; background-color: #f8fafc; page-break-after: avoid;">
+                <strong>Alamat:</strong> {{ $pos->alamat ?? '-' }} &nbsp;|&nbsp; <strong>Kode Map:</strong> {{ $pos->kode_map ?? '-' }}
+            </div>
+            
+            <table class="data-table">
+                <thead>
                     <tr>
                         <td class="text-center">{{ $loop->iteration }}</td>
                         <td>{{ $item->jenis_sarana }}</td>
@@ -56,5 +92,18 @@
             </tbody>
         </table>
     @endforeach
+
+    <!-- FORMAT TANDA TANGAN -->
+    <div class="ttd-container">
+        <div class="ttd-box">
+            <p>Jambi, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <p>Mengetahui,</p>
+            <br><br><br><br>
+            <p style="font-weight: bold; text-decoration: underline;">(Nama Kepala Bidang)</p>
+            <p>NIP. .....................................</p>
+        </div>
+        <div class="clear"></div>
+    </div>
+
 </body>
 </html>

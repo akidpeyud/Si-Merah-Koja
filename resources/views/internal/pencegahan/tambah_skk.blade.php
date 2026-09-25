@@ -4,26 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-    <title>Dashboard internal | SIMERAH KOJA</title>
+    <title>Tambah Permohonan SKK | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Bootstrap -->
+    <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        /* ==========================================================
-           DESIGN TOKENS
-           Palet inti: ink (navy gelap) sebagai warna utama, navy
-           (biru dongker medium) sebagai aksen interaktif/dekoratif —
-           tombol, status aktif menu, ikon judul seksi — dan signal
-           (merah) sebagai satu-satunya aksen darurat, dipakai konsisten
-           hanya untuk status siaga/urgent, bukan didekorasi ke semua tempat.
-           ========================================================== */
         :root {
             --ink: #0d1b2a;
             --ink-2: #132a43;
@@ -59,8 +52,6 @@
             --sidebar-w: 272px;
             --topbar-h: 72px;
 
-            /* Skala shadow tunggal, dicampur dgn warna ink (bukan hitam polos)
-               supaya terasa satu keluarga dgn palet, bukan default rgba(0,0,0,.1) */
             --shadow-xs: 0 1px 2px rgba(13, 27, 42, .05);
             --shadow-sm: 0 2px 8px -2px rgba(13, 27, 42, .08);
             --shadow-md: 0 12px 24px -8px rgba(13, 27, 42, .12);
@@ -82,25 +73,6 @@
         ul, ol { list-style: none; margin: 0; padding: 0; }
         button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
         :focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; border-radius: 6px; }
-
-        /* ==========================================================
-           NOTIFIKASI (TOAST)
-           ========================================================== */
-        .toast-wrap { position: fixed; z-index: 200; top: 18px; left: 50%; transform: translateX(-50%); display: grid; gap: 10px; width: max-content; max-width: calc(100vw - 24px); }
-        .toast {
-            display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px;
-            border-radius: 999px; background: #fff; border: 1px solid var(--line);
-            box-shadow: var(--shadow-md); font-weight: 600; font-size: .92rem;
-            animation: toastIn .45s cubic-bezier(.16,.84,.3,1) both;
-        }
-        .toast.leaving { animation: toastOut .3s ease forwards; }
-        .toast-ico { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: .78rem; }
-        .toast.ok .toast-ico { background: var(--success); }
-        .toast.err .toast-ico { background: var(--signal); }
-        .toast-x { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); transition: background .2s, color .2s; }
-        .toast-x:hover { background: var(--ink); color: #fff; }
-        @keyframes toastIn { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
-        @keyframes toastOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-14px); } }
 
         /* ==========================================================
            TOPBAR
@@ -206,124 +178,54 @@
         }
 
         /* ==========================================================
-           KONTEN UTAMA
+           KONTEN UTAMA & FORM STYLES
            ========================================================== */
         .content { flex: 1; min-width: 0; padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 80px; }
 
-        .page-head { margin-bottom: 28px; }
-        .page-head h1 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 4px; color: var(--ink); }
+        .page-head { margin-bottom: 32px; text-align: center; }
+        .page-head h1 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 6px; color: var(--ink); }
         .page-head p { color: var(--steel); font-size: .98rem; }
 
-        /* Welcome banner */
-        .welcome {
-            position: relative; overflow: hidden; border-radius: var(--r-lg);
-            background: linear-gradient(135deg, var(--ink), var(--ink-2));
-            padding: clamp(28px, 4.5vw, 40px); color: #fff; margin-bottom: 36px;
-            box-shadow: var(--shadow-md);
+        .content-card {
+            background: #fff; border-radius: var(--r-lg); border: 1px solid var(--line);
+            padding: clamp(28px, 4vw, 40px); box-shadow: var(--shadow-sm); width: 100%; max-width: 1000px; margin: 0 auto;
         }
-        .welcome::after {
-            content: ""; position: absolute; right: -8%; top: -50%; width: 60%; aspect-ratio: 1;
-            background: radial-gradient(closest-side, rgba(30,58,95,.18), transparent 70%); pointer-events: none;
-        }
-        .welcome-badge {
-            position: relative; display: inline-flex; align-items: center; gap: 8px;
-            padding: 7px 14px; border-radius: 999px; background: rgba(255,255,255,.12);
-            font-size: .82rem; font-weight: 600; margin-bottom: 18px; border: 1px solid rgba(255,255,255,.14);
-        }
-        .welcome-badge i { color: var(--amber); font-size: .78rem; }
-        .welcome h2 { position: relative; font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.35rem, 2.6vw, 1.75rem); line-height: 1.3; letter-spacing: -0.01em; max-width: 42ch; margin-bottom: 6px; }
-        .welcome p { position: relative; max-width: 58ch; color: rgba(255,255,255,.75); font-size: 1rem; }
 
-        /* Section headings — category header 1 baris, ikon navy blue */
-        .section-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: nowrap; }
-        .section-heading-ico { flex: none; width: 30px; height: 30px; border-radius: 9px; background: var(--navy); color: #fff; display: grid; place-items: center; font-size: .78rem; }
-        .section-heading h3 { flex: none; font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: 1rem; color: var(--ink); letter-spacing: -0.01em; white-space: nowrap; }
-        .section-heading .line { flex: 1 1 auto; min-width: 24px; height: 1px; background: linear-gradient(to right, var(--line), transparent 90%); }
+        .section-title {
+            font-family: var(--font-display); font-weight: 700; font-size: 1.05rem;
+            color: var(--navy); text-transform: uppercase; letter-spacing: 0.04em;
+            margin-top: 36px; margin-bottom: 20px; padding-bottom: 8px; border-bottom: 2px solid var(--navy-tint);
+        }
+        .section-title:first-of-type { margin-top: 0; }
 
-        /* Stat cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 16px;
-            margin-bottom: 44px;
+        .form-label { font-size: 0.85rem; font-weight: 700; color: var(--ink); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.03em; }
+        .form-control, .form-select {
+            font-size: 0.95rem; padding: 12px 16px; border-radius: var(--r-sm); border: 1px solid var(--line);
+            background-color: #fff; color: var(--ink); transition: border-color .2s, box-shadow .2s;
         }
-        .welcome::after {
-            content: ""; position: absolute; right: -6%; top: -30%; width: 60%; aspect-ratio: 1;
-            background: radial-gradient(closest-side, rgba(229,57,45,.4), transparent); pointer-events: none;
+        .form-control:focus, .form-select:focus {
+            border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-tint); background-color: #fff;
         }
-        .welcome-badge { position: relative; display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; background: rgba(255,255,255,.1); font-size: .78rem; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; margin-bottom: 16px; }
-        .welcome-badge i { color: var(--amber); }
-        .welcome h2 { position: relative; font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.35rem, 2.6vw, 1.75rem); line-height: 1.25; letter-spacing: -0.015em; max-width: 34ch; }
-        .welcome p { position: relative; margin-top: 10px; max-width: 58ch; color: rgba(255,255,255,.72); font-size: .95rem; line-height: 1.6; }
 
-        .stats-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
-        .stats-head h3 { font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.1rem; letter-spacing: -0.01em; }
+        .btn-submit {
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            background-color: var(--success); color: white; font-weight: 700; font-size: 0.95rem;
+            padding: 14px 28px; border: none; border-radius: 999px; width: 100%; transition: background .2s, transform .1s;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        }
+        .btn-submit:hover { background-color: #059669; }
+        .btn-submit:active { transform: scale(0.98); }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
-        .stat-card {
-            display: flex; flex-direction: column; align-items: flex-start;
-            padding: 22px; background: #fff; border-radius: var(--r-md);
-            border: 1px solid var(--line);
-            box-shadow: var(--shadow-xs);
-            transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease;
-            position: relative;
+        .btn-back {
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            background-color: var(--paper); color: var(--steel); font-weight: 600; font-size: 0.95rem;
+            padding: 14px 28px; border: 1px solid var(--line); border-radius: 999px; width: 100%;
+            text-decoration: none; text-align: center; transition: background .2s, color .2s;
         }
-        .stat-card:hover {
-            box-shadow: var(--shadow-sm);
-            border-color: #d7dee9;
-            transform: translateY(-2px);
-        }
-        .stat-card::after {
-            content: "\f061";
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
-            position: absolute; top: 22px; right: 20px;
-            color: var(--steel-soft); font-size: .8rem;
-            opacity: 0; transform: translateX(-6px);
-            transition: opacity .2s ease, transform .2s ease;
-        }
-        .stat-card:hover::after { opacity: 1; transform: translateX(0); }
-
-        .stat-ico {
-            width: 46px; height: 46px; border-radius: var(--r-sm);
-            display: grid; place-items: center; font-size: 1.1rem;
-            margin-bottom: 18px;
-        }
-        .stat-title { font-size: .76rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--steel); margin-bottom: 6px; line-height: 1.4; }
-        .stat-value { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: 1.9rem; line-height: 1; color: var(--ink); letter-spacing: -0.01em; }
-
-        /* Palet ikon dibatasi 3 warna bermakna, bukan warna acak per kartu:
-           - primer (navy tint)  -> data administratif/permohonan (default)
-           - danger (merah tint) -> status siaga/darurat aktif
-           - info (biru tint)    -> data sarana & sumber air */
-        .ic-primary { background: var(--ink-tint); color: var(--ink-3); }
-        .ic-danger  { background: var(--signal-tint); color: var(--signal-d); }
-        .ic-info    { background: var(--info-tint); color: var(--info); }
-
-        @media (prefers-reduced-motion: reduce) {
-            html { scroll-behavior: auto; }
-            *, *::before, *::after { animation: none !important; transition: none !important; }
-        }
+        .btn-back:hover { background-color: var(--line); color: var(--ink); }
     </style>
 </head>
 <body>
-
-<div class="toast-wrap" id="toastWrap" aria-live="polite">
-    @if(session('success'))
-        <div class="toast ok" data-toast>
-            <span class="toast-ico"><i class="fas fa-check"></i></span>
-            <span>{{ session('success') }}</span>
-            <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
-        </div>
-    @endif
-    @if(session('error'))
-        <div class="toast err" data-toast>
-            <span class="toast-ico"><i class="fas fa-triangle-exclamation"></i></span>
-            <span>{{ session('error') }}</span>
-            <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
-        </div>
-    @endif
-</div>
 
 <!-- ==================== TOPBAR ==================== -->
 <header class="topbar">
@@ -370,7 +272,6 @@
             <details class="side-group" {{ Request::is('internal/pencegahan*') ? 'open' : '' }}>
                 <summary><i class="fas fa-shield-halved grp-ico"></i><span class="grp-label">Bagian pencegahan</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
-                    <!-- Menu Sesuai Foto -->
                     <a href="/internal/pencegahan/peningkatan-kapasitas" class="{{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}">
                         <i class="fas fa-arrow-trend-up"></i> Peningkatan Kapasitas Aparatur
                     </a>
@@ -380,8 +281,6 @@
                     <a href="/internal/pencegahan/pemberdayaan-masyarakat" class="{{ Request::is('internal/pencegahan/pemberdayaan-masyarakat*') ? 'active' : '' }}">
                         <i class="fas fa-handshake-angle"></i> Pemberdayaan Masyarakat dan Dunia Usaha
                     </a>
-
-                    <!-- Menu Kelola -->
                     <a href="/internal/pencegahan/kelola-edukasi" class="{{ Request::is('internal/pencegahan/kelola-edukasi*') ? 'active' : '' }}">
                         <i class="fas fa-bullhorn"></i> Kelola Edukasi
                     </a>
@@ -428,11 +327,8 @@
                 <summary><i class="fas fa-warehouse grp-ico"></i><span class="grp-label">Bagian sapra</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <span class="side-kicker" style="padding-left:2px;">Sarana &amp; Prasarana</span>
-                       <a href="/sapra/sarana-mako"><i class="fas fa-fire-extinguisher"></i> Sarana pemadam kebakaran</a>
-                    <a href="/sapra/prasarana-mako"><i class="fas fa-building"></i> Prasarana pemadam kebakaran</a>
                     <a href="/sapra/sarana-penyelamatan" class="{{ Request::is('sapra/sarana-penyelamatan*') ? 'active' : '' }}">
-                        <i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi
-
+                        <i class="fas fa-life-ring"></i> Sarana Penyelamatan &amp; Evakuasi
                     </a>
                     <a href="/sapra/sarana-pemeriksaan" class="{{ Request::is('sapra/sarana-pemeriksaan*') ? 'active' : '' }}">
                         <i class="fas fa-search-location"></i> Sarana Pemeriksaan Proteksi Kebakaran
@@ -449,7 +345,7 @@
                         <i class="fas fa-map-location-dot"></i> Data Hidrant Kota Jambi
                     </a>
 
-                    <span class="side-kicker" style="padding-left:2px;">Logistik & Distribusi</span>
+                    <span class="side-kicker" style="padding-left:2px;">Logistik &amp; Distribusi</span>
                     <a href="/sapra/kebutuhan-sarpras" class="{{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}">
                         <i class="fas fa-boxes-stacked"></i> Mutu Baku Kebutuhan
                     </a>
@@ -498,157 +394,84 @@
 
     </aside>
 
-    <!-- ==================== KONTEN ==================== -->
+    <!-- ==================== KONTEN UTAMA ==================== -->
     <main class="content">
 
         <div class="page-head">
-            <h1>Ruang kerja terintegrasi</h1>
-            <p>Ringkasan sistem informasi internal Disdamkartan Kota Jambi.</p>
+            <h1>Tambah Permohonan SKK Baru</h1>
+            <p>Input data pengajuan Sertifikat Keamanan Kebakaran secara manual oleh petugas.</p>
         </div>
 
-        <section class="welcome">
-            <span class="welcome-badge"><i class="fas fa-shield-halved"></i> {{ Auth::user()->role === 'super_user' ? 'Super user' : 'Pegawai internal' }}</span>
-            <h2>Selamat bekerja, {{ Auth::user()->nama_lengkap ?? 'Rekan kerja' }}.</h2>
-            @if(Auth::user()->role === 'super_user')
-                <p>Anda memiliki kendali penuh untuk memantau dan mengelola seluruh modul operasional maupun sistem.</p>
-            @else
-                <p>Anda dapat berkolaborasi mengelola laporan dari seluruh modul layanan Disdamkartan.</p>
-            @endif
-        </section>
-
-        @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
-
-        <!-- ==============================================
-             STAT CARDS DIKELOMPOKKAN PER BAGIAN
-             Warna ikon dibatasi 3 makna (navy = data administratif,
-             merah = status darurat aktif, biru = sarana air), bukan
-             warna berbeda-beda tiap kartu.
-             ============================================== -->
-
-        <!-- 1. BAGIAN PENCEGAHAN -->
-        <div class="mb-5">
-            <div class="section-heading">
-                <span class="section-heading-ico"><i class="fas fa-shield-halved"></i></span>
-                <h3>Bagian Pencegahan</h3>
-                <span class="line"></span>
+        @if($errors->any())
+            <div class="alert alert-danger mx-auto mb-4" style="max-width: 1000px;">
+                <ul class="mb-0">
+                    @foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach
+                </ul>
             </div>
-
-            <div class="stats-grid">
-                <a href="/internal/pencegahan/kelola-rpkbgl" class="stat-card">
-                    <div class="stat-ico ic-primary"><i class="fas fa-building"></i></div>
-                    <div>
-                        <div class="stat-title">Permohonan RPKBGL</div>
-                        <div class="stat-value">
-                            {{ \Illuminate\Support\Facades\Schema::hasTable('permohonan_rpkbgl') ? \Illuminate\Support\Facades\DB::table('permohonan_rpkbgl')->count() : 0 }}
-                        </div>
-                    </div>
-                </a>
-
-                <a href="/internal/pencegahan/kelola-skk" class="stat-card">
-                    <div class="stat-ico ic-primary"><i class="fas fa-shield-halved"></i></div>
-                    <div>
-                        <div class="stat-title">Permohonan SKK (Total)</div>
-                        <div class="stat-value">
-                            @php
-                                $skkBaru = \Illuminate\Support\Facades\Schema::hasTable('permohonan_skk') ? \Illuminate\Support\Facades\DB::table('permohonan_skk')->count() : 0;
-                                $skkPerpanjang = \Illuminate\Support\Facades\Schema::hasTable('permohonan_perpanjang_skk') ? \Illuminate\Support\Facades\DB::table('permohonan_perpanjang_skk')->count() : 0;
-                            @endphp
-                            {{ $skkBaru + $skkPerpanjang }}
-                        </div>
-                    </div>
-                </a>
-
-                <a href="/internal/pencegahan/kelola-edukasi" class="stat-card">
-                    <div class="stat-ico ic-primary"><i class="fas fa-bullhorn"></i></div>
-                    <div>
-                        <div class="stat-title">Permohonan Edukasi</div>
-                        <div class="stat-value">
-                            {{ \Illuminate\Support\Facades\Schema::hasTable('permohonan_edukasi') ? \Illuminate\Support\Facades\DB::table('permohonan_edukasi')->count() : 0 }}
-                        </div>
-                    </div>
-                </a>
-
-                <a href="/internal/pencegahan/kelola-redkar" class="stat-card">
-                    <div class="stat-ico ic-primary"><i class="fas fa-users"></i></div>
-                    <div>
-                        <div class="stat-title">Kelola Redkar</div>
-                        <div class="stat-value">
-                            {{ \Illuminate\Support\Facades\Schema::hasTable('redkar') ? \Illuminate\Support\Facades\DB::table('redkar')->count() : 0 }}
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <!-- 2. BAGIAN PEMADAMAN -->
-        <div class="mb-5">
-            <div class="section-heading">
-                <span class="section-heading-ico"><i class="fas fa-fire-extinguisher"></i></span>
-                <h3>Bagian Pemadaman</h3>
-                <span class="line"></span>
-            </div>
-
-            <div class="stats-grid">
-                <a href="/internal/damtan/data-laporan" class="stat-card">
-                    <div class="stat-ico ic-danger"><i class="fas fa-fire"></i></div>
-                    <div>
-                        <div class="stat-title">Siaga Darurat (Pemadaman)</div>
-                        <div class="stat-value">0</div>
-                    </div>
-                </a>
-
-                <a href="/internal/surat-korban/create" class="stat-card">
-                    <div class="stat-ico ic-primary"><i class="fas fa-file-signature"></i></div>
-                    <div>
-                        <div class="stat-title">Surat Korban Terbit</div>
-                        <div class="stat-value">0</div>
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <!-- 3. BAGIAN SAPRA -->
-        <div class="mb-4">
-            <div class="section-heading">
-                <span class="section-heading-ico"><i class="fas fa-warehouse"></i></span>
-                <h3>Bagian Sarana &amp; Prasarana</h3>
-                <span class="line"></span>
-            </div>
-
-            <div class="stats-grid">
-                <a href="/sapra/data-hidrant-kota" class="stat-card">
-                    <div class="stat-ico ic-info"><i class="fas fa-map-marker-alt"></i></div>
-                    <div>
-                        <div class="stat-title">Total Hidrant Kota</div>
-                        <div class="stat-value">
-                            {{ \Illuminate\Support\Facades\Schema::hasTable('hidran_kota') ? \Illuminate\Support\Facades\DB::table('hidran_kota')->count() : 0 }}
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
-
         @endif
 
+        <div class="content-card">
+            <form action="{{ route('skk.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="row g-3">
+                    <div class="col-12"><div class="section-title mt-0">1. Data Pemohon</div></div>
+                    <div class="col-md-12"><label class="form-label">Nama Pemohon *</label><input type="text" class="form-control" name="nama_pemohon" value="{{ old('nama_pemohon') }}" required></div>
+                    <div class="col-md-6"><label class="form-label">Email *</label><input type="email" class="form-control" name="email_pemohon" value="{{ old('email_pemohon') }}" required></div>
+                    <div class="col-md-6"><label class="form-label">No. WhatsApp *</label><input type="text" class="form-control" name="no_whatsapp" value="{{ old('no_whatsapp') }}" required></div>
+
+                    <div class="col-12"><div class="section-title">2. Data Usaha &amp; Pemilik</div></div>
+                    <div class="col-md-12"><label class="form-label">Nama Usaha / Perusahaan *</label><input type="text" class="form-control" name="nama_usaha" value="{{ old('nama_usaha') }}" required></div>
+                    <div class="col-md-6"><label class="form-label">NIK Pemilik Usaha (Max 30 Karakter) *</label><input type="text" class="form-control" name="nik_pemilik_usaha" value="{{ old('nik_pemilik_usaha') }}" maxlength="30" required></div>
+                    <div class="col-md-6"><label class="form-label">Alamat Pemilik Usaha *</label><input type="text" class="form-control" name="alamat_pemilik_usaha" value="{{ old('alamat_pemilik_usaha') }}" required></div>
+
+                    <div class="col-12"><div class="section-title">3. Data Bangunan Gedung</div></div>
+                    <div class="col-md-12">
+                        <label class="form-label">Kategori Bangunan *</label>
+                        <select class="form-select" name="kategori_bangunan" required>
+                            <option value="" disabled selected>Pilih Kategori Bangunan</option>
+                            <option value="Rumah Tinggal" {{ old('kategori_bangunan') == 'Rumah Tinggal' ? 'selected' : '' }}>Rumah Tinggal</option>
+                            <option value="Komersial (Mall/Toko)" {{ old('kategori_bangunan') == 'Komersial (Mall/Toko)' ? 'selected' : '' }}>Komersial (Mall/Toko)</option>
+                            <option value="Fasilitas Layanan Kesehatan" {{ old('kategori_bangunan') == 'Fasilitas Layanan Kesehatan' ? 'selected' : '' }}>Fasilitas Layanan Kesehatan</option>
+                            <option value="Perkantoran" {{ old('kategori_bangunan') == 'Perkantoran' ? 'selected' : '' }}>Perkantoran</option>
+                            <option value="Hotel / Penginapan" {{ old('kategori_bangunan') == 'Hotel / Penginapan' ? 'selected' : '' }}>Hotel / Penginapan</option>
+                            <option value="Pabrik / Gudang" {{ old('kategori_bangunan') == 'Pabrik / Gudang' ? 'selected' : '' }}>Pabrik / Gudang</option>
+                            <option value="Pendidikan" {{ old('kategori_bangunan') == 'Pendidikan' ? 'selected' : '' }}>Pendidikan</option>
+                        </select>
+                    </div>
+                    <div class="col-12"><label class="form-label">Alamat Lengkap Bangunan *</label><textarea class="form-control" name="alamat_bangunan" rows="2" required>{{ old('alamat_bangunan') }}</textarea></div>
+                    <div class="col-md-6"><label class="form-label">Kecamatan *</label><input type="text" class="form-control" name="kecamatan" value="{{ old('kecamatan') }}" required></div>
+                    <div class="col-md-6"><label class="form-label">Kelurahan *</label><input type="text" class="form-control" name="kelurahan" value="{{ old('kelurahan') }}" required></div>
+                    <div class="col-md-4"><label class="form-label">Luas Tanah (m²) *</label><input type="number" step="0.01" class="form-control" name="luas_lahan" value="{{ old('luas_lahan') }}" required></div>
+                    <div class="col-md-4"><label class="form-label">Luas Bangunan (m²) *</label><input type="number" step="0.01" class="form-control" name="luas_bangunan" value="{{ old('luas_bangunan') }}" required></div>
+                    <div class="col-md-4"><label class="form-label">Tinggi Bangunan (Meter) *</label><input type="number" step="0.01" class="form-control" name="tinggi_bangunan" value="{{ old('tinggi_bangunan') }}" required></div>
+
+                    <div class="col-12"><div class="section-title">4. Status &amp; Dokumen</div></div>
+                    <div class="col-md-6">
+                        <label class="form-label">Status Permohonan *</label>
+                        <select class="form-select" name="status_permohonan" required>
+                            <option value="Pending" {{ old('status_permohonan') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="Diproses" {{ old('status_permohonan') == 'Diproses' ? 'selected' : '' }}>Diproses</option>
+                            <option value="Memenuhi Syarat" {{ old('status_permohonan') == 'Memenuhi Syarat' ? 'selected' : '' }}>Memenuhi Syarat</option>
+                            <option value="Tidak Memenuhi Syarat" {{ old('status_permohonan') == 'Tidak Memenuhi Syarat' ? 'selected' : '' }}>Tidak Memenuhi Syarat</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6"><label class="form-label">Upload Surat Permohonan (Opsional)</label><input type="file" class="form-control" name="file_surat_permohonan" accept=".pdf,.jpg,.png"></div>
+
+                    <div class="col-12 mt-4">
+                        <div class="row g-3">
+                            <div class="col-md-6"><button type="submit" class="btn-submit"><i class="fas fa-save me-2"></i> Simpan Data SKK</button></div>
+                            <div class="col-md-6"><a href="/internal/pencegahan/kelola-skk" class="btn-back"><i class="fas fa-arrow-left me-2"></i> Batal / Kembali</a></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </main>
 </div>
 
 <script>
 (function () {
     'use strict';
-
-    /* ---------- Notifikasi ---------- */
-    document.querySelectorAll('[data-toast]').forEach(function (t) {
-        var hide = function () {
-            t.classList.add('leaving');
-            setTimeout(function () { t.remove(); }, 350);
-        };
-        var x = t.querySelector('[data-toast-close]');
-        if (x) x.addEventListener('click', hide);
-        setTimeout(hide, 4500);
-    });
-
-    /* ---------- Sidebar (mobile) ---------- */
     var toggle = document.getElementById('sideToggle');
     var backdrop = document.getElementById('sideBackdrop');
 
@@ -665,7 +488,6 @@
     if (backdrop) backdrop.addEventListener('click', closeSide);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
 
-    /* ---------- Hanya satu grup sidebar terbuka pada satu waktu ---------- */
     var groups = document.querySelectorAll('.side-group');
     groups.forEach(function (g) {
         g.addEventListener('toggle', function () {
@@ -676,5 +498,6 @@
     });
 })();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
