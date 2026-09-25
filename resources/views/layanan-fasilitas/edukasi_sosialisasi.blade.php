@@ -197,13 +197,6 @@
                     <li><a href="/produkhukum">PRODUK HUKUM</a></li>
                 </ul>
             </li>
-<<<<<<< HEAD
-            <li class="dropdown">
-                <a href="#">Layanan & Fasilitas <i class="fas fa-chevron-down" style="font-size:10px; margin-left:4px;"></i></a>
-                <ul class="dropdown-menu">
-                    <li><a href="/layanan-fasilitas/layanan_perizinan">LAYANAN PERIZINAN</a></li>
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">EDUKASI DAN SOSIALISASI</a></li>
-=======
             <li class="has-drop current">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan<i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
@@ -211,7 +204,15 @@
                     <li><a href="/layanan-fasilitas/skk">SKK & Perpanjang SKK</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
->>>>>>> 4e9b3114169ff4111dc67a1afb55e7ebb94ad9f7
+                </ul>
+            </li>
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="/video-edukasi">Video Edukasi</a></li>
+                    <li><a href="/info-grafis">Info Grafis</a></li>
+                    <li><a href="/media-informasi">Media Informasi</a></li>
+                    <li><a href="/giat-disdamkartan">Giat Disdamkartan</a></li>
                 </ul>
             </li>
             <li><a href="/redkar">Redkar</a></li>
