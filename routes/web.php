@@ -233,6 +233,15 @@ Route::middleware(['auth'])->group(function () {
     // ==========================================
     // ROUTE PENCEGAHAN (SUPER LENGKAP)
     // ==========================================
+   // ROUTE EXCEL & PDF PENINGKATAN KAPASITAS (DIKLAT)
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/cetak-excel/{jenis}', [App\Http\Controllers\PencegahanController::class, 'cetakExcel']);
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/cetak-pdf/{jenis}', [App\Http\Controllers\PencegahanController::class, 'cetakPdf']);
+    // ROUTE CETAK EXCEL & PDF INSPEKSI BANGUNAN & FIRE DRILL
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan/cetak-excel', [App\Http\Controllers\PencegahanController::class, 'cetakExcelInspeksi']);
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan/cetak-pdf', [App\Http\Controllers\PencegahanController::class, 'cetakPdfInspeksi']);
+    
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/cetak-excel', [App\Http\Controllers\PencegahanController::class, 'cetakExcelFireDrill']);
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/cetak-pdf', [App\Http\Controllers\PencegahanController::class, 'cetakPdfFireDrill']);
 
     // 1. KELOLA REDKAR
     Route::get('/internal/pencegahan/kelola-redkar', [AuthController::class, 'kelolaRedkar']);
@@ -433,25 +442,36 @@ Route::middleware(['auth'])->group(function () {
         \Illuminate\Support\Facades\DB::table('pembinaan')->where('id', $id)->update($updateData);
         return redirect('/internal/pencegahan/pembinaan-pengembangan')->with('success', 'Data Pembinaan berhasil diperbarui!');
     });
-
-    // 8. PEMBERDAYAAN MASYARAKAT & PELATIHAN KELUARGA
+// 8. PEMBERDAYAAN MASYARAKAT, SOSIALISASI, & PELATIHAN KELUARGA
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat', [PemberdayaanController::class, 'index']);
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/sosialisasi', [PemberdayaanController::class, 'sosialisasi']);
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/create', [PemberdayaanController::class, 'create'])->name('pemberdayaan.create');
     Route::post('/internal/pencegahan/pemberdayaan-masyarakat/store', [PemberdayaanController::class, 'store'])->name('pemberdayaan.store');
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/edit/{id}', [PemberdayaanController::class, 'edit']);
+    Route::put('/internal/pencegahan/pemberdayaan-masyarakat/update/{id}', [PemberdayaanController::class, 'update']);
+    Route::delete('/internal/pencegahan/pemberdayaan-masyarakat/hapus/{id}', [PemberdayaanController::class, 'destroy']);
     
+    // Pelatihan Keluarga (Tetap pakai PencegahanController sesuai punya lu)
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga', [PencegahanController::class, 'indexPelatihanKeluarga'])->name('pelatihan_keluarga.index');
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/tambah', [PencegahanController::class, 'createPelatihanKeluarga'])->name('pelatihan_keluarga.create');
     Route::post('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/tambah', [PencegahanController::class, 'storePelatihanKeluarga'])->name('pelatihan_keluarga.store');
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/{id}/edit', [PencegahanController::class, 'editPelatihanKeluarga'])->name('pelatihan_keluarga.edit');
     Route::put('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/{id}', [PencegahanController::class, 'updatePelatihanKeluarga'])->name('pelatihan_keluarga.update');
     Route::delete('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/{id}', [PencegahanController::class, 'destroyPelatihanKeluarga'])->name('pelatihan_keluarga.destroy');
-
     // 9. PENINGKATAN KAPASITAS APARATUR (DIKLAT - CONTROLLER BASED)
     Route::get('/internal/pencegahan/peningkatan-kapasitas', [PencegahanController::class, 'indexPeningkatanKapasitas']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/tambah', [PencegahanController::class, 'createDiklat']);
     Route::post('/internal/pencegahan/peningkatan-kapasitas/simpan', [PencegahanController::class, 'storeDiklat']);
     // ---> TIMPA RUTE LIHAT, EDIT, DAN HAPUS DENGAN INI <---
-
+// Pelatihan Keluarga Tanggap Kebakaran (SESUAIKAN DENGAN URL EDIT/2)
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga', [PencegahanController::class, 'indexPelatihanKeluarga'])->name('pelatihan_keluarga.index');
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/tambah', [PencegahanController::class, 'createPelatihanKeluarga'])->name('pelatihan_keluarga.create');
+    Route::post('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/tambah', [PencegahanController::class, 'storePelatihanKeluarga'])->name('pelatihan_keluarga.store');
+    
+    // PERBAIKAN URL EDIT DAN HAPUS DI SINI:
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/edit/{id}', [PencegahanController::class, 'editPelatihanKeluarga'])->name('pelatihan_keluarga.edit');
+    Route::put('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/update/{id}', [PencegahanController::class, 'updatePelatihanKeluarga'])->name('pelatihan_keluarga.update');
+    Route::delete('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/hapus/{id}', [PencegahanController::class, 'destroyPelatihanKeluarga'])->name('pelatihan_keluarga.destroy');
     Route::get('/internal/pencegahan/peningkatan-kapasitas/lihat/{jenis}/{id}', function ($jenis, $id) { 
         $map = ['diksar' => 'tbl_diksar', 'diklat-f1' => 'tbl_diklat_f1', 'diklat-f2' => 'tbl_diklat_f2', 'diklat-rescue' => 'tbl_diklat_rescue', 'diklat-mfr' => 'tbl_diklat_mfr', 'diklat-operator' => 'tbl_diklat_operator', 'diklat-inspektur' => 'tbl_diklat_inspektur', 'diklat-ppl' => 'tbl_diklat_ppl'];
         $tabel = $map[strtolower($jenis)] ?? 'tbl_diklat_f1';
@@ -547,16 +567,16 @@ Route::middleware(['auth'])->group(function () {
             'permohonan' => App\Models\PermohonanEdukasi::findOrFail($id)
         ]); 
     });
+// Inspeksi Kebakaran & Fire Drill (Halaman Utama)
+    Route::get('/internal/pencegahan/inspeksi-kebakaran', [App\Http\Controllers\PencegahanController::class, 'index']);
 
-    // Inspeksi Kebakaran & Fire Drill
-    Route::get('/internal/pencegahan/inspeksi-kebakaran', function () { return view('internal.pencegahan.pencegahan_inspeksi'); });
-    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill', [App\Http\Controllers\PencegahanController::class, 'indexFireDrill']);
+    // Rute Inspeksi Bangunan
     Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan', [App\Http\Controllers\PencegahanController::class, 'indexInspeksiBangunan']);
-    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill', [App\Http\Controllers\PencegahanController::class, 'indexFireDrill']);
-    Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan', function () { return view('internal.pencegahan.inspeksi_bangunan'); });
-    Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan/tambah', function () { return view('internal.pencegahan.tambah_inspeksi_bangunan'); });
-    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill', function () { return view('internal.pencegahan.fire_drill'); });
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan/tambah', [App\Http\Controllers\PencegahanController::class, 'create']);
 
+    // Rute Fire Drill
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill', [App\Http\Controllers\PencegahanController::class, 'indexFireDrill']);
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/tambah', [App\Http\Controllers\PencegahanController::class, 'createFireDrill']);
     // Layanan Inspeksi
     Route::get('/internal/pencegahan/layanan-inspeksi', function () { 
         return view('internal.pencegahan.layanan_inspeksi', [
@@ -729,11 +749,6 @@ Route::middleware(['auth'])->group(function () {
         return redirect('/internal/pencegahan/pembinaan-pengembangan')->with('success', 'Data Pembinaan berhasil diperbarui!'); 
     });
 
-    // Pemberdayaan Masyarakat
-    Route::get('/internal/pencegahan/pemberdayaan-masyarakat', [App\Http\Controllers\PemberdayaanController::class, 'index']);
-    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga', [App\Http\Controllers\PencegahanController::class, 'indexPelatihanKeluarga'])->name('pelatihan_keluarga.index');
-    Route::get('/internal/pencegahan/pemberdayaan-masyarakat', function () { return view('internal.pencegahan.pemberdayaan_masyarakat'); });
-    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga', function () { return view('internal.pencegahan.pelatihan_keluarga'); });
 
     // Peningkatan Kapasitas Aparatur (Multi Tabel)
     Route::get('/internal/pencegahan/peningkatan-kapasitas', function () {
@@ -836,7 +851,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Halaman Index Masing-masing Diklat (Controller Based)
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diksar', function () { return view('internal.pencegahan.diksar'); });
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/diksar', [App\Http\Controllers\PencegahanController::class, 'indexDiksar']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f1', [PencegahanController::class, 'indexDiklatF1']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f2', [PencegahanController::class, 'indexDiklatF2']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-inspektur', [PencegahanController::class, 'indexDiklatInspektur']);

@@ -299,3 +299,5 @@ class RedkarController extends Controller
         return redirect('/internal/pencegahan/kelola-redkar')->with('success', 'Data relawan offline berhasil ditambahkan ke sistem!');
     }
 }
+    }
+
