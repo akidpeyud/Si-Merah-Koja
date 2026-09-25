@@ -3,667 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0d1b2a">
     <title>Peningkatan Kapasitas Aparatur - SIMERAH KOJA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="/images/simerahkoja.png" type="image/png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: #f3f4f6; color: #1f2937; }
-        #globalSuccessAlert, #globalErrorAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); color: white; padding: 16px 24px; border-radius: 8px; z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        #globalSuccessAlert { background-color: #10b981; box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); }
-        #globalErrorAlert { background-color: #ef4444; box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.4); }
-        .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px; transition: opacity 0.2s; }
-        .btn-close-alert:hover { opacity: 1; }
-        @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
-        @keyframes fadeOutUpCenter { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -50px); opacity: 0; } }
-        .navbar-internal { background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
-        .nav-brand img { height: 40px; }
-        .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; }
-        .user-menu { display: flex; align-items: center; gap: 20px; }
-        .user-profile { display: flex; align-items: center; gap: 10px; color: #e5e7eb; font-size: 14px; font-weight: 600; }
-        .user-profile i { font-size: 20px; color: #9ca3af; }
-        .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-        .btn-logout:hover { background-color: #dc2626; }
-        .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
-        .sidebar { width: 320px; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex-shrink: 0; }
-        .sidebar-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600; border-radius: 8px; transition: all 0.2s; }
-        .sidebar-item:hover { background-color: #f3f4f6; color: #111827; }
-        .sidebar-item.active { background-color: #e0f2fe; color: #0284c7; }
-        .sidebar-item.active i { color: #0284c7; }
-        .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #9ca3af; }
-        .sidebar-collapse-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 15px 15px 5px 15px; margin-top: 10px; background: transparent; border: none; border-top: 1px dashed #e5e7eb; text-align: left; font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
-        .sidebar-collapse-btn:hover { color: #4b5563; }
-        .toggle-icon { transition: transform 0.3s ease; font-size: 12px; }
-        .sidebar-collapse-btn.collapsed .toggle-icon { transform: rotate(0deg); }
-        .sidebar-collapse-btn:not(.collapsed) .toggle-icon { transform: rotate(180deg); color: #0284c7; }
-        .sidebar-collapse-btn:not(.collapsed) { color: #0284c7; }
-        .sidebar-submenu { display: flex; flex-direction: column; gap: 4px; padding-left: 10px; margin-top: 8px; }
-        .main-content { flex: 1; padding: 40px 50px; background-color: #f9fafb; overflow-x: hidden; }
-        .custom-nav-tabs { border-bottom: 2px solid #e2e8f0; margin-top: 25px; gap: 10px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; }
-        .custom-nav-tabs::-webkit-scrollbar { height: 4px; }
-        .custom-nav-tabs::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .custom-nav-tabs .nav-link { border: none; color: #64748b; font-weight: 700; font-size: 13px; padding: 12px 18px; background: transparent; white-space: nowrap; }
-        .custom-nav-tabs .nav-link:hover { color: #0f172a; }
-        .custom-nav-tabs .nav-link.active { color: #10b981; border-bottom: 3px solid #10b981; }
-        .table-scroll-wrapper { width: 100%; overflow-x: auto; border-radius: 8px; border: 1px solid #e2e8f0; background: white; margin-bottom: 40px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        .table-scroll-wrapper::-webkit-scrollbar { height: 10px; }
-        .table-scroll-wrapper::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
-        .table-scroll-wrapper::-webkit-scrollbar-track { background: #f1f5f9; }
-        .table-detailed { width: 100%; border-collapse: collapse; min-width: 2500px; }
-        .table-detailed thead { background-color: #111827; color: white; }
-        .table-detailed th { font-size: 11px; font-weight: 700; padding: 16px 15px; white-space: nowrap; text-transform: uppercase; border-right: 1px solid #374151; letter-spacing: 0.5px; vertical-align: middle; }
-        .table-detailed td { font-size: 13px; padding: 12px 15px; vertical-align: middle; white-space: nowrap; border-bottom: 1px solid #e2e8f0; border-right: 1px solid #f1f5f9; }
-        .table-detailed tbody tr:hover { background-color: #f8fafc; }
-        .badge-soft-blue { background-color: #e0f2fe; color: #0284c7; padding: 6px 12px; font-weight: 700; border-radius: 6px; border: 1px solid #bae6fd; }
-        .btn-action { width: 32px; height: 32px; display: inline-flex; justify-content: center; align-items: center; border-radius: 6px; font-size: 13px; color: white; border: none; }
-        .btn-edit { background-color: #f59e0b; }
-        .btn-delete { background-color: #ef4444; }
+        /* ==========================================================
+           DESIGN TOKENS
+           ========================================================== */
+        :root {
+            --ink: #0d1b2a; --ink-2: #132a43; --ink-3: #1d3856;
+            --paper: #f7f9fc; --white: #ffffff;
+            --navy: #1e3a5f; --navy-d: #14283f; --navy-tint: rgba(30, 58, 95, .09);
+            --signal: #e5392d; --signal-d: #c22b20; --signal-tint: rgba(229, 57, 45, .09);
+            --amber: #ffb627; --success: #10b981; --info: #2f6fed; --info-tint: rgba(47, 111, 237, .09);
+            --steel: #64748b; --steel-soft: #94a3b8; --line: #e6eaf1;
+
+            --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+            --font-body: 'Instrument Sans', system-ui, sans-serif;
+
+            --r-md: 14px; --r-sm: 10px;
+            --sidebar-w: 272px; --topbar-h: 72px;
+
+            --shadow-xs: 0 1px 2px rgba(13, 27, 42, .05);
+            --shadow-sm: 0 2px 8px -2px rgba(13, 27, 42, .08);
+            --shadow-md: 0 12px 24px -8px rgba(13, 27, 42, .12);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-body); font-size: 1rem; line-height: 1.6; color: var(--ink); background: var(--paper); -webkit-font-smoothing: antialiased; }
+        img { max-width: 100%; display: block; }
+        a { color: inherit; text-decoration: none; }
+        ul, ol { list-style: none; margin: 0; padding: 0; }
+        button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+        /* ==========================================================
+           NOTIFIKASI (TOAST)
+           ========================================================== */
+        .toast-wrap { position: fixed; z-index: 200; top: 18px; left: 50%; transform: translateX(-50%); display: grid; gap: 10px; width: max-content; max-width: calc(100vw - 24px); }
+        .toast { display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px; border-radius: 999px; background: #fff; border: 1px solid var(--line); box-shadow: var(--shadow-md); font-weight: 600; font-size: .92rem; animation: toastIn .45s cubic-bezier(.16,.84,.3,1) both; }
+        .toast.leaving { animation: toastOut .3s ease forwards; }
+        .toast-ico { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: .78rem; }
+        .toast.ok .toast-ico { background: var(--success); }
+        .toast.err .toast-ico { background: var(--signal); }
+        .toast-x { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); transition: background .2s, color .2s; }
+        .toast-x:hover { background: var(--ink); color: #fff; }
+        @keyframes toastIn { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+        @keyframes toastOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-14px); } }
+
+        /* ==========================================================
+           TOPBAR & SIDEBAR
+           ========================================================== */
+        .topbar { position: sticky; top: 0; z-index: 60; height: var(--topbar-h); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 28px; background: rgba(255,255,255,.86); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
+        .topbar-left { display: flex; align-items: center; gap: 14px; }
+        .side-toggle { display: none; width: 40px; height: 40px; border-radius: 12px; align-items: center; justify-content: center; font-size: 1.05rem; }
+        .brand { display: flex; align-items: center; gap: 12px; }
+        .brand img { height: 34px; width: auto; }
+        .brand span { font-family: var(--font-display); font-weight: 700; font-size: 1.08rem; letter-spacing: -0.01em; white-space: nowrap; }
+        
+        .topbar-right { display: flex; align-items: center; gap: 14px; }
+        .user-chip { display: flex; align-items: center; gap: 10px; padding: 6px 16px 6px 6px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: .9rem; }
+        .user-meta { display: grid; line-height: 1.25; }
+        .user-meta strong { font-size: .85rem; font-weight: 700; color: var(--ink); }
+        .user-meta small { font-size: .74rem; color: var(--steel); text-transform: capitalize; font-weight: 500; }
+        .btn-logout { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border-radius: 999px; background: var(--navy); color: #fff; font-weight: 600; font-size: .85rem; border: none; transition: background .2s, transform .1s; }
+        .btn-logout:hover { background: var(--navy-d); }
+        .btn-logout:active { transform: scale(.98); }
+
+        .shell { display: flex; align-items: flex-start; min-height: calc(100vh - var(--topbar-h)); }
+        .sidebar { width: var(--sidebar-w); flex: none; position: sticky; top: var(--topbar-h); height: calc(100vh - var(--topbar-h)); overflow-y: auto; background: #fff; border-right: 1px solid var(--line); padding: 20px 14px 32px; }
+        .side-link { display: flex; align-items: center; gap: 14px; padding: 11px 14px; border-radius: var(--r-sm); font-size: .9rem; font-weight: 600; color: var(--ink); margin-bottom: 4px; transition: background .2s, color .2s; }
+        .side-link:hover { background: var(--paper); }
+        .side-link.active { background: var(--ink); color: #fff; }
+        .side-link i { width: 20px; text-align: center; font-size: 1rem; color: var(--steel); transition: color .2s; }
+        .side-link.active i { color: var(--amber); }
+
+        .side-group summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: var(--r-sm); font-size: .8rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--navy); transition: background .2s, color .2s; }
+        .side-group summary::-webkit-details-marker { display: none; }
+        .side-group summary:hover { background: var(--paper); }
+        .side-group[open] summary { background: var(--paper); color: var(--ink); }
+        .side-group[open] summary .grp-ico { color: var(--ink); }
+        .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; transition: color .2s; }
+        .side-group summary .chev { flex: none; font-size: .7rem; transition: transform .25s ease; margin-left: auto;}
+        .side-group[open] summary .chev { transform: rotate(180deg); }
+        
+        .side-sub { display: grid; gap: 3px; padding: 6px 4px 10px 12px; border-left: 2px solid var(--line); margin: 2px 0 8px 22px; }
+        .side-sub a { display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: var(--r-sm); font-size: .85rem; font-weight: 500; line-height: 1.4; color: var(--steel); transition: background .2s, color .2s, transform .2s; }
+        .side-sub a:hover { background: var(--paper); color: var(--ink); transform: translateX(2px); }
+        .side-sub a.active { background: var(--navy-tint); color: var(--navy-d); font-weight: 600; }
+        .side-sub a i { width: 18px; text-align: center; opacity: .75; }
+        .side-sub a:hover i, .side-sub a.active i { opacity: 1; }
+        .side-kicker { padding: 18px 14px 6px; font-size: .7rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--steel-soft); }
+
+        /* ==========================================================
+           KONTEN UTAMA & STAT CARDS
+           ========================================================== */
+        .content { flex: 1; min-width: 0; padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 80px; }
+        .page-head h1 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 4px; color: var(--ink); }
+        .page-head p { color: var(--steel); font-size: .98rem; }
+
+        .custom-nav-tabs { border-bottom: 2px solid var(--line); margin-top: 15px; gap: 10px; flex-wrap: nowrap; overflow-x: auto; display: flex; margin-bottom: 30px; }
+        .custom-nav-tabs .nav-link { border: none; color: var(--steel); font-weight: 700; font-size: 13px; padding: 12px 18px; background: transparent; white-space: nowrap; transition: color .2s; }
+        .custom-nav-tabs .nav-link:hover { color: var(--ink); }
+        .custom-nav-tabs .nav-link.active { color: var(--navy); border-bottom: 3px solid var(--navy); }
+
+        /* STAT CARDS GRID */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+        .stat-card { display: flex; flex-direction: column; align-items: flex-start; padding: 24px; background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); box-shadow: var(--shadow-xs); transition: box-shadow .2s ease, transform .2s ease; position: relative; text-decoration: none !important; }
+        .stat-card:hover { box-shadow: var(--shadow-sm); transform: translateY(-2px); border-color: #cbd5e1; }
+        .stat-ico { width: 44px; height: 44px; border-radius: var(--r-sm); display: grid; place-items: center; font-size: 1rem; margin-bottom: 16px; transition: transform .2s ease; }
+        .stat-card:hover .stat-ico { transform: scale(1.05); }
+        .ic-navy { background: var(--navy-tint); color: var(--navy); }
+        .stat-title { font-size: .75rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--steel); margin-bottom: 6px; line-height: 1.4; }
+        .stat-value { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: 2.2rem; line-height: 1; color: var(--ink); letter-spacing: -0.01em; }
     </style>
 </head>
 <body>
 
+<div class="toast-wrap" id="toastWrap" aria-live="polite">
     @if(session('success'))
-        <div id="globalSuccessAlert">
-            <i class="fas fa-check-circle alert-icon"></i>
+        <div class="toast ok" data-toast>
+            <span class="toast-ico"><i class="fas fa-check"></i></span>
             <span>{{ session('success') }}</span>
-            <button class="btn-close-alert" onclick="closeAlert('globalSuccessAlert')"><i class="fas fa-times"></i></button>
+            <button type="button" class="toast-x" aria-label="Tutup" data-toast-close><i class="fas fa-times"></i></button>
         </div>
     @endif
     @if(session('error'))
-        <div id="globalErrorAlert">
-            <i class="fas fa-exclamation-triangle alert-icon"></i>
+        <div class="toast err" data-toast>
+            <span class="toast-ico"><i class="fas fa-triangle-exclamation"></i></span>
             <span>{{ session('error') }}</span>
-            <button class="btn-close-alert" onclick="closeAlert('globalErrorAlert')"><i class="fas fa-times"></i></button>
+            <button type="button" class="toast-x" aria-label="Tutup" data-toast-close><i class="fas fa-times"></i></button>
         </div>
     @endif
-    <script>
-        function closeAlert(id) {
-            let alertBox = document.getElementById(id);
-            if(alertBox) {
-                alertBox.style.animation = 'fadeOutUpCenter 0.4s ease forwards';
-                setTimeout(() => alertBox.remove(), 400); 
-            }
-        }
-        setTimeout(() => closeAlert('globalSuccessAlert'), 4000);
-        setTimeout(() => closeAlert('globalErrorAlert'), 4000);
-    </script>
+</div>
 
-    <!-- NAVBAR INTERNAL -->
-    <nav class="navbar-internal">
-        <a href="#" class="nav-brand">
-            <img src="/images/simerahkoja.png" alt="Logo Simerah">
-            <span class="title">SIMERAH KOJA</span>
-        </a>
-        <div class="user-menu">
-            <div class="user-profile">
-                <span>{{ Auth::user()?->nama_lengkap ?? 'M Ariffan Hidayah' }}</span>
-                <i class="fas fa-user-circle"></i>
-            </div>
-            <form action="/logout" method="POST" style="margin: 0;">
-                @csrf
-                <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
-            </form>
-        </div>
-    </nav>
-
-    <!-- KONTEN UTAMA -->
-    <div class="dashboard-container">
-        
-        <!-- SIDEBAR -->
-        <aside class="sidebar" id="sidebarAccordion">
-            <a href="/internal/index" class="sidebar-item">
-                <i class="fas fa-home"></i> Dashboard Utama
-            </a>
-
-            @if(Auth::user()?->role === 'user' || Auth::user()?->role === 'super_user' || true)
-                <!-- ACCORDION PENCEGAHAN -->
-                <button class="sidebar-collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePencegahan" aria-expanded="true">
-                    <span>Bagian Pencegahan</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </button>
-                <div class="collapse show" id="collapsePencegahan" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">
-                        <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item active" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">
-                            PENINGKATAN KAPASITAS APARATUR
-                        </a>
-                        <a href="/internal/pencegahan/inspeksi-kebakaran" class="sidebar-item" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">
-                            PENCEGAHAN KEBAKARAN DAN INSPEKSI
-                        </a>
-                        <a href="#" class="sidebar-item" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">
-                            PEMBERDAYAAN MASYARAKAT DAN DUNIA USAHA
-                        </a>
-                    </div>
-                </div>
-
-                <!-- ACCORDION PEMADAMAN (DAMTAN) -->
-                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="false">
-                    <span>Bagian Pemadaman</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </button>
-                <div class="collapse" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">
-                        <a href="/internal/damtan/input-data" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
-                        <a href="/internal/damtan/data-laporan" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
-                    </div>
-                </div>
-
-                <!-- ACCORDION SAPRA -->
-                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSapra" aria-expanded="false">
-                    <span>Bagian Sapra</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </button>
-                <div class="collapse" id="collapseSapra" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">
-                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">MANAJEMEN AIR</span>
-                        <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
-                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
-
-                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">FASILITAS & POS MAKO</span>
-                        <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pos</a>
-                        <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pos</a>
-                        <a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan</a>
-                        <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
-
-                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">PERENCANAAN PENGADAAN</span>
-                        <a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
-                    </div>
-                </div>
-            @endif
-
-            @if(Auth::user()?->role === 'operator' || Auth::user()?->role === 'super_user' || true)
-                <!-- ACCORDION MANAJEMEN BERITA -->
-                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita" aria-expanded="false">
-                    <span>Manajemen Berita</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </button>
-                <div class="collapse" id="collapseBerita" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">
-                        <a href="/internal/operator/kelola-berita" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
-                        <a href="/internal/operator/infografis" class="sidebar-item"><i class="fas fa-image"></i> Kelola Info Grafis</a>
-                        <a href="/internal/operator/berita-medsos" class="sidebar-item"><i class="fab fa-instagram"></i> Kelola Berita Medsos</a>
-                    </div>
-                </div>
-            @endif
-
-            <!-- ACCORDION PENGATURAN -->
-            <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePengaturan" aria-expanded="false">
-                <span>Pengaturan Akun</span>
-                <i class="fas fa-chevron-down toggle-icon"></i>
-            </button>
-            <div class="collapse" id="collapsePengaturan" data-bs-parent="#sidebarAccordion">
-                <div class="sidebar-submenu">
-                    <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
-                    <a href="/internal/kelola-user" class="sidebar-item"><i class="fas fa-users"></i> Kelola Semua Pengguna</a>
-                </div>
-            </div>
-        </aside>
-
-        <!-- MAIN AREA -->
-        <main class="main-content">
-            
-            <div class="d-flex justify-content-between align-items-end mb-3 flex-wrap gap-3">
-                <div>
-                    <h1 class="fw-bolder text-dark mb-2" style="font-size: 28px;">Peningkatan Kapasitas Aparatur</h1>
-                    <p class="text-muted mb-0" style="font-size: 15px;">Kelola data diklat dan peningkatan kapasitas aparatur pemadam kebakaran.</p>
-                </div>
-                
-                <div class="d-flex align-items-center gap-2">
-                    <div class="input-group" style="width: 260px;">
-                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
-                        <input type="text" class="form-control border-start-0 ps-0" placeholder="Cari nama atau sertifikat...">
-                    </div>
-                    
-                    <a href="/internal/pencegahan/peningkatan-kapasitas/tambah" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #0284c7; padding: 9px 16px;">
-                        <i class="fas fa-plus"></i> Tambah Data
-                    </a>
-                    <a href="#" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #10b981; padding: 9px 16px;">
-                        <i class="fas fa-file-excel"></i> Excel
-                    </a>
-                    <a href="#" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: #ef4444; padding: 9px 16px;">
-                        <i class="fas fa-file-pdf"></i> PDF
-                    </a>
-                </div>
-            </div>
-
-            <!-- TABS MENYAMPING -->
-            <ul class="nav custom-nav-tabs">
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas">Semua Data</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diksar') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diksar">DIKSAR</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-f1') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-f1">DIKLAT F1</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-f2') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-f2">DIKLAT F2</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-rescue') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-rescue">DIKLAT RESCUE</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-mfr') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-mfr">DIKLAT MFR</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-operator') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-operator">DIKLAT OPERATOR</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-inspektur') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-inspektur">DIKLAT INSPEKTUR</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas/diklat-ppl') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas/diklat-ppl">DIKLAT PPL</a>
-                </li>
-            </ul>
-
-            <!-- ================= MULAI AREA TABEL DATA ================= -->
-
-            <!-- 1. TABEL DIKSAR -->
-            <h5 class="fw-bold mt-4 mb-3" style="color: #0284c7;"><i class="fas fa-check-circle me-2"></i> Data DIKSAR</h5>
-            <div class="table-scroll-wrapper">
-                <table class="table-detailed table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th class="text-center" width="50px">NO</th>
-                            <th>NAMA</th><th>TEMPAT LAHIR</th><th>TGL LAHIR</th><th>NIK</th><th>JABATAN</th>
-                            <th>INSTANSI/PERANGKAT DAERAH</th><th>DITANDA TANGANI OLEH</th><th>TANGGAL PELAKSANAAN</th>
-                            <th>JUMLAH JAM PELAJARAN</th><th>INSTANSI PENYELENGGARA</th><th>PROVINSI</th><th>KOTA</th>
-                            <th>NOMOR SERTIFIKAT</th><th>KODE VERIFIKASI</th><th>PERSENTASI PENILAIAN</th><th>JENIS DIKLAT</th>
-                            <th>CREATED AT</th><th>UPDATED AT</th><th>TTL</th><th>KET</th>
-                            <th class="text-center" width="100px">AKSI</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($dataDiksar ?? [] as $item)
-                        <tr>
-                            <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                            <td class="fw-bold text-dark">{{ $item->nama ?? $item->nama_aparatur ?? '-' }}</td>
-                            <td>{{ $item->tempat_lahir ?? '-' }}</td><td>{{ $item->tgl_lahir ?? '-' }}</td>
-                            <td>{{ $item->nik ?? '-' }}</td><td>{{ $item->jabatan ?? '-' }}</td>
-                            <td>{{ $item->instansi ?? '-' }}</td><td>{{ $item->ditandatangani_oleh ?? $item->pejabat ?? '-' }}</td>
-                            <td>{{ $item->tanggal_pelaksanaan ?? $item->tanggal ?? '-' }}</td>
-                            <td class="text-center"><span class="badge-soft-blue">{{ $item->jumlah_jam_pelajaran ?? $item->jumlah_jp ?? '-' }} JP</span></td>
-                            <td>{{ $item->instansi_penyelenggara ?? $item->penyelenggara ?? '-' }}</td>
-                            <td>{{ $item->provinsi ?? '-' }}</td><td>{{ $item->kota ?? '-' }}</td>
-                            <td style="color: #334155; font-weight: 600;">{{ $item->nomor_sertifikat ?? '-' }}</td>
-                            <td>{{ $item->kode_verifikasi ?? $item->kode_verivikasi ?? '-' }}</td>
-                            <td>{{ $item->persentasi_penilaian ?? $item->persentase_penilaian ?? '-' }}</td>
-                            <td>{{ $item->jenis_diklat ?? '-' }}</td>
-                            <td>{{ $item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $item->ttl ?? '-' }}</td><td>{{ $item->ket ?? $item->keterangan ?? '-' }}</td>
-                            <td class="text-center" style="white-space: nowrap;">
-    <!-- Tombol Edit -->
-    <a href="/internal/pencegahan/peningkatan-kapasitas/edit/{{ str_replace('_', '-', str_replace('tbl_', '', $item->jenis_diklat ?? 'diklat-f1')) }}/{{ $item->id }}" class="btn-action btn-edit" title="Edit Data" style="position: relative; z-index: 10;">
-        <i class="fas fa-edit"></i>
-    </a>
-    
-    <!-- Tombol Hapus -->
-    <form action="/internal/pencegahan/peningkatan-kapasitas/hapus/{{ str_replace('_', '-', str_replace('tbl_', '', $item->jenis_diklat ?? 'diklat-f1')) }}/{{ $item->id }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-        @csrf 
-        @method('DELETE')
-        <button type="submit" class="btn-action btn-delete" title="Hapus Data" style="position: relative; z-index: 10;">
-            <i class="fas fa-trash"></i>
+<!-- ==================== TOPBAR ==================== -->
+<header class="topbar">
+    <div class="topbar-left">
+        <button class="side-toggle" type="button" id="sideToggle" aria-label="Buka menu" aria-expanded="false" aria-controls="sidebar">
+            <i class="fas fa-bars"></i>
         </button>
-    </form>
-</td>
-                        </tr>
-                        @empty
-                        <tr><td colspan="22" class="text-center py-4 text-muted">Belum ada data DIKSAR</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- 2. TABEL DIKLAT F1 -->
-            <h5 class="fw-bold mt-4 mb-3" style="color: #10b981;"><i class="fas fa-check-circle me-2"></i> Data DIKLAT F1</h5>
-            <div class="table-scroll-wrapper">
-                <table class="table-detailed table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th class="text-center" width="50px">NO</th>
-                            <th>NAMA</th><th>TEMPAT LAHIR</th><th>TGL LAHIR</th><th>NIK</th><th>JABATAN</th>
-                            <th>INSTANSI/PERANGKAT DAERAH</th><th>DITANDA TANGANI OLEH</th><th>TANGGAL PELAKSANAAN</th>
-                            <th>JUMLAH JAM PELAJARAN</th><th>INSTANSI PENYELENGGARA</th><th>PROVINSI</th><th>KOTA</th>
-                            <th>NOMOR SERTIFIKAT</th><th>KODE VERIFIKASI</th><th>PERSENTASI PENILAIAN</th><th>JENIS DIKLAT</th>
-                            <th>CREATED AT</th><th>UPDATED AT</th><th>TTL</th><th>KET</th>
-                            <th class="text-center" width="100px">AKSI</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($dataF1 ?? [] as $item)
-                        <tr>
-                            <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                            <td class="fw-bold text-dark">{{ $item->nama ?? $item->nama_aparatur ?? '-' }}</td>
-                            <td>{{ $item->tempat_lahir ?? '-' }}</td><td>{{ $item->tgl_lahir ?? '-' }}</td>
-                            <td>{{ $item->nik ?? '-' }}</td><td>{{ $item->jabatan ?? '-' }}</td>
-                            <td>{{ $item->instansi ?? '-' }}</td><td>{{ $item->ditandatangani_oleh ?? $item->pejabat ?? '-' }}</td>
-                            <td>{{ $item->tanggal_pelaksanaan ?? $item->tanggal ?? '-' }}</td>
-                            <td class="text-center"><span class="badge-soft-blue">{{ $item->jumlah_jam_pelajaran ?? $item->jumlah_jp ?? '-' }} JP</span></td>
-                            <td>{{ $item->instansi_penyelenggara ?? $item->penyelenggara ?? '-' }}</td>
-                            <td>{{ $item->provinsi ?? '-' }}</td><td>{{ $item->kota ?? '-' }}</td>
-                            <td style="color: #334155; font-weight: 600;">{{ $item->nomor_sertifikat ?? '-' }}</td>
-                            <td>{{ $item->kode_verifikasi ?? $item->kode_verivikasi ?? '-' }}</td>
-                            <td>{{ $item->persentasi_penilaian ?? $item->persentase_penilaian ?? '-' }}</td>
-                            <td>{{ $item->jenis_diklat ?? '-' }}</td>
-                            <td>{{ (!empty($item->created_at) && trim($item->created_at) !== '-' && trim($item->created_at) !== '') ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ (!empty($item->updated_at) && trim($item->updated_at) !== '-' && trim($item->updated_at) !== '') ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $item->ttl ?? '-' }}</td><td>{{ $item->ket ?? $item->keterangan ?? '-' }}</td>
-                            <td class="text-center d-flex justify-content-center gap-1">
-                                <a href="/internal/pencegahan/peningkatan-kapasitas/edit/diklat-f1/{{ $item->id }}" class="btn-action btn-edit"><i class="fas fa-edit"></i></a>
-                                <form action="/internal/pencegahan/peningkatan-kapasitas/hapus/diklat-f1/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr><td colspan="22" class="text-center py-4 text-muted">Belum ada data DIKLAT F1</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- 3. TABEL DIKLAT F2 -->
-            <h5 class="fw-bold mt-4 mb-3" style="color: #f59e0b;"><i class="fas fa-check-circle me-2"></i> Data DIKLAT F2</h5>
-            <div class="table-scroll-wrapper">
-                <table class="table-detailed table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th class="text-center" width="50px">NO</th>
-                            <th>NAMA</th><th>TEMPAT LAHIR</th><th>TGL LAHIR</th><th>NIK</th><th>JABATAN</th>
-                            <th>INSTANSI/PERANGKAT DAERAH</th><th>DITANDA TANGANI OLEH</th><th>TANGGAL PELAKSANAAN</th>
-                            <th>JUMLAH JAM PELAJARAN</th><th>INSTANSI PENYELENGGARA</th><th>PROVINSI</th><th>KOTA</th>
-                            <th>NOMOR SERTIFIKAT</th><th>KODE VERIFIKASI</th><th>PERSENTASI PENILAIAN</th><th>JENIS DIKLAT</th>
-                            <th>CREATED AT</th><th>UPDATED AT</th><th>TTL</th><th>KET</th>
-                            <th class="text-center" width="100px">AKSI</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($dataF2 ?? [] as $item)
-                        <tr>
-                            <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                            <td class="fw-bold text-dark">{{ $item->nama ?? $item->nama_aparatur ?? '-' }}</td>
-                            <td>{{ $item->tempat_lahir ?? '-' }}</td><td>{{ $item->tgl_lahir ?? '-' }}</td>
-                            <td>{{ $item->nik ?? '-' }}</td><td>{{ $item->jabatan ?? '-' }}</td>
-                            <td>{{ $item->instansi ?? '-' }}</td><td>{{ $item->ditandatangani_oleh ?? $item->pejabat ?? '-' }}</td>
-                            <td>{{ $item->tanggal_pelaksanaan ?? $item->tanggal ?? '-' }}</td>
-                            <td class="text-center"><span class="badge-soft-blue">{{ $item->jumlah_jam_pelajaran ?? $item->jumlah_jp ?? '-' }} JP</span></td>
-                            <td>{{ $item->instansi_penyelenggara ?? $item->penyelenggara ?? '-' }}</td>
-                            <td>{{ $item->provinsi ?? '-' }}</td><td>{{ $item->kota ?? '-' }}</td>
-                            <td style="color: #334155; font-weight: 600;">{{ $item->nomor_sertifikat ?? '-' }}</td>
-                            <td>{{ $item->kode_verifikasi ?? $item->kode_verivikasi ?? '-' }}</td>
-                            <td>{{ $item->persentasi_penilaian ?? $item->persentase_penilaian ?? '-' }}</td>
-                            <td>{{ $item->jenis_diklat ?? '-' }}</td>
-                            <td>{{ (!empty($item->created_at) && trim($item->created_at) !== '-' && trim($item->created_at) !== '') ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ (!empty($item->updated_at) && trim($item->updated_at) !== '-' && trim($item->updated_at) !== '') ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $item->ttl ?? '-' }}</td><td>{{ $item->ket ?? $item->keterangan ?? '-' }}</td>
-                            <td class="text-center d-flex justify-content-center gap-1">
-                                <a href="/internal/pencegahan/peningkatan-kapasitas/edit/diklat-f2/{{ $item->id }}" class="btn-action btn-edit"><i class="fas fa-edit"></i></a>
-                                <form action="/internal/pencegahan/peningkatan-kapasitas/hapus/diklat-f2/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr><td colspan="22" class="text-center py-4 text-muted">Belum ada data DIKLAT F2</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- 4. TABEL DIKLAT RESCUE -->
-            <h5 class="fw-bold mt-4 mb-3" style="color: #ef4444;"><i class="fas fa-check-circle me-2"></i> Data DIKLAT RESCUE</h5>
-            <div class="table-scroll-wrapper">
-                <table class="table-detailed table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th class="text-center" width="50px">NO</th>
-                            <th>NAMA</th><th>TEMPAT LAHIR</th><th>TGL LAHIR</th><th>NIK</th><th>JABATAN</th>
-                            <th>INSTANSI/PERANGKAT DAERAH</th><th>DITANDA TANGANI OLEH</th><th>TANGGAL PELAKSANAAN</th>
-                            <th>JUMLAH JAM PELAJARAN</th><th>INSTANSI PENYELENGGARA</th><th>PROVINSI</th><th>KOTA</th>
-                            <th>NOMOR SERTIFIKAT</th><th>KODE VERIFIKASI</th><th>PERSENTASI PENILAIAN</th><th>JENIS DIKLAT</th>
-                            <th>CREATED AT</th><th>UPDATED AT</th><th>TTL</th><th>KET</th>
-                            <th class="text-center" width="100px">AKSI</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($dataRescue ?? [] as $item)
-                        <tr>
-                            <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                            <td class="fw-bold text-dark">{{ $item->nama ?? $item->nama_aparatur ?? '-' }}</td>
-                            <td>{{ $item->tempat_lahir ?? '-' }}</td><td>{{ $item->tgl_lahir ?? '-' }}</td>
-                            <td>{{ $item->nik ?? '-' }}</td><td>{{ $item->jabatan ?? '-' }}</td>
-                            <td>{{ $item->instansi ?? '-' }}</td><td>{{ $item->ditandatangani_oleh ?? $item->pejabat ?? '-' }}</td>
-                            <td>{{ $item->tanggal_pelaksanaan ?? $item->tanggal ?? '-' }}</td>
-                            <td class="text-center"><span class="badge-soft-blue">{{ $item->jumlah_jam_pelajaran ?? $item->jumlah_jp ?? '-' }} JP</span></td>
-                            <td>{{ $item->instansi_penyelenggara ?? $item->penyelenggara ?? '-' }}</td>
-                            <td>{{ $item->provinsi ?? '-' }}</td><td>{{ $item->kota ?? '-' }}</td>
-                            <td style="color: #334155; font-weight: 600;">{{ $item->nomor_sertifikat ?? '-' }}</td>
-                            <td>{{ $item->kode_verifikasi ?? $item->kode_verivikasi ?? '-' }}</td>
-                            <td>{{ $item->persentasi_penilaian ?? $item->persentase_penilaian ?? '-' }}</td>
-                            <td>{{ $item->jenis_diklat ?? '-' }}</td>
-                            <td>{{ (!empty($item->created_at) && trim($item->created_at) !== '-' && trim($item->created_at) !== '') ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
-<td>{{ (!empty($item->updated_at) && trim($item->updated_at) !== '-' && trim($item->updated_at) !== '') ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $item->ttl ?? '-' }}</td><td>{{ $item->ket ?? $item->keterangan ?? '-' }}</td>
-                            <td class="text-center d-flex justify-content-center gap-1">
-                                <a href="/internal/pencegahan/peningkatan-kapasitas/edit/{{ strtolower(str_replace(' ', '-', $item->jenis_diklat)) }}/{{ $item->id }}" class="btn btn-warning btn-sm">Edit</a>
-                                <form action="/internal/pencegahan/peningkatan-kapasitas/hapus/{{ strtolower(str_replace(' ', '-', $item->jenis_diklat)) }}/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');" style="display:inline-block;">
-    @csrf
-    @method('DELETE')
-    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-</form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr><td colspan="22" class="text-center py-4 text-muted">Belum ada data DIKLAT RESCUE</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- 5. TABEL DIKLAT MFR -->
-            <h5 class="fw-bold mt-4 mb-3" style="color: #8b5cf6;"><i class="fas fa-check-circle me-2"></i> Data DIKLAT MFR</h5>
-            <div class="table-scroll-wrapper">
-                <table class="table-detailed table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th class="text-center" width="50px">NO</th>
-                            <th>NAMA</th><th>TEMPAT LAHIR</th><th>TGL LAHIR</th><th>NIK</th><th>JABATAN</th>
-                            <th>INSTANSI/PERANGKAT DAERAH</th><th>DITANDA TANGANI OLEH</th><th>TANGGAL PELAKSANAAN</th>
-                            <th>JUMLAH JAM PELAJARAN</th><th>INSTANSI PENYELENGGARA</th><th>PROVINSI</th><th>KOTA</th>
-                            <th>NOMOR SERTIFIKAT</th><th>KODE VERIFIKASI</th><th>PERSENTASI PENILAIAN</th><th>JENIS DIKLAT</th>
-                            <th>CREATED AT</th><th>UPDATED AT</th><th>TTL</th><th>KET</th>
-                            <th class="text-center" width="100px">AKSI</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($dataMfr ?? [] as $item)
-                        <tr>
-                            <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                            <td class="fw-bold text-dark">{{ $item->nama ?? $item->nama_aparatur ?? '-' }}</td>
-                            <td>{{ $item->tempat_lahir ?? '-' }}</td><td>{{ $item->tgl_lahir ?? '-' }}</td>
-                            <td>{{ $item->nik ?? '-' }}</td><td>{{ $item->jabatan ?? '-' }}</td>
-                            <td>{{ $item->instansi ?? '-' }}</td><td>{{ $item->ditandatangani_oleh ?? $item->pejabat ?? '-' }}</td>
-                            <td>{{ $item->tanggal_pelaksanaan ?? $item->tanggal ?? '-' }}</td>
-                            <td class="text-center"><span class="badge-soft-blue">{{ $item->jumlah_jam_pelajaran ?? $item->jumlah_jp ?? '-' }} JP</span></td>
-                            <td>{{ $item->instansi_penyelenggara ?? $item->penyelenggara ?? '-' }}</td>
-                            <td>{{ $item->provinsi ?? '-' }}</td><td>{{ $item->kota ?? '-' }}</td>
-                            <td style="color: #334155; font-weight: 600;">{{ $item->nomor_sertifikat ?? '-' }}</td>
-                            <td>{{ $item->kode_verifikasi ?? $item->kode_verivikasi ?? '-' }}</td>
-                            <td>{{ $item->persentasi_penilaian ?? $item->persentase_penilaian ?? '-' }}</td>
-                            <td>{{ $item->jenis_diklat ?? '-' }}</td>
-                            <td>{{ $item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $item->ttl ?? '-' }}</td><td>{{ $item->ket ?? $item->keterangan ?? '-' }}</td>
-                            <td class="text-center d-flex justify-content-center gap-1">
-                                <a href="/internal/pencegahan/peningkatan-kapasitas/edit/diklat-mfr/{{ $item->id }}" class="btn-action btn-edit"><i class="fas fa-edit"></i></a>
-                                <form action="/internal/pencegahan/peningkatan-kapasitas/hapus/diklat-mfr/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr><td colspan="22" class="text-center py-4 text-muted">Belum ada data DIKLAT MFR</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- 6. TABEL DIKLAT OPERATOR -->
-            <h5 class="fw-bold mt-4 mb-3" style="color: #06b6d4;"><i class="fas fa-check-circle me-2"></i> Data DIKLAT OPERATOR</h5>
-            <div class="table-scroll-wrapper">
-                <table class="table-detailed table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th class="text-center" width="50px">NO</th>
-                            <th>NAMA</th><th>TEMPAT LAHIR</th><th>TGL LAHIR</th><th>NIK</th><th>JABATAN</th>
-                            <th>INSTANSI/PERANGKAT DAERAH</th><th>DITANDA TANGANI OLEH</th><th>TANGGAL PELAKSANAAN</th>
-                            <th>JUMLAH JAM PELAJARAN</th><th>INSTANSI PENYELENGGARA</th><th>PROVINSI</th><th>KOTA</th>
-                            <th>NOMOR SERTIFIKAT</th><th>KODE VERIFIKASI</th><th>PERSENTASI PENILAIAN</th><th>JENIS DIKLAT</th>
-                            <th>CREATED AT</th><th>UPDATED AT</th><th>TTL</th><th>KET</th>
-                            <th class="text-center" width="100px">AKSI</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($dataOperator ?? [] as $item)
-                        <tr>
-                            <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                            <td class="fw-bold text-dark">{{ $item->nama ?? $item->nama_aparatur ?? '-' }}</td>
-                            <td>{{ $item->tempat_lahir ?? '-' }}</td><td>{{ $item->tgl_lahir ?? '-' }}</td>
-                            <td>{{ $item->nik ?? '-' }}</td><td>{{ $item->jabatan ?? '-' }}</td>
-                            <td>{{ $item->instansi ?? '-' }}</td><td>{{ $item->ditandatangani_oleh ?? $item->pejabat ?? '-' }}</td>
-                            <td>{{ $item->tanggal_pelaksanaan ?? $item->tanggal ?? '-' }}</td>
-                            <td class="text-center"><span class="badge-soft-blue">{{ $item->jumlah_jam_pelajaran ?? $item->jumlah_jp ?? '-' }} JP</span></td>
-                            <td>{{ $item->instansi_penyelenggara ?? $item->penyelenggara ?? '-' }}</td>
-                            <td>{{ $item->provinsi ?? '-' }}</td><td>{{ $item->kota ?? '-' }}</td>
-                            <td style="color: #334155; font-weight: 600;">{{ $item->nomor_sertifikat ?? '-' }}</td>
-                            <td>{{ $item->kode_verifikasi ?? $item->kode_verivikasi ?? '-' }}</td>
-                            <td>{{ $item->persentasi_penilaian ?? $item->persentase_penilaian ?? '-' }}</td>
-                            <td>{{ $item->jenis_diklat ?? '-' }}</td>
-                            <td>{{ $item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $item->ttl ?? '-' }}</td><td>{{ $item->ket ?? $item->keterangan ?? '-' }}</td>
-                            <td class="text-center d-flex justify-content-center gap-1">
-                                <a href="/internal/pencegahan/peningkatan-kapasitas/edit/diklat-operator/{{ $item->id }}" class="btn-action btn-edit"><i class="fas fa-edit"></i></a>
-                                <form action="/internal/pencegahan/peningkatan-kapasitas/hapus/diklat-operator/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr><td colspan="22" class="text-center py-4 text-muted">Belum ada data DIKLAT OPERATOR</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- 7. TABEL DIKLAT INSPEKTUR -->
-            <h5 class="fw-bold mt-4 mb-3" style="color: #14b8a6;"><i class="fas fa-check-circle me-2"></i> Data DIKLAT INSPEKTUR</h5>
-            <div class="table-scroll-wrapper">
-                <table class="table-detailed table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th class="text-center" width="50px">NO</th>
-                            <th>NAMA</th><th>TEMPAT LAHIR</th><th>TGL LAHIR</th><th>NIK</th><th>JABATAN</th>
-                            <th>INSTANSI/PERANGKAT DAERAH</th><th>DITANDA TANGANI OLEH</th><th>TANGGAL PELAKSANAAN</th>
-                            <th>JUMLAH JAM PELAJARAN</th><th>INSTANSI PENYELENGGARA</th><th>PROVINSI</th><th>KOTA</th>
-                            <th>NOMOR SERTIFIKAT</th><th>KODE VERIFIKASI</th><th>PERSENTASI PENILAIAN</th><th>JENIS DIKLAT</th>
-                            <th>CREATED AT</th><th>UPDATED AT</th><th>TTL</th><th>KET</th>
-                            <th class="text-center" width="100px">AKSI</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($dataInspektur ?? [] as $item)
-                        <tr>
-                            <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                            <td class="fw-bold text-dark">{{ $item->nama ?? $item->nama_aparatur ?? '-' }}</td>
-                            <td>{{ $item->tempat_lahir ?? '-' }}</td><td>{{ $item->tgl_lahir ?? '-' }}</td>
-                            <td>{{ $item->nik ?? '-' }}</td><td>{{ $item->jabatan ?? '-' }}</td>
-                            <td>{{ $item->instansi ?? '-' }}</td><td>{{ $item->ditandatangani_oleh ?? $item->pejabat ?? '-' }}</td>
-                            <td>{{ $item->tanggal_pelaksanaan ?? $item->tanggal ?? '-' }}</td>
-                            <td class="text-center"><span class="badge-soft-blue">{{ $item->jumlah_jam_pelajaran ?? $item->jumlah_jp ?? '-' }} JP</span></td>
-                            <td>{{ $item->instansi_penyelenggara ?? $item->penyelenggara ?? '-' }}</td>
-                            <td>{{ $item->provinsi ?? '-' }}</td><td>{{ $item->kota ?? '-' }}</td>
-                            <td style="color: #334155; font-weight: 600;">{{ $item->nomor_sertifikat ?? '-' }}</td>
-                            <td>{{ $item->kode_verifikasi ?? $item->kode_verivikasi ?? '-' }}</td>
-                            <td>{{ $item->persentasi_penilaian ?? $item->persentase_penilaian ?? '-' }}</td>
-                            <td>{{ $item->jenis_diklat ?? '-' }}</td>
-                            <td>{{ $item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $item->ttl ?? '-' }}</td><td>{{ $item->ket ?? $item->keterangan ?? '-' }}</td>
-                            <td class="text-center d-flex justify-content-center gap-1">
-                                <a href="/internal/pencegahan/peningkatan-kapasitas/edit/diklat-inspektur/{{ $item->id }}" class="btn-action btn-edit"><i class="fas fa-edit"></i></a>
-                                <form action="/internal/pencegahan/peningkatan-kapasitas/hapus/diklat-inspektur/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr><td colspan="22" class="text-center py-4 text-muted">Belum ada data DIKLAT INSPEKTUR</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- 8. TABEL DIKLAT PPL -->
-            <h5 class="fw-bold mt-4 mb-3" style="color: #ec4899;"><i class="fas fa-check-circle me-2"></i> Data DIKLAT PPL</h5>
-            <div class="table-scroll-wrapper">
-                <table class="table-detailed table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th class="text-center" width="50px">NO</th>
-                            <th>NAMA</th><th>TEMPAT LAHIR</th><th>TGL LAHIR</th><th>NIK</th><th>JABATAN</th>
-                            <th>INSTANSI/PERANGKAT DAERAH</th><th>DITANDA TANGANI OLEH</th><th>TANGGAL PELAKSANAAN</th>
-                            <th>JUMLAH JAM PELAJARAN</th><th>INSTANSI PENYELENGGARA</th><th>PROVINSI</th><th>KOTA</th>
-                            <th>NOMOR SERTIFIKAT</th><th>KODE VERIFIKASI</th><th>PERSENTASI PENILAIAN</th><th>JENIS DIKLAT</th>
-                            <th>CREATED AT</th><th>UPDATED AT</th><th>TTL</th><th>KET</th>
-                            <th class="text-center" width="100px">AKSI</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($dataPpl ?? [] as $item)
-                        <tr>
-                            <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                            <td class="fw-bold text-dark">{{ $item->nama ?? $item->nama_aparatur ?? '-' }}</td>
-                            <td>{{ $item->tempat_lahir ?? '-' }}</td><td>{{ $item->tgl_lahir ?? '-' }}</td>
-                            <td>{{ $item->nik ?? '-' }}</td><td>{{ $item->jabatan ?? '-' }}</td>
-                            <td>{{ $item->instansi ?? '-' }}</td><td>{{ $item->ditandatangani_oleh ?? $item->pejabat ?? '-' }}</td>
-                            <td>{{ $item->tanggal_pelaksanaan ?? $item->tanggal ?? '-' }}</td>
-                            <td class="text-center"><span class="badge-soft-blue">{{ $item->jumlah_jam_pelajaran ?? $item->jumlah_jp ?? '-' }} JP</span></td>
-                            <td>{{ $item->instansi_penyelenggara ?? $item->penyelenggara ?? '-' }}</td>
-                            <td>{{ $item->provinsi ?? '-' }}</td><td>{{ $item->kota ?? '-' }}</td>
-                            <td style="color: #334155; font-weight: 600;">{{ $item->nomor_sertifikat ?? '-' }}</td>
-                            <td>{{ $item->kode_verifikasi ?? $item->kode_verivikasi ?? '-' }}</td>
-                            <td>{{ $item->persentasi_penilaian ?? $item->persentase_penilaian ?? '-' }}</td>
-                            <td>{{ $item->jenis_diklat ?? '-' }}</td>
-                            <td>{{ $item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $item->ttl ?? '-' }}</td><td>{{ $item->ket ?? $item->keterangan ?? '-' }}</td>
-                            <td class="text-center d-flex justify-content-center gap-1">
-                                <a href="/internal/pencegahan/peningkatan-kapasitas/edit/diklat-ppl/{{ $item->id }}" class="btn-action btn-edit"><i class="fas fa-edit"></i></a>
-                                <form action="/internal/pencegahan/peningkatan-kapasitas/hapus/diklat-ppl/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr><td colspan="22" class="text-center py-4 text-muted">Belum ada data DIKLAT PPL</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-        </main>
+        <a href="/internal/index" class="brand">
+            <img src="/images/simerahkoja.png" alt="Logo"><span>SIMERAH KOJA</span>
+        </a>
     </div>
+    <div class="topbar-right">
+        <div class="user-chip">
+            <span class="user-avatar">{{ strtoupper(substr(Auth::user()->nama_lengkap ?? 'R', 0, 1)) }}</span>
+            <div class="user-meta">
+                <strong>{{ Auth::user()->nama_lengkap ?? 'Rekan kerja' }}</strong>
+                <small>{{ str_replace('_', ' ', Auth::user()->role ?? '') }}</small>
+            </div>
+        </div>
+        <form action="/logout" method="POST" style="margin:0;">
+            @csrf
+            <button type="submit" class="btn-logout"><i class="fas fa-arrow-right-from-bracket"></i> Keluar</button>
+        </form>
+    </div>
+</header>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<div class="shell">
+    <div class="sidebar-backdrop" id="sideBackdrop"></div>
+
+    <!-- ==================== SIDEBAR LENGKAP ==================== -->
+    <aside class="sidebar" id="sidebar">
+        <a href="/internal/index" class="side-link"><i class="fas fa-house"></i> Dashboard utama</a>
+
+        <div class="side-kicker">Modul operasional</div>
+        
+        <!-- BAGIAN PENCEGAHAN (TERBUKA LENGKAP) -->
+        <details class="side-group" open>
+            <summary><i class="fas fa-shield-halved grp-ico"></i><span class="grp-label">Bagian pencegahan</span><i class="fas fa-chevron-down chev"></i></summary>
+            <div class="side-sub">
+                <a href="/internal/pencegahan/peningkatan-kapasitas" class="active"><i class="fas fa-arrow-trend-up"></i> Peningkatan Kapasitas Aparatur</a>
+                <a href="/internal/pencegahan/inspeksi-kebakaran"><i class="fas fa-magnifying-glass-chart"></i> Pencegahan Kebakaran dan Inspeksi</a>
+                <a href="/internal/pencegahan/pemberdayaan-masyarakat"><i class="fas fa-handshake-angle"></i> Pemberdayaan Masyarakat dan Dunia Usaha</a>
+                <a href="/internal/pencegahan/kelola-edukasi"><i class="fas fa-bullhorn"></i> Kelola Edukasi</a>
+                <a href="/internal/pencegahan/kelola-redkar"><i class="fas fa-users-rectangle"></i> Kelola Redkar</a>
+                <a href="/internal/pencegahan/kelola-rpkbgl"><i class="fas fa-building-circle-check"></i> Kelola RPKBGL</a>
+                <a href="/internal/pencegahan/kelola-skk"><i class="fas fa-file-shield"></i> Kelola SKK</a>
+            </div>
+        </details>
+        
+        <!-- BAGIAN PEMADAMAN -->
+        <details class="side-group">
+            <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
+            <div class="side-sub">
+                <a href="/internal/damtan/input-data"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
+                <a href="/internal/damtan/data-laporan"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
+                <a href="/internal/surat-korban/create"><i class="fas fa-file-signature"></i> Buat Surat Korban</a>
+            </div>
+        </details>
+        
+        <!-- KEPEGAWAIAN -->
+        <details class="side-group">
+            <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
+            <div class="side-sub">
+                <a href="/internal/kepegawaian/duk"><i class="fas fa-user-tie"></i> Data Urut Kepegawaian</a>
+            </div>
+        </details>
+
+        <!-- BAGIAN SAPRA -->
+        <details class="side-group">
+            <summary><i class="fas fa-warehouse grp-ico"></i><span class="grp-label">Bagian sapra</span><i class="fas fa-chevron-down chev"></i></summary>
+            <div class="side-sub">
+                <span class="side-kicker" style="padding-left:2px;">Sarana &amp; Prasarana</span>
+                <a href="/sapra/sarana-penyelamatan"><i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi</a>
+                <a href="/sapra/sarana-pemeriksaan"><i class="fas fa-search-location"></i> Sarana Pemeriksaan Proteksi Kebakaran</a>
+                <a href="/sapra/kelola-pos"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
+
+                <span class="side-kicker" style="padding-left:2px;">Manajemen Air</span>
+                <a href="/sapra/data_hidrant_gedung"><i class="fas fa-droplet"></i> Sumber Air</a>
+                <a href="/sapra/data-hidrant-kota"><i class="fas fa-map-location-dot"></i> Data Hidrant Kota Jambi</a>
+
+                <span class="side-kicker" style="padding-left:2px;">Logistik & Distribusi</span>
+                <a href="/sapra/kebutuhan-sarpras"><i class="fas fa-boxes-stacked"></i> Mutu Baku Kebutuhan</a>
+                <a href="/sapra/distribusi-staff"><i class="fas fa-people-carry-box"></i> Distribusi Barang Staff</a>
+            </div>
+        </details>
+
+        <div class="side-kicker">Konten publik</div>
+        <details class="side-group">
+            <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen berita</span><i class="fas fa-chevron-down chev"></i></summary>
+            <div class="side-sub">
+                <a href="/internal/operator/kelola-berita"><i class="far fa-newspaper"></i> Input &amp; Kelola Berita</a>
+                <a href="/internal/operator/infografis"><i class="far fa-image"></i> Kelola Info Grafis</a>
+                <a href="/internal/operator/berita-medsos"><i class="fab fa-instagram"></i> Kelola Berita Medsos</a>
+            </div>
+        </details>
+
+        <div class="side-kicker">Akun</div>
+        <details class="side-group">
+            <summary><i class="fas fa-user-gear grp-ico"></i><span class="grp-label">Pengaturan akun</span><i class="fas fa-chevron-down chev"></i></summary>
+            <div class="side-sub">
+                <a href="/internal/profil"><i class="fas fa-user-pen"></i> Profil Saya</a>
+                @if(Auth::user()?->role === 'super_user')
+                    <a href="/internal/kelola-user"><i class="fas fa-users-gear"></i> Kelola Semua Pengguna</a>
+                    <a href="/internal/kelola-pemohon"><i class="fas fa-address-book"></i> Kelola Akun Pemohon</a>
+                @endif
+            </div>
+        </details>
+    </aside>
+
+    <!-- ==================== KONTEN UTAMA ==================== -->
+    <main class="content">
+        
+        <div class="d-flex justify-content-between align-items-end mb-2 flex-wrap gap-3">
+            <div class="page-head mb-0">
+                <h1>Peningkatan Kapasitas Aparatur</h1>
+                <p>Kelola data diklat dan peningkatan kapasitas aparatur pemadam kebakaran.</p>
+            </div>
+            
+            <div class="d-flex align-items-center gap-2">
+                <a href="/internal/pencegahan/peningkatan-kapasitas/tambah" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: var(--navy); padding: 9px 16px; border-radius: 9px;">
+                    <i class="fas fa-plus"></i> Tambah Data
+                </a>
+            </div>
+        </div>
+
+        <!-- TABS MENYAMPING -->
+        <ul class="nav custom-nav-tabs">
+            <li class="nav-item"><a class="nav-link active" href="/internal/pencegahan/peningkatan-kapasitas">Semua Data</a></li>
+            <li class="nav-item"><a class="nav-link" href="/internal/pencegahan/peningkatan-kapasitas/diksar">DIKSAR</a></li>
+            <li class="nav-item"><a class="nav-link" href="/internal/pencegahan/peningkatan-kapasitas/diklat-f1">DIKLAT F1</a></li>
+            <li class="nav-item"><a class="nav-link" href="/internal/pencegahan/peningkatan-kapasitas/diklat-f2">DIKLAT F2</a></li>
+            <li class="nav-item"><a class="nav-link" href="/internal/pencegahan/peningkatan-kapasitas/diklat-rescue">DIKLAT RESCUE</a></li>
+            <li class="nav-item"><a class="nav-link" href="/internal/pencegahan/peningkatan-kapasitas/diklat-mfr">DIKLAT MFR</a></li>
+            <li class="nav-item"><a class="nav-link" href="/internal/pencegahan/peningkatan-kapasitas/diklat-operator">DIKLAT OPERATOR</a></li>
+            <li class="nav-item"><a class="nav-link" href="/internal/pencegahan/peningkatan-kapasitas/diklat-inspektur">DIKLAT INSPEKTUR</a></li>
+            <li class="nav-item"><a class="nav-link" href="/internal/pencegahan/peningkatan-kapasitas/diklat-ppl">DIKLAT PPL</a></li>
+        </ul>
+
+        <!-- ================= STAT CARDS DASHBOARD ================= -->
+        <div class="stats-grid">
+            <a href="/internal/pencegahan/peningkatan-kapasitas/diksar" class="stat-card">
+                <div class="stat-ico ic-navy"><i class="fas fa-user-graduate"></i></div>
+                <div><div class="stat-title">DATA DIKSAR</div><div class="stat-value">{{ count($dataDiksar ?? []) }}</div></div>
+            </a>
+            <a href="/internal/pencegahan/peningkatan-kapasitas/diklat-f1" class="stat-card">
+                <div class="stat-ico ic-navy"><i class="fas fa-fire-extinguisher"></i></div>
+                <div><div class="stat-title">DATA DIKLAT F1</div><div class="stat-value">{{ count($dataF1 ?? []) }}</div></div>
+            </a>
+            <a href="/internal/pencegahan/peningkatan-kapasitas/diklat-f2" class="stat-card">
+                <div class="stat-ico ic-navy"><i class="fas fa-fire"></i></div>
+                <div><div class="stat-title">DATA DIKLAT F2</div><div class="stat-value">{{ count($dataF2 ?? []) }}</div></div>
+            </a>
+            <a href="/internal/pencegahan/peningkatan-kapasitas/diklat-rescue" class="stat-card">
+                <div class="stat-ico ic-navy"><i class="fas fa-life-ring"></i></div>
+                <div><div class="stat-title">DIKLAT RESCUE</div><div class="stat-value">{{ count($dataRescue ?? []) }}</div></div>
+            </a>
+            <a href="/internal/pencegahan/peningkatan-kapasitas/diklat-mfr" class="stat-card">
+                <div class="stat-ico ic-navy"><i class="fas fa-truck-medical"></i></div>
+                <div><div class="stat-title">DIKLAT MFR</div><div class="stat-value">{{ count($dataMfr ?? []) }}</div></div>
+            </a>
+            <a href="/internal/pencegahan/peningkatan-kapasitas/diklat-operator" class="stat-card">
+                <div class="stat-ico ic-navy"><i class="fas fa-truck"></i></div>
+                <div><div class="stat-title">DIKLAT OPERATOR</div><div class="stat-value">{{ count($dataOperator ?? []) }}</div></div>
+            </a>
+            <a href="/internal/pencegahan/peningkatan-kapasitas/diklat-inspektur" class="stat-card">
+                <div class="stat-ico ic-navy"><i class="fas fa-magnifying-glass-chart"></i></div>
+                <div><div class="stat-title">DIKLAT INSPEKTUR</div><div class="stat-value">{{ count($dataInspektur ?? []) }}</div></div>
+            </a>
+            <a href="/internal/pencegahan/peningkatan-kapasitas/diklat-ppl" class="stat-card">
+                <div class="stat-ico ic-navy"><i class="fas fa-chalkboard-user"></i></div>
+                <div><div class="stat-title">DIKLAT PPL</div><div class="stat-value">{{ count($dataPpl ?? []) }}</div></div>
+            </a>
+        </div>
+
+    </main>
+</div>
+
+<script>
+(function () {
+    'use strict';
+    document.querySelectorAll('[data-toast]').forEach(function (t) {
+        var hide = function () {
+            t.classList.add('leaving');
+            setTimeout(function () { t.remove(); }, 350);
+        };
+        var x = t.querySelector('[data-toast-close]');
+        if (x) x.addEventListener('click', hide);
+        setTimeout(hide, 4500);
+    });
+
+    var toggle = document.getElementById('sideToggle');
+    var backdrop = document.getElementById('sideBackdrop');
+    function closeSide() {
+        document.body.classList.remove('side-open');
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+    }
+    if (toggle) {
+        toggle.addEventListener('click', function () {
+            var open = document.body.classList.toggle('side-open');
+            toggle.setAttribute('aria-expanded', open);
+        });
+    }
+    if (backdrop) backdrop.addEventListener('click', closeSide);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
