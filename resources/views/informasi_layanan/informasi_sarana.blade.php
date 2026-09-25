@@ -14,7 +14,7 @@
        PENGATURAN HALAMAN
        Dari controller kirim:
          $posPemadam  : koleksi/array pos, tiap item punya id_pos, nama_pos, alamat, kode_map
-         $dataSarana  : koleksi/array sarana, tiap item punya id_pos, jenis_sarana, path_gambar, tahun (opsional)
+         $dataSarana  : koleksi/array sarana, tiap item punya id_pos, jenis_sarana, path_gambar, tahun (opsional), plat_nomor (opsional)
        ------------------------------------------------------------ */
     $posPemadam      = $posPemadam ?? [];
     $dataSarana = $dataSarana ?? [];
@@ -30,6 +30,8 @@
                 ['url' => '/informasi-prasarana',    'label' => 'Prasarana pemadam',   'ico' => 'fa-building'],
                 ['url' => '/informasi-penyelamatan', 'label' => 'Sarana penyelamatan', 'ico' => 'fa-life-ring'],
                 ['url' => '/informasi-pemeriksaan',  'label' => 'Sarana pemeriksaan',  'ico' => 'fa-magnifying-glass'],
+                ['url' => '/sumber-air',             'label' => 'Sumber Air',          'ico' => 'fa-droplet'],
+                ['url' => '/hidrant-kota',           'label' => 'Data Hidrant Kota Jambi', 'ico' => 'fa-map-location-dot'],
             ],
         ],
     ];
@@ -85,6 +87,7 @@
             --amber: #ffb627;
             --steel: #5b6c7f;
             --line: #dbe2ea;
+            --blue: #2563eb;
 
             --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
             --font-body: 'Instrument Sans', system-ui, sans-serif;
@@ -209,10 +212,6 @@
         .rise.d1 { animation-delay: .08s; } .rise.d2 { animation-delay: .18s; } .rise.d3 { animation-delay: .3s; }
         @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 
-        
-
-        
-
         /* ==========================================================
            LAYOUT UTAMA
            ========================================================== */
@@ -225,8 +224,6 @@
         .cat-panel h2 { padding: 4px 10px 16px; font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.05rem; letter-spacing: -0.01em; }
 
         /* --- Sidebar kategori --- */
-        .cat-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 20px 16px; }
-        .cat-panel h2 { padding: 4px 10px 16px; font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.05rem; letter-spacing: -0.01em; }
         .cat { border-top: 1px solid var(--line); }
         .cat:first-of-type { border-top: 0; }
         .cat-btn { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 10px; text-align: left; border-radius: 12px; font-weight: 700; font-size: .9rem; color: var(--ink); transition: background .2s; }
@@ -248,8 +245,6 @@
         .cat-sub a i { width: 20px; text-align: center; color: #b8c3d0; font-size: .95rem; }
         .cat-sub a[aria-current="page"] { background: var(--signal); color: #fff; box-shadow: 0 10px 20px -8px rgba(229,57,45,.6); }
         .cat-sub a[aria-current="page"] i { color: #fff; }
-
-        
 
         /* ==========================================================
            PANEL DATA
@@ -291,8 +286,11 @@
         .g-thumb i { font-size: 2.1rem; color: #b8c3d0; }
         .g-body { padding: 16px 18px 18px; }
         .g-title { font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: .96rem; line-height: 1.35; letter-spacing: -0.005em; }
-        .g-badge { margin-top: 12px; display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 8px; background: var(--paper); border: 1px solid var(--line); font-size: .78rem; font-weight: 700; color: var(--steel); }
+        
+        .badge-group { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+        .g-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 8px; background: var(--paper); border: 1px solid var(--line); font-size: .78rem; font-weight: 700; color: var(--steel); }
         .g-badge i { color: #2f9e5c; }
+        .g-badge.plat i { color: var(--blue); }
 
         .gallery-empty { grid-column: 1 / -1; text-align: center; padding: 56px 24px; border: 1.5px dashed var(--line); border-radius: var(--r-md); background: #fff; color: var(--steel); }
         .gallery-empty i { font-size: 2rem; color: #b8c3d0; margin-bottom: 12px; }
@@ -393,14 +391,19 @@
                     <?php endforeach; ?>
                 </ul>
             </li>
+            
+            <!-- UPDATE MENU SAPRA (HEADER) -->
             <li class="has-drop current">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan &amp; fasilitas <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">Layanan perizinan</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
+                    <li><a href="/sumber-air">Sumber Air</a></li>
+                    <li><a href="/hidrant-kota">Data Hidrant Kota Jambi</a></li>
                 </ul>
             </li>
+            
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
             <li><a class="menu-link btn-login" href="/login">Masuk</a></li>
         </ul>
@@ -444,6 +447,7 @@
                         <ul class="cat-sub">
                             <?php foreach ($kat['items'] as $item): ?>
                                 <li>
+                                    <!-- URL SIDEBAR SUDAH DIPERBAIKI -->
                                     <a href="<?= $h($item['url']) ?>" <?php if ($halaman_aktif === $item['url']): ?> aria-current="page" <?php endif; ?>>
                                         <i class="fas <?= $h($item['ico']) ?>"></i> <?= $h($item['label']) ?>
                                     </a>
@@ -522,11 +526,20 @@
                                 </div>
                                 <div class="g-body">
                                     <p class="g-title"><?= $h(mb_strtoupper($item['jenis_sarana'] ?? '')) ?></p>
-                                    <?php if (!empty($item['tahun'])): ?>
-                                        <span class="g-badge"><i class="fas fa-calendar-check"></i> Tahun <?= $h($item['tahun']) ?></span>
-                                    <?php else: ?>
-                                        <span class="g-badge"><i class="fas fa-circle-check"></i> Tersedia</span>
-                                    <?php endif; ?>
+                                    
+                                    <!-- BADGE TAHUN & PLAT NOMOR -->
+                                    <div class="badge-group">
+                                        <?php if (!empty($item['tahun'])): ?>
+                                            <span class="g-badge"><i class="fas fa-calendar-check"></i> Tahun <?= $h($item['tahun']) ?></span>
+                                        <?php else: ?>
+                                            <span class="g-badge"><i class="fas fa-circle-check"></i> Tersedia</span>
+                                        <?php endif; ?>
+
+                                        <?php if (!empty($item['plat_nomor'])): ?>
+                                            <span class="g-badge plat"><i class="fas fa-car"></i> <?= $h(mb_strtoupper($item['plat_nomor'])) ?></span>
+                                        <?php endif; ?>
+                                    </div>
+
                                 </div>
                             </div>
                             <?php endforeach; ?>
@@ -558,10 +571,6 @@
 </div>
 
 </main>
-
-
-
-
 
 <!-- ==================== FOOTER ==================== -->
 <footer class="footer">

@@ -64,8 +64,7 @@
         .toast-wrap { position: fixed; z-index: 200; top: 18px; left: 50%; transform: translateX(-50%); display: grid; gap: 10px; width: max-content; max-width: calc(100vw - 24px); }
         .toast { display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px; border-radius: 999px; background: #fff; border: 1px solid var(--line); box-shadow: var(--shadow-md); font-weight: 600; font-size: .92rem; animation: toastIn .45s cubic-bezier(.16,.84,.3,1) both; }
         .toast.leaving { animation: toastOut .3s ease forwards; }
-        .toast-ico { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: .78rem; background: var(--success); }
-        .toast.err .toast-ico { background: var(--signal); }
+        .toast-ico { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: .78rem; background: var(--green); }        .toast.err .toast-ico { background: var(--signal); }
         .toast-x { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); transition: background .2s, color .2s; }
         .toast-x:hover { background: var(--ink); color: #fff; }
         @keyframes toastIn { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
@@ -415,85 +414,6 @@
 
     <!-- ==================== KONTEN ==================== -->
     <main class="content">
-                     <!-- Menu Baru Untuk Surat -->
-                        <a href="/internal/surat-korban/create" class="sidebar-item {{ Request::is('internal/surat*') ? 'active' : '' }}"><i class="fas fa-file-signature"></i> Buat Surat Korban</a>
-                        <a href="#" class="sidebar-item"><i class="fas fa-users-cog"></i> Jadwal Piket Regu</a>
-                        <a href="#" class="sidebar-item"><i class="fas fa-running"></i> Data Relawan Redkar</a>
-                    </div>
-                </div>
-                    </div>
-                </div>
-                <div class="sidebar-separator"></div>
-
-            @endif
-
-            @if(in_array(Auth::user()->role, ['sapra', 'user', 'super_user']))
-                <button class="sidebar-collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSapra" aria-expanded="true">
-                    <span>Bagian Sapra</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </button>
-                <div class="collapse show" id="collapseSapra" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">
-                       <!-- GRUP MANAJEMEN AIR -->
-<span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">MANAJEMEN AIR</span>
-<a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
-<a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
-
-<!-- GRUP FASILITAS & POS -->
-<span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">FASILITAS & POS MAKO</span>
-<a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pos</a>
-<a href="/sapra/sarana-mako" class="sidebar-item active"><i class="fas fa-fire-extinguisher"></i> Sarana Pos</a>
-<a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan</a>
-<a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
-
-<!-- GRUP PERENCANAAN / MUTU BAKU -->
-<span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">PERENCANAAN PENGADAAN</span>
-<a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
-                    </div>
-                </div>
-            @endif
-
-            @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
-                <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita" aria-expanded="false">
-                    <span>Manajemen Berita</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </button>
-                <div class="collapse" id="collapseBerita" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">
-                        <a href="#" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
-                        <a href="/internal/operator/kelola-redkar" class="sidebar-item"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
-                    </div>
-                </div>
-            @endif
-
-            <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePengaturan" aria-expanded="false">
-                <span>Pengaturan Akun</span>
-                <i class="fas fa-chevron-down toggle-icon"></i>
-            </button>
-            <div class="collapse" id="collapsePengaturan" data-bs-parent="#sidebarAccordion">
-                <div class="sidebar-submenu">
-                    <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
-                    @if(Auth::user()->role === 'super_user')
-                        <a href="/internal/kelola-user" class="sidebar-item"><i class="fas fa-users"></i> Kelola Semua Pengguna</a>
-                    @endif
-                </div>
-            </div>
-        </aside>
-
-        <main class="main-content">
-            <div class="d-flex justify-content-between align-items-end mb-4">
-                <div>
-                    <h1 style="font-size: 26px; font-weight: 800; color: #111827; margin-bottom: 6px;">Data Sarana Pos</h1>
-                    <p style="color: #6b7280; font-size: 14px; margin: 0;">Manajemen dokumentasi sarana kebakaran di Markas Komando dan Pos Pemadam.</p>
-                </div>
-                <div class="d-flex gap-2 align-items-center">
-                    
-                    <!-- Search Bar (REAL TIME) -->
-                    <div class="input-group shadow-sm me-2 search-container" style="width: 250px; border-radius: 8px; overflow: hidden;">
-                        <span class="input-group-text bg-white border-end-0 text-muted" style="border-color: #cbd5e1;"><i class="fas fa-search"></i></span>
-                        <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari sarana..." style="border-color: #cbd5e1; font-size: 14px;">
-                    </div>
-
 
         <div class="page-toolbar">
             <div>

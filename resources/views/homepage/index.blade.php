@@ -424,13 +424,21 @@
         @media (max-width: 860px) { .giat { grid-template-columns: 1fr; } .giat-art { position: static; max-width: 420px; } }
 
         /* ==========================================================
-           FOOTER
+           FOOTER & INFO KONTAK
            ========================================================== */
         .footer { background: var(--ink); color: rgba(255,255,255,.7); padding: clamp(56px, 8vw, 96px) 0 32px; }
         .footer-grid { display: grid; grid-template-columns: 1.1fr 1.2fr .8fr; gap: clamp(32px, 5vw, 64px); }
         .footer h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: #fff; margin-bottom: 16px; }
+        
         .footer-about img { height: 96px; width: auto; margin-bottom: 20px; }
         .footer-about p { max-width: 42ch; font-size: .95rem; }
+        
+        /* Tambahan styling untuk nomor kontak di bawah Deskripsi Tentang Kami */
+        .footer-contact { margin-top: 24px; display: grid; gap: 12px; }
+        .footer-contact a { display: inline-flex; align-items: center; gap: 12px; color: rgba(255,255,255,.9); font-size: .95rem; font-weight: 500; transition: color .2s; }
+        .footer-contact a i { color: var(--signal); font-size: 1.2rem; width: 20px; text-align: center; }
+        .footer-contact a:hover { color: var(--amber); }
+
         .map { position: relative; height: 190px; border-radius: var(--r-md); overflow: hidden; background: var(--ink-2); }
         .map iframe { width: 100%; height: 100%; border: 0; pointer-events: none; filter: grayscale(.3) contrast(1.05); transition: filter .3s; }
         .map-link { position: absolute; inset: 0; z-index: 2; display: flex; align-items: flex-end; justify-content: flex-end; padding: 12px; border-radius: var(--r-md); }
@@ -909,6 +917,16 @@
                 <img src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA" loading="lazy">
                 <h3>Tentang kami</h3>
                 <p>SIMERAH KOJA merupakan sistem informasi pemerintahan berbasis elektronik yang terintegrasi pada dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+                
+                <!-- INFO KONTAK DITAMBAHKAN DI SINI -->
+                <div class="footer-contact">
+                    <a href="{{ $wa_link }}" target="_blank" rel="noopener">
+                        <i class="fab fa-whatsapp"></i> {{ $no_whatsapp }} (WhatsApp)
+                    </a>
+                    <a href="tel:{{ $no_telepon }}">
+                        <i class="fas fa-phone-alt"></i> {{ $telepon_tampil }} (Call Center Damkar)
+                    </a>
+                </div>
             </div>
 
             <div>

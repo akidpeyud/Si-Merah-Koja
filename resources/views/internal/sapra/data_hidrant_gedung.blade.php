@@ -307,7 +307,7 @@
             <img src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA">
             <div class="brand-text">
                 <span class="main">SIMERAH KOJA</span>
-                <span class="sub">Portal Internal</span>
+               
             </div>
         </a>
     </div>

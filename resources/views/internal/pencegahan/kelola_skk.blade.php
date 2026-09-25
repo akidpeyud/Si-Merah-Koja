@@ -67,11 +67,16 @@
             background: var(--paper);
             -webkit-font-smoothing: antialiased;
         }
+<<<<<<<<< Temporary merge branch 1
+        a { text-decoration: none; color: inherit; }
+        button { font: inherit; }
+=========
         img { max-width: 100%; display: block; }
         a { color: inherit; text-decoration: none; }
         ul, ol { list-style: none; margin: 0; padding: 0; }
         button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
         :focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; border-radius: 6px; }
+>>>>>>>>> Temporary merge branch 2
 
         /* ==========================================================
            NOTIFIKASI (TOAST)
@@ -255,6 +260,7 @@
             .page-head h1 { font-size: 18px; text-align: center; margin-bottom: 20px; }
             table { width: 100% !important; border-collapse: collapse; }
             table th, table td { border: 1px solid #000 !important; padding: 8px !important; font-size: 10px !important; }
+>>>>>>>>> Temporary merge branch 2
             .tab-pane { display: block !important; opacity: 1 !important; visibility: visible !important; }
         }
     </style>
@@ -539,6 +545,7 @@
                                                 <form action="{{ route('skk.destroy', $p->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data permohonan SKK ini?');" style="flex-grow: 1; margin:0;">
                                                     @csrf @method('DELETE')
                                                     <button type="submit" class="btn-action w-100" style="background-color: var(--signal);"><i class="fas fa-trash me-1"></i> Hapus</button>
+>>>>>>>>> Temporary merge branch 2
                                                 </form>
                                             </div>
 
@@ -689,6 +696,7 @@
                                 @endforelse
                             </tbody>
                         </table>
+>>>>>>>>> Temporary merge branch 2
                     </div>
                 </div>
 

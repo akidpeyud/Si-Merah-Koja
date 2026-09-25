@@ -46,6 +46,8 @@ Route::get('/informasi-penyelamatan', [PublicController::class, 'informasiPenyel
 Route::get('/informasi-pemeriksaan', [PublicController::class, 'informasiPemeriksaan']);
 Route::get('/berita/{id}', [BeritaController::class, 'showPublic']);
 Route::get('/media-informasi', [KabarDamkarController::class, 'indexMediaInformasi'])->name('media.informasi');
+Route::get('/sumber-air', [PublicController::class, 'sumberAir']);
+ Route::get('/hidrant-kota', [PublicController::class, 'hidrantKota']);
 
 
 // ==========================================

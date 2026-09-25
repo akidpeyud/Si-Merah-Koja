@@ -26,17 +26,10 @@ class SapraController extends Controller
     // ==========================================
     public function dataHidrantGedung()
     {
-<<<<<<< HEAD
-        $hidranPilar  = DB::table('prasarana')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
-        $hidranGedung = DB::table('prasarana')->where('kategori', 'Hidrant Gedung')->orderBy('no_urut', 'asc')->get();
-        $embung       = DB::table('prasarana')->where('kategori', 'Embung')->orderBy('no_urut', 'asc')->get();
-        $danau        = DB::table('prasarana')->where('kategori', 'Danau')->orderBy('no_urut', 'asc')->get();
-=======
         $hidranPilar  = DB::table('prasaranas')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
         $hidranGedung = DB::table('prasaranas')->where('kategori', 'Hidrant Gedung')->orderBy('no_urut', 'asc')->get();
         $embung       = DB::table('prasaranas')->where('kategori', 'Embung')->orderBy('no_urut', 'asc')->get();
         $danau        = DB::table('prasaranas')->where('kategori', 'Danau')->orderBy('no_urut', 'asc')->get();
->>>>>>> eca121777c7a0b26891368aa6057c0a9c8617989
 
         return view('internal.sapra.data_hidrant_gedung', compact(
             'hidranPilar', 'hidranGedung', 'embung', 'danau'
@@ -55,25 +48,15 @@ class SapraController extends Controller
         ]);
 
         // CEK NO URUT OTOMATIS: Ambil angka terbesar di kategori ini, lalu tambah 1
-<<<<<<< HEAD
-        $noUrutTerakhir = DB::table('prasarana')
-=======
         $noUrutTerakhir = DB::table('prasaranas')
->>>>>>> eca121777c7a0b26891368aa6057c0a9c8617989
                             ->where('kategori', $request->kategori)
                             ->max('no_urut');
                             
         $noUrutBaru = $noUrutTerakhir ? $noUrutTerakhir + 1 : 1;
 
-<<<<<<< HEAD
-        DB::table('prasarana')->insert([
-            'kategori'    => $request->kategori,
-            'no_urut'     => $noUrutBaru, 
-=======
         DB::table('prasaranas')->insert([
             'kategori'    => $request->kategori,
             'no_urut'     => $noUrutBaru, // Masukkan nomor yang dihitung otomatis
->>>>>>> eca121777c7a0b26891368aa6057c0a9c8617989
             'nama_gedung' => $request->nama_gedung,
             'alamat'      => $request->alamat,
             'kode_maps'   => $request->kode_maps,
@@ -98,11 +81,7 @@ class SapraController extends Controller
             'luas'        => 'nullable|string|max:100',
         ]);
 
-<<<<<<< HEAD
-        DB::table('prasarana')->where('id', $id)->update([
-=======
         DB::table('prasaranas')->where('id', $id)->update([
->>>>>>> eca121777c7a0b26891368aa6057c0a9c8617989
             'kategori'    => $request->kategori,
             'no_urut'     => $request->no_urut,
             'nama_gedung' => $request->nama_gedung,
@@ -118,27 +97,16 @@ class SapraController extends Controller
 
     public function destroyHidran($id)
     {
-<<<<<<< HEAD
-        DB::table('prasarana')->where('id', $id)->delete();
-=======
         DB::table('prasaranas')->where('id', $id)->delete();
->>>>>>> eca121777c7a0b26891368aa6057c0a9c8617989
         return redirect()->back()->with('success', 'Data berhasil dihapus!');
     }
 
     public function cetakPdfHidran()
     {
-<<<<<<< HEAD
-        $hidranPilar  = DB::table('prasarana')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
-        $hidranGedung = DB::table('prasarana')->where('kategori', 'Hidrant Gedung')->orderBy('no_urut', 'asc')->get();
-        $embung       = DB::table('prasarana')->where('kategori', 'Embung')->orderBy('no_urut', 'asc')->get();
-        $danau        = DB::table('prasarana')->where('kategori', 'Danau')->orderBy('no_urut', 'asc')->get();
-=======
         $hidranPilar  = DB::table('prasaranas')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
         $hidranGedung = DB::table('prasaranas')->where('kategori', 'Hidrant Gedung')->orderBy('no_urut', 'asc')->get();
         $embung       = DB::table('prasaranas')->where('kategori', 'Embung')->orderBy('no_urut', 'asc')->get();
         $danau        = DB::table('prasaranas')->where('kategori', 'Danau')->orderBy('no_urut', 'asc')->get();
->>>>>>> eca121777c7a0b26891368aa6057c0a9c8617989
 
         $pdf = Pdf::loadView('internal.sapra.hidran_gedung_pdf', compact(
             'hidranPilar', 'hidranGedung', 'embung', 'danau'
@@ -149,14 +117,10 @@ class SapraController extends Controller
 
     public function cetakPdfHidranGedung()
     {
-<<<<<<< HEAD
-        $dataHidran = DB::table('prasarana')->orderBy('no_urut', 'asc')->get();
-=======
         $hidranPilar  = DB::table('prasaranas')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
         $hidranGedung = DB::table('prasaranas')->where('kategori', 'Hidrant Gedung')->orderBy('no_urut', 'asc')->get();
         $embung       = DB::table('prasaranas')->where('kategori', 'Embung')->orderBy('no_urut', 'asc')->get();
         $danau        = DB::table('prasaranas')->where('kategori', 'Danau')->orderBy('no_urut', 'asc')->get();
->>>>>>> eca121777c7a0b26891368aa6057c0a9c8617989
         
         $pdf = Pdf::loadView('internal.sapra.hidran_pdf', compact(
             'hidranPilar', 'hidranGedung', 'embung', 'danau'
@@ -209,11 +173,7 @@ class SapraController extends Controller
                   ->setPaper('a4', 'landscape');
         return $pdf->download('Data_Hidrant_Kota_Jambi.pdf');
     }
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> eca121777c7a0b26891368aa6057c0a9c8617989
     public function cetakExcelKota()
     {
         return Excel::download(new HidranKotaExport, 'Data_Hidrant_Kota_Jambi.xlsx');
@@ -288,10 +248,7 @@ class SapraController extends Controller
             'path_gambar'     => $gambarPath,
         ]);
 
-<<<<<<< HEAD
-=======
         // Menyimpan id_pos ke session agar tab tidak reset
->>>>>>> eca121777c7a0b26891368aa6057c0a9c8617989
         return redirect()->back()
             ->with('success', 'Data Prasarana berhasil ditambahkan!')
             ->with('active_tab', $request->id_pos);
@@ -319,10 +276,7 @@ class SapraController extends Controller
             'path_gambar'     => $gambarPath,
         ]);
 
-<<<<<<< HEAD
-=======
         // Menyimpan id_pos ke session agar tab tidak reset
->>>>>>> eca121777c7a0b26891368aa6057c0a9c8617989
         return redirect()->back()
             ->with('success', 'Data Prasarana berhasil diperbarui!')
             ->with('active_tab', $request->id_pos);
@@ -332,10 +286,7 @@ class SapraController extends Controller
     {
         $data = DB::table('prasarana')->where('id_prasarana', $id)->first();
         
-<<<<<<< HEAD
-=======
         // Simpan id_pos ke variabel sebelum data dihapus dari database
->>>>>>> eca121777c7a0b26891368aa6057c0a9c8617989
         $id_pos_terakhir = $data->id_pos;
         
         if ($data && $data->path_gambar && file_exists(public_path($data->path_gambar))) {
@@ -344,10 +295,7 @@ class SapraController extends Controller
 
         DB::table('prasarana')->where('id_prasarana', $id)->delete();
 
-<<<<<<< HEAD
-=======
         // Mengirimkan id_pos terakhir ke session
->>>>>>> eca121777c7a0b26891368aa6057c0a9c8617989
         return redirect()->back()
             ->with('success', 'Data Prasarana berhasil dihapus!')
             ->with('active_tab', $id_pos_terakhir);
@@ -363,10 +311,7 @@ class SapraController extends Controller
 
         return $pdf->download('Data_Prasarana_Mako_Pos.pdf');
     }
-<<<<<<< HEAD
-=======
 
->>>>>>> eca121777c7a0b26891368aa6057c0a9c8617989
     // ==========================================
     // === MENU SARANA MAKO & POS ===
     // ==========================================
@@ -458,11 +403,7 @@ class SapraController extends Controller
         $pdf = Pdf::loadView('internal.sapra.sarana_mako_pdf', compact('posPemadam', 'dataSarana'))
                   ->setPaper('a4', 'portrait');
 
-<<<<<<< HEAD
-        return $pdf->download('Data_Sarana.pdf');
-=======
         return $pdf->download('Data_Sarana_Mako_Pos.pdf');
->>>>>>> eca121777c7a0b26891368aa6057c0a9c8617989
     }
 
     // ==========================================
@@ -483,10 +424,7 @@ class SapraController extends Controller
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
             $filename = time() . '_' . $file->getClientOriginalName();
-<<<<<<< HEAD
-=======
             // Simpan gambar ke folder public/uploads/penyelamatan
->>>>>>> eca121777c7a0b26891368aa6057c0a9c8617989
             $file->move(public_path('uploads/penyelamatan'), $filename); 
             $gambarPath = 'uploads/penyelamatan/' . $filename;
         }
@@ -509,10 +447,7 @@ class SapraController extends Controller
         $gambarPath = $dataLama->path_gambar;
 
         if ($request->hasFile('gambar')) {
-<<<<<<< HEAD
-=======
             // Hapus gambar lama jika ada
->>>>>>> eca121777c7a0b26891368aa6057c0a9c8617989
             if ($gambarPath && file_exists(public_path($gambarPath))) {
                 unlink(public_path($gambarPath));
             }
@@ -539,10 +474,7 @@ class SapraController extends Controller
         $data = DB::table('sarana_penyelamatan')->where('id_sarana_penyelamatan', $id)->first();
         $id_pos_terakhir = $data->id_pos;
         
-<<<<<<< HEAD
-=======
         // Hapus file gambar fisik dari folder
->>>>>>> eca121777c7a0b26891368aa6057c0a9c8617989
         if ($data && $data->path_gambar && file_exists(public_path($data->path_gambar))) {
             unlink(public_path($data->path_gambar));
         }
@@ -564,10 +496,7 @@ class SapraController extends Controller
 
         return $pdf->download('Data_Sarana_Penyelamatan_Mako_Pos.pdf');
     }
-<<<<<<< HEAD
-=======
 
->>>>>>> eca121777c7a0b26891368aa6057c0a9c8617989
     // ==========================================
     // === MENU KELOLA DATA POS ===
     // ==========================================
@@ -581,11 +510,7 @@ class SapraController extends Controller
     public function storePos(Request $request)
     {
         DB::table('pos_pemadam')->insert([
-<<<<<<< HEAD
-            'nama_pos' => strtoupper($request->nama_pos), 
-=======
             'nama_pos' => strtoupper($request->nama_pos), // Otomatis huruf besar
->>>>>>> eca121777c7a0b26891368aa6057c0a9c8617989
             'alamat'   => $request->alamat,
             'kode_map' => $request->kode_map,
         ]);
@@ -936,8 +861,5 @@ class SapraController extends Controller
 
         return $pdf->download('Data_Sarana_Pemeriksaan_Mako_Pos.pdf');
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> eca121777c7a0b26891368aa6057c0a9c8617989
+

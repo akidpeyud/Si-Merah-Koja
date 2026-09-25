@@ -454,7 +454,7 @@
                         <i class="fas fa-boxes-stacked"></i> Mutu Baku Kebutuhan
                     </a>
                     <a href="/sapra/distribusi-staff" class="{{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}">
-                        <i class="fas fa-people-carry-box"></i> Distribusi Barang Staff
+                        <i class="fas fa-people-carry-box"></i> Serah terima Barang
                     </a>
                 </div>
             </details>

@@ -10,19 +10,15 @@
         return function_exists('asset') ? asset($path) : '/' . ltrim($path, '/');
     };
 
-    /* ------------------------------------------------------------
-       PENGATURAN HALAMAN
-       Dari controller kirim:
-         $posPemadam     : koleksi/array pos, tiap item punya id_pos, nama_pos, alamat, kode_map
-         $dataPrasarana  : koleksi/array prasarana, tiap item punya id_pos, jenis_prasarana, path_gambar
-       ------------------------------------------------------------ */
-    $posPemadam      = $posPemadam ?? [];
-    $dataPrasarana = $dataPrasarana ?? [];
-
-    // Sidebar kategori publikasi. Kategori & item aktif untuk halaman ini: Sapra > Sarana pemeriksaan
     $kategori = [
-        'pencegahan' => ['label' => 'Bagian pencegahan', 'items' => []],
-        'pemadaman'  => ['label' => 'Bagian pemadaman',  'items' => []],
+        'pencegahan' => [
+            'label' => 'Bagian pencegahan',
+            'items' => [],
+        ],
+        'pemadaman' => [
+            'label' => 'Bagian pemadaman',
+            'items' => [],
+        ],
         'sapra' => [
             'label' => 'Bagian sapra',
             'items' => [
@@ -35,10 +31,11 @@
             ],
         ],
     ];
-    $kategori_aktif = 'sapra';
-    $halaman_aktif  = '/informasi-prasarana';
+    
+    // Kunci agar sidebar Sapra otomatis terbuka dan menu Sumber Air tersorot
+    $kategori_aktif = 'sapra'; 
+    $halaman_aktif  = '/sumber-air';  
 
-    // Menu Program kerja (dipakai oleh dropdown di header)
     $tabs = [
         'sotk'        => ['url' => '/sotk',        'label' => 'SOTK'],
         'sop'         => ['url' => '/sop',         'label' => 'SOP'],
@@ -51,10 +48,9 @@
     $no_whatsapp    = "628117113113";
     $no_telepon     = "074141171";
     $telepon_tampil = "(0741) 41171";
-    $pesan_wa = "Terimakasih%20telah%20menghubungi%20%F0%9F%94%A5%F0%9F%94%A5%F0%9F%94%A5..%0ASistem%20Informasi%20Penanggulangan%20Kebakaran%20dan%20Penyelamatan%20Daerah%20Kota%20Jambi%20(SIMERAH%20KOJA)%0A%0AMohon%20Isi%20Laporan%20Pengaduan%3A%20%0A%0ANama%20Pelapor%20%20%20%3A%0ANo.%20HP%20Pelapor%20%3A%0AAlamat%20Pelapor%20%3A%0AJenis%20Laporan%20%20%20%3A%20%20(Kebakaran%2FEvakuasi)%0A%0AAlamat%20Kejadian%20%3A%0A%0AKirim%20Peta%20Lokasi%20kejadian%20(Google%20Maps)%20%3A%0A%0AKirim%20Foto%20%26%20Video%20Kejadian%20%3A%0A%0ALaporan%20akan%20segera%20kami%20tindaklanjuti%20%F0%9F%9A%92%F0%9F%9A%92%F0%9F%9A%92%0ASalam%20YUDHA%20BRAMA%20JAYA%20Dinas%20Pemadam%20Kebakaran%20%26%20Penyelamatan%20Kota%20Jambi.";
+    $pesan_wa = "Terimakasih%20telah%20menghubungi%20Sistem%20Informasi%20Simerah%20Koja...";
     $wa_link   = "https://wa.me/" . $no_whatsapp . "?text=" . $pesan_wa;
-    $maps_link = "https://www.google.com/maps/place/6PC59JJ2%2BQ76/@-1.6180875,103.6006406,871m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-1.6180875!4d103.6006406?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D";
-
+    $maps_link = "https://www.google.com/maps/place/6PC59JJ2%2BQ76";
     $play_store_url = "";
 ?>
 <!DOCTYPE html>
@@ -63,8 +59,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-    <meta name="description" content="Galeri publik data bangunan dan fasilitas fisik prasarana pemadam kebakaran di setiap pos Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.">
-    <title>Prasarana pemadam | SIMERAH KOJA</title>
+    <meta name="description" content="Data pemetaan sumber air pemadam kebakaran di Kota Jambi.">
+    <title>Data Sumber Air | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -74,7 +70,7 @@
 
     <style>
         /* ==========================================================
-           TOKENS (sama dengan halaman utama)
+           TOKENS & BASE MASTER DESIGN LU
            ========================================================== */
         :root {
             --ink: #0d1b2a;
@@ -119,7 +115,7 @@
         .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: clamp(16px, 4vw, 32px); padding-right: clamp(16px, 4vw, 32px); }
 
         /* ==========================================================
-           HEADER
+           HEADER (ASLI LU)
            ========================================================== */
         .site-header {
             position: sticky; top: 0; z-index: 60;
@@ -183,7 +179,7 @@
         }
 
         /* ==========================================================
-           HERO HALAMAN
+           HERO HALAMAN (ASLI LU)
            ========================================================== */
         .page-hero {
             position: relative; isolation: isolate; color: #fff; background: var(--ink); overflow: hidden;
@@ -212,17 +208,16 @@
         @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 
         /* ==========================================================
-           LAYOUT UTAMA
+           LAYOUT UTAMA & SIDEBAR (ASLI LU)
            ========================================================== */
         .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
         .page-body { background: var(--paper); padding-bottom: clamp(64px, 9vw, 112px); }
         .info-layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 24px; align-items: start; margin-top: 40px; }
         @media (max-width: 900px) { .info-layout { grid-template-columns: 1fr; } }
-        .cat-panel { position: sticky; top: calc(var(--header-h) + 16px); background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 20px 16px; }
+        
+        .cat-panel { position: sticky; top: calc(var(--header-h) + 16px); background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 20px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);}
         @media (max-width: 900px) { .cat-panel { position: static; } }
         .cat-panel h2 { padding: 4px 10px 16px; font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.05rem; letter-spacing: -0.01em; }
-
-        /* --- Sidebar kategori --- */
         .cat { border-top: 1px solid var(--line); }
         .cat:first-of-type { border-top: 0; }
         .cat-btn { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 10px; text-align: left; border-radius: 12px; font-weight: 700; font-size: .9rem; color: var(--ink); transition: background .2s; }
@@ -246,64 +241,9 @@
         .cat-sub a[aria-current="page"] i { color: #fff; }
 
         /* ==========================================================
-           PANEL DATA
+           FOOTER (ASLI LU)
            ========================================================== */
-        .data-col { display: grid; gap: 24px; min-width: 0; }
-
-        .data-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px; background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: clamp(20px, 3vw, 28px); }
-        .data-head h2 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.35rem, 2.6vw, 1.75rem); line-height: 1.2; letter-spacing: -0.015em; color: var(--signal-d); }
-        .data-head p { margin-top: 6px; color: var(--steel); max-width: 56ch; font-size: .95rem; }
-        .search { position: relative; width: min(300px, 100%); flex: none; }
-        .search i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--steel); font-size: .9rem; pointer-events: none; }
-        .search input { width: 100%; height: 46px; padding: 0 18px 0 44px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--paper); font: inherit; font-size: .92rem; color: var(--ink); transition: border-color .2s, background .2s; }
-        .search input::placeholder { color: #9aa8b8; }
-        .search input:focus { outline: none; border-color: var(--ink); background: #fff; box-shadow: 0 0 0 4px rgba(255,182,39,.4); }
-
-        .pos-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
-        .pos-tab { padding: 10px 22px; border-radius: 999px; background: #fff; border: 1.5px solid var(--line); font-weight: 700; font-size: .85rem; letter-spacing: .01em; color: var(--steel); transition: background .2s, color .2s, border-color .2s; }
-        .pos-tab:hover { border-color: #b8c3d0; color: var(--ink); }
-        .pos-tab[aria-selected="true"] { background: var(--signal); border-color: var(--signal); color: #fff; box-shadow: 0 10px 20px -10px rgba(229,57,45,.7); }
-
-        .pos-panel[hidden] { display: none; }
-        .pos-panel { display: grid; gap: 20px; }
-
-        .pos-info { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); padding: 20px 24px; }
-        .pos-info h3 { display: flex; align-items: center; gap: 12px; font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.1rem; letter-spacing: -0.01em; }
-        .pos-info h3 i { color: var(--signal-d); }
-        .pos-info p { margin-top: 6px; display: flex; align-items: center; gap: 8px; color: var(--steel); font-size: .9rem; }
-        .pos-info p i { color: var(--steel); font-size: .8rem; }
-        .btn-maps { flex: none; display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 10px; background: #fdeceb; color: var(--signal-d); font-weight: 700; font-size: .85rem; border: 1px solid #f5c2be; transition: background .2s, color .2s; }
-        .btn-maps:hover { background: var(--signal); color: #fff; border-color: var(--signal); }
-
-        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
-        .g-card { background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; transition: transform .25s, box-shadow .25s; }
-        .g-card:hover { transform: translateY(-5px); box-shadow: 0 20px 34px -20px rgba(13,27,42,.4); }
-        .g-card[hidden] { display: none; }
-        .g-thumb { position: relative; height: 180px; background: var(--paper); overflow: hidden; display: grid; place-items: center; }
-        .g-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
-        .g-card:hover .g-thumb img { transform: scale(1.06); }
-        .g-thumb i { font-size: 2.1rem; color: #b8c3d0; }
-        .g-body { padding: 16px 18px 18px; }
-        .g-title { font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: .96rem; line-height: 1.35; letter-spacing: -0.005em; }
-        .g-badge { margin-top: 12px; display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 8px; background: var(--paper); border: 1px solid var(--line); font-size: .78rem; font-weight: 700; color: var(--steel); }
-        .g-badge i { color: #2f9e5c; }
-
-        .gallery-empty { grid-column: 1 / -1; text-align: center; padding: 56px 24px; border: 1.5px dashed var(--line); border-radius: var(--r-md); background: #fff; color: var(--steel); }
-        .gallery-empty i { font-size: 2rem; color: #b8c3d0; margin-bottom: 12px; }
-        .gallery-empty h3 { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
-        .gallery-empty p { margin-top: 4px; font-size: .92rem; }
-
-        .search-empty { display: none; grid-column: 1 / -1; text-align: center; padding: 40px 24px; color: var(--steel); }
-
-        @media (max-width: 640px) {
-            .pos-info { flex-direction: column; align-items: flex-start; }
-            .btn-maps { width: 100%; justify-content: center; }
-        }
-
-        /* ==========================================================
-           FOOTER
-           ========================================================== */
-        .footer { background: var(--ink); color: rgba(255,255,255,.7); padding: clamp(56px, 8vw, 96px) 0 32px; }
+        .footer { background: var(--ink); color: rgba(255,255,255,.7); padding: clamp(56px, 8vw, 96px) 0 32px; margin-top: 40px;}
         .footer-grid { display: grid; grid-template-columns: 1.1fr 1.2fr .8fr; gap: clamp(32px, 5vw, 64px); }
         .footer h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: #fff; margin-bottom: 16px; }
         .footer-about img { height: 96px; width: auto; margin-bottom: 20px; }
@@ -325,12 +265,12 @@
         .footer-links a i { font-size: .7rem; color: var(--signal); }
         .footer-links a:hover { color: #fff; gap: 14px; }
         .footer-bar { margin-top: clamp(40px, 6vw, 72px); padding-top: 28px; border-top: 1px solid rgba(255,255,255,.1); display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; align-items: center; font-size: .88rem; }
-        .footer .social a { background: rgba(255,255,255,.08); color: #fff; }
+        .footer .social a { background: rgba(255,255,255,.08); color: #fff; padding: 8px; border-radius: 6px; transition: background .2s; display: inline-flex;}
         .footer .social a:hover { background: var(--signal); }
         @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr; } }
 
         /* ==========================================================
-           TOMBOL LAPOR MENGAMBANG
+           TOMBOL LAPOR MENGAMBANG (ASLI LU)
            ========================================================== */
         .beacon { position: relative; width: 12px; height: 12px; border-radius: 50%; background: #fff; flex: none; }
         .beacon::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #fff; animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
@@ -347,8 +287,48 @@
         .sos-sheet .wa i { color: #25d366; } .sos-sheet .tel i { color: #38bdf8; } .sos-sheet .n112 i { color: #f87171; }
 
         /* ==========================================================
-           REDUCED MOTION
+           TAB & TABEL SUMBER AIR (DESAIN BARU)
            ========================================================== */
+        .data-col { display: grid; gap: 24px; min-width: 0; }
+        
+        .data-head { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: clamp(20px, 3vw, 28px); box-shadow: 0 4px 20px rgba(0,0,0,0.03);}
+        .data-head h2 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.35rem, 2.6vw, 1.75rem); line-height: 1.2; letter-spacing: -0.015em; color: var(--ink); margin-bottom: 6px; }
+        .data-head p { color: var(--steel); font-size: .95rem; }
+
+        .tabs { display: flex; overflow-x: auto; background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: 0 4px 20px rgba(0,0,0,0.02); margin-bottom: 20px;}
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab-btn { padding: 18px 24px; font-weight: 700; font-size: 0.95rem; color: var(--steel); border-bottom: 3px solid transparent; white-space: nowrap; transition: color .2s; flex: 1; text-align: center;}
+        .tab-btn:hover { color: var(--ink); background: var(--paper);}
+        .tab-btn.active { color: var(--signal); border-bottom-color: var(--signal); }
+
+        .tab-content { display: none; padding: 0; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .table-wrap { background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: 0 4px 20px rgba(0,0,0,0.02); overflow: hidden; }
+        .table-scroll { overflow-x: auto; width: 100%; }
+        .data-table { width: 100%; min-width: 800px; border-collapse: collapse; text-align: left; }
+        
+        .data-table thead th { background: #f1f5f9; color: #475569; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 16px 24px; border-bottom: 1px solid var(--line); border-top: 1px solid var(--line); }
+        .data-table tbody td { padding: 20px 24px; border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.95rem; vertical-align: middle; }
+        .data-table tbody tr { transition: background .2s; }
+        .data-table tbody tr:hover { background: #f8fafc; }
+        .data-table tbody tr:last-child td { border-bottom: none; }
+
+        .text-center { text-align: center !important; }
+        .text-bold { font-weight: 700; color: #0f172a; font-size: 0.98rem;}
+        
+        .badge-urut { display: inline-flex; justify-content: center; align-items: center; width: 28px; height: 28px; background: #eff6ff; color: #2563eb; border-radius: 6px; font-weight: 700; font-size: 0.85rem; }
+        .badge-luas { background: #f1f5f9; color: #475569; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; border: 1px solid #e2e8f0;}
+        
+        .btn-maps { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; border-radius: 999px; font-weight: 600; font-size: 0.85rem; transition: all .2s; white-space: nowrap; }
+        .btn-maps:hover { background: #d1fae5; transform: translateY(-1px); }
+        .btn-maps.disabled { background: #f1f5f9; color: #94a3b8; border-color: var(--line); cursor: not-allowed; }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--steel); }
+        .empty-state i { font-size: 3rem; color: #cbd5e1; margin-bottom: 16px; }
+        .empty-state h3 { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); margin-bottom: 4px;}
+
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
             *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -366,6 +346,7 @@
             <img src="/images/logo-redkar.png" alt="Logo Redkar">
         </a>
 
+        <!-- TOMBOL TOGGLE MOBILE -->
         <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="menu">
             <i class="fas fa-bars"></i>
         </button>
@@ -388,27 +369,17 @@
                 </ul>
             </li>
             
-            <!-- MENU BAGIAN SAPRA DI HEADER PUBLIK -->
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Bagian Sapra <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/informasi-sarana">Sarana pemadam</a></li>
-                    <li><a href="/informasi-prasarana">Prasarana pemadam</a></li>
-                    <li><a href="/informasi-penyelamatan">Sarana penyelamatan</a></li>
-                    <li><a href="/informasi-pemeriksaan">Sarana pemeriksaan</a></li>
-                    <li><a href="/sumber-air">Sumber Air</a></li>
-                    <li><a href="/hidrant-kota">Data Hidrant Kota Jambi</a></li>
-                </ul>
-            </li>
-
             <li class="has-drop current">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan &amp; fasilitas <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">Layanan perizinan</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
+                    <li><a href="/sumber-air">Sumber Air</a></li>
+                    <li><a href="/hidrant-kota">Data Hidrant Kota Jambi</a></li>
                 </ul>
             </li>
+            
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
             <li><a class="menu-link btn-login" href="/login">Masuk</a></li>
         </ul>
@@ -424,11 +395,11 @@
             <ol class="crumbs">
                 <li><a href="/">Beranda</a></li>
                 <li><a href="/informasi-layanan">Informasi layanan</a></li>
-                <li><span aria-current="page">Prasarana pemadam</span></li>
+                <li><span aria-current="page">Sumber air</span></li>
             </ol>
         </nav>
-        <h1 class="rise d1">Informasi layanan</h1>
-        <p class="rise d2">Galeri publik transparansi data bangunan dan fasilitas fisik di tiap pos.</p>
+        <h1 class="rise d1">Data Sumber Air</h1>
+        <p class="rise d2">Pemetaan lokasi sumber air untuk keperluan pemadaman di Kota Jambi.</p>
     </div>
 </section>
 
@@ -468,92 +439,170 @@
                 <?php endforeach; ?>
             </nav>
 
-            <!-- Data pemeriksaan -->
-            <section class="data-col" aria-label="Galeri sarana pemeriksaan">
-
+            <!-- KONTEN TABEL -->
+            <section class="data-col">
+                
                 <div class="data-head">
-                    <div>
-                        <h2>Prasarana pemadam kebakaran</h2>
-                        <p>Galeri publik transparansi data bangunan dan fasilitas fisik di tiap pos.</p>
-                    </div>
-                    <label class="search">
-                        <span class="sr-only">Cari fasilitas prasarana</span>
-                        <i class="fas fa-search"></i>
-                        <input type="search" id="searchInput" placeholder="Cari fasilitas prasarana" autocomplete="off">
-                    </label>
+                    <h2>Distribusi Sumber Air</h2>
+                    <p>Klik salah satu kategori di bawah untuk melihat rincian lokasi sumber air.</p>
                 </div>
 
-                <?php if (count($posPemadam)): ?>
-                <div class="pos-tabs" role="tablist" aria-label="Pos pemadam">
-                    <?php foreach ($posPemadam as $i => $pos): $pos = $arr($pos); ?>
-                        <button type="button" class="pos-tab" role="tab" data-pos="pos-<?= $h($pos['id_pos'] ?? $i) ?>" aria-selected="<?= $i === 0 ? 'true' : 'false' ?>">
-                            <?= $h(mb_strtoupper($pos['nama_pos'] ?? '')) ?>
-                        </button>
-                    <?php endforeach; ?>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="openTab('pilar', this)">Hidrant Pilar</button>
+                    <button class="tab-btn" onclick="openTab('gedung', this)">Hidrant Gedung</button>
+                    <button class="tab-btn" onclick="openTab('embung', this)">Embung</button>
+                    <button class="tab-btn" onclick="openTab('danau', this)">Danau</button>
                 </div>
 
-                <?php foreach ($posPemadam as $i => $pos): $pos = $arr($pos); $posId = 'pos-' . $h($pos['id_pos'] ?? $i);
-                    $itemsPos = [];
-                    foreach ($dataPrasarana as $item) {
-                        $item = $arr($item);
-                        if ((string) ($item['id_pos'] ?? '') === (string) ($pos['id_pos'] ?? '')) { $itemsPos[] = $item; }
-                    }
-                ?>
-                <div class="pos-panel" id="<?= $posId ?>" role="tabpanel" <?php if ($i !== 0): ?> hidden <?php endif; ?>>
-
-                    <div class="pos-info">
-                        <div>
-                            <h3><i class="fas fa-warehouse"></i> <?= $h($pos['nama_pos'] ?? '') ?></h3>
-                            <p><i class="fas fa-map-marker-alt"></i> <?= $h($pos['alamat'] ?? 'Alamat belum tersedia') ?></p>
+                <!-- TAB: PILAR -->
+                <div id="pilar" class="tab-content active">
+                    <div class="table-wrap">
+                        <div class="table-scroll">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" width="5%">NO</th>
+                                        <th width="30%">LOKASI / AREA</th>
+                                        <th width="45%">ALAMAT</th>
+                                        <th class="text-center" width="20%">MAPS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($hidranPilar as $item)
+                                        <tr>
+                                            <td class="text-center"><span class="badge-urut">{{ $item->no_urut }}</span></td>
+                                            <td class="text-bold">{{ $item->nama_gedung }}</td>
+                                            <td>{{ $item->alamat }}</td>
+                                            <td class="text-center">
+                                                @if($item->kode_maps)
+                                                    <a href="{{ str_starts_with($item->kode_maps, 'http') ? $item->kode_maps : 'https://www.google.com/maps/search/?api=1&query=' . urlencode($item->kode_maps) }}" target="_blank" class="btn-maps"><i class="fas fa-location-dot"></i> Buka Map</a>
+                                                @else
+                                                    <span class="btn-maps disabled"><i class="fas fa-ban"></i> Kosong</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr><td colspan="4" class="empty-state"><i class="fas fa-tint-slash"></i><h3>Data kosong</h3><p>Belum ada data Hidrant Pilar</p></td></tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
                         </div>
-                        <?php if (!empty($pos['kode_map'])): ?>
-                            <a class="btn-maps" href="https://www.google.com/maps/search/?api=1&query=<?= urlencode($pos['kode_map']) ?>" target="_blank" rel="noopener">
-                                <i class="fas fa-location-arrow"></i> Lihat di Google Maps
-                            </a>
-                        <?php endif; ?>
                     </div>
+                </div>
 
-                    <div class="gallery">
-                        <?php if ($itemsPos): ?>
-                            <?php foreach ($itemsPos as $item):
-                                $gambarAda = !empty($item['path_gambar']) && $fileExists($item['path_gambar']);
-                            ?>
-                            <div class="g-card" data-name="<?= $h(mb_strtolower($item['jenis_prasarana'] ?? '')) ?>">
-                                <div class="g-thumb">
-                                    <?php if ($gambarAda): ?>
-                                        <a href="<?= $h($assetUrl($item['path_gambar'])) ?>" target="_blank" rel="noopener">
-                                            <img src="<?= $h($assetUrl($item['path_gambar'])) ?>" alt="<?= $h($item['jenis_prasarana'] ?? '') ?>" loading="lazy">
-                                        </a>
-                                    <?php else: ?>
-                                        <i class="far fa-image"></i>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="g-body">
-                                    <p class="g-title"><?= $h(mb_strtoupper($item['jenis_prasarana'] ?? '')) ?></p>
-                                    <span class="g-badge"><i class="fas fa-circle-check"></i> Tersedia</span>
-                                </div>
-                            </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <div class="gallery-empty">
-                                <i class="fas fa-box-open"></i>
-                                <h3>Data kosong</h3>
-                                <p>Belum ada galeri prasarana untuk pos ini.</p>
-                            </div>
-                        <?php endif; ?>
-                        <p class="search-empty">Tidak ada alat yang cocok dengan pencarian.</p>
+                <!-- TAB: GEDUNG -->
+                <div id="gedung" class="tab-content">
+                    <div class="table-wrap">
+                        <div class="table-scroll">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" width="5%">NO</th>
+                                        <th width="25%">NAMA GEDUNG</th>
+                                        <th width="35%">ALAMAT</th>
+                                        <th class="text-center" width="15%">JUMLAH (UNIT)</th>
+                                        <th class="text-center" width="20%">MAPS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($hidranGedung as $item)
+                                        <tr>
+                                            <td class="text-center" style="color: var(--steel);">{{ $loop->iteration }}</td>
+                                            <td class="text-bold">{{ $item->nama_gedung }}</td>
+                                            <td style="color: #475569;">{{ $item->alamat }}</td>
+                                            <td class="text-center"><span class="badge-luas">{{ $item->jumlah ?? '-' }}</span></td>
+                                            <td class="text-center">
+                                                @if($item->kode_maps)
+                                                    <a href="{{ str_starts_with($item->kode_maps, 'http') ? $item->kode_maps : 'https://www.google.com/maps/search/?api=1&query=' . urlencode($item->kode_maps) }}" target="_blank" class="btn-maps"><i class="fas fa-location-dot"></i> Buka Map</a>
+                                                @else
+                                                    <span class="btn-maps disabled"><i class="fas fa-ban"></i> Kosong</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr><td colspan="5" class="empty-state"><i class="fas fa-tint-slash"></i><h3>Data kosong</h3><p>Belum ada data Hidrant Gedung</p></td></tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-
                 </div>
-                <?php endforeach; ?>
 
-                <?php else: ?>
-                <div class="gallery-empty">
-                    <i class="fas fa-warehouse"></i>
-                    <h3>Belum ada data pos</h3>
-                    <p>Data pos pemadam akan tampil di sini setelah ditambahkan.</p>
+                <!-- TAB: EMBUNG -->
+                <div id="embung" class="tab-content">
+                    <div class="table-wrap">
+                        <div class="table-scroll">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" width="5%">NO</th>
+                                        <th width="30%">NAMA LOKASI</th>
+                                        <th width="35%">ALAMAT</th>
+                                        <th class="text-center" width="15%">KAPASITAS AIR</th>
+                                        <th class="text-center" width="15%">MAPS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($embung as $item)
+                                        <tr>
+                                            <td class="text-center" style="color: var(--steel);">{{ $loop->iteration }}</td>
+                                            <td class="text-bold">{{ $item->nama_gedung }}</td>
+                                            <td style="color: #475569;">{{ $item->alamat }}</td>
+                                            <td class="text-center"><span class="badge-luas">{{ $item->luas ?? '-' }}</span></td>
+                                            <td class="text-center">
+                                                @if($item->kode_maps)
+                                                    <a href="{{ str_starts_with($item->kode_maps, 'http') ? $item->kode_maps : 'https://www.google.com/maps/search/?api=1&query=' . urlencode($item->kode_maps) }}" target="_blank" class="btn-maps"><i class="fas fa-location-dot"></i> Buka Map</a>
+                                                @else
+                                                    <span class="btn-maps disabled"><i class="fas fa-ban"></i> Kosong</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr><td colspan="5" class="empty-state"><i class="fas fa-water"></i><h3>Data kosong</h3><p>Belum ada data Embung</p></td></tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-                <?php endif; ?>
+
+                <!-- TAB: DANAU -->
+                <div id="danau" class="tab-content">
+                    <div class="table-wrap">
+                        <div class="table-scroll">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" width="5%">NO</th>
+                                        <th width="30%">NAMA DANAU</th>
+                                        <th width="35%">ALAMAT</th>
+                                        <th class="text-center" width="15%">KAPASITAS AIR</th>
+                                        <th class="text-center" width="15%">MAPS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($danau as $item)
+                                        <tr>
+                                            <td class="text-center" style="color: var(--steel);">{{ $loop->iteration }}</td>
+                                            <td class="text-bold">{{ $item->nama_gedung }}</td>
+                                            <td style="color: #475569;">{{ $item->alamat }}</td>
+                                            <td class="text-center"><span class="badge-luas">{{ $item->luas ?? '-' }}</span></td>
+                                            <td class="text-center">
+                                                @if($item->kode_maps)
+                                                    <a href="{{ str_starts_with($item->kode_maps, 'http') ? $item->kode_maps : 'https://www.google.com/maps/search/?api=1&query=' . urlencode($item->kode_maps) }}" target="_blank" class="btn-maps"><i class="fas fa-location-dot"></i> Buka Map</a>
+                                                @else
+                                                    <span class="btn-maps disabled"><i class="fas fa-ban"></i> Kosong</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr><td colspan="5" class="empty-state"><i class="fas fa-water"></i><h3>Data kosong</h3><p>Belum ada data Danau</p></td></tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
 
             </section>
 
@@ -673,7 +722,23 @@
         if (e.key === 'Escape') closeDrops(null);
     });
 
-    /* ---------- Tombol lapor mengambang (muncul setelah scroll) ---------- */
+    /* ---------- Accordion Sidebar ---------- */
+    document.querySelectorAll('.cat-btn.has-items').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var cat = btn.closest('.cat');
+            var nowOpen = !cat.hasAttribute('data-open');
+            document.querySelectorAll('.cat[data-open]').forEach(function (c) { 
+                c.removeAttribute('data-open'); 
+                c.querySelector('.cat-btn').setAttribute('aria-expanded', 'false'); 
+            });
+            if (nowOpen) { 
+                cat.setAttribute('data-open', ''); 
+                btn.setAttribute('aria-expanded', 'true'); 
+            }
+        });
+    });
+
+    /* ---------- Tombol lapor mengambang ---------- */
     var fab = document.getElementById('sosFab');
     var fabBtn = fab.querySelector('.sos-fab-btn');
 
@@ -690,39 +755,17 @@
         fabBtn.setAttribute('aria-expanded', open);
     });
 
-    /* ---------- Tab pos ---------- */
-    var tabs = document.querySelectorAll('.pos-tab');
-    tabs.forEach(function (tab) {
-        tab.addEventListener('click', function () {
-            tabs.forEach(function (t) { t.setAttribute('aria-selected', 'false'); });
-            document.querySelectorAll('.pos-panel').forEach(function (p) { p.hidden = true; });
-            tab.setAttribute('aria-selected', 'true');
-            var panel = document.getElementById(tab.dataset.pos);
-            if (panel) { panel.hidden = false; }
-            var search = document.getElementById('searchInput');
-            if (search) { search.value = ''; }
-            filterCards('');
-        });
-    });
-
-    /* ---------- Pencarian galeri ---------- */
-    function filterCards(q) {
-        q = q.trim().toLowerCase();
-        var panel = document.querySelector('.pos-panel:not([hidden])');
-        if (!panel) return;
-        var cards = panel.querySelectorAll('.g-card');
-        var visible = 0;
-        cards.forEach(function (c) {
-            var hit = c.dataset.name.indexOf(q) !== -1;
-            c.hidden = !hit;
-            if (hit) visible++;
-        });
-        var empty = panel.querySelector('.search-empty');
-        if (empty) { empty.style.display = (cards.length && !visible) ? 'block' : 'none'; }
-    }
-    var searchInput = document.getElementById('searchInput');
-    if (searchInput) { searchInput.addEventListener('input', function () { filterCards(searchInput.value); }); }
 })();
+
+/* Script Untuk Ganti Tab Tabel (Global) */
+function openTab(tabId, element) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    
+    element.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+}
 </script>
+
 </body>
 </html>
