@@ -9,7 +9,7 @@
     // Isi dengan link Google Play jika aplikasi sudah tersedia. Kosong = badge disembunyikan.
     $play_store_url = "";
 
-    // Data Video Edukasi
+    // Fallback Data Video Edu Damkar (Jika database edu_damkar masih kosong)
     $video_edukasi = [
         ['yt' => '', 'judul' => 'Cara memakai APAR dengan benar'],
         ['yt' => '', 'judul' => 'Langkah evakuasi saat terjadi kebakaran'],
@@ -17,7 +17,7 @@
         ['yt' => '', 'judul' => 'Pertolongan pertama pada luka bakar'],
     ];
 
-    // Data Video Ujung-Ujung Damkar (Isi 'yt' dengan ID YouTube, misal: 'dQw4w9WgXcQ')
+    // Fallback Data Video Ujung-Ujung Damkar (Jika database ujung_damkar masih kosong)
     $video_ujung_damkar = [
         ['yt' => '', 'judul' => 'Evakuasi sarang tawon di pemukiman warga'],
         ['yt' => '', 'judul' => 'Penyelamatan hewan peliharaan terjebak di sumur'],
@@ -347,7 +347,7 @@
         @media (max-width: 620px) { .kj-grid { grid-template-columns: 1fr; } .kj-card.is-featured { grid-column: auto; } .kj-card.is-featured .kj-thumb { height: 230px; } }
 
         /* ==========================================================
-           VIDEO EDUKASI
+           VIDEO EDUKASI (EDU DAMKAR)
            ========================================================== */
         .vid-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
         .vid { text-align: left; display: block; width: 100%; }
@@ -578,8 +578,8 @@
             <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="/video-edukasi">Video Edukasi</a></li>
-                    <li><a href="/info-grafis">Info Grafis</a></li>
+                    <li><a href="#video">Edu Damkar</a></li>
+                    <li><a href="#infografis">Info Grafis</a></li>
                     <li><a href="/media-informasi">Media Informasi</a></li>
                     <li><a href="#giat">Ujung-ujung Damkar</a></li>
                 </ul>
@@ -787,7 +787,15 @@
     </div>
 </section>
 
-<!-- ==================== VIDEO EDUKASI ==================== -->
+<!-- ==================== EDU DAMKAR (VIDEO EDUKASI) ==================== -->
+@php
+    // Mengambil data langsung dari variabel route $daftar_edu_damkar atau fallback ke Model EduDamkar
+    $listEduDamkar = isset($daftar_edu_damkar) && count($daftar_edu_damkar)
+        ? $daftar_edu_damkar
+        : (\Illuminate\Support\Facades\Schema::hasTable('edu_damkar')
+            ? \App\Models\EduDamkar::latest()->take(4)->get()
+            : collect());
+@endphp
 <section class="section bg-ink" id="video">
     <div class="wrap">
         <div class="sec-head">
@@ -798,19 +806,33 @@
         </div>
 
         <div class="vid-grid">
-            @foreach($video_edukasi as $v)
-                <button class="vid" type="button" data-yt="{{ $v['yt'] }}" data-title="{{ $v['judul'] }}" @if(!$v['yt']) disabled @endif>
+            @forelse($listEduDamkar as $v)
+                <button class="vid" type="button" data-yt="{{ $v->youtube_id }}" data-title="{{ $v->judul }}" @if(empty($v->youtube_id)) disabled @endif>
                     <div class="vid-thumb">
-                        @if($v['yt'])
-                            <img src="https://i.ytimg.com/vi/{{ $v['yt'] }}/hqdefault.jpg" alt="" loading="lazy">
+                        @if(!empty($v->youtube_id))
+                            <img src="https://i.ytimg.com/vi/{{ $v->youtube_id }}/hqdefault.jpg" alt="{{ $v->judul }}" loading="lazy">
                         @else
                             <span class="vid-soon">Segera hadir</span>
                         @endif
                         <div class="vid-play"><span><i class="fas fa-play"></i></span></div>
                     </div>
-                    <h3 class="mt-2">{{ $v['judul'] }}</h3>
+                    <h3 class="mt-2">{{ $v->judul }}</h3>
                 </button>
-            @endforeach
+            @empty
+                @foreach($video_edukasi as $v)
+                    <button class="vid" type="button" data-yt="{{ $v['yt'] }}" data-title="{{ $v['judul'] }}" @if(!$v['yt']) disabled @endif>
+                        <div class="vid-thumb">
+                            @if($v['yt'])
+                                <img src="https://i.ytimg.com/vi/{{ $v['yt'] }}/hqdefault.jpg" alt="{{ $v['judul'] }}" loading="lazy">
+                            @else
+                                <span class="vid-soon">Segera hadir</span>
+                            @endif
+                            <div class="vid-play"><span><i class="fas fa-play"></i></span></div>
+                        </div>
+                        <h3 class="mt-2">{{ $v['judul'] }}</h3>
+                    </button>
+                @endforeach
+            @endforelse
         </div>
     </div>
 </section>
@@ -901,7 +923,6 @@
     </div>
 </section>
 
-<!-- ==================== UJUNG-UJUNG DAMKAR (FORMAT VIDEO) ==================== -->
 <!-- ==================== UJUNG-UJUNG DAMKAR (FORMAT VIDEO) ==================== -->
 @php
     // Mengambil data langsung dari variabel route atau fallback ke Model UjungDamkar

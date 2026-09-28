@@ -20,6 +20,7 @@ use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
 use App\Models\UjungDamkar;
+use App\Models\EduDamkar;
 use App\Http\Controllers\PemberdayaanController;
 
 // ==========================================
@@ -30,7 +31,8 @@ Route::get('/', function () {
     $daftar_infografis = Infografis::latest()->take(6)->get();
     $daftar_medsos = BeritaMedsos::latest()->take(6)->get();
     $daftar_ujung_damkar = UjungDamkar::latest()->take(6)->get();
-    return view('homepage.index', compact('daftar_berita', 'daftar_infografis', 'daftar_medsos', 'daftar_ujung_damkar'));
+    $daftar_edu_damkar = EduDamkar::latest()->take(4)->get();
+    return view('homepage.index', compact('daftar_berita', 'daftar_infografis', 'daftar_medsos', 'daftar_ujung_damkar', 'daftar_edu_damkar'));
 });
 
 // Program Kerja
@@ -159,6 +161,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/internal/operator/ujung-damkar/store', [OperatorMedsosController::class, 'storeUjungDamkar'])->name('ujung-damkar.store');
     Route::put('/internal/operator/ujung-damkar/update/{id}', [OperatorMedsosController::class, 'updateUjungDamkar'])->name('ujung-damkar.update');
     Route::delete('/internal/operator/ujung-damkar/hapus/{id}', [OperatorMedsosController::class, 'destroyUjungDamkar'])->name('ujung-damkar.destroy');
+
+    // TAMBAHAN BARU: EDU DAMKAR (VIDEO EDUKASI)
+    Route::get('/internal/operator/edu-damkar', [OperatorMedsosController::class, 'indexEduDamkar'])->name('edu-damkar.index');
+    Route::post('/internal/operator/edu-damkar/store', [OperatorMedsosController::class, 'storeEduDamkar'])->name('edu-damkar.store');
+    Route::put('/internal/operator/edu-damkar/update/{id}', [OperatorMedsosController::class, 'updateEduDamkar'])->name('edu-damkar.update');
+    Route::delete('/internal/operator/edu-damkar/hapus/{id}', [OperatorMedsosController::class, 'destroyEduDamkar'])->name('edu-damkar.destroy');
 
     // --- C. DAMTAN (PEMADAMAN & PENYELAMATAN) ---
     Route::get('/internal/damtan/input-data', [DamtanController::class, 'createPenyelamatan'])->name('damtan.laporan.create');
