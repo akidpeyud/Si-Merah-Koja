@@ -156,7 +156,7 @@
     </table>
 
     <div class="doc-title">
-        <h3>REKAPITULASI DISTRIBUSI BARANG / INVENTARIS PERSONIL</h3>
+        <h3>REKAPITULASI SERAH TERIMA BARANG</h3>
     </div>
 
     <!-- TABEL DATA -->
