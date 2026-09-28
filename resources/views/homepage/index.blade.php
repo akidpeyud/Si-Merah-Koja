@@ -883,7 +883,7 @@
             <div>
                 <div class="sec-head">
                     <div>
-                        <h2>Giat Disdamkartan Kota Jambi</h2>
+                        <h2>ujung-ujung damkar</h2>
                     </div>
                 </div>
 
