@@ -136,10 +136,12 @@ class DamtanController extends Controller
 
             DB::commit();
 
-            return redirect()->back()->with('success', 'Data Laporan Penyelamatan berhasil disimpan ke database!');
+            // PERUBAHAN DI SINI: Alihkan user ke halaman daftar laporan setelah berhasil simpan
+            return redirect('/internal/damtan/data-laporan')->with('success', 'Data Laporan Penyelamatan berhasil disimpan ke database!');
 
         } catch (\Exception $e) {
             DB::rollback();
+            // Jika error, tetap di halaman form agar data yang diisi tidak hilang
             return redirect()->back()->with('error', 'Gagal menyimpan data: ' . $e->getMessage());
         }
     }
