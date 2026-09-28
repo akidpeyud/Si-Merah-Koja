@@ -1788,6 +1788,12 @@ summary .chev {
                     <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
                         <i class="fab fa-instagram"></i> Kelola Berita Medsos
                     </a>
+                    <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
+                        <i class="fab fa-youtube"></i> Ujung-Ujung Damkar
+                    </a>
+                    <a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
+                                            <i class="fas fa-graduation-cap"></i> Edu Damkar
+                    </a>
                 </div>
             </details>
         @endif

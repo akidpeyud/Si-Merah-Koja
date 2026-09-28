@@ -15,7 +15,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -26,7 +25,7 @@
 
     <style>
         /* ==========================================================
-           DESIGN TOKENS UTAMA (Sidebar, Topbar, Background)
+           DESIGN TOKENS
            ========================================================== */
         :root {
             --ink: #0d1b2a;
@@ -63,19 +62,6 @@
         body { font-family: var(--font-body); font-size: 1rem; line-height: 1.6; color: var(--ink); background: var(--paper); -webkit-font-smoothing: antialiased; }
         a { color: inherit; text-decoration: none; }
         button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
-        
-        /* ==========================================================
-           GLOBAL ALERTS
-           ========================================================== */
-        #globalSuccessAlert, #globalErrorAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); color: white; padding: 16px 24px; border-radius: 12px; z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        #globalSuccessAlert { background-color: var(--success); box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); }
-        #globalErrorAlert { background-color: var(--signal); box-shadow: 0 10px 25px -5px rgba(229, 57, 45, 0.4); }
-        .alert-icon { font-size: 22px; }
-        .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px; transition: opacity 0.2s; }
-        .btn-close-alert:hover { opacity: 1; }
-
-        @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
-        @keyframes fadeOutUpCenter { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -50px); opacity: 0; } }
 
         /* ==========================================================
            TOPBAR & SIDEBAR
@@ -86,7 +72,7 @@
         .side-toggle:hover { background: var(--paper); }
         .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
         .brand img { height: 34px; width: auto; flex: none; }
-        .brand span { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: 1.08rem; letter-spacing: -0.01em; white-space: nowrap; }
+        .brand span { font-family: var(--font-display); font-weight: 700; font-size: 1.08rem; letter-spacing: -0.01em; white-space: nowrap; }
 
         .topbar-right { display: flex; align-items: center; gap: 14px; }
         .user-chip { display: flex; align-items: center; gap: 10px; padding: 6px 16px 6px 6px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); }
@@ -132,6 +118,8 @@
         
         .btn-custom-edit { background-color: rgba(255, 182, 39, 0.15); color: #d97706; font-weight: 700; border: none; padding: 10px 24px; border-radius: 12px; transition: background 0.2s; display: inline-flex; align-items: center; text-decoration: none;}
         .btn-custom-edit:hover { background-color: rgba(255, 182, 39, 0.3); color: #d97706;}
+        .btn-custom-primary { background-color: var(--navy); color: #fff; font-weight: 700; border: none; padding: 10px 24px; border-radius: 12px; transition: background 0.2s; display: inline-flex; align-items: center;}
+        .btn-custom-primary:hover { background-color: var(--navy-d); color: #fff; }
 
         @media (max-width: 900px) {
             .side-toggle { display: inline-flex; }
@@ -142,10 +130,8 @@
 
         /* ==========================================================
            PENGATURAN PDF LAMA (ANTI-ERROR HTML2PDF)
-           Gunakan PX dan Hex Colors murni di dalam #report-content
            ========================================================== */
         
-        /* Kop Surat */
         .tabel-kop { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
         .tabel-kop td { vertical-align: middle; }
         .tabel-kop img { width: 80px; height: auto; }
@@ -157,29 +143,28 @@
         .judul-laporan { text-align: center; margin-bottom: 25px; line-height: 1.2; font-family: 'Times New Roman', Times, serif; color: #000; }
         .judul-laporan h3 { margin: 0; font-size: 14pt; font-weight: bold; text-decoration: underline; }
 
-        /* Grid Data Laporan Asli */
-        .section-header { clear: both; display: flex; align-items: center; gap: 12px; margin-bottom: 12px; margin-top: 25px; padding-bottom: 5px; border-bottom: 1px solid #e5e7eb; page-break-after: avoid; page-break-inside: avoid; }
-        .section-header::before { content: ''; width: 4px; height: 18px; background-color: #3b82f6; border-radius: 4px; }
-        .section-header h3 { font-size: 16px; font-weight: 800; margin: 0; color: #111827; text-transform: uppercase; font-family: 'Plus Jakarta Sans', sans-serif;}
-
+        .section-header { clear: both; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; margin-top: 32px; padding-bottom: 8px; border-bottom: 1px solid var(--line); page-break-after: avoid; page-break-inside: avoid; }
+        .section-header h3 { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; margin: 0; color: var(--ink); text-transform: uppercase; letter-spacing: 0.02em;}
+        .section-header::before { content: ''; width: 6px; height: 20px; background-color: var(--navy); border-radius: 4px; }
+        
+        .sub-header { clear: both; display: block; width: 100%; font-size: 1.05rem; font-family: var(--font-display); font-weight: 700; color: var(--navy); margin-top: 24px; margin-bottom: 12px; page-break-after: avoid; page-break-inside: avoid; }
+        
         .pdf-grid { display: block; width: 100%; margin-bottom: 15px; } 
-        .pdf-grid::after { content: ""; display: table; clear: both; } 
-        .pdf-item { float: left; width: 49%; padding-right: 15px; margin-bottom: 10px; box-sizing: border-box; page-break-inside: avoid; }
-        .pdf-item-full { clear: both; display: block; width: 100%; margin-bottom: 10px; box-sizing: border-box; page-break-inside: avoid; }
+        .pdf-grid::after { content: ""; display: table; clear: both; }
+        .pdf-item { float: left; width: 49%; padding-right: 15px; margin-bottom: 12px; box-sizing: border-box; page-break-inside: avoid; }
+        .pdf-item-full { clear: both; display: block; width: 100%; margin-bottom: 12px; box-sizing: border-box; page-break-inside: avoid; }
         
         .data-row { display: flex; align-items: flex-start; page-break-inside: avoid; break-inside: avoid; width: 100%; }
-        .data-icon { width: 22px; color: #0284c7; flex-shrink: 0; font-size: 13px; margin-top: 1px; }
-        .data-label { width: 135px; font-weight: 700; color: #4b5563; flex-shrink: 0; font-size: 12px; line-height: 1.4; font-family: 'Plus Jakarta Sans', sans-serif;}
-        .data-colon { width: 12px; font-weight: 700; color: #4b5563; text-align: center; flex-shrink: 0; font-size: 12px; line-height: 1.4; }
-        .data-value { flex-grow: 1; font-weight: 600; color: #1f2937; font-size: 12px; word-break: break-word; line-height: 1.4; font-family: 'Plus Jakarta Sans', sans-serif;}
-        
-        .sub-header { clear: both; display: block; width: 100%; font-size: 14px; font-weight: 700; color: #0284c7; margin-top: 20px; margin-bottom: 10px; page-break-after: avoid; page-break-inside: avoid; font-family: 'Plus Jakarta Sans', sans-serif;}
-        
+        .data-icon { width: 26px; color: var(--navy); flex-shrink: 0; font-size: 13px; margin-top: 2px; }
+        .data-label { width: 145px; font-weight: 600; color: var(--steel); flex-shrink: 0; font-size: 0.9rem; line-height: 1.5; }
+        .data-colon { width: 12px; font-weight: 600; color: var(--steel); text-align: center; flex-shrink: 0; font-size: 0.9rem; line-height: 1.5; }
+        .data-value { flex-grow: 1; font-weight: 600; color: var(--ink); font-size: 0.9rem; word-break: break-word; line-height: 1.5; }
+
         .text-capitalize { text-transform: capitalize; }
         .text-uppercase { text-transform: uppercase; }
 
         @media print {
-            .topbar, .sidebar, .sidebar-backdrop, #action-buttons-container, .back-link, .d-print-none, #globalSuccessAlert, #globalErrorAlert, .page-head { display: none !important; }
+            .topbar, .sidebar, .sidebar-backdrop, #action-buttons-container, .back-link, .d-print-none, .page-head { display: none !important; }
             body, .content { background-color: white !important; padding: 0 !important; margin: 0 !important;}
             .card-custom { box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
@@ -188,35 +173,26 @@
 </head>
 <body>
 
-    <!-- ALERT SUCCESS GLOBAL -->
-    @if(session('success'))
-        <div id="globalSuccessAlert">
-            <i class="fas fa-check-circle alert-icon"></i>
-            <span>{{ session('success') }}</span>
-            <button class="btn-close-alert" onclick="closeAlert('globalSuccessAlert')"><i class="fas fa-times"></i></button>
-        </div>
-    @endif
-
-    <!-- ALERT ERROR GLOBAL -->
-    @if(session('error'))
-        <div id="globalErrorAlert">
-            <i class="fas fa-exclamation-triangle alert-icon"></i>
-            <span>{{ session('error') }}</span>
-            <button class="btn-close-alert" onclick="closeAlert('globalErrorAlert')"><i class="fas fa-times"></i></button>
-        </div>
-    @endif
-
-    <script>
-        function closeAlert(id) {
-            let alertBox = document.getElementById(id);
-            if(alertBox) {
-                alertBox.style.animation = 'fadeOutUpCenter 0.4s ease forwards';
-                setTimeout(() => alertBox.remove(), 400); 
+    <!-- ==================== LOGIKA PARSING ARRAY JSON ==================== -->
+    @php
+        if (!function_exists('parseJsonField')) {
+            function parseJsonField($field) {
+                if (empty($field) || $field === 'null' || $field === '[]') return [];
+                // Jika data berbentuk string JSON, decode jadi array. Jika sudah array, pakai langsung.
+                return is_string($field) ? json_decode($field, true) ?? [] : (is_array($field) ? $field : []);
             }
         }
-        setTimeout(() => closeAlert('globalSuccessAlert'), 4000);
-        setTimeout(() => closeAlert('globalErrorAlert'), 4000);
-    </script>
+        
+        // Tab 2 & 3
+        $arr_evakuasi = parseJsonField($teknis->metode_evakuasi ?? null);
+        $arr_penyelamatan = parseJsonField($teknis->metode_penyelamatan ?? null);
+        $arr_armada = parseJsonField($teknis->armada ?? null);
+        $arr_peralatan = parseJsonField($teknis->peralatan ?? null);
+        $arr_instansi = parseJsonField($dokumentasi->instansi_pendukung ?? null);
+        
+        // Tab Lampiran
+        $arr_foto = parseJsonField($dokumentasi->foto ?? null);
+    @endphp
 
     <!-- ==================== TOPBAR ==================== -->
     <header class="topbar d-print-none">
@@ -261,13 +237,13 @@
                     <summary><i class="fas fa-shield-halved grp-ico"></i><span class="grp-label">Bagian pencegahan</span><i class="fas fa-chevron-down chev"></i></summary>
                     <div class="side-sub">
                         <a href="/internal/pencegahan/peningkatan-kapasitas" class="{{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}">
-                            <i class="fas fa-arrow-trend-up"></i> Peningkatan Kapasitas Aparatur
+                            <i class="fas fa-arrow-trend-up"></i> Peningkatan Kapasitas
                         </a>
                         <a href="/internal/pencegahan/inspeksi-kebakaran" class="{{ Request::is('internal/pencegahan/inspeksi-kebakaran*') ? 'active' : '' }}">
-                            <i class="fas fa-magnifying-glass-chart"></i> Pencegahan Kebakaran dan Inspeksi
+                            <i class="fas fa-magnifying-glass-chart"></i> Pencegahan & Inspeksi
                         </a>
                         <a href="/internal/pencegahan/pemberdayaan-masyarakat" class="{{ Request::is('internal/pencegahan/pemberdayaan-masyarakat*') ? 'active' : '' }}">
-                            <i class="fas fa-handshake-angle"></i> Pemberdayaan Masyarakat dan Dunia Usaha
+                            <i class="fas fa-handshake-angle"></i> Pemberdayaan Masyarakat
                         </a>
                         <a href="/internal/pencegahan/kelola-edukasi" class="{{ Request::is('internal/pencegahan/kelola-edukasi*') ? 'active' : '' }}">
                             <i class="fas fa-bullhorn"></i> Kelola Edukasi
@@ -326,7 +302,7 @@
 
                         <span class="side-kicker" style="padding-left:2px;">Manajemen Air</span>
                         <a href="/sapra/data_hidrant_gedung" class="{{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}"><i class="fas fa-droplet"></i> Sumber Air</a>
-                        <a href="/sapra/data-hidrant-kota" class="{{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}"><i class="fas fa-map-location-dot"></i> Data Hidrant Kota Jambi</a>
+                        <a href="/sapra/data-hidrant-kota" class="{{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}"><i class="fas fa-map-location-dot"></i> Data Hidrant Kota</a>
 
                         <span class="side-kicker" style="padding-left:2px;">Logistik & Distribusi</span>
                         <a href="/sapra/kebutuhan-sarpras" class="{{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}"><i class="fas fa-boxes-stacked"></i> Mutu Baku Kebutuhan</a>
@@ -367,10 +343,9 @@
                 <h1 class="page-title">Rincian Laporan Tervalidasi</h1>
             </div>
 
-            <!-- ID report-content untuk di-render oleh html2pdf -->
             <div class="card-custom" id="report-content">
                 
-                <!-- KOP SURAT PDF (Tersembunyi secara default, akan dimunculkan via JS saat cetak) -->
+                <!-- KOP SURAT PDF -->
                 <div id="pdf-header" style="display: none;">
                     <table class="tabel-kop">
                         <tr>
@@ -637,24 +612,25 @@
                     </div>
                     @endif
 
-                    @if(!empty(json_decode($teknis->metode_evakuasi)))
+                    <!-- ARRAY FIX -->
+                    @if(!empty($arr_evakuasi))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-route"></i></div>
                             <div class="data-label">Metode Evakuasi</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value text-capitalize">{{ str_replace(['"', '[', ']', '_'], ['','','',' '], $teknis->metode_evakuasi) }}</div>
+                            <div class="data-value text-capitalize">{{ str_replace('_', ' ', implode(', ', $arr_evakuasi)) }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty(json_decode($teknis->metode_penyelamatan)))
+                    @if(!empty($arr_penyelamatan))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-hands-helping"></i></div>
                             <div class="data-label">Met. Penyelamatan</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value text-capitalize">{{ str_replace(['"', '[', ']', '_'], ['','','',' '], $teknis->metode_penyelamatan) }}</div>
+                            <div class="data-value text-capitalize">{{ str_replace('_', ' ', implode(', ', $arr_penyelamatan)) }}</div>
                         </div>
                     </div>
                     @endif
@@ -741,7 +717,7 @@
                             <div class="data-icon"><i class="fas fa-user-times"></i></div>
                             <div class="data-label">Korban Meninggal</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value" style="color: #dc2626;">{{ $teknis->korban_meninggal }} Jiwa</div>
+                            <div class="data-value text-danger">{{ $teknis->korban_meninggal }} Jiwa</div>
                         </div>
                     </div>
                     @endif
@@ -761,24 +737,24 @@
 
                 <div class="sub-header">Alat & Logistik Terpakai</div>
                 <div class="pdf-grid">
-                    @if(!empty(json_decode($teknis->armada)))
+                    @if(!empty($arr_armada))
                     <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-truck"></i></div>
                             <div class="data-label">Armada Diturunkan</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value text-capitalize">{{ str_replace(['"', '[', ']'], '', $teknis->armada) }}</div>
+                            <div class="data-value text-capitalize">{{ str_replace('_', ' ', implode(', ', $arr_armada)) }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty(json_decode($teknis->peralatan)))
+                    @if(!empty($arr_peralatan))
                     <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-toolbox"></i></div>
                             <div class="data-label">Peralatan Khusus</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ str_replace(['"', '[', ']'], '', $teknis->peralatan) }}</div>
+                            <div class="data-value">{{ implode(', ', $arr_peralatan) }}</div>
                         </div>
                     </div>
                     @endif
@@ -934,13 +910,13 @@
                     </div>
                     @endif
 
-                    @if(!empty(json_decode($dokumentasi->instansi_pendukung)))
+                    @if(!empty($arr_instansi))
                     <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-building"></i></div>
                             <div class="data-label">Instansi Pendukung</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value text-uppercase">{{ str_replace(['"', '[', ']', '_'], ['','','',' '], $dokumentasi->instansi_pendukung) }}</div>
+                            <div class="data-value text-uppercase">{{ strtoupper(str_replace('_', ' ', implode(', ', $arr_instansi))) }}</div>
                         </div>
                     </div>
                     @endif
@@ -1246,19 +1222,16 @@
                 @endif
 
                 <!-- TAB 5: DOKUMENTASI FOTO & VIDEO -->
-                @if((!empty($dokumentasi->foto) && $dokumentasi->foto !== 'null' && $dokumentasi->foto !== '[]') || !empty($dokumentasi->video))
+                @if(!empty($arr_foto) || !empty($dokumentasi->video))
                 <div class="section-header" style="page-break-before: always;"><h3>V. Dokumentasi Lapangan</h3></div>
                 
-                @if(!empty($dokumentasi->foto) && $dokumentasi->foto !== 'null' && $dokumentasi->foto !== '[]')
-                    @php $fotos = json_decode($dokumentasi->foto, true); @endphp
-                    @if(is_array($fotos) && count($fotos) > 0)
+                @if(!empty($arr_foto))
                     <div class="sub-header"><i class="fas fa-camera me-2"></i>Lampiran Foto</div>
                     <div style="display: block; width: 100%; margin-bottom: 20px;">
-                        @foreach($fotos as $foto)
-                            <img src="{{ asset('uploads/damtan/foto/' . $foto) }}" style="display: inline-block; width: 48%; height: 200px; object-fit: cover; border-radius: 8px; border: 1px solid #cbd5e1; margin-right: 1%; margin-bottom: 10px;">
+                        @foreach($arr_foto as $foto)
+                            <img src="{{ asset('storage/' . $foto) }}" style="display: inline-block; width: 48%; height: 200px; object-fit: cover; border-radius: 8px; border: 1px solid #cbd5e1; margin-right: 1%; margin-bottom: 10px;">
                         @endforeach
                     </div>
-                    @endif
                 @endif
 
                 @if(!empty($dokumentasi->video))
@@ -1269,7 +1242,7 @@
                                 <div class="data-icon"><i class="fas fa-file-video"></i></div>
                                 <div class="data-label">File Terlampir</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value"><a href="{{ asset('uploads/damtan/video/' . $dokumentasi->video) }}" target="_blank" style="color: #0284c7; text-decoration: none;">{{ $dokumentasi->video }} <small class="text-muted">(Klik untuk memutar di browser)</small></a></div>
+                                <div class="data-value"><a href="{{ asset('storage/' . $dokumentasi->video) }}" target="_blank" style="color: var(--navy); text-decoration: none;">{{ basename($dokumentasi->video) }} <small class="text-muted">(Klik untuk memutar di browser)</small></a></div>
                             </div>
                         </div>
                     </div>
@@ -1278,11 +1251,11 @@
 
                 <!-- KESIMPULAN -->
                 <div class="section-header" style="page-break-before: auto;"><h3>Kesimpulan & Dasar Pelaksanaan</h3></div>
-                <div style="font-weight: 600; font-style: italic; color: #4b5563; font-size: 12px; line-height: 1.5; margin-left: 20px; page-break-inside: avoid;">
+                <div style="font-weight: 600; font-style: italic; color: var(--steel); font-size: 13px; line-height: 1.5; margin-left: 20px; page-break-inside: avoid;">
                     Seluruh kegiatan Pelayanan Penyelamatan dan Pemadaman ini berpedoman pada Peraturan Menteri Dalam Negeri (Permendagri) Nomor 114 Tahun 2018 tentang Standar Teknis Pelayanan Dasar Pada Standar Pelayanan Minimal (SPM) Sub Urusan Kebakaran Daerah Kabupaten/Kota.
                 </div>
 
-                <div class="d-flex justify-content-end gap-3 mt-5 pt-3 border-top d-print-none" id="action-buttons-container" data-html2canvas-ignore="true">
+                <div class="d-flex justify-content-end gap-3 mt-5 pt-4 border-top d-print-none" id="action-buttons-container" data-html2canvas-ignore="true">
                     <div class="dropdown">
                         <button class="btn btn-custom-light shadow-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-download me-2"></i> Download Laporan
@@ -1459,8 +1432,8 @@
             });
             content += "</table>";
 
-            let photos = document.querySelectorAll('img[src*="/uploads/damtan/foto/"]');
-            let video = document.querySelector('a[href*="/uploads/damtan/video/"]');
+            let photos = document.querySelectorAll('img[src*="/storage/"]');
+            let video = document.querySelector('a[href*="/storage/"]');
 
             if(photos.length > 0 || video) {
                 content += "<h3 style='margin-top: 30px; font-family: Arial, sans-serif; border-bottom: 1px solid #ccc; padding-bottom: 5px;'>V. Dokumentasi Lapangan</h3>";

@@ -23,59 +23,55 @@
 
     <style>
         /* ==========================================================
-           DESIGN TOKENS (Konsisten dengan UI Utama)
+           SIMERAH KOJA - CLEAN NAVY DASHBOARD
            ========================================================== */
         :root {
             --ink: #0d1b2a;
             --ink-2: #132a43;
             --ink-3: #1d3856;
-            --paper: #f7f9fc;
+
+            --navy: #163a63;
+            --navy-dark: #0d2947;
+            --navy-light: #eaf1f8;
+            --navy-soft: rgba(22, 58, 99, .08);
+
+            --paper: #f5f7fa;
             --white: #ffffff;
 
-            --navy: #1e3a5f;
-            --navy-d: #14283f;
-            --navy-tint: rgba(30, 58, 95, .09);
+            --signal: #dc3545;
+            --signal-dark: #b42332;
+            --signal-soft: rgba(220, 53, 69, .09);
 
-            --signal: #e5392d;
-            --signal-d: #c22b20;
-            --signal-tint: rgba(229, 57, 45, .09);
-
-            --amber: #ffb627;
-            --success: #10b981;
-            --info: #2f6fed;
-            --info-tint: rgba(47, 111, 237, .09);
-            --ink-tint: rgba(13, 27, 42, .055);
+            --amber: #f4b740;
+            --success: #198754;
+            --info: #2563eb;
+            --info-soft: rgba(37, 99, 235, .09);
 
             --steel: #64748b;
             --steel-soft: #94a3b8;
-            --line: #e6eaf1;
+
+            --line: #e2e8f0;
+            --line-dark: #cbd5e1;
 
             --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
             --font-body: 'Instrument Sans', system-ui, sans-serif;
 
-            --r-lg: 20px;
+            --r-lg: 18px;
             --r-md: 14px;
             --r-sm: 10px;
 
             --sidebar-w: 272px;
-            --topbar-h: 72px;
+            --topbar-h: 70px;
 
-            --shadow-xs: 0 1px 2px rgba(13, 27, 42, .05);
-            --shadow-sm: 0 2px 8px -2px rgba(13, 27, 42, .08);
-            --shadow-md: 0 12px 24px -8px rgba(13, 27, 42, .12);
-            --shadow-lg: 0 24px 48px -16px rgba(13, 27, 42, .18);
+            --shadow-xs: 0 1px 2px rgba(13, 27, 42, .04);
+            --shadow-sm: 0 4px 12px rgba(13, 27, 42, .06);
+            --shadow-md: 0 10px 25px rgba(13, 27, 42, .08);
+            --shadow-lg: 0 20px 45px rgba(13, 27, 42, .14);
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
-        body {
-            font-family: var(--font-body);
-            font-size: 1rem;
-            line-height: 1.6;
-            color: var(--ink);
-            background: var(--paper);
-            -webkit-font-smoothing: antialiased;
-        }
+        body { font-family: var(--font-body); font-size: 1rem; line-height: 1.6; color: var(--ink); background: var(--paper); -webkit-font-smoothing: antialiased; }
         img { max-width: 100%; display: block; }
         a { color: inherit; text-decoration: none; }
         ul, ol { list-style: none; margin: 0; padding: 0; }
@@ -85,15 +81,9 @@
         /* ==========================================================
            GLOBAL ALERTS
            ========================================================== */
-        #globalSuccessAlert, #globalErrorAlert {
-            position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
-            color: white; padding: 16px 24px; border-radius: var(--r-md); z-index: 99999;
-            display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px;
-            animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+        #globalSuccessAlert, #globalErrorAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); color: white; padding: 16px 24px; border-radius: 12px; z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         #globalSuccessAlert { background-color: var(--success); box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); }
         #globalErrorAlert { background-color: var(--signal); box-shadow: 0 10px 25px -5px rgba(229, 57, 45, 0.4); }
-        
         .alert-icon { font-size: 22px; }
         .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px; transition: opacity 0.2s; }
         .btn-close-alert:hover { opacity: 1; }
@@ -104,29 +94,25 @@
         /* ==========================================================
            TOPBAR
            ========================================================== */
-        .topbar {
-            position: sticky; top: 0; z-index: 1020; height: var(--topbar-h);
-            display: flex; align-items: center; justify-content: space-between; gap: 16px;
-            padding: 0 28px; background: rgba(255,255,255,.86);
-            -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--line);
-        }
+        .topbar { position: sticky; top: 0; z-index: 1020; height: var(--topbar-h); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 28px; background: var(--ink); border-bottom: 1px solid rgba(255,255,255,.08); box-shadow: 0 2px 12px rgba(13, 27, 42, .16); }
         .topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
-        .side-toggle { display: none; width: 40px; height: 40px; border-radius: 12px; align-items: center; justify-content: center; font-size: 1.05rem; transition: background .2s; }
-        .side-toggle:hover { background: var(--paper); }
-        .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .side-toggle { display: none; width: 40px; height: 40px; border-radius: 10px; align-items: center; justify-content: center; font-size: 1.05rem; color: #fff; transition: background .2s, transform .2s; }
+        .side-toggle:hover { background: rgba(255,255,255,.10); }
+        .side-toggle:active { transform: scale(.95); }
+        .brand { display: flex; align-items: center; gap: 12px; min-width: 0; color: #fff; }
         .brand img { height: 34px; width: auto; flex: none; }
-        .brand span { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: 1.08rem; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        .topbar-right { display: flex; align-items: center; gap: 14px; }
-        .user-chip { display: flex; align-items: center; gap: 10px; padding: 6px 16px 6px 6px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); }
-        .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: .9rem; flex: none; }
+        .brand span { font-family: var(--font-display); font-weight: 700; font-size: 1.08rem; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; }
+        
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .user-chip { display: flex; align-items: center; gap: 10px; padding: 5px 14px 5px 5px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); transition: background .2s, border-color .2s; }
+        .user-chip:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.18); }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: #ffffff; color: var(--ink); display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: .9rem; flex: none; }
         .user-meta { display: grid; line-height: 1.25; }
-        .user-meta strong { font-size: .85rem; font-weight: 700; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); }
-        .user-meta small { font-size: .74rem; color: var(--steel); text-transform: capitalize; font-weight: 500; }
-        .btn-logout { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border-radius: 999px; background: var(--navy); color: #fff; font-weight: 600; font-size: .85rem; transition: background .2s, transform .1s; border: none; }
-        .btn-logout:hover { background: var(--navy-d); }
-        .btn-logout:active { transform: scale(.98); }
+        .user-meta strong { font-size: .84rem; font-weight: 700; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #ffffff; }
+        .user-meta small { font-size: .72rem; color: rgba(255,255,255,.62); text-transform: capitalize; font-weight: 500; }
+        .btn-logout { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 17px; border-radius: 999px; background: #ffffff; color: var(--ink); font-weight: 600; font-size: .84rem; border: none; transition: background .2s, color .2s, transform .1s, box-shadow .2s; }
+        .btn-logout:hover { background: #e8eef5; color: var(--ink); box-shadow: 0 4px 10px rgba(0,0,0,.12); }
+        .btn-logout:active { transform: scale(.97); }
 
         @media (max-width: 900px) {
             .side-toggle { display: inline-flex; }
@@ -137,70 +123,40 @@
            SHELL & SIDEBAR
            ========================================================== */
         .shell { display: flex; align-items: flex-start; min-height: calc(100vh - var(--topbar-h)); }
-
-        .sidebar {
-            width: var(--sidebar-w); flex: none; position: sticky; top: var(--topbar-h);
-            height: calc(100vh - var(--topbar-h)); overflow-y: auto;
-            background: #fff; border-right: 1px solid var(--line);
-            padding: 20px 14px 32px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--line) transparent;
-        }
+        .sidebar { width: var(--sidebar-w); flex: none; position: sticky; top: var(--topbar-h); height: calc(100vh - var(--topbar-h)); overflow-y: auto; background: #ffffff; border-right: 1px solid var(--line); padding: 20px 14px 32px; scrollbar-width: thin; scrollbar-color: #d8dee8 transparent; }
         .sidebar::-webkit-scrollbar { width: 6px; }
         .sidebar::-webkit-scrollbar-track { background: transparent; }
-        .sidebar::-webkit-scrollbar-thumb { background-color: var(--line); border-radius: 20px; }
+        .sidebar::-webkit-scrollbar-thumb { background-color: #d8dee8; border-radius: 20px; }
 
-        .side-link {
-            display: flex; align-items: center; gap: 14px; padding: 11px 14px; border-radius: var(--r-sm);
-            font-size: .9rem; font-weight: 600; color: var(--ink); transition: background .2s, color .2s;
-            margin-bottom: 4px;
-        }
-        .side-link:hover { background: var(--paper); }
-        .side-link.active { background: var(--ink); color: #fff; }
+        .side-link { display: flex; align-items: center; gap: 14px; padding: 11px 14px; border-radius: var(--r-sm); font-size: .89rem; font-weight: 600; color: var(--ink); transition: background .2s, color .2s, transform .2s; margin-bottom: 4px; }
+        .side-link:hover { background: #f3f6fa; color: var(--ink); transform: translateX(1px); }
+        .side-link.active { background: var(--ink); color: #ffffff; box-shadow: 0 4px 10px rgba(13,27,42,.10); }
         .side-link i { width: 20px; text-align: center; font-size: 1rem; color: var(--steel); transition: color .2s; }
         .side-link:hover i { color: var(--ink); }
-        .side-link.active i { color: var(--amber); }
+        .side-link.active i { color: #ffffff; }
 
         .side-group + .side-group { margin-top: 6px; }
-        .side-group summary {
-            list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px;
-            padding: 11px 14px; border-radius: var(--r-sm); font-size: .8rem; font-weight: 700;
-            letter-spacing: .04em; text-transform: uppercase; color: var(--navy); transition: background .2s;
-            user-select: none;
-        }
+        .side-group summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: var(--r-sm); font-size: .78rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--navy); transition: background .2s, color .2s; user-select: none; }
         .side-group summary::-webkit-details-marker { display: none; }
-        .side-group summary:hover { background: var(--paper); }
+        .side-group summary:hover { background: #f3f6fa; }
         .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); }
         .side-group summary .grp-label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .side-group summary .chev { flex: none; font-size: .7rem; transition: transform .25s ease; }
         .side-group[open] summary .chev { transform: rotate(180deg); }
 
         .side-sub { display: grid; gap: 3px; padding: 6px 4px 10px 12px; border-left: 2px solid var(--line); margin: 2px 0 8px 22px; }
-        .side-sub a {
-            display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: var(--r-sm);
-            font-size: .85rem; font-weight: 500; line-height: 1.4; color: var(--steel);
-            transition: background .2s, color .2s, transform .2s;
-        }
-        .side-sub a:hover { background: var(--paper); color: var(--ink); transform: translateX(2px); }
-        .side-sub a.active { background: var(--navy-tint); color: var(--navy-d); font-weight: 600; }
-        .side-sub a i { width: 18px; text-align: center; font-size: .9rem; opacity: .75; }
+        .side-sub a { display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: var(--r-sm); font-size: .84rem; font-weight: 500; line-height: 1.4; color: var(--steel); transition: background .2s, color .2s, transform .2s; }
+        .side-sub a:hover { background: var(--navy-light); color: var(--navy-dark); transform: translateX(2px); }
+        .side-sub a.active { background: var(--navy-soft); color: var(--navy); font-weight: 600; }
+        .side-sub a i { width: 18px; text-align: center; font-size: .88rem; opacity: .75; }
         .side-sub a:hover i, .side-sub a.active i { opacity: 1; }
-
         .side-kicker { padding: 18px 14px 6px; font-size: .7rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--steel-soft); }
-
         .sidebar-backdrop { display: none; }
 
         @media (max-width: 900px) {
-            .sidebar {
-                position: fixed; z-index: 1010; top: var(--topbar-h); left: 0;
-                height: calc(100dvh - var(--topbar-h)); transform: translateX(-100%);
-                transition: transform .3s cubic-bezier(.4,0,.2,1); box-shadow: var(--shadow-lg);
-            }
+            .sidebar { position: fixed; z-index: 1010; top: var(--topbar-h); left: 0; height: calc(100dvh - var(--topbar-h)); transform: translateX(-100%); transition: transform .3s cubic-bezier(.4,0,.2,1); box-shadow: var(--shadow-lg); }
             body.side-open .sidebar { transform: none; }
-            .sidebar-backdrop {
-                display: block; position: fixed; inset: var(--topbar-h) 0 0 0; z-index: 1000;
-                background: rgba(13,27,42,.4); opacity: 0; pointer-events: none; transition: opacity .3s;
-            }
+            .sidebar-backdrop { display: block; position: fixed; inset: var(--topbar-h) 0 0 0; z-index: 1000; background: rgba(13,27,42,.45); opacity: 0; pointer-events: none; transition: opacity .3s; }
             body.side-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
         }
 
@@ -210,67 +166,89 @@
         .content { flex: 1; min-width: 0; padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 80px; }
         
         .page-header { margin-bottom: 28px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
-        .page-header-text h1 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 4px; color: var(--ink); }
-        .page-header-text p { color: var(--steel); font-size: .98rem; margin: 0; }
+        .page-header-text h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 4px; color: var(--ink); }
+        .page-header-text p { color: var(--steel); font-size: .95rem; margin-bottom: 0;}
 
         .card-custom {
-            background: #fff;
+            background: #ffffff;
             border: 1px solid var(--line);
             border-radius: var(--r-md);
+            box-shadow: var(--shadow-xs);
             overflow: hidden;
+            transition: box-shadow .2s ease, border-color .2s ease;
+        }
+        .card-custom:hover {
             box-shadow: var(--shadow-sm);
+            border-color: #d2dae5;
         }
 
         /* Form Filter Styles */
         .form-control, .form-select {
             font-family: var(--font-body);
-            font-size: .95rem;
+            min-height: 42px;
+            font-size: .9rem;
             color: var(--ink);
-            background-color: var(--paper);
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            padding: 10px 16px;
-            transition: all 0.2s ease-in-out;
+            background-color: var(--white);
+            border: 1px solid var(--line-dark);
+            border-radius: 8px;
+            padding: 8px 14px;
+            transition: all 0.2s ease;
             box-shadow: none;
         }
         .form-control:focus, .form-select:focus {
-            background-color: #fff;
             border-color: var(--navy);
-            box-shadow: 0 0 0 4px var(--navy-tint);
+            box-shadow: 0 0 0 3px var(--navy-soft);
         }
-        .input-group-text { background-color: var(--paper); border: 1px solid var(--line); color: var(--steel); }
+        .form-control::placeholder { color: var(--steel-soft); }
+
+        .input-group-text {
+            background-color: #f8fafc;
+            border: 1px solid var(--line-dark);
+            color: var(--steel);
+            font-weight: 600;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
         .input-group > .form-control { border-top-right-radius: 0; border-bottom-right-radius: 0; }
         .input-group > .input-group-text { border-top-left-radius: 0; border-bottom-left-radius: 0; }
 
         /* Buttons */
         .btn-custom-primary {
-            background-color: var(--navy); color: #fff; font-family: var(--font-body); font-weight: 700;
-            border: none; padding: 10px 24px; border-radius: 12px; transition: background 0.2s; text-decoration: none; display: inline-flex; align-items: center;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            min-height: 44px; padding: 0 24px;
+            background: var(--navy); color: #fff;
+            border: none; border-radius: 8px;
+            font-size: .92rem; font-weight: 600;
+            transition: all .2s ease; text-decoration: none;
         }
-        .btn-custom-primary:hover { background-color: var(--navy-d); color: #fff; }
+        .btn-custom-primary:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13, 27, 42, .15); color: #fff;}
         
         .btn-custom-light {
-            background-color: var(--paper); color: var(--ink); font-family: var(--font-body); font-weight: 700;
-            border: 1px solid var(--line); padding: 10px 24px; border-radius: 12px; transition: background 0.2s; display: inline-flex; align-items: center;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            min-height: 44px; padding: 0 24px;
+            background: var(--white); color: var(--ink);
+            border: 1px solid var(--line-dark); border-radius: 8px;
+            font-size: .92rem; font-weight: 600;
+            transition: all .2s ease;
         }
-        .btn-custom-light:hover { background-color: var(--line); color: var(--ink); }
+        .btn-custom-light:hover { background: #f8fafc; border-color: var(--steel-soft); color: var(--ink); }
 
         /* Table Custom Styles */
         .table { margin-bottom: 0; }
-        .table th { background-color: rgba(243, 245, 248, 0.6); color: var(--ink-3); font-weight: 700; font-size: 13px; padding: 16px; border-bottom: 1px solid var(--line); font-family: var(--font-display); }
+        .table th { background-color: #f8fafc; color: var(--ink-3); font-weight: 700; font-size: 13px; padding: 16px; border-bottom: 1px solid var(--line); font-family: var(--font-display); letter-spacing: 0.02em;}
         .table td { padding: 16px; font-size: 14px; color: var(--ink); vertical-align: middle; border-bottom: 1px solid var(--line); }
         .table tbody tr:hover { background-color: var(--paper); }
         
         /* Action Buttons */
-        .action-btn { width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; border: none; font-size: 13px; transition: all 0.2s; text-decoration: none; }
+        .action-btn { width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: none; font-size: 13px; transition: all 0.2s; text-decoration: none; }
         .action-btn.view { background-color: var(--info-tint); color: var(--info); }
         .action-btn.view:hover { background-color: #dbeafe; }
-        .action-btn.edit { background-color: rgba(255, 182, 39, 0.15); color: #d97706; margin: 0 5px; } /* Amber tint */
+        .action-btn.edit { background-color: rgba(255, 182, 39, 0.15); color: #d97706; margin: 0 5px; } 
         .action-btn.edit:hover { background-color: rgba(255, 182, 39, 0.25); }
         .action-btn.delete { background-color: var(--signal-tint); color: var(--signal); }
         .action-btn.delete:hover { background-color: #fecaca; }
         
-        .badge-custom { padding: 6px 12px; font-weight: 600; font-size: 11px; border-radius: 8px; }
+        .badge-custom { padding: 6px 12px; font-weight: 600; font-size: 11px; border-radius: 6px; }
 
         /* Pagination */
         .pagination-container nav ul.pagination { margin-bottom: 0 !important; }
@@ -280,20 +258,17 @@
         @page { margin: 0; }
         @media print {
             .topbar, .sidebar, .sidebar-backdrop, .page-header, .card-header, .card-footer,
-            .btn, .dropdown, form, .modal, .action-btn, #globalSuccessAlert, #globalErrorAlert {
-                display: none !important;
-            }
-
+            .btn, .dropdown, form, .modal, .action-btn, #globalSuccessAlert, #globalErrorAlert, .d-print-none { display: none !important; }
             body { background-color: white !important; font-size: 12px; margin: 1.5cm !important; -webkit-print-color-adjust: exact; }
             .shell { display: block; }
             .content { padding: 0 !important; margin: 0 !important; }
             .card-custom { box-shadow: none !important; border: none !important; border-radius: 0 !important; }
             .card-body { padding: 0 !important; }
 
-            /* Format tabel cetak */
+            /* Format tabel cetak murni */
             .table { width: 100% !important; border-collapse: collapse; margin-bottom: 20px; }
             .table th, .table td { border: 1px solid black !important; padding: 8px !important; text-align: left; }
-            .table th { background-color: #f2f2f2 !important; font-weight: bold; color: black !important; text-align: left !important; }
+            .table th { background-color: #f2f2f2 !important; font-weight: bold; color: black !important; text-align: center !important; }
             th:last-child, td:last-child { display: none !important; }
         }
     </style>
@@ -331,7 +306,7 @@
 </script>
 
 <!-- ==================== TOPBAR ==================== -->
-<header class="topbar">
+<header class="topbar d-print-none">
     <div class="topbar-left">
         <button class="side-toggle" type="button" id="sideToggle" aria-label="Buka menu" aria-expanded="false" aria-controls="sidebar">
             <i class="fas fa-bars"></i>
@@ -360,7 +335,7 @@
     <div class="sidebar-backdrop" id="sideBackdrop"></div>
 
     <!-- ==================== SIDEBAR ==================== -->
-    <aside class="sidebar" id="sidebar" aria-label="Navigasi internal">
+    <aside class="sidebar d-print-none" id="sidebar" aria-label="Navigasi internal">
         <a href="/internal/index" class="side-link {{ Request::is('internal/index') ? 'active' : '' }}">
             <i class="fas fa-house"></i> Dashboard utama
         </a>
@@ -373,13 +348,13 @@
                 <summary><i class="fas fa-shield-halved grp-ico"></i><span class="grp-label">Bagian pencegahan</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/pencegahan/peningkatan-kapasitas" class="{{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}">
-                        <i class="fas fa-arrow-trend-up"></i> Peningkatan Kapasitas Aparatur
+                        <i class="fas fa-arrow-trend-up"></i> Peningkatan Kapasitas
                     </a>
                     <a href="/internal/pencegahan/inspeksi-kebakaran" class="{{ Request::is('internal/pencegahan/inspeksi-kebakaran*') ? 'active' : '' }}">
-                        <i class="fas fa-magnifying-glass-chart"></i> Pencegahan Kebakaran dan Inspeksi
+                        <i class="fas fa-magnifying-glass-chart"></i> Pencegahan & Inspeksi
                     </a>
                     <a href="/internal/pencegahan/pemberdayaan-masyarakat" class="{{ Request::is('internal/pencegahan/pemberdayaan-masyarakat*') ? 'active' : '' }}">
-                        <i class="fas fa-handshake-angle"></i> Pemberdayaan Masyarakat dan Dunia Usaha
+                        <i class="fas fa-handshake-angle"></i> Pemberdayaan Masyarakat
                     </a>
                     <a href="/internal/pencegahan/kelola-edukasi" class="{{ Request::is('internal/pencegahan/kelola-edukasi*') ? 'active' : '' }}">
                         <i class="fas fa-bullhorn"></i> Kelola Edukasi
@@ -414,7 +389,7 @@
                     </a>
                 </div>
             </details>
-            
+
             <!-- BAGIAN KEPEGAWAIAN -->
             <details class="side-group" {{ Request::is('internal/kepegawaian*') ? 'open' : '' }}>
                 <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
@@ -433,16 +408,16 @@
                     <a href="/sapra/sarana-mako" class="{{ Request::is('sapra/sarana-mako*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam</a>
                     <a href="/sapra/prasarana-mako" class="{{ Request::is('sapra/prasarana-mako*') ? 'active' : '' }}"><i class="fas fa-building"></i> Prasarana Pemadam</a>
                     <a href="/sapra/sarana-penyelamatan" class="{{ Request::is('sapra/sarana-penyelamatan*') ? 'active' : '' }}"><i class="fas fa-life-ring"></i> Sarana Penyelamatan</a>
-                    <a href="/sapra/sarana-pemeriksaan" class="{{ Request::is('sapra/sarana-pemeriksaan*') ? 'active' : '' }}"><i class="fas fa-search"></i> Sarana Pemeriksaan</a> 
-                    <a href="/sapra/kelola-pos" class="{{ Request::is('sapra/kelola-pos*') ? 'active' : '' }}"><i class="fas fa-warehouse"></i> Kelola data pos</a>
+                    <a href="/sapra/sarana-pemeriksaan" class="{{ Request::is('sapra/sarana-pemeriksaan*') ? 'active' : '' }}"><i class="fas fa-search-location"></i> Pemeriksaan Proteksi</a> 
+                    <a href="/sapra/kelola-pos" class="{{ Request::is('sapra/kelola-pos*') ? 'active' : '' }}"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
 
-                    <span class="side-kicker" style="padding-left:2px;">Manajemen air</span>
-                    <a href="/sapra/data_hidrant_gedung" class="{{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}"><i class="fas fa-droplet"></i> Sumber air</a>
-                    <a href="/sapra/data-hidrant-kota" class="{{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}"><i class="fas fa-map-marker-alt"></i> Hidrant Kota Jambi</a>
+                    <span class="side-kicker" style="padding-left:2px;">Manajemen Air</span>
+                    <a href="/sapra/data_hidrant_gedung" class="{{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}"><i class="fas fa-droplet"></i> Sumber Air</a>
+                    <a href="/sapra/data-hidrant-kota" class="{{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}"><i class="fas fa-map-location-dot"></i> Data Hidrant Kota</a>
 
                     <span class="side-kicker" style="padding-left:2px;">Logistik & Distribusi</span>
-                    <a href="/sapra/kebutuhan-sarpras" class="{{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
-                    <a href="/sapra/distribusi-staff" class="{{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}"><i class="fas fa-user-check"></i> Distribusi Barang Staff</a>
+                    <a href="/sapra/kebutuhan-sarpras" class="{{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}"><i class="fas fa-boxes-stacked"></i> Mutu Baku Kebutuhan</a>
+                    <a href="/sapra/distribusi-staff" class="{{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}"><i class="fas fa-people-carry-box"></i> Distribusi Barang Staff</a>
                 </div>
             </details>
         @endif
@@ -452,9 +427,9 @@
             <details class="side-group" {{ Request::is('internal/operator*') ? 'open' : '' }}>
                 <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen berita</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
-                    <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}"><i class="fas fa-newspaper"></i> Input &amp; kelola berita</a>
-                    <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}"><i class="far fa-image"></i> Kelola info grafis</a>
-                    <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}"><i class="fab fa-instagram"></i> Kelola berita medsos</a>
+                    <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}"><i class="far fa-newspaper"></i> Input &amp; Kelola Berita</a>
+                    <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}"><i class="far fa-image"></i> Kelola Info Grafis</a>
+                    <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}"><i class="fab fa-instagram"></i> Kelola Berita Medsos</a>
                 </div>
             </details>
         @endif
@@ -463,12 +438,10 @@
         <details class="side-group" {{ Request::is('internal/profil*') || Request::is('internal/kelola-user*') || Request::is('internal/kelola-pemohon*') ? 'open' : '' }}>
             <summary><i class="fas fa-user-gear grp-ico"></i><span class="grp-label">Pengaturan akun</span><i class="fas fa-chevron-down chev"></i></summary>
             <div class="side-sub">
-                <a href="/internal/profil" class="{{ Request::is('internal/profil*') ? 'active' : '' }}"><i class="fas fa-user-pen"></i> Profil saya</a>
+                <a href="/internal/profil" class="{{ Request::is('internal/profil*') ? 'active' : '' }}"><i class="fas fa-user-pen"></i> Profil Saya</a>
                 @if(Auth::user()->role === 'super_user')
-                    <a href="/internal/kelola-user" class="{{ Request::is('internal/kelola-user*') ? 'active' : '' }}"><i class="fas fa-users-gear"></i> Kelola semua pengguna</a>
-                    <a href="/internal/kelola-pemohon" class="{{ Request::is('internal/kelola-pemohon*') ? 'active' : '' }}">
-                        <i class="fas fa-address-book"></i> Kelola Akun Pemohon
-                    </a>
+                    <a href="/internal/kelola-user" class="{{ Request::is('internal/kelola-user*') ? 'active' : '' }}"><i class="fas fa-users-gear"></i> Kelola Semua Pengguna</a>
+                    <a href="/internal/kelola-pemohon" class="{{ Request::is('internal/kelola-pemohon*') ? 'active' : '' }}"><i class="fas fa-address-book"></i> Kelola Akun Pemohon</a>
                 @endif
             </div>
         </details>
@@ -476,7 +449,7 @@
 
     <!-- ==================== KONTEN UTAMA ==================== -->
     <main class="content">
-        <div class="page-header">
+        <div class="page-header d-print-none">
             <div class="page-header-text">
                 <h1>Data Laporan Penyelamatan</h1>
                 <p>Daftar seluruh laporan kejadian yang telah diinput ke dalam sistem.</p>
@@ -493,7 +466,7 @@
 
         <div class="card-custom">
             <!-- Filter & Search Bar -->
-            <div class="card-header bg-white p-4 border-bottom border-light">
+            <div class="card-header bg-white p-4 border-bottom border-light d-print-none">
                 <div class="row g-3">
                     <div class="col-md-4">
                         <div class="input-group">
@@ -512,7 +485,7 @@
                         <input type="date" class="form-control">
                     </div>
                     <div class="col-md-2 text-end">
-                        <button class="btn-custom-light w-100 p-2" onclick="resetFilter()"><i class="fas fa-sync-alt me-2"></i>Reset</button>
+                        <button class="btn-custom-light w-100 py-2 border-light fw-bold" onclick="resetFilter()"><i class="fas fa-sync-alt me-2"></i>Reset</button>
                     </div>
                 </div>
             </div>
@@ -560,7 +533,7 @@
                                 <th width="20%">Kategori Kejadian</th>
                                 <th width="10%">Prioritas</th>
                                 <th width="15%">Status Evakuasi</th>
-                                <th class="text-center" width="15%">Aksi</th>
+                                <th class="text-center d-print-none" width="15%">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
@@ -607,7 +580,7 @@
                                         <i class="fas fa-check-circle me-1"></i>Terekam
                                     </span>
                                 </td>
-                                <td class="text-center">
+                                <td class="text-center d-print-none">
                                     <a href="/internal/damtan/lihat-data/{{ $row->id }}" class="action-btn view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
                                     <a href="/internal/damtan/edit-data/{{ $row->id }}" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
                                     <form action="/internal/damtan/hapus-data/{{ $row->id }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus laporan {{ $row->nomor_laporan }} secara permanen?')">
@@ -645,7 +618,7 @@
                 </div>
             </div>
             
-            <div class="card-footer bg-white p-4 d-flex justify-content-between align-items-center border-top">
+            <div class="card-footer bg-white p-4 d-flex justify-content-between align-items-center border-top d-print-none">
                 <span class="text-muted" style="font-size: 13px;" id="dataCount">
                     Menampilkan {{ $data_laporan->firstItem() ?? 0 }} - {{ $data_laporan->lastItem() ?? 0 }} dari total {{ $data_laporan->total() }} laporan
                 </span>

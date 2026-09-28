@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('infografis', function (Blueprint $table) {
             $table->id();
+            
+            // Tambahkan dua kolom ini sesuai kebutuhan Controller
+            $table->string('judul');
+            $table->string('gambar');
+            
             $table->timestamps();
         });
     }

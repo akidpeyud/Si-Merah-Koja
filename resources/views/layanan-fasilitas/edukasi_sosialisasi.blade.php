@@ -202,7 +202,7 @@
                 <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
                     <li><a href="/layanan-fasilitas/skk">SKK & Perpanjang SKK</a></li>
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan Edukasi & Sosialisasi</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
             </li>
@@ -210,7 +210,7 @@
                 <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="/video-edukasi">Video Edukasi</a></li>
-                    <li><a href="/info-grafis">Info Grafis</a></li>
+                    <li><a href="/info-grafis">Infografis</a></li>
                     <li><a href="/media-informasi">Media Informasi</a></li>
                     <li><a href="/giat-disdamkartan">Giat Disdamkartan</a></li>
                 </ul>
@@ -222,9 +222,9 @@
 
     <!-- HERO SECTION -->
     <div class="page-hero">
-        <h1>EDUKASI DAN SOSIALISASI</h1>
+        <h1>Kunjungan Edukasi & Sosialisasi</h1>
         <div class="breadcrumb">
-            <a href="/">Home</a> <span>&raquo;</span> EDUKASI DAN SOSIALISASI
+            <a href="/">Home</a> <span>&raquo;</span> Kunjungan Edukasi & Sosialisasi
         </div>
     </div>
 
@@ -309,7 +309,7 @@
 
         <!-- KANAN: FORMULIR -->
         <div class="form-container">
-            <h2 class="form-title">Pengajuan Edukasi dan Sosialisasi</h2>
+            <h2 class="form-title">Pengajuan Kunjungan Edukasi & Sosialisasi</h2>
 
             <!-- ALERT ERROR VALIDASI -->
             @if($errors->any())
@@ -390,7 +390,7 @@
 
                 <!-- Kolom Grid untuk Umur Peserta -->
                 <div class="form-group" style="margin-top: 30px;">
-                    <div class="section-label">Jumlah Peserta Edukasi Sosialisasi</div>
+                    <div class="section-label">Jumlah Peserta Kunjungan Edukasi & Sosialisasi</div>
                     <div class="grid-4-col">
                         <div>
                             <label>Usia 3-6 Thn</label>
