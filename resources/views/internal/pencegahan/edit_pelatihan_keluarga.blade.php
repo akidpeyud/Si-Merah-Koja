@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Data Pelatihan Keluarga - SIMERAH KOJA</title>
+    <title>Edit Data Sosialisasi - SIMERAH KOJA</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -43,7 +43,7 @@
                     <i class="fas fa-arrow-left"></i> Kembali ke Data Pelatihan
                 </a>
 
-                <h1 class="fw-bolder text-dark mb-0" style="font-size: 24px;">Form Edit Pelatihan Keluarga (Goes to RT)</h1>
+                <h1 class="fw-bolder text-dark mb-0" style="font-size: 24px;">Form Edit  Sosialisasi</h1>
 
                 <div class="form-wrapper">
                     <!-- Ingat, edit data wajib pakai metode PUT -->
