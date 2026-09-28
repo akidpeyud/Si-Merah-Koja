@@ -218,10 +218,15 @@ class PencegahanController extends Controller
     // ==========================================
     public function index()
     {
-        $data_inspeksi = InspeksiBangunan::all();
-        return view('internal.pencegahan.inspeksi_bangunan', compact('data_inspeksi'));
-    }
+        // Ambil semua data untuk ditampilin di tabel
+        $data_inspeksi = InspeksiBangunan::orderBy('tanggal_inspeksi', 'desc')->get();
+        
+        // Hitung total data untuk kotak "Semua Data"
+        $total_inspeksi = InspeksiBangunan::count();
+        $total_fire_drill = FireDrill::count(); 
 
+        return view('internal.pencegahan.inspeksi_bangunan', compact('data_inspeksi', 'total_inspeksi', 'total_fire_drill'));
+    }
     public function indexInspeksiBangunan()
     {
         $data_inspeksi = InspeksiBangunan::all();
@@ -291,7 +296,7 @@ class PencegahanController extends Controller
         return view('internal.pencegahan.edit_inspeksi_bangunan', compact('item'));
     }
 
-    public function update(Request $request, $id)
+    public function updateInspeksiBangunan(Request $request, $id)
     {
         // Cari data berdasarkan ID
         $inspeksi = InspeksiBangunan::find($id); 
