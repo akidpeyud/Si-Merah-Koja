@@ -6,38 +6,62 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Models\LaporanPenyelamatan;
-use App\Models\LpTeknisLogistik;
-use App\Models\LpDokumentasi;
-use App\Models\LpKategoriKhusus;
 
 class DamtanController extends Controller
 {
-    // Menampilkan form input
+    // ==========================================
+    // KELOLA DATA PENYELAMATAN (TABEL UTAMA)
+    // ==========================================
+
+    // 1. Menampilkan form input
     public function createPenyelamatan()
     {
         return view('internal.damtan.input_data');
     }
 
-    // Menampilkan tabel data laporan
+    // 2. Menampilkan tabel data laporan
     public function indexPenyelamatan()
     {
-        $data_laporan = LaporanPenyelamatan::with(['teknisLogistik', 'dokumentasi', 'kategoriKhusus'])
-                    ->latest()
-                    ->paginate(10);
+        $data_laporan = LaporanPenyelamatan::latest()->paginate(10);
                     
         return view('internal.damtan.data_laporan', compact('data_laporan'));
     }
 
-    // Menyimpan data dari form
+    // 3. Menampilkan detail data spesifik (Lihat Data)
+    public function showPenyelamatan($id)
+    {
+        $laporan = LaporanPenyelamatan::findOrFail($id);
+        
+        // Pastikan file view ini sudah ada: resources/views/internal/damtan/lihat_data.blade.php
+        return view('internal.damtan.lihat_data', compact('laporan'));
+    }
+
+    // 4. Menyimpan data dari form (Create)
     public function storePenyelamatan(Request $request)
     {
         DB::beginTransaction();
 
         try {
-            // 1. Simpan ke Tabel Utama (LaporanPenyelamatan)
-            $laporan = LaporanPenyelamatan::create([
+            $fotoPaths = [];
+            if ($request->hasFile('foto')) {
+                foreach ($request->file('foto') as $file) {
+                    $fotoPaths[] = $file->store('uploads/penyelamatan/foto', 'public');
+                }
+            }
+
+            $videoPath = null;
+            if ($request->hasFile('video')) {
+                $videoPath = $request->file('video')->store('uploads/penyelamatan/video', 'public');
+            }
+
+            LaporanPenyelamatan::create([
+                'user_id' => auth()->id(), 
                 'nomor_laporan' => 'REG-' . date('Ymd') . '-' . rand(1000, 9999),
                 'id_laporan' => Str::uuid(),
+
+                // Tab 1: Informasi Dasar
+                'nama_pelapor' => $request->nama_pelapor,
+                'media_pelaporan' => $request->media_pelaporan,
                 'kategori_kebakaran' => $request->kategori_kebakaran,
                 'kategori_non_kebakaran' => $request->kategori_non_kebakaran,
                 'rincian_kategori_non_kebakaran' => $request->rincian_kategori_non_kebakaran,
@@ -48,12 +72,12 @@ class DamtanController extends Controller
                 'waktu_berangkat' => $request->waktu_berangkat,
                 'waktu_tiba' => $request->waktu_tiba,
                 'waktu_selesai' => $request->waktu_selesai,
+                'waktu_kembali' => $request->waktu_kembali,
                 'alamat' => $request->alamat,
+                'jarak_tempuh' => $request->jarak_tempuh,
                 'koordinat' => $request->koordinat,
-            ]);
 
-            // 2. Simpan ke Tabel Teknis & Logistik
-            $laporan->teknisLogistik()->create([
+                // Tab 2: Teknis & Logistik
                 'korban_selamat' => $request->korban_selamat ?? 0,
                 'korban_ringan' => $request->korban_ringan ?? 0,
                 'korban_berat' => $request->korban_berat ?? 0,
@@ -73,23 +97,8 @@ class DamtanController extends Controller
                 'armada' => $request->armada,
                 'jumlah_personel' => $request->jumlah_personel ?? 0,
                 'daftar_personel' => $request->daftar_personel,
-            ]);
 
-            // 3. Proses File Upload (Foto & Video)
-            $fotoPaths = [];
-            if ($request->hasFile('foto')) {
-                foreach ($request->file('foto') as $file) {
-                    $fotoPaths[] = $file->store('uploads/penyelamatan/foto', 'public');
-                }
-            }
-
-            $videoPath = null;
-            if ($request->hasFile('video')) {
-                $videoPath = $request->file('video')->store('uploads/penyelamatan/video', 'public');
-            }
-
-            // Simpan ke Tabel Dokumentasi
-            $laporan->dokumentasi()->create([
+                // Tab 3: Dokumentasi
                 'dugaan_penyebab' => $request->dugaan_penyebab,
                 'dugaan_penyebab_lainnya' => $request->dugaan_penyebab_lainnya,
                 'sumber_api' => $request->sumber_api,
@@ -102,10 +111,8 @@ class DamtanController extends Controller
                 'kronologi_lengkap' => $request->kronologi_lengkap,
                 'foto' => !empty($fotoPaths) ? $fotoPaths : null,
                 'video' => $videoPath,
-            ]);
 
-            // 4. Simpan ke Tabel Kategori Khusus
-            $laporan->kategoriKhusus()->create([
+                // Tab 4: Kategori Khusus
                 'jenis_hewan' => $request->jenis_hewan,
                 'spesies_hewan' => $request->spesies_hewan,
                 'dimensi_hewan' => $request->dimensi_hewan,
@@ -137,20 +144,70 @@ class DamtanController extends Controller
         }
     }
 
+    // 5. Menampilkan form edit laporan
+    public function editPenyelamatan($id)
+    {
+        $laporan = LaporanPenyelamatan::findOrFail($id);
+        
+        return view('internal.damtan.edit_data', compact('laporan'));
+    }
+
+    // 6. Menyimpan perubahan data (Update)
+    public function updatePenyelamatan(Request $request, $id)
+    {
+        $laporan = LaporanPenyelamatan::findOrFail($id);
+
+        DB::beginTransaction();
+        try {
+            $dataUpdate = $request->except(['_token', '_method', 'foto', 'video']);
+
+            if ($request->hasFile('foto')) {
+                $fotoPaths = [];
+                foreach ($request->file('foto') as $file) {
+                    $fotoPaths[] = $file->store('uploads/penyelamatan/foto', 'public');
+                }
+                $dataUpdate['foto'] = $fotoPaths;
+            }
+
+            if ($request->hasFile('video')) {
+                $dataUpdate['video'] = $request->file('video')->store('uploads/penyelamatan/video', 'public');
+            }
+
+            $laporan->update($dataUpdate);
+
+            DB::commit();
+            
+            return redirect('/internal/damtan/data-laporan')->with('success', 'Data Laporan Penyelamatan berhasil diperbarui!');
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('error', 'Gagal memperbarui data: ' . $e->getMessage());
+        }
+    }
+
+    // 7. Menghapus data laporan (Delete)
+    public function destroyPenyelamatan($id)
+    {
+        $laporan = LaporanPenyelamatan::findOrFail($id);
+        $laporan->delete();
+
+        return redirect()->back()->with('success', 'Data Laporan berhasil dihapus secara permanen!');
+    }
+    
     // ==========================================
-    // TAMBAHAN: KELOLA SURAT KORBAN
+    // KELOLA SURAT KORBAN
     // ==========================================
 
-    // Menampilkan Form Create Surat Korban
     public function createSurat()
     {
         return view('internal.damtan.input_surat');
     }
 
-    // Menyimpan Data Surat Korban Baru
     public function storeSurat(Request $request)
     {
         DB::table('surat_korbans')->insert([
+            'nomor_surat' => 'SKK-' . date('Ymd') . '-' . rand(1000, 9999),
+            'tanggal_surat' => now(),
             'nama_korban' => $request->nama_korban,
             'status_kepemilikan' => $request->status_kepemilikan,
             'nik' => $request->nik,
@@ -174,7 +231,6 @@ class DamtanController extends Controller
 
     public function indexSurat()
     {
-        // Mengambil semua data surat dari database dengan pagination (10 data per halaman)
         $surat = DB::table('surat_korbans')->orderBy('created_at', 'desc')->paginate(10);
         return view('internal.damtan.data_surat', compact('surat'));
     }
@@ -217,5 +273,18 @@ class DamtanController extends Controller
     {
         DB::table('surat_korbans')->where('id', $id)->delete();
         return redirect('/internal/surat-korban/data')->with('success', 'Data surat berhasil dihapus secara permanen!');
+    }
+
+    // 8. Mencetak Surat Korban (Cetak PDF / Print)
+    public function cetakSurat($id)
+    {
+        $surat = DB::table('surat_korbans')->where('id', $id)->first();
+        
+        if (!$surat) {
+            return redirect('/internal/surat-korban/data')->with('error', 'Data surat tidak ditemukan untuk dicetak.');
+        }
+
+        // Pastikan kamu sudah membuat file cetak_surat.blade.php di folder resources/views/internal/damtan/
+        return view('internal.damtan.cetak_surat', compact('surat'));
     }
 }
