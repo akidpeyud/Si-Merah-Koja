@@ -380,7 +380,7 @@
                 <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
                     <li><a href="/layanan-fasilitas/skk">SKK & Perpanjang SKK</a></li>
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan Edukasi & Sosialisasi</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
             </li>
@@ -388,13 +388,12 @@
                 <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="/video-edukasi">Video Edukasi</a></li>
-                    <li><a href="/info-grafis">Info Grafis</a></li>
+                    <li><a href="/info-grafis">Infografis</a></li>
                     <li><a href="/media-informasi">Media Informasi</a></li>
                     <li><a href="/giat-disdamkartan">Giat Disdamkartan</a></li>
                 </ul>
             </li>
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
-            <li><a class="menu-link btn-login" href="/login">Masuk</a></li>
         </ul>
     </nav>
 </header>

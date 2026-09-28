@@ -549,7 +549,7 @@
 
         <ul class="menu" id="menu">
             <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan kedaruratan <i class="fas fa-chevron-down"></i></button>
+                <button class="menu-trigger" type="button" aria-expanded="false">Layanan Kedaruratan <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="{{ $wa_link }}" target="_blank" rel="noopener">WhatsApp</a></li>
                     <li><a href="tel:{{ $no_telepon }}">Telepon</a></li>
@@ -571,7 +571,7 @@
                 <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
                     <li><a href="/layanan-fasilitas/skk">SKK &amp; Perpanjang SKK</a></li>
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan Edukasi & Sosialisasi</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
             </li>
@@ -579,7 +579,7 @@
                 <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="#video">Edu Damkar</a></li>
-                    <li><a href="#infografis">Info Grafis</a></li>
+                    <li><a href="#infografis">Infografis</a></li>
                     <li><a href="/media-informasi">Media Informasi</a></li>
                     <li><a href="#giat">Ujung-ujung Damkar</a></li>
                 </ul>
@@ -653,7 +653,7 @@
         </div>
 
         <aside class="sos rise d3" id="lapor" aria-labelledby="judul-lapor">
-            <div class="sos-head"><span class="beacon" aria-hidden="true"></span> Lapor darurat</div>
+            <div class="sos-head"><span class="beacon" aria-hidden="true"></span> Lapor Darurat</div>
             <h2 id="judul-lapor">Kebakaran atau butuh penyelamatan?</h2>
 
             <div class="sos-list">
@@ -737,7 +737,7 @@
     <div class="wrap">
         <div class="sec-head">
             <div>
-                <h2>Kejadian &amp; evakuasi</h2>
+                <h2>Pemadaman, Penyelamatan &amp; Evakuasi</h2>
                 <p>Informasi terbaru tentang kejadian di Kota Jambi.</p>
             </div>
             <img src="/images/mobil.png" alt="Mobil pemadam kebakaran" loading="lazy">
@@ -842,7 +842,7 @@
     <div class="wrap">
         <div class="sec-head">
             <div>
-                <h2>Info grafis</h2>
+                <h2>Infografis</h2>
                 <p>Panduan singkat bergambar. Ketuk gambar untuk memperbesar.</p>
             </div>
         </div>
@@ -869,7 +869,7 @@
         <!-- HEADER MEDIA INFORMASI + TOMBOL LIHAT LAINNYA -->
         <div class="sec-head sub-head" style="flex-wrap: wrap;">
             <div>
-                <h2>Media informasi</h2>
+                <h2>Media Informasi</h2>
                 <p>Kabar terbaru dari media sosial Damkar Kota Jambi.</p>
             </div>
             <a href="/media-informasi" class="btn btn-outline">
@@ -1048,7 +1048,7 @@
         <a class="n112" href="tel:112"><i class="fas fa-headset"></i> Call Center 112</a>
     </div>
     <button class="sos-fab-btn" type="button" aria-expanded="false" aria-controls="sosSheet">
-        <span class="beacon" style="background:#fff" aria-hidden="true"></span> Lapor darurat
+        <span class="beacon" style="background:#fff" aria-hidden="true"></span> Lapor Darurat
     </button>
 </div>
 
