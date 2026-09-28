@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
 use App\Models\UjungDamkar;
+use App\Models\EduDamkar;
 
 class OperatorMedsosController extends Controller
 {
@@ -118,7 +119,6 @@ class OperatorMedsosController extends Controller
     {
         $videos = UjungDamkar::orderBy('created_at', 'desc')->get();
 
-        // Otomatis mendeteksi apakah nama file blade Anda menggunakan garis bawah (_) atau strip (-)
         $viewName = view()->exists('internal.operator.ujung_damkar')
             ? 'internal.operator.ujung_damkar'
             : 'internal.operator.ujung-damkar';
@@ -186,6 +186,80 @@ class OperatorMedsosController extends Controller
         $item->delete();
 
         return back()->with('success', 'Video Ujung-Ujung Damkar berhasil dihapus!');
+    }
+
+    // ================= EDU DAMKAR (VIDEO EDUKASI) =================
+    public function indexEduDamkar()
+    {
+        $videos = EduDamkar::orderBy('created_at', 'desc')->get();
+
+        $viewName = view()->exists('internal.operator.edu_damkar')
+            ? 'internal.operator.edu_damkar'
+            : 'internal.operator.edu-damkar';
+
+        return view($viewName, compact('videos'));
+    }
+
+    public function storeEduDamkar(Request $request)
+    {
+        $request->validate([
+            'judul' => ['required', 'string', 'max:255'],
+            'link'  => ['required', 'url'],
+        ], [
+            'judul.required' => 'Judul materi edukasi wajib diisi.',
+            'link.required'  => 'Link video YouTube wajib diisi.',
+            'link.url'       => 'Format link tidak valid.',
+        ]);
+
+        $youtubeId = $this->extractYoutubeId($request->link);
+
+        if (!$youtubeId) {
+            return back()
+                ->withInput()
+                ->with('error', 'Link YouTube tidak dikenali! Pastikan menggunakan link video atau Shorts YouTube yang valid.');
+        }
+
+        EduDamkar::create([
+            'judul'      => $request->judul,
+            'youtube_id' => $youtubeId,
+            'link_asli'  => $request->link,
+        ]);
+
+        return back()->with('success', 'Video Edu Damkar berhasil ditambahkan!');
+    }
+
+    public function updateEduDamkar(Request $request, $id)
+    {
+        $item = EduDamkar::findOrFail($id);
+
+        $request->validate([
+            'judul' => ['required', 'string', 'max:255'],
+            'link'  => ['required', 'url'],
+        ]);
+
+        $youtubeId = $this->extractYoutubeId($request->link);
+
+        if (!$youtubeId) {
+            return back()
+                ->withInput()
+                ->with('error', 'Link YouTube tidak dikenali! Pastikan menggunakan link video atau Shorts YouTube yang valid.');
+        }
+
+        $item->update([
+            'judul'      => $request->judul,
+            'youtube_id' => $youtubeId,
+            'link_asli'  => $request->link,
+        ]);
+
+        return back()->with('success', 'Video Edu Damkar berhasil diperbarui!');
+    }
+
+    public function destroyEduDamkar($id)
+    {
+        $item = EduDamkar::findOrFail($id);
+        $item->delete();
+
+        return back()->with('success', 'Video Edu Damkar berhasil dihapus!');
     }
 
     /**
