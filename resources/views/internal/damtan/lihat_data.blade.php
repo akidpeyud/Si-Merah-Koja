@@ -3,19 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0d1b2a">
     <title>Rincian Data - SIMERAH KOJA</title>
-<link rel="icon" href="/images/simerahkoja.png" type="image/png">
+    <link rel="icon" href="/images/simerahkoja.png" type="image/png">
+    
+    <!-- PRELOAD LOGO AGAR TIDAK TELAT LOADING SAAT DI-PRINT -->
+    <link rel="preload" href="/images/logo.png" as="image">
+    <link rel="preload" href="/images/jambi.png" as="image">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
+    <!-- Font Awesome & HTML2PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: #f3f4f6; color: #1f2937; }
+        /* ==========================================================
+           DESIGN TOKENS UTAMA (Sidebar, Topbar, Background)
+           ========================================================== */
+        :root {
+            --ink: #0d1b2a;
+            --ink-2: #132a43;
+            --ink-3: #1d3856;
+            --paper: #f7f9fc;
+            --white: #ffffff;
 
-        /* --- PENGATURAN KOP SURAT PDF --- */
+            --navy: #1e3a5f;
+            --navy-d: #14283f;
+            --navy-tint: rgba(30, 58, 95, .09);
+
+            --signal: #e5392d;
+            --signal-d: #c22b20;
+
+            --amber: #ffb627;
+            --success: #10b981;
+            --info: #2f6fed;
+            --steel: #64748b;
+            --steel-soft: #94a3b8;
+            --line: #e6eaf1;
+
+            --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+            --font-body: 'Instrument Sans', system-ui, sans-serif;
+
+            --sidebar-w: 272px;
+            --topbar-h: 72px;
+            --shadow-sm: 0 2px 8px -2px rgba(13, 27, 42, .08);
+            --shadow-lg: 0 24px 48px -16px rgba(13, 27, 42, .18);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-body); font-size: 1rem; line-height: 1.6; color: var(--ink); background: var(--paper); -webkit-font-smoothing: antialiased; }
+        a { color: inherit; text-decoration: none; }
+        button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+        
+        /* ==========================================================
+           GLOBAL ALERTS
+           ========================================================== */
+        #globalSuccessAlert, #globalErrorAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); color: white; padding: 16px 24px; border-radius: 12px; z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #globalSuccessAlert { background-color: var(--success); box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); }
+        #globalErrorAlert { background-color: var(--signal); box-shadow: 0 10px 25px -5px rgba(229, 57, 45, 0.4); }
+        .alert-icon { font-size: 22px; }
+        .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px; transition: opacity 0.2s; }
+        .btn-close-alert:hover { opacity: 1; }
+
+        @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+        @keyframes fadeOutUpCenter { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -50px); opacity: 0; } }
+
+        /* ==========================================================
+           TOPBAR & SIDEBAR
+           ========================================================== */
+        .topbar { position: sticky; top: 0; z-index: 1020; height: var(--topbar-h); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 28px; background: rgba(255,255,255,.86); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
+        .topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+        .side-toggle { display: none; width: 40px; height: 40px; border-radius: 12px; align-items: center; justify-content: center; font-size: 1.05rem; transition: background .2s; }
+        .side-toggle:hover { background: var(--paper); }
+        .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .brand img { height: 34px; width: auto; flex: none; }
+        .brand span { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: 1.08rem; letter-spacing: -0.01em; white-space: nowrap; }
+
+        .topbar-right { display: flex; align-items: center; gap: 14px; }
+        .user-chip { display: flex; align-items: center; gap: 10px; padding: 6px 16px 6px 6px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: .9rem; flex: none; }
+        .user-meta { display: grid; line-height: 1.25; }
+        .user-meta strong { font-size: .85rem; font-weight: 700; color: var(--ink); }
+        .user-meta small { font-size: .74rem; color: var(--steel); text-transform: capitalize; }
+        .btn-logout { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border-radius: 999px; background: var(--navy); color: #fff; font-weight: 600; font-size: .85rem; transition: background .2s; }
+        .btn-logout:hover { background: var(--navy-d); }
+
+        .shell { display: flex; align-items: flex-start; min-height: calc(100vh - var(--topbar-h)); }
+        .sidebar { width: var(--sidebar-w); flex: none; position: sticky; top: var(--topbar-h); height: calc(100vh - var(--topbar-h)); overflow-y: auto; background: #fff; border-right: 1px solid var(--line); padding: 20px 14px 32px; scrollbar-width: thin; }
+        .side-link { display: flex; align-items: center; gap: 14px; padding: 11px 14px; border-radius: 10px; font-size: .9rem; font-weight: 600; color: var(--ink); margin-bottom: 4px; transition: background .2s, color .2s; }
+        .side-link:hover { background: var(--paper); }
+        .side-link.active { background: var(--ink); color: #fff; }
+        .side-link i { width: 20px; text-align: center; font-size: 1rem; color: var(--steel); transition: color .2s; }
+        .side-link.active i { color: var(--amber); }
+
+        .side-group + .side-group { margin-top: 6px; }
+        .side-group summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 10px; font-size: .8rem; font-weight: 700; text-transform: uppercase; color: var(--navy); }
+        .side-group summary::-webkit-details-marker { display: none; }
+        .side-group summary:hover { background: var(--paper); }
+        .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); }
+        .side-group summary .grp-label { flex: 1 1 auto; min-width: 0; white-space: nowrap; }
+        .side-group summary .chev { flex: none; font-size: .7rem; transition: transform .25s ease; }
+        .side-group[open] summary .chev { transform: rotate(180deg); }
+
+        .side-sub { display: grid; gap: 3px; padding: 6px 4px 10px 12px; border-left: 2px solid var(--line); margin: 2px 0 8px 22px; }
+        .side-sub a { display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: 10px; font-size: .85rem; font-weight: 500; color: var(--steel); transition: background .2s, color .2s; }
+        .side-sub a:hover { background: var(--paper); color: var(--ink); }
+        .side-sub a.active { background: var(--navy-tint); color: var(--navy-d); font-weight: 600; }
+        .side-sub a i { width: 18px; text-align: center; font-size: .9rem; opacity: .75; }
+        .side-sub a:hover i, .side-sub a.active i { opacity: 1; }
+        .side-kicker { padding: 18px 14px 6px; font-size: .7rem; font-weight: 700; text-transform: uppercase; color: var(--steel-soft); }
+        
+        .content { flex: 1; min-width: 0; padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 80px; }
+        .back-link { color: var(--steel); font-size: 14px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; margin-bottom: 10px; transition: color .2s;}
+        .back-link:hover { color: var(--navy); }
+        .page-head { margin-bottom: 28px; }
+        .page-head h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -0.02em; color: var(--ink); }
+        
+        .card-custom { background: #fff; border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow-sm); padding: clamp(24px, 4vw, 40px); margin-bottom: 30px; }
+        
+        .btn-custom-edit { background-color: rgba(255, 182, 39, 0.15); color: #d97706; font-weight: 700; border: none; padding: 10px 24px; border-radius: 12px; transition: background 0.2s; display: inline-flex; align-items: center; text-decoration: none;}
+        .btn-custom-edit:hover { background-color: rgba(255, 182, 39, 0.3); color: #d97706;}
+
+        @media (max-width: 900px) {
+            .side-toggle { display: inline-flex; }
+            .user-meta { display: none; }
+            .sidebar { position: fixed; z-index: 1010; top: var(--topbar-h); left: 0; transform: translateX(-100%); transition: transform .3s; }
+            body.side-open .sidebar { transform: none; }
+        }
+
+        /* ==========================================================
+           PENGATURAN PDF LAMA (ANTI-ERROR HTML2PDF)
+           Gunakan PX dan Hex Colors murni di dalam #report-content
+           ========================================================== */
+        
+        /* Kop Surat */
         .tabel-kop { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
         .tabel-kop td { vertical-align: middle; }
         .tabel-kop img { width: 80px; height: auto; }
@@ -23,239 +153,229 @@
         .kop-text h2 { margin: 0; font-size: 14pt; font-weight: normal; font-family: 'Times New Roman', Times, serif; color: #000; }
         .kop-text h1 { margin: 0; font-size: 16pt; font-weight: bold; line-height: 1.1; font-family: 'Times New Roman', Times, serif; color: #000; }
         .kop-text p { margin: 2px 0 0 0; font-size: 10pt; font-family: 'Times New Roman', Times, serif; color: #000; }
-
-        .garis-kop {
-            border-top: 3px solid black;
-            border-bottom: 1px solid black;
-            height: 2px;
-            margin-top: 5px;
-            margin-bottom: 20px;
-        }
-
+        .garis-kop { border-top: 3px solid black; border-bottom: 1px solid black; height: 2px; margin-top: 5px; margin-bottom: 20px; }
         .judul-laporan { text-align: center; margin-bottom: 25px; line-height: 1.2; font-family: 'Times New Roman', Times, serif; color: #000; }
         .judul-laporan h3 { margin: 0; font-size: 14pt; font-weight: bold; text-decoration: underline; }
 
-        /* --- NAVBAR INTERNAL --- */
-        .navbar-internal {
-            background-color: #111827; padding: 15px 50px; border-bottom: 4px solid #10b981;
-            display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-        }
-        .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
-        .nav-brand img { height: 40px; }
-        .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; }
-
-        .user-menu { display: flex; align-items: center; gap: 20px; }
-        .user-profile { display: flex; align-items: center; gap: 10px; color: #e5e7eb; font-size: 14px; font-weight: 600; }
-        .user-profile i { font-size: 20px; color: #9ca3af; }
-        
-        .btn-logout {
-            background-color: #ef4444; color: white; border: none; padding: 8px 20px;
-            border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s;
-        }
-        .btn-logout:hover { background-color: #dc2626; }
-
-        /* --- SIDEBAR & ACCORDION STYLES --- */
-        .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
-        .sidebar {
-            width: 280px; background-color: #ffffff; border-right: 1px solid #e5e7eb;
-            padding: 30px 20px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto;
-        }
-        
-        .sidebar-item {
-            display: flex; align-items: center; gap: 15px; padding: 12px 15px;
-            color: #4b5563; text-decoration: none; font-size: 13px; font-weight: 600;
-            border-radius: 8px; transition: all 0.2s;
-        }
-        .sidebar-item:hover { background-color: #f3f4f6; color: #111827; }
-        .sidebar-item.active { background-color: #e0f2fe; color: #0284c7; }
-        .sidebar-item.active i { color: #0284c7; }
-        .sidebar-item i { font-size: 16px; width: 20px; text-align: center; color: #9ca3af; }
-        
-        .sidebar-collapse-btn {
-            display: flex; justify-content: space-between; align-items: center;
-            width: 100%; padding: 15px 15px 5px 15px; margin-top: 10px;
-            background: transparent; border: none; border-top: 1px dashed #e5e7eb;
-            text-align: left; font-size: 11px; font-weight: 800; color: #9ca3af;
-            text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s;
-        }
-        .sidebar-collapse-btn:hover { color: #4b5563; }
-        
-        .toggle-icon { transition: transform 0.3s ease; font-size: 12px; }
-        .sidebar-collapse-btn.collapsed .toggle-icon { transform: rotate(0deg); }
-        .sidebar-collapse-btn:not(.collapsed) .toggle-icon { transform: rotate(180deg); color: #0284c7; }
-        .sidebar-collapse-btn:not(.collapsed) { color: #0284c7; }
-
-        .sidebar-submenu {
-            display: flex; flex-direction: column; gap: 4px; padding-left: 10px; margin-top: 8px;
-        }
-        
-        /* --- KONTEN UTAMA --- */
-        .main-content { flex: 1; padding: 40px 50px; background-color: #f9fafb; }
-        .back-link { color: #6b7280; font-size: 14px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; margin-bottom: 10px; }
-        .page-title { font-size: 26px; font-weight: 800; color: #111827; margin-bottom: 30px; }
-
-        .detail-card { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 40px 50px; margin-bottom: 30px; }
-        
+        /* Grid Data Laporan Asli */
         .section-header { clear: both; display: flex; align-items: center; gap: 12px; margin-bottom: 12px; margin-top: 25px; padding-bottom: 5px; border-bottom: 1px solid #e5e7eb; page-break-after: avoid; page-break-inside: avoid; }
         .section-header::before { content: ''; width: 4px; height: 18px; background-color: #3b82f6; border-radius: 4px; }
-        .section-header h3 { font-size: 16px; font-weight: 800; margin: 0; color: #111827; text-transform: uppercase; }
+        .section-header h3 { font-size: 16px; font-weight: 800; margin: 0; color: #111827; text-transform: uppercase; font-family: 'Plus Jakarta Sans', sans-serif;}
 
-        /* --- PERBAIKAN SISTEM GRID PDF (ANTI TERPOTONG HORIZONTAL) --- */
         .pdf-grid { display: block; width: 100%; margin-bottom: 15px; } 
-        .pdf-grid::after { content: ""; display: table; clear: both; } /* Clear float */
-        
+        .pdf-grid::after { content: ""; display: table; clear: both; } 
         .pdf-item { float: left; width: 49%; padding-right: 15px; margin-bottom: 10px; box-sizing: border-box; page-break-inside: avoid; }
         .pdf-item-full { clear: both; display: block; width: 100%; margin-bottom: 10px; box-sizing: border-box; page-break-inside: avoid; }
         
-        /* Pengganti Table Menjadi Flex Div murni */
         .data-row { display: flex; align-items: flex-start; page-break-inside: avoid; break-inside: avoid; width: 100%; }
         .data-icon { width: 22px; color: #0284c7; flex-shrink: 0; font-size: 13px; margin-top: 1px; }
-        .data-label { width: 135px; font-weight: 700; color: #4b5563; flex-shrink: 0; font-size: 12px; line-height: 1.4; }
+        .data-label { width: 135px; font-weight: 700; color: #4b5563; flex-shrink: 0; font-size: 12px; line-height: 1.4; font-family: 'Plus Jakarta Sans', sans-serif;}
         .data-colon { width: 12px; font-weight: 700; color: #4b5563; text-align: center; flex-shrink: 0; font-size: 12px; line-height: 1.4; }
-        .data-value { flex-grow: 1; font-weight: 600; color: #1f2937; font-size: 12px; word-break: break-word; line-height: 1.4; }
+        .data-value { flex-grow: 1; font-weight: 600; color: #1f2937; font-size: 12px; word-break: break-word; line-height: 1.4; font-family: 'Plus Jakarta Sans', sans-serif;}
         
-        .sub-header { clear: both; display: block; width: 100%; font-size: 14px; font-weight: 700; color: #0284c7; margin-top: 20px; margin-bottom: 10px; page-break-after: avoid; page-break-inside: avoid; }
+        .sub-header { clear: both; display: block; width: 100%; font-size: 14px; font-weight: 700; color: #0284c7; margin-top: 20px; margin-bottom: 10px; page-break-after: avoid; page-break-inside: avoid; font-family: 'Plus Jakarta Sans', sans-serif;}
+        
         .text-capitalize { text-transform: capitalize; }
         .text-uppercase { text-transform: uppercase; }
 
-        .btn-action-bottom { border-radius: 6px; font-weight: 700; font-size: 14px; padding: 10px 24px; border: none; }
-        .btn-edit { background-color: #fbbf24; color: #92400e; text-decoration: none; }
-
         @media print {
-            .navbar-internal, .sidebar, .btn-action-bottom, .back-link, .d-print-none { display: none !important; }
-            body, .main-content { background-color: white !important; }
-            .detail-card { box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; }
+            .topbar, .sidebar, .sidebar-backdrop, #action-buttons-container, .back-link, .d-print-none, #globalSuccessAlert, #globalErrorAlert, .page-head { display: none !important; }
+            body, .content { background-color: white !important; padding: 0 !important; margin: 0 !important;}
+            .card-custom { box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
     </style>
 </head>
 <body>
 
-    <!-- NAVBAR INTERNAL -->
-    <nav class="navbar-internal">
-        <a href="#" class="nav-brand">
-            <img src="/images/simerahkoja.png" alt="Logo Simerah">
-            <span class="title">SIMERAH KOJA</span>
-        </a>
-        <div class="user-menu">
-            <div class="user-profile">
-                <span>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</span>
-                <i class="fas fa-user-circle"></i>
+    <!-- ALERT SUCCESS GLOBAL -->
+    @if(session('success'))
+        <div id="globalSuccessAlert">
+            <i class="fas fa-check-circle alert-icon"></i>
+            <span>{{ session('success') }}</span>
+            <button class="btn-close-alert" onclick="closeAlert('globalSuccessAlert')"><i class="fas fa-times"></i></button>
+        </div>
+    @endif
+
+    <!-- ALERT ERROR GLOBAL -->
+    @if(session('error'))
+        <div id="globalErrorAlert">
+            <i class="fas fa-exclamation-triangle alert-icon"></i>
+            <span>{{ session('error') }}</span>
+            <button class="btn-close-alert" onclick="closeAlert('globalErrorAlert')"><i class="fas fa-times"></i></button>
+        </div>
+    @endif
+
+    <script>
+        function closeAlert(id) {
+            let alertBox = document.getElementById(id);
+            if(alertBox) {
+                alertBox.style.animation = 'fadeOutUpCenter 0.4s ease forwards';
+                setTimeout(() => alertBox.remove(), 400); 
+            }
+        }
+        setTimeout(() => closeAlert('globalSuccessAlert'), 4000);
+        setTimeout(() => closeAlert('globalErrorAlert'), 4000);
+    </script>
+
+    <!-- ==================== TOPBAR ==================== -->
+    <header class="topbar d-print-none">
+        <div class="topbar-left">
+            <button class="side-toggle" type="button" id="sideToggle" aria-label="Buka menu" aria-expanded="false" aria-controls="sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="/internal/index" class="brand">
+                <img src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA">
+                <span>SIMERAH KOJA</span>
+            </a>
+        </div>
+        <div class="topbar-right">
+            <div class="user-chip">
+                <span class="user-avatar">{{ strtoupper(substr(Auth::user()->nama_lengkap ?? 'R', 0, 1)) }}</span>
+                <div class="user-meta">
+                    <strong>{{ Auth::user()->nama_lengkap ?? 'Rekan kerja' }}</strong>
+                    <small>{{ str_replace('_', ' ', Auth::user()->role ?? '') }}</small>
+                </div>
             </div>
-            <form action="/logout" method="POST" style="margin: 0;">
+            <form action="/logout" method="POST" style="margin:0;">
                 @csrf
-                <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-2"></i> KELUAR</button>
+                <button type="submit" class="btn-logout"><i class="fas fa-arrow-right-from-bracket"></i> Keluar</button>
             </form>
         </div>
-    </nav>
+    </header>
 
-    <div class="dashboard-container">
-        
-        <!-- SIDEBAR TERINTEGRASI -->
-        <aside class="sidebar d-print-none" id="sidebarAccordion">
-            <a href="/internal/index" class="sidebar-item {{ Request::is('internal/index') ? 'active' : '' }}">
-                <i class="fas fa-home"></i> Dashboard Utama
+    <div class="shell">
+        <div class="sidebar-backdrop" id="sideBackdrop"></div>
+
+        <!-- ==================== SIDEBAR ==================== -->
+        <aside class="sidebar d-print-none" id="sidebar" aria-label="Navigasi internal">
+            <a href="/internal/index" class="side-link {{ Request::is('internal/index') ? 'active' : '' }}">
+                <i class="fas fa-house"></i> Dashboard utama
             </a>
 
             @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
-                
-                <button class="sidebar-collapse-btn {{ Request::is('internal/pencegahan*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePencegahan" aria-expanded="{{ Request::is('internal/pencegahan*') ? 'true' : 'false' }}">
-                    <span>Bagian Pencegahan</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </button>
-                <div class="collapse {{ Request::is('internal/pencegahan*') ? 'show' : '' }}" id="collapsePencegahan" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">
-                        <a href="/internal/pencegahan/kelola-rpkbgl" class="sidebar-item {{ Request::is('internal/pencegahan/kelola-rpkbgl*') ? 'active' : '' }}"><i class="fas fa-building"></i> Kelola RPKBGL</a>
-                        <a href="/internal/pencegahan/kelola-skk" class="sidebar-item {{ Request::is('internal/pencegahan/kelola-skk*') ? 'active' : '' }}"><i class="fas fa-shield-alt"></i> Kelola SKK</a> 
-                        <a href="/internal/pencegahan/layanan-inspeksi" class="sidebar-item {{ Request::is('internal/pencegahan/layanan-inspeksi*') ? 'active' : '' }}"><i class="fas fa-clipboard-check"></i> Layanan Inspeksi</a>
-                        <a href="/internal/pencegahan/kelola-edukasi" class="sidebar-item {{ Request::is('internal/pencegahan/kelola-edukasi*') ? 'active' : '' }}"><i class="fas fa-bullhorn"></i> Kelola Edukasi</a>
-                        <a href="/internal/pencegahan/pelatihan" class="sidebar-item {{ Request::is('internal/pencegahan/pelatihan*') ? 'active' : '' }}"><i class="fas fa-chalkboard-teacher"></i> Pelatihan</a>
-                        <a href="/internal/pencegahan/pembinaan-pengembangan" class="sidebar-item {{ Request::is('internal/pencegahan/pembinaan-pengembangan*') ? 'active' : '' }}"><i class="fas fa-chart-line"></i> Pembinaan & Pengembangan</a>
-                        <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item {{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}"><i class="fas fa-level-up-alt"></i> Peningkatan Kapasitas</a>
-                        <a href="/internal/pencegahan/kelola-redkar" class="sidebar-item {{ Request::is('internal/pencegahan/kelola-redkar*') ? 'active' : '' }}"><i class="fas fa-users-cog"></i> Kelola Redkar</a>
-                    </div>
-                </div>
+                <div class="side-kicker">Modul operasional</div>
 
-                <button class="sidebar-collapse-btn {{ Request::is('internal/damtan*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePemadaman" aria-expanded="{{ Request::is('internal/damtan*') ? 'true' : 'false' }}">
-                    <span>Bagian Pemadaman</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </button>
-                <div class="collapse {{ Request::is('internal/damtan*') ? 'show' : '' }}" id="collapsePemadaman" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">
-                        <a href="/internal/damtan/input-data" class="sidebar-item {{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Input Data</a>
-                        <a href="/internal/damtan/data-laporan" class="sidebar-item {{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') ? 'active' : '' }}"><i class="fas fa-clipboard-list"></i> Data Laporan</a>
-                        <a href="/internal/surat-korban/create" class="sidebar-item {{ Request::is('internal/surat*') ? 'active' : '' }}"><i class="fas fa-file-signature"></i> Buat Surat Korban</a>
+                <!-- BAGIAN PENCEGAHAN -->
+                <details class="side-group" {{ Request::is('internal/pencegahan*') ? 'open' : '' }}>
+                    <summary><i class="fas fa-shield-halved grp-ico"></i><span class="grp-label">Bagian pencegahan</span><i class="fas fa-chevron-down chev"></i></summary>
+                    <div class="side-sub">
+                        <a href="/internal/pencegahan/peningkatan-kapasitas" class="{{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}">
+                            <i class="fas fa-arrow-trend-up"></i> Peningkatan Kapasitas Aparatur
+                        </a>
+                        <a href="/internal/pencegahan/inspeksi-kebakaran" class="{{ Request::is('internal/pencegahan/inspeksi-kebakaran*') ? 'active' : '' }}">
+                            <i class="fas fa-magnifying-glass-chart"></i> Pencegahan Kebakaran dan Inspeksi
+                        </a>
+                        <a href="/internal/pencegahan/pemberdayaan-masyarakat" class="{{ Request::is('internal/pencegahan/pemberdayaan-masyarakat*') ? 'active' : '' }}">
+                            <i class="fas fa-handshake-angle"></i> Pemberdayaan Masyarakat dan Dunia Usaha
+                        </a>
+                        <a href="/internal/pencegahan/kelola-edukasi" class="{{ Request::is('internal/pencegahan/kelola-edukasi*') ? 'active' : '' }}">
+                            <i class="fas fa-bullhorn"></i> Kelola Edukasi
+                        </a>
+                        <a href="/internal/pencegahan/kelola-redkar" class="{{ Request::is('internal/pencegahan/kelola-redkar*') ? 'active' : '' }}">
+                            <i class="fas fa-users-rectangle"></i> Kelola Redkar
+                        </a>
+                        <a href="/internal/pencegahan/kelola-rpkbgl" class="{{ Request::is('internal/pencegahan/kelola-rpkbgl*') ? 'active' : '' }}">
+                            <i class="fas fa-building-circle-check"></i> Kelola RPKBGL
+                        </a>
+                        <a href="/internal/pencegahan/kelola-skk" class="{{ Request::is('internal/pencegahan/kelola-skk*') ? 'active' : '' }}">
+                            <i class="fas fa-file-shield"></i> Kelola SKK
+                        </a>
                     </div>
-                </div>
+                </details>
 
-                <button class="sidebar-collapse-btn {{ Request::is('sapra*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSapra" aria-expanded="{{ Request::is('sapra*') ? 'true' : 'false' }}">
-                    <span>Bagian Sapra</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </button>
-                <div class="collapse {{ Request::is('sapra*') ? 'show' : '' }}" id="collapseSapra" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">
-                      
-                        <!-- Sarana dan prasarana -->
-                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">SARANA DAN PRASARANA</span>
-                        <a href="/sapra/sarana-mako" class="sidebar-item"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam Kebakaran</a>
-                        <a href="/sapra/prasarana-mako" class="sidebar-item"><i class="fas fa-building"></i> Prasarana Pemadam Kebakaran</a>
-                        <a href="/sapra/sarana-penyelamatan" class="sidebar-item"><i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi</a>
-                        <a href="/sapra/sarana-pemeriksaan" class="sidebar-item"><i class="fas fa-search"></i> Sarana Pemeriksaan Proteksi Kebakaran</a>    
-                        <a href="/sapra/kelola-pos" class="sidebar-item"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
-                        
-                          <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 5px; margin-bottom: 3px; letter-spacing: 0.5px;">MANAJEMEN AIR</span>
-                        <a href="/sapra/data_hidrant_gedung" class="sidebar-item"><i class="fas fa-clipboard-list"></i> Sumber Air</a>
-                        <a href="/sapra/data-hidrant-kota" class="sidebar-item"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
-
-                        <!-- GRUP LOGISTIK & DISTRIBUSI -->
-                        <span style="font-size: 10px; font-weight: 800; color: #94a3b8; padding-left: 15px; margin-top: 15px; margin-bottom: 3px; letter-spacing: 0.5px;">LOGISTIK & DISTRIBUSI</span>
-                        <a href="/sapra/kebutuhan-sarpras" class="sidebar-item"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
-                        <a href="/sapra/distribusi-staff" class="sidebar-item"><i class="fas fa-user-check"></i> Distribusi Barang Staff</a>
+                <!-- BAGIAN PEMADAMAN -->
+                <details class="side-group" open>
+                    <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
+                   <div class="side-sub">
+                        <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
+                            <i class="fas fa-fire-extinguisher"></i> Input data
+                        </a>
+                        <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
+                            <i class="fas fa-file-signature"></i> Buat Surat Korban
+                        </a>
+                        <a href="/internal/damtan/data-laporan" class="active">
+                            <i class="fas fa-clipboard-list"></i> Kelola Data Laporan
+                        </a>
+                        <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
+                            <i class="fas fa-folder-open"></i> Kelola Surat Korban
+                        </a>
                     </div>
-                </div>
+                </details>
+
+                <!-- BAGIAN KEPEGAWAIAN -->
+                <details class="side-group" {{ Request::is('internal/kepegawaian*') ? 'open' : '' }}>
+                    <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
+                    <div class="side-sub">
+                        <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
+                            <i class="fas fa-user-tie"></i> Data Urut Kepegawaian
+                        </a>
+                    </div>
+                </details>
+
+                <!-- BAGIAN SAPRA -->
+                <details class="side-group" {{ Request::is('sapra*') ? 'open' : '' }}>
+                    <summary><i class="fas fa-warehouse grp-ico"></i><span class="grp-label">Bagian sapra</span><i class="fas fa-chevron-down chev"></i></summary>
+                    <div class="side-sub">
+                        <span class="side-kicker" style="padding-left:2px;">Sarana &amp; Prasarana</span>
+                        <a href="/sapra/sarana-mako" class="{{ Request::is('sapra/sarana-mako*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam</a>
+                        <a href="/sapra/prasarana-mako" class="{{ Request::is('sapra/prasarana-mako*') ? 'active' : '' }}"><i class="fas fa-building"></i> Prasarana Pemadam</a>
+                        <a href="/sapra/sarana-penyelamatan" class="{{ Request::is('sapra/sarana-penyelamatan*') ? 'active' : '' }}"><i class="fas fa-life-ring"></i> Sarana Penyelamatan</a>
+                        <a href="/sapra/sarana-pemeriksaan" class="{{ Request::is('sapra/sarana-pemeriksaan*') ? 'active' : '' }}"><i class="fas fa-search"></i> Sarana Pemeriksaan</a> 
+                        <a href="/sapra/kelola-pos" class="{{ Request::is('sapra/kelola-pos*') ? 'active' : '' }}"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
+
+                        <span class="side-kicker" style="padding-left:2px;">Manajemen Air</span>
+                        <a href="/sapra/data_hidrant_gedung" class="{{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}"><i class="fas fa-droplet"></i> Sumber Air</a>
+                        <a href="/sapra/data-hidrant-kota" class="{{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}"><i class="fas fa-map-location-dot"></i> Data Hidrant Kota Jambi</a>
+
+                        <span class="side-kicker" style="padding-left:2px;">Logistik & Distribusi</span>
+                        <a href="/sapra/kebutuhan-sarpras" class="{{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}"><i class="fas fa-boxes-stacked"></i> Mutu Baku Kebutuhan</a>
+                        <a href="/sapra/distribusi-staff" class="{{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}"><i class="fas fa-people-carry-box"></i> Distribusi Barang Staff</a>
+                    </div>
+                </details>
             @endif
 
             @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
-                <button class="sidebar-collapse-btn {{ Request::is('internal/operator*') ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBerita" aria-expanded="{{ Request::is('internal/operator*') ? 'true' : 'false' }}">
-                    <span>Manajemen Berita</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </button>
-                <div class="collapse {{ Request::is('internal/operator*') ? 'show' : '' }}" id="collapseBerita" data-bs-parent="#sidebarAccordion">
-                    <div class="sidebar-submenu">
-                        <a href="/internal/operator/kelola-berita" class="sidebar-item {{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
-                        <a href="/internal/operator/infografis" class="sidebar-item {{ Request::is('internal/operator/infografis*') ? 'active' : '' }}"><i class="fas fa-image"></i> Kelola Info Grafis</a>
-                        <a href="/internal/operator/berita-medsos" class="sidebar-item {{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}"><i class="fab fa-instagram"></i> Kelola Berita Medsos</a>
+                <div class="side-kicker">Konten publik</div>
+                <details class="side-group" {{ Request::is('internal/operator*') ? 'open' : '' }}>
+                    <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen berita</span><i class="fas fa-chevron-down chev"></i></summary>
+                    <div class="side-sub">
+                        <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}"><i class="fas fa-newspaper"></i> Input &amp; Kelola Berita</a>
+                        <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}"><i class="far fa-image"></i> Kelola Info Grafis</a>
+                        <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}"><i class="fab fa-instagram"></i> Kelola Berita Medsos</a>
                     </div>
-                </div>
+                </details>
             @endif
 
-            <button class="sidebar-collapse-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePengaturan" aria-expanded="false">
-                <span>Pengaturan Akun</span>
-                <i class="fas fa-chevron-down toggle-icon"></i>
-            </button>
-            <div class="collapse" id="collapsePengaturan" data-bs-parent="#sidebarAccordion">
-                <div class="sidebar-submenu">
-                    <a href="/internal/profil" class="sidebar-item"><i class="fas fa-user-edit"></i> Profil Saya</a>
+            <div class="side-kicker">Akun</div>
+            <details class="side-group" {{ Request::is('internal/profil*') || Request::is('internal/kelola-user*') || Request::is('internal/kelola-pemohon*') ? 'open' : '' }}>
+                <summary><i class="fas fa-user-gear grp-ico"></i><span class="grp-label">Pengaturan akun</span><i class="fas fa-chevron-down chev"></i></summary>
+                <div class="side-sub">
+                    <a href="/internal/profil" class="{{ Request::is('internal/profil*') ? 'active' : '' }}"><i class="fas fa-user-pen"></i> Profil Saya</a>
                     @if(Auth::user()->role === 'super_user')
-                        <a href="/internal/kelola-user" class="sidebar-item"><i class="fas fa-users"></i> Kelola Semua Pengguna</a>
+                        <a href="/internal/kelola-user" class="{{ Request::is('internal/kelola-user*') ? 'active' : '' }}"><i class="fas fa-users-gear"></i> Kelola Semua Pengguna</a>
+                        <a href="/internal/kelola-pemohon" class="{{ Request::is('internal/kelola-pemohon*') ? 'active' : '' }}"><i class="fas fa-address-book"></i> Kelola Akun Pemohon</a>
                     @endif
                 </div>
-            </div>
+            </details>
         </aside>
 
-        <main class="main-content">
+        <!-- ==================== KONTEN UTAMA ==================== -->
+        <main class="content">
             <a href="/internal/damtan/data-laporan" class="back-link d-print-none"><i class="fas fa-arrow-left me-2"></i> Kembali ke Data Laporan</a>
-            <h1 class="page-title d-print-none">Rincian Laporan Tervalidasi</h1>
+            <div class="page-head d-print-none mt-2">
+                <h1 class="page-title">Rincian Laporan Tervalidasi</h1>
+            </div>
 
-            <div class="detail-card" id="report-content">
+            <!-- ID report-content untuk di-render oleh html2pdf -->
+            <div class="card-custom" id="report-content">
                 
-                <!-- KOP SURAT PDF -->
+                <!-- KOP SURAT PDF (Tersembunyi secara default, akan dimunculkan via JS saat cetak) -->
                 <div id="pdf-header" style="display: none;">
                     <table class="tabel-kop">
                         <tr>
                             <td style="width: 15%; text-align: left;">
-                                <img src="{{ asset('images/jambi.png') }}" alt="Logo.png">
+                                <img src="{{ asset('images/jambi.png') }}" alt="Logo Jambi">
                             </td>
                             <td style="width: 70%;" class="kop-text">
                                 <h2>PEMERINTAH KOTA JAMBI</h2>
@@ -263,8 +383,8 @@
                                 <p>Jl. Hos. Cokroaminoto No. 113 Telp. 0741-41171<br>JAMBI</p>
                             </td>
                             <td style="width: 15%; text-align: right;">
-                                <img src="{{ asset('images/logo.png') }}" alt="Logo Damkar" style="width: 100px; height: auto;">
-                        </td>
+                                <img src="{{ asset('images/logo.png') }}" alt="Logo Damkar">
+                            </td>
                         </tr>
                     </table>
                     
@@ -473,7 +593,6 @@
                     </div>
                     @endif
 
-                    <!-- TAMBAHAN: Pendamping Operasi -->
                     @if(!empty($teknis->pendamping_operasi))
                     <div class="pdf-item">
                         <div class="data-row">
@@ -496,7 +615,6 @@
                     </div>
                     @endif
 
-                    <!-- TAMBAHAN: Tim Respon Time -->
                     @if(!empty($teknis->tim_respontime))
                     <div class="pdf-item">
                         <div class="data-row">
@@ -623,7 +741,7 @@
                             <div class="data-icon"><i class="fas fa-user-times"></i></div>
                             <div class="data-label">Korban Meninggal</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value text-danger">{{ $teknis->korban_meninggal }} Jiwa</div>
+                            <div class="data-value" style="color: #dc2626;">{{ $teknis->korban_meninggal }} Jiwa</div>
                         </div>
                     </div>
                     @endif
@@ -1151,7 +1269,7 @@
                                 <div class="data-icon"><i class="fas fa-file-video"></i></div>
                                 <div class="data-label">File Terlampir</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value"><a href="{{ asset('uploads/damtan/video/' . $dokumentasi->video) }}" target="_blank" style="color: #0284c7; text-decoration: none;">{{ $dokumentasi->video }} <small>(Klik untuk memutar di browser)</small></a></div>
+                                <div class="data-value"><a href="{{ asset('uploads/damtan/video/' . $dokumentasi->video) }}" target="_blank" style="color: #0284c7; text-decoration: none;">{{ $dokumentasi->video }} <small class="text-muted">(Klik untuk memutar di browser)</small></a></div>
                             </div>
                         </div>
                     </div>
@@ -1166,7 +1284,7 @@
 
                 <div class="d-flex justify-content-end gap-3 mt-5 pt-3 border-top d-print-none" id="action-buttons-container" data-html2canvas-ignore="true">
                     <div class="dropdown">
-                        <button class="btn btn-action-bottom shadow-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #0284c7; color: white; border: none;">
+                        <button class="btn btn-custom-light shadow-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-download me-2"></i> Download Laporan
                         </button>
                         <ul class="dropdown-menu border-0 shadow">
@@ -1175,7 +1293,7 @@
                             <li><a class="dropdown-item py-2 text-primary fw-bold" href="#" onclick="downloadDetailWord()"><i class="fas fa-file-word me-2"></i> Format Word</a></li>
                         </ul>
                     </div>
-                    <a href="/internal/damtan/edit-data/{{ $laporan->id }}" class="btn btn-action-bottom btn-edit shadow-sm">
+                    <a href="/internal/damtan/edit-data/{{ $laporan->id }}" class="btn btn-custom-edit shadow-sm">
                         <i class="fas fa-edit me-2"></i> Edit Data Ini
                     </a>
                 </div>
@@ -1185,26 +1303,61 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        (function () {
+            'use strict';
+            /* ---------- Sidebar (Mobile Toggle) ---------- */
+            var toggle = document.getElementById('sideToggle');
+            var backdrop = document.getElementById('sideBackdrop');
+            function closeSide() {
+                document.body.classList.remove('side-open');
+                if(toggle) toggle.setAttribute('aria-expanded', 'false');
+            }
+            if (toggle) {
+                toggle.addEventListener('click', function () {
+                    var open = document.body.classList.toggle('side-open');
+                    toggle.setAttribute('aria-expanded', open);
+                });
+            }
+            if (backdrop) backdrop.addEventListener('click', closeSide);
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
+
+            /* ---------- Eksklusivitas Accordion Sidebar ---------- */
+            var groups = document.querySelectorAll('.side-group');
+            groups.forEach(function (g) {
+                g.addEventListener('toggle', function () {
+                    if (g.open) {
+                        groups.forEach(function (o) { if (o !== g) o.open = false; });
+                    }
+                });
+            });
+        })();
+
         function downloadDetailPDF() {
             window.scrollTo(0, 0);
 
             const element = document.getElementById('report-content');
             const pdfHeader = document.getElementById('pdf-header');
             const btnContainer = document.getElementById('action-buttons-container');
-            const nav = document.querySelector('.navbar-internal');
+            const topbar = document.querySelector('.topbar');
             const sidebar = document.querySelector('.sidebar');
+            const backLink = document.querySelector('.back-link');
+            const pageHead = document.querySelector('.page-head');
 
             pdfHeader.style.display = 'block'; 
             btnContainer.style.display = 'none';
-            if(nav) nav.style.display = 'none';
+            if(topbar) topbar.style.display = 'none';
             if(sidebar) sidebar.style.display = 'none';
+            if(backLink) backLink.style.display = 'none';
+            if(pageHead) pageHead.style.display = 'none';
 
             const originalPadding = element.style.padding;
             const originalMargin = element.style.margin;
             const originalShadow = element.style.boxShadow;
+            const originalBorder = element.style.border;
             element.style.padding = '10px 20px';
             element.style.margin = '0px';
             element.style.boxShadow = 'none';
+            element.style.border = 'none';
 
             let nomorLaporan = "{{ $laporan->nomor_laporan }}";
             let filename = "Laporan_Penyelamatan_Lengkap_" + nomorLaporan + ".pdf";
@@ -1223,11 +1376,15 @@
                 html2pdf().set(opt).from(element).save().then(() => {
                     pdfHeader.style.display = 'none';
                     btnContainer.style.display = 'flex';
-                    if(nav) nav.style.display = 'flex';
-                    if(sidebar) sidebar.style.display = 'flex';
+                    if(topbar) topbar.style.display = 'flex';
+                    if(sidebar) sidebar.style.display = 'block';
+                    if(backLink) backLink.style.display = 'inline-flex';
+                    if(pageHead) pageHead.style.display = 'block';
+                    
                     element.style.padding = originalPadding;
                     element.style.margin = originalMargin;
                     element.style.boxShadow = originalShadow;
+                    element.style.border = originalBorder;
                 });
             }, 500); 
         }
