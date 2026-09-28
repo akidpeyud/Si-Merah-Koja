@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB; // <-- Penting untuk memanggil tabel kategori_berita
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
 use App\Models\UjungDamkar;
@@ -22,14 +23,14 @@ class OperatorMedsosController extends Controller
     public function storeInfografis(Request $request)
     {
         $request->validate([
-            'judul' => ['nullable', 'string', 'max:255'],
+            'judul'  => ['nullable', 'string', 'max:255'],
             'gambar' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:2048']
         ]);
 
         $path = $request->file('gambar')->store('infografis', 'public');
 
         Infografis::create([
-            'judul' => $request->judul,
+            'judul'  => $request->judul,
             'gambar' => $path
         ]);
 
@@ -50,27 +51,45 @@ class OperatorMedsosController extends Controller
     public function indexMedsos()
     {
         $medsos = BeritaMedsos::orderBy('created_at', 'desc')->get();
-        return view('internal.operator.berita_medsos', compact('medsos'));
+
+        // Mengambil data dari tabel kategori_berita
+        $dataKategori = DB::table('kategori_berita')->orderBy('id', 'asc')->get();
+
+        // Dikirim dengan beberapa alias variabel agar otomatis cocok dengan @foreach di Blade kamu
+        return view('internal.operator.berita_medsos', [
+            'medsos'          => $medsos,
+            'kategori'        => $dataKategori,
+            'kategoris'       => $dataKategori,
+            'kategori_berita' => $dataKategori,
+            'kategoriBerita'  => $dataKategori,
+        ]);
     }
 
     public function storeMedsos(Request $request)
     {
+        // Jaga-jaga bila di form tertulis name="kategori" atau name="kategori_id", kita samakan ke "sumber"
+        if (!$request->filled('sumber')) {
+            $request->merge([
+                'sumber' => $request->kategori ?? $request->nama_kategori ?? $request->kategori_id
+            ]);
+        }
+
         $request->validate([
-            'judul' => ['required', 'string', 'max:255'],
+            'judul'   => ['required', 'string', 'max:255'],
             'tanggal' => ['required', 'date'],
-            'sumber' => ['required', 'string'],
-            'link' => ['nullable', 'url'],
-            'gambar' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:2048']
+            'sumber'  => ['required', 'string'],
+            'link'    => ['nullable', 'url'],
+            'gambar'  => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048']
         ]);
 
         $path = $request->file('gambar')->store('berita_medsos', 'public');
 
         BeritaMedsos::create([
-            'judul' => $request->judul,
+            'judul'   => $request->judul,
             'tanggal' => $request->tanggal,
-            'sumber' => $request->sumber,
-            'link' => $request->link,
-            'gambar' => $path
+            'sumber'  => $request->sumber,
+            'link'    => $request->link,
+            'gambar'  => $path
         ]);
 
         return back()->with('success', 'Berita media sosial berhasil ditambahkan!');
@@ -80,12 +99,18 @@ class OperatorMedsosController extends Controller
     {
         $item = BeritaMedsos::findOrFail($id);
 
+        if (!$request->filled('sumber')) {
+            $request->merge([
+                'sumber' => $request->kategori ?? $request->nama_kategori ?? $request->kategori_id
+            ]);
+        }
+
         $request->validate([
-            'judul' => ['required', 'string', 'max:255'],
+            'judul'   => ['required', 'string', 'max:255'],
             'tanggal' => ['required', 'date'],
-            'sumber' => ['required', 'string'],
-            'link' => ['nullable', 'url'],
-            'gambar' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048']
+            'sumber'  => ['required', 'string'],
+            'link'    => ['nullable', 'url'],
+            'gambar'  => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048']
         ]);
 
         $item->judul = $request->judul;
