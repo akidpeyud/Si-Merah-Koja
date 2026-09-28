@@ -85,7 +85,7 @@
         <main class="main-content">
             <div class="page-header">
                 <a href="/internal/pencegahan/pelatihan" class="text-decoration-none" style="color: #64748b; font-size: 14px; font-weight: 600;"><i class="fas fa-arrow-left me-2"></i> Kembali ke Data Pelatihan</a>
-                <h1 class="mt-2">Form Buat Pelatihan Baru</h1>
+                <h1 class="mt-2">Form Tambah Pelatihan Keluarga (Goes to RT)</h1>
             </div>
 
             <div class="form-card">

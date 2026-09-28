@@ -43,7 +43,8 @@
                     <i class="fas fa-arrow-left"></i> Kembali ke Data Pelatihan
                 </a>
 
-                <h1 class="fw-bolder text-dark mb-0" style="font-size: 24px;">Form Tambah Pelatihan Keluarga (Goes to RT)</h1>
+                <h1 class="fw-bolder text-dark mb-0" style="font-size: 24px;">Form Buat Sosialisasi
+</h1>
 
                 <div class="form-wrapper">
                     <form action="{{ route('pelatihan_keluarga.store') }}" method="POST">
