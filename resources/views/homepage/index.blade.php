@@ -16,6 +16,14 @@
         ['yt' => '', 'judul' => 'Mencegah kebakaran akibat korsleting listrik'],
         ['yt' => '', 'judul' => 'Pertolongan pertama pada luka bakar'],
     ];
+
+    // Data Video Ujung-Ujung Damkar (Isi 'yt' dengan ID YouTube, misal: 'dQw4w9WgXcQ')
+    $video_ujung_damkar = [
+        ['yt' => '', 'judul' => 'Evakuasi sarang tawon di pemukiman warga'],
+        ['yt' => '', 'judul' => 'Penyelamatan hewan peliharaan terjebak di sumur'],
+        ['yt' => '', 'judul' => 'Bantuan pelepasan cincin yang menyempit di jari'],
+        ['yt' => '', 'judul' => 'Evakuasi ular masuk ke dalam rumah warga'],
+    ];
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -105,6 +113,8 @@
         .btn-light:hover { background: var(--amber); }
         .btn-ghost { border: 1.5px solid rgba(255,255,255,.35); color: #fff; }
         .btn-ghost:hover { border-color: #fff; background: rgba(255,255,255,.08); }
+        .btn-outline { border: 1.5px solid var(--line); color: var(--ink); background: #fff; }
+        .btn-outline:hover { border-color: var(--ink); background: var(--ink); color: #fff; }
 
         /* ==========================================================
            HEADER
@@ -346,11 +356,11 @@
         .vid:not([disabled]):hover .vid-thumb { border-color: var(--signal); transform: translateY(-4px); }
         .vid:not([disabled]):hover img { opacity: 1; transform: scale(1.04); }
         .vid-play { position: absolute; inset: 0; display: grid; place-items: center; }
-        .vid-play span { width: 60px; height: 60px; border-radius: 50%; display: grid; place-items: center; background: var(--signal); font-size: 1.15rem; padding-left: 3px; box-shadow: 0 10px 24px rgba(0,0,0,.4); transition: transform .25s; }
+        .vid-play span { width: 60px; height: 60px; border-radius: 50%; display: grid; place-items: center; background: var(--signal); color: #fff; font-size: 1.15rem; padding-left: 3px; box-shadow: 0 10px 24px rgba(0,0,0,.4); transition: transform .25s; }
         .vid:not([disabled]):hover .vid-play span { transform: scale(1.1); }
         .vid[disabled] { cursor: default; }
         .vid[disabled] .vid-play span { background: rgba(255,255,255,.14); box-shadow: none; }
-        .vid-soon { position: absolute; left: 12px; bottom: 12px; padding: 4px 10px; border-radius: 999px; font-size: .75rem; font-weight: 600; background: rgba(13,27,42,.8); }
+        .vid-soon { position: absolute; left: 12px; bottom: 12px; padding: 4px 10px; border-radius: 999px; font-size: .75rem; font-weight: 600; background: rgba(13,27,42,.8); color: #fff; }
         .vid h3 { margin-top: 14px; font-size: 1rem; font-weight: 600; line-height: 1.35; color: rgba(255,255,255,.92); }
         @media (max-width: 960px) { .vid-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
         @media (max-width: 480px) { .vid-grid { grid-template-columns: 1fr; } }
@@ -407,21 +417,40 @@
         .media-empty-filter { grid-column: 1 / -1; text-align: center; padding: 48px 24px; border: 1.5px dashed var(--line); border-radius: var(--r-md); color: var(--steel); }
 
         /* ==========================================================
-           GIAT
+           UJUNG-UJUNG DAMKAR (FORMAT VIDEO)
            ========================================================== */
         .giat { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(32px, 6vw, 88px); align-items: start; }
         .giat-art { position: sticky; top: calc(var(--header-h) + 32px); border-radius: var(--r-lg); background: var(--paper); padding: clamp(24px, 5vw, 48px); }
         .giat-art img { width: 100%; max-width: 380px; margin: 0 auto; filter: drop-shadow(0 20px 28px rgba(13,27,42,.2)); }
-        .timeline { margin-top: 8px; border-left: 2px solid var(--line); margin-left: 8px; }
-        .tl-item { position: relative; padding: 0 0 44px 36px; }
-        .tl-item:last-child { padding-bottom: 0; }
-        .tl-item::before { content: ""; position: absolute; left: -9px; top: 6px; width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 4px solid var(--signal); }
-        .tl-item time { display: inline-flex; align-items: baseline; gap: 6px; padding: 5px 12px; border-radius: 999px; background: var(--ink); color: #fff; font-weight: 600; font-size: .85rem; }
-        .tl-item h3 { margin: 14px 0 8px; font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.35rem; line-height: 1.25; letter-spacing: -0.01em; }
-        .tl-item p { color: #3b4b5e; max-width: 60ch; }
-        .tl-item a { display: inline-flex; gap: 8px; align-items: center; margin-top: 12px; font-weight: 700; font-size: .92rem; color: var(--signal-d); }
-        .tl-item a:hover { text-decoration: underline; text-underline-offset: 4px; }
-        @media (max-width: 860px) { .giat { grid-template-columns: 1fr; } .giat-art { position: static; max-width: 420px; } }
+
+        /* Grid Video khusus untuk Ujung-Ujung Damkar (Latar Terang) */
+        .giat-vid-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+        }
+        .giat .vid h3 {
+            color: var(--ink);
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+        .giat .vid-thumb {
+            border: 1px solid var(--line);
+            box-shadow: 0 10px 24px -12px rgba(13,27,42,.18);
+        }
+        .giat .vid[disabled] .vid-play span {
+            background: rgba(255,255,255,.22);
+            color: #fff;
+        }
+
+        @media (max-width: 860px) {
+            .giat { grid-template-columns: 1fr; }
+            .giat-art { position: static; max-width: 420px; margin: 0 auto; }
+        }
+        @media (max-width: 540px) {
+            .giat-vid-grid { grid-template-columns: 1fr; }
+        }
 
         /* ==========================================================
            FOOTER & INFO KONTAK
@@ -538,10 +567,10 @@
                 </ul>
             </li>
             <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan<i class="fas fa-chevron-down"></i></button>
+                <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
-                    <li><a href="/layanan-fasilitas/skk">SKK & Perpanjang SKK</a></li>
+                    <li><a href="/layanan-fasilitas/skk">SKK &amp; Perpanjang SKK</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
@@ -552,7 +581,7 @@
                     <li><a href="/video-edukasi">Video Edukasi</a></li>
                     <li><a href="/info-grafis">Info Grafis</a></li>
                     <li><a href="/media-informasi">Media Informasi</a></li>
-                    <li><a href="/giat-disdamkartan">Giat Disdamkartan</a></li>
+                    <li><a href="#giat">Ujung-ujung Damkar</a></li>
                 </ul>
             </li>
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
@@ -827,7 +856,7 @@
         </div>
 
         @php
-            $daftarMedsos    = collect($daftar_medsos ?? []);
+            $daftarMedsos = collect($daftar_medsos ?? []);
         @endphp
 
         <!-- GRID BERITA (LEBIH KECIL, 4 KOLOM, BADGE MELAYANG DI ATAS FOTO) -->
@@ -872,7 +901,16 @@
     </div>
 </section>
 
-<!-- ==================== GIAT DISDAMKARTAN ==================== -->
+<!-- ==================== UJUNG-UJUNG DAMKAR (FORMAT VIDEO) ==================== -->
+<!-- ==================== UJUNG-UJUNG DAMKAR (FORMAT VIDEO) ==================== -->
+@php
+    // Mengambil data langsung dari variabel route atau fallback ke Model UjungDamkar
+    $listUjungDamkar = isset($daftar_ujung_damkar) && count($daftar_ujung_damkar)
+        ? $daftar_ujung_damkar
+        : (\Illuminate\Support\Facades\Schema::hasTable('ujung_damkar')
+            ? \App\Models\UjungDamkar::latest()->take(6)->get()
+            : collect());
+@endphp
 <section class="section bg-paper" id="giat">
     <div class="wrap">
         <div class="giat">
@@ -883,24 +921,39 @@
             <div>
                 <div class="sec-head">
                     <div>
-                        <h2>ujung-ujung damkar</h2>
+                        <h2>Ujung-ujung Damkar</h2>
+                        <p>Dokumentasi video aksi penyelamatan dan layanan kemanusiaan non-kebakaran oleh petugas Damkar Kota Jambi.</p>
                     </div>
                 </div>
 
-                <div class="timeline">
-                    <article class="tl-item">
-                        <time>13 Jul</time>
-                        <h3>Bapak Walikota Jambi memberikan bantuan kepada korban kebakaran dan bencana alam</h3>
-                        <p>Pada hari Kamis tanggal 07 Juli 2022 pukul 15.30 WIB sampai dengan selesai di Dinas Pemadam Kebakaran Kota Jambi. Bapak Walikota Jambi didampingi Kepala Disdamkar.</p>
-                        <a href="#">Selengkapnya <i class="fas fa-angle-right"></i></a>
-                    </article>
-
-                    <article class="tl-item">
-                        <time>9 Nov</time>
-                        <h3>Peningkatan kapasitas aparatur Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi</h3>
-                        <p>Kegiatan peningkatan kapasitas aparatur dengan materi penyelamatan beda ketinggian dan evakuasi korban.</p>
-                        <a href="#">Selengkapnya <i class="fas fa-angle-right"></i></a>
-                    </article>
+                <div class="giat-vid-grid">
+                    @forelse($listUjungDamkar as $vu)
+                        <button class="vid" type="button" data-yt="{{ $vu->youtube_id }}" data-title="{{ $vu->judul }}" @if(empty($vu->youtube_id)) disabled @endif>
+                            <div class="vid-thumb">
+                                @if(!empty($vu->youtube_id))
+                                    <img src="https://i.ytimg.com/vi/{{ $vu->youtube_id }}/hqdefault.jpg" alt="{{ $vu->judul }}" loading="lazy">
+                                @else
+                                    <span class="vid-soon">Segera hadir</span>
+                                @endif
+                                <div class="vid-play"><span><i class="fas fa-play"></i></span></div>
+                            </div>
+                            <h3 class="mt-2">{{ $vu->judul }}</h3>
+                        </button>
+                    @empty
+                        @foreach($video_ujung_damkar as $vu)
+                            <button class="vid" type="button" data-yt="{{ $vu['yt'] }}" data-title="{{ $vu['judul'] }}" @if(!$vu['yt']) disabled @endif>
+                                <div class="vid-thumb">
+                                    @if($vu['yt'])
+                                        <img src="https://i.ytimg.com/vi/{{ $vu['yt'] }}/hqdefault.jpg" alt="{{ $vu['judul'] }}" loading="lazy">
+                                    @else
+                                        <span class="vid-soon">Segera hadir</span>
+                                    @endif
+                                    <div class="vid-play"><span><i class="fas fa-play"></i></span></div>
+                                </div>
+                                <h3 class="mt-2">{{ $vu['judul'] }}</h3>
+                            </button>
+                        @endforeach
+                    @endforelse
                 </div>
             </div>
         </div>
@@ -1068,7 +1121,7 @@
     lightbox.querySelector('.dlg-close').addEventListener('click', function () { lightbox.close(); });
     lightbox.addEventListener('click', function (e) { if (e.target === lightbox) lightbox.close(); });
 
-    /* ---------- Dialog Video Edukasi ---------- */
+    /* ---------- Dialog Video Edukasi & Ujung-Ujung Damkar ---------- */
     var vDialog = document.getElementById('videoDialog');
     var vFrame = vDialog.querySelector('iframe');
 
@@ -1078,6 +1131,17 @@
             vFrame.src = 'https://www.youtube-nocookie.com/embed/' + yt + '?autoplay=1';
             vDialog.showModal();
         });
+    });
+
+    vDialog.querySelector('.dlg-close').addEventListener('click', function () {
+        vFrame.src = '';
+        vDialog.close();
+    });
+    vDialog.addEventListener('click', function (e) {
+        if (e.target === vDialog) {
+            vFrame.src = '';
+            vDialog.close();
+        }
     });
 
     /* ---------- Filter kategori media informasi ---------- */

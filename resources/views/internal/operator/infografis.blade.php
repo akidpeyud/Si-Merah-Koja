@@ -796,6 +796,10 @@ button {
                     <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
                         <i class="fab fa-instagram"></i> Kelola Berita Medsos
                     </a>
+                     </a>
+                    <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
+    <i class="fab fa-youtube"></i> Ujung-Ujung Damkar
+</a>
                 </div>
             </details>
         @endif
@@ -816,6 +820,7 @@ button {
                 <a href="{{ url('/internal/kelola-pemohon') }}" class="{{ request()->is('internal/kelola-pemohon*') ? 'active' : '' }}">
                     <i class="fas fa-address-book"></i> Kelola Akun Pemohon
                 </a>
+                
             </div>
         </details>
 

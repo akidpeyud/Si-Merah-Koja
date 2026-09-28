@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
+use App\Models\UjungDamkar;
 
 class OperatorMedsosController extends Controller
 {
@@ -110,5 +111,94 @@ class OperatorMedsosController extends Controller
         }
         $item->delete();
         return back()->with('success', 'Berita media sosial berhasil dihapus!');
+    }
+
+    // ================= UJUNG-UJUNG DAMKAR =================
+    public function indexUjungDamkar()
+    {
+        $videos = UjungDamkar::orderBy('created_at', 'desc')->get();
+
+        // Otomatis mendeteksi apakah nama file blade Anda menggunakan garis bawah (_) atau strip (-)
+        $viewName = view()->exists('internal.operator.ujung_damkar')
+            ? 'internal.operator.ujung_damkar'
+            : 'internal.operator.ujung-damkar';
+
+        return view($viewName, compact('videos'));
+    }
+
+    public function storeUjungDamkar(Request $request)
+    {
+        $request->validate([
+            'judul' => ['required', 'string', 'max:255'],
+            'link'  => ['required', 'url'],
+        ], [
+            'judul.required' => 'Judul kegiatan / video wajib diisi.',
+            'link.required'  => 'Link video YouTube wajib diisi.',
+            'link.url'       => 'Format link tidak valid.',
+        ]);
+
+        $youtubeId = $this->extractYoutubeId($request->link);
+
+        if (!$youtubeId) {
+            return back()
+                ->withInput()
+                ->with('error', 'Link YouTube tidak dikenali! Pastikan menggunakan link video atau Shorts YouTube yang valid.');
+        }
+
+        UjungDamkar::create([
+            'judul'      => $request->judul,
+            'youtube_id' => $youtubeId,
+            'link_asli'  => $request->link,
+        ]);
+
+        return back()->with('success', 'Video Ujung-Ujung Damkar berhasil ditambahkan!');
+    }
+
+    public function updateUjungDamkar(Request $request, $id)
+    {
+        $item = UjungDamkar::findOrFail($id);
+
+        $request->validate([
+            'judul' => ['required', 'string', 'max:255'],
+            'link'  => ['required', 'url'],
+        ]);
+
+        $youtubeId = $this->extractYoutubeId($request->link);
+
+        if (!$youtubeId) {
+            return back()
+                ->withInput()
+                ->with('error', 'Link YouTube tidak dikenali! Pastikan menggunakan link video atau Shorts YouTube yang valid.');
+        }
+
+        $item->update([
+            'judul'      => $request->judul,
+            'youtube_id' => $youtubeId,
+            'link_asli'  => $request->link,
+        ]);
+
+        return back()->with('success', 'Video Ujung-Ujung Damkar berhasil diperbarui!');
+    }
+
+    public function destroyUjungDamkar($id)
+    {
+        $item = UjungDamkar::findOrFail($id);
+        $item->delete();
+
+        return back()->with('success', 'Video Ujung-Ujung Damkar berhasil dihapus!');
+    }
+
+    /**
+     * Helper pengekstrak 11 karakter ID YouTube dari berbagai format URL
+     */
+    private function extractYoutubeId(string $url): ?string
+    {
+        $pattern = '/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i';
+
+        if (preg_match($pattern, $url, $matches)) {
+            return $matches[1];
+        }
+
+        return null;
     }
 }
