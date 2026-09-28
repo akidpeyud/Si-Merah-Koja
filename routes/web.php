@@ -8,10 +8,11 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\SapraController;
 use App\Http\Controllers\OperatorMedsosController;
+use App\Http\Controllers\DukController; 
 use App\Http\Controllers\DamtanController;
 use App\Http\Controllers\RedkarController; 
 use App\Http\Controllers\SuratKorbanController;
-use App\Http\Controllers\PermohonanController; // Pastikan controller ini ada
+use App\Http\Controllers\PermohonanController; 
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\KabarDamkarController;
 use App\Http\Controllers\PencegahanController;
@@ -155,10 +156,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/kelola-pemohon', function () {
         return view('pemohon.kelola_pemohon');
     })->name('internal.pemohon');
-
-    Route::get('/internal/kepegawaian/duk', function () {
-        return view('internal.kepegawaian.duk'); 
-    })->name('internal.duk');
 
     // --- B. OPERATOR MEDSOS ---
     Route::get('/internal/operator/kelola-berita', [BeritaController::class, 'indexInternal']);
@@ -586,5 +583,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-rescue', [PencegahanController::class, 'indexDiklatRescue']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-operator', [PencegahanController::class, 'indexDiklatOperator']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-ppl', [PencegahanController::class, 'indexDiklatPpl']);
+
+    // ROUTE DUK KEPEGAWAIAN
+    Route::prefix('internal/kepegawaian')->name('kepegawaian.')->group(function () {
+        Route::get('/duk', [DukController::class, 'index'])->name('duk.index');
+        Route::get('/duk/tambah', [DukController::class, 'create'])->name('duk.create'); // <--- INI RUTENYA
+        Route::post('/duk', [DukController::class, 'store'])->name('duk.store');
+        Route::delete('/duk/{id}', [DukController::class, 'destroy'])->name('duk.destroy');
+    });
 
 });
