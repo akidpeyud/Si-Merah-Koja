@@ -5,8 +5,6 @@
        PENGATURAN HALAMAN
        Dari controller bisa dikirim (semuanya opsional):
          $tab_aktif        : 'rpkbgl' | 'skk' | 'perpanjang_skk'
-         $kecamatan_list   : [['id' => 1, 'nama' => 'Kota Baru'], ...]
-         $kelurahan_list   : [['id' => 10, 'nama' => 'Suka Karya', 'kecamatan_id' => 1], ...]
          $old              : isian sebelumnya (mis. old() di Laravel) supaya tidak hilang saat gagal kirim
          $pesan_sukses     : teks sukses setelah formulir terkirim
          $galat            : array pesan galat validasi
@@ -18,8 +16,6 @@
     ];
     $tab_aktif = $tab_aktif ?? 'rpkbgl';
 
-    $kecamatan_list = $kecamatan_list ?? [];
-    $kelurahan_list = $kelurahan_list ?? [];
     $old            = $old ?? [];
     $pesan_sukses   = $pesan_sukses ?? '';
     $galat          = $galat ?? [];
@@ -27,6 +23,24 @@
 
     $to_arr = function ($d) { return (is_object($d) && method_exists($d, 'toArray')) ? $d->toArray() : (array) $d; };
     $val    = function ($k) use ($old, $h) { return $h($old[$k] ?? ''); };
+
+    // Data wilayah Kota Jambi
+    $dataWilayah = [
+        'Alam Barajo'   => ['Bagan Pete', 'Beliung', 'Kenali Besar', 'Mayang Mangurai', 'Pinang Merah', 'Rawa Sari', 'Simpang Rimbo'],
+        'Danau Sipin'   => ['Legok', 'Murni', 'Selamat', 'Solok Sipin', 'Sungai Putri'],
+        'Danau Teluk'   => ['Olak Kemang', 'Pasir Panjang', 'Tanjung Pasir', 'Tanjung Raden', 'Ulu Gedong'],
+        'Jambi Selatan' => ['Pakuan Baru', 'Pasir Putih', 'Tambak Sari', 'The Hok', 'Wijaya Pura'],
+        'Jambi Timur'   => ['Budiman', 'Kasang', 'Kasang Jaya', 'Rajawali', 'Sejinjang', 'Sulanjana', 'Talang Banjar', 'Tanjung Pinang', 'Tanjung Sari'],
+        'Jelutung'      => ['Cempaka Putih', 'Handil Jaya', 'Jelutung', 'Kebun Handil', 'Lebak Bandung', 'Payo Lebar', 'Talang Jauh'],
+        'Kota Baru'     => ['Kenali Asam', 'Kenali Asam Atas', 'Kenali Asam Bawah', 'Paal Lima', 'Simpang Tiga Sipin', 'Sukakarya', 'Talang Gulo'],
+        'Paal Merah'    => ['Bakung Jaya', 'Eka Jaya', 'Lingkar Selatan', 'Paal Merah', 'Payo Selincah', 'Talang Bakung'],
+        'Pasar Jambi'   => ['Beringin', 'Orang Kayo Hitam', 'Pasar Jambi', 'Sungai Asam'],
+        'Pelayangan'    => ['Arab Melayu', 'Jelmu', 'Mudung Laut', 'Tahtul Yaman', 'Tanjung Johor', 'Tengah'],
+        'Telanaipura'   => ['Aur Kenali', 'Buluran Kenali', 'Pematang Sulur', 'Penyengat Rendah', 'Simpang Empat Sipin', 'Telanaipura', 'Teluk Kenali'],
+    ];
+    
+    $oldKec = $old['kecamatan'] ?? '';
+    $oldKel = $old['kelurahan'] ?? '';
 
     $kategori_list = ['1' => 'Rumah tinggal', '2' => 'Komersial', '3' => 'Industri'];
 
@@ -37,7 +51,6 @@
     $wa_link   = "https://wa.me/" . $no_whatsapp . "?text=" . $pesan_wa;
     $maps_link = "https://www.google.com/maps/place/6PC59JJ2%2BQ76/@-1.6180875,103.6006406,871m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-1.6180875!4d103.6006406?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D";
 
-    // Isi dengan link Google Play jika aplikasi sudah tersedia. Kosong = badge disembunyikan.
     $play_store_url = "";
 ?>
 <!DOCTYPE html>
@@ -55,9 +68,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* ==========================================================
-           TOKENS (sama dengan halaman utama & Program kerja)
-           ========================================================== */
         :root {
             --ink: #0d1b2a;
             --ink-2: #132a43;
@@ -102,9 +112,7 @@
         .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: clamp(16px, 4vw, 32px); padding-right: clamp(16px, 4vw, 32px); }
         .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-        /* ==========================================================
-           HEADER
-           ========================================================== */
+        /* HEADER */
         .site-header {
             position: sticky; top: 0; z-index: 60;
             background: rgba(13, 27, 42, .85);
@@ -140,13 +148,11 @@
             border-radius: var(--r-md); padding: 6px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
         }
         .dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
-        .dropdown a { display: block; padding: 11px 14px; border-radius: var(--r-sm); font-size: .92rem; color: rgba(255,255,255,.85); }
+        .dropdown a, .dropdown button { display: block; width: 100%; text-align: left; padding: 11px 14px; border-radius: var(--r-sm); font-size: .92rem; color: rgba(255,255,255,.85); }
         .dropdown a:hover, .dropdown a[aria-current="page"] { background: rgba(255,255,255,.1); color: #fff; }
         
-        /* Tambahan Style untuk Tombol Logout Dropdown */
         .dropdown .btn-logout {
-            width: 100%; text-align: left; padding: 11px 14px; border-radius: var(--r-sm); 
-            font-size: .92rem; color: #ff8b8b; display: flex; align-items: center; gap: 8px; 
+            color: #ff8b8b; display: flex; align-items: center; gap: 8px; 
             transition: background .2s, color .2s; cursor: pointer;
         }
         .dropdown .btn-logout:hover { background: rgba(255, 255, 255, .1); color: #ffb8b8; }
@@ -175,9 +181,7 @@
             .menu .btn-login { margin: 8px 0 0; justify-content: center; padding: 14px; }
         }
 
-        /* ==========================================================
-           HERO HALAMAN
-           ========================================================== */
+        /* HERO HALAMAN */
         .page-hero {
             position: relative; isolation: isolate; color: #fff; background: var(--ink); overflow: hidden;
             padding: clamp(36px, 6vw, 72px) 0 clamp(72px, 10vw, 112px);
@@ -204,9 +208,7 @@
         .rise.d1 { animation-delay: .08s; } .rise.d2 { animation-delay: .18s; } .rise.d3 { animation-delay: .3s; }
         @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 
-        /* ==========================================================
-           TAB LAYANAN (menempel di tepi hero)
-           ========================================================== */
+        /* TAB LAYANAN */
         .page-body { background: var(--paper); padding-bottom: clamp(64px, 9vw, 112px); }
         .tabs-wrap { position: relative; z-index: 2; margin-top: -30px; }
         .tabs {
@@ -226,9 +228,7 @@
         .tab[aria-current="page"] { background: var(--ink); color: #fff; }
         .tab[aria-current="page"] i { color: var(--amber); }
 
-        /* ==========================================================
-           RINGKASAN LAYANAN
-           ========================================================== */
+        /* RINGKASAN LAYANAN */
         .c-ico { flex: none; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--paper); color: var(--signal-d); font-size: 1rem; }
 
         .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 28px; }
@@ -238,9 +238,7 @@
         .fact strong, .fact a { display: block; font-weight: 600; font-size: .95rem; line-height: 1.4; }
         .fact a:hover { color: var(--signal-d); text-decoration: underline; text-underline-offset: 4px; }
 
-        /* ==========================================================
-           LAYOUT KONTEN
-           ========================================================== */
+        /* LAYOUT KONTEN */
         .perizinan-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; margin-top: 24px; align-items: start; }
         @media (min-width: 992px) {
             .perizinan-layout { grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); gap: 32px; }
@@ -287,9 +285,7 @@
         .steps li:last-child::after { display: none; }
         .steps li:last-child::before { background: var(--signal); }
 
-        /* ==========================================================
-           FORMULIR
-           ========================================================== */
+        /* FORMULIR */
         .form-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
         .form-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; padding: 18px clamp(18px, 3vw, 32px); border-bottom: 1px solid var(--line); }
         .form-title { display: flex; align-items: center; gap: 14px; min-width: 0; }
@@ -366,9 +362,7 @@
         .form-actions p { font-size: .88rem; color: var(--steel); }
         @media (max-width: 640px) { .form-actions .btn { width: 100%; } }
 
-        /* ==========================================================
-           MODAL PERSYARATAN
-           ========================================================== */
+        /* MODAL PERSYARATAN */
         .modal {
             margin: auto; padding: 0; border: 0; border-radius: var(--r-lg);
             width: min(760px, calc(100vw - 24px)); max-height: min(88vh, 820px);
@@ -394,9 +388,7 @@
         .req-list ul ul li::before { background: transparent; border: 1.5px solid var(--steel); }
         .req-list b { font-weight: 600; }
 
-        /* ==========================================================
-           FOOTER
-           ========================================================== */
+        /* FOOTER */
         .footer { background: var(--ink); color: rgba(255,255,255,.7); padding: clamp(56px, 8vw, 96px) 0 32px; }
         .footer-grid { display: grid; grid-template-columns: 1.1fr 1.2fr .8fr; gap: clamp(32px, 5vw, 64px); }
         .footer h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: #fff; margin-bottom: 16px; }
@@ -424,9 +416,7 @@
         .social a:hover { background: var(--signal); transform: translateY(-3px); }
         @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr; } }
 
-        /* ==========================================================
-           TOMBOL LAPOR MENGAMBANG
-           ========================================================== */
+        /* TOMBOL LAPOR MENGAMBANG */
         .beacon { position: relative; width: 12px; height: 12px; border-radius: 50%; background: #fff; flex: none; }
         .beacon::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #fff; animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
         @keyframes ping { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(3.2); opacity: 0; } }
@@ -441,9 +431,6 @@
         .sos-sheet a i { width: 22px; text-align: center; font-size: 1.15rem; }
         .sos-sheet .wa i { color: #25d366; } .sos-sheet .tel i { color: #38bdf8; } .sos-sheet .n112 i { color: #f87171; }
 
-        /* ==========================================================
-           REDUCED MOTION
-           ========================================================== */
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
             *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -452,7 +439,7 @@
 </head>
 <body>
 
-<!-- ==================== HEADER ==================== -->
+<!-- HEADER -->
 <header class="site-header" id="siteHeader">
     <nav class="nav" aria-label="Navigasi utama">
         <a href="/" class="brand" aria-label="SIMERAH KOJA, beranda">
@@ -504,35 +491,29 @@
             </li>
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
             
-            <!-- LOGIKA TOMBOL MASUK DAN KELUAR -->
-            @if(session()->has('pemohon_id'))
-                <li class="has-drop">
-                    <button class="menu-trigger btn-login" type="button" aria-expanded="false">
-                        <!-- strtok digunakan agar yg tampil hanya nama panggilan (kata pertama) -->
-                        <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <ul class="dropdown">
-                        <li>
-                            <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
-                                @csrf
-                                <button type="submit" class="btn-logout">
-                                    <i class="fas fa-sign-out-alt"></i> Keluar
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
-                </li>
-            @else
-                <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
-            @endif
-
+            <?php /* Logika tombol disesuaikan jika menggunakan view berbasis blade/session */ ?>
+            <li class="has-drop">
+                <button class="menu-trigger btn-login" type="button" aria-expanded="false">
+                    <i class="fas fa-user-circle"></i> Akun <i class="fas fa-chevron-down"></i>
+                </button>
+                <ul class="dropdown">
+                    <li>
+                        <form action="/pemohon/logout" method="POST" style="margin: 0;">
+                            <!-- Bila di Laravel blade, tambahkan csrf token. Jika native php, abaikan atau atur sendiri -->
+                            <button type="submit" class="btn-logout">
+                                <i class="fas fa-sign-out-alt"></i> Keluar
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </li>
         </ul>
     </nav>
 </header>
 
 <main>
 
-<!-- ==================== HERO HALAMAN ==================== -->
+<!-- HERO HALAMAN -->
 <section class="page-hero">
     <div class="wrap">
         <nav aria-label="Breadcrumb" class="rise">
@@ -672,8 +653,8 @@
                     <span class="form-note"><span class="req" aria-hidden="true">*</span> wajib diisi</span>
                 </div>
 
-                <?php /* Jika memakai Laravel: ganti action="#" dengan route tujuan dan tambahkan csrf_field() di dalam form. */ ?>
                 <form class="form-body" action="#" method="POST" enctype="multipart/form-data">
+                    <!-- Jika di dalam environment laravel, pastikan ada @csrf / csrf_field() di sini -->
 
                     <?php if ($pesan_sukses): ?>
                         <div class="alert ok" role="status"><i class="fas fa-circle-check"></i><div><?= $h($pesan_sukses) ?></div></div>
@@ -704,7 +685,6 @@
                             <div class="field">
                                 <label class="label" for="no_wa">Nomor WhatsApp <span class="req" aria-hidden="true">*</span></label>
                                 <input class="input" type="tel" id="no_wa" name="no_wa" value="<?= $val('no_wa') ?>" inputmode="tel" autocomplete="tel" placeholder="08xxxxxxxxxx" required aria-describedby="hint-wa">
-                                <p class="hint" id="hint-wa">Notifikasi status permohonan dikirim ke nomor ini.</p>
                             </div>
                         </div>
                     </fieldset>
@@ -734,7 +714,7 @@
                             <div class="field">
                                 <label class="label" for="kategori">Kategori bangunan <span class="req" aria-hidden="true">*</span></label>
                                 <select class="input" id="kategori" name="kategori" required>
-                                    <option value="">Pilih kategori bangunan</option>
+                                    <option value="" disabled <?= empty($old['kategori']) ? 'selected' : '' ?>>Pilih kategori bangunan</option>
                                     <?php foreach ($kategori_list as $kv => $kn): ?>
                                         <option value="<?= $h($kv) ?>" <?= (($old['kategori'] ?? '') == $kv) ? 'selected' : '' ?>><?= $h($kn) ?></option>
                                     <?php endforeach; ?>
@@ -744,24 +724,31 @@
                                 <label class="label" for="alamat_bangunan">Alamat bangunan <span class="req" aria-hidden="true">*</span></label>
                                 <input class="input" type="text" id="alamat_bangunan" name="alamat_bangunan" value="<?= $val('alamat_bangunan') ?>" required>
                             </div>
+                            
+                            <!-- KECAMATAN / KELURAHAN -->
                             <div class="field">
-                                <label class="label" for="kecamatan">Kecamatan <?php if ($kecamatan_list): ?><span class="req" aria-hidden="true">*</span><?php endif; ?></label>
-                                <select class="input" id="kecamatan" name="kecamatan" <?= $kecamatan_list ? 'required' : '' ?>>
-                                    <option value="">Pilih kecamatan</option>
-                                    <?php foreach ($kecamatan_list as $kc): $kc = $to_arr($kc); ?>
-                                        <option value="<?= $h($kc['id'] ?? '') ?>" <?= (($old['kecamatan'] ?? '') == ($kc['id'] ?? null)) ? 'selected' : '' ?>><?= $h($kc['nama'] ?? '') ?></option>
+                                <label class="label" for="kecamatan">Kecamatan <span class="req" aria-hidden="true">*</span></label>
+                                <select class="input" id="kecamatan" name="kecamatan" required>
+                                    <option value="" disabled <?= !$oldKec ? 'selected' : '' ?>>Pilih kecamatan</option>
+                                    <?php foreach (array_keys($dataWilayah) as $kc): ?>
+                                        <option value="<?= $h($kc) ?>" <?= ($oldKec === $kc) ? 'selected' : '' ?>><?= $h($kc) ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
                             <div class="field">
-                                <label class="label" for="kelurahan">Kelurahan <?php if ($kelurahan_list): ?><span class="req" aria-hidden="true">*</span><?php endif; ?></label>
-                                <select class="input" id="kelurahan" name="kelurahan" data-selected="<?= $val('kelurahan') ?>" <?= $kelurahan_list ? 'required' : '' ?>>
-                                    <option value="">Pilih kelurahan</option>
-                                    <?php foreach ($kelurahan_list as $kl): $kl = $to_arr($kl); ?>
-                                        <option value="<?= $h($kl['id'] ?? '') ?>" data-kec="<?= $h($kl['kecamatan_id'] ?? '') ?>"><?= $h($kl['nama'] ?? '') ?></option>
-                                    <?php endforeach; ?>
+                                <label class="label" for="kelurahan">Kelurahan <span class="req" aria-hidden="true">*</span></label>
+                                <select class="input" id="kelurahan" name="kelurahan" required>
+                                    <?php if ($oldKec && isset($dataWilayah[$oldKec])): ?>
+                                        <option value="" disabled <?= !$oldKel ? 'selected' : '' ?>>Pilih kelurahan</option>
+                                        <?php foreach ($dataWilayah[$oldKec] as $kl): ?>
+                                            <option value="<?= $h($kl) ?>" <?= ($oldKel === $kl) ? 'selected' : '' ?>><?= $h($kl) ?></option>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <option value="" disabled selected>Pilih kecamatan terlebih dahulu</option>
+                                    <?php endif; ?>
                                 </select>
                             </div>
+
                             <div class="field">
                                 <label class="label" for="luas_lahan">Luas lahan <span class="req" aria-hidden="true">*</span></label>
                                 <div class="unit">
@@ -824,7 +811,7 @@
 
 </main>
 
-<!-- ==================== MODAL PERSYARATAN ==================== -->
+<!-- MODAL PERSYARATAN -->
 <dialog class="modal" id="modalPersyaratan" aria-labelledby="modalTitle">
     <div class="modal-head">
         <h2 id="modalTitle">Detail persyaratan RPKBGL lainnya</h2>
@@ -897,7 +884,7 @@
     </div>
 </dialog>
 
-<!-- ==================== FOOTER ==================== -->
+<!-- FOOTER -->
 <footer class="footer">
     <div class="wrap">
         <div class="footer-grid">
@@ -953,7 +940,7 @@
     </div>
 </footer>
 
-<!-- ==================== TOMBOL LAPOR MENGAMBANG ==================== -->
+<!-- TOMBOL LAPOR MENGAMBANG -->
 <div class="sos-fab" id="sosFab">
     <div class="sos-sheet" id="sosSheet">
         <a class="wa" href="<?= $h($wa_link) ?>" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Lapor lewat WhatsApp</a>
@@ -1007,7 +994,7 @@
         if (e.key === 'Escape') closeDrops(null);
     });
 
-    /* ---------- Tombol lapor mengambang (muncul setelah scroll) ---------- */
+    /* ---------- Tombol lapor mengambang ---------- */
     var fab = document.getElementById('sosFab');
     var fabBtn = fab.querySelector('.sos-fab-btn');
 
@@ -1034,24 +1021,23 @@
         b.addEventListener('click', openDlg);
     });
     dlg.addEventListener('click', function (e) {
-        // klik di area gelap (backdrop) atau tombol tutup
         if (e.target === dlg || e.target.closest('[data-close]')) closeDlg();
     });
 
     /* ---------- Kelurahan mengikuti kecamatan ---------- */
+    var dataWilayah = <?= json_encode($dataWilayah) ?>;
     var kec = document.getElementById('kecamatan');
     var kel = document.getElementById('kelurahan');
-    var kelAll = Array.prototype.slice.call(kel.options, 1);
 
-    function syncKelurahan(keep) {
-        while (kel.options.length > 1) kel.remove(1);
-        kelAll.filter(function (o) { return o.getAttribute('data-kec') === kec.value; })
-              .forEach(function (o) { kel.add(o); });
-        kel.disabled = !kec.value;
-        kel.value = keep || '';
-    }
-    kec.addEventListener('change', function () { syncKelurahan(''); });
-    syncKelurahan(kel.getAttribute('data-selected'));
+    kec.addEventListener('change', function () {
+        kel.innerHTML = '';
+        var ph = new Option('Pilih kelurahan', '', true, true);
+        ph.disabled = true;
+        kel.add(ph);
+        (dataWilayah[kec.value] || []).forEach(function (nama) {
+            kel.add(new Option(nama, nama));
+        });
+    });
 
     /* ---------- Area unggah berkas ---------- */
     function fmtSize(b) {
