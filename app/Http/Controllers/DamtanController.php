@@ -23,7 +23,7 @@ class DamtanController extends Controller
     {
         $data_laporan = LaporanPenyelamatan::with(['teknisLogistik', 'dokumentasi', 'kategoriKhusus'])
                     ->latest()
-                    ->paginate(10); // PERBAIKAN: get() diubah menjadi paginate(10)
+                    ->paginate(10);
                     
         return view('internal.damtan.data_laporan', compact('data_laporan'));
     }
@@ -140,6 +140,37 @@ class DamtanController extends Controller
     // ==========================================
     // TAMBAHAN: KELOLA SURAT KORBAN
     // ==========================================
+
+    // Menampilkan Form Create Surat Korban
+    public function createSurat()
+    {
+        return view('internal.damtan.input_surat');
+    }
+
+    // Menyimpan Data Surat Korban Baru
+    public function storeSurat(Request $request)
+    {
+        DB::table('surat_korbans')->insert([
+            'nama_korban' => $request->nama_korban,
+            'status_kepemilikan' => $request->status_kepemilikan,
+            'nik' => $request->nik,
+            'pekerjaan' => $request->pekerjaan,
+            'tempat_lahir' => $request->tempat_lahir,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'status_perkawinan' => $request->status_perkawinan,
+            'alamat' => $request->alamat,
+            'objek_terbakar' => $request->objek_terbakar,
+            'hari_kejadian' => $request->hari_kejadian,
+            'tanggal_kejadian' => $request->tanggal_kejadian,
+            'waktu_kejadian' => $request->waktu_kejadian,
+            'tembusan_camat' => $request->tembusan_camat,
+            'tembusan_lurah' => $request->tembusan_lurah,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return redirect('/internal/surat-korban/data')->with('success', 'Data Surat Keterangan Korban berhasil ditambahkan!');
+    }
 
     public function indexSurat()
     {
