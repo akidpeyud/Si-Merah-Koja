@@ -582,177 +582,177 @@
                 <div class="section-header"><h3>II. Teknis Penyelamatan & Logistik Operasi</h3></div>
 
                 <div class="pdf-grid">
-                    @if(!empty($teknis->pimpinan_operasi))
+                    @if(!empty($laporan->pimpinan_operasi))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-user-shield"></i></div>
                             <div class="data-label">Pimpinan Operasi</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->pimpinan_operasi }}</div>
+                            <div class="data-value">{{ $laporan->pimpinan_operasi }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->pendamping_operasi))
+                    @if(!empty($laporan->pendamping_operasi))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-user-friends"></i></div>
                             <div class="data-label">Pendamping Operasi</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->pendamping_operasi }}</div>
+                            <div class="data-value">{{ $laporan->pendamping_operasi }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->satuan_tugas))
+                    @if(!empty($laporan->satuan_tugas))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-users-cog"></i></div>
                             <div class="data-label">Satuan Tugas / Regu</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->satuan_tugas }}</div>
+                            <div class="data-value">{{ $laporan->satuan_tugas }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->tim_respontime))
+                    @if(!empty($laporan->tim_respontime))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-stopwatch"></i></div>
                             <div class="data-label">Tim Respon Time</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->tim_respontime }}</div>
+                            <div class="data-value">{{ $laporan->tim_respontime }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->status_evakuasi))
+                    @if(!empty($laporan->status_evakuasi))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-info-circle"></i></div>
                             <div class="data-label">Status Evakuasi</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value text-capitalize">{{ str_replace('_', ' ', $teknis->status_evakuasi) }}</div>
+                            <div class="data-value text-capitalize">{{ str_replace('_', ' ', $laporan->status_evakuasi) }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty(json_decode($teknis->metode_evakuasi)))
+                    @if(!empty(json_decode($laporan->metode_evakuasi)))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-route"></i></div>
                             <div class="data-label">Metode Evakuasi</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value text-capitalize">{{ str_replace(['"', '[', ']', '_'], ['','','',' '], $teknis->metode_evakuasi) }}</div>
+                            <div class="data-value text-capitalize">{{ str_replace(['"', '[', ']', '_'], ['','','',' '], $laporan->metode_evakuasi) }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty(json_decode($teknis->metode_penyelamatan)))
+                    @if(!empty(json_decode($laporan->metode_penyelamatan)))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-hands-helping"></i></div>
                             <div class="data-label">Met. Penyelamatan</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value text-capitalize">{{ str_replace(['"', '[', ']', '_'], ['','','',' '], $teknis->metode_penyelamatan) }}</div>
+                            <div class="data-value text-capitalize">{{ str_replace(['"', '[', ']', '_'], ['','','',' '], $laporan->metode_penyelamatan) }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->objek_terdampak))
+                    @if(!empty($laporan->objek_terdampak))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-house-damage"></i></div>
                             <div class="data-label">Objek Terdampak</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->objek_terdampak }}</div>
+                            <div class="data-value">{{ $laporan->objek_terdampak }}</div>
                         </div>
                     </div>
                     @endif
                     
-                    @if(!empty($teknis->jumlah_personel) && $teknis->jumlah_personel > 0)
+                    @if(!empty($laporan->jumlah_personel) && $laporan->jumlah_personel > 0)
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-users"></i></div>
                             <div class="data-label">Jumlah Anggota</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->jumlah_personel }} Personel</div>
+                            <div class="data-value">{{ $laporan->jumlah_personel }} Personel</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->daftar_personel))
+                    @if(!empty($laporan->daftar_personel))
                     <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-user-tag"></i></div>
                             <div class="data-label">Anggota Terlibat</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->daftar_personel }}</div>
+                            <div class="data-value">{{ $laporan->daftar_personel }}</div>
                         </div>
                     </div>
                     @endif
                 </div>
 
                 @if(
-                    (!empty($teknis->korban_selamat) && $teknis->korban_selamat > 0) ||
-                    (!empty($teknis->korban_ringan) && $teknis->korban_ringan > 0) ||
-                    (!empty($teknis->korban_berat) && $teknis->korban_berat > 0) ||
-                    (!empty($teknis->korban_meninggal) && $teknis->korban_meninggal > 0) ||
-                    !empty($teknis->korban_hewan_aset)
+                    (!empty($laporan->korban_selamat) && $laporan->korban_selamat > 0) ||
+                    (!empty($laporan->korban_ringan) && $laporan->korban_ringan > 0) ||
+                    (!empty($laporan->korban_berat) && $laporan->korban_berat > 0) ||
+                    (!empty($laporan->korban_meninggal) && $laporan->korban_meninggal > 0) ||
+                    !empty($laporan->korban_hewan_aset)
                 )
                 <div class="sub-header">Data Korban & Aset</div>
                 <div class="pdf-grid">
-                    @if(!empty($teknis->korban_selamat) && $teknis->korban_selamat > 0)
+                    @if(!empty($laporan->korban_selamat) && $laporan->korban_selamat > 0)
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-user-check"></i></div>
                             <div class="data-label">Korban Selamat</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->korban_selamat }} Jiwa</div>
+                            <div class="data-value">{{ $laporan->korban_selamat }} Jiwa</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->korban_ringan) && $teknis->korban_ringan > 0)
+                    @if(!empty($laporan->korban_ringan) && $laporan->korban_ringan > 0)
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-user-injured"></i></div>
                             <div class="data-label">Korban Luka Ringan</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->korban_ringan }} Jiwa</div>
+                            <div class="data-value">{{ $laporan->korban_ringan }} Jiwa</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->korban_berat) && $teknis->korban_berat > 0)
+                    @if(!empty($laporan->korban_berat) && $laporan->korban_berat > 0)
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-procedures"></i></div>
                             <div class="data-label">Korban Luka Berat</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->korban_berat }} Jiwa</div>
+                            <div class="data-value">{{ $laporan->korban_berat }} Jiwa</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->korban_meninggal) && $teknis->korban_meninggal > 0)
+                    @if(!empty($laporan->korban_meninggal) && $laporan->korban_meninggal > 0)
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-user-times"></i></div>
                             <div class="data-label">Korban Meninggal</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value" style="color: #dc2626;">{{ $teknis->korban_meninggal }} Jiwa</div>
+                            <div class="data-value" style="color: #dc2626;">{{ $laporan->korban_meninggal }} Jiwa</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->korban_hewan_aset))
+                    @if(!empty($laporan->korban_hewan_aset))
                     <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-cat"></i></div>
                             <div class="data-label">Korban Hewan/Aset</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->korban_hewan_aset }}</div>
+                            <div class="data-value">{{ $laporan->korban_hewan_aset }}</div>
                         </div>
                     </div>
                     @endif
@@ -761,79 +761,79 @@
 
                 <div class="sub-header">Alat & Logistik Terpakai</div>
                 <div class="pdf-grid">
-                    @if(!empty(json_decode($teknis->armada)))
+                    @if(!empty(json_decode($laporan->armada)))
                     <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-truck"></i></div>
                             <div class="data-label">Armada Diturunkan</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value text-capitalize">{{ str_replace(['"', '[', ']'], '', $teknis->armada) }}</div>
+                            <div class="data-value text-capitalize">{{ str_replace(['"', '[', ']'], '', $laporan->armada) }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty(json_decode($teknis->peralatan)))
+                    @if(!empty(json_decode($laporan->peralatan)))
                     <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-toolbox"></i></div>
                             <div class="data-label">Peralatan Khusus</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ str_replace(['"', '[', ']'], '', $teknis->peralatan) }}</div>
+                            <div class="data-value">{{ str_replace(['"', '[', ']'], '', $laporan->peralatan) }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->peralatan_lain))
+                    @if(!empty($laporan->peralatan_lain))
                     <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-tools"></i></div>
                             <div class="data-label">Peralatan Lainnya</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->peralatan_lain }}</div>
+                            <div class="data-value">{{ $laporan->peralatan_lain }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->liter_air) && $teknis->liter_air > 0)
+                    @if(!empty($laporan->liter_air) && $laporan->liter_air > 0)
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-tint"></i></div>
                             <div class="data-label">Konsumsi Air</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->liter_air }} Liter</div>
+                            <div class="data-value">{{ $laporan->liter_air }} Liter</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->liter_foam) && $teknis->liter_foam > 0)
+                    @if(!empty($laporan->liter_foam) && $laporan->liter_foam > 0)
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-soap"></i></div>
                             <div class="data-label">Konsumsi Foam</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->liter_foam }} Liter</div>
+                            <div class="data-value">{{ $laporan->liter_foam }} Liter</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->liter_bbm) && $teknis->liter_bbm > 0)
+                    @if(!empty($laporan->liter_bbm) && $laporan->liter_bbm > 0)
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-gas-pump"></i></div>
                             <div class="data-label">Konsumsi BBM</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->liter_bbm }} Liter</div>
+                            <div class="data-value">{{ $laporan->liter_bbm }} Liter</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->konsumsi_alat))
+                    @if(!empty($laporan->konsumsi_alat))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-spray-can"></i></div>
                             <div class="data-label">Konsumsi Alat Umum</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->konsumsi_alat }}</div>
+                            <div class="data-value">{{ $laporan->konsumsi_alat }}</div>
                         </div>
                     </div>
                     @endif
@@ -843,46 +843,46 @@
                 <div class="section-header" style="margin-top: 20px;"><h3>III. Analisis, Evaluasi & Dokumentasi Kejadian</h3></div>
 
                 <div class="pdf-grid">
-                    @if(!empty($teknis->langkah_penanganan))
+                    @if(!empty($laporan->langkah_penanganan))
                     <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-tasks"></i></div>
                             <div class="data-label">Langkah Penanganan</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->langkah_penanganan }}</div>
+                            <div class="data-value">{{ $laporan->langkah_penanganan }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->hambatan_lapangan))
+                    @if(!empty($laporan->hambatan_lapangan))
                     <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-exclamation-triangle"></i></div>
                             <div class="data-label">Hambatan Lapangan</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->hambatan_lapangan }}</div>
+                            <div class="data-value">{{ $laporan->hambatan_lapangan }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->hasil_tindakan))
+                    @if(!empty($laporan->hasil_tindakan))
                     <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-check-double"></i></div>
                             <div class="data-label">Hasil Tindakan</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->hasil_tindakan }}</div>
+                            <div class="data-value">{{ $laporan->hasil_tindakan }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($dokumentasi->kronologi_lengkap))
+                    @if(!empty($laporan->kronologi_lengkap))
                     <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-align-left"></i></div>
                             <div class="data-label">Kronologi Lengkap</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $dokumentasi->kronologi_lengkap }}</div>
+                            <div class="data-value">{{ $laporan->kronologi_lengkap }}</div>
                         </div>
                     </div>
                     @endif
@@ -890,116 +890,116 @@
 
                 <div class="sub-header">Investigasi Lapangan</div>
                 <div class="pdf-grid">
-                    @if(!empty($dokumentasi->dugaan_penyebab))
+                    @if(!empty($laporan->dugaan_penyebab))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-bolt"></i></div>
                             <div class="data-label">Dugaan Penyebab</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value text-capitalize">{{ str_replace('_', ' ', $dokumentasi->dugaan_penyebab) }}</div>
+                            <div class="data-value text-capitalize">{{ str_replace('_', ' ', $laporan->dugaan_penyebab) }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($dokumentasi->dugaan_penyebab_lainnya))
+                    @if(!empty($laporan->dugaan_penyebab_lainnya))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-search"></i></div>
                             <div class="data-label">Penyebab Lainnya</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $dokumentasi->dugaan_penyebab_lainnya }}</div>
+                            <div class="data-value">{{ $laporan->dugaan_penyebab_lainnya }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($dokumentasi->sumber_api))
+                    @if(!empty($laporan->sumber_api))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-fire-alt"></i></div>
                             <div class="data-label">Sumber Api / Awal</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $dokumentasi->sumber_api }}</div>
+                            <div class="data-value">{{ $laporan->sumber_api }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($dokumentasi->luas_area) && $dokumentasi->luas_area > 0)
+                    @if(!empty($laporan->luas_area) && $laporan->luas_area > 0)
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-ruler-combined"></i></div>
                             <div class="data-label">Luas Area Terdampak</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $dokumentasi->luas_area }} m²</div>
+                            <div class="data-value">{{ $laporan->luas_area }} m²</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty(json_decode($dokumentasi->instansi_pendukung)))
+                    @if(!empty(json_decode($laporan->instansi_pendukung)))
                     <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-building"></i></div>
                             <div class="data-label">Instansi Pendukung</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value text-uppercase">{{ str_replace(['"', '[', ']', '_'], ['','','',' '], $dokumentasi->instansi_pendukung) }}</div>
+                            <div class="data-value text-uppercase">{{ str_replace(['"', '[', ']', '_'], ['','','',' '], $laporan->instansi_pendukung) }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($dokumentasi->tindakan_instansi))
+                    @if(!empty($laporan->tindakan_instansi))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-hands-helping"></i></div>
                             <div class="data-label">Tindakan Instansi Lain</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $dokumentasi->tindakan_instansi }}</div>
+                            <div class="data-value">{{ $laporan->tindakan_instansi }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($dokumentasi->kontak_saksi))
+                    @if(!empty($laporan->kontak_saksi))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-phone-alt"></i></div>
                             <div class="data-label">Kontak Saksi/Warga</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $dokumentasi->kontak_saksi }}</div>
+                            <div class="data-value">{{ $laporan->kontak_saksi }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($dokumentasi->cara_bertindak))
+                    @if(!empty($laporan->cara_bertindak))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-clipboard-check"></i></div>
                             <div class="data-label">Cara Bertindak</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $dokumentasi->cara_bertindak }}</div>
+                            <div class="data-value">{{ $laporan->cara_bertindak }}</div>
                         </div>
                     </div>
                     @endif
                 </div>
 
-                @if(!empty($dokumentasi->kebutuhan_tambahan) || !empty($dokumentasi->saran_mitigasi))
+                @if(!empty($laporan->kebutuhan_tambahan) || !empty($laporan->saran_mitigasi))
                 <div class="sub-header">Evaluasi Pasca Operasi</div>
                 <div class="pdf-grid">
-                    @if(!empty($dokumentasi->kebutuhan_tambahan))
+                    @if(!empty($laporan->kebutuhan_tambahan))
                     <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-plus-circle"></i></div>
                             <div class="data-label">Kebutuhan Tambahan</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $dokumentasi->kebutuhan_tambahan }}</div>
+                            <div class="data-value">{{ $laporan->kebutuhan_tambahan }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($dokumentasi->saran_mitigasi))
+                    @if(!empty($laporan->saran_mitigasi))
                     <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-lightbulb"></i></div>
                             <div class="data-label">Saran Mitigasi Warga</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $dokumentasi->saran_mitigasi }}</div>
+                            <div class="data-value">{{ $laporan->saran_mitigasi }}</div>
                         </div>
                     </div>
                     @endif
@@ -1007,10 +1007,10 @@
                 @endif
 
                 <!-- TAB 4: KATEGORI KHUSUS -->
-                @if(!empty($khusus->jenis_hewan) || !empty($khusus->jenis_objek_tumbang) || !empty($khusus->kondisi_perairan) || !empty($khusus->jenis_benda_bahaya))
+                @if(!empty($laporan->jenis_hewan) || !empty($laporan->jenis_objek_tumbang) || !empty($laporan->kondisi_perairan) || !empty($laporan->jenis_benda_bahaya))
                 <div class="section-header"><h3>IV. Rincian Modul Kategori Khusus</h3></div>
 
-                    @if(!empty($khusus->jenis_hewan))
+                    @if(!empty($laporan->jenis_hewan))
                     <div class="sub-header"><i class="fas fa-paw me-2"></i>Data Animal Rescue</div>
                     <div class="pdf-grid">
                         <div class="pdf-item">
@@ -1018,68 +1018,68 @@
                                 <div class="data-icon"><i class="fas fa-paw"></i></div>
                                 <div class="data-label">Jenis Hewan</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value text-capitalize">{{ $khusus->jenis_hewan }}</div>
+                                <div class="data-value text-capitalize">{{ $laporan->jenis_hewan }}</div>
                             </div>
                         </div>
                         
-                        @if(!empty($khusus->spesies_hewan))
+                        @if(!empty($laporan->spesies_hewan))
                         <div class="pdf-item">
                             <div class="data-row">
                                 <div class="data-icon"><i class="fas fa-tag"></i></div>
                                 <div class="data-label">Spesies / Lokal</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value">{{ $khusus->spesies_hewan }}</div>
+                                <div class="data-value">{{ $laporan->spesies_hewan }}</div>
                             </div>
                         </div>
                         @endif
 
-                        @if(!empty($khusus->dimensi_hewan))
+                        @if(!empty($laporan->dimensi_hewan))
                         <div class="pdf-item">
                             <div class="data-row">
                                 <div class="data-icon"><i class="fas fa-ruler"></i></div>
                                 <div class="data-label">Dimensi / Panjang</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value">{{ $khusus->dimensi_hewan }}</div>
+                                <div class="data-value">{{ $laporan->dimensi_hewan }}</div>
                             </div>
                         </div>
                         @endif
                         
-                        @if(!empty($khusus->berat_hewan))
+                        @if(!empty($laporan->berat_hewan))
                         <div class="pdf-item">
                             <div class="data-row">
                                 <div class="data-icon"><i class="fas fa-balance-scale"></i></div>
                                 <div class="data-label">Berat Hewan</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value">{{ $khusus->berat_hewan }} Kg</div>
+                                <div class="data-value">{{ $laporan->berat_hewan }} Kg</div>
                             </div>
                         </div>
                         @endif
 
-                        @if(!empty($khusus->status_hewan_pasca))
+                        @if(!empty($laporan->status_hewan_pasca))
                         <div class="pdf-item">
                             <div class="data-row">
                                 <div class="data-icon"><i class="fas fa-share-square"></i></div>
                                 <div class="data-label">Status Evakuasi</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value text-capitalize">{{ str_replace('_', ' ', $khusus->status_hewan_pasca) }}</div>
+                                <div class="data-value text-capitalize">{{ str_replace('_', ' ', $laporan->status_hewan_pasca) }}</div>
                             </div>
                         </div>
                         @endif
 
-                        @if(!empty($khusus->lokasi_pelepasan))
+                        @if(!empty($laporan->lokasi_pelepasan))
                         <div class="pdf-item">
                             <div class="data-row">
                                 <div class="data-icon"><i class="fas fa-map-marker-alt"></i></div>
                                 <div class="data-label">Lokasi Pelepasan</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value">{{ $khusus->lokasi_pelepasan }}</div>
+                                <div class="data-value">{{ $laporan->lokasi_pelepasan }}</div>
                             </div>
                         </div>
                         @endif
                     </div>
                     @endif
 
-                    @if(!empty($khusus->jenis_objek_tumbang))
+                    @if(!empty($laporan->jenis_objek_tumbang))
                     <div class="sub-header"><i class="fas fa-tree me-2"></i>Data Objek Tumbang/Bangunan</div>
                     <div class="pdf-grid">
                         <div class="pdf-item">
@@ -1087,46 +1087,46 @@
                                 <div class="data-icon"><i class="fas fa-cube"></i></div>
                                 <div class="data-label">Jenis Objek</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value text-capitalize">{{ str_replace('_', ' ', $khusus->jenis_objek_tumbang) }}</div>
+                                <div class="data-value text-capitalize">{{ str_replace('_', ' ', $laporan->jenis_objek_tumbang) }}</div>
                             </div>
                         </div>
 
-                        @if(!empty($khusus->dimensi_objek))
+                        @if(!empty($laporan->dimensi_objek))
                         <div class="pdf-item">
                             <div class="data-row">
                                 <div class="data-icon"><i class="fas fa-expand-arrows-alt"></i></div>
                                 <div class="data-label">Dimensi Objek</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value">{{ $khusus->dimensi_objek }} cm</div>
+                                <div class="data-value">{{ $laporan->dimensi_objek }} cm</div>
                             </div>
                         </div>
                         @endif
 
-                        @if(!empty($khusus->status_utilitas))
+                        @if(!empty($laporan->status_utilitas))
                         <div class="pdf-item">
                             <div class="data-row">
                                 <div class="data-icon"><i class="fas fa-plug"></i></div>
                                 <div class="data-label">Utilitas Terkait</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value text-capitalize">{{ str_replace('_', ' ', $khusus->status_utilitas) }}</div>
+                                <div class="data-value text-capitalize">{{ str_replace('_', ' ', $laporan->status_utilitas) }}</div>
                             </div>
                         </div>
                         @endif
 
-                        @if(!empty($khusus->dampak_properti))
+                        @if(!empty($laporan->dampak_properti))
                         <div class="pdf-item-full">
                             <div class="data-row">
                                 <div class="data-icon"><i class="fas fa-house-damage"></i></div>
                                 <div class="data-label">Dampak Properti</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value">{{ $khusus->dampak_properti }}</div>
+                                <div class="data-value">{{ $laporan->dampak_properti }}</div>
                             </div>
                         </div>
                         @endif
                     </div>
                     @endif
 
-                    @if(!empty($khusus->kondisi_perairan))
+                    @if(!empty($laporan->kondisi_perairan))
                     <div class="sub-header"><i class="fas fa-water me-2"></i>Data Water Rescue</div>
                     <div class="pdf-grid">
                         <div class="pdf-item">
@@ -1134,110 +1134,110 @@
                                 <div class="data-icon"><i class="fas fa-water"></i></div>
                                 <div class="data-label">Kondisi Perairan</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value text-capitalize">{{ str_replace('_', ' ', $khusus->kondisi_perairan) }}</div>
+                                <div class="data-value text-capitalize">{{ str_replace('_', ' ', $laporan->kondisi_perairan) }}</div>
                             </div>
                         </div>
 
-                        @if(!empty($khusus->radius_pencarian))
+                        @if(!empty($laporan->radius_pencarian))
                         <div class="pdf-item">
                             <div class="data-row">
                                 <div class="data-icon"><i class="fas fa-search-location"></i></div>
                                 <div class="data-label">Radius Pencarian</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value">{{ $khusus->radius_pencarian }} meter</div>
+                                <div class="data-value">{{ $laporan->radius_pencarian }} meter</div>
                             </div>
                         </div>
                         @endif
 
-                        @if(!empty($khusus->metode_pencarian_air))
+                        @if(!empty($laporan->metode_pencarian_air))
                         <div class="pdf-item">
                             <div class="data-row">
                                 <div class="data-icon"><i class="fas fa-binoculars"></i></div>
                                 <div class="data-label">Metode Pencarian</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value text-capitalize">{{ str_replace('_', ' ', $khusus->metode_pencarian_air) }}</div>
+                                <div class="data-value text-capitalize">{{ str_replace('_', ' ', $laporan->metode_pencarian_air) }}</div>
                             </div>
                         </div>
                         @endif
 
-                        @if(!empty($khusus->daftar_penyelam))
+                        @if(!empty($laporan->daftar_penyelam))
                         <div class="pdf-item-full">
                             <div class="data-row">
                                 <div class="data-icon"><i class="fas fa-swimmer"></i></div>
                                 <div class="data-label">Daftar Penyelam</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value">{{ $khusus->daftar_penyelam }}</div>
+                                <div class="data-value">{{ $laporan->daftar_penyelam }}</div>
                             </div>
                         </div>
                         @endif
                     </div>
                     @endif
 
-                    @if(!empty($khusus->jenis_benda_bahaya) || !empty($khusus->jenis_medan))
+                    @if(!empty($laporan->jenis_benda_bahaya) || !empty($laporan->jenis_medan))
                     <div class="sub-header"><i class="fas fa-ring me-2"></i>Data Pelepasan Cincin & Geografis Lapangan</div>
                     <div class="pdf-grid">
-                        @if(!empty($khusus->jenis_benda_bahaya))
+                        @if(!empty($laporan->jenis_benda_bahaya))
                         <div class="pdf-item">
                             <div class="data-row">
                                 <div class="data-icon"><i class="fas fa-ring"></i></div>
                                 <div class="data-label">Jenis Benda</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value">{{ $khusus->jenis_benda_bahaya }}</div>
+                                <div class="data-value">{{ $laporan->jenis_benda_bahaya }}</div>
                             </div>
                         </div>
                         @endif
 
-                        @if(!empty($khusus->kondisi_anggota_tubuh))
+                        @if(!empty($laporan->kondisi_anggota_tubuh))
                         <div class="pdf-item">
                             <div class="data-row">
                                 <div class="data-icon"><i class="fas fa-hand-paper"></i></div>
                                 <div class="data-label">Kondisi Tubuh</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value text-capitalize">{{ str_replace('_', ' ', $khusus->kondisi_anggota_tubuh) }}</div>
+                                <div class="data-value text-capitalize">{{ str_replace('_', ' ', $laporan->kondisi_anggota_tubuh) }}</div>
                             </div>
                         </div>
                         @endif
 
-                        @if(!empty($khusus->alat_potong_cincin))
+                        @if(!empty($laporan->alat_potong_cincin))
                         <div class="pdf-item">
                             <div class="data-row">
                                 <div class="data-icon"><i class="fas fa-cut"></i></div>
                                 <div class="data-label">Alat Potong</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value text-capitalize">{{ str_replace('_', ' ', $khusus->alat_potong_cincin) }}</div>
+                                <div class="data-value text-capitalize">{{ str_replace('_', ' ', $laporan->alat_potong_cincin) }}</div>
                             </div>
                         </div>
                         @endif
 
-                        @if(!empty($khusus->cuaca_operasi))
+                        @if(!empty($laporan->cuaca_operasi))
                         <div class="pdf-item">
                             <div class="data-row">
                                 <div class="data-icon"><i class="fas fa-cloud-sun"></i></div>
                                 <div class="data-label">Cuaca Operasi</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value text-capitalize">{{ str_replace('_', ' ', $khusus->cuaca_operasi) }}</div>
+                                <div class="data-value text-capitalize">{{ str_replace('_', ' ', $laporan->cuaca_operasi) }}</div>
                             </div>
                         </div>
                         @endif
 
-                        @if(!empty($khusus->jenis_medan))
+                        @if(!empty($laporan->jenis_medan))
                         <div class="pdf-item">
                             <div class="data-row">
                                 <div class="data-icon"><i class="fas fa-mountain"></i></div>
                                 <div class="data-label">Jenis Medan</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value text-capitalize">{{ str_replace('_', ' ', $khusus->jenis_medan) }}</div>
+                                <div class="data-value text-capitalize">{{ str_replace('_', ' ', $laporan->jenis_medan) }}</div>
                             </div>
                         </div>
                         @endif
 
-                        @if(!empty($khusus->akses_lokasi))
+                        @if(!empty($laporan->akses_lokasi))
                         <div class="pdf-item">
                             <div class="data-row">
                                 <div class="data-icon"><i class="fas fa-road"></i></div>
                                 <div class="data-label">Akses Lokasi</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value text-capitalize">{{ str_replace('_', ' ', $khusus->akses_lokasi) }}</div>
+                                <div class="data-value text-capitalize">{{ str_replace('_', ' ', $laporan->akses_lokasi) }}</div>
                             </div>
                         </div>
                         @endif
@@ -1246,11 +1246,11 @@
                 @endif
 
                 <!-- TAB 5: DOKUMENTASI FOTO & VIDEO -->
-                @if((!empty($dokumentasi->foto) && $dokumentasi->foto !== 'null' && $dokumentasi->foto !== '[]') || !empty($dokumentasi->video))
+                @if((!empty($laporan->foto) && $laporan->foto !== 'null' && $laporan->foto !== '[]') || !empty($laporan->video))
                 <div class="section-header" style="page-break-before: always;"><h3>V. Dokumentasi Lapangan</h3></div>
                 
-                @if(!empty($dokumentasi->foto) && $dokumentasi->foto !== 'null' && $dokumentasi->foto !== '[]')
-                    @php $fotos = json_decode($dokumentasi->foto, true); @endphp
+                @if(!empty($laporan->foto) && $laporan->foto !== 'null' && $laporan->foto !== '[]')
+                    @php $fotos = json_decode($laporan->foto, true); @endphp
                     @if(is_array($fotos) && count($fotos) > 0)
                     <div class="sub-header"><i class="fas fa-camera me-2"></i>Lampiran Foto</div>
                     <div style="display: block; width: 100%; margin-bottom: 20px;">
@@ -1261,7 +1261,7 @@
                     @endif
                 @endif
 
-                @if(!empty($dokumentasi->video))
+                @if(!empty($laporan->video))
                     <div class="sub-header"><i class="fas fa-video me-2"></i>Lampiran Video</div>
                     <div class="pdf-grid">
                         <div class="pdf-item-full">
@@ -1269,7 +1269,7 @@
                                 <div class="data-icon"><i class="fas fa-file-video"></i></div>
                                 <div class="data-label">File Terlampir</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value"><a href="{{ asset('uploads/damtan/video/' . $dokumentasi->video) }}" target="_blank" style="color: #0284c7; text-decoration: none;">{{ $dokumentasi->video }} <small class="text-muted">(Klik untuk memutar di browser)</small></a></div>
+                                <div class="data-value"><a href="{{ asset('uploads/damtan/video/' . $laporan->video) }}" target="_blank" style="color: #0284c7; text-decoration: none;">{{ $laporan->video }} <small class="text-muted">(Klik untuk memutar di browser)</small></a></div>
                             </div>
                         </div>
                     </div>

@@ -9,23 +9,46 @@ class LaporanPenyelamatan extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['id'];
+    protected $guarded = ['id']; // Membuka semua field untuk mass-assignment
 
-    // Relasi ke Tabel Teknis & Logistik
+    // Casting array ke JSON secara otomatis
+    protected $casts = [
+        'metode_evakuasi' => 'array',
+        'metode_penyelamatan' => 'array',
+        'peralatan' => 'array',
+        'armada' => 'array',
+        'instansi_pendukung' => 'array',
+        'foto' => 'array', 
+        'waktu_kejadian' => 'datetime',
+        'waktu_terima' => 'datetime',
+        'waktu_berangkat' => 'datetime',
+        'waktu_tiba' => 'datetime',
+        'waktu_selesai' => 'datetime',
+    ];
+
+    // Relasi ke user yang menginput
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    // ====================================================
+    // TAMBAHKAN KODE RELASI INI AGAR CONTROLLER BISA JALAN
+    // ====================================================
+
     public function teknisLogistik()
     {
-        return $this->hasOne(LpTeknisLogistik::class, 'laporan_id');
+        // Sesuaikan 'id_laporan' jika foreign key di tabel teknis_logistik bernama lain
+        return $this->hasOne(LpTeknisLogistik::class, 'laporan_penyelamatan_id', 'id');
     }
 
-    // Relasi ke Tabel Dokumentasi
     public function dokumentasi()
     {
-        return $this->hasOne(LpDokumentasi::class, 'laporan_id');
+        return $this->hasOne(LpDokumentasi::class, 'laporan_penyelamatan_id', 'id');
     }
 
-    // Relasi ke Tabel Kategori Khusus
     public function kategoriKhusus()
     {
-        return $this->hasOne(LpKategoriKhusus::class, 'laporan_id');
+        return $this->hasOne(LpKategoriKhusus::class, 'laporan_penyelamatan_id', 'id');
     }
 }

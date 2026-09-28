@@ -297,12 +297,12 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ Request::is('internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga*') ? 'active' : '' }}" href="/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga">
-                    PELATIHAN KELUARGA TANGGAP KEBAKARAN
+                    SOSIALISASI DAN EDUKASI
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ Request::is('internal/pencegahan/pemberdayaan-masyarakat/sosialisasi*') ? 'active' : '' }}" href="/internal/pencegahan/pemberdayaan-masyarakat/sosialisasi">
-                    SOSIALISASI DAN EDUKASI
+                   PELATIHAN KELUARGA TANGGAP KEBAKARAN 
                 </a>
             </li>
         </ul>
@@ -342,7 +342,7 @@
                             <th rowspan="2">POSYANDU</th>
                             <th rowspan="2" class="text-center">RT</th>
                             <th rowspan="2">KELURAHAN</th>
-                            <th rowspan="2">KECAMATAN</th>
+                            <th rowspan="2">NAMA SEKOLAH</th>
                             <th colspan="2" class="th-group">JUMLAH PESERTA</th>
                             <th rowspan="2" class="text-center">FOTO DAN VIDEO</th>
                             <th rowspan="2" class="text-center" width="120px">AKSI</th>

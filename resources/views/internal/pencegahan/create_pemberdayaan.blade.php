@@ -121,11 +121,13 @@
                 <div class="row mb-5">
                     <div class="col-md-6 mb-3 mb-md-0">
                         <label class="form-label">Peserta Laki-laki</label>
-                        <input type="number" name="jumlah_peserta_laki_laki" class="form-control" value="0" min="0" required>
+                        <!-- PERBAIKAN: name diubah jadi peserta_laki_laki -->
+                        <input type="number" name="peserta_laki_laki" class="form-control" value="0" min="0" required>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Peserta Perempuan</label>
-                        <input type="number" name="jumlah_peserta_perempuan" class="form-control" value="0" min="0" required>
+                        <!-- PERBAIKAN: name diubah jadi peserta_perempuan -->
+                        <input type="number" name="peserta_perempuan" class="form-control" value="0" min="0" required>
                     </div>
                 </div>
 
@@ -137,7 +139,8 @@
                 <div class="row mb-5">
                     <div class="col-md-12">
                         <label class="form-label">Foto / Video Dokumentasi (Opsional)</label>
-                        <input type="file" name="file_dokumentasi" class="form-control" accept="image/*,video/*,.pdf,.zip">
+                        <!-- PERBAIKAN: name diubah jadi foto_video -->
+                        <input type="file" name="foto_video" class="form-control" accept="image/*,video/*,.pdf,.zip">
                     </div>
                 </div>
 

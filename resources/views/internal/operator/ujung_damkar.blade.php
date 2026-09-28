@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-    <title>{{ isset($berita) ? 'Edit Berita' : 'Tambah Berita' }} | SIMERAH KOJA</title>
+    <title>Kelola Ujung-Ujung Damkar | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
 
     <!-- Fonts -->
@@ -18,7 +18,11 @@
 
     <style>
 /* ==========================================================
-   SIMERAH KOJA - CLEAN NAVY DASHBOARD STYLING
+   SIMERAH KOJA - CLEAN NAVY DASHBOARD
+   ========================================================== */
+
+/* ==========================================================
+   1. DESIGN TOKENS
    ========================================================== */
 
 :root {
@@ -65,7 +69,14 @@
     --shadow-lg: 0 20px 45px rgba(13, 27, 42, .14);
 }
 
-*, *::before, *::after {
+
+/* ==========================================================
+   2. RESET
+   ========================================================== */
+
+*,
+*::before,
+*::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -94,6 +105,13 @@ a {
     text-decoration: none;
 }
 
+ul,
+ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
 button {
     font: inherit;
     color: inherit;
@@ -108,10 +126,14 @@ button {
     border-radius: 6px;
 }
 
-/* ==================== TOAST / ALERT ==================== */
+
+/* ==========================================================
+   3. TOAST / NOTIFICATION
+   ========================================================== */
+
 .toast-wrap {
     position: fixed;
-    z-index: 200;
+    z-index: 1090;
     top: 18px;
     left: 50%;
     transform: translateX(-50%);
@@ -121,11 +143,11 @@ button {
     max-width: calc(100vw - 24px);
 }
 
-.toast {
+.toast-item {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 16px;
+    padding: 12px 12px 12px 16px;
     border-radius: 999px;
     background: #ffffff;
     border: 1px solid var(--line);
@@ -135,7 +157,7 @@ button {
     animation: toastIn .45s cubic-bezier(.16,.84,.3,1) both;
 }
 
-.toast.leaving {
+.toast-item.leaving {
     animation: toastOut .3s ease forwards;
 }
 
@@ -150,13 +172,18 @@ button {
     font-size: .78rem;
 }
 
-.toast.ok .toast-ico { background: var(--success); }
-.toast.err .toast-ico { background: var(--signal); }
+.toast-item.ok .toast-ico {
+    background: var(--success);
+}
+
+.toast-item.err .toast-ico {
+    background: var(--signal);
+}
 
 .toast-x {
     flex: none;
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     display: grid;
     place-items: center;
@@ -170,16 +197,32 @@ button {
 }
 
 @keyframes toastIn {
-    from { opacity: 0; transform: translateY(-14px); }
-    to { opacity: 1; transform: none; }
+    from {
+        opacity: 0;
+        transform: translateY(-14px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
 }
 
 @keyframes toastOut {
-    from { opacity: 1; transform: none; }
-    to { opacity: 0; transform: translateY(-14px); }
+    from {
+        opacity: 1;
+        transform: none;
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-14px);
+    }
 }
 
-/* ==================== TOPBAR ==================== */
+
+/* ==========================================================
+   4. TOPBAR
+   ========================================================== */
+
 .topbar {
     position: sticky;
     top: 0;
@@ -214,8 +257,13 @@ button {
     transition: background .2s, transform .2s;
 }
 
-.side-toggle:hover { background: rgba(255,255,255,.10); }
-.side-toggle:active { transform: scale(.95); }
+.side-toggle:hover {
+    background: rgba(255,255,255,.10);
+}
+
+.side-toggle:active {
+    transform: scale(.95);
+}
 
 .brand {
     display: flex;
@@ -322,9 +370,15 @@ button {
     box-shadow: 0 4px 10px rgba(0,0,0,.12);
 }
 
-.btn-logout:active { transform: scale(.97); }
+.btn-logout:active {
+    transform: scale(.97);
+}
 
-/* ==================== SHELL & SIDEBAR ==================== */
+
+/* ==========================================================
+   5. MAIN SHELL & SIDEBAR
+   ========================================================== */
+
 .shell {
     display: flex;
     align-items: flex-start;
@@ -345,8 +399,18 @@ button {
     scrollbar-color: #d8dee8 transparent;
 }
 
-.sidebar::-webkit-scrollbar { width: 6px; }
-.sidebar::-webkit-scrollbar-thumb { background-color: #d8dee8; border-radius: 20px; }
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: #d8dee8;
+    border-radius: 20px;
+}
 
 .side-link {
     display: flex;
@@ -381,10 +445,17 @@ button {
     transition: color .2s;
 }
 
-.side-link:hover i { color: var(--ink); }
-.side-link.active i { color: #ffffff; }
+.side-link:hover i {
+    color: var(--ink);
+}
 
-.side-group + .side-group { margin-top: 6px; }
+.side-link.active i {
+    color: #ffffff;
+}
+
+.side-group + .side-group {
+    margin-top: 6px;
+}
 
 .side-group summary {
     list-style: none;
@@ -403,8 +474,13 @@ button {
     user-select: none;
 }
 
-.side-group summary::-webkit-details-marker { display: none; }
-.side-group summary:hover { background: #f3f6fa; }
+.side-group summary::-webkit-details-marker {
+    display: none;
+}
+
+.side-group summary:hover {
+    background: #f3f6fa;
+}
 
 .side-group summary .grp-ico {
     flex: none;
@@ -428,7 +504,9 @@ button {
     transition: transform .25s ease;
 }
 
-.side-group[open] summary .chev { transform: rotate(180deg); }
+.side-group[open] summary .chev {
+    transform: rotate(180deg);
+}
 
 .side-sub {
     display: grid;
@@ -470,7 +548,10 @@ button {
     opacity: .75;
 }
 
-.side-sub a:hover i, .side-sub a.active i { opacity: 1; }
+.side-sub a:hover i,
+.side-sub a.active i {
+    opacity: 1;
+}
 
 .side-kicker {
     padding: 18px 14px 6px;
@@ -481,11 +562,19 @@ button {
     color: var(--steel-soft);
 }
 
-.sidebar-backdrop { display: none; }
+.sidebar-backdrop {
+    display: none;
+}
 
 @media (max-width: 900px) {
-    .side-toggle { display: inline-flex; }
-    .user-meta { display: none; }
+    .side-toggle {
+        display: inline-flex;
+    }
+
+    .user-meta {
+        display: none;
+    }
+
     .sidebar {
         position: fixed;
         z-index: 90;
@@ -496,7 +585,11 @@ button {
         transition: transform .3s cubic-bezier(.4,0,.2,1);
         box-shadow: var(--shadow-lg);
     }
-    body.side-open .sidebar { transform: none; }
+
+    body.side-open .sidebar {
+        transform: none;
+    }
+
     .sidebar-backdrop {
         display: block;
         position: fixed;
@@ -507,25 +600,37 @@ button {
         pointer-events: none;
         transition: opacity .3s;
     }
-    body.side-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
+
+    body.side-open .sidebar-backdrop {
+        opacity: 1;
+        pointer-events: auto;
+    }
 }
 
-/* ==================== CONTENT & FORM ==================== */
+
+/* ==========================================================
+   6. MAIN CONTENT & PAGE HEADER
+   ========================================================== */
+
 .content {
     flex: 1;
     min-width: 0;
     padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 80px;
 }
 
-.form-wrapper {
-    max-width: 900px;
-    margin: 0 auto;
+.page-head-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 28px;
 }
 
 .page-head h1 {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: clamp(1.55rem, 2.8vw, 2rem);
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
     line-height: 1.2;
     letter-spacing: -.02em;
     margin-bottom: 5px;
@@ -538,19 +643,350 @@ button {
     margin: 0;
 }
 
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    flex-wrap: nowrap;
+}
+
+.section-heading-ico {
+    flex: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    background: var(--navy);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-size: .78rem;
+    box-shadow: 0 4px 8px rgba(22,58,99,.12);
+}
+
+.section-heading h3 {
+    flex: none;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--ink);
+    letter-spacing: -.01em;
+    white-space: nowrap;
+    margin: 0;
+}
+
+.section-heading .line {
+    flex: 1 1 auto;
+    min-width: 24px;
+    height: 1px;
+    background: linear-gradient(to right, var(--line), transparent 90%);
+}
+
+.count-pill {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--navy-soft);
+    color: var(--navy);
+    font-size: .78rem;
+    font-weight: 700;
+}
+
+
+/* ==========================================================
+   7. BUTTONS, CARD BOX & TABLE (UJUNG-UJUNG DAMKAR)
+   ========================================================== */
+
+.btn-simerah-danger {
+    background: var(--signal);
+    color: #ffffff;
+    font-weight: 600;
+    font-size: .9rem;
+    border-radius: var(--r-sm);
+    padding: 11px 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, .22);
+    transition: background .2s, transform .15s, box-shadow .2s;
+}
+
+.btn-simerah-danger:hover {
+    background: var(--signal-dark);
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(220, 53, 69, .28);
+}
+
+.btn-simerah-danger:active {
+    transform: translateY(0);
+}
+
+.btn-simerah-secondary {
+    background: var(--paper);
+    color: var(--ink);
+    font-weight: 600;
+    font-size: .88rem;
+    border-radius: var(--r-sm);
+    padding: 10px 18px;
+    border: 1px solid var(--line-dark);
+    transition: background .2s, border-color .2s;
+}
+
+.btn-simerah-secondary:hover {
+    background: var(--line);
+}
+
 .card-box {
     background: #ffffff;
     border-radius: var(--r-md);
-    padding: clamp(22px, 3.5vw, 34px);
     border: 1px solid var(--line);
+    box-shadow: var(--shadow-xs);
+    overflow: hidden;
+}
+
+.table-simerah {
+    margin-bottom: 0;
+}
+
+.table-simerah thead th {
+    font-family: var(--font-display);
+    font-size: .76rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    font-weight: 700;
+    color: var(--steel);
+    background-color: #f8fafc;
+    border-bottom: 1px solid var(--line);
+    padding: 15px 20px;
+    white-space: nowrap;
+}
+
+.table-simerah tbody td {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+}
+
+.table-simerah tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table-simerah tbody tr {
+    transition: background-color .15s ease;
+}
+
+.table-simerah tbody tr:hover {
+    background-color: #f9fbfd;
+}
+
+.row-num {
+    display: inline-grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--steel);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: .84rem;
+}
+
+.yt-thumb-link {
+    position: relative;
+    display: block;
+    width: 148px;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--r-sm);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: var(--ink);
     box-shadow: var(--shadow-xs);
 }
 
+.yt-thumb-link img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .3s ease, opacity .3s ease;
+}
+
+.yt-thumb-play {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(13, 27, 42, .35);
+    color: #ffffff;
+    font-size: 1.35rem;
+    opacity: 0;
+    transition: opacity .25s ease;
+}
+
+.yt-thumb-link:hover img {
+    transform: scale(1.05);
+    opacity: .88;
+}
+
+.yt-thumb-link:hover .yt-thumb-play {
+    opacity: 1;
+}
+
+.video-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: .98rem;
+    color: var(--ink);
+    margin-bottom: 6px;
+    line-height: 1.35;
+}
+
+.video-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.yt-watch-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--signal);
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--signal-soft);
+    transition: background .2s, color .2s;
+}
+
+.yt-watch-link:hover {
+    background: var(--signal);
+    color: #ffffff;
+}
+
+.yt-id-code {
+    font-size: .76rem;
+    font-weight: 600;
+    color: var(--steel);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    padding: 3px 8px;
+    border-radius: 6px;
+}
+
+.btn-delete-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    border-radius: var(--r-sm);
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--signal-dark);
+    background: var(--signal-soft);
+    border: 1px solid transparent;
+    transition: background .2s, color .2s, border-color .2s;
+}
+
+.btn-delete-item:hover {
+    background: var(--signal);
+    color: #ffffff;
+}
+
+/* Empty State */
+.empty-state {
+    padding: 48px 24px;
+    text-align: center;
+}
+
+.empty-ico {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: var(--signal-soft);
+    color: var(--signal);
+    display: grid;
+    place-items: center;
+    font-size: 1.5rem;
+    margin: 0 auto 14px;
+}
+
+.empty-state h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--ink);
+    margin-bottom: 6px;
+}
+
+.empty-state p {
+    color: var(--steel);
+    font-size: .88rem;
+    max-width: 40ch;
+    margin: 0 auto 18px;
+}
+
+
+/* ==========================================================
+   8. MODAL & FORM STYLING
+   ========================================================== */
+
+.modal-content {
+    border-radius: var(--r-lg);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+.modal-header {
+    background: var(--ink);
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    padding: 18px 24px;
+}
+
+.modal-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.02rem;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-header .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+    opacity: .75;
+}
+
+.modal-header .btn-close:hover {
+    opacity: 1;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.modal-footer {
+    background: #f8fafc;
+    border-top: 1px solid var(--line);
+    padding: 14px 24px;
+}
+
 .form-label {
-    font-size: .85rem;
+    font-size: .84rem;
     font-weight: 700;
     color: var(--ink);
-    margin-bottom: 7px;
+    margin-bottom: 6px;
 }
 
 .form-control {
@@ -567,75 +1003,192 @@ button {
     box-shadow: 0 0 0 3px var(--navy-soft);
 }
 
-.form-control::placeholder {
-    color: var(--steel-soft);
+.form-hint {
+    display: block;
+    font-size: .78rem;
+    color: var(--steel);
+    margin-top: 6px;
 }
 
-.upload-box {
+.yt-preview-card {
     background: var(--paper);
-    border: 1.5px dashed var(--line-dark);
+    border: 1px dashed var(--line-dark);
     border-radius: var(--r-md);
-    padding: 20px;
+    padding: 14px;
+    text-align: center;
 }
 
-/* Buttons */
-.btn-simerah-danger {
-    background: var(--signal);
-    color: #ffffff;
-    font-weight: 600;
+.yt-preview-card img {
+    width: 100%;
+    max-width: 280px;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
     border-radius: var(--r-sm);
-    padding: 10px 22px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    border: none;
-    font-size: .9rem;
-    transition: background .2s, transform .1s, box-shadow .2s;
+    margin: 0 auto;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-xs);
 }
 
-.btn-simerah-danger:hover {
-    background: var(--signal-dark);
-    color: #ffffff;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(220, 53, 69, .2);
+
+/* ==========================================================
+   9. RESPONSIVE TABLET & MOBILE
+   ========================================================== */
+
+@media (max-width: 1100px) {
+    .topbar {
+        padding: 0 20px;
+    }
+
+    .content {
+        padding: 32px 26px 60px;
+    }
 }
 
-.btn-simerah-outline {
-    background: #ffffff;
-    color: var(--ink);
-    font-weight: 600;
-    border-radius: var(--r-sm);
-    padding: 9px 18px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    border: 1px solid var(--line-dark);
-    font-size: .88rem;
-    transition: background .2s, border-color .2s;
+@media (max-width: 700px) {
+    :root {
+        --topbar-h: 64px;
+    }
+
+    .topbar {
+        height: var(--topbar-h);
+        padding: 0 14px;
+        gap: 10px;
+    }
+
+    .brand {
+        gap: 9px;
+    }
+
+    .brand img {
+        height: 30px;
+    }
+
+    .brand span {
+        font-size: .95rem;
+    }
+
+    .topbar-right {
+        gap: 7px;
+    }
+
+    .user-chip {
+        padding: 3px;
+        border: none;
+        background: transparent;
+    }
+
+    .user-avatar {
+        width: 34px;
+        height: 34px;
+    }
+
+    .btn-logout {
+        width: 38px;
+        height: 38px;
+        padding: 0;
+        border-radius: 10px;
+        font-size: 0;
+    }
+
+    .btn-logout i {
+        font-size: .9rem;
+    }
+
+    .content {
+        padding: 26px 16px 50px;
+    }
+
+    .page-head-bar {
+        align-items: stretch;
+        margin-bottom: 22px;
+    }
+
+    .page-head h1 {
+        font-size: 1.55rem;
+    }
+
+    .page-head p {
+        font-size: .88rem;
+    }
+
+    .btn-simerah-danger.w-mobile-100 {
+        width: 100%;
+    }
+
+    .yt-thumb-link {
+        width: 116px;
+    }
 }
 
-.btn-simerah-outline:hover {
-    background: var(--paper);
-    border-color: var(--steel-soft);
-    color: var(--ink);
+@media (max-width: 420px) {
+    .brand span {
+        display: none;
+    }
+
+    .content {
+        padding-left: 13px;
+        padding-right: 13px;
+    }
+
+    .section-heading h3 {
+        font-size: .86rem;
+    }
 }
-</style>
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+@media print {
+    .topbar {
+        position: static;
+        background: #ffffff !important;
+        color: #000000 !important;
+        box-shadow: none;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .brand span {
+        color: #000000 !important;
+    }
+
+    .sidebar,
+    .btn-logout,
+    .btn-simerah-danger,
+    .btn-delete-item {
+        display: none !important;
+    }
+
+    .content {
+        padding: 20px;
+    }
+}
+    </style>
 </head>
 <body>
 
-<!-- Toast Notification -->
+<!-- ==================== TOAST NOTIFICATION ==================== -->
 <div class="toast-wrap" id="toastWrap" aria-live="polite">
     @if(session('success'))
-        <div class="toast ok" data-toast>
+        <div class="toast-item ok" data-toast>
             <span class="toast-ico"><i class="fas fa-check"></i></span>
             <span>{{ session('success') }}</span>
             <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
         </div>
     @endif
-    @if(session('error'))
-        <div class="toast err" data-toast>
+    @if(session('error') || $errors->any())
+        <div class="toast-item err" data-toast>
             <span class="toast-ico"><i class="fas fa-triangle-exclamation"></i></span>
-            <span>{{ session('error') }}</span>
+            <span>{{ session('error') ?? $errors->first() }}</span>
             <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
         </div>
     @endif
@@ -656,7 +1209,7 @@ button {
         <div class="user-chip">
             <span class="user-avatar">{{ strtoupper(substr(Auth::user()->nama_lengkap ?? 'O', 0, 1)) }}</span>
             <div class="user-meta">
-                <strong>{{ Auth::user()->nama_lengkap ?? 'Rekan Kerja' }}</strong>
+                <strong>{{ Auth::user()->nama_lengkap ?? 'Operator Media' }}</strong>
                 <small>{{ str_replace('_', ' ', Auth::user()->role ?? '') }}</small>
             </div>
         </div>
@@ -679,6 +1232,7 @@ button {
         </a>
 
         @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
+
             <div class="side-kicker">Modul operasional</div>
 
             <!-- BAGIAN PENCEGAHAN -->
@@ -689,10 +1243,10 @@ button {
                         <i class="fas fa-arrow-trend-up"></i> Peningkatan Kapasitas Aparatur
                     </a>
                     <a href="/internal/pencegahan/inspeksi-kebakaran" class="{{ Request::is('internal/pencegahan/inspeksi-kebakaran*') ? 'active' : '' }}">
-                        <i class="fas fa-magnifying-glass-chart"></i> Pencegahan Kebakaran & Inspeksi
+                        <i class="fas fa-magnifying-glass-chart"></i> Pencegahan Kebakaran dan Inspeksi
                     </a>
                     <a href="/internal/pencegahan/pemberdayaan-masyarakat" class="{{ Request::is('internal/pencegahan/pemberdayaan-masyarakat*') ? 'active' : '' }}">
-                        <i class="fas fa-handshake-angle"></i> Pemberdayaan Masyarakat
+                        <i class="fas fa-handshake-angle"></i> Pemberdayaan Masyarakat dan Dunia Usaha
                     </a>
                     <a href="/internal/pencegahan/kelola-edukasi" class="{{ Request::is('internal/pencegahan/kelola-edukasi*') ? 'active' : '' }}">
                         <i class="fas fa-bullhorn"></i> Kelola Edukasi
@@ -743,17 +1297,22 @@ button {
                 <summary><i class="fas fa-warehouse grp-ico"></i><span class="grp-label">Bagian sapra</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <span class="side-kicker" style="padding-left:2px;">Sarana &amp; Prasarana</span>
-                    <a href="/sapra/sarana-mako"><i class="fas fa-fire-extinguisher"></i> Sarana pemadam</a>
-                    <a href="/sapra/prasarana-mako"><i class="fas fa-building"></i> Prasarana pemadam</a>
+                    <a href="/sapra/sarana-mako" class="{{ Request::is('sapra/sarana-mako*') ? 'active' : '' }}">
+                        <i class="fas fa-fire-extinguisher"></i> Sarana pemadam kebakaran
+                    </a>
+                    <a href="/sapra/prasarana-mako" class="{{ Request::is('sapra/prasarana-mako*') ? 'active' : '' }}">
+                        <i class="fas fa-building"></i> Prasarana pemadam kebakaran
+                    </a>
                     <a href="/sapra/sarana-penyelamatan" class="{{ Request::is('sapra/sarana-penyelamatan*') ? 'active' : '' }}">
-                        <i class="fas fa-life-ring"></i> Sarana Penyelamatan
+                        <i class="fas fa-life-ring"></i> Sarana Penyelamatan &amp; Evakuasi
                     </a>
                     <a href="/sapra/sarana-pemeriksaan" class="{{ Request::is('sapra/sarana-pemeriksaan*') ? 'active' : '' }}">
-                        <i class="fas fa-search-location"></i> Sarana Pemeriksaan
+                        <i class="fas fa-search-location"></i> Sarana Pemeriksaan Proteksi Kebakaran
                     </a>
                     <a href="/sapra/kelola-pos" class="{{ Request::is('sapra/kelola-pos*') ? 'active' : '' }}">
                         <i class="fas fa-warehouse"></i> Kelola Data Pos
                     </a>
+
                     <span class="side-kicker" style="padding-left:2px;">Manajemen Air</span>
                     <a href="/sapra/data_hidrant_gedung" class="{{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}">
                         <i class="fas fa-droplet"></i> Sumber Air
@@ -761,7 +1320,8 @@ button {
                     <a href="/sapra/data-hidrant-kota" class="{{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}">
                         <i class="fas fa-map-location-dot"></i> Data Hidrant Kota Jambi
                     </a>
-                    <span class="side-kicker" style="padding-left:2px;">Logistik & Distribusi</span>
+
+                    <span class="side-kicker" style="padding-left:2px;">Logistik &amp; Distribusi</span>
                     <a href="/sapra/kebutuhan-sarpras" class="{{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}">
                         <i class="fas fa-boxes-stacked"></i> Mutu Baku Kebutuhan
                     </a>
@@ -774,7 +1334,7 @@ button {
 
         @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
             <div class="side-kicker">Konten publik</div>
-            <details class="side-group" {{ Request::is('internal/operator*') ? 'open' : '' }}>
+            <details class="side-group" {{ Request::is('internal/operator*') ? 'open' : '' }} open>
                 <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen berita</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
@@ -786,10 +1346,9 @@ button {
                     <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
                         <i class="fab fa-instagram"></i> Kelola Berita Medsos
                     </a>
-                     </a>
                     <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
-    <i class="fab fa-youtube"></i> Ujung-Ujung Damkar
-</a>
+                        <i class="fab fa-youtube"></i> Ujung-Ujung Damkar
+                    </a>
                 </div>
             </details>
         @endif
@@ -815,116 +1374,150 @@ button {
 
     </aside>
 
-    <!-- ==================== MAIN CONTENT ==================== -->
+    <!-- ==================== KONTEN UTAMA ==================== -->
     <main class="content">
-        <div class="form-wrapper">
 
-            <!-- Header -->
-            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
-                <div class="page-head">
-                    <h1>{{ isset($berita) ? 'Edit Data Kejadian' : 'Tambah Berita Baru' }}</h1>
-                    <p>Lengkapi formulir di bawah ini dengan informasi kejadian yang valid.</p>
-                </div>
-                <a href="/internal/operator/kelola-berita" class="btn-simerah-outline">
-                    <i class="fas fa-arrow-left"></i> Kembali ke Tabel
-                </a>
+        <!-- Header Halaman & Tombol Aksi -->
+        <div class="page-head-bar">
+            <div class="page-head">
+                <h1>Kelola Ujung-Ujung Damkar</h1>
+                <p>Unggah dan kelola tautan video YouTube untuk ditampilkan pada bagian Ujung-Ujung Damkar di halaman utama.</p>
             </div>
-
-            <!-- Alert Validasi Error -->
-            @if ($errors->any())
-                <div class="alert alert-danger border-0 rounded-3 shadow-sm mb-4">
-                    <div class="fw-bold mb-1"><i class="fas fa-triangle-exclamation me-2"></i> Terdapat kesalahan pengisian form:</div>
-                    <ul class="mb-0 ps-3 small">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            <div class="card-box">
-                <form action="{{ isset($berita) ? '/internal/operator/kelola-berita/update/' . $berita->id : '/internal/operator/kelola-berita/store' }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    @if(isset($berita))
-                        @method('PUT')
-                    @endif
-
-                    <div class="mb-3">
-                        <label class="form-label">Judul Kejadian <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="judul" value="{{ old('judul', $berita->judul ?? '') }}" required placeholder="Contoh: Evakuasi Pemotongan Cincin">
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Tanggal Kejadian <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" name="tanggal_kejadian" value="{{ old('tanggal_kejadian', $berita->tanggal_kejadian ?? '') }}" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Waktu Kejadian <span class="text-danger">*</span></label>
-                            <input type="time" class="form-control" name="waktu_kejadian" value="{{ old('waktu_kejadian', $berita->waktu_kejadian ?? '') }}" required>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Lokasi Kejadian <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="lokasi" value="{{ old('lokasi', $berita->lokasi ?? '') }}" required placeholder="Contoh: Jl. AR. Saleh Lorong Abdi Utama">
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Pelapor <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="pelapor" value="{{ old('pelapor', $berita->pelapor ?? '') }}" required placeholder="Contoh: Warga RT. 07">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Sumber Informasi <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="sumber_informasi" value="{{ old('sumber_informasi', $berita->sumber_informasi ?? '') }}" required placeholder="Contoh: Melalui Telepon / Aplikasi">
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Keterangan Singkat (Ringkasan) <span class="text-danger">*</span></label>
-                        <textarea class="form-control" name="keterangan_singkat" rows="2" required placeholder="Ringkasan singkat untuk tampilan kartu di halaman utama...">{{ old('keterangan_singkat', $berita->keterangan_singkat ?? '') }}</textarea>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="form-label">Detail Lengkap Berita <span class="text-danger">*</span></label>
-                        <textarea class="form-control" name="detail_lengkap" rows="6" required placeholder="Tuliskan kronologi lengkap kejadian di sini...">{{ old('detail_lengkap', $berita->detail_lengkap ?? '') }}</textarea>
-                    </div>
-
-                    <div class="mb-4 upload-box">
-                        <label class="form-label mb-2">Foto Dokumentasi (Opsional)</label>
-                        @if(isset($berita) && $berita->gambar)
-                            <div class="mb-3 d-flex align-items-center gap-3 flex-wrap">
-                                <img src="{{ asset('storage/' . $berita->gambar) }}" alt="Preview" style="height: 90px; width: 130px; border-radius: var(--r-sm); object-fit: cover; border: 1px solid var(--line-dark);">
-                                <span class="text-muted small"><i class="fas fa-circle-info me-1"></i> Foto saat ini. Biarkan kosong jika tidak ingin mengubah foto.</span>
-                            </div>
-                        @endif
-                        <input type="file" class="form-control bg-white" name="gambar" accept=".jpg,.jpeg,.png">
-                        <small class="text-muted d-block mt-2"><i class="fas fa-file-image me-1"></i>Format yang diizinkan: JPG, JPEG, PNG. Maksimal 2MB.</small>
-                    </div>
-
-                    <hr class="my-4" style="border-color: var(--line);">
-
-                    <div class="d-flex justify-content-end gap-2">
-                        <a href="/internal/operator/kelola-berita" class="btn-simerah-outline">Batal</a>
-                        <button type="submit" class="btn-simerah-danger">
-                            <i class="fas fa-floppy-disk"></i> Simpan Data
-                        </button>
-                    </div>
-                </form>
-            </div>
-
+            <button type="button" class="btn-simerah-danger w-mobile-100" data-bs-toggle="modal" data-bs-target="#modalTambah">
+                <i class="fas fa-plus"></i> Tambah Video
+            </button>
         </div>
+
+        <!-- Section Heading dengan Indikator Jumlah Data -->
+        <div class="section-heading">
+            <span class="section-heading-ico"><i class="fab fa-youtube"></i></span>
+            <h3>Daftar Video Tayang</h3>
+            <span class="line"></span>
+            <span class="count-pill">
+                <i class="fas fa-film"></i> {{ isset($videos) ? count($videos) : 0 }} Video
+            </span>
+        </div>
+
+        <!-- Tabel Data Video -->
+        <div class="card-box">
+            <div class="table-responsive">
+                <table class="table table-simerah align-middle">
+                    <thead>
+                        <tr>
+                            <th style="width: 6%;">No</th>
+                            <th style="width: 22%;">Thumbnail</th>
+                            <th style="width: 52%;">Judul Kegiatan &amp; Tautan</th>
+                            <th style="width: 20%;" class="text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($videos ?? [] as $index => $item)
+                        <tr>
+                            <td>
+                                <span class="row-num">{{ $index + 1 }}</span>
+                            </td>
+                            <td>
+                                <a href="{{ $item->link_asli }}" target="_blank" rel="noopener noreferrer" class="yt-thumb-link" title="Tonton: {{ $item->judul }}">
+                                    <img src="https://i.ytimg.com/vi/{{ $item->youtube_id }}/hqdefault.jpg" alt="Thumbnail {{ $item->judul }}" loading="lazy">
+                                    <span class="yt-thumb-play"><i class="fas fa-circle-play"></i></span>
+                                </a>
+                            </td>
+                            <td>
+                                <div class="video-title">{{ $item->judul }}</div>
+                                <div class="video-meta">
+                                    <a href="{{ $item->link_asli }}" target="_blank" rel="noopener noreferrer" class="yt-watch-link">
+                                        <i class="fab fa-youtube"></i> Tonton di YouTube
+                                    </a>
+                                    @if(!empty($item->youtube_id))
+                                        <span class="yt-id-code"><i class="fas fa-hashtag me-1"></i>{{ $item->youtube_id }}</span>
+                                    @endif
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <form action="/internal/operator/ujung-damkar/hapus/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus video ini dari daftar tayang?')" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn-delete-item">
+                                        <i class="fas fa-trash-can"></i> Hapus
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="4">
+                                <div class="empty-state">
+                                    <div class="empty-ico">
+                                        <i class="fab fa-youtube"></i>
+                                    </div>
+                                    <h4>Belum Ada Video Ujung-Ujung Damkar</h4>
+                                    <p>Tambahkan tautan video dokumentasi atau edukasi dari YouTube agar tampil di halaman publik SIMERAH KOJA.</p>
+                                    <button type="button" class="btn-simerah-danger" data-bs-toggle="modal" data-bs-target="#modalTambah">
+                                        <i class="fas fa-plus"></i> Tambah Video Pertama
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </main>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- ==================== MODAL TAMBAH VIDEO ==================== -->
+<div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form action="/internal/operator/ujung-damkar/store" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTambahLabel">
+                        <i class="fab fa-youtube text-danger"></i> Tambah Video Ujung-Ujung Damkar
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="ytLinkInput" class="form-label">Link Video YouTube <span class="text-danger">*</span></label>
+                        <input type="url" class="form-control" name="link" id="ytLinkInput" placeholder="https://www.youtube.com/watch?v=..." required>
+                        <span class="form-hint">Mendukung tautan YouTube standar, tautan bagikan (`youtu.be`), maupun YouTube Shorts.</span>
+                    </div>
 
+                    <!-- Preview Otomatis saat Paste Link -->
+                    <div class="mb-3 d-none yt-preview-card" id="ytPreviewBox">
+                        <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
+                            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1" style="font-size: .74rem;">
+                                <i class="fas fa-circle-check me-1"></i>ID Video Terdeteksi: <strong id="ytDetectedId">-</strong>
+                            </span>
+                        </div>
+                        <img src="" id="ytPreviewImg" alt="Preview Thumbnail YouTube">
+                    </div>
+
+                    <div class="mb-1">
+                        <label for="judulVideoInput" class="form-label">Judul Kegiatan / Video <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="judul" id="judulVideoInput" placeholder="Contoh: Evakuasi Cincin Warga di Mako Damkar Kota Jambi" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-simerah-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn-simerah-danger">
+                        <i class="fas fa-floppy-disk"></i> Simpan Video
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 (function () {
     'use strict';
 
-    /* ---------- Toast Auto-Hide ---------- */
+    /* ---------- 1. Notifikasi Toast ---------- */
     document.querySelectorAll('[data-toast]').forEach(function (t) {
         var hide = function () {
             t.classList.add('leaving');
@@ -935,7 +1528,7 @@ button {
         setTimeout(hide, 4500);
     });
 
-    /* ---------- Sidebar Mobile Toggle ---------- */
+    /* ---------- 2. Sidebar (Mobile Drawer) ---------- */
     var toggle = document.getElementById('sideToggle');
     var backdrop = document.getElementById('sideBackdrop');
 
@@ -950,17 +1543,42 @@ button {
         });
     }
     if (backdrop) backdrop.addEventListener('click', closeSide);
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeSide();
+    });
 
-    /* ---------- Single Open Accordion Sidebar ---------- */
+    /* ---------- 3. Hanya satu grup sidebar terbuka pada satu waktu ---------- */
     var groups = document.querySelectorAll('.side-group');
     groups.forEach(function (g) {
         g.addEventListener('toggle', function () {
             if (g.open) {
-                groups.forEach(function (o) { if (o !== g) o.open = false; });
+                groups.forEach(function (o) {
+                    if (o !== g) o.open = false;
+                });
             }
         });
     });
+
+    /* ---------- 4. Preview Thumbnail Otomatis saat Paste Link YouTube ---------- */
+    var ytInput      = document.getElementById('ytLinkInput');
+    var ytBox        = document.getElementById('ytPreviewBox');
+    var ytImg        = document.getElementById('ytPreviewImg');
+    var ytDetectedId = document.getElementById('ytDetectedId');
+
+    if (ytInput) {
+        ytInput.addEventListener('input', function () {
+            var val = ytInput.value.trim();
+            var match = val.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+            if (match && match[1]) {
+                ytImg.src = 'https://i.ytimg.com/vi/' + match[1] + '/hqdefault.jpg';
+                if (ytDetectedId) ytDetectedId.textContent = match[1];
+                ytBox.classList.remove('d-none');
+            } else {
+                ytBox.classList.add('d-none');
+                ytImg.src = '';
+            }
+        });
+    }
 })();
 </script>
 </body>
