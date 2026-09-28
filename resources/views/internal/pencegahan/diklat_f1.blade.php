@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-    <title>{{ isset($judul_diklat) ? $judul_diklat : 'Diklat F1' }} - SIMERAH KOJA</title>
+    <title>{{ $judul_diklat ?? 'Diklat F1' }} | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,222 +16,409 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* ==========================================================
-           DESIGN TOKENS
-           ========================================================== */
-        :root {
-            --ink: #0d1b2a;
-            --ink-2: #132a43;
-            --ink-3: #1d3856;
-            --paper: #f7f9fc;
-            --white: #ffffff;
+/* ==========================================================
+   SIMERAH KOJA - CLEAN NAVY DASHBOARD (TEMPLATE)
+   ========================================================== */
 
-            --navy: #1e3a5f;
-            --navy-d: #14283f;
-            --navy-tint: rgba(30, 58, 95, .09);
+/* 1. DESIGN TOKENS */
+:root {
+    --ink: #0d1b2a;
+    --ink-2: #132a43;
+    --ink-3: #1d3856;
 
-            --signal: #e5392d;
-            --signal-d: #c22b20;
-            --signal-tint: rgba(229, 57, 45, .09);
+    --navy: #163a63;
+    --navy-dark: #0d2947;
+    --navy-light: #eaf1f8;
+    --navy-soft: rgba(22, 58, 99, .08);
 
-            --amber: #ffb627;
-            --success: #10b981;
-            --info: #2f6fed;
-            --info-tint: rgba(47, 111, 237, .09);
-            --ink-tint: rgba(13, 27, 42, .055);
+    --paper: #f5f7fa;
+    --white: #ffffff;
 
-            --steel: #64748b;
-            --steel-soft: #94a3b8;
-            --line: #e6eaf1;
+    --signal: #dc3545;
+    --signal-dark: #b42332;
+    --signal-soft: rgba(220, 53, 69, .09);
 
-            --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
-            --font-body: 'Instrument Sans', system-ui, sans-serif;
+    --amber: #f4b740;
+    --success: #198754;
+    --info: #2563eb;
+    --info-soft: rgba(37, 99, 235, .09);
 
-            --r-lg: 20px;
-            --r-md: 14px;
-            --r-sm: 10px;
+    --steel: #64748b;
+    --steel-soft: #94a3b8;
 
-            --sidebar-w: 272px;
-            --topbar-h: 72px;
+    --line: #e2e8f0;
+    --line-dark: #d5dce6;
 
-            --shadow-xs: 0 1px 2px rgba(13, 27, 42, .05);
-            --shadow-sm: 0 2px 8px -2px rgba(13, 27, 42, .08);
-            --shadow-md: 0 12px 24px -8px rgba(13, 27, 42, .12);
-            --shadow-lg: 0 24px 48px -16px rgba(13, 27, 42, .18);
-        }
+    --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+    --font-body: 'Instrument Sans', system-ui, sans-serif;
 
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: var(--font-body);
-            font-size: 1rem;
-            line-height: 1.6;
-            color: var(--ink);
-            background: var(--paper);
-            -webkit-font-smoothing: antialiased;
-        }
-        img { max-width: 100%; display: block; }
-        a { color: inherit; text-decoration: none; }
-        ul, ol { list-style: none; margin: 0; padding: 0; }
-        button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
-        :focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; border-radius: 6px; }
+    --r-lg: 18px;
+    --r-md: 14px;
+    --r-sm: 10px;
 
-        /* ==========================================================
-           NOTIFIKASI (TOAST)
-           ========================================================== */
-        .toast-wrap { position: fixed; z-index: 200; top: 18px; left: 50%; transform: translateX(-50%); display: grid; gap: 10px; width: max-content; max-width: calc(100vw - 24px); }
-        .toast {
-            display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px;
-            border-radius: 999px; background: #fff; border: 1px solid var(--line);
-            box-shadow: var(--shadow-md); font-weight: 600; font-size: .92rem;
-            animation: toastIn .45s cubic-bezier(.16,.84,.3,1) both;
-        }
-        .toast.leaving { animation: toastOut .3s ease forwards; }
-        .toast-ico { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: .78rem; }
-        .toast.ok .toast-ico { background: var(--success); }
-        .toast.err .toast-ico { background: var(--signal); }
-        .toast-x { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); transition: background .2s, color .2s; }
-        .toast-x:hover { background: var(--ink); color: #fff; }
-        @keyframes toastIn { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
-        @keyframes toastOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-14px); } }
+    --sidebar-w: 272px;
+    --topbar-h: 70px;
 
-        /* ==========================================================
-           TOPBAR
-           ========================================================== */
-        .topbar {
-            position: sticky; top: 0; z-index: 60; height: var(--topbar-h);
-            display: flex; align-items: center; justify-content: space-between; gap: 16px;
-            padding: 0 28px; background: rgba(255,255,255,.86);
-            -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--line);
-        }
-        .topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
-        .side-toggle { display: none; width: 40px; height: 40px; border-radius: 12px; align-items: center; justify-content: center; font-size: 1.05rem; transition: background .2s; }
-        .side-toggle:hover { background: var(--paper); }
-        .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
-        .brand img { height: 34px; width: auto; flex: none; }
-        .brand span { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: 1.08rem; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    --shadow-xs: 0 1px 2px rgba(13, 27, 42, .04);
+    --shadow-sm: 0 4px 12px rgba(13, 27, 42, .06);
+    --shadow-md: 0 10px 25px rgba(13, 27, 42, .08);
+    --shadow-lg: 0 20px 45px rgba(13, 27, 42, .14);
+}
 
-        .topbar-right { display: flex; align-items: center; gap: 14px; }
-        .user-chip { display: flex; align-items: center; gap: 10px; padding: 6px 16px 6px 6px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); }
-        .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: .9rem; flex: none; }
-        .user-meta { display: grid; line-height: 1.25; }
-        .user-meta strong { font-size: .85rem; font-weight: 700; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); }
-        .user-meta small { font-size: .74rem; color: var(--steel); text-transform: capitalize; font-weight: 500; }
-        .btn-logout { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border-radius: 999px; background: var(--navy); color: #fff; font-weight: 600; font-size: .85rem; transition: background .2s, transform .1s; border: none; }
-        .btn-logout:hover { background: var(--navy-d); }
-        .btn-logout:active { transform: scale(.98); }
+/* 2. RESET */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--paper);
+    -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; margin: 0; padding: 0; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; border-radius: 6px; }
 
-        @media (max-width: 900px) {
-            .side-toggle { display: inline-flex; }
-            .user-meta { display: none; }
-        }
+/* 3. TOAST */
+.toast-wrap {
+    position: fixed; z-index: 200; top: 18px; left: 50%;
+    transform: translateX(-50%);
+    display: grid; gap: 10px;
+    width: max-content; max-width: calc(100vw - 24px);
+}
+.toast {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 12px 12px 16px;
+    border-radius: 999px; background: #ffffff;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-md);
+    font-weight: 600; font-size: .92rem;
+    animation: toastIn .45s cubic-bezier(.16,.84,.3,1) both;
+}
+.toast.leaving { animation: toastOut .3s ease forwards; }
+.toast-ico { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: .78rem; }
+.toast.ok .toast-ico { background: var(--success); }
+.toast.err .toast-ico { background: var(--signal); }
+.toast-x { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); transition: background .2s, color .2s; }
+.toast-x:hover { background: var(--ink); color: #fff; }
+@keyframes toastIn { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+@keyframes toastOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-14px); } }
 
-        /* ==========================================================
-           SHELL: SIDEBAR + KONTEN
-           ========================================================== */
-        .shell { display: flex; align-items: flex-start; min-height: calc(100vh - var(--topbar-h)); }
+/* 4. TOPBAR (NAVY) */
+.topbar {
+    position: sticky; top: 0; z-index: 60;
+    height: var(--topbar-h);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding: 0 28px;
+    background: var(--ink);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    box-shadow: 0 2px 12px rgba(13, 27, 42, .16);
+}
+.topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.side-toggle {
+    display: none; width: 40px; height: 40px; border-radius: 10px;
+    align-items: center; justify-content: center;
+    font-size: 1.05rem; color: #fff;
+    transition: background .2s, transform .2s;
+}
+.side-toggle:hover { background: rgba(255,255,255,.10); }
+.side-toggle:active { transform: scale(.95); }
 
-        .sidebar {
-            width: var(--sidebar-w); flex: none; position: sticky; top: var(--topbar-h);
-            height: calc(100vh - var(--topbar-h)); overflow-y: auto;
-            background: #fff; border-right: 1px solid var(--line);
-            padding: 20px 14px 32px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--line) transparent;
-        }
-        .sidebar::-webkit-scrollbar { width: 6px; }
-        .sidebar::-webkit-scrollbar-track { background: transparent; }
-        .sidebar::-webkit-scrollbar-thumb { background-color: var(--line); border-radius: 20px; }
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; color: #fff; }
+.brand img { height: 34px; width: auto; flex: none; }
+.brand span {
+    font-family: var(--font-display); font-weight: 700; font-size: 1.08rem;
+    letter-spacing: -.01em; white-space: nowrap; overflow: hidden;
+    text-overflow: ellipsis; color: #fff;
+}
 
-        .side-link {
-            display: flex; align-items: center; gap: 14px; padding: 11px 14px; border-radius: var(--r-sm);
-            font-size: .9rem; font-weight: 600; color: var(--ink); transition: background .2s, color .2s;
-            margin-bottom: 4px;
-        }
-        .side-link:hover { background: var(--paper); }
-        .side-link.active { background: var(--ink); color: #fff; }
-        .side-link i { width: 20px; text-align: center; font-size: 1rem; color: var(--steel); transition: color .2s; }
-        .side-link:hover i { color: var(--ink); }
-        .side-link.active i { color: var(--amber); }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.user-chip {
+    display: flex; align-items: center; gap: 10px;
+    padding: 5px 14px 5px 5px; border-radius: 999px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.12);
+    transition: background .2s, border-color .2s;
+}
+.user-chip:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.18); }
+.user-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: #ffffff; color: var(--ink);
+    display: grid; place-items: center;
+    font-family: var(--font-display); font-weight: 700; font-size: .9rem; flex: none;
+}
+.user-meta { display: grid; line-height: 1.25; }
+.user-meta strong { font-size: .84rem; font-weight: 700; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #ffffff; }
+.user-meta small { font-size: .72rem; color: rgba(255,255,255,.62); text-transform: capitalize; font-weight: 500; }
 
-        .side-group + .side-group { margin-top: 6px; }
-        .side-group summary {
-            list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px;
-            padding: 11px 14px; border-radius: var(--r-sm); font-size: .8rem; font-weight: 700;
-            letter-spacing: .04em; text-transform: uppercase; color: var(--navy); transition: background .2s;
-            user-select: none;
-        }
-        .side-group summary::-webkit-details-marker { display: none; }
-        .side-group summary:hover { background: var(--paper); }
-        .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); }
-        .side-group summary .grp-label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .side-group summary .chev { flex: none; font-size: .7rem; transition: transform .25s ease; }
-        .side-group[open] summary .chev { transform: rotate(180deg); }
+.btn-logout {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    height: 40px; padding: 0 17px; border-radius: 999px;
+    background: #ffffff; color: var(--ink);
+    font-weight: 600; font-size: .84rem; border: none;
+    transition: background .2s, color .2s, transform .1s, box-shadow .2s;
+}
+.btn-logout:hover { background: #e8eef5; color: var(--ink); box-shadow: 0 4px 10px rgba(0,0,0,.12); }
+.btn-logout:active { transform: scale(.97); }
 
-        .side-sub { display: grid; gap: 3px; padding: 6px 4px 10px 12px; border-left: 2px solid var(--line); margin: 2px 0 8px 22px; }
-        .side-sub a {
-            display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: var(--r-sm);
-            font-size: .85rem; font-weight: 500; line-height: 1.4; color: var(--steel);
-            transition: background .2s, color .2s, transform .2s;
-        }
-        .side-sub a:hover { background: var(--paper); color: var(--ink); transform: translateX(2px); }
-        .side-sub a.active { background: var(--navy-tint); color: var(--navy-d); font-weight: 600; }
-        .side-sub a i { width: 18px; text-align: center; font-size: .9rem; opacity: .75; }
-        .side-sub a:hover i, .side-sub a.active i { opacity: 1; }
+/* 7. SHELL */
+.shell { display: flex; align-items: flex-start; min-height: calc(100vh - var(--topbar-h)); }
 
-        .side-kicker { padding: 18px 14px 6px; font-size: .7rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--steel-soft); }
+/* 8. SIDEBAR */
+.sidebar {
+    width: var(--sidebar-w); flex: none;
+    position: sticky; top: var(--topbar-h);
+    height: calc(100vh - var(--topbar-h));
+    overflow-y: auto; background: #ffffff;
+    border-right: 1px solid var(--line);
+    padding: 20px 14px 32px;
+    scrollbar-width: thin; scrollbar-color: #d8dee8 transparent;
+}
+.sidebar::-webkit-scrollbar { width: 6px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background-color: #d8dee8; border-radius: 20px; }
 
-        .sidebar-backdrop { display: none; }
+/* 9. SIDEBAR MENU */
+.side-link {
+    display: flex; align-items: center; gap: 14px;
+    padding: 11px 14px; border-radius: var(--r-sm);
+    font-size: .89rem; font-weight: 600; color: var(--ink);
+    transition: background .2s, color .2s, transform .2s;
+    margin-bottom: 4px;
+}
+.side-link:hover { background: #f3f6fa; color: var(--ink); transform: translateX(1px); }
+.side-link.active { background: var(--ink); color: #ffffff; box-shadow: 0 4px 10px rgba(13,27,42,.10); }
+.side-link i { width: 20px; text-align: center; font-size: 1rem; color: var(--steel); transition: color .2s; }
+.side-link:hover i { color: var(--ink); }
+.side-link.active i { color: #ffffff; }
 
-        @media (max-width: 900px) {
-            .sidebar {
-                position: fixed; z-index: 90; top: var(--topbar-h); left: 0;
-                height: calc(100dvh - var(--topbar-h)); transform: translateX(-100%);
-                transition: transform .3s cubic-bezier(.4,0,.2,1); box-shadow: var(--shadow-lg);
-            }
-            body.side-open .sidebar { transform: none; }
-            .sidebar-backdrop {
-                display: block; position: fixed; inset: var(--topbar-h) 0 0 0; z-index: 80;
-                background: rgba(13,27,42,.4); opacity: 0; pointer-events: none; transition: opacity .3s;
-            }
-            body.side-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
-        }
+/* 10. SIDEBAR GROUP */
+.side-group + .side-group { margin-top: 6px; }
+.side-group summary {
+    list-style: none; cursor: pointer;
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 14px; border-radius: var(--r-sm);
+    font-size: .78rem; font-weight: 700; letter-spacing: .04em;
+    text-transform: uppercase; color: var(--navy);
+    transition: background .2s, color .2s; user-select: none;
+}
+.side-group summary::-webkit-details-marker { display: none; }
+.side-group summary:hover { background: #f3f6fa; }
+.side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); }
+.side-group summary .grp-label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.side-group summary .chev { flex: none; font-size: .7rem; transition: transform .25s ease; }
+.side-group[open] summary .chev { transform: rotate(180deg); }
 
-        /* ==========================================================
-           KONTEN UTAMA & TABEL
-           ========================================================== */
-        .content { flex: 1; min-width: 0; padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 80px; }
+/* 11. SIDEBAR SUB MENU */
+.side-sub {
+    display: grid; gap: 3px;
+    padding: 6px 4px 10px 12px;
+    border-left: 2px solid var(--line);
+    margin: 2px 0 8px 22px;
+}
+.side-sub a {
+    display: flex; align-items: center; gap: 12px;
+    padding: 9px 12px; border-radius: var(--r-sm);
+    font-size: .84rem; font-weight: 500; line-height: 1.4; color: var(--steel);
+    transition: background .2s, color .2s, transform .2s;
+}
+.side-sub a:hover { background: var(--navy-light); color: var(--navy-dark); transform: translateX(2px); }
+.side-sub a.active { background: var(--navy-soft); color: var(--navy); font-weight: 600; }
+.side-sub a i { width: 18px; text-align: center; font-size: .88rem; opacity: .75; }
+.side-sub a:hover i, .side-sub a.active i { opacity: 1; }
 
-        .page-head h1 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 4px; color: var(--ink); }
-        .page-head p { color: var(--steel); font-size: .98rem; }
+/* 12. SIDEBAR SECTION LABEL */
+.side-kicker {
+    padding: 18px 14px 6px; font-size: .68rem; font-weight: 700;
+    letter-spacing: .06em; text-transform: uppercase; color: var(--steel-soft);
+}
 
-        .custom-nav-tabs { border-bottom: 2px solid var(--line); margin-top: 15px; gap: 10px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; display: flex; }
-        .custom-nav-tabs::-webkit-scrollbar { height: 4px; }
-        .custom-nav-tabs::-webkit-scrollbar-thumb { background: var(--steel-soft); border-radius: 10px; }
-        .custom-nav-tabs .nav-link { border: none; color: var(--steel); font-weight: 700; font-size: 13px; padding: 12px 18px; background: transparent; white-space: nowrap; transition: all 0.2s; }
-        .custom-nav-tabs .nav-link:hover { color: var(--ink); }
-        .custom-nav-tabs .nav-link.active { color: var(--navy); border-bottom: 3px solid var(--navy); }
+/* 13. MOBILE SIDEBAR */
+.sidebar-backdrop { display: none; }
+@media (max-width: 900px) {
+    .side-toggle { display: inline-flex; }
+    .user-meta { display: none; }
+    .sidebar {
+        position: fixed; z-index: 90; top: var(--topbar-h); left: 0;
+        height: calc(100dvh - var(--topbar-h));
+        transform: translateX(-100%);
+        transition: transform .3s cubic-bezier(.4,0,.2,1);
+        box-shadow: var(--shadow-lg);
+    }
+    body.side-open .sidebar { transform: none; }
+    .sidebar-backdrop {
+        display: block; position: fixed; inset: var(--topbar-h) 0 0 0; z-index: 80;
+        background: rgba(13,27,42,.45); opacity: 0; pointer-events: none; transition: opacity .3s;
+    }
+    body.side-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
+}
 
-        .table-scroll-wrapper { width: 100%; overflow-x: auto; border-radius: var(--r-md); border: 1px solid var(--line); background: #fff; margin-bottom: 40px; box-shadow: var(--shadow-sm); }
-        .table-scroll-wrapper::-webkit-scrollbar { height: 8px; }
-        .table-scroll-wrapper::-webkit-scrollbar-thumb { background: var(--steel-soft); border-radius: 10px; }
-        .table-scroll-wrapper::-webkit-scrollbar-track { background: var(--paper); }
-        
-        .table-detailed { width: 100%; border-collapse: collapse; min-width: 2500px; margin-bottom: 0; }
-        .table-detailed thead { background-color: var(--ink); color: #fff; }
-        .table-detailed th { font-size: 11px; font-weight: 700; padding: 16px 15px; white-space: nowrap; text-transform: uppercase; border-right: 1px solid var(--ink-3); letter-spacing: 0.5px; vertical-align: middle; }
-        .table-detailed td { font-size: 13px; padding: 14px 15px; vertical-align: middle; white-space: nowrap; border-bottom: 1px solid var(--line); border-right: 1px solid var(--paper); }
-        .table-detailed tbody tr:hover { background-color: var(--paper); }
-        
-        .badge-soft-blue { background-color: var(--info-tint); color: var(--info); padding: 6px 12px; font-weight: 700; border-radius: 6px; border: 1px solid rgba(47, 111, 237, .15); }
-        
-        .btn-action { width: 32px; height: 32px; display: inline-flex; justify-content: center; align-items: center; border-radius: 6px; font-size: 13px; color: white; border: none; cursor: pointer; transition: transform 0.1s; margin-right: 4px;}
-        .btn-action:hover { transform: scale(1.05); color: white; }
-        .btn-edit { background-color: var(--amber); }
-        .btn-delete { background-color: var(--signal); }
+/* 14. MAIN CONTENT */
+.content {
+    flex: 1; min-width: 0;
+    padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 80px;
+}
 
-        .badge-diklat { font-size: 11px; font-weight: 600; padding: 5px 10px; border-radius: 4px; background: var(--navy-tint); color: var(--navy-d); }
+/* 15. PAGE HEADER */
+.page-head { margin-bottom: 26px; }
+.page-head h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2;
+    letter-spacing: -.02em; margin-bottom: 5px; color: var(--ink);
+}
+.page-head p { color: var(--steel); font-size: .95rem; }
+
+/* ==========================================================
+   HALAMAN DIKSAR (tabs, toolbar, tabel) - disesuaikan ke template
+   ========================================================== */
+.page-toolbar { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-bottom: 8px; }
+.page-toolbar .page-head { margin-bottom: 0; }
+.toolbar-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+
+.search-box { position: relative; width: 260px; max-width: 100%; }
+.search-box i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--steel-soft); font-size: .85rem; pointer-events: none; }
+.search-box input {
+    width: 100%; height: 42px; padding: 0 14px 0 38px;
+    border: 1px solid var(--line-dark); border-radius: var(--r-sm);
+    background: #fff; font-size: .88rem; font-family: var(--font-body); color: var(--ink);
+    transition: border-color .2s, box-shadow .2s;
+}
+.search-box input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+
+.btn-tool {
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 42px; padding: 0 16px; border-radius: var(--r-sm);
+    font-weight: 600; font-size: .85rem; color: #fff; border: none;
+    transition: filter .2s, transform .1s, box-shadow .2s;
+}
+.btn-tool:hover { color: #fff; filter: brightness(1.08); box-shadow: var(--shadow-sm); }
+.btn-tool:active { transform: scale(.97); }
+.btn-tool.navy { background: var(--navy); }
+.btn-tool.green { background: var(--success); }
+.btn-tool.red { background: var(--signal); }
+
+.custom-nav-tabs {
+    display: flex; flex-wrap: nowrap; gap: 6px; overflow-x: auto;
+    margin-top: 18px; padding-bottom: 0;
+    border-bottom: 1px solid var(--line);
+}
+.custom-nav-tabs::-webkit-scrollbar { height: 4px; }
+.custom-nav-tabs::-webkit-scrollbar-thumb { background: var(--steel-soft); border-radius: 10px; }
+.custom-nav-tabs .nav-link {
+    border: none; border-bottom: 3px solid transparent; border-radius: 0;
+    color: var(--steel); font-weight: 700; font-size: .8rem; letter-spacing: .02em;
+    padding: 12px 18px; background: transparent; white-space: nowrap;
+    transition: color .2s, border-color .2s, background .2s;
+}
+.custom-nav-tabs .nav-link:hover { color: var(--ink); background: var(--navy-soft); }
+.custom-nav-tabs .nav-link.active { color: var(--navy); border-bottom-color: var(--navy); }
+
+.table-title {
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--font-display); font-weight: 700; font-size: 1rem;
+    color: var(--ink); letter-spacing: -.01em; margin: 26px 0 14px;
+}
+.table-title .ico {
+    width: 32px; height: 32px; border-radius: 9px; background: var(--navy); color: #fff;
+    display: grid; place-items: center; font-size: .78rem;
+    box-shadow: 0 4px 8px rgba(22,58,99,.12);
+}
+
+.table-scroll-wrapper {
+    width: 100%; overflow-x: auto; background: #fff;
+    border-radius: var(--r-md); border: 1px solid var(--line);
+    box-shadow: var(--shadow-xs); margin-bottom: 40px;
+}
+.table-scroll-wrapper::-webkit-scrollbar { height: 8px; }
+.table-scroll-wrapper::-webkit-scrollbar-thumb { background: var(--steel-soft); border-radius: 10px; }
+.table-scroll-wrapper::-webkit-scrollbar-track { background: var(--paper); }
+
+.table-detailed { width: 100%; border-collapse: collapse; min-width: 2500px; margin-bottom: 0; }
+.table-detailed thead { background: var(--ink); color: #fff; }
+.table-detailed th {
+    font-size: .7rem; font-weight: 700; padding: 16px 15px; white-space: nowrap;
+    text-transform: uppercase; letter-spacing: .05em; vertical-align: middle;
+    border-right: 1px solid var(--ink-3);
+}
+.table-detailed td {
+    font-size: .84rem; padding: 14px 15px; vertical-align: middle; white-space: nowrap;
+    border-bottom: 1px solid var(--line); border-right: 1px solid var(--paper);
+}
+.table-detailed tbody tr { transition: background .15s; }
+.table-detailed tbody tr:hover { background: var(--paper); }
+
+.badge-soft-blue {
+    display: inline-block; background: var(--info-soft); color: var(--info);
+    padding: 5px 12px; font-weight: 700; font-size: .78rem; border-radius: 6px;
+    border: 1px solid rgba(37, 99, 235, .15);
+}
+.badge-diklat {
+    display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .03em;
+    padding: 5px 10px; border-radius: 6px; background: var(--navy-soft); color: var(--navy);
+}
+
+.aksi-wrap { display: flex; justify-content: center; align-items: center; gap: 6px; }
+.aksi-wrap form { margin: 0; display: inline-flex; }
+.btn-action {
+    width: 32px; height: 32px; display: inline-flex; justify-content: center; align-items: center;
+    border-radius: 8px; font-size: .8rem; color: #fff; border: none; cursor: pointer;
+    transition: transform .1s, filter .2s;
+}
+.btn-action:hover { transform: scale(1.06); color: #fff; filter: brightness(1.06); }
+.btn-edit { background: var(--amber); color: var(--ink); }
+.btn-edit:hover { color: var(--ink); }
+.btn-delete { background: var(--signal); }
+
+.empty-state { text-align: center; padding: 48px 12px !important; color: var(--steel); font-weight: 600; }
+.empty-state i { font-size: 28px; color: var(--steel-soft); margin-bottom: 8px; }
+
+/* RESPONSIVE TABLET */
+@media (max-width: 1100px) {
+    .topbar { padding: 0 20px; }
+    .content { padding: 32px 26px 60px; }
+}
+
+/* RESPONSIVE MOBILE */
+@media (max-width: 700px) {
+    :root { --topbar-h: 64px; }
+    .topbar { height: var(--topbar-h); padding: 0 14px; gap: 10px; }
+    .brand { gap: 9px; }
+    .brand img { height: 30px; }
+    .brand span { font-size: .95rem; }
+    .topbar-right { gap: 7px; }
+    .user-chip { padding: 3px; border: none; background: transparent; }
+    .user-avatar { width: 34px; height: 34px; }
+    .btn-logout { width: 38px; height: 38px; padding: 0; border-radius: 10px; font-size: 0; }
+    .btn-logout i { font-size: .9rem; }
+    .content { padding: 26px 16px 50px; }
+    .page-head { margin-bottom: 22px; }
+    .page-head h1 { font-size: 1.55rem; }
+    .page-head p { font-size: .88rem; }
+    .search-box { width: 100%; }
+    .toolbar-actions { width: 100%; }
+}
+
+@media (max-width: 420px) {
+    .brand span { display: none; }
+    .content { padding-left: 13px; padding-right: 13px; }
+}
+
+/* ACCESSIBILITY */
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* PRINT */
+@media print {
+    .topbar { position: static; background: #fff !important; color: #000 !important; box-shadow: none; border-bottom: 1px solid #ddd; }
+    .brand span { color: #000 !important; }
+    .sidebar, .btn-logout, .toolbar-actions { display: none; }
+    .content { padding: 20px; }
+}
     </style>
 </head>
 <body>
@@ -290,7 +477,7 @@
             <i class="fas fa-house"></i> Dashboard utama
         </a>
 
-        @if(Auth::user()?->role === 'user' || Auth::user()?->role === 'super_user' || true)
+        @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
 
             <div class="side-kicker">Modul operasional</div>
 
@@ -298,8 +485,7 @@
             <details class="side-group" {{ Request::is('internal/pencegahan*') ? 'open' : '' }}>
                 <summary><i class="fas fa-shield-halved grp-ico"></i><span class="grp-label">Bagian pencegahan</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
-                    <!-- AKTIF DI HALAMAN INI -->
-                    <a href="/internal/pencegahan/peningkatan-kapasitas" class="active">
+                    <a href="/internal/pencegahan/peningkatan-kapasitas" class="{{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}">
                         <i class="fas fa-arrow-trend-up"></i> Peningkatan Kapasitas Aparatur
                     </a>
                     <a href="/internal/pencegahan/inspeksi-kebakaran" class="{{ Request::is('internal/pencegahan/inspeksi-kebakaran*') ? 'active' : '' }}">
@@ -329,13 +515,16 @@
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
-                        <i class="fas fa-fire-extinguisher"></i> Input Data
+                        <i class="fas fa-fire-extinguisher"></i> Input data
+                    </a>
+                    <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
+                        <i class="fas fa-file-signature"></i> Buat Surat Korban
                     </a>
                     <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') ? 'active' : '' }}">
-                        <i class="fas fa-clipboard-list"></i> Data Laporan
+                        <i class="fas fa-clipboard-list"></i> Kelola Data Laporan
                     </a>
-                    <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban*') ? 'active' : '' }}">
-                        <i class="fas fa-file-signature"></i> Buat Surat Korban
+                    <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') ? 'active' : '' }}">
+                        <i class="fas fa-folder"></i> Kelola Surat Korban
                     </a>
                 </div>
             </details>
@@ -355,8 +544,10 @@
                 <summary><i class="fas fa-warehouse grp-ico"></i><span class="grp-label">Bagian sapra</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <span class="side-kicker" style="padding-left:2px;">Sarana &amp; Prasarana</span>
+                    <a href="/sapra/sarana-mako" class="{{ Request::is('sapra/sarana-mako*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Sarana pemadam kebakaran</a>
+                    <a href="/sapra/prasarana-mako" class="{{ Request::is('sapra/prasarana-mako*') ? 'active' : '' }}"><i class="fas fa-building"></i> Prasarana pemadam kebakaran</a>
                     <a href="/sapra/sarana-penyelamatan" class="{{ Request::is('sapra/sarana-penyelamatan*') ? 'active' : '' }}">
-                        <i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi
+                        <i class="fas fa-life-ring"></i> Sarana Penyelamatan &amp; Evakuasi
                     </a>
                     <a href="/sapra/sarana-pemeriksaan" class="{{ Request::is('sapra/sarana-pemeriksaan*') ? 'active' : '' }}">
                         <i class="fas fa-search-location"></i> Sarana Pemeriksaan Proteksi Kebakaran
@@ -373,18 +564,18 @@
                         <i class="fas fa-map-location-dot"></i> Data Hidrant Kota Jambi
                     </a>
 
-                    <span class="side-kicker" style="padding-left:2px;">Logistik & Distribusi</span>
+                    <span class="side-kicker" style="padding-left:2px;">Logistik &amp; Distribusi</span>
                     <a href="/sapra/kebutuhan-sarpras" class="{{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}">
                         <i class="fas fa-boxes-stacked"></i> Mutu Baku Kebutuhan
                     </a>
                     <a href="/sapra/distribusi-staff" class="{{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}">
-                        <i class="fas fa-people-carry-box"></i> Distribusi Barang Staff
+                        <i class="fas fa-people-carry-box"></i> Serah terima Barang
                     </a>
                 </div>
             </details>
         @endif
 
-        @if(Auth::user()?->role === 'operator' || Auth::user()?->role === 'super_user' || true)
+        @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
             <div class="side-kicker">Konten publik</div>
             <details class="side-group" {{ Request::is('internal/operator*') ? 'open' : '' }}>
                 <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen berita</span><i class="fas fa-chevron-down chev"></i></summary>
@@ -402,21 +593,24 @@
             </details>
         @endif
 
+        <!-- PENGATURAN AKUN -->
         <div class="side-kicker">Akun</div>
-        <details class="side-group" {{ Request::is('internal/profil*') || Request::is('internal/kelola-user*') || Request::is('internal/kelola-pemohon*') ? 'open' : '' }}>
+        <details class="side-group" {{ request()->is('internal/profil*') || request()->is('internal/kelola-user*') || request()->is('internal/kelola-pemohon*') ? 'open' : '' }}>
             <summary><i class="fas fa-user-gear grp-ico"></i><span class="grp-label">Pengaturan akun</span><i class="fas fa-chevron-down chev"></i></summary>
             <div class="side-sub">
-                <a href="/internal/profil" class="{{ Request::is('internal/profil*') ? 'active' : '' }}">
+                <a href="{{ url('/internal/profil') }}" class="{{ request()->is('internal/profil*') ? 'active' : '' }}">
                     <i class="fas fa-user-pen"></i> Profil Saya
                 </a>
-                @if(Auth::user()?->role === 'super_user')
-                    <a href="/internal/kelola-user" class="{{ Request::is('internal/kelola-user*') ? 'active' : '' }}">
-                        <i class="fas fa-users-gear"></i> Kelola Semua Pengguna
-                    </a>
-                    <a href="/internal/kelola-pemohon" class="{{ Request::is('internal/kelola-pemohon*') ? 'active' : '' }}">
-                        <i class="fas fa-address-book"></i> Kelola Akun Pemohon
+
+                @if(auth()->user()->role === 'super_user')
+                    <a href="{{ url('/internal/kelola-user') }}" class="{{ request()->is('internal/kelola-user*') ? 'active' : '' }}">
+                        <i class="fas fa-users-gear"></i> Kelola Pengguna
                     </a>
                 @endif
+
+                <a href="{{ url('/internal/kelola-pemohon') }}" class="{{ request()->is('internal/kelola-pemohon*') ? 'active' : '' }}">
+                    <i class="fas fa-address-book"></i> Kelola Akun Pemohon
+                </a>
             </div>
         </details>
 
@@ -424,36 +618,36 @@
 
     <!-- ==================== KONTEN UTAMA ==================== -->
     <main class="content">
-        
+
         <!-- HEADER KONTEN & TOMBOL AKSI -->
-        <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
-            <div class="page-head mb-0">
+        <div class="page-toolbar">
+            <div class="page-head">
                 <h1>Peningkatan Kapasitas Aparatur</h1>
                 <p>Kelola data diklat dan peningkatan kapasitas aparatur pemadam kebakaran.</p>
             </div>
-            
-            <div class="d-flex align-items-center gap-2">
-                <div class="input-group" style="width: 260px;">
-                    <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
-                    <input type="text" class="form-control border-start-0 ps-0" placeholder="Cari nama atau NIK...">
+
+            <div class="toolbar-actions">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Cari nama atau NIK..." aria-label="Cari nama atau NIK">
                 </div>
-                
                 @php
-                    $jenis_url = isset($judul_diklat) ? strtolower(str_replace(' ', '-', $judul_diklat)) : 'diklat-f1';
+                    $judul = $judul_diklat ?? 'DIKLAT F1';
+                    $jenis_url = strtolower(str_replace(' ', '-', $judul));
                 @endphp
-                <a href="/internal/pencegahan/peningkatan-kapasitas/tambah?jenis={{ isset($judul_diklat) ? $judul_diklat : 'DIKLAT F1' }}" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: var(--navy); padding: 9px 16px;">
+                <a href="/internal/pencegahan/peningkatan-kapasitas/tambah?jenis={{ $judul }}" class="btn-tool navy">
                     <i class="fas fa-plus"></i> Tambah Data
                 </a>
-                <a href="/internal/pencegahan/peningkatan-kapasitas/cetak-excel/{{ $jenis_url }}" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: var(--success); padding: 9px 16px;">
+                <a href="/internal/pencegahan/peningkatan-kapasitas/cetak-excel/{{ $jenis_url }}" class="btn-tool green">
                     <i class="fas fa-file-excel"></i> Excel
                 </a>
-                <a href="/internal/pencegahan/peningkatan-kapasitas/cetak-pdf/{{ $jenis_url }}" target="_blank" class="btn text-white fw-bold d-flex align-items-center gap-2" style="background-color: var(--signal); padding: 9px 16px;">
+                <a href="/internal/pencegahan/peningkatan-kapasitas/cetak-pdf/{{ $jenis_url }}" target="_blank" class="btn-tool red">
                     <i class="fas fa-file-pdf"></i> PDF
                 </a>
             </div>
         </div>
 
-        <!-- TABS MENYAMPING -->
+        <!-- TABS -->
         <ul class="nav custom-nav-tabs">
             <li class="nav-item">
                 <a class="nav-link {{ Request::is('internal/pencegahan/peningkatan-kapasitas') ? 'active' : '' }}" href="/internal/pencegahan/peningkatan-kapasitas">Semua Data</a>
@@ -485,17 +679,17 @@
         </ul>
 
         <!-- ================= AREA TABEL DATA ================= -->
-        <h5 class="fw-bold mt-4 mb-3" style="color: var(--navy);">
-            <i class="fas fa-list-check me-2"></i> Data {{ isset($judul_diklat) ? $judul_diklat : 'Diklat' }}
-        </h5>
+        <div class="table-title">
+            <span class="ico"><i class="fas fa-list-check"></i></span>
+            <span>Data {{ $judul_diklat ?? 'Diklat' }}</span>
+        </div>
 
-        <!-- TABEL -->
         <div class="table-scroll-wrapper">
             <table class="table-detailed table-hover">
                 <thead>
                     <tr>
                         <th class="text-center" width="50px">No</th>
-                        <th>NAMA</th>
+                        <th>Nama</th>
                         <th>Tempat Lahir</th>
                         <th>Tgl Lahir</th>
                         <th>NIK</th>
@@ -515,59 +709,57 @@
                         <th>Updated at</th>
                         <th>TTL</th>
                         <th>Ket</th>
-                        <th class="text-center" width="100px">AKSI</th>
+                        <th class="text-center" width="100px">Aksi</th>
                     </tr>
                 </thead>
-                
+
                 <tbody>
-                    @if(isset($data_diklat) && count($data_diklat) > 0)
-                        @foreach($data_diklat as $index => $item)
-                        <tr>
-                            <td class="text-center fw-bold">{{ $index + 1 }}</td>
-                            <td><div class="fw-bold text-dark">{{ $item->nama }}</div></td>
-                            <td>{{ $item->tempat_lahir }}</td>
-                            <td>{{ $item->tgl_lahir }}</td>
-                            <td>{{ $item->nik }}</td>
-                            <td>{{ $item->jabatan }}</td>
-                            <td>{{ $item->instansi }}</td>
-                            <td>{{ $item->ditandatangani_oleh }}</td>
-                            <td>{{ $item->tanggal_pelaksanaan }}</td>
-                            <td class="text-center"><span class="badge-soft-blue">{{ $item->jumlah_jam_pelajaran }}</span></td>
-                            <td>{{ $item->instansi_penyelenggara }}</td>
-                            <td>{{ $item->provinsi }}</td>
-                            <td>{{ $item->kota }}</td>
-                            <td style="color: var(--ink); font-weight: 600;">{{ $item->nomor_sertifikat }}</td>
-                            <td>{{ $item->kode_verifikasi }}</td>
-                            <td>{{ $item->persentasi_penilaian }}</td>
-                            <td><span class="badge-diklat">{{ $item->jenis_diklat ?? ($judul_diklat ?? 'DIKLAT F1') }}</span></td>
-                            <td>{{ $item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $item->ttl }}</td>
-                            <td>{{ $item->ket }}</td>
-                            <td class="text-center d-flex justify-content-center align-items-center">
-                                <!-- TOMBOL EDIT -->
-                                <a href="/internal/pencegahan/peningkatan-kapasitas/edit/{{ strtolower(str_replace(' ', '-', $judul_diklat ?? 'diklat-f1')) }}/{{ $item->id }}" class="btn-action btn-edit" title="Edit">
+                    @forelse (($data_diklat ?? []) as $index => $item)
+                    <tr>
+                        <td class="text-center fw-bold">{{ $index + 1 }}</td>
+                        <td><div class="fw-bold">{{ $item->nama }}</div></td>
+                        <td>{{ $item->tempat_lahir }}</td>
+                        <td>{{ $item->tgl_lahir }}</td>
+                        <td>{{ $item->nik }}</td>
+                        <td>{{ $item->jabatan }}</td>
+                        <td>{{ $item->instansi }}</td>
+                        <td>{{ $item->ditandatangani_oleh }}</td>
+                        <td>{{ $item->tanggal_pelaksanaan }}</td>
+                        <td class="text-center"><span class="badge-soft-blue">{{ $item->jumlah_jam_pelajaran }}</span></td>
+                        <td>{{ $item->instansi_penyelenggara }}</td>
+                        <td>{{ $item->provinsi }}</td>
+                        <td>{{ $item->kota }}</td>
+                        <td style="color: var(--ink); font-weight: 600;">{{ $item->nomor_sertifikat }}</td>
+                        <td>{{ $item->kode_verifikasi }}</td>
+                        <td>{{ $item->persentasi_penilaian }}</td>
+                        <td><span class="badge-diklat">{{ $item->jenis_diklat ?? ($judul_diklat ?? 'DIKLAT F1') }}</span></td>
+                        <td>{{ $item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
+                        <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
+                        <td>{{ $item->ttl }}</td>
+                        <td>{{ $item->ket }}</td>
+                        <td>
+                            <div class="aksi-wrap">
+                                <a href="/internal/pencegahan/peningkatan-kapasitas/edit/{{ $jenis_url }}/{{ $item->id }}" class="btn-action btn-edit" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <!-- TOMBOL HAPUS -->
-                                <form action="/internal/pencegahan/peningkatan-kapasitas/hapus/{{ strtolower(str_replace(' ', '-', $judul_diklat ?? 'diklat-f1')) }}/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');" style="margin: 0; padding: 0; display: inline-block;">
+                                <form action="/internal/pencegahan/peningkatan-kapasitas/hapus/{{ $jenis_url }}/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn-action btn-delete" title="Hapus">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    @else
-                        <tr>
-                            <td colspan="22" class="text-center text-muted fw-bold py-5">
-                                <i class="fas fa-folder-open mb-2" style="font-size: 28px; color: var(--steel-soft);"></i><br>
-                                Belum ada data untuk {{ isset($judul_diklat) ? $judul_diklat : 'Diklat F1' }}.
-                            </td>
-                        </tr>
-                    @endif
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="22" class="empty-state">
+                            <i class="fas fa-folder-open"></i><br>
+                            Belum ada data untuk {{ $judul_diklat ?? 'Diklat F1' }}.
+                        </td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
