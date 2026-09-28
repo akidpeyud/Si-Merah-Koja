@@ -259,6 +259,31 @@
         .btn-save.success:hover { background: #15803d; }
 
         /* ==========================================================
+           SEARCHABLE SELECT (Pilih Barang / Jasa)
+           Panel inline (bukan absolute) supaya nggak kepotong
+           overflow modal & scroll body modal tetap jalan.
+           ========================================================== */
+        .ss { position: relative; }
+        .ss-btn { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; height: 44px; padding: 0 14px; border: 1.5px solid var(--line); border-radius: 12px; background: #fff; font: inherit; font-size: .92rem; color: var(--ink); text-align: left; cursor: pointer; transition: border-color .2s, box-shadow .2s; }
+        .ss-btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .ss-btn.placeholder span { color: var(--steel); }
+        .ss-btn i { font-size: .7rem; color: var(--steel); transition: transform .2s; flex: none; }
+        .ss.open .ss-btn { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-tint); }
+        .ss.open .ss-btn i { transform: rotate(180deg); }
+        .ss-panel { display: none; margin-top: 6px; background: #fff; border: 1.5px solid var(--line); border-radius: 12px; box-shadow: var(--shadow-sm); overflow: hidden; }
+        .ss.open .ss-panel { display: block; }
+        .ss-search { position: relative; padding: 8px; border-bottom: 1px solid var(--line); background: var(--paper); }
+        .ss-search i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--steel); font-size: .8rem; pointer-events: none; }
+        .ss-search input { width: 100%; height: 38px; padding: 0 12px 0 34px; border: 1.5px solid var(--line); border-radius: 9px; font: inherit; font-size: .88rem; background: #fff; color: var(--ink); }
+        .ss-search input:focus { outline: none; border-color: var(--navy); }
+        .ss-list { max-height: 200px; overflow-y: auto; padding: 4px; }
+        .ss-opt { padding: 9px 12px; border-radius: 8px; font-size: .88rem; cursor: pointer; color: var(--ink); }
+        .ss-opt:hover, .ss-opt.hl { background: var(--paper); color: var(--blue-d); }
+        .ss-opt.sel { background: #eef2ff; color: var(--blue-d); font-weight: 700; }
+        .ss-opt mark { background: #fff3c4; color: inherit; border-radius: 3px; padding: 0 1px; }
+        .ss-empty { padding: 16px; text-align: center; color: var(--steel-soft); font-size: .85rem; font-weight: 600; }
+
+        /* ==========================================================
            CETAK
            ========================================================== */
         @media print {
@@ -338,12 +363,30 @@
                     <i class="fas fa-chevron-down chev"></i>
                 </summary>
                 <div class="side-sub">
-                    <a href="/internal/pencegahan/layanan-inspeksi" class="side-a {{ Request::is('internal/pencegahan/layanan-inspeksi*') ? 'active' : '' }}"><i class="fas fa-clipboard-check"></i> Layanan inspeksi</a>
-                    <a href="/internal/pencegahan/layanan-sosialisasi" class="side-a {{ Request::is('internal/pencegahan/layanan-sosialisasi*') ? 'active' : '' }}"><i class="fas fa-bullhorn"></i> Layanan sosialisasi</a>
-                    <a href="/internal/pencegahan/pelatihan" class="side-a {{ Request::is('internal/pencegahan/pelatihan*') ? 'active' : '' }}"><i class="fas fa-chalkboard-user"></i> Pelatihan</a>
-                    <a href="/internal/pencegahan/pembinaan-pengembangan" class="side-a {{ Request::is('internal/pencegahan/pembinaan-pengembangan*') ? 'active' : '' }}"><i class="fas fa-chart-line"></i> Pembinaan &amp; pengembangan</a>
-                    <a href="/internal/pencegahan/peningkatan-kapasitas" class="side-a {{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}"><i class="fas fa-level-up-alt"></i> Peningkatan kapasitas</a>
-                    <a href="/internal/pencegahan/kelola-redkar" class="side-a {{ Request::is('internal/pencegahan/kelola-redkar*') ? 'active' : '' }}"><i class="fas fa-users-gear"></i> Kelola Redkar</a>
+                  <!-- Menu Sesuai Foto -->
+                    <a href="/internal/pencegahan/peningkatan-kapasitas" class="{{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}">
+                        <i class="fas fa-arrow-trend-up"></i> Peningkatan Kapasitas Aparatur
+                    </a>
+                    <a href="/internal/pencegahan/inspeksi-kebakaran" class="{{ Request::is('internal/pencegahan/inspeksi-kebakaran*') ? 'active' : '' }}">
+                        <i class="fas fa-magnifying-glass-chart"></i> Pencegahan Kebakaran dan Inspeksi
+                    </a>
+                    <a href="/internal/pencegahan/pemberdayaan-masyarakat" class="{{ Request::is('internal/pencegahan/pemberdayaan-masyarakat*') ? 'active' : '' }}">
+                        <i class="fas fa-handshake-angle"></i> Pemberdayaan Masyarakat dan Dunia Usaha
+                    </a>
+
+                    <!-- Menu Kelola -->
+                    <a href="/internal/pencegahan/kelola-edukasi" class="{{ Request::is('internal/pencegahan/kelola-edukasi*') ? 'active' : '' }}">
+                        <i class="fas fa-bullhorn"></i> Kelola Edukasi
+                    </a>
+                    <a href="/internal/pencegahan/kelola-redkar" class="{{ Request::is('internal/pencegahan/kelola-redkar*') ? 'active' : '' }}">
+                        <i class="fas fa-users-rectangle"></i> Kelola Redkar
+                    </a>
+                    <a href="/internal/pencegahan/kelola-rpkbgl" class="{{ Request::is('internal/pencegahan/kelola-rpkbgl*') ? 'active' : '' }}">
+                        <i class="fas fa-building-circle-check"></i> Kelola RPKBGL
+                    </a>
+                    <a href="/internal/pencegahan/kelola-skk" class="{{ Request::is('internal/pencegahan/kelola-skk*') ? 'active' : '' }}">
+                        <i class="fas fa-file-shield"></i> Kelola SKK
+                    </a>
                 </div>
             </details>
         @endif
@@ -705,7 +748,7 @@
                 <div>Data yang diinput di sini akan otomatis <b>menambah STOK</b> di tabel Mutu Baku Kebutuhan.</div>
             </div>
             <div>
-                <label class="f-label" for="kebutuhan_id">Pilih Barang / Jasa</label>
+                <label class="f-label">Pilih Barang / Jasa</label>
                 <select class="f-input" id="kebutuhan_id" name="kebutuhan_id" required>
                     <option value="">-- Pilih Barang --</option>
                     @foreach($dataKebutuhan as $item)
@@ -822,6 +865,127 @@
             });
         });
     }
+
+    /* ---------- Searchable Select (realtime) untuk Pilih Barang / Jasa ---------- */
+    function makeSearchable(select) {
+        var wrap = document.createElement('div');
+        wrap.className = 'ss';
+        wrap.innerHTML =
+            '<button type="button" class="ss-btn placeholder" aria-haspopup="listbox" aria-expanded="false"><span></span><i class="fas fa-chevron-down"></i></button>' +
+            '<div class="ss-panel">' +
+                '<div class="ss-search"><i class="fas fa-search"></i><input type="text" placeholder="Ketik untuk mencari barang..." autocomplete="off"></div>' +
+                '<div class="ss-list" role="listbox"></div>' +
+            '</div>';
+
+        select.parentNode.insertBefore(wrap, select);
+        select.style.display = 'none';
+        select.removeAttribute('required'); // validasi manual di bawah (select hidden nggak bisa difokus browser)
+        wrap.appendChild(select);
+
+        var btn = wrap.querySelector('.ss-btn');
+        var label = btn.querySelector('span');
+        var input = wrap.querySelector('.ss-search input');
+        var list = wrap.querySelector('.ss-list');
+        var options = Array.prototype.slice.call(select.options).filter(function (o) { return o.value !== ''; });
+        var placeholderText = select.options[0] ? select.options[0].textContent : '-- Pilih Barang --';
+        var hlIndex = -1;
+
+        function esc(s) {
+            return s.replace(/[&<>"]/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+            });
+        }
+
+        function syncLabel() {
+            var cur = options.find(function (o) { return o.value === select.value; });
+            label.textContent = cur ? cur.textContent : placeholderText;
+            btn.classList.toggle('placeholder', !cur);
+        }
+
+        function setHl() {
+            var items = list.querySelectorAll('.ss-opt');
+            items.forEach(function (el, i) { el.classList.toggle('hl', i === hlIndex); });
+            if (items[hlIndex]) items[hlIndex].scrollIntoView({ block: 'nearest' });
+        }
+
+        function render(q) {
+            q = (q || '').toLowerCase().trim();
+            list.innerHTML = '';
+            var shown = options.filter(function (o) { return o.textContent.toLowerCase().indexOf(q) !== -1; });
+            if (!shown.length) {
+                list.innerHTML = '<div class="ss-empty">Barang tidak ditemukan</div>';
+                hlIndex = -1;
+                return;
+            }
+            shown.forEach(function (o) {
+                var d = document.createElement('div');
+                d.className = 'ss-opt' + (o.value === select.value ? ' sel' : '');
+                d.setAttribute('role', 'option');
+                d.dataset.value = o.value;
+                var text = o.textContent;
+                if (q) {
+                    var i = text.toLowerCase().indexOf(q);
+                    d.innerHTML = esc(text.slice(0, i)) + '<mark>' + esc(text.slice(i, i + q.length)) + '</mark>' + esc(text.slice(i + q.length));
+                } else {
+                    d.textContent = text;
+                }
+                list.appendChild(d);
+            });
+            hlIndex = 0;
+            setHl();
+        }
+
+        function open() {
+            wrap.classList.add('open');
+            btn.setAttribute('aria-expanded', 'true');
+            input.value = '';
+            render('');
+            setTimeout(function () { input.focus(); }, 0);
+        }
+        function close() {
+            wrap.classList.remove('open');
+            btn.setAttribute('aria-expanded', 'false');
+        }
+        function choose(val) {
+            select.value = val;
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+            syncLabel();
+            close();
+            btn.focus();
+        }
+
+        btn.addEventListener('click', function () { wrap.classList.contains('open') ? close() : open(); });
+        input.addEventListener('input', function () { render(input.value); });
+        input.addEventListener('keydown', function (e) {
+            var items = list.querySelectorAll('.ss-opt');
+            if (e.key === 'ArrowDown') { e.preventDefault(); hlIndex = Math.min(hlIndex + 1, items.length - 1); setHl(); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); hlIndex = Math.max(hlIndex - 1, 0); setHl(); }
+            else if (e.key === 'Enter') { e.preventDefault(); if (items[hlIndex]) choose(items[hlIndex].dataset.value); }
+            else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(); btn.focus(); }
+        });
+        list.addEventListener('mousedown', function (e) {
+            var opt = e.target.closest('.ss-opt');
+            if (opt) { e.preventDefault(); choose(opt.dataset.value); }
+        });
+        document.addEventListener('click', function (e) { if (!wrap.contains(e.target)) close(); });
+
+        // Validasi: wajib pilih barang
+        var form = select.closest('form');
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                if (!select.value) {
+                    e.preventDefault();
+                    btn.style.borderColor = 'var(--signal)';
+                    open();
+                }
+            });
+        }
+        select.addEventListener('change', function () { btn.style.borderColor = ''; syncLabel(); });
+
+        syncLabel();
+    }
+
+    document.querySelectorAll('select[name="kebutuhan_id"]').forEach(makeSearchable);
 })();
 </script>
 </body>
