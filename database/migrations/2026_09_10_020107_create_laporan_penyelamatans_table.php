@@ -15,7 +15,6 @@ return new class extends Migration
             $table->string('nomor_laporan')->unique();
             $table->uuid('id_laporan')->unique();
             
-            // Kolom baru yang ditambahkan berdasarkan request form
             $table->string('nama_pelapor')->nullable();
             $table->string('media_pelaporan')->nullable();
             
@@ -29,15 +28,10 @@ return new class extends Migration
             $table->dateTime('waktu_berangkat')->nullable();
             $table->dateTime('waktu_tiba')->nullable();
             $table->dateTime('waktu_selesai')->nullable();
-            
-            // Kolom baru yang ditambahkan berdasarkan request form
             $table->dateTime('waktu_kembali')->nullable();
             
             $table->text('alamat')->nullable();
-            
-            // Kolom baru yang ditambahkan berdasarkan request form
             $table->string('jarak_tempuh')->nullable();
-            
             $table->string('koordinat')->nullable();
 
             // Tab 2: Teknis & Logistik
@@ -49,18 +43,18 @@ return new class extends Migration
             
             $table->string('status_evakuasi')->nullable();
             $table->string('objek_terdampak')->nullable();
-            $table->json('metode_evakuasi')->nullable(); // Array checkbox
-            $table->json('metode_penyelamatan')->nullable(); // Array checkbox
+            $table->json('metode_evakuasi')->nullable();
+            $table->json('metode_penyelamatan')->nullable();
             $table->text('hambatan_lapangan')->nullable();
             
-            $table->json('peralatan')->nullable(); // Array checkbox
+            $table->json('peralatan')->nullable();
             $table->string('peralatan_lain')->nullable();
             $table->string('konsumsi_alat')->nullable();
             $table->integer('liter_air')->nullable();
             $table->integer('liter_foam')->nullable();
             $table->integer('liter_bbm')->nullable();
             
-            $table->json('armada')->nullable(); // Array checkbox
+            $table->json('armada')->nullable();
             $table->integer('jumlah_personel')->nullable();
             $table->text('daftar_personel')->nullable();
 
@@ -70,15 +64,15 @@ return new class extends Migration
             $table->string('sumber_api')->nullable();
             $table->float('luas_area')->nullable();
             
-            $table->json('instansi_pendukung')->nullable(); // Array checkbox
+            $table->json('instansi_pendukung')->nullable();
             $table->text('tindakan_instansi')->nullable();
             $table->string('kontak_saksi')->nullable();
             $table->text('kebutuhan_tambahan')->nullable();
             $table->text('saran_mitigasi')->nullable();
             $table->text('kronologi_lengkap')->nullable();
             
-            $table->json('foto')->nullable(); // Array nama file foto
-            $table->string('video')->nullable(); // Nama file video
+            $table->json('foto')->nullable();
+            $table->string('video')->nullable();
 
             // Tab 4: Kategori Khusus
             // Animal Rescue
@@ -87,16 +81,19 @@ return new class extends Migration
             $table->string('dimensi_hewan')->nullable();
             $table->string('status_hewan_pasca')->nullable();
             $table->string('lokasi_pelepasan')->nullable();
+            
             // Pohon Tumbang
             $table->string('jenis_objek_tumbang')->nullable();
             $table->float('dimensi_objek')->nullable();
             $table->string('status_utilitas')->nullable();
             $table->text('dampak_properti')->nullable();
+            
             // Water Rescue
             $table->string('kondisi_perairan')->nullable();
             $table->integer('radius_pencarian')->nullable();
             $table->string('metode_pencarian_air')->nullable();
             $table->text('daftar_penyelam')->nullable();
+            
             // Ring Removal / Geografis
             $table->string('jenis_benda_bahaya')->nullable();
             $table->string('kondisi_anggota_tubuh')->nullable();

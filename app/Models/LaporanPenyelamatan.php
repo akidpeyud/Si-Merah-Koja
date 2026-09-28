@@ -9,9 +9,13 @@ class LaporanPenyelamatan extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['id']; // Membuka semua field untuk mass-assignment
+    // Ubah menjadi 'laporan_penyelamatans' (pakai 's') agar cocok dengan migration
+    protected $table = 'laporan_penyelamatans';
 
-    // Casting array ke JSON secara otomatis
+    // Mengizinkan mass-assignment untuk semua kolom kecuali 'id'
+    protected $guarded = ['id'];
+
+    // Casting tipe data secara otomatis
     protected $casts = [
         'metode_evakuasi' => 'array',
         'metode_penyelamatan' => 'array',
@@ -19,36 +23,30 @@ class LaporanPenyelamatan extends Model
         'armada' => 'array',
         'instansi_pendukung' => 'array',
         'foto' => 'array', 
-        'waktu_kejadian' => 'datetime',
-        'waktu_terima' => 'datetime',
-        'waktu_berangkat' => 'datetime',
-        'waktu_tiba' => 'datetime',
-        'waktu_selesai' => 'datetime',
     ];
 
-    // Relasi ke user yang menginput
+    // ==========================================
+    // RELASI KE TABEL / MODEL LAIN
+    // ==========================================
+
+    // Relasi ke user yang menginput laporan
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // ====================================================
-    // TAMBAHKAN KODE RELASI INI AGAR CONTROLLER BISA JALAN
-    // ====================================================
-
     public function teknisLogistik()
     {
-        // Sesuaikan 'id_laporan' jika foreign key di tabel teknis_logistik bernama lain
-        return $this->hasOne(LpTeknisLogistik::class, 'laporan_penyelamatan_id', 'id');
+        return $this->hasOne(LpTeknisLogistik::class, 'laporan_penyelamatans_id', 'id');
     }
 
     public function dokumentasi()
     {
-        return $this->hasOne(LpDokumentasi::class, 'laporan_penyelamatan_id', 'id');
+        return $this->hasOne(LpDokumentasi::class, 'laporan_penyelamatans_id', 'id');
     }
 
     public function kategoriKhusus()
     {
-        return $this->hasOne(LpKategoriKhusus::class, 'laporan_penyelamatan_id', 'id');
+        return $this->hasOne(LpKategoriKhusus::class, 'laporan_penyelamatans_id', 'id');
     }
 }
