@@ -792,7 +792,7 @@
     <div class="wrap">
         <div class="sec-head">
             <div>
-                <h2>Video edukasi</h2>
+                <h2>Edu Damkar</h2>
                 <p>Tindakan praktis dan saran dari petugas untuk mencegah dan menghadapi kebakaran.</p>
             </div>
         </div>
