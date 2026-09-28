@@ -25,26 +25,29 @@
             --ink: #0d1b2a;
             --ink-2: #132a43;
             --ink-3: #1d3856;
-            --paper: #f7f9fc;
+
+            --navy: #163a63;
+            --navy-dark: #0d2947;
+            --navy-light: #eaf1f8;
+            --navy-soft: rgba(22, 58, 99, .08);
+
+            --paper: #f5f7fa;
             --white: #ffffff;
 
-            --navy: #1e3a5f;
-            --navy-d: #14283f;
-            --navy-tint: rgba(30, 58, 95, .09);
+            --signal: #dc3545;
+            --signal-dark: #b42332;
+            --signal-soft: rgba(220, 53, 69, .09);
 
-            --signal: #e5392d;
-            --signal-d: #c22b20;
-            --signal-tint: rgba(229, 57, 45, .09);
-
-            --amber: #ffb627;
-            --success: #10b981;
-            --info: #2f6fed;
-            --info-tint: rgba(47, 111, 237, .09);
-            --ink-tint: rgba(13, 27, 42, .055);
+            --amber: #f4b740;
+            --success: #198754;
+            --info: #2563eb;
+            --info-soft: rgba(37, 99, 235, .09);
 
             --steel: #64748b;
             --steel-soft: #94a3b8;
-            --line: #e6eaf1;
+
+            --line: #e2e8f0;
+            --line-dark: #cbd5e1;
 
             --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
             --font-body: 'Instrument Sans', system-ui, sans-serif;
@@ -54,12 +57,12 @@
             --r-sm: 10px;
 
             --sidebar-w: 272px;
-            --topbar-h: 72px;
+            --topbar-h: 70px;
 
-            --shadow-xs: 0 1px 2px rgba(13, 27, 42, .05);
-            --shadow-sm: 0 2px 8px -2px rgba(13, 27, 42, .08);
-            --shadow-md: 0 12px 24px -8px rgba(13, 27, 42, .12);
-            --shadow-lg: 0 24px 48px -16px rgba(13, 27, 42, .18);
+            --shadow-xs: 0 1px 2px rgba(13, 27, 42, .04);
+            --shadow-sm: 0 4px 12px rgba(13, 27, 42, .06);
+            --shadow-md: 0 10px 25px rgba(13, 27, 42, .08);
+            --shadow-lg: 0 20px 45px rgba(13, 27, 42, .14);
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -103,26 +106,26 @@
         .topbar {
             position: sticky; top: 0; z-index: 1020; height: var(--topbar-h);
             display: flex; align-items: center; justify-content: space-between; gap: 16px;
-            padding: 0 28px; background: rgba(255,255,255,.86);
-            -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--line);
+            padding: 0 28px; background: var(--ink); border-bottom: 1px solid rgba(255,255,255,.08); box-shadow: 0 2px 12px rgba(13, 27, 42, .16);
         }
         .topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
-        .side-toggle { display: none; width: 40px; height: 40px; border-radius: 12px; align-items: center; justify-content: center; font-size: 1.05rem; transition: background .2s; }
-        .side-toggle:hover { background: var(--paper); }
-        .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .side-toggle { display: none; width: 40px; height: 40px; border-radius: 10px; align-items: center; justify-content: center; font-size: 1.05rem; color: #fff; transition: background .2s, transform .2s; }
+        .side-toggle:hover { background: rgba(255,255,255,.10); }
+        .side-toggle:active { transform: scale(.95); }
+        .brand { display: flex; align-items: center; gap: 12px; min-width: 0; color: #fff; }
         .brand img { height: 34px; width: auto; flex: none; }
-        .brand span { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: 1.08rem; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .brand span { font-family: var(--font-display); font-weight: 700; font-size: 1.08rem; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         .topbar-right { display: flex; align-items: center; gap: 14px; }
-        .user-chip { display: flex; align-items: center; gap: 10px; padding: 6px 16px 6px 6px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); }
-        .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: .9rem; flex: none; }
+        .user-chip { display: flex; align-items: center; gap: 10px; padding: 5px 14px 5px 5px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); transition: background .2s, border-color .2s; }
+        .user-chip:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.18); }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: #ffffff; color: var(--ink); display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: .9rem; flex: none; }
         .user-meta { display: grid; line-height: 1.25; }
-        .user-meta strong { font-size: .85rem; font-weight: 700; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); }
-        .user-meta small { font-size: .74rem; color: var(--steel); text-transform: capitalize; font-weight: 500; }
-        .btn-logout { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border-radius: 999px; background: var(--navy); color: #fff; font-weight: 600; font-size: .85rem; transition: background .2s, transform .1s; border: none; }
-        .btn-logout:hover { background: var(--navy-d); }
-        .btn-logout:active { transform: scale(.98); }
+        .user-meta strong { font-size: .84rem; font-weight: 700; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #ffffff; }
+        .user-meta small { font-size: .72rem; color: rgba(255,255,255,.62); text-transform: capitalize; font-weight: 500; }
+        .btn-logout { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 17px; border-radius: 999px; background: #ffffff; color: var(--ink); font-weight: 600; font-size: .84rem; border: none; transition: background .2s, color .2s, transform .1s, box-shadow .2s; }
+        .btn-logout:hover { background: #e8eef5; color: var(--ink); box-shadow: 0 4px 10px rgba(0,0,0,.12); }
+        .btn-logout:active { transform: scale(.97); }
 
         @media (max-width: 900px) {
             .side-toggle { display: inline-flex; }
@@ -140,19 +143,19 @@
             background: #fff; border-right: 1px solid var(--line);
             padding: 20px 14px 32px;
             scrollbar-width: thin;
-            scrollbar-color: var(--line) transparent;
+            scrollbar-color: #d8dee8 transparent;
         }
         .sidebar::-webkit-scrollbar { width: 6px; }
         .sidebar::-webkit-scrollbar-track { background: transparent; }
-        .sidebar::-webkit-scrollbar-thumb { background-color: var(--line); border-radius: 20px; }
+        .sidebar::-webkit-scrollbar-thumb { background-color: #d8dee8; border-radius: 20px; }
 
         .side-link {
             display: flex; align-items: center; gap: 14px; padding: 11px 14px; border-radius: var(--r-sm);
-            font-size: .9rem; font-weight: 600; color: var(--ink); transition: background .2s, color .2s;
+            font-size: .89rem; font-weight: 600; color: var(--ink); transition: background .2s, color .2s, transform .2s;
             margin-bottom: 4px;
         }
-        .side-link:hover { background: var(--paper); }
-        .side-link.active { background: var(--ink); color: #fff; }
+        .side-link:hover { background: #f3f6fa; color: var(--ink); transform: translateX(1px); }
+        .side-link.active { background: var(--ink); color: #fff; box-shadow: 0 4px 10px rgba(13,27,42,.10); }
         .side-link i { width: 20px; text-align: center; font-size: 1rem; color: var(--steel); transition: color .2s; }
         .side-link:hover i { color: var(--ink); }
         .side-link.active i { color: var(--amber); }
@@ -160,12 +163,12 @@
         .side-group + .side-group { margin-top: 6px; }
         .side-group summary {
             list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px;
-            padding: 11px 14px; border-radius: var(--r-sm); font-size: .8rem; font-weight: 700;
-            letter-spacing: .04em; text-transform: uppercase; color: var(--navy); transition: background .2s;
+            padding: 11px 14px; border-radius: var(--r-sm); font-size: .78rem; font-weight: 700;
+            letter-spacing: .04em; text-transform: uppercase; color: var(--navy); transition: background .2s, color .2s;
             user-select: none;
         }
         .side-group summary::-webkit-details-marker { display: none; }
-        .side-group summary:hover { background: var(--paper); }
+        .side-group summary:hover { background: #f3f6fa; }
         .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); }
         .side-group summary .grp-label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .side-group summary .chev { flex: none; font-size: .7rem; transition: transform .25s ease; }
@@ -174,15 +177,15 @@
         .side-sub { display: grid; gap: 3px; padding: 6px 4px 10px 12px; border-left: 2px solid var(--line); margin: 2px 0 8px 22px; }
         .side-sub a {
             display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: var(--r-sm);
-            font-size: .85rem; font-weight: 500; line-height: 1.4; color: var(--steel);
+            font-size: .84rem; font-weight: 500; line-height: 1.4; color: var(--steel);
             transition: background .2s, color .2s, transform .2s;
         }
-        .side-sub a:hover { background: var(--paper); color: var(--ink); transform: translateX(2px); }
-        .side-sub a.active { background: var(--navy-tint); color: var(--navy-d); font-weight: 600; }
-        .side-sub a i { width: 18px; text-align: center; font-size: .9rem; opacity: .75; }
+        .side-sub a:hover { background: var(--navy-light); color: var(--navy-dark); transform: translateX(2px); }
+        .side-sub a.active { background: var(--navy-soft); color: var(--navy); font-weight: 600; }
+        .side-sub a i { width: 18px; text-align: center; font-size: .88rem; opacity: .75; }
         .side-sub a:hover i, .side-sub a.active i { opacity: 1; }
 
-        .side-kicker { padding: 18px 14px 6px; font-size: .7rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--steel-soft); }
+        .side-kicker { padding: 18px 14px 6px; font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--steel-soft); }
 
         .sidebar-backdrop { display: none; }
 
@@ -195,7 +198,7 @@
             body.side-open .sidebar { transform: none; }
             .sidebar-backdrop {
                 display: block; position: fixed; inset: var(--topbar-h) 0 0 0; z-index: 1000;
-                background: rgba(13,27,42,.4); opacity: 0; pointer-events: none; transition: opacity .3s;
+                background: rgba(13,27,42,.45); opacity: 0; pointer-events: none; transition: opacity .3s;
             }
             body.side-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
         }
@@ -205,89 +208,89 @@
            ========================================================== */
         .content { flex: 1; min-width: 0; padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 80px; }
         
-        .page-head { margin-bottom: 28px; }
-        .page-head h1 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 4px; color: var(--ink); }
-        .page-head p { color: var(--steel); font-size: .98rem; margin: 0; }
+        .page-head { margin-bottom: 26px; }
+        .page-head h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 5px; color: var(--ink); }
+        .page-head p { color: var(--steel); font-size: .95rem; margin-bottom: 0;}
 
         /* Custom Card Form */
         .card-custom {
-            background: #fff;
+            background: #ffffff;
             border: 1px solid var(--line);
             border-radius: var(--r-md);
-            overflow: hidden;
+            box-shadow: var(--shadow-xs);
+            transition: box-shadow .2s ease, border-color .2s ease;
+        }
+        .card-custom:hover {
             box-shadow: var(--shadow-sm);
+            border-color: #d2dae5;
         }
 
+        /* Section Title Block */
+        .section-title-block {
+            display: flex; align-items: center; gap: 12px;
+            background: var(--navy-soft);
+            padding: 14px 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--navy);
+            font-family: var(--font-display);
+            font-size: 1.05rem; font-weight: 700; color: var(--navy-dark);
+            margin-bottom: 24px;
+        }
+        .section-title-block i { font-size: 1.1rem; color: var(--navy); }
+
         /* Form Elements */
-        .field-label { font-size: .85rem; font-weight: 700; color: var(--ink-3); margin-bottom: 8px; display: inline-flex; align-items: center; }
-        .field-label i { margin-right: 8px; font-size: .9rem; color: var(--steel); }
+        .field-label { font-size: .84rem; font-weight: 700; color: var(--ink-2); margin-bottom: 6px; display: inline-flex; align-items: center; }
+        .field-label i { margin-right: 8px; font-size: .85rem; color: var(--steel-soft); }
 
         .form-control, .form-select {
             font-family: var(--font-body);
-            font-size: .95rem;
+            min-height: 42px;
+            font-size: .9rem;
             color: var(--ink);
-            background-color: var(--paper);
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            padding: 12px 16px;
-            transition: all 0.2s ease-in-out;
+            background-color: var(--white);
+            border: 1px solid var(--line-dark);
+            border-radius: 8px;
+            padding: 8px 14px;
+            transition: all 0.2s ease;
             box-shadow: none;
         }
         .form-control:focus, .form-select:focus {
-            background-color: #fff;
             border-color: var(--navy);
-            box-shadow: 0 0 0 4px var(--navy-tint);
+            box-shadow: 0 0 0 3px var(--navy-soft);
         }
         .form-control::placeholder { color: var(--steel-soft); }
-        
-        .section-title {
-            font-family: var(--font-display);
-            font-weight: 700;
-            color: var(--ink);
+
+        /* Area Highlight abu-abu */
+        .highlight-area {
+            background-color: #f8fafc;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 20px;
             margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 1px dashed var(--line);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.25rem;
-        }
-        .section-title i {
-            color: var(--navy);
-            background: var(--navy-tint);
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 1.05rem;
         }
 
         /* Buttons */
         .btn-custom-primary {
-            background-color: var(--navy);
-            color: #fff;
-            font-family: var(--font-body);
-            font-weight: 700;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 12px;
-            transition: background 0.2s;
-            text-decoration: none;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            min-height: 44px; padding: 0 24px;
+            background: var(--navy); color: #fff;
+            border: none; border-radius: 8px;
+            font-size: .92rem; font-weight: 600;
+            transition: all .2s ease;
         }
-        .btn-custom-primary:hover { background-color: var(--navy-d); color: #fff; }
+        .btn-custom-primary:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13, 27, 42, .15); color: #fff;}
+        .btn-custom-primary:active { transform: translateY(0); }
         
         .btn-custom-light {
-            background-color: var(--paper);
-            color: var(--ink);
-            font-family: var(--font-body);
-            font-weight: 700;
-            border: 1px solid var(--line);
-            padding: 12px 28px;
-            border-radius: 12px;
-            transition: background 0.2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            min-height: 44px; padding: 0 24px;
+            background: var(--white); color: var(--ink);
+            border: 1px solid var(--line-dark); border-radius: 8px;
+            font-size: .92rem; font-weight: 600;
+            transition: all .2s ease; text-decoration: none;
         }
-        .btn-custom-light:hover { background-color: var(--line); color: var(--ink); }
+        .btn-custom-light:hover { background: #f8fafc; border-color: var(--steel-soft); color: var(--ink); }
+
     </style>
 </head>
 <body>
@@ -365,13 +368,13 @@
                 <summary><i class="fas fa-shield-halved grp-ico"></i><span class="grp-label">Bagian pencegahan</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/pencegahan/peningkatan-kapasitas" class="{{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}">
-                        <i class="fas fa-arrow-trend-up"></i> Peningkatan Kapasitas Aparatur
+                        <i class="fas fa-arrow-trend-up"></i> Peningkatan Kapasitas
                     </a>
                     <a href="/internal/pencegahan/inspeksi-kebakaran" class="{{ Request::is('internal/pencegahan/inspeksi-kebakaran*') ? 'active' : '' }}">
-                        <i class="fas fa-magnifying-glass-chart"></i> Pencegahan Kebakaran dan Inspeksi
+                        <i class="fas fa-magnifying-glass-chart"></i> Pencegahan & Inspeksi
                     </a>
                     <a href="/internal/pencegahan/pemberdayaan-masyarakat" class="{{ Request::is('internal/pencegahan/pemberdayaan-masyarakat*') ? 'active' : '' }}">
-                        <i class="fas fa-handshake-angle"></i> Pemberdayaan Masyarakat dan Dunia Usaha
+                        <i class="fas fa-handshake-angle"></i> Pemberdayaan Masyarakat
                     </a>
                     <a href="/internal/pencegahan/kelola-edukasi" class="{{ Request::is('internal/pencegahan/kelola-edukasi*') ? 'active' : '' }}">
                         <i class="fas fa-bullhorn"></i> Kelola Edukasi
@@ -401,7 +404,7 @@
                     <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
                         <i class="fas fa-clipboard-list"></i> Kelola Data Laporan
                     </a>
-                    <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
+                    <a href="/internal/surat-korban/data" class="active">
                         <i class="fas fa-folder-open"></i> Kelola Surat Korban
                     </a>
                 </div>
@@ -425,20 +428,16 @@
                     <a href="/sapra/sarana-mako" class="{{ Request::is('sapra/sarana-mako*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam</a>
                     <a href="/sapra/prasarana-mako" class="{{ Request::is('sapra/prasarana-mako*') ? 'active' : '' }}"><i class="fas fa-building"></i> Prasarana Pemadam</a>
                     <a href="/sapra/sarana-penyelamatan" class="{{ Request::is('sapra/sarana-penyelamatan*') ? 'active' : '' }}"><i class="fas fa-life-ring"></i> Sarana Penyelamatan</a>
-                    <a href="/sapra/sarana-pemeriksaan" class="{{ Request::is('sapra/sarana-pemeriksaan*') ? 'active' : '' }}"><i class="fas fa-search"></i> Sarana Pemeriksaan</a> 
+                    <a href="/sapra/sarana-pemeriksaan" class="{{ Request::is('sapra/sarana-pemeriksaan*') ? 'active' : '' }}"><i class="fas fa-search-location"></i> Pemeriksaan Proteksi</a> 
                     <a href="/sapra/kelola-pos" class="{{ Request::is('sapra/kelola-pos*') ? 'active' : '' }}"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
 
                     <span class="side-kicker" style="padding-left:2px;">Manajemen Air</span>
-                    <a href="/sapra/data_hidrant_gedung" class="{{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}"><i class="fas fa-droplet"></i> Sumber Air
-                    </a>
-                    <a href="/sapra/data-hidrant-kota" class="{{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}"><i class="fas fa-map-location-dot"></i> Data Hidrant Kota Jambi
-                    </a>
+                    <a href="/sapra/data_hidrant_gedung" class="{{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}"><i class="fas fa-droplet"></i> Sumber Air</a>
+                    <a href="/sapra/data-hidrant-kota" class="{{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}"><i class="fas fa-map-location-dot"></i> Data Hidrant Kota</a>
 
                     <span class="side-kicker" style="padding-left:2px;">Logistik & Distribusi</span>
-                    <a href="/sapra/kebutuhan-sarpras" class="{{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}"><i class="fas fa-boxes-stacked"></i> Mutu Baku Kebutuhan
-                    </a>
-                    <a href="/sapra/distribusi-staff" class="{{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}"><i class="fas fa-people-carry-box"></i> Distribusi Barang Staff
-                    </a>
+                    <a href="/sapra/kebutuhan-sarpras" class="{{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}"><i class="fas fa-boxes-stacked"></i> Mutu Baku Kebutuhan</a>
+                    <a href="/sapra/distribusi-staff" class="{{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}"><i class="fas fa-people-carry-box"></i> Distribusi Barang Staff</a>
                 </div>
             </details>
         @endif
@@ -448,15 +447,9 @@
             <details class="side-group" {{ Request::is('internal/operator*') ? 'open' : '' }}>
                 <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen berita</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
-                    <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
-                        <i class="far fa-newspaper"></i> Input &amp; Kelola Berita
-                    </a>
-                    <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
-                        <i class="far fa-image"></i> Kelola Info Grafis
-                    </a>
-                    <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
-                        <i class="fab fa-instagram"></i> Kelola Berita Medsos
-                    </a>
+                    <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}"><i class="far fa-newspaper"></i> Input &amp; Kelola Berita</a>
+                    <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}"><i class="far fa-image"></i> Kelola Info Grafis</a>
+                    <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}"><i class="fab fa-instagram"></i> Kelola Berita Medsos</a>
                 </div>
             </details>
         @endif
@@ -465,16 +458,10 @@
         <details class="side-group" {{ Request::is('internal/profil*') || Request::is('internal/kelola-user*') || Request::is('internal/kelola-pemohon*') ? 'open' : '' }}>
             <summary><i class="fas fa-user-gear grp-ico"></i><span class="grp-label">Pengaturan akun</span><i class="fas fa-chevron-down chev"></i></summary>
             <div class="side-sub">
-                <a href="/internal/profil" class="{{ Request::is('internal/profil*') ? 'active' : '' }}">
-                    <i class="fas fa-user-pen"></i> Profil Saya
-                </a>
+                <a href="/internal/profil" class="{{ Request::is('internal/profil*') ? 'active' : '' }}"><i class="fas fa-user-pen"></i> Profil Saya</a>
                 @if(Auth::user()->role === 'super_user')
-                    <a href="/internal/kelola-user" class="{{ Request::is('internal/kelola-user*') ? 'active' : '' }}">
-                        <i class="fas fa-users-gear"></i> Kelola Semua Pengguna
-                    </a>
-                    <a href="/internal/kelola-pemohon" class="{{ Request::is('internal/kelola-pemohon*') ? 'active' : '' }}">
-                        <i class="fas fa-address-book"></i> Kelola Akun Pemohon
-                    </a>
+                    <a href="/internal/kelola-user" class="{{ Request::is('internal/kelola-user*') ? 'active' : '' }}"><i class="fas fa-users-gear"></i> Kelola Pengguna</a>
+                    <a href="/internal/kelola-pemohon" class="{{ Request::is('internal/kelola-pemohon*') ? 'active' : '' }}"><i class="fas fa-address-book"></i> Kelola Akun Pemohon</a>
                 @endif
             </div>
         </details>
@@ -489,14 +476,17 @@
         </div>
 
         <div class="card-custom">
-            <div class="card-body p-4 p-md-5">
+            <div class="card-body p-4 p-md-5 pt-4">
                 <form action="/internal/surat-korban/update/{{ $surat->id }}" method="POST">
                     @csrf
                     @method('PUT')
                     
                     <!-- BAGIAN A: DATA DIRI -->
-                    <h5 class="section-title"><i class="fas fa-user"></i> Data Diri Korban</h5>
-                    <div class="row g-4 mb-5">
+                    <div class="section-title-block">
+                        <i class="fas fa-user"></i> Data Diri Korban
+                    </div>
+                    
+                    <div class="row g-3 mb-5">
                         <div class="col-md-6">
                             <label class="field-label"><i class="fas fa-user"></i> Nama Lengkap</label>
                             <input type="text" name="nama_korban" class="form-control" value="{{ $surat->nama_korban }}" required>
@@ -541,37 +531,42 @@
                     </div>
 
                     <!-- BAGIAN B: DETAIL KEJADIAN -->
-                    <h5 class="section-title"><i class="fas fa-file-signature"></i> Detail Kejadian & Surat</h5>
-                    <div class="row g-4 mb-4 p-4 rounded border" style="background: var(--paper);">
-                        <div class="col-md-12">
-                            <label class="field-label"><i class="fas fa-fire"></i> Objek Terbakar</label>
-                            <input type="text" name="objek_terbakar" class="form-control" value="{{ $surat->objek_terbakar }}" required>
-                        </div>
-                        
-                        <div class="col-md-4">
-                            <label class="field-label"><i class="fas fa-calendar-day"></i> Hari Kejadian</label>
-                            <select class="form-select" name="hari_kejadian" required>
-                                <option value="" disabled>-- Pilih Hari --</option>
-                                <option value="Senin" {{ $surat->hari_kejadian == 'Senin' ? 'selected' : '' }}>Senin</option>
-                                <option value="Selasa" {{ $surat->hari_kejadian == 'Selasa' ? 'selected' : '' }}>Selasa</option>
-                                <option value="Rabu" {{ $surat->hari_kejadian == 'Rabu' ? 'selected' : '' }}>Rabu</option>
-                                <option value="Kamis" {{ $surat->hari_kejadian == 'Kamis' ? 'selected' : '' }}>Kamis</option>
-                                <option value="Jumat" {{ $surat->hari_kejadian == 'Jumat' ? 'selected' : '' }}>Jumat</option>
-                                <option value="Sabtu" {{ $surat->hari_kejadian == 'Sabtu' ? 'selected' : '' }}>Sabtu</option>
-                                <option value="Minggu" {{ $surat->hari_kejadian == 'Minggu' ? 'selected' : '' }}>Minggu</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="field-label"><i class="fas fa-calendar"></i> Tanggal Kejadian</label>
-                            <input type="date" name="tanggal_kejadian" class="form-control" value="{{ $surat->tanggal_kejadian }}" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="field-label"><i class="fas fa-clock"></i> Waktu Kejadian (WIB)</label>
-                            <input type="time" name="waktu_kejadian" class="form-control" value="{{ $surat->waktu_kejadian }}" required>
+                    <div class="section-title-block">
+                        <i class="fas fa-file-signature"></i> Detail Kejadian & Surat
+                    </div>
+                    
+                    <div class="highlight-area">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label class="field-label"><i class="fas fa-fire"></i> Objek Terbakar</label>
+                                <input type="text" name="objek_terbakar" class="form-control" value="{{ $surat->objek_terbakar }}" required>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label class="field-label"><i class="fas fa-calendar-day"></i> Hari Kejadian</label>
+                                <select class="form-select" name="hari_kejadian" required>
+                                    <option value="" disabled>-- Pilih Hari --</option>
+                                    <option value="Senin" {{ $surat->hari_kejadian == 'Senin' ? 'selected' : '' }}>Senin</option>
+                                    <option value="Selasa" {{ $surat->hari_kejadian == 'Selasa' ? 'selected' : '' }}>Selasa</option>
+                                    <option value="Rabu" {{ $surat->hari_kejadian == 'Rabu' ? 'selected' : '' }}>Rabu</option>
+                                    <option value="Kamis" {{ $surat->hari_kejadian == 'Kamis' ? 'selected' : '' }}>Kamis</option>
+                                    <option value="Jumat" {{ $surat->hari_kejadian == 'Jumat' ? 'selected' : '' }}>Jumat</option>
+                                    <option value="Sabtu" {{ $surat->hari_kejadian == 'Sabtu' ? 'selected' : '' }}>Sabtu</option>
+                                    <option value="Minggu" {{ $surat->hari_kejadian == 'Minggu' ? 'selected' : '' }}>Minggu</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="field-label"><i class="fas fa-calendar"></i> Tanggal Kejadian</label>
+                                <input type="date" name="tanggal_kejadian" class="form-control" value="{{ $surat->tanggal_kejadian }}" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="field-label"><i class="fas fa-clock"></i> Waktu Kejadian (WIB)</label>
+                                <input type="time" name="waktu_kejadian" class="form-control" value="{{ $surat->waktu_kejadian }}" required>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="row g-4 mb-4">
+                    <div class="row g-3 mb-4">
                         <div class="col-md-6">
                             <label class="field-label"><i class="fas fa-user-tie"></i> Tembusan Camat</label>
                             <input type="text" name="tembusan_camat" class="form-control" value="{{ $surat->tembusan_camat }}">
