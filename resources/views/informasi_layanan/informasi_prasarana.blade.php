@@ -14,7 +14,7 @@
        PENGATURAN HALAMAN
        Dari controller kirim:
          $posPemadam     : koleksi/array pos, tiap item punya id_pos, nama_pos, alamat, kode_map
-         $dataPrasarana  : koleksi/array prasarana, tiap item punya id_pos, jenis_prasarana, path_gambar, luas_bangunan (opsional)
+         $dataPrasarana  : koleksi/array prasarana, tiap item punya id_pos, jenis_prasarana, path_gambar
        ------------------------------------------------------------ */
     $posPemadam      = $posPemadam ?? [];
     $dataPrasarana = $dataPrasarana ?? [];
@@ -30,6 +30,8 @@
                 ['url' => '/informasi-prasarana',    'label' => 'Prasarana pemadam',   'ico' => 'fa-building'],
                 ['url' => '/informasi-penyelamatan', 'label' => 'Sarana penyelamatan', 'ico' => 'fa-life-ring'],
                 ['url' => '/informasi-pemeriksaan',  'label' => 'Sarana pemeriksaan',  'ico' => 'fa-magnifying-glass'],
+                ['url' => '/sumber-air',             'label' => 'Sumber Air',          'ico' => 'fa-droplet'],
+                ['url' => '/hidrant-kota',           'label' => 'Data Hidrant Kota Jambi', 'ico' => 'fa-map-location-dot'],
             ],
         ],
     ];
@@ -209,10 +211,6 @@
         .rise.d1 { animation-delay: .08s; } .rise.d2 { animation-delay: .18s; } .rise.d3 { animation-delay: .3s; }
         @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 
-        
-
-        
-
         /* ==========================================================
            LAYOUT UTAMA
            ========================================================== */
@@ -225,8 +223,6 @@
         .cat-panel h2 { padding: 4px 10px 16px; font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.05rem; letter-spacing: -0.01em; }
 
         /* --- Sidebar kategori --- */
-        .cat-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 20px 16px; }
-        .cat-panel h2 { padding: 4px 10px 16px; font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.05rem; letter-spacing: -0.01em; }
         .cat { border-top: 1px solid var(--line); }
         .cat:first-of-type { border-top: 0; }
         .cat-btn { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 10px; text-align: left; border-radius: 12px; font-weight: 700; font-size: .9rem; color: var(--ink); transition: background .2s; }
@@ -248,8 +244,6 @@
         .cat-sub a i { width: 20px; text-align: center; color: #b8c3d0; font-size: .95rem; }
         .cat-sub a[aria-current="page"] { background: var(--signal); color: #fff; box-shadow: 0 10px 20px -8px rgba(229,57,45,.6); }
         .cat-sub a[aria-current="page"] i { color: #fff; }
-
-        
 
         /* ==========================================================
            PANEL DATA
@@ -393,6 +387,20 @@
                     <?php endforeach; ?>
                 </ul>
             </li>
+            
+            <!-- MENU BAGIAN SAPRA DI HEADER PUBLIK -->
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Bagian Sapra <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="/informasi-sarana">Sarana pemadam</a></li>
+                    <li><a href="/informasi-prasarana">Prasarana pemadam</a></li>
+                    <li><a href="/informasi-penyelamatan">Sarana penyelamatan</a></li>
+                    <li><a href="/informasi-pemeriksaan">Sarana pemeriksaan</a></li>
+                    <li><a href="/sumber-air">Sumber Air</a></li>
+                    <li><a href="/hidrant-kota">Data Hidrant Kota Jambi</a></li>
+                </ul>
+            </li>
+
             <li class="has-drop current">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan &amp; fasilitas <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
@@ -522,11 +530,7 @@
                                 </div>
                                 <div class="g-body">
                                     <p class="g-title"><?= $h(mb_strtoupper($item['jenis_prasarana'] ?? '')) ?></p>
-                                    <?php if (!empty($item['luas_bangunan'])): ?>
-                                        <span class="g-badge"><i class="fas fa-up-right-and-down-left-from-center"></i> Luas: <?= $h($item['luas_bangunan']) ?></span>
-                                    <?php else: ?>
-                                        <span class="g-badge"><i class="fas fa-circle-check"></i> Tersedia</span>
-                                    <?php endif; ?>
+                                    <span class="g-badge"><i class="fas fa-circle-check"></i> Tersedia</span>
                                 </div>
                             </div>
                             <?php endforeach; ?>
@@ -558,10 +562,6 @@
 </div>
 
 </main>
-
-
-
-
 
 <!-- ==================== FOOTER ==================== -->
 <footer class="footer">

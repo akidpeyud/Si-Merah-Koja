@@ -50,4 +50,23 @@ class PublicController extends Controller
 
         return view('informasi_layanan.informasi_pemeriksaan', compact('posPemadam', 'dataPemeriksaan'));
     }
+
+    // Halaman Publik: Sumber Air
+    public function sumberAir()
+    {
+        // Query database dilengkapi
+        $hidranPilar  = DB::table('prasaranas')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
+        $hidranGedung = DB::table('prasaranas')->where('kategori', 'Hidrant Gedung')->orderBy('no_urut', 'asc')->get();
+        $embung       = DB::table('prasaranas')->where('kategori', 'Embung')->orderBy('no_urut', 'asc')->get();
+        $danau        = DB::table('prasaranas')->where('kategori', 'Danau')->orderBy('no_urut', 'asc')->get();
+
+        return view('informasi_layanan.sumber_air', compact('hidranPilar', 'hidranGedung', 'embung', 'danau'));
+    }
+
+    // Halaman Publik: Data Hidrant Kota Jambi
+    public function hidrantKota()
+    {
+        $dataMaintenance = DB::table('hidran_kota')->orderBy('id', 'asc')->get();
+        return view('informasi_layanan.hidrant_kota', compact('dataMaintenance'));
+    }
 }

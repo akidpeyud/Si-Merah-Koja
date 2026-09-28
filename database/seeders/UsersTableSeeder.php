@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB; // <-- Baris ini sangat penting agar tidak error
+use Illuminate\Support\Facades\Hash; // <-- Tambahkan ini untuk enkripsi password
 
 class UsersTableSeeder extends Seeder
 {
@@ -12,6 +13,9 @@ class UsersTableSeeder extends Seeder
      */
     public function run(): void
     {
+        // ========================================================
+        // 1. SEEDER AKUN INTERNAL (PEGAWAI/ADMIN)
+        // ========================================================
         DB::table('users')->insert([
             [
                 'id' => 1,
@@ -97,6 +101,53 @@ class UsersTableSeeder extends Seeder
                 'created_at' => '2026-09-06 23:35:56',
                 'updated_at' => '2026-09-06 23:35:56',
             ],
+        ]);
+
+        // ========================================================
+        // 2. SEEDER AKUN REDKAR (NATASHA)
+        // ========================================================
+        DB::table('redkar_registrations')->insert([
+            'id'                        => 'RDKR-' . time() . '-' . rand(100, 999), 
+            'username'                  => 'natasha',
+            'password'                  => Hash::make('password123'), // Password: password123
+            'nik'                       => '1571234567890001',
+            'nama_lengkap'              => 'Natasha Romanoff',
+            'jenis_kelamin'             => 'Perempuan',
+            'tempat_lahir'              => 'Rusia',
+            'tanggal_lahir'             => '1984-11-22',
+            'status_perkawinan'         => 'Belum Kawin',
+            'agama'                     => 'Kristen',
+            'nomor_telp'                => '081234567890',
+            'alamat'                    => 'Jl. Avengers No. 1',
+            'rt_rw'                     => '01/01',
+            'kode_pos'                  => '36123',
+            'provinsi'                  => 'Jambi',
+            'kabupaten_kota'            => 'Kota Jambi',
+            'kecamatan'                 => 'Telanaipura',
+            'kelurahan'                 => 'Telanaipura',
+            'pekerjaan'                 => 'Karyawan Swasta',
+            'pendidikan_terakhir'       => 'S1',
+            'latar_belakang_pendidikan' => 'Spionase',
+            'sehat_jasmani'             => 'Ya',
+            'golongan_darah'            => 'AB',
+            'status_pendaftaran'        => 'Diterima',
+            'status_akun'               => 'Aktif',
+            'created_at'                => now(),
+            'updated_at'                => now(),
+        ]);
+
+// ========================================================
+        // 3. SEEDER AKUN PEMOHON PUBLIK (NATASHA)
+        // ========================================================
+        DB::table('pemohons')->insert([
+            'nik'          => '1571234567890002', // Tambahkan NIK sesuai struktur tabel
+            'nama_lengkap' => 'Natasha Romanoff', // Menggunakan nama_lengkap sesuai database
+            'email'        => 'natasha@gmail.com',
+            'no_whatsapp'  => '081234567890',
+            'password'     => Hash::make('password123'), // Password: password123
+            'role'         => 'pemohon', // Tambahkan role jika wajib diisi
+            'created_at'   => now(),
+            'updated_at'   => now(),
         ]);
     }
 }

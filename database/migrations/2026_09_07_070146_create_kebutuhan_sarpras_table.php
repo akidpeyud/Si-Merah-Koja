@@ -6,14 +6,11 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('kebutuhan_sarpras', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('uraian');
+            $table->id();
+            $table->string('uraian', 255); // Uraian barang/jasa
             $table->integer('jumlah_dibutuhkan')->default(0);
             $table->integer('jumlah_tersedia')->default(0);
             $table->integer('jumlah_belum_tersedia')->default(0);
@@ -21,9 +18,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('kebutuhan_sarpras');

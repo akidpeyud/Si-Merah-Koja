@@ -138,24 +138,34 @@
             <h1 class="fw-bolder text-dark mb-0" style="font-size: 24px;">Form Tambah Inspeksi Bangunan</h1>
 
             <div class="form-wrapper">
-                <!-- PENTING: enctype="multipart/form-data" WAJIB ADA BIAR BISA UPLOAD FILE -->
-                <form action="#" method="POST" enctype="multipart/form-data">
+                <!-- PENTING: Action sudah diarahkan ke route yang benar -->
+                <form action="{{ route('inspeksi.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     
-                    <!-- SECTION 1: DATA BANGUNAN (SESUAI FOTO LU) -->
+                    <!-- SECTION 1: DATA BANGUNAN -->
                     <div class="section-title text-primary first"><i class="fas fa-building"></i> Informasi Bangunan & Usaha</div>
                     <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Nama Bangunan</label>
-                            <input type="text" class="form-control" name="nama_bangunan" placeholder="Contoh: Hotel Infinity" required>
+                        <div class="col-md-4">
+                            <label class="form-label">Nama Tempat</label>
+                            <!-- BERUBAH: name="nama_tempat" -->
+                            <input type="text" class="form-control" name="nama_tempat" placeholder="Contoh: Hotel Infinity" required>
                         </div>
-                        <div class="col-md-6">
+                        
+                        <div class="col-md-4">
                             <label class="form-label">Jenis Usaha</label>
+                            <!-- AMAN: name="jenis_usaha" -->
                             <input type="text" class="form-control" name="jenis_usaha" placeholder="Contoh: Hotel / Mall / Rumah Sakit" required>
                         </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Tanggal Inspeksi</label>
+                            <!-- TAMBAHAN BARU: Input tanggal agar tidak null -->
+                            <input type="date" class="form-control" name="tanggal_inspeksi" required>
+                        </div>
+
                         <div class="col-md-12">
                             <label class="form-label">Alamat Lengkap</label>
-                            <textarea class="form-control" name="alamat" rows="2" placeholder="Masukkan alamat lengkap lokasi..." required></textarea>
+                            <textarea class="form-control" name="alamat" rows="2" placeholder="Masukkan alamat lengkap lokasi..."></textarea>
                         </div>
                     </div>
 
