@@ -21,11 +21,11 @@ class DamtanController extends Controller
     // Menampilkan tabel data laporan
     public function indexPenyelamatan()
     {
-        $laporans = LaporanPenyelamatan::with(['teknisLogistik', 'dokumentasi', 'kategoriKhusus'])
+        $data_laporan = LaporanPenyelamatan::with(['teknisLogistik', 'dokumentasi', 'kategoriKhusus'])
                     ->latest()
-                    ->get();
+                    ->paginate(10); // PERBAIKAN: get() diubah menjadi paginate(10)
                     
-        return view('internal.damtan.data_laporan', compact('laporans'));
+        return view('internal.damtan.data_laporan', compact('data_laporan'));
     }
 
     // Menyimpan data dari form

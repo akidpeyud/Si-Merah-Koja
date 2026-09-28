@@ -16,295 +16,1607 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* ==========================================================
-           DESIGN TOKENS
-           Palet inti: ink (navy gelap) sebagai warna utama, navy
-           (biru dongker medium) sebagai aksen interaktif/dekoratif —
-           tombol, status aktif menu, ikon judul seksi — dan signal
-           (merah) sebagai satu-satunya aksen darurat, dipakai konsisten
-           hanya untuk status siaga/urgent, bukan didekorasi ke semua tempat.
-           ========================================================== */
-        :root {
-            --ink: #0d1b2a;
-            --ink-2: #132a43;
-            --ink-3: #1d3856;
-            --paper: #f7f9fc;
-            --white: #ffffff;
+/* ==========================================================
+   SIMERAH KOJA - CLEAN NAVY DASHBOARD
+   ========================================================== */
 
-            --navy: #1e3a5f;
-            --navy-d: #14283f;
-            --navy-tint: rgba(30, 58, 95, .09);
+/* ==========================================================
+   1. DESIGN TOKENS
+   ========================================================== */
 
-            --signal: #e5392d;
-            --signal-d: #c22b20;
-            --signal-tint: rgba(229, 57, 45, .09);
+:root {
+    --ink: #0d1b2a;
+    --ink-2: #132a43;
+    --ink-3: #1d3856;
 
-            --amber: #ffb627;
-            --success: #10b981;
-            --info: #2f6fed;
-            --info-tint: rgba(47, 111, 237, .09);
-            --ink-tint: rgba(13, 27, 42, .055);
+    --navy: #163a63;
+    --navy-dark: #0d2947;
+    --navy-light: #eaf1f8;
+    --navy-soft: rgba(22, 58, 99, .08);
 
-            --steel: #64748b;
-            --steel-soft: #94a3b8;
-            --line: #e6eaf1;
+    --paper: #f5f7fa;
+    --white: #ffffff;
 
-            --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
-            --font-body: 'Instrument Sans', system-ui, sans-serif;
+    --signal: #dc3545;
+    --signal-dark: #b42332;
+    --signal-soft: rgba(220, 53, 69, .09);
 
-            --r-lg: 20px;
-            --r-md: 14px;
-            --r-sm: 10px;
+    --amber: #f4b740;
+    --success: #198754;
+    --info: #2563eb;
+    --info-soft: rgba(37, 99, 235, .09);
 
-            --sidebar-w: 272px;
-            --topbar-h: 72px;
+    --steel: #64748b;
+    --steel-soft: #94a3b8;
 
-            /* Skala shadow tunggal, dicampur dgn warna ink (bukan hitam polos)
-               supaya terasa satu keluarga dgn palet, bukan default rgba(0,0,0,.1) */
-            --shadow-xs: 0 1px 2px rgba(13, 27, 42, .05);
-            --shadow-sm: 0 2px 8px -2px rgba(13, 27, 42, .08);
-            --shadow-md: 0 12px 24px -8px rgba(13, 27, 42, .12);
-            --shadow-lg: 0 24px 48px -16px rgba(13, 27, 42, .18);
-        }
+    --line: #e2e8f0;
+    --line-dark: #d5dce6;
 
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: var(--font-body);
-            font-size: 1rem;
-            line-height: 1.6;
-            color: var(--ink);
-            background: var(--paper);
-            -webkit-font-smoothing: antialiased;
-        }
-        img { max-width: 100%; display: block; }
-        a { color: inherit; text-decoration: none; }
-        ul, ol { list-style: none; margin: 0; padding: 0; }
-        button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
-        :focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; border-radius: 6px; }
+    --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+    --font-body: 'Instrument Sans', system-ui, sans-serif;
 
-        /* ==========================================================
-           NOTIFIKASI (TOAST)
-           ========================================================== */
-        .toast-wrap { position: fixed; z-index: 200; top: 18px; left: 50%; transform: translateX(-50%); display: grid; gap: 10px; width: max-content; max-width: calc(100vw - 24px); }
-        .toast {
-            display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px;
-            border-radius: 999px; background: #fff; border: 1px solid var(--line);
-            box-shadow: var(--shadow-md); font-weight: 600; font-size: .92rem;
-            animation: toastIn .45s cubic-bezier(.16,.84,.3,1) both;
-        }
-        .toast.leaving { animation: toastOut .3s ease forwards; }
-        .toast-ico { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: .78rem; }
-        .toast.ok .toast-ico { background: var(--success); }
-        .toast.err .toast-ico { background: var(--signal); }
-        .toast-x { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); transition: background .2s, color .2s; }
-        .toast-x:hover { background: var(--ink); color: #fff; }
-        @keyframes toastIn { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
-        @keyframes toastOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-14px); } }
+    --r-lg: 18px;
+    --r-md: 14px;
+    --r-sm: 10px;
 
-        /* ==========================================================
-           TOPBAR
-           ========================================================== */
-        .topbar {
-            position: sticky; top: 0; z-index: 60; height: var(--topbar-h);
-            display: flex; align-items: center; justify-content: space-between; gap: 16px;
-            padding: 0 28px; background: rgba(255,255,255,.86);
-            -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--line);
-        }
-        .topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
-        .side-toggle { display: none; width: 40px; height: 40px; border-radius: 12px; align-items: center; justify-content: center; font-size: 1.05rem; transition: background .2s; }
-        .side-toggle:hover { background: var(--paper); }
-        .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
-        .brand img { height: 34px; width: auto; flex: none; }
-        .brand span { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: 1.08rem; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    --sidebar-w: 272px;
+    --topbar-h: 70px;
 
-        .topbar-right { display: flex; align-items: center; gap: 14px; }
-        .user-chip { display: flex; align-items: center; gap: 10px; padding: 6px 16px 6px 6px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); }
-        .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: .9rem; flex: none; }
-        .user-meta { display: grid; line-height: 1.25; }
-        .user-meta strong { font-size: .85rem; font-weight: 700; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); }
-        .user-meta small { font-size: .74rem; color: var(--steel); text-transform: capitalize; font-weight: 500; }
-        .btn-logout { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border-radius: 999px; background: var(--navy); color: #fff; font-weight: 600; font-size: .85rem; transition: background .2s, transform .1s; border: none; }
-        .btn-logout:hover { background: var(--navy-d); }
-        .btn-logout:active { transform: scale(.98); }
+    --shadow-xs:
+        0 1px 2px rgba(13, 27, 42, .04);
 
-        @media (max-width: 900px) {
-            .side-toggle { display: inline-flex; }
-            .user-meta { display: none; }
-        }
+    --shadow-sm:
+        0 4px 12px rgba(13, 27, 42, .06);
 
-        /* ==========================================================
-           SHELL: SIDEBAR + KONTEN
-           ========================================================== */
-        .shell { display: flex; align-items: flex-start; min-height: calc(100vh - var(--topbar-h)); }
+    --shadow-md:
+        0 10px 25px rgba(13, 27, 42, .08);
 
-        .sidebar {
-            width: var(--sidebar-w); flex: none; position: sticky; top: var(--topbar-h);
-            height: calc(100vh - var(--topbar-h)); overflow-y: auto;
-            background: #fff; border-right: 1px solid var(--line);
-            padding: 20px 14px 32px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--line) transparent;
-        }
-        .sidebar::-webkit-scrollbar { width: 6px; }
-        .sidebar::-webkit-scrollbar-track { background: transparent; }
-        .sidebar::-webkit-scrollbar-thumb { background-color: var(--line); border-radius: 20px; }
+    --shadow-lg:
+        0 20px 45px rgba(13, 27, 42, .14);
+}
 
-        .side-link {
-            display: flex; align-items: center; gap: 14px; padding: 11px 14px; border-radius: var(--r-sm);
-            font-size: .9rem; font-weight: 600; color: var(--ink); transition: background .2s, color .2s;
-            margin-bottom: 4px;
-        }
-        .side-link:hover { background: var(--paper); }
-        .side-link.active { background: var(--ink); color: #fff; }
-        .side-link i { width: 20px; text-align: center; font-size: 1rem; color: var(--steel); transition: color .2s; }
-        .side-link:hover i { color: var(--ink); }
-        .side-link.active i { color: var(--amber); }
 
-        .side-group + .side-group { margin-top: 6px; }
-        .side-group summary {
-            list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px;
-            padding: 11px 14px; border-radius: var(--r-sm); font-size: .8rem; font-weight: 700;
-            letter-spacing: .04em; text-transform: uppercase; color: var(--navy); transition: background .2s;
-            user-select: none;
-        }
-        .side-group summary::-webkit-details-marker { display: none; }
-        .side-group summary:hover { background: var(--paper); }
-        .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); }
-        .side-group summary .grp-label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .side-group summary .chev { flex: none; font-size: .7rem; transition: transform .25s ease; }
-        .side-group[open] summary .chev { transform: rotate(180deg); }
+/* ==========================================================
+   2. RESET
+   ========================================================== */
 
-        .side-sub { display: grid; gap: 3px; padding: 6px 4px 10px 12px; border-left: 2px solid var(--line); margin: 2px 0 8px 22px; }
-        .side-sub a {
-            display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: var(--r-sm);
-            font-size: .85rem; font-weight: 500; line-height: 1.4; color: var(--steel);
-            transition: background .2s, color .2s, transform .2s;
-        }
-        .side-sub a:hover { background: var(--paper); color: var(--ink); transform: translateX(2px); }
-        .side-sub a.active { background: var(--navy-tint); color: var(--navy-d); font-weight: 600; }
-        .side-sub a i { width: 18px; text-align: center; font-size: .9rem; opacity: .75; }
-        .side-sub a:hover i, .side-sub a.active i { opacity: 1; }
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        .side-kicker { padding: 18px 14px 6px; font-size: .7rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--steel-soft); }
+html {
+    scroll-behavior: smooth;
+}
 
-        .sidebar-backdrop { display: none; }
+body {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--paper);
+    -webkit-font-smoothing: antialiased;
+}
 
-        @media (max-width: 900px) {
-            .sidebar {
-                position: fixed; z-index: 90; top: var(--topbar-h); left: 0;
-                height: calc(100dvh - var(--topbar-h)); transform: translateX(-100%);
-                transition: transform .3s cubic-bezier(.4,0,.2,1); box-shadow: var(--shadow-lg);
-            }
-            body.side-open .sidebar { transform: none; }
-            .sidebar-backdrop {
-                display: block; position: fixed; inset: var(--topbar-h) 0 0 0; z-index: 80;
-                background: rgba(13,27,42,.4); opacity: 0; pointer-events: none; transition: opacity .3s;
-            }
-            body.side-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
-        }
+img {
+    max-width: 100%;
+    display: block;
+}
 
-        /* ==========================================================
-           KONTEN UTAMA
-           ========================================================== */
-        .content { flex: 1; min-width: 0; padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 80px; }
+a {
+    color: inherit;
+    text-decoration: none;
+}
 
-        .page-head { margin-bottom: 28px; }
-        .page-head h1 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 4px; color: var(--ink); }
-        .page-head p { color: var(--steel); font-size: .98rem; }
+ul,
+ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
 
-        /* Welcome banner */
-        .welcome {
-            position: relative; overflow: hidden; border-radius: var(--r-lg);
-            background: linear-gradient(135deg, var(--ink), var(--ink-2));
-            padding: clamp(28px, 4.5vw, 40px); color: #fff; margin-bottom: 36px;
-            box-shadow: var(--shadow-md);
-        }
-        .welcome::after {
-            content: ""; position: absolute; right: -8%; top: -50%; width: 60%; aspect-ratio: 1;
-            background: radial-gradient(closest-side, rgba(30,58,95,.18), transparent 70%); pointer-events: none;
-        }
-        .welcome-badge {
-            position: relative; display: inline-flex; align-items: center; gap: 8px;
-            padding: 7px 14px; border-radius: 999px; background: rgba(255,255,255,.12);
-            font-size: .82rem; font-weight: 600; margin-bottom: 18px; border: 1px solid rgba(255,255,255,.14);
-        }
-        .welcome-badge i { color: var(--amber); font-size: .78rem; }
-        .welcome h2 { position: relative; font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.35rem, 2.6vw, 1.75rem); line-height: 1.3; letter-spacing: -0.01em; max-width: 42ch; margin-bottom: 6px; }
-        .welcome p { position: relative; max-width: 58ch; color: rgba(255,255,255,.75); font-size: 1rem; }
+button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
 
-        /* Section headings — category header 1 baris, ikon navy blue */
-        .section-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: nowrap; }
-        .section-heading-ico { flex: none; width: 30px; height: 30px; border-radius: 9px; background: var(--navy); color: #fff; display: grid; place-items: center; font-size: .78rem; }
-        .section-heading h3 { flex: none; font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: 1rem; color: var(--ink); letter-spacing: -0.01em; white-space: nowrap; }
-        .section-heading .line { flex: 1 1 auto; min-width: 24px; height: 1px; background: linear-gradient(to right, var(--line), transparent 90%); }
+:focus-visible {
+    outline: 3px solid var(--amber);
+    outline-offset: 2px;
+    border-radius: 6px;
+}
 
-        /* Stat cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 16px;
-            margin-bottom: 44px;
-        }
-        .welcome::after {
-            content: ""; position: absolute; right: -6%; top: -30%; width: 60%; aspect-ratio: 1;
-            background: radial-gradient(closest-side, rgba(229,57,45,.4), transparent); pointer-events: none;
-        }
-        .welcome-badge { position: relative; display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; background: rgba(255,255,255,.1); font-size: .78rem; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; margin-bottom: 16px; }
-        .welcome-badge i { color: var(--amber); }
-        .welcome h2 { position: relative; font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.35rem, 2.6vw, 1.75rem); line-height: 1.25; letter-spacing: -0.015em; max-width: 34ch; }
-        .welcome p { position: relative; margin-top: 10px; max-width: 58ch; color: rgba(255,255,255,.72); font-size: .95rem; line-height: 1.6; }
 
-        .stats-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
-        .stats-head h3 { font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.1rem; letter-spacing: -0.01em; }
+/* ==========================================================
+   3. TOAST / NOTIFICATION
+   ========================================================== */
 
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
-        .stat-card {
-            display: flex; flex-direction: column; align-items: flex-start;
-            padding: 22px; background: #fff; border-radius: var(--r-md);
-            border: 1px solid var(--line);
-            box-shadow: var(--shadow-xs);
-            transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease;
-            position: relative;
-        }
-        .stat-card:hover {
-            box-shadow: var(--shadow-sm);
-            border-color: #d7dee9;
-            transform: translateY(-2px);
-        }
-        .stat-card::after {
-            content: "\f061";
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
-            position: absolute; top: 22px; right: 20px;
-            color: var(--steel-soft); font-size: .8rem;
-            opacity: 0; transform: translateX(-6px);
-            transition: opacity .2s ease, transform .2s ease;
-        }
-        .stat-card:hover::after { opacity: 1; transform: translateX(0); }
+.toast-wrap {
+    position: fixed;
+    z-index: 200;
 
-        .stat-ico {
-            width: 46px; height: 46px; border-radius: var(--r-sm);
-            display: grid; place-items: center; font-size: 1.1rem;
-            margin-bottom: 18px;
-        }
-        .stat-title { font-size: .76rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--steel); margin-bottom: 6px; line-height: 1.4; }
-        .stat-value { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: 1.9rem; line-height: 1; color: var(--ink); letter-spacing: -0.01em; }
+    top: 18px;
+    left: 50%;
 
-        /* Palet ikon dibatasi 3 warna bermakna, bukan warna acak per kartu:
-           - primer (navy tint)  -> data administratif/permohonan (default)
-           - danger (merah tint) -> status siaga/darurat aktif
-           - info (biru tint)    -> data sarana & sumber air */
-        .ic-primary { background: var(--ink-tint); color: var(--ink-3); }
-        .ic-danger  { background: var(--signal-tint); color: var(--signal-d); }
-        .ic-info    { background: var(--info-tint); color: var(--info); }
+    transform: translateX(-50%);
 
-        @media (prefers-reduced-motion: reduce) {
-            html { scroll-behavior: auto; }
-            *, *::before, *::after { animation: none !important; transition: none !important; }
-        }
-    </style>
+    display: grid;
+    gap: 10px;
+
+    width: max-content;
+    max-width: calc(100vw - 24px);
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 12px 12px 12px 16px;
+
+    border-radius: 999px;
+
+    background: #ffffff;
+    border: 1px solid var(--line);
+
+    box-shadow: var(--shadow-md);
+
+    font-weight: 600;
+    font-size: .92rem;
+
+    animation:
+        toastIn .45s cubic-bezier(.16,.84,.3,1) both;
+}
+
+.toast.leaving {
+    animation: toastOut .3s ease forwards;
+}
+
+.toast-ico {
+    flex: none;
+
+    width: 28px;
+    height: 28px;
+
+    border-radius: 50%;
+
+    display: grid;
+    place-items: center;
+
+    color: #fff;
+
+    font-size: .78rem;
+}
+
+.toast.ok .toast-ico {
+    background: var(--success);
+}
+
+.toast.err .toast-ico {
+    background: var(--signal);
+}
+
+.toast-x {
+    flex: none;
+
+    width: 30px;
+    height: 30px;
+
+    border-radius: 50%;
+
+    display: grid;
+    place-items: center;
+
+    background: var(--paper);
+
+    transition:
+        background .2s,
+        color .2s;
+}
+
+.toast-x:hover {
+    background: var(--ink);
+    color: #fff;
+}
+
+@keyframes toastIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(-14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes toastOut {
+
+    from {
+        opacity: 1;
+        transform: none;
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-14px);
+    }
+}
+
+
+/* ==========================================================
+   4. TOPBAR
+   ========================================================== */
+
+.topbar {
+    position: sticky;
+    top: 0;
+
+    z-index: 60;
+
+    height: var(--topbar-h);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    padding: 0 28px;
+
+    /* NAVY BLUE */
+    background: var(--ink);
+
+    border-bottom: 1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+        0 2px 12px rgba(13, 27, 42, .16);
+}
+
+
+/* ==========================================================
+   5. TOPBAR LEFT
+   ========================================================== */
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    min-width: 0;
+}
+
+
+/* Mobile menu */
+
+.side-toggle {
+    display: none;
+
+    width: 40px;
+    height: 40px;
+
+    border-radius: 10px;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 1.05rem;
+
+    color: #fff;
+
+    transition:
+        background .2s,
+        transform .2s;
+}
+
+.side-toggle:hover {
+    background: rgba(255,255,255,.10);
+}
+
+.side-toggle:active {
+    transform: scale(.95);
+}
+
+
+/* Brand */
+
+.brand {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    min-width: 0;
+
+    color: #fff;
+}
+
+.brand img {
+    height: 34px;
+
+    width: auto;
+
+    flex: none;
+}
+
+.brand span {
+    font-family: var(--font-display);
+
+    font-weight: 700;
+
+    font-size: 1.08rem;
+
+    letter-spacing: -.01em;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    color: #fff;
+}
+
+
+/* ==========================================================
+   6. TOPBAR RIGHT
+   ========================================================== */
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+/* User chip */
+
+.user-chip {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 5px 14px 5px 5px;
+
+    border-radius: 999px;
+
+    background: rgba(255,255,255,.08);
+
+    border: 1px solid rgba(255,255,255,.12);
+
+    transition:
+        background .2s,
+        border-color .2s;
+}
+
+.user-chip:hover {
+    background: rgba(255,255,255,.12);
+
+    border-color:
+        rgba(255,255,255,.18);
+}
+
+
+/* User avatar */
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    color: var(--ink);
+
+    display: grid;
+    place-items: center;
+
+    font-family: var(--font-display);
+
+    font-weight: 700;
+
+    font-size: .9rem;
+
+    flex: none;
+}
+
+
+/* User information */
+
+.user-meta {
+    display: grid;
+
+    line-height: 1.25;
+}
+
+.user-meta strong {
+    font-size: .84rem;
+
+    font-weight: 700;
+
+    max-width: 160px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    color: #ffffff;
+}
+
+.user-meta small {
+    font-size: .72rem;
+
+    color: rgba(255,255,255,.62);
+
+    text-transform: capitalize;
+
+    font-weight: 500;
+}
+
+
+/* Logout */
+
+.btn-logout {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    height: 40px;
+
+    padding: 0 17px;
+
+    border-radius: 999px;
+
+    background: #ffffff;
+
+    color: var(--ink);
+
+    font-weight: 600;
+
+    font-size: .84rem;
+
+    border: none;
+
+    transition:
+        background .2s,
+        color .2s,
+        transform .1s,
+        box-shadow .2s;
+}
+
+.btn-logout:hover {
+    background: #e8eef5;
+
+    color: var(--ink);
+
+    box-shadow:
+        0 4px 10px rgba(0,0,0,.12);
+}
+
+.btn-logout:active {
+    transform: scale(.97);
+}
+
+
+/* ==========================================================
+   7. MAIN SHELL
+   ========================================================== */
+
+.shell {
+    display: flex;
+
+    align-items: flex-start;
+
+    min-height:
+        calc(100vh - var(--topbar-h));
+}
+
+
+/* ==========================================================
+   8. SIDEBAR
+   ========================================================== */
+
+.sidebar {
+    width: var(--sidebar-w);
+
+    flex: none;
+
+    position: sticky;
+
+    top: var(--topbar-h);
+
+    height:
+        calc(100vh - var(--topbar-h));
+
+    overflow-y: auto;
+
+    background: #ffffff;
+
+    border-right:
+        1px solid var(--line);
+
+    padding:
+        20px 14px 32px;
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        #d8dee8 transparent;
+}
+
+
+/* Sidebar scrollbar */
+
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: #d8dee8;
+
+    border-radius: 20px;
+}
+
+
+/* ==========================================================
+   9. SIDEBAR MENU
+   ========================================================== */
+
+.side-link {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding:
+        11px 14px;
+
+    border-radius:
+        var(--r-sm);
+
+    font-size: .89rem;
+
+    font-weight: 600;
+
+    color: var(--ink);
+
+    transition:
+        background .2s,
+        color .2s,
+        transform .2s;
+
+    margin-bottom: 4px;
+}
+
+.side-link:hover {
+    background: #f3f6fa;
+
+    color: var(--ink);
+
+    transform: translateX(1px);
+}
+
+.side-link.active {
+    background: var(--ink);
+
+    color: #ffffff;
+
+    box-shadow:
+        0 4px 10px
+        rgba(13,27,42,.10);
+}
+
+.side-link i {
+    width: 20px;
+
+    text-align: center;
+
+    font-size: 1rem;
+
+    color: var(--steel);
+
+    transition: color .2s;
+}
+
+.side-link:hover i {
+    color: var(--ink);
+}
+
+.side-link.active i {
+    color: #ffffff;
+}
+
+
+/* ==========================================================
+   10. SIDEBAR GROUP
+   ========================================================== */
+
+.side-group + .side-group {
+    margin-top: 6px;
+}
+
+.side-group summary {
+    list-style: none;
+
+    cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding:
+        11px 14px;
+
+    border-radius:
+        var(--r-sm);
+
+    font-size: .78rem;
+
+    font-weight: 700;
+
+    letter-spacing: .04em;
+
+    text-transform: uppercase;
+
+    color: var(--navy);
+
+    transition:
+        background .2s,
+        color .2s;
+
+    user-select: none;
+}
+
+.side-group summary::-webkit-details-marker {
+    display: none;
+}
+
+.side-group summary:hover {
+    background: #f3f6fa;
+}
+
+.side-group summary .grp-ico {
+    flex: none;
+
+    width: 20px;
+
+    text-align: center;
+
+    font-size: .95rem;
+
+    color: var(--navy);
+}
+
+.side-group summary .grp-label {
+    flex: 1 1 auto;
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.side-group summary .chev {
+    flex: none;
+
+    font-size: .7rem;
+
+    transition:
+        transform .25s ease;
+}
+
+.side-group[open]
+summary .chev {
+    transform:
+        rotate(180deg);
+}
+
+
+/* ==========================================================
+   11. SIDEBAR SUB MENU
+   ========================================================== */
+
+.side-sub {
+    display: grid;
+
+    gap: 3px;
+
+    padding:
+        6px 4px 10px 12px;
+
+    border-left:
+        2px solid var(--line);
+
+    margin:
+        2px 0 8px 22px;
+}
+
+.side-sub a {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding:
+        9px 12px;
+
+    border-radius:
+        var(--r-sm);
+
+    font-size: .84rem;
+
+    font-weight: 500;
+
+    line-height: 1.4;
+
+    color: var(--steel);
+
+    transition:
+        background .2s,
+        color .2s,
+        transform .2s;
+}
+
+.side-sub a:hover {
+    background:
+        var(--navy-light);
+
+    color:
+        var(--navy-dark);
+
+    transform:
+        translateX(2px);
+}
+
+.side-sub a.active {
+    background:
+        var(--navy-soft);
+
+    color:
+        var(--navy);
+
+    font-weight: 600;
+}
+
+.side-sub a i {
+    width: 18px;
+
+    text-align: center;
+
+    font-size: .88rem;
+
+    opacity: .75;
+}
+
+.side-sub a:hover i,
+.side-sub a.active i {
+    opacity: 1;
+}
+
+
+/* ==========================================================
+   12. SIDEBAR SECTION LABEL
+   ========================================================== */
+
+.side-kicker {
+    padding:
+        18px 14px 6px;
+
+    font-size: .68rem;
+
+    font-weight: 700;
+
+    letter-spacing: .06em;
+
+    text-transform: uppercase;
+
+    color: var(--steel-soft);
+}
+
+
+/* ==========================================================
+   13. MOBILE SIDEBAR
+   ========================================================== */
+
+.sidebar-backdrop {
+    display: none;
+}
+
+@media (max-width: 900px) {
+
+    .side-toggle {
+        display: inline-flex;
+    }
+
+    .user-meta {
+        display: none;
+    }
+
+    .sidebar {
+        position: fixed;
+
+        z-index: 90;
+
+        top: var(--topbar-h);
+
+        left: 0;
+
+        height:
+            calc(100dvh - var(--topbar-h));
+
+        transform:
+            translateX(-100%);
+
+        transition:
+            transform .3s cubic-bezier(.4,0,.2,1);
+
+        box-shadow:
+            var(--shadow-lg);
+    }
+
+    body.side-open .sidebar {
+        transform: none;
+    }
+
+    .sidebar-backdrop {
+        display: block;
+
+        position: fixed;
+
+        inset:
+            var(--topbar-h) 0 0 0;
+
+        z-index: 80;
+
+        background:
+            rgba(13,27,42,.45);
+
+        opacity: 0;
+
+        pointer-events: none;
+
+        transition:
+            opacity .3s;
+    }
+
+    body.side-open
+    .sidebar-backdrop {
+        opacity: 1;
+
+        pointer-events: auto;
+    }
+}
+
+
+/* ==========================================================
+   14. MAIN CONTENT
+   ========================================================== */
+
+.content {
+    flex: 1;
+
+    min-width: 0;
+
+    padding:
+        clamp(24px, 4vw, 44px)
+        clamp(20px, 4vw, 44px)
+        80px;
+}
+
+
+/* ==========================================================
+   15. PAGE HEADER
+   ========================================================== */
+
+.page-head {
+    margin-bottom: 26px;
+}
+
+.page-head h1 {
+    font-family: var(--font-display);
+
+    font-weight: 700;
+
+    font-size:
+        clamp(1.6rem, 3vw, 2.1rem);
+
+    line-height: 1.2;
+
+    letter-spacing: -.02em;
+
+    margin-bottom: 5px;
+
+    color: var(--ink);
+}
+
+.page-head p {
+    color: var(--steel);
+
+    font-size: .95rem;
+}
+
+
+/* ==========================================================
+   16. WELCOME BANNER
+   ========================================================== */
+
+.welcome {
+    position: relative;
+
+    overflow: hidden;
+
+    border-radius:
+        var(--r-lg);
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--ink) 0%,
+            var(--ink-2) 100%
+        );
+
+    padding:
+        clamp(28px, 4.5vw, 40px);
+
+    color: #fff;
+
+    margin-bottom: 38px;
+
+    box-shadow:
+        var(--shadow-md);
+}
+
+.welcome::after {
+    content: "";
+
+    position: absolute;
+
+    right: -10%;
+
+    top: -60%;
+
+    width: 55%;
+
+    aspect-ratio: 1;
+
+    background:
+        radial-gradient(
+            closest-side,
+            rgba(55,105,160,.30),
+            transparent 70%
+        );
+
+    pointer-events: none;
+}
+
+.welcome-badge {
+    position: relative;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding:
+        7px 14px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(255,255,255,.10);
+
+    border:
+        1px solid rgba(255,255,255,.12);
+
+    font-size: .78rem;
+
+    font-weight: 700;
+
+    letter-spacing: .03em;
+
+    text-transform: uppercase;
+
+    margin-bottom: 16px;
+}
+
+.welcome-badge i {
+    color: var(--amber);
+}
+
+.welcome h2 {
+    position: relative;
+
+    font-family: var(--font-display);
+
+    font-weight: 700;
+
+    font-size:
+        clamp(1.35rem, 2.6vw, 1.75rem);
+
+    line-height: 1.3;
+
+    letter-spacing: -.015em;
+
+    max-width: 42ch;
+
+    margin-bottom: 8px;
+}
+
+.welcome p {
+    position: relative;
+
+    max-width: 58ch;
+
+    color:
+        rgba(255,255,255,.72);
+
+    font-size: .95rem;
+
+    line-height: 1.6;
+}
+
+
+/* ==========================================================
+   17. SECTION HEADING
+   ========================================================== */
+
+.section-heading {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 18px;
+
+    flex-wrap: nowrap;
+}
+
+.section-heading-ico {
+    flex: none;
+
+    width: 32px;
+    height: 32px;
+
+    border-radius: 9px;
+
+    background:
+        var(--navy);
+
+    color: #fff;
+
+    display: grid;
+
+    place-items: center;
+
+    font-size: .78rem;
+
+    box-shadow:
+        0 4px 8px
+        rgba(22,58,99,.12);
+}
+
+.section-heading h3 {
+    flex: none;
+
+    font-family: var(--font-display);
+
+    font-weight: 700;
+
+    font-size: 1rem;
+
+    color: var(--ink);
+
+    letter-spacing: -.01em;
+
+    white-space: nowrap;
+}
+
+.section-heading .line {
+    flex: 1 1 auto;
+
+    min-width: 24px;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            to right,
+            var(--line),
+            transparent 90%
+        );
+}
+
+
+/* ==========================================================
+   18. STAT GRID
+   ========================================================== */
+
+.stats-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(220px, 1fr)
+        );
+
+    gap: 16px;
+
+    margin-bottom: 44px;
+}
+
+
+/* ==========================================================
+   19. STAT CARD
+   ========================================================== */
+
+.stat-card {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    padding: 22px;
+
+    background:
+        #ffffff;
+
+    border-radius:
+        var(--r-md);
+
+    border:
+        1px solid var(--line);
+
+    box-shadow:
+        var(--shadow-xs);
+
+    transition:
+        box-shadow .2s ease,
+        border-color .2s ease,
+        transform .2s ease;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    box-shadow:
+        var(--shadow-sm);
+
+    border-color:
+        #d2dae5;
+
+    transform:
+        translateY(-3px);
+}
+
+
+/* Arrow ketika hover */
+
+.stat-card::after {
+    content: "\f061";
+
+    font-family:
+        "Font Awesome 6 Free";
+
+    font-weight: 900;
+
+    position: absolute;
+
+    top: 22px;
+
+    right: 20px;
+
+    color:
+        var(--steel-soft);
+
+    font-size: .8rem;
+
+    opacity: 0;
+
+    transform:
+        translateX(-6px);
+
+    transition:
+        opacity .2s ease,
+        transform .2s ease;
+}
+
+.stat-card:hover::after {
+    opacity: 1;
+
+    transform:
+        translateX(0);
+}
+
+
+/* ==========================================================
+   20. STAT ICON
+   ========================================================== */
+
+.stat-ico {
+    width: 46px;
+    height: 46px;
+
+    border-radius:
+        var(--r-sm);
+
+    display: grid;
+
+    place-items: center;
+
+    font-size: 1.05rem;
+
+    margin-bottom: 18px;
+}
+
+
+/* Navy */
+
+.ic-primary {
+    background:
+        var(--navy-soft);
+
+    color:
+        var(--navy);
+}
+
+
+/* Red */
+
+.ic-danger {
+    background:
+        var(--signal-soft);
+
+    color:
+        var(--signal-dark);
+}
+
+
+/* Blue */
+
+.ic-info {
+    background:
+        var(--info-soft);
+
+    color:
+        var(--info);
+}
+
+
+/* ==========================================================
+   21. STAT TEXT
+   ========================================================== */
+
+.stat-title {
+    font-size: .74rem;
+
+    font-weight: 700;
+
+    letter-spacing: .04em;
+
+    text-transform: uppercase;
+
+    color: var(--steel);
+
+    margin-bottom: 6px;
+
+    line-height: 1.4;
+}
+
+.stat-value {
+    font-family:
+        var(--font-display);
+
+    font-weight: 700;
+
+    font-size: 1.9rem;
+
+    line-height: 1;
+
+    color: var(--ink);
+
+    letter-spacing: -.01em;
+}
+
+
+/* ==========================================================
+   22. RESPONSIVE TABLET
+   ========================================================== */
+
+@media (max-width: 1100px) {
+
+    .topbar {
+        padding:
+            0 20px;
+    }
+
+    .content {
+        padding:
+            32px 26px 60px;
+    }
+
+    .stats-grid {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+}
+
+
+/* ==========================================================
+   23. RESPONSIVE MOBILE
+   ========================================================== */
+
+@media (max-width: 700px) {
+
+    :root {
+        --topbar-h: 64px;
+    }
+
+    .topbar {
+        height:
+            var(--topbar-h);
+
+        padding:
+            0 14px;
+
+        gap: 10px;
+    }
+
+    .brand {
+        gap: 9px;
+    }
+
+    .brand img {
+        height: 30px;
+    }
+
+    .brand span {
+        font-size: .95rem;
+    }
+
+    .topbar-right {
+        gap: 7px;
+    }
+
+    .user-chip {
+        padding: 3px;
+        border: none;
+        background: transparent;
+    }
+
+    .user-avatar {
+        width: 34px;
+        height: 34px;
+    }
+
+    .btn-logout {
+        width: 38px;
+        height: 38px;
+
+        padding: 0;
+
+        border-radius: 10px;
+
+        font-size: 0;
+    }
+
+    .btn-logout i {
+        font-size: .9rem;
+    }
+
+    .content {
+        padding:
+            26px 16px 50px;
+    }
+
+    .page-head {
+        margin-bottom: 22px;
+    }
+
+    .page-head h1 {
+        font-size: 1.55rem;
+    }
+
+    .page-head p {
+        font-size: .88rem;
+    }
+
+    .welcome {
+        padding: 25px 22px;
+
+        margin-bottom: 30px;
+
+        border-radius:
+            15px;
+    }
+
+    .welcome h2 {
+        font-size: 1.3rem;
+    }
+
+    .welcome p {
+        font-size: .88rem;
+    }
+
+    .section-heading {
+        gap: 9px;
+    }
+
+    .section-heading-ico {
+        width: 30px;
+        height: 30px;
+    }
+
+    .section-heading h3 {
+        font-size: .92rem;
+    }
+
+    .stats-grid {
+        grid-template-columns:
+            1fr;
+
+        gap: 12px;
+
+        margin-bottom: 34px;
+    }
+
+    .stat-card {
+        padding: 19px;
+    }
+
+    .stat-ico {
+        width: 42px;
+        height: 42px;
+
+        margin-bottom: 14px;
+    }
+
+    .stat-value {
+        font-size: 1.7rem;
+    }
+}
+
+
+/* ==========================================================
+   24. VERY SMALL SCREEN
+   ========================================================== */
+
+@media (max-width: 420px) {
+
+    .brand span {
+        display: none;
+    }
+
+    .content {
+        padding-left: 13px;
+        padding-right: 13px;
+    }
+
+    .welcome {
+        padding:
+            22px 18px;
+    }
+
+    .welcome h2 {
+        font-size: 1.18rem;
+    }
+
+    .welcome p {
+        font-size: .84rem;
+    }
+
+    .section-heading h3 {
+        font-size: .86rem;
+    }
+}
+
+
+/* ==========================================================
+   25. ACCESSIBILITY / REDUCED MOTION
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+
+        transition: none !important;
+    }
+}
+
+
+/* ==========================================================
+   26. PRINT
+   ========================================================== */
+
+@media print {
+
+    .topbar {
+        position: static;
+
+        background: #ffffff !important;
+
+        color: #000000 !important;
+
+        box-shadow: none;
+
+        border-bottom:
+            1px solid #ddd;
+    }
+
+    .brand span {
+        color: #000000 !important;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .content {
+        padding: 20px;
+    }
+
+    .welcome {
+        box-shadow: none;
+
+        border:
+            1px solid #ddd;
+    }
+
+    .stat-card {
+        box-shadow: none;
+
+        break-inside: avoid;
+    }
+
+    .btn-logout {
+        display: none;
+    }
+}
+</style>
 </head>
 <body>
 
@@ -402,17 +1714,19 @@
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
-                        <i class="fas fa-fire-extinguisher"></i> Input Data
+                        <i class="fas fa-fire-extinguisher"></i> Input data
+                    </a>
+                    <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
+                        <i class="fas fa-file-signature"></i> Buat Surat Korban
                     </a>
                     <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') ? 'active' : '' }}">
-                        <i class="fas fa-clipboard-list"></i> Data Laporan
+                        <i class="fas fa-clipboard-list"></i> Kelola Data Laporan
                     </a>
-                    <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban*') ? 'active' : '' }}">
-                        <i class="fas fa-file-signature"></i> Buat Surat Korban
+                    <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') ? 'active' : '' }}">
+                        <i class="fas fa-folder"></i> Kelola Surat Korban
                     </a>
                 </div>
             </details>
-
             <!-- BAGIAN KEPEGAWAIAN -->
             <details class="side-group" {{ Request::is('internal/kepegawaian*') ? 'open' : '' }}>
                 <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
@@ -478,21 +1792,29 @@
             </details>
         @endif
 
+        <!-- ==============================================
+             IMPLEMENTASI LOGIKA PENGATURAN AKUN (TERBARU)
+             ============================================== -->
         <div class="side-kicker">Akun</div>
-        <details class="side-group" {{ Request::is('internal/profil*') || Request::is('internal/kelola-user*') || Request::is('internal/kelola-pemohon*') ? 'open' : '' }}>
+        <details class="side-group" {{ request()->is('internal/profil*') || request()->is('internal/kelola-user*') || request()->is('internal/kelola-pemohon*') ? 'open' : '' }}>
             <summary><i class="fas fa-user-gear grp-ico"></i><span class="grp-label">Pengaturan akun</span><i class="fas fa-chevron-down chev"></i></summary>
             <div class="side-sub">
-                <a href="/internal/profil" class="{{ Request::is('internal/profil*') ? 'active' : '' }}">
+                <!-- Menu Profil (Bisa diakses semua) -->
+                <a href="{{ url('/internal/profil') }}" class="{{ request()->is('internal/profil*') ? 'active' : '' }}">
                     <i class="fas fa-user-pen"></i> Profil Saya
                 </a>
-                @if(Auth::user()->role === 'super_user')
-                    <a href="/internal/kelola-user" class="{{ Request::is('internal/kelola-user*') ? 'active' : '' }}">
-                        <i class="fas fa-users-gear"></i> Kelola Semua Pengguna
-                    </a>
-                    <a href="/internal/kelola-pemohon" class="{{ Request::is('internal/kelola-pemohon*') ? 'active' : '' }}">
-                        <i class="fas fa-address-book"></i> Kelola Akun Pemohon
+                
+                <!-- Menu Kelola Pengguna (HANYA UNTUK SUPER USER) -->
+                @if(auth()->user()->role === 'super_user')
+                    <a href="{{ url('/internal/kelola-user') }}" class="{{ request()->is('internal/kelola-user*') ? 'active' : '' }}">
+                        <i class="fas fa-users-gear"></i> Kelola Pengguna
                     </a>
                 @endif
+                
+                <!-- Menu Kelola Akun Pemohon (DILUAR IF SUPER_USER, BISA DIAKSES SESUAI REQUEST) -->
+                <a href="{{ url('/internal/kelola-pemohon') }}" class="{{ request()->is('internal/kelola-pemohon*') ? 'active' : '' }}">
+                    <i class="fas fa-address-book"></i> Kelola Akun Pemohon
+                </a>
             </div>
         </details>
 
@@ -589,16 +1911,36 @@
             </div>
 
             <div class="stats-grid">
+                <!-- Card 1: Shortcut Input Data Laporan -->
+                <a href="/internal/damtan/input-data" class="stat-card">
+                    <div class="stat-ico ic-danger"><i class="fas fa-fire-extinguisher"></i></div>
+                    <div>
+                        <div class="stat-title">Input Data Baru</div>
+                        <div class="stat-value"><i class="fas fa-plus" style="font-size: 1.25rem;"></i></div>
+                    </div>
+                </a>
+
+                <!-- Card 2: Shortcut Buat Surat Korban -->
+                <a href="/internal/surat-korban/create" class="stat-card">
+                    <div class="stat-ico ic-primary"><i class="fas fa-file-signature"></i></div>
+                    <div>
+                        <div class="stat-title">Buat Surat Korban</div>
+                        <div class="stat-value"><i class="fas fa-plus" style="font-size: 1.25rem;"></i></div>
+                    </div>
+                </a>
+
+                <!-- Card 3: Statistik Data Laporan -->
                 <a href="/internal/damtan/data-laporan" class="stat-card">
-                    <div class="stat-ico ic-danger"><i class="fas fa-fire"></i></div>
+                    <div class="stat-ico ic-danger"><i class="fas fa-clipboard-list"></i></div>
                     <div>
                         <div class="stat-title">Siaga Darurat (Pemadaman)</div>
                         <div class="stat-value">0</div>
                     </div>
                 </a>
 
-                <a href="/internal/surat-korban/create" class="stat-card">
-                    <div class="stat-ico ic-primary"><i class="fas fa-file-signature"></i></div>
+                <!-- Card 4: Statistik Surat Korban Terbit -->
+                <a href="/internal/surat-korban/data" class="stat-card">
+                    <div class="stat-ico ic-primary"><i class="fas fa-folder"></i></div>
                     <div>
                         <div class="stat-title">Surat Korban Terbit</div>
                         <div class="stat-value">0</div>
