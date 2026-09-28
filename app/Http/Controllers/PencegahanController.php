@@ -28,6 +28,7 @@ class PencegahanController extends Controller
         
         return view('internal.pencegahan.diksar', compact('data_diklat', 'judul_diklat'));
     }
+    
     public function indexDiklatF1()
     {
         $data_diklat = DB::table('tbl_diklat_f1')->orderBy('id', 'desc')->get();
@@ -218,7 +219,6 @@ class PencegahanController extends Controller
     public function index()
     {
         $data_inspeksi = InspeksiBangunan::all();
-        // Ubah kata 'inspeksi_kebakaran' jadi 'inspeksi_bangunan'
         return view('internal.pencegahan.inspeksi_bangunan', compact('data_inspeksi'));
     }
 
@@ -235,11 +235,52 @@ class PencegahanController extends Controller
 
     public function store(Request $request)
     {
-        InspeksiBangunan::create([
-            'nama_tempat'      => $request->nama_tempat,
-            'tanggal_inspeksi' => $request->tanggal_inspeksi, 
-            'jenis_usaha'      => $request->jenis_usaha,
-        ]);
+        $inspeksi = new InspeksiBangunan();
+        $inspeksi->nama_tempat = $request->nama_tempat;
+        $inspeksi->jenis_usaha = $request->jenis_usaha;
+        $inspeksi->tanggal_inspeksi = $request->tanggal_inspeksi;
+
+        // 1. Upload Surat Perintah Tugas
+        if ($request->hasFile('surat_perintah_tugas')) {
+            $file = $request->file('surat_perintah_tugas');
+            $nama_file = time() . '_spt.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/inspeksi'), $nama_file);
+            $inspeksi->surat_perintah_tugas = $nama_file;
+        }
+
+        // 2. Upload Berita Acara
+        if ($request->hasFile('berita_acara')) {
+            $file = $request->file('berita_acara');
+            $nama_file = time() . '_ba.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/inspeksi'), $nama_file);
+            $inspeksi->berita_acara = $nama_file;
+        }
+
+        // 3. Upload Hasil Penilaian
+        if ($request->hasFile('hasil_penilaian')) {
+            $file = $request->file('hasil_penilaian');
+            $nama_file = time() . '_nilai.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/inspeksi'), $nama_file);
+            $inspeksi->hasil_penilaian = $nama_file;
+        }
+
+        // 4. Upload Rekomendasi
+        if ($request->hasFile('rekomendasi')) {
+            $file = $request->file('rekomendasi');
+            $nama_file = time() . '_rekom.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/inspeksi'), $nama_file);
+            $inspeksi->rekomendasi = $nama_file;
+        }
+
+        // 5. Upload SKK
+        if ($request->hasFile('skk')) {
+            $file = $request->file('skk');
+            $nama_file = time() . '_skk.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/inspeksi'), $nama_file);
+            $inspeksi->skk = $nama_file;
+        }
+
+        $inspeksi->save();
 
         return redirect('/internal/pencegahan/inspeksi-kebakaran/bangunan')->with('success', 'Data berhasil ditambahkan!');
     }
@@ -250,16 +291,58 @@ class PencegahanController extends Controller
         return view('internal.pencegahan.edit_inspeksi_bangunan', compact('item'));
     }
 
-    public function updateInspeksiBangunan(Request $request, $id)
+    public function update(Request $request, $id)
     {
-        $item = InspeksiBangunan::findOrFail($id);
-        $item->update([
-            'nama_tempat' => $request->nama_tempat,
-            'tanggal_inspeksi' => $request->tanggal_inspeksi,
-            'jenis_usaha' => $request->jenis_usaha,
-        ]);
+        // Cari data berdasarkan ID
+        $inspeksi = InspeksiBangunan::find($id); 
+        
+        $inspeksi->nama_tempat = $request->nama_tempat;
+        $inspeksi->jenis_usaha = $request->jenis_usaha;
+        $inspeksi->tanggal_inspeksi = $request->tanggal_inspeksi;
 
-        return redirect('/internal/pencegahan/inspeksi-kebakaran/bangunan')->with('success', 'Data berhasil diperbarui!');
+        // 1. Upload Surat Perintah Tugas
+        if ($request->hasFile('surat_perintah_tugas')) {
+            $file = $request->file('surat_perintah_tugas');
+            $nama_file = time() . '_spt.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/inspeksi'), $nama_file);
+            $inspeksi->surat_perintah_tugas = $nama_file;
+        }
+
+        // 2. Upload Berita Acara
+        if ($request->hasFile('berita_acara')) {
+            $file = $request->file('berita_acara');
+            $nama_file = time() . '_ba.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/inspeksi'), $nama_file);
+            $inspeksi->berita_acara = $nama_file;
+        }
+
+        // 3. Upload Hasil Penilaian
+        if ($request->hasFile('hasil_penilaian')) {
+            $file = $request->file('hasil_penilaian');
+            $nama_file = time() . '_nilai.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/inspeksi'), $nama_file);
+            $inspeksi->hasil_penilaian = $nama_file;
+        }
+
+        // 4. Upload Rekomendasi
+        if ($request->hasFile('rekomendasi')) {
+            $file = $request->file('rekomendasi');
+            $nama_file = time() . '_rekom.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/inspeksi'), $nama_file);
+            $inspeksi->rekomendasi = $nama_file;
+        }
+
+        // 5. Upload SKK
+        if ($request->hasFile('skk')) {
+            $file = $request->file('skk');
+            $nama_file = time() . '_skk.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/inspeksi'), $nama_file);
+            $inspeksi->skk = $nama_file;
+        }
+
+        $inspeksi->save();
+
+        return redirect('/internal/pencegahan/inspeksi-kebakaran/bangunan')->with('success', 'Data berhasil diupdate!');
     }
 
     public function destroyInspeksiBangunan($id)
@@ -269,7 +352,6 @@ class PencegahanController extends Controller
 
         return redirect()->back()->with('success', 'Data berhasil dihapus!');
     }
-
 
     // ==========================================
     // BAGIAN FIRE DRILL
@@ -330,7 +412,6 @@ class PencegahanController extends Controller
         return redirect()->back()->with('success', 'Data Fire Drill berhasil dihapus!');
     }
 
-
     // ==========================================
     // BAGIAN PELATIHAN KELUARGA (DAMKAR GOES TO RT)
     // ==========================================
@@ -389,6 +470,7 @@ class PencegahanController extends Controller
 
         return redirect()->back()->with('success', 'Data berhasil dihapus!');
     }
+
     // ==========================================
     // FUNGSI DOWNLOAD EXCEL & PDF (INSPEKSI BANGUNAN)
     // ==========================================

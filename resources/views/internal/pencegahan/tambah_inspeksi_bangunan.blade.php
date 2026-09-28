@@ -8,6 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -39,25 +43,23 @@
         .sidebar-submenu { display: flex; flex-direction: column; gap: 4px; padding-left: 10px; margin-top: 8px; }
 
         /* MAIN AREA & FORM WRAPPER */
-        .main-content { flex: 1; padding: 40px 50px; background-color: #f9fafb; overflow-x: hidden; }
+        .main-content { flex: 1; padding: 40px 50px 100px; background-color: #f9fafb; overflow-x: hidden; }
         
-        .form-wrapper {
-            background-color: #ffffff;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            padding: 30px;
-            margin-top: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-        }
-
+        .form-wrapper { background-color: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 30px; margin-top: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         .back-link { color: #64748b; font-size: 14px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 15px; transition: color 0.2s; }
         .back-link:hover { color: #0f172a; }
 
         /* Form Customization */
         .form-label { font-weight: 600; font-size: 13px; color: #475569; margin-bottom: 8px; }
-        .form-control { border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 15px; font-size: 14px; color: #334155; }
-        .form-control:focus { border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
+        .form-control, .form-select { border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 15px; font-size: 14px; color: #334155; }
+        .form-control:focus, .form-select:focus { border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); outline: none; }
         .form-control[type="file"] { padding: 8px 15px; }
+
+        /* Select2 Kustomisasi */
+        .select2-container--bootstrap-5 .select2-selection { font-size: 14px; padding: 6px 15px; min-height: 44px; border: 1px solid #cbd5e1; border-radius: 6px; }
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection { border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
+        .select2-results__group { font-weight: 800; color: #0f172a; background-color: #f1f5f9; padding: 8px 12px; font-size: 13px; }
+        .select2-results__option { font-size: 14px; font-weight: 500; }
         
         .section-title { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 15px; margin-top: 25px; padding-bottom: 8px; border-bottom: 1px dashed #e2e8f0; display: flex; align-items: center; gap: 8px; }
         .section-title.first { margin-top: 0; }
@@ -90,7 +92,7 @@
     </nav>
 
     <div class="dashboard-container">
-        <!-- SIDEBAR UTUH -->
+        <!-- SIDEBAR -->
         <aside class="sidebar" id="sidebarAccordion">
             <a href="/internal/index" class="sidebar-item"><i class="fas fa-home"></i> Dashboard Utama</a>
 
@@ -102,9 +104,8 @@
             <div class="collapse show" id="collapsePencegahan" data-bs-parent="#sidebarAccordion">
                 <div class="sidebar-submenu">
                     <a href="/internal/pencegahan/peningkatan-kapasitas" class="sidebar-item" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">PENINGKATAN KAPASITAS APARATUR</a>
-                    <!-- YANG AKTIF KARENA MASIH DI MODUL INSPEKSI -->
                     <a href="/internal/pencegahan/inspeksi-kebakaran" class="sidebar-item active" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">PENCEGAHAN KEBAKARAN DAN INSPEKSI</a>
-                    <a href="#" class="sidebar-item" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">PEMBERDAYAAN MASYARAKAT DAN DUNIA USAHA</a>
+                    <a href="/internal/pencegahan/pemberdayaan-masyarakat" class="sidebar-item" style="white-space: normal; line-height: 1.4; padding: 10px 15px;">PEMBERDAYAAN MASYARAKAT DAN DUNIA USAHA</a>
                 </div>
             </div>
 
@@ -138,71 +139,81 @@
             <h1 class="fw-bolder text-dark mb-0" style="font-size: 24px;">Form Tambah Inspeksi Bangunan</h1>
 
             <div class="form-wrapper">
-                <!-- PENTING: Action sudah diarahkan ke route yang benar -->
                 <form action="{{ route('inspeksi.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     
-                    <!-- SECTION 1: DATA BANGUNAN -->
                     <div class="section-title text-primary first"><i class="fas fa-building"></i> Informasi Bangunan & Usaha</div>
                     <div class="row g-3">
-                        <div class="col-md-4">
-                            <label class="form-label">Nama Tempat</label>
-                            <!-- BERUBAH: name="nama_tempat" -->
+                        <div class="col-md-6">
+                            <label class="form-label">Nama Tempat / Bangunan <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="nama_tempat" placeholder="Contoh: Hotel Infinity" required>
                         </div>
                         
-                        <div class="col-md-4">
-                            <label class="form-label">Jenis Usaha</label>
-                            <!-- AMAN: name="jenis_usaha" -->
-                            <input type="text" class="form-control" name="jenis_usaha" placeholder="Contoh: Hotel / Mall / Rumah Sakit" required>
+                        <div class="col-md-6">
+                            <label class="form-label">Jenis Bangunan / Usaha <span class="text-danger">*</span></label>
+                            <select name="jenis_usaha" class="form-select select2-searchable" required>
+                                <option value="" disabled selected></option>
+                                
+                                <optgroup label="Sebagai Tempat Tinggal">
+                                    <option value="Rumah Tinggal Deret">Rumah Tinggal Deret</option>
+                                    <option value="Rumah Tinggal Deret (MBR)">Rumah Tinggal Deret (MBR)</option>
+                                    <option value="Rumah Tinggal Tunggal">Rumah Tinggal Tunggal</option>
+                                    <option value="Rumah Tinggal Tunggal (MBR)">Rumah Tinggal Tunggal (MBR)</option>
+                                    <option value="Rumah Susun">Rumah Susun</option>
+                                    <option value="Rumah Susun (MBR)">Rumah Susun (MBR)</option>
+                                </optgroup>
+
+                                <optgroup label="Sebagai Tempat Pendidikan, Kebudayaan, dan Kesehatan">
+                                    <option value="Bangunan Gedung Pendidikan">Bangunan Gedung Pendidikan (SD, SMP, SMA, PT, Terpadu)</option>
+                                    <option value="Bangunan Gedung Kebudayaan">Bangunan Gedung Kebudayaan (Museum, Pameran, Kesenian)</option>
+                                    <option value="Bangunan Gedung Kesehatan">Bangunan Gedung Kesehatan (Puskesmas, Klinik, RS, Lab)</option>
+                                    <option value="Bangunan Gedung Pelayanan Umum Lainnya">Bangunan Gedung Pelayanan Umum Lainnya</option>
+                                </optgroup>
+
+                                <optgroup label="Sebagai Tempat Usaha">
+                                    <option value="Bangunan Gedung Perkantoran">Bangunan Gedung Perkantoran</option>
+                                    <option value="Bangunan Gedung Perdagangan">Bangunan Gedung Perdagangan</option>
+                                    <option value="Bangunan Gedung Perindustrian">Bangunan Gedung Perindustrian</option>
+                                    <option value="Bangunan Gedung Perhotelan">Bangunan Gedung Perhotelan</option>
+                                    <option value="Bangunan Wisata dan Rekreasi">Bangunan Wisata dan Rekreasi</option>
+                                    <option value="Bangunan Gedung Terminal">Bangunan Gedung Terminal</option>
+                                    <option value="Bangunan Gedung Tempat Penyimpanan">Bangunan Gedung Tempat Penyimpanan</option>
+                                    <option value="Bangunan Gedung Peternakan">Bangunan Gedung Peternakan</option>
+                                    <option value="Bangunan Gedung Laboratorium">Bangunan Gedung Laboratorium (Bukan Faskes/Pendidikan)</option>
+                                </optgroup>
+                            </select>
                         </div>
 
-                        <div class="col-md-4">
-                            <label class="form-label">Tanggal Inspeksi</label>
-                            <!-- TAMBAHAN BARU: Input tanggal agar tidak null -->
+                        <div class="col-md-6">
+                            <label class="form-label">Tanggal Inspeksi <span class="text-danger">*</span></label>
                             <input type="date" class="form-control" name="tanggal_inspeksi" required>
-                        </div>
-
-                        <div class="col-md-12">
-                            <label class="form-label">Alamat Lengkap</label>
-                            <textarea class="form-control" name="alamat" rows="2" placeholder="Masukkan alamat lengkap lokasi..."></textarea>
                         </div>
                     </div>
 
-                    <!-- SECTION 2: DOKUMEN UPLOAD 1 SAMPAI 5 (SESUAI FOTO LU) -->
                     <div class="section-title text-success"><i class="fas fa-file-upload"></i> Upload Dokumen Inspeksi</div>
                     
                     <div class="upload-group">
                         <div class="row g-4">
-                            <!-- 1. Surat Perintah Tugas -->
                             <div class="col-md-6">
                                 <label class="form-label">1. Surat Perintah Tugas</label>
                                 <input class="form-control" type="file" name="surat_perintah_tugas" accept=".pdf,.jpg,.jpeg,.png">
                                 <small class="text-muted" style="font-size: 12px;">Format: PDF/JPG/PNG</small>
                             </div>
-
-                            <!-- 2. Berita Acara -->
                             <div class="col-md-6">
                                 <label class="form-label">2. Berita Acara</label>
                                 <input class="form-control" type="file" name="berita_acara" accept=".pdf,.jpg,.jpeg,.png">
                                 <small class="text-muted" style="font-size: 12px;">Format: PDF/JPG/PNG</small>
                             </div>
-
-                            <!-- 3. Hasil Penilaian -->
                             <div class="col-md-6">
                                 <label class="form-label">3. Hasil Penilaian</label>
                                 <input class="form-control" type="file" name="hasil_penilaian" accept=".pdf,.jpg,.jpeg,.png">
                                 <small class="text-muted" style="font-size: 12px;">Format: PDF/JPG/PNG</small>
                             </div>
-
-                            <!-- 4. Rekomendasi -->
                             <div class="col-md-6">
                                 <label class="form-label">4. Rekomendasi</label>
                                 <input class="form-control" type="file" name="rekomendasi" accept=".pdf,.jpg,.jpeg,.png">
                                 <small class="text-muted" style="font-size: 12px;">Format: PDF/JPG/PNG</small>
                             </div>
-
-                            <!-- 5. SKK -->
                             <div class="col-md-12">
                                 <label class="form-label">5. SKK (Sertifikat Keselamatan Kebakaran)</label>
                                 <input class="form-control" type="file" name="skk" accept=".pdf,.jpg,.jpeg,.png">
@@ -211,7 +222,6 @@
                         </div>
                     </div>
 
-                    <!-- TOMBOL SIMPAN -->
                     <div class="d-flex justify-content-end gap-2 mt-4 pt-3" style="border-top: 1px solid #e2e8f0;">
                         <a href="javascript:history.back()" class="btn btn-cancel">Batal</a>
                         <button type="submit" class="btn btn-save"><i class="fas fa-save me-2"></i> Simpan Data Inspeksi</button>
@@ -219,10 +229,27 @@
 
                 </form>
             </div>
-
         </main>
     </div>
 
+    <!-- JQUERY & BOOTSTRAP JS -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <script>
+        // Inisialisasi Select2
+        $(document).ready(function() {
+            $('.select2-searchable').select2({
+                theme: 'bootstrap-5',
+                placeholder: "-- Pilih Jenis Bangunan / Usaha --",
+                allowClear: true,
+                width: '100%',
+                dropdownPosition: 'below'
+            });
+        });
+    </script>
 </body>
 </html>

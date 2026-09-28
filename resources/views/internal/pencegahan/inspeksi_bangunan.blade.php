@@ -218,16 +218,20 @@
         .table-scroll-wrapper::-webkit-scrollbar-thumb { background: var(--steel-soft); border-radius: 10px; }
         .table-scroll-wrapper::-webkit-scrollbar-track { background: var(--paper); }
         
-        .table-detailed { width: 100%; border-collapse: collapse; min-width: 800px; margin-bottom: 0; }
+        .table-detailed { width: 100%; border-collapse: collapse; min-width: 900px; margin-bottom: 0; }
         .table-detailed thead { background-color: var(--ink); color: #fff; }
         .table-detailed th { font-size: 11px; font-weight: 700; padding: 16px 15px; white-space: nowrap; text-transform: uppercase; border-right: 1px solid var(--ink-3); letter-spacing: 0.5px; vertical-align: middle; }
-        .table-detailed td { font-size: 13px; padding: 14px 15px; vertical-align: middle; white-space: nowrap; border-bottom: 1px solid var(--line); border-right: 1px solid var(--paper); }
+        .table-detailed td { font-size: 13px; padding: 14px 15px; vertical-align: middle; border-bottom: 1px solid var(--line); border-right: 1px solid var(--paper); }
         .table-detailed tbody tr:hover { background-color: var(--paper); }
         
         .btn-action { width: 32px; height: 32px; display: inline-flex; justify-content: center; align-items: center; border-radius: 6px; font-size: 13px; color: white; border: none; cursor: pointer; transition: transform 0.1s; }
         .btn-action:hover { transform: scale(1.05); color: white; }
         .btn-edit { background-color: var(--amber); }
         .btn-delete { background-color: var(--signal); }
+
+        /* ==== TAMBAHAN CSS UNTUK BADGE DOKUMEN ==== */
+        .doc-badge { display: inline-block; padding: 4px 8px; font-size: 10px; font-weight: 700; border-radius: 4px; margin-right: 3px; margin-bottom: 3px; color: white !important; text-decoration: none; transition: opacity 0.2s; }
+        .doc-badge:hover { opacity: 0.8; }
     </style>
 </head>
 <body>
@@ -248,7 +252,6 @@
         </div>
     @endif
 </div>
-
 <!-- ==================== TOPBAR ==================== -->
 <header class="topbar">
     <div class="topbar-left">
@@ -345,7 +348,6 @@
                     </a>
                 </div>
             </details>
-
             <!-- BAGIAN SAPRA -->
             <details class="side-group" {{ Request::is('sapra*') ? 'open' : '' }}>
                 <summary><i class="fas fa-warehouse grp-ico"></i><span class="grp-label">Bagian sapra</span><i class="fas fa-chevron-down chev"></i></summary>
@@ -474,11 +476,13 @@
             <table class="table-detailed table-hover">
                 <thead>
                     <tr>
-                        <th class="text-center" width="80px">NO</th>
-                        <th>NAMA TEMPAT</th>
-                        <th>BULAN / TANGGAL INSPEKSI</th>
-                        <th>JENIS USAHA</th>
-                        <th class="text-center" width="100px">AKSI</th>
+                        <th class="text-center" width="5%">NO</th>
+                        <th width="20%">NAMA TEMPAT</th>
+                        <th width="15%">BULAN / TANGGAL INSPEKSI</th>
+                        <th width="25%">JENIS USAHA</th>
+                        <!-- === KOLOM BARU DOKUMEN === -->
+                        <th width="20%">DOKUMEN TERLAMPIR</th>
+                        <th class="text-center" width="15%">AKSI</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -487,7 +491,31 @@
                         <td class="text-center fw-bold">{{ $index + 1 }}</td>
                         <td class="fw-bold text-dark">{{ $item->nama_tempat }}</td>
                         <td>{{ $item->tanggal_inspeksi }}</td>
-                        <td>{{ $item->jenis_usaha }}</td>
+                        <td style="white-space: normal;">{{ $item->jenis_usaha }}</td>
+                        
+                        <!-- === ISI KOLOM DOKUMEN === -->
+                        <td style="white-space: normal;">
+                            @if($item->surat_perintah_tugas)
+                                <a href="/uploads/inspeksi/{{ $item->surat_perintah_tugas }}" class="doc-badge" style="background-color: #3b82f6;" target="_blank" title="Surat Perintah Tugas">SPT</a>
+                            @endif
+                            @if($item->berita_acara)
+                                <a href="/uploads/inspeksi/{{ $item->berita_acara }}" class="doc-badge" style="background-color: #10b981;" target="_blank" title="Berita Acara">BA</a>
+                            @endif
+                            @if($item->hasil_penilaian)
+                                <a href="/uploads/inspeksi/{{ $item->hasil_penilaian }}" class="doc-badge" style="background-color: #06b6d4;" target="_blank" title="Hasil Penilaian">NILAI</a>
+                            @endif
+                            @if($item->rekomendasi)
+                                <a href="/uploads/inspeksi/{{ $item->rekomendasi }}" class="doc-badge" style="background-color: #8b5cf6;" target="_blank" title="Rekomendasi">REKOM</a>
+                            @endif
+                            @if($item->skk)
+                                <a href="/uploads/inspeksi/{{ $item->skk }}" class="doc-badge" style="background-color: #ef4444;" target="_blank" title="Sertifikat Keselamatan">SKK</a>
+                            @endif
+                            
+                            @if(!$item->surat_perintah_tugas && !$item->berita_acara && !$item->hasil_penilaian && !$item->rekomendasi && !$item->skk)
+                                <span class="text-muted" style="font-size: 11px; font-style: italic;">Tidak ada dokumen</span>
+                            @endif
+                        </td>
+
                         <td class="text-center d-flex justify-content-center gap-1">
                             <a href="{{ route('inspeksi.edit', $item->id) }}" class="btn-action btn-edit" title="Edit">
                                 <i class="fas fa-edit"></i>
@@ -503,7 +531,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center py-5 text-muted fw-bold">
+                        <td colspan="6" class="text-center py-5 text-muted fw-bold">
                             <i class="fas fa-folder-open mb-2" style="font-size: 28px; color: var(--steel-soft);"></i><br>
                             Belum ada data inspeksi bangunan.
                         </td>
