@@ -53,6 +53,17 @@ Route::get('/media-informasi', [KabarDamkarController::class, 'indexMediaInforma
 Route::get('/sumber-air', [PublicController::class, 'sumberAir']);
 Route::get('/hidrant-kota', [PublicController::class, 'hidrantKota']);
 
+// Halaman Publik Edu Damkar & Ujung-ujung Damkar (Sesuai folder resources/views/kabardamkar)
+Route::get('/edu-damkar', function () {
+    $daftar_edu_damkar = EduDamkar::latest()->get();
+    return view('kabardamkar.edu-damkar', compact('daftar_edu_damkar'));
+})->name('publik.edu-damkar');
+
+Route::get('/ujung-ujung-damkar', function () {
+    $daftar_ujung_damkar = UjungDamkar::latest()->get();
+    return view('kabardamkar.ujung-damkar', compact('daftar_ujung_damkar'));
+})->name('publik.ujung-damkar');
+
 
 // ==========================================
 // 2. RUTE AKUN PEMOHON (MASYARAKAT / PERUSAHAAN)
@@ -872,7 +883,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diksar', [App\Http\Controllers\PencegahanController::class, 'indexDiksar']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f1', [PencegahanController::class, 'indexDiklatF1']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f2', [PencegahanController::class, 'indexDiklatF2']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-inspektur', [PencegahanController::class, 'indexDiklatInspektur']);
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-inspektur', [App\Http\Controllers\PencegahanController::class, 'indexDiklatInspektur']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-mfr', [PencegahanController::class, 'indexDiklatMfr']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-rescue', [PencegahanController::class, 'indexDiklatRescue']); // Typo diperbaiki
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-operator', [PencegahanController::class, 'indexDiklatOperator']);

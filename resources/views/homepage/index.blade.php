@@ -6,7 +6,6 @@
     $wa_link   = "https://wa.me/" . $no_whatsapp . "?text=" . $pesan_wa;
     $maps_link = "https://www.google.com/maps/place/6PC59JJ2%2BQ76/@-1.6180875,103.6006406,871m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-1.6180875!4d103.6006406?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D";
 
-    // Isi dengan link Google Play jika aplikasi sudah tersedia. Kosong = badge disembunyikan.
     $play_store_url = "";
 
     // Fallback Data Video Edu Damkar (Jika database edu_damkar masih kosong)
@@ -90,7 +89,7 @@
         .bg-paper { background: var(--paper); }
         .bg-ink { background: var(--ink); color: #fff; }
 
-        .sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: clamp(32px, 5vw, 56px); }
+        .sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: clamp(32px, 5vw, 56px); flex-wrap: wrap; }
         .sec-head h2 {
             font-family: var(--font-display);
             font-weight: 700;
@@ -106,7 +105,7 @@
         .btn {
             display: inline-flex; align-items: center; justify-content: center; gap: 10px;
             padding: 14px 24px; border-radius: 999px; font-weight: 600; font-size: .95rem;
-            transition: background .2s, transform .2s, border-color .2s;
+            transition: background .2s, transform .2s, border-color .2s, color .2s;
         }
         .btn:active { transform: scale(.97); }
         .btn-light { background: #fff; color: var(--ink); }
@@ -157,7 +156,6 @@
         .dropdown a { display: block; padding: 11px 14px; border-radius: var(--r-sm); font-size: .92rem; color: rgba(255,255,255,.85); }
         .dropdown a:hover { background: rgba(255,255,255,.08); color: #fff; }
         
-        /* Tombol Logout Dropdown */
         .dropdown .btn-logout {
             width: 100%; text-align: left; padding: 11px 14px; border-radius: var(--r-sm); 
             font-size: .92rem; color: #ff8b8b; display: flex; align-items: center; gap: 8px; 
@@ -311,40 +309,137 @@
         @media (max-width: 860px) { .about { grid-template-columns: 1fr; } .about-art { max-width: 380px; } }
 
         /* ==========================================================
-           KEJADIAN & EVAKUASI
+           KEJADIAN & EVAKUASI (RAPAT KE JUDUL TANPA JARAK BERLEBIH)
            ========================================================== */
-        .kj-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
-        .kj-card { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; transition: transform .25s, box-shadow .25s; }
-        .kj-card:hover { transform: translateY(-4px); box-shadow: 0 22px 40px -22px rgba(13,27,42,.4); }
-        .kj-card.is-featured { grid-column: span 2; }
-        .kj-thumb { position: relative; height: 210px; background: var(--paper); overflow: hidden; }
-        .kj-card.is-featured .kj-thumb { height: 320px; }
-        .kj-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s; }
-        .kj-card:hover .kj-thumb img { transform: scale(1.04); }
-        .kj-ph { width: 100%; height: 100%; display: grid; place-content: center; justify-items: center; gap: 8px; color: #94a3b8; font-weight: 600; font-size: .9rem; background: repeating-linear-gradient(135deg, var(--paper) 0 14px, #eaeef3 14px 28px); }
-        .kj-ph i { font-size: 2.2rem; color: #b8c3d0; }
-        .kj-date { position: absolute; top: 14px; left: 14px; padding: 8px 12px; border-radius: 12px; text-align: center; line-height: 1; color: #fff; background: rgba(13,27,42,.9); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
-        .kj-date.baru { background: rgba(229,57,45,.94); }
-        .kj-date b { display: block; font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; }
-        .kj-date span { display: block; margin-top: 3px; font-size: .72rem; font-weight: 600; text-transform: capitalize; opacity: .9; }
-        .kj-flag { position: absolute; top: 14px; right: 14px; padding: 5px 11px; border-radius: 999px; font-size: .78rem; font-weight: 700; background: var(--amber); color: var(--ink); }
-        .kj-body { display: flex; flex-direction: column; flex: 1; padding: 22px 24px 24px; }
-        .kj-body h3 { font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.2rem; line-height: 1.25; letter-spacing: -0.01em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .kj-card.is-featured h3 { font-size: 1.6rem; }
-        .kj-meta { display: grid; gap: 6px; margin: 14px 0; padding-bottom: 14px; border-bottom: 1px solid var(--line); font-size: .86rem; color: var(--steel); }
-        .kj-meta div { display: flex; gap: 10px; align-items: flex-start; }
-        .kj-meta i { color: var(--signal-d); margin-top: 4px; width: 14px; text-align: center; }
-        .kj-body p { color: #3b4b5e; font-size: .94rem; flex: 1; }
-        .kj-more { margin-top: 16px; display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: .9rem; color: var(--signal-d); transition: gap .25s; }
-        .kj-card:hover .kj-more { gap: 14px; }
+        #kejadian {
+            padding-top: clamp(36px, 5vw, 64px);
+            padding-bottom: clamp(48px, 7vw, 88px);
+        }
+        #kejadian .sec-head {
+            align-items: center;
+            margin-bottom: 12px; /* Jarak ke gambar berita diperkecil */
+        }
+        #kejadian .sec-head p {
+            margin-top: 6px;
+        }
+        #kejadian .sec-head img {
+            width: clamp(130px, 16vw, 180px);
+            margin-top: -24px;    /* Mencegah tinggi gambar mobil mendorong kartu berita ke bawah */
+            margin-bottom: -24px;
+        }
+        .kj-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 20px;
+        }
+        .kj-item {
+            display: block;
+            text-align: left;
+            width: 100%;
+        }
+        .kj-thumb {
+            position: relative;
+            aspect-ratio: 16 / 10;
+            border-radius: var(--r-md);
+            overflow: hidden;
+            background: repeating-linear-gradient(135deg, var(--ink-2) 0 16px, var(--ink-3) 16px 32px);
+            border: 1px solid var(--line);
+            box-shadow: 0 8px 20px -12px rgba(13,27,42,.15);
+            transition: border-color .25s, transform .25s, box-shadow .25s;
+        }
+        .kj-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .5s;
+        }
+        .kj-item:hover .kj-thumb {
+            border-color: var(--signal);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 28px -12px rgba(13,27,42,.25);
+        }
+        .kj-item:hover .kj-thumb img {
+            transform: scale(1.04);
+        }
+        .kj-ph {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            place-content: center;
+            justify-items: center;
+            gap: 8px;
+            color: rgba(255,255,255,.75);
+            font-weight: 600;
+            font-size: .85rem;
+        }
+        .kj-ph i {
+            font-size: 1.8rem;
+            color: var(--signal);
+        }
+        .kj-date {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 5px 10px;
+            border-radius: 8px;
+            text-align: center;
+            line-height: 1.1;
+            color: #fff;
+            background: rgba(13,27,42,.85);
+            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+            z-index: 2;
+        }
+        .kj-date.baru {
+            background: rgba(229,57,45,.95);
+        }
+        .kj-date b {
+            display: block;
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            font-weight: 800;
+        }
+        .kj-date span {
+            display: block;
+            font-size: .65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .kj-item h3 {
+            margin-top: 10px;
+            font-size: .98rem;
+            font-weight: 700;
+            line-height: 1.35;
+            color: var(--ink);
+            text-transform: uppercase;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: color .2s;
+        }
+        .kj-item:hover h3 {
+            color: var(--signal);
+        }
 
-        .empty { grid-column: 1 / -1; text-align: center; padding: 56px 24px; border: 1.5px dashed var(--line); border-radius: var(--r-md); color: var(--steel); }
-        .empty i { font-size: 2rem; color: #b8c3d0; margin-bottom: 12px; }
-        .empty h3 { font-family: var(--font-display); font-size: 1.2rem; color: var(--ink); }
-        .empty p { margin-top: 4px; font-size: .95rem; }
+        .empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px 24px;
+            border: 1.5px dashed var(--line);
+            border-radius: var(--r-md);
+            color: var(--steel);
+            background: rgba(255,255,255,.5);
+        }
+        .empty i { font-size: 1.8rem; color: #b8c3d0; margin-bottom: 10px; }
+        .empty h3 { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+        .empty p { margin-top: 4px; font-size: .92rem; }
 
-        @media (max-width: 960px) { .kj-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-        @media (max-width: 620px) { .kj-grid { grid-template-columns: 1fr; } .kj-card.is-featured { grid-column: auto; } .kj-card.is-featured .kj-thumb { height: 230px; } }
+        @media (max-width: 960px) {
+            .kj-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            #kejadian .sec-head img { margin-top: 0; margin-bottom: 0; }
+        }
+        @media (max-width: 480px) { .kj-grid { grid-template-columns: 1fr; } }
 
         /* ==========================================================
            VIDEO EDUKASI (EDU DAMKAR)
@@ -361,7 +456,7 @@
         .vid[disabled] { cursor: default; }
         .vid[disabled] .vid-play span { background: rgba(255,255,255,.14); box-shadow: none; }
         .vid-soon { position: absolute; left: 12px; bottom: 12px; padding: 4px 10px; border-radius: 999px; font-size: .75rem; font-weight: 600; background: rgba(13,27,42,.8); color: #fff; }
-        .vid h3 { margin-top: 14px; font-size: 1rem; font-weight: 600; line-height: 1.35; color: rgba(255,255,255,.92); }
+        .vid h3 { margin-top: 14px; font-size: 1rem; font-weight: 600; line-height: 1.35; color: rgba(255,255,255,.92); text-transform: uppercase; }
         @media (max-width: 960px) { .vid-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
         @media (max-width: 480px) { .vid-grid { grid-template-columns: 1fr; } }
 
@@ -378,43 +473,9 @@
 
         .sub-head { margin: clamp(64px, 9vw, 112px) 0 clamp(28px, 4vw, 48px); }
 
-        /* Media Filter (Clean Pill tanpa #) */
-        .media-filter { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: clamp(20px, 3vw, 28px); }
-        .pill { padding: 9px 18px; border-radius: 999px; background: #fff; border: 1px solid var(--line); font-weight: 600; font-size: .87rem; color: var(--steel); transition: background .2s, color .2s, border-color .2s; }
-        .pill:hover { border-color: #b8c3d0; color: var(--ink); }
-        .pill.is-active { background: var(--ink); border-color: var(--ink); color: #fff; }
-
-        /* Media Card (Lebih kecil = 250px) */
         .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
         .media-card { display: flex; flex-direction: column; background: #fff; border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line); transition: transform .3s, box-shadow .3s; }
         .media-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px -15px rgba(13,27,42,.15); border-color: transparent;}
-        
-        .media-thumb { position: relative; background: var(--paper); aspect-ratio: 4 / 3; overflow: hidden; }
-        .media-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s;}
-        .media-card:hover .media-thumb img { transform: scale(1.05); }
-        
-        /* Floating Badge Modern */
-        .media-tag { 
-            position: absolute; top: 12px; left: 12px; padding: 4px 12px; border-radius: 6px; 
-            font-size: .7rem; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; 
-            background: rgba(255, 255, 255, 0.95); color: var(--signal-d); z-index: 2;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08); backdrop-filter: blur(4px);
-        }
-        
-        .media-body { display: flex; flex-direction: column; flex: 1; padding: 18px 20px 20px; }
-        .media-body h3 { font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.05rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 12px; transition: color 0.2s;}
-        .media-card:hover .media-body h3 { color: var(--signal); }
-        
-        .media-meta { margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .8rem; color: var(--steel); font-weight: 500;}
-        .media-meta span { display: flex; align-items: center; gap: 6px; }
-        .media-meta .fa-instagram { color: #d6249f; }
-        .media-meta .fa-youtube { color: #ff0000; }
-        .media-meta .fa-tiktok { color: #111; }
-        
-        .media-body a { margin-top: auto; font-weight: 700; font-size: .88rem; color: var(--signal-d); display: inline-flex; gap: 6px; align-items: center; transition: gap 0.2s; }
-        .media-card:hover .media-body a { gap: 10px; }
-        
-        .media-empty-filter { grid-column: 1 / -1; text-align: center; padding: 48px 24px; border: 1.5px dashed var(--line); border-radius: var(--r-md); color: var(--steel); }
 
         /* ==========================================================
            UJUNG-UJUNG DAMKAR (FORMAT VIDEO)
@@ -423,7 +484,6 @@
         .giat-art { position: sticky; top: calc(var(--header-h) + 32px); border-radius: var(--r-lg); background: var(--paper); padding: clamp(24px, 5vw, 48px); }
         .giat-art img { width: 100%; max-width: 380px; margin: 0 auto; filter: drop-shadow(0 20px 28px rgba(13,27,42,.2)); }
 
-        /* Grid Video khusus untuk Ujung-Ujung Damkar (Latar Terang) */
         .giat-vid-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -462,7 +522,6 @@
         .footer-about img { height: 96px; width: auto; margin-bottom: 20px; }
         .footer-about p { max-width: 42ch; font-size: .95rem; }
         
-        /* Tambahan styling untuk nomor kontak di bawah Deskripsi Tentang Kami */
         .footer-contact { margin-top: 24px; display: grid; gap: 12px; }
         .footer-contact a { display: inline-flex; align-items: center; gap: 12px; color: rgba(255,255,255,.9); font-size: .95rem; font-weight: 500; transition: color .2s; }
         .footer-contact a i { color: var(--signal); font-size: 1.2rem; width: 20px; text-align: center; }
@@ -488,7 +547,7 @@
         @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr; } }
 
         /* ==========================================================
-           TOMBOL LAPOR MENGAMBANG
+           TOMBOL LAPOR MENGAMBANG & DIALOG
            ========================================================== */
         .sos-fab { position: fixed; right: clamp(14px, 3vw, 28px); bottom: clamp(14px, 3vw, 28px); z-index: 70; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; opacity: 0; visibility: hidden; transform: translateY(16px); transition: opacity .3s, transform .3s, visibility .3s; }
         .sos-fab.show { opacity: 1; visibility: visible; transform: none; }
@@ -501,9 +560,6 @@
         .sos-sheet a i { width: 22px; text-align: center; font-size: 1.15rem; }
         .sos-sheet .wa i { color: #25d366; } .sos-sheet .tel i { color: #38bdf8; } .sos-sheet .n112 i { color: #f87171; }
 
-        /* ==========================================================
-           DIALOG (infografis & video)
-           ========================================================== */
         dialog { border: 0; padding: 0; background: transparent; color: #fff; max-width: min(1000px, 94vw); max-height: 94dvh; margin: auto; overflow: visible; }
         dialog::backdrop { background: rgba(7,14,24,.86); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
         .dlg-close { position: absolute; top: -52px; right: 0; width: 44px; height: 44px; border-radius: 50%; background: #fff; color: var(--ink); font-size: 1.1rem; display: grid; place-items: center; }
@@ -514,9 +570,6 @@
         .video-frame { aspect-ratio: 16 / 9; border-radius: var(--r-md); overflow: hidden; background: #000; }
         .video-frame iframe { width: 100%; height: 100%; border: 0; }
 
-        /* ==========================================================
-           REDUCED MOTION
-           ========================================================== */
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
             *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -527,6 +580,15 @@
 </head>
 <body>
 
+@php
+    // Auto-fetch daftar berita/kejadian jika belum dikirim dari route
+    $listBerita = isset($daftar_berita) && count($daftar_berita)
+        ? $daftar_berita
+        : (class_exists('\App\Models\Berita') && (\Illuminate\Support\Facades\Schema::hasTable('beritas') || \Illuminate\Support\Facades\Schema::hasTable('berita'))
+            ? \App\Models\Berita::latest()->take(4)->get()
+            : collect());
+@endphp
+
 <!-- ==================== HEADER ==================== -->
 <header class="site-header" id="siteHeader">
     <nav class="nav" aria-label="Navigasi utama">
@@ -534,7 +596,6 @@
             <a href="/" aria-label="SIMERAH KOJA, beranda">
                 <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
             </a>
-            <!-- KLIK LOGO DAMKAR KE LOGIN INTERNAL -->
             <a href="/login" title="Login Internal Pegawai">
                 <img src="/images/logo.png" alt="Logo Damkar">
             </a>
@@ -549,7 +610,7 @@
 
         <ul class="menu" id="menu">
             <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan Kedaruratan <i class="fas fa-chevron-down"></i></button>
+                <button class="menu-trigger" type="button" aria-expanded="false">Layanan kedaruratan <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="{{ $wa_link }}" target="_blank" rel="noopener">WhatsApp</a></li>
                     <li><a href="tel:{{ $no_telepon }}">Telepon</a></li>
@@ -571,22 +632,21 @@
                 <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
                     <li><a href="/layanan-fasilitas/skk">SKK &amp; Perpanjang SKK</a></li>
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan Edukasi & Sosialisasi</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
             </li>
             <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="#video">Edu Damkar</a></li>
-                    <li><a href="#infografis">Infografis</a></li>
+                    <li><a href="/edu-damkar">Edu Damkar</a></li>
+                    <li><a href="#infografis">Info Grafis</a></li>
                     <li><a href="/media-informasi">Media Informasi</a></li>
-                    <li><a href="#giat">Ujung-ujung Damkar</a></li>
+                    <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
                 </ul>
             </li>
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
 
-            <!-- TOMBOL LOGIN / LOGOUT PEMOHON -->
             @if(session()->has('pemohon_id'))
                 <li class="has-drop">
                     <button class="menu-trigger btn-login" type="button" aria-expanded="false">
@@ -653,7 +713,7 @@
         </div>
 
         <aside class="sos rise d3" id="lapor" aria-labelledby="judul-lapor">
-            <div class="sos-head"><span class="beacon" aria-hidden="true"></span> Lapor Darurat</div>
+            <div class="sos-head"><span class="beacon" aria-hidden="true"></span> Lapor darurat</div>
             <h2 id="judul-lapor">Kebakaran atau butuh penyelamatan?</h2>
 
             <div class="sos-list">
@@ -686,14 +746,14 @@
         </aside>
     </div>
 
-    @if(!empty($daftar_berita) && count($daftar_berita))
+    @if(count($listBerita))
     <div class="ticker">
         <div class="ticker-label"><span class="beacon" aria-hidden="true"></span> Kejadian terbaru</div>
         <div class="ticker-track">
             <div class="ticker-run">
                 @foreach([false, true] as $duplikat)
                 <div class="ticker-group" @if($duplikat) aria-hidden="true" @endif>
-                    @foreach($daftar_berita as $berita)
+                    @foreach($listBerita as $berita)
                         <a class="tick" href="/berita/{{ $berita->id }}" @if($duplikat) tabindex="-1" @endif>
                             <b>{{ \Carbon\Carbon::parse($berita->waktu_kejadian)->format('H:i') }}</b>
                             {{ $berita->judul }}
@@ -737,27 +797,26 @@
     <div class="wrap">
         <div class="sec-head">
             <div>
-                <h2>Pemadaman, Penyelamatan &amp; Evakuasi</h2>
+                <h2>Kejadian &amp; evakuasi</h2>
                 <p>Informasi terbaru tentang kejadian di Kota Jambi.</p>
             </div>
             <img src="/images/mobil.png" alt="Mobil pemadam kebakaran" loading="lazy">
         </div>
 
         <div class="kj-grid">
-            @forelse($daftar_berita ?? [] as $berita)
+            @forelse($listBerita as $berita)
                 @php
                     $tgl  = \Carbon\Carbon::parse($berita->tanggal_kejadian)->locale('id');
                     $baru = $tgl->diffInDays(now(), true) <= 3;
                 @endphp
-                <a href="/berita/{{ $berita->id }}" class="kj-card {{ $loop->first ? 'is-featured' : '' }}">
+                <a href="/berita/{{ $berita->id }}" class="kj-item">
                     <div class="kj-thumb">
                         <div class="kj-date {{ $baru ? 'baru' : '' }}">
                             <b>{{ $tgl->format('d') }}</b>
                             <span>{{ $tgl->translatedFormat('M') }}</span>
                         </div>
-                        @if($baru)<div class="kj-flag">Baru</div>@endif
 
-                        @if($berita->gambar)
+                        @if(!empty($berita->gambar))
                             <img src="{{ asset('storage/' . $berita->gambar) }}" alt="{{ $berita->judul }}" loading="lazy">
                         @else
                             <div class="kj-ph">
@@ -766,15 +825,7 @@
                             </div>
                         @endif
                     </div>
-                    <div class="kj-body">
-                        <h3>{{ $berita->judul }}</h3>
-                        <div class="kj-meta">
-                            <div title="Lokasi"><i class="fas fa-map-marker-alt"></i> <span>{{ Str::limit($berita->lokasi, 60) }}</span></div>
-                            <div title="Waktu laporan"><i class="far fa-clock"></i> <span>{{ \Carbon\Carbon::parse($berita->waktu_kejadian)->format('H:i') }} WIB, pelapor: {{ $berita->pelapor }}</span></div>
-                        </div>
-                        <p>{{ Str::limit($berita->keterangan_singkat ?? $berita->detail_lengkap, $loop->first ? 160 : 90) }}</p>
-                        <span class="kj-more">Baca selengkapnya <i class="fas fa-arrow-right"></i></span>
-                    </div>
+                    <h3>{{ $berita->judul }}</h3>
                 </a>
             @empty
                 <div class="empty">
@@ -789,7 +840,6 @@
 
 <!-- ==================== EDU DAMKAR (VIDEO EDUKASI) ==================== -->
 @php
-    // Mengambil data langsung dari variabel route $daftar_edu_damkar atau fallback ke Model EduDamkar
     $listEduDamkar = isset($daftar_edu_damkar) && count($daftar_edu_damkar)
         ? $daftar_edu_damkar
         : (\Illuminate\Support\Facades\Schema::hasTable('edu_damkar')
@@ -803,6 +853,9 @@
                 <h2>Edu Damkar</h2>
                 <p>Tindakan praktis dan saran dari petugas untuk mencegah dan menghadapi kebakaran.</p>
             </div>
+            <a href="/edu-damkar" class="btn btn-ghost">
+                Lihat lainnya <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
 
         <div class="vid-grid">
@@ -842,7 +895,7 @@
     <div class="wrap">
         <div class="sec-head">
             <div>
-                <h2>Infografis</h2>
+                <h2>Info grafis</h2>
                 <p>Panduan singkat bergambar. Ketuk gambar untuk memperbesar.</p>
             </div>
         </div>
@@ -866,10 +919,9 @@
             @endforelse
         </div>
 
-        <!-- HEADER MEDIA INFORMASI + TOMBOL LIHAT LAINNYA -->
         <div class="sec-head sub-head" style="flex-wrap: wrap;">
             <div>
-                <h2>Media Informasi</h2>
+                <h2>Media informasi</h2>
                 <p>Kabar terbaru dari media sosial Damkar Kota Jambi.</p>
             </div>
             <a href="/media-informasi" class="btn btn-outline">
@@ -881,8 +933,7 @@
             $daftarMedsos = collect($daftar_medsos ?? []);
         @endphp
 
-        <!-- GRID BERITA (LEBIH KECIL, 4 KOLOM, BADGE MELAYANG DI ATAS FOTO) -->
-        <div class="media-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+        <div class="media-grid">
             @forelse($daftarMedsos as $medsos)
                 @php 
                     $namaKatCard = str_replace('Lainya', 'Lainnya', $medsos->kategori->nama_kategori ?? 'Informasi'); 
@@ -896,7 +947,7 @@
                     if (str_contains($s, 'twitter'))   $ikonSumber = 'fab fa-twitter';
                 @endphp
                 
-                <article class="media-card" style="display: flex; flex-direction: column; background: #fff; border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line); transition: transform .3s, box-shadow .3s;">
+                <article class="media-card">
                     <div style="position: relative; background: var(--paper); aspect-ratio: 4 / 3; overflow: hidden;">
                         @if($medsos->kategori)
                             <span style="position: absolute; top: 12px; left: 12px; padding: 4px 12px; border-radius: 6px; font-size: .7rem; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; background: rgba(255, 255, 255, 0.95); color: var(--signal-d); z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.08); backdrop-filter: blur(4px);">{{ $namaKatCard }}</span>
@@ -913,7 +964,7 @@
                     </div>
                 </article>
             @empty
-                <div class="empty" style="grid-column: 1 / -1; text-align: center; padding: 64px 24px; border: 1.5px dashed var(--line); border-radius: var(--r-md); color: var(--steel); background: #fff;">
+                <div class="empty" style="grid-column: 1 / -1; background: #fff;">
                     <i class="far fa-newspaper" style="font-size: 3rem; color: var(--line); margin-bottom: 12px;"></i>
                     <h3>Belum ada berita media sosial</h3>
                     <p>Unggahan terbaru akan tampil di sini.</p>
@@ -925,7 +976,6 @@
 
 <!-- ==================== UJUNG-UJUNG DAMKAR (FORMAT VIDEO) ==================== -->
 @php
-    // Mengambil data langsung dari variabel route atau fallback ke Model UjungDamkar
     $listUjungDamkar = isset($daftar_ujung_damkar) && count($daftar_ujung_damkar)
         ? $daftar_ujung_damkar
         : (\Illuminate\Support\Facades\Schema::hasTable('ujung_damkar')
@@ -945,6 +995,9 @@
                         <h2>Ujung-ujung Damkar</h2>
                         <p>Dokumentasi video aksi penyelamatan dan layanan kemanusiaan non-kebakaran oleh petugas Damkar Kota Jambi.</p>
                     </div>
+                    <a href="/ujung-ujung-damkar" class="btn btn-outline">
+                        Lihat lainnya <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
 
                 <div class="giat-vid-grid">
@@ -992,7 +1045,6 @@
                 <h3>Tentang kami</h3>
                 <p>SIMERAH KOJA merupakan sistem informasi pemerintahan berbasis elektronik yang terintegrasi pada dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
                 
-                <!-- INFO KONTAK DITAMBAHKAN DI SINI -->
                 <div class="footer-contact">
                     <a href="{{ $wa_link }}" target="_blank" rel="noopener">
                         <i class="fab fa-whatsapp"></i> {{ $no_whatsapp }} (WhatsApp)
@@ -1048,7 +1100,7 @@
         <a class="n112" href="tel:112"><i class="fas fa-headset"></i> Call Center 112</a>
     </div>
     <button class="sos-fab-btn" type="button" aria-expanded="false" aria-controls="sosSheet">
-        <span class="beacon" style="background:#fff" aria-hidden="true"></span> Lapor Darurat
+        <span class="beacon" style="background:#fff" aria-hidden="true"></span> Lapor darurat
     </button>
 </div>
 
@@ -1070,7 +1122,6 @@
 (function () {
     'use strict';
 
-    /* ---------- Navigasi ---------- */
     var header = document.getElementById('siteHeader');
     var toggle = header.querySelector('.nav-toggle');
     var drops = header.querySelectorAll('.has-drop');
@@ -1108,7 +1159,6 @@
         if (e.key === 'Escape') closeDrops(null);
     });
 
-    /* ---------- Tombol lapor mengambang ---------- */
     var fab = document.getElementById('sosFab');
     var fabBtn = fab.querySelector('.sos-fab-btn');
 
@@ -1125,7 +1175,6 @@
         fabBtn.setAttribute('aria-expanded', open);
     });
 
-    /* ---------- Dialog Lightbox Infografis ---------- */
     var lightbox = document.getElementById('lightbox');
     var lbImg = lightbox.querySelector('img');
     var lbTxt = lightbox.querySelector('p');
@@ -1142,7 +1191,6 @@
     lightbox.querySelector('.dlg-close').addEventListener('click', function () { lightbox.close(); });
     lightbox.addEventListener('click', function (e) { if (e.target === lightbox) lightbox.close(); });
 
-    /* ---------- Dialog Video Edukasi & Ujung-Ujung Damkar ---------- */
     var vDialog = document.getElementById('videoDialog');
     var vFrame = vDialog.querySelector('iframe');
 
@@ -1164,34 +1212,6 @@
             vDialog.close();
         }
     });
-
-    /* ---------- Filter kategori media informasi ---------- */
-    var mediaFilter = document.querySelector('.media-filter');
-    if (mediaFilter) {
-        var mediaCards = document.querySelectorAll('[data-media-grid] .media-card');
-        var mediaEmpty = document.querySelector('[data-media-empty]');
-
-        mediaFilter.addEventListener('click', function (e) {
-            var btn = e.target.closest('.pill');
-            if (!btn) return;
-
-            mediaFilter.querySelectorAll('.pill').forEach(function (p) {
-                p.classList.remove('is-active');
-                p.setAttribute('aria-selected', 'false');
-            });
-            btn.classList.add('is-active');
-            btn.setAttribute('aria-selected', 'true');
-
-            var filter = btn.dataset.filter;
-            var visible = 0;
-            mediaCards.forEach(function (c) {
-                var show = filter === 'all' || c.dataset.kategori === filter;
-                c.style.display = show ? '' : 'none';
-                if (show) visible++;
-            });
-            if (mediaEmpty) mediaEmpty.hidden = visible !== 0;
-        });
-    }
 })();
 </script>
 </body>
