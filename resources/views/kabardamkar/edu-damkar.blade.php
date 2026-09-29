@@ -456,10 +456,10 @@
             <li class="has-drop current">
                 <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="/video-edukasi" aria-current="page">Video edukasi</a></li>
-                    <li><a href="/info-grafis">Infografis</a></li>
-                    <li><a href="/media-informasi">Media informasi</a></li>
-                    <li><a href="/giat-disdamkartan">Giat Disdamkartan Kota Jambi</a></li>
+                   <li><a href="/edu-damkar">Edu Damkar</a></li>
+                    <li><a href="#infografis">Info Grafis</a></li>
+                    <li><a href="/media-informasi">Media Informasi</a></li>
+                    <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
                 </ul>
             </li>
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
