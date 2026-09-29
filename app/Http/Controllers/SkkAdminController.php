@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 
 class SkkAdminController extends Controller
 {
-    // 1. Menampilkan halaman rekap daftar permohonan SKK (Baru & Perpanjangan)
+    // 1. Menampilkan halaman rekap daftar permohonan SKK
     public function index()
     {
         $skk_baru = PermohonanSkk::orderBy('created_at', 'desc')->get();
@@ -18,9 +18,10 @@ class SkkAdminController extends Controller
         return view('internal.pencegahan.kelola_skk', compact('skk_baru', 'skk_perpanjang'));
     }
 
-    // 2. Menampilkan Form Tambah Permohonan SKK (Offline oleh Petugas)
+    // 2. Menampilkan Form Tambah Permohonan SKK
     public function create()
     {
+        // Pastikan file view ini ada di folder resources/views/internal/pencegahan/
         return view('internal.pencegahan.tambah_skk');
     }
 
@@ -47,11 +48,9 @@ class SkkAdminController extends Controller
 
         $data = $request->all();
 
-        // Menangani upload file surat permohonan
         if ($request->hasFile('file_surat_permohonan')) {
             $data['file_surat_permohonan'] = $request->file('file_surat_permohonan')->store('skk_surat', 'public');
         } else {
-            // Nilai default jika petugas tidak mengunggah file lewat input offline kantor
             $data['file_surat_permohonan'] = 'offline_registered'; 
         }
 
@@ -61,18 +60,30 @@ class SkkAdminController extends Controller
     }
 
     // 4. Menampilkan Form Edit Data SKK
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        $p = PermohonanSkk::findOrFail($id);
+        $tipe = $request->query('tipe', 'baru');
         
-        // Pastikan Anda sudah membuat file view 'internal.pencegahan.edit_skk'
-        return view('internal.pencegahan.edit_skk', compact('p'));
+        if ($tipe === 'perpanjang') {
+            $p = PermohonanPerpanjangSkk::findOrFail($id);
+        } else {
+            $p = PermohonanSkk::findOrFail($id);
+        }
+        
+        // Mengirim data ke view edit dengan variabel $p
+        return view('internal.pencegahan.edit_skk', compact('p', 'tipe'));
     }
 
     // 5. Memproses Pembaruan (Update) Data SKK
     public function update(Request $request, $id)
     {
-        $p = PermohonanSkk::findOrFail($id);
+        $tipe = $request->query('tipe', 'baru');
+        
+        if ($tipe === 'perpanjang') {
+            $p = PermohonanPerpanjangSkk::findOrFail($id);
+        } else {
+            $p = PermohonanSkk::findOrFail($id);
+        }
 
         $request->validate([
             'nama_pemohon'           => 'required|string|max:150',
@@ -92,7 +103,7 @@ class SkkAdminController extends Controller
             'file_surat_permohonan'  => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
-        $data = $request->all();
+        $data = $request->except(['_token', '_method', 'tipe']);
 
         // Cek dan proses jika ada file surat baru yang di-upload
         if ($request->hasFile('file_surat_permohonan')) {
@@ -108,11 +119,16 @@ class SkkAdminController extends Controller
     }
 
     // 6. Menghapus Data SKK dari Sistem
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        $p = PermohonanSkk::findOrFail($id);
+        $tipe = $request->query('tipe', 'baru');
         
-        // Hapus file lampiran dari storage jika ada
+        if ($tipe === 'perpanjang') {
+            $p = PermohonanPerpanjangSkk::findOrFail($id);
+        } else {
+            $p = PermohonanSkk::findOrFail($id);
+        }
+        
         if ($p->file_surat_permohonan && $p->file_surat_permohonan !== 'offline_registered' && Storage::disk('public')->exists($p->file_surat_permohonan)) {
             Storage::disk('public')->delete($p->file_surat_permohonan);
         }
@@ -120,5 +136,35 @@ class SkkAdminController extends Controller
         $p->delete();
 
         return back()->with('success', 'Data Permohonan SKK berhasil dihapus dari sistem.');
+    }
+
+    // 7. Menampilkan Detail Data SKK (Tampilan Read-only)
+    public function show(Request $request, $id)
+    {
+        $tipe = $request->query('tipe', 'baru'); 
+        
+        if ($tipe === 'perpanjang') {
+            $permohonan = PermohonanPerpanjangSkk::findOrFail($id);
+            $jenis_layanan = "Perpanjangan SKK"; 
+        } else { 
+            $permohonan = PermohonanSkk::findOrFail($id);
+            $jenis_layanan = "SKK Baru"; 
+        } 
+        
+        return view('internal.pencegahan.detail_skk', compact('permohonan', 'tipe', 'jenis_layanan')); 
+    }
+
+    // 8. Update Status SKK Baru
+    public function updateStatus(Request $request, $id)
+    {
+        PermohonanSkk::where('id', $id)->update(['status_permohonan' => $request->status_permohonan]); 
+        return redirect()->back()->with('success', 'Status Permohonan SKK Baru berhasil diperbarui!'); 
+    }
+
+    // 9. Update Status SKK Perpanjang
+    public function updateStatusPerpanjang(Request $request, $id)
+    {
+        PermohonanPerpanjangSkk::where('id', $id)->update(['status_permohonan' => $request->status_permohonan]); 
+        return redirect()->back()->with('success', 'Status Permohonan Perpanjangan SKK berhasil diperbarui!'); 
     }
 }

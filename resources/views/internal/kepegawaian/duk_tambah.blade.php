@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-    <title>Data Urut Kepegawaian (DUK) | SIMERAH KOJA</title>
+    <title>Tambah Data Pegawai | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -158,62 +158,65 @@
         }
 
         /* ==========================================================
-           MAIN CONTENT (DUK SPECIFIC)
+           MAIN CONTENT (FORM SPECIFIC)
            ========================================================== */
         .content { flex: 1; min-width: 0; padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 80px; }
+        .page-head { margin-bottom: 26px; }
         .page-head h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 5px; color: var(--ink); }
-        .page-head p { color: var(--steel); font-size: .95rem; margin-bottom: 0;}
+        .page-head p { color: var(--steel); font-size: .95rem; margin-bottom: 25px;}
 
-        /* Card Container */
-        .card-container { background: #ffffff; border: 1px solid var(--line); border-radius: var(--r-md); padding: 26px; box-shadow: var(--shadow-xs); transition: box-shadow .2s ease, border-color .2s ease; }
-        .card-container:hover { box-shadow: var(--shadow-sm); border-color: #d2dae5; }
+        /* Form Container */
+        .form-container { background: #ffffff; border: 1px solid var(--line); border-radius: var(--r-md); padding: 35px; box-shadow: var(--shadow-xs); }
+        .section-title { 
+            display: flex; align-items: center; gap: 10px;
+            font-size: 1.05rem; font-weight: 700; font-family: var(--font-display); color: var(--ink); 
+            border-bottom: 1px solid var(--line); padding-bottom: 14px; margin-bottom: 20px; margin-top: 35px; 
+        }
+        .section-title::before {
+            content: ""; width: 4px; height: 18px;
+            background: var(--navy); border-radius: 4px;
+        }
+        .section-title:first-child { margin-top: 0; }
         
-        /* Table Customization */
-        .table { margin-bottom: 0; }
-        .table th { white-space: nowrap; font-size: 0.85rem; text-transform: uppercase; color: var(--steel-soft); font-family: var(--font-body); font-weight: 700; letter-spacing: .02em; border-bottom: 2px solid var(--line-dark); background-color: #fcfdfe; }
-        .table td { white-space: nowrap; font-size: 0.9rem; vertical-align: middle; border-color: var(--line); }
-        .table-hover tbody tr:hover { background-color: #f8fafc; }
+        /* Form Inputs */
+        .form-label { font-size: .88rem; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+        .form-control, .form-select { 
+            min-height: 44px; font-size: .92rem; border: 1px solid var(--line-dark); border-radius: 8px; color: var(--ink); box-shadow: none; transition: all .2s ease; 
+        }
+        .form-control:focus, .form-select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+        .form-control::placeholder { color: var(--steel-soft); }
+        
+        .input-group-text { background: var(--paper); border-color: var(--line-dark); color: var(--steel); font-size: .92rem; font-weight: 600;}
 
-        /* Button Customization */
-        .btn-tambah { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 0 20px; background: var(--navy); color: #fff; border: none; border-radius: 8px; font-size: .9rem; font-weight: 600; transition: all .2s ease; }
-        .btn-tambah:hover { background: var(--navy-dark); color: #fff; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13, 27, 42, .15); }
-        .btn-tambah:active { transform: translateY(0); }
+        /* Buttons */
+        .btn-primary-custom { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 24px; background: var(--navy); color: #fff; border: none; border-radius: 8px; font-size: .9rem; font-weight: 600; transition: all .2s ease; }
+        .btn-primary-custom:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13, 27, 42, .15); }
         
-        /* Custom Badges */
-        .badge { padding: 6px 12px; border-radius: 6px; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; }
-        .badge.bg-success { background-color: var(--success) !important; }
-        .badge.bg-warning { background-color: var(--amber) !important; color: #fff !important; }
-        .badge.bg-secondary { background-color: var(--steel) !important; }
+        .btn-secondary-custom { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 24px; background: var(--paper); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; font-size: .9rem; font-weight: 600; transition: all .2s ease; }
+        .btn-secondary-custom:hover { background: #e2e8f0; }
     </style>
 </head>
 <body>
 
 <!-- TOAST NOTIFICATION -->
 <div class="toast-wrap" id="toastWrap" aria-live="polite">
-    @if(session('success'))
-        <div class="toast ok" data-toast>
-            <span class="toast-ico"><i class="fas fa-check"></i></span>
-            <span>{{ session('success') }}</span>
-            <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
-        </div>
-    @endif
     @if ($errors->any())
         <div class="toast err" data-toast>
             <span class="toast-ico"><i class="fas fa-triangle-exclamation"></i></span>
-            <span>Gagal menyimpan data. Silakan periksa kembali.</span>
+            <span>Terdapat kesalahan pada input form.</span>
             <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
         </div>
     @endif
 </div>
 
-<!-- ==================== TOPBAR ==================== -->
+<!-- TOPBAR -->
 <header class="topbar">
     <div class="topbar-left">
         <button class="side-toggle" type="button" id="sideToggle" aria-label="Buka menu" aria-expanded="false" aria-controls="sidebar">
             <i class="fas fa-bars"></i>
         </button>
         <a href="/internal/index" class="brand">
-            <img src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA">
+            <img src="/images/simerahkoja.png" alt="Logo">
             <span>SIMERAH KOJA</span>
         </a>
     </div>
@@ -234,8 +237,8 @@
 
 <div class="shell">
     <div class="sidebar-backdrop" id="sideBackdrop"></div>
-
-    <!-- ==================== SIDEBAR ==================== -->
+    
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar" aria-label="Navigasi internal">
 
         <a href="/internal/index" class="side-link {{ Request::is('internal/index') ? 'active' : '' }}">
@@ -317,7 +320,6 @@
         <details class="side-group" {{ request()->is('internal/profil*') || request()->is('internal/kelola-user*') || request()->is('internal/kelola-pemohon*') ? 'open' : '' }}>
             <summary><i class="fas fa-user-gear grp-ico"></i><span class="grp-label">Pengaturan akun</span><i class="fas fa-chevron-down chev"></i></summary>
             <div class="side-sub">
-                <!-- Menu Profil Aktif -->
                 <a href="{{ url('/internal/profil') }}" class="{{ request()->is('internal/profil*') ? 'active' : '' }}">
                     <i class="fas fa-user-pen"></i> Profil Saya
                 </a>
@@ -335,103 +337,182 @@
         </details>
     </aside>
 
-    <!-- ==================== KONTEN ==================== -->
+    <!-- KONTEN -->
     <main class="content">
+        
+        <a href="{{ route('kepegawaian.duk.index') }}" class="btn btn-sm btn-outline-secondary mb-3 px-3" style="border-radius: 8px; font-weight: 600;">
+            <i class="fas fa-arrow-left me-1"></i> Kembali ke DUK
+        </a>
 
-        <!-- Error Messages (Optional, if toast fails) -->
+        <div class="page-head">
+            <h1>Tambah Data Pegawai Baru</h1>
+            <p>Silakan lengkapi form Daftar Urut Kepangkatan (DUK) di bawah ini.</p>
+        </div>
+
         @if ($errors->any())
-            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert" style="border-radius: 12px;">
-                <ul class="mb-0">
+            <div class="alert alert-danger mb-4" style="border-radius: 12px; border: 1px solid rgba(220, 53, 69, .2); background: var(--signal-soft); color: var(--signal-dark);">
+                <div class="fw-bold mb-2"><i class="fas fa-exclamation-circle me-2"></i> Terdapat kesalahan:</div>
+                <ul class="mb-0 ps-3">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
-        <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
-            <div class="page-head mb-0">
-                <h1>Daftar Urut Kepangkatan (DUK)</h1>
-                <p>Manajemen data pegawai, kepangkatan, jabatan, dan pendidikan.</p>
-            </div>
-            <a href="{{ route('kepegawaian.duk.create') }}" class="btn-tambah text-decoration-none">
-                <i class="fas fa-plus me-1"></i> Tambah Data Pegawai
-            </a>
-        </div>
+        <div class="form-container">
+            <form action="{{ route('kepegawaian.duk.store') }}" method="POST">
+                @csrf
+                
+                <!-- 1. DATA PRIBADI -->
+                <div class="section-title">
+                    <i class="fas fa-id-card text-muted"></i> Data Pribadi
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-2">
+                        <label class="form-label">No. Urut DUK</label>
+                        <input type="number" name="no_urut" class="form-control" value="{{ old('no_urut') }}" placeholder="Cth: 1">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">NIP <span class="text-danger">*</span></label>
+                        <input type="text" name="nip" class="form-control" value="{{ old('nip') }}" required maxlength="18" pattern="[0-9]{18}" title="NIP harus 18 digit angka" placeholder="18 Digit NIP">
+                        <small class="text-muted" style="font-size: .75rem;">Maksimal & wajib 18 digit angka.</small>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Nama Lengkap (Beserta Gelar) <span class="text-danger">*</span></label>
+                        <input type="text" name="nama" class="form-control" value="{{ old('nama') }}" required placeholder="Cth: Ir. Soekarno, M.Sc.">
+                    </div>
+                    
+                    <!-- DIPISAH MENJADI TEMPAT LAHIR & TANGGAL LAHIR -->
+                    <div class="col-md-6">
+                        <label class="form-label">Tempat Lahir</label>
+                        <input type="text" name="tempat_lahir" class="form-control" value="{{ old('tempat_lahir') }}" placeholder="Cth: Jambi">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Tanggal Lahir</label>
+                        <input type="date" name="tanggal_lahir" class="form-control" value="{{ old('tanggal_lahir') }}">
+                    </div>
 
-        <div class="card-container">
-            <!-- Tabel Responsif -->
-            <div class="table-responsive">
-                <table class="table table-hover align-middle border-0">
-                    <thead>
-                        <tr>
-                            <th class="text-center" width="5%">No. Urut</th>
-                            <th>NIP</th>
-                            <th>Nama Lengkap</th>
-                            <th>Pangkat / Gol. Ruang</th>
-                            <th>Jabatan</th>
-                            <th>Masa Kerja</th>
-                            <th>Pendidikan Terakhir</th>
-                            <th>Status Pegawai</th>
-                            <th class="text-center" width="10%">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($pegawais ?? [] as $pegawai)
-                        <tr>
-                            <td class="text-center fw-bold text-secondary">{{ $pegawai->no_urut }}</td>
-                            <td class="fw-bold">{{ $pegawai->nip }}</td>
-                            <td class="fw-semibold">{{ $pegawai->nama }}</td>
-                            <td>
-                                {{ $pegawai->pangkat_gol_ruang }}<br>
-                                <small class="text-muted">TMT: {{ $pegawai->pangkat_tmt }}</small>
-                            </td>
-                            <td>
-                                {{ $pegawai->jabatan_nama }}<br>
-                                <small class="text-muted">TMT: {{ $pegawai->jabatan_tmt }}</small>
-                            </td>
-                            <td>{{ $pegawai->masa_kerja_th }} Thn, {{ $pegawai->masa_kerja_bln }} Bln</td>
-                            <td>
-                                {{ $pegawai->pendidikan_tingkat_ijazah }} - {{ $pegawai->pendidikan_nama }}<br>
-                                <small class="text-muted">Lulus: {{ $pegawai->pendidikan_tahun_lulus }}</small>
-                            </td>
-                            <td>
-                                @if($pegawai->status_pegawai == 'Aktif')
-                                    <span class="badge bg-success">Aktif</span>
-                                @elseif($pegawai->status_pegawai == 'Cuti')
-                                    <span class="badge bg-warning">Cuti</span>
-                                @elseif($pegawai->status_pegawai == 'Pensiun')
-                                    <span class="badge bg-secondary">Pensiun</span>
-                                @else
-                                    <span class="badge bg-info">{{ $pegawai->status_pegawai }}</span>
-                                @endif
-                            </td>
-                            <td class="text-center">
-                                <a href="#" class="btn btn-sm btn-outline-primary" style="border-radius: 6px;" title="Edit"><i class="fas fa-edit"></i></a>
-                                
-                                <form action="{{ route('kepegawaian.duk.destroy', $pegawai->id ?? 1) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" style="border-radius: 6px;" title="Hapus" onclick="return confirm('Yakin ingin menghapus pegawai ini?')"><i class="fas fa-trash"></i></button>
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="9" class="text-center py-5">
-                                <div class="text-muted">
-                                    <i class="fas fa-folder-open mb-3" style="font-size: 2.5rem; color: var(--steel-soft); opacity: 0.7;"></i><br>
-                                    Belum ada data pegawai. Silakan tambah data baru.
-                                </div>
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Jenis Kelamin</label>
+                        <select name="jenis_kelamin" class="form-select">
+                            <option value="">Pilih...</option>
+                            <option value="Laki-laki" {{ old('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                            <option value="Perempuan" {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Status Pegawai</label>
+                        <select name="status_pegawai" class="form-select">
+                            <option value="Aktif" {{ old('status_pegawai') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                            <option value="Cuti" {{ old('status_pegawai') == 'Cuti' ? 'selected' : '' }}>Cuti</option>
+                            <option value="Pensiun" {{ old('status_pegawai') == 'Pensiun' ? 'selected' : '' }}>Pensiun</option>
+                            <option value="Pindah" {{ old('status_pegawai') == 'Pindah' ? 'selected' : '' }}>Pindah Instansi</option>
+                        </select>
+                    </div>
+                </div>
 
+                <!-- 2. KEPANGKATAN & JABATAN -->
+                <div class="section-title">
+                    <i class="fas fa-medal text-muted"></i> Kepangkatan & Jabatan
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <label class="form-label">Pangkat / Golongan Ruang</label>
+                        <input type="text" name="pangkat_gol_ruang" class="form-control" value="{{ old('pangkat_gol_ruang') }}" placeholder="Cth: Penata Tk. I / III/d">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">TMT Pangkat</label>
+                        <input type="date" name="pangkat_tmt" class="form-control" value="{{ old('pangkat_tmt') }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Nama Jabatan</label>
+                        <input type="text" name="jabatan_nama" class="form-control" value="{{ old('jabatan_nama') }}" placeholder="Cth: Kepala Bidang Pencegahan">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">TMT Jabatan</label>
+                        <input type="date" name="jabatan_tmt" class="form-control" value="{{ old('jabatan_tmt') }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Masa Kerja (Tahun)</label>
+                        <div class="input-group">
+                            <input type="number" name="masa_kerja_th" class="form-control" value="{{ old('masa_kerja_th') }}" placeholder="0">
+                            <span class="input-group-text border-start-0">Thn</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Masa Kerja (Bulan)</label>
+                        <div class="input-group">
+                            <input type="number" name="masa_kerja_bln" class="form-control" value="{{ old('masa_kerja_bln') }}" placeholder="0">
+                            <span class="input-group-text border-start-0">Bln</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. PENDIDIKAN -->
+                <div class="section-title">
+                    <i class="fas fa-graduation-cap text-muted"></i> Pendidikan Formal
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-3">
+                        <label class="form-label">Tingkat Ijazah</label>
+                        <select name="pendidikan_tingkat_ijazah" class="form-select">
+                            <option value="">Pilih...</option>
+                            <option value="SMA/SMK" {{ old('pendidikan_tingkat_ijazah') == 'SMA/SMK' ? 'selected' : '' }}>SMA/SMK</option>
+                            <option value="D3" {{ old('pendidikan_tingkat_ijazah') == 'D3' ? 'selected' : '' }}>D3</option>
+                            <option value="D4/S1" {{ old('pendidikan_tingkat_ijazah') == 'D4/S1' ? 'selected' : '' }}>D4 / S1</option>
+                            <option value="S2" {{ old('pendidikan_tingkat_ijazah') == 'S2' ? 'selected' : '' }}>S2</option>
+                            <option value="S3" {{ old('pendidikan_tingkat_ijazah') == 'S3' ? 'selected' : '' }}>S3</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Nama Jurusan / Pendidikan</label>
+                        <input type="text" name="pendidikan_nama" class="form-control" value="{{ old('pendidikan_nama') }}" placeholder="Cth: Ilmu Pemerintahan">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Tahun Lulus</label>
+                        <input type="text" name="pendidikan_tahun_lulus" class="form-control" maxlength="4" value="{{ old('pendidikan_tahun_lulus') }}" placeholder="Cth: 2012">
+                    </div>
+                </div>
+
+                <!-- 4. DIKLAT / LATIHAN JABATAN -->
+                <div class="section-title">
+                    <i class="fas fa-chalkboard-user text-muted"></i> Diklat / Latihan Jabatan
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-5">
+                        <label class="form-label">Nama Latihan Jabatan</label>
+                        <input type="text" name="latihan_jabatan_nama" class="form-control" value="{{ old('latihan_jabatan_nama') }}" placeholder="Cth: Diklat PIM III">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Tahun Lulus</label>
+                        <input type="text" name="latihan_jabatan_tahun_lulus" class="form-control" maxlength="4" value="{{ old('latihan_jabatan_tahun_lulus') }}" placeholder="Cth: 2015">
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label">Tempat Latihan</label>
+                        <input type="text" name="latihan_jabatan_tempat" class="form-control" value="{{ old('latihan_jabatan_tempat') }}" placeholder="Cth: BPSDM Provinsi Jambi">
+                    </div>
+                </div>
+
+                <!-- 5. CATATAN TAMBAHAN -->
+                <div class="section-title">
+                    <i class="fas fa-clipboard-list text-muted"></i> Lain-lain
+                </div>
+                <div class="row g-4 mb-4">
+                    <div class="col-12">
+                        <label class="form-label">Catatan Mutasi Pegawai</label>
+                        <textarea name="catatan_mutasi_pegawai" class="form-control" rows="4" placeholder="Tuliskan riwayat mutasi atau catatan tambahan di sini...">{{ old('catatan_mutasi_pegawai') }}</textarea>
+                    </div>
+                </div>
+
+                <hr class="my-4" style="border-color: var(--line);">
+                
+                <div class="d-flex justify-content-end gap-3">
+                    <a href="{{ route('kepegawaian.duk.index') }}" class="btn-secondary-custom">Batal</a>
+                    <button type="submit" class="btn-primary-custom"><i class="fas fa-save"></i> Simpan Data</button>
+                </div>
+            </form>
+        </div>
     </main>
 </div>
 
@@ -439,6 +520,17 @@
 <script>
 (function () {
     'use strict';
+
+    /* ---------- Validasi Input NIP Hanya Angka & Maks 18 Digit ---------- */
+    const nipInput = document.querySelector('input[name="nip"]');
+    if (nipInput) {
+        nipInput.addEventListener('input', function (e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value.length > 18) {
+                this.value = this.value.slice(0, 18);
+            }
+        });
+    }
 
     /* ---------- Notifikasi (Toast) ---------- */
     document.querySelectorAll('[data-toast]').forEach(function (t) {

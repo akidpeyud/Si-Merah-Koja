@@ -721,7 +721,6 @@
                             <div class="field">
                                 <label class="label" for="no_whatsapp">Nomor WhatsApp <span class="req" aria-hidden="true">*</span></label>
                                 <input class="input{{ $inv('no_whatsapp') }}" type="tel" id="no_whatsapp" name="no_whatsapp" value="{{ old('no_whatsapp') }}" inputmode="tel" autocomplete="tel" placeholder="Contoh: 08123456789" required aria-describedby="hint-wa">
-                                <p class="hint" id="hint-wa">Notifikasi status permohonan dikirim ke nomor ini.</p>
                                 {!! $fe('no_whatsapp') !!}
                             </div>
                         </div>
