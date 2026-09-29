@@ -1,26 +1,49 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\PermohonanEdukasi;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 
 class PermohonanEdukasiController extends Controller
 {
     private $dataWilayah = [
-        "Alam Barajo" => ["Bagan Pete", "Beliung", "Kenali Besar", "Mayang Mangurai", "Pinang Merah", "Rawa Sari", "Simpang Rimbo"],
-        "Danau Sipin" => ["Legok", "Murni", "Selamat", "Solok Sipin", "Sungai Putri"],
-        "Danau Teluk" => ["Olak Kemang", "Pasir Panjang", "Tanjung Pasir", "Tanjung Raden", "Ulu Gedong"],
+        "Alam Barajo"   => ["Bagan Pete", "Beliung", "Kenali Besar", "Mayang Mangurai", "Pinang Merah", "Rawa Sari", "Simpang Rimbo"],
+        "Danau Sipin"   => ["Legok", "Murni", "Selamat", "Solok Sipin", "Sungai Putri"],
+        "Danau Teluk"   => ["Olak Kemang", "Pasir Panjang", "Tanjung Pasir", "Tanjung Raden", "Ulu Gedong"],
         "Jambi Selatan" => ["Pakuan Baru", "Pasir Putih", "Tambak Sari", "The Hok", "Wijaya Pura"],
-        "Jambi Timur" => ["Budiman", "Kasang", "Kasang Jaya", "Rajawali", "Sejinjang", "Sulanjana", "Talang Banjar", "Tanjung Pinang", "Tanjung Sari"],
-        "Jelutung" => ["Cempaka Putih", "Handil Jaya", "Jelutung", "Kebun Handil", "Lebak Bandung", "Payo Lebar", "Talang Jauh"],
-        "Kota Baru" => ["Kenali Asam", "Kenali Asam Atas", "Kenali Asam Bawah", "Paal Lima", "Simpang Tiga Sipin", "Sukakarya", "Talang Gulo"],
-        "Paal Merah" => ["Bakung Jaya", "Eka Jaya", "Lingkar Selatan", "Paal Merah", "Payo Selincah", "Talang Bakung"],
-        "Pasar Jambi" => ["Beringin", "Orang Kayo Hitam", "Pasar Jambi", "Sungai Asam"],
-        "Pelayangan" => ["Arab Melayu", "Jelmu", "Mudung Laut", "Tahtul Yaman", "Tanjung Johor", "Tengah"],
-        "Telanaipura" => ["Aur Kenali", "Buluran Kenali", "Pematang Sulur", "Penyengat Rendah", "Simpang Empat Sipin", "Telanaipura", "Teluk Kenali"]
+        "Jambi Timur"   => ["Budiman", "Kasang", "Kasang Jaya", "Rajawali", "Sejinjang", "Sulanjana", "Talang Banjar", "Tanjung Pinang", "Tanjung Sari"],
+        "Jelutung"      => ["Cempaka Putih", "Handil Jaya", "Jelutung", "Kebun Handil", "Lebak Bandung", "Payo Lebar", "Talang Jauh"],
+        "Kota Baru"     => ["Kenali Asam", "Kenali Asam Atas", "Kenali Asam Bawah", "Paal Lima", "Simpang Tiga Sipin", "Sukakarya", "Talang Gulo"],
+        "Paal Merah"    => ["Bakung Jaya", "Eka Jaya", "Lingkar Selatan", "Paal Merah", "Payo Selincah", "Talang Bakung"],
+        "Pasar Jambi"   => ["Beringin", "Orang Kayo Hitam", "Pasar Jambi", "Sungai Asam"],
+        "Pelayangan"    => ["Arab Melayu", "Jelmu", "Mudung Laut", "Tahtul Yaman", "Tanjung Johor", "Tengah"],
+        "Telanaipura"   => ["Aur Kenali", "Buluran Kenali", "Pematang Sulur", "Penyengat Rendah", "Simpang Empat Sipin", "Telanaipura", "Teluk Kenali"]
     ];
 
+    /**
+     * Menampilkan daftar permohonan di halaman internal kelola edukasi.
+     */
+    public function index()
+    {
+        $permohonan = PermohonanEdukasi::orderBy('created_at', 'desc')->get();
+        return view('internal.pencegahan.kelola_edukasi', compact('permohonan'));
+    }
+
+    /**
+     * Menampilkan rincian detail permohonan berdasarkan ID.
+     */
+    public function show($id)
+    {
+        $edukasi = PermohonanEdukasi::findOrFail($id);
+        return view('internal.pencegahan.detail_edukasi', compact('edukasi'));
+    }
+
+    /**
+     * Menyimpan data permohonan baru dari form publik.
+     */
     public function store(Request $request)
     {
         $kecamatanValid = array_keys($this->dataWilayah);
@@ -45,19 +68,27 @@ class PermohonanEdukasiController extends Controller
             'usia_13_18'         => 'nullable|integer|min:0',
             'usia_18_keatas'     => 'nullable|integer|min:0',
             'surat_permohonan'   => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'syarat_lainnya'     => 'nullable|file|mimes:pdf,zip,rar|max:10240',
+            'syarat_lainnya.*'   => 'nullable|file|mimes:pdf,jpg,jpeg,png,zip,rar|max:10240',
         ]);
 
+        // Upload Surat Permohonan Wajib
         if ($request->hasFile('surat_permohonan')) {
             $fileSurat = $request->file('surat_permohonan');
             $filenameSurat = time() . '_edu_surat_' . uniqid() . '.' . $fileSurat->getClientOriginalExtension();
+            // Simpan ke disk public agar bisa diakses via asset('storage/...')
             $validatedData['surat_permohonan'] = $fileSurat->storeAs('uploads/edukasi', $filenameSurat, 'public');
         }
 
+        // Upload Syarat Lainnya (Menangani multiple files / array)
         if ($request->hasFile('syarat_lainnya')) {
-            $fileLain = $request->file('syarat_lainnya');
-            $filenameLain = time() . '_edu_lainnya_' . uniqid() . '.' . $fileLain->getClientOriginalExtension();
-            $validatedData['syarat_lainnya'] = $fileLain->storeAs('uploads/edukasi', $filenameLain, 'public');
+            $uploadedFiles = [];
+            foreach ($request->file('syarat_lainnya') as $fileLain) {
+                $filenameLain = time() . '_edu_lain_' . uniqid() . '.' . $fileLain->getClientOriginalExtension();
+                $path = $fileLain->storeAs('uploads/edukasi', $filenameLain, 'public');
+                $uploadedFiles[] = $path;
+            }
+            // Simpan sebagai array/json jika kolom di database mendukung (atau ubah sesuai kebutuhan model)
+            $validatedData['syarat_lainnya'] = $uploadedFiles;
         }
 
         $validatedData['status_permohonan'] = 'Pending';

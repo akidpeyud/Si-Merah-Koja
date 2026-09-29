@@ -12,7 +12,7 @@ use App\Http\Controllers\DukController;
 use App\Http\Controllers\DamtanController;
 use App\Http\Controllers\RedkarController; 
 use App\Http\Controllers\SuratKorbanController;
-use App\Http\Controllers\PermohonanController; 
+use App\Http\Controllers\PermohonanRpkbglController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\KabarDamkarController;
 use App\Http\Controllers\PencegahanController;
@@ -90,10 +90,10 @@ Route::post('/pemohon/logout', [PemohonAuthController::class, 'logout'])->name('
 Route::middleware([CekLoginPemohon::class])->group(function () {
     
     // RPKBGL
-    Route::get('/layanan-fasilitas/layanan_perizinan', function () { 
-        return view('layanan-fasilitas.layanan_perizinan'); 
-    })->name('layanan_perizinan');
-    Route::post('/layanan-fasilitas/layanan_perizinan', [PermohonanController::class, 'store'])->name('permohonan.store');
+Route::get('/layanan-fasilitas/layanan_perizinan', function () { 
+    return view('layanan-fasilitas.layanan_perizinan'); 
+})->name('layanan_perizinan');
+Route::post('/layanan-fasilitas/layanan_perizinan', [PermohonanRpkbglController::class, 'store'])->name('permohonan.store');
 
     // SKK
     Route::get('/layanan-fasilitas/skk', function () { 
@@ -272,10 +272,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/pencegahan/tambah-redkar', [RedkarController::class, 'createRedkar']);
     Route::post('/internal/pencegahan/simpan-redkar-offline', [RedkarController::class, 'storeRedkarOffline']);
 
-    // 2. KELOLA PERMOHONAN (RPKBGL, SKK, EDUKASI)
     Route::get('/internal/pencegahan/kelola-rpkbgl', function () { 
-        return view('internal.pencegahan.kelola_rpkbgl', ['permohonan' => App\Models\PermohonanRpkbgl::orderBy('created_at', 'desc')->get()]); 
-    });
+    return view('internal.pencegahan.kelola_rpkbgl', [
+        'permohonan' => App\Models\PermohonanRpkbgl::orderBy('created_at', 'desc')->get()
+    ]); 
+});
     Route::post('/internal/pencegahan/kelola-rpkbgl/update-status/{id}', function (Illuminate\Http\Request $request,$id) { 
         App\Models\PermohonanRpkbgl::where('id', $id)->update(['status_permohonan' =>$request->status_permohonan]); 
         return redirect()->back()->with('success', 'Status permohonan berhasil diperbarui!'); 
@@ -302,17 +303,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/internal/pencegahan/kelola-perpanjang-skk/update-status/{id}', [SkkAdminController::class, 'updateStatusPerpanjang'])->name('skk.update_status_perpanjang');
     // ----------------------------------------------------------
 
-    Route::get('/internal/pencegahan/kelola-edukasi', function () { 
-        return view('internal.pencegahan.kelola_edukasi', ['permohonan' => App\Models\PermohonanEdukasi::orderBy('created_at', 'desc')->get()]); 
-    });
-    Route::post('/internal/pencegahan/kelola-edukasi/update-status/{id}', function (Illuminate\Http\Request $request,$id) { 
-        App\Models\PermohonanEdukasi::where('id', $id)->update(['status_permohonan' =>$request->status_permohonan]); 
+    // --- KELOLA EDUKASI (MENGGUNAKAN PermohonanEdukasiController) ---
+    Route::get('/internal/pencegahan/kelola-edukasi', [App\Http\Controllers\PermohonanEdukasiController::class, 'index']);
+    
+    Route::post('/internal/pencegahan/kelola-edukasi/update-status/{id}', function (Illuminate\Http\Request $request, $id) { 
+        App\Models\PermohonanEdukasi::where('id', $id)->update(['status_permohonan' => $request->status_permohonan]); 
         return redirect()->back()->with('success', 'Status Permohonan Edukasi berhasil diperbarui!'); 
     });
-    Route::get('/internal/pencegahan/kelola-edukasi/{id}', function ($id) { 
-        return view('internal.pencegahan.detail_edukasi', ['permohonan' => App\Models\PermohonanEdukasi::findOrFail($id)]); 
-    });
-
+    
+    Route::get('/internal/pencegahan/kelola-edukasi/{id}', [App\Http\Controllers\PermohonanEdukasiController::class, 'show']);
     // 3. MENU PENCEGAHAN KEBAKARAN & INSPEKSI (UTAMA)
     Route::get('/internal/pencegahan/inspeksi-kebakaran', function () { return view('internal.pencegahan.pencegahan_inspeksi'); });
     

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-    <title>Kelola Edukasi & Sosialisasi | SIMERAH KOJA</title>
+    <title>Kelola Kunjungan Edukasi & Sosialisasi | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -362,7 +362,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
         <div class="page-head">
             <div class="page-head-title">
-                <h1>Daftar Edukasi & Sosialisasi</h1>
+                <h1>Daftar Kunjungan Edukasi & Sosialisasi</h1>
                 <p>Kelola pengajuan layanan edukasi dan sosialisasi ke masyarakat dan instansi.</p>
             </div>
             <div>
@@ -464,7 +464,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                         <tr>
                             <td colspan="7" class="text-center py-5">
                                 <i class="fas fa-folder-open mb-3" style="font-size: 32px; color: var(--line-dark);"></i><br>
-                                <span style="color: var(--steel); font-weight: 500;">Belum ada pengajuan Edukasi & Sosialisasi.</span>
+                                <span style="color: var(--steel); font-weight: 500;">Belum ada pengajuan Kunjungan Edukasi & Sosialisasi.</span>
                             </td>
                         </tr>
                         @endforelse

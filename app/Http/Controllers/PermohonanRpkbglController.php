@@ -1,81 +1,90 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use App\Models\PermohonanRpkbgl;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use App\Models\PermohonanRpkbgl;
 
 class PermohonanRpkbglController extends Controller
 {
-    // Daftar wilayah disamakan persis dengan script JavaScript di Form Redkar
-    private $dataWilayah = [
-        "Alam Barajo" => ["Bagan Pete", "Beliung", "Kenali Besar", "Mayang Mangurai", "Pinang Merah", "Rawa Sari", "Simpang Rimbo"],
-        "Danau Sipin" => ["Legok", "Murni", "Selamat", "Solok Sipin", "Sungai Putri"],
-        "Danau Teluk" => ["Olak Kemang", "Pasir Panjang", "Tanjung Pasir", "Tanjung Raden", "Ulu Gedong"],
-        "Jambi Selatan" => ["Pakuan Baru", "Pasir Putih", "Tambak Sari", "The Hok", "Wijaya Pura"],
-        "Jambi Timur" => ["Budiman", "Kasang", "Kasang Jaya", "Rajawali", "Sejinjang", "Sulanjana", "Talang Banjar", "Tanjung Pinang", "Tanjung Sari"],
-        "Jelutung" => ["Cempaka Putih", "Handil Jaya", "Jelutung", "Kebun Handil", "Lebak Bandung", "Payo Lebar", "Talang Jauh"],
-        "Kota Baru" => ["Kenali Asam", "Kenali Asam Atas", "Kenali Asam Bawah", "Paal Lima", "Simpang Tiga Sipin", "Sukakarya", "Talang Gulo"],
-        "Paal Merah" => ["Bakung Jaya", "Eka Jaya", "Lingkar Selatan", "Paal Merah", "Payo Selincah", "Talang Bakung"],
-        "Pasar Jambi" => ["Beringin", "Orang Kayo Hitam", "Pasar Jambi", "Sungai Asam"],
-        "Pelayangan" => ["Arab Melayu", "Jelmu", "Mudung Laut", "Tahtul Yaman", "Tanjung Johor", "Tengah"],
-        "Telanaipura" => ["Aur Kenali", "Buluran Kenali", "Pematang Sulur", "Penyengat Rendah", "Simpang Empat Sipin", "Telanaipura", "Teluk Kenali"]
-    ];
-
     public function store(Request $request)
     {
-        // Ambil daftar kecamatan yang valid
-        $kecamatanValid = array_keys($this->dataWilayah);
-
-        // 1. Validasi Input Form
-        $validatedData = $request->validate([
-            'nama_pemohon'             => 'required|string|max:150',
-            'email_pemohon'            => 'required|email|max:100',
-            'no_whatsapp'              => 'required|string|max:25',
-            'nama_usaha'               => 'required|string|max:150',
-            'nik_pemilik_usaha'        => 'required|string|max:30',
-            'alamat_pemilik_usaha'     => 'required|string',
-            'kategori_bangunan'        => 'required|string|max:100',
-            'alamat_bangunan'          => 'required|string',
-            
-            // Validasi Kecamatan harus ada di array list
-            'kecamatan'                => ['required', 'string', Rule::in($kecamatanValid)],
-            
-            // Validasi Kelurahan menggunakan Custom Closure
-            'kelurahan'                => ['required', 'string', function ($attribute, $value, $fail) use ($request) {
-                $kec = $request->input('kecamatan');
-                // Cek jika kecamatan valid dan kelurahan ada di dalam kecamatan tersebut
-                if (isset($this->dataWilayah[$kec]) && !in_array($value, $this->dataWilayah[$kec])) {
-                    $fail('Kelurahan tidak valid untuk kecamatan yang dipilih.');
-                }
-            }],
-            
-            'luas_lahan'               => 'required|numeric|min:0',
-            'luas_bangunan'            => 'required|numeric|min:0',
-            'tinggi_bangunan'          => 'required|numeric|min:0',
-            'file_surat_permohonan'    => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'file_persyaratan_lainnya' => 'nullable|file|mimes:pdf,jpg,jpeg,png,zip|max:10240',
+        // 1. Validasi input dari form HTML
+        $request->validate([
+            'nama_pemohon'          => 'required|string|max:150',
+            'email_pemohon'         => 'required|email|max:100',
+            'no_wa'                 => 'required|string|max:25',
+            'nama_usaha'            => 'required|string|max:150',
+            'nik'                   => 'required|string|max:30',
+            'alamat_pemilik'        => 'required|string',
+            'kategori'              => 'required|string|max:100',
+            'alamat_bangunan'       => 'required|string',
+            'kecamatan'             => 'required|string|max:100',
+            'kelurahan'             => 'required|string|max:100',
+            'luas_lahan'            => 'required|numeric',
+            'luas_bangunan'         => 'required|numeric',
+            'tinggi_bangunan'       => 'required|numeric',
+            'surat_permohonan'      => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120', // Maks 5MB
+            'persyaratan_lainnya.*' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        ], [
+            // Kustomisasi pesan error jika mau
+            'required' => 'Kolom :attribute wajib diisi.',
+            'mimes'    => 'Format file :attribute harus PDF, JPG, JPEG, atau PNG.',
+            'max'      => 'Ukuran file maksimal 5MB.'
         ]);
 
-        // 2. Upload Surat Permohonan
-        if ($request->hasFile('file_surat_permohonan')) {
-            $fileSurat = $request->file('file_surat_permohonan');
-            $filenameSurat = time() . '_surat_' . uniqid() . '.' . $fileSurat->getClientOriginalExtension();
-            $validatedData['file_surat_permohonan'] = $fileSurat->storeAs('uploads/surat_permohonan', $filenameSurat, 'public');
+        try {
+            // 2. Upload Surat Permohonan (1 File)
+            $suratName = null;
+            if ($request->hasFile('surat_permohonan')) {
+                $fileSurat = $request->file('surat_permohonan');
+                $suratName = time() . '_surat_' . str_replace(' ', '_', $fileSurat->getClientOriginalName());
+                $fileSurat->move(public_path('uploads/rpkbgl/surat'), $suratName);
+            }
+
+            // 3. Upload Persyaratan Lainnya (Multiple Files)
+            $persyaratanNames = [];
+            if ($request->hasFile('persyaratan_lainnya')) {
+                foreach ($request->file('persyaratan_lainnya') as $fileLain) {
+                    $lainName = time() . '_lain_' . str_replace(' ', '_', $fileLain->getClientOriginalName());
+                    $fileLain->move(public_path('uploads/rpkbgl/persyaratan'), $lainName);
+                    $persyaratanNames[] = $lainName;
+                }
+            }
+            
+            // Karena di DB tipenya string, kita jadikan array nama file ke bentuk JSON string
+            $filePersyaratanJson = json_encode($persyaratanNames);
+
+            // 4. Simpan ke Database
+            // Memetakan nama input form (kiri) ke nama kolom database (kanan)
+            DB::table('permohonan_rpkbgl')->insert([
+                'nama_pemohon'             => $request->nama_pemohon,
+                'email_pemohon'            => $request->email_pemohon,
+                'no_whatsapp'              => $request->no_wa,          // Beda nama
+                'nama_usaha'               => $request->nama_usaha,
+                'nik_pemilik_usaha'        => $request->nik,            // Beda nama
+                'alamat_pemilik_usaha'     => $request->alamat_pemilik, // Beda nama
+                'kategori_bangunan'        => $request->kategori,       // Beda nama
+                'alamat_bangunan'          => $request->alamat_bangunan,
+                'kecamatan'                => $request->kecamatan,
+                'kelurahan'                => $request->kelurahan,
+                'luas_lahan'               => $request->luas_lahan,
+                'luas_bangunan'            => $request->luas_bangunan,
+                'tinggi_bangunan'          => $request->tinggi_bangunan,
+                'file_surat_permohonan'    => $suratName,
+                'file_persyaratan_lainnya' => $filePersyaratanJson,
+                'status_permohonan'        => 'Pending',
+                'created_at'               => now(),
+                'updated_at'               => now(),
+            ]);
+
+            // 5. Sukses, kembali ke form dengan trigger SweetAlert
+            return redirect()->back()->with('success', 'Permohonan RPKBGL Anda berhasil dikirim dan akan segera diproses dalam 14 hari kerja.');
+
+        } catch (\Exception $e) {
+            // Jika ada error (misal folder upload tidak bisa ditulis), kembalikan error
+            return redirect()->back()->withInput()->withErrors(['Gagal mengirim permohonan: ' . $e->getMessage()]);
         }
-
-        // 3. Upload Persyaratan Lainnya
-        if ($request->hasFile('file_persyaratan_lainnya')) {
-            $fileLain = $request->file('file_persyaratan_lainnya');
-            $filenameLain = time() . '_lainnya_' . uniqid() . '.' . $fileLain->getClientOriginalExtension();
-            $validatedData['file_persyaratan_lainnya'] = $fileLain->storeAs('uploads/persyaratan_lainnya', $filenameLain, 'public');
-        }
-
-        $validatedData['status_permohonan'] = 'Pending';
-
-        // 4. Simpan ke Database
-        PermohonanRpkbgl::create($validatedData);
-
-        return redirect()->back()->with('success', 'Permohonan Rekomendasi Proteksi Kebakaran berhasil dikirim!');
     }
 }

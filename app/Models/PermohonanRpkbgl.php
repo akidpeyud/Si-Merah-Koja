@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,13 +20,18 @@ class PermohonanRpkbgl extends Model
         'alamat_pemilik_usaha',
         'kategori_bangunan',
         'alamat_bangunan',
-        'kecamatan',  // Menggunakan nama kecamatan
-        'kelurahan',  // Menggunakan nama kelurahan
+        'kecamatan',
+        'kelurahan',
         'luas_lahan',
         'luas_bangunan',
         'tinggi_bangunan',
         'file_surat_permohonan',
         'file_persyaratan_lainnya',
         'status_permohonan',
+    ];
+
+    // Ini penting agar file_persyaratan_lainnya otomatis jadi Array saat ditarik
+    protected $casts = [
+        'file_persyaratan_lainnya' => 'array',
     ];
 }
