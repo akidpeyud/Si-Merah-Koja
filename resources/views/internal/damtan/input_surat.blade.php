@@ -141,7 +141,8 @@
         .side-sub a.active { background: var(--navy-soft); color: var(--navy); font-weight: 600; }
         .side-sub a i { width: 18px; text-align: center; font-size: .88rem; opacity: .75; }
         .side-sub a:hover i, .side-sub a.active i { opacity: 1; }
-        .side-kicker { padding: 18px 14px 6px; font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--steel-soft); }
+        .side-kicker { padding: 14px 12px 4px; font-size: .68rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: #a9b6c4; }
+
         .sidebar-backdrop { display: none; }
 
         @media (max-width: 900px) {
@@ -354,13 +355,13 @@
             </details>
 
             <!-- BAGIAN PEMADAMAN -->
-            <details class="side-group" open>
+            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
-               <div class="side-sub">
+                <div class="side-sub">
                     <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
                         <i class="fas fa-fire-extinguisher"></i> Input data
                     </a>
-                    <a href="/internal/surat-korban/create" class="active">
+                    <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
                         <i class="fas fa-file-signature"></i> Buat Surat Korban
                     </a>
                     <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
@@ -387,8 +388,8 @@
                 <summary><i class="fas fa-warehouse grp-ico"></i><span class="grp-label">Bagian sapra</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <span class="side-kicker" style="padding-left:2px;">Sarana &amp; Prasarana</span>
-                    <a href="/sapra/sarana-mako"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam</a>
-                    <a href="/sapra/prasarana-mako"><i class="fas fa-building"></i> Prasarana Pemadam</a>
+                    <a href="/sapra/sarana-mako" class="{{ Request::is('sapra/sarana-mako*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam</a>
+                    <a href="/sapra/prasarana-mako" class="{{ Request::is('sapra/prasarana-mako*') ? 'active' : '' }}"><i class="fas fa-building"></i> Prasarana Pemadam</a>
                     <a href="/sapra/sarana-penyelamatan" class="{{ Request::is('sapra/sarana-penyelamatan*') ? 'active' : '' }}">
                         <i class="fas fa-life-ring"></i> Sarana Penyelamatan
                     </a>
@@ -529,22 +530,14 @@
                                 <input type="text" name="objek_terbakar" class="form-control" placeholder="Cth: Bangunan / Rumah Tinggal" required>
                             </div>
                             
+                            <!-- PERBAIKAN: HARI OTOMATIS BERDASARKAN TANGGAL -->
                             <div class="col-md-4">
                                 <label class="field-label"><i class="fas fa-calendar-day"></i> Hari Kejadian</label>
-                                <select class="form-select" name="hari_kejadian" required>
-                                    <option value="" disabled selected>-- Pilih Hari --</option>
-                                    <option value="Senin">Senin</option>
-                                    <option value="Selasa">Selasa</option>
-                                    <option value="Rabu">Rabu</option>
-                                    <option value="Kamis">Kamis</option>
-                                    <option value="Jumat">Jumat</option>
-                                    <option value="Sabtu">Sabtu</option>
-                                    <option value="Minggu">Minggu</option>
-                                </select>
+                                <input type="text" class="form-control" id="hari_kejadian" name="hari_kejadian" placeholder="Otomatis terisi..." readonly style="background-color: #e2e8f0; font-weight: 600; cursor: not-allowed;" required>
                             </div>
                             <div class="col-md-4">
                                 <label class="field-label"><i class="fas fa-calendar"></i> Tanggal Kejadian</label>
-                                <input type="date" name="tanggal_kejadian" class="form-control" required>
+                                <input type="date" id="tanggal_kejadian" name="tanggal_kejadian" class="form-control" required>
                             </div>
                             <div class="col-md-4">
                                 <label class="field-label"><i class="fas fa-clock"></i> Waktu Kejadian (WIB)</label>
@@ -600,7 +593,7 @@
     if (backdrop) backdrop.addEventListener('click', closeSide);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
 
-    /* ---------- Eksklusivitas Accordion Sidebar (hanya satu grup terbuka) ---------- */
+    /* ---------- Eksklusivitas Accordion Sidebar ---------- */
     var groups = document.querySelectorAll('.side-group');
     groups.forEach(function (g) {
         g.addEventListener('toggle', function () {
@@ -609,6 +602,23 @@
             }
         });
     });
+
+    /* ---------- FUNGSI AUTO HARI KEJADIAN ---------- */
+    const inputTanggal = document.getElementById('tanggal_kejadian');
+    const inputHari = document.getElementById('hari_kejadian');
+
+    if(inputTanggal && inputHari) {
+        inputTanggal.addEventListener('change', function() {
+            if(this.value) {
+                const date = new Date(this.value);
+                const namaHari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                const hari = namaHari[date.getDay()];
+                inputHari.value = hari;
+            } else {
+                inputHari.value = '';
+            }
+        });
+    }
 })();
 </script>
 </body>

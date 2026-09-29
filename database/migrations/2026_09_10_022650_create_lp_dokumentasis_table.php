@@ -1,14 +1,14 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
-    public function up(): void {
+return new class extends Migration
+{
+    public function up()
+    {
         Schema::create('lp_dokumentasis', function (Blueprint $table) {
             $table->id();
-            // Relasi ke tabel utama
             $table->foreignId('laporan_id')->constrained('laporan_penyelamatans')->onDelete('cascade');
             
             $table->string('dugaan_penyebab')->nullable();
@@ -18,22 +18,23 @@ return new class extends Migration {
             
             $table->json('instansi_pendukung')->nullable();
             $table->text('tindakan_instansi')->nullable();
-            $table->string('kontak_saksi', 20)->nullable();
+            $table->string('kontak_saksi')->nullable();
+            $table->string('cara_bertindak')->nullable();
+            $table->string('cara_bertindak_lainnya')->nullable();
+            
             $table->text('kebutuhan_tambahan')->nullable();
             $table->text('saran_mitigasi')->nullable();
-            
-            // Kolom baru yang ditambahkan
-            $table->text('cara_bertindak')->nullable();
-            
             $table->text('kronologi_lengkap')->nullable();
             
             $table->json('foto')->nullable();
             $table->string('video')->nullable();
+            
             $table->timestamps();
         });
     }
 
-    public function down(): void {
+    public function down()
+    {
         Schema::dropIfExists('lp_dokumentasis');
     }
 };

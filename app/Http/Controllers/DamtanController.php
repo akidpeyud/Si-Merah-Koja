@@ -6,11 +6,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Models\LaporanPenyelamatan;
+use App\Models\LpTeknisLogistik;
+use App\Models\LpDokumentasi;
+use App\Models\LpKategoriKhusus;
 
 class DamtanController extends Controller
 {
     // ==========================================
-    // KELOLA DATA PENYELAMATAN (TABEL UTAMA)
+    // KELOLA DATA PENYELAMATAN
     // ==========================================
 
     // 1. Menampilkan form input
@@ -23,17 +26,21 @@ class DamtanController extends Controller
     public function indexPenyelamatan()
     {
         $data_laporan = LaporanPenyelamatan::latest()->paginate(10);
-                    
         return view('internal.damtan.data_laporan', compact('data_laporan'));
     }
 
     // 3. Menampilkan detail data spesifik (Lihat Data)
     public function showPenyelamatan($id)
     {
+        // Tarik data laporan beserta relasinya dari 3 tabel lainnya
         $laporan = LaporanPenyelamatan::findOrFail($id);
         
-        // Pastikan file view ini sudah ada: resources/views/internal/damtan/lihat_data.blade.php
-        return view('internal.damtan.lihat_data', compact('laporan'));
+        // Menggunakan relasi Eloquent atau Query Builder
+        $teknis = LpTeknisLogistik::where('laporan_id', $id)->first();
+        $dokumentasi = LpDokumentasi::where('laporan_id', $id)->first();
+        $khusus = LpKategoriKhusus::where('laporan_id', $id)->first();
+        
+        return view('internal.damtan.lihat_data', compact('laporan', 'teknis', 'dokumentasi', 'khusus'));
     }
 
     // 4. Menyimpan data dari form (Create)
@@ -42,6 +49,7 @@ class DamtanController extends Controller
         DB::beginTransaction();
 
         try {
+            // PROSES UPLOAD FILE
             $fotoPaths = [];
             if ($request->hasFile('foto')) {
                 foreach ($request->file('foto') as $file) {
@@ -54,12 +62,12 @@ class DamtanController extends Controller
                 $videoPath = $request->file('video')->store('uploads/penyelamatan/video', 'public');
             }
 
-            LaporanPenyelamatan::create([
+            // TAB 1: INSERT TABEL UTAMA
+            $laporan = LaporanPenyelamatan::create([
                 'user_id' => auth()->id(), 
                 'nomor_laporan' => 'REG-' . date('Ymd') . '-' . rand(1000, 9999),
                 'id_laporan' => Str::uuid(),
 
-                // Tab 1: Informasi Dasar
                 'nama_pelapor' => $request->nama_pelapor,
                 'media_pelaporan' => $request->media_pelaporan,
                 'kategori_kebakaran' => $request->kategori_kebakaran,
@@ -76,8 +84,19 @@ class DamtanController extends Controller
                 'alamat' => $request->alamat,
                 'jarak_tempuh' => $request->jarak_tempuh,
                 'koordinat' => $request->koordinat,
+            ]);
 
-                // Tab 2: Teknis & Logistik
+            // TAB 2: INSERT TABEL TEKNIS & LOGISTIK
+            LpTeknisLogistik::create([
+                'laporan_id' => $laporan->id,
+                'pimpinan_operasi' => $request->pimpinan_operasi,
+                'pendamping_operasi' => $request->pendamping_operasi,
+                'satuan_tugas' => $request->satuan_tugas,
+                'tim_respontime' => $request->tim_respontime,
+                'langkah_penanganan' => $request->langkah_penanganan,
+                'hambatan_lapangan' => $request->hambatan_lapangan,
+                'hasil_tindakan' => $request->hasil_tindakan,
+                
                 'korban_selamat' => $request->korban_selamat ?? 0,
                 'korban_ringan' => $request->korban_ringan ?? 0,
                 'korban_berat' => $request->korban_berat ?? 0,
@@ -85,47 +104,63 @@ class DamtanController extends Controller
                 'korban_hewan_aset' => $request->korban_hewan_aset,
                 'status_evakuasi' => $request->status_evakuasi,
                 'objek_terdampak' => $request->objek_terdampak,
-                'metode_evakuasi' => $request->metode_evakuasi,
-                'metode_penyelamatan' => $request->metode_penyelamatan,
-                'hambatan_lapangan' => $request->hambatan_lapangan,
-                'peralatan' => $request->peralatan,
+                
+                'metode_evakuasi' => $request->has('metode_evakuasi') ? json_encode($request->metode_evakuasi) : null,
+                'metode_penyelamatan' => $request->has('metode_penyelamatan') ? json_encode($request->metode_penyelamatan) : null,
+                'armada' => $request->has('armada') ? json_encode($request->armada) : null,
+                'peralatan' => $request->has('peralatan') ? json_encode($request->peralatan) : null,
+                
                 'peralatan_lain' => $request->peralatan_lain,
                 'konsumsi_alat' => $request->konsumsi_alat,
                 'liter_air' => $request->liter_air ?? 0,
                 'liter_foam' => $request->liter_foam ?? 0,
                 'liter_bbm' => $request->liter_bbm ?? 0,
-                'armada' => $request->armada,
                 'jumlah_personel' => $request->jumlah_personel ?? 0,
                 'daftar_personel' => $request->daftar_personel,
+            ]);
 
-                // Tab 3: Dokumentasi
+            // TAB 3: INSERT TABEL DOKUMENTASI
+            LpDokumentasi::create([
+                'laporan_id' => $laporan->id,
                 'dugaan_penyebab' => $request->dugaan_penyebab,
                 'dugaan_penyebab_lainnya' => $request->dugaan_penyebab_lainnya,
                 'sumber_api' => $request->sumber_api,
                 'luas_area' => $request->luas_area,
-                'instansi_pendukung' => $request->instansi_pendukung,
+                
+                'instansi_pendukung' => $request->has('instansi_pendukung') ? json_encode($request->instansi_pendukung) : null,
                 'tindakan_instansi' => $request->tindakan_instansi,
                 'kontak_saksi' => $request->kontak_saksi,
                 'kebutuhan_tambahan' => $request->kebutuhan_tambahan,
                 'saran_mitigasi' => $request->saran_mitigasi,
+                'cara_bertindak' => $request->cara_bertindak,
+                'cara_bertindak_lainnya' => $request->cara_bertindak_lainnya,
                 'kronologi_lengkap' => $request->kronologi_lengkap,
-                'foto' => !empty($fotoPaths) ? $fotoPaths : null,
+                
+                'foto' => !empty($fotoPaths) ? json_encode($fotoPaths) : null,
                 'video' => $videoPath,
+            ]);
 
-                // Tab 4: Kategori Khusus
+            // TAB 4: INSERT TABEL KATEGORI KHUSUS
+            LpKategoriKhusus::create([
+                'laporan_id' => $laporan->id,
                 'jenis_hewan' => $request->jenis_hewan,
+                'jenis_hewan_lainnya' => $request->jenis_hewan_lainnya,
                 'spesies_hewan' => $request->spesies_hewan,
                 'dimensi_hewan' => $request->dimensi_hewan,
+                'berat_hewan' => $request->berat_hewan,
                 'status_hewan_pasca' => $request->status_hewan_pasca,
                 'lokasi_pelepasan' => $request->lokasi_pelepasan,
+                
                 'jenis_objek_tumbang' => $request->jenis_objek_tumbang,
                 'dimensi_objek' => $request->dimensi_objek,
                 'status_utilitas' => $request->status_utilitas,
                 'dampak_properti' => $request->dampak_properti,
+                
                 'kondisi_perairan' => $request->kondisi_perairan,
                 'radius_pencarian' => $request->radius_pencarian,
                 'metode_pencarian_air' => $request->metode_pencarian_air,
                 'daftar_penyelam' => $request->daftar_penyelam,
+                
                 'jenis_benda_bahaya' => $request->jenis_benda_bahaya,
                 'kondisi_anggota_tubuh' => $request->kondisi_anggota_tubuh,
                 'alat_potong_cincin' => $request->alat_potong_cincin,
@@ -136,12 +171,10 @@ class DamtanController extends Controller
 
             DB::commit();
 
-            // PERUBAHAN DI SINI: Alihkan user ke halaman daftar laporan setelah berhasil simpan
             return redirect('/internal/damtan/data-laporan')->with('success', 'Data Laporan Penyelamatan berhasil disimpan ke database!');
 
         } catch (\Exception $e) {
             DB::rollback();
-            // Jika error, tetap di halaman form agar data yang diisi tidak hilang
             return redirect()->back()->with('error', 'Gagal menyimpan data: ' . $e->getMessage());
         }
     }
@@ -151,31 +184,130 @@ class DamtanController extends Controller
     {
         $laporan = LaporanPenyelamatan::findOrFail($id);
         
-        return view('internal.damtan.edit_data', compact('laporan'));
+        $teknis = LpTeknisLogistik::where('laporan_id', $id)->first() ?? new LpTeknisLogistik();
+        $dokumentasi = LpDokumentasi::where('laporan_id', $id)->first() ?? new LpDokumentasi();
+        $khusus = LpKategoriKhusus::where('laporan_id', $id)->first() ?? new LpKategoriKhusus();
+        
+        return view('internal.damtan.edit_data', compact('laporan', 'teknis', 'dokumentasi', 'khusus'));
     }
 
     // 6. Menyimpan perubahan data (Update)
     public function updatePenyelamatan(Request $request, $id)
     {
-        $laporan = LaporanPenyelamatan::findOrFail($id);
-
         DB::beginTransaction();
         try {
-            $dataUpdate = $request->except(['_token', '_method', 'foto', 'video']);
+            $laporan = LaporanPenyelamatan::findOrFail($id);
+
+            // Update TAB 1
+            $laporan->update([
+                'nama_pelapor' => $request->nama_pelapor,
+                'media_pelaporan' => $request->media_pelaporan,
+                'kategori_kebakaran' => $request->kategori_kebakaran,
+                'kategori_non_kebakaran' => $request->kategori_non_kebakaran,
+                'rincian_kategori_non_kebakaran' => $request->rincian_kategori_non_kebakaran,
+                'kategori_kejadian' => $request->kategori_kejadian,
+                'prioritas' => $request->prioritas ?? 'rendah',
+                'waktu_kejadian' => $request->waktu_kejadian,
+                'waktu_terima' => $request->waktu_terima,
+                'waktu_berangkat' => $request->waktu_berangkat,
+                'waktu_tiba' => $request->waktu_tiba,
+                'waktu_selesai' => $request->waktu_selesai,
+                'waktu_kembali' => $request->waktu_kembali,
+                'alamat' => $request->alamat,
+                'jarak_tempuh' => $request->jarak_tempuh,
+                'koordinat' => $request->koordinat,
+            ]);
+
+            // Update TAB 2
+            LpTeknisLogistik::updateOrCreate(
+                ['laporan_id' => $id],
+                [
+                    'pimpinan_operasi' => $request->pimpinan_operasi,
+                    'pendamping_operasi' => $request->pendamping_operasi,
+                    'satuan_tugas' => $request->satuan_tugas,
+                    'tim_respontime' => $request->tim_respontime,
+                    'langkah_penanganan' => $request->langkah_penanganan,
+                    'hambatan_lapangan' => $request->hambatan_lapangan,
+                    'hasil_tindakan' => $request->hasil_tindakan,
+                    'korban_selamat' => $request->korban_selamat ?? 0,
+                    'korban_ringan' => $request->korban_ringan ?? 0,
+                    'korban_berat' => $request->korban_berat ?? 0,
+                    'korban_meninggal' => $request->korban_meninggal ?? 0,
+                    'korban_hewan_aset' => $request->korban_hewan_aset,
+                    'status_evakuasi' => $request->status_evakuasi,
+                    'objek_terdampak' => $request->objek_terdampak,
+                    'metode_evakuasi' => $request->has('metode_evakuasi') ? json_encode($request->metode_evakuasi) : null,
+                    'metode_penyelamatan' => $request->has('metode_penyelamatan') ? json_encode($request->metode_penyelamatan) : null,
+                    'armada' => $request->has('armada') ? json_encode($request->armada) : null,
+                    'peralatan' => $request->has('peralatan') ? json_encode($request->peralatan) : null,
+                    'peralatan_lain' => $request->peralatan_lain,
+                    'konsumsi_alat' => $request->konsumsi_alat,
+                    'liter_air' => $request->liter_air ?? 0,
+                    'liter_foam' => $request->liter_foam ?? 0,
+                    'liter_bbm' => $request->liter_bbm ?? 0,
+                    'jumlah_personel' => $request->jumlah_personel ?? 0,
+                    'daftar_personel' => $request->daftar_personel,
+                ]
+            );
+
+            // Update TAB 3 & Proses Ulang File
+            $dokumentasi = LpDokumentasi::where('laporan_id', $id)->first();
+            $dataDokumentasi = [
+                'dugaan_penyebab' => $request->dugaan_penyebab,
+                'dugaan_penyebab_lainnya' => $request->dugaan_penyebab_lainnya,
+                'sumber_api' => $request->sumber_api,
+                'luas_area' => $request->luas_area,
+                'instansi_pendukung' => $request->has('instansi_pendukung') ? json_encode($request->instansi_pendukung) : null,
+                'tindakan_instansi' => $request->tindakan_instansi,
+                'kontak_saksi' => $request->kontak_saksi,
+                'kebutuhan_tambahan' => $request->kebutuhan_tambahan,
+                'saran_mitigasi' => $request->saran_mitigasi,
+                'cara_bertindak' => $request->cara_bertindak,
+                'cara_bertindak_lainnya' => $request->cara_bertindak_lainnya,
+                'kronologi_lengkap' => $request->kronologi_lengkap,
+            ];
 
             if ($request->hasFile('foto')) {
                 $fotoPaths = [];
                 foreach ($request->file('foto') as $file) {
                     $fotoPaths[] = $file->store('uploads/penyelamatan/foto', 'public');
                 }
-                $dataUpdate['foto'] = $fotoPaths;
+                $dataDokumentasi['foto'] = json_encode($fotoPaths);
             }
 
             if ($request->hasFile('video')) {
-                $dataUpdate['video'] = $request->file('video')->store('uploads/penyelamatan/video', 'public');
+                $dataDokumentasi['video'] = $request->file('video')->store('uploads/penyelamatan/video', 'public');
             }
 
-            $laporan->update($dataUpdate);
+            LpDokumentasi::updateOrCreate(['laporan_id' => $id], $dataDokumentasi);
+
+            // Update TAB 4
+            LpKategoriKhusus::updateOrCreate(
+                ['laporan_id' => $id],
+                [
+                    'jenis_hewan' => $request->jenis_hewan,
+                    'jenis_hewan_lainnya' => $request->jenis_hewan_lainnya,
+                    'spesies_hewan' => $request->spesies_hewan,
+                    'dimensi_hewan' => $request->dimensi_hewan,
+                    'berat_hewan' => $request->berat_hewan,
+                    'status_hewan_pasca' => $request->status_hewan_pasca,
+                    'lokasi_pelepasan' => $request->lokasi_pelepasan,
+                    'jenis_objek_tumbang' => $request->jenis_objek_tumbang,
+                    'dimensi_objek' => $request->dimensi_objek,
+                    'status_utilitas' => $request->status_utilitas,
+                    'dampak_properti' => $request->dampak_properti,
+                    'kondisi_perairan' => $request->kondisi_perairan,
+                    'radius_pencarian' => $request->radius_pencarian,
+                    'metode_pencarian_air' => $request->metode_pencarian_air,
+                    'daftar_penyelam' => $request->daftar_penyelam,
+                    'jenis_benda_bahaya' => $request->jenis_benda_bahaya,
+                    'kondisi_anggota_tubuh' => $request->kondisi_anggota_tubuh,
+                    'alat_potong_cincin' => $request->alat_potong_cincin,
+                    'cuaca_operasi' => $request->cuaca_operasi,
+                    'jenis_medan' => $request->jenis_medan,
+                    'akses_lokasi' => $request->akses_lokasi,
+                ]
+            );
 
             DB::commit();
             
@@ -191,6 +323,8 @@ class DamtanController extends Controller
     public function destroyPenyelamatan($id)
     {
         $laporan = LaporanPenyelamatan::findOrFail($id);
+        // Karena di migrations kita pakai onDelete('cascade'), 
+        // cukup hapus parent-nya, tabel anaknya (Tab 2, 3, 4) akan ikut terhapus otomatis.
         $laporan->delete();
 
         return redirect()->back()->with('success', 'Data Laporan berhasil dihapus secara permanen!');
@@ -286,7 +420,6 @@ class DamtanController extends Controller
             return redirect('/internal/surat-korban/data')->with('error', 'Data surat tidak ditemukan untuk dicetak.');
         }
 
-        // Pastikan kamu sudah membuat file cetak_surat.blade.php di folder resources/views/internal/damtan/
         return view('internal.damtan.cetak_surat', compact('surat'));
     }
 }

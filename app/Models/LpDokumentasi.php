@@ -9,15 +9,16 @@ class LpDokumentasi extends Model
 {
     use HasFactory;
 
+    protected $table = 'lp_dokumentasis';
     protected $guarded = ['id'];
-
-    protected $casts = [
-        'instansi_pendukung' => 'array',
-        'foto' => 'array',
-    ];
 
     public function laporan()
     {
         return $this->belongsTo(LaporanPenyelamatan::class, 'laporan_id');
     }
+
+    protected $casts = [
+        'instansi_pendukung' => 'array',
+        'foto' => 'array',
+    ];
 }
