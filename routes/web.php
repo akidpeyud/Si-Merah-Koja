@@ -16,7 +16,7 @@ use App\Http\Controllers\PermohonanRpkbglController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\KabarDamkarController;
 use App\Http\Controllers\PencegahanController;
-use App\Http\Controllers\SkkAdminController; // Pastikan Controller ini diimport
+use App\Http\Controllers\SkkAdminController;
 use App\Http\Controllers\PemberdayaanController;
 use App\Http\Controllers\PemohonAuthController;
 use App\Http\Controllers\PermohonanSkkController;
@@ -57,7 +57,7 @@ Route::get('/sumber-air', [PublicController::class, 'sumberAir']);
 Route::get('/hidrant-kota', [PublicController::class, 'hidrantKota']);
 Route::get('/public-sigap', [PetaController::class, 'sigap']);
 
-// Halaman Publik Edu Damkar & Ujung-ujung Damkar
+// Halaman Publik Edu Damkar, Ujung-ujung Damkar, & Info Grafis
 Route::get('/edu-damkar', function () {
     $daftar_edu_damkar = EduDamkar::latest()->get();
     return view('kabardamkar.edu-damkar', compact('daftar_edu_damkar'));
@@ -67,6 +67,12 @@ Route::get('/ujung-ujung-damkar', function () {
     $daftar_ujung_damkar = UjungDamkar::latest()->get();
     return view('kabardamkar.ujung-damkar', compact('daftar_ujung_damkar'));
 })->name('publik.ujung-damkar');
+
+// ---> INI ROUTE INFOGRAFIS YANG BARU DITAMBAHKAN <---
+Route::get('/infografis', function () {
+    $daftar_infografis = \App\Models\Infografis::latest()->paginate(12);
+    return view('kabardamkar.infografis', compact('daftar_infografis'));
+})->name('publik.infografis');
 
 
 // ==========================================
@@ -90,10 +96,10 @@ Route::post('/pemohon/logout', [PemohonAuthController::class, 'logout'])->name('
 Route::middleware([CekLoginPemohon::class])->group(function () {
     
     // RPKBGL
-Route::get('/layanan-fasilitas/layanan_perizinan', function () { 
-    return view('layanan-fasilitas.layanan_perizinan'); 
-})->name('layanan_perizinan');
-Route::post('/layanan-fasilitas/layanan_perizinan', [PermohonanRpkbglController::class, 'store'])->name('permohonan.store');
+    Route::get('/layanan-fasilitas/layanan_perizinan', function () { 
+        return view('layanan-fasilitas.layanan_perizinan'); 
+    })->name('layanan_perizinan');
+    Route::post('/layanan-fasilitas/layanan_perizinan', [PermohonanRpkbglController::class, 'store'])->name('permohonan.store');
 
     // SKK
     Route::get('/layanan-fasilitas/skk', function () { 
@@ -173,6 +179,18 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/internal/operator/berita-medsos/store', [OperatorMedsosController::class, 'storeMedsos']);
     Route::put('/internal/operator/berita-medsos/update/{id}', [OperatorMedsosController::class, 'updateMedsos']);
     Route::delete('/internal/operator/berita-medsos/hapus/{id}', [OperatorMedsosController::class, 'destroyMedsos']);
+
+    // TAMBAHAN BARU: UJUNG-UJUNG DAMKAR
+    Route::get('/internal/operator/ujung-damkar', [OperatorMedsosController::class, 'indexUjungDamkar'])->name('ujung-damkar.index');
+    Route::post('/internal/operator/ujung-damkar/store', [OperatorMedsosController::class, 'storeUjungDamkar'])->name('ujung-damkar.store');
+    Route::put('/internal/operator/ujung-damkar/update/{id}', [OperatorMedsosController::class, 'updateUjungDamkar'])->name('ujung-damkar.update');
+    Route::delete('/internal/operator/ujung-damkar/hapus/{id}', [OperatorMedsosController::class, 'destroyUjungDamkar'])->name('ujung-damkar.destroy');
+
+    // TAMBAHAN BARU: EDU DAMKAR
+    Route::get('/internal/operator/edu-damkar', [OperatorMedsosController::class, 'indexEduDamkar'])->name('edu-damkar.index');
+    Route::post('/internal/operator/edu-damkar/store', [OperatorMedsosController::class, 'storeEduDamkar'])->name('edu-damkar.store');
+    Route::put('/internal/operator/edu-damkar/update/{id}', [OperatorMedsosController::class, 'updateEduDamkar'])->name('edu-damkar.update');
+    Route::delete('/internal/operator/edu-damkar/hapus/{id}', [OperatorMedsosController::class, 'destroyEduDamkar'])->name('edu-damkar.destroy');
 
     // --- C. DAMTAN (PEMADAMAN & PENYELAMATAN) ---
     Route::get('/internal/damtan/input-data', [DamtanController::class, 'createPenyelamatan'])->name('damtan.laporan.create');
@@ -488,6 +506,7 @@ Route::middleware(['auth'])->group(function () {
         if (!$data) return redirect()->back()->with('error', 'Data tidak ditemukan di tabel!');
         return view('internal.pencegahan.lihat_peningkatan', compact('data', 'jenis')); 
     });
+    
     Route::get('/internal/pencegahan/peningkatan-kapasitas/edit/{jenis}/{id}', function ($jenis, $id) { 
         $map = ['diksar' => 'tbl_diksar', 'diklat-f1' => 'tbl_diklat_f1', 'diklat-f2' => 'tbl_diklat_f2', 'diklat-rescue' => 'tbl_diklat_rescue', 'diklat-mfr' => 'tbl_diklat_mfr', 'diklat-operator' => 'tbl_diklat_operator', 'diklat-inspektur' => 'tbl_diklat_inspektur', 'diklat-ppl' => 'tbl_diklat_ppl'];
         $tabel = $map[strtolower($jenis)] ?? 'tbl_diklat_f1';
@@ -499,6 +518,7 @@ Route::middleware(['auth'])->group(function () {
         
         return view('internal.pencegahan.edit_peningkatan', compact('data', 'jenis')); 
     });
+    
     // Kelola Redkar - Disesuaikan URL method POST Verifikasi agar cocok dengan Form Modal
     Route::get('/internal/pencegahan/kelola-redkar', [RedkarController::class, 'kelolaRedkarInternal']);
     Route::post('/internal/pencegahan/update-status-redkar/{id}', [RedkarController::class, 'verifikasiRedkar']);
@@ -584,7 +604,7 @@ Route::middleware(['auth'])->group(function () {
     // Rute Fire Drill
     Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill', [App\Http\Controllers\PencegahanController::class, 'indexFireDrill']);
     Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/tambah', [App\Http\Controllers\PencegahanController::class, 'createFireDrill']);
-    Route::get('/internal/pencegahan/fire-drill/export/pdf', [FireDrillController::class, 'cetakPdf']);
+    
     // Layanan Inspeksi
     Route::get('/internal/pencegahan/layanan-inspeksi', function () { 
         return view('internal.pencegahan.layanan_inspeksi', [
@@ -756,114 +776,6 @@ Route::middleware(['auth'])->group(function () {
         DB::table('pembinaan')->where('id', $id)->update($updateData); 
         return redirect('/internal/pencegahan/pembinaan-pengembangan')->with('success', 'Data Pembinaan berhasil diperbarui!'); 
     });
-
-
-    // Peningkatan Kapasitas Aparatur (Multi Tabel)
-    Route::get('/internal/pencegahan/peningkatan-kapasitas', function () {
-        $dataDiksar = \Illuminate\Support\Facades\Schema::hasTable('tbl_diksar') ? DB::table('tbl_diksar')->orderBy('id', 'desc')->get() : [];
-        $dataF1 = \Illuminate\Support\Facades\Schema::hasTable('tbl_diklat_f1') ? DB::table('tbl_diklat_f1')->orderBy('id', 'desc')->get() : [];
-        $dataF2 = \Illuminate\Support\Facades\Schema::hasTable('tbl_diklat_f2') ? DB::table('tbl_diklat_f2')->orderBy('id', 'desc')->get() : [];
-        $dataRescue = \Illuminate\Support\Facades\Schema::hasTable('tbl_diklat_rescue') ? DB::table('tbl_diklat_rescue')->orderBy('id', 'desc')->get() : [];
-        $dataMfr = \Illuminate\Support\Facades\Schema::hasTable('tbl_diklat_mfr') ? DB::table('tbl_diklat_mfr')->orderBy('id', 'desc')->get() : [];
-        $dataOperator = \Illuminate\Support\Facades\Schema::hasTable('tbl_diklat_operator') ? DB::table('tbl_diklat_operator')->orderBy('id', 'desc')->get() : [];
-        $dataInspektur = \Illuminate\Support\Facades\Schema::hasTable('tbl_diklat_inspektur') ? DB::table('tbl_diklat_inspektur')->orderBy('id', 'desc')->get() : [];
-        $dataPpl = \Illuminate\Support\Facades\Schema::hasTable('tbl_diklat_ppl') ? DB::table('tbl_diklat_ppl')->orderBy('id', 'desc')->get() : [];
-
-        return view('internal.pencegahan.peningkatan_kapasitas', compact(
-            'dataDiksar', 'dataF1', 'dataF2', 'dataRescue', 'dataMfr', 'dataOperator', 'dataInspektur', 'dataPpl'
-        ));
-    });
-
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/tambah', function () { return view('internal.pencegahan.tambah_diklat'); });
-
-    Route::post('/internal/pencegahan/peningkatan-kapasitas/tambah', function (Request $request) {$jenis = strtoupper($request->jenis_diklat);$tabel_tujuan = 'tbl_diklat_f1'; // Default
-        
-        if ($jenis == 'DIKSAR') {$tabel_tujuan = 'tbl_diksar'; }
-        elseif ($jenis == 'DIKLAT F1') {$tabel_tujuan = 'tbl_diklat_f1'; }
-        elseif ($jenis == 'DIKLAT F2') {$tabel_tujuan = 'tbl_diklat_f2'; }
-        elseif ($jenis == 'DIKLAT RESCUE') {$tabel_tujuan = 'tbl_diklat_rescue'; }
-        elseif ($jenis == 'DIKLAT MFR') {$tabel_tujuan = 'tbl_diklat_mfr'; }
-        elseif ($jenis == 'DIKLAT OPERATOR') {$tabel_tujuan = 'tbl_diklat_operator'; }
-        elseif ($jenis == 'DIKLAT INSPEKTUR') {$tabel_tujuan = 'tbl_diklat_inspektur'; }
-        elseif ($jenis == 'DIKLAT PPL') {$tabel_tujuan = 'tbl_diklat_ppl'; }
-
-        $data = [
-            'nama' => $request->nama,
-            'nik' => $request->nik,
-            'tempat_lahir' => $request->tempat_lahir,
-            'tgl_lahir' => $request->tgl_lahir,
-            'jabatan' => $request->jabatan,
-            'instansi' => $request->instansi_daerah ?? $request->instansi,
-            'jenis_diklat' => $request->jenis_diklat,
-            'instansi_penyelenggara' => $request->penyelenggara ?? $request->instansi_penyelenggara,
-            'provinsi' => $request->provinsi,
-            'kota' => $request->kota,
-            'tanggal_pelaksanaan' => $request->tgl_pelaksanaan ?? $request->tanggal_pelaksanaan,
-            'nomor_sertifikat' => $request->nomor_sertifikat,
-            'ditandatangani_oleh' => $request->ditanda_tangani ?? $request->ditandatangani_oleh,
-            'jumlah_jam_pelajaran' => $request->jumlah_jp ?? $request->jumlah_jam_pelajaran,
-            'kode_verifikasi' => $request->kode_verifikasi,
-            'persentasi_penilaian' => $request->persentase_penilaian ?? $request->persentasi_penilaian,
-            'ket' => $request->keterangan ?? $request->ket,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ];
-        DB::table($tabel_tujuan)->insert($data);
-        return redirect('/internal/pencegahan/peningkatan-kapasitas')->with('success', 'Data Peningkatan Kapasitas berhasil ditambahkan!');
-    });
-
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/lihat/{jenis}/{id}', function ($jenis, $id) {$map = ['diksar' => 'tbl_diksar', 'diklat-f1' => 'tbl_diklat_f1', 'diklat-f2' => 'tbl_diklat_f2', 'diklat-rescue' => 'tbl_diklat_rescue', 'diklat-mfr' => 'tbl_diklat_mfr', 'diklat-operator' => 'tbl_diklat_operator', 'diklat-inspektur' => 'tbl_diklat_inspektur', 'diklat-ppl' => 'tbl_diklat_ppl'];
-        $tabel =$map[strtolower($jenis)] ?? 'tbl_diklat_f1';$data = DB::table($tabel)->where('id',$id)->first(); 
-        if (!$data) return redirect()->back()->with('error', 'Data tidak ditemukan di tabel!');
-        return view('internal.pencegahan.lihat_peningkatan', compact('data', 'jenis')); 
-    });
-    
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/edit/{jenis}/{id}', function ($jenis, $id) {$map = ['diksar' => 'tbl_diksar', 'diklat-f1' => 'tbl_diklat_f1', 'diklat-f2' => 'tbl_diklat_f2', 'diklat-rescue' => 'tbl_diklat_rescue', 'diklat-mfr' => 'tbl_diklat_mfr', 'diklat-operator' => 'tbl_diklat_operator', 'diklat-inspektur' => 'tbl_diklat_inspektur', 'diklat-ppl' => 'tbl_diklat_ppl'];
-        $tabel =$map[strtolower($jenis)] ?? 'tbl_diklat_f1';$data = DB::table($tabel)->where('id',$id)->first(); 
-        if (!$data) return redirect('/internal/pencegahan/peningkatan-kapasitas')->with('error', 'Gagal Edit: Data tidak ada di database!');
-        return view('internal.pencegahan.edit_peningkatan', compact('data', 'jenis')); 
-    });
-
-    Route::post('/internal/pencegahan/peningkatan-kapasitas/edit/{jenis}/{id}', function (Request $request,$jenis, $id) {$map = ['diksar' => 'tbl_diksar', 'diklat-f1' => 'tbl_diklat_f1', 'diklat-f2' => 'tbl_diklat_f2', 'diklat-rescue' => 'tbl_diklat_rescue', 'diklat-mfr' => 'tbl_diklat_mfr', 'diklat-operator' => 'tbl_diklat_operator', 'diklat-inspektur' => 'tbl_diklat_inspektur', 'diklat-ppl' => 'tbl_diklat_ppl'];
-        $tabel =$map[strtolower($jenis)] ?? 'tbl_diklat_f1';$updateData = [ 
-            'nama' => $request->nama, 
-            'nik' => $request->nik, 
-            'tempat_lahir' => $request->tempat_lahir, 
-            'tgl_lahir' => $request->tgl_lahir, 
-            'jabatan' => $request->jabatan, 
-            'instansi' => $request->instansi_daerah ?? $request->instansi, 
-            'jenis_diklat' => $request->jenis_diklat, 
-            'instansi_penyelenggara' => $request->penyelenggara ?? $request->instansi_penyelenggara, 
-            'provinsi' => $request->provinsi, 
-            'kota' => $request->kota, 
-            'tanggal_pelaksanaan' => $request->tgl_pelaksanaan ?? $request->tanggal_pelaksanaan, 
-            'nomor_sertifikat' => $request->nomor_sertifikat, 
-            'ditandatangani_oleh' => $request->ditanda_tangani ?? $request->ditandatangani_oleh, 
-            'jumlah_jam_pelajaran' => $request->jumlah_jp ?? $request->jumlah_jam_pelajaran, 
-            'kode_verifikasi' => $request->kode_verifikasi, 
-            'persentasi_penilaian' => $request->persentase_penilaian ?? $request->persentasi_penilaian, 
-            'ket' => $request->keterangan ?? $request->ket, 
-            'updated_at' => now(), 
-        ]; 
-        DB::table($tabel)->where('id', $id)->update($updateData); 
-        return redirect('/internal/pencegahan/peningkatan-kapasitas')->with('success', 'Data Peningkatan Kapasitas berhasil diperbarui!'); 
-    });
-
-    Route::delete('/internal/pencegahan/peningkatan-kapasitas/hapus/{jenis}/{id}', function ($jenis,$id) { 
-        $map = ['diksar' => 'tbl_diksar', 'diklat-f1' => 'tbl_diklat_f1', 'diklat-f2' => 'tbl_diklat_f2', 'diklat-rescue' => 'tbl_diklat_rescue', 'diklat-mfr' => 'tbl_diklat_mfr', 'diklat-operator' => 'tbl_diklat_operator', 'diklat-inspektur' => 'tbl_diklat_inspektur', 'diklat-ppl' => 'tbl_diklat_ppl'];$tabel = $map[strtolower($jenis)] ?? 'tbl_diklat_f1';
-        
-        DB::table($tabel)->where('id',$id)->delete(); 
-        return redirect()->back()->with('success', 'Data berhasil dihapus!'); 
-    });
-
-    // Halaman Index Masing-masing Diklat
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diksar', [PencegahanController::class, 'indexDiksar']);  Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f1', [PencegahanController::class, 'indexDiklatF1']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f2', [PencegahanController::class, 'indexDiklatF2']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-inspektur', [PencegahanController::class, 'indexDiklatInspektur']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-mfr', [PencegahanController::class, 'indexDiklatMfr']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-rescue', [PencegahanController::class, 'indexDiklatRescue']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-operator', [PencegahanController::class, 'indexDiklatOperator']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-ppl', [PencegahanController::class, 'indexDiklatPpl']);
 
     // ROUTE DUK KEPEGAWAIAN
     Route::prefix('internal/kepegawaian')->name('kepegawaian.')->group(function () {
