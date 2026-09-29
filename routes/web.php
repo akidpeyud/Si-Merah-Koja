@@ -16,7 +16,7 @@ use App\Http\Controllers\PermohonanController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\KabarDamkarController;
 use App\Http\Controllers\PencegahanController;
-use App\Http\Controllers\SkkAdminController;
+use App\Http\Controllers\SkkAdminController; // Pastikan Controller ini diimport
 use App\Http\Controllers\PemberdayaanController;
 use App\Http\Controllers\PemohonAuthController;
 use App\Http\Controllers\PermohonanSkkController;
@@ -284,28 +284,23 @@ Route::middleware(['auth'])->group(function () {
         return view('internal.pencegahan.detail_rpkbgl', ['permohonan' => App\Models\PermohonanRpkbgl::findOrFail($id)]); 
     });
 
-    Route::get('/internal/pencegahan/kelola-skk', function () { 
-        return view('internal.pencegahan.kelola_skk', [
-            'skk_baru' => App\Models\PermohonanSkk::orderBy('created_at', 'desc')->get(), 
-            'skk_perpanjang' => App\Models\PermohonanPerpanjangSkk::orderBy('created_at', 'desc')->get()
-        ]); 
+    // -------- RUTE KELOLA SKK (MENGGUNAKAN CONTROLLER) --------
+    Route::prefix('internal/pencegahan/kelola-skk')->name('skk.')->group(function () {
+        Route::get('/', [SkkAdminController::class, 'index'])->name('index');
+        Route::get('/tambah', [SkkAdminController::class, 'create'])->name('create');
+        Route::post('/simpan', [SkkAdminController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [SkkAdminController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [SkkAdminController::class, 'update'])->name('update');
+        Route::delete('/hapus/{id}', [SkkAdminController::class, 'destroy'])->name('destroy');
+        Route::post('/update-status/{id}', [SkkAdminController::class, 'updateStatus'])->name('update_status');
+        
+        // Rute detail (harus diletakkan di bawah rute lain agar parameter {id} tidak bentrok dengan kata 'tambah')
+        Route::get('/{id}', [SkkAdminController::class, 'show'])->name('show'); 
     });
-    Route::post('/internal/pencegahan/kelola-skk/update-status/{id}', function (Illuminate\Http\Request $request,$id) { 
-        App\Models\PermohonanSkk::where('id', $id)->update(['status_permohonan' =>$request->status_permohonan]); 
-        return redirect()->back()->with('success', 'Status Permohonan SKK Baru berhasil diperbarui!'); 
-    });
-    Route::post('/internal/pencegahan/kelola-perpanjang-skk/update-status/{id}', function (Illuminate\Http\Request $request,$id) { 
-        App\Models\PermohonanPerpanjangSkk::where('id', $id)->update(['status_permohonan' =>$request->status_permohonan]); 
-        return redirect()->back()->with('success', 'Status Permohonan Perpanjangan SKK berhasil diperbarui!'); 
-    });
-    Route::get('/internal/pencegahan/kelola-skk/{id}', function (Illuminate\Http\Request $request,$id) { 
-        $tipe =$request->query('tipe', 'baru'); 
-        if ($tipe === 'perpanjang') {$permohonan = App\Models\PermohonanPerpanjangSkk::findOrFail($id);$jenis_layanan = "Perpanjangan SKK"; 
-        } else { 
-            $permohonan = App\Models\PermohonanSkk::findOrFail($id);$jenis_layanan = "SKK Baru"; 
-        } 
-        return view('internal.pencegahan.detail_skk', compact('permohonan', 'tipe', 'jenis_layanan')); 
-    });
+    
+    // Pembaruan Status SKK Perpanjang
+    Route::post('/internal/pencegahan/kelola-perpanjang-skk/update-status/{id}', [SkkAdminController::class, 'updateStatusPerpanjang'])->name('skk.update_status_perpanjang');
+    // ----------------------------------------------------------
 
     Route::get('/internal/pencegahan/kelola-edukasi', function () { 
         return view('internal.pencegahan.kelola_edukasi', ['permohonan' => App\Models\PermohonanEdukasi::orderBy('created_at', 'desc')->get()]); 
@@ -587,7 +582,7 @@ Route::middleware(['auth'])->group(function () {
     // ROUTE DUK KEPEGAWAIAN
     Route::prefix('internal/kepegawaian')->name('kepegawaian.')->group(function () {
         Route::get('/duk', [DukController::class, 'index'])->name('duk.index');
-        Route::get('/duk/tambah', [DukController::class, 'create'])->name('duk.create'); // <--- INI RUTENYA
+        Route::get('/duk/tambah', [DukController::class, 'create'])->name('duk.create'); 
         Route::post('/duk', [DukController::class, 'store'])->name('duk.store');
         Route::delete('/duk/{id}', [DukController::class, 'destroy'])->name('duk.destroy');
     });
