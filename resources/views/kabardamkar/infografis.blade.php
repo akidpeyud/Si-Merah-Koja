@@ -7,22 +7,15 @@
     $wa_link   = "https://wa.me/" . $no_whatsapp . "?text=" . $pesan_wa;
     $maps_link = "https://www.google.com/maps/place/6PC59JJ2%2BQ76/@-1.6180875,103.6006406,871m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-1.6180875!4d103.6006406?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D";
     $play_store_url = "";
-
-    // Ambil data Edu Damkar (hanya yang memiliki youtube_id)
-    $listEduDamkar = isset($daftar_edu_damkar) && count($daftar_edu_damkar)
-        ? collect($daftar_edu_damkar)->filter(fn($item) => !empty($item->youtube_id))
-        : (\Illuminate\Support\Facades\Schema::hasTable('edu_damkar')
-            ? \App\Models\EduDamkar::whereNotNull('youtube_id')->where('youtube_id', '!=', '')->latest()->get()
-            : collect());
 @endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0d1b2a">
-    <meta name="description" content="Kumpulan video edukasi, tindakan praktis, dan saran dari petugas Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.">
-    <title>Edu Damkar - Kabar Damkar | SIMERAH KOJA</title>
+    <meta name="theme-color" content="#0b1826">
+    <meta name="description" content="Kumpulan panduan bergambar, informasi visual, dan edukasi terkait pencegahan serta penanggulangan kebakaran di Kota Jambi.">
+    <title>Info Grafis - Kabar Damkar | SIMERAH KOJA</title>
 
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -185,103 +178,81 @@
         }
         .content-head p{margin-top:6px;color:var(--steel);font-size:.9rem}
 
-        /* ================= 4-COLUMN VIDEO GRID ================= */
-        .media-grid{
-            display:grid;
-            grid-template-columns:repeat(4,minmax(0,1fr));
-            gap:22px;
+        /* ================= INFOGRAFIS GRID ================= */
+        .grafis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
         }
-        .media-card{
-            position:relative;display:flex;flex-direction:column;
-            width:100%;min-width:0;background:#fff;border:1px solid var(--line);
-            border-radius:22px;overflow:hidden;
-            box-shadow:0 7px 24px rgba(13,27,42,.055);
-            transition:transform .35s cubic-bezier(.2,.75,.25,1),box-shadow .35s,border-color .35s
+        .grafis-card {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            position: relative;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 7px 24px rgba(13,27,42,.055);
+            transition: transform .35s cubic-bezier(.2,.75,.25,1), box-shadow .35s, border-color .35s;
+            cursor: zoom-in;
+            aspect-ratio: 4 / 5;
         }
-        .media-card:hover{
-            transform:translateY(-8px);
-            box-shadow:0 24px 55px rgba(13,27,42,.14);
-            border-color:rgba(229,57,45,.25)
+        .grafis-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 24px 55px rgba(13,27,42,.14);
+            border-color: rgba(229,57,45,.25);
         }
-        .media-thumb{
-            position:relative;aspect-ratio:16/10;
-            overflow:hidden;background:#dfe5eb;width:100%
+        .grafis-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: filter .35s, transform .5s;
         }
-        .media-thumb::after{
-            content:"";position:absolute;inset:0;
-            background:linear-gradient(180deg,rgba(0,0,0,.02) 40%,rgba(0,0,0,.56) 100%);
-            pointer-events:none;transition:opacity .3s
-        }
-        .media-card:hover .media-thumb::after{opacity:.75}
-        .media-thumb img{
-            width:100%;height:100%;object-fit:cover;
-            transition:transform .65s cubic-bezier(.2,.7,.2,1),filter .35s
-        }
-        .media-card:hover .media-thumb img{transform:scale(1.065);filter:saturate(1.06)}
-
-        .media-tag{
-            position:absolute;z-index:3;top:12px;left:12px;
-            max-width:calc(100% - 24px);
-            padding:5px 10px;border-radius:8px;
-            background:rgba(255,255,255,.95);color:var(--signal-dark);
-            font-size:.63rem;font-weight:800;letter-spacing:.045em;
-            text-transform:uppercase;box-shadow:0 5px 14px rgba(0,0,0,.13);
-            backdrop-filter:blur(6px)
-        }
-        .media-source{
-            position:absolute;z-index:3;right:12px;top:12px;
-            width:32px;height:32px;border-radius:50%;
-            display:grid;place-items:center;
-            color:#fff;background:rgba(7,20,33,.68);
-            border:1px solid rgba(255,255,255,.2);
-            backdrop-filter:blur(8px);font-size:.8rem
-        }
-        .media-source .fa-youtube{color:#ff3838}
-
-        .photo-play{
-            position:absolute;z-index:3;left:50%;top:50%;
-            transform:translate(-50%,-45%) scale(.94);
-            width:50px;height:50px;border-radius:50%;
-            display:grid;place-items:center;
-            color:#fff;background:rgba(229,57,45,.94);
-            box-shadow:0 10px 25px rgba(0,0,0,.32);
-            opacity:.92;transition:.3s ease
-        }
-        .photo-play i{margin-left:2px}
-        .media-card:hover .photo-play{
-            opacity:1;transform:translate(-50%,-50%) scale(1.08);
-            background:var(--signal)
+        .grafis-card:hover img {
+            filter: saturate(1.06);
+            transform: scale(1.03);
         }
 
-        .media-body{padding:16px 17px 16px;display:flex;flex-direction:column;flex:1;width:100%}
-        .media-body h3{
-            font-family:var(--display);font-weight:750;font-size:1rem;
-            line-height:1.32;letter-spacing:-.018em;
-            display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
-            overflow:hidden;min-height:2.64em;margin-bottom:10px;
-            transition:color .2s
+        .grafis-zoom {
+            position: absolute;
+            z-index: 3;
+            top: 12px; right: 12px;
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            display: grid; place-items: center;
+            color: #fff;
+            background: rgba(7,20,33,.68);
+            border: 1px solid rgba(255,255,255,.2);
+            backdrop-filter: blur(8px);
+            font-size: .95rem;
+            opacity: 0; transform: translateY(-4px);
+            transition: .3s ease;
         }
-        .media-card:hover h3{color:var(--signal-dark)}
-        .media-meta{
-            display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;
-            color:var(--steel);font-size:.74rem;font-weight:600;margin-bottom:14px
+        .grafis-card:hover .grafis-zoom {
+            opacity: 1; transform: translateY(0);
         }
-        .media-meta span{display:inline-flex;align-items:center;gap:5px}
-        .media-meta i{font-size:.7rem}
-        .media-meta .fa-youtube{color:#f00}
 
-        .media-link{
-            margin-top:auto;display:flex;align-items:center;justify-content:space-between;
-            padding-top:12px;border-top:1px solid var(--soft);
-            color:var(--ink);font-size:.8rem;font-weight:800;width:100%
+        .grafis-title {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(7,20,33,.9), transparent);
+            color: #fff;
+            padding: 36px 18px 18px;
+            font-family: var(--display);
+            font-weight: 700;
+            font-size: 1rem;
+            line-height: 1.35;
+            letter-spacing: -.01em;
+            opacity: 0;
+            transition: opacity .3s;
         }
-        .media-link i{
-            width:28px;height:28px;border-radius:50%;
-            display:grid;place-items:center;
-            background:var(--soft);color:var(--ink);transition:.25s;font-size:.75rem
+        .grafis-card:hover .grafis-title { opacity: 1; }
+        
+        @media (hover: none) { 
+            .grafis-card .grafis-zoom, .grafis-card .grafis-title { opacity: 1; transform: translateY(0); } 
         }
-        .media-card:hover .media-link{color:var(--signal-dark)}
-        .media-card:hover .media-link i{background:var(--signal);color:#fff;transform:translateX(3px)}
 
         .empty-filter{
             grid-column:1/-1;text-align:center;padding:72px 24px;
@@ -290,15 +261,15 @@
         .empty-filter i{font-size:2.8rem;color:#c8d1db;margin-bottom:12px}
         .empty-filter h2{font-family:var(--display);color:var(--ink);margin-bottom:5px}
 
-        /* ================= MODAL DIALOG (YOUTUBE) ================= */
+        /* ================= MODAL DIALOG (GAMBAR / LIGHTBOX) ================= */
         dialog{
             border:0;padding:0;background:transparent;
-            width:min(960px,94vw);margin:auto;overflow:visible
+            width:min(1100px,96vw);margin:auto;overflow:visible
         }
         dialog::backdrop{
-            background:rgba(7,14,24,.86);
-            backdrop-filter:blur(6px);
-            -webkit-backdrop-filter:blur(6px)
+            background:rgba(7,14,24,.88);
+            backdrop-filter:blur(8px);
+            -webkit-backdrop-filter:blur(8px)
         }
         .dlg-close{
             position:absolute;top:-52px;right:0;
@@ -308,13 +279,15 @@
             box-shadow:0 8px 22px rgba(0,0,0,.3);transition:.2s
         }
         .dlg-close:hover{background:var(--signal);color:#fff;transform:scale(1.06)}
-        .video-frame{
-            aspect-ratio:16/9;border-radius:20px;
-            overflow:hidden;background:#000;
-            box-shadow:0 25px 60px rgba(0,0,0,.5);
-            display:grid;place-items:center
+        
+        #lightboxContent img {
+            max-height: 84dvh; width: auto; margin: 0 auto; 
+            border-radius: 20px; box-shadow: 0 30px 60px rgba(0,0,0,.5);
         }
-        .video-frame iframe{width:100%;height:100%;border:0}
+        #lightboxContent p {
+            margin-top: 18px; text-align: center; color: #fff;
+            font-family: var(--display); font-weight: 600; font-size: 1.15rem;
+        }
 
         /* ================= FOOTER ================= */
         .footer{background:var(--ink);color:rgba(255,255,255,.69);padding:80px 0 30px}
@@ -368,7 +341,6 @@
         @media (hover:hover) and (min-width:992px){.has-drop:hover .dropdown{display:block}}
         @media (max-width:1100px){
             .menu-link,.menu-trigger{padding-left:10px;padding-right:10px;font-size:.82rem}
-            .media-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
             .footer-grid{grid-template-columns:1fr 1fr}
             .footer-links{grid-column:span 2}
         }
@@ -387,7 +359,6 @@
             .dropdown::before{display:none}
             .menu .btn-login{margin:7px 0 0;justify-content:center;padding:13px}
             .page-hero{padding:43px 0 78px}
-            .media-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
         }
         @media (max-width:700px){
             .wrap{width:min(calc(100% - 28px),1180px)}
@@ -399,15 +370,6 @@
             .footer-links{grid-column:auto}
             .footer-bar{margin-top:42px;align-items:flex-start}
             .sos-fab{right:14px;bottom:14px}
-        }
-        @media (max-width:520px){
-            .media-grid{grid-template-columns:1fr}
-        }
-        @media (max-width:390px){
-            .brand img{height:28px}
-            .brand img+img{padding-left:5px}
-            .media-body{padding:16px}
-            .media-thumb{aspect-ratio:16/10}
         }
     </style>
 </head>
@@ -458,13 +420,13 @@
                 <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                    <li><a href="/edu-damkar">Edu Damkar</a></li>
-                   <li><a href="/infografis">Info Grafis</a></li>
+                    <li><a href="/infografis" aria-current="page">Info Grafis</a></li>
                     <li><a href="/media-informasi">Media Informasi</a></li>
                     <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
                 </ul>
             </li>
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
-                       @if(session()->has('pemohon_id'))
+            @if(session()->has('pemohon_id'))
                 <li class="has-drop">
                     <button class="menu-trigger btn-login" type="button" aria-expanded="false">
                         <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
@@ -473,7 +435,7 @@
                         <li>
                             <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
                                 @csrf
-                                <button type="submit" class="btn-logout">
+                                <button type="submit" class="btn-logout" style="width: 100%; text-align: left; padding: 10px 13px; color: #ff8b8b; font-size: .9rem;">
                                     <i class="fas fa-sign-out-alt"></i> Keluar
                                 </button>
                             </form>
@@ -483,7 +445,6 @@
             @else
                 <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
             @endif
-
         </ul>
     </nav>
 </header>
@@ -497,12 +458,12 @@
             <ol class="crumbs">
                 <li><a href="/">Beranda</a></li>
                 <li><a href="#">Kabar Damkar</a></li>
-                <li><span aria-current="page">Edu Damkar</span></li>
+                <li><span aria-current="page">Info Grafis</span></li>
             </ol>
         </nav>
-        <div class="hero-kicker rise"><i class="fas fa-fire-extinguisher"></i> Edukasi &amp; Pencegahan</div>
-        <h1 class="rise d1">Edu Damkar</h1>
-        <p class="rise d2">Kumpulan video edukasi, tindakan praktis, dan saran dari petugas untuk mencegah serta menghadapi keadaan darurat kebakaran.</p>
+        <div class="hero-kicker rise"><i class="fas fa-image"></i> Edukasi Visual</div>
+        <h1 class="rise d1">Info Grafis</h1>
+        <p class="rise d2">Kumpulan panduan bergambar, informasi visual, dan edukasi terkait pencegahan serta penanggulangan kebakaran di Kota Jambi. Ketuk gambar untuk memperbesar.</p>
         <div class="hero-line rise d3"></div>
     </div>
 </section>
@@ -512,72 +473,53 @@
     <div class="wrap media-layout">
         <div class="content-head">
             <div>
-                <h2>Video edukasi terbaru</h2>
-                <p>Klik pada video untuk menonton panduan keselamatan secara langsung.</p>
+                <h2>Galeri Infografis</h2>
+                <p>Klik pada gambar untuk memperbesar resolusi.</p>
             </div>
         </div>
 
-        <div class="media-grid" id="eduGrid">
-            @forelse($listEduDamkar as $v)
-                @php
-                    $ytId = $v->youtube_id;
-                    $thumbUrl = "https://i.ytimg.com/vi/{$ytId}/hqdefault.jpg";
-                @endphp
-
-                <button type="button"
-                        class="media-card"
-                        data-yt="{{ $ytId }}"
-                        data-title="{{ $v->judul }}">
-                    <div class="media-thumb">
-                        <span class="media-tag">Video Edukasi</span>
-                        <span class="media-source" aria-hidden="true">
-                            <i class="fab fa-youtube"></i>
-                        </span>
-                        <img src="{{ $thumbUrl }}"
-                             alt="{{ $v->judul }}"
-                             loading="lazy"
-                             onerror="this.src='/images/placeholder.jpg'">
-                        <span class="photo-play" aria-hidden="true">
-                            <i class="fas fa-play"></i>
-                        </span>
-                    </div>
-                    <div class="media-body">
-                        <h3>{{ $v->judul }}</h3>
-                        <div class="media-meta">
-                            @if(!empty($v->created_at) || !empty($v->tanggal))
-                                <span>
-                                    <i class="far fa-calendar-alt"></i>
-                                    {{ \Carbon\Carbon::parse($v->tanggal ?? $v->created_at)->locale('id')->translatedFormat('d M Y') }}
-                                </span>
-                            @endif
-                            <span>
-                                <i class="fab fa-youtube"></i>
-                                YouTube Damkar
-                            </span>
-                        </div>
-                        <span class="media-link">
-                            Tonton video
-                            <i class="fas fa-play"></i>
-                        </span>
-                    </div>
+        <div class="grafis-grid">
+            @forelse($daftar_infografis ?? [] as $info)
+                <button type="button" class="grafis-card"
+                        data-src="{{ asset('storage/' . $info->gambar) }}"
+                        data-title="{{ $info->judul ?? 'Infografis Damkar' }}"
+                        aria-label="Perbesar: {{ $info->judul ?? 'Infografis' }}">
+                    
+                    <span class="grafis-zoom" aria-hidden="true"><i class="fas fa-search-plus"></i></span>
+                    
+                    <img src="{{ asset('storage/' . $info->gambar) }}" alt="{{ $info->judul ?? 'Infografis' }}" loading="lazy">
+                    
+                    @if(!empty($info->judul))
+                        <div class="grafis-title">{{ $info->judul }}</div>
+                    @endif
                 </button>
             @empty
                 <div class="empty-filter">
-                    <i class="fas fa-video-slash"></i>
-                    <h2>Belum ada video edukasi</h2>
-                    <p>Video edukasi akan tampil di sini setelah diunggah oleh petugas.</p>
+                    <i class="far fa-images"></i>
+                    <h2>Belum ada infografis</h2>
+                    <p>Kumpulan panduan grafis dan visualisasi edukasi akan tampil di halaman ini setelah diunggah oleh admin Damkar Kota Jambi.</p>
                 </div>
             @endforelse
         </div>
+        
+        <!-- Pagination Handle -->
+        @if(isset($daftar_infografis) && method_exists($daftar_infografis, 'links'))
+            <div style="margin-top: 40px; display: flex; justify-content: center;">
+                {{ $daftar_infografis->links() }}
+            </div>
+        @endif
     </div>
 </div>
 
 </main>
 
-<!-- ==================== MODAL DIALOG (YOUTUBE) ==================== -->
-<dialog id="mediaDialog" aria-label="Pemutar video edukasi">
+<!-- ==================== MODAL DIALOG (GAMBAR LIGHTBOX) ==================== -->
+<dialog id="mediaDialog" aria-label="Lihat Infografis">
     <button type="button" class="dlg-close" aria-label="Tutup"><i class="fas fa-times"></i></button>
-    <div class="video-frame" id="dialogContent"></div>
+    <div id="lightboxContent">
+        <img src="" alt="" id="lbImg">
+        <p id="lbTxt"></p>
+    </div>
 </dialog>
 
 <!-- ==================== FOOTER ==================== -->
@@ -695,26 +637,27 @@
         });
     });
 
-    /* ---------- Modal Dialog (Video YouTube) ---------- */
+    /* ---------- Modal Dialog (Lightbox Gambar) ---------- */
     var mDialog = document.getElementById('mediaDialog');
-    var dContent = document.getElementById('dialogContent');
-    var cards = document.querySelectorAll('#eduGrid .media-card');
+    var lbImg = document.getElementById('lbImg');
+    var lbTxt = document.getElementById('lbTxt');
+    var cards = document.querySelectorAll('.grafis-card');
 
     cards.forEach(function (card) {
         card.addEventListener('click', function () {
-            var ytId = card.getAttribute('data-yt');
-            var title = card.getAttribute('data-title') || 'Video Edukasi';
-
-            if (ytId) {
-                dContent.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + ytId + '?autoplay=1" title="' + title.replace(/"/g, '&quot;') + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
-                mDialog.showModal();
-            }
+            lbImg.src = card.getAttribute('data-src');
+            lbImg.alt = card.getAttribute('data-title');
+            lbTxt.textContent = card.getAttribute('data-title');
+            mDialog.showModal();
         });
     });
 
     function closeDialog() {
-        dContent.innerHTML = '';
         mDialog.close();
+        setTimeout(function(){
+            lbImg.src = '';
+            lbTxt.textContent = '';
+        }, 200);
     }
 
     mDialog.querySelector('.dlg-close').addEventListener('click', closeDialog);
@@ -726,7 +669,7 @@
         if (e.key === 'Escape') closeDrops(null);
     });
 
-    /* ---------- Tombol lapor mengambang (muncul setelah scroll) ---------- */
+    /* ---------- Tombol lapor mengambang ---------- */
     var fab = document.getElementById('sosFab');
     var fabBtn = fab.querySelector('.sos-fab-btn');
 
