@@ -797,13 +797,14 @@
     <div class="wrap">
         <div class="sec-head">
             <div>
-                <h2>Kejadian &amp; evakuasi</h2>
+                <h2>Pemadaman, penyelamatan Dan evakuasi</h2>
                 <p>Informasi terbaru tentang kejadian di Kota Jambi.</p>
             </div>
             <img src="/images/mobil.png" alt="Mobil pemadam kebakaran" loading="lazy">
         </div>
 
         <div class="kj-grid">
+
             @forelse($listBerita as $berita)
                 @php
                     $tgl  = \Carbon\Carbon::parse($berita->tanggal_kejadian)->locale('id');
