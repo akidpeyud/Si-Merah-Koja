@@ -1,10 +1,11 @@
 <?php
+    use App\Models\Dokumen;
+
     $h = function ($v) { return htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8'); };
 
     /* ------------------------------------------------------------
        PENGATURAN HALAMAN
        Halaman ini dipakai bersama untuk 5 tab Program Kerja.
-       Dari controller bisa dikirim: $tab_aktif, $dokumen_url, $dokumen_judul
        ------------------------------------------------------------ */
     $tabs = [
         'sotk'        => ['url' => '/sotk',        'label' => 'SOTK',         'ico' => 'fa-sitemap',       'judul' => 'Struktur Organisasi dan Tata Kerja (SOTK)'],
@@ -13,10 +14,25 @@
         'pelaporan'   => ['url' => '/pelaporan',   'label' => 'Pelaporan',    'ico' => 'fa-file-lines',    'judul' => 'Dokumen pelaporan'],
         'produkhukum' => ['url' => '/produkhukum', 'label' => 'Produk hukum', 'ico' => 'fa-scale-balanced','judul' => 'Produk hukum'],
     ];
-    $tab_aktif     = $tab_aktif ?? 'sotk';
-    $dokumen_url   = $dokumen_url ?? '';          // URL gambar (jpg/png/webp) atau file .pdf
-    $dokumen_judul = $dokumen_judul ?? $tabs[$tab_aktif]['judul'];
-    $is_pdf        = $dokumen_url !== '' && preg_match('/\.pdf$/i', (string) parse_url($dokumen_url, PHP_URL_PATH));
+    $tab_aktif = 'sop';
+
+    // ============================================================
+    // AMBIL DATA DARI DATABASE (DENGAN ROUTE CONTROLLER)
+    // ============================================================
+    $dokumenDB = Dokumen::where('kategori', 'SOP')->latest()->get();
+
+    $dokumen_list = [];
+    foreach ($dokumenDB as $doc) {
+        $dokumen_list[] = [
+            'judul'        => $doc->sub_kategori ? "[{$doc->sub_kategori}] {$doc->judul_dokumen}" : $doc->judul_dokumen,
+            // Hapus kata /internal/program-kerja/ dan ganti menjadi /dokumen/
+            'url'          => url('/dokumen/view/' . $doc->id), 
+            'url_download' => url('/dokumen/download/' . $doc->id),
+            'ext'          => pathinfo($doc->nama_file, PATHINFO_EXTENSION) 
+        ];
+    }
+    
+    $jumlah = count($dokumen_list);
 
     $no_whatsapp    = "628117113113";
     $no_telepon     = "074141171";
@@ -25,7 +41,6 @@
     $wa_link   = "https://wa.me/" . $no_whatsapp . "?text=" . $pesan_wa;
     $maps_link = "https://www.google.com/maps/place/6PC59JJ2%2BQ76/@-1.6180875,103.6006406,871m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-1.6180875!4d103.6006406?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D";
 
-    // Isi dengan link Google Play jika aplikasi sudah tersedia. Kosong = badge disembunyikan.
     $play_store_url = "";
 ?>
 <!DOCTYPE html>
@@ -44,9 +59,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* ==========================================================
-           TOKENS (sama dengan halaman utama)
-           ========================================================== */
         :root {
             --ink: #0d1b2a;
             --ink-2: #132a43;
@@ -89,9 +101,6 @@
 
         .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: clamp(16px, 4vw, 32px); padding-right: clamp(16px, 4vw, 32px); }
 
-        /* ==========================================================
-           HEADER
-           ========================================================== */
         .site-header {
             position: sticky; top: 0; z-index: 60;
             background: rgba(13, 27, 42, .85);
@@ -153,9 +162,6 @@
             .menu .btn-login { margin: 8px 0 0; justify-content: center; padding: 14px; }
         }
 
-        /* ==========================================================
-           HERO HALAMAN
-           ========================================================== */
         .page-hero {
             position: relative; isolation: isolate; color: #fff; background: var(--ink); overflow: hidden;
             padding: clamp(36px, 6vw, 72px) 0 clamp(72px, 10vw, 112px);
@@ -182,9 +188,6 @@
         .rise.d1 { animation-delay: .08s; } .rise.d2 { animation-delay: .18s; } .rise.d3 { animation-delay: .3s; }
         @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 
-        /* ==========================================================
-           TAB PROGRAM KERJA (menempel di tepi hero)
-           ========================================================== */
         .page-body { background: var(--paper); padding-bottom: clamp(64px, 9vw, 112px); }
         .tabs-wrap { position: relative; z-index: 2; margin-top: -30px; }
         .tabs {
@@ -204,9 +207,6 @@
         .tab[aria-current="page"] { background: var(--ink); color: #fff; }
         .tab[aria-current="page"] i { color: var(--amber); }
 
-        /* ==========================================================
-           LAYOUT KONTEN
-           ========================================================== */
         .doc-layout { display: grid; gap: 24px; margin-top: 28px; }
 
         .side-card { background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); padding: clamp(20px, 3vw, 28px); }
@@ -223,46 +223,52 @@
         .social a { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: var(--paper); color: var(--ink); transition: background .2s, color .2s, transform .2s; }
         .social a:hover { background: var(--signal); color: #fff; transform: translateY(-3px); }
 
-        /* ==========================================================
-           PENAMPIL DOKUMEN
-           ========================================================== */
-        .viewer { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
-        .viewer:fullscreen { display: flex; flex-direction: column; border-radius: 0; border: 0; }
-        .viewer:fullscreen .viewer-stage { flex: 1; max-height: none; }
-        .viewer:fullscreen .pdf-frame { height: 100%; }
-        .viewer-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; padding: 14px clamp(14px, 2.5vw, 22px); border-bottom: 1px solid var(--line); }
-        .viewer-title { display: flex; align-items: center; gap: 12px; min-width: 0; font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.1rem; line-height: 1.25; }
-        .viewer-title i { flex: none; width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: var(--ink); color: var(--amber); font-size: .95rem; }
-        .viewer-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-        .tool { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 40px; height: 40px; padding: 0 14px; border-radius: 999px; background: var(--paper); font-size: .88rem; font-weight: 600; transition: background .2s, color .2s; }
+        .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+        .doc-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
+        .doc-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; padding: 16px clamp(16px, 2.5vw, 26px); border-bottom: 1px solid var(--line); }
+        .doc-title { display: flex; align-items: center; gap: 12px; min-width: 0; font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.1rem; line-height: 1.25; }
+        .doc-title i { flex: none; width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: var(--ink); color: var(--amber); font-size: .95rem; }
+        .doc-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+        .doc-count { padding: 6px 14px; border-radius: 999px; background: var(--paper); font-size: .85rem; font-weight: 600; color: var(--steel); font-variant-numeric: tabular-nums; }
+        .doc-search { position: relative; display: block; }
+        .doc-search i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--steel); font-size: .85rem; pointer-events: none; }
+        .doc-search input { width: min(280px, 100%); height: 40px; padding: 0 16px 0 40px; border: 1px solid var(--line); border-radius: 999px; background: #fff; font: inherit; font-size: .92rem; color: var(--ink); transition: border-color .2s; }
+        .doc-search input:hover { border-color: #b8c3d0; }
+        .doc-search input:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(255,182,39,.5); }
+
+        .doc-row { position: relative; display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 18px; align-items: center; padding: 18px clamp(16px, 2.5vw, 26px); border-bottom: 1px solid var(--line); transition: background .2s; }
+        .doc-row:last-child { border-bottom: 0; }
+        .doc-row[hidden] { display: none; }
+        .doc-row:not(.is-empty):hover { background: var(--paper); }
+        .doc-ico { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; background: #fdeceb; color: var(--signal-d); font-size: 1.4rem; }
+        .doc-row.is-empty .doc-ico { background: var(--paper); color: #b8c3d0; }
+        .doc-name { font-family: var(--font-display); font-weight: 600; font-stretch: 92%; font-size: 1.1rem; line-height: 1.35; letter-spacing: -0.005em; }
+        .doc-name a::after { content: ""; position: absolute; inset: 0; }
+        .doc-row:not(.is-empty):hover .doc-name a { color: var(--signal-d); }
+        .doc-row.is-empty .doc-name { color: var(--steel); }
+        .doc-meta { margin-top: 2px; font-size: .85rem; color: var(--steel); }
+        .doc-actions { position: relative; z-index: 1; display: flex; gap: 8px; }
+        .tool { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 40px; height: 40px; padding: 0 16px; border-radius: 999px; background: var(--paper); font-size: .88rem; font-weight: 600; transition: background .2s, color .2s; }
         .tool:hover { background: var(--ink); color: #fff; }
-        .zoom { display: inline-flex; align-items: center; background: var(--paper); border-radius: 999px; padding: 3px; }
-        .zoom button { width: 34px; height: 34px; border-radius: 50%; font-size: .8rem; display: grid; place-items: center; transition: background .2s, color .2s; }
-        .zoom button:hover { background: var(--ink); color: #fff; }
-        .zoom output { min-width: 52px; text-align: center; font-weight: 700; font-size: .88rem; font-variant-numeric: tabular-nums; }
+        .doc-row:hover .tool { background: #fff; }
+        .doc-row:hover .tool:hover { background: var(--ink); }
 
-        .viewer-stage { background: #dfe5ec; padding: clamp(16px, 4vw, 48px); max-height: 88vh; overflow: auto; }
-        .viewer-stage.is-pdf { padding: 0; max-height: none; overflow: hidden; }
-        .doc-img { display: block; margin: 0 auto; width: 100%; max-width: none; height: auto; background: #fff; border-radius: 4px; box-shadow: 0 24px 44px -14px rgba(13,27,42,.4); transition: width .2s; }
-        .pdf-frame { display: block; width: 100%; height: 88vh; border: 0; background: #fff; }
-
-        .viewer-empty {
-            min-height: 520px; display: grid; place-content: center; justify-items: center; gap: 6px; text-align: center; padding: 40px 24px;
-            color: var(--steel); background: repeating-linear-gradient(135deg, var(--paper) 0 14px, #eaeef3 14px 28px);
-        }
-        .viewer-empty i { font-size: 2.2rem; color: #b8c3d0; margin-bottom: 8px; }
-        .viewer-empty h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; color: var(--ink); }
-        .viewer-empty p { max-width: 40ch; font-size: .95rem; }
+        .doc-none, .doc-empty { text-align: center; color: var(--steel); }
+        .doc-none[hidden] { display: none; }
+        .doc-none { padding: 40px 24px; }
+        .doc-empty { min-height: 420px; display: grid; place-content: center; justify-items: center; gap: 6px; padding: 40px 24px; background: repeating-linear-gradient(135deg, var(--paper) 0 14px, #eaeef3 14px 28px); }
+        .doc-empty i { font-size: 2.2rem; color: #b8c3d0; margin-bottom: 8px; }
+        .doc-empty h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; color: var(--ink); }
+        .doc-empty p { max-width: 40ch; font-size: .95rem; }
 
         @media (max-width: 640px) {
-            .tool span { display: none; }
-            .tool { padding: 0; width: 40px; }
-            .viewer-tools { width: 100%; justify-content: space-between; }
+            .doc-row { grid-template-columns: 52px minmax(0, 1fr); align-items: start; }
+            .doc-actions { grid-column: 1 / -1; }
+            .doc-actions .tool { flex: 1; }
+            .doc-search, .doc-search input { width: 100%; }
+            .doc-filter { width: 100%; }
         }
 
-        /* ==========================================================
-           FOOTER
-           ========================================================== */
         .footer { background: var(--ink); color: rgba(255,255,255,.7); padding: clamp(56px, 8vw, 96px) 0 32px; }
         .footer-grid { display: grid; grid-template-columns: 1.1fr 1.2fr .8fr; gap: clamp(32px, 5vw, 64px); }
         .footer h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: #fff; margin-bottom: 16px; }
@@ -289,9 +295,6 @@
         .footer .social a:hover { background: var(--signal); }
         @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr; } }
 
-        /* ==========================================================
-           TOMBOL LAPOR MENGAMBANG
-           ========================================================== */
         .beacon { position: relative; width: 12px; height: 12px; border-radius: 50%; background: #fff; flex: none; }
         .beacon::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #fff; animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
         @keyframes ping { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(3.2); opacity: 0; } }
@@ -306,9 +309,6 @@
         .sos-sheet a i { width: 22px; text-align: center; font-size: 1.15rem; }
         .sos-sheet .wa i { color: #25d366; } .sos-sheet .tel i { color: #38bdf8; } .sos-sheet .n112 i { color: #f87171; }
 
-        /* ==========================================================
-           REDUCED MOTION
-           ========================================================== */
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
             *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -317,7 +317,6 @@
 </head>
 <body>
 
-<!-- ==================== HEADER ==================== -->
 <header class="site-header" id="siteHeader">
     <nav class="nav" aria-label="Navigasi utama">
         <a href="/" class="brand" aria-label="SIMERAH KOJA, beranda">
@@ -349,7 +348,7 @@
             </li>
             <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan &amp; fasilitas <i class="fas fa-chevron-down"></i></button>
-               <ul class="dropdown">
+                <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
                     <li><a href="/layanan-fasilitas/skk">SKK & Perpanjang SKK</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan Edukasi & Sosialisasi</a></li>
@@ -372,7 +371,6 @@
 
 <main>
 
-<!-- ==================== HERO HALAMAN ==================== -->
 <section class="page-hero">
     <div class="wrap">
         <nav aria-label="Breadcrumb" class="rise">
@@ -388,7 +386,6 @@
 </section>
 
 <div class="page-body">
-    <!-- Tab -->
     <div class="wrap tabs-wrap">
         <nav class="tabs" aria-label="Kategori program kerja">
             <?php foreach ($tabs as $key => $tab): ?>
@@ -402,44 +399,70 @@
     <div class="wrap">
         <div class="doc-layout">
 
-            <!-- Penampil dokumen -->
-            <section class="viewer" id="viewer" aria-label="Penampil dokumen">
-                <div class="viewer-bar">
-                    <div class="viewer-title">
+            <!-- Daftar dokumen -->
+            <section class="doc-panel" aria-label="Daftar dokumen">
+                <div class="doc-bar">
+                    <div class="doc-title">
                         <i class="fas <?= $h($tabs[$tab_aktif]['ico']) ?>"></i>
-                        <span><?= $h($dokumen_judul) ?></span>
+                        <span><?= $h($tabs[$tab_aktif]['judul']) ?></span>
                     </div>
-
-                    <?php if ($dokumen_url): ?>
-                    <div class="viewer-tools">
-                        <?php if (!$is_pdf): ?>
-                        <div class="zoom" role="group" aria-label="Zoom dokumen">
-                            <button type="button" data-zoom="out" aria-label="Perkecil"><i class="fas fa-minus"></i></button>
-                            <output id="zoomLevel" aria-live="polite">100%</output>
-                            <button type="button" data-zoom="in" aria-label="Perbesar"><i class="fas fa-plus"></i></button>
-                        </div>
+                    <div class="doc-filter">
+                        <?php if ($jumlah): ?>
+                        <span class="doc-count" id="docCount" aria-live="polite"><?= (int) $jumlah ?> dokumen</span>
                         <?php endif; ?>
-                        <button class="tool" type="button" id="btnPrint" aria-label="Cetak dokumen"><i class="fas fa-print"></i><span>Cetak</span></button>
-                        <a class="tool" href="<?= $h($dokumen_url) ?>" download aria-label="Unduh dokumen"><i class="fas fa-download"></i><span>Unduh</span></a>
-                        <button class="tool" type="button" id="btnFull" aria-label="Layar penuh"><i class="fas fa-expand"></i></button>
+                        <?php if ($jumlah > 5): ?>
+                        <label class="doc-search">
+                            <span class="sr-only">Cari dokumen</span>
+                            <i class="fas fa-search"></i>
+                            <input type="search" id="docSearch" placeholder="Cari dokumen" autocomplete="off">
+                        </label>
+                        <?php endif; ?>
                     </div>
-                    <?php endif; ?>
                 </div>
 
-                <?php if ($dokumen_url): ?>
-                    <div class="viewer-stage <?= $h($is_pdf ? 'is-pdf' : '') ?>" id="viewerStage">
-                        <?php if ($is_pdf): ?>
-                            <iframe class="pdf-frame" src="<?= $h($dokumen_url) ?>#view=FitH" title="<?= $h($dokumen_judul) ?>"></iframe>
-                        <?php else: ?>
-                            <img class="doc-img" id="docImg" src="<?= $h($dokumen_url) ?>" alt="<?= $h($dokumen_judul) ?>">
+                <?php if ($jumlah): ?>
+                <ul class="doc-list">
+                    <?php foreach ($dokumen_list as $d):
+                        $d            = (is_object($d) && method_exists($d, 'toArray')) ? $d->toArray() : (array) $d;
+                        $judul        = (string) ($d['judul'] ?? '');
+                        $url          = (string) ($d['url'] ?? '');
+                        $url_download = (string) ($d['url_download'] ?? $url);
+                        $ada          = $url !== '';
+                        
+                        // Perbaikan: Ambil eksistensi file langsung dari array yang di-passing Controller, bukan menebak dari URL route
+                        $ext          = $ada ? strtoupper($d['ext'] ?? 'PDF') : '';
+                        $ext          = $ext ?: 'PDF';
+                        $ico          = ['PDF' => 'fa-file-pdf', 'DOC' => 'fa-file-word', 'DOCX' => 'fa-file-word', 'XLS' => 'fa-file-excel', 'XLSX' => 'fa-file-excel'][$ext] ?? 'fa-file-lines';
+                    ?>
+                    <li class="doc-row <?= $ada ? '' : 'is-empty' ?>" data-name="<?= $h(mb_strtolower($judul)) ?>">
+                        <span class="doc-ico"><i class="fas <?= $h($ada ? $ico : 'fa-file-circle-question') ?>"></i></span>
+                        <div>
+                            <p class="doc-name">
+                                <?php if ($ada): ?>
+                                    <a href="<?= $h($url) ?>" target="_blank" rel="noopener"><?= $h($judul) ?></a>
+                                <?php else: ?>
+                                    <?= $h($judul) ?>
+                                <?php endif; ?>
+                            </p>
+                            <p class="doc-meta"><?= $ada ? 'Dokumen ' . $h($ext) : 'Berkas belum diunggah' ?></p>
+                        </div>
+                        <?php if ($ada): ?>
+                        <!-- Perbaikan: Tombol menggunakan Route View dan Route Download, serta hapus atribut native download -->
+                        <div class="doc-actions">
+                            <a class="tool" href="<?= $h($url) ?>" target="_blank" rel="noopener" aria-label="Buka <?= $h($judul) ?>"><i class="fas fa-arrow-up-right-from-square"></i> Buka</a>
+                            <a class="tool" href="<?= $h($url_download) ?>" aria-label="Unduh <?= $h($judul) ?>"><i class="fas fa-download"></i> Unduh</a>
+                        </div>
                         <?php endif; ?>
-                    </div>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+                <p class="doc-none" id="docNone" hidden>Tidak ada dokumen yang cocok. Coba kata kunci lain.</p>
                 <?php else: ?>
-                    <div class="viewer-empty">
-                        <i class="far fa-file-lines"></i>
-                        <h3>Dokumen belum diunggah</h3>
-                        <p><?= $h($dokumen_judul) ?> akan tampil di sini setelah petugas mengunggahnya.</p>
-                    </div>
+                <div class="doc-empty">
+                    <i class="far fa-folder-open"></i>
+                    <h3>Belum ada dokumen</h3>
+                    <p><?= $h($tabs[$tab_aktif]['judul']) ?> akan tampil di sini setelah petugas mengunggahnya.</p>
+                </div>
                 <?php endif; ?>
             </section>
 
@@ -489,7 +512,6 @@
 
 </main>
 
-<!-- ==================== FOOTER ==================== -->
 <footer class="footer">
     <div class="wrap">
         <div class="footer-grid">
@@ -545,7 +567,6 @@
     </div>
 </footer>
 
-<!-- ==================== TOMBOL LAPOR MENGAMBANG ==================== -->
 <div class="sos-fab" id="sosFab">
     <div class="sos-sheet" id="sosSheet">
         <a class="wa" href="<?= $h($wa_link) ?>" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Lapor lewat WhatsApp</a>
@@ -561,7 +582,6 @@
 (function () {
     'use strict';
 
-    /* ---------- Navigasi ---------- */
     var header = document.getElementById('siteHeader');
     var toggle = header.querySelector('.nav-toggle');
     var drops = header.querySelectorAll('.has-drop');
@@ -599,7 +619,6 @@
         if (e.key === 'Escape') closeDrops(null);
     });
 
-    /* ---------- Tombol lapor mengambang (muncul setelah scroll) ---------- */
     var fab = document.getElementById('sosFab');
     var fabBtn = fab.querySelector('.sos-fab-btn');
 
@@ -616,61 +635,22 @@
         fabBtn.setAttribute('aria-expanded', open);
     });
 
-    /* ---------- Penampil dokumen ---------- */
-    var viewer = document.getElementById('viewer');
-    var img = document.getElementById('docImg');
-    var zoomOut = document.getElementById('zoomLevel');
-    var btnPrint = document.getElementById('btnPrint');
-    var btnFull = document.getElementById('btnFull');
-    var zoom = 1;
-
-    function setZoom(z) {
-        zoom = Math.min(3, Math.max(0.5, z));
-        if (img) img.style.width = (zoom * 100) + '%';
-        if (zoomOut) zoomOut.textContent = Math.round(zoom * 100) + '%';
-    }
-
-    viewer.querySelectorAll('[data-zoom]').forEach(function (b) {
-        b.addEventListener('click', function () {
-            setZoom(zoom + (b.dataset.zoom === 'in' ? 0.25 : -0.25));
-        });
-    });
-
-    if (btnPrint) {
-        btnPrint.addEventListener('click', function () {
-            if (!img) {
-                /* PDF: buka di tab baru, cetak lewat penampil PDF browser */
-                var frame = viewer.querySelector('iframe');
-                if (frame) window.open(frame.src, '_blank');
-                return;
-            }
-            var w = window.open('', '_blank');
-            if (!w) { window.open(img.src, '_blank'); return; }
-            w.document.title = img.alt;
-            var st = w.document.createElement('style');
-            st.textContent = 'body{margin:0}img{width:100%;height:auto;display:block}';
-            w.document.head.appendChild(st);
-            var im = w.document.createElement('img');
-            im.onload = function () { w.focus(); w.print(); };
-            im.src = img.src;
-            w.document.body.appendChild(im);
-        });
-    }
-
-    if (btnFull) {
-        if (!viewer.requestFullscreen) {
-            btnFull.style.display = 'none';
-        } else {
-            btnFull.addEventListener('click', function () {
-                if (document.fullscreenElement) { document.exitFullscreen(); }
-                else { viewer.requestFullscreen(); }
+    var search = document.getElementById('docSearch');
+    if (search) {
+        var rows = document.querySelectorAll('.doc-row');
+        var count = document.getElementById('docCount');
+        var none = document.getElementById('docNone');
+        search.addEventListener('input', function () {
+            var q = search.value.trim().toLowerCase();
+            var n = 0;
+            rows.forEach(function (r) {
+                var hit = r.dataset.name.indexOf(q) !== -1;
+                r.hidden = !hit;
+                if (hit) n++;
             });
-            document.addEventListener('fullscreenchange', function () {
-                var on = !!document.fullscreenElement;
-                btnFull.querySelector('i').className = on ? 'fas fa-compress' : 'fas fa-expand';
-                btnFull.setAttribute('aria-label', on ? 'Keluar dari layar penuh' : 'Layar penuh');
-            });
-        }
+            if (count) count.textContent = n + ' dokumen';
+            none.hidden = n !== 0;
+        });
     }
 })();
 </script>

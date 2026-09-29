@@ -1727,15 +1727,20 @@ summary .chev {
                     </a>
                 </div>
             </details>
-            <!-- BAGIAN KEPEGAWAIAN -->
-            <details class="side-group" {{ Request::is('internal/kepegawaian*') ? 'open' : '' }}>
-                <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
-                <div class="side-sub">
-                    <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
-                        <i class="fas fa-user-tie"></i> Data Urut Kepegawaian
-                    </a>
-                </div>
-            </details>
+<!-- BAGIAN KEPEGAWAIAN -->
+<details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') ? 'open' : '' }}>
+    <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
+    <div class="side-sub">
+        <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
+            <i class="fas fa-user-tie"></i> Data Urut Kepegawaian
+        </a>
+        
+        <!-- Tambahan Tombol Program Kerja -->
+        <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
+            <i class="fas fa-file-contract"></i> Program Kerja
+        </a>
+    </div>
+</details>
 
             <!-- BAGIAN SAPRA -->
             <details class="side-group" {{ Request::is('sapra*') ? 'open' : '' }}>

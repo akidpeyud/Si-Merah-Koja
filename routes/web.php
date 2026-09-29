@@ -22,11 +22,13 @@ use App\Http\Controllers\PemohonAuthController;
 use App\Http\Controllers\PermohonanSkkController;
 use App\Http\Controllers\PermohonanEdukasiController;
 use App\Http\Controllers\PetaController;
+use App\Http\Controllers\ProgramKerjaController;
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
 use App\Models\EduDamkar;
 use App\Models\UjungDamkar;
+
 
 // ==========================================
 // 1. RUTE PUBLIK (HALAMAN UTAMA & INFO)
@@ -785,4 +787,19 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/duk/{id}', [DukController::class, 'destroy'])->name('duk.destroy');
     });
 
-});
+    // --------------------------------------------------------
+    // KELOLA PROGRAM KERJA (AMAN, HANYA ADMIN/PEGAWAI YANG BISA AKSES)
+    // --------------------------------------------------------
+    Route::prefix('internal/program-kerja')->group(function () {
+        Route::get('/', [ProgramKerjaController::class, 'index']);
+        Route::post('/store', [ProgramKerjaController::class, 'store']);
+        Route::delete('/destroy/{id}', [ProgramKerjaController::class, 'destroy']);
+    });
+
+}); // <--- INI ADALAH PENUTUP MIDDLEWARE AUTH (JANGAN DIHAPUS)
+
+// ============================================================
+// 7. RUTE PUBLIK (BISA DIAKSES SEMUA ORANG TANPA LOGIN)
+// ============================================================
+Route::get('/dokumen/view/{id}', [ProgramKerjaController::class, 'viewFile']);
+Route::get('/dokumen/download/{id}', [ProgramKerjaController::class, 'download']);

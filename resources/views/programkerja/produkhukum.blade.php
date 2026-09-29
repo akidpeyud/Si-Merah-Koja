@@ -1,10 +1,11 @@
 <?php
+    use App\Models\Dokumen;
+
     $h = function ($v) { return htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8'); };
 
     /* ------------------------------------------------------------
        PENGATURAN HALAMAN
        Halaman ini dipakai bersama untuk 5 tab Program Kerja.
-       Dari controller bisa dikirim: $tab_aktif dan $dokumen_list (lihat di bawah)
        ------------------------------------------------------------ */
     $tabs = [
         'sotk'        => ['url' => '/sotk',        'label' => 'SOTK',         'ico' => 'fa-sitemap',       'judul' => 'Struktur Organisasi dan Tata Kerja (SOTK)'],
@@ -13,25 +14,23 @@
         'pelaporan'   => ['url' => '/pelaporan',   'label' => 'Pelaporan',    'ico' => 'fa-file-lines',    'judul' => 'Dokumen pelaporan'],
         'produkhukum' => ['url' => '/produkhukum', 'label' => 'Produk hukum', 'ico' => 'fa-scale-balanced','judul' => 'Produk hukum'],
     ];
-    $tab_aktif = $tab_aktif ?? 'produkhukum';
+    $tab_aktif = 'produkhukum';
 
-    /*
-      Daftar produk hukum. Setiap item: ['judul' => '...', 'url' => 'link berkas PDF'].
-      Selama 'url' kosong, baris tampil sebagai "Berkas belum diunggah".
-      Dari controller boleh kirim array atau koleksi model yang punya kolom judul dan url.
-    */
-    $dokumen_list = $dokumen_list ?? [
-        ['judul' => 'Permen 11/PRT/M/ 2020 Tentang Tim Ahli Bangunan Gedung, Pengkaji Teknis, dan Penilik Bangunan', 'url' => ''],
-        ['judul' => 'Perwal No 9 Tahun 2019 Tentang PROTAP Penanggulangan Kebakaran dan Bencana Lainnya di Kota Jambi', 'url' => ''],
-        ['judul' => 'Permen PU 20 Tahun 2009 Tentang Pedoman Teknis Manajemen Proteksi Kebakaran di Perkotaan', 'url' => ''],
-        ['judul' => 'Permendagri No 16 Tahun 2020 Tentang Nomenklatur Dinas Pemadam Kebakaran', 'url' => ''],
-        ['judul' => 'Permen Tenaga Kerja No. 04/Men/1980 Tentang Syarat Pemasangan Alat Pemadam Api Ringan', 'url' => ''],
-        ['judul' => 'PERDA 3 TH 2015 Tentang BANGUNAN', 'url' => ''],
-        ['judul' => 'Permen PU 26 Tahun 2008 Tentang Pedoman Teknis Rencana Induk Sistem Proteksi Kebakaran', 'url' => ''],
-        ['judul' => 'Permendagri No 16 2009 Tentang Standar Aparatur Pemadaman Kebakaran di Daerah', 'url' => ''],
-        ['judul' => 'UU RI Nomor: 28 Tahun 2002 Tentang Bangunan Gedung', 'url' => ''],
-        ['judul' => 'UU RI Nomor: 24 Tahun 2007 Tentang Penanggulangan Bencana', 'url' => ''],
-    ];
+    // ============================================================
+    // AMBIL DATA DARI DATABASE (DENGAN ROUTE PUBLIK)
+    // ============================================================
+    $dokumenDB = Dokumen::where('kategori', 'Produk Hukum')->latest()->get();
+
+    $dokumen_list = [];
+    foreach ($dokumenDB as $doc) {
+        $dokumen_list[] = [
+            'judul'        => $doc->judul_dokumen,
+            'url'          => url('/dokumen/view/' . $doc->id), 
+            'url_download' => url('/dokumen/download/' . $doc->id),
+            'ext'          => pathinfo($doc->nama_file, PATHINFO_EXTENSION) 
+        ];
+    }
+    
     $jumlah = count($dokumen_list);
 
     $no_whatsapp    = "628117113113";
@@ -41,7 +40,6 @@
     $wa_link   = "https://wa.me/" . $no_whatsapp . "?text=" . $pesan_wa;
     $maps_link = "https://www.google.com/maps/place/6PC59JJ2%2BQ76/@-1.6180875,103.6006406,871m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-1.6180875!4d103.6006406?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D";
 
-    // Isi dengan link Google Play jika aplikasi sudah tersedia. Kosong = badge disembunyikan.
     $play_store_url = "";
 ?>
 <!DOCTYPE html>
@@ -60,9 +58,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* ==========================================================
-           TOKENS (sama dengan halaman utama)
-           ========================================================== */
         :root {
             --ink: #0d1b2a;
             --ink-2: #132a43;
@@ -105,9 +100,6 @@
 
         .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: clamp(16px, 4vw, 32px); padding-right: clamp(16px, 4vw, 32px); }
 
-        /* ==========================================================
-           HEADER
-           ========================================================== */
         .site-header {
             position: sticky; top: 0; z-index: 60;
             background: rgba(13, 27, 42, .85);
@@ -169,9 +161,6 @@
             .menu .btn-login { margin: 8px 0 0; justify-content: center; padding: 14px; }
         }
 
-        /* ==========================================================
-           HERO HALAMAN
-           ========================================================== */
         .page-hero {
             position: relative; isolation: isolate; color: #fff; background: var(--ink); overflow: hidden;
             padding: clamp(36px, 6vw, 72px) 0 clamp(72px, 10vw, 112px);
@@ -198,9 +187,6 @@
         .rise.d1 { animation-delay: .08s; } .rise.d2 { animation-delay: .18s; } .rise.d3 { animation-delay: .3s; }
         @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 
-        /* ==========================================================
-           TAB PROGRAM KERJA (menempel di tepi hero)
-           ========================================================== */
         .page-body { background: var(--paper); padding-bottom: clamp(64px, 9vw, 112px); }
         .tabs-wrap { position: relative; z-index: 2; margin-top: -30px; }
         .tabs {
@@ -220,9 +206,6 @@
         .tab[aria-current="page"] { background: var(--ink); color: #fff; }
         .tab[aria-current="page"] i { color: var(--amber); }
 
-        /* ==========================================================
-           LAYOUT KONTEN
-           ========================================================== */
         .doc-layout { display: grid; gap: 24px; margin-top: 28px; }
 
         .side-card { background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); padding: clamp(20px, 3vw, 28px); }
@@ -239,9 +222,6 @@
         .social a { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: var(--paper); color: var(--ink); transition: background .2s, color .2s, transform .2s; }
         .social a:hover { background: var(--signal); color: #fff; transform: translateY(-3px); }
 
-        /* ==========================================================
-           DAFTAR DOKUMEN
-           ========================================================== */
         .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
         .doc-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
         .doc-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; padding: 16px clamp(16px, 2.5vw, 26px); border-bottom: 1px solid var(--line); }
@@ -288,9 +268,6 @@
             .doc-filter { width: 100%; }
         }
 
-        /* ==========================================================
-           FOOTER
-           ========================================================== */
         .footer { background: var(--ink); color: rgba(255,255,255,.7); padding: clamp(56px, 8vw, 96px) 0 32px; }
         .footer-grid { display: grid; grid-template-columns: 1.1fr 1.2fr .8fr; gap: clamp(32px, 5vw, 64px); }
         .footer h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: #fff; margin-bottom: 16px; }
@@ -317,9 +294,6 @@
         .footer .social a:hover { background: var(--signal); }
         @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr; } }
 
-        /* ==========================================================
-           TOMBOL LAPOR MENGAMBANG
-           ========================================================== */
         .beacon { position: relative; width: 12px; height: 12px; border-radius: 50%; background: #fff; flex: none; }
         .beacon::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #fff; animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
         @keyframes ping { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(3.2); opacity: 0; } }
@@ -334,9 +308,6 @@
         .sos-sheet a i { width: 22px; text-align: center; font-size: 1.15rem; }
         .sos-sheet .wa i { color: #25d366; } .sos-sheet .tel i { color: #38bdf8; } .sos-sheet .n112 i { color: #f87171; }
 
-        /* ==========================================================
-           REDUCED MOTION
-           ========================================================== */
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
             *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -345,7 +316,6 @@
 </head>
 <body>
 
-<!-- ==================== HEADER ==================== -->
 <header class="site-header" id="siteHeader">
     <nav class="nav" aria-label="Navigasi utama">
         <a href="/" class="brand" aria-label="SIMERAH KOJA, beranda">
@@ -377,7 +347,7 @@
             </li>
             <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan &amp; fasilitas <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
+               <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
                     <li><a href="/layanan-fasilitas/skk">SKK & Perpanjang SKK</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan Edukasi & Sosialisasi</a></li>
@@ -400,7 +370,6 @@
 
 <main>
 
-<!-- ==================== HERO HALAMAN ==================== -->
 <section class="page-hero">
     <div class="wrap">
         <nav aria-label="Breadcrumb" class="rise">
@@ -416,7 +385,6 @@
 </section>
 
 <div class="page-body">
-    <!-- Tab -->
     <div class="wrap tabs-wrap">
         <nav class="tabs" aria-label="Kategori program kerja">
             <?php foreach ($tabs as $key => $tab): ?>
@@ -454,13 +422,15 @@
                 <?php if ($jumlah): ?>
                 <ul class="doc-list">
                     <?php foreach ($dokumen_list as $d):
-                        $d     = (is_object($d) && method_exists($d, 'toArray')) ? $d->toArray() : (array) $d;
-                        $judul = (string) ($d['judul'] ?? '');
-                        $url   = (string) ($d['url'] ?? '');
-                        $ada   = $url !== '';
-                        $ext   = $ada ? strtoupper(pathinfo((string) parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION)) : '';
-                        $ext   = $ext ?: 'PDF';
-                        $ico   = ['PDF' => 'fa-file-pdf', 'DOC' => 'fa-file-word', 'DOCX' => 'fa-file-word', 'XLS' => 'fa-file-excel', 'XLSX' => 'fa-file-excel'][$ext] ?? 'fa-file-lines';
+                        $d            = (is_object($d) && method_exists($d, 'toArray')) ? $d->toArray() : (array) $d;
+                        $judul        = (string) ($d['judul'] ?? '');
+                        $url          = (string) ($d['url'] ?? '');
+                        $url_download = (string) ($d['url_download'] ?? $url);
+                        $ada          = $url !== '';
+                        
+                        $ext          = $ada ? strtoupper($d['ext'] ?? 'PDF') : '';
+                        $ext          = $ext ?: 'PDF';
+                        $ico          = ['PDF' => 'fa-file-pdf', 'DOC' => 'fa-file-word', 'DOCX' => 'fa-file-word', 'XLS' => 'fa-file-excel', 'XLSX' => 'fa-file-excel', 'JPG' => 'fa-file-image', 'PNG' => 'fa-file-image', 'JPEG' => 'fa-file-image'][$ext] ?? 'fa-file-lines';
                     ?>
                     <li class="doc-row <?= $ada ? '' : 'is-empty' ?>" data-name="<?= $h(mb_strtolower($judul)) ?>">
                         <span class="doc-ico"><i class="fas <?= $h($ada ? $ico : 'fa-file-circle-question') ?>"></i></span>
@@ -477,7 +447,7 @@
                         <?php if ($ada): ?>
                         <div class="doc-actions">
                             <a class="tool" href="<?= $h($url) ?>" target="_blank" rel="noopener" aria-label="Buka <?= $h($judul) ?>"><i class="fas fa-arrow-up-right-from-square"></i> Buka</a>
-                            <a class="tool" href="<?= $h($url) ?>" download aria-label="Unduh <?= $h($judul) ?>"><i class="fas fa-download"></i> Unduh</a>
+                            <a class="tool" href="<?= $h($url_download) ?>" aria-label="Unduh <?= $h($judul) ?>"><i class="fas fa-download"></i> Unduh</a>
                         </div>
                         <?php endif; ?>
                     </li>
@@ -539,7 +509,6 @@
 
 </main>
 
-<!-- ==================== FOOTER ==================== -->
 <footer class="footer">
     <div class="wrap">
         <div class="footer-grid">
@@ -595,7 +564,6 @@
     </div>
 </footer>
 
-<!-- ==================== TOMBOL LAPOR MENGAMBANG ==================== -->
 <div class="sos-fab" id="sosFab">
     <div class="sos-sheet" id="sosSheet">
         <a class="wa" href="<?= $h($wa_link) ?>" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Lapor lewat WhatsApp</a>
@@ -611,7 +579,6 @@
 (function () {
     'use strict';
 
-    /* ---------- Navigasi ---------- */
     var header = document.getElementById('siteHeader');
     var toggle = header.querySelector('.nav-toggle');
     var drops = header.querySelectorAll('.has-drop');
@@ -649,7 +616,6 @@
         if (e.key === 'Escape') closeDrops(null);
     });
 
-    /* ---------- Tombol lapor mengambang (muncul setelah scroll) ---------- */
     var fab = document.getElementById('sosFab');
     var fabBtn = fab.querySelector('.sos-fab-btn');
 
@@ -666,7 +632,6 @@
         fabBtn.setAttribute('aria-expanded', open);
     });
 
-    /* ---------- Pencarian dokumen ---------- */
     var search = document.getElementById('docSearch');
     if (search) {
         var rows = document.querySelectorAll('.doc-row');
