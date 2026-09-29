@@ -198,6 +198,7 @@
 
         .form-control, .form-select { font-family: var(--font-body); min-height: 42px; font-size: .9rem; color: var(--ink); background-color: var(--white); border: 1px solid var(--line-dark); border-radius: 8px; padding: 8px 14px; transition: all 0.2s ease; box-shadow: none; }
         .form-control:focus, .form-select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+        .form-control:disabled, .form-select:disabled { background-color: #f1f5f9; cursor: not-allowed; opacity: 1; border-color: var(--line); color: var(--steel);}
         .form-control::placeholder { color: var(--steel-soft); }
 
         .input-group-text { background-color: #f8fafc; border: 1px solid var(--line-dark); color: var(--steel); font-weight: 600; border-radius: 8px; font-size: 0.9rem; }
@@ -254,6 +255,18 @@
             <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
         </div>
     @endif
+    
+    <!-- Notifikasi kalau validasi form dari Controller PHP gagal -->
+    @if ($errors->any())
+        <div class="toast err" data-toast>
+            <span class="toast-ico"><i class="fas fa-triangle-exclamation"></i></span>
+            <span style="line-height: 1.3;">
+                <strong>Data Gagal Disimpan!</strong><br>
+                <span style="font-size: 0.85rem; font-weight: 500;">Ada isian wajib yang terlewat atau tidak sesuai.</span>
+            </span>
+            <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
+        </div>
+    @endif
 </div>
 
 <!-- ==================== TOPBAR ==================== -->
@@ -283,6 +296,7 @@
 </header>
 
 <div class="shell">
+
     <div class="sidebar-backdrop" id="sideBackdrop"></div>
 
     <!-- ==================== SIDEBAR ==================== -->
@@ -293,6 +307,7 @@
         </a>
 
         @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
+
             <div class="side-kicker">Modul operasional</div>
 
             <!-- BAGIAN PENCEGAHAN -->
@@ -324,10 +339,10 @@
             </details>
 
             <!-- BAGIAN PEMADAMAN -->
-            <details class="side-group" open>
+            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
-               <div class="side-sub">
-                    <a href="/internal/damtan/input-data" class="active">
+                <div class="side-sub">
+                    <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
                         <i class="fas fa-fire-extinguisher"></i> Input data
                     </a>
                     <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
@@ -357,19 +372,33 @@
                 <summary><i class="fas fa-warehouse grp-ico"></i><span class="grp-label">Bagian sapra</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <span class="side-kicker" style="padding-left:2px;">Sarana &amp; Prasarana</span>
-                    <a href="/sapra/sarana-mako"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam</a>
-                    <a href="/sapra/prasarana-mako"><i class="fas fa-building"></i> Prasarana Pemadam</a>
-                    <a href="/sapra/sarana-penyelamatan" class="{{ Request::is('sapra/sarana-penyelamatan*') ? 'active' : '' }}"><i class="fas fa-life-ring"></i> Sarana Penyelamatan</a>
-                    <a href="/sapra/sarana-pemeriksaan" class="{{ Request::is('sapra/sarana-pemeriksaan*') ? 'active' : '' }}"><i class="fas fa-search-location"></i> Pemeriksaan Proteksi</a> 
-                    <a href="/sapra/kelola-pos" class="{{ Request::is('sapra/kelola-pos*') ? 'active' : '' }}"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
+                    <a href="/sapra/sarana-mako" class="{{ Request::is('sapra/sarana-mako*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam</a>
+                    <a href="/sapra/prasarana-mako" class="{{ Request::is('sapra/prasarana-mako*') ? 'active' : '' }}"><i class="fas fa-building"></i> Prasarana Pemadam</a>
+                    <a href="/sapra/sarana-penyelamatan" class="{{ Request::is('sapra/sarana-penyelamatan*') ? 'active' : '' }}">
+                        <i class="fas fa-life-ring"></i> Sarana Penyelamatan
+                    </a>
+                    <a href="/sapra/sarana-pemeriksaan" class="{{ Request::is('sapra/sarana-pemeriksaan*') ? 'active' : '' }}">
+                        <i class="fas fa-search-location"></i> Pemeriksaan Proteksi
+                    </a>
+                    <a href="/sapra/kelola-pos" class="{{ Request::is('sapra/kelola-pos*') ? 'active' : '' }}">
+                        <i class="fas fa-warehouse"></i> Kelola Data Pos
+                    </a>
 
                     <span class="side-kicker" style="padding-left:2px;">Manajemen Air</span>
-                    <a href="/sapra/data_hidrant_gedung" class="{{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}"><i class="fas fa-droplet"></i> Sumber Air</a>
-                    <a href="/sapra/data-hidrant-kota" class="{{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}"><i class="fas fa-map-location-dot"></i> Data Hidrant Kota</a>
+                    <a href="/sapra/data_hidrant_gedung" class="{{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}">
+                        <i class="fas fa-droplet"></i> Sumber Air
+                    </a>
+                    <a href="/sapra/data-hidrant-kota" class="{{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}">
+                        <i class="fas fa-map-location-dot"></i> Data Hidrant Kota
+                    </a>
 
                     <span class="side-kicker" style="padding-left:2px;">Logistik & Distribusi</span>
-                    <a href="/sapra/kebutuhan-sarpras" class="{{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}"><i class="fas fa-boxes-stacked"></i> Mutu Baku Kebutuhan</a>
-                    <a href="/sapra/distribusi-staff" class="{{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}"><i class="fas fa-people-carry-box"></i> Distribusi Barang Staff</a>
+                    <a href="/sapra/kebutuhan-sarpras" class="{{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}">
+                        <i class="fas fa-boxes-stacked"></i> Mutu Baku Kebutuhan
+                    </a>
+                    <a href="/sapra/distribusi-staff" class="{{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}">
+                        <i class="fas fa-people-carry-box"></i> Distribusi Barang Staff
+                    </a>
                 </div>
             </details>
         @endif
@@ -379,9 +408,15 @@
             <details class="side-group" {{ Request::is('internal/operator*') ? 'open' : '' }}>
                 <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen berita</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
-                    <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}"><i class="far fa-newspaper"></i> Input &amp; Kelola Berita</a>
-                    <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}"><i class="far fa-image"></i> Kelola Info Grafis</a>
-                    <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}"><i class="fab fa-instagram"></i> Kelola Berita Medsos</a>
+                    <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
+                        <i class="far fa-newspaper"></i> Input &amp; Kelola Berita
+                    </a>
+                    <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
+                        <i class="far fa-image"></i> Kelola Info Grafis
+                    </a>
+                    <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
+                        <i class="fab fa-instagram"></i> Kelola Berita Medsos
+                    </a>
                 </div>
             </details>
         @endif
@@ -390,10 +425,16 @@
         <details class="side-group" {{ Request::is('internal/profil*') || Request::is('internal/kelola-user*') || Request::is('internal/kelola-pemohon*') ? 'open' : '' }}>
             <summary><i class="fas fa-user-gear grp-ico"></i><span class="grp-label">Pengaturan akun</span><i class="fas fa-chevron-down chev"></i></summary>
             <div class="side-sub">
-                <a href="/internal/profil" class="{{ Request::is('internal/profil*') ? 'active' : '' }}"><i class="fas fa-user-pen"></i> Profil Saya</a>
+                <a href="/internal/profil" class="{{ Request::is('internal/profil*') ? 'active' : '' }}">
+                    <i class="fas fa-user-pen"></i> Profil Saya
+                </a>
                 @if(Auth::user()->role === 'super_user')
-                    <a href="/internal/kelola-user" class="{{ Request::is('internal/kelola-user*') ? 'active' : '' }}"><i class="fas fa-users-gear"></i> Kelola Pengguna</a>
-                    <a href="/internal/kelola-pemohon" class="{{ Request::is('internal/kelola-pemohon*') ? 'active' : '' }}"><i class="fas fa-address-book"></i> Kelola Akun Pemohon</a>
+                    <a href="/internal/kelola-user" class="{{ Request::is('internal/kelola-user*') ? 'active' : '' }}">
+                        <i class="fas fa-users-gear"></i> Kelola Pengguna
+                    </a>
+                    <a href="/internal/kelola-pemohon" class="{{ Request::is('internal/kelola-pemohon*') ? 'active' : '' }}">
+                        <i class="fas fa-address-book"></i> Kelola Akun Pemohon
+                    </a>
                 @endif
             </div>
         </details>
@@ -427,7 +468,6 @@
             </div>
 
             <div class="card-body p-4 p-md-5 pt-4">
-                <!-- PASTIKAN MENGGUNAKAN METHOD POST UNTUK INPUT DATA BARU -->
                 <form action="{{ route('damtan.laporan.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="tab-content" id="formTabsContent">
@@ -453,8 +493,8 @@
                             <div class="highlight-area">
                                 <div class="row g-3">
                                     <div class="col-md-4">
-                                        <label class="field-label"><i class="fas fa-user"></i> Nama Pelapor</label>
-                                        <input type="text" class="form-control" name="nama_pelapor" placeholder="Cth: Bapak Iskandar">
+                                        <label class="field-label"><i class="fas fa-user"></i> Nama Pelapor <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="nama_pelapor" placeholder="Cth: Bapak Iskandar" required>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="field-label"><i class="fas fa-headset"></i> Layanan Pelaporan</label>
@@ -490,7 +530,7 @@
                                 <div class="col-md-6">
                                     <label class="field-label"><i class="fas fa-life-ring"></i> Kategori Laporan (Non-Kebakaran)</label>
                                     <div class="d-flex gap-2">
-                                        <select class="form-select w-50" name="kategori_non_kebakaran">
+                                        <select class="form-select w-50" name="kategori_non_kebakaran" id="kategori_non_kebakaran">
                                             <option selected value="">-- Pilih Jenis Evakuasi --</option>
                                             <option value="fire_rescue">Fire Rescue</option>
                                             <option value="water_rescue">Water Rescue</option>
@@ -500,9 +540,9 @@
                                             <option value="evakuasi_piaraan">Evakuasi Hewan Peliharaan</option>
                                             <option value="evakuasi_cincin">Evakuasi Cincin / Anting</option>
                                             <option value="evakuasi_kendaraan">Evakuasi Kendaraan Bermotor</option>
-                                            <option value="lainnya">Lainnya (Sebutkan...)</option>
+                                            <option value="lainnya">Lainnya</option>
                                         </select>
-                                        <input type="text" class="form-control w-50" name="rincian_kategori_non_kebakaran" placeholder="Detail (Cth: Monyet)...">
+                                        <input type="text" class="form-control w-50" name="rincian_kategori_non_kebakaran" id="rincian_kategori_non_kebakaran" placeholder="Ketik jika 'Lainnya'..." disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-12 mt-3">
@@ -816,7 +856,7 @@
                                 <div class="col-md-6">
                                     <label class="field-label"><i class="fas fa-bolt"></i> Dugaan Penyebab</label>
                                     <div class="d-flex gap-2">
-                                        <select class="form-select w-50" name="dugaan_penyebab">
+                                        <select class="form-select w-50" name="dugaan_penyebab" id="dugaan_penyebab">
                                             <option selected value="">-- Pilih Penyebab --</option>
                                             <option value="arus_pendek">Arus pendek listrik</option>
                                             <option value="kebocoran_gas">Kebocoran gas</option>
@@ -825,82 +865,83 @@
                                             <option value="faktor_alam">Faktor alam</option>
                                             <option value="lainnya">Lainnya</option>
                                         </select>
-                                        <input type="text" class="form-control w-50" name="dugaan_penyebab_lainnya" placeholder="Ketik jika 'Lainnya'...">
+                                        <input type="text" class="form-control w-50" name="dugaan_penyebab_lainnya" id="dugaan_penyebab_lainnya" placeholder="Ketik jika 'Lainnya'..." disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="field-label"><i class="fas fa-fire-alt"></i> Sumber Api / Titik Awal</label>
                                     <input type="text" name="sumber_api" class="form-control" placeholder="Contoh: Dapur, Panel Listrik utama...">
                                 </div>
-                                <div class="col-md-6 mt-3">
+                            </div>
+
+                            <div class="row g-4 mb-4 border-bottom pb-4">
+                                <div class="col-md-12">
                                     <label class="field-label"><i class="fas fa-ruler-combined"></i> Luas Area Terdampak</label>
-                                    <div class="input-group">
+                                    <div class="input-group" style="width: 50%;">
                                         <input type="number" min="0" step="0.1" name="luas_area" class="form-control" placeholder="0">
                                         <span class="input-group-text">m²</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="section-title-block mt-5">
-                                <i class="fas fa-handshake"></i> Kerjasama Lintas Sektoral
-                            </div>
-
-                            <div class="row g-3 mb-4">
+                            <h6 class="fw-bold mb-3 mt-5 border-bottom pb-2" style="color: var(--steel);">Kerjasama Lintas Sektoral & Evaluasi</h6>
+                            <div class="row g-4 mb-4">
                                 <div class="col-md-12">
-                                    <label class="field-label w-100 mb-2"><i class="fas fa-building"></i> Instansi Pendukung di Lokasi</label>
-                                    <div>
-                                        <div class="form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="inst_pln" name="instansi_pendukung[]" value="pln">
-                                            <label class="form-check-label" for="inst_pln">PLN</label>
-                                        </div>
-                                        <div class="form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="inst_polisi" name="instansi_pendukung[]" value="polisi">
-                                            <label class="form-check-label" for="inst_polisi">Polisi</label>
-                                        </div>
-                                        <div class="form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="inst_tni" name="instansi_pendukung[]" value="tni">
-                                            <label class="form-check-label" for="inst_tni">TNI</label>
-                                        </div>
-                                        <div class="form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="inst_pmi" name="instansi_pendukung[]" value="pmi">
-                                            <label class="form-check-label" for="inst_pmi">BPBD</label>
-                                        </div>
-                                        <div class="form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="inst_relawan" name="instansi_pendukung[]" value="relawan_lokal">
-                                            <label class="form-check-label" for="inst_relawan">Relawan Lokal</label>
-                                        </div>
+                                    <label class="field-label w-100"><i class="fas fa-building"></i> Instansi Pendukung di Lokasi</label>
+                                    <div class="form-check form-check-inline mt-1">
+                                        <input class="form-check-input" type="checkbox" id="inst_pln" name="instansi_pendukung[]" value="pln">
+                                        <label class="form-check-label" for="inst_pln">PLN</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mt-1">
+                                        <input class="form-check-input" type="checkbox" id="inst_polisi" name="instansi_pendukung[]" value="polisi">
+                                        <label class="form-check-label" for="inst_polisi">Polisi</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mt-1">
+                                        <input class="form-check-input" type="checkbox" id="inst_tni" name="instansi_pendukung[]" value="tni">
+                                        <label class="form-check-label" for="inst_tni">TNI</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mt-1">
+                                        <input class="form-check-input" type="checkbox" id="inst_pmi" name="instansi_pendukung[]" value="pmi">
+                                        <label class="form-check-label" for="inst_pmi">BPBD</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mt-1">
+                                        <input class="form-check-input" type="checkbox" id="inst_relawan" name="instansi_pendukung[]" value="relawan_lokal">
+                                        <label class="form-check-label" for="inst_relawan">Relawan Lokal</label>
                                     </div>
                                 </div>
-                                <div class="col-md-8 mt-3">
+                            </div>
+                            <div class="row g-4 mb-4">
+                                <div class="col-md-8">
                                     <label class="field-label"><i class="fas fa-tasks"></i> Tindakan Instansi Samping</label>
                                     <textarea class="form-control" name="tindakan_instansi" rows="2" placeholder="Contoh: PLN melakukan pemutusan arus..."></textarea>
                                 </div>
-                                <div class="col-md-4 mt-3">
+                                <div class="col-md-4">
                                     <label class="field-label"><i class="fas fa-phone-alt"></i> No. Kontak Saksi/Warga</label>
                                     <input type="text" name="kontak_saksi" class="form-control" placeholder="08xx-xxxx-xxxx">
                                 </div>
                             </div>
                             
-                            <div class="highlight-area">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="field-label"><i class="fas fa-plus-circle"></i> Kebutuhan Tambahan</label>
-                                        <textarea class="form-control" name="kebutuhan_tambahan" rows="2" placeholder="Dibutuhkan drone thermal..."></textarea>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="field-label"><i class="fas fa-lightbulb"></i> Saran Mitigasi Warga</label>
-                                        <textarea class="form-control" name="saran_mitigasi" rows="2" placeholder="Sosialisasi APAR..."></textarea>
-                                    </div>
+                            <div class="row g-4 mb-4 border-bottom pb-4">
+                                <div class="col-md-6">
+                                    <label class="field-label"><i class="fas fa-plus-circle"></i> Kebutuhan Tambahan</label>
+                                    <textarea class="form-control" name="kebutuhan_tambahan" rows="2" placeholder="Dibutuhkan drone thermal..."></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="field-label"><i class="fas fa-lightbulb"></i> Saran Mitigasi Warga</label>
+                                    <textarea class="form-control" name="saran_mitigasi" rows="2" placeholder="Sosialisasi APAR..."></textarea>
                                 </div>
                             </div>
                             
-                            <div class="row g-3 mb-4">
+                            <div class="row g-4 mb-4">
                                 <div class="col-md-12">
                                     <label class="field-label"><i class="fas fa-hands-helping"></i> Cara Bertindak</label>
-                                    <select class="form-select" name="cara_bertindak">
-                                        <option selected value="5T">5 T (Terencana, Terukur, Terarah, Terlayani & Tuntas)</option>
-                                        <option value="lainnya">Lainnya...</option>
-                                    </select>
+                                    <div class="d-flex gap-2">
+                                        <select class="form-select w-50" name="cara_bertindak" id="cara_bertindak">
+                                            <option selected value="5T">5 T (Terencana, Terukur, Terarah, Terlayani & Tuntas)</option>
+                                            <option value="lainnya">Lainnya...</option>
+                                        </select>
+                                        <input type="text" class="form-control w-50" name="cara_bertindak_lainnya" id="cara_bertindak_lainnya" placeholder="Ketik jika 'Lainnya'..." disabled>
+                                    </div>
                                 </div>
                             </div>
 
@@ -936,17 +977,21 @@
                             <div class="highlight-area pb-4">
                                 <h6 class="fw-bold mb-3" style="color: var(--navy); font-family: var(--font-display);"><i class="fas fa-paw me-2"></i>Animal Rescue</h6>
                                 <div class="row g-3">
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <label class="field-label">Jenis Hewan</label>
-                                        <select class="form-select" name="jenis_hewan">
-                                            <option selected value="">-- Pilih --</option>
-                                            <option value="ular">Ular</option>
-                                            <option value="tawon">Tawon/Vespa</option>
-                                            <option value="kera">Kera</option>
-                                            <option value="biawak">Biawak</option>
-                                        </select>
+                                        <div class="d-flex gap-2">
+                                            <select class="form-select w-50" name="jenis_hewan" id="jenis_hewan">
+                                                <option selected value="">-- Pilih --</option>
+                                                <option value="ular">Ular</option>
+                                                <option value="tawon">Tawon/Vespa</option>
+                                                <option value="kera">Kera</option>
+                                                <option value="biawak">Biawak</option>
+                                                <option value="lainnya">Lainnya</option>
+                                            </select>
+                                            <input type="text" class="form-control w-50" name="jenis_hewan_lainnya" id="jenis_hewan_lainnya" placeholder="Ketik jika 'Lainnya'..." disabled>
+                                        </div>
                                     </div>
-                                    <div class="col-md-8">
+                                    <div class="col-md-6">
                                         <label class="field-label"><i class="fas fa-tag"></i> Spesies/Lokal</label>
                                         <input type="text" name="spesies_hewan" class="form-control" placeholder="Cth: King Cobra">
                                     </div>
@@ -1224,6 +1269,62 @@
         let modalInstance = bootstrap.Modal.getInstance(myModalEl);
         if(modalInstance) modalInstance.hide();
     }
+
+    /* ---------- LOGIKA INPUT LAINNYA ---------- */
+    function setupLainnyaLogic(selectId, inputId) {
+        const selectEl = document.getElementById(selectId);
+        const inputEl = document.getElementById(inputId);
+        
+        if(selectEl && inputEl) {
+            // Cek status saat pertama kali load
+            inputEl.disabled = selectEl.value !== 'lainnya';
+            
+            // Cek saat dropdown berubah
+            selectEl.addEventListener('change', function() {
+                if(this.value === 'lainnya') {
+                    inputEl.disabled = false;
+                    inputEl.required = true;
+                    inputEl.focus();
+                } else {
+                    inputEl.disabled = true;
+                    inputEl.value = ''; 
+                    inputEl.required = false;
+                }
+            });
+        }
+    }
+
+    setupLainnyaLogic('kategori_non_kebakaran', 'rincian_kategori_non_kebakaran');
+    setupLainnyaLogic('dugaan_penyebab', 'dugaan_penyebab_lainnya');
+    setupLainnyaLogic('cara_bertindak', 'cara_bertindak_lainnya');
+    setupLainnyaLogic('jenis_hewan', 'jenis_hewan_lainnya');
+
+    /* ---------- AUTO-ARAHKAN KE TAB & KOLOM YANG KOSONG ---------- */
+    document.addEventListener('invalid', function (e) {
+        let invalidField = e.target;
+        
+        // Pastikan yang error adalah input di dalam form
+        if(invalidField.tagName === 'INPUT' || invalidField.tagName === 'SELECT' || invalidField.tagName === 'TEXTAREA') {
+            e.preventDefault(); // Cegah error diam-diam dari browser
+            
+            let tabPane = invalidField.closest('.tab-pane');
+            if (tabPane && !tabPane.classList.contains('active')) {
+                let tabId = tabPane.getAttribute('id');
+                let tabButton = document.querySelector('[data-bs-target="#' + tabId + '"]');
+                if (tabButton) {
+                    let tab = new bootstrap.Tab(tabButton);
+                    tab.show(); // Pindah otomatis ke tab yang ada errornya
+                }
+            }
+            
+            // Tunggu animasi tab selesai, lalu sorot inputnya
+            setTimeout(function() {
+                invalidField.focus();
+                invalidField.reportValidity(); // Munculkan pesan peringatan
+            }, 250);
+        }
+    }, true); // parameter `true` penting untuk menangkap event `invalid`
+
 })();
 </script>
 </body>
