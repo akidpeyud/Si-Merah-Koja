@@ -594,7 +594,7 @@ Route::middleware(['auth'])->group(function () {
     // Rute Fire Drill
     Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill', [App\Http\Controllers\PencegahanController::class, 'indexFireDrill']);
     Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/tambah', [App\Http\Controllers\PencegahanController::class, 'createFireDrill']);
-    
+    Route::get('/internal/pencegahan/fire-drill/export/pdf', [FireDrillController::class, 'cetakPdf']);
     // Layanan Inspeksi
     Route::get('/internal/pencegahan/layanan-inspeksi', function () { 
         return view('internal.pencegahan.layanan_inspeksi', [
