@@ -542,8 +542,13 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
-                        <i class="fas fa-user-tie"></i> Data Urut Kepegawaian
-                    </a>
+            <i class="fas fa-user-tie"></i> Data Urut Kepegawaian
+        </a>
+        
+        <!-- Tambahan Tombol Program Kerja -->
+        <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
+            <i class="fas fa-file-contract"></i> Program Kerja
+        </a>
                 </div>
             </details>
 
@@ -596,6 +601,13 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     </a>
                     <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
                         <i class="fab fa-instagram"></i> Kelola Berita Medsos
+                    </a>
+                     </a>
+                    <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
+    <i class="fab fa-youtube"></i> Ujung-Ujung Damkar
+</a>
+<a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
+                        <i class="fas fa-graduation-cap"></i> Edu Damkar
                     </a>
                 </div>
             </details>
