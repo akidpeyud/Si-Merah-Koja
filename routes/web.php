@@ -174,6 +174,18 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/internal/operator/berita-medsos/update/{id}', [OperatorMedsosController::class, 'updateMedsos']);
     Route::delete('/internal/operator/berita-medsos/hapus/{id}', [OperatorMedsosController::class, 'destroyMedsos']);
 
+    // TAMBAHAN BARU: UJUNG-UJUNG DAMKAR
+    Route::get('/internal/operator/ujung-damkar', [OperatorMedsosController::class, 'indexUjungDamkar'])->name('ujung-damkar.index');
+    Route::post('/internal/operator/ujung-damkar/store', [OperatorMedsosController::class, 'storeUjungDamkar'])->name('ujung-damkar.store');
+    Route::put('/internal/operator/ujung-damkar/update/{id}', [OperatorMedsosController::class, 'updateUjungDamkar'])->name('ujung-damkar.update');
+    Route::delete('/internal/operator/ujung-damkar/hapus/{id}', [OperatorMedsosController::class, 'destroyUjungDamkar'])->name('ujung-damkar.destroy');
+
+    // TAMBAHAN BARU: EDU DAMKAR
+    Route::get('/internal/operator/edu-damkar', [OperatorMedsosController::class, 'indexEduDamkar'])->name('edu-damkar.index');
+    Route::post('/internal/operator/edu-damkar/store', [OperatorMedsosController::class, 'storeEduDamkar'])->name('edu-damkar.store');
+    Route::put('/internal/operator/edu-damkar/update/{id}', [OperatorMedsosController::class, 'updateEduDamkar'])->name('edu-damkar.update');
+    Route::delete('/internal/operator/edu-damkar/hapus/{id}', [OperatorMedsosController::class, 'destroyEduDamkar'])->name('edu-damkar.destroy');
+
     // --- C. DAMTAN (PEMADAMAN & PENYELAMATAN) ---
     Route::get('/internal/damtan/input-data', [DamtanController::class, 'createPenyelamatan'])->name('damtan.laporan.create');
     Route::post('/internal/damtan/input-data/store', [DamtanController::class, 'storePenyelamatan'])->name('damtan.laporan.store');
