@@ -407,7 +407,14 @@
                 <i class="fas fa-chevron-down chev"></i>
             </summary>
             <div class="side-sub">
-                <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}"><i class="fas fa-user-tie"></i> Data Urut Kepegawaian</a>
+                <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
+            <i class="fas fa-user-tie"></i> Data Urut Kepegawaian
+        </a>
+        
+        <!-- Tambahan Tombol Program Kerja -->
+        <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
+            <i class="fas fa-file-contract"></i> Program Kerja
+        </a> 
             </div>
         </details>
 
@@ -437,7 +444,37 @@
             </details>
         @endif
 
+
         <div class="side-divider"></div>
+ @if(in_array(Auth::user()->role, ['operator', 'super_user']))
+            <div class="side-divider"></div>
+            <div class="side-kicker">KONTEN PUBLIK</div>
+            <details class="side-group" {{ Request::is('internal/operator*') || Request::is('media-informasi*') ? 'open' : '' }}>
+                <summary>
+                    <i class="far fa-newspaper grp-ico"></i>
+                    <span class="grp-label">MANAJEMEN BERITA</span>
+                    <i class="fas fa-chevron-down chev"></i>
+                </summary>
+                <div class="side-sub">
+                   <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
+                        <i class="far fa-newspaper"></i> Input &amp; Kelola Berita
+                    </a>
+                    <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
+                        <i class="far fa-image"></i> Kelola Info Grafis
+                    </a>
+                    <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
+                        <i class="fab fa-instagram"></i> Kelola Berita Medsos
+                    </a>
+                    <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
+                        <i class="fab fa-youtube"></i> Ujung-Ujung Damkar
+                    </a>
+                    <a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
+                                            <i class="fas fa-graduation-cap"></i> Edu Damkar
+                    </a>
+
+                </div>
+            </details>
+        @endif
 
         <!-- KICKER AKUN -->
         <div class="side-kicker">AKUN</div>
