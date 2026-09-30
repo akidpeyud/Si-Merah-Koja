@@ -4,13 +4,42 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use App\Models\InspeksiBangunan;
+use App\Models\FireDrill;
+use App\Models\PelatihanKeluarga;
 
 class PublicController extends Controller
 {
-    // --- 1. FUNGSI BARU UNTUK HALAMAN LANDING UMUM ---
+    // --- 1. HALAMAN LANDING INFORMASI LAYANAN (dengan total data Bagian pencegahan) ---
     public function indexLayanan()
     {
-        return view('informasi_layanan.index_layanan'); 
+        // Hitung total dari tabel mentah. Kalau tabel belum ada, hasilnya 0 (tidak error).
+        $hitung = function ($tabel) {
+            return Schema::hasTable($tabel) ? DB::table($tabel)->count() : 0;
+        };
+
+        $stat = [
+            // Peningkatan Kapasitas Aparatur (tabel sama dengan PencegahanController)
+            'diksar'    => $hitung('tbl_diksar'),
+            'f1'        => $hitung('tbl_diklat_f1'),
+            'f2'        => $hitung('tbl_diklat_f2'),
+            'rescue'    => $hitung('tbl_diklat_rescue'),
+            'mfr'       => $hitung('tbl_diklat_mfr'),
+            'operator'  => $hitung('tbl_diklat_operator'),
+            'inspektur' => $hitung('tbl_diklat_inspektur'),
+            'ppl'       => $hitung('tbl_diklat_ppl'),
+
+            // Pencegahan Kebakaran & Inspeksi (pakai Model, sama seperti controller internal)
+            'inspeksi'   => InspeksiBangunan::count(),
+            'fire_drill' => FireDrill::count(),
+
+            // Pemberdayaan Masyarakat
+            'pelatihan'   => PelatihanKeluarga::count(),
+            'sosialisasi' => $hitung('sosialisasi_edukasi'),
+        ];
+
+        return view('informasi_layanan.index_layanan', compact('stat'));
     }
 
     // --- 2. NAMA FUNGSI DIUBAH JADI informasiSarana ---
@@ -28,7 +57,7 @@ class PublicController extends Controller
     public function informasiPrasarana()
     {
         $posPemadam = DB::table('pos_pemadam')->orderBy('id_pos', 'asc')->get();
-        $dataPrasarana = DB::table('prasarana')->orderBy('id_prasarana', 'asc')->get(); 
+        $dataPrasarana = DB::table('prasarana')->orderBy('id_prasarana', 'asc')->get();
 
         return view('informasi_layanan.informasi_prasarana', compact('posPemadam', 'dataPrasarana'));
     }
@@ -37,7 +66,7 @@ class PublicController extends Controller
     public function informasiPenyelamatan()
     {
         $posPemadam = DB::table('pos_pemadam')->orderBy('id_pos', 'asc')->get();
-        $dataPenyelamatan = DB::table('sarana_penyelamatan')->get(); 
+        $dataPenyelamatan = DB::table('sarana_penyelamatan')->get();
 
         return view('informasi_layanan.informasi_penyelamatan', compact('posPemadam', 'dataPenyelamatan'));
     }
@@ -46,7 +75,7 @@ class PublicController extends Controller
     public function informasiPemeriksaan()
     {
         $posPemadam = DB::table('pos_pemadam')->orderBy('id_pos', 'asc')->get();
-        $dataPemeriksaan = DB::table('sarana_pemeriksaan')->get(); 
+        $dataPemeriksaan = DB::table('sarana_pemeriksaan')->get();
 
         return view('informasi_layanan.informasi_pemeriksaan', compact('posPemadam', 'dataPemeriksaan'));
     }

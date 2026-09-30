@@ -3,16 +3,19 @@
 
     /* ------------------------------------------------------------
        PENGATURAN HALAMAN
-       Struktur kategori publikasi. Setiap kategori berisi daftar sub-menu
-       (label, url, ikon). Kategori tanpa 'items' tampil sebagai baris nonaktif
-       (belum ada konten) dan tidak bisa dibuka.
-       Dari controller kirim $kategori_aktif = 'slug-halaman-ini-milik-kategori-mana'
-       agar sidebar otomatis terbuka dan menyorot menu yang sedang dilihat.
+       Struktur kategori publikasi. Setiap kategori berisi daftar sub-menu.
+       - Item dengan 'url'   : link biasa ke halaman lain.
+       - Item dengan 'panel' : membuka panel data di sisi kanan (tanpa pindah halaman).
+       Kategori tanpa 'items' tampil sebagai baris nonaktif (segera hadir).
        ------------------------------------------------------------ */
-   $kategori = [
+    $kategori = [
         'pencegahan' => [
             'label' => 'Bagian pencegahan',
-            'items' => [],
+            'items' => [
+                ['panel' => 'kapasitas',    'label' => 'Peningkatan Kapasitas Aparatur',  'ico' => 'fa-arrow-trend-up'],
+                ['panel' => 'inspeksi',     'label' => 'Pencegahan Kebakaran & Inspeksi', 'ico' => 'fa-magnifying-glass-chart'],
+                ['panel' => 'pemberdayaan', 'label' => 'Pemberdayaan Masyarakat',         'ico' => 'fa-handshake-angle'],
+            ],
         ],
         'pemadaman' => [
             'label' => 'Bagian pemadaman',
@@ -29,8 +32,79 @@
                 ['url' => '/hidrant-kota',           'label' => 'Data Hidrant Kota Jambi', 'ico' => 'fa-map-location-dot'],
             ],
         ],
-    ];$kategori_aktif = $kategori_aktif ?? null; // Otomatis ngebuka menu Sapra
+    ];
+    $kategori_aktif = $kategori_aktif ?? null; // Otomatis ngebuka menu Sapra
     $halaman_aktif  = $halaman_aktif ?? null;  // contoh: '/publik/sapra/sarana-pemadam'
+
+    // Angka total dikirim dari controller, contoh:
+    // ['diksar' => 12, 'f1' => 5, 'f2' => 3, 'rescue' => 0, 'mfr' => 0, 'operator' => 0,
+    //  'inspektur' => 0, 'ppl' => 0, 'inspeksi' => 4, 'fire_drill' => 2, 'pelatihan' => 7, 'sosialisasi' => 9]
+    // Kalau tidak dikirim, semua tampil 0.
+    $stat = $stat ?? [];
+
+    // Otomatis ambil total dari variabel yang sama dengan halaman internal
+    // (Peningkatan Kapasitas Aparatur): $dataDiksar, $dataF1, $dataF2, dst.
+    // Bisa berupa array, Collection, atau Paginator.
+    $hitung = function ($d) {
+        if ($d === null) return 0;
+        if (is_object($d) && method_exists($d, 'total')) return $d->total();
+        return count($d);
+    };
+    $sumber = [
+        'diksar'    => $dataDiksar    ?? null,
+        'f1'        => $dataF1        ?? null,
+        'f2'        => $dataF2        ?? null,
+        'rescue'    => $dataRescue    ?? null,
+        'mfr'       => $dataMfr       ?? null,
+        'operator'  => $dataOperator  ?? null,
+        'inspektur' => $dataInspektur ?? null,
+        'ppl'       => $dataPpl       ?? null,
+        // Isi setelah variabel halaman internalnya diketahui:
+        // 'inspeksi'    => $dataInspeksi    ?? null,
+        // 'fire_drill'  => $dataFireDrill   ?? null,
+        // 'pelatihan'   => $dataPelatihan   ?? null,
+        // 'sosialisasi' => $dataSosialisasi ?? null,
+    ];
+    foreach ($sumber as $k => $d) {
+        if (!isset($stat[$k]) && $d !== null) $stat[$k] = $hitung($d);
+    }
+
+    // Panel data (Bagian pencegahan). Format kartu: 'key' => [label, ikon]
+    $panels = [
+        'kapasitas' => [
+            'title' => 'Peningkatan Kapasitas Aparatur',
+            'desc'  => 'Data pendidikan dan pelatihan aparatur pemadam kebakaran.',
+            'ico'   => 'fa-arrow-trend-up',
+            'cards' => [
+                'diksar'    => ['Data DIKSAR',      'fa-user-graduate'],
+                'f1'        => ['Data DIKLAT F1',   'fa-fire-extinguisher'],
+                'f2'        => ['Data DIKLAT F2',   'fa-fire'],
+                'rescue'    => ['DIKLAT Rescue',    'fa-life-ring'],
+                'mfr'       => ['DIKLAT MFR',       'fa-truck-medical'],
+                'operator'  => ['DIKLAT Operator',  'fa-truck'],
+                'inspektur' => ['DIKLAT Inspektur', 'fa-magnifying-glass'],
+                'ppl'       => ['DIKLAT PPL',       'fa-chalkboard-user'],
+            ],
+        ],
+        'inspeksi' => [
+            'title' => 'Pencegahan Kebakaran & Inspeksi',
+            'desc'  => 'Data inspeksi bangunan gedung, lingkungan, dan pelaksanaan fire drill.',
+            'ico'   => 'fa-magnifying-glass-chart',
+            'cards' => [
+                'inspeksi'   => ['Inspeksi bangunan gedung', 'fa-building'],
+                'fire_drill' => ['Fire drill',               'fa-fire'],
+            ],
+        ],
+        'pemberdayaan' => [
+            'title' => 'Pemberdayaan Masyarakat',
+            'desc'  => 'Data sosialisasi, edukasi, dan pelatihan tanggap kebakaran.',
+            'ico'   => 'fa-handshake-angle',
+            'cards' => [
+                'pelatihan'   => ['Pelatihan keluarga',    'fa-house'],
+                'sosialisasi' => ['Sosialisasi & edukasi', 'fa-users'],
+            ],
+        ],
+    ];
 
     // Menu Program kerja (dipakai oleh dropdown di header)
     $tabs = [
@@ -206,8 +280,6 @@
         .rise.d1 { animation-delay: .08s; } .rise.d2 { animation-delay: .18s; } .rise.d3 { animation-delay: .3s; }
         @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 
-        
-
         /* ==========================================================
            LAYOUT UTAMA
            ========================================================== */
@@ -234,14 +306,15 @@
         .cat-sub { list-style: none; overflow: hidden; max-height: 0; transition: max-height .3s ease; }
         .cat[data-open] .cat-sub { max-height: 400px; }
         .cat-sub li { padding: 2px 4px 8px; }
-        .cat-sub a { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 12px; font-size: .9rem; font-weight: 600; color: var(--steel); transition: background .2s, color .2s; }
-        .cat-sub a:hover { background: var(--paper); color: var(--ink); }
-        .cat-sub a i { width: 20px; text-align: center; color: #b8c3d0; font-size: .95rem; }
-        .cat-sub a[aria-current="page"] { background: var(--signal); color: #fff; box-shadow: 0 10px 20px -8px rgba(229,57,45,.6); }
-        .cat-sub a[aria-current="page"] i { color: #fff; }
+        .cat-sub a, .cat-sub button { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 11px 14px; border-radius: 12px; font-size: .9rem; font-weight: 600; color: var(--steel); transition: background .2s, color .2s; }
+        .cat-sub a:hover, .cat-sub button:hover { background: var(--paper); color: var(--ink); }
+        .cat-sub a i, .cat-sub button i { width: 20px; text-align: center; color: #b8c3d0; font-size: .95rem; flex: none; }
+        .cat-sub a[aria-current="page"], .cat-sub button[aria-current="true"] { background: var(--signal); color: #fff; box-shadow: 0 10px 20px -8px rgba(229,57,45,.6); }
+        .cat-sub a[aria-current="page"] i, .cat-sub button[aria-current="true"] i { color: #fff; }
 
-        /* --- Panel konten kanan --- */
+        /* --- Panel konten kanan: landing --- */
         .welcome { position: relative; overflow: hidden; background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); min-height: 100%; padding: clamp(48px, 8vw, 96px) clamp(24px, 5vw, 56px); text-align: center; display: grid; place-items: center; }
+        .welcome[hidden] { display: none; }
         .welcome::before { content: ""; position: absolute; inset: 0; background: radial-gradient(60% 50% at 50% 0%, rgba(229,57,45,.06), transparent 70%); pointer-events: none; }
         .welcome-inner { position: relative; max-width: 46ch; display: grid; gap: 18px; justify-items: center; }
         .welcome-logo { width: 88px; height: 88px; border-radius: 22px; background: #fff; border: 1px solid var(--line); box-shadow: 0 10px 24px -12px rgba(13,27,42,.35); display: grid; place-items: center; margin-bottom: 4px; padding: 14px; }
@@ -251,6 +324,40 @@
         .welcome .cue { display: inline-flex; align-items: center; gap: 10px; padding: 12px 22px; border-radius: 999px; background: #fdeceb; color: var(--signal-d); font-weight: 700; font-size: .95rem; }
         .welcome .cue i { animation: nudge 1.6s ease-in-out infinite; }
         @keyframes nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-5px); } }
+
+        /* --- Panel konten kanan: data Bagian pencegahan --- */
+        .data-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
+        .data-panel[hidden] { display: none; animation: none; }
+        .data-panel { animation: rise .5s cubic-bezier(.16,.84,.3,1) both; }
+
+        .dp-head { position: relative; isolation: isolate; display: flex; align-items: center; gap: 18px; padding: clamp(22px, 3.5vw, 34px); color: #fff; background: var(--ink); }
+        .dp-head::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(70% 140% at 0% 100%, rgba(229,57,45,.45), transparent 70%), linear-gradient(100deg, var(--ink) 0%, var(--ink-3) 100%); }
+        .dp-head-ico { flex: none; width: 56px; height: 56px; border-radius: 16px; display: grid; place-items: center; font-size: 1.35rem; background: var(--signal); box-shadow: 0 12px 24px -8px rgba(229,57,45,.7); }
+        .dp-head-txt { flex: 1; min-width: 0; }
+        .dp-head h2 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.3rem, 2.6vw, 1.75rem); line-height: 1.15; letter-spacing: -0.015em; }
+        .dp-head p { margin-top: 4px; font-size: .92rem; color: rgba(255,255,255,.72); }
+        .dp-total { flex: none; text-align: right; padding: 10px 18px; border-radius: 16px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.14); }
+        .dp-total span { display: block; font-size: .7rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.65); }
+        .dp-total strong { font-family: var(--font-display); font-size: 1.8rem; line-height: 1.1; }
+        @media (max-width: 640px) {
+            .dp-head { flex-wrap: wrap; }
+            .dp-total { width: 100%; text-align: left; display: flex; align-items: baseline; justify-content: space-between; }
+        }
+
+        .dp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px; padding: clamp(18px, 3vw, 30px); background: var(--paper); }
+        .dp-card { --c: #e5392d; --t: #fdeceb; position: relative; overflow: hidden; display: grid; gap: 4px; align-content: start; padding: 22px; background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); transition: transform .25s, box-shadow .25s, border-color .25s; }
+        .dp-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--c); opacity: .9; }
+        .dp-card:hover { transform: translateY(-4px); border-color: var(--c); box-shadow: 0 18px 30px -18px rgba(13,27,42,.35); }
+        .dp-card:nth-child(6n+2) { --c: #f59e0b; --t: #fef3d6; }
+        .dp-card:nth-child(6n+3) { --c: #2563eb; --t: #e3ecfd; }
+        .dp-card:nth-child(6n+4) { --c: #0d9488; --t: #d9f3f0; }
+        .dp-card:nth-child(6n+5) { --c: #7c3aed; --t: #ece4fd; }
+        .dp-card:nth-child(6n+6) { --c: #db2777; --t: #fbe3ee; }
+        .dp-ico { width: 46px; height: 46px; border-radius: 14px; background: var(--t); color: var(--c); display: grid; place-items: center; font-size: 1.1rem; margin-bottom: 12px; }
+        .dp-label { font-size: .8rem; font-weight: 600; color: var(--steel); }
+        .dp-num { font-family: var(--font-display); font-weight: 800; font-stretch: 88%; font-size: 2.4rem; line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); }
+        .dp-bg { position: absolute; right: -10px; bottom: -14px; font-size: 5.5rem; color: var(--c); opacity: .07; pointer-events: none; transform: rotate(-12deg); transition: transform .3s, opacity .3s; }
+        .dp-card:hover .dp-bg { opacity: .13; transform: rotate(-4deg) scale(1.08); }
 
         /* ==========================================================
            FOOTER
@@ -339,9 +446,9 @@
                     <?php endforeach; ?>
                 </ul>
             </li>
-            
+
             <!-- MENU BAGIAN SAPRA DIHEADER PUBLIK -->
-           
+
             <!-- AKHIR MENU BAGIAN SAPRA DIHEADER PUBLIK -->
 
             <li class="has-drop">
@@ -423,9 +530,15 @@
                         <ul class="cat-sub">
                             <?php foreach ($kat['items'] as $item): ?>
                                 <li>
-                                    <a href="<?= $h($item['url']) ?>" <?php if ($halaman_aktif === $item['url']): ?> aria-current="page" <?php endif; ?>>
-                                        <i class="fas <?= $h($item['ico']) ?>"></i> <?= $h($item['label']) ?>
-                                    </a>
+                                    <?php if (!empty($item['panel'])): ?>
+                                        <button type="button" data-panel="<?= $h($item['panel']) ?>">
+                                            <i class="fas <?= $h($item['ico']) ?>"></i> <?= $h($item['label']) ?>
+                                        </button>
+                                    <?php else: ?>
+                                        <a href="<?= $h($item['url']) ?>" <?php if ($halaman_aktif === $item['url']): ?> aria-current="page" <?php endif; ?>>
+                                            <i class="fas <?= $h($item['ico']) ?>"></i> <?= $h($item['label']) ?>
+                                        </a>
+                                    <?php endif; ?>
                                 </li>
                             <?php endforeach; ?>
                         </ul>
@@ -448,6 +561,37 @@
                     <span class="cue"><i class="fas fa-arrow-left"></i> Pilih kategori di sebelah kiri untuk memulai</span>
                 </div>
             </section>
+
+            <!-- Panel data Bagian pencegahan (muncul saat bidang diklik) -->
+            <?php foreach ($panels as $pk => $p):
+                $total = 0;
+                foreach ($p['cards'] as $key => $c) { $total += (int) ($stat[$key] ?? 0); }
+            ?>
+            <section class="data-panel" id="panel-<?= $h($pk) ?>" hidden>
+                <header class="dp-head">
+                    <span class="dp-head-ico"><i class="fas <?= $h($p['ico']) ?>"></i></span>
+                    <div class="dp-head-txt">
+                        <h2><?= $h($p['title']) ?></h2>
+                        <p><?= $h($p['desc']) ?></p>
+                    </div>
+                    <div class="dp-total">
+                        <span>Total data</span>
+                        <strong><?= $h(number_format($total, 0, ',', '.')) ?></strong>
+                    </div>
+                </header>
+
+                <div class="dp-grid">
+                    <?php foreach ($p['cards'] as $key => $c): ?>
+                        <article class="dp-card">
+                            <span class="dp-ico"><i class="fas <?= $h($c[1]) ?>"></i></span>
+                            <span class="dp-label"><?= $h($c[0]) ?></span>
+                            <strong class="dp-num"><?= $h(number_format($stat[$key] ?? 0, 0, ',', '.')) ?></strong>
+                            <i class="fas <?= $h($c[1]) ?> dp-bg" aria-hidden="true"></i>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+            </section>
+            <?php endforeach; ?>
 
         </div>
     </div>
@@ -591,6 +735,24 @@
             var nowOpen = !cat.hasAttribute('data-open');
             document.querySelectorAll('.cat[data-open]').forEach(function (c) { c.removeAttribute('data-open'); c.querySelector('.cat-btn').setAttribute('aria-expanded', 'false'); });
             if (nowOpen) { cat.setAttribute('data-open', ''); btn.setAttribute('aria-expanded', 'true'); }
+        });
+    });
+
+    /* ---------- Panel data Bagian pencegahan ---------- */
+    var welcome = document.querySelector('.welcome');
+    var panelBtns = document.querySelectorAll('[data-panel]');
+    var panelEls = document.querySelectorAll('.data-panel');
+
+    panelBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            panelBtns.forEach(function (b) { b.removeAttribute('aria-current'); });
+            btn.setAttribute('aria-current', 'true');
+            welcome.hidden = true;
+            panelEls.forEach(function (p) { p.hidden = true; });
+
+            var panel = document.getElementById('panel-' + btn.dataset.panel);
+            panel.hidden = false;
+            if (window.innerWidth <= 900) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
     });
 })();
