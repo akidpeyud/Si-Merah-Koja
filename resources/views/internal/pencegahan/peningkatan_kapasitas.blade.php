@@ -448,8 +448,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 <p>Kelola data diklat dan peningkatan kapasitas aparatur pemadam kebakaran.</p>
             </div>
 
-            <a href="/internal/pencegahan/peningkatan-kapasitas/tambah" class="btn-navy">
-                <i class="fas fa-plus"></i> Tambah Data
+            <a href="/internal/pencegahan/peningkatan-kapasitas/tambah"
+                
             </a>
         </div>
 

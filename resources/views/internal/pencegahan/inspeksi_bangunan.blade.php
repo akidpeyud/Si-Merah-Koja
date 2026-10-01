@@ -445,11 +445,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
                         <i class="fab fa-instagram"></i> Kelola Berita Medsos
                     </a>
-                     </a>
                     <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
-    <i class="fab fa-youtube"></i> Ujung-Ujung Damkar
-</a>
-<a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
+                        <i class="fab fa-youtube"></i> Ujung-Ujung Damkar
+                    </a>
+                    <a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
                         <i class="fas fa-graduation-cap"></i> Edu Damkar
                     </a>
                 </div>
@@ -487,22 +486,28 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 <h1>Pencegahan Kebakaran &amp; Inspeksi</h1>
                 <p>Kelola data inspeksi bangunan gedung, lingkungan, dan pelaksanaan fire drill.</p>
             </div>
+{{-- Toolbar disembunyikan di tab Semua Data --}}
+@unless(Request::is('internal/pencegahan/inspeksi-kebakaran'))
+<div class="toolbar">
+    <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Cari nama tempat...">
+    </div>
 
-            <div class="toolbar">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Cari nama tempat...">
-                </div>
-                <a href="/internal/pencegahan/inspeksi-kebakaran/bangunan/tambah" class="btn-solid navy">
-                    <i class="fas fa-plus"></i> Tambah Data
-                </a>
-                <a href="/internal/pencegahan/inspeksi-kebakaran/bangunan/cetak-excel" class="btn-solid green">
-                    <i class="fas fa-file-excel"></i> Excel
-                </a>
-                <a href="/internal/pencegahan/inspeksi-kebakaran/bangunan/cetak-pdf" target="_blank" class="btn-solid red">
-                    <i class="fas fa-file-pdf"></i> PDF
-                </a>
-            </div>
+    @if(Request::is('internal/pencegahan/inspeksi-kebakaran/bangunan*'))
+    <a href="/internal/pencegahan/inspeksi-kebakaran/bangunan/tambah" class="btn-solid navy">
+        <i class="fas fa-plus"></i> Tambah Data
+    </a>
+    @endif
+
+    <a href="/internal/pencegahan/inspeksi-kebakaran/bangunan/cetak-excel" class="btn-solid green">
+        <i class="fas fa-file-excel"></i> Excel
+    </a>
+    <a href="/internal/pencegahan/inspeksi-kebakaran/bangunan/cetak-pdf" target="_blank" class="btn-solid red">
+        <i class="fas fa-file-pdf"></i> PDF
+    </a>
+</div>
+@endunless
         </div>
 
         <!-- TABS -->
