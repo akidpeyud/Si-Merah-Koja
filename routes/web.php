@@ -16,12 +16,13 @@ use App\Http\Controllers\PermohonanRpkbglController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\KabarDamkarController;
 use App\Http\Controllers\PencegahanController;
-use App\Http\Controllers\SkkAdminController; // Pastikan Controller ini diimport
+use App\Http\Controllers\SkkAdminController;
 use App\Http\Controllers\PemberdayaanController;
 use App\Http\Controllers\PemohonAuthController;
 use App\Http\Controllers\PermohonanSkkController;
 use App\Http\Controllers\PermohonanEdukasiController;
 use App\Http\Controllers\PetaController;
+use App\Http\Controllers\IzinKeramaianController; // <-- Tambahan Controller Izin Keramaian
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
@@ -90,10 +91,10 @@ Route::post('/pemohon/logout', [PemohonAuthController::class, 'logout'])->name('
 Route::middleware([CekLoginPemohon::class])->group(function () {
     
     // RPKBGL
-Route::get('/layanan-fasilitas/layanan_perizinan', function () { 
-    return view('layanan-fasilitas.layanan_perizinan'); 
-})->name('layanan_perizinan');
-Route::post('/layanan-fasilitas/layanan_perizinan', [PermohonanRpkbglController::class, 'store'])->name('permohonan.store');
+    Route::get('/layanan-fasilitas/layanan_perizinan', function () { 
+        return view('layanan-fasilitas.layanan_perizinan'); 
+    })->name('layanan_perizinan');
+    Route::post('/layanan-fasilitas/layanan_perizinan', [PermohonanRpkbglController::class, 'store'])->name('permohonan.store');
 
     // SKK
     Route::get('/layanan-fasilitas/skk', function () { 
@@ -101,6 +102,10 @@ Route::post('/layanan-fasilitas/layanan_perizinan', [PermohonanRpkbglController:
     });
     Route::post('/permohonan-skk', [PermohonanSkkController::class, 'store'])->name('permohonan.skk.store');
     
+    // TAMBAHAN BARU: Izin Keramaian
+    Route::get('/layanan-fasilitas/izin-keramaian', [IzinKeramaianController::class, 'index'])->name('izin-keramaian.index');
+    Route::post('/layanan-fasilitas/izin-keramaian', [IzinKeramaianController::class, 'store'])->name('izin-keramaian.store');
+
     // Edukasi
     Route::get('/layanan-fasilitas/edukasi_sosialisasi', function () { 
         return view('layanan-fasilitas.edukasi_sosialisasi'); 
