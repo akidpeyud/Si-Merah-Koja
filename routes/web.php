@@ -897,3 +897,7 @@ Route::get('/dokumen/view/{id}', [ProgramKerjaController::class, 'viewFile'])->n
 
 // Download File Dokumen (Publik)
 Route::get('/dokumen/download/{id}', [ProgramKerjaController::class, 'download'])->name('dokumen.download');
+// --- PROGRAM KERJA ---
+    Route::get('/internal/program-kerja', [ProgramKerjaController::class, 'index'])->name('program-kerja.index');
+    Route::post('/internal/program-kerja/store', [ProgramKerjaController::class, 'store'])->name('program-kerja.store');
+    Route::delete('/internal/program-kerja/hapus/{id}', [ProgramKerjaController::class, 'destroy'])->name('program-kerja.destroy');
