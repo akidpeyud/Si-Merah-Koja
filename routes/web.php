@@ -23,6 +23,7 @@ use App\Http\Controllers\PermohonanSkkController;
 use App\Http\Controllers\PermohonanEdukasiController;
 use App\Http\Controllers\PetaController;
 use App\Http\Controllers\IzinKeramaianController; // <-- Tambahan Controller Izin Keramaian
+use App\Http\Controllers\ProgramKerjaController;
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
@@ -891,3 +892,8 @@ Route::middleware(['auth'])->group(function () {
     });
 
 });
+// Buka / Lihat File Dokumen (Publik)
+Route::get('/dokumen/view/{id}', [ProgramKerjaController::class, 'viewFile'])->name('dokumen.view');
+
+// Download File Dokumen (Publik)
+Route::get('/dokumen/download/{id}', [ProgramKerjaController::class, 'download'])->name('dokumen.download');
