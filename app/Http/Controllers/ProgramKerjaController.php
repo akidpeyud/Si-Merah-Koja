@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Dokumen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ProgramKerjaController extends Controller
 {
@@ -18,24 +19,40 @@ class ProgramKerjaController extends Controller
     // 2. Menyimpan Data dan Upload File
     public function store(Request $request)
     {
-        $request->validate([
+        // Menggunakan Validator manual agar kita bisa mengembalikan form input (withInput)
+        $validator = Validator::make($request->all(), [
             'judul_dokumen' => 'required|string|max:255',
             'kategori'      => 'required|in:SOTK,SOP,Perencanaan,Pelaporan,Produk Hukum',
-            'sub_kategori'  => 'required_if:kategori,SOP|nullable|in:Sekretariat,Sapra,Damtan,Pencegahan',
-            'file_dokumen'  => 'required|mimes:pdf,jpg,jpeg,png|max:5120', 
+            'sub_kategori'  => 'nullable|in:Sekretariat,Sapra,Damtan,Pencegahan',
+            'file_dokumen'  => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120', 
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('error', 'Cek kembali form isian Anda. Pastikan file valid.');
+        }
 
         try {
             $file = $request->file('file_dokumen');
-            $namaFile = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
             
-            // CARA PALING AMPUH (Bypass Storage Facade)
-            // Tentukan jalur pasti sesuai yang dicari oleh Detektor Error
+            // Bersihkan nama file dari spasi dan karakter khusus yang bisa merusak URL
+            $namaFileAsli = str_replace([' ', '#', '%', '&'], '_', $file->getClientOriginalName());
+            $namaFile = time() . '_' . $namaFileAsli;
+            
+            // Tentukan jalur pasti folder tujuan
             $tujuan_upload = storage_path('app/public/dokumen');
+            
+            // CEK & BUAT FOLDER OTOMATIS: Jika folder belum ada, buat foldernya!
+            if (!file_exists($tujuan_upload)) {
+                mkdir($tujuan_upload, 0755, true);
+            }
             
             // Pindahkan file secara fisik langsung ke folder tujuan
             $file->move($tujuan_upload, $namaFile);
 
+            // Simpan ke database
             Dokumen::create([
                 'judul_dokumen' => $request->judul_dokumen,
                 'kategori'      => $request->kategori,
@@ -43,12 +60,16 @@ class ProgramKerjaController extends Controller
                 'nama_file'     => $namaFile,
             ]);
 
-            return redirect()->back()->with('success', 'Dokumen berhasil diunggah!');
+            return redirect()->back()->with('success', 'Dokumen berhasil diunggah dan disimpan!');
+            
         } catch (\Exception $e) {
-            // Memunculkan pesan error asli jika gagal memindahkan file
-            return redirect()->back()->with('error', 'Gagal upload: ' . $e->getMessage());
+            // Memunculkan pesan error asli di layar (Toast merah) jika gagal masuk DB / gagal pindah file
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal sistem: ' . $e->getMessage());
         }
     }
+
     // 3. Menghapus Data
     public function destroy($id)
     {
@@ -63,7 +84,7 @@ class ProgramKerjaController extends Controller
         return redirect()->back()->with('success', 'Dokumen beserta filenya berhasil dihapus!');
     }
     
-   // 4. Buka / Lihat File (Publik)
+    // 4. Buka / Lihat File (Publik)
     public function viewFile($id)
     {
         $dokumen = Dokumen::find($id);
