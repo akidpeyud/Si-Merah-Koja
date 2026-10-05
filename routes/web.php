@@ -5,6 +5,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Middleware\CekLoginPemohon;
 use App\Http\Controllers\AuthController;
+use App\HttpHere is the clean, resolved `web.php` file with the merge conflicts fixed. The imports have been combined, and the internal Program Kerja routes have been correctly placed inside the `auth` middleware group to ensure they remain protected.
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Middleware\CekLoginPemohon;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\SapraController;
 use App\Http\Controllers\OperatorMedsosController;
@@ -23,8 +33,8 @@ use App\Http\Controllers\PermohonanSkkController;
 use App\Http\Controllers\PermohonanEdukasiController;
 use App\Http\Controllers\PetaController;
 use App\Http\Controllers\IzinKeramaianController; 
-use App\Http\Controllers\FireDrillController; // <-- Tambahan Import FireDrillController
-
+use App\Http\Controllers\FireDrillController;
+use App\Http\Controllers\ProgramKerjaController;
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
@@ -612,7 +622,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/duk', [DukController::class, 'store'])->name('duk.store');
         Route::delete('/duk/{id}', [DukController::class, 'destroy'])->name('duk.destroy');
     });
-});
+
+    // --- PROGRAM KERJA ---
+    Route::get('/internal/program-kerja', [ProgramKerjaController::class, 'index'])->name('program-kerja.index');
+    Route::post('/internal/program-kerja/store', [ProgramKerjaController::class, 'store'])->name('program-kerja.store');
+    Route::delete('/internal/program-kerja/hapus/{id}', [ProgramKerjaController::class, 'destroy'])->name('program-kerja.destroy');
+
+}); // Akhir dari middleware auth internal
 
 
 // ==========================================
@@ -629,3 +645,14 @@ Route::prefix('internal/peta-sigap')->middleware(['auth'])->group(function () {
     Route::post('/store', [PetaController::class, 'store']);
     Route::delete('/hapus/{id}', [PetaController::class, 'destroy']);
 });
+
+
+// ==========================================
+// 8. ROUTE DOKUMEN PUBLIK
+// ==========================================
+
+// Buka / Lihat File Dokumen (Publik)
+Route::get('/dokumen/view/{id}', [ProgramKerjaController::class, 'viewFile'])->name('dokumen.view');
+
+// Download File Dokumen (Publik)
+Route::get('/dokumen/download/{id}', [ProgramKerjaController::class, 'download'])->name('dokumen.download');
