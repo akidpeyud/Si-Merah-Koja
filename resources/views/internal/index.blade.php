@@ -1725,6 +1725,9 @@ summary .chev {
                     <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') ? 'active' : '' }}">
                         <i class="fas fa-folder"></i> Kelola Surat Korban
                     </a>
+                    <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
+                        <i class="fas fa-users-rectangle"></i> Kelola Surat Keramaian
+                    </a>
                 </div>
             </details>
 <!-- BAGIAN KEPEGAWAIAN -->

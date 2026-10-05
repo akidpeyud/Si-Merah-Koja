@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-    <title>Kelola Surat Korban | SIMERAH KOJA</title>
+    <title>Kelola Izin Keramaian | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
     
-    <!-- PRELOAD LOGO AGAR TIDAK TELAT LOADING SAAT DI-PRINT -->
+    <!-- PRELOAD LOGO -->
     <link rel="preload" href="/images/logo.png" as="image">
     <link rel="preload" href="/images/jambi.png" as="image">
 
@@ -78,9 +78,7 @@
         button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
         :focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; border-radius: 6px; }
         
-        /* ==========================================================
-           GLOBAL ALERTS
-           ========================================================== */
+        /* GLOBAL ALERTS */
         #globalSuccessAlert, #globalErrorAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); color: white; padding: 16px 24px; border-radius: var(--r-md); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         #globalSuccessAlert { background-color: var(--success); box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); }
         #globalErrorAlert { background-color: var(--signal); box-shadow: 0 10px 25px -5px rgba(229, 57, 45, 0.4); }
@@ -91,9 +89,7 @@
         @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
         @keyframes fadeOutUpCenter { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -50px); opacity: 0; } }
 
-        /* ==========================================================
-           TOPBAR
-           ========================================================== */
+        /* TOPBAR */
         .topbar { position: sticky; top: 0; z-index: 1020; height: var(--topbar-h); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 28px; background: var(--ink); border-bottom: 1px solid rgba(255,255,255,.08); box-shadow: 0 2px 12px rgba(13, 27, 42, .16); }
         .topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
         .side-toggle { display: none; width: 40px; height: 40px; border-radius: 10px; align-items: center; justify-content: center; font-size: 1.05rem; color: #fff; transition: background .2s, transform .2s; }
@@ -119,9 +115,7 @@
             .user-meta { display: none; }
         }
 
-        /* ==========================================================
-           SHELL & SIDEBAR
-           ========================================================== */
+        /* SIDEBAR */
         .shell { display: flex; align-items: flex-start; min-height: calc(100vh - var(--topbar-h)); }
         .sidebar { width: var(--sidebar-w); flex: none; position: sticky; top: var(--topbar-h); height: calc(100vh - var(--topbar-h)); overflow-y: auto; background: #ffffff; border-right: 1px solid var(--line); padding: 20px 14px 32px; scrollbar-width: thin; scrollbar-color: #d8dee8 transparent; }
         .sidebar::-webkit-scrollbar { width: 6px; }
@@ -160,9 +154,7 @@
             body.side-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
         }
 
-        /* ==========================================================
-           MAIN CONTENT & TABLE STYLING
-           ========================================================== */
+        /* MAIN CONTENT & TABLE STYLING */
         .content { flex: 1; min-width: 0; padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 80px; }
         
         .page-header { margin-bottom: 28px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
@@ -238,35 +230,18 @@
         .action-btn { width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: none; font-size: 13px; transition: all 0.2s; text-decoration: none; }
         .action-btn.view { background-color: var(--info-tint); color: var(--info); }
         .action-btn.view:hover { background-color: #dbeafe; }
-        .action-btn.edit { background-color: rgba(255, 182, 39, 0.15); color: #d97706; margin: 0 5px; } 
-        .action-btn.edit:hover { background-color: rgba(255, 182, 39, 0.25); }
-        .action-btn.delete { background-color: var(--signal-tint); color: var(--signal); }
+        .action-btn.delete { background-color: var(--signal-tint); color: var(--signal); margin-left: 5px;}
         .action-btn.delete:hover { background-color: #fecaca; }
 
-        /* Pagination */
-        .pagination-container nav ul.pagination { margin-bottom: 0 !important; }
-        .pagination-container nav p { display: none; }
-
-        /* --- STYLES KHUSUS UNTUK CETAK PDF --- */
-        @page { margin: 0; }
-        @media print {
-            .topbar, .sidebar, .sidebar-backdrop, .page-header, .card-header, .card-footer,
-            .btn, .dropdown, form, .modal, .action-btn, #globalSuccessAlert, #globalErrorAlert { display: none !important; }
-            body { background-color: white !important; font-size: 12px; margin: 1.5cm !important; -webkit-print-color-adjust: exact; }
-            .shell { display: block; }
-            .content { padding: 0 !important; margin: 0 !important; }
-            .card-custom { box-shadow: none !important; border: none !important; border-radius: 0 !important; }
-            .card-body { padding: 0 !important; }
-            .table { width: 100% !important; border-collapse: collapse; margin-bottom: 20px; }
-            .table th, .table td { border: 1px solid black !important; padding: 8px !important; text-align: left; }
-            .table th { background-color: #f2f2f2 !important; font-weight: bold; color: black !important; text-align: left !important; }
-            th:last-child, td:last-child { display: none !important; }
-        }
+        .badge-status { padding: 6px 12px; font-weight: 600; font-size: 0.8rem; border-radius: 6px; }
+        .badge-pending { background-color: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+        .badge-proses { background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .badge-disetujui { background-color: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+        .badge-ditolak { background-color: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
     </style>
 </head>
 <body>
 
-<!-- ALERT SUCCESS GLOBAL -->
 @if(session('success'))
     <div id="globalSuccessAlert">
         <i class="fas fa-check-circle alert-icon"></i>
@@ -275,7 +250,6 @@
     </div>
 @endif
 
-<!-- ALERT ERROR GLOBAL -->
 @if(session('error'))
     <div id="globalErrorAlert">
         <i class="fas fa-exclamation-triangle alert-icon"></i>
@@ -296,7 +270,7 @@
     setTimeout(() => closeAlert('globalErrorAlert'), 4000);
 </script>
 
-<!-- ==================== TOPBAR ==================== -->
+<!-- TOPBAR -->
 <header class="topbar">
     <div class="topbar-left">
         <button class="side-toggle" type="button" id="sideToggle" aria-label="Buka menu" aria-expanded="false" aria-controls="sidebar">
@@ -309,9 +283,9 @@
     </div>
     <div class="topbar-right">
         <div class="user-chip">
-            <span class="user-avatar">{{ strtoupper(substr(Auth::user()->nama_lengkap ?? 'R', 0, 1)) }}</span>
+            <span class="user-avatar">{{ strtoupper(substr(Auth::user()->nama_lengkap ?? 'A', 0, 1)) }}</span>
             <div class="user-meta">
-                <strong>{{ Auth::user()->nama_lengkap ?? 'Rekan kerja' }}</strong>
+                <strong>{{ Auth::user()->nama_lengkap ?? 'Admin Damkar' }}</strong>
                 <small>{{ str_replace('_', ' ', Auth::user()->role ?? '') }}</small>
             </div>
         </div>
@@ -325,7 +299,7 @@
 <div class="shell">
     <div class="sidebar-backdrop" id="sideBackdrop"></div>
 
-    <!-- ==================== SIDEBAR ==================== -->
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar" aria-label="Navigasi internal">
         <a href="/internal/index" class="side-link {{ Request::is('internal/index') ? 'active' : '' }}">
             <i class="fas fa-house"></i> Dashboard utama
@@ -335,30 +309,16 @@
             <div class="side-kicker">Modul operasional</div>
 
             <!-- BAGIAN PENCEGAHAN -->
-            <details class="side-group" {{ Request::is('internal/pencegahan*') ? 'open' : '' }}>
+            <details class="side-group">
                 <summary><i class="fas fa-shield-halved grp-ico"></i><span class="grp-label">Bagian pencegahan</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
-                    <a href="/internal/pencegahan/peningkatan-kapasitas" class="{{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}">
-                        <i class="fas fa-arrow-trend-up"></i> Peningkatan Kapasitas
-                    </a>
-                    <a href="/internal/pencegahan/inspeksi-kebakaran" class="{{ Request::is('internal/pencegahan/inspeksi-kebakaran*') ? 'active' : '' }}">
-                        <i class="fas fa-magnifying-glass-chart"></i> Pencegahan & Inspeksi
-                    </a>
-                    <a href="/internal/pencegahan/pemberdayaan-masyarakat" class="{{ Request::is('internal/pencegahan/pemberdayaan-masyarakat*') ? 'active' : '' }}">
-                        <i class="fas fa-handshake-angle"></i> Pemberdayaan Masyarakat
-                    </a>
-                    <a href="/internal/pencegahan/kelola-edukasi" class="{{ Request::is('internal/pencegahan/kelola-edukasi*') ? 'active' : '' }}">
-                        <i class="fas fa-bullhorn"></i> Kelola Edukasi
-                    </a>
-                    <a href="/internal/pencegahan/kelola-redkar" class="{{ Request::is('internal/pencegahan/kelola-redkar*') ? 'active' : '' }}">
-                        <i class="fas fa-users-rectangle"></i> Kelola Redkar
-                    </a>
-                    <a href="/internal/pencegahan/kelola-rpkbgl" class="{{ Request::is('internal/pencegahan/kelola-rpkbgl*') ? 'active' : '' }}">
-                        <i class="fas fa-building-circle-check"></i> Kelola RPKBGL
-                    </a>
-                    <a href="/internal/pencegahan/kelola-skk" class="{{ Request::is('internal/pencegahan/kelola-skk*') ? 'active' : '' }}">
-                        <i class="fas fa-file-shield"></i> Kelola SKK
-                    </a>
+                    <a href="/internal/pencegahan/peningkatan-kapasitas"><i class="fas fa-arrow-trend-up"></i> Peningkatan Kapasitas</a>
+                    <a href="/internal/pencegahan/inspeksi-kebakaran"><i class="fas fa-magnifying-glass-chart"></i> Pencegahan & Inspeksi</a>
+                    <a href="/internal/pencegahan/pemberdayaan-masyarakat"><i class="fas fa-handshake-angle"></i> Pemberdayaan Masyarakat</a>
+                    <a href="/internal/pencegahan/kelola-edukasi"><i class="fas fa-bullhorn"></i> Kelola Edukasi</a>
+                    <a href="/internal/pencegahan/kelola-redkar"><i class="fas fa-users-rectangle"></i> Kelola Redkar</a>
+                    <a href="/internal/pencegahan/kelola-rpkbgl"><i class="fas fa-building-circle-check"></i> Kelola RPKBGL</a>
+                    <a href="/internal/pencegahan/kelola-skk"><i class="fas fa-file-shield"></i> Kelola SKK</a>
                 </div>
             </details>
 
@@ -366,18 +326,11 @@
             <details class="side-group" open>
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
                <div class="side-sub">
-                    <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
-                        <i class="fas fa-fire-extinguisher"></i> Input data
-                    </a>
-                    <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
-                        <i class="fas fa-file-signature"></i> Buat Surat Korban
-                    </a>
-                    <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
-                        <i class="fas fa-clipboard-list"></i> Kelola Data Laporan
-                    </a>
-                    <a href="/internal/surat-korban/data" class="active">
-                        <i class="fas fa-folder-open"></i> Kelola Surat Korban
-                    </a>
+                    <a href="/internal/damtan/input-data"><i class="fas fa-fire-extinguisher"></i> Input data</a>
+                    <a href="/internal/surat-korban/create"><i class="fas fa-file-signature"></i> Buat Surat Korban</a>
+                    <a href="/internal/damtan/data-laporan"><i class="fas fa-clipboard-list"></i> Kelola Data Laporan</a>
+                    <a href="/internal/surat-korban/data"><i class="fas fa-folder-open"></i> Kelola Surat Korban</a>
+                    
                     <!-- MENU BARU: KELOLA SURAT KERAMAIAN -->
                     <a href="{{ route('internal.izin-keramaian.index') }}" class="active">
                         <i class="fas fa-users-rectangle"></i> Kelola Surat Keramaian
@@ -386,89 +339,57 @@
             </details>
 
             <!-- BAGIAN KEPEGAWAIAN -->
-            <details class="side-group" {{ Request::is('internal/kepegawaian*') ? 'open' : '' }}>
+            <details class="side-group">
                 <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
-                    <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
-                        <i class="fas fa-user-tie"></i> Data Urut Kepegawaian
-                    </a>
+                    <a href="/internal/kepegawaian/duk"><i class="fas fa-user-tie"></i> Data Urut Kepegawaian</a>
                 </div>
             </details>
 
             <!-- BAGIAN SAPRA -->
-            <details class="side-group" {{ Request::is('sapra*') ? 'open' : '' }}>
+            <details class="side-group">
                 <summary><i class="fas fa-warehouse grp-ico"></i><span class="grp-label">Bagian sapra</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <span class="side-kicker" style="padding-left:2px;">Sarana &amp; Prasarana</span>
-                    <a href="/sapra/sarana-mako" class="{{ Request::is('sapra/sarana-mako*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam</a>
-                    <a href="/sapra/prasarana-mako" class="{{ Request::is('sapra/prasarana-mako*') ? 'active' : '' }}"><i class="fas fa-building"></i> Prasarana Pemadam</a>
-                    <a href="/sapra/sarana-penyelamatan" class="{{ Request::is('sapra/sarana-penyelamatan*') ? 'active' : '' }}"><i class="fas fa-life-ring"></i> Sarana Penyelamatan</a>
-                    <a href="/sapra/sarana-pemeriksaan" class="{{ Request::is('sapra/sarana-pemeriksaan*') ? 'active' : '' }}"><i class="fas fa-search-location"></i> Pemeriksaan Proteksi</a> 
-                    <a href="/sapra/kelola-pos" class="{{ Request::is('sapra/kelola-pos*') ? 'active' : '' }}"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
+                    <a href="/sapra/sarana-mako"><i class="fas fa-fire-extinguisher"></i> Sarana Pemadam</a>
+                    <a href="/sapra/prasarana-mako"><i class="fas fa-building"></i> Prasarana Pemadam</a>
+                    <a href="/sapra/sarana-penyelamatan"><i class="fas fa-life-ring"></i> Sarana Penyelamatan</a>
+                    <a href="/sapra/sarana-pemeriksaan"><i class="fas fa-search-location"></i> Pemeriksaan Proteksi</a> 
+                    <a href="/sapra/kelola-pos"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
 
                     <span class="side-kicker" style="padding-left:2px;">Manajemen Air</span>
-                    <a href="/sapra/data_hidrant_gedung" class="{{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}"><i class="fas fa-droplet"></i> Sumber Air</a>
-                    <a href="/sapra/data-hidrant-kota" class="{{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}"><i class="fas fa-map-location-dot"></i> Data Hidrant Kota</a>
+                    <a href="/sapra/data_hidrant_gedung"><i class="fas fa-droplet"></i> Sumber Air</a>
+                    <a href="/sapra/data-hidrant-kota"><i class="fas fa-map-location-dot"></i> Data Hidrant Kota</a>
 
                     <span class="side-kicker" style="padding-left:2px;">Logistik & Distribusi</span>
-                    <a href="/sapra/kebutuhan-sarpras" class="{{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}"><i class="fas fa-boxes-stacked"></i> Mutu Baku Kebutuhan</a>
-                    <a href="/sapra/distribusi-staff" class="{{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}"><i class="fas fa-people-carry-box"></i> Distribusi Barang Staff</a>
-                </div>
-            </details>
-        @endif
-
-        @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
-           <div class="side-kicker">Konten publik</div>
-            <details class="side-group" {{ Request::is('internal/operator*') ? 'open' : '' }}>
-                <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen berita</span><i class="fas fa-chevron-down chev"></i></summary>
-                <div class="side-sub">
-                    <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
-                        <i class="far fa-newspaper"></i> Input &amp; Kelola Berita
-                    </a>
-                    <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
-                        <i class="far fa-image"></i> Kelola Info Grafis
-                    </a>
-                    <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
-                        <i class="fab fa-instagram"></i> Kelola Berita Medsos
-                    </a>
-                     </a>
-                    <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
-    <i class="fab fa-youtube"></i> Ujung-Ujung Damkar
-</a>
-<a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
-                        <i class="fas fa-graduation-cap"></i> Edu Damkar
-                    </a>
+                    <a href="/sapra/kebutuhan-sarpras"><i class="fas fa-boxes-stacked"></i> Mutu Baku Kebutuhan</a>
+                    <a href="/sapra/distribusi-staff"><i class="fas fa-people-carry-box"></i> Distribusi Barang Staff</a>
                 </div>
             </details>
         @endif
 
         <div class="side-kicker">Akun</div>
-        <details class="side-group" {{ Request::is('internal/profil*') || Request::is('internal/kelola-user*') || Request::is('internal/kelola-pemohon*') ? 'open' : '' }}>
+        <details class="side-group">
             <summary><i class="fas fa-user-gear grp-ico"></i><span class="grp-label">Pengaturan akun</span><i class="fas fa-chevron-down chev"></i></summary>
             <div class="side-sub">
-                <a href="/internal/profil" class="{{ Request::is('internal/profil*') ? 'active' : '' }}"><i class="fas fa-user-pen"></i> Profil Saya</a>
+                <a href="/internal/profil"><i class="fas fa-user-pen"></i> Profil Saya</a>
                 @if(Auth::user()->role === 'super_user')
-                    <a href="/internal/kelola-user" class="{{ Request::is('internal/kelola-user*') ? 'active' : '' }}"><i class="fas fa-users-gear"></i> Kelola Pengguna</a>
-                    <a href="/internal/kelola-pemohon" class="{{ Request::is('internal/kelola-pemohon*') ? 'active' : '' }}"><i class="fas fa-address-book"></i> Kelola Akun Pemohon</a>
+                    <a href="/internal/kelola-user"><i class="fas fa-users-gear"></i> Kelola Pengguna</a>
+                    <a href="/internal/kelola-pemohon"><i class="fas fa-address-book"></i> Kelola Akun Pemohon</a>
                 @endif
             </div>
         </details>
     </aside>
 
-    <!-- ==================== KONTEN UTAMA ==================== -->
+    <!-- KONTEN UTAMA -->
     <main class="content">
         <div class="page-header">
             <div class="page-header-text">
-                <h1>Kelola Surat Korban</h1>
-                <p>Daftar seluruh Surat Keterangan Kejadian yang telah diterbitkan.</p>
+                <h1>Kelola Izin Keramaian</h1>
+                <p>Daftar seluruh pengajuan rekomendasi izin keramaian masyarakat.</p>
             </div>
             <div class="d-flex gap-2">
-                <button class="btn-custom-light shadow-sm" type="button" onclick="window.print()">
-                    <i class="fas fa-download me-2"></i> Ekspor Semua
-                </button>
-                <a href="/internal/surat-korban/create" class="btn-custom-primary shadow-sm">
-                    <i class="fas fa-plus me-2"></i> Buat Surat Baru
-                </a>
+                <!-- Tombol aksi jika ada -->
             </div>
         </div>
 
@@ -479,7 +400,7 @@
                     <div class="col-md-8">
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0"><i class="fas fa-search"></i></span>
-                            <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari nomor surat, nama korban...">
+                            <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari nama pemohon, acara, lokasi...">
                         </div>
                     </div>
                     <div class="col-md-4 text-end ms-auto">
@@ -491,65 +412,52 @@
             <!-- Table Content -->
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    
-                    <!-- HEADER KHUSUS CETAK PDF MENGGUNAKAN FLEXBOX ANTI-ERROR BOOTSTRAP -->
-                    <div id="print-header" class="d-none d-print-block" style="width: 100%; margin-bottom: 20px;">
-                        <div style="display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; margin-bottom: 15px;">
-                            
-                            <!-- Logo Kiri -->
-                            <div style="width: 15% !important; text-align: left !important;">
-                                <img src="/images/jambi.png" style="width: 80px; height: auto;">
-                            </div>
-                            
-                            <!-- Teks Tengah Dipaksa Center -->
-                            <div style="width: 70% !important; text-align: center !important;">
-                                <div style="font-size: 14pt; color: #000; margin-bottom: 2px; font-family: 'Times New Roman', Times, serif;">PEMERINTAH KOTA JAMBI</div>
-                                <div style="font-size: 16pt; font-weight: bold; color: #000; line-height: 1.1; margin-bottom: 5px; font-family: 'Times New Roman', Times, serif;">DINAS PEMADAM KEBAKARAN<br>DAN PENYELAMATAN</div>
-                                <div style="font-size: 10pt; color: #000; font-family: 'Times New Roman', Times, serif;">Jl. Hos. Cokroaminoto No. 113 Telp. 0741-41171<br>JAMBI</div>
-                            </div>
-                            
-                            <!-- Logo Kanan -->
-                            <div style="width: 15% !important; text-align: right !important;">
-                                <img src="/images/logo.png" style="width: 100px; height: auto;">
-                            </div>
-                        </div>
-                        
-                        <!-- Garis Ganda -->
-                        <div style="border-top: 3px solid black !important; border-bottom: 1px solid black !important; height: 2px !important; width: 100% !important; margin-bottom: 15px !important;"></div>
-                        
-                        <h3 style="text-align: center !important; font-weight: bold; margin-bottom: 5px; font-size: 16px; color: black; font-family: 'Times New Roman', Times, serif;">REKAPITULASI SURAT KETERANGAN KEJADIAN</h3>
-                        <p style="text-align: center !important; font-size: 12px; margin-bottom: 15px; color: black; font-family: 'Times New Roman', Times, serif;">Dicetak pada: {{ date('d F Y') }}</p>
-                    </div>
-                    <!-- AKHIR HEADER CETAK -->
-
                     <table class="table align-middle mb-0">
                         <thead>
                             <tr>
                                 <th class="text-center" width="5%">No</th>
-                                <th width="25%">Nomor Surat</th>
-                                <th width="35%">Nama Korban / Instansi</th>
-                                <th width="20%">Tanggal Diterbitkan</th>
-                                <th class="text-center" width="15%">Aksi</th>
+                                <th width="20%">Nama Pemohon</th>
+                                <th width="15%">Kontak</th>
+                                <th width="25%">Nama Acara</th>
+                                <th width="15%">Tgl Acara</th>
+                                <th width="10%">Status</th>
+                                <th class="text-center" width="10%">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
-                            @forelse($surat as $index => $row)
+                            @forelse($permohonan as $index => $row)
                             <tr>
-                                <td class="text-center text-muted">{{ $surat->firstItem() + $index }}</td>
-                                <td><strong>{{ $row->nomor_surat }}</strong></td>
-                                <td class="text-capitalize">{{ $row->nama_korban }}</td>
+                                <td class="text-center text-muted">{{ $loop->iteration }}</td>
+                                <td><strong>{{ $row->nama }}</strong></td>
+                                <td>{{ $row->no_hp }}</td>
+                                <td class="text-capitalize">{{ $row->nama_acara }}<br><small class="text-muted">{{ $row->lokasi_acara }}</small></td>
                                 <td>
                                     <div class="text-dark fw-bold">
-                                        {{ $row->created_at ? \Carbon\Carbon::parse($row->created_at)->format('d M Y') : '-' }}
+                                        {{ \Carbon\Carbon::parse($row->tgl_pelaksanaan)->format('d M Y') }}
                                     </div>
                                 </td>
+                                <td>
+                                    @if($row->status_permohonan == 'Pending')
+                                        <span class="badge-status badge-pending">{{ $row->status_permohonan }}</span>
+                                    @elseif($row->status_permohonan == 'Proses')
+                                        <span class="badge-status badge-proses">{{ $row->status_permohonan }}</span>
+                                    @elseif($row->status_permohonan == 'Disetujui')
+                                        <span class="badge-status badge-disetujui">{{ $row->status_permohonan }}</span>
+                                    @elseif($row->status_permohonan == 'Ditolak')
+                                        <span class="badge-status badge-ditolak">{{ $row->status_permohonan }}</span>
+                                    @else
+                                        <span class="badge-status" style="background:#e2e8f0; color:#475569; border:1px solid #cbd5e1;">{{ $row->status_permohonan }}</span>
+                                    @endif
+                                </td>
                                 <td class="text-center">
-                                    <!-- Tombol Cetak PDF -->
-                                    <a href="/internal/surat-korban/cetak/{{ $row->id }}" class="action-btn view" target="_blank" title="Cetak Surat"><i class="fas fa-print"></i></a>
-                                    <!-- Tombol Edit -->
-                                    <a href="/internal/surat-korban/edit/{{ $row->id }}" class="action-btn edit" title="Edit Surat"><i class="fas fa-edit"></i></a>
-                                    <!-- Tombol Hapus -->
-                                    <form action="/internal/surat-korban/delete/{{ $row->id }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus surat nomor {{ $row->nomor_surat }} secara permanen?')">
+                                <!-- Tombol Detail -->
+                                    <a href="{{ route('internal.izin-keramaian.show', $row->id) }}" class="action-btn view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
+    
+                                <!-- Tombol Edit (BARU DI SINI) -->
+                                    <a href="{{ route('internal.izin-keramaian.edit', $row->id) }}" class="action-btn edit" title="Edit Data"><i class="fas fa-edit"></i></a>
+    
+                                 <!-- Tombol Hapus -->
+                                    <form action="{{ route('internal.izin-keramaian.destroy', $row->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus permohonan ini secara permanen?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="action-btn delete" title="Hapus"><i class="fas fa-trash"></i></button>
@@ -558,9 +466,9 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="5" class="text-center py-5 text-muted">
-                                    <i class="fas fa-envelope-open-text mb-3" style="font-size: 24px;"></i><br>
-                                    Belum ada surat keterangan korban yang diterbitkan.
+                                <td colspan="7" class="text-center py-5 text-muted">
+                                    <i class="fas fa-users-slash mb-3" style="font-size: 24px;"></i><br>
+                                    Belum ada data pengajuan Izin Keramaian.
                                 </td>
                             </tr>
                             @endforelse
@@ -569,24 +477,16 @@
                 </div>
             </div>
             
-            <div class="card-footer bg-white p-4 d-flex justify-content-between align-items-center border-top">
-                <span class="text-muted" style="font-size: 13px;" id="dataCount">
-                    Menampilkan {{ $surat->firstItem() ?? 0 }} - {{ $surat->lastItem() ?? 0 }} dari total {{ $surat->total() }} surat
-                </span>
-                <div class="pagination-container mb-0">
-                    {{ $surat->links('pagination::bootstrap-5') }}
-                </div>
-            </div>
         </div>
     </main>
 </div>
 
-<!-- Script Bootstrap & Fungsi Search/Filter JavaScript -->
+<!-- Script Bootstrap & Fungsi Search -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     (function () {
         'use strict';
-        /* ---------- Sidebar (Mobile Toggle) ---------- */
+        /* Sidebar Toggle */
         var toggle = document.getElementById('sideToggle');
         var backdrop = document.getElementById('sideBackdrop');
         function closeSide() {
@@ -602,7 +502,7 @@
         if (backdrop) backdrop.addEventListener('click', closeSide);
         document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
 
-        /* ---------- Eksklusivitas Accordion Sidebar ---------- */
+        /* Accordion Sidebar */
         var groups = document.querySelectorAll('.side-group');
         groups.forEach(function (g) {
             g.addEventListener('toggle', function () {
@@ -613,7 +513,7 @@
         });
     })();
 
-    /* ---------- FUNGSI SEARCH FRONTEND ---------- */
+    /* Search Script */
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('searchInput');
         const tableBody = document.getElementById('tableBody');
@@ -621,18 +521,13 @@
 
         function filterTable() {
             const searchTerm = searchInput.value.toLowerCase();
-
             for (let i = 0; i < rows.length; i++) {
-                // Abaikan baris "Belum ada data"
                 if (rows[i].getElementsByTagName('td').length === 1) continue; 
-                
                 const rowText = rows[i].textContent.toLowerCase();
                 const matchesSearch = rowText.includes(searchTerm);
-
                 rows[i].style.display = matchesSearch ? '' : 'none';
             }
         }
-
         searchInput.addEventListener('keyup', filterTable);
     });
 

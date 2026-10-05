@@ -209,6 +209,20 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/internal/surat-korban/update/{id}', [DamtanController::class, 'updateSurat']);
     Route::delete('/internal/surat-korban/delete/{id}', [DamtanController::class, 'destroySurat']);
 
+    // --- C. DAMTAN (PEMADAMAN & PENYELAMATAN) ---
+    // ... rute damtan lainnya ...
+
+    // KELOLA SURAT KERAMAIAN (ADMIN BAGIAN PEMADAMAN)
+    Route::get('/internal/damtan/kelola-izin-keramaian', [App\Http\Controllers\IzinKeramaianController::class, 'indexInternal'])->name('internal.izin-keramaian.index');
+    Route::get('/internal/damtan/kelola-izin-keramaian/{id}', [App\Http\Controllers\IzinKeramaianController::class, 'showInternal'])->name('internal.izin-keramaian.show');
+    Route::post('/internal/damtan/kelola-izin-keramaian/update-status/{id}', [App\Http\Controllers\IzinKeramaianController::class, 'updateStatusInternal'])->name('internal.izin-keramaian.update_status');
+    Route::delete('/internal/damtan/kelola-izin-keramaian/hapus/{id}', [App\Http\Controllers\IzinKeramaianController::class, 'destroyInternal'])->name('internal.izin-keramaian.destroy');
+    // Menampilkan form edit
+    Route::get('/internal/damtan/kelola-izin-keramaian/edit/{id}', [App\Http\Controllers\IzinKeramaianController::class, 'editInternal'])->name('internal.izin-keramaian.edit');
+
+    // Memproses pembaruan data
+    Route::put('/internal/damtan/kelola-izin-keramaian/update/{id}', [App\Http\Controllers\IzinKeramaianController::class, 'updateInternal'])->name('internal.izin-keramaian.update');
+
     // --- D. SAPRA (SARANA PRASARANA) ---
     Route::get('/sapra/data-hidrant-kota', [SapraController::class, 'dataHidrantKota']);
     Route::get('/sapra/data-hidrant-kota/cetak-pdf', [SapraController::class, 'cetakPdfKota']);
