@@ -508,7 +508,7 @@
                     <button class="menu-trigger btn-login" type="button" aria-expanded="false">
                         <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
                     </button>
-                    <ul class="dropdown">
+                   <ul class="dropdown">
                         <li>
                             <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
                                 @csrf
@@ -523,7 +523,7 @@
                 <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
             @endif
 
-        </ul>
+        </ul> 
     </nav>
 </header>
 

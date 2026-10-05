@@ -51,24 +51,28 @@
            ========================================================== */
         :root {
             --ink: #0d1b2a; --ink-2: #132a43; --ink-3: #1d3856;
-            --paper: #f3f5f8; --white: #ffffff;
-            --signal: #e5392d; --signal-d: #c22b20; --amber: #ffb627; --amber-d: #b45309;
-            --green: #16a34a; --blue: #2563eb; --blue-d: #1d4fd6; --orange: #f97316; --orange-d: #c2410c;
-            --steel: #5b6c7f; --line: #dbe2ea;
-            
-            --navy: #1e3a5f;
-            --navy-d: #14283f;
-            --navy-tint: rgba(30, 58, 95, .09);
+            --paper: #f5f7fa; --white: #ffffff;
+
+            --navy: #163a63; --navy-dark: #0d2947; --navy-d: #0d2947;
+            --navy-light: #eaf1f8; --navy-soft: rgba(22, 58, 99, .08); --navy-tint: rgba(22, 58, 99, .08);
+
+            --signal: #dc3545; --signal-d: #b42332; --signal-tint: rgba(220, 53, 69, .09);
+            --amber: #f4b740; --green: #198754; --success: #198754;
+            --blue: #2563eb; --blue-d: #1d4fd6; --info: #2563eb; --info-tint: rgba(37, 99, 235, .09);
+            --orange: #f97316; --orange-d: #c2410c;
+
+            --steel: #64748b; --steel-soft: #94a3b8;
+            --line: #e2e8f0; --line-dark: #d5dce6;
 
             --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
             --font-body: 'Instrument Sans', system-ui, sans-serif;
             --r-lg: 22px; --r-md: 16px; --r-sm: 10px;
-            --sidebar-w: 272px; --topbar-h: 66px;
+            --sidebar-w: 272px; --topbar-h: 70px;
 
-            --shadow-xs: 0 1px 2px rgba(13, 27, 42, .05);
-            --shadow-sm: 0 2px 8px -2px rgba(13, 27, 42, .08);
-            --shadow-md: 0 12px 24px -8px rgba(13, 27, 42, .12);
-            --shadow-lg: 0 24px 48px -16px rgba(13, 27, 42, .18);
+            --shadow-xs: 0 1px 2px rgba(13, 27, 42, .04);
+            --shadow-sm: 0 4px 12px rgba(13, 27, 42, .06);
+            --shadow-md: 0 10px 25px rgba(13, 27, 42, .08);
+            --shadow-lg: 0 20px 45px rgba(13, 27, 42, .14);
         }
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
@@ -82,14 +86,12 @@
         :focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; border-radius: 6px; }
 
         /* ==========================================================
-           MODERN SCROLLBAR
+           SCROLLBAR
            ========================================================== */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #ccd5df; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #b1b9c2; }
-        .sidebar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); }
-        .sidebar::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.15); }
+        ::-webkit-scrollbar-thumb { background: #d5dce6; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
         /* ==========================================================
            TOAST
@@ -105,67 +107,67 @@
         @keyframes toastOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-14px); } }
 
         /* ==========================================================
-           TOPBAR
+           TOPBAR (NAVY GELAP)
            ========================================================== */
-        .topbar { position: sticky; top: 0; z-index: 60; height: var(--topbar-h); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 20px 0 clamp(16px, 2vw, 24px); background: rgba(255,255,255,.9); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); box-shadow: 0 2px 10px -2px rgba(0,0,0,0.02); }
-        .topbar-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
-        .side-toggle { display: none; width: 40px; height: 40px; border-radius: 10px; align-items: center; justify-content: center; font-size: 1.05rem; color: var(--steel); }
-        .side-toggle:hover { background: var(--paper); color: var(--ink); }
-        .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .topbar { position: sticky; top: 0; z-index: 60; height: var(--topbar-h); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 28px; background: var(--ink); border-bottom: 1px solid rgba(255,255,255,.08); box-shadow: 0 2px 12px rgba(13, 27, 42, .16); }
+        .topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+        .side-toggle { display: none; width: 40px; height: 40px; border-radius: 10px; align-items: center; justify-content: center; font-size: 1.05rem; color: #fff; transition: background .2s; }
+        .side-toggle:hover { background: rgba(255,255,255,.10); }
+        .brand { display: flex; align-items: center; gap: 12px; min-width: 0; color: #fff; }
         .brand img { height: 34px; width: auto; flex: none; }
-        .brand span { font-family: var(--font-display); font-weight: 800; font-stretch: 90%; font-size: 1.05rem; letter-spacing: -0.01em; white-space: nowrap; color: var(--ink); }
+        .brand span { font-family: var(--font-display); font-weight: 700; font-size: 1.08rem; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; }
         .topbar-right { display: flex; align-items: center; gap: 12px; }
-        .user-chip { display: flex; align-items: center; gap: 10px; padding: 5px 12px 5px 5px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); }
-        .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--ink-2); color: #fff; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: .85rem; flex: none; }
+        .user-chip { display: flex; align-items: center; gap: 10px; padding: 5px 14px 5px 5px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); transition: background .2s; }
+        .user-chip:hover { background: rgba(255,255,255,.12); }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: #fff; color: var(--ink); display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: .9rem; flex: none; }
         .user-meta { display: grid; line-height: 1.25; }
-        .user-meta strong { font-size: .85rem; font-weight: 700; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        
-        /* Tombol Keluar (Diperbarui menggunakan warna Navy) */
-        .btn-logout { display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 16px; border-radius: 999px; background: var(--navy); color: #fff; font-weight: 700; font-size: .82rem; }
-        .btn-logout:hover { background: var(--navy-d); transform: translateY(-1px); }
-        
-        @media (max-width: 900px) { .side-toggle { display: inline-flex; } .user-meta { display: none; } }
+        .user-meta strong { font-size: .84rem; font-weight: 700; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff; }
+        .user-meta small { font-size: .72rem; color: rgba(255,255,255,.62); text-transform: capitalize; font-weight: 500; }
+        .btn-logout { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 17px; border-radius: 999px; background: #fff; color: var(--ink); font-weight: 600; font-size: .84rem; border: none; transition: background .2s, box-shadow .2s; }
+        .btn-logout:hover { background: #e8eef5; box-shadow: 0 4px 10px rgba(0,0,0,.12); }
 
         /* ==========================================================
-           SHELL & SIDEBAR MASTER
+           SHELL & SIDEBAR
            ========================================================== */
         .shell { display: flex; align-items: flex-start; height: calc(100vh - var(--topbar-h)); }
-        
-        .sidebar { width: var(--sidebar-w); flex: none; position: sticky; top: var(--topbar-h); height: calc(100vh - var(--topbar-h)); overflow-y: auto; background: var(--white); border-right: 1px solid var(--line); padding: 16px 10px 32px; box-shadow: 1px 0 0 0 rgba(0,0,0,0.01); display: flex; flex-direction: column; gap: 4px; }
-        
-        .side-a { display: flex; align-items: center; gap: 12px; border-radius: 10px; font-weight: 600; color: var(--ink); }
-        .side-a:hover { background: var(--paper); color: var(--blue-d); }
-        .side-a i { width: 20px; text-align: center; font-size: 0.95rem; color: var(--steel); transition: color .2s; }
-        .side-a:hover i { color: var(--blue-d); }
-        
-        .side-link { padding: 12px 14px; font-size: 0.88rem; }
-        .side-link.active { background: var(--ink); color: #fff; font-weight: 700; }
-        .side-link.active i { color: var(--amber); }
-        
-        .side-group { margin-top: 2px; }
-        .side-group summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 10px; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-2); position: relative; }
-        .side-group summary::-webkit-details-marker { display: none; }
-        .side-group summary:hover { background: var(--paper); color: var(--blue-d); }
-        .side-group summary .chev { margin-left: auto; font-size: 0.65rem; color: var(--steel); transition: transform .25s ease, color .2s; }
-        .side-group[open] > summary .chev { transform: rotate(180deg); color: var(--blue-d); }
-        
-        .side-sub { display: grid; gap: 2px; padding: 2px 2px 6px 12px; margin-left: 23px; border-left: 1px solid #e2e8f0; }
-        .side-sub a { padding: 8px 12px; font-size: 0.84rem; font-weight: 500; color: var(--ink-2); position: relative; }
-        .side-sub a i { width: 16px; font-size: 0.8rem; }
-        .side-sub a.active { background: #eef2ff; color: var(--blue-d); font-weight: 700; }
-        .side-sub a.active i { color: var(--blue-d); }
-        .side-sub a.active::before { content: ""; position: absolute; left: -13px; top: 50%; transform: translateY(-50%); height: 16px; width: 2px; background: var(--blue); border-radius: 99px; }
 
-        .side-kicker { padding: 12px 14px 4px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #a9b6c4; margin-top: 8px; }
-        .side-sub-kicker { display: block; padding: 12px 12px 4px 0; font-size: 0.65rem; font-weight: 800; color: #a9b6c4; text-transform: uppercase; letter-spacing: 0.05em; }
-        .side-divider { height: 1px; background: var(--line); margin: 6px 10px; flex: none; }
-        
+        .sidebar { width: var(--sidebar-w); flex: none; position: sticky; top: var(--topbar-h); height: calc(100vh - var(--topbar-h)); overflow-y: auto; background: #fff; border-right: 1px solid var(--line); padding: 20px 14px 32px; scrollbar-width: thin; scrollbar-color: #d8dee8 transparent; display: flex; flex-direction: column; gap: 4px; }
+
+        .side-link { display: flex; align-items: center; gap: 14px; padding: 11px 14px; border-radius: var(--r-sm); font-size: .89rem; font-weight: 600; color: var(--ink); transition: background .2s, color .2s, transform .2s; margin-bottom: 4px; }
+        .side-link:hover { background: #f3f6fa; color: var(--ink); transform: translateX(1px); }
+        .side-link.active { background: var(--navy); color: #fff; box-shadow: 0 4px 10px rgba(13,27,42,.10); }
+        .side-link i { width: 20px; text-align: center; font-size: 1rem; color: var(--steel); transition: color .2s; }
+        .side-link:hover i { color: var(--ink); }
+        .side-link.active i { color: #fff; }
+
+        .side-group + .side-group { margin-top: 6px; }
+        .side-group summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: var(--r-sm); font-size: .78rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--navy); transition: background .2s, color .2s; user-select: none; }
+        .side-group summary::-webkit-details-marker { display: none; }
+        .side-group summary:hover { background: #f3f6fa; }
+        .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); }
+        .side-group summary .grp-label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .side-group summary .chev { flex: none; font-size: .7rem; transition: transform .25s ease; }
+        .side-group[open] summary .chev { transform: rotate(180deg); }
+
+        .side-sub { display: grid; gap: 3px; padding: 6px 4px 10px 12px; border-left: 2px solid var(--line); margin: 2px 0 8px 22px; }
+        .side-sub a { display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: var(--r-sm); font-size: .84rem; font-weight: 500; line-height: 1.4; color: var(--steel); transition: background .2s, color .2s, transform .2s; }
+        .side-sub a:hover { background: var(--navy-light); color: var(--navy-dark); transform: translateX(2px); }
+        .side-sub a.active { background: var(--navy-soft); color: var(--navy); font-weight: 600; }
+        .side-sub a i { width: 18px; text-align: center; font-size: .88rem; opacity: .75; }
+        .side-sub a:hover i, .side-sub a.active i { opacity: 1; }
+
+        .side-kicker { padding: 18px 14px 6px; font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--steel-soft); }
+        .side-sub-kicker { display: block; padding: 12px 12px 4px 0; font-size: .65rem; font-weight: 800; color: var(--steel-soft); text-transform: uppercase; letter-spacing: .05em; }
+        .side-divider { height: 1px; background: var(--line); margin: 6px 14px; flex: none; }
         .sidebar-backdrop { display: none; }
-        
+
         @media (max-width: 900px) {
-            .sidebar { position: fixed; z-index: 90; top: var(--topbar-h); left: 0; height: calc(100dvh - var(--topbar-h)); transform: translateX(-100%); transition: transform .3s ease; box-shadow: 12px 0 30px rgba(0,0,0,0.1); }
+            .side-toggle { display: inline-flex; }
+            .user-meta { display: none; }
+            .topbar { padding: 0 16px; }
+            .sidebar { position: fixed; z-index: 90; top: var(--topbar-h); left: 0; height: calc(100dvh - var(--topbar-h)); transform: translateX(-100%); transition: transform .3s ease; box-shadow: var(--shadow-lg); }
             body.side-open .sidebar { transform: none; }
-            .sidebar-backdrop { display: block; position: fixed; inset: var(--topbar-h) 0 0 0; z-index: 80; background: rgba(13,27,42,0.4); opacity: 0; pointer-events: none; transition: opacity .3s; }
+            .sidebar-backdrop { display: block; position: fixed; inset: var(--topbar-h) 0 0 0; z-index: 80; background: rgba(13,27,42,.45); opacity: 0; pointer-events: none; transition: opacity .3s; }
             body.side-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
         }
 
@@ -186,8 +188,8 @@
 
         .btn { display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 18px; border-radius: 999px; font-weight: 700; font-size: .86rem; transition: background .2s, transform .2s, box-shadow .2s; white-space: nowrap; }
         .btn:active { transform: scale(.98); }
-        .btn-primary { background: var(--navy); color: #fff; box-shadow: 0 4px 6px -1px rgba(37,99,235,0.1); }
-        .btn-primary:hover { background: var(--navy-d); box-shadow: 0 6px 8px -1px rgba(37,99,235,0.2); }
+        .btn-primary { background: var(--navy); color: #fff; box-shadow: 0 4px 6px -1px rgba(22,58,99,.12); }
+        .btn-primary:hover { background: var(--navy-dark); box-shadow: 0 6px 8px -1px rgba(22,58,99,.22); }
         .btn-outline { background: #fff; border: 1.5px solid var(--line); color: var(--ink); }
         .btn-outline:hover { border-color: var(--ink); background: var(--paper); }
         .btn-outline.green i { color: var(--green); }
@@ -209,7 +211,7 @@
         .table-wrap { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-xs); }
         .table-scroll { overflow-x: auto; }
         .data-table { font-size: .85rem; min-width: 720px; }
-        .data-table thead th { background: var(--paper); color: var(--steel); padding: 14px 16px; font-weight: 800; font-size: .7rem; letter-spacing: .05em; text-transform: uppercase; text-align: left; white-space: nowrap; border-bottom: 2px solid var(--line); position: sticky; top: 0; z-index: 10;}
+        .data-table thead th { background: var(--paper); color: var(--steel); padding: 14px 16px; font-weight: 800; font-size: .7rem; letter-spacing: .05em; text-transform: uppercase; text-align: left; white-space: nowrap; border-bottom: 2px solid var(--line); position: sticky; top: 0; z-index: 10; }
         .data-table thead th.c { text-align: center; }
         .data-table tbody td { padding: 13px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; color: var(--ink); }
         .data-table tbody td.c { text-align: center; }
@@ -221,15 +223,15 @@
         .row-total td:first-child { text-align: right; }
 
         .chip { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: .8rem; border: 1px solid transparent; }
-        .chip-blue { background: var(--info-tint); color: var(--info); border-color: rgba(47, 111, 237, 0.2); }
-        .chip-green { background: rgba(16, 185, 129, 0.1); color: var(--success); border-color: rgba(16, 185, 129, 0.2); }
+        .chip-blue { background: var(--info-tint); color: var(--info); border-color: rgba(37, 99, 235, 0.2); }
+        .chip-green { background: rgba(25, 135, 84, 0.1); color: var(--success); border-color: rgba(25, 135, 84, 0.2); }
         .chip-total { background: var(--navy); color: #fff; border-color: transparent; }
         .chip-muted { color: var(--steel-soft); }
 
-        .maps-chip { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); font-size: .78rem; font-weight: 700; color: var(--info); transition: background .2s, color .2s; }
-        .maps-chip:hover { background: var(--ink); color: #fff; }
+        .maps-chip { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 999px; background: var(--navy-light); border: 1px solid var(--navy-soft); font-size: .78rem; font-weight: 600; color: var(--navy); transition: background .2s, color .2s; }
+        .maps-chip:hover { background: var(--navy); color: #fff; }
         .maps-chip i { color: var(--signal); }
-        .maps-chip:hover i { color: var(--amber); }
+        .maps-chip:hover i { color: #fff; }
 
         .row-actions { display: inline-flex; gap: 6px; }
         .icon-btn { width: 32px; height: 32px; border-radius: 9px; display: inline-grid; place-items: center; font-size: .82rem; color: #fff; transition: filter .2s, transform .2s; }
@@ -263,7 +265,7 @@
         .btn-cancel { height: 42px; padding: 0 18px; border-radius: 999px; background: var(--paper); color: var(--ink); font-weight: 700; font-size: .86rem; transition: background .2s; }
         .btn-cancel:hover { background: var(--line); }
         .btn-save { height: 42px; padding: 0 22px; border-radius: 999px; background: var(--navy); color: #fff; font-weight: 700; font-size: .86rem; transition: background .2s; }
-        .btn-save:hover { background: var(--navy-d); }
+        .btn-save:hover { background: var(--navy-dark); }
 
         /* ==========================================================
            PRINT
@@ -305,10 +307,7 @@
         </button>
         <a href="/internal/index" class="brand">
             <img src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA">
-            <div class="brand-text">
-                <span class="main">SIMERAH KOJA</span>
-                <span class="sub">Portal Internal</span>
-            </div>
+            <span>SIMERAH KOJA</span>
         </a>
     </div>
     <div class="topbar-right">
@@ -329,10 +328,10 @@
 <div class="shell">
     <div class="sidebar-backdrop" id="sideBackdrop"></div>
 
-    <!-- ==================== SIDEBAR MASTER ==================== -->
+    <!-- ==================== SIDEBAR ==================== -->
     <aside class="sidebar" id="sidebar" aria-label="Navigasi internal">
 
-        <a href="/internal/index" class="side-a side-link {{ Request::is('internal/index') || Request::is('/') ? 'active' : '' }}">
+        <a href="/internal/index" class="side-link {{ Request::is('internal/index') || Request::is('/') ? 'active' : '' }}">
             <i class="fas fa-house"></i> Dashboard utama
         </a>
 
@@ -348,12 +347,12 @@
                     <i class="fas fa-chevron-down chev"></i>
                 </summary>
                 <div class="side-sub">
-                    <a href="/internal/pencegahan/layanan-inspeksi" class="side-a {{ Request::is('internal/pencegahan/layanan-inspeksi*') ? 'active' : '' }}"><i class="fas fa-clipboard-check"></i> Layanan inspeksi</a>
-                    <a href="/internal/pencegahan/layanan-sosialisasi" class="side-a {{ Request::is('internal/pencegahan/layanan-sosialisasi*') ? 'active' : '' }}"><i class="fas fa-bullhorn"></i> Layanan sosialisasi</a>
-                    <a href="/internal/pencegahan/pelatihan" class="side-a {{ Request::is('internal/pencegahan/pelatihan*') ? 'active' : '' }}"><i class="fas fa-chalkboard-user"></i> Pelatihan</a>
-                    <a href="/internal/pencegahan/pembinaan-pengembangan" class="side-a {{ Request::is('internal/pencegahan/pembinaan-pengembangan*') ? 'active' : '' }}"><i class="fas fa-chart-line"></i> Pembinaan &amp; pengembangan</a>
-                    <a href="/internal/pencegahan/peningkatan-kapasitas" class="side-a {{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}"><i class="fas fa-level-up-alt"></i> Peningkatan kapasitas</a>
-                    <a href="/internal/pencegahan/kelola-redkar" class="side-a {{ Request::is('internal/pencegahan/kelola-redkar*') ? 'active' : '' }}"><i class="fas fa-users-gear"></i> Kelola Redkar</a>
+                    <a href="/internal/pencegahan/layanan-inspeksi" class="{{ Request::is('internal/pencegahan/layanan-inspeksi*') ? 'active' : '' }}"><i class="fas fa-clipboard-check"></i> Layanan inspeksi</a>
+                    <a href="/internal/pencegahan/layanan-sosialisasi" class="{{ Request::is('internal/pencegahan/layanan-sosialisasi*') ? 'active' : '' }}"><i class="fas fa-bullhorn"></i> Layanan sosialisasi</a>
+                    <a href="/internal/pencegahan/pelatihan" class="{{ Request::is('internal/pencegahan/pelatihan*') ? 'active' : '' }}"><i class="fas fa-chalkboard-user"></i> Pelatihan</a>
+                    <a href="/internal/pencegahan/pembinaan-pengembangan" class="{{ Request::is('internal/pencegahan/pembinaan-pengembangan*') ? 'active' : '' }}"><i class="fas fa-chart-line"></i> Pembinaan &amp; pengembangan</a>
+                    <a href="/internal/pencegahan/peningkatan-kapasitas" class="{{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}"><i class="fas fa-level-up-alt"></i> Peningkatan kapasitas</a>
+                    <a href="/internal/pencegahan/kelola-redkar" class="{{ Request::is('internal/pencegahan/kelola-redkar*') ? 'active' : '' }}"><i class="fas fa-users-gear"></i> Kelola Redkar</a>
                 </div>
             </details>
         @endif
@@ -366,9 +365,9 @@
                     <i class="fas fa-chevron-down chev"></i>
                 </summary>
                 <div class="side-sub">
-                    <a href="/internal/damtan/input-data" class="side-a {{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Input data &amp; laporan</a>
-                    <a href="/internal/damtan/data-laporan" class="side-a {{ Request::is('internal/damtan/data-laporan*') ? 'active' : '' }}"><i class="fas fa-file-lines"></i> Data laporan</a>
-                    <a href="/internal/surat-korban/create" class="side-a {{ Request::is('internal/surat-korban*') ? 'active' : '' }}"><i class="fas fa-file-signature"></i> Buat surat korban</a>
+                    <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Input data &amp; laporan</a>
+                    <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') ? 'active' : '' }}"><i class="fas fa-file-lines"></i> Data laporan</a>
+                    <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban*') ? 'active' : '' }}"><i class="fas fa-file-signature"></i> Buat surat korban</a>
                 </div>
             </details>
         @endif
@@ -380,7 +379,7 @@
                 <i class="fas fa-chevron-down chev"></i>
             </summary>
             <div class="side-sub">
-                <a href="/internal/kepegawaian/duk" class="side-a {{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}"><i class="fas fa-user-tie"></i> Data Urut Kepegawaian</a>
+                <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}"><i class="fas fa-user-tie"></i> Data Urut Kepegawaian</a>
             </div>
         </details>
 
@@ -393,22 +392,21 @@
                     <i class="fas fa-chevron-down chev"></i>
                 </summary>
                 <div class="side-sub">
-                    <!-- Child labels as kickers -->
-                    <span class="side-sub-kicker">SARANA & PRASARANA</span>
-                    <a href="/sapra/sarana-mako" class="side-a {{ Request::is('sapra/sarana-mako*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Sarana pemadam kebakaran</a>
-                    <a href="/sapra/prasarana-mako" class="side-a {{ Request::is('sapra/prasarana-mako*') ? 'active' : '' }}"><i class="fas fa-building"></i> Prasarana pemadam kebakaran</a>
-                    <a href="/sapra/sarana-penyelamatan" class="side-a {{ Request::is('sapra/sarana-penyelamatan*') ? 'active' : '' }}"><i class="fas fa-life-ring"></i> Sarana Penyelamatan & Evakuasi</a>
-                    <a href="/sapra/sarana-pemeriksaan" class="side-a {{ Request::is('sapra/sarana-pemeriksaan*') ? 'active' : '' }}"><i class="fas fa-search"></i> Sarana Pemeriksaan Proteksi</a>
-                    <a href="/sapra/kelola-pos" class="side-a {{ Request::is('sapra/kelola-pos*') ? 'active' : '' }}"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
+                    <span class="side-sub-kicker">SARANA &amp; PRASARANA</span>
+                    <a href="/sapra/sarana-mako" class="{{ Request::is('sapra/sarana-mako*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Sarana pemadam kebakaran</a>
+                    <a href="/sapra/prasarana-mako" class="{{ Request::is('sapra/prasarana-mako*') ? 'active' : '' }}"><i class="fas fa-building"></i> Prasarana pemadam kebakaran</a>
+                    <a href="/sapra/sarana-penyelamatan" class="{{ Request::is('sapra/sarana-penyelamatan*') ? 'active' : '' }}"><i class="fas fa-life-ring"></i> Sarana Penyelamatan &amp; Evakuasi</a>
+                    <a href="/sapra/sarana-pemeriksaan" class="{{ Request::is('sapra/sarana-pemeriksaan*') ? 'active' : '' }}"><i class="fas fa-search"></i> Sarana Pemeriksaan Proteksi</a>
+                    <a href="/sapra/kelola-pos" class="{{ Request::is('sapra/kelola-pos*') ? 'active' : '' }}"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
 
                     <span class="side-sub-kicker">MANAJEMEN AIR</span>
                     <!-- ACTIVE KARENA HALAMAN INI SUMBER AIR -->
-                    <a href="/sapra/data_hidrant_gedung" class="side-a {{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}"><i class="fas fa-droplet"></i> Sumber Air</a>
-                    <a href="/sapra/data-hidrant-kota" class="side-a {{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
+                    <a href="/sapra/data_hidrant_gedung" class="{{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}"><i class="fas fa-droplet"></i> Sumber Air</a>
+                    <a href="/sapra/data-hidrant-kota" class="{{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
 
-                    <span class="side-sub-kicker">LOGISTIK & DISTRIBUSI</span>
-                    <a href="/sapra/kebutuhan-sarpras" class="side-a {{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
-                    <a href="/sapra/distribusi-staff" class="side-a {{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}"><i class="fas fa-people-carry-box"></i> Distribusi Barang Staff</a>
+                    <span class="side-sub-kicker">LOGISTIK &amp; DISTRIBUSI</span>
+                    <a href="/sapra/kebutuhan-sarpras" class="{{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
+                    <a href="/sapra/distribusi-staff" class="{{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}"><i class="fas fa-people-carry-box"></i> Distribusi Barang Staff</a>
                 </div>
             </details>
         @endif
@@ -423,9 +421,9 @@
                     <i class="fas fa-chevron-down chev"></i>
                 </summary>
                 <div class="side-sub">
-                    <a href="/internal/operator/kelola-berita" class="side-a {{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}"><i class="fas fa-newspaper"></i> Input &amp; kelola berita</a>
-                    <a href="/internal/operator/infografis" class="side-a {{ Request::is('internal/operator/infografis*') ? 'active' : '' }}"><i class="far fa-image"></i> Kelola info grafis</a>
-                    <a href="/internal/operator/berita-medsos" class="side-a {{ Request::is('internal/operator/berita-medsos*') || Request::is('media-informasi*') ? 'active' : '' }}"><i class="fab fa-instagram"></i> Kelola berita medsos</a>
+                    <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}"><i class="fas fa-newspaper"></i> Input &amp; kelola berita</a>
+                    <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}"><i class="far fa-image"></i> Kelola info grafis</a>
+                    <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') || Request::is('media-informasi*') ? 'active' : '' }}"><i class="fab fa-instagram"></i> Kelola berita medsos</a>
                 </div>
             </details>
         @endif
@@ -441,9 +439,9 @@
                 <i class="fas fa-chevron-down chev"></i>
             </summary>
             <div class="side-sub">
-                <a href="/internal/profil" class="side-a {{ Request::is('internal/profil*') ? 'active' : '' }}"><i class="fas fa-user-pen"></i> Profil saya</a>
+                <a href="/internal/profil" class="{{ Request::is('internal/profil*') ? 'active' : '' }}"><i class="fas fa-user-pen"></i> Profil saya</a>
                 @if(Auth::user()->role === 'super_user')
-                    <a href="/internal/kelola-user" class="side-a {{ Request::is('internal/kelola-user*') ? 'active' : '' }}"><i class="fas fa-users-gear"></i> Kelola pengguna</a>
+                    <a href="/internal/kelola-user" class="{{ Request::is('internal/kelola-user*') ? 'active' : '' }}"><i class="fas fa-users-gear"></i> Kelola pengguna</a>
                 @endif
             </div>
         </details>
@@ -662,7 +660,7 @@
     /* ---------- Sidebar (mobile) ---------- */
     var toggle = document.getElementById('sideToggle');
     var backdrop = document.getElementById('sideBackdrop');
-    function closeSide() { document.body.classList.remove('side-open'); toggle.setAttribute('aria-expanded', 'false'); }
+    function closeSide() { document.body.classList.remove('side-open'); if (toggle) toggle.setAttribute('aria-expanded', 'false'); }
     if (toggle) {
         toggle.addEventListener('click', function () {
             var open = document.body.classList.toggle('side-open');
@@ -686,13 +684,13 @@
         tab.addEventListener('click', function () {
             tabs.forEach(function (t) { t.setAttribute('aria-selected', 'false'); });
             tab.setAttribute('aria-selected', 'true');
-            
+
             document.querySelectorAll('.panel').forEach(function (p) {
                 var active = p.id === tab.dataset.tab;
                 p.hidden = !active;
                 if (active) { p.setAttribute('data-print-active', ''); } else { p.removeAttribute('data-print-active'); }
             });
-            
+
             if (searchInput) {
                 searchInput.value = '';
                 document.querySelectorAll('.data-row').forEach(function (row) { row.style.display = ''; });
@@ -719,17 +717,14 @@
             var q = searchInput.value.trim().toLowerCase();
             var activePanel = document.querySelector('.panel:not([hidden])');
             if (!activePanel) return;
-            
+
             activePanel.querySelectorAll('.data-row').forEach(function (row) {
-                // Prevent hiding total row
-                if (row.classList.contains('row-total')) return;
-                
                 var namaElem = row.querySelector('.data-name');
                 var alamatElem = row.querySelector('.data-address');
-                
+
                 var nama = namaElem ? namaElem.textContent.toLowerCase() : '';
                 var alamat = alamatElem ? alamatElem.textContent.toLowerCase() : '';
-                
+
                 row.style.display = (nama.indexOf(q) !== -1 || alamat.indexOf(q) !== -1) ? '' : 'none';
             });
         });
@@ -739,7 +734,7 @@
     var pilihKategori = document.getElementById('pilihKategoriTambah');
     var inputJumlah = document.getElementById('inputTambahJumlah');
     var inputLuas = document.getElementById('inputTambahLuas');
-    
+
     if (pilihKategori) {
         pilihKategori.addEventListener('change', function () {
             var kat = pilihKategori.value;

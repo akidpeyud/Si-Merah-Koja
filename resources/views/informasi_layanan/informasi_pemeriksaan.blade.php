@@ -21,14 +21,14 @@
 
     // Sidebar kategori publikasi. Kategori & item aktif untuk halaman ini: Sapra > Sarana pemeriksaan
     $kategori = [
-      'pencegahan' => [
-    'label' => 'Bagian pencegahan',
-    'items' => [
-        ['url' => '/informasi-layanan?panel=kapasitas',    'label' => 'Peningkatan Kapasitas Aparatur',  'ico' => 'fa-arrow-trend-up'],
-        ['url' => '/informasi-layanan?panel=inspeksi',     'label' => 'Pencegahan Kebakaran & Inspeksi', 'ico' => 'fa-magnifying-glass-chart'],
-        ['url' => '/informasi-layanan?panel=pemberdayaan', 'label' => 'Pemberdayaan Masyarakat',         'ico' => 'fa-handshake-angle'],
-    ],
-],
+        'pencegahan' => [
+            'label' => 'Bagian pencegahan',
+            'items' => [
+                ['url' => '/informasi-layanan?panel=kapasitas',    'label' => 'Peningkatan Kapasitas Aparatur',  'ico' => 'fa-arrow-trend-up'],
+                ['url' => '/informasi-layanan?panel=inspeksi',     'label' => 'Pencegahan Kebakaran & Inspeksi', 'ico' => 'fa-magnifying-glass-chart'],
+                ['url' => '/informasi-layanan?panel=pemberdayaan', 'label' => 'Pemberdayaan Masyarakat',         'ico' => 'fa-handshake-angle'],
+            ],
+        ],
         'pemadaman'  => ['label' => 'Bagian pemadaman',  'items' => []],
         'sapra' => [
             'label' => 'Bagian sapra',
@@ -38,9 +38,8 @@
                 ['url' => '/informasi-penyelamatan', 'label' => 'Sarana penyelamatan', 'ico' => 'fa-life-ring'],
                 ['url' => '/informasi-pemeriksaan',  'label' => 'Sarana pemeriksaan',  'ico' => 'fa-magnifying-glass'],
                 ['url' => '/sumber-air',             'label' => 'Sumber Air',          'ico' => 'fa-droplet'],
-                ['url' => '/hidrant-kota',           'label' => 'Data Hidrant Kota Jambi', 'ico' => 'fa-map-location-dot'],         
-                
-                ],
+                ['url' => '/hidrant-kota',           'label' => 'Data Hidrant Kota Jambi', 'ico' => 'fa-map-location-dot'],        
+            ],
         ],
     ];
     $kategori_aktif = 'sapra';
@@ -219,10 +218,6 @@
         .rise.d1 { animation-delay: .08s; } .rise.d2 { animation-delay: .18s; } .rise.d3 { animation-delay: .3s; }
         @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 
-        
-
-        
-
         /* ==========================================================
            LAYOUT UTAMA
            ========================================================== */
@@ -235,8 +230,6 @@
         .cat-panel h2 { padding: 4px 10px 16px; font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.05rem; letter-spacing: -0.01em; }
 
         /* --- Sidebar kategori --- */
-        .cat-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 20px 16px; }
-        .cat-panel h2 { padding: 4px 10px 16px; font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.05rem; letter-spacing: -0.01em; }
         .cat { border-top: 1px solid var(--line); }
         .cat:first-of-type { border-top: 0; }
         .cat-btn { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 10px; text-align: left; border-radius: 12px; font-weight: 700; font-size: .9rem; color: var(--ink); transition: background .2s; }
@@ -258,8 +251,6 @@
         .cat-sub a i { width: 20px; text-align: center; color: #b8c3d0; font-size: .95rem; }
         .cat-sub a[aria-current="page"] { background: var(--signal); color: #fff; box-shadow: 0 10px 20px -8px rgba(229,57,45,.6); }
         .cat-sub a[aria-current="page"] i { color: #fff; }
-
-        
 
         /* ==========================================================
            PANEL DATA
@@ -422,7 +413,7 @@
                 </ul>
             </li>
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
-              @if(session()->has('pemohon_id'))
+            @if(session()->has('pemohon_id'))
                 <li class="has-drop">
                     <button class="menu-trigger btn-login" type="button" aria-expanded="false">
                         <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
@@ -504,7 +495,7 @@
                 <div class="data-head">
                     <div>
                         <h2>Sarana pemeriksaan proteksi kebakaran</h2>
-                        <p>Galeri publik transparansi data ketersediaan alat seperti walkie talkie dan head tester di tiap pos.</p>
+                        <p>Galeri publik transparansi data ketersediaan alat seperti walkie talkie dan heat tester di tiap pos.</p>
                     </div>
                     <label class="search">
                         <span class="sr-only">Cari alat pemeriksaan</span>
@@ -592,10 +583,6 @@
 </div>
 
 </main>
-
-
-
-
 
 <!-- ==================== FOOTER ==================== -->
 <footer class="footer">
@@ -705,6 +692,26 @@
 
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') closeDrops(null);
+    });
+
+    /* ---------- Sidebar Kategori (Akordion / Auto Tutup) ---------- */
+    document.querySelectorAll('.cat-btn.has-items').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var cat = btn.closest('.cat');
+            var nowOpen = !cat.hasAttribute('data-open');
+            
+            // Menutup semua menu sidebar yang sedang terbuka
+            document.querySelectorAll('.cat[data-open]').forEach(function (c) { 
+                c.removeAttribute('data-open'); 
+                c.querySelector('.cat-btn').setAttribute('aria-expanded', 'false'); 
+            });
+            
+            // Membuka menu yang sedang diklik (jika tadinya tertutup)
+            if (nowOpen) { 
+                cat.setAttribute('data-open', ''); 
+                btn.setAttribute('aria-expanded', 'true'); 
+            }
+        });
     });
 
     /* ---------- Tombol lapor mengambang (muncul setelah scroll) ---------- */
