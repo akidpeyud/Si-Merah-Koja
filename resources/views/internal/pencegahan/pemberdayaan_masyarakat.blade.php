@@ -643,22 +643,24 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 <h1>Pemberdayaan masyarakat</h1>
                 <p>Kelola data sosialisasi, edukasi, dan pelatihan tanggap kebakaran.</p>
             </div>
-
-            <div class="toolbar">
-                <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
-                    <input type="text" class="form-control border-start-0 ps-0" placeholder="Cari kelurahan atau posyandu...">
-                </div>
-                <a href="/internal/pencegahan/pemberdayaan-masyarakat/create" class="btn-solid btn-navy">
-                    <i class="fas fa-plus"></i> Tambah Data
-                </a>
-                <a href="#" class="btn-solid btn-green">
-                    <i class="fas fa-file-excel"></i> Excel
-                </a>
-                <a href="#" class="btn-solid btn-red">
-                    <i class="fas fa-file-pdf"></i> PDF
-                </a>
-            </div>
+{{-- Toolbar disembunyikan di tab Semua Data --}}
+@unless(Request::is('internal/pencegahan/pemberdayaan-masyarakat'))
+<div class="toolbar">
+    <div class="input-group">
+        <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+        <input type="text" class="form-control border-start-0 ps-0" placeholder="Cari kelurahan atau posyandu...">
+    </div>
+    <a href="/internal/pencegahan/pemberdayaan-masyarakat/create" class="btn-solid btn-navy">
+        <i class="fas fa-plus"></i> Tambah Data
+    </a>
+    <a href="{{ url('/internal/pencegahan/pemberdayaan-masyarakat/cetak-excel') }}" class="btn btn-success">
+    <i class="fas fa-file-excel"></i> Excel
+</a>
+     <a href="/internal/pencegahan/pemberdayaan-masyarakat/cetak" target="_blank" class="btn-solid btn-red">
+        <i class="fas fa-file-pdf"></i> PDF
+    </a>
+</div>
+@endunless
         </div>
 
         <!-- TABS -->

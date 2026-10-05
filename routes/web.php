@@ -29,7 +29,7 @@ use App\Models\Infografis;
 use App\Models\BeritaMedsos;
 use App\Models\EduDamkar;
 use App\Models\UjungDamkar;
-
+use App\Http\Controllers\FireDrillController;
 // ==========================================
 // 1. RUTE PUBLIK (HALAMAN UTAMA & INFO)
 // ==========================================
@@ -277,9 +277,10 @@ Route::middleware(['auth'])->group(function () {
     // ROUTE CETAK EXCEL & PDF INSPEKSI BANGUNAN & FIRE DRILL
     Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan/cetak-excel', [PencegahanController::class, 'cetakExcelInspeksi']);
     Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan/cetak-pdf', [PencegahanController::class, 'cetakPdfInspeksi']);
-    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/cetak-excel', [PencegahanController::class, 'cetakExcelFireDrill']);
-    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/cetak-pdf', [PencegahanController::class, 'cetakPdfFireDrill']);
-
+      Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/excel', [FireDrillController::class, 'excel'])
+      ->name('fire_drill.excel');
+   Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/cetak', [FireDrillController::class, 'cetak'])
+    ->name('fire_drill.cetak');
     // 1. KELOLA REDKAR
     Route::get('/internal/pencegahan/kelola-redkar', [RedkarController::class, 'kelolaRedkarInternal']);
     Route::post('/internal/pencegahan/verifikasi-redkar/{id}', [RedkarController::class, 'verifikasiRedkar']);
@@ -479,7 +480,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/edit/{id}', [PemberdayaanController::class, 'edit']);
     Route::put('/internal/pencegahan/pemberdayaan-masyarakat/update/{id}', [PemberdayaanController::class, 'update']);
     Route::delete('/internal/pencegahan/pemberdayaan-masyarakat/hapus/{id}', [PemberdayaanController::class, 'destroy']);
-    
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/cetak', [PemberdayaanController::class, 'cetak'])
+    ->name('pemberdayaan.cetak');
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/cetak-excel', [PemberdayaanController::class, 'cetakExcel']);
+
     // Pelatihan Keluarga
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga', [PencegahanController::class, 'indexPelatihanKeluarga'])->name('pelatihan_keluarga.index');
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/tambah', [PencegahanController::class, 'createPelatihanKeluarga'])->name('pelatihan_keluarga.create');
@@ -487,7 +491,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/edit/{id}', [PencegahanController::class, 'editPelatihanKeluarga'])->name('pelatihan_keluarga.edit');
     Route::put('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/update/{id}', [PencegahanController::class, 'updatePelatihanKeluarga'])->name('pelatihan_keluarga.update');
     Route::delete('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/hapus/{id}', [PencegahanController::class, 'destroyPelatihanKeluarga'])->name('pelatihan_keluarga.destroy');
-
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak', [App\Http\Controllers\PemberdayaanController::class, 'cetakPelatihan']);
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak-excel', [App\Http\Controllers\PemberdayaanController::class, 'cetakExcelPelatihan']);
     // 9. PENINGKATAN KAPASITAS APARATUR (DIKLAT - CONTROLLER BASED)
     Route::get('/internal/pencegahan/peningkatan-kapasitas', [PencegahanController::class, 'indexPeningkatanKapasitas']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/tambah', [PencegahanController::class, 'createDiklat']);

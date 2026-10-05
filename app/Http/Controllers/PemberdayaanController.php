@@ -116,4 +116,100 @@ class PemberdayaanController extends Controller
         return redirect('/internal/pencegahan/pemberdayaan-masyarakat')
             ->with('success', 'Data Sosialisasi & Edukasi berhasil dihapus!');
     }
+
+   // 7. CETAK PDF SOSIALISASI
+    public function cetak()
+    {
+        // Ubah nama variabel penampung menjadi $data
+        $data = DB::table('sosialisasi_edukasi')->orderBy('tanggal_pelaksanaan', 'desc')->get();
+
+        // Kirimkan variabel $data menggunakan compact('data')
+        return view('internal.pencegahan.cetak_sosialisasi', compact('data'));
+    }
+
+    // 8. CETAK EXCEL SOSIALISASI
+    public function cetakExcel()
+    {
+        $data = DB::table('sosialisasi_edukasi')->orderBy('tanggal_pelaksanaan', 'desc')->get();
+        $filename = "Data_Sosialisasi_Edukasi_" . date('Ymd') . ".csv";
+        
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['NO', 'TANGGAL PELAKSANAAN', 'KECAMATAN', 'KELURAHAN', 'RT', 'POSYANDU', 'PESERTA LAKI-LAKI', 'PESERTA PEREMPUAN', 'TOTAL PESERTA'];
+
+        $callback = function() use($data, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+            
+            foreach ($data as $index => $row) {
+                // Hitung total peserta otomatis
+                $total_peserta = ($row->peserta_laki_laki ?? 0) + ($row->peserta_perempuan ?? 0);
+                
+                fputcsv($file, [
+                    $index + 1,
+                    $row->tanggal_pelaksanaan ? \Carbon\Carbon::parse($row->tanggal_pelaksanaan)->translatedFormat('d F Y') : '-',
+                    $row->kecamatan ?? '-',
+                    $row->kelurahan ?? '-',
+                    $row->rt ?? '-',
+                    $row->posyandu ?? '-',
+                    $row->peserta_laki_laki ?? '0',
+                    $row->peserta_perempuan ?? '0',
+                    $total_peserta
+                ]);
+            }
+            fclose($file);
+        };
+        
+        return response()->stream($callback, 200, $headers);
+    }
+
+    // 9. CETAK PELATIHAN KELUARGA
+    public function cetakPelatihan()
+    {
+        $data = \App\Models\PelatihanKeluarga::orderBy('tanggal_pelaksanaan', 'desc')->get();
+
+        return view('internal.pencegahan.cetak_pelatihan', compact('data'));
+    }// 10. CETAK EXCEL PELATIHAN KELUARGA
+    public function cetakExcelPelatihan()
+    {
+        $data = \App\Models\PelatihanKeluarga::orderBy('tanggal_pelaksanaan', 'desc')->get();
+        $filename = "Data_Pelatihan_Keluarga_" . date('Ymd') . ".csv";
+        
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        // Sesuai dengan kolom di tabel view kamu
+        $columns = ['NO', 'HARI / TANGGAL', 'LOKASI / KELURAHAN', 'NAMA SEKOLAH', 'JUMLAH PESERTA', 'KETERANGAN'];
+
+        $callback = function() use($data, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+            
+            foreach ($data as $index => $row) {
+                fputcsv($file, [
+                    $index + 1,
+                    // Format l, d F Y akan menghasilkan: Senin, 01 Agustus 2026
+                    $row->tanggal_pelaksanaan ? \Carbon\Carbon::parse($row->tanggal_pelaksanaan)->translatedFormat('l, d F Y') : '-',
+                    $row->lokasi_kelurahan ?? ($row->kelurahan ?? '-'),
+                    $row->nama_sekolah ?? '-',
+                    $row->jumlah_peserta ?? '0',
+                    $row->keterangan ?? '-'
+                ]);
+            }
+            fclose($file);
+        };
+        
+        return response()->stream($callback, 200, $headers);
+    }
 }

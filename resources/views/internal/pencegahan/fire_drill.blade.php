@@ -665,12 +665,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 <a href="{{ route('fire_drill.create') }}" class="btn-tool navy">
                     <i class="fas fa-plus"></i> Tambah Data
                 </a>
-                <a href="#" class="btn-tool green">
-                    <i class="fas fa-file-excel"></i> Excel
-                </a>
-                <a href="#" class="btn-tool red">
-                    <i class="fas fa-file-pdf"></i> PDF
-                </a>
+                <a href="{{ route('fire_drill.excel') }}" class="btn-tool green">
+    <i class="fas fa-file-excel"></i> Excel
+</a>
+                <a href="{{ route('fire_drill.cetak') }}" target="_blank" class="btn-tool red">
+    <i class="fas fa-file-pdf"></i> PDF
+</a>
             </div>
         </div>
 
