@@ -157,6 +157,8 @@
         .dropdown .btn-logout {
             color: #ff8b8b; display: flex; align-items: center; gap: 8px; 
             transition: background .2s, color .2s; cursor: pointer;
+            border: none; background: transparent; width: 100%; text-align: left;
+            padding: 11px 14px; font-size: .92rem; border-radius: var(--r-sm);
         }
         .dropdown .btn-logout:hover { background: rgba(255, 255, 255, .1); color: #ffb8b8; }
 
@@ -357,12 +359,12 @@
         .dz-files li { display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); font-size: .82rem; font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
 
         .form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; padding-top: 4px; }
-        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 30px; border-radius: 999px; font-weight: 700; font-size: 1rem; transition: background .2s, box-shadow .2s; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 30px; border-radius: 999px; font-weight: 700; font-size: 1rem; transition: background .2s, box-shadow .2s; border: none; cursor: pointer;}
         .btn-primary { background: var(--signal); color: #fff; box-shadow: 0 14px 30px -10px rgba(229,57,45,.6); }
         .btn-primary:hover { background: var(--signal-d); }
         .btn-dark { background: var(--ink); color: #fff; }
         .btn-dark:hover { background: var(--ink-3); }
-        .form-actions p { font-size: .88rem; color: var(--steel); }
+        .form-actions p { font-size: .88rem; color: var(--steel); margin: 0; }
         @media (max-width: 640px) { .form-actions .btn { width: 100%; } }
 
         /* MODAL PERSYARATAN */
@@ -490,20 +492,20 @@
             <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="/video-edukasi">Video Edukasi</a></li>
-                    <li><a href="/info-grafis">Infografis</a></li>
+                    <li><a href="/edu-damkar">Edu Damkar</a></li>
+                    <li><a href="/infografis">Info Grafis</a></li>
                     <li><a href="/media-informasi">Media Informasi</a></li>
-                    <li><a href="/giat-disdamkartan">Giat Disdamkartan</a></li>
+                    <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
                 </ul>
             </li>
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
             
-          @if(session()->has('pemohon_id'))
+            @if(session()->has('pemohon_id'))
                 <li class="has-drop">
                     <button class="menu-trigger btn-login" type="button" aria-expanded="false">
                         <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
                     </button>
-                   <ul class="dropdown">
+                    <ul class="dropdown">
                         <li>
                             <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
                                 @csrf
@@ -517,10 +519,6 @@
             @else
                 <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
             @endif
-
-                    </li>
-                </ul>
-            </li>
         </ul>
     </nav>
 </header>
@@ -667,7 +665,7 @@
                     <span class="form-note"><span class="req" aria-hidden="true">*</span> wajib diisi</span>
                 </div>
 
-                <form class="form-body" action="#" method="POST" enctype="multipart/form-data">
+                <form class="form-body" action="{{ route('permohonan.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <?php if ($pesan_sukses): ?>
