@@ -17,9 +17,13 @@
 
     $kategori = [
         'pencegahan' => [
-            'label' => 'Bagian pencegahan',
-            'items' => [],
-        ],
+    'label' => 'Bagian pencegahan',
+    'items' => [
+        ['url' => '/informasi-layanan?panel=kapasitas',    'label' => 'Peningkatan Kapasitas Aparatur',  'ico' => 'fa-arrow-trend-up'],
+        ['url' => '/informasi-layanan?panel=inspeksi',     'label' => 'Pencegahan Kebakaran & Inspeksi', 'ico' => 'fa-magnifying-glass-chart'],
+        ['url' => '/informasi-layanan?panel=pemberdayaan', 'label' => 'Pemberdayaan Masyarakat',         'ico' => 'fa-handshake-angle'],
+    ],
+],
         'pemadaman' => [
             'label' => 'Bagian pemadaman',
             'items' => [],

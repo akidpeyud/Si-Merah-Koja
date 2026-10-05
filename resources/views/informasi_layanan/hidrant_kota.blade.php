@@ -3,10 +3,14 @@
     $arr = function ($x) { return (is_object($x) && method_exists($x, 'toArray')) ? $x->toArray() : (array) $x; };
 
     $kategori = [
-        'pencegahan' => [
-            'label' => 'Bagian pencegahan',
-            'items' => [],
-        ],
+       'pencegahan' => [
+    'label' => 'Bagian pencegahan',
+    'items' => [
+        ['url' => '/informasi-layanan?panel=kapasitas',    'label' => 'Peningkatan Kapasitas Aparatur',  'ico' => 'fa-arrow-trend-up'],
+        ['url' => '/informasi-layanan?panel=inspeksi',     'label' => 'Pencegahan Kebakaran & Inspeksi', 'ico' => 'fa-magnifying-glass-chart'],
+        ['url' => '/informasi-layanan?panel=pemberdayaan', 'label' => 'Pemberdayaan Masyarakat',         'ico' => 'fa-handshake-angle'],
+    ],
+],
         'pemadaman' => [
             'label' => 'Bagian pemadaman',
             'items' => [],

@@ -21,7 +21,14 @@
 
     // Sidebar kategori publikasi. Kategori & item aktif untuk halaman ini: Sapra > Sarana pemeriksaan
     $kategori = [
-        'pencegahan' => ['label' => 'Bagian pencegahan', 'items' => []],
+        'pencegahan' => [
+            'label' => 'Bagian pencegahan',
+            'items' => [
+                ['url' => '/informasi-layanan?panel=kapasitas',    'label' => 'Peningkatan Kapasitas Aparatur',  'ico' => 'fa-arrow-trend-up'],
+                ['url' => '/informasi-layanan?panel=inspeksi',     'label' => 'Pencegahan Kebakaran & Inspeksi', 'ico' => 'fa-magnifying-glass-chart'],
+                ['url' => '/informasi-layanan?panel=pemberdayaan', 'label' => 'Pemberdayaan Masyarakat',         'ico' => 'fa-handshake-angle'],
+            ],
+        ],
         'pemadaman'  => ['label' => 'Bagian pemadaman',  'items' => []],
         'sapra' => [
             'label' => 'Bagian sapra',
@@ -31,8 +38,8 @@
                 ['url' => '/informasi-penyelamatan', 'label' => 'Sarana penyelamatan', 'ico' => 'fa-life-ring'],
                 ['url' => '/informasi-pemeriksaan',  'label' => 'Sarana pemeriksaan',  'ico' => 'fa-magnifying-glass'],
                 ['url' => '/sumber-air',             'label' => 'Sumber Air',          'ico' => 'fa-droplet'],
-                ['url' => '/hidrant-kota',           'label' => 'Data Hidrant Kota Jambi', 'ico' => 'fa-map-location-dot'],         
-                ],
+                ['url' => '/hidrant-kota',           'label' => 'Data Hidrant Kota Jambi', 'ico' => 'fa-map-location-dot'],        
+            ],
         ],
     ];
     $kategori_aktif = 'sapra';
@@ -211,10 +218,6 @@
         .rise.d1 { animation-delay: .08s; } .rise.d2 { animation-delay: .18s; } .rise.d3 { animation-delay: .3s; }
         @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 
-        
-
-        
-
         /* ==========================================================
            LAYOUT UTAMA
            ========================================================== */
@@ -250,8 +253,6 @@
         .cat-sub a i { width: 20px; text-align: center; color: #b8c3d0; font-size: .95rem; }
         .cat-sub a[aria-current="page"] { background: var(--signal); color: #fff; box-shadow: 0 10px 20px -8px rgba(229,57,45,.6); }
         .cat-sub a[aria-current="page"] i { color: #fff; }
-
-        
 
         /* ==========================================================
            PANEL DATA
@@ -395,7 +396,7 @@
                     <?php endforeach; ?>
                 </ul>
             </li>
-           <li class="has-drop">
+            <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
@@ -585,10 +586,6 @@
 
 </main>
 
-
-
-
-
 <!-- ==================== FOOTER ==================== -->
 <footer class="footer">
     <div class="wrap">
@@ -697,6 +694,26 @@
 
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') closeDrops(null);
+    });
+
+    /* ---------- Sidebar Kategori (Akordion / Auto Tutup) ---------- */
+    document.querySelectorAll('.cat-btn.has-items').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var cat = btn.closest('.cat');
+            var nowOpen = !cat.hasAttribute('data-open');
+            
+            // Menutup semua menu sidebar yang sedang terbuka
+            document.querySelectorAll('.cat[data-open]').forEach(function (c) { 
+                c.removeAttribute('data-open'); 
+                c.querySelector('.cat-btn').setAttribute('aria-expanded', 'false'); 
+            });
+            
+            // Membuka menu yang sedang diklik (jika tadinya tertutup)
+            if (nowOpen) { 
+                cat.setAttribute('data-open', ''); 
+                btn.setAttribute('aria-expanded', 'true'); 
+            }
+        });
     });
 
     /* ---------- Tombol lapor mengambang (muncul setelah scroll) ---------- */
