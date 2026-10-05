@@ -71,6 +71,11 @@ Route::get('/ujung-ujung-damkar', function () {
     return view('kabardamkar.ujung-damkar', compact('daftar_ujung_damkar'));
 })->name('publik.ujung-damkar');
 
+// TAMBAHKAN RUTE INFO GRAFIS DI SINI
+Route::get('/info-grafis', function () {
+    $daftar_infografis = App\Models\Infografis::latest()->get();
+    return view('kabardamkar.infografis', compact('daftar_infografis')); 
+})->name('publik.infografis');
 
 // ==========================================
 // 2. RUTE AKUN PEMOHON (MASYARAKAT / PERUSAHAAN)
@@ -653,3 +658,32 @@ Route::get('/dokumen/view/{id}', [ProgramKerjaController::class, 'viewFile'])->n
 
 // Download File Dokumen (Publik)
 Route::get('/dokumen/download/{id}', [ProgramKerjaController::class, 'download'])->name('dokumen.download');
+// ========================================================
+    // 10. Pemberdayaan Masyarakat & Pelatihan Keluarga
+    // ========================================================
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat', [PemberdayaanController::class, 'index']);
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/sosialisasi', [PemberdayaanController::class, 'sosialisasi']);
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/create', [PemberdayaanController::class, 'create'])->name('pemberdayaan.create');
+    Route::post('/internal/pencegahan/pemberdayaan-masyarakat/store', [PemberdayaanController::class, 'store'])->name('pemberdayaan.store');
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/edit/{id}', [PemberdayaanController::class, 'edit']);
+    Route::put('/internal/pencegahan/pemberdayaan-masyarakat/update/{id}', [PemberdayaanController::class, 'update']);
+    Route::delete('/internal/pencegahan/pemberdayaan-masyarakat/hapus/{id}', [PemberdayaanController::class, 'destroy']);
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/cetak', [PemberdayaanController::class, 'cetak'])->name('pemberdayaan.cetak');
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/cetak-excel', [PemberdayaanController::class, 'cetakExcel']);
+
+    // --- Pelatihan Keluarga ---
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga', [PencegahanController::class, 'indexPelatihanKeluarga'])->name('pelatihan_keluarga.index');
+    
+    // Rute GET (Menampilkan Form) - Mendukung URL /create maupun /tambah
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/create', [PencegahanController::class, 'createPelatihanKeluarga'])->name('pelatihan_keluarga.create');
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/tambah', [PencegahanController::class, 'createPelatihanKeluarga']);
+    
+    // Rute POST (Menyimpan Data) - Mendukung URL /store maupun /tambah
+    Route::post('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/store', [PencegahanController::class, 'storePelatihanKeluarga'])->name('pelatihan_keluarga.store');
+    Route::post('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/tambah', [PencegahanController::class, 'storePelatihanKeluarga']);
+    
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/edit/{id}', [PencegahanController::class, 'editPelatihanKeluarga'])->name('pelatihan_keluarga.edit');
+    Route::put('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/update/{id}', [PencegahanController::class, 'updatePelatihanKeluarga'])->name('pelatihan_keluarga.update');
+    Route::delete('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/hapus/{id}', [PencegahanController::class, 'destroyPelatihanKeluarga'])->name('pelatihan_keluarga.destroy');
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak', [PemberdayaanController::class, 'cetakPelatihan']);
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak-excel', [PemberdayaanController::class, 'cetakExcelPelatihan']);
