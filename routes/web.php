@@ -5,16 +5,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Middleware\CekLoginPemohon;
 use App\Http\Controllers\AuthController;
-use App\HttpHere is the clean, resolved `web.php` file with the merge conflicts fixed. The imports have been combined, and the internal Program Kerja routes have been correctly placed inside the `auth` middleware group to ensure they remain protected.
-
-```php
-<?php
-
-use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Http\Middleware\CekLoginPemohon;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\SapraController;
 use App\Http\Controllers\OperatorMedsosController;
@@ -273,7 +263,7 @@ Route::middleware(['auth'])->group(function () {
 
     // 1. Kelola REDKAR
     Route::get('/internal/pencegahan/kelola-redkar', [RedkarController::class, 'kelolaRedkarInternal']);
-    Route::post('/internal/pencegahan/update-status-redkar/{id}', [RedkarController::class, 'verifikasiRedkar']); // Sesuai dengan form modal update
+    Route::post('/internal/pencegahan/update-status-redkar/{id}', [RedkarController::class, 'verifikasiRedkar']); 
     Route::get('/internal/pencegahan/edit-redkar/{id}', [RedkarController::class, 'editRedkar']);
     Route::put('/internal/pencegahan/update-redkar/{id}', [RedkarController::class, 'updateRedkar']);
     Route::delete('/internal/pencegahan/hapus-redkar/{id}', [RedkarController::class, 'hapusRedkar']);

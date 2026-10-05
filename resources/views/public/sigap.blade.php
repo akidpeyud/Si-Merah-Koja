@@ -26,6 +26,7 @@
 
 <style>
 :root {
+    /* Warna Dasar Peta & Halaman SIGAP */
     --ink: #0d1b2a;
     --ink-2: #1e293b;
     --ink-3: #334155;
@@ -38,13 +39,28 @@
     --blue-soft: #eff6ff;
     --line: #e2e8f0;
     --soft: #f1f5f9;
+
+    /* Warna & Variabel khusus dari Navbar Baru */
+    --signal: #e5392d;
+    --signal-d: #c22b20;
+    --amber: #ffb627;
+    --steel: #5b6c7f;
+    --r-lg: 28px;
+    --r-md: 18px;
+    --r-sm: 10px;
+
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    
     --display: 'Bricolage Grotesque', system-ui, sans-serif;
     --body: 'Instrument Sans', system-ui, sans-serif;
+    --font-display: var(--display);
+    --font-body: var(--body);
+    
     --wrap: 1200px;
-    --header: 70px;
+    --header-h: 64px;
+    --header: var(--header-h);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -65,62 +81,71 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 :focus-visible { outline: 3px solid rgba(37, 99, 235, 0.5); outline-offset: 2px; border-radius: 6px; }
 .wrap { width: min(var(--wrap), calc(100% - 40px)); margin: auto; }
 
-/* HEADER */
+/* ==========================================================
+   HEADER NAVBAR (STYLE BARU)
+   ========================================================== */
 .site-header {
     position: sticky; top: 0; z-index: 1000;
-    background: rgba(13, 27, 42, 0.95);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    background: rgba(13, 27, 42, .85);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    backdrop-filter: blur(14px) saturate(1.4);
+    border-bottom: 1px solid rgba(255,255,255,.08);
 }
 .nav {
-    width: min(1260px, calc(100% - 32px));
-    height: var(--header); margin: auto;
+    max-width: var(--wrap); margin: 0 auto; height: var(--header-h);
+    padding: 0 clamp(16px, 4vw, 32px);
     display: flex; align-items: center; justify-content: space-between; gap: 24px;
 }
-.brand { display: flex; align-items: center; gap: 8px; flex: none; }
-.brand img { height: 36px; width: auto; object-fit: contain; }
-.brand img+img { padding-left: 9px; border-left: 1px solid rgba(255,255,255,0.15); }
-.menu { display: flex; align-items: center; gap: 4px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand img { height: 38px; width: auto; }
+
+.menu { display: flex; align-items: center; gap: 2px; }
 .menu > li { position: relative; }
 .menu-link, .menu-trigger {
     display: inline-flex; align-items: center; gap: 8px;
-    padding: 8px 14px; border-radius: 8px;
-    color: rgba(255,255,255,0.8);
-    font-size: 0.88rem; font-weight: 600;
+    padding: 9px 14px; border-radius: 999px;
+    color: rgba(255,255,255,.88); font-size: .92rem; font-weight: 500;
+    transition: background .2s, color .2s;
 }
-.menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger {
-    color: #fff; background: rgba(255,255,255,0.1);
-}
-.menu-trigger i { font-size: 0.65rem; transition: transform .2s; }
+.menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger, .menu > li.current > .menu-trigger { background: rgba(255,255,255,.1); color: #fff; }
+.menu-trigger i { font-size: .65rem; transition: transform .2s; }
 .has-drop.open > .menu-trigger i { transform: rotate(180deg); }
-.menu .btn-login {
-    margin-left: 8px; padding: 9px 20px;
-    background: var(--red); color: #fff; border-radius: 8px;
-}
-.menu .btn-login:hover { background: var(--red-dark); transform: translateY(-1px); }
-.dropdown {
-    display: none; position: absolute; top: calc(100% + 8px); left: 0;
-    min-width: 240px; padding: 8px;
-    background: #0f172a;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 12px;
-    box-shadow: var(--shadow-lg);
-}
-.dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -8px; height: 8px; }
-.dropdown a {
-    display: block; padding: 10px 14px; border-radius: 8px;
-    color: rgba(255,255,255,0.85); font-size: 0.88rem; font-weight: 500;
-}
-.dropdown a:hover { background: rgba(255,255,255,0.1); color: #fff; }
-.has-drop.open .dropdown { display: block; }
-.nav-toggle {
-    display: none; width: 44px; height: 44px; border-radius: 8px;
-    color: #fff; font-size: 1.1rem;
-}
-.nav-toggle:hover { background: rgba(255,255,255,0.1); }
+.menu .btn-login { background: var(--signal); color: #fff; margin-left: 10px; font-weight: 600; padding: 9px 22px; }
+.menu .btn-login:hover { background: var(--signal-d); }
 
-/* HERO */
+.dropdown {
+    display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 250px;
+    background: var(--ink-2); border: 1px solid rgba(255,255,255,.1);
+    border-radius: var(--r-md); padding: 6px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
+}
+.dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
+.dropdown a { display: block; padding: 11px 14px; border-radius: var(--r-sm); font-size: .92rem; color: rgba(255,255,255,.85); }
+.dropdown a:hover, .dropdown a[aria-current="page"] { background: rgba(255,255,255,.1); color: #fff; }
+.has-drop.open .dropdown { display: block; }
+@media (hover: hover) and (min-width: 992px) {
+    .has-drop:hover .dropdown { display: block; }
+}
+
+.nav-toggle { display: none; width: 44px; height: 44px; border-radius: 12px; color: #fff; font-size: 1.15rem; }
+.nav-toggle:hover { background: rgba(255,255,255,.1); }
+
+@media (max-width: 991px) {
+    .nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
+    .menu {
+        display: none; position: fixed; top: var(--header-h); left: 0; right: 0;
+        max-height: calc(100dvh - var(--header-h)); overflow-y: auto;
+        flex-direction: column; align-items: stretch; gap: 4px;
+        padding: 16px clamp(16px, 4vw, 32px) 28px; background: var(--ink);
+        border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .nav-open .menu { display: flex; }
+    .menu-link, .menu-trigger { width: 100%; justify-content: space-between; padding: 14px 16px; border-radius: 14px; font-size: 1rem; }
+    .dropdown { position: static; margin: 2px 0 8px 12px; box-shadow: none; background: transparent; border: 0; border-left: 2px solid rgba(255,255,255,.12); border-radius: 0; }
+    .dropdown::before { display: none; }
+    .menu .btn-login { margin: 8px 0 0; justify-content: center; padding: 14px; }
+}
+
+/* HERO SIGAP */
 .page-hero {
     position: relative; overflow: hidden; color: #fff;
     padding: 60px 0 100px; background: #0b1d2e;
@@ -155,6 +180,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 
 /* MAP SECTION */
 .page-body { background: var(--paper); padding-bottom: 80px; }
+.page-body .wrap { width: min(1360px, calc(100% - 40px)); }
 .map-wrap {
     margin: -60px auto 0;
     background: #fff;
@@ -164,7 +190,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
     position: relative; z-index: 10;
     border: 1px solid var(--line);
     display: grid;
-    grid-template-columns: 360px 1fr;
+    grid-template-columns: 300px 1fr 300px;
     height: 75vh; min-height: 650px;
 }
 .map-sidebar {
@@ -176,11 +202,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 .map-sidebar::-webkit-scrollbar { width: 6px; }
 .map-sidebar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
-.map-sidebar-header {
-    padding: 24px;
-    border-bottom: 1px solid var(--line);
-    background: #f8fafc;
-}
+.map-sidebar-header { padding: 24px; background: #f8fafc; flex: 1; }
 .map-sidebar-header h2 {
     font-family: var(--display); font-size: 1.3rem; font-weight: 700;
     color: var(--ink); margin-bottom: 4px;
@@ -236,16 +258,34 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 }
 .search-wrap .form-control { padding-left: 38px; margin-bottom: 0; }
 
+/* Panel kanan: daftar kecamatan / titik */
+.map-list {
+    border-left: 1px solid var(--line);
+    display: flex; flex-direction: column;
+    background: #fff; min-height: 0;
+}
+.map-list-header { padding: 20px 20px 12px; border-bottom: 1px solid var(--line); background: #f8fafc; }
+.list-scroll { flex: 1; overflow-y: auto; min-height: 0; }
+.list-scroll::-webkit-scrollbar { width: 6px; }
+.list-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
 /* District List */
 .list-heading {
-    padding: 16px 24px 8px;
+    padding: 0 0 12px;
     display: flex; align-items: center; justify-content: space-between;
     color: var(--muted); font-size: 0.75rem; font-weight: 700;
     text-transform: uppercase; letter-spacing: 0.05em;
 }
-#daftar {
-    list-style: none; margin: 0; padding: 0 16px 16px;
+.count-badge {
+    min-width: 24px; text-align: center; padding: 2px 8px; border-radius: 999px;
+    background: var(--soft); color: var(--ink-3); font-size: .7rem; font-weight: 700;
 }
+#daftar-kecamatan { list-style: none; margin: 0; padding: 0 16px 16px; }
+#daftar-titik { list-style: none; margin: 12px 0 0; max-height: 300px; overflow-y: auto; }
+#daftar-titik::-webkit-scrollbar { width: 6px; }
+#daftar-titik::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.filter-section .list-heading { padding: 0 0 10px; }
+.filter-section .search-wrap { margin-top: 0; }
 .item {
     width: 100%; cursor: pointer; display: flex; align-items: center; gap: 12px;
     padding: 10px 12px; border-radius: 8px; border: 1px solid transparent;
@@ -254,6 +294,8 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 }
 .item:hover { background: #f8fafc; border-color: var(--line); }
 .item.aktif { background: var(--blue-soft); color: var(--blue); border-color: #bfdbfe; }
+.item small { display: block; color: var(--muted); font-weight: 500; }
+.item .meta { margin-left: auto; font-size: .7rem; color: var(--muted); }
 .warna { width: 12px; height: 12px; border-radius: 4px; flex: none; }
 .kosong { padding: 20px; color: var(--muted); font-size: 0.85rem; text-align: center; }
 
@@ -293,12 +335,12 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 .footer h3 { font-family: var(--display); color: #fff; font-size: 1.1rem; margin-bottom: 16px; }
 .footer-about img { height: 60px; width: auto; margin-bottom: 16px; }
 .footer-about p { font-size: 0.85rem; line-height: 1.7; }
-.map {
+.footer .map {
     position: relative; height: 180px; border-radius: 12px;
     overflow: hidden; border: 1px solid rgba(255,255,255,0.1);
 }
-.map iframe { width: 100%; height: 100%; border: 0; filter: grayscale(0.3); transition: .3s; }
-.map:hover iframe { filter: none; }
+.footer .map iframe { width: 100%; height: 100%; border: 0; filter: grayscale(0.3); transition: .3s; }
+.footer .map:hover iframe { filter: none; }
 .map-link {
     position: absolute; inset: 0; z-index: 2;
     display: flex; align-items: flex-end; justify-content: flex-end; padding: 12px;
@@ -347,25 +389,13 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 
 /* RESPONSIVE */
 @media (max-width: 991px) {
-    .nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
-    .menu {
-        display: none; position: fixed; top: var(--header); left: 0; right: 0;
-        max-height: calc(100dvh - var(--header)); overflow-y: auto;
-        flex-direction: column; align-items: stretch; gap: 8px;
-        padding: 16px 20px 24px; background: #0b1d2e;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-    .nav-open .menu { display: flex; }
-    .menu-link, .menu-trigger { width: 100%; justify-content: space-between; padding: 12px 16px; border-radius: 8px; background: rgba(255,255,255,0.03); }
-    .dropdown { position: static; margin: 4px 0 8px 12px; box-shadow: none; background: transparent; border: none; border-left: 2px solid rgba(255,255,255,0.1); border-radius: 0; }
-    .dropdown::before { display: none; }
-    .menu .btn-login { margin: 8px 0 0; justify-content: center; }
     .footer-grid { grid-template-columns: 1fr; gap: 40px; }
+    .map-wrap { grid-template-columns: 1fr; height: auto; margin-top: -40px; }
+    #map { order: -1; height: 60vh; min-height: 420px; }
+    .map-sidebar { border-right: none; border-top: 1px solid var(--line); }
+    .map-list { border-left: none; border-top: 1px solid var(--line); max-height: 420px; }
 }
 @media (max-width: 768px) {
-    .map-wrap { grid-template-columns: 1fr; grid-template-rows: auto 60vh; height: auto; margin-top: -40px; }
-    #map { order: -1; min-height: 450px; }
-    .map-sidebar { border-right: none; border-top: 1px solid var(--line); max-height: 500px; }
     .chips { grid-template-columns: 1fr 1fr; }
     .page-hero { padding: 40px 0 80px; }
     .page-hero h1 { font-size: clamp(2rem, 8vw, 2.8rem); }
@@ -379,18 +409,19 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 </head>
 <body>
 
-<!-- ==================== HEADER ==================== -->
+<!-- ==================== HEADER (STYLE BARU) ==================== -->
 <header class="site-header" id="siteHeader">
     <nav class="nav" aria-label="Navigasi utama">
         <a href="/" class="brand" aria-label="SIMERAH KOJA, beranda">
             <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
             <img src="/images/logo.png" alt="Logo Damkar">
             <img src="/images/logo-redkar.png" alt="Logo Redkar">
-            <span>SIMERAH KOJA</span>
         </a>
+
         <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="menu">
             <i class="fas fa-bars"></i>
         </button>
+
         <ul class="menu" id="menu">
             <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan kedaruratan <i class="fas fa-chevron-down"></i></button>
@@ -410,21 +441,23 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
                     <li><a href="/produkhukum">Produk hukum</a></li>
                 </ul>
             </li>
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan &amp; fasilitas <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/layanan-fasilitas/layanan_perizinan">Layanan perizinan</a></li>
+            <li class="has-drop current">
+                <button class="menu-trigger" type="button" aria-expanded="false">Layanan<i class="fas fa-chevron-down"></i></button>
+               <ul class="dropdown">
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
+                    <li><a href="/layanan-fasilitas/skk">SKK &amp; Perpanjang SKK</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan Edukasi &amp; Sosialisasi</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
+                    <li><a href="/public-sigap" aria-current="page">Peta SIGAP</a></li>
                 </ul>
             </li>
             <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="/video-edukasi">Video edukasi</a></li>
+                    <li><a href="/video-edukasi">Video Edukasi</a></li>
                     <li><a href="/info-grafis">Infografis</a></li>
-                    <li><a href="/media-informasi">Media informasi</a></li>
-                    <li><a href="/giat-disdamkartan">Giat Disdamkartan Kota Jambi</a></li>
+                    <li><a href="/media-informasi">Media Informasi</a></li>
+                    <li><a href="/giat-disdamkartan">Giat Disdamkartan</a></li>
                 </ul>
             </li>
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
@@ -437,15 +470,16 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
     <!-- ==================== HERO ==================== -->
     <section class="page-hero">
         <div class="wrap">
-            <nav aria-label="Breadcrumb" class="rise">
+            <nav aria-label="Breadcrumb">
                 <ol class="crumbs">
                     <li><a href="/">Beranda</a></li>
                     <li><span aria-current="page">Peta Operasional</span></li>
                 </ol>
             </nav>
-            <div class="hero-kicker rise"><i class="fas fa-map-marked-alt"></i> SIGAP SIMERAH</div>
-            <h1 class="rise d1">Peta Operasional Kota Jambi</h1>
-            <div class="hero-line rise d3"></div>
+            <div class="hero-kicker"><i class="fas fa-map-marked-alt"></i> SIGAP SIMERAH</div>
+            <h1>SIGAP Kota Jambi</h1>
+            <h2>Sistem Informasi Geografis Antisipasi dan Penanggulangan</h2>
+            <div class="hero-line"></div>
         </div>
     </section>
 
@@ -459,34 +493,49 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
                         <h2>Filter Data Peta</h2>
                         <p id="ringkas">Pilih kategori titik terlebih dahulu untuk mengaktifkan filter kecamatan.</p>
 
-                        <!-- KATEGORI TITIK -->
                         <div class="filter-section">
                             <span class="lbl">Kategori Titik</span>
                             <div id="kategori" class="chips" aria-label="Filter kategori titik"></div>
                         </div>
 
-                        <!-- PILIH KECAMATAN (Disabled sampai kategori diklik) -->
                         <div class="filter-section">
                             <span class="lbl">Pilih Kecamatan</span>
                             <select id="filter-kecamatan" class="form-select" aria-label="Filter Kecamatan" disabled>
                                 <option value="">Pilih kategori terlebih dahulu...</option>
                             </select>
-                            <div class="search-wrap mt-2">
-                                <i class="fas fa-search"></i>
-                                <input id="cari" class="form-control" type="search" placeholder="Cari kecamatan..." aria-label="Cari kecamatan" disabled>
+                        </div>
+
+                        <div class="filter-section">
+                            <div class="list-heading">
+                                <span id="judul-titik">Daftar Titik</span>
+                                <span id="count-titik" class="count-badge"></span>
                             </div>
+                            <div class="search-wrap">
+                                <i class="fas fa-search"></i>
+                                <input id="cari-titik" class="form-control" type="search" placeholder="Cari titik..." aria-label="Cari titik" disabled>
+                            </div>
+                            <ul id="daftar-titik"></ul>
                         </div>
                     </div>
-
-                    <!-- DAFTAR KECAMATAN / TITIK -->
-                    <div class="list-heading">
-                        <span id="judul-daftar">Daftar Kecamatan</span>
-                        <span id="list-count" class="badge bg-secondary rounded-pill"></span>
-                    </div>
-                    <ul id="daftar"></ul>
                 </aside>
 
                 <div id="map"></div>
+
+                <aside class="map-list" aria-label="Daftar kecamatan">
+                    <div class="map-list-header">
+                        <div class="list-heading">
+                            <span>Daftar Kecamatan</span>
+                            <span id="list-count" class="count-badge"></span>
+                        </div>
+                        <div class="search-wrap">
+                            <i class="fas fa-search"></i>
+                            <input id="cari" class="form-control" type="search" placeholder="Cari kecamatan..." aria-label="Cari kecamatan">
+                        </div>
+                    </div>
+                    <div class="list-scroll">
+                        <ul id="daftar-kecamatan"></ul>
+                    </div>
+                </aside>
 
             </div>
         </div>
@@ -560,179 +609,54 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 (function () {
     'use strict';
 
-    /* ---------- Navigasi & tombol darurat ---------- */
-    var header = document.getElementById('siteHeader');
-    var toggle = header.querySelector('.nav-toggle');
-    var drops = header.querySelectorAll('.has-drop');
+    const $ = id => document.getElementById(id);
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-    function closeDrops(except) {
-        drops.forEach(function (li) {
-            if (li !== except) {
-                li.classList.remove('open');
-                li.querySelector('.menu-trigger').setAttribute('aria-expanded', 'false');
-            }
-        });
-    }
+    /* =========================================================
+       1. NAVIGASI & TOMBOL DARURAT
+       ========================================================= */
+    const header = $('siteHeader');
+    const toggle = header.querySelector('.nav-toggle');
+    const drops  = header.querySelectorAll('.has-drop');
 
-    toggle.addEventListener('click', function () {
-        var open = header.classList.toggle('nav-open');
+    const closeDrops = except => drops.forEach(li => {
+        if (li === except) return;
+        li.classList.remove('open');
+        li.querySelector('.menu-trigger').setAttribute('aria-expanded', 'false');
+    });
+
+    toggle.addEventListener('click', () => {
+        const open = header.classList.toggle('nav-open');
         toggle.setAttribute('aria-expanded', open);
         toggle.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
         toggle.querySelector('i').className = open ? 'fas fa-times' : 'fas fa-bars';
     });
 
-    drops.forEach(function (li) {
-        var btn = li.querySelector('.menu-trigger');
-        btn.addEventListener('click', function () {
-            var open = li.classList.toggle('open');
-            btn.setAttribute('aria-expanded', open);
+    drops.forEach(li => {
+        const btn = li.querySelector('.menu-trigger');
+        btn.addEventListener('click', () => {
+            btn.setAttribute('aria-expanded', li.classList.toggle('open'));
             closeDrops(li);
         });
     });
+    document.addEventListener('click', e => { if (!e.target.closest('.has-drop')) closeDrops(null); });
 
-    document.addEventListener('click', function (e) {
-        if (!e.target.closest('.has-drop')) closeDrops(null);
-    });
-
-    var fab = document.getElementById('sosFab');
-    var fabBtn = fab.querySelector('.sos-fab-btn');
-
-    function updateFab() {
-        var show = window.scrollY > 300;
+    const fab = $('sosFab'), fabBtn = fab.querySelector('.sos-fab-btn');
+    const setFab = open => { fab.classList.toggle('open', open); fabBtn.setAttribute('aria-expanded', open); };
+    fabBtn.addEventListener('click', () => setFab(!fab.classList.contains('open')));
+    const updateFab = () => {
+        const show = window.scrollY > 300;
         fab.classList.toggle('show', show);
-        if (!show) { fab.classList.remove('open'); fabBtn.setAttribute('aria-expanded', 'false'); }
-    }
+        if (!show) setFab(false);
+    };
     window.addEventListener('scroll', updateFab, { passive: true });
     updateFab();
 
-    fabBtn.addEventListener('click', function () {
-        var open = fab.classList.toggle('open');
-        fabBtn.setAttribute('aria-expanded', open);
-    });
-
-    /* ---------- Peta Leaflet ---------- */
+    /* =========================================================
+       2. KONFIGURASI & STATE
+       ========================================================= */
     const KOLOM_NAMA = ['kecamatan', 'KECAMATAN', 'Kecamatan', 'WADMKC', 'NAMOBJ', 'nama', 'NAME_3'];
     const PALET = ['#2563eb', '#dc2626', '#f59e0b', '#10b981', '#8b5cf6', '#ea580c', '#0f172a', '#334155', '#64748b', '#f43f5e', '#14b8a6'];
-
-    const map = L.map('map').setView([-1.6101, 103.6131], 12);
-    const jalan = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19, attribution: '&copy; OpenStreetMap'
-    }).addTo(map);
-    const citra = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        maxZoom: 19, attribution: 'Esri'
-    });
-    L.control.layers({ 'Peta Jalan': jalan, 'Citra Satelit': citra }).addTo(map);
-
-    const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    const getNama = p => { for (const k of KOLOM_NAMA) if (p[k]) return p[k]; return 'Tanpa nama'; };
-
-    const daftar = document.getElementById('daftar');
-    const selectFilter = document.getElementById('filter-kecamatan');
-    const inputCari = document.getElementById('cari');
-    const judulDaftar = document.getElementById('judul-daftar');
-    const listCount = document.getElementById('list-count');
-    const layers = {}, warnaNama = {};
-    let geojson;
-    let daftarKecamatanGlobal = [];
-
-    function sorot(nama, aktif) {
-        (layers[nama] || []).forEach(l => aktif
-            ? l.setStyle({ weight: 3, color: '#0f172a', fillOpacity: 0.7 })
-            : geojson.resetStyle(l));
-    }
-
-    function aktifkanFilterKecamatan() {
-        selectFilter.disabled = false;
-        inputCari.disabled = false;
-        selectFilter.innerHTML = '<option value="">Semua Kecamatan</option>';
-        daftarKecamatanGlobal.forEach(n => {
-            const o = document.createElement('option');
-            o.value = n; o.textContent = n; selectFilter.appendChild(o);
-        });
-    }
-
-    function lockFilterKecamatan() {
-        selectFilter.disabled = true;
-        inputCari.disabled = true;
-        selectFilter.innerHTML = '<option value="">Pilih kategori terlebih dahulu...</option>';
-        inputCari.value = '';
-        map.fitBounds(geojson.getBounds());
-        map.closePopup();
-    }
-
-    function renderSidebarList(filterKecamatan = '', keywordPencarian = '') {
-        daftar.innerHTML = '';
-
-        if (filterKecamatan) {
-            judulDaftar.textContent = `Titik di ${filterKecamatan}`;
-            
-            const titikDiKecamatan = semuaTitik.filter(p => {
-                const matchKat = aktifKat.has(p.kategori);
-                const matchCari = p.nama.toLowerCase().includes(keywordPencarian) || p.lokasi.toLowerCase().includes(keywordPencarian);
-                return matchKat && matchCari;
-            });
-
-            listCount.textContent = titikDiKecamatan.length;
-
-            if (titikDiKecamatan.length === 0) {
-                daftar.innerHTML = '<li class="kosong">Tidak ada titik data untuk kategori ini di wilayah tersebut.</li>';
-                return;
-            }
-
-            titikDiKecamatan.forEach(p => {
-                const li = document.createElement('li');
-                const warnaKat = KATEGORI[p.kategori]?.warna || '#2563eb';
-                const ikonKat = KATEGORI[p.kategori]?.ikon || 'fa-map-pin';
-
-                li.innerHTML = `<button class="item"><span class="warna" style="background:${warnaKat}"><i class="fas ${ikonKat}" style="font-size:0.6rem; color:#fff; display:grid; place-items:center; height:100%;"></i></span><div style="flex:1; overflow:hidden;"><div style="font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${esc(p.nama)}</div><small style="color:var(--muted);">${esc(p.lokasi)}</small></div></button>`;
-                
-                li.firstChild.addEventListener('click', () => {
-                    map.setView([p.lat, p.lng], 16);
-                });
-                daftar.appendChild(li);
-            });
-
-        } else {
-            judulDaftar.textContent = "Daftar Kecamatan";
-            const q = keywordPencarian.toLowerCase();
-            
-            const filteredKec = daftarKecamatanGlobal.filter(n => n.toLowerCase().includes(q));
-            listCount.textContent = filteredKec.length;
-
-            if (filteredKec.length === 0) {
-                daftar.innerHTML = '<li class="kosong">Kecamatan tidak ditemukan.</li>';
-                return;
-            }
-
-            filteredKec.forEach(n => {
-                const li = document.createElement('li');
-                li.innerHTML = `<button class="item"><span class="warna" style="background:${warnaNama[n]}"></span>${esc(n)}</button>`;
-                const b = li.firstChild;
-                b.addEventListener('click', () => pilih(n));
-                b.addEventListener('mouseenter', () => sorot(n, true));
-                b.addEventListener('mouseleave', () => sorot(n, false));
-                daftar.appendChild(li);
-            });
-        }
-    }
-
-    function pilih(nama) {
-        if (layers[nama]) {
-            map.fitBounds(L.featureGroup(layers[nama]).getBounds(), { padding: [30, 30] });
-            layers[nama][0].openPopup();
-            selectFilter.value = nama;
-            renderSidebarList(nama, inputCari.value);
-            renderTitik();
-        }
-    }
-
-    function popupHtml(p, nama) {
-        const baris = Object.entries(p).filter(([, v]) => v !== null && v !== '')
-            .map(([k, v]) => `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('');
-        return `<div class="popup"><h3>${esc(nama)}</h3><table>${baris}</table></div>`;
-    }
-
-    /* ---------- Kategori Titik ---------- */
     const KATEGORI = {
         kebakaran:    { label: 'Kebakaran',    warna: '#dc2626', ikon: 'fa-fire' },
         sumber_air:   { label: 'Sumber Air',   warna: '#2563eb', ikon: 'fa-water' },
@@ -740,134 +664,264 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
         penyelamatan: { label: 'Penyelamatan', warna: '#10b981', ikon: 'fa-life-ring' },
         pos:          { label: 'Pos Damkar',   warna: '#0f172a', ikon: 'fa-building' }
     };
-    const semuaTitik = [];
-    const aktifKat = new Set(); 
-    const chip = {};
+
+    const state = { kategori: null, kecamatan: '', qKec: '', qTitik: '' };
+
+    const data = { fitur: [], kecamatan: [], titik: [] };
+    const layersKec = {};   // nama kecamatan -> [layer poligon]
+    const warnaKec  = {};   // nama kecamatan -> warna
+    const chips     = {};   // kategori -> elemen chip
+    const markers   = new Map(); // titik -> L.marker (dibuat sekali)
+    let geojson;
+
+    const el = {
+        ringkas: $('ringkas'), kategori: $('kategori'), select: $('filter-kecamatan'),
+        cariKec: $('cari'), countKec: $('list-count'), daftarKec: $('daftar-kecamatan'),
+        cariTitik: $('cari-titik'), judulTitik: $('judul-titik'), countTitik: $('count-titik'), daftarTitik: $('daftar-titik')
+    };
+
+    const getNama = p => { for (const k of KOLOM_NAMA) if (p[k]) return p[k]; return 'Tanpa nama'; };
+
+    /* =========================================================
+       3. PETA DASAR
+       ========================================================= */
+    const map = L.map('map').setView([-1.6101, 103.6131], 12);
+    const jalan = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(map);
+    const citra = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Esri' });
+    L.control.layers({ 'Peta Jalan': jalan, 'Citra Satelit': citra }).addTo(map);
     const grupTitik = L.layerGroup().addTo(map);
 
+    /* =========================================================
+       4. GEOMETRI: tentukan kecamatan dari koordinat titik
+       ========================================================= */
+    function inRing(lng, lat, ring) {
+        let inside = false;
+        for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+            const [xi, yi] = ring[i], [xj, yj] = ring[j];
+            if ((yi > lat) !== (yj > lat) && lng < (xj - xi) * (lat - yi) / (yj - yi) + xi) inside = !inside;
+        }
+        return inside;
+    }
+    const inPolygon = (lng, lat, rings) => inRing(lng, lat, rings[0]) && !rings.slice(1).some(r => inRing(lng, lat, r));
+
+    function cariKecamatan(lat, lng) {
+        for (const f of data.fitur) {
+            const g = f.geometry;
+            const polys = g.type === 'Polygon' ? [g.coordinates] : g.type === 'MultiPolygon' ? g.coordinates : [];
+            if (polys.some(rings => inPolygon(lng, lat, rings))) return getNama(f.properties);
+        }
+        return '';
+    }
+
+    /* =========================================================
+       5. DATA TURUNAN (dihitung dari state)
+       ========================================================= */
+    const titikKategori = () => state.kategori ? data.titik.filter(p => p.kategori === state.kategori) : [];
+    const titikTerpilih = () => titikKategori().filter(p => !state.kecamatan || p.kecamatan === state.kecamatan);
+    const titikTampil = () => {
+        const q = state.qTitik.toLowerCase();
+        return titikTerpilih().filter(p => `${p.nama} ${p.lokasi || ''}`.toLowerCase().includes(q));
+    };
+
+    /* =========================================================
+       6. RENDER
+       ========================================================= */
+    function renderChips() {
+        const hitung = {};
+        data.titik.forEach(p => { hitung[p.kategori] = (hitung[p.kategori] || 0) + 1; });
+        Object.entries(chips).forEach(([k, b]) => {
+            b.classList.toggle('off', state.kategori !== k);
+            b.querySelector('b').textContent = hitung[k] || 0;
+        });
+    }
+
+    function renderFilter() {
+        const aktif = !!state.kategori;
+        el.select.disabled = el.cariTitik.disabled = !aktif;
+        el.cariTitik.value = state.qTitik;
+
+        if (!aktif) {
+            el.select.innerHTML = '<option value="">Pilih kategori terlebih dahulu...</option>';
+            return;
+        }
+        el.select.innerHTML = '<option value="">Semua Kecamatan</option>' +
+            data.kecamatan.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
+        el.select.value = state.kecamatan;
+    }
+
+    function renderDaftarKecamatan() {
+        const q = state.qKec.toLowerCase();
+        const list = data.kecamatan.filter(n => n.toLowerCase().includes(q));
+        el.countKec.textContent = list.length;
+        el.daftarKec.innerHTML = '';
+        if (!list.length) { el.daftarKec.innerHTML = '<li class="kosong">Kecamatan tidak ditemukan.</li>'; return; }
+
+        const jumlah = {};
+        titikKategori().forEach(p => { jumlah[p.kecamatan] = (jumlah[p.kecamatan] || 0) + 1; });
+
+        list.forEach(n => {
+            const li = document.createElement('li');
+            li.innerHTML = `<button class="item${n === state.kecamatan ? ' aktif' : ''}"><span class="warna" style="background:${warnaKec[n]}"></span>${esc(n)}${
+                state.kategori ? `<span class="meta">${jumlah[n] || 0} titik</span>` : ''}</button>`;
+            const b = li.firstElementChild;
+            b.addEventListener('click', () => n === state.kecamatan ? setKecamatan('') : fokusKecamatan(n));
+            b.addEventListener('mouseenter', () => sorot(n, true));
+            b.addEventListener('mouseleave', () => sorot(n, false));
+            el.daftarKec.appendChild(li);
+        });
+    }
+
+    function renderDaftarTitik() {
+        el.daftarTitik.innerHTML = '';
+        const kosong = teks => { el.daftarTitik.innerHTML = `<li class="kosong">${teks}</li>`; };
+
+        el.judulTitik.textContent = state.kecamatan ? `Titik di ${state.kecamatan}` : 'Daftar Titik';
+        if (!state.kategori) { el.countTitik.textContent = ''; return kosong('Pilih kategori titik terlebih dahulu.'); }
+
+        const list = titikTampil();
+        el.countTitik.textContent = list.length;
+        if (!list.length) return kosong('Tidak ada titik untuk filter ini.');
+
+        list.forEach(p => {
+            const li = document.createElement('li');
+            li.innerHTML = `<button class="item"><span class="warna" style="background:${KATEGORI[p.kategori].warna}"></span>
+                <div style="flex:1;overflow:hidden"><div style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.nama)}</div>
+                <small>${esc(p.lokasi || '')}</small></div></button>`;
+            li.firstElementChild.addEventListener('click', () => { map.setView([p.lat, p.lng], 16); markers.get(p)?.openPopup(); });
+            el.daftarTitik.appendChild(li);
+        });
+    }
+
+    function renderMarker() {
+        grupTitik.clearLayers();
+        titikTampil().forEach(p => {
+            if (!markers.has(p)) markers.set(p, buatMarker(p));
+            grupTitik.addLayer(markers.get(p));
+        });
+    }
+
+    function render() {
+        renderChips();
+        renderFilter();
+        renderDaftarKecamatan();
+        renderDaftarTitik();
+        renderMarker();
+    }
+
+    /* =========================================================
+       7. AKSI (satu-satunya tempat state berubah)
+       ========================================================= */
+    function setKategori(k) {
+        state.kategori = state.kategori === k ? null : k;
+        state.kecamatan = '';
+        state.qTitik = '';
+        if (geojson) map.fitBounds(geojson.getBounds());
+        map.closePopup();
+        render();
+    }
+
+    function setKecamatan(nama) {
+        state.kecamatan = nama;
+        state.qTitik = '';
+        const target = nama && layersKec[nama] ? L.featureGroup(layersKec[nama]).getBounds() : geojson.getBounds();
+        map.fitBounds(target, { padding: [30, 30] });
+        render();
+    }
+
+    function fokusKecamatan(nama) {
+        if (state.kategori) return setKecamatan(nama);
+        map.fitBounds(L.featureGroup(layersKec[nama]).getBounds(), { padding: [30, 30] });
+    }
+
+    function sorot(nama, aktif) {
+        (layersKec[nama] || []).forEach(l => aktif
+            ? l.setStyle({ weight: 3, color: '#0f172a', fillOpacity: 0.7 })
+            : geojson.resetStyle(l));
+    }
+
+    /* =========================================================
+       8. FACTORY: chip, marker, popup
+       ========================================================= */
     Object.entries(KATEGORI).forEach(([k, v]) => {
         const b = document.createElement('button');
-        b.type = 'button'; 
+        b.type = 'button';
         b.className = 'chip off';
         b.innerHTML = `<span class="dot" style="background:${v.warna}"><i class="fas ${v.ikon}"></i></span><span>${v.label}</span><b>0</b>`;
-        
-        b.addEventListener('click', () => {
-            const isSudahAktif = aktifKat.has(k);
-            
-            aktifKat.clear();
-            Object.values(chip).forEach(ch => ch.classList.add('off'));
-
-            if (!isSudahAktif) {
-                aktifKat.add(k);
-                b.classList.remove('off');
-                aktifkanFilterKecamatan();
-            } else {
-                lockFilterKecamatan();
-            }
-            
-            renderSidebarList(selectFilter.value, inputCari.value);
-            renderTitik();
-        });
-        
-        chip[k] = b;
-        document.getElementById('kategori').appendChild(b);
+        b.addEventListener('click', () => setKategori(k));
+        chips[k] = b;
+        el.kategori.appendChild(b);
     });
 
-    function ikonTitik(k) {
-        const v = KATEGORI[k];
-        return L.divIcon({
+    function buatMarker(p) {
+        const v = KATEGORI[p.kategori];
+        const icon = L.divIcon({
             className: '', iconSize: [32, 32], iconAnchor: [16, 16], popupAnchor: [0, -16],
             html: `<div class="pin" style="background:${v.warna}"><i class="fas ${v.ikon}"></i></div>`
         });
+        const baris = [['Kategori', v.label], ['Kecamatan', p.kecamatan], ['Lokasi', p.lokasi], ['Tanggal', p.tanggal]]
+            .filter(([, x]) => x).map(([a, b]) => `<tr><td>${esc(a)}</td><td>${esc(b)}</td></tr>`).join('');
+        const popup = `<div class="popup"><h3>${esc(p.nama)}</h3><table>${baris}</table>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}" target="_blank" rel="noopener"><i class="fas fa-directions"></i> Rute ke lokasi</a></div>`;
+        return L.marker([p.lat, p.lng], { icon, title: p.nama, alt: p.nama }).bindPopup(popup);
     }
 
-    function popupTitik(p, lat, lng) {
-        const baris = [
-            ['Kategori', KATEGORI[p.kategori]?.label || p.kategori], 
-            ['Lokasi', p.lokasi], 
-            ['Tanggal', p.tanggal]
-        ].filter(([, v]) => v).map(([a, b]) => `<tr><td>${esc(a)}</td><td>${esc(b)}</td></tr>`).join('');
-        
-        return `<div class="popup"><h3>${esc(p.nama)}</h3><table>${baris}</table>
-            <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" rel="noopener"><i class="fas fa-directions"></i> Rute ke lokasi</a></div>`;
-    }
+    const popupWilayah = (props, nama) =>
+        `<div class="popup"><h3>${esc(nama)}</h3><table>${
+            Object.entries(props).filter(([, v]) => v !== null && v !== '')
+                .map(([k, v]) => `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')
+        }</table></div>`;
 
-    function renderTitik() {
-        grupTitik.clearLayers();
-        const hitung = {};
-        
-        semuaTitik.forEach(p => {
-            if (!KATEGORI[p.kategori]) return;
-            hitung[p.kategori] = (hitung[p.kategori] || 0) + 1;
-            
-            if (!aktifKat.has(p.kategori)) return;
-            
-            L.marker([p.lat, p.lng], { icon: ikonTitik(p.kategori), title: p.nama, alt: p.nama })
-                .bindPopup(popupTitik(p, p.lat, p.lng)).addTo(grupTitik);
-        });
-        
-        Object.keys(KATEGORI).forEach(k => chip[k].querySelector('b').textContent = hitung[k] || 0);
-    }
-
-    function inisialisasiTitik() {
-        selectFilter.addEventListener('change', function () {
-            const val = this.value;
-            if (val && layers[val]) {
-                pilih(val);
-            } else {
-                map.fitBounds(geojson.getBounds());
-                map.closePopup();
-                renderSidebarList('', inputCari.value);
-                renderTitik();
-            }
-        });
-        
-        fetch("{{ url('/api/titik') }}")
-            .then(r => r.json())
-            .then(data => { 
-                semuaTitik.push(...data); 
-                document.getElementById('ringkas').textContent = `Total ${data.length} titik tersimpan. Silakan pilih kategori titik.`;
-                renderTitik(); 
-            })
-            .catch(() => {
-                console.warn('Data titik gagal dimuat.');
-                document.getElementById('ringkas').textContent = 'Gagal terhubung ke database titik.';
-            });
-    }
-
-    /* ---------- Muat GeoJSON kecamatan ---------- */
-    fetch("{{ asset('geojson/kecamatan_kota_jambi.geojson') }}")
-        .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-        .then(data => {
-            daftarKecamatanGlobal = [...new Set(data.features.map(f => getNama(f.properties)))].sort();
-            daftarKecamatanGlobal.forEach((n, i) => warnaNama[n] = PALET[i % PALET.length]);
-
-            geojson = L.geoJSON(data, {
-                style: f => ({ color: '#fff', weight: 1.5, fillColor: warnaNama[getNama(f.properties)], fillOpacity: 0.4 }),
-                onEachFeature: (f, layer) => {
-                    const n = getNama(f.properties);
-                    (layers[n] ||= []).push(layer);
-                    layer.bindTooltip(n, { sticky: true });
-                    layer.bindPopup(popupHtml(f.properties, n));
-                    layer.on({ mouseover: () => sorot(n, true), mouseout: () => sorot(n, false), click: () => pilih(n) });
-                }
-            }).addTo(map);
-            map.fitBounds(geojson.getBounds());
-
-            renderSidebarList('', '');
-            inisialisasiTitik();
-        })
-        .catch(() => {
-            document.getElementById('ringkas').textContent = 'Data wilayah belum tersedia';
-            daftar.innerHTML = '<li class="kosong">File GeoJSON tidak ditemukan.</li>';
-        });
-
-    // Pencarian interaktif
-    inputCari.addEventListener('input', e => {
-        const currentKec = selectFilter.value;
-        renderSidebarList(currentKec, e.target.value);
+    /* =========================================================
+       9. EVENT FILTER
+       ========================================================= */
+    el.select.addEventListener('change', () => setKecamatan(el.select.value));
+    el.cariKec.addEventListener('input', e => {
+        state.qKec = e.target.value;
+        renderDaftarKecamatan();
+    });
+    el.cariTitik.addEventListener('input', e => {
+        state.qTitik = e.target.value;
+        renderDaftarTitik();
+        renderMarker();
     });
 
+    /* =========================================================
+       10. MUAT DATA (paralel), lalu inisialisasi sekali
+       ========================================================= */
+    const getJson = url => fetch(url).then(r => { if (!r.ok) throw new Error(url + ' ' + r.status); return r.json(); });
+
+    Promise.all([
+        getJson("{{ asset('geojson/kecamatan_kota_jambi.geojson') }}"),
+        getJson("{{ url('/api/titik') }}").catch(() => null)
+    ]).then(([wilayah, titik]) => {
+        data.fitur = wilayah.features;
+        data.kecamatan = [...new Set(data.fitur.map(f => getNama(f.properties)))].sort();
+        data.kecamatan.forEach((n, i) => { warnaKec[n] = PALET[i % PALET.length]; });
+
+        geojson = L.geoJSON(wilayah, {
+            style: f => ({ color: '#fff', weight: 1.5, fillColor: warnaKec[getNama(f.properties)], fillOpacity: 0.4 }),
+            onEachFeature: (f, layer) => {
+                const n = getNama(f.properties);
+                (layersKec[n] ||= []).push(layer);
+                layer.bindTooltip(n, { sticky: true });
+                layer.bindPopup(popupWilayah(f.properties, n));
+                layer.on({ mouseover: () => sorot(n, true), mouseout: () => sorot(n, false), click: () => fokusKecamatan(n) });
+            }
+        }).addTo(map);
+        map.fitBounds(geojson.getBounds());
+
+        if (titik) {
+            data.titik = titik.filter(p => KATEGORI[p.kategori] && isFinite(p.lat) && isFinite(p.lng));
+            data.titik.forEach(p => { p.kecamatan = p.kecamatan || cariKecamatan(+p.lat, +p.lng); });
+            el.ringkas.textContent = `Total ${data.titik.length} titik tersimpan. Silakan pilih kategori titik.`;
+        } else {
+            el.ringkas.textContent = 'Gagal memuat data titik. Batas wilayah tetap ditampilkan.';
+        }
+        render();
+    }).catch(() => {
+        el.ringkas.textContent = 'Data wilayah belum tersedia';
+        el.daftarKec.innerHTML = '<li class="kosong">File GeoJSON tidak ditemukan.</li>';
+    });
 })();
 </script>
 </body>

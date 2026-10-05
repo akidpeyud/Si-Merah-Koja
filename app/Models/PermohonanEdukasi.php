@@ -16,4 +16,13 @@ class PermohonanEdukasi extends Model
         'usia_3_6', 'usia_7_12', 'usia_13_18', 'usia_18_keatas',
         'surat_permohonan', 'syarat_lainnya', 'status_permohonan'
     ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'syarat_lainnya' => 'array',
+    ];
 }
