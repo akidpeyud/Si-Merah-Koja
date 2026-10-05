@@ -701,3 +701,14 @@ Route::get('/dokumen/download/{id}', [ProgramKerjaController::class, 'download']
     Route::delete('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/hapus/{id}', [PencegahanController::class, 'destroyPelatihanKeluarga'])->name('pelatihan_keluarga.destroy');
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak', [PemberdayaanController::class, 'cetakPelatihan']);
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak-excel', [PemberdayaanController::class, 'cetakExcelPelatihan']);
+    Route::get('/download-format-surat', function () {
+    // Pastikan kamu punya folder 'dokumen' di dalam folder 'public'
+    // dan file PDF-nya ada di sana dengan nama yang sesuai.
+    $filePath = public_path('dokumen/format_surat_izin_keramaian.pdf');
+    
+    if (file_exists($filePath)) {
+        return response()->download($filePath, 'Format_Surat_Pernyataan_Keramaian.pdf');
+    } else {
+        return abort(404, 'File PDF tidak ditemukan di folder public/dokumen/');
+    }
+})->name('download.format.surat');
