@@ -89,10 +89,16 @@
         .has-drop.open > .menu-trigger i { transform: rotate(180deg); }
         .menu .btn-login { background: var(--signal); color: #fff; margin-left: 10px; font-weight: 600; padding: 9px 22px; }
         .menu .btn-login:hover { background: var(--signal-d); }
+        
         .dropdown { display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 250px; background: var(--ink-2); border: 1px solid rgba(255,255,255,.1); border-radius: var(--r-md); padding: 6px; box-shadow: 0 24px 48px rgba(0,0,0,.45); }
         .dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
         .dropdown a, .dropdown button { display: block; width: 100%; text-align: left; padding: 11px 14px; border-radius: var(--r-sm); font-size: .92rem; color: rgba(255,255,255,.85); }
         .dropdown a:hover, .dropdown a[aria-current="page"] { background: rgba(255,255,255,.1); color: #fff; }
+        
+        /* Tombol Keluar di Dropdown */
+        .dropdown .btn-logout { color: #ff8b8b; display: flex; align-items: center; gap: 8px; transition: background .2s, color .2s; cursor: pointer; }
+        .dropdown .btn-logout:hover { background: rgba(255, 255, 255, .1); color: #ffb8b8; }
+        
         .has-drop.open .dropdown { display: block; }
         @media (hover: hover) and (min-width: 992px) { .has-drop:hover .dropdown { display: block; } }
         .nav-toggle { display: none; width: 44px; height: 44px; border-radius: 12px; color: #fff; font-size: 1.15rem; }
@@ -301,14 +307,34 @@
             <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="/video-edukasi">Video Edukasi</a></li>
-                    <li><a href="/info-grafis">Infografis</a></li>
+                    <li><a href="/edu-damkar">Edu Damkar</a></li>
+                    <li><a href="/infografis">Info Grafis</a></li>
                     <li><a href="/media-informasi">Media Informasi</a></li>
-                    <li><a href="/giat-disdamkartan">Giat Disdamkartan</a></li>
+                    <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
                 </ul>
             </li>
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
-            <li><a href="/login" class="btn-login"><i class="fas fa-user-circle me-1"></i> LOGIN</a></li>
+            
+            @if(session()->has('pemohon_id'))
+                <li class="has-drop">
+                    <button class="menu-trigger btn-login" type="button" aria-expanded="false">
+                        <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <ul class="dropdown">
+                        <li>
+                            <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
+                                @csrf
+                                <button type="submit" class="btn-logout">
+                                    <i class="fas fa-sign-out-alt"></i> Keluar
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            @else
+                <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
+            @endif
+
         </ul>
     </nav>
 </header>

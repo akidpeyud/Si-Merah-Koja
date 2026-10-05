@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0b1826">
     <meta name="description" content="Kumpulan panduan bergambar, informasi visual, dan edukasi terkait pencegahan serta penanggulangan kebakaran di Kota Jambi.">
-    <title>Info Grafis - Kabar Damkar | SIMERAH KOJA</title>
+    <title>Infografis - Kabar Damkar | SIMERAH KOJA</title>
 
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -420,7 +420,7 @@
                 <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                    <li><a href="/edu-damkar">Edu Damkar</a></li>
-                    <li><a href="/infografis" aria-current="page">Info Grafis</a></li>
+                    <li><a href="/infografis" aria-current="page">Infografis</a></li>
                     <li><a href="/media-informasi">Media Informasi</a></li>
                     <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
                 </ul>
@@ -458,11 +458,11 @@
             <ol class="crumbs">
                 <li><a href="/">Beranda</a></li>
                 <li><a href="#">Kabar Damkar</a></li>
-                <li><span aria-current="page">Info Grafis</span></li>
+                <li><span aria-current="page">Infografis</span></li>
             </ol>
         </nav>
         <div class="hero-kicker rise"><i class="fas fa-image"></i> Edukasi Visual</div>
-        <h1 class="rise d1">Info Grafis</h1>
+        <h1 class="rise d1">Infografis</h1>
         <p class="rise d2">Kumpulan panduan bergambar, informasi visual, dan edukasi terkait pencegahan serta penanggulangan kebakaran di Kota Jambi. Ketuk gambar untuk memperbesar.</p>
         <div class="hero-line rise d3"></div>
     </div>
