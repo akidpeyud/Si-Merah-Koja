@@ -813,7 +813,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     <div>
                         <div class="stat-title">Data Pos</div>
                         <div class="stat-value">
-                            {{ \Illuminate\Support\Facades\Schema::hasTable('pos') ? \Illuminate\Support\Facades\DB::table('pos')->count() : 0 }}
+                            {{ \Illuminate\Support\Facades\Schema::hasTable('pos_pemadam') ? \Illuminate\Support\Facades\DB::table('pos_pemadam')->count() : 0 }}
                         </div>
                     </div>
                 </a>
@@ -833,7 +833,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     <div>
                         <div class="stat-title">Serah Terima Barang</div>
                         <div class="stat-value">
-                            {{ \Illuminate\Support\Facades\Schema::hasTable('distribusi_staff') ? \Illuminate\Support\Facades\DB::table('distribusi_staff')->count() : 0 }}
+                            {{ \Illuminate\Support\Facades\Schema::hasTable('distribusi_barang_staff') ? \Illuminate\Support\Facades\DB::table('distribusi_barang_staff')->count() : 0 }}
                         </div>
                     </div>
                 </a>
