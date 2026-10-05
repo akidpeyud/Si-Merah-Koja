@@ -2,19 +2,53 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class RedkarRegistration extends Model
+class RedkarRegistration extends Authenticatable
 {
-    use HasFactory;
+    use Notifiable;
 
     protected $table = 'redkar_registrations';
 
-    // TAMBAHKAN INI AGAR ID TEKS TIDAK BERUBAH JADI ANGKA 0
-    protected $primaryKey = 'id';
-    public $incrementing = false;
-    protected $keyType = 'string';
+    // ========================================================
+    // KODE WAJIB UNTUK PRIMARY KEY STRING (CUSTOM ID)
+    // ========================================================
+    public $incrementing = false; // Matikan auto-increment (1, 2, 3...)
+    protected $keyType = 'string'; // Beritahu Laravel bahwa ID berbentuk huruf/string
+    // ========================================================
 
-    protected $guarded = ['id'];
+    protected $fillable = [
+        'id', // Wajib dimasukkan ke fillable agar bisa diisi manual (RDK-...)
+        'username',
+        'password',
+        'nik',
+        'nama_lengkap',
+        'jenis_kelamin',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'status_perkawinan',
+        'agama',
+        'nomor_telp',
+        'file_ktp',
+        'alamat',
+        'rt_rw',
+        'kode_pos',
+        'provinsi',
+        'kabupaten_kota',
+        'kecamatan',
+        'kelurahan',
+        'pendidikan_terakhir',
+        'latar_belakang_pendidikan',
+        'pekerjaan',
+        'sehat_jasmani',
+        'buta_warna',
+        'golongan_darah',
+        'status_akun',
+        'status_pendaftaran',
+    ];
+
+    protected $hidden = [
+        'password',
+    ];
 }
