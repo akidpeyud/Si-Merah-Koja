@@ -406,6 +406,9 @@
                     </a>
                     <a href="/internal/surat-korban/data" class="active">
                         <i class="fas fa-folder-open"></i> Kelola Surat Korban
+                    <!-- MENU BARU: KELOLA SURAT KERAMAIAN -->
+                    <a href="{{ route('internal.izin-keramaian.index') }}" class="active">
+                        <i class="fas fa-users-rectangle"></i> Kelola Surat Keramaian
                     </a>
                 </div>
             </details>

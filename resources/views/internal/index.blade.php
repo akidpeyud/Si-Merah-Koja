@@ -566,6 +566,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
                         <i class="fas fa-file-contract"></i><span class="lbl">Program Kerja</span>
                     </a>
+                    <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
+                        <i class="fas fa-users-rectangle"></i> Kelola Surat Keramaian
+                    </a>
                 </div>
             </details>
 

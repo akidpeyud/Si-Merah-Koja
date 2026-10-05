@@ -387,6 +387,10 @@
                     <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
                         <i class="fas fa-folder-open"></i> Kelola Surat Korban
                     </a>
+                    <!-- MENU BARU: KELOLA SURAT KERAMAIAN -->
+                    <a href="{{ route('internal.izin-keramaian.index') }}" class="active">
+                        <i class="fas fa-users-rectangle"></i> Kelola Surat Keramaian
+                    </a>
                 </div>
             </details>
 
@@ -675,7 +679,7 @@
         });
     })();
 
-    /* ---------- FUNGSI SEARCH & FILTER ---------- */
+/* ---------- FUNGSI SEARCH & FILTER ---------- */
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('searchInput');
         const filterKategori = document.getElementById('filterKategori');
@@ -684,16 +688,25 @@
 
         function filterTable() {
             const searchTerm = searchInput.value.toLowerCase();
-            const categoryTerm = filterKategori.value.toLowerCase();
+            const categoryTerm = filterKategori.value.toLowerCase(); // "kebakaran" atau "non-kebakaran"
 
             for (let i = 0; i < rows.length; i++) {
+                // Abaikan baris "Belum ada data"
                 if (rows[i].getElementsByTagName('td').length === 1) continue; 
                 
                 const rowText = rows[i].textContent.toLowerCase();
-                const categoryCellText = rows[i].getElementsByTagName('td')[3].textContent.toLowerCase(); 
+                
+                // Ambil div pertama di dalam sel kategori (yang isinya judul Kategori)
+                const categoryCell = rows[i].getElementsByTagName('td')[3];
+                const mainCategoryTitle = categoryCell.querySelector('div.fw-bold'); 
+                
+                // Bersihkan spasi berlebih dan ubah ke huruf kecil
+                const exactCategoryText = mainCategoryTitle ? mainCategoryTitle.textContent.trim().toLowerCase() : "";
 
                 const matchesSearch = rowText.includes(searchTerm);
-                const matchesCategory = categoryTerm === "" || categoryCellText.includes(categoryTerm);
+                
+                // Pengecekan EXACT MATCH (harus sama persis)
+                const matchesCategory = categoryTerm === "" || exactCategoryText === categoryTerm;
 
                 rows[i].style.display = (matchesSearch && matchesCategory) ? '' : 'none';
             }
