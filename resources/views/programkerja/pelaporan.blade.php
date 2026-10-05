@@ -367,7 +367,7 @@
                 </ul>
             </li>
             <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan &amp; fasilitas <i class="fas fa-chevron-down"></i></button>
+                <button class="menu-trigger" type="button" aria-expanded="false">Layanan<i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
                     <li><a href="/layanan-fasilitas/skk">SKK & Perpanjang SKK</a></li>
@@ -378,10 +378,10 @@
             <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="/video-edukasi">Video Edukasi</a></li>
-                    <li><a href="/info-grafis">Infografis</a></li>
+                    <li><a href="/edu-damkar">Edu Damkar</a></li>
+                    <li><a href="/infografis">Info Grafis</a></li>
                     <li><a href="/media-informasi">Media Informasi</a></li>
-                    <li><a href="/giat-disdamkartan">Giat Disdamkartan</a></li>
+                    <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
                 </ul>
             </li>
             <li><a class="menu-link" href="/redkar">Redkar</a></li>

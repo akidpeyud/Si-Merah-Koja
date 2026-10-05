@@ -3,10 +3,14 @@
     $arr = function ($x) { return (is_object($x) && method_exists($x, 'toArray')) ? $x->toArray() : (array) $x; };
 
     $kategori = [
-        'pencegahan' => [
-            'label' => 'Bagian pencegahan',
-            'items' => [],
-        ],
+       'pencegahan' => [
+    'label' => 'Bagian pencegahan',
+    'items' => [
+        ['url' => '/informasi-layanan?panel=kapasitas',    'label' => 'Peningkatan Kapasitas Aparatur',  'ico' => 'fa-arrow-trend-up'],
+        ['url' => '/informasi-layanan?panel=inspeksi',     'label' => 'Pencegahan Kebakaran & Inspeksi', 'ico' => 'fa-magnifying-glass-chart'],
+        ['url' => '/informasi-layanan?panel=pemberdayaan', 'label' => 'Pemberdayaan Masyarakat',         'ico' => 'fa-handshake-angle'],
+    ],
+],
         'pemadaman' => [
             'label' => 'Bagian pemadaman',
             'items' => [],
@@ -475,8 +479,7 @@
                     <?php endforeach; ?>
                 </ul>
             </li>
-
-             <li class="has-drop">
+            <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>

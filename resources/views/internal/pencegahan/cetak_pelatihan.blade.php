@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Cetak PDF - Fire Drill</title>
+    <title>Cetak PDF - PELAKSANAAN SOSIALISASI DAN EDUKASI</title>
     <style>
         @page { size: landscape; margin: 15mm; }
         body { font-family: 'Times New Roman', Times, serif; font-size: 12px; color: #000; }
@@ -33,42 +33,35 @@
             <td class="logo-kanan"><img src="{{ asset('images/logo.png') }}" alt="Logo Damkar" style="width: 80px; height: auto;"></td>
         </tr>
     </table>
-    
+
     <div class="judul-dokumen">
-        DATA PELAKSANAAN FIRE DRILL KOTA JAMBI<br>
-        TAHUN {{ date('Y') }}
+        DATA PELAKSANAAN SOSIALISASI DAN EDUKASI<br>
+        KOTA JAMBI
     </div>
-    
+
     <table class="table-data">
         <thead>
             <tr>
-                <th rowspan="2" width="5%">NO</th>
-                <th rowspan="2" width="20%">NAMA INSTANSI</th>
-                <th rowspan="2" width="10%">TAHUN</th>
-                <th rowspan="2" width="15%">TANGGAL PELAKSANAAN</th>
-                <th rowspan="2" width="20%">TEMPAT PELAKSANAAN</th>
-                <th colspan="3">JUMLAH PESERTA</th>
-            </tr>
-            <tr>
-                <th width="10%">LAKI-LAKI</th>
-                <th width="10%">PEREMPUAN</th>
-                <th width="10%">TOTAL</th>
+                <th width="5%">NO</th>
+                <th width="18%">HARI / TANGGAL</th>
+                <th width="22%">LOKASI / KELURAHAN</th>
+                <th width="22%">NAMA SEKOLAH</th>
+                <th width="13%">JUMLAH PESERTA</th>
+                <th width="20%">KETERANGAN</th>
             </tr>
         </thead>
         <tbody>
             @forelse($data as $index => $item)
             <tr>
                 <td class="text-center">{{ $index + 1 }}</td>
-                <td>{{ $item->nama_instansi ?? '-' }}</td>
-                <td class="text-center">{{ $item->tahun ?? '-' }}</td>
-                <td class="text-center">{{ $item->tanggal_pelaksanaan ?? '-' }}</td>
-                <td>{{ $item->tempat_pelaksanaan ?? '-' }}</td>
-                <td class="text-center">{{ $item->peserta_laki_laki ?? '0' }}</td>
-                <td class="text-center">{{ $item->peserta_perempuan ?? '0' }}</td>
-                <td class="text-center fw-bold">{{ $item->total_peserta ?? '0' }}</td>
+                <td>{{ \Carbon\Carbon::parse($item->tanggal_pelaksanaan)->translatedFormat('d F Y') }}</td>
+                <td>{{ $item->kelurahan ?? '-' }}</td>
+                <td>{{ $item->nama_sekolah ?? '-' }}</td>
+                <td class="text-center">{{ $item->jumlah_peserta ?? 0 }}</td>
+                <td>{{ $item->keterangan ?? '-' }}</td>
             </tr>
             @empty
-            <tr><td colspan="8" class="text-center">Belum ada data Fire Drill</td></tr>
+            <tr><td colspan="6" class="text-center">Belum ada data PELAKSANAAN SOSIALISASI DAN EDUKASI</td></tr>
             @endforelse
         </tbody>
     </table>

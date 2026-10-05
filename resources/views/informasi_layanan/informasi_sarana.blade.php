@@ -16,12 +16,19 @@
          $posPemadam  : koleksi/array pos, tiap item punya id_pos, nama_pos, alamat, kode_map
          $dataSarana  : koleksi/array sarana, tiap item punya id_pos, jenis_sarana, path_gambar, tahun (opsional), plat_nomor (opsional)
        ------------------------------------------------------------ */
-    $posPemadam      = $posPemadam ?? [];
+    $posPemadam = $posPemadam ?? [];
     $dataSarana = $dataSarana ?? [];
 
-    // Sidebar kategori publikasi. Kategori & item aktif untuk halaman ini: Sapra > Sarana pemeriksaan
+    // Sidebar kategori publikasi.
     $kategori = [
-        'pencegahan' => ['label' => 'Bagian pencegahan', 'items' => []],
+        'pencegahan' => [
+            'label' => 'Bagian pencegahan',
+            'items' => [
+                ['url' => '/informasi-layanan?panel=kapasitas',    'label' => 'Peningkatan Kapasitas Aparatur',  'ico' => 'fa-arrow-trend-up'],
+                ['url' => '/informasi-layanan?panel=inspeksi',     'label' => 'Pencegahan Kebakaran & Inspeksi', 'ico' => 'fa-magnifying-glass-chart'],
+                ['url' => '/informasi-layanan?panel=pemberdayaan', 'label' => 'Pemberdayaan Masyarakat',         'ico' => 'fa-handshake-angle'],
+            ],
+        ],
         'pemadaman'  => ['label' => 'Bagian pemadaman',  'items' => []],
         'sapra' => [
             'label' => 'Bagian sapra',
@@ -35,6 +42,8 @@
             ],
         ],
     ];
+    
+    // Default menu sapra terbuka
     $kategori_aktif = 'sapra';
     $halaman_aktif  = '/informasi-sarana';
 
@@ -392,7 +401,6 @@
                 </ul>
             </li>
             
-            <!-- UPDATE MENU SAPRA (HEADER) -->
             <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
@@ -472,7 +480,6 @@
                         <ul class="cat-sub">
                             <?php foreach ($kat['items'] as $item): ?>
                                 <li>
-                                    <!-- URL SIDEBAR SUDAH DIPERBAIKI -->
                                     <a href="<?= $h($item['url']) ?>" <?php if ($halaman_aktif === $item['url']): ?> aria-current="page" <?php endif; ?>>
                                         <i class="fas <?= $h($item['ico']) ?>"></i> <?= $h($item['label']) ?>
                                     </a>
@@ -705,6 +712,26 @@
 
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') closeDrops(null);
+    });
+
+    /* ---------- Sidebar Kategori (Akordion / Auto Tutup) ---------- */
+    document.querySelectorAll('.cat-btn.has-items').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var cat = btn.closest('.cat');
+            var nowOpen = !cat.hasAttribute('data-open');
+            
+            // Menutup semua menu sidebar yang sedang terbuka
+            document.querySelectorAll('.cat[data-open]').forEach(function (c) { 
+                c.removeAttribute('data-open'); 
+                c.querySelector('.cat-btn').setAttribute('aria-expanded', 'false'); 
+            });
+            
+            // Membuka menu yang sedang diklik (jika tadinya tertutup)
+            if (nowOpen) { 
+                cat.setAttribute('data-open', ''); 
+                btn.setAttribute('aria-expanded', 'true'); 
+            }
+        });
     });
 
     /* ---------- Tombol lapor mengambang (muncul setelah scroll) ---------- */

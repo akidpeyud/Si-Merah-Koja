@@ -633,6 +633,7 @@
                     <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
                     <li><a href="/layanan-fasilitas/skk">SKK &amp; Perpanjang SKK</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
+                    <li><a href="/public-sigap">SIGAP</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
             </li>
@@ -640,7 +641,7 @@
                 <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="/edu-damkar">Edu Damkar</a></li>
-                    <li><a href="/infografis">Info Grafis</a></li>
+                    <a href="{{ route('publik.infografis') }}">Infografis</a>
                     <li><a href="/media-informasi">Media Informasi</a></li>
                     <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
                 </ul>

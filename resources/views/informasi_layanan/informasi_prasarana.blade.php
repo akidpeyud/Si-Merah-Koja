@@ -21,7 +21,14 @@
 
     // Sidebar kategori publikasi. Kategori & item aktif untuk halaman ini: Sapra > Sarana pemeriksaan
     $kategori = [
-        'pencegahan' => ['label' => 'Bagian pencegahan', 'items' => []],
+      'pencegahan' => [
+    'label' => 'Bagian pencegahan',
+    'items' => [
+        ['url' => '/informasi-layanan?panel=kapasitas',    'label' => 'Peningkatan Kapasitas Aparatur',  'ico' => 'fa-arrow-trend-up'],
+        ['url' => '/informasi-layanan?panel=inspeksi',     'label' => 'Pencegahan Kebakaran & Inspeksi', 'ico' => 'fa-magnifying-glass-chart'],
+        ['url' => '/informasi-layanan?panel=pemberdayaan', 'label' => 'Pemberdayaan Masyarakat',         'ico' => 'fa-handshake-angle'],
+    ],
+],
         'pemadaman'  => ['label' => 'Bagian pemadaman',  'items' => []],
         'sapra' => [
             'label' => 'Bagian sapra',
@@ -689,6 +696,26 @@
 
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') closeDrops(null);
+    });
+
+    /* ---------- Sidebar Kategori (Akordion / Auto Tutup) ---------- */
+    document.querySelectorAll('.cat-btn.has-items').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var cat = btn.closest('.cat');
+            var nowOpen = !cat.hasAttribute('data-open');
+            
+            // Menutup semua menu sidebar yang sedang terbuka
+            document.querySelectorAll('.cat[data-open]').forEach(function (c) { 
+                c.removeAttribute('data-open'); 
+                c.querySelector('.cat-btn').setAttribute('aria-expanded', 'false'); 
+            });
+            
+            // Membuka menu yang sedang diklik (jika tadinya tertutup)
+            if (nowOpen) { 
+                cat.setAttribute('data-open', ''); 
+                btn.setAttribute('aria-expanded', 'true'); 
+            }
+        });
     });
 
     /* ---------- Tombol lapor mengambang (muncul setelah scroll) ---------- */

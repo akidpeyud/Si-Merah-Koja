@@ -18,7 +18,11 @@
     $kategori = [
         'pencegahan' => [
             'label' => 'Bagian pencegahan',
-            'items' => [],
+            'items' => [
+                ['url' => '/informasi-layanan?panel=kapasitas',    'label' => 'Peningkatan Kapasitas Aparatur',  'ico' => 'fa-arrow-trend-up'],
+                ['url' => '/informasi-layanan?panel=inspeksi',     'label' => 'Pencegahan Kebakaran & Inspeksi', 'ico' => 'fa-magnifying-glass-chart'],
+                ['url' => '/informasi-layanan?panel=pemberdayaan', 'label' => 'Pemberdayaan Masyarakat',         'ico' => 'fa-handshake-angle'],
+            ],
         ],
         'pemadaman' => [
             'label' => 'Bagian pemadaman',
@@ -60,10 +64,10 @@
 
     // Definisi kategori sumber air (dipakai untuk kartu kategori + panel data)
     $groups = [
-        ['id' => 'pilar',  'label' => 'Hidrant Pilar',  'ico' => 'fa-faucet-drip', 'tone' => 'red',   'data' => $hidranPilar,  'field' => null,     'fieldLabel' => null,             'nameLabel' => 'Lokasi / Area', 'desc' => 'Hidrant di tepi jalan'],
-        ['id' => 'gedung', 'label' => 'Hidrant Gedung', 'ico' => 'fa-building',    'tone' => 'blue',  'data' => $hidranGedung, 'field' => 'jumlah', 'fieldLabel' => 'Jumlah (Unit)',  'nameLabel' => 'Nama Gedung',   'desc' => 'Hidrant di dalam gedung'],
-        ['id' => 'embung', 'label' => 'Embung',         'ico' => 'fa-water',       'tone' => 'teal',  'data' => $embung,       'field' => 'luas',   'fieldLabel' => 'Kapasitas Air', 'nameLabel' => 'Nama Lokasi',   'desc' => 'Tampungan air buatan'],
-        ['id' => 'danau',  'label' => 'Danau',          'ico' => 'fa-droplet',     'tone' => 'amber', 'data' => $danau,        'field' => 'luas',   'fieldLabel' => 'Kapasitas Air', 'nameLabel' => 'Nama Danau',    'desc' => 'Sumber air alami'],
+        ['id' => 'pilar',  'label' => 'Hidrant Pilar',  'ico' => 'fa-faucet-drip', 'tone' => 'red',   'data' => $hidranPilar ?? [],  'field' => null,     'fieldLabel' => null,             'nameLabel' => 'Lokasi / Area', 'desc' => 'Hidrant di tepi jalan'],
+        ['id' => 'gedung', 'label' => 'Hidrant Gedung', 'ico' => 'fa-building',    'tone' => 'blue',  'data' => $hidranGedung ?? [], 'field' => 'jumlah', 'fieldLabel' => 'Jumlah (Unit)',  'nameLabel' => 'Nama Gedung',   'desc' => 'Hidrant di dalam gedung'],
+        ['id' => 'embung', 'label' => 'Embung',         'ico' => 'fa-water',       'tone' => 'teal',  'data' => $embung ?? [],       'field' => 'luas',   'fieldLabel' => 'Kapasitas Air', 'nameLabel' => 'Nama Lokasi',   'desc' => 'Tampungan air buatan'],
+        ['id' => 'danau',  'label' => 'Danau',          'ico' => 'fa-droplet',     'tone' => 'amber', 'data' => $danau ?? [],        'field' => 'luas',   'fieldLabel' => 'Kapasitas Air', 'nameLabel' => 'Nama Danau',    'desc' => 'Sumber air alami'],
     ];
     $totalSemua = 0;
     foreach ($groups as $g) { $totalSemua += count($g['data']); }
@@ -464,7 +468,7 @@
                     <?php endforeach; ?>
                 </ul>
             </li>
- <li class="has-drop">
+            <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
