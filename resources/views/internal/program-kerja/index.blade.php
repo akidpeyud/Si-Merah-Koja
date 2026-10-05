@@ -266,14 +266,35 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 </head>
 <body>
 
+<!-- BLOK TOAST ERROR HANDLING SUDAH DITAMBAHKAN -->
 <div class="toast-wrap" id="toastWrap" aria-live="polite">
-    <!-- Contoh Notifikasi Keberhasilan -->
+    <!-- Notifikasi Sukses -->
     @if(session('success'))
         <div class="toast ok" data-toast>
             <span class="toast-ico"><i class="fas fa-check"></i></span>
             <span>{{ session('success') }}</span>
             <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
         </div>
+    @endif
+
+    <!-- Notifikasi Error dari Catch Controller -->
+    @if(session('error'))
+        <div class="toast err" data-toast>
+            <span class="toast-ico"><i class="fas fa-exclamation-triangle"></i></span>
+            <span>{{ session('error') }}</span>
+            <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
+        </div>
+    @endif
+
+    <!-- Notifikasi Error dari Validasi Request -->
+    @if($errors->any())
+        @foreach($errors->all() as $error)
+            <div class="toast err" data-toast>
+                <span class="toast-ico"><i class="fas fa-times"></i></span>
+                <span>{{ $error }}</span>
+                <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
+            </div>
+        @endforeach
     @endif
 </div>
 
@@ -385,7 +406,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         </td>
         <td class="text-center">
             <!-- Form Hapus -->
-            <form action="/internal/program-kerja/destroy/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus dokumen ini?');">
+            <form action="{{ route('program-kerja.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus dokumen ini?');">
                 @csrf
                 @method('DELETE')
                 <button type="button" class="btn-icon edit" title="Edit Data"><i class="fas fa-pen"></i></button>
@@ -401,9 +422,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 </tbody>
                 </table>
             </div>
-            
-            <!-- Jika butuh pagination Laravel, taruh di bawah sini: -->
-            <!-- <div class="mt-4">{{-- $dokumen->links() --}}</div> -->
 
         </div>
 
@@ -418,8 +436,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 <h5 class="modal-title" id="modalTambahLabel">Tambah Dokumen Baru</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <!-- Form Action sesuaikan dengan Route Laravel kamu -->
-            <form action="/internal/program-kerja/store" method="POST" enctype="multipart/form-data">
+            <!-- ACTION FORM SUDAH DIPERBAIKI -->
+            <form action="{{ route('program-kerja.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     
@@ -485,7 +503,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         };
         var x = t.querySelector('[data-toast-close]');
         if (x) x.addEventListener('click', hide);
-        setTimeout(hide, 4500);
+        // Toast akan tertutup otomatis setelah 5 detik
+        setTimeout(hide, 5000);
     });
 
     /* ---------- Sidebar Mobile Toggle ---------- */

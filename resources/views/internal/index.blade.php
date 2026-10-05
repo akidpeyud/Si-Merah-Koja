@@ -566,6 +566,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
                         <i class="fas fa-file-contract"></i><span class="lbl">Program Kerja</span>
                     </a>
+                    <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
+                        <i class="fas fa-users-rectangle"></i> Kelola Surat Keramaian
+                    </a>
                 </div>
             </details>
 
@@ -804,6 +807,36 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                         <div class="stat-title">Total Hidrant Kota</div>
                         <div class="stat-value">
                             {{ \Illuminate\Support\Facades\Schema::hasTable('hidran_kota') ? \Illuminate\Support\Facades\DB::table('hidran_kota')->count() : 0 }}
+                        </div>
+                    </div>
+                </a>
+
+                <a href="/sapra/kelola-pos" class="stat-card">
+                    <div class="stat-ico ic-primary"><i class="fas fa-warehouse"></i></div>
+                    <div>
+                        <div class="stat-title">Data Pos</div>
+                        <div class="stat-value">
+                            {{ \Illuminate\Support\Facades\Schema::hasTable('pos') ? \Illuminate\Support\Facades\DB::table('pos')->count() : 0 }}
+                        </div>
+                    </div>
+                </a>
+
+                <a href="/sapra/kebutuhan-sarpras" class="stat-card">
+                    <div class="stat-ico ic-info"><i class="fas fa-boxes-stacked"></i></div>
+                    <div>
+                        <div class="stat-title">Mutu Baku Kebutuhan</div>
+                        <div class="stat-value">
+                            {{ \Illuminate\Support\Facades\Schema::hasTable('kebutuhan_sarpras') ? \Illuminate\Support\Facades\DB::table('kebutuhan_sarpras')->count() : 0 }}
+                        </div>
+                    </div>
+                </a>
+
+                <a href="/sapra/distribusi-staff" class="stat-card">
+                    <div class="stat-ico ic-primary"><i class="fas fa-people-carry-box"></i></div>
+                    <div>
+                        <div class="stat-title">Serah Terima Barang</div>
+                        <div class="stat-value">
+                            {{ \Illuminate\Support\Facades\Schema::hasTable('distribusi_staff') ? \Illuminate\Support\Facades\DB::table('distribusi_staff')->count() : 0 }}
                         </div>
                     </div>
                 </a>
