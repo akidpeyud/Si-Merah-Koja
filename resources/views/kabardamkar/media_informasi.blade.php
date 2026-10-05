@@ -475,7 +475,7 @@
             </li>
             
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
-                   @if(session()->has('pemohon_id'))
+                  @if(session()->has('pemohon_id'))
                 <li class="has-drop">
                     <button class="menu-trigger btn-login" type="button" aria-expanded="false">
                         <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
@@ -494,6 +494,7 @@
             @else
                 <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
             @endif
+f
 
         </ul>
     </nav>

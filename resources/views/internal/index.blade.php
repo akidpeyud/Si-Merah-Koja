@@ -807,6 +807,36 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                         </div>
                     </div>
                 </a>
+
+                <a href="/sapra/kelola-pos" class="stat-card">
+                    <div class="stat-ico ic-primary"><i class="fas fa-warehouse"></i></div>
+                    <div>
+                        <div class="stat-title">Data Pos</div>
+                        <div class="stat-value">
+                            {{ \Illuminate\Support\Facades\Schema::hasTable('pos') ? \Illuminate\Support\Facades\DB::table('pos')->count() : 0 }}
+                        </div>
+                    </div>
+                </a>
+
+                <a href="/sapra/kebutuhan-sarpras" class="stat-card">
+                    <div class="stat-ico ic-info"><i class="fas fa-boxes-stacked"></i></div>
+                    <div>
+                        <div class="stat-title">Mutu Baku Kebutuhan</div>
+                        <div class="stat-value">
+                            {{ \Illuminate\Support\Facades\Schema::hasTable('kebutuhan_sarpras') ? \Illuminate\Support\Facades\DB::table('kebutuhan_sarpras')->count() : 0 }}
+                        </div>
+                    </div>
+                </a>
+
+                <a href="/sapra/distribusi-staff" class="stat-card">
+                    <div class="stat-ico ic-primary"><i class="fas fa-people-carry-box"></i></div>
+                    <div>
+                        <div class="stat-title">Serah Terima Barang</div>
+                        <div class="stat-value">
+                            {{ \Illuminate\Support\Facades\Schema::hasTable('distribusi_staff') ? \Illuminate\Support\Facades\DB::table('distribusi_staff')->count() : 0 }}
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
 

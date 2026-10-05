@@ -479,8 +479,7 @@
                     <?php endforeach; ?>
                 </ul>
             </li>
-
-             <li class="has-drop">
+            <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
