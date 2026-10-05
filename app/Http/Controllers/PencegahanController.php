@@ -435,7 +435,6 @@ class PencegahanController extends Controller
     {
         PelatihanKeluarga::create([
             'tanggal_pelaksanaan' => $request->tanggal_pelaksanaan,
-            'posyandu'            => $request->posyandu,
             'rt'                  => $request->rt,
             'kelurahan'           => $request->kelurahan,
             'kecamatan'           => $request->kecamatan,
@@ -457,7 +456,6 @@ class PencegahanController extends Controller
         $item = PelatihanKeluarga::findOrFail($id);
         $item->update([
             'tanggal_pelaksanaan' => $request->tanggal_pelaksanaan,
-            'posyandu'            => $request->posyandu,
             'rt'                  => $request->rt,
             'kelurahan'           => $request->kelurahan,
             'kecamatan'           => $request->kecamatan,
