@@ -394,6 +394,61 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .total-cell { text-align: center; font-weight: 700; color: var(--navy); }
 
+
+/* ==========================================================
+   TABEL PELATIHAN KELUARGA (rapi + Perempuan / Laki-laki)
+   ========================================================== */
+.table-card {
+    background: #fff; border-radius: var(--r-lg); overflow: hidden;
+    border: 1px solid var(--line); box-shadow: var(--shadow-sm); margin-bottom: 40px;
+}
+.table-card .table-scroll-wrapper { border: 0; border-radius: 0; box-shadow: none; margin-bottom: 0; }
+.table-detailed.table-peserta { min-width: 1180px; table-layout: auto; }
+.table-peserta thead th { text-align: center; }
+.table-peserta thead th.th-left { text-align: left; }
+.table-peserta thead tr:first-child th { border-bottom: 1px solid var(--ink-3); }
+.table-peserta thead th.th-sub { background: var(--ink-2); font-size: .68rem; }
+.table-peserta thead th.th-sub i { margin-right: 6px; font-size: .78rem; }
+.table-peserta thead th.th-sub .fa-venus { color: #f9a8d4; }
+.table-peserta thead th.th-sub .fa-mars { color: #93c5fd; }
+.table-peserta tbody td { padding: 15px; }
+.table-peserta tbody tr:nth-child(even) { background: #fafbfd; }
+.table-peserta tbody tr:hover { background: var(--navy-light); }
+.table-peserta td.col-center { text-align: center; }
+.table-peserta td.col-rt { white-space: normal; min-width: 140px; max-width: 220px; text-align: center; }
+.cell-date strong { display: block; font-weight: 600; color: var(--ink); }
+.cell-date small { color: var(--steel); font-size: .74rem; }
+
+.count-pill {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    min-width: 58px; padding: 4px 12px; border-radius: 999px;
+    font-weight: 700; font-size: .82rem;
+}
+.count-pill.female { background: rgba(219, 39, 119, .09); color: #be185d; }
+.count-pill.male   { background: var(--info-soft); color: var(--info); }
+.count-pill.total  { background: var(--navy-soft); color: var(--navy); }
+.count-pill i { font-size: .72rem; }
+
+.table-peserta tfoot td {
+    background: var(--paper); font-weight: 700; font-size: .84rem;
+    padding: 14px 15px; border-top: 2px solid var(--line-dark); border-bottom: 0;
+}
+.table-peserta tfoot td.foot-label { text-align: right; text-transform: uppercase; letter-spacing: .05em; font-size: .72rem; color: var(--steel); }
+
+.btn-media {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--info); font-weight: 600; font-size: .82rem;
+    padding: 5px 12px; border-radius: 8px; background: transparent; border: 0;
+    transition: background .2s;
+}
+.btn-media:hover { background: var(--info-soft); }
+.media-empty { color: var(--steel-soft); }
+
+.media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+.media-grid .media-item { border-radius: var(--r-sm); overflow: hidden; background: var(--paper); border: 1px solid var(--line); aspect-ratio: 4 / 3; }
+.media-grid img, .media-grid video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.modal-title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
+
 /* RESPONSIVE TABLET */
 @media (max-width: 1100px) {
     .topbar { padding: 0 20px; }
@@ -613,7 +668,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
                         <i class="fab fa-instagram"></i> Kelola Berita Medsos
                     </a>
-                     </a>
                     <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
     <i class="fab fa-youtube"></i> Ujung-Ujung Damkar
 </a>
@@ -660,30 +714,30 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             <div class="toolbar-actions">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Cari kelurahan atau posyandu..." aria-label="Cari kelurahan atau posyandu">
+                    <input type="text" placeholder="Cari kelurahan atau kecamatan..." aria-label="Cari kelurahan atau kecamatan">
                 </div>
                 <a href="/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/create" class="btn-tool navy">
                     <i class="fas fa-plus"></i> Tambah Data
                 </a>
-               <a href="{{ url('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak-excel') }}" class="btn btn-success">
-    <i class="fas fa-file-excel"></i> Excel
-</a>
-               <a href="/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak" target="_blank" class="btn-tool red">
-    <i class="fas fa-file-pdf"></i> PDF
-</a>
+                <a href="/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak-excel" class="btn-tool green">
+                    <i class="fas fa-file-excel"></i> Excel
+                </a>
+                <a href="/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak" target="_blank" class="btn-tool red">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </a>
             </div>
         </div>
 
         <!-- TABS -->
         <ul class="nav custom-nav-tabs">
             <li class="nav-item">
-                <a class="nav-link {{ Request::is('internal/pencegahan/pemberdayaan-masyarakat') && !Request::is('internal/pencegahan/pemberdayaan-masyarakat/pelatihan*') && !Request::is('internal/pencegahan/pemberdayaan-masyarakat/sosialisasi*') ? 'active' : '' }}" href="/internal/pencegahan/pemberdayaan-masyarakat">Semua Data</a>
+                <a class="nav-link {{ Request::is('internal/pencegahan/pemberdayaan-masyarakat') ? 'active' : '' }}" href="/internal/pencegahan/pemberdayaan-masyarakat">Semua Data</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Request::is('internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga*') ? 'active' : '' }}" href="/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga">SOSIALISASI DAN EDUKASI</a>
+                <a class="nav-link {{ Request::is('internal/pencegahan/pemberdayaan-masyarakat/sosialisasi*') ? 'active' : '' }}" href="/internal/pencegahan/pemberdayaan-masyarakat/sosialisasi">SOSIALISASI DAN EDUKASI</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Request::is('internal/pencegahan/pemberdayaan-masyarakat/sosialisasi*') ? 'active' : '' }}" href="/internal/pencegahan/pemberdayaan-masyarakat/sosialisasi">PELATIHAN KELUARGA TANGGAP KEBAKARAN</a>
+                <a class="nav-link {{ Request::is('internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga*') ? 'active' : '' }}" href="/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga">PELATIHAN KELUARGA TANGGAP KEBAKARAN</a>
             </li>
         </ul>
 
@@ -693,53 +747,126 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             <span class="line"></span>
         </div>
 
-        <div class="table-scroll-wrapper">
-            <table class="table-detailed table-compact table-hover">
-                <thead>
-                    <tr>
-                        <th class="text-center" width="60px">No</th>
-                        <th>Hari / Tanggal</th>
-                        <th>Lokasi / Kelurahan</th>
-                        <th>Nama Sekolah</th>
-                        <th>Jumlah Peserta</th>
-                        <th>Keterangan</th>
-                        <th class="text-center" width="100px">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse(($data_pelatihan ?? []) as $index => $item)
-                    <tr>
-                        <td class="text-center fw-bold">{{ $index + 1 }}</td>
-                        <td>{{ $item->tanggal_pelaksanaan ? \Carbon\Carbon::parse($item->tanggal_pelaksanaan)->translatedFormat('d F Y') : ($item->hari_tgl ?? '-') }}</td>
-                        <td><strong>{{ $item->lokasi ?? $item->kelurahan ?? '-' }}</strong></td>
-                        <td>{{ $item->kecamatan ?? '-' }}</td>
-                        <td>{{ $item->jumlah_peserta ?? '-' }} Orang</td>
-                        <td>{{ $item->keterangan ?? '-' }}</td>
-                        <td>
-                            <div class="aksi-wrap">
-                                <a href="/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/edit/{{ $item->id }}" class="btn-action btn-edit" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/hapus/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn-action btn-delete" title="Hapus">
-                                        <i class="fas fa-trash"></i>
+        @php
+            $rows = collect($data_pelatihan ?? []);
+            $totalP = $rows->sum(fn($r) => (int) ($r->peserta_perempuan ?? 0));
+            $totalL = $rows->sum(fn($r) => (int) ($r->peserta_laki_laki ?? 0));
+        @endphp
+
+        <div class="table-card">
+            <div class="table-scroll-wrapper">
+                <table class="table-detailed table-peserta" id="tabelPelatihan">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" width="56">No</th>
+                            <th rowspan="2" class="th-left">Hari / Tgl</th>
+                            <th rowspan="2">RT</th>
+                            <th rowspan="2" class="th-left">Kelurahan</th>
+                            <th rowspan="2" class="th-left">Kecamatan</th>
+                            <th colspan="3" class="th-group">Jumlah Peserta</th>
+                            <th rowspan="2">Foto dan Video</th>
+                            <th rowspan="2" width="100">Aksi</th>
+                        </tr>
+                        <tr>
+                            <th class="th-sub"><i class="fas fa-venus"></i>Perempuan</th>
+                            <th class="th-sub"><i class="fas fa-mars"></i>Laki-laki</th>
+                            <th class="th-sub">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($rows as $item)
+                        @php
+                            $tgl = $item->tanggal_pelaksanaan ?? null;
+                            $p = (int) ($item->peserta_perempuan ?? 0);
+                            $l = (int) ($item->peserta_laki_laki ?? 0);
+
+                            $media = $item->foto_video ?? null;
+                            if (is_string($media)) {
+                                $decoded = json_decode($media, true);
+                                $media = is_array($decoded) ? $decoded : [$media];
+                            }
+                            $media = collect($media ?? [])->filter()->map(function ($m) {
+                                return \Illuminate\Support\Str::startsWith($m, ['http', '/'])
+                                    ? $m : url('/uploads/pemberdayaan/' . $m);
+                            })->values();
+                        @endphp
+                        <tr>
+                            <td class="col-center fw-bold">{{ $loop->iteration }}</td>
+                            <td class="cell-date">
+                                @if($tgl)
+                                    <strong>{{ \Carbon\Carbon::parse($tgl)->locale('id')->translatedFormat('d F Y') }}</strong>
+                                    <small>{{ \Carbon\Carbon::parse($tgl)->locale('id')->translatedFormat('l') }}</small>
+                                @else
+                                    <strong>{{ $item->hari_tgl ?? '-' }}</strong>
+                                @endif
+                            </td>
+                            <td class="col-rt">{{ $item->rt ?? '-' }}</td>
+                            <td><strong>{{ $item->kelurahan ?? '-' }}</strong></td>
+                            <td>{{ $item->kecamatan ?? '-' }}</td>
+                            <td class="col-center"><span class="count-pill female"><i class="fas fa-venus"></i>{{ $p }}</span></td>
+                            <td class="col-center"><span class="count-pill male"><i class="fas fa-mars"></i>{{ $l }}</span></td>
+                            <td class="col-center"><span class="count-pill total">{{ $p + $l }}</span></td>
+                            <td class="col-center">
+                                @if($media->isNotEmpty())
+                                    <button type="button" class="btn-media" data-media='@json($media)' data-title="{{ $item->kelurahan ?? 'Dokumentasi' }}">
+                                        <i class="fas fa-camera"></i> Lihat
                                     </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="7" class="empty-state">
-                            <i class="fas fa-folder-open"></i><br>
-                            Belum ada data Pelatihan Keluarga Tanggap Kebakaran.
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                                @else
+                                    <span class="media-empty">-</span>
+                                @endif
+                            </td>
+                            <td>
+                                <div class="aksi-wrap">
+                                    <a href="/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/edit/{{ $item->id }}" class="btn-action btn-edit" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/hapus/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-action btn-delete" title="Hapus">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="10" class="empty-state">
+                                <i class="fas fa-folder-open"></i><br>
+                                Belum ada data Pelatihan Keluarga Tanggap Kebakaran.
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                    @if($rows->isNotEmpty())
+                    <tfoot>
+                        <tr>
+                            <td colspan="5" class="foot-label">Total seluruh peserta</td>
+                            <td class="col-center"><span class="count-pill female"><i class="fas fa-venus"></i>{{ $totalP }}</span></td>
+                            <td class="col-center"><span class="count-pill male"><i class="fas fa-mars"></i>{{ $totalL }}</span></td>
+                            <td class="col-center"><span class="count-pill total">{{ $totalP + $totalL }}</span></td>
+                            <td colspan="2"></td>
+                        </tr>
+                    </tfoot>
+                    @endif
+                </table>
+            </div>
+        </div>
+
+        <!-- MODAL FOTO & VIDEO -->
+        <div class="modal fade" id="mediaModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content" style="border-radius: var(--r-md); border: 0;">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="mediaModalTitle">Dokumentasi</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="media-grid" id="mediaGrid"></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </main>
@@ -776,6 +903,49 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     }
     if (backdrop) backdrop.addEventListener('click', closeSide);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
+
+
+    /* ---------- Pencarian tabel ---------- */
+    var searchInput = document.querySelector('.search-box input');
+    var tbody = document.querySelector('.table-peserta tbody');
+    if (searchInput && tbody) {
+        searchInput.addEventListener('input', function () {
+            var q = this.value.trim().toLowerCase();
+            tbody.querySelectorAll('tr').forEach(function (tr) {
+                if (tr.querySelector('.empty-state')) return;
+                tr.style.display = tr.textContent.toLowerCase().indexOf(q) > -1 ? '' : 'none';
+            });
+        });
+    }
+
+    /* ---------- Modal foto & video ---------- */
+    document.querySelectorAll('.btn-media').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var list = [];
+            try { list = JSON.parse(btn.getAttribute('data-media')) || []; } catch (e) {}
+            var grid = document.getElementById('mediaGrid');
+            grid.innerHTML = '';
+            list.forEach(function (url) {
+                var box = document.createElement('div');
+                box.className = 'media-item';
+                var el;
+                if (/\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(url)) {
+                    el = document.createElement('video');
+                    el.src = url; el.controls = true;
+                } else {
+                    el = document.createElement('img');
+                    el.src = url; el.alt = 'Dokumentasi'; el.loading = 'lazy';
+                }
+                box.appendChild(el);
+                grid.appendChild(box);
+            });
+            document.getElementById('mediaModalTitle').textContent = 'Dokumentasi - ' + (btn.getAttribute('data-title') || '');
+            if (window.bootstrap) new bootstrap.Modal(document.getElementById('mediaModal')).show();
+        });
+    });
+    document.getElementById('mediaModal').addEventListener('hidden.bs.modal', function () {
+        document.querySelectorAll('#mediaGrid video').forEach(function (v) { v.pause(); });
+    });
 
     /* ---------- Hanya satu grup sidebar terbuka pada satu waktu ---------- */
     var groups = document.querySelectorAll('.side-group');
