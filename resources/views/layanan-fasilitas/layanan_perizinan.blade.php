@@ -4,21 +4,24 @@
     /* ------------------------------------------------------------
        PENGATURAN HALAMAN
        Dari controller bisa dikirim (semuanya opsional):
-         $tab_aktif        : 'rpkbgl' | 'skk' | 'perpanjang_skk'
+         $tab_aktif        : 'rpkbgl' | 'skk' | 'perpanjang_skk' | 'keramaian'
          $old              : isian sebelumnya (mis. old() di Laravel) supaya tidak hilang saat gagal kirim
          $pesan_sukses     : teks sukses setelah formulir terkirim
          $galat            : array pesan galat validasi
          $url_surat_permohonan : link unduh templat surat permohonan
        ------------------------------------------------------------ */
     $layanan = [
-        'rpkbgl' => ['url' => '/layanan-fasilitas/layanan_perizinan', 'label' => 'RPKBGL', 'ico' => 'fa-building', 'ket' => 'Layanan perizinan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan'],
-        'skk'    => ['url' => '/layanan-fasilitas/skk',                'label' => 'SKK (Baru & Perpanjangan)', 'ico' => 'fa-user-shield', 'ket' => 'Layanan perizinan penerbitan & perpanjangan Sertifikat Keamanan Kebakaran'],
+        'rpkbgl'    => ['url' => '/layanan-fasilitas/layanan_perizinan', 'label' => 'RPKBGL', 'ico' => 'fa-building', 'ket' => 'Layanan perizinan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan'],
+        'skk'       => ['url' => '/layanan-fasilitas/skk',                'label' => 'SKK (Baru & Perpanjangan)', 'ico' => 'fa-user-shield', 'ket' => 'Layanan perizinan penerbitan & perpanjangan Sertifikat Keamanan Kebakaran'],
+        'keramaian' => ['url' => '/layanan-fasilitas/izin-keramaian',     'label' => 'Izin Keramaian', 'ico' => 'fa-users', 'ket' => 'Pengajuan Rekomendasi Izin Keramaian'],
     ];
+    
+    // Tab aktif default untuk halaman ini adalah RPKBGL
     $tab_aktif = $tab_aktif ?? 'rpkbgl';
 
-    $old            = $old ?? [];
-    $pesan_sukses   = $pesan_sukses ?? '';
-    $galat          = $galat ?? [];
+    $old            = session()->getOldInput() ?? []; 
+    $pesan_sukses   = session('success') ?? '';
+    $galat          = $errors->all() ?? [];
     $url_surat_permohonan = $url_surat_permohonan ?? '';
 
     $to_arr = function ($d) { return (is_object($d) && method_exists($d, 'toArray')) ? $d->toArray() : (array) $d; };
@@ -471,15 +474,19 @@
                     <li><a href="/produkhukum">Produk hukum</a></li>
                 </ul>
             </li>
+            
+            <!-- UPDATE DROPDOWN LAYANAN DISINI -->
             <li class="has-drop current">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan<i class="fas fa-chevron-down"></i></button>
+                <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
+                    <li><a href="/layanan-fasilitas/layanan_perizinan" aria-current="page">RPKBGL</a></li>
                     <li><a href="/layanan-fasilitas/skk">SKK & Perpanjang SKK</a></li>
+                    <li><a href="/layanan-fasilitas/izin-keramaian">Izin Keramaian</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan Edukasi & Sosialisasi</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
             </li>
+            
             <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
@@ -499,7 +506,7 @@
                 <ul class="dropdown">
                     <li>
                         <form action="/pemohon/logout" method="POST" style="margin: 0;">
-                            <!-- Bila di Laravel blade, tambahkan csrf token. Jika native php, abaikan atau atur sendiri -->
+                            @csrf
                             <button type="submit" class="btn-logout">
                                 <i class="fas fa-sign-out-alt"></i> Keluar
                             </button>
@@ -524,7 +531,7 @@
             </ol>
         </nav>
         <h1 class="rise d1">Layanan perizinan</h1>
-        <p class="rise d2">Ajukan rekomendasi proteksi kebakaran, sertifikat keamanan kebakaran, dan perpanjangannya secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+        <p class="rise d2">Ajukan rekomendasi proteksi kebakaran, sertifikat keamanan kebakaran, dan izin keramaian secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
 </section>
 
@@ -640,7 +647,7 @@
                 </section>
             </aside>
 
-            <!-- Formulir -->
+            <!-- Formulir RPKBGL -->
             <section class="form-panel" id="formulir" aria-label="Formulir permohonan">
                 <div class="form-bar">
                     <div class="form-title">
@@ -654,7 +661,7 @@
                 </div>
 
                 <form class="form-body" action="#" method="POST" enctype="multipart/form-data">
-                    <!-- Jika di dalam environment laravel, pastikan ada @csrf / csrf_field() di sini -->
+                    @csrf
 
                     <?php if ($pesan_sukses): ?>
                         <div class="alert ok" role="status"><i class="fas fa-circle-check"></i><div><?= $h($pesan_sukses) ?></div></div>
