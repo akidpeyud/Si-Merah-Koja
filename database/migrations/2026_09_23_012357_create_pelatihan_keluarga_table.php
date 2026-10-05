@@ -6,38 +6,31 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('pelatihan_keluarga', function (Blueprint $table) {
             $table->id();
-            
-            // Informasi Pelaksanaan
+
+            // Informasi pelaksanaan
             $table->date('tanggal_pelaksanaan');
-            $table->string('kecamatan');
-            $table->string('kelurahan');
-            
-            // Menggunakan string untuk RT karena di input ada contoh: "01, 03, 05, 06"
-            $table->string('rt'); 
-            
-            // Posyandu bersifat opsional (boleh dikosongkan)
-            $table->string('posyandu')->nullable(); 
-            
-            // Jumlah Peserta
-            $table->integer('peserta_perempuan')->default(0);
-            $table->integer('peserta_laki_laki')->default(0);
-            
-            // Dokumen/Media (Foto dan Video di tabel dashboard)
-            
+            $table->string('kecamatan', 100);   // dari dropdown
+            $table->string('kelurahan', 100);   // dari dropdown
+            $table->string('rt');               // contoh: "03, 12, 14 dan 19"
+
+            // Jumlah peserta
+            $table->unsignedInteger('peserta_perempuan')->default(0);
+            $table->unsignedInteger('peserta_laki_laki')->default(0);
+
+            // Dokumentasi (path file foto/video)
+            $table->string('foto_video')->nullable();
+
             $table->timestamps();
+
+            $table->index('tanggal_pelaksanaan');
+            $table->index(['kecamatan', 'kelurahan']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('pelatihan_keluarga');

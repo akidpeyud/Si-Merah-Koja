@@ -272,7 +272,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .page-head p { color: var(--steel); font-size: .95rem; }
 
 /* ==========================================================
-   HALAMAN FORM EDIT - disesuaikan ke template
+   HALAMAN FORM TAMBAH DATA
    ========================================================== */
 .back-link {
     display: inline-flex; align-items: center; gap: 8px;
@@ -286,6 +286,15 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     border-radius: var(--r-md); box-shadow: var(--shadow-xs);
     padding: clamp(20px, 3vw, 32px);
 }
+
+.form-alert {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: var(--signal-soft); border: 1px solid rgba(220,53,69,.25);
+    color: var(--signal-dark); border-radius: var(--r-sm);
+    padding: 14px 16px; margin-bottom: 20px; font-size: .88rem;
+}
+.form-alert i { margin-top: 3px; }
+.form-alert ul { list-style: disc; padding-left: 18px; margin-top: 4px; }
 
 .section-title {
     display: flex; align-items: center; gap: 12px;
@@ -302,14 +311,31 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .section-title .line { flex: 1 1 auto; height: 1px; background: linear-gradient(to right, var(--line), transparent 90%); }
 
 .form-label { font-weight: 600; font-size: .8rem; color: var(--steel); margin-bottom: 6px; letter-spacing: .01em; }
-.form-control {
+.form-label .req { color: var(--signal); margin-left: 2px; }
+.form-control, .form-select {
     height: 44px; border: 1px solid var(--line-dark); border-radius: var(--r-sm);
-    padding: 0 14px; font-size: .9rem; color: var(--ink); background: #fff;
+    padding: 0 14px; font-size: .9rem; color: var(--ink); background-color: #fff;
     transition: border-color .2s, box-shadow .2s;
 }
+.form-select { padding-right: 38px; }
+.form-select:disabled { background-color: var(--paper); color: var(--steel-soft); cursor: not-allowed; }
 .form-control[type="file"] { height: auto; padding: 9px 14px; }
 .form-control::placeholder { color: var(--steel-soft); }
-.form-control:focus { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+.form-control:focus, .form-select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+.form-control.is-invalid, .form-select.is-invalid { border-color: var(--signal); }
+.form-hint { display: block; margin-top: 6px; font-size: .75rem; color: var(--steel-soft); }
+
+.gender-label { display: flex; align-items: center; gap: 8px; }
+.gender-label i { font-size: .85rem; }
+.gender-label .fa-venus { color: #db2777; }
+.gender-label .fa-mars { color: var(--info); }
+
+.total-box {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    margin-top: 16px; padding: 12px 16px; border-radius: var(--r-sm);
+    background: var(--navy-light); color: var(--navy); font-size: .88rem; font-weight: 600;
+}
+.total-box strong { font-family: var(--font-display); font-size: 1.3rem; }
 
 .form-actions {
     display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px;
@@ -322,6 +348,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .btn-save { background: var(--navy); color: #fff; border: none; }
 .btn-save:hover { filter: brightness(1.1); box-shadow: var(--shadow-sm); color: #fff; }
+.btn-save:disabled { opacity: .7; cursor: wait; }
 .btn-cancel { background: #fff; color: var(--steel); border: 1px solid var(--line-dark); }
 .btn-cancel:hover { background: var(--paper); color: var(--ink); }
 .btn-save:active, .btn-cancel:active { transform: scale(.97); }
@@ -484,9 +511,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             <details class="side-group" {{ Request::is('internal/kepegawaian*') ? 'open' : '' }}>
                 <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
-                    <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
-                        <i class="fas fa-user-tie"></i> Data Urut Kepegawaian
-                    </a>
+                   <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
+            <i class="fas fa-user-tie"></i> Data Urut Kepegawaian
+        </a>
+        
+        <!-- Tambahan Tombol Program Kerja -->
+        <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
+            <i class="fas fa-file-contract"></i> Program Kerja
+        </a>
                 </div>
             </details>
 
@@ -527,7 +559,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         @endif
 
         @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
-            <div class="side-kicker">Konten publik</div>
+           <div class="side-kicker">Konten publik</div>
             <details class="side-group" {{ Request::is('internal/operator*') ? 'open' : '' }}>
                 <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen berita</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
@@ -539,6 +571,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     </a>
                     <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
                         <i class="fab fa-instagram"></i> Kelola Berita Medsos
+                    </a>
+                    <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
+    <i class="fab fa-youtube"></i> Ujung-Ujung Damkar
+</a>
+<a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
+                        <i class="fas fa-graduation-cap"></i> Edu Damkar
                     </a>
                 </div>
             </details>
@@ -575,12 +613,26 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         </a>
 
         <div class="page-head">
-            <h1>Form Tambah Pelatihan Baru</h1>
+            <h1>Form Sosialisasi</h1>
             <p>Isi informasi pelaksanaan, jumlah peserta, dan dokumentasi kegiatan.</p>
         </div>
 
+        @if($errors->any())
+            <div class="form-alert" role="alert">
+                <i class="fas fa-triangle-exclamation"></i>
+                <div>
+                    <strong>Data belum bisa disimpan. Periksa kembali:</strong>
+                    <ul>
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
+
         <div class="form-wrapper">
-            <form action="/internal/pencegahan/pemberdayaan-masyarakat/store" method="POST" enctype="multipart/form-data">
+            <form id="formSosialisasi" action="/internal/pencegahan/pemberdayaan-masyarakat/store" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <!-- INFORMASI PELAKSANAAN -->
@@ -591,26 +643,34 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 </div>
 
                 <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Tanggal Pelaksanaan</label>
-                        <input type="date" name="tanggal_pelaksanaan" class="form-control" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Nama Posyandu</label>
-                        <input type="text" name="posyandu" class="form-control" placeholder="Contoh: Posyandu Beringin (boleh dikosongkan)">
-                    </div>
-
                     <div class="col-md-4">
-                        <label class="form-label">RT</label>
-                        <input type="text" name="rt" class="form-control" placeholder="Contoh: 03, 12, 14" required>
+                        <label class="form-label" for="tanggal_pelaksanaan">Tanggal Pelaksanaan <span class="req">*</span></label>
+                        <input type="date" id="tanggal_pelaksanaan" name="tanggal_pelaksanaan" value="{{ old('tanggal_pelaksanaan') }}" class="form-control @error('tanggal_pelaksanaan') is-invalid @enderror" required>
+                        @error('tanggal_pelaksanaan')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Kelurahan</label>
-                        <input type="text" name="kelurahan" class="form-control" placeholder="Contoh: Rawasari" required>
+                        <label class="form-label" for="kecamatan">Kecamatan <span class="req">*</span></label>
+                        <select id="kecamatan" name="kecamatan" class="form-select @error('kecamatan') is-invalid @enderror" data-old="{{ old('kecamatan') }}" required>
+                            <option value="" selected disabled>Pilih kecamatan</option>
+                        </select>
+                        @error('kecamatan')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Kecamatan</label>
-                        <input type="text" name="kecamatan" class="form-control" placeholder="Contoh: Alam Barajo" required>
+                        <label class="form-label" for="kelurahan">Kelurahan <span class="req">*</span></label>
+                        <select id="kelurahan" name="kelurahan" class="form-select @error('kelurahan') is-invalid @enderror" data-old="{{ old('kelurahan') }}" required disabled>
+                            <option value="" selected disabled>Pilih kecamatan dulu</option>
+                        </select>
+                        @error('kelurahan')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label" for="rt">RT <span class="req">*</span></label>
+                        <input type="text" id="rt" name="rt" value="{{ old('rt') }}" class="form-control @error('rt') is-invalid @enderror" placeholder="Contoh: 03, 12, 14 dan 19" required>
+                        @error('rt')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="col-md-7">
+                        <label class="form-label" for="posyandu_sekolah">Posyandu / Nama Sekolah <span class="req">*</span></label>
+                        <input type="text" id="posyandu_sekolah" name="posyandu_sekolah" value="{{ old('posyandu_sekolah') }}" class="form-control @error('posyandu_sekolah') is-invalid @enderror" placeholder="Contoh: Posyandu Melati / SDN 12 Kota Jambi" maxlength="150" required>
+                        @error('posyandu_sekolah')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
 
@@ -623,13 +683,20 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label">Peserta Laki-laki</label>
-                        <input type="number" name="peserta_laki_laki" class="form-control" value="0" min="0" required>
+                        <label class="form-label gender-label" for="peserta_perempuan"><i class="fas fa-venus"></i> Peserta Perempuan <span class="req">*</span></label>
+                        <input type="number" id="peserta_perempuan" name="peserta_perempuan" value="{{ old('peserta_perempuan', 0) }}" class="form-control js-peserta @error('peserta_perempuan') is-invalid @enderror" min="0" inputmode="numeric" required>
+                        @error('peserta_perempuan')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Peserta Perempuan</label>
-                        <input type="number" name="peserta_perempuan" class="form-control" value="0" min="0" required>
+                        <label class="form-label gender-label" for="peserta_laki_laki"><i class="fas fa-mars"></i> Peserta Laki-laki <span class="req">*</span></label>
+                        <input type="number" id="peserta_laki_laki" name="peserta_laki_laki" value="{{ old('peserta_laki_laki', 0) }}" class="form-control js-peserta @error('peserta_laki_laki') is-invalid @enderror" min="0" inputmode="numeric" required>
+                        @error('peserta_laki_laki')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
+                </div>
+
+                <div class="total-box">
+                    <span>Total peserta</span>
+                    <strong id="totalPeserta">0</strong>
                 </div>
 
                 <!-- DOKUMENTASI -->
@@ -641,14 +708,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
                 <div class="row g-3">
                     <div class="col-12">
-                        <label class="form-label">Foto / Video Dokumentasi (Opsional)</label>
-                        <input type="file" name="foto_video" class="form-control" accept="image/*,video/*,.pdf,.zip">
+                        <label class="form-label" for="foto_video">Foto / Video Dokumentasi (Opsional)</label>
+                        <input type="file" id="foto_video" name="foto_video" class="form-control @error('foto_video') is-invalid @enderror" accept="image/*,video/*">
+                        @error('foto_video')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <span class="form-hint">Boleh dikosongkan. Gunakan file foto atau video kegiatan.</span>
                     </div>
                 </div>
 
                 <div class="form-actions">
                     <a href="/internal/pencegahan/pemberdayaan-masyarakat" class="btn-cancel">Batal</a>
-                    <button type="submit" class="btn-save"><i class="fas fa-save"></i> Simpan Data Sosialisasi</button>
+                    <button type="submit" class="btn-save" id="btnSave"><i class="fas fa-save"></i> Simpan Data Sosialisasi</button>
                 </div>
             </form>
         </div>
@@ -687,6 +756,78 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     }
     if (backdrop) backdrop.addEventListener('click', closeSide);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
+
+
+    /* ---------- Data Kecamatan -> Kelurahan (Kota Jambi) ---------- */
+    var WILAYAH = {
+        'Alam Barajo': ['Bagan Pete', 'Beliung', 'Kenali Besar', 'Mayang Mangurai', 'Pinang Merah', 'Rawasari', 'Simpang Rimbo'],
+        'Danau Sipin': ['Legok', 'Murni', 'Selamat', 'Solok Sipin', 'Sungai Putri'],
+        'Danau Teluk': ['Olak Kemang', 'Pasir Panjang', 'Tanjung Pasir', 'Tanjung Raden', 'Ulu Gedong'],
+        'Jambi Selatan': ['Pakuan Baru', 'Pasir Putih', 'Tambak Sari', 'The Hok', 'Wijaya Pura'],
+        'Jambi Timur': ['Budiman', 'Kasang', 'Kasang Jaya', 'Rajawali', 'Sijenjang', 'Sulanjana', 'Talang Banjar', 'Tanjung Pinang', 'Tanjung Sari'],
+        'Jelutung': ['Cempaka Putih', 'Handil Jaya', 'Jelutung', 'Kebun Handil', 'Lebak Bandung', 'Payo Lebar', 'Talang Jauh'],
+        'Kota Baru': ['Kenali Asam', 'Kenali Asam Atas', 'Kenali Asam Bawah', 'Paal Lima', 'Simpang III Sipin', 'Suka Karya', 'Talang Gulo'],
+        'Paal Merah': ['Bakung Jaya', 'Eka Jaya', 'Lingkar Selatan', 'Paal Merah', 'Payo Selincah', 'Talang Bakung'],
+        'Pasar Jambi': ['Beringin', 'Orang Kayo Hitam', 'Pasar Jambi', 'Sungai Asam'],
+        'Pelayangan': ['Arab Melayu', 'Jelmu', 'Mudung Laut', 'Tahtul Yaman', 'Tanjung Johor', 'Tengah'],
+        'Telanaipura': ['Aur Kenali', 'Buluran Kenali', 'Pematang Sulur', 'Penyengat Rendah', 'Simpang IV Sipin', 'Telanaipura', 'Teluk Kenali']
+    };
+
+    var selKec = document.getElementById('kecamatan');
+    var selKel = document.getElementById('kelurahan');
+
+    function addOption(select, value, text, selected) {
+        var o = document.createElement('option');
+        o.value = value; o.textContent = text;
+        if (selected) o.selected = true;
+        select.appendChild(o);
+    }
+
+    function fillKelurahan(kec, oldKel) {
+        selKel.innerHTML = '';
+        if (!kec || !WILAYAH[kec]) {
+            addOption(selKel, '', 'Pilih kecamatan dulu', true);
+            selKel.options[0].disabled = true;
+            selKel.disabled = true;
+            return;
+        }
+        addOption(selKel, '', 'Pilih kelurahan', !oldKel);
+        selKel.options[0].disabled = true;
+        WILAYAH[kec].forEach(function (k) { addOption(selKel, k, k, k === oldKel); });
+        selKel.disabled = false;
+    }
+
+    if (selKec && selKel) {
+        var oldKec = selKec.getAttribute('data-old') || '';
+        var oldKel = selKel.getAttribute('data-old') || '';
+
+        Object.keys(WILAYAH).forEach(function (k) { addOption(selKec, k, k, k === oldKec); });
+        selKec.options[0].selected = !oldKec;
+
+        fillKelurahan(oldKec, oldKel);
+        selKec.addEventListener('change', function () { fillKelurahan(selKec.value, ''); });
+    }
+
+    /* ---------- Total peserta otomatis ---------- */
+    var pesertaInputs = document.querySelectorAll('.js-peserta');
+    var totalEl = document.getElementById('totalPeserta');
+    function hitungTotal() {
+        var t = 0;
+        pesertaInputs.forEach(function (i) { t += Math.max(0, parseInt(i.value, 10) || 0); });
+        if (totalEl) totalEl.textContent = t;
+    }
+    pesertaInputs.forEach(function (i) { i.addEventListener('input', hitungTotal); });
+    hitungTotal();
+
+    /* ---------- Cegah submit ganda ---------- */
+    var form = document.getElementById('formSosialisasi');
+    var btnSave = document.getElementById('btnSave');
+    if (form && btnSave) {
+        form.addEventListener('submit', function () {
+            btnSave.disabled = true;
+            btnSave.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+        });
+    }
 
     /* ---------- Hanya satu grup sidebar terbuka pada satu waktu ---------- */
     var groups = document.querySelectorAll('.side-group');

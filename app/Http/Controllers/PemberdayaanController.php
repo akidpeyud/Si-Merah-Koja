@@ -14,7 +14,7 @@ class PemberdayaanController extends Controller
         // Hitung total data untuk dimunculkan di kotak-kotak ringkasan (Stat Cards)
         $total_sosialisasi = DB::table('sosialisasi_edukasi')->count();
         // Asumsi nama tabel untuk pelatihan keluarga adalah 'pelatihan_keluarga'. Sesuaikan kalau beda!
-        $total_pelatihan = DB::table('pelatihan_keluarga')->count(); 
+        $total_pelatihan = DB::table('pelatihan_keluarga')->count();
 
         return view('internal.pencegahan.pemberdayaan_masyarakat', compact('total_sosialisasi', 'total_pelatihan'));
     }
@@ -26,7 +26,7 @@ class PemberdayaanController extends Controller
         $data_sosialisasi = DB::table('sosialisasi_edukasi')
                             ->orderBy('tanggal_pelaksanaan', 'desc')
                             ->get();
-                            
+
         // Kirim data ke view pemberdayaan_masyarakat
         return view('internal.pencegahan.pemberdayaan_masyarakat', compact('data_sosialisasi'));
     }
@@ -36,17 +36,27 @@ class PemberdayaanController extends Controller
     {
         return view('internal.pencegahan.create_pemberdayaan');
     }
-    
+
     // 3. PROSES SIMPAN DATA KE DATABASE (STORE)
     public function store(Request $request)
     {
+        $request->validate([
+            'tanggal_pelaksanaan' => 'required|date',
+            'kecamatan'           => 'required|string|max:100',
+            'kelurahan'           => 'required|string|max:100',
+            'rt'                  => 'required|string|max:255',
+            'posyandu_sekolah'    => 'required|string|max:150',
+            'peserta_perempuan'   => 'required|integer|min:0',
+            'peserta_laki_laki'   => 'required|integer|min:0',
+            'foto_video'          => 'nullable|file|mimes:jpg,jpeg,png,webp,mp4,mov,webm|max:51200',
+        ]);
+
         $data = [
-            // PERBAIKAN: Otomatis mencari input bernama 'tanggal_pelaksanaan' atau 'tanggal'
-            'tanggal_pelaksanaan' => $request->tanggal_pelaksanaan ?? $request->tanggal,
+            'tanggal_pelaksanaan' => $request->tanggal_pelaksanaan,
             'kecamatan'           => $request->kecamatan,
             'kelurahan'           => $request->kelurahan,
             'rt'                  => $request->rt,
-            'posyandu'            => $request->posyandu,
+            'posyandu_sekolah'    => $request->posyandu_sekolah,
             'peserta_perempuan'   => $request->peserta_perempuan ?? 0,
             'peserta_laki_laki'   => $request->peserta_laki_laki ?? 0,
             'created_at'          => now(),
@@ -63,7 +73,7 @@ class PemberdayaanController extends Controller
 
         DB::table('sosialisasi_edukasi')->insert($data);
 
-        return redirect('/internal/pencegahan/pemberdayaan-masyarakat')
+        return redirect('/internal/pencegahan/pemberdayaan-masyarakat/sosialisasi')
             ->with('success', 'Data Sosialisasi & Edukasi berhasil ditambahkan!');
     }
 
@@ -71,9 +81,9 @@ class PemberdayaanController extends Controller
     public function edit($id)
     {
         $data = DB::table('sosialisasi_edukasi')->where('id', $id)->first();
-        
+
         if (!$data) {
-            return redirect('/internal/pencegahan/pemberdayaan-masyarakat')->with('error', 'Data tidak ditemukan!');
+            return redirect('/internal/pencegahan/pemberdayaan-masyarakat/sosialisasi')->with('error', 'Data tidak ditemukan!');
         }
 
         return view('internal.pencegahan.edit_pemberdayaan', compact('data'));
@@ -82,13 +92,23 @@ class PemberdayaanController extends Controller
     // 5. PROSES UPDATE DATA KE DATABASE (UPDATE)
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'tanggal_pelaksanaan' => 'required|date',
+            'kecamatan'           => 'required|string|max:100',
+            'kelurahan'           => 'required|string|max:100',
+            'rt'                  => 'required|string|max:255',
+            'posyandu_sekolah'    => 'required|string|max:150',
+            'peserta_perempuan'   => 'required|integer|min:0',
+            'peserta_laki_laki'   => 'required|integer|min:0',
+            'foto_video'          => 'nullable|file|mimes:jpg,jpeg,png,webp,mp4,mov,webm|max:51200',
+        ]);
+
         $updateData = [
-            // PERBAIKAN: Sama seperti di atas
-            'tanggal_pelaksanaan' => $request->tanggal_pelaksanaan ?? $request->tanggal,
+            'tanggal_pelaksanaan' => $request->tanggal_pelaksanaan,
             'kecamatan'           => $request->kecamatan,
             'kelurahan'           => $request->kelurahan,
             'rt'                  => $request->rt,
-            'posyandu'            => $request->posyandu,
+            'posyandu_sekolah'    => $request->posyandu_sekolah,
             'peserta_perempuan'   => $request->peserta_perempuan ?? 0,
             'peserta_laki_laki'   => $request->peserta_laki_laki ?? 0,
             'updated_at'          => now(),
@@ -104,7 +124,7 @@ class PemberdayaanController extends Controller
 
         DB::table('sosialisasi_edukasi')->where('id', $id)->update($updateData);
 
-        return redirect('/internal/pencegahan/pemberdayaan-masyarakat')
+        return redirect('/internal/pencegahan/pemberdayaan-masyarakat/sosialisasi')
             ->with('success', 'Data Sosialisasi & Edukasi berhasil diperbarui!');
     }
 
@@ -113,17 +133,15 @@ class PemberdayaanController extends Controller
     {
         DB::table('sosialisasi_edukasi')->where('id', $id)->delete();
 
-        return redirect('/internal/pencegahan/pemberdayaan-masyarakat')
+        return redirect('/internal/pencegahan/pemberdayaan-masyarakat/sosialisasi')
             ->with('success', 'Data Sosialisasi & Edukasi berhasil dihapus!');
     }
 
-   // 7. CETAK PDF SOSIALISASI
+    // 7. CETAK PDF SOSIALISASI
     public function cetak()
     {
-        // Ubah nama variabel penampung menjadi $data
         $data = DB::table('sosialisasi_edukasi')->orderBy('tanggal_pelaksanaan', 'desc')->get();
 
-        // Kirimkan variabel $data menggunakan compact('data')
         return view('internal.pencegahan.cetak_sosialisasi', compact('data'));
     }
 
@@ -132,7 +150,7 @@ class PemberdayaanController extends Controller
     {
         $data = DB::table('sosialisasi_edukasi')->orderBy('tanggal_pelaksanaan', 'desc')->get();
         $filename = "Data_Sosialisasi_Edukasi_" . date('Ymd') . ".csv";
-        
+
         $headers = [
             "Content-type"        => "text/csv",
             "Content-Disposition" => "attachment; filename=$filename",
@@ -141,23 +159,23 @@ class PemberdayaanController extends Controller
             "Expires"             => "0"
         ];
 
-        $columns = ['NO', 'TANGGAL PELAKSANAAN', 'KECAMATAN', 'KELURAHAN', 'RT', 'POSYANDU', 'PESERTA LAKI-LAKI', 'PESERTA PEREMPUAN', 'TOTAL PESERTA'];
+        $columns = ['NO', 'TANGGAL PELAKSANAAN', 'KECAMATAN', 'KELURAHAN', 'RT', 'POSYANDU / NAMA SEKOLAH', 'PESERTA LAKI-LAKI', 'PESERTA PEREMPUAN', 'TOTAL PESERTA'];
 
         $callback = function() use($data, $columns) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
-            
+
             foreach ($data as $index => $row) {
                 // Hitung total peserta otomatis
                 $total_peserta = ($row->peserta_laki_laki ?? 0) + ($row->peserta_perempuan ?? 0);
-                
+
                 fputcsv($file, [
                     $index + 1,
                     $row->tanggal_pelaksanaan ? \Carbon\Carbon::parse($row->tanggal_pelaksanaan)->translatedFormat('d F Y') : '-',
                     $row->kecamatan ?? '-',
                     $row->kelurahan ?? '-',
                     $row->rt ?? '-',
-                    $row->posyandu ?? '-',
+                    $row->posyandu_sekolah ?? '-',
                     $row->peserta_laki_laki ?? '0',
                     $row->peserta_perempuan ?? '0',
                     $total_peserta
@@ -165,7 +183,7 @@ class PemberdayaanController extends Controller
             }
             fclose($file);
         };
-        
+
         return response()->stream($callback, 200, $headers);
     }
 
@@ -175,12 +193,14 @@ class PemberdayaanController extends Controller
         $data = \App\Models\PelatihanKeluarga::orderBy('tanggal_pelaksanaan', 'desc')->get();
 
         return view('internal.pencegahan.cetak_pelatihan', compact('data'));
-    }// 10. CETAK EXCEL PELATIHAN KELUARGA
+    }
+
+    // 10. CETAK EXCEL PELATIHAN KELUARGA
     public function cetakExcelPelatihan()
     {
         $data = \App\Models\PelatihanKeluarga::orderBy('tanggal_pelaksanaan', 'desc')->get();
         $filename = "Data_Pelatihan_Keluarga_" . date('Ymd') . ".csv";
-        
+
         $headers = [
             "Content-type"        => "text/csv",
             "Content-Disposition" => "attachment; filename=$filename",
@@ -195,7 +215,7 @@ class PemberdayaanController extends Controller
         $callback = function() use($data, $columns) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
-            
+
             foreach ($data as $index => $row) {
                 fputcsv($file, [
                     $index + 1,
@@ -209,7 +229,7 @@ class PemberdayaanController extends Controller
             }
             fclose($file);
         };
-        
+
         return response()->stream($callback, 200, $headers);
     }
 }
