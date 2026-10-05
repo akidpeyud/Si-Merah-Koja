@@ -354,6 +354,10 @@
                     <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
                         <i class="fas fa-folder-open"></i> Kelola Surat Korban
                     </a>
+                   <!-- MENU BARU: KELOLA SURAT KERAMAIAN -->
+                    <a href="{{ route('internal.izin-keramaian.index') }}" class="active">
+                        <i class="fas fa-users-rectangle"></i> Kelola Surat Keramaian
+                    </a>
                 </div>
             </details>
 
