@@ -8,9 +8,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\SapraController;
 use App\Http\Controllers\OperatorMedsosController;
-use App\Http\Controllers\DukController; 
+use App\Http\Controllers\DukController;
 use App\Http\Controllers\DamtanController;
-use App\Http\Controllers\RedkarController; 
+use App\Http\Controllers\RedkarController;
 use App\Http\Controllers\SuratKorbanController;
 use App\Http\Controllers\PermohonanRpkbglController;
 use App\Http\Controllers\PublicController;
@@ -22,7 +22,7 @@ use App\Http\Controllers\PemohonAuthController;
 use App\Http\Controllers\PermohonanSkkController;
 use App\Http\Controllers\PermohonanEdukasiController;
 use App\Http\Controllers\PetaController;
-use App\Http\Controllers\IzinKeramaianController; 
+use App\Http\Controllers\IzinKeramaianController;
 use App\Http\Controllers\FireDrillController;
 use App\Http\Controllers\ProgramKerjaController;
 use App\Models\Berita;
@@ -251,17 +251,10 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/sapra/sarana-pemeriksaan/delete/{id}', [SapraController::class, 'destroySaranaPemeriksaan']);
     Route::get('/sapra/sarana-pemeriksaan/cetak', [SapraController::class, 'cetakPdfSaranaPemeriksaan']);
 
-    // --- E. PENCEGAHAN ---
-    // Cetak Excel & PDF
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/cetak-excel/{jenis}', [PencegahanController::class, 'cetakExcel']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/cetak-pdf/{jenis}', [PencegahanController::class, 'cetakPdf']);
-    Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan/cetak-excel', [PencegahanController::class, 'cetakExcelInspeksi']);
-    Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan/cetak-pdf', [PencegahanController::class, 'cetakPdfInspeksi']);
-    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/cetak-excel', [PencegahanController::class, 'cetakExcelFireDrill']);
-    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/cetak-pdf', [PencegahanController::class, 'cetakPdfFireDrill']);
-    Route::get('/internal/pencegahan/fire-drill/export/pdf', [FireDrillController::class, 'cetakPdf']);
 
-    // 1. Kelola REDKAR
+    // --- E. PENCEGAHAN ---
+    
+    // 1. KELOLA REDKAR
     Route::get('/internal/pencegahan/kelola-redkar', [RedkarController::class, 'kelolaRedkarInternal']);
     Route::post('/internal/pencegahan/update-status-redkar/{id}', [RedkarController::class, 'verifikasiRedkar']); 
     Route::get('/internal/pencegahan/edit-redkar/{id}', [RedkarController::class, 'editRedkar']);
@@ -285,7 +278,7 @@ Route::middleware(['auth'])->group(function () {
         return view('internal.pencegahan.detail_rpkbgl', ['permohonan' => App\Models\PermohonanRpkbgl::findOrFail($id)]); 
     });
 
-    // 3. Kelola SKK (Menggabungkan Controller Method & Route Closure)
+    // 3. Kelola SKK 
     Route::prefix('internal/pencegahan/kelola-skk')->name('skk.')->group(function () {
         Route::get('/', [SkkAdminController::class, 'index'])->name('index');
         Route::get('/tambah', [SkkAdminController::class, 'create'])->name('create');
@@ -314,6 +307,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan/{id}/edit', [PencegahanController::class, 'editInspeksiBangunan'])->name('inspeksi.edit');
     Route::put('/internal/pencegahan/inspeksi-kebakaran/bangunan/{id}', [PencegahanController::class, 'updateInspeksiBangunan'])->name('inspeksi.update');
     Route::delete('/internal/pencegahan/inspeksi-kebakaran/bangunan/{id}', [PencegahanController::class, 'destroyInspeksiBangunan'])->name('inspeksi.destroy');
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan/cetak-excel', [PencegahanController::class, 'cetakExcelInspeksi']);
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan/cetak-pdf', [PencegahanController::class, 'cetakPdfInspeksi']);
 
     Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill', [PencegahanController::class, 'indexFireDrill']);
     Route::get('/internal/pencegahan/fire-drill/tambah', [PencegahanController::class, 'createFireDrill'])->name('fire_drill.create');
@@ -321,6 +316,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/pencegahan/fire-drill/{id}/edit', [PencegahanController::class, 'editFireDrill'])->name('fire_drill.edit');
     Route::put('/internal/pencegahan/fire-drill/{id}', [PencegahanController::class, 'updateFireDrill'])->name('fire_drill.update');
     Route::delete('/internal/pencegahan/fire-drill/{id}', [PencegahanController::class, 'destroyFireDrill'])->name('fire_drill.destroy');
+    
+    // Gabungan rute cetak Fire Drill (dari kedua branch)
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/excel', [FireDrillController::class, 'excel'])->name('fire_drill.excel');
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/cetak', [FireDrillController::class, 'cetak'])->name('fire_drill.cetak');
+    Route::get('/internal/pencegahan/fire-drill/export/pdf', [FireDrillController::class, 'cetakPdf']);
 
     // 6. Layanan Inspeksi (Manual)
     Route::get('/internal/pencegahan/layanan-inspeksi', function () { 
@@ -478,15 +478,20 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/edit/{id}', [PemberdayaanController::class, 'edit']);
     Route::put('/internal/pencegahan/pemberdayaan-masyarakat/update/{id}', [PemberdayaanController::class, 'update']);
     Route::delete('/internal/pencegahan/pemberdayaan-masyarakat/hapus/{id}', [PemberdayaanController::class, 'destroy']);
-    
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/cetak', [PemberdayaanController::class, 'cetak'])->name('pemberdayaan.cetak');
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/cetak-excel', [PemberdayaanController::class, 'cetakExcel']);
+
+    // Pelatihan Keluarga
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga', [PencegahanController::class, 'indexPelatihanKeluarga'])->name('pelatihan_keluarga.index');
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/tambah', [PencegahanController::class, 'createPelatihanKeluarga'])->name('pelatihan_keluarga.create');
     Route::post('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/tambah', [PencegahanController::class, 'storePelatihanKeluarga'])->name('pelatihan_keluarga.store');
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/edit/{id}', [PencegahanController::class, 'editPelatihanKeluarga'])->name('pelatihan_keluarga.edit');
     Route::put('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/update/{id}', [PencegahanController::class, 'updatePelatihanKeluarga'])->name('pelatihan_keluarga.update');
     Route::delete('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/hapus/{id}', [PencegahanController::class, 'destroyPelatihanKeluarga'])->name('pelatihan_keluarga.destroy');
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak', [PemberdayaanController::class, 'cetakPelatihan']);
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak-excel', [PemberdayaanController::class, 'cetakExcelPelatihan']);
 
-    // 11. Peningkatan Kapasitas Aparatur (Diklat)
+    // 11. Peningkatan Kapasitas Aparatur
     Route::get('/internal/pencegahan/peningkatan-kapasitas', function () {
         $dataDiksar = \Illuminate\Support\Facades\Schema::hasTable('tbl_diksar') ? DB::table('tbl_diksar')->orderBy('id', 'desc')->get() : [];
         $dataF1 = \Illuminate\Support\Facades\Schema::hasTable('tbl_diklat_f1') ? DB::table('tbl_diklat_f1')->orderBy('id', 'desc')->get() : [];
@@ -595,7 +600,9 @@ Route::middleware(['auth'])->group(function () {
         return redirect()->back()->with('success', 'Data berhasil dihapus!'); 
     });
 
-    // Rute Index Peningkatan Kapasitas
+    // Rute Tambahan Peningkatan Kapasitas
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/cetak-excel/{jenis}', [PencegahanController::class, 'cetakExcel']);
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/cetak-pdf/{jenis}', [PencegahanController::class, 'cetakPdf']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diksar', [PencegahanController::class, 'indexDiksar']);  
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f1', [PencegahanController::class, 'indexDiklatF1']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f2', [PencegahanController::class, 'indexDiklatF2']);
