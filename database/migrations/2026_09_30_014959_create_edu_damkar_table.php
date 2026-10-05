@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('edu_damkar', function (Blueprint $table) {
-            $table->id();
-            $table->string('judul');
-            $table->string('youtube_id');
-            $table->string('link_asli');
-            $table->timestamps();
-        });
+        // Cek apakah tabel edu_damkar belum ada, baru jalankan create
+        if (!Schema::hasTable('edu_damkar')) {
+            Schema::create('edu_damkar', function (Blueprint $table) {
+                $table->id();
+                $table->string('judul');
+                $table->string('youtube_id');
+                $table->string('link_asli');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

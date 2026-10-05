@@ -553,10 +553,13 @@ class PencegahanController extends Controller
         };
         return response()->stream($callback, 200, $headers);
     }
-
-    public function cetakPdfFireDrill()
+public function cetak()
     {
-        $data = FireDrill::orderBy('tanggal_pelaksanaan', 'asc')->get();
+        // Ubah nama variabel penampung menjadi $data
+        $data = FireDrill::orderBy('tanggal_pelaksanaan', 'desc')->get();
+        
+        // Kirimkan variabel 'data' ke dalam view
         return view('internal.pencegahan.cetak_pdf_fire_drill', compact('data'));
     }
+    
 }
