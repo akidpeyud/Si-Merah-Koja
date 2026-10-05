@@ -60,7 +60,7 @@ class PermohonanEdukasiController extends Controller
             }],
             'nama_pemohon'       => 'required|string|max:150',
             'jabatan_pemohon'    => 'required|string|max:100',
-            'nik'                => 'required|string|max:30',
+            'nik'                => 'required|string|max:16',
             'no_kontak'          => 'required|string|max:25',
             'tgl_kegiatan'       => 'required|date',
             'usia_3_6'           => 'nullable|integer|min:0',
