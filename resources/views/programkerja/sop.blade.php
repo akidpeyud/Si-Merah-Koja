@@ -365,6 +365,25 @@
                 </ul>
             </li>
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
+                @if(session()->has('pemohon_id'))
+                <li class="has-drop">
+                    <button class="menu-trigger btn-login" type="button" aria-expanded="false">
+                        <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <ul class="dropdown">
+                        <li>
+                            <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
+                                @csrf
+                                <button type="submit" class="btn-logout">
+                                    <i class="fas fa-sign-out-alt"></i> Keluar
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            @else
+                <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
+            @endif
         </ul>
     </nav>
 </header>
