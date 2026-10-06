@@ -72,7 +72,7 @@ Route::get('/ujung-ujung-damkar', function () {
 })->name('publik.ujung-damkar');
 
 // TAMBAHKAN RUTE INFO GRAFIS DI SINI
-Route::get('/info-grafis', function () {
+Route::get('/infografis', function () {
     $daftar_infografis = App\Models\Infografis::latest()->get();
     return view('kabardamkar.infografis', compact('daftar_infografis')); 
 })->name('publik.infografis');
