@@ -345,6 +345,15 @@
                     <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
                         <i class="fas fa-fire-extinguisher"></i> Input data
                     </a>
+
+                    <!-- MENU BARU: REKAP LAYANAN & OBJEK -->
+                    <a href="/internal/damtan/rekap-layanan" class="{{ Request::is('internal/damtan/rekap-layanan*') ? 'active' : '' }}">
+                        <i class="fas fa-truck-medical"></i> Input Rekap Layanan
+                    </a>
+                    <a href="/internal/damtan/rekap-objek" class="{{ Request::is('internal/damtan/rekap-objek*') ? 'active' : '' }}">
+                        <i class="fas fa-house-chimney-crack"></i> Input Rekap Objek Kebakaran
+                    </a>
+
                     <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
                         <i class="fas fa-file-signature"></i> Buat Surat Korban
                     </a>
@@ -354,7 +363,8 @@
                     <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
                         <i class="fas fa-folder-open"></i> Kelola Surat Korban
                     </a>
-                   <!-- MENU BARU: KELOLA SURAT KERAMAIAN -->
+                    
+                   <!-- MENU KELOLA SURAT KERAMAIAN -->
                     <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
                         <i class="fas fa-users-rectangle"></i> Kelola Surat Keramaian
                     </a>
