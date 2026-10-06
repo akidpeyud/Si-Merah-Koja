@@ -39,18 +39,13 @@
     $kategori_aktif = $kategori_aktif ?? null; // Otomatis ngebuka menu Sapra
     $halaman_aktif  = $halaman_aktif ?? null;  // contoh: '/publik/sapra/sarana-pemadam'
 
-    // Angka total dikirim dari controller, contoh:
-    // ['diksar' => 12, 'f1' => 5, 'f2' => 3, 'rescue' => 0, 'mfr' => 0, 'operator' => 0,
-    //  'inspektur' => 0, 'ppl' => 0, 'inspeksi' => 4, 'fire_drill' => 2, 'pelatihan' => 7, 'sosialisasi' => 9]
-    // Kalau tidak dikirim, semua tampil 0.
+    // Angka total dikirim dari controller
     $stat = $stat ?? [];
 
     // Data statistik Bagian pemadaman (key: layanan_* dan objek_*) dari controller.
     $stat = array_merge($stat, $dataStatistik ?? []);
 
     // Otomatis ambil total dari variabel yang sama dengan halaman internal
-    // (Peningkatan Kapasitas Aparatur): $dataDiksar, $dataF1, $dataF2, dst.
-    // Bisa berupa array, Collection, atau Paginator.
     $hitung = function ($d) {
         if ($d === null) return 0;
         if (is_object($d) && method_exists($d, 'total')) return $d->total();
@@ -65,11 +60,6 @@
         'operator'  => $dataOperator  ?? null,
         'inspektur' => $dataInspektur ?? null,
         'ppl'       => $dataPpl       ?? null,
-        // Isi setelah variabel halaman internalnya diketahui:
-        // 'inspeksi'    => $dataInspeksi    ?? null,
-        // 'fire_drill'  => $dataFireDrill   ?? null,
-        // 'pelatihan'   => $dataPelatihan   ?? null,
-        // 'sosialisasi' => $dataSosialisasi ?? null,
     ];
     foreach ($sumber as $k => $d) {
         if (!isset($stat[$k]) && $d !== null) $stat[$k] = $hitung($d);

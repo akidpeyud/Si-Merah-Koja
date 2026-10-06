@@ -422,4 +422,107 @@ class DamtanController extends Controller
 
         return view('internal.damtan.cetak_surat', compact('surat'));
     }
+
+// ==========================================
+    // REKAP LAYANAN PEMADAMAN & PENYELAMATAN
+    // ==========================================
+
+    public function rekapLayanan()
+    {
+        // Ganti 'rekap_layanans' jadi 'rekap_layanan'
+        $riwayat = \Illuminate\Support\Facades\DB::table('rekap_layanan')
+            ->orderBy('tanggal', 'desc')
+            ->orderBy('id', 'desc')
+            ->get();
+            
+        $totals = \Illuminate\Support\Facades\DB::table('rekap_layanan')
+            ->select('kategori', \Illuminate\Support\Facades\DB::raw('SUM(jumlah) as total'))
+            ->groupBy('kategori')
+            ->pluck('total', 'kategori');
+
+        return view('internal.damtan.rekap_layanan', compact('riwayat', 'totals'));
+    }
+
+    public function storeRekapLayanan(Request $request)
+    {
+        $request->validate([
+            'tanggal'  => 'required|date',
+            'kategori' => 'required|string',
+            'jumlah'   => 'required|integer|min:1'
+        ]);
+
+        // Ganti 'rekap_layanans' jadi 'rekap_layanan'
+        \Illuminate\Support\Facades\DB::table('rekap_layanan')->insert([
+            'tanggal'    => $request->tanggal,
+            'kategori'   => $request->kategori,
+            'jumlah'     => $request->jumlah,
+            'kecamatan'  => $request->kecamatan,
+            'lokasi'     => $request->lokasi,
+            'keterangan' => $request->keterangan,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Data rekap layanan berhasil disimpan!');
+    }
+
+    public function destroyRekapLayanan($id)
+    {
+        // Ganti 'rekap_layanans' jadi 'rekap_layanan'
+        \Illuminate\Support\Facades\DB::table('rekap_layanan')->where('id', $id)->delete();
+        
+        return redirect()->back()->with('success', 'Data rekap berhasil dihapus!');
+    }
+
+    // ==========================================
+    // REKAP OBJEK KEBAKARAN
+    // ==========================================
+
+    public function rekapObjek()
+    {
+        // Kategori khusus untuk halaman objek
+        $kategori_objek = ['objek_rumah', 'objek_kantor', 'objek_ruko', 'objek_gudang', 'objek_bengkel', 'objek_mall', 'objek_restoran', 'objek_toko', 'objek_kandang', 'objek_kendaraan', 'objek_hotel', 'objek_hiburan', 'objek_vital'];
+
+        $riwayat = \Illuminate\Support\Facades\DB::table('rekap_layanan')
+            ->whereIn('kategori', $kategori_objek)
+            ->orderBy('tanggal', 'desc')
+            ->orderBy('id', 'desc')
+            ->get();
+            
+        $totals = \Illuminate\Support\Facades\DB::table('rekap_layanan')
+            ->whereIn('kategori', $kategori_objek)
+            ->select('kategori', \Illuminate\Support\Facades\DB::raw('SUM(jumlah) as total'))
+            ->groupBy('kategori')
+            ->pluck('total', 'kategori');
+
+        return view('internal.damtan.rekap_objek', compact('riwayat', 'totals'));
+    }
+
+    public function storeRekapObjek(Request $request)
+    {
+        $request->validate([
+            'tanggal'  => 'required|date',
+            'kategori' => 'required|string',
+            'jumlah'   => 'required|integer|min:1'
+        ]);
+
+        \Illuminate\Support\Facades\DB::table('rekap_layanan')->insert([
+            'tanggal'    => $request->tanggal,
+            'kategori'   => $request->kategori,
+            'jumlah'     => $request->jumlah,
+            'kecamatan'  => $request->kecamatan,
+            'lokasi'     => $request->lokasi,
+            'keterangan' => $request->keterangan,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Data rekap objek kebakaran berhasil disimpan!');
+    }
+
+    public function destroyRekapObjek($id)
+    {
+        \Illuminate\Support\Facades\DB::table('rekap_layanan')->where('id', $id)->delete();
+        return redirect()->back()->with('success', 'Data rekap berhasil dihapus!');
+    }
 }
