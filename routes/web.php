@@ -91,9 +91,20 @@ Route::post('/pemohon/logout', [PemohonAuthController::class, 'logout'])->name('
 // 3. RUTE WAJIB LOGIN PEMOHON (LAYANAN)
 // ==========================================
 Route::middleware([CekLoginPemohon::class])->group(function () {
+    
+    // Halaman Menu Layanan Perizinan Utama
+    Route::get('/layanan-fasilitas/layanan_perizinan', function () { 
+        return view('layanan-fasilitas.layanan_perizinan'); 
+    })->name('layanan-fasilitas.perizinan');
+
     // RPKBGL
-    Route::get('/layanan-fasilitas/layanan_perizinan', function () { return view('layanan-fasilitas.layanan_perizinan'); })->name('layanan_perizinan');
-    Route::post('/layanan-fasilitas/layanan_perizinan', [PermohonanRpkbglController::class, 'store'])->name('permohonan.store');
+    Route::prefix('internal/pencegahan/kelola-rpkbgl')->group(function () {
+        Route::get('/', [PermohonanRpkbglController::class, 'index']);
+        Route::get('/create', [PermohonanRpkbglController::class, 'create']);
+        Route::post('/', [PermohonanRpkbglController::class, 'store'])->name('permohonan.store'); 
+        Route::post('/update-status/{id}', [PermohonanRpkbglController::class, 'updateStatus']);
+        Route::delete('/{id}', [PermohonanRpkbglController::class, 'destroy']);
+    });
 
     // SKK
     Route::get('/layanan-fasilitas/skk', function () { return view('layanan-fasilitas.skk'); });
@@ -197,18 +208,12 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/internal/surat-korban/update/{id}', [DamtanController::class, 'updateSurat']);
     Route::delete('/internal/surat-korban/delete/{id}', [DamtanController::class, 'destroySurat']);
 
-    // --- C. DAMTAN (PEMADAMAN & PENYELAMATAN) ---
-    // ... rute damtan lainnya ...
-
     // KELOLA SURAT KERAMAIAN (ADMIN BAGIAN PEMADAMAN)
     Route::get('/internal/damtan/kelola-izin-keramaian', [App\Http\Controllers\IzinKeramaianController::class, 'indexInternal'])->name('internal.izin-keramaian.index');
     Route::get('/internal/damtan/kelola-izin-keramaian/{id}', [App\Http\Controllers\IzinKeramaianController::class, 'showInternal'])->name('internal.izin-keramaian.show');
     Route::post('/internal/damtan/kelola-izin-keramaian/update-status/{id}', [App\Http\Controllers\IzinKeramaianController::class, 'updateStatusInternal'])->name('internal.izin-keramaian.update_status');
     Route::delete('/internal/damtan/kelola-izin-keramaian/hapus/{id}', [App\Http\Controllers\IzinKeramaianController::class, 'destroyInternal'])->name('internal.izin-keramaian.destroy');
-    // Menampilkan form edit
     Route::get('/internal/damtan/kelola-izin-keramaian/edit/{id}', [App\Http\Controllers\IzinKeramaianController::class, 'editInternal'])->name('internal.izin-keramaian.edit');
-
-    // Memproses pembaruan data
     Route::put('/internal/damtan/kelola-izin-keramaian/update/{id}', [App\Http\Controllers\IzinKeramaianController::class, 'updateInternal'])->name('internal.izin-keramaian.update');
 
     // --- D. SAPRA (SARANA PRASARANA) ---
@@ -283,18 +288,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/pencegahan/tambah-redkar', [RedkarController::class, 'createRedkar']);
     Route::post('/internal/pencegahan/simpan-redkar-offline', [RedkarController::class, 'storeRedkarOffline']);
 
-    // 2. Kelola RPKBGL
-    Route::get('/internal/pencegahan/kelola-rpkbgl', function () { 
+    // 2. Kelola RPKBGL (Hanya view manual admin di luar controller, jika masih butuh)
+    Route::get('/internal/pencegahan/kelola-rpkbgl-admin', function () { 
         return view('internal.pencegahan.kelola_rpkbgl', [
             'permohonan' => App\Models\PermohonanRpkbgl::orderBy('created_at', 'desc')->get()
         ]); 
-    });
-    Route::post('/internal/pencegahan/kelola-rpkbgl/update-status/{id}', function (Illuminate\Http\Request $request, $id) { 
-        App\Models\PermohonanRpkbgl::where('id', $id)->update(['status_permohonan' => $request->status_permohonan]); 
-        return redirect()->back()->with('success', 'Status permohonan berhasil diperbarui!'); 
-    });
-    Route::get('/internal/pencegahan/kelola-rpkbgl/{id}', function ($id) { 
-        return view('internal.pencegahan.detail_rpkbgl', ['permohonan' => App\Models\PermohonanRpkbgl::findOrFail($id)]); 
     });
 
     // 3. Kelola SKK 
@@ -502,8 +500,10 @@ Route::middleware(['auth'])->group(function () {
 
     // Pelatihan Keluarga
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga', [PencegahanController::class, 'indexPelatihanKeluarga'])->name('pelatihan_keluarga.index');
-    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/tambah', [PencegahanController::class, 'createPelatihanKeluarga'])->name('pelatihan_keluarga.create');
-    Route::post('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/tambah', [PencegahanController::class, 'storePelatihanKeluarga'])->name('pelatihan_keluarga.store');
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/create', [PencegahanController::class, 'createPelatihanKeluarga'])->name('pelatihan_keluarga.create');
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/tambah', [PencegahanController::class, 'createPelatihanKeluarga']);
+    Route::post('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/store', [PencegahanController::class, 'storePelatihanKeluarga'])->name('pelatihan_keluarga.store');
+    Route::post('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/tambah', [PencegahanController::class, 'storePelatihanKeluarga']);
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/edit/{id}', [PencegahanController::class, 'editPelatihanKeluarga'])->name('pelatihan_keluarga.edit');
     Route::put('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/update/{id}', [PencegahanController::class, 'updatePelatihanKeluarga'])->name('pelatihan_keluarga.update');
     Route::delete('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/hapus/{id}', [PencegahanController::class, 'destroyPelatihanKeluarga'])->name('pelatihan_keluarga.destroy');
@@ -672,38 +672,9 @@ Route::get('/dokumen/view/{id}', [ProgramKerjaController::class, 'viewFile'])->n
 
 // Download File Dokumen (Publik)
 Route::get('/dokumen/download/{id}', [ProgramKerjaController::class, 'download'])->name('dokumen.download');
-// ========================================================
-    // 10. Pemberdayaan Masyarakat & Pelatihan Keluarga
-    // ========================================================
-    Route::get('/internal/pencegahan/pemberdayaan-masyarakat', [PemberdayaanController::class, 'index']);
-    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/sosialisasi', [PemberdayaanController::class, 'sosialisasi']);
-    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/create', [PemberdayaanController::class, 'create'])->name('pemberdayaan.create');
-    Route::post('/internal/pencegahan/pemberdayaan-masyarakat/store', [PemberdayaanController::class, 'store'])->name('pemberdayaan.store');
-    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/edit/{id}', [PemberdayaanController::class, 'edit']);
-    Route::put('/internal/pencegahan/pemberdayaan-masyarakat/update/{id}', [PemberdayaanController::class, 'update']);
-    Route::delete('/internal/pencegahan/pemberdayaan-masyarakat/hapus/{id}', [PemberdayaanController::class, 'destroy']);
-    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/cetak', [PemberdayaanController::class, 'cetak'])->name('pemberdayaan.cetak');
-    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/cetak-excel', [PemberdayaanController::class, 'cetakExcel']);
 
-    // --- Pelatihan Keluarga ---
-    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga', [PencegahanController::class, 'indexPelatihanKeluarga'])->name('pelatihan_keluarga.index');
-    
-    // Rute GET (Menampilkan Form) - Mendukung URL /create maupun /tambah
-    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/create', [PencegahanController::class, 'createPelatihanKeluarga'])->name('pelatihan_keluarga.create');
-    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/tambah', [PencegahanController::class, 'createPelatihanKeluarga']);
-    
-    // Rute POST (Menyimpan Data) - Mendukung URL /store maupun /tambah
-    Route::post('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/store', [PencegahanController::class, 'storePelatihanKeluarga'])->name('pelatihan_keluarga.store');
-    Route::post('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/tambah', [PencegahanController::class, 'storePelatihanKeluarga']);
-    
-    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/edit/{id}', [PencegahanController::class, 'editPelatihanKeluarga'])->name('pelatihan_keluarga.edit');
-    Route::put('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/update/{id}', [PencegahanController::class, 'updatePelatihanKeluarga'])->name('pelatihan_keluarga.update');
-    Route::delete('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/hapus/{id}', [PencegahanController::class, 'destroyPelatihanKeluarga'])->name('pelatihan_keluarga.destroy');
-    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak', [PemberdayaanController::class, 'cetakPelatihan']);
-    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak-excel', [PemberdayaanController::class, 'cetakExcelPelatihan']);
-    Route::get('/download-format-surat', function () {
-    // Pastikan kamu punya folder 'dokumen' di dalam folder 'public'
-    // dan file PDF-nya ada di sana dengan nama yang sesuai.
+// Download Format Surat Izin Keramaian
+Route::get('/download-format-surat', function () {
     $filePath = public_path('dokumen/format_surat_izin_keramaian.pdf');
     
     if (file_exists($filePath)) {

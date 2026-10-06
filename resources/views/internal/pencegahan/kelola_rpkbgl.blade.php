@@ -118,8 +118,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .page-head h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 5px; color: var(--ink); }
 .page-head p { color: var(--steel); font-size: .95rem; }
 
-.btn-print-rekap { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; background: var(--navy); color: #fff; border-radius: 8px; font-size: .9rem; font-weight: 600; transition: all .2s; }
-.btn-print-rekap:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13, 27, 42, .15); }
+/* Action Buttons (Top) */
+.btn-print-rekap, .btn-add { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; border-radius: 8px; font-size: .9rem; font-weight: 600; transition: all .2s; border: none; text-decoration: none; }
+.btn-print-rekap { background: var(--navy); color: #fff; }
+.btn-print-rekap:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13, 27, 42, .15); color: #fff; }
+.btn-add { background: var(--success); color: #fff; }
+.btn-add:hover { background: #146c43; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(25, 135, 84, .15); color: #fff; }
 
 .content-card { background: #ffffff; border: 1px solid var(--line); border-radius: var(--r-md); padding: 24px; box-shadow: var(--shadow-xs); overflow: hidden; }
 
@@ -139,18 +143,20 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 /* Action Buttons In Table */
 .btn-action-group { display: flex; flex-direction: column; gap: 6px; }
-.btn-action { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 6px 12px; border-radius: 6px; font-size: .8rem; font-weight: 600; transition: all .2s; text-decoration: none; border: none; }
+.btn-action { display: inline-flex; align-items: center; justify-content: flex-start; gap: 6px; padding: 6px 12px; border-radius: 6px; font-size: .8rem; font-weight: 600; transition: all .2s; text-decoration: none; border: none; width: 100%; }
 .btn-lihat { background: var(--info-soft); color: var(--info); }
 .btn-lihat:hover { background: var(--info); color: #ffffff; }
 .btn-update { background: var(--navy-soft); color: var(--navy); }
 .btn-update:hover { background: var(--navy); color: #ffffff; }
+.btn-delete { background: var(--signal-soft); color: var(--signal-dark); }
+.btn-delete:hover { background: var(--signal); color: #ffffff; }
 
 .attachment-link { display: inline-flex; align-items: center; gap: 6px; font-size: .82rem; color: var(--info); font-weight: 500; text-decoration: none; margin-bottom: 4px; transition: color .2s; }
 .attachment-link:hover { color: var(--navy-dark); text-decoration: underline; }
 
 /* Print Media */
 @media print {
-    .topbar, .sidebar, .btn-print-rekap, .no-print-col, .page-head p { display: none !important; }
+    .topbar, .sidebar, .btn-print-rekap, .btn-add, .no-print-col, .page-head p { display: none !important; }
     .content { padding: 0; background: white; }
     .content-card { padding: 0; border: none; box-shadow: none; }
     .page-head h1 { font-size: 1.5rem; text-align: center; width: 100%; margin-bottom: 20px; }
@@ -244,9 +250,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 <h1>Daftar Permohonan RPKBGL</h1>
                 <p>Data pengajuan Rekomendasi Proteksi Kebakaran Bangunan Gedung & Lingkungan.</p>
             </div>
-            <button onclick="window.print()" class="btn-print-rekap">
-                <i class="fas fa-print"></i> Cetak Rekap
-            </button>
+            
+            <!-- BUtton Group: Tambah & Cetak -->
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="/internal/pencegahan/kelola-rpkbgl/create" class="btn-add no-print-col">
+                    <i class="fas fa-plus"></i> Tambah Data
+                </a>
+                <button onclick="window.print()" class="btn-print-rekap no-print-col">
+                    <i class="fas fa-print"></i> Cetak Rekap
+                </button>
+            </div>
         </div>
 
         <div class="content-card">
@@ -261,7 +274,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                             <th>Lokasi Bangunan</th>
                             <th>Status</th>
                             <th class="no-print-col">Berkas Lampiran</th>
-                            <th class="text-center no-print-col" style="width: 130px;">Aksi</th>
+                            <th class="no-print-col" style="width: 130px;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -318,7 +331,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                             <td class="no-print-col">
                                 <div class="btn-action-group">
                                     <a href="/internal/pencegahan/kelola-rpkbgl/{{ $p->id }}" class="btn-action btn-lihat">
-                                        <i class="fas fa-search"></i> Detail
+                                        <i class="fas fa-search" style="width: 14px;"></i> Detail
                                     </a>
                                     <button type="button" class="btn-action btn-update" 
                                         data-bs-toggle="modal" 
@@ -326,7 +339,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                                         data-id="{{ $p->id }}" 
                                         data-nama="{{ $p->nama_pemohon }}" 
                                         data-status="{{ $p->status_permohonan }}">
-                                        <i class="fas fa-edit"></i> Update
+                                        <i class="fas fa-edit" style="width: 14px;"></i> Update
+                                    </button>
+                                    
+                                    <!-- TOMBOL HAPUS BARU -->
+                                    <button type="button" class="btn-action btn-delete" onclick="confirmDelete({{ $p->id }}, '{{ addslashes($p->nama_pemohon) }}')">
+                                        <i class="fas fa-trash" style="width: 14px;"></i> Hapus
                                     </button>
                                 </div>
                             </td>
@@ -420,19 +438,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     var modalUpdateStatus = document.getElementById('modalUpdateStatus');
     if (modalUpdateStatus) {
         modalUpdateStatus.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget; // Tombol yang diklik
+            var button = event.relatedTarget; 
             var id = button.getAttribute('data-id');
             var nama = button.getAttribute('data-nama');
             var status = button.getAttribute('data-status');
 
-            // Ubah Action URL pada Form
             var form = document.getElementById('formUpdateStatus');
             form.action = '/internal/pencegahan/kelola-rpkbgl/update-status/' + id;
 
-            // Ganti teks nama pemohon
             document.getElementById('modalPemohonName').textContent = nama;
             
-            // Pilih status yang sesuai
             var select = document.getElementById('selectStatus');
             if(!status || status == '') status = 'Pending';
             select.value = status;
@@ -450,6 +465,46 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         });
     @endif
 })();
+
+/* ---------- Fungsi Konfirmasi Hapus dengan SweetAlert2 ---------- */
+function confirmDelete(id, namaPemohon) {
+    Swal.fire({
+        title: 'Hapus Data?',
+        html: `Anda yakin ingin menghapus data permohonan atas nama <strong>${namaPemohon}</strong>?<br>Data tidak dapat dikembalikan.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="fas fa-trash"></i> Ya, Hapus',
+        cancelButtonText: 'Batal',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Membuat form virtual (dinamis) untuk mengirim request DELETE ke Laravel
+            const form = document.createElement('form');
+            form.method = 'POST';
+            
+            // Sesuaikan Route ini ke endpoint Delete controller Anda
+            form.action = `/internal/pencegahan/kelola-rpkbgl/${id}`; 
+
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = '_token';
+            csrfToken.value = '{{ csrf_token() }}';
+
+            const methodField = document.createElement('input');
+            methodField.type = 'hidden';
+            methodField.name = '_method';
+            methodField.value = 'DELETE';
+
+            form.appendChild(csrfToken);
+            form.appendChild(methodField);
+            document.body.appendChild(form);
+            
+            form.submit();
+        }
+    });
+}
 </script>
 </body>
 </html>

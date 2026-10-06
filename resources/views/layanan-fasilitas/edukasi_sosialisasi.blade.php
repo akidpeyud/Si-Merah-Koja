@@ -417,24 +417,6 @@
                         </ol>
                     </section>
 
-                    <section class="side-card">
-                        <div class="card-head">
-                            <span class="c-ico"><i class="fas fa-route"></i></span>
-                            <h2>Sistem, Mekanisme & Prosedur</h2>
-                        </div>
-                        <details class="disclose">
-                            <summary>
-                                <span class="when-closed">Tampilkan detail</span><span class="when-open">Sembunyikan detail</span>
-                                <i class="fas fa-chevron-down"></i>
-                            </summary>
-                            <ol class="steps">
-                                <li>Pemohon mendaftar secara online dan mengupload berkas yang dibutuhkan.</li>
-                                <li>Admin Damkar memverifikasi permohonan dan kesediaan jadwal kegiatan.</li>
-                                <li>Pemohon akan mendapatkan notifikasi persetujuan/perubahan jadwal via WhatsApp.</li>
-                                <li>Pelaksanaan Edukasi dan Sosialisasi dilakukan sesuai jadwal yang disetujui bersama.</li>
-                            </ol>
-                        </details>
-                    </section>
                 </aside>
 
                 <!-- FORMULIR PENGAJUAN -->

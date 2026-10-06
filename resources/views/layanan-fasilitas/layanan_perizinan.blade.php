@@ -22,7 +22,9 @@
     $old            = session()->getOldInput() ?? []; 
     $pesan_sukses   = session('success') ?? '';
     $galat          = $errors->all() ?? [];
-    $url_surat_permohonan = $url_surat_permohonan ?? '';
+    
+    // URL SURAT PERMOHONAN DIISI DI SINI
+    $url_surat_permohonan = 'FORMULIR-1.docx';
 
     $to_arr = function ($d) { return (is_object($d) && method_exists($d, 'toArray')) ? $d->toArray() : (array) $d; };
     $val    = function ($k) use ($old, $h) { return $h($old[$k] ?? ''); };
@@ -629,26 +631,6 @@
                             </div>
                         </li>
                     </ol>
-                </section>
-
-                <section class="side-card">
-                    <div class="card-head">
-                        <span class="c-ico"><i class="fas fa-route"></i></span>
-                        <h2>Sistem, mekanisme, dan prosedur</h2>
-                    </div>
-                    <details class="disclose">
-                        <summary>
-                            <span class="when-closed">Tampilkan detail</span><span class="when-open">Sembunyikan detail</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </summary>
-                        <ol class="steps">
-                            <li>Pemohon mendaftar secara daring, lalu mengunggah kelengkapan berkas yang dipersyaratkan</li>
-                            <li>Tim Inspeksi memeriksa proteksi aktif kebakaran gedung pemohon</li>
-                            <li>Tim Inspeksi merekomendasikan kepada Kepala Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi untuk menerima atau menolak permohonan, berdasarkan hasil inspeksi lapangan (memenuhi syarat atau tidak memenuhi syarat)</li>
-                            <li>Kepala Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi memberikan jawaban berdasarkan hasil rekomendasi Tim Inspeksi</li>
-                            <li>Sistem mengirim notifikasi lewat WhatsApp dari Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi</li>
-                        </ol>
-                    </details>
                 </section>
             </aside>
 

@@ -550,23 +550,6 @@
                     </ol>
                 </section>
 
-                <section class="side-card">
-                    <div class="card-head">
-                        <span class="c-ico"><i class="fas fa-route"></i></span>
-                        <h2>Mekanisme & Prosedur</h2>
-                    </div>
-                    <details class="disclose">
-                        <summary>
-                            <span class="when-closed">Tampilkan detail</span><span class="when-open">Sembunyikan detail</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </summary>
-                        <ol class="steps">
-                            <li>Pemohon mendaftar secara daring, lalu mengunggah kelengkapan berkas yang dipersyaratkan (Minimal 7 hari sebelum acara)</li>
-                            <li>Tim Inspeksi memeriksa kelengkapan fasilitas proteksi kebakaran (Minimal 8 APAR & 4 Staff terlatih)</li>
-                            <li>Dinas Pemadam Kebakaran mengeluarkan hasil rekomendasi izin keramaian.</li>
-                        </ol>
-                    </details>
-                </section>
             </aside>
 
             <!-- Formulir -->
