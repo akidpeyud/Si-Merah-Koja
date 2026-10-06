@@ -664,8 +664,18 @@ Route::get('/api/titik', [PetaController::class, 'apiData']);
 
 // Route Admin Peta SIGAP
 Route::prefix('internal/peta-sigap')->middleware(['auth'])->group(function () {
+    // Create (Tampilkan form & Proses Simpan)
     Route::get('/input', [PetaController::class, 'input']);
     Route::post('/store', [PetaController::class, 'store']);
+    
+    // Read (Tampilkan Halaman Kelola Data/Tabel)
+    Route::get('/data', [PetaController::class, 'data']); 
+    
+    // Update (Tampilkan Form Edit & Proses Update)
+    Route::get('/edit/{id}', [PetaController::class, 'edit']);
+    Route::put('/update/{id}', [PetaController::class, 'update']);
+    
+    // Delete (Proses Hapus)
     Route::delete('/hapus/{id}', [PetaController::class, 'destroy']);
 });
 

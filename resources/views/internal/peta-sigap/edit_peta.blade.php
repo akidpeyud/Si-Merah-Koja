@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-    <title>Input Titik Peta | SIMERAH KOJA</title>
+    <title>Edit Titik Peta | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -216,12 +216,12 @@ textarea.form-control { min-height: 100px; padding: 10px 14px; }
 .btn-submit {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     min-height: 44px; padding: 0 20px;
-    background: var(--navy); color: #fff;
+    background: var(--amber); color: var(--ink);
     border: none; border-radius: 8px;
     font-size: .9rem; font-weight: 600;
     transition: all .2s ease; width: 100%;
 }
-.btn-submit:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13, 27, 42, .15); }
+.btn-submit:hover { background: #e5a730; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13, 27, 42, .15); }
 .btn-submit:active { transform: translateY(0); }
 
 /* Map Picker styles */
@@ -350,18 +350,24 @@ textarea.form-control { min-height: 100px; padding: 10px 14px; }
     <!-- ==================== KONTEN UTAMA ==================== -->
     <main class="content">
 
-        <div class="page-head">
-            <h1>Input Titik Peta SIGAP</h1>
-            <p>Tambahkan data lokasi operasional (kebakaran, hidrant, dll) untuk ditampilkan di peta publik.</p>
+        <div class="page-head d-flex justify-content-between align-items-center">
+            <div>
+                <h1>Edit Titik Peta SIGAP</h1>
+                <p>Perbarui data lokasi operasional untuk peta publik.</p>
+            </div>
+            <div>
+                <a href="/internal/peta-sigap/data" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Kembali ke Data</a>
+            </div>
         </div>
 
-        <form action="{{ url('/internal/peta-sigap/store') }}" method="POST">
+        <form action="{{ url('/internal/peta-sigap/update/' . $titik->id) }}" method="POST">
             @csrf
+            @method('PUT')
 
-            <!-- BLOK PENAMPIL ERROR VALIDASI Yg Sudah Diperbaiki -->
+            <!-- BLOK PENAMPIL ERROR VALIDASI -->
             @if($errors->any())
                 <div class="alert alert-danger mb-4" style="border-radius: 8px;">
-                    <strong><i class="fas fa-exclamation-triangle"></i> Gagal menyimpan data!</strong>
+                    <strong><i class="fas fa-exclamation-triangle"></i> Gagal menyimpan pembaruan!</strong>
                     <ul class="mb-0 mt-1">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -385,12 +391,12 @@ textarea.form-control { min-height: 100px; padding: 10px 14px; }
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-tag"></i></span>
                                 <select name="kategori" class="form-select" required>
-                                    <option value="" disabled selected>Pilih Kategori...</option>
-                                    <option value="kebakaran">Kebakaran</option>
-                                    <option value="sumber_air">Sumber Air</option>
-                                    <option value="hydrant">Hydrant</option>
-                                    <option value="penyelamatan">Penyelamatan</option>
-                                    <option value="pos">Pos Damkar</option>
+                                    <option value="" disabled>Pilih Kategori...</option>
+                                    <option value="kebakaran" {{ (old('kategori') ?? $titik->kategori) == 'kebakaran' ? 'selected' : '' }}>Kebakaran</option>
+                                    <option value="sumber_air" {{ (old('kategori') ?? $titik->kategori) == 'sumber_air' ? 'selected' : '' }}>Sumber Air</option>
+                                    <option value="hydrant" {{ (old('kategori') ?? $titik->kategori) == 'hydrant' ? 'selected' : '' }}>Hydrant</option>
+                                    <option value="penyelamatan" {{ (old('kategori') ?? $titik->kategori) == 'penyelamatan' ? 'selected' : '' }}>Penyelamatan</option>
+                                    <option value="pos" {{ (old('kategori') ?? $titik->kategori) == 'pos' ? 'selected' : '' }}>Pos Damkar</option>
                                 </select>
                             </div>
                         </div>
@@ -400,11 +406,11 @@ textarea.form-control { min-height: 100px; padding: 10px 14px; }
                             <label class="form-label">Nama / Judul Titik</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-font"></i></span>
-                                <input type="text" name="nama" class="form-control" placeholder="Cth: Kebakaran Lahan Alam Barajo" value="{{ old('nama') }}" required>
+                                <input type="text" name="nama" class="form-control" placeholder="Cth: Kebakaran Lahan Alam Barajo" value="{{ old('nama') ?? $titik->nama }}" required>
                             </div>
                         </div>
 
-                        <!-- Kecamatan -->
+                        <!-- Kecamatan (Sesuai dengan input awal Anda) -->
                         <div class="mb-3">
                             <label class="form-label">Kecamatan</label>
                             <div class="input-group">
@@ -429,13 +435,13 @@ textarea.form-control { min-height: 100px; padding: 10px 14px; }
                         <!-- Alamat Detail -->
                         <div class="mb-3">
                             <label class="form-label">Alamat Lengkap</label>
-                            <textarea name="lokasi" class="form-control" placeholder="Masukkan detail lokasi atau nama jalan..." required>{{ old('lokasi') }}</textarea>
+                            <textarea name="lokasi" class="form-control" placeholder="Masukkan detail lokasi atau nama jalan..." required>{{ old('lokasi') ?? $titik->lokasi }}</textarea>
                         </div>
                         
                         <!-- Keterangan (Opsional) -->
                         <div class="mb-3">
                             <label class="form-label">Keterangan (Opsional)</label>
-                            <textarea name="keterangan" class="form-control" placeholder="Tambahkan keterangan lebih lanjut jika ada...">{{ old('keterangan') }}</textarea>
+                            <textarea name="keterangan" class="form-control" placeholder="Tambahkan keterangan lebih lanjut jika ada...">{{ old('keterangan') ?? $titik->keterangan }}</textarea>
                         </div>
 
                         <!-- Tanggal -->
@@ -443,7 +449,7 @@ textarea.form-control { min-height: 100px; padding: 10px 14px; }
                             <label class="form-label">Tanggal (Kejadian / Update)</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                                <input type="date" name="tanggal" class="form-control" value="{{ old('tanggal') }}" required>
+                                <input type="date" name="tanggal" class="form-control" value="{{ old('tanggal') ?? $titik->tanggal }}" required>
                             </div>
                         </div>
                         
@@ -456,7 +462,7 @@ textarea.form-control { min-height: 100px; padding: 10px 14px; }
                                 <label class="form-label">Latitude</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-globe"></i></span>
-                                    <input type="text" id="latInput" name="latitude" class="form-control" placeholder="-1.6180" value="{{ old('latitude') }}" required>
+                                    <input type="text" id="latInput" name="latitude" class="form-control" placeholder="-1.6180" value="{{ old('latitude') ?? $titik->latitude }}" required>
                                 </div>
                             </div>
                             
@@ -465,14 +471,14 @@ textarea.form-control { min-height: 100px; padding: 10px 14px; }
                                 <label class="form-label">Longitude</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-globe"></i></span>
-                                    <input type="text" id="lngInput" name="longitude" class="form-control" placeholder="103.6006" value="{{ old('longitude') }}" required>
+                                    <input type="text" id="lngInput" name="longitude" class="form-control" placeholder="103.6006" value="{{ old('longitude') ?? $titik->longitude }}" required>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Submit Button -->
                         <button type="submit" class="btn-submit">
-                            <i class="fas fa-save"></i> Simpan Data Titik
+                            <i class="fas fa-save"></i> Simpan Perubahan
                         </button>
                     </div>
                 </div>
@@ -535,20 +541,21 @@ textarea.form-control { min-height: 100px; padding: 10px 14px; }
     });
 
     /* ---------- LEAFLET MAP PICKER ---------- */
-    var defaultLat = -1.6180875;
-    var defaultLng = 103.6006406;
+    // Nilai awal diambil dari database untuk halaman edit
+    var initialLat = {{ $titik->latitude }};
+    var initialLng = {{ $titik->longitude }};
 
     var latInput = document.getElementById('latInput');
     var lngInput = document.getElementById('lngInput');
 
-    var map = L.map('mapPicker').setView([defaultLat, defaultLng], 13);
+    var map = L.map('mapPicker').setView([initialLat, initialLng], 14);
     
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap'
     }).addTo(map);
 
-    var marker = L.marker([defaultLat, defaultLng], {
+    var marker = L.marker([initialLat, initialLng], {
         draggable: true
     }).addTo(map);
 
@@ -566,24 +573,19 @@ textarea.form-control { min-height: 100px; padding: 10px 14px; }
 
     // Fungsi handle paste dari Google Maps (Format: "-1.6180, 103.6006")
     function handlePaste(e) {
-        // Ambil text yang dipaste
         var pastedText = (e.clipboardData || window.clipboardData).getData('text');
         
-        // Cek apakah formatnya dipisahkan dengan koma (ciri khas Google Maps)
         if (pastedText.includes(',')) {
             var parts = pastedText.split(',');
             var parsedLat = parseFloat(parts[0].trim());
             var parsedLng = parseFloat(parts[1].trim());
 
-            // Jika keduanya adalah angka yang valid
             if (!isNaN(parsedLat) && !isNaN(parsedLng)) {
-                e.preventDefault(); // Cegah default paste
+                e.preventDefault(); 
                 
-                // Isi kedua kolom
                 latInput.value = parsedLat;
                 lngInput.value = parsedLng;
                 
-                // Update peta
                 updateMapFromInputs();
             }
         }
@@ -611,13 +613,10 @@ textarea.form-control { min-height: 100px; padding: 10px 14px; }
         lngInput.value = lng.toFixed(6);
     });
 
-    // Cek apakah ada old input saat validasi error, kalau tidak ada pakai default
-    var initialLat = latInput.value ? parseFloat(latInput.value) : defaultLat;
-    var initialLng = lngInput.value ? parseFloat(lngInput.value) : defaultLng;
-    
-    latInput.value = initialLat;
-    lngInput.value = initialLng;
-    updateMapFromInputs();
+    // Cek jika ada old input error
+    if (latInput.value && lngInput.value) {
+        updateMapFromInputs();
+    }
 
 })();
 </script>

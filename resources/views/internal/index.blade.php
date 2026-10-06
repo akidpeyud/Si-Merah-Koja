@@ -538,7 +538,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             </details>
 
             <!-- BAGIAN PEMADAMAN -->
-            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
+            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') || Request::is('internal/damtan/kelola-izin-keramaian*') ? 'open' : '' }}>
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
@@ -553,21 +553,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') ? 'active' : '' }}">
                         <i class="fas fa-folder"></i><span class="lbl">Kelola Surat Korban</span>
                     </a>
-                </div>
-            </details>
-
-            <!-- BAGIAN KEPEGAWAIAN -->
-            <details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') ? 'open' : '' }}>
-                <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
-                <div class="side-sub">
-                    <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
-                        <i class="fas fa-user-tie"></i><span class="lbl">Data Urut Kepegawaian</span>
-                    </a>
-                    <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
-                        <i class="fas fa-file-contract"></i><span class="lbl">Program Kerja</span>
-                    </a>
+                    <!-- Dipindahkan ke Bagian Pemadaman -->
                     <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
-                        <i class="fas fa-users-rectangle"></i> Kelola Surat Keramaian
+                        <i class="fas fa-users-rectangle"></i><span class="lbl">Kelola Surat Keramaian</span>
                     </a>
                 </div>
             </details>
@@ -607,6 +595,19 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     </a>
                     <a href="/sapra/distribusi-staff" class="{{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}">
                         <i class="fas fa-people-carry-box"></i><span class="lbl">Serah terima Barang</span>
+                    </a>
+                </div>
+            </details>
+
+            <!-- BAGIAN KEPEGAWAIAN (Dipindahkan ke bawah Sapra) -->
+            <details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') ? 'open' : '' }}>
+                <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
+                <div class="side-sub">
+                    <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
+                        <i class="fas fa-user-tie"></i><span class="lbl">Data Urut Kepegawaian</span>
+                    </a>
+                    <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
+                        <i class="fas fa-file-contract"></i><span class="lbl">Program Kerja</span>
                     </a>
                 </div>
             </details>
