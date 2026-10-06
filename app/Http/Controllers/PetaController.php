@@ -17,51 +17,100 @@ class PetaController extends Controller
     }
 
     // ==========================================
-    // FUNGSI DASHBOARD ADMIN
+    // FUNGSI DASHBOARD ADMIN (CRUD)
     // ==========================================
 
     /**
-     * Tampilkan Halaman Input (Dashboard Admin)
+     * READ: Tampilkan Halaman Daftar Data (Tabel)
+     */
+    public function data()
+    {
+        $titikSigaps = TitikSigap::orderBy('created_at', 'desc')->get();
+        return view('internal.peta-sigap.data_peta', compact('titikSigaps'));
+    }
+
+    /**
+     * CREATE: Tampilkan Halaman Input
      */
     public function input()
     {
-        // Ambil data untuk ditampilkan di tabel riwayat bagian bawah
+        // Opsional: jika input dan tabel digabung dalam 1 halaman
         $titikSigaps = TitikSigap::orderBy('created_at', 'desc')->get();
         
-        // Nama dalam compact harus sama persis dengan nama variabel di atas ($titikSigaps)
         return view('internal.peta-sigap.inputdata_peta', compact('titikSigaps')); 
     }
 
     /**
-     * Simpan Data Titik Baru
+     * CREATE: Simpan Data Titik Baru
      */
     public function store(Request $request)
     {
         // Validasi data input
         $request->validate([
-            'kategori'  => 'required|in:kebakaran,sumber_air,hydrant,penyelamatan,pos',
-            'nama'      => 'required|string|max:255',
-            'tanggal'   => 'nullable|date',
-            'lokasi'    => 'required|string',
-            'latitude'  => 'required|numeric',
-            'longitude' => 'required|numeric',
+            'kategori'   => 'required|in:kebakaran,sumber_air,hydrant,penyelamatan,pos',
+            'nama'       => 'required|string|max:255',
+            'tanggal'    => 'nullable|date',
+            'lokasi'     => 'required|string',
+            'keterangan' => 'nullable|string', // Validasi keterangan
+            'latitude'   => 'required|numeric',
+            'longitude'  => 'required|numeric',
         ]);
 
-        // Simpan ke database secara spesifik agar input 'kecamatan' (yang tidak ada di DB) diabaikan
         TitikSigap::create([
-            'kategori'  => $request->kategori,
-            'nama'      => $request->nama,
-            'tanggal'   => $request->tanggal,
-            'lokasi'    => $request->lokasi,
-            'latitude'  => $request->latitude,
-            'longitude' => $request->longitude,
+            'kategori'   => $request->kategori,
+            'nama'       => $request->nama,
+            'tanggal'    => $request->tanggal,
+            'lokasi'     => $request->lokasi,
+            'keterangan' => $request->keterangan, // Masukkan keterangan
+            'latitude'   => $request->latitude,
+            'longitude'  => $request->longitude,
         ]);
 
         return redirect()->back()->with('success', 'Titik SIGAP berhasil ditambahkan!');
     }
 
     /**
-     * Hapus Data Titik
+     * UPDATE: Tampilkan Form Edit Data
+     */
+public function edit($id)
+{
+    $titik = TitikSigap::findOrFail($id);
+    return view('internal.peta-sigap.edit_peta', compact('titik'));
+}
+
+    /**
+     * UPDATE: Simpan Perubahan Data
+     */
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'kategori'   => 'required|in:kebakaran,sumber_air,hydrant,penyelamatan,pos',
+            'nama'       => 'required|string|max:255',
+            'tanggal'    => 'nullable|date',
+            'lokasi'     => 'required|string',
+            'keterangan' => 'nullable|string', // Validasi keterangan
+            'latitude'   => 'required|numeric',
+            'longitude'  => 'required|numeric',
+        ]);
+
+        $titik = TitikSigap::findOrFail($id);
+        
+        $titik->update([
+            'kategori'   => $request->kategori,
+            'nama'       => $request->nama,
+            'tanggal'    => $request->tanggal,
+            'lokasi'     => $request->lokasi,
+            'keterangan' => $request->keterangan, // Update keterangan
+            'latitude'   => $request->latitude,
+            'longitude'  => $request->longitude,
+        ]);
+
+        // Arahkan kembali ke halaman data setelah berhasil edit
+        return redirect('/internal/peta-sigap/data')->with('success', 'Data Titik SIGAP berhasil diperbarui!');
+    }
+
+    /**
+     * DELETE: Hapus Data Titik
      */
     public function destroy($id)
     {
@@ -76,22 +125,22 @@ class PetaController extends Controller
     // ==========================================
 
     /**
-     * API Endpoint (Untuk memanggil titik-titik JSON di halaman peta Publik)
+     * API Endpoint
      */
     public function apiData()
     {
         $titiks = TitikSigap::all();
         
-        // Format agar bisa dibaca dengan mudah oleh JavaScript Leaflet di halaman publik
         $formattedTitik = $titiks->map(function($titik) {
             return [
-                'id'       => $titik->id,
-                'kategori' => $titik->kategori,
-                'nama'     => $titik->nama,
-                'tanggal'  => $titik->tanggal ? \Carbon\Carbon::parse($titik->tanggal)->format('d M Y') : 'Tidak diketahui',
-                'lokasi'   => $titik->lokasi,
-                'lat'      => (float) $titik->latitude,
-                'lng'      => (float) $titik->longitude,
+                'id'         => $titik->id,
+                'kategori'   => $titik->kategori,
+                'nama'       => $titik->nama,
+                'tanggal'    => $titik->tanggal ? \Carbon\Carbon::parse($titik->tanggal)->format('d M Y') : 'Tidak diketahui',
+                'lokasi'     => $titik->lokasi,
+                'keterangan' => $titik->keterangan, // Tambahkan keterangan agar bisa dibaca di popup Maps Publik
+                'lat'        => (float) $titik->latitude,
+                'lng'        => (float) $titik->longitude,
             ];
         });
 

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->string('nama');
             $table->date('tanggal')->nullable();
             $table->text('lokasi');
+            // Tambahan kolom keterangan
+            $table->text('keterangan')->nullable(); 
             // Tipe data decimal untuk presisi koordinat peta (Latitude dan Longitude)
             $table->decimal('latitude', 10, 8);
             $table->decimal('longitude', 11, 8);
