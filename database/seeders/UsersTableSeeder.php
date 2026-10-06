@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema; // Tambahan wajib untuk mengatasi relasi
 
 class UsersTableSeeder extends Seeder
 {
@@ -13,6 +14,21 @@ class UsersTableSeeder extends Seeder
      */
     public function run(): void
     {
+        // ========================================================
+        // 0. BERSIHKAN TABEL SEBELUM SEEDING
+        // ========================================================
+        // Matikan pengecekan foreign key sementara
+        Schema::disableForeignKeyConstraints();
+
+        // Kosongkan isi ketiga tabel ini HANYA (tabel lain di database aman)
+        DB::table('users')->truncate();
+        DB::table('redkar_registrations')->truncate();
+        DB::table('pemohons')->truncate();
+
+        // Nyalakan kembali pengecekan foreign key
+        Schema::enableForeignKeyConstraints();
+
+
         // ========================================================
         // 1. SEEDER AKUN INTERNAL (PEGAWAI/ADMIN)
         // ========================================================
@@ -24,7 +40,7 @@ class UsersTableSeeder extends Seeder
                 'nomor_pegawai' => '23112021',
                 'role' => 'super_user',
                 'email_verified_at' => null,
-                'password' => '$2y$12$24dyBXpDKc0buZaC7WtU6u6GC5ZjphCUP5kPKvCA7N014vLGoGGha',
+                'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
                 'created_at' => '2026-09-03 00:13:52',
                 'updated_at' => '2026-09-07 18:33:45',
@@ -36,7 +52,7 @@ class UsersTableSeeder extends Seeder
                 'nomor_pegawai' => '23112018',
                 'role' => 'user',
                 'email_verified_at' => null,
-                'password' => '$2y$12$oGpz.VPskPJC6h98elnN3ee7qZIZl2Cgrw2V0o8CP/e/29BQrtvgC',
+                'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
                 'created_at' => '2026-09-04 09:40:30',
                 'updated_at' => '2026-09-07 18:38:31',
@@ -48,7 +64,7 @@ class UsersTableSeeder extends Seeder
                 'nomor_pegawai' => '23112017',
                 'role' => 'super_user',
                 'email_verified_at' => null,
-                'password' => '$2y$12$A3o8N4rpvAo1EXhsOmZdvOtfi/mvPrlFE33OTCtH1rvI5wtMzvPj.',
+                'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
                 'created_at' => '2026-09-06 20:59:14',
                 'updated_at' => '2026-09-06 20:59:14',
@@ -60,7 +76,7 @@ class UsersTableSeeder extends Seeder
                 'nomor_pegawai' => '23111006',
                 'role' => 'user',
                 'email_verified_at' => null,
-                'password' => '$2y$12$rxJR5GflWyTvaq8e5lst2O5UmayMaXykgTNGtxXaBWvTjgfubmJ3C',
+                'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
                 'created_at' => '2026-09-06 20:59:54',
                 'updated_at' => '2026-09-07 18:38:31',
@@ -72,7 +88,7 @@ class UsersTableSeeder extends Seeder
                 'nomor_pegawai' => '23112007',
                 'role' => 'user',
                 'email_verified_at' => null,
-                'password' => '$2y$12$ZIbd10RDcZYZEFISoTBMz.jDnb8UssyhHza1Ye.OEqL5eBqamtdzO',
+                'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
                 'created_at' => '2026-09-06 21:03:09',
                 'updated_at' => '2026-09-07 18:38:31',
@@ -84,7 +100,7 @@ class UsersTableSeeder extends Seeder
                 'nomor_pegawai' => '231120xx',
                 'role' => 'user',
                 'email_verified_at' => null,
-                'password' => '$2y$12$3WPQSivRZFK7OlN8/EaBBuywUGFeoOUp/00GC/bDmhMpeKXoTXyZi',
+                'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
                 'created_at' => '2026-09-06 23:12:02',
                 'updated_at' => '2026-09-07 18:38:31',
@@ -96,7 +112,7 @@ class UsersTableSeeder extends Seeder
                 'nomor_pegawai' => '23113001',
                 'role' => 'operator',
                 'email_verified_at' => null,
-                'password' => '$2y$12$/FjxJDSVPbjOM.byocQqY.T.cYKP6M39dVUo8Q63FBN/U1nsFafBi',
+                'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
                 'created_at' => '2026-09-06 23:35:56',
                 'updated_at' => '2026-09-06 23:35:56',
@@ -119,21 +135,21 @@ class UsersTableSeeder extends Seeder
                 'status_perkawinan'         => 'Belum Kawin',
                 'agama'                     => 'Kristen',
                 'nomor_telp'                => '081234567890',
-                'file_ktp'                  => null, // Nullable sesuai tabel
+                'file_ktp'                  => null, 
                 'alamat'                    => 'Jl. Avengers No. 1',
                 'rt_rw'                     => '01/01',
                 'kode_pos'                  => '36123',
-                'provinsi'                  => 'JAMBI', // Default value JAMBI
-                'kabupaten_kota'            => 'KOTA JAMBI', // Default value KOTA JAMBI
+                'provinsi'                  => 'JAMBI', 
+                'kabupaten_kota'            => 'KOTA JAMBI', 
                 'kecamatan'                 => 'Telanaipura',
                 'kelurahan'                 => 'Telanaipura',
                 'pendidikan_terakhir'       => 'S1',
                 'latar_belakang_pendidikan' => 'Spionase',
                 'pekerjaan'                 => 'Karyawan Swasta',
                 'sehat_jasmani'             => 'Ya',
-                'buta_warna'                => 'Tidak', // Menambahkan field yang sebelumnya hilang
+                'buta_warna'                => 'Tidak', 
                 'golongan_darah'            => 'AB',
-                'status_akun'               => 'Aktif', // Menyesuaikan dengan kebutuhan agar bisa login
+                'status_akun'               => 'Aktif', 
                 'status_pendaftaran'        => 'Diterima',
                 'created_at'                => now(),
                 'updated_at'                => now(),
@@ -164,8 +180,8 @@ class UsersTableSeeder extends Seeder
                 'sehat_jasmani'             => 'Ya',
                 'buta_warna'                => 'Tidak',
                 'golongan_darah'            => 'O',
-                'status_akun'               => 'Nonaktif', // Sesuai default di tabel
-                'status_pendaftaran'        => 'Pending', // Sesuai default di tabel
+                'status_akun'               => 'Nonaktif', 
+                'status_pendaftaran'        => 'Pending', 
                 'created_at'                => now(),
                 'updated_at'                => now(),
             ],
@@ -205,7 +221,6 @@ class UsersTableSeeder extends Seeder
         // ========================================================
         // 3. SEEDER AKUN PEMOHON PUBLIK
         // ========================================================
-        // Perhatikan penambahan array [] di sini agar sesuai dengan standar insert multiple data
         DB::table('pemohons')->insert([
             [
                 'nik'          => '1571234567890002', 
