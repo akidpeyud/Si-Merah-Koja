@@ -205,7 +205,7 @@
         .btn-outline-primary { color: var(--navy); border-color: var(--navy); font-weight: 600; border-radius: 8px; background: transparent; min-height: 42px; font-size: 0.9rem; }
         .btn-outline-primary:hover { background-color: var(--navy); color: #fff; border-color: var(--navy);}
 
-        .highlight-area { background-color: #f8fafc; border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+        .highlight-area { background-color: #f8fafc; border: 1px solid var(--line); border-radius: 12px; padding: 24px 20px; margin-bottom: 24px; }
 
         #map { height: 400px; width: 100%; border-radius: 8px; border: 1px solid var(--line-dark); z-index: 1;}
         .modal-content { border-radius: var(--r-md); border: none; box-shadow: var(--shadow-lg); }
@@ -300,14 +300,33 @@
                 </div>
             </details>
 
+            <!-- BAGIAN PEMADAMAN -->
             <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
-                    <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Input data</a>
-                    <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}"><i class="fas fa-file-signature"></i> Buat Surat Korban</a>
-                    <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}"><i class="fas fa-clipboard-list"></i> Kelola Data Laporan</a>
-                    <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}"><i class="fas fa-folder-open"></i> Kelola Surat Korban</a>
-                    <!-- MENU BARU: KELOLA SURAT KERAMAIAN -->
+                    <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
+                        <i class="fas fa-fire-extinguisher"></i> Input data
+                    </a>
+
+                    <!-- MENU BARU: REKAP LAYANAN & OBJEK -->
+                    <a href="/internal/damtan/rekap-layanan" class="{{ Request::is('internal/damtan/rekap-layanan*') ? 'active' : '' }}">
+                        <i class="fas fa-truck-medical"></i> Input Rekap Layanan
+                    </a>
+                    <a href="/internal/damtan/rekap-objek" class="{{ Request::is('internal/damtan/rekap-objek*') ? 'active' : '' }}">
+                        <i class="fas fa-house-chimney-crack"></i> Input Rekap Objek Kebakaran
+                    </a>
+
+                    <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
+                        <i class="fas fa-file-signature"></i> Buat Surat Korban
+                    </a>
+                    <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
+                        <i class="fas fa-clipboard-list"></i> Kelola Data Laporan
+                    </a>
+                    <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
+                        <i class="fas fa-folder-open"></i> Kelola Surat Korban
+                    </a>
+                    
+                   <!-- MENU KELOLA SURAT KERAMAIAN -->
                     <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
                         <i class="fas fa-users-rectangle"></i> Kelola Surat Keramaian
                     </a>

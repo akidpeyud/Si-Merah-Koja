@@ -537,21 +537,35 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 </div>
             </details>
 
-            <!-- BAGIAN PEMADAMAN -->
+<!-- BAGIAN PEMADAMAN -->
             <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
-                        <i class="fas fa-fire-extinguisher"></i><span class="lbl">Input data</span>
+                        <i class="fas fa-fire-extinguisher"></i> Input data
                     </a>
+
+                    <!-- MENU BARU: REKAP LAYANAN & OBJEK -->
+                    <a href="/internal/damtan/rekap-layanan" class="{{ Request::is('internal/damtan/rekap-layanan*') ? 'active' : '' }}">
+                        <i class="fas fa-truck-medical"></i> Input Rekap Layanan
+                    </a>
+                    <a href="/internal/damtan/rekap-objek" class="{{ Request::is('internal/damtan/rekap-objek*') ? 'active' : '' }}">
+                        <i class="fas fa-house-chimney-crack"></i> Input Rekap Objek Kebakaran
+                    </a>
+
                     <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
-                        <i class="fas fa-file-signature"></i><span class="lbl">Buat Surat Korban</span>
+                        <i class="fas fa-file-signature"></i> Buat Surat Korban
                     </a>
-                    <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') ? 'active' : '' }}">
-                        <i class="fas fa-clipboard-list"></i><span class="lbl">Kelola Data Laporan</span>
+                    <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
+                        <i class="fas fa-clipboard-list"></i> Kelola Data Laporan
                     </a>
-                    <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') ? 'active' : '' }}">
-                        <i class="fas fa-folder"></i><span class="lbl">Kelola Surat Korban</span>
+                    <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
+                        <i class="fas fa-folder-open"></i> Kelola Surat Korban
+                    </a>
+                    
+                   <!-- MENU KELOLA SURAT KERAMAIAN -->
+                    <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
+                        <i class="fas fa-users-rectangle"></i> Kelola Surat Keramaian
                     </a>
                 </div>
             </details>
@@ -789,6 +803,64 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                         <div class="stat-value">0</div>
                     </div>
                 </a>
+
+                <!-- KARTU BARU: REKAP LAYANAN -->
+                <a href="/internal/damtan/rekap-layanan" class="stat-card">
+                    <div class="stat-ico ic-danger"><i class="fas fa-truck-medical"></i></div>
+                    <div>
+                        <div class="stat-title">Input Rekap Layanan</div>
+                        <div class="stat-value"><i class="fas fa-plus" style="font-size: 1.25rem;"></i></div>
+                    </div>
+                </a>
+
+                <a href="/internal/damtan/rekap-layanan" class="stat-card">
+                    <div class="stat-ico ic-info"><i class="fas fa-chart-simple"></i></div>
+                    <div>
+                        <div class="stat-title">Total Rekap Layanan</div>
+                        <div class="stat-value">
+                            {{ \Illuminate\Support\Facades\Schema::hasTable('rekap_layanan') ? number_format(\Illuminate\Support\Facades\DB::table('rekap_layanan')->sum('jumlah'), 0, ',', '.') : 0 }}
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- 2B. REKAP LAYANAN & PENYELAMATAN (PER KATEGORI) -->
+        @php
+            $rekapTotals = \Illuminate\Support\Facades\Schema::hasTable('rekap_layanan')
+                ? \Illuminate\Support\Facades\DB::table('rekap_layanan')
+                    ->select('kategori', \Illuminate\Support\Facades\DB::raw('SUM(jumlah) as total'))
+                    ->groupBy('kategori')->pluck('total', 'kategori')->toArray()
+                : [];
+            $rekapKategori = [
+                'kebakaran'          => ['Kebakaran',              'fa-fire-flame-curved',     'ic-danger'],
+                'evakuasi_ular'      => ['Evakuasi Ular',          'fa-staff-snake',           'ic-primary'],
+                'rescue_darat_air'   => ['Rescue Darat & Air',     'fa-life-ring',             'ic-info'],
+                'evakuasi_tawon'     => ['Evakuasi Tawon/Lebah',   'fa-bug',                   'ic-primary'],
+                'edukasi_kunjungan'  => ['Edukasi & Kunjungan',    'fa-users',                 'ic-info'],
+                'evakuasi_hewan'     => ['Evakuasi Hewan Lainnya', 'fa-cat',                   'ic-primary'],
+                'pemeriksaan_gedung' => ['Pemeriksaan Gedung',     'fa-building-circle-check', 'ic-danger'],
+                'evakuasi_cincin'    => ['Evakuasi Cincin/Anting', 'fa-ring',                  'ic-primary'],
+            ];
+        @endphp
+
+        <div class="mb-5">
+            <div class="section-heading">
+                <span class="section-heading-ico"><i class="fas fa-truck-medical"></i></span>
+                <h3>Rekap Layanan &amp; Penyelamatan</h3>
+                <span class="line"></span>
+            </div>
+
+            <div class="stats-grid">
+                @foreach($rekapKategori as $key => [$nama, $ikon, $warna])
+                    <a href="/internal/damtan/rekap-layanan" class="stat-card">
+                        <div class="stat-ico {{ $warna }}"><i class="fas {{ $ikon }}"></i></div>
+                        <div>
+                            <div class="stat-title">{{ $nama }}</div>
+                            <div class="stat-value">{{ number_format($rekapTotals[$key] ?? 0, 0, ',', '.') }}</div>
+                        </div>
+                    </a>
+                @endforeach
             </div>
         </div>
 

@@ -25,6 +25,7 @@ use App\Http\Controllers\PetaController;
 use App\Http\Controllers\IzinKeramaianController;
 use App\Http\Controllers\FireDrillController;
 use App\Http\Controllers\ProgramKerjaController;
+use App\Http\Controllers\InformasiLayananController;
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
@@ -49,7 +50,7 @@ Route::get('/produkhukum', function () { return view('programkerja.produkhukum')
 Route::get('/sop', function () { return view('programkerja.sop'); });
 
 // Informasi Layanan (Publik)
-Route::get('/informasi-layanan', [PublicController::class, 'indexLayanan']);
+Route::get('/informasi-layanan', [InformasiLayananController::class, 'index'])->name('informasi-layanan.index');
 Route::get('/informasi-sarana', [PublicController::class, 'informasiSarana']);
 Route::get('/informasi-prasarana', [PublicController::class, 'informasiPrasarana']);
 Route::get('/informasi-penyelamatan', [PublicController::class, 'informasiPenyelamatan']);
@@ -105,9 +106,6 @@ Route::middleware([CekLoginPemohon::class])->group(function () {
         
         // Tambahkan rute GET ini untuk melihat detail data (menangani URL seperti .../kelola-rpkbgl/2)
         Route::get('/{id}', [PermohonanRpkbglController::class, 'show'])->name('permohonan.show');
-        
-        // (Opsional) Tambahkan rute ini jika Anda juga punya halaman form edit data
-        // Route::get('/{id}/edit', [PermohonanRpkbglController::class, 'edit'])->name('permohonan.edit');
 
         Route::post('/update-status/{id}', [PermohonanRpkbglController::class, 'updateStatus']);
         Route::delete('/{id}', [PermohonanRpkbglController::class, 'destroy']);
@@ -222,6 +220,18 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/internal/damtan/kelola-izin-keramaian/hapus/{id}', [App\Http\Controllers\IzinKeramaianController::class, 'destroyInternal'])->name('internal.izin-keramaian.destroy');
     Route::get('/internal/damtan/kelola-izin-keramaian/edit/{id}', [App\Http\Controllers\IzinKeramaianController::class, 'editInternal'])->name('internal.izin-keramaian.edit');
     Route::put('/internal/damtan/kelola-izin-keramaian/update/{id}', [App\Http\Controllers\IzinKeramaianController::class, 'updateInternal'])->name('internal.izin-keramaian.update');
+    
+    // ==========================================
+    // REKAP LAYANAN PEMADAMAN (Ini yang ditambahkan)
+    // ==========================================
+    Route::get('/internal/damtan/rekap-layanan', [App\Http\Controllers\DamtanController::class, 'rekapLayanan'])->name('damtan.rekap_layanan');
+    Route::post('/internal/damtan/rekap-layanan', [App\Http\Controllers\DamtanController::class, 'storeRekapLayanan']);
+    Route::delete('/internal/damtan/rekap-layanan/{id}', [App\Http\Controllers\DamtanController::class, 'destroyRekapLayanan']);
+
+    // TAMBAHKAN 3 BARIS INI UNTUK REKAP OBJEK KEBAKARAN
+    Route::get('/internal/damtan/rekap-objek', [App\Http\Controllers\DamtanController::class, 'rekapObjek'])->name('damtan.rekap_objek');
+    Route::post('/internal/damtan/rekap-objek', [App\Http\Controllers\DamtanController::class, 'storeRekapObjek']);
+    Route::delete('/internal/damtan/rekap-objek/{id}', [App\Http\Controllers\DamtanController::class, 'destroyRekapObjek']);
 
     // --- D. SAPRA (SARANA PRASARANA) ---
     Route::get('/sapra/data-hidrant-kota', [SapraController::class, 'dataHidrantKota']);
@@ -341,7 +351,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/internal/pencegahan/fire-drill/{id}', [PencegahanController::class, 'updateFireDrill'])->name('fire_drill.update');
     Route::delete('/internal/pencegahan/fire-drill/{id}', [PencegahanController::class, 'destroyFireDrill'])->name('fire_drill.destroy');
     
-    // Gabungan rute cetak Fire Drill (dari kedua branch)
+    // Gabungan rute cetak Fire Drill
     Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/excel', [FireDrillController::class, 'excel'])->name('fire_drill.excel');
     Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/cetak', [FireDrillController::class, 'cetak'])->name('fire_drill.cetak');
     Route::get('/internal/pencegahan/fire-drill/export/pdf', [FireDrillController::class, 'cetakPdf']);
@@ -505,7 +515,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/cetak', [PemberdayaanController::class, 'cetak'])->name('pemberdayaan.cetak');
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/cetak-excel', [PemberdayaanController::class, 'cetakExcel']);
 
-    // Pelatihan Keluarga
+    // --- Pelatihan Keluarga ---
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga', [PencegahanController::class, 'indexPelatihanKeluarga'])->name('pelatihan_keluarga.index');
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/create', [PencegahanController::class, 'createPelatihanKeluarga'])->name('pelatihan_keluarga.create');
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/tambah', [PencegahanController::class, 'createPelatihanKeluarga']);
@@ -516,7 +526,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/hapus/{id}', [PencegahanController::class, 'destroyPelatihanKeluarga'])->name('pelatihan_keluarga.destroy');
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak', [PemberdayaanController::class, 'cetakPelatihan']);
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak-excel', [PemberdayaanController::class, 'cetakExcelPelatihan']);
-
+    
     // 11. Peningkatan Kapasitas Aparatur
     Route::get('/internal/pencegahan/peningkatan-kapasitas', function () {
         $dataDiksar = \Illuminate\Support\Facades\Schema::hasTable('tbl_diksar') ? DB::table('tbl_diksar')->orderBy('id', 'desc')->get() : [];
