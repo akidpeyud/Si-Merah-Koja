@@ -203,17 +203,30 @@ class UsersTableSeeder extends Seeder
         ]);
 
         // ========================================================
-        // 3. SEEDER AKUN PEMOHON PUBLIK (NATASHA)
+        // 3. SEEDER AKUN PEMOHON PUBLIK
         // ========================================================
+        // Perhatikan penambahan array [] di sini agar sesuai dengan standar insert multiple data
         DB::table('pemohons')->insert([
-            'nik'          => '1571234567890002', 
-            'nama_lengkap' => 'Natasha Romanoff', 
-            'email'        => 'natasha@gmail.com',
-            'no_whatsapp'  => '081234567890',
-            'password'     => Hash::make('password123'), 
-            'role'         => 'pemohon', 
-            'created_at'   => now(),
-            'updated_at'   => now(),
+            [
+                'nik'          => '1571234567890002', 
+                'nama_lengkap' => 'Natasha Romanoff', 
+                'email'        => 'natasha@gmail.com',
+                'no_whatsapp'  => '081234567890',
+                'password'     => Hash::make('password123'), 
+                'role'         => 'pemohon', 
+                'created_at'   => now(),
+                'updated_at'   => now(),
+            ],
+            [
+                'nik'          => '1571234567890003', 
+                'nama_lengkap' => 'Steve Rogers', 
+                'email'        => 'steve@gmail.com',
+                'no_whatsapp'  => '081298765432',
+                'password'     => Hash::make('password123'), 
+                'role'         => 'pemohon', 
+                'created_at'   => now(),
+                'updated_at'   => now(),
+            ]
         ]);
     }
 }

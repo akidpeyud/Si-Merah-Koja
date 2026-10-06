@@ -9,45 +9,49 @@
 
 ---
 
-## 🔑 Akses Akun Uji Coba (Login Credentials)
+## 🔑 Kredensial Akses Uji Coba (Login)
 
-Untuk mempermudah proses _development_ dan _testing_, database telah dilengkapi dengan _seeder_. Berikut adalah daftar akun yang bisa digunakan oleh tim untuk _login_:
+Untuk mempermudah proses _development_ dan _testing_, gunakan daftar akun di bawah ini. Pastikan Anda sudah menjalankan perintah `php artisan migrate:fresh --seed` sebelum mencoba _login_.
 
-### 1. Akun Internal (Admin / Pegawai / Operator)
+### 🏢 1. Akun Internal (Pegawai / Admin / Operator)
 
-**Halaman Login:** `/login`
+👉 **URL Login:** `http://localhost:8000/login`  
+⚠️ **Password untuk semua akun internal:** `password`
 
-> **Catatan:** Password _default_ untuk akun internal yang dienkripsi pada seeder biasanya adalah `password` atau `password123`.
-
-| Nama Lengkap           | Email                        | Hak Akses (Role)      |
+| Nama Lengkap           | Email Login                  | Hak Akses (Role)      |
 | :--------------------- | :--------------------------- | :-------------------- |
 | **Andika Dwi Putra**   | `dwiputdika@gmail.com`       | 👑 **Super User**     |
 | **Ananda Gita April**  | `siipooke@gmail.com`         | 👑 **Super User**     |
 | **Dhimas Zaky Abiyyu** | `dhimaszaky102005@gmail.com` | 👤 **User** (Pegawai) |
 | **M Ariffan Hidayah**  | `erikpramana68@gmail.com`    | 👤 **User** (Pegawai) |
+| **M. Suwanda**         | `mebius3105@gmail.com`       | 👤 **User** (Pegawai) |
+| **Natasha Romanoff**   | `adingbing11@gmail.com`      | 👤 **User** (Pegawai) |
 | **Operator Berita**    | `berita.damkar@gmail.com`    | 📰 **Operator**       |
 
-### 2. Akun Anggota REDKAR (Relawan)
+<br>
 
-**Halaman Login:** `/login-redkar`
+### 🧑‍🚒 2. Akun Anggota REDKAR (Relawan)
 
-> **Catatan:** Password untuk semua akun REDKAR di bawah ini adalah: `password123`
+👉 **URL Login:** `http://localhost:8000/login-redkar`  
+⚠️️ **Password untuk semua akun REDKAR:** `password123`
 
-| Nama Anggota         | Username Login | Status Akun           |
+| Nama Relawan         | Username Login | Status Akun           |
 | :------------------- | :------------- | :-------------------- |
-| **Natasha Romanoff** | `natasha`      | 🟢 Aktif              |
-| **Siti Aminah**      | `siti_relawan` | 🟢 Aktif              |
+| **Natasha Romanoff** | `natasha`      | 🟢 Aktif (Bisa Login) |
+| **Siti Aminah**      | `siti_relawan` | 🟢 Aktif (Bisa Login) |
 | **Budi Santoso**     | `budi_redkar`  | 🔴 Nonaktif (Pending) |
 
-### 3. Akun Pemohon Publik (Layanan Masyarakat)
+<br>
 
-**Halaman Login:** `/pemohon/login`
+### 📝 3. Akun Pemohon Publik (Masyarakat/Perusahaan)
 
-> **Catatan:** Password untuk akun pemohon di bawah ini adalah: `password123`
+👉 **URL Login:** `http://localhost:8000/pemohon/login`  
+⚠️ **Password untuk semua akun Pemohon:** `password123`
 
 | Nama Pemohon         | Email Login         | Role           |
 | :------------------- | :------------------ | :------------- |
 | **Natasha Romanoff** | `natasha@gmail.com` | Pemohon Publik |
+| **Steve Rogers**     | `steve@gmail.com`   | Pemohon Publik |
 
 ---
 
