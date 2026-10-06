@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB; // <-- Baris ini sangat penting agar tidak error
-use Illuminate\Support\Facades\Hash; // <-- Tambahkan ini untuk enkripsi password
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UsersTableSeeder extends Seeder
 {
@@ -104,50 +104,129 @@ class UsersTableSeeder extends Seeder
         ]);
 
         // ========================================================
-        // 2. SEEDER AKUN REDKAR (NATASHA)
+        // 2. SEEDER AKUN REDKAR (BERDASARKAN STRUKTUR TABEL)
         // ========================================================
         DB::table('redkar_registrations')->insert([
-            'id'                        => 'RDKR-' . time() . '-' . rand(100, 999), 
-            'username'                  => 'natasha',
-            'password'                  => Hash::make('password123'), // Password: password123
-            'nik'                       => '1571234567890001',
-            'nama_lengkap'              => 'Natasha Romanoff',
-            'jenis_kelamin'             => 'Perempuan',
-            'tempat_lahir'              => 'Rusia',
-            'tanggal_lahir'             => '1984-11-22',
-            'status_perkawinan'         => 'Belum Kawin',
-            'agama'                     => 'Kristen',
-            'nomor_telp'                => '081234567890',
-            'alamat'                    => 'Jl. Avengers No. 1',
-            'rt_rw'                     => '01/01',
-            'kode_pos'                  => '36123',
-            'provinsi'                  => 'Jambi',
-            'kabupaten_kota'            => 'Kota Jambi',
-            'kecamatan'                 => 'Telanaipura',
-            'kelurahan'                 => 'Telanaipura',
-            'pekerjaan'                 => 'Karyawan Swasta',
-            'pendidikan_terakhir'       => 'S1',
-            'latar_belakang_pendidikan' => 'Spionase',
-            'sehat_jasmani'             => 'Ya',
-            'golongan_darah'            => 'AB',
-            'status_pendaftaran'        => 'Diterima',
-            'status_akun'               => 'Aktif',
-            'created_at'                => now(),
-            'updated_at'                => now(),
+            [
+                'id'                        => 'RDKR-' . time() . '-' . rand(100, 999), 
+                'username'                  => 'natasha',
+                'password'                  => Hash::make('password123'), 
+                'nik'                       => '1571234567890001',
+                'nama_lengkap'              => 'Natasha Romanoff',
+                'jenis_kelamin'             => 'Perempuan',
+                'tempat_lahir'              => 'Rusia',
+                'tanggal_lahir'             => '1984-11-22',
+                'status_perkawinan'         => 'Belum Kawin',
+                'agama'                     => 'Kristen',
+                'nomor_telp'                => '081234567890',
+                'file_ktp'                  => null, // Nullable sesuai tabel
+                'alamat'                    => 'Jl. Avengers No. 1',
+                'rt_rw'                     => '01/01',
+                'kode_pos'                  => '36123',
+                'provinsi'                  => 'JAMBI', // Default value JAMBI
+                'kabupaten_kota'            => 'KOTA JAMBI', // Default value KOTA JAMBI
+                'kecamatan'                 => 'Telanaipura',
+                'kelurahan'                 => 'Telanaipura',
+                'pendidikan_terakhir'       => 'S1',
+                'latar_belakang_pendidikan' => 'Spionase',
+                'pekerjaan'                 => 'Karyawan Swasta',
+                'sehat_jasmani'             => 'Ya',
+                'buta_warna'                => 'Tidak', // Menambahkan field yang sebelumnya hilang
+                'golongan_darah'            => 'AB',
+                'status_akun'               => 'Aktif', // Menyesuaikan dengan kebutuhan agar bisa login
+                'status_pendaftaran'        => 'Diterima',
+                'created_at'                => now(),
+                'updated_at'                => now(),
+            ],
+            [
+                'id'                        => 'RDKR-' . (time() + 1) . '-' . rand(100, 999), 
+                'username'                  => 'budi_redkar',
+                'password'                  => Hash::make('password123'), 
+                'nik'                       => '1571234567890002',
+                'nama_lengkap'              => 'Budi Santoso',
+                'jenis_kelamin'             => 'Laki-laki',
+                'tempat_lahir'              => 'Jambi',
+                'tanggal_lahir'             => '1990-05-15',
+                'status_perkawinan'         => 'Kawin',
+                'agama'                     => 'Islam',
+                'nomor_telp'                => '085211223344',
+                'file_ktp'                  => null,
+                'alamat'                    => 'Jl. Pahlawan No. 45',
+                'rt_rw'                     => '02/05',
+                'kode_pos'                  => '36124',
+                'provinsi'                  => 'JAMBI',
+                'kabupaten_kota'            => 'KOTA JAMBI',
+                'kecamatan'                 => 'Jambi Selatan',
+                'kelurahan'                 => 'Pakuan Baru',
+                'pendidikan_terakhir'       => 'SMA',
+                'latar_belakang_pendidikan' => 'IPS',
+                'pekerjaan'                 => 'Wiraswasta',
+                'sehat_jasmani'             => 'Ya',
+                'buta_warna'                => 'Tidak',
+                'golongan_darah'            => 'O',
+                'status_akun'               => 'Nonaktif', // Sesuai default di tabel
+                'status_pendaftaran'        => 'Pending', // Sesuai default di tabel
+                'created_at'                => now(),
+                'updated_at'                => now(),
+            ],
+            [
+                'id'                        => 'RDKR-' . (time() + 2) . '-' . rand(100, 999), 
+                'username'                  => 'siti_relawan',
+                'password'                  => Hash::make('password123'), 
+                'nik'                       => '1571234567890003',
+                'nama_lengkap'              => 'Siti Aminah',
+                'jenis_kelamin'             => 'Perempuan',
+                'tempat_lahir'              => 'Muaro Jambi',
+                'tanggal_lahir'             => '1995-08-20',
+                'status_perkawinan'         => 'Belum Kawin',
+                'agama'                     => 'Islam',
+                'nomor_telp'                => '082133445566',
+                'file_ktp'                  => null,
+                'alamat'                    => 'Jl. Sudirman Blok C',
+                'rt_rw'                     => '04/02',
+                'kode_pos'                  => '36125',
+                'provinsi'                  => 'JAMBI',
+                'kabupaten_kota'            => 'KOTA JAMBI',
+                'kecamatan'                 => 'Danau Sipin',
+                'kelurahan'                 => 'Legok',
+                'pendidikan_terakhir'       => 'D3',
+                'latar_belakang_pendidikan' => 'Keperawatan',
+                'pekerjaan'                 => 'Perawat',
+                'sehat_jasmani'             => 'Ya',
+                'buta_warna'                => 'Tidak',
+                'golongan_darah'            => 'A',
+                'status_akun'               => 'Aktif',
+                'status_pendaftaran'        => 'Diterima',
+                'created_at'                => now(),
+                'updated_at'                => now(),
+            ]
         ]);
 
-// ========================================================
-        // 3. SEEDER AKUN PEMOHON PUBLIK (NATASHA)
         // ========================================================
+        // 3. SEEDER AKUN PEMOHON PUBLIK
+        // ========================================================
+        // Perhatikan penambahan array [] di sini agar sesuai dengan standar insert multiple data
         DB::table('pemohons')->insert([
-            'nik'          => '1571234567890002', // Tambahkan NIK sesuai struktur tabel
-            'nama_lengkap' => 'Natasha Romanoff', // Menggunakan nama_lengkap sesuai database
-            'email'        => 'natasha@gmail.com',
-            'no_whatsapp'  => '081234567890',
-            'password'     => Hash::make('password123'), // Password: password123
-            'role'         => 'pemohon', // Tambahkan role jika wajib diisi
-            'created_at'   => now(),
-            'updated_at'   => now(),
+            [
+                'nik'          => '1571234567890002', 
+                'nama_lengkap' => 'Natasha Romanoff', 
+                'email'        => 'natasha@gmail.com',
+                'no_whatsapp'  => '081234567890',
+                'password'     => Hash::make('password123'), 
+                'role'         => 'pemohon', 
+                'created_at'   => now(),
+                'updated_at'   => now(),
+            ],
+            [
+                'nik'          => '1571234567890003', 
+                'nama_lengkap' => 'Steve Rogers', 
+                'email'        => 'steve@gmail.com',
+                'no_whatsapp'  => '081298765432',
+                'password'     => Hash::make('password123'), 
+                'role'         => 'pemohon', 
+                'created_at'   => now(),
+                'updated_at'   => now(),
+            ]
         ]);
     }
 }
