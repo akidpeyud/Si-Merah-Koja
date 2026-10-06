@@ -171,4 +171,15 @@ class PermohonanRpkbglController extends Controller
 
         return redirect()->back()->with('success', 'Data dan berkas permohonan berhasil dihapus selamanya.');
     }
+    // =========================================================================
+    // 6. TAMPILKAN DETAIL DATA (SHOW ADMIN)
+    // =========================================================================
+    public function show($id)
+    {
+        // Cari data berdasarkan ID dan gunakan variabel $permohonan
+        $permohonan = PermohonanRpkbgl::findOrFail($id);
+        
+        // Kembalikan ke tampilan detail dengan membawa data $permohonan
+        return view('internal.pencegahan.detail_rpkbgl', compact('permohonan'));
+    }
 }
