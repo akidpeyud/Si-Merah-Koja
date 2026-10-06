@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema; // Tambahan wajib untuk mengatasi relasi
 
 class UsersTableSeeder extends Seeder
 {
@@ -13,6 +14,21 @@ class UsersTableSeeder extends Seeder
      */
     public function run(): void
     {
+        // ========================================================
+        // 0. BERSIHKAN TABEL SEBELUM SEEDING
+        // ========================================================
+        // Matikan pengecekan foreign key sementara
+        Schema::disableForeignKeyConstraints();
+
+        // Kosongkan isi ketiga tabel ini HANYA (tabel lain di database aman)
+        DB::table('users')->truncate();
+        DB::table('redkar_registrations')->truncate();
+        DB::table('pemohons')->truncate();
+
+        // Nyalakan kembali pengecekan foreign key
+        Schema::enableForeignKeyConstraints();
+
+
         // ========================================================
         // 1. SEEDER AKUN INTERNAL (PEGAWAI/ADMIN)
         // ========================================================
@@ -119,21 +135,21 @@ class UsersTableSeeder extends Seeder
                 'status_perkawinan'         => 'Belum Kawin',
                 'agama'                     => 'Kristen',
                 'nomor_telp'                => '081234567890',
-                'file_ktp'                  => null, // Nullable sesuai tabel
+                'file_ktp'                  => null, 
                 'alamat'                    => 'Jl. Avengers No. 1',
                 'rt_rw'                     => '01/01',
                 'kode_pos'                  => '36123',
-                'provinsi'                  => 'JAMBI', // Default value JAMBI
-                'kabupaten_kota'            => 'KOTA JAMBI', // Default value KOTA JAMBI
+                'provinsi'                  => 'JAMBI', 
+                'kabupaten_kota'            => 'KOTA JAMBI', 
                 'kecamatan'                 => 'Telanaipura',
                 'kelurahan'                 => 'Telanaipura',
                 'pendidikan_terakhir'       => 'S1',
                 'latar_belakang_pendidikan' => 'Spionase',
                 'pekerjaan'                 => 'Karyawan Swasta',
                 'sehat_jasmani'             => 'Ya',
-                'buta_warna'                => 'Tidak', // Menambahkan field yang sebelumnya hilang
+                'buta_warna'                => 'Tidak', 
                 'golongan_darah'            => 'AB',
-                'status_akun'               => 'Aktif', // Menyesuaikan dengan kebutuhan agar bisa login
+                'status_akun'               => 'Aktif', 
                 'status_pendaftaran'        => 'Diterima',
                 'created_at'                => now(),
                 'updated_at'                => now(),
@@ -164,8 +180,8 @@ class UsersTableSeeder extends Seeder
                 'sehat_jasmani'             => 'Ya',
                 'buta_warna'                => 'Tidak',
                 'golongan_darah'            => 'O',
-                'status_akun'               => 'Nonaktif', // Sesuai default di tabel
-                'status_pendaftaran'        => 'Pending', // Sesuai default di tabel
+                'status_akun'               => 'Nonaktif', 
+                'status_pendaftaran'        => 'Pending', 
                 'created_at'                => now(),
                 'updated_at'                => now(),
             ],
@@ -205,7 +221,6 @@ class UsersTableSeeder extends Seeder
         // ========================================================
         // 3. SEEDER AKUN PEMOHON PUBLIK
         // ========================================================
-        // Perhatikan penambahan array [] di sini agar sesuai dengan standar insert multiple data
         DB::table('pemohons')->insert([
             [
                 'nik'          => '1571234567890002', 

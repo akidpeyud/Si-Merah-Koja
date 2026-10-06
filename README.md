@@ -64,3 +64,6 @@ Bagi anggota tim yang baru bergabung, ikuti langkah-langkah berikut untuk menjal
     git clone <url-repository-kalian>
     cd si-merah-koja
     ```
+2. **Untuk Menambahkan User ke Tabel Database**
+   Jalankan Perintah berikut:
+   php artisan db:seed --class=UsersTableSeeder
