@@ -97,11 +97,18 @@ Route::middleware([CekLoginPemohon::class])->group(function () {
         return view('layanan-fasilitas.layanan_perizinan'); 
     })->name('layanan-fasilitas.perizinan');
 
-    // RPKBGL
+// RPKBGL
     Route::prefix('internal/pencegahan/kelola-rpkbgl')->group(function () {
         Route::get('/', [PermohonanRpkbglController::class, 'index']);
         Route::get('/create', [PermohonanRpkbglController::class, 'create']);
-        Route::post('/', [PermohonanRpkbglController::class, 'store'])->name('permohonan.store'); 
+        Route::post('/', [PermohonanRpkbglController::class, 'store'])->name('permohonan.store');
+        
+        // Tambahkan rute GET ini untuk melihat detail data (menangani URL seperti .../kelola-rpkbgl/2)
+        Route::get('/{id}', [PermohonanRpkbglController::class, 'show'])->name('permohonan.show');
+        
+        // (Opsional) Tambahkan rute ini jika Anda juga punya halaman form edit data
+        // Route::get('/{id}/edit', [PermohonanRpkbglController::class, 'edit'])->name('permohonan.edit');
+
         Route::post('/update-status/{id}', [PermohonanRpkbglController::class, 'updateStatus']);
         Route::delete('/{id}', [PermohonanRpkbglController::class, 'destroy']);
     });
