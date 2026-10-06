@@ -499,7 +499,8 @@
                 <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
                     <li><a href="/layanan-fasilitas/skk">SKK &amp; Perpanjang SKK</a></li>
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan Edukasi &amp; sosialisasi</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
+                    <li><a href="/public-sigap">SIGAP</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
             </li>

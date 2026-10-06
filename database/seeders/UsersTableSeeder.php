@@ -3,8 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB; // <-- Baris ini sangat penting agar tidak error
-use Illuminate\Support\Facades\Hash; // <-- Tambahkan ini untuk enkripsi password
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema; // Tambahan wajib untuk mengatasi relasi
 
 class UsersTableSeeder extends Seeder
 {
@@ -13,6 +14,21 @@ class UsersTableSeeder extends Seeder
      */
     public function run(): void
     {
+        // ========================================================
+        // 0. BERSIHKAN TABEL SEBELUM SEEDING
+        // ========================================================
+        // Matikan pengecekan foreign key sementara
+        Schema::disableForeignKeyConstraints();
+
+        // Kosongkan isi ketiga tabel ini HANYA (tabel lain di database aman)
+        DB::table('users')->truncate();
+        DB::table('redkar_registrations')->truncate();
+        DB::table('pemohons')->truncate();
+
+        // Nyalakan kembali pengecekan foreign key
+        Schema::enableForeignKeyConstraints();
+
+
         // ========================================================
         // 1. SEEDER AKUN INTERNAL (PEGAWAI/ADMIN)
         // ========================================================
@@ -24,7 +40,7 @@ class UsersTableSeeder extends Seeder
                 'nomor_pegawai' => '23112021',
                 'role' => 'super_user',
                 'email_verified_at' => null,
-                'password' => '$2y$12$24dyBXpDKc0buZaC7WtU6u6GC5ZjphCUP5kPKvCA7N014vLGoGGha',
+                'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
                 'created_at' => '2026-09-03 00:13:52',
                 'updated_at' => '2026-09-07 18:33:45',
@@ -36,7 +52,7 @@ class UsersTableSeeder extends Seeder
                 'nomor_pegawai' => '23112018',
                 'role' => 'user',
                 'email_verified_at' => null,
-                'password' => '$2y$12$oGpz.VPskPJC6h98elnN3ee7qZIZl2Cgrw2V0o8CP/e/29BQrtvgC',
+                'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
                 'created_at' => '2026-09-04 09:40:30',
                 'updated_at' => '2026-09-07 18:38:31',
@@ -48,7 +64,7 @@ class UsersTableSeeder extends Seeder
                 'nomor_pegawai' => '23112017',
                 'role' => 'super_user',
                 'email_verified_at' => null,
-                'password' => '$2y$12$A3o8N4rpvAo1EXhsOmZdvOtfi/mvPrlFE33OTCtH1rvI5wtMzvPj.',
+                'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
                 'created_at' => '2026-09-06 20:59:14',
                 'updated_at' => '2026-09-06 20:59:14',
@@ -60,7 +76,7 @@ class UsersTableSeeder extends Seeder
                 'nomor_pegawai' => '23111006',
                 'role' => 'user',
                 'email_verified_at' => null,
-                'password' => '$2y$12$rxJR5GflWyTvaq8e5lst2O5UmayMaXykgTNGtxXaBWvTjgfubmJ3C',
+                'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
                 'created_at' => '2026-09-06 20:59:54',
                 'updated_at' => '2026-09-07 18:38:31',
@@ -72,7 +88,7 @@ class UsersTableSeeder extends Seeder
                 'nomor_pegawai' => '23112007',
                 'role' => 'user',
                 'email_verified_at' => null,
-                'password' => '$2y$12$ZIbd10RDcZYZEFISoTBMz.jDnb8UssyhHza1Ye.OEqL5eBqamtdzO',
+                'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
                 'created_at' => '2026-09-06 21:03:09',
                 'updated_at' => '2026-09-07 18:38:31',
@@ -84,7 +100,7 @@ class UsersTableSeeder extends Seeder
                 'nomor_pegawai' => '231120xx',
                 'role' => 'user',
                 'email_verified_at' => null,
-                'password' => '$2y$12$3WPQSivRZFK7OlN8/EaBBuywUGFeoOUp/00GC/bDmhMpeKXoTXyZi',
+                'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
                 'created_at' => '2026-09-06 23:12:02',
                 'updated_at' => '2026-09-07 18:38:31',
@@ -96,7 +112,7 @@ class UsersTableSeeder extends Seeder
                 'nomor_pegawai' => '23113001',
                 'role' => 'operator',
                 'email_verified_at' => null,
-                'password' => '$2y$12$/FjxJDSVPbjOM.byocQqY.T.cYKP6M39dVUo8Q63FBN/U1nsFafBi',
+                'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
                 'created_at' => '2026-09-06 23:35:56',
                 'updated_at' => '2026-09-06 23:35:56',
@@ -104,50 +120,128 @@ class UsersTableSeeder extends Seeder
         ]);
 
         // ========================================================
-        // 2. SEEDER AKUN REDKAR (NATASHA)
+        // 2. SEEDER AKUN REDKAR (BERDASARKAN STRUKTUR TABEL)
         // ========================================================
         DB::table('redkar_registrations')->insert([
-            'id'                        => 'RDKR-' . time() . '-' . rand(100, 999), 
-            'username'                  => 'natasha',
-            'password'                  => Hash::make('password123'), // Password: password123
-            'nik'                       => '1571234567890001',
-            'nama_lengkap'              => 'Natasha Romanoff',
-            'jenis_kelamin'             => 'Perempuan',
-            'tempat_lahir'              => 'Rusia',
-            'tanggal_lahir'             => '1984-11-22',
-            'status_perkawinan'         => 'Belum Kawin',
-            'agama'                     => 'Kristen',
-            'nomor_telp'                => '081234567890',
-            'alamat'                    => 'Jl. Avengers No. 1',
-            'rt_rw'                     => '01/01',
-            'kode_pos'                  => '36123',
-            'provinsi'                  => 'Jambi',
-            'kabupaten_kota'            => 'Kota Jambi',
-            'kecamatan'                 => 'Telanaipura',
-            'kelurahan'                 => 'Telanaipura',
-            'pekerjaan'                 => 'Karyawan Swasta',
-            'pendidikan_terakhir'       => 'S1',
-            'latar_belakang_pendidikan' => 'Spionase',
-            'sehat_jasmani'             => 'Ya',
-            'golongan_darah'            => 'AB',
-            'status_pendaftaran'        => 'Diterima',
-            'status_akun'               => 'Aktif',
-            'created_at'                => now(),
-            'updated_at'                => now(),
+            [
+                'id'                        => 'RDKR-' . time() . '-' . rand(100, 999), 
+                'username'                  => 'natasha',
+                'password'                  => Hash::make('password123'), 
+                'nik'                       => '1571234567890001',
+                'nama_lengkap'              => 'Natasha Romanoff',
+                'jenis_kelamin'             => 'Perempuan',
+                'tempat_lahir'              => 'Rusia',
+                'tanggal_lahir'             => '1984-11-22',
+                'status_perkawinan'         => 'Belum Kawin',
+                'agama'                     => 'Kristen',
+                'nomor_telp'                => '081234567890',
+                'file_ktp'                  => null, 
+                'alamat'                    => 'Jl. Avengers No. 1',
+                'rt_rw'                     => '01/01',
+                'kode_pos'                  => '36123',
+                'provinsi'                  => 'JAMBI', 
+                'kabupaten_kota'            => 'KOTA JAMBI', 
+                'kecamatan'                 => 'Telanaipura',
+                'kelurahan'                 => 'Telanaipura',
+                'pendidikan_terakhir'       => 'S1',
+                'latar_belakang_pendidikan' => 'Spionase',
+                'pekerjaan'                 => 'Karyawan Swasta',
+                'sehat_jasmani'             => 'Ya',
+                'buta_warna'                => 'Tidak', 
+                'golongan_darah'            => 'AB',
+                'status_akun'               => 'Aktif', 
+                'status_pendaftaran'        => 'Diterima',
+                'created_at'                => now(),
+                'updated_at'                => now(),
+            ],
+            [
+                'id'                        => 'RDKR-' . (time() + 1) . '-' . rand(100, 999), 
+                'username'                  => 'budi_redkar',
+                'password'                  => Hash::make('password123'), 
+                'nik'                       => '1571234567890002',
+                'nama_lengkap'              => 'Budi Santoso',
+                'jenis_kelamin'             => 'Laki-laki',
+                'tempat_lahir'              => 'Jambi',
+                'tanggal_lahir'             => '1990-05-15',
+                'status_perkawinan'         => 'Kawin',
+                'agama'                     => 'Islam',
+                'nomor_telp'                => '085211223344',
+                'file_ktp'                  => null,
+                'alamat'                    => 'Jl. Pahlawan No. 45',
+                'rt_rw'                     => '02/05',
+                'kode_pos'                  => '36124',
+                'provinsi'                  => 'JAMBI',
+                'kabupaten_kota'            => 'KOTA JAMBI',
+                'kecamatan'                 => 'Jambi Selatan',
+                'kelurahan'                 => 'Pakuan Baru',
+                'pendidikan_terakhir'       => 'SMA',
+                'latar_belakang_pendidikan' => 'IPS',
+                'pekerjaan'                 => 'Wiraswasta',
+                'sehat_jasmani'             => 'Ya',
+                'buta_warna'                => 'Tidak',
+                'golongan_darah'            => 'O',
+                'status_akun'               => 'Nonaktif', 
+                'status_pendaftaran'        => 'Pending', 
+                'created_at'                => now(),
+                'updated_at'                => now(),
+            ],
+            [
+                'id'                        => 'RDKR-' . (time() + 2) . '-' . rand(100, 999), 
+                'username'                  => 'siti_relawan',
+                'password'                  => Hash::make('password123'), 
+                'nik'                       => '1571234567890003',
+                'nama_lengkap'              => 'Siti Aminah',
+                'jenis_kelamin'             => 'Perempuan',
+                'tempat_lahir'              => 'Muaro Jambi',
+                'tanggal_lahir'             => '1995-08-20',
+                'status_perkawinan'         => 'Belum Kawin',
+                'agama'                     => 'Islam',
+                'nomor_telp'                => '082133445566',
+                'file_ktp'                  => null,
+                'alamat'                    => 'Jl. Sudirman Blok C',
+                'rt_rw'                     => '04/02',
+                'kode_pos'                  => '36125',
+                'provinsi'                  => 'JAMBI',
+                'kabupaten_kota'            => 'KOTA JAMBI',
+                'kecamatan'                 => 'Danau Sipin',
+                'kelurahan'                 => 'Legok',
+                'pendidikan_terakhir'       => 'D3',
+                'latar_belakang_pendidikan' => 'Keperawatan',
+                'pekerjaan'                 => 'Perawat',
+                'sehat_jasmani'             => 'Ya',
+                'buta_warna'                => 'Tidak',
+                'golongan_darah'            => 'A',
+                'status_akun'               => 'Aktif',
+                'status_pendaftaran'        => 'Diterima',
+                'created_at'                => now(),
+                'updated_at'                => now(),
+            ]
         ]);
 
-// ========================================================
-        // 3. SEEDER AKUN PEMOHON PUBLIK (NATASHA)
+        // ========================================================
+        // 3. SEEDER AKUN PEMOHON PUBLIK
         // ========================================================
         DB::table('pemohons')->insert([
-            'nik'          => '1571234567890002', // Tambahkan NIK sesuai struktur tabel
-            'nama_lengkap' => 'Natasha Romanoff', // Menggunakan nama_lengkap sesuai database
-            'email'        => 'natasha@gmail.com',
-            'no_whatsapp'  => '081234567890',
-            'password'     => Hash::make('password123'), // Password: password123
-            'role'         => 'pemohon', // Tambahkan role jika wajib diisi
-            'created_at'   => now(),
-            'updated_at'   => now(),
+            [
+                'nik'          => '1571234567890002', 
+                'nama_lengkap' => 'Natasha Romanoff', 
+                'email'        => 'natasha@gmail.com',
+                'no_whatsapp'  => '081234567890',
+                'password'     => Hash::make('password123'), 
+                'role'         => 'pemohon', 
+                'created_at'   => now(),
+                'updated_at'   => now(),
+            ],
+            [
+                'nik'          => '1571234567890003', 
+                'nama_lengkap' => 'Steve Rogers', 
+                'email'        => 'steve@gmail.com',
+                'no_whatsapp'  => '081298765432',
+                'password'     => Hash::make('password123'), 
+                'role'         => 'pemohon', 
+                'created_at'   => now(),
+                'updated_at'   => now(),
+            ]
         ]);
     }
 }

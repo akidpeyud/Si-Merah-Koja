@@ -636,26 +636,6 @@
                         </li>
                     </ol>
                 </section>
-
-                <section class="side-card">
-                    <div class="card-head">
-                        <span class="c-ico"><i class="fas fa-route"></i></span>
-                        <h2>Sistem, mekanisme, dan prosedur</h2>
-                    </div>
-                    <details class="disclose">
-                        <summary>
-                            <span class="when-closed">Tampilkan detail</span><span class="when-open">Sembunyikan detail</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </summary>
-                        <ol class="steps">
-                            <li>Pemohon mendaftar secara daring, lalu mengunggah kelengkapan berkas yang dipersyaratkan</li>
-                            <li>Tim Inspeksi memeriksa proteksi aktif kebakaran gedung pemohon</li>
-                            <li>Tim Inspeksi merekomendasikan kepada Kepala Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi untuk menerima atau menolak permohonan, berdasarkan hasil inspeksi lapangan</li>
-                            <li>Kepala Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi memberikan jawaban berdasarkan hasil rekomendasi Tim Inspeksi</li>
-                            <li>Sistem mengirim notifikasi lewat WhatsApp</li>
-                        </ol>
-                    </details>
-                </section>
             </aside>
 
             <!-- Formulir -->
