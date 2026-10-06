@@ -164,6 +164,47 @@
         .rise{animation:rise .75s cubic-bezier(.16,.84,.3,1) both}
         .rise.d1{animation-delay:.08s}.rise.d2{animation-delay:.16s}.rise.d3{animation-delay:.24s}
         @keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+        
+        /* ================= SUB NAVIGATION (PILL MENU) ================= */
+        .page-nav-wrap {
+            display: flex;
+            justify-content: center;
+            margin-top: -30px;
+            position: relative;
+            z-index: 10;
+            padding: 0 20px;
+        }
+        .page-nav {
+            display: inline-flex;
+            align-items: center;
+            background: #fff;
+            padding: 6px;
+            border-radius: 999px;
+            box-shadow: 0 12px 35px rgba(13,27,42,0.1);
+            gap: 4px;
+            overflow-x: auto;
+            max-width: 100%;
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+        .page-nav::-webkit-scrollbar { display: none; }
+        .page-nav { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .page-nav a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--steel);
+            white-space: nowrap;
+            transition: 0.3s ease;
+        }
+        .page-nav a i { font-size: 1.05rem; }
+        .page-nav a:hover { color: var(--ink-2); background: var(--soft); }
+        .page-nav a.active { background: var(--ink); color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .page-nav a.active i { color: var(--amber); }
 
         /* ================= CONTENT ================= */
         .page-body{background:var(--paper);min-height:50vh;padding-bottom:95px}
@@ -360,6 +401,10 @@
             .menu .btn-login{margin:7px 0 0;justify-content:center;padding:13px}
             .page-hero{padding:43px 0 78px}
         }
+        @media (max-width:768px){
+            .page-nav { justify-content: flex-start; padding: 6px 12px; }
+            .page-nav a { padding: 8px 16px; font-size: 0.85rem; }
+        }
         @media (max-width:700px){
             .wrap{width:min(calc(100% - 28px),1180px)}
             .brand img{height:32px}
@@ -468,6 +513,16 @@
         <div class="hero-line rise d3"></div>
     </div>
 </section>
+
+<!-- ==================== SUB NAVIGATION (PILL MENU) ==================== -->
+<div class="page-nav-wrap rise d3">
+    <nav class="page-nav" aria-label="Sub menu Kabar Damkar">
+        <a href="/edu-damkar"><i class="fas fa-video"></i> Edu Damkar</a>
+        <a href="/infografis" class="active"><i class="fas fa-image"></i> Info Grafis</a>
+        <a href="/media-informasi"><i class="fas fa-newspaper"></i> Media Informasi</a>
+        <a href="/ujung-ujung-damkar"><i class="fas fa-fire-extinguisher"></i> Ujung-ujung Damkar</a>
+    </nav>
+</div>
 
 <!-- ==================== BODY & KONTEN ==================== -->
 <div class="page-body">

@@ -5,9 +5,9 @@
     |--------------------------------------------------------------------------
     */
     $listUjungDamkar = isset($daftar_ujung_damkar) && count($daftar_ujung_damkar)
-        ? $daftar_ujung_damkar
+        ? collect($daftar_ujung_damkar)->filter(fn($item) => !empty($item->youtube_id))
         : (\Illuminate\Support\Facades\Schema::hasTable('ujung_damkar')
-            ? \App\Models\UjungDamkar::latest()->get()
+            ? \App\Models\UjungDamkar::whereNotNull('youtube_id')->where('youtube_id', '!=', '')->latest()->get()
             : collect());
 
     /*
@@ -21,6 +21,7 @@
     $pesan_wa       = "Terimakasih%20telah%20menghubungi%20%F0%9F%94%A5%F0%9F%94%A5%F0%9F%94%A5..%0ASistem%20Informasi%20Penanggulangan%20Kebakaran%20dan%20Penyelamatan%20Daerah%20Kota%20Jambi%20(SIMERAH%20KOJA)%0A%0AMohon%20Isi%20Laporan%20Pengaduan%3A%20%0A%0ANama%20Pelapor%20%20%20%3A%0ANo.%20HP%20Pelapor%20%3A%0AAlamat%20Pelapor%20%3A%0AJenis%20Laporan%20%20%20%3A%20%20(Kebakaran%2FEvakuasi)%0A%0AAlamat%20Kejadian%20%3A%0A%0AKirim%20Peta%20Lokasi%20kejadian%20(Google%20Maps)%20%3A%0A%0AKirim%20Foto%20%26%20Video%20Kejadian%20%3A%0A%0ALaporan%20akan%20segera%20kami%20tindaklanjuti%20%F0%9F%9A%92%F0%9F%9A%92%F0%9F%9A%92%0ASalam%20YUDHA%20BRAMA%20JAYA%20Dinas%20Pemadam%20Kebakaran%20%26%20Penyelamatan%20Kota%20Jambi.";
     $wa_link        = "https://wa.me/" . $no_whatsapp . "?text=" . $pesan_wa;
     $maps_link      = "https://www.google.com/maps/place/6PC59JJ2%2BQ76/@-1.6180875,103.6006406,871m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-1.6180875!4d103.6006406?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D";
+    $play_store_url = "";
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -29,50 +30,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
     <meta name="description" content="Dokumentasi video aksi penyelamatan dan layanan kemanusiaan non-kebakaran oleh petugas Damkar Kota Jambi.">
-    <title>Ujung-ujung Damkar - SIMERAH KOJA</title>
+    <title>Ujung-ujung Damkar - Kabar Damkar | SIMERAH KOJA</title>
 
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    
     <style>
-        /* ==========================================================
-           TOKENS & RESET
-           ========================================================== */
         :root {
-            --ink: #0d1b2a;
-            --ink-2: #132a43;
-            --ink-3: #1d3856;
-            --paper: #f3f5f8;
+            --ink: #0b1826;
+            --ink-2: #10283e;
+            --ink-3: #183b5a;
+            --paper: #f7f9fc;
             --white: #ffffff;
             --signal: #e5392d;
-            --signal-d: #c22b20;
+            --signal-dark: #bd241c;
             --amber: #ffb627;
-            --steel: #5b6c7f;
-            --line: #dbe2ea;
-            --soft: #eef2f6;
-
-            --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
-            --font-body: 'Instrument Sans', system-ui, sans-serif;
-
-            --r-lg: 28px;
-            --r-md: 18px;
-            --r-sm: 10px;
-            --wrap: 1200px;
-            --header-h: 64px;
+            --steel: #657487;
+            --line: #e2e8f0;
+            --soft: #edf2f7;
+            --display: 'Bricolage Grotesque', system-ui, sans-serif;
+            --body: 'Instrument Sans', system-ui, sans-serif;
+            --wrap: 1180px;
+            --header: 68px;
+            --shadow-sm: 0 4px 12px rgba(13,27,42,.04);
+            --shadow-md: 0 12px 32px rgba(13,27,42,.06);
+            --shadow-lg: 0 24px 50px rgba(13,27,42,.12);
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
         body {
-            font-family: var(--font-body);
-            font-size: 1rem;
-            line-height: 1.65;
+            font-family: var(--body);
             color: var(--ink);
             background: var(--paper);
-            min-height: 100vh;
+            line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
         }
@@ -80,288 +74,402 @@
         img { max-width: 100%; display: block; }
         a { color: inherit; text-decoration: none; }
         ul, ol { list-style: none; }
-        button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
-        :focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; border-radius: 6px; }
+        button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; text-align: left; }
+        :focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; border-radius: 8px; }
+        .wrap { width: min(var(--wrap), calc(100% - 40px)); margin: auto; }
 
-        .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: clamp(16px, 4vw, 32px); padding-right: clamp(16px, 4vw, 32px); }
-
-        /* ==========================================================
-           HEADER
-           ========================================================== */
+        /* ================= HEADER ================= */
         .site-header {
             position: sticky; top: 0; z-index: 60;
-            background: rgba(13, 27, 42, .85);
-            -webkit-backdrop-filter: blur(14px) saturate(1.4);
-            backdrop-filter: blur(14px) saturate(1.4);
+            background: rgba(8,22,35,.88);
+            backdrop-filter: blur(18px) saturate(1.35);
+            -webkit-backdrop-filter: blur(18px) saturate(1.35);
             border-bottom: 1px solid rgba(255,255,255,.08);
         }
         .nav {
-            max-width: var(--wrap); margin: 0 auto; height: var(--header-h);
-            padding: 0 clamp(16px, 4vw, 32px);
-            display: flex; align-items: center; justify-content: space-between; gap: 24px;
+            width: min(1240px, calc(100% - 32px));
+            height: var(--header);
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
         }
-        .brand { display: flex; align-items: center; gap: 12px; }
-        .brand img { height: 38px; width: auto; }
+        .brand { display: flex; align-items: center; gap: 9px; flex: none; }
+        .brand img { height: 37px; width: auto; object-fit: contain; }
+        .brand img + img { padding-left: 9px; border-left: 1px solid rgba(255,255,255,.16); }
 
         .menu { display: flex; align-items: center; gap: 2px; }
         .menu > li { position: relative; }
         .menu-link, .menu-trigger {
             display: inline-flex; align-items: center; gap: 8px;
-            padding: 9px 14px; border-radius: 999px;
-            color: rgba(255,255,255,.88); font-size: .92rem; font-weight: 500;
-            transition: background .2s, color .2s;
+            padding: 9px 13px; border-radius: 999px;
+            color: rgba(255,255,255,.88);
+            font-size: .88rem; font-weight: 600;
+            transition: .2s ease;
         }
-        .menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger, .has-drop.current > .menu-trigger {
-            background: rgba(255,255,255,.1); color: #fff;
+        .menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger, .menu > li.current > .menu-trigger {
+            color: #fff; background: rgba(255,255,255,.10);
         }
-        .menu-trigger i { font-size: .65rem; transition: transform .2s; }
+        .menu-trigger i { font-size: .62rem; transition: transform .2s; }
         .has-drop.open > .menu-trigger i { transform: rotate(180deg); }
-        .menu .btn-login { background: var(--signal); color: #fff; margin-left: 10px; font-weight: 600; padding: 9px 22px; }
-        .menu .btn-login:hover { background: var(--signal-d); }
+        .menu .btn-login { margin-left: 8px; padding: 10px 20px; background: var(--signal); color: #fff; }
+        .menu .btn-login:hover { background: var(--signal-dark); transform: translateY(-1px); }
 
         .dropdown {
-            display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 250px;
-            background: var(--ink-2); border: 1px solid rgba(255,255,255,.1);
-            border-radius: var(--r-md); padding: 6px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
+            display: none; position: absolute; top: calc(100% + 10px); left: 0;
+            min-width: 245px; padding: 7px;
+            background: #10283e; border: 1px solid rgba(255,255,255,.1);
+            border-radius: 16px; box-shadow: 0 24px 55px rgba(0,0,0,.35);
         }
         .dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
-        .dropdown a { display: block; padding: 11px 14px; border-radius: var(--r-sm); font-size: .92rem; color: rgba(255,255,255,.85); }
-        .dropdown a:hover, .dropdown a[aria-current="page"] { background: rgba(255,255,255,.08); color: #fff; }
-
-        .dropdown .btn-logout {
-            width: 100%; text-align: left; padding: 11px 14px; border-radius: var(--r-sm);
-            font-size: .92rem; color: #ff8b8b; display: flex; align-items: center; gap: 8px;
-            transition: background .2s, color .2s; cursor: pointer;
-        }
-        .dropdown .btn-logout:hover { background: rgba(255, 255, 255, .1); color: #ffb8b8; }
-
+        .dropdown a { display: block; padding: 10px 13px; border-radius: 10px; color: rgba(255,255,255,.84); font-size: .9rem; }
+        .dropdown a:hover, .dropdown a[aria-current=page] { background: rgba(255,255,255,.09); color: #fff; }
         .has-drop.open .dropdown { display: block; }
-        @media (hover: hover) and (min-width: 992px) {
-            .has-drop:hover .dropdown { display: block; }
-        }
 
-        .nav-toggle { display: none; width: 44px; height: 44px; border-radius: 12px; color: #fff; font-size: 1.15rem; }
+        .nav-toggle { display: none; width: 44px; height: 44px; border-radius: 12px; color: #fff; font-size: 1.1rem; }
         .nav-toggle:hover { background: rgba(255,255,255,.1); }
 
-        @media (max-width: 991px) {
-            .nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
-            .menu {
-                display: none; position: fixed; top: var(--header-h); left: 0; right: 0;
-                max-height: calc(100dvh - var(--header-h)); overflow-y: auto;
-                flex-direction: column; align-items: stretch; gap: 4px;
-                padding: 16px clamp(16px, 4vw, 32px) 28px; background: var(--ink);
-                border-bottom: 1px solid rgba(255,255,255,.1);
-            }
-            .nav-open .menu { display: flex; }
-            .menu-link, .menu-trigger { width: 100%; justify-content: space-between; padding: 14px 16px; border-radius: 14px; font-size: 1rem; }
-            .dropdown { position: static; margin: 2px 0 8px 12px; box-shadow: none; background: transparent; border: 0; border-left: 2px solid rgba(255,255,255,.12); border-radius: 0; }
-            .dropdown::before { display: none; }
-            .menu .btn-login { margin: 8px 0 0; justify-content: center; padding: 14px; }
-        }
-
-        /* ==========================================================
-           PAGE HERO & BREADCRUMB
-           ========================================================== */
+        /* ================= HERO ================= */
         .page-hero {
-            position: relative; isolation: isolate; overflow: hidden;
-            color: #fff; padding: clamp(44px, 6vw, 68px) 0 clamp(64px, 8vw, 92px);
-            background: var(--ink);
+            position: relative; isolation: isolate; overflow: hidden; color: #fff;
+            padding: 60px 0 95px;
+            background: #0b1826;
         }
         .page-hero::before {
             content: ""; position: absolute; inset: 0; z-index: -2;
             background:
                 linear-gradient(105deg, rgba(7,20,33,.97) 0%, rgba(8,24,39,.88) 45%, rgba(8,24,39,.62) 100%),
-                url('/images/background1.png') center / cover no-repeat;
+                url('/images/background1.png') center/cover no-repeat;
         }
         .page-hero::after {
             content: ""; position: absolute; z-index: -1; inset: auto -10% -50% -10%; height: 280px;
             background: radial-gradient(ellipse at center, rgba(229,57,45,.38), transparent 66%);
             pointer-events: none;
         }
-
-        .crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; color: rgba(255,255,255,.66); font-size: .85rem; margin-bottom: 24px; }
+        .crumbs {
+            display: flex; flex-wrap: wrap; align-items: center; gap: 9px;
+            color: rgba(255,255,255,.66); font-size: .83rem; margin-bottom: 24px;
+        }
         .crumbs li { display: inline-flex; align-items: center; gap: 9px; }
         .crumbs li + li::before { content: "/"; opacity: .38; }
         .crumbs a:hover { color: #fff; }
-        .crumbs [aria-current="page"] { color: #fff; font-weight: 700; }
+        .crumbs [aria-current=page] { color: #fff; font-weight: 700; }
 
         .hero-kicker {
-            display: inline-flex; align-items: center; gap: 9px; padding: 7px 12px;
-            border: 1px solid rgba(255,255,255,.14); border-radius: 999px;
-            background: rgba(255,255,255,.07); color: rgba(255,255,255,.85);
-            font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
-            margin-bottom: 16px;
+            display: inline-flex; align-items: center; gap: 9px;
+            padding: 7px 11px; border: 1px solid rgba(255,255,255,.14);
+            border-radius: 999px; background: rgba(255,255,255,.07);
+            color: rgba(255,255,255,.85); font-size: .74rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: .08em; margin-bottom: 16px;
         }
-        .hero-kicker i { color: var(--signal); }
-
+        .hero-kicker i { color: #ff5a4d; }
         .page-hero h1 {
-            font-family: var(--font-display); font-weight: 800; font-stretch: 85%;
-            font-size: clamp(2.8rem, 7vw, 5.4rem); line-height: .95; letter-spacing: -0.04em;
-            max-width: 850px;
+            font-family: var(--display); font-weight: 800;
+            font-size: clamp(3rem, 7vw, 5.8rem); line-height: .91;
+            letter-spacing: -.055em; max-width: 760px;
         }
-        .page-hero p { margin-top: 18px; max-width: 62ch; color: rgba(255,255,255,.74); font-size: clamp(1rem, 1.4vw, 1.12rem); }
-        .hero-line { width: 70px; height: 4px; border-radius: 99px; margin-top: 24px; background: var(--signal); }
+        .page-hero p {
+            margin-top: 18px; max-width: 570px;
+            color: rgba(255,255,255,.72);
+            font-size: clamp(.98rem, 1.4vw, 1.1rem);
+        }
+        .hero-line {
+            width: 70px; height: 4px; border-radius: 99px;
+            margin-top: 25px; background: var(--signal);
+        }
 
         .rise { animation: rise .75s cubic-bezier(.16,.84,.3,1) both; }
         .rise.d1 { animation-delay: .08s; } .rise.d2 { animation-delay: .16s; } .rise.d3 { animation-delay: .24s; }
         @keyframes rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
 
-        /* ==========================================================
-           CONTENT & VIDEO GRID
-           ========================================================== */
-        .page-body { background: var(--paper); min-height: 50vh; padding: clamp(48px, 7vw, 80px) 0 clamp(64px, 9vw, 100px); }
-        .content-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 28px; flex-wrap: wrap; }
+        /* ================= SUB NAVIGATION (PILL MENU) ================= */
+        .page-nav-wrap {
+            display: flex; justify-content: center;
+            margin-top: -30px; position: relative; z-index: 10; padding: 0 20px;
+        }
+        .page-nav {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            padding: 6px; border-radius: 999px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            overflow-x: auto; max-width: 100%;
+            -ms-overflow-style: none; scrollbar-width: none;
+        }
+        .page-nav::-webkit-scrollbar { display: none; }
+
+        .page-nav a {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 22px; border-radius: 999px;
+            font-size: 0.9rem; font-weight: 700; color: var(--steel);
+            white-space: nowrap; transition: 0.3s cubic-bezier(.2,.75,.25,1);
+        }
+        .page-nav a i { font-size: 1.05rem; }
+        .page-nav a:hover { color: var(--ink-2); background: var(--soft); }
+        .page-nav a.active { 
+            background: var(--ink); color: #fff; 
+            box-shadow: 0 4px 14px rgba(13,27,42,.18); 
+        }
+        .page-nav a.active i { color: var(--amber); }
+
+        /* ================= CONTENT ================= */
+        .page-body { background: var(--paper); min-height: 50vh; padding-bottom: 95px; }
+        
+        .content-head {
+            display: flex; align-items: end; justify-content: space-between; gap: 20px;
+            margin: 48px 0 26px;
+        }
         .content-head h2 {
-            font-family: var(--font-display); font-weight: 700; font-stretch: 90%;
-            font-size: clamp(1.75rem, 3.2vw, 2.4rem); line-height: 1.08; letter-spacing: -0.025em;
+            font-family: var(--display); font-size: clamp(1.65rem, 3vw, 2.2rem);
+            line-height: 1.05; letter-spacing: -.035em; color: var(--ink);
         }
-        .content-head p { margin-top: 6px; color: var(--steel); font-size: .95rem; }
+        .content-head p { margin-top: 6px; color: var(--steel); font-size: .92rem; }
 
-        .vid-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
-        .vid {
-            position: relative; display: flex; flex-direction: column; width: 100%; text-align: left;
-            background: var(--white); border: 1px solid var(--line); border-radius: 22px; overflow: hidden;
-            box-shadow: 0 7px 24px rgba(13,27,42,.055);
-            transition: transform .35s cubic-bezier(.2,.75,.25,1), box-shadow .35s, border-color .35s;
+        /* ================= VIDEO GRID (4 COLUMN) ================= */
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 26px;
         }
-        .vid:not([disabled]):hover {
-            transform: translateY(-6px);
-            box-shadow: 0 24px 55px rgba(13,27,42,.14);
-            border-color: rgba(229,57,45,.25);
+        .media-card {
+            position: relative; display: flex; flex-direction: column;
+            width: 100%; min-width: 0; 
+            background: #fff; border: 1px solid var(--line);
+            border-radius: 20px; overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s cubic-bezier(.2,.8,.2,1), border-color .4s;
         }
-
-        .vid-thumb { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--ink-2); }
-        .vid-thumb::after {
+        .media-card:not([disabled]):hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(229,57,45,.3);
+        }
+        
+        .media-thumb {
+            position: relative; aspect-ratio: 16/10;
+            overflow: hidden; background: #e2e8f0; width: 100%;
+        }
+        .media-thumb::after {
             content: ""; position: absolute; inset: 0;
-            background: linear-gradient(180deg, rgba(0,0,0,.02) 40%, rgba(0,0,0,.56) 100%);
-            pointer-events: none; transition: opacity .3s;
+            background: linear-gradient(180deg, rgba(0,0,0,.0) 30%, rgba(0,0,0,.65) 100%);
+            pointer-events: none; opacity: 0.8; transition: opacity .4s;
         }
-        .vid:not([disabled]):hover .vid-thumb::after { opacity: .75; }
-        .vid-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(.2,.7,.2,1), filter .35s; }
-        .vid:not([disabled]):hover .vid-thumb img { transform: scale(1.06); filter: saturate(1.06); }
+        .media-card:not([disabled]):hover .media-thumb::after { opacity: 0.95; }
+        
+        .media-thumb img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform .7s cubic-bezier(.2,.8,.2,1), filter .4s;
+        }
+        .media-card:not([disabled]):hover .media-thumb img { 
+            transform: scale(1.08); filter: saturate(1.1) brightness(0.95); 
+        }
 
-        .video-tag {
-            position: absolute; z-index: 4; top: 12px; left: 12px; padding: 5px 10px; border-radius: 8px;
-            background: rgba(255,255,255,.95); color: var(--signal-d); font-size: .65rem; font-weight: 800;
-            letter-spacing: .04em; text-transform: uppercase; box-shadow: 0 5px 14px rgba(0,0,0,.13);
+        .media-tag {
+            position: absolute; z-index: 3; top: 12px; left: 12px;
+            padding: 5px 10px; border-radius: 6px;
+            background: rgba(255,255,255,.9); color: var(--signal-dark);
+            font-size: .63rem; font-weight: 800; letter-spacing: .045em;
+            text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,.1);
+            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
         }
-        .video-source {
-            position: absolute; z-index: 4; right: 12px; top: 12px; width: 34px; height: 34px; border-radius: 50%;
-            display: grid; place-items: center; color: #fff; background: rgba(7,20,33,.68);
-            border: 1px solid rgba(255,255,255,.2); backdrop-filter: blur(8px); font-size: .82rem;
+        .media-source {
+            position: absolute; z-index: 3; right: 12px; top: 12px;
+            width: 32px; height: 32px; border-radius: 50%;
+            display: grid; place-items: center;
+            color: #fff; background: rgba(13,27,42,.65);
+            border: 1px solid rgba(255,255,255,.15);
+            backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+            font-size: .8rem;
         }
-        .video-source i { color: #ff3838; }
+        .media-source .fa-youtube { color: #ff3838; }
 
-        .vid-play { position: absolute; z-index: 5; inset: 0; display: grid; place-items: center; }
-        .vid-play span {
-            width: 58px; height: 58px; border-radius: 50%; display: grid; place-items: center;
-            color: #fff; background: rgba(229,57,45,.94); box-shadow: 0 10px 25px rgba(0,0,0,.28);
-            font-size: 1rem; padding-left: 3px; transition: transform .3s ease;
+        /* Glassmorphism Play Button */
+        .photo-play {
+            position: absolute; z-index: 3; left: 50%; top: 50%;
+            transform: translate(-50%, -50%) scale(.9);
+            width: 54px; height: 54px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.25);
+            border: 1.5px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 8px 24px rgba(0,0,0,.2);
+            opacity: 0.9; transition: .4s cubic-bezier(.2,.8,.2,1);
         }
-        .vid:not([disabled]):hover .vid-play span { transform: scale(1.1); }
-
-        .vid-content { padding: 18px 20px; display: flex; flex-direction: column; flex: 1; }
-        .vid h3 {
-            margin: 0; color: var(--ink); font-family: var(--font-display); font-size: 1.06rem; font-weight: 700;
-            line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-            overflow: hidden; min-height: 2.7em; transition: color .2s;
+        .photo-play i { margin-left: 3px; }
+        .media-card:not([disabled]):hover .photo-play {
+            opacity: 1; 
+            transform: translate(-50%, -50%) scale(1.1);
+            background: rgba(229,57,45,.9);
+            border-color: rgba(255,255,255,.3);
+            box-shadow: 0 12px 28px rgba(229,57,45,.4);
         }
-        .vid:not([disabled]):hover h3 { color: var(--signal-d); }
 
-        .vid-meta {
-            display: flex; align-items: center; flex-wrap: wrap; gap: 7px 14px;
-            color: var(--steel); font-size: .78rem; font-weight: 600; margin: 12px 0 16px;
+        .media-body { padding: 18px 20px; display: flex; flex-direction: column; flex: 1; width: 100%; }
+        .media-body h3 {
+            font-family: var(--display); font-weight: 700; font-size: 1.05rem;
+            line-height: 1.35; letter-spacing: -.01em;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+            overflow: hidden; min-height: 2.7em; margin-bottom: 12px;
+            transition: color .3s;
         }
-        .vid-meta span { display: inline-flex; align-items: center; gap: 6px; }
-        .vid-meta .youtube { color: #ff0000; }
+        .media-card:not([disabled]):hover h3 { color: var(--signal-dark); }
+        
+        .media-meta {
+            display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px;
+            color: var(--steel); font-size: .78rem; font-weight: 600; margin-bottom: 16px;
+        }
+        .media-meta span { display: inline-flex; align-items: center; gap: 5px; }
+        .media-meta i { font-size: .75rem; }
+        .media-meta .fa-youtube { color: #e5392d; }
 
-        .vid-link {
+        .media-link {
             margin-top: auto; display: flex; align-items: center; justify-content: space-between;
-            padding-top: 13px; border-top: 1px solid var(--soft); color: var(--ink);
-            font-size: .84rem; font-weight: 700;
+            padding-top: 14px; border-top: 1px solid var(--soft);
+            color: var(--ink); font-size: .84rem; font-weight: 700; width: 100%;
+            transition: color .3s;
         }
-        .vid-link i {
-            width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
-            background: var(--soft); color: var(--ink); transition: .25s; font-size: .75rem;
+        .media-link i {
+            width: 30px; height: 30px; border-radius: 50%;
+            display: grid; place-items: center;
+            background: var(--soft); color: var(--steel); 
+            transition: .3s cubic-bezier(.2,.8,.2,1); font-size: .75rem;
         }
-        .vid:not([disabled]):hover .vid-link { color: var(--signal-d); }
-        .vid:not([disabled]):hover .vid-link i { background: var(--signal); color: #fff; transform: translateX(3px); }
-
-        .empty {
-            grid-column: 1 / -1; text-align: center; padding: 64px 24px;
-            border: 1.5px dashed var(--line); border-radius: 22px; background: var(--white); color: var(--steel);
+        .media-card:not([disabled]):hover .media-link { color: var(--signal-dark); }
+        .media-card:not([disabled]):hover .media-link i { 
+            background: var(--signal); color: #fff; transform: translateX(4px); 
         }
-        .empty-icon {
-            width: 68px; height: 68px; margin: 0 auto 16px; border-radius: 50%;
-            display: grid; place-items: center; background: var(--soft); color: #b6c1cc; font-size: 1.75rem;
+
+        .empty-filter {
+            grid-column: 1/-1; text-align: center; padding: 72px 24px;
+            border: 2px dashed var(--line); background: #fff; border-radius: 20px; color: var(--steel);
         }
-        .empty h3 { font-family: var(--font-display); color: var(--ink); font-size: 1.3rem; margin-bottom: 6px; }
-        .empty p { font-size: .92rem; }
+        .empty-filter i { font-size: 3rem; color: #cbd5e1; margin-bottom: 16px; }
+        .empty-filter h2 { font-family: var(--display); color: var(--ink); margin-bottom: 6px; font-size: 1.4rem; }
 
-        /* ==========================================================
-           FOOTER & INFO KONTAK
-           ========================================================== */
-        .footer { background: var(--ink); color: rgba(255,255,255,.7); padding: clamp(56px, 8vw, 96px) 0 32px; }
-        .footer-grid { display: grid; grid-template-columns: 1.1fr 1.2fr .8fr; gap: clamp(32px, 5vw, 64px); }
-        .footer h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: #fff; margin-bottom: 16px; }
-
-        .footer-about img { height: 96px; width: auto; margin-bottom: 20px; }
-        .footer-about p { max-width: 42ch; font-size: .95rem; }
-
-        .footer-contact { margin-top: 24px; display: grid; gap: 12px; }
-        .footer-contact a { display: inline-flex; align-items: center; gap: 12px; color: rgba(255,255,255,.9); font-size: .95rem; font-weight: 500; transition: color .2s; }
-        .footer-contact a i { color: var(--signal); font-size: 1.2rem; width: 20px; text-align: center; }
-        .footer-contact a:hover { color: var(--amber); }
-
-        .map { position: relative; height: 190px; border-radius: var(--r-md); overflow: hidden; background: var(--ink-2); }
-        .map iframe { width: 100%; height: 100%; border: 0; pointer-events: none; filter: grayscale(.3) contrast(1.05); transition: filter .3s; }
-        .map-link { position: absolute; inset: 0; z-index: 2; display: flex; align-items: flex-end; justify-content: flex-end; padding: 12px; border-radius: var(--r-md); }
-        .map-link span { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: var(--signal); color: #fff; font-size: .85rem; font-weight: 700; box-shadow: 0 8px 20px rgba(0,0,0,.35); transition: background .2s, transform .2s; }
-        .map-link:hover span, .map-link:focus-visible span { background: var(--signal-d); transform: translateY(-2px); }
-        .map:hover iframe { filter: none; }
-        .find { margin-top: 14px; display: inline-flex; align-items: center; gap: 10px; font-weight: 600; color: #fff; transition: color .2s, gap .2s; }
-        .find i { color: var(--signal); }
-        .find:hover { color: var(--amber); gap: 14px; }
-
-        .footer-links li + li { margin-top: 8px; }
-        .footer-links a { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: .95rem; transition: color .2s, gap .2s; }
-        .footer-links a i { font-size: .7rem; color: var(--signal); }
-        .footer-links a:hover { color: #fff; gap: 14px; }
-
-        .footer-bar { margin-top: clamp(40px, 6vw, 72px); padding-top: 28px; border-top: 1px solid rgba(255,255,255,.1); display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; align-items: center; font-size: .88rem; }
-        .social { display: flex; flex-wrap: wrap; gap: 8px; }
-        .social a { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: rgba(255,255,255,.08); color: #fff; transition: background .2s, transform .2s; }
-        .social a:hover { background: var(--signal); transform: translateY(-3px); }
-        @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr; } }
-
-        /* ==========================================================
-           TOMBOL LAPOR MENGAMBANG & DIALOG VIDEO
-           ========================================================== */
-        .beacon { position: relative; width: 12px; height: 12px; border-radius: 50%; background: #fff; flex: none; }
-        .beacon::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #fff; animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
-        @keyframes ping { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(3.2); opacity: 0; } }
-
-        .sos-fab { position: fixed; right: clamp(14px, 3vw, 28px); bottom: clamp(14px, 3vw, 28px); z-index: 70; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; opacity: 0; visibility: hidden; transform: translateY(16px); transition: opacity .3s, transform .3s, visibility .3s; }
-        .sos-fab.show { opacity: 1; visibility: visible; transform: none; }
-        .sos-fab-btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; background: var(--signal); color: #fff; font-weight: 700; box-shadow: 0 14px 30px -6px rgba(229,57,45,.6); }
-        .sos-fab-btn:hover { background: var(--signal-d); }
-        .sos-sheet { display: none; width: min(320px, calc(100vw - 28px)); padding: 8px; border-radius: 20px; background: var(--ink); border: 1px solid rgba(255,255,255,.12); box-shadow: 0 24px 48px rgba(0,0,0,.45); }
-        .sos-fab.open .sos-sheet { display: grid; gap: 6px; }
-        .sos-sheet a { display: flex; align-items: center; gap: 14px; padding: 13px 14px; border-radius: 14px; color: #fff; font-weight: 600; }
-        .sos-sheet a:hover { background: rgba(255,255,255,.1); }
-        .sos-sheet a i { width: 22px; text-align: center; font-size: 1.15rem; }
-        .sos-sheet .wa i { color: #25d366; } .sos-sheet .tel i { color: #38bdf8; } .sos-sheet .n112 i { color: #f87171; }
-
-        dialog { border: 0; padding: 0; background: transparent; color: #fff; width: min(960px, 94vw); max-height: 94dvh; margin: auto; overflow: visible; }
-        dialog::backdrop { background: rgba(7,14,24,.86); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
-        .dlg-close { position: absolute; top: -52px; right: 0; width: 44px; height: 44px; border-radius: 50%; background: #fff; color: var(--ink); font-size: 1.1rem; display: grid; place-items: center; transition: .2s; }
-        .dlg-close:hover { background: var(--amber); }
-        .video-frame { aspect-ratio: 16 / 9; border-radius: var(--r-md); overflow: hidden; background: #000; box-shadow: 0 30px 70px rgba(0,0,0,.45); }
+        /* ================= MODAL DIALOG (YOUTUBE) ================= */
+        dialog {
+            border: 0; padding: 0; background: transparent;
+            width: min(1000px, 94vw); margin: auto; overflow: visible;
+        }
+        dialog::backdrop {
+            background: rgba(7,14,24,.9);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+        }
+        .dlg-close {
+            position: absolute; top: -56px; right: 0;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: #fff; color: var(--ink); font-size: 1.1rem;
+            display: grid; place-items: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,.3); transition: .3s cubic-bezier(.2,.8,.2,1);
+        }
+        .dlg-close:hover { background: var(--signal); color: #fff; transform: scale(1.08) rotate(90deg); }
+        .video-frame {
+            aspect-ratio: 16/9; border-radius: 20px;
+            overflow: hidden; background: #000;
+            box-shadow: 0 30px 60px rgba(0,0,0,.6);
+            display: grid; place-items: center;
+        }
         .video-frame iframe { width: 100%; height: 100%; border: 0; }
 
-        @media (prefers-reduced-motion: reduce) {
-            html { scroll-behavior: auto; }
-            *, *::before, *::after { animation: none !important; transition: none !important; }
+        /* ================= FOOTER ================= */
+        .footer{background:var(--ink);color:rgba(255,255,255,.69);padding:80px 0 30px}
+        .footer-grid{display:grid;grid-template-columns:1.05fr 1.2fr .75fr;gap:54px}
+        .footer h3{font-family:var(--display);color:#fff;font-size:1.1rem;margin-bottom:15px}
+        .footer-about img{height:88px;width:auto;margin-bottom:17px}
+        .footer-about p{max-width:44ch;font-size:.91rem}
+        .map{position:relative;height:195px;border-radius:18px;overflow:hidden;background:var(--ink-2);border:1px solid rgba(255,255,255,.08)}
+        .map iframe{width:100%;height:100%;border:0;filter:grayscale(.25) contrast(1.04);transition:.3s}
+        .map-link{position:absolute;inset:0;z-index:2;display:flex;align-items:flex-end;justify-content:flex-end;padding:12px}
+        .map-link span{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;background:var(--signal);color:#fff;font-size:.78rem;font-weight:800;box-shadow:0 9px 20px rgba(0,0,0,.28);transition:.2s}
+        .map-link:hover span{background:var(--signal-dark);transform:translateY(-2px)}
+        .map:hover iframe{filter:none}
+        .find{display:inline-flex;align-items:center;gap:9px;margin-top:13px;color:#fff;font-size:.86rem;font-weight:700;transition:.2s}
+        .find i{color:var(--signal)}
+        .find:hover{color:var(--amber);gap:13px}
+        .app-dl{margin-top:20px}.app-dl p{font-size:.82rem;margin-bottom:9px}.app-dl img{height:42px;width:auto}
+        .footer-links li+li{margin-top:7px}
+        .footer-links a{display:flex;align-items:center;gap:9px;padding:5px 0;font-size:.88rem;transition:.2s}
+        .footer-links a i{font-size:.65rem;color:var(--signal)}
+        .footer-links a:hover{color:#fff;gap:13px}
+        .footer-bar{margin-top:58px;padding-top:25px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;font-size:.8rem}
+        .social{display:flex;gap:7px;flex-wrap:wrap}
+        .social a{width:39px;height:39px;border-radius:11px;display:grid;place-items:center;background:rgba(255,255,255,.075);color:#fff;transition:.2s}
+        .social a:hover{background:var(--signal);transform:translateY(-3px)}
+
+        /* ================= SOS ================= */
+        .beacon{position:relative;width:10px;height:10px;border-radius:50%;background:#fff;flex:none}
+        .beacon::after{content:"";position:absolute;inset:0;border-radius:50%;background:#fff;animation:ping 1.8s cubic-bezier(0,0,.2,1) infinite}
+        @keyframes ping{0%{transform:scale(1);opacity:.7}100%{transform:scale(3.2);opacity:0}}
+        .sos-fab{
+            position:fixed;right:22px;bottom:22px;z-index:70;
+            display:flex;flex-direction:column;align-items:flex-end;gap:10px;
+            opacity:0;visibility:hidden;transform:translateY(16px);transition:.3s
+        }
+        .sos-fab.show{opacity:1;visibility:visible;transform:none}
+        .sos-fab-btn{
+            display:inline-flex;align-items:center;gap:9px;padding:13px 19px;
+            border-radius:999px;background:var(--signal);color:#fff;font-weight:800;
+            box-shadow:0 15px 30px -7px rgba(229,57,45,.55);transition:.2s
+        }
+        .sos-fab-btn:hover{background:var(--signal-dark);transform:translateY(-2px)}
+        .sos-sheet{display:none;width:min(320px,calc(100vw - 28px));padding:7px;border-radius:18px;background:var(--ink);border:1px solid rgba(255,255,255,.1);box-shadow:0 24px 48px rgba(0,0,0,.4)}
+        .sos-fab.open .sos-sheet{display:grid;gap:5px}
+        .sos-sheet a{display:flex;align-items:center;gap:13px;padding:12px 13px;border-radius:12px;color:#fff;font-weight:700;font-size:.9rem}
+        .sos-sheet a:hover{background:rgba(255,255,255,.09)}
+        .sos-sheet a i{width:21px;text-align:center;font-size:1.05rem}
+        .sos-sheet .wa i{color:#25d366}.sos-sheet .tel i{color:#38bdf8}.sos-sheet .n112 i{color:#f87171}
+
+        /* ================= RESPONSIVE ================= */
+        @media (hover:hover) and (min-width:992px){.has-drop:hover .dropdown{display:block}}
+        @media (max-width:1100px){
+            .menu-link,.menu-trigger{padding-left:10px;padding-right:10px;font-size:.82rem}
+            .media-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+            .footer-grid{grid-template-columns:1fr 1fr}
+            .footer-links{grid-column:span 2}
+        }
+        @media (max-width:991px){
+            .nav-toggle{display:inline-flex;align-items:center;justify-content:center}
+            .menu{
+                display:none;position:fixed;top:var(--header);left:0;right:0;
+                max-height:calc(100dvh - var(--header));overflow-y:auto;
+                flex-direction:column;align-items:stretch;gap:4px;
+                padding:14px 16px 25px;background:var(--ink);
+                border-bottom:1px solid rgba(255,255,255,.1)
+            }
+            .nav-open .menu{display:flex}
+            .menu-link,.menu-trigger{width:100%;justify-content:space-between;padding:13px 14px;border-radius:13px;font-size:.95rem}
+            .dropdown{position:static;margin:1px 0 7px 10px;box-shadow:none;background:transparent;border:0;border-left:2px solid rgba(255,255,255,.12);border-radius:0}
+            .dropdown::before{display:none}
+            .menu .btn-login{margin:7px 0 0;justify-content:center;padding:13px}
+            .page-hero{padding:43px 0 78px}
+            .media-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+        }
+        @media (max-width:768px){
+            .page-nav { justify-content: flex-start; padding: 6px 12px; }
+            .page-nav a { padding: 8px 16px; font-size: 0.85rem; }
+        }
+        @media (max-width:700px){
+            .wrap{width:min(calc(100% - 28px),1180px)}
+            .brand img{height:32px}
+            .brand img+img{padding-left:7px}
+            .page-hero h1{font-size:clamp(2.8rem,15vw,4.5rem)}
+            .footer{padding-top:60px}
+            .footer-grid{grid-template-columns:1fr;gap:38px}
+            .footer-links{grid-column:auto}
+            .footer-bar{margin-top:42px;align-items:flex-start}
+            .sos-fab{right:14px;bottom:14px}
+        }
+        @media (max-width:520px){
+            .media-grid{grid-template-columns:1fr}
+        }
+        @media (max-width:390px){
+            .brand img{height:28px}
+            .brand img+img{padding-left:5px}
+            .media-body{padding:16px}
+            .media-thumb{aspect-ratio:16/10}
         }
     </style>
 </head>
@@ -370,17 +478,11 @@
 <!-- ==================== HEADER ==================== -->
 <header class="site-header" id="siteHeader">
     <nav class="nav" aria-label="Navigasi utama">
-        <div class="brand">
-            <a href="/" aria-label="SIMERAH KOJA, beranda">
-                <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
-            </a>
-            <a href="/login" title="Login Internal Pegawai">
-                <img src="/images/logo.png" alt="Logo Damkar">
-            </a>
-            <a href="/redkar" aria-label="Redkar">
-                <img src="/images/logo-redkar.png" alt="Logo Redkar">
-            </a>
-        </div>
+        <a href="/" class="brand" aria-label="SIMERAH KOJA, beranda">
+            <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
+            <img src="/images/logo.png" alt="Logo Damkar">
+            <img src="/images/logo-redkar.png" alt="Logo Redkar">
+        </a>
 
         <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="menu">
             <i class="fas fa-bars"></i>
@@ -415,17 +517,19 @@
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
             </li>
+            
             <li class="has-drop current">
                 <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                   <li><a href="/edu-damkar">Edu Damkar</a></li>
+                    <li><a href="/edu-damkar">Edu Damkar</a></li>
                     <li><a href="/infografis">Info Grafis</a></li>
                     <li><a href="/media-informasi">Media Informasi</a></li>
-                    <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
+                    <li><a href="/ujung-ujung-damkar" aria-current="page">Ujung-ujung Damkar</a></li>
                 </ul>
             </li>
+            
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
-
+            
             @if(session()->has('pemohon_id'))
                 <li class="has-drop">
                     <button class="menu-trigger btn-login" type="button" aria-expanded="false">
@@ -435,7 +539,7 @@
                         <li>
                             <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
                                 @csrf
-                                <button type="submit" class="btn-logout">
+                                <button type="submit" class="btn-logout" style="width: 100%; text-align: left; padding: 10px 13px; color: #ff8b8b; font-size: .9rem;">
                                     <i class="fas fa-sign-out-alt"></i> Keluar
                                 </button>
                             </form>
@@ -451,106 +555,110 @@
 
 <main>
 
-    <!-- ==================== HERO ==================== -->
-    <section class="page-hero">
-        <div class="wrap">
-            <nav aria-label="Breadcrumb" class="rise">
-                <ol class="crumbs">
-                    <li><a href="/">Beranda</a></li>
-                    <li><a href="/#giat">Kabar Damkar</a></li>
-                    <li><span aria-current="page">Ujung-ujung Damkar</span></li>
-                </ol>
-            </nav>
+<!-- ==================== HERO HALAMAN ==================== -->
+<section class="page-hero">
+    <div class="wrap">
+        <nav aria-label="Breadcrumb" class="rise">
+            <ol class="crumbs">
+                <li><a href="/">Beranda</a></li>
+                <li><a href="#">Kabar Damkar</a></li>
+                <li><span aria-current="page">Ujung-ujung Damkar</span></li>
+            </ol>
+        </nav>
+        <div class="hero-kicker rise"><i class="fas fa-life-ring"></i> Dokumentasi Damkar Kota Jambi</div>
+        <h1 class="rise d1">Ujung-ujung Damkar</h1>
+        <p class="rise d2">Dokumentasi video aksi penyelamatan dan layanan kemanusiaan non-kebakaran oleh petugas Damkar Kota Jambi.</p>
+        <div class="hero-line rise d3"></div>
+    </div>
+</section>
 
-            <div class="hero-kicker rise">
-                <i class="fas fa-life-ring"></i> Dokumentasi Damkar Kota Jambi
+<!-- ==================== SUB NAVIGATION (PILL MENU) ==================== -->
+<div class="page-nav-wrap rise d3">
+    <nav class="page-nav" aria-label="Sub menu Kabar Damkar">
+        <a href="/edu-damkar"><i class="fas fa-video"></i> Edu Damkar</a>
+        <a href="/infografis"><i class="fas fa-image"></i> Info Grafis</a>
+        <a href="/media-informasi"><i class="fas fa-newspaper"></i> Media Informasi</a>
+        <a href="/ujung-ujung-damkar" class="active"><i class="fas fa-fire-extinguisher"></i> Ujung-ujung Damkar</a>
+    </nav>
+</div>
+
+<!-- ==================== BODY & KONTEN ==================== -->
+<div class="page-body">
+    <div class="wrap media-layout">
+        <div class="content-head">
+            <div>
+                <h2>Dokumentasi kegiatan</h2>
+                <p>Saksikan berbagai aksi penyelamatan dan pelayanan kemanusiaan petugas Damkar Kota Jambi.</p>
             </div>
-
-            <h1 class="rise d1">Ujung-ujung Damkar</h1>
-
-            <p class="rise d2">
-                Dokumentasi video aksi penyelamatan dan layanan kemanusiaan non-kebakaran oleh petugas Damkar Kota Jambi.
-            </p>
-
-            <div class="hero-line rise d3"></div>
         </div>
-    </section>
 
-    <!-- ==================== CONTENT ==================== -->
-    <section class="page-body">
-        <div class="wrap">
-            <div class="content-head">
-                <div>
-                    <h2>Dokumentasi kegiatan</h2>
-                    <p>Saksikan berbagai aksi penyelamatan dan pelayanan kemanusiaan petugas Damkar Kota Jambi.</p>
-                </div>
-            </div>
+        <div class="media-grid" id="eduGrid">
+            @forelse($listUjungDamkar as $vu)
+                @php
+                    $youtubeId  = trim($vu->youtube_id ?? '');
+                    $judulVideo = $vu->judul ?? 'Dokumentasi Ujung-ujung Damkar';
+                    $thumbUrl = "https://i.ytimg.com/vi/{$youtubeId}/hqdefault.jpg";
+                @endphp
 
-            <div class="vid-grid">
-                @forelse($listUjungDamkar as $vu)
-                    @php
-                        $youtubeId  = trim($vu->youtube_id ?? '');
-                        $judulVideo = $vu->judul ?? 'Dokumentasi Ujung-ujung Damkar';
-                    @endphp
-
-                    <button class="vid" type="button"
+                <button type="button"
+                        class="media-card"
+                        @if($youtubeId) data-yt="{{ $youtubeId }}" data-title="{{ $judulVideo }}" @else disabled @endif>
+                    
+                    <div class="media-thumb">
+                        <span class="media-tag">Ujung-ujung Damkar</span>
+                        <span class="media-source" aria-hidden="true">
+                            <i class="fab fa-youtube"></i>
+                        </span>
+                        
                         @if($youtubeId)
-                            data-yt="{{ $youtubeId }}"
-                            data-title="{{ $judulVideo }}"
-                        @else
-                            disabled
+                            <img src="{{ $thumbUrl }}"
+                                 alt="{{ $judulVideo }}"
+                                 loading="lazy"
+                                 onerror="this.src='/images/placeholder.jpg'">
+                            <span class="photo-play" aria-hidden="true">
+                                <i class="fas fa-play"></i>
+                            </span>
                         @endif
-                    >
-                        <div class="vid-thumb">
-                            @if($youtubeId)
-                                <img src="https://i.ytimg.com/vi/{{ $youtubeId }}/hqdefault.jpg" alt="{{ $judulVideo }}" loading="lazy">
-                            @endif
-
-                            <span class="video-tag">Ujung-ujung Damkar</span>
-
-                            <span class="video-source" aria-hidden="true">
-                                <i class="fab fa-youtube"></i>
-                            </span>
-
-                            @if($youtubeId)
-                                <div class="vid-play" aria-hidden="true">
-                                    <span><i class="fas fa-play"></i></span>
-                                </div>
-                            @endif
-                        </div>
-
-                        <div class="vid-content">
-                            <h3>{{ $judulVideo }}</h3>
-
-                            <div class="vid-meta">
-                                <span><i class="fab fa-youtube youtube"></i> YouTube</span>
-                                @if($vu->created_at ?? false)
-                                    <span>
-                                        <i class="far fa-calendar-alt"></i>
-                                        {{ \Carbon\Carbon::parse($vu->created_at)->locale('id')->translatedFormat('d M Y') }}
-                                    </span>
-                                @endif
-                            </div>
-
-                            <span class="vid-link">
-                                Lihat dokumentasi <i class="fas fa-arrow-right"></i>
-                            </span>
-                        </div>
-                    </button>
-                @empty
-                    <div class="empty">
-                        <div class="empty-icon">
-                            <i class="far fa-play-circle"></i>
-                        </div>
-                        <h3>Belum ada video dokumentasi</h3>
-                        <p>Dokumentasi video akan tampil di sini setelah diunggah oleh petugas.</p>
                     </div>
-                @endforelse
-            </div>
+                    
+                    <div class="media-body">
+                        <h3>{{ $judulVideo }}</h3>
+                        <div class="media-meta">
+                            @if(!empty($vu->created_at))
+                                <span>
+                                    <i class="far fa-calendar-alt"></i>
+                                    {{ \Carbon\Carbon::parse($vu->created_at)->locale('id')->translatedFormat('d M Y') }}
+                                </span>
+                            @endif
+                            <span>
+                                <i class="fab fa-youtube"></i>
+                                YouTube Damkar
+                            </span>
+                        </div>
+                        <span class="media-link">
+                            Tonton dokumentasi
+                            <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </button>
+            @empty
+                <div class="empty-filter">
+                    <i class="fas fa-video-slash"></i>
+                    <h2>Belum ada video dokumentasi</h2>
+                    <p>Dokumentasi aksi lapangan akan tampil di sini setelah diunggah oleh petugas.</p>
+                </div>
+            @endforelse
         </div>
-    </section>
+    </div>
+</div>
 
 </main>
+
+<!-- ==================== MODAL DIALOG (YOUTUBE) ==================== -->
+<dialog id="mediaDialog" aria-label="Pemutar video edukasi">
+    <button type="button" class="dlg-close" aria-label="Tutup"><i class="fas fa-times"></i></button>
+    <div class="video-frame" id="dialogContent"></div>
+</dialog>
 
 <!-- ==================== FOOTER ==================== -->
 <footer class="footer">
@@ -560,15 +668,6 @@
                 <img src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA" loading="lazy">
                 <h3>Tentang kami</h3>
                 <p>SIMERAH KOJA merupakan sistem informasi pemerintahan berbasis elektronik yang terintegrasi pada Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
-
-                <div class="footer-contact">
-                    <a href="{{ $wa_link }}" target="_blank" rel="noopener">
-                        <i class="fab fa-whatsapp"></i> {{ $no_whatsapp }} (WhatsApp)
-                    </a>
-                    <a href="tel:{{ $no_telepon }}">
-                        <i class="fas fa-phone-alt"></i> {{ $telepon_tampil }} (Call Center Damkar)
-                    </a>
-                </div>
             </div>
 
             <div>
@@ -582,6 +681,15 @@
                     </a>
                 </div>
                 <a class="find" href="{{ $maps_link }}" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Temukan kami di peta</a>
+
+                @if ($play_store_url)
+                <div class="app-dl">
+                    <p>Unduh aplikasi SIMERAH KOJA</p>
+                    <a href="{{ $play_store_url }}" target="_blank" rel="noopener">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Dapatkan di Google Play">
+                    </a>
+                </div>
+                @endif
             </div>
 
             <div class="footer-links">
@@ -620,18 +728,11 @@
     </button>
 </div>
 
-<!-- ==================== VIDEO MODAL ==================== -->
-<dialog id="videoDialog">
-    <button type="button" class="dlg-close" aria-label="Tutup video"><i class="fas fa-times"></i></button>
-    <div class="video-frame">
-        <iframe src="" title="Video Ujung-ujung Damkar" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-    </div>
-</dialog>
-
 <script>
 (function () {
     'use strict';
 
+    /* ---------- Navigasi ---------- */
     var header = document.getElementById('siteHeader');
     var toggle = header.querySelector('.nav-toggle');
     var drops = header.querySelectorAll('.has-drop');
@@ -665,10 +766,47 @@
         if (!e.target.closest('.has-drop')) closeDrops(null);
     });
 
+    header.querySelectorAll('.dropdown a, .menu-link').forEach(function (a) {
+        a.addEventListener('click', function () {
+            header.classList.remove('nav-open');
+            toggle.setAttribute('aria-expanded', 'false');
+            toggle.querySelector('i').className = 'fas fa-bars';
+            closeDrops(null);
+        });
+    });
+
+    /* ---------- Modal Dialog (Video YouTube) ---------- */
+    var mDialog = document.getElementById('mediaDialog');
+    var dContent = document.getElementById('dialogContent');
+    var cards = document.querySelectorAll('.media-card:not([disabled])');
+
+    cards.forEach(function (card) {
+        card.addEventListener('click', function () {
+            var ytId = card.getAttribute('data-yt');
+            var title = card.getAttribute('data-title') || 'Video Dokumentasi';
+
+            if (ytId) {
+                dContent.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + ytId + '?autoplay=1" title="' + title.replace(/"/g, '&quot;') + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+                mDialog.showModal();
+            }
+        });
+    });
+
+    function closeDialog() {
+        dContent.innerHTML = '';
+        mDialog.close();
+    }
+
+    mDialog.querySelector('.dlg-close').addEventListener('click', closeDialog);
+    mDialog.addEventListener('click', function (e) {
+        if (e.target === mDialog) closeDialog();
+    });
+
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') closeDrops(null);
     });
 
+    /* ---------- Tombol lapor mengambang (muncul setelah scroll) ---------- */
     var fab = document.getElementById('sosFab');
     var fabBtn = fab.querySelector('.sos-fab-btn');
 
@@ -685,28 +823,6 @@
         fabBtn.setAttribute('aria-expanded', open);
     });
 
-    var vDialog = document.getElementById('videoDialog');
-    var vFrame = vDialog.querySelector('iframe');
-    var vClose = vDialog.querySelector('.dlg-close');
-
-    document.querySelectorAll('.vid:not([disabled])').forEach(function (v) {
-        v.addEventListener('click', function () {
-            var youtubeId = v.getAttribute('data-yt');
-            if (!youtubeId) return;
-            vFrame.src = 'https://www.youtube-nocookie.com/embed/' + youtubeId + '?autoplay=1&rel=0';
-            vDialog.showModal();
-        });
-    });
-
-    function closeVideo() {
-        vFrame.src = '';
-        vDialog.close();
-    }
-
-    vClose.addEventListener('click', closeVideo);
-    vDialog.addEventListener('click', function (e) {
-        if (e.target === vDialog) closeVideo();
-    });
 })();
 </script>
 </body>
