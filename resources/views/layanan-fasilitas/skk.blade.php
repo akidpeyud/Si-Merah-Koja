@@ -3,8 +3,9 @@
        PENGATURAN HALAMAN
        ------------------------------------------------------------ */
     $layanan = [
-        'rpkbgl' => ['url' => '/layanan-fasilitas/layanan_perizinan', 'label' => 'RPKBGL', 'ico' => 'fa-building', 'ket' => 'Layanan perizinan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan'],
-        'skk'    => ['url' => '/layanan-fasilitas/skk',                'label' => 'SKK (Baru & Perpanjangan)', 'ico' => 'fa-user-shield', 'ket' => 'Layanan perizinan penerbitan & perpanjangan Sertifikat Keamanan Kebakaran'],
+        'rpkbgl'    => ['url' => '/layanan-fasilitas/layanan_perizinan', 'label' => 'RPKBGL', 'ico' => 'fa-building', 'ket' => 'Layanan perizinan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan'],
+        'skk'       => ['url' => '/layanan-fasilitas/skk',                'label' => 'SKK (Baru & Perpanjangan)', 'ico' => 'fa-user-shield', 'ket' => 'Layanan perizinan penerbitan & perpanjangan Sertifikat Keamanan Kebakaran'],
+        'keramaian' => ['url' => '/layanan-fasilitas/izin-keramaian',     'label' => 'Izin Keramaian', 'ico' => 'fa-users', 'ket' => 'Pengajuan Rekomendasi Izin Keramaian'],
     ];
     $tab_aktif = 'skk';
 
@@ -483,11 +484,12 @@
                     <li><a href="/produkhukum">Produk hukum</a></li>
                 </ul>
             </li>
-          <li class="has-drop">
+          <li class="has-drop current">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
-                    <li><a href="/layanan-fasilitas/skk">SKK &amp; Perpanjang SKK</a></li>
+                    <li><a href="/layanan-fasilitas/skk" aria-current="page">SKK &amp; Perpanjang SKK</a></li>
+                    <li><a href="/layanan-fasilitas/izin-keramaian">Izin Keramaian</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan Edukasi &amp; sosialisasi</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
