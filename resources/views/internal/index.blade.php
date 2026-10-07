@@ -637,7 +637,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                         <i class="far fa-newspaper"></i><span class="lbl">Input &amp; Kelola Berita</span>
                     </a>
                     <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
-                        <i class="far fa-image"></i><span class="lbl">Kelola Info Grafis</span>
+                        <i class="far fa-image"></i><span class="lbl">Kelola Infografis</span>
                     </a>
                     <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
                         <i class="fab fa-instagram"></i><span class="lbl">Kelola Berita Medsos</span>
@@ -789,7 +789,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     'id' => 'informasi', 'title' => 'Manajemen Informasi', 'icon' => 'fa-newspaper', 'roles' => 'Super User|Operator',
                     'items' => [
                         ['Berita', 'berita', 'fa-newspaper', '/internal/operator/kelola-berita', $count('berita'), 'ic-primary'],
-                        ['Info Grafis', 'info grafis', 'fa-image', '/internal/operator/infografis', $count('infografis'), 'ic-info'],
+                        ['Infografis', 'Infografis', 'fa-image', '/internal/operator/infografis', $count('infografis'), 'ic-info'],
                         ['Berita Medsos', 'unggahan', 'fa-brands fa-instagram', '/internal/operator/berita-medsos', $count('berita_medsos'), 'ic-danger'],
                         ['Ujung-Ujung Damkar', 'video', 'fa-brands fa-youtube', '/internal/operator/ujung-damkar', $count('ujung_damkar'), 'ic-danger'],
                         ['Edu Damkar', 'materi', 'fa-graduation-cap', '/internal/operator/edu-damkar', $count('edu_damkar'), 'ic-primary'],

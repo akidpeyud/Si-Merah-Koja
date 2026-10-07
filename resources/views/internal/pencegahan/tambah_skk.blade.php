@@ -336,7 +336,7 @@
                         <i class="far fa-newspaper"></i><span class="lbl">Input &amp; Kelola Berita</span>
                     </a>
                     <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
-                        <i class="far fa-image"></i><span class="lbl">Kelola Info Grafis</span>
+                        <i class="far fa-image"></i><span class="lbl">Kelola Infografis</span>
                     </a>
                     <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
                         <i class="fab fa-instagram"></i><span class="lbl">Kelola Berita Medsos</span>

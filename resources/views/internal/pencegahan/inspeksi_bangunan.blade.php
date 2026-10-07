@@ -440,7 +440,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                         <i class="far fa-newspaper"></i> Input &amp; Kelola Berita
                     </a>
                     <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
-                        <i class="far fa-image"></i> Kelola Info Grafis
+                        <i class="far fa-image"></i> Kelola Infografis
                     </a>
                     <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
                         <i class="fab fa-instagram"></i> Kelola Berita Medsos

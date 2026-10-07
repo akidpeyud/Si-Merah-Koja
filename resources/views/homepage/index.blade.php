@@ -461,7 +461,7 @@
         @media (max-width: 480px) { .vid-grid { grid-template-columns: 1fr; } }
 
         /* ==========================================================
-           INFO GRAFIS & MEDIA INFORMASI
+           Infografis & MEDIA INFORMASI
            ========================================================== */
         .grafis { columns: 3 260px; column-gap: 20px; }
         .grafis-item { display: block; width: 100%; break-inside: avoid; margin-bottom: 20px; position: relative; border-radius: var(--r-md); overflow: hidden; background: #fff; box-shadow: 0 1px 0 var(--line), 0 12px 28px -18px rgba(13,27,42,.35); }
@@ -892,12 +892,12 @@
     </div>
 </section>
 
-<!-- ==================== INFO GRAFIS & MEDIA INFORMASI ==================== -->
+<!-- ==================== Infografis & MEDIA INFORMASI ==================== -->
 <section class="section" id="infografis">
     <div class="wrap">
         <div class="sec-head">
             <div>
-                <h2>Info grafis</h2>
+                <h2>Infografis</h2>
                 <p>Panduan singkat bergambar. Ketuk gambar untuk memperbesar.</p>
             </div>
         </div>
