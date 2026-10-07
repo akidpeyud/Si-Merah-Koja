@@ -514,7 +514,7 @@
                 <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="/edu-damkar">Edu Damkar</a></li>
-                    <li><a href="/infografis">Info Grafis</a></li>
+                    <li><a href="/infografis">Infografis</a></li>
                     <li><a href="/media-informasi" aria-current="page">Media Informasi</a></li>
                     <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
                 </ul>
@@ -568,7 +568,7 @@
 <div class="page-nav-wrap rise d3">
     <nav class="page-nav" aria-label="Sub menu Kabar Damkar">
         <a href="/edu-damkar"><i class="fas fa-video"></i> Edu Damkar</a>
-        <a href="/infografis"><i class="fas fa-image"></i> Info Grafis</a>
+        <a href="/infografis"><i class="fas fa-image"></i> Infografis</a>
         <a href="/media-informasi" class="active"><i class="fas fa-newspaper"></i> Media Informasi</a>
         <a href="/ujung-ujung-damkar"><i class="fas fa-fire-extinguisher"></i> Ujung-ujung Damkar</a>
     </nav>

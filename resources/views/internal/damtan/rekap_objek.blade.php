@@ -327,7 +327,7 @@ textarea.f-control { height: auto; padding: 12px 14px; resize: vertical; min-hei
                 <div class="side-sub">
                     @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
                         <a href="/internal/operator/kelola-berita"><i class="far fa-newspaper"></i><span class="lbl">Input &amp; Kelola Berita</span></a>
-                        <a href="/internal/operator/infografis"><i class="far fa-image"></i><span class="lbl">Kelola Info Grafis</span></a>
+                        <a href="/internal/operator/infografis"><i class="far fa-image"></i><span class="lbl">Kelola Infografis</span></a>
                         <a href="/internal/operator/berita-medsos"><i class="fab fa-instagram"></i><span class="lbl">Kelola Berita Medsos</span></a>
                         <a href="/internal/operator/ujung-damkar"><i class="fab fa-youtube"></i><span class="lbl">Ujung-Ujung Damkar</span></a>
                         <a href="/internal/operator/edu-damkar"><i class="fas fa-graduation-cap"></i><span class="lbl">Edu Damkar</span></a>
@@ -983,7 +983,7 @@ textarea.f-control { height: auto; padding: 12px 14px; resize: vertical; min-hei
                             <i class="far fa-newspaper"></i><span class="lbl">Input &amp; Kelola Berita</span>
                         </a>
                         <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
-                            <i class="far fa-image"></i><span class="lbl">Kelola Info Grafis</span>
+                            <i class="far fa-image"></i><span class="lbl">Kelola Infografis</span>
                         </a>
                         <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
                             <i class="fab fa-instagram"></i><span class="lbl">Kelola Berita Medsos</span>
