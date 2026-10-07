@@ -215,9 +215,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     padding: 5px 12px; border-radius: 6px;
     font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .02em;
 }
-.badge-role.super_user { background: var(--ink); color: #fff; }
-.badge-role.operator { background: var(--info-soft); color: var(--info); }
-.badge-role.user { background: var(--navy-soft); color: var(--navy); }
+.super_user { background: var(--ink); color: #fff; }
+.operator { background: var(--info-soft); color: var(--info); }
+.damtan { background: rgba(220, 53, 69, .15); color: #b42332; }
+.sapra { background: rgba(25, 135, 84, .15); color: #198754; }
+.pencegahan { background: rgba(244, 183, 64, .15); color: #d97706; }
+.sekretariat { background: var(--navy-soft); color: var(--navy); }
 
 /* Action Buttons */
 .btn-action {
@@ -336,7 +339,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             <span class="user-avatar">{{ strtoupper(substr(Auth::user()->nama_lengkap ?? 'R', 0, 1)) }}</span>
             <div class="user-meta">
                 <strong>{{ Auth::user()->nama_lengkap ?? 'Rekan kerja' }}</strong>
-                <small>{{ str_replace('_', ' ', Auth::user()->role ?? '') }}</small>
+                <small>{{ Auth::user()->role ?? '' }}</small>
             </div>
         </div>
         <form action="/logout" method="POST" style="margin:0;">
@@ -357,7 +360,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             <i class="fas fa-house"></i> Dashboard utama
         </a>
 
-        @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
+        @hasanyrole('Super User|Sapra|Damtan|Pencegahan|Sekretariat|Operator')
             <div class="side-kicker">Modul operasional</div>
             
             <!-- BAGIAN PENCEGAHAN -->
@@ -413,9 +416,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     <a href="/sapra/distribusi-staff" class="{{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}"><i class="fas fa-people-carry-box"></i> Serah terima Barang</a>
                 </div>
             </details>
-        @endif
+        @endhasanyrole
 
-        @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
+        @hasanyrole('Super User|Operator')
             <div class="side-kicker">Konten publik</div>
             <details class="side-group" {{ Request::is('internal/operator*') ? 'open' : '' }}>
                 <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen berita</span><i class="fas fa-chevron-down chev"></i></summary>
@@ -438,7 +441,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     </a>
                 </div>
             </details>
-        @endif
+        @endhasanyrole
 
         <!-- PENGATURAN AKUN -->
         <div class="side-kicker">Akun</div>
@@ -451,11 +454,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 </a>
                 
                 <!-- Menu Kelola Pengguna Aktif -->
-                @if(auth()->user()->role === 'super_user')
+                @hasrole('Super User')
                     <a href="{{ url('/internal/kelola-user') }}" class="{{ request()->is('internal/kelola-user*') ? 'active' : '' }}">
                         <i class="fas fa-users-gear"></i> Kelola Pengguna
                     </a>
-                @endif
+                @endhasrole
                 
                 <a href="{{ url('/internal/kelola-pemohon') }}" class="{{ request()->is('internal/kelola-pemohon*') ? 'active' : '' }}">
                     <i class="fas fa-address-book"></i> Kelola Akun Pemohon
@@ -516,8 +519,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                                 <td>{{ $u->nomor_pegawai }}</td>
                                 <td>{{ $u->email }}</td>
                                 <td>
-                                    <span class="badge-role {{ $u->role }}">
-                                        {{ $u->role === 'user' ? 'Pegawai Internal' : ucwords(str_replace('_', ' ', $u->role)) }}
+                                    <span class="badge-role {{ strtolower(str_replace(' ', '_', $u->role)) }}">
+                                        {{ $u->role }}
                                     </span>
                                 </td>
                                 <td>
@@ -576,9 +579,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                                                 <div class="mb-3">
                                                     <label class="form-label">Pilih Hak Akses (Role)</label>
                                                     <select name="role" class="form-select" required>
-                                                        <option value="user" {{ $u->role == 'user' ? 'selected' : '' }}>User (Pegawai Internal Terintegrasi)</option>
-                                                        <option value="operator" {{ $u->role == 'operator' ? 'selected' : '' }}>Operator (Manajemen Berita & Redkar)</option>
-                                                        <option value="super_user" {{ $u->role == 'super_user' ? 'selected' : '' }}>Super User (Admin Penuh)</option>
+                                                        <option value="Super User" {{ $u->role == 'Super User' ? 'selected' : '' }}>Super User (Admin Penuh)</option>
+                                                        <option value="Sapra" {{ $u->role == 'Sapra' ? 'selected' : '' }}>Sapra (Sarana Prasarana)</option>
+                                                        <option value="Damtan" {{ $u->role == 'Damtan' ? 'selected' : '' }}>Damtan (Pemadaman & Penyelamatan)</option>
+                                                        <option value="Pencegahan" {{ $u->role == 'Pencegahan' ? 'selected' : '' }}>Pencegahan (Inspeksi & Redkar)</option>
+                                                        <option value="Sekretariat" {{ $u->role == 'Sekretariat' ? 'selected' : '' }}>Sekretariat (Kepegawaian)</option>
+                                                        <option value="Operator" {{ $u->role == 'Operator' ? 'selected' : '' }}>Operator (Manajemen Informasi)</option>
                                                     </select>
                                                 </div>
 
@@ -644,9 +650,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                         <label class="form-label">Pilih Hak Akses (Role)</label>
                         <select name="role" class="form-select" required>
                             <option value="" selected disabled>-- Pilih Hak Akses --</option>
-                            <option value="user">User (Pegawai Internal Terintegrasi)</option>
-                            <option value="operator">Operator (Manajemen Berita & Redkar)</option>
-                            <option value="super_user">Super User (Admin Penuh)</option>
+                            <option value="Super User">Super User (Admin Penuh)</option>
+                            <option value="Sapra">Sapra (Sarana Prasarana)</option>
+                            <option value="Damtan">Damtan (Pemadaman & Penyelamatan)</option>
+                            <option value="Pencegahan">Pencegahan (Inspeksi & Redkar)</option>
+                            <option value="Sekretariat">Sekretariat (Kepegawaian)</option>
+                            <option value="Operator">Operator (Manajemen Informasi)</option>
                         </select>
                     </div>
 
