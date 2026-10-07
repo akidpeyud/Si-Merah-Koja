@@ -29,7 +29,13 @@
                 ['url' => '/informasi-layanan?panel=pemberdayaan', 'label' => 'Pemberdayaan Masyarakat',         'ico' => 'fa-handshake-angle'],
             ],
         ],
-        'pemadaman'  => ['label' => 'Bagian pemadaman',  'items' => []],
+        'pemadaman' => [
+            'label' => 'Bagian pemadaman',
+            'items' => [
+                ['url' => '/informasi-layanan?panel=rekap_layanan',   'label' => 'Rekap Layanan & Penyelamatan', 'ico' => 'fa-truck-fast'],
+                ['url' => '/informasi-layanan?panel=objek_kebakaran', 'label' => 'Rekapitulasi Objek Kebakaran', 'ico' => 'fa-fire'],
+            ],
+        ],
         'sapra' => [
             'label' => 'Bagian sapra',
             'items' => [
@@ -42,7 +48,7 @@
             ],
         ],
     ];
-    
+
     // Default menu sapra terbuka
     $kategori_aktif = 'sapra';
     $halaman_aktif  = '/informasi-sarana';
@@ -247,7 +253,7 @@
         .cat-soon { margin-left: auto; font-size: .72rem; font-weight: 600; color: var(--steel); background: var(--paper); padding: 3px 10px; border-radius: 999px; }
 
         .cat-sub { list-style: none; overflow: hidden; max-height: 0; transition: max-height .3s ease; }
-        .cat[data-open] .cat-sub { max-height: 400px; }
+        .cat[data-open] .cat-sub { max-height: 900px; }
         .cat-sub li { padding: 2px 4px 8px; }
         .cat-sub a { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 12px; font-size: .9rem; font-weight: 600; color: var(--steel); transition: background .2s, color .2s; }
         .cat-sub a:hover { background: var(--paper); color: var(--ink); }
@@ -295,7 +301,7 @@
         .g-thumb i { font-size: 2.1rem; color: #b8c3d0; }
         .g-body { padding: 16px 18px 18px; }
         .g-title { font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: .96rem; line-height: 1.35; letter-spacing: -0.005em; }
-        
+
         .badge-group { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
         .g-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 8px; background: var(--paper); border: 1px solid var(--line); font-size: .78rem; font-weight: 700; color: var(--steel); }
         .g-badge i { color: #2f9e5c; }
@@ -400,7 +406,7 @@
                     <?php endforeach; ?>
                 </ul>
             </li>
-            
+
             <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
@@ -559,7 +565,7 @@
                                 </div>
                                 <div class="g-body">
                                     <p class="g-title"><?= $h(mb_strtoupper($item['jenis_sarana'] ?? '')) ?></p>
-                                    
+
                                     <!-- BADGE TAHUN & PLAT NOMOR -->
                                     <div class="badge-group">
                                         <?php if (!empty($item['tahun'])): ?>
@@ -720,17 +726,17 @@
         btn.addEventListener('click', function () {
             var cat = btn.closest('.cat');
             var nowOpen = !cat.hasAttribute('data-open');
-            
+
             // Menutup semua menu sidebar yang sedang terbuka
-            document.querySelectorAll('.cat[data-open]').forEach(function (c) { 
-                c.removeAttribute('data-open'); 
-                c.querySelector('.cat-btn').setAttribute('aria-expanded', 'false'); 
+            document.querySelectorAll('.cat[data-open]').forEach(function (c) {
+                c.removeAttribute('data-open');
+                c.querySelector('.cat-btn').setAttribute('aria-expanded', 'false');
             });
-            
+
             // Membuka menu yang sedang diklik (jika tadinya tertutup)
-            if (nowOpen) { 
-                cat.setAttribute('data-open', ''); 
-                btn.setAttribute('aria-expanded', 'true'); 
+            if (nowOpen) {
+                cat.setAttribute('data-open', '');
+                btn.setAttribute('aria-expanded', 'true');
             }
         });
     });
