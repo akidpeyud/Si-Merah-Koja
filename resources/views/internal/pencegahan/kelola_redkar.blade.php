@@ -550,7 +550,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 <p>Kelola data pendaftaran relawan masyarakat dan pendaftaran langsung kantor.</p>
             </div>
             <div class="d-flex gap-2 flex-wrap">
+                <!-- TOMBOL TAMBAH HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
+                @hasanyrole('Pencegahan|Super User')
                 <a href="/internal/pencegahan/tambah-redkar" class="btn-add"><i class="fas fa-user-plus"></i> Tambah Relawan</a>
+                @endhasanyrole
+
+                <!-- TOMBOL CETAK REKAP TERBUKA UNTUK SEMUA ROLE -->
                 <button onclick="window.print()" class="btn-print-rekap"><i class="fas fa-print"></i> Cetak Rekap</button>
             </div>
         </div>
@@ -613,15 +618,28 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                             </td>
                             <td class="text-center no-print-col">
                                 <div class="btn-action-group">
+                                    
+                                    <!-- TOMBOL STATUS HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
+                                    @hasanyrole('Pencegahan|Super User')
                                     <button type="button" class="btn-action btn-update" data-bs-toggle="modal" data-bs-target="#modalStatusRedkar{{ $r->id }}" title="Verifikasi Pendaftaran">
                                         <i class="fas fa-user-check"></i> Status
                                     </button>
+                                    @endhasanyrole
+
+                                    <!-- TOMBOL EDIT HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
+                                    @hasanyrole('Pencegahan|Super User')
                                     <a href="/internal/pencegahan/edit-redkar/{{ $r->id }}" class="btn-action btn-warning-soft" title="Edit Data">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>
+                                    @endhasanyrole
+
+                                    <!-- TOMBOL CETAK PDF PER ORANG TERBUKA UNTUK SEMUA ROLE -->
                                     <a href="/internal/pencegahan/cetak-redkar/{{ $r->id }}" target="_blank" class="btn-action btn-lihat" title="Cetak PDF">
                                         <i class="fas fa-print"></i> Cetak
                                     </a>
+                                    
+                                    <!-- TOMBOL HAPUS HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
+                                    @hasanyrole('Pencegahan|Super User')
                                     <form action="/internal/pencegahan/hapus-redkar/{{ $r->id }}" method="POST" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus relawan ini?');">
                                         @csrf
                                         @method('DELETE')
@@ -629,11 +647,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
+                                    @endhasanyrole
+
                                 </div>
                             </td>
                         </tr>
 
-                        <!-- MODAL VERIFIKASI STATUS -->
+                        <!-- MODAL VERIFIKASI STATUS (DIBATASI HANYA UNTUK PENCEGAHAN DAN SUPER USER) -->
+                        @hasanyrole('Pencegahan|Super User')
                         <div class="modal fade" id="modalStatusRedkar{{ $r->id }}" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content" style="border: none; border-radius: var(--r-md); box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
@@ -678,6 +699,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                                 </div>
                             </div>
                         </div>
+                        @endhasanyrole
 
                         @empty
                         <tr>

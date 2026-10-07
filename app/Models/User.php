@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles; // 1. TAMBAHAN SPATIE: Panggil class-nya
 
 // UPDATE: Menambahkan 'nama_lengkap', 'nomor_pegawai', dan 'role'
 #[Fillable(['nama_lengkap', 'email', 'nomor_pegawai', 'role', 'password'])]
@@ -16,7 +17,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles; // 2. TAMBAHAN SPATIE: Sisipkan di sini
 
     /**
      * Get the attributes that should be cast.
