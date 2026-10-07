@@ -441,23 +441,7 @@
             </div>
         </details>
 
-        <!-- KEPEGAWAIAN -->
-        <details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') ? 'open' : '' }}>
-            <summary>
-                <i class="fas fa-user-tie grp-ico"></i>
-                <span class="grp-label">KEPEGAWAIAN</span>
-                <i class="fas fa-chevron-down chev"></i>
-            </summary>
-            <div class="side-sub">
-                <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
-                    <i class="fas fa-user-tie"></i> Data Urut Kepegawaian
-                </a>
-                <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
-                    <i class="fas fa-file-contract"></i> Program Kerja
-                </a>
-            </div>
-        </details>
-
+    
         <!-- BAGIAN SAPRA -->
         <details class="side-group" {{ Request::is('sapra*') ? 'open' : '' }}>
             <summary>
@@ -482,6 +466,24 @@
                 <a href="/sapra/distribusi-staff" class="{{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}"><i class="fas fa-people-carry-box"></i> Serah Terima Barang</a>
             </div>
         </details>
+
+            <!-- KEPEGAWAIAN -->
+        <details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') ? 'open' : '' }}>
+            <summary>
+                <i class="fas fa-user-tie grp-ico"></i>
+                <span class="grp-label">KEPEGAWAIAN</span>
+                <i class="fas fa-chevron-down chev"></i>
+            </summary>
+            <div class="side-sub">
+                <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
+                    <i class="fas fa-user-tie"></i> Data Urut Kepegawaian
+                </a>
+                <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
+                    <i class="fas fa-file-contract"></i> Program Kerja
+                </a>
+            </div>
+        </details>
+
 
         @if($bisaKonten)
             <div class="side-divider"></div>
