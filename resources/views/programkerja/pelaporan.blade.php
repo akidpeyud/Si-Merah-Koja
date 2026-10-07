@@ -4,7 +4,7 @@
     /* ------------------------------------------------------------
        PENGATURAN HALAMAN
        Halaman ini dipakai bersama untuk 5 tab Program Kerja.
-       Dari controller bisa dikirim: $tab_aktif dan $dokumen_list (lihat di bawah)
+       Dari controller bisa dikirim: $tab_aktif dan $dokumen_list
        ------------------------------------------------------------ */
     $tabs = [
         'sotk'        => ['url' => '/sotk',        'label' => 'SOTK',         'ico' => 'fa-sitemap',       'judul' => 'Struktur Organisasi dan Tata Kerja (SOTK)'],
@@ -16,13 +16,13 @@
     $tab_aktif = $tab_aktif ?? 'pelaporan';
 
     /*
-      Daftar dokumen pelaporan (mis. LKjIP). Setiap item: ['judul' => '...', 'url' => 'link berkas PDF'].
-      Selama 'url' kosong, baris tampil sebagai "Berkas belum diunggah".
-      Dari controller boleh kirim array atau koleksi model yang punya kolom judul dan url.
+      Daftar dokumen pelaporan (mis. LKjIP). 
+      Kita mengambil data dari Model 'Dokumen' dengan kategori 'Pelaporan' jika $dokumen_list belum didefinisikan oleh Controller.
     */
-    $dokumen_list = $dokumen_list ?? [
-        ['judul' => 'Laporan Kinerja Instansi Pemerintah (LKjIP) 2022', 'url' => ''],
-    ];
+    if (!isset($dokumen_list)) {
+        $dokumen_list = App\Models\Dokumen::where('kategori', 'Pelaporan')->latest()->get();
+    }
+    
     $jumlah = count($dokumen_list);
 
     $no_whatsapp    = "628117113113";
@@ -32,7 +32,6 @@
     $wa_link   = "https://wa.me/" . $no_whatsapp . "?text=" . $pesan_wa;
     $maps_link = "https://www.google.com/maps/place/6PC59JJ2%2BQ76/@-1.6180875,103.6006406,871m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-1.6180875!4d103.6006406?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D";
 
-    // Isi dengan link Google Play jika aplikasi sudah tersedia. Kosong = badge disembunyikan.
     $play_store_url = "";
 ?>
 <!DOCTYPE html>
@@ -52,7 +51,7 @@
 
     <style>
         /* ==========================================================
-           TOKENS (sama dengan halaman utama)
+           TOKENS
            ========================================================== */
         :root {
             --ink: #0d1b2a;
@@ -97,7 +96,7 @@
         .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: clamp(16px, 4vw, 32px); padding-right: clamp(16px, 4vw, 32px); }
 
         /* ==========================================================
-           HEADER
+           HEADER PUBLIK
            ========================================================== */
         .site-header {
             position: sticky; top: 0; z-index: 60;
@@ -190,7 +189,7 @@
         @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 
         /* ==========================================================
-           TAB PROGRAM KERJA (menempel di tepi hero)
+           TAB PROGRAM KERJA
            ========================================================== */
         .page-body { background: var(--paper); padding-bottom: clamp(64px, 9vw, 112px); }
         .tabs-wrap { position: relative; z-index: 2; margin-top: -30px; }
@@ -231,7 +230,7 @@
         .social a:hover { background: var(--signal); color: #fff; transform: translateY(-3px); }
 
         /* ==========================================================
-           DAFTAR DOKUMEN
+           DAFTAR DOKUMEN (MODE LIST)
            ========================================================== */
         .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
         .doc-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
@@ -252,7 +251,7 @@
         .doc-row:not(.is-empty):hover { background: var(--paper); }
         .doc-ico { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; background: #fdeceb; color: var(--signal-d); font-size: 1.4rem; }
         .doc-row.is-empty .doc-ico { background: var(--paper); color: #b8c3d0; }
-        .doc-name { font-family: var(--font-display); font-weight: 600; font-stretch: 92%; font-size: 1.1rem; line-height: 1.35; letter-spacing: -0.005em; }
+        .doc-name { font-family: var(--font-display); font-weight: 600; font-stretch: 92%; font-size: 1.1rem; line-height: 1.35; letter-spacing: -0.005em; margin-bottom: 4px;}
         .doc-name a::after { content: ""; position: absolute; inset: 0; }
         .doc-row:not(.is-empty):hover .doc-name a { color: var(--signal-d); }
         .doc-row.is-empty .doc-name { color: var(--steel); }
@@ -336,7 +335,7 @@
 </head>
 <body>
 
-<!-- ==================== HEADER ==================== -->
+<!-- ==================== HEADER PUBLIK ==================== -->
 <header class="site-header" id="siteHeader">
     <nav class="nav" aria-label="Navigasi utama">
         <a href="/" class="brand" aria-label="SIMERAH KOJA, beranda">
@@ -411,7 +410,6 @@
 
 <main>
 
-<!-- ==================== HERO HALAMAN ==================== -->
 <section class="page-hero">
     <div class="wrap">
         <nav aria-label="Breadcrumb" class="rise">
@@ -427,7 +425,6 @@
 </section>
 
 <div class="page-body">
-    <!-- Tab -->
     <div class="wrap tabs-wrap">
         <nav class="tabs" aria-label="Kategori program kerja">
             <?php foreach ($tabs as $key => $tab): ?>
@@ -441,7 +438,7 @@
     <div class="wrap">
         <div class="doc-layout">
 
-            <!-- Daftar dokumen -->
+            <!-- Daftar Dokumen PDF -->
             <section class="doc-panel" aria-label="Daftar dokumen">
                 <div class="doc-bar">
                     <div class="doc-title">
@@ -466,9 +463,14 @@
                 <ul class="doc-list">
                     <?php foreach ($dokumen_list as $d):
                         $d     = (is_object($d) && method_exists($d, 'toArray')) ? $d->toArray() : (array) $d;
-                        $judul = (string) ($d['judul'] ?? '');
-                        $url   = (string) ($d['url'] ?? '');
+                        $judul = (string) ($d['judul_dokumen'] ?? '');
+                        // Ambil URL public untuk file
+                        $url   = isset($d['nama_file']) ? url('uploads/dokumen_publik/' . $d['nama_file']) : '';
                         $ada   = $url !== '';
+                        // Menggunakan route download yang sudah dibuat di web.php
+                        $urlDownload = isset($d['id']) ? url('/dokumen/download/' . $d['id']) : '';
+                        $urlView = isset($d['id']) ? url('/dokumen/view/' . $d['id']) : '';
+                        
                         $ext   = $ada ? strtoupper(pathinfo((string) parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION)) : '';
                         $ext   = $ext ?: 'PDF';
                         $ico   = ['PDF' => 'fa-file-pdf', 'DOC' => 'fa-file-word', 'DOCX' => 'fa-file-word', 'XLS' => 'fa-file-excel', 'XLSX' => 'fa-file-excel'][$ext] ?? 'fa-file-lines';
@@ -478,17 +480,22 @@
                         <div>
                             <p class="doc-name">
                                 <?php if ($ada): ?>
-                                    <a href="<?= $h($url) ?>" target="_blank" rel="noopener"><?= $h($judul) ?></a>
+                                    <!-- Mengarahkan ke viewer atau buka PDF di tab baru -->
+                                    <a href="<?= $h($urlView) ?>" target="_blank" rel="noopener"><?= $h($judul) ?></a>
                                 <?php else: ?>
                                     <?= $h($judul) ?>
                                 <?php endif; ?>
                             </p>
-                            <p class="doc-meta"><?= $ada ? 'Dokumen ' . $h($ext) : 'Berkas belum diunggah' ?></p>
+                            <p class="doc-meta">
+                                <?= $ada ? 'Dokumen ' . $h($ext) : 'Berkas belum diunggah' ?>
+                                <!-- Menampilkan Tanggal Upload -->
+                                <span class="ms-2"><i class="far fa-clock"></i> <?= isset($d['created_at']) ? date('d M Y', strtotime($d['created_at'])) : '-' ?></span>
+                            </p>
                         </div>
                         <?php if ($ada): ?>
                         <div class="doc-actions">
-                            <a class="tool" href="<?= $h($url) ?>" target="_blank" rel="noopener" aria-label="Buka <?= $h($judul) ?>"><i class="fas fa-arrow-up-right-from-square"></i> Buka</a>
-                            <a class="tool" href="<?= $h($url) ?>" download aria-label="Unduh <?= $h($judul) ?>"><i class="fas fa-download"></i> Unduh</a>
+                            <a class="tool" href="<?= $h($urlView) ?>" target="_blank" rel="noopener" aria-label="Buka <?= $h($judul) ?>"><i class="fas fa-arrow-up-right-from-square"></i> Buka</a>
+                            <a class="tool" href="<?= $h($urlDownload) ?>" download aria-label="Unduh <?= $h($judul) ?>"><i class="fas fa-download"></i> Unduh</a>
                         </div>
                         <?php endif; ?>
                     </li>
@@ -504,7 +511,6 @@
                 <?php endif; ?>
             </section>
 
-            <!-- Kontak -->
             <aside aria-label="Kontak dinas">
                 <div class="side-card">
                     <h2>Kontak dinas</h2>
@@ -606,7 +612,6 @@
     </div>
 </footer>
 
-<!-- ==================== TOMBOL LAPOR MENGAMBANG ==================== -->
 <div class="sos-fab" id="sosFab">
     <div class="sos-sheet" id="sosSheet">
         <a class="wa" href="<?= $h($wa_link) ?>" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Lapor lewat WhatsApp</a>
@@ -677,7 +682,7 @@
         fabBtn.setAttribute('aria-expanded', open);
     });
 
-    /* ---------- Pencarian dokumen ---------- */
+    /* ---------- Pencarian dokumen (untuk mode List) ---------- */
     var search = document.getElementById('docSearch');
     if (search) {
         var rows = document.querySelectorAll('.doc-row');
@@ -692,7 +697,7 @@
                 if (hit) n++;
             });
             if (count) count.textContent = n + ' dokumen';
-            none.hidden = n !== 0;
+            none.hidden = n === 0;
         });
     }
 })();

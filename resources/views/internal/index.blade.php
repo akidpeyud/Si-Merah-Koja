@@ -262,7 +262,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     .user-meta { display: none; }
 
     .sidebar {
-        position: fixed; z-index: 90;
+        position: fixed; z-index: 1010;
         top: var(--topbar-h); left: 0;
         height: calc(100dvh - var(--topbar-h));
         transform: translateX(-100%);
@@ -273,7 +273,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
     .sidebar-backdrop {
         display: block; position: fixed;
-        inset: var(--topbar-h) 0 0 0; z-index: 80;
+        inset: var(--topbar-h) 0 0 0; z-index: 1000;
         background: rgba(13,27,42,.45);
         opacity: 0; pointer-events: none; transition: opacity .3s;
     }
@@ -542,28 +542,23 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
-                        <i class="fas fa-fire-extinguisher"></i> Input data
+                        <i class="fas fa-fire-extinguisher"></i><span class="lbl">Input data</span>
                     </a>
-
-                    <!-- MENU BARU: REKAP LAYANAN & OBJEK -->
                     <a href="/internal/damtan/rekap-layanan" class="{{ Request::is('internal/damtan/rekap-layanan*') ? 'active' : '' }}">
-                        <i class="fas fa-truck-medical"></i> Input Rekap Layanan
+                        <i class="fas fa-truck-medical"></i><span class="lbl">Input Rekap Layanan</span>
                     </a>
                     <a href="/internal/damtan/rekap-objek" class="{{ Request::is('internal/damtan/rekap-objek*') ? 'active' : '' }}">
-                        <i class="fas fa-house-chimney-crack"></i> Input Rekap Objek Kebakaran
+                        <i class="fas fa-house-chimney-crack"></i><span class="lbl">Input Rekap Objek Kebakaran</span>
                     </a>
-
                     <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
-                        <i class="fas fa-file-signature"></i> Buat Surat Korban
+                        <i class="fas fa-file-signature"></i><span class="lbl">Buat Surat Korban</span>
                     </a>
                     <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
-                        <i class="fas fa-clipboard-list"></i> Kelola Data Laporan
+                        <i class="fas fa-clipboard-list"></i><span class="lbl">Kelola Data Laporan</span>
                     </a>
                     <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
-                        <i class="fas fa-folder-open"></i> Kelola Surat Korban
+                        <i class="fas fa-folder-open"></i><span class="lbl">Kelola Surat Korban</span>
                     </a>
-                    
-                    <!-- MENU KELOLA SURAT KERAMAIAN -->
                     <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
                         <i class="fas fa-users-rectangle"></i><span class="lbl">Kelola Surat Keramaian</span>
                     </a>
@@ -609,7 +604,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 </div>
             </details>
 
-            <!-- BAGIAN KEPEGAWAIAN (Dipindahkan ke bawah Sapra) -->
+            <!-- BAGIAN KEPEGAWAIAN -->
             <details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') ? 'open' : '' }}>
                 <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
@@ -623,7 +618,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             </details>
         @endhasanyrole
 
-        <!-- MANAJEMEN INFORMASI (sudah termasuk Pemetaan SIGAP) -->
+        <!-- MANAJEMEN INFORMASI -->
         @hasanyrole('Super User|Operator')
             <div class="side-kicker">Konten publik</div>
             <details class="side-group" {{ Request::is('internal/operator*') || Request::is('internal/peta-sigap*') ? 'open' : '' }}>
@@ -656,7 +651,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             </details>
         @endhasanyrole
 
-        <!-- PENGATURAN AKUN -->
+<!-- PENGATURAN AKUN -->
         <div class="side-kicker">Akun</div>
         <details class="side-group" {{ request()->is('internal/profil*') || request()->is('internal/kelola-user*') || request()->is('internal/kelola-pemohon*') ? 'open' : '' }}>
             <summary><i class="fas fa-user-gear grp-ico"></i><span class="grp-label">Pengaturan akun</span><i class="fas fa-chevron-down chev"></i></summary>
@@ -669,11 +664,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     <a href="{{ url('/internal/kelola-user') }}" class="{{ request()->is('internal/kelola-user*') ? 'active' : '' }}">
                         <i class="fas fa-users-gear"></i><span class="lbl">Kelola Pengguna</span>
                     </a>
+                    
+                    <!-- Pindahkan Kelola Akun Pemohon ke dalam blok hasrole ini -->
+                    <a href="{{ url('/internal/kelola-pemohon') }}" class="{{ request()->is('internal/kelola-pemohon*') ? 'active' : '' }}">
+                        <i class="fas fa-address-book"></i><span class="lbl">Kelola Akun Pemohon</span>
+                    </a>
                 @endhasrole
-
-                <a href="{{ url('/internal/kelola-pemohon') }}" class="{{ request()->is('internal/kelola-pemohon*') ? 'active' : '' }}">
-                    <i class="fas fa-address-book"></i><span class="lbl">Kelola Akun Pemohon</span>
-                </a>
             </div>
         </details>
 
@@ -783,7 +779,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     <div class="stat-ico ic-danger"><i class="fas fa-clipboard-list"></i></div>
                     <div>
                         <div class="stat-title">Siaga Darurat (Pemadaman)</div>
-                        <div class="stat-value">0</div>
+                        <div class="stat-value">
+                            {{ \Illuminate\Support\Facades\Schema::hasTable('data_laporans') ? \Illuminate\Support\Facades\DB::table('data_laporans')->count() : 0 }}
+                        </div>
                     </div>
                 </a>
 
@@ -791,7 +789,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     <div class="stat-ico ic-primary"><i class="fas fa-folder"></i></div>
                     <div>
                         <div class="stat-title">Surat Korban Terbit</div>
-                        <div class="stat-value">0</div>
+                        <div class="stat-value">
+                            {{ \Illuminate\Support\Facades\Schema::hasTable('surat_korbans') ? \Illuminate\Support\Facades\DB::table('surat_korbans')->count() : 0 }}
+                        </div>
                     </div>
                 </a>
 

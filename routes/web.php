@@ -657,11 +657,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-operator', [PencegahanController::class, 'indexDiklatOperator']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-ppl', [PencegahanController::class, 'indexDiklatPpl']);
 
-    // ROUTE DUK KEPEGAWAIAN
+// ROUTE DUK KEPEGAWAIAN
     Route::prefix('internal/kepegawaian')->name('kepegawaian.')->group(function () {
         Route::get('/duk', [DukController::class, 'index'])->name('duk.index');
         Route::get('/duk/tambah', [DukController::class, 'create'])->name('duk.create'); 
         Route::post('/duk', [DukController::class, 'store'])->name('duk.store');
+        
+        // TAMBAHKAN DUA BARIS INI UNTUK EDIT & UPDATE
+        Route::get('/duk/{id}/edit', [DukController::class, 'edit'])->name('duk.edit');
+        Route::put('/duk/{id}', [DukController::class, 'update'])->name('duk.update');
+        
         Route::delete('/duk/{id}', [DukController::class, 'destroy'])->name('duk.destroy');
     });
 
