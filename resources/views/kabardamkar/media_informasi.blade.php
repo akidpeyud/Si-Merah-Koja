@@ -174,9 +174,50 @@
         .rise.d1{animation-delay:.08s}.rise.d2{animation-delay:.16s}.rise.d3{animation-delay:.24s}
         @keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 
+        /* ================= SUB NAVIGATION (PILL MENU) ================= */
+        .page-nav-wrap {
+            display: flex;
+            justify-content: center;
+            margin-top: -30px;
+            position: relative;
+            z-index: 10;
+            padding: 0 20px;
+        }
+        .page-nav {
+            display: inline-flex;
+            align-items: center;
+            background: #fff;
+            padding: 6px;
+            border-radius: 999px;
+            box-shadow: 0 12px 35px rgba(13,27,42,0.1);
+            gap: 4px;
+            overflow-x: auto;
+            max-width: 100%;
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+        .page-nav::-webkit-scrollbar { display: none; }
+        .page-nav { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .page-nav a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--steel);
+            white-space: nowrap;
+            transition: 0.3s ease;
+        }
+        .page-nav a i { font-size: 1.05rem; }
+        .page-nav a:hover { color: var(--ink-2); background: var(--soft); }
+        .page-nav a.active { background: var(--ink); color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .page-nav a.active i { color: var(--amber); }
+
         /* ================= CONTENT ================= */
         .page-body{background:var(--paper);min-height:50vh;padding-bottom:95px}
-        .tabs-wrap{position:relative;z-index:4;margin-top:-30px}
+        .tabs-wrap{position:relative;z-index:4;margin-top:30px;margin-bottom:20px;}
         .tabs{
             width:100%;
             display:flex;flex-wrap:wrap;justify-content:center;gap:7px;
@@ -199,7 +240,7 @@
 
         .content-head{
             display:flex;align-items:end;justify-content:space-between;gap:20px;
-            margin:42px 0 19px
+            margin:22px 0 19px
         }
         .content-head h2{
             font-family:var(--display);font-size:clamp(1.65rem,3vw,2.2rem);
@@ -395,6 +436,10 @@
             .menu .btn-login{margin:7px 0 0;justify-content:center;padding:13px}
             .page-hero{padding:43px 0 78px}
         }
+        @media (max-width:768px){
+            .page-nav { justify-content: flex-start; padding: 6px 12px; }
+            .page-nav a { padding: 8px 16px; font-size: 0.85rem; }
+        }
         @media (max-width:700px){
             .wrap{width:min(100% - 28px,1180px)}
             .brand img{height:32px}
@@ -459,7 +504,8 @@
                 <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
                     <li><a href="/layanan-fasilitas/skk">SKK &amp; Perpanjang SKK</a></li>
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan Edukasi &amp; sosialisasi</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
+                    <li><a href="/public-sigap">SIGAP</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
             </li>
@@ -469,13 +515,13 @@
                 <ul class="dropdown">
                     <li><a href="/edu-damkar">Edu Damkar</a></li>
                     <li><a href="/infografis">Info Grafis</a></li>
-                    <li><a href="/media-informasi">Media Informasi</a></li>
+                    <li><a href="/media-informasi" aria-current="page">Media Informasi</a></li>
                     <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
                 </ul>
             </li>
             
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
-                  @if(session()->has('pemohon_id'))
+            @if(session()->has('pemohon_id'))
                 <li class="has-drop">
                     <button class="menu-trigger btn-login" type="button" aria-expanded="false">
                         <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
@@ -484,7 +530,7 @@
                         <li>
                             <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
                                 @csrf
-                                <button type="submit" class="btn-logout">
+                                <button type="submit" class="btn-logout" style="width: 100%; text-align: left; padding: 10px 13px; color: #ff8b8b; font-size: .9rem;">
                                     <i class="fas fa-sign-out-alt"></i> Keluar
                                 </button>
                             </form>
@@ -494,7 +540,6 @@
             @else
                 <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
             @endif
-f
 
         </ul>
     </nav>
@@ -519,19 +564,27 @@ f
     </div>
 </section>
 
+<!-- ==================== SUB NAVIGATION (PILL MENU) ==================== -->
+<div class="page-nav-wrap rise d3">
+    <nav class="page-nav" aria-label="Sub menu Kabar Damkar">
+        <a href="/edu-damkar"><i class="fas fa-video"></i> Edu Damkar</a>
+        <a href="/infografis"><i class="fas fa-image"></i> Info Grafis</a>
+        <a href="/media-informasi" class="active"><i class="fas fa-newspaper"></i> Media Informasi</a>
+        <a href="/ujung-ujung-damkar"><i class="fas fa-fire-extinguisher"></i> Ujung-ujung Damkar</a>
+    </nav>
+</div>
+
 <!-- ==================== BODY & KONTEN ==================== -->
 <div class="page-body">
     
-    <!-- Tab Filter Kategori (Auto-Wrap, Tanpa Icon Hashtag) -->
+    <!-- Tab Filter Kategori -->
     <div class="wrap tabs-wrap">
         <nav class="tabs" aria-label="Filter kategori">
             <a class="tab" href="{{ route('media.informasi') }}" {!! empty($kategoriId) ? 'aria-current="page"' : '' !!}>
                 Semua
             </a>
             @foreach($daftar_kategori as $kat)
-                {{-- AUTO FIX: Mengubah tulisan Lainya jadi Lainnya via PHP string replace --}}
                 @php $namaKatBersih = str_replace('Lainya', 'Lainnya', $kat->nama_kategori); @endphp
-                
                 <a class="tab" href="{{ route('media.informasi', ['kategori' => $kat->id]) }}" {!! ($kategoriId == $kat->id) ? 'aria-current="page"' : '' !!}>
                     {{ $namaKatBersih }}
                 </a>
@@ -556,7 +609,6 @@ f
                     if (str_contains($s, 'youtube'))   $ikonSumber = 'fab fa-youtube';
                     if (str_contains($s, 'tiktok'))    $ikonSumber = 'fab fa-tiktok';
                     
-                    // Cek auto fix nama kategori di card juga
                     $namaKategoriItem = str_replace('Lainya', 'Lainnya', $item->kategori->nama_kategori ?? 'Informasi');
                 @endphp
 
