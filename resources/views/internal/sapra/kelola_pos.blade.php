@@ -333,14 +333,28 @@
                     <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
                         <i class="fas fa-fire-extinguisher"></i> Input data
                     </a>
+
+                    <!-- MENU BARU: REKAP LAYANAN & OBJEK -->
+                    <a href="/internal/damtan/rekap-layanan" class="{{ Request::is('internal/damtan/rekap-layanan*') ? 'active' : '' }}">
+                        <i class="fas fa-truck-medical"></i> Input Rekap Layanan
+                    </a>
+                    <a href="/internal/damtan/rekap-objek" class="{{ Request::is('internal/damtan/rekap-objek*') ? 'active' : '' }}">
+                        <i class="fas fa-house-chimney-crack"></i> Input Rekap Objek Kebakaran
+                    </a>
+
                     <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
                         <i class="fas fa-file-signature"></i> Buat Surat Korban
                     </a>
-                    <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') ? 'active' : '' }}">
+                    <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
                         <i class="fas fa-clipboard-list"></i> Kelola Data Laporan
                     </a>
-                    <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') ? 'active' : '' }}">
-                        <i class="fas fa-folder"></i> Kelola Surat Korban
+                    <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
+                        <i class="fas fa-folder-open"></i> Kelola Surat Korban
+                    </a>
+                    
+                    <!-- MENU KELOLA SURAT KERAMAIAN -->
+                    <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
+                        <i class="fas fa-users-rectangle"></i><span class="lbl">Kelola Surat Keramaian</span>
                     </a>
                 </div>
             </details>

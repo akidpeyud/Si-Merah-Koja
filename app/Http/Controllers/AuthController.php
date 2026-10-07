@@ -128,7 +128,8 @@ class AuthController extends Controller
     // Menampilkan halaman Kelola User (Khusus Super User)
     public function kelolaUser()
     {
-        if (Auth::user()->role !== 'super_user') {
+        // Menggunakan method bawaan Spatie
+        if (!Auth::user()->hasRole('Super User')) {
             return redirect('/internal/index')->with('error', 'Akses Ditolak! Hanya Super User yang dapat mengelola pengguna.');
         }
 
@@ -140,7 +141,7 @@ class AuthController extends Controller
     // Memproses penambahan user baru
     public function storeUser(Request $request)
     {
-        if (Auth::user()->role !== 'super_user') {
+        if (!Auth::user()->hasRole('Super User')) {
             return redirect('/internal/index')->with('error', 'Akses Ditolak!');
         }
 
@@ -156,8 +157,11 @@ class AuthController extends Controller
         $user->email = $request->email;
         $user->nomor_pegawai = $request->nomor_pegawai;
         $user->password = Hash::make('Damkar123'); 
-        $user->role = $request->role;
+        $user->role = $request->role; // Tetap simpan di kolom lama untuk berjaga-jaga
         $user->save();
+
+        // TAMBAHAN SPATIE: Assign role ke user baru
+        $user->assignRole($request->role);
 
         return back()->with('success', 'Pengguna baru berhasil ditambahkan! Password default: Damkar123');
     }
@@ -165,7 +169,7 @@ class AuthController extends Controller
     // Memproses update data user
     public function updateUser(Request $request, $id)
     {
-        if (Auth::user()->role !== 'super_user') {
+        if (!Auth::user()->hasRole('Super User')) {
             return redirect('/internal/index')->with('error', 'Akses Ditolak!');
         }
 
@@ -188,6 +192,9 @@ class AuthController extends Controller
         }
 
         $user->save();
+
+        // TAMBAHAN SPATIE: Cabut role lama & pasangkan role baru
+        $user->syncRoles([$request->role]);
 
         return back()->with('success', 'Data pengguna berhasil diperbarui!');
     }
@@ -251,28 +258,18 @@ class AuthController extends Controller
 
     public function kelolaRedkar()
     {
-        // Izinkan 'user' (Pegawai Internal) dan 'super_user' untuk mengakses
-        if (!in_array(Auth::user()->role, ['user', 'super_user'])) {
-            return redirect('/internal/index')->with('error', 'Akses Ditolak!');
-        }
-
+        // Dibiarkan terbuka tanpa batasan agar semua role yang login bisa Read-Only data Redkar
         $relawan = RedkarRegistration::orderBy('created_at', 'desc')->get();
         
-        // Diubah ke folder pencegahan
         return view('internal.pencegahan.kelola_redkar', compact('relawan'));
     }
 
     // Menampilkan halaman cetak PDF untuk 1 relawan
     public function cetakRedkar($id)
     {
-        // Izinkan 'user' dan 'super_user'
-        if (!in_array(Auth::user()->role, ['user', 'super_user'])) {
-            return redirect('/internal/index')->with('error', 'Akses Ditolak!');
-        }
-
+        // Dibiarkan terbuka tanpa batasan agar semua role bisa mencetak PDF
         $relawan = RedkarRegistration::findOrFail($id); 
         
-        // Diubah ke folder pencegahan
         return view('internal.pencegahan.cetak_redkar', compact('relawan'));
     }
 }
