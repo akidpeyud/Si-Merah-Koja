@@ -710,20 +710,34 @@ button {
             </details>
 
             <!-- BAGIAN PEMADAMAN -->
-            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
+            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') || Request::is('internal/damtan/kelola-izin-keramaian*') ? 'open' : '' }}>
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
                         <i class="fas fa-fire-extinguisher"></i> Input data
                     </a>
+
+                    <!-- MENU BARU: REKAP LAYANAN & OBJEK -->
+                    <a href="/internal/damtan/rekap-layanan" class="{{ Request::is('internal/damtan/rekap-layanan*') ? 'active' : '' }}">
+                        <i class="fas fa-truck-medical"></i> Input Rekap Layanan
+                    </a>
+                    <a href="/internal/damtan/rekap-objek" class="{{ Request::is('internal/damtan/rekap-objek*') ? 'active' : '' }}">
+                        <i class="fas fa-house-chimney-crack"></i> Input Rekap Objek Kebakaran
+                    </a>
+
                     <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
                         <i class="fas fa-file-signature"></i> Buat Surat Korban
                     </a>
-                    <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') ? 'active' : '' }}">
+                    <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
                         <i class="fas fa-clipboard-list"></i> Kelola Data Laporan
                     </a>
-                    <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') ? 'active' : '' }}">
-                        <i class="fas fa-folder"></i> Kelola Surat Korban
+                    <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
+                        <i class="fas fa-folder-open"></i> Kelola Surat Korban
+                    </a>
+                    
+                    <!-- MENU KELOLA SURAT KERAMAIAN -->
+                    <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
+                        <i class="fas fa-users-rectangle"></i><span class="lbl">Kelola Surat Keramaian</span>
                     </a>
                 </div>
             </details>
@@ -772,27 +786,40 @@ button {
             </details>
         @endif
 
-        @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
+        @if(in_array(Auth::user()->role, ['operator', 'user', 'super_user']))
             <div class="side-kicker">Konten publik</div>
-            <details class="side-group" {{ Request::is('internal/operator*') ? 'open' : '' }}>
-                <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen berita</span><i class="fas fa-chevron-down chev"></i></summary>
+            <details class="side-group" {{ Request::is('internal/operator*') || Request::is('internal/peta-sigap*') ? 'open' : '' }}>
+                <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen Informasi</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
-                    <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
-                        <i class="far fa-newspaper"></i> Input &amp; Kelola Berita
-                    </a>
-                    <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
-                        <i class="far fa-image"></i> Kelola Info Grafis
-                    </a>
-                    <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
-                        <i class="fab fa-instagram"></i> Kelola Berita Medsos
-                    </a>
-                     </a>
-                    <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
-    <i class="fab fa-youtube"></i> Ujung-Ujung Damkar
-</a>
-<a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
-                        <i class="fas fa-graduation-cap"></i> Edu Damkar
-                    </a>
+
+                    @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
+                        <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
+                            <i class="far fa-newspaper"></i><span class="lbl">Input &amp; Kelola Berita</span>
+                        </a>
+                        <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
+                            <i class="far fa-image"></i><span class="lbl">Kelola Info Grafis</span>
+                        </a>
+                        <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
+                            <i class="fab fa-instagram"></i><span class="lbl">Kelola Berita Medsos</span>
+                        </a>
+                        <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
+                            <i class="fab fa-youtube"></i><span class="lbl">Ujung-Ujung Damkar</span>
+                        </a>
+                        <a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
+                            <i class="fas fa-graduation-cap"></i><span class="lbl">Edu Damkar</span>
+                        </a>
+                    @endif
+
+                    @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
+                        <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
+                        <a href="/internal/peta-sigap/input" class="{{ Request::is('internal/peta-sigap/input*') ? 'active' : '' }}">
+                            <i class="fas fa-plus"></i><span class="lbl">Input Titik Peta</span>
+                        </a>
+                        <a href="/internal/peta-sigap/data" class="{{ Request::is('internal/peta-sigap/data*') ? 'active' : '' }}">
+                            <i class="fas fa-table-list"></i><span class="lbl">Kelola Data Titik</span>
+                        </a>
+                    @endif
+
                 </div>
             </details>
         @endif
