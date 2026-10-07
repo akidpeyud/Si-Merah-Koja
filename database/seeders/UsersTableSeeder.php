@@ -5,27 +5,23 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Schema; // Tambahan wajib untuk mengatasi relasi
+use Illuminate\Support\Facades\Schema;
+use App\Models\User;
+use Spatie\Permission\Models\Role; // Tambahan wajib untuk membuat Role Spatie
 
 class UsersTableSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         // ========================================================
         // 0. BERSIHKAN TABEL SEBELUM SEEDING
         // ========================================================
-        // Matikan pengecekan foreign key sementara
         Schema::disableForeignKeyConstraints();
 
-        // Kosongkan isi ketiga tabel ini HANYA (tabel lain di database aman)
         DB::table('users')->truncate();
         DB::table('redkar_registrations')->truncate();
         DB::table('pemohons')->truncate();
 
-        // Nyalakan kembali pengecekan foreign key
         Schema::enableForeignKeyConstraints();
 
 
@@ -118,6 +114,28 @@ class UsersTableSeeder extends Seeder
                 'updated_at' => '2026-09-06 23:35:56',
             ],
         ]);
+
+        // ========================================================
+        // TAMBAHAN SPATIE: 1. BUAT ROLE DULU DI DATABASE
+        // ========================================================
+        // Kita pakai firstOrCreate supaya nggak error kalau seeder dijalankan berkali-kali
+        Role::firstOrCreate(['name' => 'Super User']);
+        Role::firstOrCreate(['name' => 'Sapra']);
+        Role::firstOrCreate(['name' => 'Damtan']);
+        Role::firstOrCreate(['name' => 'Pencegahan']);
+        Role::firstOrCreate(['name' => 'Sekretariat']);
+        Role::firstOrCreate(['name' => 'Operator']);
+
+        // ========================================================
+        // TAMBAHAN SPATIE: 2. ASSIGN ROLE KE MASING-MASING USER
+        // ========================================================
+        User::find(1)->assignRole('Super User'); // Andika
+        User::find(2)->assignRole('Sapra');      // Dhimas (Revisi)
+        User::find(3)->assignRole('Sekretariat'); // Ananda 
+        User::find(4)->assignRole('Damtan');     // Suwanda (Revisi)
+        User::find(5)->assignRole('Pencegahan'); // Ariffan 
+        User::find(6)->assignRole('Operator');   // Natasha 
+        User::find(7)->assignRole('Operator');   // Operator Berita 
 
         // ========================================================
         // 2. SEEDER AKUN REDKAR (BERDASARKAN STRUKTUR TABEL)
