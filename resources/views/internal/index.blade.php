@@ -484,7 +484,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             <span class="user-avatar">{{ strtoupper(substr(Auth::user()->nama_lengkap ?? 'R', 0, 1)) }}</span>
             <div class="user-meta">
                 <strong>{{ Auth::user()->nama_lengkap ?? 'Rekan kerja' }}</strong>
-                <small>{{ str_replace('_', ' ', Auth::user()->role ?? '') }}</small>
+                <small>{{ Auth::user()->role ?? '' }}</small>
             </div>
         </div>
         <form action="/logout" method="POST" style="margin:0;">
@@ -505,7 +505,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             <i class="fas fa-house"></i><span class="lbl">Dashboard utama</span>
         </a>
 
-        @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
+        @hasanyrole('Super User|Sapra|Damtan|Pencegahan|Sekretariat|Operator')
 
             <div class="side-kicker">Modul operasional</div>
 
@@ -621,46 +621,40 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     </a>
                 </div>
             </details>
-        @endif
+        @endhasanyrole
 
         <!-- MANAJEMEN INFORMASI (sudah termasuk Pemetaan SIGAP) -->
-        @if(in_array(Auth::user()->role, ['operator', 'user', 'super_user']))
+        @hasanyrole('Super User|Operator')
             <div class="side-kicker">Konten publik</div>
             <details class="side-group" {{ Request::is('internal/operator*') || Request::is('internal/peta-sigap*') ? 'open' : '' }}>
                 <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen Informasi</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
+                    <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
+                        <i class="far fa-newspaper"></i><span class="lbl">Input &amp; Kelola Berita</span>
+                    </a>
+                    <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
+                        <i class="far fa-image"></i><span class="lbl">Kelola Info Grafis</span>
+                    </a>
+                    <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
+                        <i class="fab fa-instagram"></i><span class="lbl">Kelola Berita Medsos</span>
+                    </a>
+                    <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
+                        <i class="fab fa-youtube"></i><span class="lbl">Ujung-Ujung Damkar</span>
+                    </a>
+                    <a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
+                        <i class="fas fa-graduation-cap"></i><span class="lbl">Edu Damkar</span>
+                    </a>
 
-                    @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
-                        <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
-                            <i class="far fa-newspaper"></i><span class="lbl">Input &amp; Kelola Berita</span>
-                        </a>
-                        <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
-                            <i class="far fa-image"></i><span class="lbl">Kelola Info Grafis</span>
-                        </a>
-                        <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
-                            <i class="fab fa-instagram"></i><span class="lbl">Kelola Berita Medsos</span>
-                        </a>
-                        <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
-                            <i class="fab fa-youtube"></i><span class="lbl">Ujung-Ujung Damkar</span>
-                        </a>
-                        <a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
-                            <i class="fas fa-graduation-cap"></i><span class="lbl">Edu Damkar</span>
-                        </a>
-                    @endif
-
-                    @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
-                        <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
-                        <a href="/internal/peta-sigap/input" class="{{ Request::is('internal/peta-sigap/input*') ? 'active' : '' }}">
-                            <i class="fas fa-plus"></i><span class="lbl">Input Titik Peta</span>
-                        </a>
-                        <a href="/internal/peta-sigap/data" class="{{ Request::is('internal/peta-sigap/data*') ? 'active' : '' }}">
-                            <i class="fas fa-table-list"></i><span class="lbl">Kelola Data Titik</span>
-                        </a>
-                    @endif
-
+                    <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
+                    <a href="/internal/peta-sigap/input" class="{{ Request::is('internal/peta-sigap/input*') ? 'active' : '' }}">
+                        <i class="fas fa-plus"></i><span class="lbl">Input Titik Peta</span>
+                    </a>
+                    <a href="/internal/peta-sigap/data" class="{{ Request::is('internal/peta-sigap/data*') ? 'active' : '' }}">
+                        <i class="fas fa-table-list"></i><span class="lbl">Kelola Data Titik</span>
+                    </a>
                 </div>
             </details>
-        @endif
+        @endhasanyrole
 
         <!-- PENGATURAN AKUN -->
         <div class="side-kicker">Akun</div>
@@ -671,11 +665,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     <i class="fas fa-user-pen"></i><span class="lbl">Profil Saya</span>
                 </a>
 
-                @if(auth()->user()->role === 'super_user')
+                @hasrole('Super User')
                     <a href="{{ url('/internal/kelola-user') }}" class="{{ request()->is('internal/kelola-user*') ? 'active' : '' }}">
                         <i class="fas fa-users-gear"></i><span class="lbl">Kelola Pengguna</span>
                     </a>
-                @endif
+                @endhasrole
 
                 <a href="{{ url('/internal/kelola-pemohon') }}" class="{{ request()->is('internal/kelola-pemohon*') ? 'active' : '' }}">
                     <i class="fas fa-address-book"></i><span class="lbl">Kelola Akun Pemohon</span>
@@ -694,16 +688,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         </div>
 
         <section class="welcome">
-            <span class="welcome-badge"><i class="fas fa-shield-halved"></i> {{ Auth::user()->role === 'super_user' ? 'Super user' : 'Pegawai internal' }}</span>
+            <span class="welcome-badge"><i class="fas fa-shield-halved"></i> {{ Auth::user()->hasRole('Super User') ? 'Super user' : 'Pegawai internal' }}</span>
             <h2>Selamat bekerja, {{ Auth::user()->nama_lengkap ?? 'Rekan kerja' }}.</h2>
-            @if(Auth::user()->role === 'super_user')
+            @hasrole('Super User')
                 <p>Anda memiliki kendali penuh untuk memantau dan mengelola seluruh modul operasional maupun sistem.</p>
             @else
                 <p>Anda dapat berkolaborasi mengelola laporan dari seluruh modul layanan Disdamkartan.</p>
-            @endif
+            @endhasrole
         </section>
 
-        @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
+        @hasanyrole('Super User|Sapra|Damtan|Pencegahan|Sekretariat|Operator')
 
         <!-- 1. BAGIAN PENCEGAHAN -->
         <div class="mb-5">
@@ -912,7 +906,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             </div>
         </div>
 
-        @endif
+        @endhasanyrole
 
     </main>
 </div>

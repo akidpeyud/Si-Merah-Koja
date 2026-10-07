@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use App\Models\User;
-use Spatie\Permission\Models\Role; // Tambahan wajib untuk membuat Role Spatie
+use Spatie\Permission\Models\Role; 
 
 class UsersTableSeeder extends Seeder
 {
@@ -34,7 +34,7 @@ class UsersTableSeeder extends Seeder
                 'nama_lengkap' => 'Andika Dwi Putra',
                 'email' => 'dwiputdika@gmail.com',
                 'nomor_pegawai' => '23112021',
-                'role' => 'super_user',
+                'role' => 'Super User', // Disesuaikan
                 'email_verified_at' => null,
                 'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
@@ -46,7 +46,7 @@ class UsersTableSeeder extends Seeder
                 'nama_lengkap' => 'Dhimas Zaky Abiyyu',
                 'email' => 'dhimaszaky102005@gmail.com',
                 'nomor_pegawai' => '23112018',
-                'role' => 'user',
+                'role' => 'Sapra', // Disesuaikan
                 'email_verified_at' => null,
                 'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
@@ -58,7 +58,7 @@ class UsersTableSeeder extends Seeder
                 'nama_lengkap' => 'Ananda Gita April',
                 'email' => 'siipooke@gmail.com',
                 'nomor_pegawai' => '23112017',
-                'role' => 'super_user',
+                'role' => 'Sekretariat', // Disesuaikan
                 'email_verified_at' => null,
                 'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
@@ -70,7 +70,7 @@ class UsersTableSeeder extends Seeder
                 'nama_lengkap' => 'M. Suwanda',
                 'email' => 'mebius3105@gmail.com',
                 'nomor_pegawai' => '23111006',
-                'role' => 'user',
+                'role' => 'Damtan', // Disesuaikan
                 'email_verified_at' => null,
                 'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
@@ -82,7 +82,7 @@ class UsersTableSeeder extends Seeder
                 'nama_lengkap' => 'M Ariffan Hidayah',
                 'email' => 'erikpramana68@gmail.com',
                 'nomor_pegawai' => '23112007',
-                'role' => 'user',
+                'role' => 'Pencegahan', // Disesuaikan
                 'email_verified_at' => null,
                 'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
@@ -94,7 +94,7 @@ class UsersTableSeeder extends Seeder
                 'nama_lengkap' => 'Natasha Romanoff',
                 'email' => 'adingbing11@gmail.com',
                 'nomor_pegawai' => '231120xx',
-                'role' => 'user',
+                'role' => 'Operator', // Disesuaikan
                 'email_verified_at' => null,
                 'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
@@ -106,7 +106,7 @@ class UsersTableSeeder extends Seeder
                 'nama_lengkap' => 'Operator Berita',
                 'email' => 'berita.damkar@gmail.com',
                 'nomor_pegawai' => '23113001',
-                'role' => 'operator',
+                'role' => 'Operator', // Disesuaikan
                 'email_verified_at' => null,
                 'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
@@ -118,7 +118,6 @@ class UsersTableSeeder extends Seeder
         // ========================================================
         // TAMBAHAN SPATIE: 1. BUAT ROLE DULU DI DATABASE
         // ========================================================
-        // Kita pakai firstOrCreate supaya nggak error kalau seeder dijalankan berkali-kali
         Role::firstOrCreate(['name' => 'Super User']);
         Role::firstOrCreate(['name' => 'Sapra']);
         Role::firstOrCreate(['name' => 'Damtan']);
@@ -129,13 +128,13 @@ class UsersTableSeeder extends Seeder
         // ========================================================
         // TAMBAHAN SPATIE: 2. ASSIGN ROLE KE MASING-MASING USER
         // ========================================================
-        User::find(1)->assignRole('Super User'); // Andika
-        User::find(2)->assignRole('Sapra');      // Dhimas (Revisi)
-        User::find(3)->assignRole('Sekretariat'); // Ananda 
-        User::find(4)->assignRole('Damtan');     // Suwanda (Revisi)
-        User::find(5)->assignRole('Pencegahan'); // Ariffan 
-        User::find(6)->assignRole('Operator');   // Natasha 
-        User::find(7)->assignRole('Operator');   // Operator Berita 
+        User::find(1)->assignRole('Super User'); 
+        User::find(2)->assignRole('Sapra');      
+        User::find(3)->assignRole('Sekretariat'); 
+        User::find(4)->assignRole('Damtan');     
+        User::find(5)->assignRole('Pencegahan'); 
+        User::find(6)->assignRole('Operator');   
+        User::find(7)->assignRole('Operator');   
 
         // ========================================================
         // 2. SEEDER AKUN REDKAR (BERDASARKAN STRUKTUR TABEL)
