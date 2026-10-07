@@ -326,11 +326,20 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/internal/pencegahan/kelola-perpanjang-skk/update-status/{id}', [SkkAdminController::class, 'updateStatusPerpanjang'])->name('skk.update_status_perpanjang');
     
     // 4. Kelola Edukasi
+    // Rute utama (Halaman Tabel)
     Route::get('/internal/pencegahan/kelola-edukasi', [PermohonanEdukasiController::class, 'index']);
+    
+    // Rute Tambah Offline (Harus di atas rute {id})
+    Route::get('/internal/pencegahan/kelola-edukasi/tambah', [PermohonanEdukasiController::class, 'createOffline'])->name('edukasi.offline.create');
+    Route::post('/internal/pencegahan/kelola-edukasi/simpan-offline', [PermohonanEdukasiController::class, 'storeOffline'])->name('edukasi.offline.store');
+    
+    // Rute Update Status
     Route::post('/internal/pencegahan/kelola-edukasi/update-status/{id}', function (Illuminate\Http\Request $request, $id) { 
         App\Models\PermohonanEdukasi::where('id', $id)->update(['status_permohonan' => $request->status_permohonan]); 
         return redirect()->back()->with('success', 'Status Permohonan Edukasi berhasil diperbarui!'); 
     });
+
+    // Rute Detail (Harus di paling bawah grup edukasi)
     Route::get('/internal/pencegahan/kelola-edukasi/{id}', [PermohonanEdukasiController::class, 'show']);
 
     // 5. Inspeksi Kebakaran & Fire Drill
@@ -710,3 +719,6 @@ Route::get('/download-format-surat', function () {
         return abort(404, 'File PDF tidak ditemukan di folder public/dokumen/');
     }
 })->name('download.format.surat');
+// Tambahkan route edit dan update untuk Edukasi
+Route::get('/internal/pencegahan/kelola-edukasi/{id}/edit', [PermohonanEdukasiController::class, 'edit'])->name('edukasi.offline.edit');
+Route::put('/internal/pencegahan/kelola-edukasi/{id}', [PermohonanEdukasiController::class, 'update'])->name('edukasi.offline.update');
