@@ -145,46 +145,77 @@ class PemberdayaanController extends Controller
         return view('internal.pencegahan.cetak_sosialisasi', compact('data'));
     }
 
-    // 8. CETAK EXCEL SOSIALISASI
+    // 8. CETAK EXCEL SOSIALISASI & EDUKASI (Format HTML Table bertingkat ke .xls)
     public function cetakExcel()
     {
         $data = DB::table('sosialisasi_edukasi')->orderBy('tanggal_pelaksanaan', 'desc')->get();
-        $filename = "Data_Sosialisasi_Edukasi_" . date('Ymd') . ".csv";
+        $filename = "Data_Sosialisasi_Edukasi_" . date('Ymd') . ".xls";
 
-        $headers = [
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=$filename",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
-        ];
+        // Bikin struktur tabel HTML langsung di Controller
+        $html = '<table border="1" cellpadding="5" cellspacing="0">';
+        $html .= '<thead>';
+        $html .= '<tr>';
+        $html .= '<th rowspan="2" style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">NO</th>';
+        $html .= '<th rowspan="2" style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">HARI / TGL</th>';
+        $html .= '<th rowspan="2" style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">RT</th>';
+        $html .= '<th rowspan="2" style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">KELURAHAN</th>';
+        $html .= '<th rowspan="2" style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">KECAMATAN</th>';
+        $html .= '<th rowspan="2" style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">POSYANDU / NAMA SEKOLAH</th>';
+        $html .= '<th colspan="3" style="background-color: #0f172a; color: white; text-align: center;">JUMLAH PESERTA</th>';
+        $html .= '<th rowspan="2" style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">FOTO DAN VIDEO</th>';
+        $html .= '</tr>';
+        $html .= '<tr>';
+        $html .= '<th style="background-color: #0f172a; color: white; text-align: center;">PEREMPUAN</th>';
+        $html .= '<th style="background-color: #0f172a; color: white; text-align: center;">LAKI-LAKI</th>';
+        $html .= '<th style="background-color: #0f172a; color: white; text-align: center;">TOTAL</th>';
+        $html .= '</tr>';
+        $html .= '</thead>';
+        
+        $html .= '<tbody>';
+        
+        $total_semua_perempuan = 0;
+        $total_semua_lakilaki = 0;
+        $total_semua_peserta = 0;
 
-        $columns = ['NO', 'TANGGAL PELAKSANAAN', 'KECAMATAN', 'KELURAHAN', 'RT', 'POSYANDU / NAMA SEKOLAH', 'PESERTA LAKI-LAKI', 'PESERTA PEREMPUAN', 'TOTAL PESERTA'];
+        foreach ($data as $index => $row) {
+            $tanggal = $row->tanggal_pelaksanaan ? \Carbon\Carbon::parse($row->tanggal_pelaksanaan)->translatedFormat('d F Y') : '-';
+            $perempuan = $row->peserta_perempuan ?? 0;
+            $lakilaki = $row->peserta_laki_laki ?? 0;
+            $total_peserta = $perempuan + $lakilaki;
 
-        $callback = function() use($data, $columns) {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, $columns);
+            $total_semua_perempuan += $perempuan;
+            $total_semua_lakilaki += $lakilaki;
+            $total_semua_peserta += $total_peserta;
 
-            foreach ($data as $index => $row) {
-                // Hitung total peserta otomatis
-                $total_peserta = ($row->peserta_laki_laki ?? 0) + ($row->peserta_perempuan ?? 0);
+            $html .= '<tr>';
+            $html .= '<td style="text-align: center;">' . ($index + 1) . '</td>';
+            $html .= '<td style="text-align: center;">' . $tanggal . '</td>';
+            $html .= '<td style="text-align: center;">' . ($row->rt ?? '-') . '</td>';
+            $html .= '<td>' . ($row->kelurahan ?? '-') . '</td>';
+            $html .= '<td>' . ($row->kecamatan ?? '-') . '</td>';
+            $html .= '<td>' . ($row->posyandu_sekolah ?? '-') . '</td>';
+            $html .= '<td style="text-align: center;">' . $perempuan . '</td>';
+            $html .= '<td style="text-align: center;">' . $lakilaki . '</td>';
+            $html .= '<td style="text-align: center;"><b>' . $total_peserta . '</b></td>';
+            $html .= '<td style="text-align: center;">' . (!empty($row->foto_video) ? 'Ada Media' : '-') . '</td>';
+            $html .= '</tr>';
+        }
 
-                fputcsv($file, [
-                    $index + 1,
-                    $row->tanggal_pelaksanaan ? \Carbon\Carbon::parse($row->tanggal_pelaksanaan)->translatedFormat('d F Y') : '-',
-                    $row->kecamatan ?? '-',
-                    $row->kelurahan ?? '-',
-                    $row->rt ?? '-',
-                    $row->posyandu_sekolah ?? '-',
-                    $row->peserta_laki_laki ?? '0',
-                    $row->peserta_perempuan ?? '0',
-                    $total_peserta
-                ]);
-            }
-            fclose($file);
-        };
+        // Baris Total Seluruh Peserta
+        $html .= '<tr>';
+        $html .= '<td colspan="6" style="text-align: center; font-weight: bold; background-color: #f3f4f6;">TOTAL SELURUH PESERTA</td>';
+        $html .= '<td style="text-align: center; font-weight: bold; background-color: #f3f4f6;">' . $total_semua_perempuan . '</td>';
+        $html .= '<td style="text-align: center; font-weight: bold; background-color: #f3f4f6;">' . $total_semua_lakilaki . '</td>';
+        $html .= '<td style="text-align: center; font-weight: bold; background-color: #f3f4f6;">' . $total_semua_peserta . '</td>';
+        $html .= '<td style="background-color: #f3f4f6;"></td>';
+        $html .= '</tr>';
 
-        return response()->stream($callback, 200, $headers);
+        $html .= '</tbody>';
+        $html .= '</table>';
+
+        return response($html)
+            ->header('Content-Type', 'application/vnd.ms-excel')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
 
     // 9. CETAK PELATIHAN KELUARGA
@@ -195,41 +226,76 @@ class PemberdayaanController extends Controller
         return view('internal.pencegahan.cetak_pelatihan', compact('data'));
     }
 
-    // 10. CETAK EXCEL PELATIHAN KELUARGA
+    // 10. CETAK EXCEL PELATIHAN KELUARGA (Format HTML Table bertingkat ke .xls)
     public function cetakExcelPelatihan()
     {
         $data = \App\Models\PelatihanKeluarga::orderBy('tanggal_pelaksanaan', 'desc')->get();
-        $filename = "Data_Pelatihan_Keluarga_" . date('Ymd') . ".csv";
+        $filename = "Data_Pelatihan_Keluarga_" . date('Ymd') . ".xls";
 
-        $headers = [
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=$filename",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
-        ];
+        // Bikin struktur tabel HTML langsung di Controller
+        $html = '<table border="1" cellpadding="5" cellspacing="0">';
+        $html .= '<thead>';
+        $html .= '<tr>';
+        $html .= '<th rowspan="2" style="background-color: #1f2937; color: white; text-align: center; vertical-align: middle;">NO</th>';
+        $html .= '<th rowspan="2" style="background-color: #1f2937; color: white; text-align: center; vertical-align: middle;">HARI / TGL</th>';
+        $html .= '<th rowspan="2" style="background-color: #1f2937; color: white; text-align: center; vertical-align: middle;">RT</th>';
+        $html .= '<th rowspan="2" style="background-color: #1f2937; color: white; text-align: center; vertical-align: middle;">KELURAHAN</th>';
+        $html .= '<th rowspan="2" style="background-color: #1f2937; color: white; text-align: center; vertical-align: middle;">KECAMATAN</th>';
+        $html .= '<th colspan="3" style="background-color: #1f2937; color: white; text-align: center;">JUMLAH PESERTA</th>';
+        $html .= '</tr>';
+        $html .= '<tr>';
+        $html .= '<th style="background-color: #1f2937; color: white; text-align: center;">PEREMPUAN</th>';
+        $html .= '<th style="background-color: #1f2937; color: white; text-align: center;">LAKI-LAKI</th>';
+        $html .= '<th style="background-color: #1f2937; color: white; text-align: center;">TOTAL</th>';
+        $html .= '</tr>';
+        $html .= '</thead>';
+        
+        $html .= '<tbody>';
+        
+        // Variabel untuk menghitung total seluruh peserta di bawah tabel
+        $total_semua_perempuan = 0;
+        $total_semua_lakilaki = 0;
+        $total_semua_peserta = 0;
 
-        // Sesuai dengan kolom di tabel view kamu
-        $columns = ['NO', 'HARI / TANGGAL', 'LOKASI / KELURAHAN', 'NAMA SEKOLAH', 'JUMLAH PESERTA', 'KETERANGAN'];
+        foreach ($data as $index => $row) {
+            $tanggal = $row->tanggal_pelaksanaan ? \Carbon\Carbon::parse($row->tanggal_pelaksanaan)->translatedFormat('d F Y') : '-';
+            
+            // Ambil data peserta (pastikan nama kolom di database sesuai, misal: peserta_perempuan)
+            $perempuan = $row->peserta_perempuan ?? 0;
+            $lakilaki = $row->peserta_laki_laki ?? 0;
+            $total_peserta = $perempuan + $lakilaki;
 
-        $callback = function() use($data, $columns) {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, $columns);
+            // Tambahkan ke total keseluruhan
+            $total_semua_perempuan += $perempuan;
+            $total_semua_lakilaki += $lakilaki;
+            $total_semua_peserta += $total_peserta;
+            
+            $html .= '<tr>';
+            $html .= '<td style="text-align: center;">' . ($index + 1) . '</td>';
+            $html .= '<td>' . $tanggal . '</td>';
+            $html .= '<td>' . ($row->rt ?? '-') . '</td>';
+            $html .= '<td>' . ($row->kelurahan ?? '-') . '</td>';
+            $html .= '<td>' . ($row->kecamatan ?? '-') . '</td>';
+            $html .= '<td style="text-align: center;">' . $perempuan . '</td>';
+            $html .= '<td style="text-align: center;">' . $lakilaki . '</td>';
+            $html .= '<td style="text-align: center;"><b>' . $total_peserta . '</b></td>';
+            $html .= '</tr>';
+        }
 
-            foreach ($data as $index => $row) {
-                fputcsv($file, [
-                    $index + 1,
-                    // Format l, d F Y akan menghasilkan: Senin, 01 Agustus 2026
-                    $row->tanggal_pelaksanaan ? \Carbon\Carbon::parse($row->tanggal_pelaksanaan)->translatedFormat('l, d F Y') : '-',
-                    $row->lokasi_kelurahan ?? ($row->kelurahan ?? '-'),
-                    $row->nama_sekolah ?? '-',
-                    $row->jumlah_peserta ?? '0',
-                    $row->keterangan ?? '-'
-                ]);
-            }
-            fclose($file);
-        };
+        // Baris untuk TOTAL SELURUH PESERTA
+        $html .= '<tr>';
+        $html .= '<td colspan="5" style="text-align: center; font-weight: bold; background-color: #f3f4f6;">TOTAL SELURUH PESERTA</td>';
+        $html .= '<td style="text-align: center; font-weight: bold; background-color: #f3f4f6;">' . $total_semua_perempuan . '</td>';
+        $html .= '<td style="text-align: center; font-weight: bold; background-color: #f3f4f6;">' . $total_semua_lakilaki . '</td>';
+        $html .= '<td style="text-align: center; font-weight: bold; background-color: #f3f4f6;">' . $total_semua_peserta . '</td>';
+        $html .= '</tr>';
 
-        return response()->stream($callback, 200, $headers);
+        $html .= '</tbody>';
+        $html .= '</table>';
+
+        // Return HTML string dan paksa download sebagai Excel .xls
+        return response($html)
+            ->header('Content-Type', 'application/vnd.ms-excel')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
 }
