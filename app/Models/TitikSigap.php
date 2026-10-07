@@ -9,15 +9,14 @@ class TitikSigap extends Model
 {
     use HasFactory;
 
-    protected $table = 'titik_sigaps';
-
-    // Kolom-kolom yang diizinkan untuk diisi dari form request
+    // Tambahkan 'keterangan' ke dalam fillable
     protected $fillable = [
-        'kategori',
-        'nama',
-        'tanggal',
-        'lokasi',
-        'latitude',
-        'longitude',
+        'kategori', 
+        'nama', 
+        'tanggal', 
+        'lokasi', 
+        'keterangan', // <--- Kolom baru
+        'latitude', 
+        'longitude'
     ];
 }
