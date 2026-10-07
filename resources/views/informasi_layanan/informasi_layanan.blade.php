@@ -776,18 +776,46 @@
     var panelBtns = document.querySelectorAll('[data-panel]');
     var panelEls = document.querySelectorAll('.data-panel');
 
+    function openPanel(name, scroll) {
+        var btn = document.querySelector('[data-panel="' + name + '"]');
+        var panel = document.getElementById('panel-' + name);
+        if (!btn || !panel) return false;
+
+        // tandai sub-menu aktif
+        panelBtns.forEach(function (b) { b.removeAttribute('aria-current'); });
+        btn.setAttribute('aria-current', 'true');
+
+        // buka kategori induknya di sidebar, tutup yang lain
+        var cat = btn.closest('.cat');
+        document.querySelectorAll('.cat[data-open]').forEach(function (c) {
+            c.removeAttribute('data-open');
+            c.querySelector('.cat-btn').setAttribute('aria-expanded', 'false');
+        });
+        cat.setAttribute('data-open', '');
+        cat.querySelector('.cat-btn').setAttribute('aria-expanded', 'true');
+
+        // tampilkan panel
+        welcome.hidden = true;
+        panelEls.forEach(function (p) { p.hidden = true; });
+        panel.hidden = false;
+
+        if (scroll && window.innerWidth <= 900) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return true;
+    }
+
     panelBtns.forEach(function (btn) {
         btn.addEventListener('click', function () {
-            panelBtns.forEach(function (b) { b.removeAttribute('aria-current'); });
-            btn.setAttribute('aria-current', 'true');
-            welcome.hidden = true;
-            panelEls.forEach(function (p) { p.hidden = true; });
-
-            var panel = document.getElementById('panel-' + btn.dataset.panel);
-            panel.hidden = false;
-            if (window.innerWidth <= 900) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            openPanel(btn.dataset.panel, true);
+            // simpan di URL supaya bisa di-share / di-refresh
+            if (window.history && history.replaceState) {
+                history.replaceState(null, '', '?panel=' + encodeURIComponent(btn.dataset.panel));
+            }
         });
     });
+
+    // Buka otomatis kalau datang dari halaman lain (mis. dari halaman Sarana pemadam)
+    var qPanel = new URLSearchParams(window.location.search).get('panel');
+    if (qPanel) openPanel(qPanel, true);
 })();
 </script>
 </body>

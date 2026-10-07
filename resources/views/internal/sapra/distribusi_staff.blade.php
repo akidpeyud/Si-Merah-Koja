@@ -1,3 +1,16 @@
+@php
+    /* ------------------------------------------------------------
+       LOGIKA AKUN (Spatie Permission)
+       Role: Super User, Sapra, Sekretariat, Damtan, Pencegahan, Operator
+       Aturan: HANYA role "Sapra" yang boleh CRUD. Role lain: lihat & cetak saja.
+       Mau tambah role lain yang boleh CRUD? Ubah satu baris $bisaCrud di bawah.
+       ------------------------------------------------------------ */
+    $user       = Auth::user();
+    $namaRole   = $user->getRoleNames()->first() ?? '';
+    $bisaCrud = $user->hasRole('Sapra') || $user->hasRole('Super User');
+    $isSuper    = $user->hasRole('Super User');
+    $bisaKonten = $user->hasAnyRole(['Operator', 'Super User']);
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -38,6 +51,8 @@
             --success: #198754;
             --blue: #2563eb;
             --blue-d: #1d4fd6;
+            --info: #2563eb;
+            --info-soft: rgba(37, 99, 235, .09);
 
             --steel: #64748b;
             --steel-soft: #94a3b8;
@@ -166,6 +181,9 @@
         .page-toolbar p { color: var(--steel); font-size: .95rem; }
         .toolbar-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 
+        /* Badge mode hanya-lihat (untuk role selain Sapra) */
+        .mode-badge { display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; padding: 6px 14px; border-radius: 999px; background: var(--info-soft); color: var(--info); border: 1px solid rgba(37, 99, 235, .2); font-size: .78rem; font-weight: 700; }
+
         .search { position: relative; width: 280px; max-width: 100%; }
         .search i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--steel); font-size: .85rem; pointer-events: none; }
         .search input { width: 100%; height: 44px; padding: 0 16px 0 42px; border-radius: 999px; border: 1px solid var(--line-dark); background: #fff; font: inherit; font-size: .9rem; color: var(--ink); transition: border-color .2s, box-shadow .2s; }
@@ -284,6 +302,19 @@
         .ss-opt.sel { background: var(--navy-light); color: var(--navy-dark); font-weight: 700; }
         .ss-opt mark { background: #fff3c4; color: inherit; border-radius: 3px; padding: 0 1px; }
         .ss-empty { padding: 16px; text-align: center; color: var(--steel-soft); font-size: .85rem; font-weight: 600; }
+
+        /* ==========================================================
+           PRINT
+           ========================================================== */
+        @media print {
+            .topbar, .sidebar, .sidebar-backdrop, .page-toolbar .toolbar-actions, .row-actions, dialog, .toast-wrap, .mode-badge, .staff-info .btn { display: none !important; }
+            body { background: #fff !important; overflow: visible !important; }
+            .shell { display: block !important; height: auto !important; }
+            .content { padding: 0 !important; overflow: visible !important; height: auto !important; }
+            .table-wrap { border: none !important; box-shadow: none !important; }
+            .col-aksi { display: none !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
     </style>
 </head>
 <body>
@@ -293,6 +324,13 @@
         <div class="toast" data-toast>
             <span class="toast-ico"><i class="fas fa-check"></i></span>
             <span>{{ session('success') }}</span>
+            <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="toast err" data-toast>
+            <span class="toast-ico"><i class="fas fa-triangle-exclamation"></i></span>
+            <span>{{ session('error') }}</span>
             <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
         </div>
     @endif
@@ -311,10 +349,10 @@
     </div>
     <div class="topbar-right">
         <div class="user-chip">
-            <span class="user-avatar">{{ strtoupper(substr(Auth::user()->nama_lengkap ?? 'D', 0, 1)) }}</span>
+            <span class="user-avatar">{{ strtoupper(substr($user->nama_lengkap ?? 'R', 0, 1)) }}</span>
             <div class="user-meta">
-                <strong>{{ Auth::user()->nama_lengkap ?? 'Dhimas Zaky Abiyyu' }}</strong>
-                <small>{{ str_replace('_', ' ', Auth::user()->role ?? 'User') }}</small>
+                <strong>{{ $user->nama_lengkap ?? 'Rekan kerja' }}</strong>
+                <small>{{ $namaRole }}</small>
             </div>
         </div>
         <form action="/logout" method="POST" style="margin:0;">
@@ -337,78 +375,74 @@
         <div class="side-divider"></div>
         <div class="side-kicker">MODUL OPERASIONAL</div>
 
-        @if(in_array(Auth::user()->role, ['pencegahan', 'user', 'super_user']))
-            <details class="side-group" {{ Request::is('internal/pencegahan*') ? 'open' : '' }}>
-                <summary>
-                    <i class="fas fa-shield-halved grp-ico"></i>
-                    <span class="grp-label">BAGIAN PENCEGAHAN</span>
-                    <i class="fas fa-chevron-down chev"></i>
-                </summary>
-                <div class="side-sub">
-                    <a href="/internal/pencegahan/peningkatan-kapasitas" class="{{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}">
-                        <i class="fas fa-arrow-trend-up"></i> Peningkatan Kapasitas Aparatur
-                    </a>
-                    <a href="/internal/pencegahan/inspeksi-kebakaran" class="{{ Request::is('internal/pencegahan/inspeksi-kebakaran*') ? 'active' : '' }}">
-                        <i class="fas fa-magnifying-glass-chart"></i> Pencegahan Kebakaran dan Inspeksi
-                    </a>
-                    <a href="/internal/pencegahan/pemberdayaan-masyarakat" class="{{ Request::is('internal/pencegahan/pemberdayaan-masyarakat*') ? 'active' : '' }}">
-                        <i class="fas fa-handshake-angle"></i> Pemberdayaan Masyarakat dan Dunia Usaha
-                    </a>
-                    <a href="/internal/pencegahan/kelola-edukasi" class="{{ Request::is('internal/pencegahan/kelola-edukasi*') ? 'active' : '' }}">
-                        <i class="fas fa-bullhorn"></i> Kelola Edukasi
-                    </a>
-                    <a href="/internal/pencegahan/kelola-redkar" class="{{ Request::is('internal/pencegahan/kelola-redkar*') ? 'active' : '' }}">
-                        <i class="fas fa-users-rectangle"></i> Kelola Redkar
-                    </a>
-                    <a href="/internal/pencegahan/kelola-rpkbgl" class="{{ Request::is('internal/pencegahan/kelola-rpkbgl*') ? 'active' : '' }}">
-                        <i class="fas fa-building-circle-check"></i> Kelola RPKBGL
-                    </a>
-                    <a href="/internal/pencegahan/kelola-skk" class="{{ Request::is('internal/pencegahan/kelola-skk*') ? 'active' : '' }}">
-                        <i class="fas fa-file-shield"></i> Kelola SKK
-                    </a>
-                </div>
-            </details>
-        @endif
+        <!-- BAGIAN PENCEGAHAN (semua role bisa lihat) -->
+        <details class="side-group" {{ Request::is('internal/pencegahan*') ? 'open' : '' }}>
+            <summary>
+                <i class="fas fa-shield-halved grp-ico"></i>
+                <span class="grp-label">BAGIAN PENCEGAHAN</span>
+                <i class="fas fa-chevron-down chev"></i>
+            </summary>
+            <div class="side-sub">
+                <a href="/internal/pencegahan/peningkatan-kapasitas" class="{{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}">
+                    <i class="fas fa-arrow-trend-up"></i> Peningkatan Kapasitas Aparatur
+                </a>
+                <a href="/internal/pencegahan/inspeksi-kebakaran" class="{{ Request::is('internal/pencegahan/inspeksi-kebakaran*') ? 'active' : '' }}">
+                    <i class="fas fa-magnifying-glass-chart"></i> Pencegahan Kebakaran dan Inspeksi
+                </a>
+                <a href="/internal/pencegahan/pemberdayaan-masyarakat" class="{{ Request::is('internal/pencegahan/pemberdayaan-masyarakat*') ? 'active' : '' }}">
+                    <i class="fas fa-handshake-angle"></i> Pemberdayaan Masyarakat dan Dunia Usaha
+                </a>
+                <a href="/internal/pencegahan/kelola-edukasi" class="{{ Request::is('internal/pencegahan/kelola-edukasi*') ? 'active' : '' }}">
+                    <i class="fas fa-bullhorn"></i> Kelola Edukasi
+                </a>
+                <a href="/internal/pencegahan/kelola-redkar" class="{{ Request::is('internal/pencegahan/kelola-redkar*') ? 'active' : '' }}">
+                    <i class="fas fa-users-rectangle"></i> Kelola Redkar
+                </a>
+                <a href="/internal/pencegahan/kelola-rpkbgl" class="{{ Request::is('internal/pencegahan/kelola-rpkbgl*') ? 'active' : '' }}">
+                    <i class="fas fa-building-circle-check"></i> Kelola RPKBGL
+                </a>
+                <a href="/internal/pencegahan/kelola-skk" class="{{ Request::is('internal/pencegahan/kelola-skk*') ? 'active' : '' }}">
+                    <i class="fas fa-file-shield"></i> Kelola SKK
+                </a>
+            </div>
+        </details>
 
-        @if(in_array(Auth::user()->role, ['pemadaman', 'user', 'super_user']))
-            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
-                <summary>
-                    <i class="fas fa-fire-extinguisher grp-ico"></i>
-                    <span class="grp-label">BAGIAN PEMADAMAN</span>
-                    <i class="fas fa-chevron-down chev"></i>
-                </summary>
-                <div class="side-sub">
-                   <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
+        <!-- BAGIAN PEMADAMAN (menu input/buat hanya untuk Sapra) -->
+        <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
+            <summary>
+                <i class="fas fa-fire-extinguisher grp-ico"></i>
+                <span class="grp-label">BAGIAN PEMADAMAN</span>
+                <i class="fas fa-chevron-down chev"></i>
+            </summary>
+            <div class="side-sub">
+                @if($bisaCrud)
+                    <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
                         <i class="fas fa-fire-extinguisher"></i> Input data
                     </a>
-
-                    <!-- MENU BARU: REKAP LAYANAN & OBJEK -->
                     <a href="/internal/damtan/rekap-layanan" class="{{ Request::is('internal/damtan/rekap-layanan*') ? 'active' : '' }}">
                         <i class="fas fa-truck-medical"></i> Input Rekap Layanan
                     </a>
                     <a href="/internal/damtan/rekap-objek" class="{{ Request::is('internal/damtan/rekap-objek*') ? 'active' : '' }}">
                         <i class="fas fa-house-chimney-crack"></i> Input Rekap Objek Kebakaran
                     </a>
-
                     <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
                         <i class="fas fa-file-signature"></i> Buat Surat Korban
                     </a>
-                    <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
-                        <i class="fas fa-clipboard-list"></i> Kelola Data Laporan
-                    </a>
-                    <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
-                        <i class="fas fa-folder-open"></i> Kelola Surat Korban
-                    </a>
-                    
-                    <!-- MENU KELOLA SURAT KERAMAIAN -->
-                    <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
-                        <i class="fas fa-users-rectangle"></i><span class="lbl">Kelola Surat Keramaian</span>
-                    </a>
-                </div>
-            </details>
-        @endif
+                @endif
+                <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
+                    <i class="fas fa-clipboard-list"></i> Kelola Data Laporan
+                </a>
+                <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
+                    <i class="fas fa-folder-open"></i> Kelola Surat Korban
+                </a>
+                <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
+                    <i class="fas fa-users-rectangle"></i> Kelola Surat Keramaian
+                </a>
+            </div>
+        </details>
 
-        <details class="side-group" {{ Request::is('internal/kepegawaian*') ? 'open' : '' }}>
+        <!-- KEPEGAWAIAN -->
+        <details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') ? 'open' : '' }}>
             <summary>
                 <i class="fas fa-user-tie grp-ico"></i>
                 <span class="grp-label">KEPEGAWAIAN</span>
@@ -416,44 +450,40 @@
             </summary>
             <div class="side-sub">
                 <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
-            <i class="fas fa-user-tie"></i> Data Urut Kepegawaian
-        </a>
-        
-        <!-- Tambahan Tombol Program Kerja -->
-        <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
-            <i class="fas fa-file-contract"></i> Program Kerja
-        </a> 
+                    <i class="fas fa-user-tie"></i> Data Urut Kepegawaian
+                </a>
+                <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
+                    <i class="fas fa-file-contract"></i> Program Kerja
+                </a>
             </div>
         </details>
 
-        @if(in_array(Auth::user()->role, ['sapra', 'user', 'super_user']))
-            <details class="side-group" {{ Request::is('sapra*') ? 'open' : '' }}>
-                <summary>
-                    <i class="fas fa-warehouse grp-ico"></i>
-                    <span class="grp-label">BAGIAN SAPRA</span>
-                    <i class="fas fa-chevron-down chev"></i>
-                </summary>
-                <div class="side-sub">
-                    <span class="side-sub-kicker">SARANA &amp; PRASARANA</span>
-                    <a href="/sapra/sarana-mako" class="{{ Request::is('sapra/sarana-mako*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Sarana pemadam kebakaran</a>
-                    <a href="/sapra/prasarana-mako" class="{{ Request::is('sapra/prasarana-mako*') ? 'active' : '' }}"><i class="fas fa-building"></i> Prasarana pemadam kebakaran</a>
-                    <a href="/sapra/sarana-penyelamatan" class="{{ Request::is('sapra/sarana-penyelamatan*') ? 'active' : '' }}"><i class="fas fa-life-ring"></i> Sarana Penyelamatan &amp; Evakuasi</a>
-                    <a href="/sapra/sarana-pemeriksaan" class="{{ Request::is('sapra/sarana-pemeriksaan*') ? 'active' : '' }}"><i class="fas fa-search"></i> Sarana Pemeriksaan Proteksi kebakaran</a>
-                    <a href="/sapra/kelola-pos" class="{{ Request::is('sapra/kelola-pos*') ? 'active' : '' }}"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
+        <!-- BAGIAN SAPRA -->
+        <details class="side-group" {{ Request::is('sapra*') ? 'open' : '' }}>
+            <summary>
+                <i class="fas fa-warehouse grp-ico"></i>
+                <span class="grp-label">BAGIAN SAPRA</span>
+                <i class="fas fa-chevron-down chev"></i>
+            </summary>
+            <div class="side-sub">
+                <span class="side-sub-kicker">SARANA &amp; PRASARANA</span>
+                <a href="/sapra/sarana-mako" class="{{ Request::is('sapra/sarana-mako*') ? 'active' : '' }}"><i class="fas fa-fire-extinguisher"></i> Sarana pemadam kebakaran</a>
+                <a href="/sapra/prasarana-mako" class="{{ Request::is('sapra/prasarana-mako*') ? 'active' : '' }}"><i class="fas fa-building"></i> Prasarana pemadam kebakaran</a>
+                <a href="/sapra/sarana-penyelamatan" class="{{ Request::is('sapra/sarana-penyelamatan*') ? 'active' : '' }}"><i class="fas fa-life-ring"></i> Sarana Penyelamatan &amp; Evakuasi</a>
+                <a href="/sapra/sarana-pemeriksaan" class="{{ Request::is('sapra/sarana-pemeriksaan*') ? 'active' : '' }}"><i class="fas fa-search"></i> Sarana Pemeriksaan Proteksi kebakaran</a>
+                <a href="/sapra/kelola-pos" class="{{ Request::is('sapra/kelola-pos*') ? 'active' : '' }}"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
 
-                    <span class="side-sub-kicker">MANAJEMEN AIR</span>
-                    <a href="/sapra/data_hidrant_gedung" class="{{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}"><i class="fas fa-droplet"></i> Sumber Air</a>
-                    <a href="/sapra/data-hidrant-kota" class="{{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
+                <span class="side-sub-kicker">MANAJEMEN AIR</span>
+                <a href="/sapra/data_hidrant_gedung" class="{{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}"><i class="fas fa-droplet"></i> Sumber Air</a>
+                <a href="/sapra/data-hidrant-kota" class="{{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}"><i class="fas fa-map-marker-alt"></i> Data Hidrant Kota Jambi</a>
 
-                    <span class="side-sub-kicker">LOGISTIK &amp; DISTRIBUSI</span>
-                    <a href="/sapra/kebutuhan-sarpras" class="{{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
-                    <!-- AKTIF DISINI SESUAI KONTEN -->
-                    <a href="/sapra/distribusi-staff" class="active"><i class="fas fa-people-carry-box"></i> Serah Terima Barang</a>
-                </div>
-            </details>
-        @endif
+                <span class="side-sub-kicker">LOGISTIK &amp; DISTRIBUSI</span>
+                <a href="/sapra/kebutuhan-sarpras" class="{{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}"><i class="fas fa-clipboard-check"></i> Mutu Baku Kebutuhan</a>
+                <a href="/sapra/distribusi-staff" class="{{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}"><i class="fas fa-people-carry-box"></i> Serah Terima Barang</a>
+            </div>
+        </details>
 
-        @if(in_array(Auth::user()->role, ['operator', 'super_user']))
+        @if($bisaKonten)
             <div class="side-divider"></div>
             <div class="side-kicker">KONTEN PUBLIK</div>
             <details class="side-group" {{ Request::is('internal/operator*') || Request::is('media-informasi*') ? 'open' : '' }}>
@@ -463,7 +493,7 @@
                     <i class="fas fa-chevron-down chev"></i>
                 </summary>
                 <div class="side-sub">
-                  <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
+                    <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
                         <i class="far fa-newspaper"></i> Input &amp; Kelola Berita
                     </a>
                     <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
@@ -476,14 +506,15 @@
                         <i class="fab fa-youtube"></i> Ujung-Ujung Damkar
                     </a>
                     <a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
-                                            <i class="fas fa-graduation-cap"></i> Edu Damkar
+                        <i class="fas fa-graduation-cap"></i> Edu Damkar
                     </a>
-          </div>
+                </div>
             </details>
         @endif
 
         <div class="side-divider"></div>
 
+        <!-- KICKER AKUN -->
         <div class="side-kicker">AKUN</div>
         <details class="side-group" {{ Request::is('internal/profil*') || Request::is('internal/kelola-user*') ? 'open' : '' }}>
             <summary>
@@ -493,7 +524,7 @@
             </summary>
             <div class="side-sub">
                 <a href="/internal/profil" class="{{ Request::is('internal/profil*') ? 'active' : '' }}"><i class="fas fa-user-pen"></i> Profil saya</a>
-                @if(Auth::user()->role === 'super_user')
+                @if($isSuper)
                     <a href="/internal/kelola-user" class="{{ Request::is('internal/kelola-user*') ? 'active' : '' }}"><i class="fas fa-users-gear"></i> Kelola pengguna</a>
                 @endif
             </div>
@@ -506,7 +537,10 @@
         <div class="page-toolbar">
             <div>
                 <h1>Bukti Distribusi Barang</h1>
-                <p>Catat dan pantau waktu pembagian inventaris ke masing-masing anggota/staff.</p>
+                <p>{{ $bisaCrud ? 'Catat dan pantau waktu pembagian inventaris ke masing-masing anggota/staff.' : 'Lihat dan cetak catatan waktu pembagian inventaris ke masing-masing anggota/staff.' }}</p>
+                @unless($bisaCrud)
+                    <span class="mode-badge"><i class="fas fa-eye"></i> Mode lihat &amp; cetak</span>
+                @endunless
             </div>
             <div class="toolbar-actions">
                 <label class="search">
@@ -514,8 +548,11 @@
                     <i class="fas fa-search"></i>
                     <input type="text" id="searchInput" placeholder="Cari nama staff atau barang..." autocomplete="off">
                 </label>
+                <button type="button" class="btn btn-outline" onclick="window.print()"><i class="fas fa-print"></i> Cetak</button>
                 <a href="/sapra/distribusi-staff/cetak" target="_blank" class="btn btn-outline red"><i class="fas fa-file-pdf"></i> PDF</a>
-                <button type="button" class="btn btn-primary" data-open="dlgTambah" data-nama=""><i class="fas fa-user-plus"></i> Input Distribusi Baru</button>
+                @if($bisaCrud)
+                    <button type="button" class="btn btn-primary" data-open="dlgTambah" data-nama=""><i class="fas fa-user-plus"></i> Input Distribusi Baru</button>
+                @endif
             </div>
         </div>
 
@@ -526,10 +563,12 @@
                         <tr>
                             <th class="c" style="width:5%">NO</th>
                             <th style="width:25%">NAMA PENERIMA</th>
-                            <th class="c" style="width:25%">BARANG / INVENTARIS</th>
-                            <th class="c" style="width:15%">WAKTU TERIMA</th>
-                            <th style="width:20%">KETERANGAN</th>
-                            <th class="c" style="width:10%">AKSI</th>
+                            <th class="c" style="width:{{ $bisaCrud ? '25%' : '30%' }}">BARANG / INVENTARIS</th>
+                            <th class="c" style="width:{{ $bisaCrud ? '15%' : '18%' }}">WAKTU TERIMA</th>
+                            <th style="width:{{ $bisaCrud ? '20%' : '22%' }}">KETERANGAN</th>
+                            @if($bisaCrud)
+                                <th class="c col-aksi" style="width:10%">AKSI</th>
+                            @endif
                         </tr>
                     </thead>
 
@@ -538,16 +577,18 @@
                             <!-- HEADER NAMA STAFF -->
                             <tr class="staff-header">
                                 <td class="c staff-num">{{ $loop->iteration }}</td>
-                                <td colspan="5" class="staff-name-search">
+                                <td colspan="{{ $bisaCrud ? 5 : 4 }}" class="staff-name-search">
                                     <div class="staff-info">
                                         <div class="staff-info-left">
                                             <div class="staff-icon"><i class="fas fa-user"></i></div>
                                             <span class="staff-name">{{ $nama }}</span>
                                             <span class="staff-count"><i class="fas fa-box-open"></i> {{ count($items) }} Total Barang</span>
                                         </div>
-                                        <button type="button" class="btn btn-outline btn-xs" data-open="dlgTambah" data-nama="{{ $nama }}">
-                                            <i class="fas fa-plus"></i> Tambah Barang
-                                        </button>
+                                        @if($bisaCrud)
+                                            <button type="button" class="btn btn-outline btn-xs" data-open="dlgTambah" data-nama="{{ $nama }}">
+                                                <i class="fas fa-plus"></i> Tambah Barang
+                                            </button>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -582,8 +623,9 @@
                                         {{ $item->keterangan ?? '-' }}
                                     </td>
 
-                                    <!-- Aksi -->
-                                    <td class="c">
+                                    <!-- Aksi (hanya Sapra) -->
+                                    @if($bisaCrud)
+                                    <td class="c col-aksi">
                                         <div class="row-actions">
                                             <button type="button" class="icon-btn edit" data-open="dlgEdit{{ $item->id }}" aria-label="Edit"><i class="fas fa-pen"></i></button>
                                             <form action="/sapra/distribusi-staff/delete/{{ $item->id }}" method="POST" style="margin:0;" onsubmit="return confirm('Yakin ingin menghapus data penerimaan ini? Stok Mutu Baku akan dikembalikan otomatis.');">
@@ -592,9 +634,11 @@
                                             </form>
                                         </div>
                                     </td>
+                                    @endif
                                 </tr>
 
-                                <!-- MODAL EDIT DATA -->
+                                @if($bisaCrud)
+                                <!-- MODAL EDIT DATA (hanya Sapra) -->
                                 <dialog class="sheet" id="dlgEdit{{ $item->id }}">
                                     <div class="sheet-head">
                                         <h2>Edit Data Distribusi</h2>
@@ -643,12 +687,13 @@
                                         </div>
                                     </form>
                                 </dialog>
+                                @endif
                             @endforeach
                         </tbody>
                     @empty
                         <tbody>
                             <tr>
-                                <td colspan="6" class="cell-empty">
+                                <td colspan="{{ $bisaCrud ? 6 : 5 }}" class="cell-empty">
                                     <div style="font-size: 3rem; color: #cbd5e1; margin-bottom: 12px;"><i class="fas fa-box-open"></i></div>
                                     <div style="font-size: 1.1rem; color: var(--ink);">Belum ada data distribusi barang ke staff.</div>
                                 </td>
@@ -662,7 +707,8 @@
     </main>
 </div>
 
-<!-- ==================== DIALOG TAMBAH (GLOBAL & INLINE) ==================== -->
+@if($bisaCrud)
+<!-- ==================== DIALOG TAMBAH (GLOBAL & INLINE, hanya Sapra) ==================== -->
 <dialog class="sheet" id="dlgTambah">
     <div class="sheet-head">
         <h2>Input Distribusi Baru</h2>
@@ -717,6 +763,7 @@
         </div>
     </form>
 </dialog>
+@endif
 
 <script>
 (function () {
@@ -750,16 +797,17 @@
         });
     });
 
-    /* ---------- Modal / Dialog ---------- */
-    // Logika Pintar untuk tombol "Tambah Barang" (Global vs Inline)
+    /* ---------- Modal / Dialog (hanya ada untuk Sapra) ---------- */
+    // Logika pintar untuk tombol "Tambah Barang" (Global vs Inline)
     document.querySelectorAll('[data-open="dlgTambah"]').forEach(function (btn) {
         btn.addEventListener('click', function () {
             var nama = btn.getAttribute('data-nama') || '';
             var inputNama = document.getElementById('inputNamaPenerima');
+            if (!inputNama) return;
 
             inputNama.value = nama;
             if (nama !== '') {
-                // Di-lock & digelapin warnanya kalau dipanggil dari baris nama spesifik
+                // Di-lock kalau dipanggil dari baris nama spesifik
                 inputNama.setAttribute('readonly', 'true');
                 inputNama.style.backgroundColor = 'var(--paper)';
             } else {
@@ -809,7 +857,7 @@
                     // Munculin baris kalau nama barangnya cocok, ATAU kalau nama staf-nya yang dicari
                     if (textBarang.indexOf(filter) !== -1 || headerText.indexOf(filter) !== -1) {
                         row.style.display = '';
-                        matchInGroup = true; // Ketemu di dalam grup ini
+                        matchInGroup = true;
                     } else {
                         row.style.display = 'none';
                     }
@@ -826,7 +874,7 @@
         });
     }
 
-    /* ---------- Searchable Select (realtime) untuk Jenis Barang ---------- */
+    /* ---------- Searchable Select (realtime) untuk Jenis Barang (hanya Sapra) ---------- */
     function makeSearchable(select) {
         var wrap = document.createElement('div');
         wrap.className = 'ss';

@@ -1,3 +1,17 @@
+@php
+    /* ------------------------------------------------------------
+       LOGIKA AKUN (Spatie Permission)
+       Role: Super User, Sapra, Sekretariat, Damtan, Pencegahan, Operator
+       Aturan: HANYA role "Sapra" yang boleh CRUD. Role lain: lihat & cetak saja.
+       Mau tambah role lain yang boleh CRUD? Ubah satu baris $bisaCrud di bawah.
+       ------------------------------------------------------------ */
+    $user       = Auth::user();
+    $namaRole   = $user->getRoleNames()->first() ?? '';
+    $bisaCrud = $user->hasRole('Sapra') || $user->hasRole('Super User');
+    $isSuper    = $user->hasRole('Super User');
+    $bisaKonten = $user->hasAnyRole(['Operator', 'Super User']);
+@endphp
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -566,7 +580,9 @@
                     </div>
                 </details>
 
-                <button type="button" class="btn btn-primary" data-open="dlgTambah"><i class="fas fa-plus"></i> Tambah Kebutuhan</button>
+                @if($bisaCrud)
+                    <button type="button" class="btn btn-primary" data-open="dlgTambah"><i class="fas fa-plus"></i> Tambah Kebutuhan</button>
+                @endif
             </div>
         </div>
 
@@ -595,7 +611,9 @@
                                 <th class="c" style="width:10%">Tersedia</th>
                                 <th class="c" style="width:15%; background-color: var(--navy); color: #fff;">Masuk Thn {{ date('Y') }}</th>
                                 <th class="c" style="width:10%">Belum Tersedia</th>
-                                <th class="c" style="width:10%">Aksi</th>
+                                @if($bisaCrud)
+                                    <th class="c" style="width:10%">Aksi</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -627,17 +645,20 @@
                                     @endif
                                 </td>
 
-                                <td class="c">
-                                    <div class="row-actions">
-                                        <button type="button" class="icon-btn edit" data-open="dlgEdit{{ $item->id }}" aria-label="Edit"><i class="fas fa-pen"></i></button>
-                                        <form action="/sapra/kebutuhan-sarpras/delete/{{ $item->id }}" method="POST" style="margin:0;" onsubmit="return confirm('Yakin ingin menghapus data kebutuhan ini? Semua riwayat pengadaannya juga akan ikut terhapus lho!');">
-                                            @csrf @method('DELETE')
-                                            <button type="submit" class="icon-btn delete" aria-label="Hapus"><i class="fas fa-trash"></i></button>
-                                        </form>
-                                    </div>
-                                </td>
+                                @if($bisaCrud)
+                                    <td class="c">
+                                        <div class="row-actions">
+                                            <button type="button" class="icon-btn edit" data-open="dlgEdit{{ $item->id }}" aria-label="Edit"><i class="fas fa-pen"></i></button>
+                                            <form action="/sapra/kebutuhan-sarpras/delete/{{ $item->id }}" method="POST" style="margin:0;" onsubmit="return confirm('Yakin ingin menghapus data kebutuhan ini? Semua riwayat pengadaannya juga akan ikut terhapus lho!');">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="icon-btn delete" aria-label="Hapus"><i class="fas fa-trash"></i></button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                @endif
                             </tr>
 
+                            @if($bisaCrud)
                             <!-- Dialog Edit Mutu Baku -->
                             <dialog class="sheet" id="dlgEdit{{ $item->id }}">
                                 <div class="sheet-head">
@@ -672,9 +693,10 @@
                                     </div>
                                 </form>
                             </dialog>
+                            @endif
                             @empty
                             <tr>
-                                <td colspan="7" class="cell-empty">Belum ada data mutu baku.</td>
+                                <td colspan="{{ $bisaCrud ? 7 : 6 }}" class="cell-empty">Belum ada data mutu baku.</td>
                             </tr>
                             @endforelse
 
@@ -686,7 +708,7 @@
                                     <td class="c"><span class="badge-qty bg-sedia">{{ $dataKebutuhan->sum('jumlah_tersedia') }}</span></td>
                                     <td class="c"><span class="badge-qty bg-masuk">+{{ isset($realisasiTahunIni) ? $realisasiTahunIni->sum('total_masuk') : 0 }}</span></td>
                                     <td class="c"><span class="badge-qty bg-kurang">{{ $dataKebutuhan->sum('jumlah_belum_tersedia') }}</span></td>
-                                    <td></td>
+                                    @if($bisaCrud)<td></td>@endif
                                 </tr>
                             @endif
                         </tbody>
@@ -699,7 +721,9 @@
         <div class="panel" id="panel-pengadaan" role="tabpanel" @if($activeTab != 'pengadaan') hidden @endif @if($activeTab == 'pengadaan') data-print-active @endif>
 
             <div style="display: flex; justify-content: flex-end; margin-bottom: 14px;">
-                <button class="btn btn-success" data-open="dlgTambahPengadaan"><i class="fas fa-truck-loading"></i> Input Riwayat Pengadaan</button>
+                @if($bisaCrud)
+                    <button class="btn btn-success" data-open="dlgTambahPengadaan"><i class="fas fa-truck-loading"></i> Input Riwayat Pengadaan</button>
+                @endif
             </div>
 
             <div class="table-wrap">
@@ -732,10 +756,12 @@
                                             @if(isset($pengadaanMapped[$item->id][$tahun]))
                                                 <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
                                                     <span style="font-weight: 700; color: var(--ink);">{{ $pengadaanMapped[$item->id][$tahun] }}</span>
-                                                    <form action="/sapra/pengadaan-sarpras/delete/{{ $item->id }}/{{ $tahun }}" method="POST" style="margin:0;" onsubmit="return confirm('Yakin ingin membatalkan pengadaan tahun {{ $tahun }} ini? Stok Mutu Baku akan otomatis dikurangi kembali.');">
-                                                        @csrf @method('DELETE')
-                                                        <button type="submit" class="icon-btn delete-sm" title="Batalkan Pengadaan"><i class="fas fa-times"></i></button>
-                                                    </form>
+                                                    @if($bisaCrud)
+                                                        <form action="/sapra/pengadaan-sarpras/delete/{{ $item->id }}/{{ $tahun }}" method="POST" style="margin:0;" onsubmit="return confirm('Yakin ingin membatalkan pengadaan tahun {{ $tahun }} ini? Stok Mutu Baku akan otomatis dikurangi kembali.');">
+                                                            @csrf @method('DELETE')
+                                                            <button type="submit" class="icon-btn delete-sm" title="Batalkan Pengadaan"><i class="fas fa-times"></i></button>
+                                                        </form>
+                                                    @endif
                                                 </div>
                                             @else
                                                 <span style="color: var(--steel);">-</span>
@@ -761,6 +787,7 @@
     </main>
 </div>
 
+@if($bisaCrud)
 <!-- ==================== DIALOG TAMBAH KEBUTUHAN ==================== -->
 <dialog class="sheet" id="dlgTambah">
     <div class="sheet-head">
@@ -835,6 +862,7 @@
         </div>
     </form>
 </dialog>
+@endif
 
 <script>
 (function () {

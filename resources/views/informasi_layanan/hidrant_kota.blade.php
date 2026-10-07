@@ -11,10 +11,13 @@
         ['url' => '/informasi-layanan?panel=pemberdayaan', 'label' => 'Pemberdayaan Masyarakat',         'ico' => 'fa-handshake-angle'],
     ],
 ],
-        'pemadaman' => [
-            'label' => 'Bagian pemadaman',
-            'items' => [],
-        ],
+      'pemadaman' => [
+    'label' => 'Bagian pemadaman',
+    'items' => [
+        ['url' => '/informasi-layanan?panel=rekap_layanan',   'label' => 'Rekap Layanan & Penyelamatan', 'ico' => 'fa-truck-fast'],
+        ['url' => '/informasi-layanan?panel=objek_kebakaran', 'label' => 'Rekapitulasi Objek Kebakaran', 'ico' => 'fa-fire'],
+    ],
+],
         'sapra' => [
             'label' => 'Bagian sapra',
             'items' => [
