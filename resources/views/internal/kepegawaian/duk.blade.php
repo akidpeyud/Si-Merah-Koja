@@ -277,28 +277,33 @@
                 </div>
             </details>
 
-            <!-- BAGIAN PEMADAMAN -->
+           <!-- BAGIAN PEMADAMAN -->
             <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') || Request::is('internal/damtan/kelola-izin-keramaian*') ? 'open' : '' }}>
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
-                        <i class="fas fa-fire-extinguisher"></i><span class="lbl">Input data</span>
+                        <i class="fas fa-fire-extinguisher"></i> Input data
                     </a>
+
+                    <!-- MENU BARU: REKAP LAYANAN & OBJEK -->
                     <a href="/internal/damtan/rekap-layanan" class="{{ Request::is('internal/damtan/rekap-layanan*') ? 'active' : '' }}">
-                        <i class="fas fa-truck-medical"></i><span class="lbl">Input Rekap Layanan</span>
+                        <i class="fas fa-truck-medical"></i> Input Rekap Layanan
                     </a>
                     <a href="/internal/damtan/rekap-objek" class="{{ Request::is('internal/damtan/rekap-objek*') ? 'active' : '' }}">
-                        <i class="fas fa-house-chimney-crack"></i><span class="lbl">Input Rekap Objek Kebakaran</span>
+                        <i class="fas fa-house-chimney-crack"></i> Input Rekap Objek Kebakaran
                     </a>
+
                     <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
-                        <i class="fas fa-file-signature"></i><span class="lbl">Buat Surat Korban</span>
+                        <i class="fas fa-file-signature"></i> Buat Surat Korban
                     </a>
                     <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
-                        <i class="fas fa-clipboard-list"></i><span class="lbl">Kelola Data Laporan</span>
+                        <i class="fas fa-clipboard-list"></i> Kelola Data Laporan
                     </a>
                     <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
-                        <i class="fas fa-folder-open"></i><span class="lbl">Kelola Surat Korban</span>
+                        <i class="fas fa-folder-open"></i> Kelola Surat Korban
                     </a>
+                    
+                    <!-- MENU KELOLA SURAT KERAMAIAN -->
                     <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
                         <i class="fas fa-users-rectangle"></i><span class="lbl">Kelola Surat Keramaian</span>
                     </a>
@@ -344,7 +349,7 @@
                 </div>
             </details>
 
-            <!-- BAGIAN KEPEGAWAIAN -->
+            <!-- BAGIAN KEPEGAWAIAN (YANG BENAR DAN LENGKAP) -->
             <details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') ? 'open' : '' }}>
                 <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
@@ -358,14 +363,14 @@
             </details>
         @endhasanyrole
 
-        <!-- MANAJEMEN INFORMASI -->
-        @hasanyrole('Super User|Operator')
+<!-- MANAJEMEN INFORMASI: semua pegawai internal bisa melihat menu ini -->
+        @hasanyrole('Super User|Sapra|Damtan|Pencegahan|Sekretariat|Operator')
             <div class="side-kicker">Konten publik</div>
             <details class="side-group" {{ Request::is('internal/operator*') || Request::is('internal/peta-sigap*') ? 'open' : '' }}>
                 <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen Informasi</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
-                        <i class="far fa-newspaper"></i><span class="lbl">Input &amp; Kelola Berita</span>
+                        <i class="far fa-newspaper"></i><span class="lbl">Kelola Berita</span>
                     </a>
                     <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
                         <i class="far fa-image"></i><span class="lbl">Kelola Infografis</span>
@@ -381,9 +386,14 @@
                     </a>
 
                     <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
+                    
+                    <!-- Khusus untuk Input Titik, dibatasi hanya untuk Super User & Operator -->
+                    @hasanyrole('Super User|Operator')
                     <a href="/internal/peta-sigap/input" class="{{ Request::is('internal/peta-sigap/input*') ? 'active' : '' }}">
                         <i class="fas fa-plus"></i><span class="lbl">Input Titik Peta</span>
                     </a>
+                    @endhasanyrole
+
                     <a href="/internal/peta-sigap/data" class="{{ Request::is('internal/peta-sigap/data*') ? 'active' : '' }}">
                         <i class="fas fa-table-list"></i><span class="lbl">Kelola Data Titik</span>
                     </a>
@@ -456,7 +466,9 @@
                             <th>Masa Kerja</th>
                             <th>Pendidikan Terakhir</th>
                             <th>Status Pegawai</th>
+                            @hasanyrole('Sekretariat|Super User')
                             <th class="text-center" width="10%">Aksi</th>
+                            @endhasanyrole
                         </tr>
                     </thead>
                     <tbody>
@@ -489,25 +501,22 @@
                                     <span class="badge bg-info">{{ $pegawai->status_pegawai }}</span>
                                 @endif
                             </td>
+                            
+                            @hasanyrole('Sekretariat|Super User')
                             <td class="text-center">
-<!-- Pembatasan akses CRUD Update & Delete -->
-                                @hasanyrole('Super User|Sekretariat')
-                                    <!-- PERBAIKAN: href mengarah ke route edit -->
-                                    <a href="{{ route('kepegawaian.duk.edit', $pegawai->id) }}" class="btn btn-sm btn-outline-primary" style="border-radius: 6px;" title="Edit"><i class="fas fa-edit"></i></a>
-                                    
-                                    <form action="{{ route('kepegawaian.duk.destroy', $pegawai->id ?? 1) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" style="border-radius: 6px;" title="Hapus" onclick="return confirm('Yakin ingin menghapus pegawai ini?')"><i class="fas fa-trash"></i></button>
-                                    </form>
-                                @else
-                                    <span class="text-muted" style="font-size: 0.8rem;"><i>Tidak ada akses</i></span>
-                                @endhasanyrole
+                                <a href="{{ route('kepegawaian.duk.edit', $pegawai->id) }}" class="btn btn-sm btn-outline-primary" style="border-radius: 6px;" title="Edit"><i class="fas fa-edit"></i></a>
+                                
+                                <form action="{{ route('kepegawaian.duk.destroy', $pegawai->id ?? 1) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" style="border-radius: 6px;" title="Hapus" onclick="return confirm('Yakin ingin menghapus pegawai ini?')"><i class="fas fa-trash"></i></button>
+                                </form>
                             </td>
+                            @endhasanyrole
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="9" class="text-center py-5">
+                            <td colspan="@hasanyrole('Sekretariat|Super User') 9 @else 8 @endhasanyrole" class="text-center py-5">
                                 <div class="text-muted">
                                     <i class="fas fa-folder-open mb-3" style="font-size: 2.5rem; color: var(--steel-soft); opacity: 0.7;"></i><br>
                                     Belum ada data pegawai. Silakan tambah data baru.
