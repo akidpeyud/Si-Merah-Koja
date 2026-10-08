@@ -4,23 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-    <title>Kelola Kunjungan Edukasi & Sosialisasi | SIMERAH KOJA</title>
+    <title>Edit Data Edukasi Offline | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Bootstrap -->
+    <!-- Bootstrap & FontAwesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
 /* ==========================================================
-   SIMERAH KOJA - CLEAN NAVY DASHBOARD
+   SIMERAH KOJA - CLEAN NAVY DASHBOARD 
    ========================================================== */
-
-/* 1. DESIGN TOKENS */
 :root {
     --ink: #0d1b2a;
     --ink-2: #132a43;
@@ -65,142 +63,52 @@
     --shadow-lg: 0 20px 45px rgba(13, 27, 42, .14);
 }
 
-/* 2. RESET */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
-    font-family: var(--font-body);
-    font-size: 1rem;
-    line-height: 1.6;
-    color: var(--ink);
-    background: var(--paper);
-    -webkit-font-smoothing: antialiased;
+    font-family: var(--font-body); font-size: 1rem; line-height: 1.6;
+    color: var(--ink); background: var(--paper); -webkit-font-smoothing: antialiased;
 }
-img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 ul, ol { list-style: none; margin: 0; padding: 0; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 :focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; border-radius: 6px; }
 
-/* 3. TOAST */
-.toast-wrap {
-    position: fixed; z-index: 2000; top: 18px; left: 50%;
-    transform: translateX(-50%);
-    display: grid; gap: 10px;
-    width: max-content; max-width: calc(100vw - 24px);
-}
-.toast {
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px 12px 12px 16px;
-    border-radius: 999px;
-    background: #fff; border: 1px solid var(--line);
-    box-shadow: var(--shadow-md);
-    font-weight: 600; font-size: .92rem;
-    animation: toastIn .45s cubic-bezier(.16,.84,.3,1) both;
-}
-.toast.leaving { animation: toastOut .3s ease forwards; }
-.toast-ico {
-    flex: none; width: 28px; height: 28px; border-radius: 50%;
-    display: grid; place-items: center; color: #fff; font-size: .78rem;
-}
-.toast.ok .toast-ico { background: var(--success); }
-.toast.err .toast-ico { background: var(--signal); }
-.toast-x {
-    flex: none; width: 30px; height: 30px; border-radius: 50%;
-    display: grid; place-items: center; background: var(--paper);
-    transition: background .2s, color .2s;
-}
-.toast-x:hover { background: var(--ink); color: #fff; }
-@keyframes toastIn { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
-@keyframes toastOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-14px); } }
-
-/* 4. TOPBAR */
+/* TOPBAR */
 .topbar {
-    position: sticky; top: 0; z-index: 1020;
-    height: var(--topbar-h);
+    position: sticky; top: 0; z-index: 1020; height: var(--topbar-h);
     display: flex; align-items: center; justify-content: space-between;
-    gap: 16px; padding: 0 28px;
-    background: var(--ink);
-    border-bottom: 1px solid rgba(255,255,255,.08);
-    box-shadow: 0 2px 12px rgba(13, 27, 42, .16);
+    gap: 16px; padding: 0 28px; background: var(--ink);
+    border-bottom: 1px solid rgba(255,255,255,.08); box-shadow: 0 2px 12px rgba(13, 27, 42, .16);
 }
 .topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
-
-.side-toggle {
-    display: none; width: 40px; height: 40px; border-radius: 10px;
-    align-items: center; justify-content: center;
-    font-size: 1.05rem; color: #fff;
-    transition: background .2s, transform .2s;
-}
+.side-toggle { display: none; width: 40px; height: 40px; border-radius: 10px; align-items: center; justify-content: center; font-size: 1.05rem; color: #fff; transition: background .2s, transform .2s; }
 .side-toggle:hover { background: rgba(255,255,255,.10); }
-.side-toggle:active { transform: scale(.95); }
-
 .brand { display: flex; align-items: center; gap: 12px; min-width: 0; color: #fff; }
 .brand img { height: 34px; width: auto; flex: none; }
-.brand span {
-    font-family: var(--font-display); font-weight: 700; font-size: 1.08rem;
-    letter-spacing: -.01em; white-space: nowrap; overflow: hidden;
-    text-overflow: ellipsis; color: #fff;
-}
+.brand span { font-family: var(--font-display); font-weight: 700; font-size: 1.08rem; letter-spacing: -.01em; white-space: nowrap; color: #fff; }
 
-/* 6. TOPBAR RIGHT */
+/* TOPBAR RIGHT */
 .topbar-right { display: flex; align-items: center; gap: 12px; }
-.user-chip {
-    display: flex; align-items: center; gap: 10px;
-    padding: 5px 14px 5px 5px; border-radius: 999px;
-    background: rgba(255,255,255,.08);
-    border: 1px solid rgba(255,255,255,.12);
-    transition: background .2s, border-color .2s;
-}
-.user-chip:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.18); }
-.user-avatar {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: #fff; color: var(--ink);
-    display: grid; place-items: center;
-    font-family: var(--font-display); font-weight: 700; font-size: .9rem; flex: none;
-}
+.user-chip { display: flex; align-items: center; gap: 10px; padding: 5px 14px 5px 5px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); }
+.user-avatar { width: 36px; height: 36px; border-radius: 50%; background: #fff; color: var(--ink); display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: .9rem; flex: none; }
 .user-meta { display: grid; line-height: 1.25; }
-.user-meta strong {
-    font-size: .84rem; font-weight: 700; max-width: 160px;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff;
-}
+.user-meta strong { font-size: .84rem; font-weight: 700; color: #fff; }
 .user-meta small { font-size: .72rem; color: rgba(255,255,255,.62); text-transform: capitalize; font-weight: 500; }
-
-.btn-logout {
-    display: inline-flex; align-items: center; justify-content: center;
-    gap: 8px; height: 40px; padding: 0 17px; border-radius: 999px;
-    background: #fff; color: var(--ink);
-    font-weight: 600; font-size: .84rem; border: none;
-    transition: background .2s, color .2s, transform .1s, box-shadow .2s;
-}
+.btn-logout { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 17px; border-radius: 999px; background: #fff; color: var(--ink); font-weight: 600; font-size: .84rem; border: none; transition: background .2s, color .2s, transform .1s, box-shadow .2s; }
 .btn-logout:hover { background: #e8eef5; color: var(--ink); box-shadow: 0 4px 10px rgba(0,0,0,.12); }
-.btn-logout:active { transform: scale(.97); }
 
-/* 7. SHELL */
+/* SHELL & SIDEBAR */
 .shell { display: flex; align-items: flex-start; min-height: calc(100vh - var(--topbar-h)); }
-
-/* 8. SIDEBAR */
 .sidebar {
-    width: var(--sidebar-w); flex: none;
-    position: sticky; top: var(--topbar-h);
-    height: calc(100vh - var(--topbar-h));
-    overflow-y: auto; overflow-x: hidden;
-    background: #fff; border-right: 1px solid var(--line);
-    padding: 20px 14px 32px;
-    scrollbar-width: thin; scrollbar-color: #d8dee8 transparent;
+    width: var(--sidebar-w); flex: none; position: sticky; top: var(--topbar-h);
+    height: calc(100vh - var(--topbar-h)); overflow-y: auto; overflow-x: hidden;
+    background: #fff; border-right: 1px solid var(--line); padding: 20px 14px 32px;
 }
 .sidebar::-webkit-scrollbar { width: 6px; }
-.sidebar::-webkit-scrollbar-track { background: transparent; }
 .sidebar::-webkit-scrollbar-thumb { background-color: #d8dee8; border-radius: 20px; }
 
-/* 9. SIDEBAR MENU */
-.side-link {
-    display: flex; align-items: flex-start; gap: 14px;
-    padding: 11px 14px; border-radius: var(--r-sm);
-    font-size: .89rem; font-weight: 600; color: var(--ink);
-    transition: background .2s, color .2s, transform .2s;
-    margin-bottom: 4px;
-}
+.side-link { display: flex; align-items: flex-start; gap: 14px; padding: 11px 14px; border-radius: var(--r-sm); font-size: .89rem; font-weight: 600; color: var(--ink); transition: background .2s, color .2s, transform .2s; margin-bottom: 4px; }
 .side-link:hover { background: #f3f6fa; color: var(--ink); transform: translateX(1px); }
 .side-link.active { background: var(--ink); color: #fff; box-shadow: 0 4px 10px rgba(13,27,42,.10); }
 .side-link i { width: 20px; text-align: center; font-size: 1rem; color: var(--steel); transition: color .2s; flex: none; margin-top: 3px; }
@@ -209,186 +117,73 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 .lbl { flex: 1 1 auto; min-width: 0; overflow-wrap: break-word; line-height: 1.4; }
 
-/* 10. SIDEBAR GROUP */
 .side-group + .side-group { margin-top: 6px; }
-.side-group summary {
-    list-style: none; cursor: pointer;
-    display: flex; align-items: flex-start; gap: 12px;
-    padding: 11px 14px; border-radius: var(--r-sm);
-    font-size: .78rem; font-weight: 700; letter-spacing: .04em;
-    text-transform: uppercase; color: var(--navy);
-    transition: background .2s, color .2s; user-select: none;
-}
+.side-group summary { list-style: none; cursor: pointer; display: flex; align-items: flex-start; gap: 12px; padding: 11px 14px; border-radius: var(--r-sm); font-size: .78rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--navy); user-select: none; }
 .side-group summary::-webkit-details-marker { display: none; }
 .side-group summary:hover { background: #f3f6fa; }
 .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); margin-top: 3px; }
-.side-group summary .grp-label {
-    flex: 1 1 auto; min-width: 0;
-    white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.4;
-}
+.side-group summary .grp-label { flex: 1 1 auto; min-width: 0; white-space: normal; line-height: 1.4; }
 .side-group summary .chev { flex: none; font-size: .7rem; margin-top: 4px; transition: transform .25s ease; }
 .side-group[open] summary .chev { transform: rotate(180deg); }
 
-/* 11. SUB MENU */
-.side-sub {
-    display: grid; gap: 3px;
-    padding: 6px 0 10px 8px;
-    border-left: 2px solid var(--line);
-    margin: 2px 0 8px 18px;
-}
-.side-sub a {
-    display: flex; align-items: flex-start; gap: 12px;
-    padding: 9px 10px; border-radius: var(--r-sm);
-    font-size: .84rem; font-weight: 500; line-height: 1.4; color: var(--steel);
-    transition: background .2s, color .2s, transform .2s;
-}
+.side-sub { display: grid; gap: 3px; padding: 6px 0 10px 8px; border-left: 2px solid var(--line); margin: 2px 0 8px 18px; }
+.side-sub a { display: flex; align-items: flex-start; gap: 12px; padding: 9px 10px; border-radius: var(--r-sm); font-size: .84rem; font-weight: 500; line-height: 1.4; color: var(--steel); transition: background .2s, color .2s, transform .2s; }
 .side-sub a:hover { background: var(--navy-light); color: var(--navy-dark); transform: translateX(2px); }
 .side-sub a.active { background: var(--navy-soft); color: var(--navy); font-weight: 600; }
 .side-sub a i { width: 18px; text-align: center; font-size: .88rem; opacity: .75; flex: none; margin-top: 3px; }
 .side-sub a:hover i, .side-sub a.active i { opacity: 1; }
 
-/* 12. SECTION LABEL */
-.side-kicker {
-    padding: 18px 14px 6px;
-    font-size: .68rem; font-weight: 700; letter-spacing: .06em;
-    text-transform: uppercase; color: var(--steel-soft);
-}
-
-/* 13. MOBILE SIDEBAR */
-.sidebar-backdrop { display: none; }
+.side-kicker { padding: 18px 14px 6px; font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--steel-soft); }
 
 @media (max-width: 900px) {
     .side-toggle { display: inline-flex; }
     .user-meta { display: none; }
-    .sidebar {
-        position: fixed; z-index: 1010;
-        top: var(--topbar-h); left: 0;
-        height: calc(100dvh - var(--topbar-h));
-        transform: translateX(-100%);
-        transition: transform .3s cubic-bezier(.4,0,.2,1);
-        box-shadow: var(--shadow-lg);
-    }
+    .sidebar { position: fixed; z-index: 1010; top: var(--topbar-h); left: 0; height: calc(100dvh - var(--topbar-h)); transform: translateX(-100%); transition: transform .3s; box-shadow: var(--shadow-lg); }
     body.side-open .sidebar { transform: none; }
-
-    .sidebar-backdrop {
-        display: block; position: fixed;
-        inset: var(--topbar-h) 0 0 0; z-index: 1000;
-        background: rgba(13,27,42,.45);
-        opacity: 0; pointer-events: none; transition: opacity .3s;
-    }
+    .sidebar-backdrop { display: block; position: fixed; inset: var(--topbar-h) 0 0 0; z-index: 1000; background: rgba(13,27,42,.45); opacity: 0; pointer-events: none; transition: opacity .3s; }
     body.side-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
 }
 
-/* 14. MAIN CONTENT */
-.content {
-    flex: 1; min-width: 0;
-    padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 80px;
-}
-
-/* 15. PAGE HEADER (Kelola Khusus) */
-.page-head { margin-bottom: 26px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
-.page-head-title h1 {
-    font-family: var(--font-display); font-weight: 700;
-    font-size: clamp(1.6rem, 3vw, 2.1rem);
-    line-height: 1.2; letter-spacing: -.02em; margin-bottom: 5px; color: var(--ink);
-}
+/* MAIN CONTENT */
+.content { flex: 1; min-width: 0; padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 80px; }
+.page-head { margin-bottom: 26px; }
+.page-head-title h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 5px; color: var(--ink); }
 .page-head-title p { color: var(--steel); font-size: .95rem; margin-bottom: 0; }
 
-/* ==========================================================
-   STYLE SPESIFIK KELOLA EDUKASI
-   ========================================================== */
-.content-card { background: #ffffff; border: 1px solid var(--line); border-radius: var(--r-md); padding: 26px; box-shadow: var(--shadow-xs); transition: box-shadow .2s ease, border-color .2s ease; overflow: hidden;}
-.content-card:hover { box-shadow: var(--shadow-sm); border-color: #d2dae5; }
-
-/* Table Styles */
-.table-custom { margin-bottom: 0; }
-.table-custom th { background-color: var(--paper); color: var(--steel); font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; font-weight: 700; padding: 14px 12px; border-bottom: 2px solid var(--line-dark) !important; border-top: none; }
-.table-custom td { padding: 16px 12px; vertical-align: middle; font-size: .88rem; color: var(--ink); border-bottom: 1px solid var(--line); }
-
-/* Badges */
-.badge-status { padding: 6px 12px; border-radius: 6px; font-size: .75rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
-.status-pending { background-color: #fef3c7; color: #d97706; }
-.status-disetujui { background-color: #d1fae5; color: #059669; }
-.status-ditolak { background-color: #fee2e2; color: #dc2626; }
-
-/* Buttons */
-.btn-print-rekap { display: inline-flex; align-items: center; gap: 8px; background-color: var(--navy); color: white; font-weight: 600; font-size: .9rem; padding: 10px 20px; border-radius: 8px; border: none; transition: 0.2s; cursor: pointer; }
-.btn-print-rekap:hover { background-color: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13, 27, 42, .15); }
-
-.btn-action-group { display: flex; flex-direction: column; gap: 6px; }
-.btn-action { display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 7px 10px; border-radius: 6px; font-weight: 700; font-size: .75rem; border: none; text-decoration: none; transition: all 0.2s; cursor: pointer; color: white; }
-.btn-action:hover { opacity: 0.9; color: white; transform: translateY(-1px); }
-.bg-detail { background-color: var(--info); }
-.bg-edit { background-color: var(--amber); color: var(--ink-3) !important; }
-.bg-status { background-color: var(--success); }
-.bg-cetak { background-color: var(--steel); }
-
-/* Modal Styles */
-.modal-content { font-family: var(--font-body); border: none; border-radius: var(--r-md); box-shadow: var(--shadow-lg); }
-.modal-header { border-bottom: 1px solid var(--line); padding: 18px 24px; }
-.modal-title { font-family: var(--font-display); font-weight: 700; color: var(--ink); }
-.modal-body { padding: 24px; }
-.modal-footer { border-top: 1px solid var(--line); padding: 16px 24px; }
+/* STYLE KHUSUS FORM TAMBAH EDUKASI */
+.content-card { background: #ffffff; border: 1px solid var(--line); border-radius: var(--r-md); padding: 32px; box-shadow: var(--shadow-xs); }
 .form-label { font-weight: 600; color: var(--ink-2); font-size: .88rem; margin-bottom: 8px; }
-.form-select { border-radius: 8px; border-color: var(--line-dark); min-height: 42px; font-size: .9rem; color: var(--ink); box-shadow: none; }
-.form-select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+.form-control, .form-select { border-radius: 8px; border-color: var(--line-dark); min-height: 44px; font-size: .9rem; color: var(--ink); }
+.form-control:focus, .form-select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+.section-header { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; border-bottom: 2px solid var(--line); padding-bottom: 8px; margin-bottom: 20px; margin-top: 30px; }
 
-/* Responsive Adjustments */
+.btn-primary-custom { display: inline-flex; align-items: center; gap: 8px; background: var(--navy); color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 600; font-size: .95rem; transition: 0.2s; }
+.btn-primary-custom:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13, 27, 42, .15); }
+.btn-outline-custom { display: inline-flex; align-items: center; justify-content: center; background: #fff; border: 1px solid var(--line-dark); color: var(--ink); padding: 10px 24px; border-radius: 8px; font-weight: 600; font-size: .95rem; transition: 0.2s; text-decoration: none; }
+.btn-outline-custom:hover { background: var(--paper); color: var(--ink); }
+
 @media (max-width: 700px) {
     :root { --topbar-h: 64px; }
-    .topbar { height: var(--topbar-h); padding: 0 14px; gap: 10px; }
+    .topbar { padding: 0 14px; gap: 10px; }
     .brand { gap: 9px; }
     .brand img { height: 30px; }
     .brand span { font-size: .95rem; }
     .topbar-right { gap: 7px; }
     .user-chip { padding: 3px; border: none; background: transparent; }
     .user-avatar { width: 34px; height: 34px; }
-    .btn-logout { width: 38px; height: 38px; padding: 0; border-radius: 10px; font-size: 0; }
+    .btn-logout { width: 38px; height: 38px; padding: 0; font-size: 0; }
     .btn-logout i { font-size: .9rem; }
     .content { padding: 26px 16px 50px; }
     .page-head-title h1 { font-size: 1.55rem; }
-    .page-head-title p { font-size: .88rem; }
-}
-
-@media (max-width: 420px) {
-    .brand span { display: none; }
-    .content { padding-left: 13px; padding-right: 13px; }
-}
-
-/* Print CSS */
-@media print {
-    .topbar, .sidebar, .btn-print-rekap, .page-head-title p { display: none !important; }
-    .no-print-col { display: none !important; } 
-    .shell { display: block; }
-    .content { padding: 0 !important; margin: 0 !important; background-color: white; }
-    .content-card { border: none; box-shadow: none; padding: 0; }
-    body { background-color: white; margin: 0; padding: 0; }
 }
     </style>
 </head>
 <body>
 
-<div class="toast-wrap" id="toastWrap" aria-live="polite">
-    @if(session('success'))
-        <div class="toast ok" data-toast>
-            <span class="toast-ico"><i class="fas fa-check"></i></span>
-            <span>{{ session('success') }}</span>
-            <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
-        </div>
-    @endif
-    @if(session('error'))
-        <div class="toast err" data-toast>
-            <span class="toast-ico"><i class="fas fa-triangle-exclamation"></i></span>
-            <span>{{ session('error') }}</span>
-            <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
-        </div>
-    @endif
-</div>
-
 <!-- ==================== TOPBAR ==================== -->
 <header class="topbar">
     <div class="topbar-left">
-        <button class="side-toggle" type="button" id="sideToggle" aria-label="Buka menu" aria-expanded="false" aria-controls="sidebar">
+        <button class="side-toggle" type="button" id="sideToggle">
             <i class="fas fa-bars"></i>
         </button>
         <a href="/internal/index" class="brand">
@@ -593,132 +388,171 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     <!-- ==================== KONTEN UTAMA ==================== -->
     <main class="content">
 
-        <div class="page-head">
-            <div class="page-head-title">
-                <h1>Daftar Kunjungan Edukasi & Sosialisasi</h1>
-                <p>Kelola pengajuan layanan edukasi dan sosialisasi ke masyarakat dan instansi.</p>
-            </div>
-            <div>
-                <!-- TOMBOL TAMBAH DATA (DIKUNCI HANYA UNTUK PENCEGAHAN & SUPER USER) -->
-                @hasanyrole('Pencegahan|Super User')
-                <a href="/internal/pencegahan/kelola-edukasi/tambah" class="btn btn-primary shadow-sm" style="font-weight: 600; border-radius: 8px; padding: 10px 20px; margin-right: 8px; background-color: var(--info); border: none;">
-                    <i class="fas fa-plus"></i> Tambah Data Offline
+        <!-- Kontainer pembungkus utama agar semuanya sejajar dan rapi -->
+        <div class="mx-auto" style="max-width: 900px;">
+            
+            <!-- TOMBOL KEMBALI -->
+            <div class="mb-4">
+                <a href="/internal/pencegahan/kelola-edukasi" class="btn-outline-custom" style="padding: 8px 18px; font-size: 0.88rem;">
+                    <i class="fas fa-arrow-left me-2"></i> Kembali ke Kelola Edukasi
                 </a>
-                @endhasanyrole
-
-                <button onclick="window.print()" class="btn-print-rekap"><i class="fas fa-print"></i> Cetak Rekap</button>
             </div>
-        </div>
 
-        <div class="content-card">
-            <div class="table-responsive">
-                <table class="table table-custom table-hover align-middle mb-0">
-                    <thead>
-                        <tr>
-                            <th>Diajukan Pada</th>
-                            <th>Institusi</th>
-                            <th>Pemohon</th>
-                            <th>Jadwal Kegiatan</th>
-                            <th>Status</th>
-                            <th class="no-print-col text-center">Lampiran</th>
-                            <th class="text-center no-print-col" style="width: 120px;">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($permohonan as $p)
-                        <tr>
-                            <td>
-                                <div class="fw-bold">{{ $p->created_at->format('d M Y') }}</div>
-                                <div style="font-size: .75rem; color: var(--steel);">{{ $p->created_at->format('H:i') }} WIB</div>
-                            </td>
-                            <td>
-                                <div class="fw-bold">{{ $p->institusi }}</div>
-                                <div style="font-size: .75rem; color: var(--steel);">Kec. {{ $p->kecamatan }}</div>
-                            </td>
-                            <td>
-                                <div class="fw-bold" style="color: var(--info);">{{ $p->nama_pemohon }}</div>
-                                <a href="https://wa.me/{{ preg_replace('/^0/', '62', $p->no_kontak) }}" target="_blank" class="text-decoration-none" style="font-size: .75rem; font-weight:600; color: var(--success);"><i class="fab fa-whatsapp"></i> {{ $p->no_kontak }}</a>
-                            </td>
-                            <td>
-                                <div class="fw-bold" style="color: var(--amber);">{{ \Carbon\Carbon::parse($p->tgl_kegiatan)->format('d F Y') }}</div>
-                                <div style="font-size: .75rem; color: var(--steel);">
-                                    Total: {{ $p->usia_3_6 + $p->usia_7_12 + $p->usia_13_18 + $p->usia_18_keatas }} Peserta
-                                </div>
-                            </td>
-                            <td>
-                                @if($p->status_permohonan == 'Pending') 
-                                    <span class="badge-status status-pending">Pending</span>
-                                @elseif($p->status_permohonan == 'Disetujui') 
-                                    <span class="badge-status status-disetujui">Disetujui</span>
-                                @else 
-                                    <span class="badge-status status-ditolak">Ditolak</span>
-                                @endif
-                            </td>
-                            <td class="no-print-col text-center">
-                                @if($p->surat_permohonan) 
-                                    <a href="{{ asset('storage/' . $p->surat_permohonan) }}" target="_blank" class="badge bg-danger text-decoration-none mb-1"><i class="fas fa-file-pdf"></i> Surat</a> 
-                                @endif
-                                @if($p->syarat_lainnya) 
-                                    <br><a href="{{ asset('storage/' . $p->syarat_lainnya) }}" target="_blank" class="badge bg-secondary text-decoration-none"><i class="fas fa-paperclip"></i> Syarat</a> 
-                                @endif
-                            </td>
-                            <td class="no-print-col">
-                                <div class="btn-action-group">
-                                    <a href="/internal/pencegahan/kelola-edukasi/{{ $p->id }}" class="btn-action bg-detail"><i class="fas fa-search"></i> Detail</a>
-                                    
-                                    <!-- TOMBOL EDIT DAN STATUS HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
-                                    @hasanyrole('Pencegahan|Super User')
-                                    <a href="{{ route('edukasi.offline.edit', $p->id) }}" class="btn-action bg-edit"><i class="fas fa-pen"></i> Edit</a>
-                                    <button type="button" class="btn-action bg-status" data-bs-toggle="modal" data-bs-target="#modalStatus{{ $p->id }}"><i class="fas fa-edit"></i> Status</button>
-                                    @endhasanyrole
+            <div class="page-head">
+                <div class="page-head-title">
+                    <h1>Edit Data Kunjungan Edukasi</h1>
+                    <p>Perbarui informasi pengajuan layanan edukasi secara offline dari masyarakat atau instansi.</p>
+                </div>
+            </div>
 
-                                    <a href="/internal/pencegahan/kelola-edukasi/{{ $p->id }}?auto_print=true" target="_blank" class="btn-action bg-cetak"><i class="fas fa-print"></i> Cetak</a>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <!-- MODAL UPDATE STATUS HANYA DIBACA OLEH PENCEGAHAN DAN SUPER USER -->
-                        @hasanyrole('Pencegahan|Super User')
-                        <div class="modal fade" id="modalStatus{{ $p->id }}" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Update Status Edukasi</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <form action="/internal/pencegahan/kelola-edukasi/update-status/{{ $p->id }}" method="POST">
-                                        @csrf
-                                        <div class="modal-body text-start">
-                                            <p class="mb-4" style="font-size: .9rem; color: var(--steel);">Ubah status pengajuan jadwal dari <strong style="color: var(--ink);">{{ $p->institusi }}</strong>.</p>
-                                            <div class="mb-2">
-                                                <label class="form-label">Pilih Status Baru</label>
-                                                <select name="status_permohonan" class="form-select" required>
-                                                    <option value="Pending" {{ $p->status_permohonan == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                                    <option value="Disetujui" {{ $p->status_permohonan == 'Disetujui' ? 'selected' : '' }}>Disetujui / Diterima</option>
-                                                    <option value="Ditolak" {{ $p->status_permohonan == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" style="font-weight:600; border-radius: 8px;" data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn btn-primary" style="font-weight:600; border-radius: 8px; background: var(--navy); border:none;"><i class="fas fa-save me-1"></i> Simpan Perubahan</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
+            <div class="content-card">
+                
+                @if(session('error'))
+                    <div class="alert alert-danger" style="border-radius: 8px; font-size: 0.9rem;">
+                        <i class="fas fa-exclamation-triangle me-2"></i> {{ session('error') }}
+                    </div>
+                @endif
+                
+                <form action="{{ route('edukasi.offline.update', $edukasi->id) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    
+                    <div class="section-header mt-0">Data Institusi</div>
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label">Institusi (Sekolah/Kampus/Instansi) <span class="text-danger">*</span></label>
+                            <input type="text" name="institusi" class="form-control" placeholder="Contoh: TK Dharma Wanita" value="{{ old('institusi', $edukasi->institusi) }}" required>
                         </div>
-                        @endhasanyrole
+                        <div class="col-md-12">
+                            <label class="form-label">Alamat Lengkap Institusi <span class="text-danger">*</span></label>
+                            <textarea name="alamat_institusi" class="form-control" rows="3" required>{{ old('alamat_institusi', $edukasi->alamat_institusi) }}</textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Kecamatan <span class="text-danger">*</span></label>
+                            <select name="kecamatan" id="kecamatan" class="form-select" required>
+                                <option value="" disabled>Pilih kecamatan</option>
+                                <option value="Alam Barajo" {{ old('kecamatan', $edukasi->kecamatan) == 'Alam Barajo' ? 'selected' : '' }}>Alam Barajo</option>
+                                <option value="Danau Sipin" {{ old('kecamatan', $edukasi->kecamatan) == 'Danau Sipin' ? 'selected' : '' }}>Danau Sipin</option>
+                                <option value="Danau Teluk" {{ old('kecamatan', $edukasi->kecamatan) == 'Danau Teluk' ? 'selected' : '' }}>Danau Teluk</option>
+                                <option value="Jambi Selatan" {{ old('kecamatan', $edukasi->kecamatan) == 'Jambi Selatan' ? 'selected' : '' }}>Jambi Selatan</option>
+                                <option value="Jambi Timur" {{ old('kecamatan', $edukasi->kecamatan) == 'Jambi Timur' ? 'selected' : '' }}>Jambi Timur</option>
+                                <option value="Jelutung" {{ old('kecamatan', $edukasi->kecamatan) == 'Jelutung' ? 'selected' : '' }}>Jelutung</option>
+                                <option value="Kota Baru" {{ old('kecamatan', $edukasi->kecamatan) == 'Kota Baru' ? 'selected' : '' }}>Kota Baru</option>
+                                <option value="Paal Merah" {{ old('kecamatan', $edukasi->kecamatan) == 'Paal Merah' ? 'selected' : '' }}>Paal Merah</option>
+                                <option value="Pasar Jambi" {{ old('kecamatan', $edukasi->kecamatan) == 'Pasar Jambi' ? 'selected' : '' }}>Pasar Jambi</option>
+                                <option value="Pelayangan" {{ old('kecamatan', $edukasi->kecamatan) == 'Pelayangan' ? 'selected' : '' }}>Pelayangan</option>
+                                <option value="Telanaipura" {{ old('kecamatan', $edukasi->kecamatan) == 'Telanaipura' ? 'selected' : '' }}>Telanaipura</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Kelurahan <span class="text-danger">*</span></label>
+                            <select name="kelurahan" id="kelurahan" class="form-select" required>
+                                <option value="" disabled selected>Pilih kecamatan terlebih dahulu</option>
+                            </select>
+                        </div>
+                    </div>
 
-                        @empty
-                        <tr>
-                            <td colspan="7" class="text-center py-5">
-                                <i class="fas fa-folder-open mb-3" style="font-size: 32px; color: var(--line-dark);"></i><br>
-                                <span style="color: var(--steel); font-weight: 500;">Belum ada pengajuan Kunjungan Edukasi & Sosialisasi.</span>
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                    <div class="section-header">Data Penanggung Jawab</div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
+                            <input type="text" name="nama_pemohon" class="form-control" placeholder="Contoh: Budi Santoso" value="{{ old('nama_pemohon', $edukasi->nama_pemohon) }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Jabatan <span class="text-danger">*</span></label>
+                            <input type="text" name="jabatan_pemohon" class="form-control" placeholder="Kepala Sekolah / Panitia" value="{{ old('jabatan_pemohon', $edukasi->jabatan_pemohon) }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">NIK KTP <span class="text-danger">*</span></label>
+                            <input type="text" name="nik" class="form-control" value="{{ old('nik', $edukasi->nik) }}" inputmode="numeric" pattern="[0-9]{16}" maxlength="16" placeholder="16 Digit" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">No. Telepon / WhatsApp <span class="text-danger">*</span></label>
+                            <input type="text" name="no_kontak" class="form-control" placeholder="08xxxxxxxxxx" value="{{ old('no_kontak', $edukasi->no_kontak) }}" required>
+                        </div>
+                    </div>
+
+                    <div class="section-header">Rincian Kegiatan</div>
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label">Rencana Tanggal Pelaksanaan <span class="text-danger">*</span></label>
+                            <input type="date" name="tgl_kegiatan" class="form-control" style="max-width: 250px;" value="{{ old('tgl_kegiatan', $edukasi->tgl_kegiatan) }}" required>
+                        </div>
+                        <div class="col-12"><label class="form-label mb-0">Jumlah & Perkiraan Usia Peserta</label></div>
+                        <div class="col-md-3 col-6">
+                            <small class="text-muted d-block mb-1 text-center">Usia 3 - 6 Tahun</small>
+                            <input type="number" name="usia_3_6" class="form-control text-center" min="0" value="{{ old('usia_3_6', $edukasi->usia_3_6) }}">
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <small class="text-muted d-block mb-1 text-center">Usia 7 - 12 Tahun</small>
+                            <input type="number" name="usia_7_12" class="form-control text-center" min="0" value="{{ old('usia_7_12', $edukasi->usia_7_12) }}">
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <small class="text-muted d-block mb-1 text-center">Usia 13 - 18 Tahun</small>
+                            <input type="number" name="usia_13_18" class="form-control text-center" min="0" value="{{ old('usia_13_18', $edukasi->usia_13_18) }}">
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <small class="text-muted d-block mb-1 text-center">Diatas 18 Tahun</small>
+                            <input type="number" name="usia_18_keatas" class="form-control text-center" min="0" value="{{ old('usia_18_keatas', $edukasi->usia_18_keatas) }}">
+                        </div>
+                    </div>
+
+                    <!-- ==============================================
+                         PERBAIKAN LOGIKA TOMBOL LAMPIRAN DENGAN ALERT 
+                         ============================================== -->
+                    <div class="section-header">Unggah Berkas (Biarkan kosong jika tidak diubah)</div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Surat Permohonan Bermaterai (PDF/JPG/PNG)</label>
+                            @if($edukasi->surat_permohonan)
+                                <div class="mb-2">
+                                    @if($edukasi->surat_permohonan == 'Tidak dilampirkan (Offline)')
+                                        <a href="javascript:void(0)" onclick="alert('Tidak ada data lampiran Surat Permohonan.');" class="badge bg-primary text-decoration-none py-2 px-3">
+                                            <i class="fas fa-file-alt"></i> Lihat Dokumen Saat Ini
+                                        </a>
+                                    @else
+                                        <a href="{{ asset('storage/' . $edukasi->surat_permohonan) }}" target="_blank" class="badge bg-primary text-decoration-none py-2 px-3">
+                                            <i class="fas fa-file-alt"></i> Lihat Dokumen Saat Ini
+                                        </a>
+                                    @endif
+                                </div>
+                            @endif
+                            <input type="file" name="surat_permohonan" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Persyaratan Lainnya</label>
+                            @if($edukasi->syarat_lainnya && $edukasi->syarat_lainnya != 'null' && $edukasi->syarat_lainnya != '[]')
+                                <div class="mb-2">
+                                    @php
+                                        // Cek apakah data string array (JSON) atau path biasa
+                                        $syaratLain = is_string($edukasi->syarat_lainnya) && str_starts_with($edukasi->syarat_lainnya, '[') 
+                                            ? json_decode($edukasi->syarat_lainnya, true) 
+                                            : $edukasi->syarat_lainnya;
+                                            
+                                        $linkSyarat = is_array($syaratLain) && isset($syaratLain[0]) ? $syaratLain[0] : (is_string($syaratLain) ? $syaratLain : null);
+                                    @endphp
+                                    
+                                    @if(!$linkSyarat || $linkSyarat == 'Tidak dilampirkan (Offline)')
+                                        <a href="javascript:void(0)" onclick="alert('Tidak ada data lampiran Persyaratan Lainnya.');" class="badge bg-secondary text-decoration-none py-2 px-3">
+                                            <i class="fas fa-folder-open"></i> Lihat Dokumen Saat Ini
+                                        </a>
+                                    @else
+                                        <a href="{{ asset('storage/' . $linkSyarat) }}" target="_blank" class="badge bg-secondary text-decoration-none py-2 px-3">
+                                            <i class="fas fa-folder-open"></i> Lihat Dokumen Saat Ini
+                                        </a>
+                                    @endif
+                                </div>
+                            @endif
+                            <input type="file" name="syarat_lainnya[]" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.zip,.rar" multiple>
+                            <small class="text-muted">Gunakan ZIP/RAR jika lebih dari 1 file tambahan</small>
+                        </div>
+                    </div>
+
+                    <hr style="margin-top: 40px; border-color: var(--line-dark);">
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <button type="submit" class="btn-primary-custom"><i class="fas fa-save"></i> Perbarui Data</button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -730,15 +564,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 (function () {
     'use strict';
 
-    /* ---------- Notifikasi (Toast) ---------- */
-    document.querySelectorAll('[data-toast]').forEach(function (t) {
-        var hide = function () {
-            t.classList.add('leaving');
-            setTimeout(function () { t.remove(); }, 350);
-        };
-        var x = t.querySelector('[data-toast-close]');
-        if (x) x.addEventListener('click', hide);
-        setTimeout(hide, 4500);
+    /* ---------- Loading State Submit ---------- */
+    document.querySelector('form').addEventListener('submit', function(e) {
+        var btn = this.querySelector('button[type="submit"]');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memperbarui...';
+        btn.classList.add('disabled');
     });
 
     /* ---------- Sidebar Mobile Toggle ---------- */
@@ -767,6 +597,48 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             }
         });
     });
+
+    /* ---------- Kelurahan mengikuti Kecamatan ---------- */
+    var dataWilayah = {
+        'Alam Barajo': ['Bagan Pete', 'Beliung', 'Kenali Besar', 'Mayang Mangurai', 'Pinang Merah', 'Rawa Sari', 'Simpang Rimbo'],
+        'Danau Sipin': ['Legok', 'Murni', 'Selamat', 'Solok Sipin', 'Sungai Putri'],
+        'Danau Teluk': ['Olak Kemang', 'Pasir Panjang', 'Tanjung Pasir', 'Tanjung Raden', 'Ulu Gedong'],
+        'Jambi Selatan': ['Pakuan Baru', 'Pasir Putih', 'Tambak Sari', 'The Hok', 'Wijaya Pura'],
+        'Jambi Timur': ['Budiman', 'Kasang', 'Kasang Jaya', 'Rajawali', 'Sejinjang', 'Sulanjana', 'Talang Banjar', 'Tanjung Pinang', 'Tanjung Sari'],
+        'Jelutung': ['Cempaka Putih', 'Handil Jaya', 'Jelutung', 'Kebun Handil', 'Lebak Bandung', 'Payo Lebar', 'Talang Jauh'],
+        'Kota Baru': ['Kenali Asam', 'Kenali Asam Atas', 'Kenali Asam Bawah', 'Paal Lima', 'Simpang Tiga Sipin', 'Sukakarya', 'Talang Gulo'],
+        'Paal Merah': ['Bakung Jaya', 'Eka Jaya', 'Lingkar Selatan', 'Paal Merah', 'Payo Selincah', 'Talang Bakung'],
+        'Pasar Jambi': ['Beringin', 'Orang Kayo Hitam', 'Pasar Jambi', 'Sungai Asam'],
+        'Pelayangan': ['Arab Melayu', 'Jelmu', 'Mudung Laut', 'Tahtul Yaman', 'Tanjung Johor', 'Tengah'],
+        'Telanaipura': ['Aur Kenali', 'Buluran Kenali', 'Pematang Sulur', 'Penyengat Rendah', 'Simpang Empat Sipin', 'Telanaipura', 'Teluk Kenali']
+    };
+
+    var kec = document.getElementById('kecamatan');
+    var kel = document.getElementById('kelurahan');
+    
+    // Inject old value atau value dari database saat ini
+    var oldKel = "{{ old('kelurahan', $edukasi->kelurahan) }}";
+
+    function updateKelurahan() {
+        kel.innerHTML = '';
+        var ph = new Option('Pilih kelurahan', '', true, true);
+        ph.disabled = true;
+        kel.add(ph);
+        if(kec.value && dataWilayah[kec.value]) {
+            dataWilayah[kec.value].forEach(function (nama) {
+                var opt = new Option(nama, nama);
+                if (nama === oldKel) opt.selected = true;
+                kel.add(opt);
+            });
+        }
+    }
+
+    kec.addEventListener('change', updateKelurahan);
+    
+    // Inisialisasi awal saat halaman di-load
+    if (kec.value) {
+        updateKelurahan();
+    }
 })();
 </script>
 </body>

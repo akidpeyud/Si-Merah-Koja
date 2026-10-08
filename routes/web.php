@@ -72,7 +72,7 @@ Route::get('/ujung-ujung-damkar', function () {
     return view('kabardamkar.ujung-damkar', compact('daftar_ujung_damkar'));
 })->name('publik.ujung-damkar');
 
-// TAMBAHKAN RUTE INFO GRAFIS DI SINI
+// TAMBAHKAN RUTE Infografis DI SINI
 Route::get('/infografis', function () {
     $daftar_infografis = App\Models\Infografis::latest()->get();
     return view('kabardamkar.infografis', compact('daftar_infografis')); 
@@ -326,11 +326,20 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/internal/pencegahan/kelola-perpanjang-skk/update-status/{id}', [SkkAdminController::class, 'updateStatusPerpanjang'])->name('skk.update_status_perpanjang');
     
     // 4. Kelola Edukasi
+    // Rute utama (Halaman Tabel)
     Route::get('/internal/pencegahan/kelola-edukasi', [PermohonanEdukasiController::class, 'index']);
+    
+    // Rute Tambah Offline (Harus di atas rute {id})
+    Route::get('/internal/pencegahan/kelola-edukasi/tambah', [PermohonanEdukasiController::class, 'createOffline'])->name('edukasi.offline.create');
+    Route::post('/internal/pencegahan/kelola-edukasi/simpan-offline', [PermohonanEdukasiController::class, 'storeOffline'])->name('edukasi.offline.store');
+    
+    // Rute Update Status
     Route::post('/internal/pencegahan/kelola-edukasi/update-status/{id}', function (Illuminate\Http\Request $request, $id) { 
         App\Models\PermohonanEdukasi::where('id', $id)->update(['status_permohonan' => $request->status_permohonan]); 
         return redirect()->back()->with('success', 'Status Permohonan Edukasi berhasil diperbarui!'); 
     });
+
+    // Rute Detail (Harus di paling bawah grup edukasi)
     Route::get('/internal/pencegahan/kelola-edukasi/{id}', [PermohonanEdukasiController::class, 'show']);
 
     // 5. Inspeksi Kebakaran & Fire Drill
@@ -648,11 +657,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-operator', [PencegahanController::class, 'indexDiklatOperator']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-ppl', [PencegahanController::class, 'indexDiklatPpl']);
 
-    // ROUTE DUK KEPEGAWAIAN
+// ROUTE DUK KEPEGAWAIAN
     Route::prefix('internal/kepegawaian')->name('kepegawaian.')->group(function () {
         Route::get('/duk', [DukController::class, 'index'])->name('duk.index');
         Route::get('/duk/tambah', [DukController::class, 'create'])->name('duk.create'); 
         Route::post('/duk', [DukController::class, 'store'])->name('duk.store');
+        
+        // TAMBAHKAN DUA BARIS INI UNTUK EDIT & UPDATE
+        Route::get('/duk/{id}/edit', [DukController::class, 'edit'])->name('duk.edit');
+        Route::put('/duk/{id}', [DukController::class, 'update'])->name('duk.update');
+        
         Route::delete('/duk/{id}', [DukController::class, 'destroy'])->name('duk.destroy');
     });
 
@@ -710,3 +724,6 @@ Route::get('/download-format-surat', function () {
         return abort(404, 'File PDF tidak ditemukan di folder public/dokumen/');
     }
 })->name('download.format.surat');
+// Tambahkan route edit dan update untuk Edukasi
+Route::get('/internal/pencegahan/kelola-edukasi/{id}/edit', [PermohonanEdukasiController::class, 'edit'])->name('edukasi.offline.edit');
+Route::put('/internal/pencegahan/kelola-edukasi/{id}', [PermohonanEdukasiController::class, 'update'])->name('edukasi.offline.update');

@@ -262,7 +262,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     .user-meta { display: none; }
 
     .sidebar {
-        position: fixed; z-index: 90;
+        position: fixed; z-index: 1010;
         top: var(--topbar-h); left: 0;
         height: calc(100dvh - var(--topbar-h));
         transform: translateX(-100%);
@@ -273,7 +273,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
     .sidebar-backdrop {
         display: block; position: fixed;
-        inset: var(--topbar-h) 0 0 0; z-index: 80;
+        inset: var(--topbar-h) 0 0 0; z-index: 1000;
         background: rgba(13,27,42,.45);
         opacity: 0; pointer-events: none; transition: opacity .3s;
     }
@@ -325,72 +325,87 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .welcome p { position: relative; max-width: 58ch; color: rgba(255,255,255,.72); font-size: .95rem; line-height: 1.6; }
 
 /* 17. SECTION HEADING */
-.section-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: nowrap; }
+.dash-section { margin-bottom: 40px; scroll-margin-top: calc(var(--topbar-h) + 20px); }
+.section-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
 .section-heading-ico {
-    flex: none; width: 32px; height: 32px; border-radius: 9px;
+    flex: none; width: 34px; height: 34px; border-radius: 10px;
     background: var(--navy); color: #fff;
-    display: grid; place-items: center; font-size: .78rem;
-    box-shadow: 0 4px 8px rgba(22,58,99,.12);
+    display: grid; place-items: center; font-size: .82rem;
 }
 .section-heading h3 {
-    flex: none; font-family: var(--font-display); font-weight: 700;
-    font-size: 1rem; color: var(--ink); letter-spacing: -.01em; white-space: nowrap;
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 1.08rem; color: var(--ink); letter-spacing: -.01em;
 }
-.section-heading .line {
-    flex: 1 1 auto; min-width: 24px; height: 1px;
-    background: linear-gradient(to right, var(--line), transparent 90%);
+.section-meta {
+    margin-left: auto; font-size: .8rem; color: var(--steel); font-weight: 500;
+    padding: 5px 12px; border-radius: 999px; background: #fff; border: 1px solid var(--line);
 }
+.section-meta b { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
 
-/* 18. STAT GRID */
+/* 18. OVERVIEW STRIP (di dalam welcome) */
+.overview {
+    position: relative; display: grid; gap: 10px; margin-top: 26px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+.ov-item {
+    display: flex; flex-direction: column; gap: 2px;
+    padding: 14px 16px; border-radius: 12px;
+    background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.10);
+    transition: background .2s, border-color .2s;
+}
+.ov-item:hover { background: rgba(255,255,255,.13); border-color: rgba(255,255,255,.22); }
+.ov-item strong {
+    font-family: var(--font-display); font-weight: 700; font-size: 1.65rem;
+    line-height: 1.1; font-variant-numeric: tabular-nums; color: #fff;
+}
+.ov-item span { font-size: .8rem; color: rgba(255,255,255,.70); font-weight: 500; }
+
+/* 19. STAT GRID */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 16px; margin-bottom: 44px;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 14px;
 }
 
-/* 19. STAT CARD */
+/* 20. STAT CARD */
 .stat-card {
-    display: flex; flex-direction: column; align-items: flex-start;
-    padding: 22px; background: #fff;
+    display: flex; flex-direction: column; align-items: stretch; gap: 16px;
+    padding: 18px; background: #fff;
     border-radius: var(--r-md); border: 1px solid var(--line);
-    box-shadow: var(--shadow-xs);
     transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease;
-    position: relative; overflow: hidden;
 }
-.stat-card:hover { box-shadow: var(--shadow-sm); border-color: #d2dae5; transform: translateY(-3px); }
-.stat-card::after {
-    content: "\f061"; font-family: "Font Awesome 6 Free"; font-weight: 900;
-    position: absolute; top: 22px; right: 20px;
-    color: var(--steel-soft); font-size: .8rem;
-    opacity: 0; transform: translateX(-6px);
-    transition: opacity .2s ease, transform .2s ease;
-}
-.stat-card:hover::after { opacity: 1; transform: translateX(0); }
-
-/* 20. STAT ICON */
+.stat-card:hover { box-shadow: var(--shadow-sm); border-color: #cbd5e3; transform: translateY(-2px); }
+.stat-top { display: flex; align-items: center; justify-content: space-between; }
 .stat-ico {
-    width: 46px; height: 46px; border-radius: var(--r-sm);
-    display: grid; place-items: center; font-size: 1.05rem; margin-bottom: 18px;
+    width: 40px; height: 40px; border-radius: 11px;
+    display: grid; place-items: center; font-size: .95rem;
 }
+.stat-go {
+    width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+    font-size: .7rem; color: var(--steel-soft); background: var(--paper);
+    transition: background .2s, color .2s, transform .2s;
+}
+.stat-card:hover .stat-go { background: var(--ink); color: #fff; transform: translateX(2px); }
 .ic-primary { background: var(--navy-soft); color: var(--navy); }
 .ic-danger { background: var(--signal-soft); color: var(--signal-dark); }
 .ic-info { background: var(--info-soft); color: var(--info); }
 
 /* 21. STAT TEXT */
-.stat-title {
-    font-size: .74rem; font-weight: 700; letter-spacing: .04em;
-    text-transform: uppercase; color: var(--steel); margin-bottom: 6px; line-height: 1.4;
-}
 .stat-value {
     font-family: var(--font-display); font-weight: 700;
-    font-size: 1.9rem; line-height: 1; color: var(--ink); letter-spacing: -.01em;
+    font-size: 2rem; line-height: 1; color: var(--ink);
+    letter-spacing: -.02em; font-variant-numeric: tabular-nums;
 }
+.stat-value.is-empty { color: var(--steel-soft); }
+.stat-title { font-size: .9rem; font-weight: 600; color: var(--ink); line-height: 1.35; margin-top: 8px; }
+.stat-unit { font-size: .78rem; color: var(--steel); margin-top: 2px; }
 
 /* 22. TABLET */
 @media (max-width: 1100px) {
     .topbar { padding: 0 20px; }
     .content { padding: 32px 26px 60px; }
     .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .overview { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* 23. MOBILE */
@@ -415,10 +430,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     .section-heading { gap: 9px; }
     .section-heading-ico { width: 30px; height: 30px; }
     .section-heading h3 { font-size: .92rem; }
-    .stats-grid { grid-template-columns: 1fr; gap: 12px; margin-bottom: 34px; }
-    .stat-card { padding: 19px; }
-    .stat-ico { width: 42px; height: 42px; margin-bottom: 14px; }
-    .stat-value { font-size: 1.7rem; }
+    .dash-section { margin-bottom: 32px; }
+    .section-meta { margin-left: 0; }
+    .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .stat-card { padding: 15px; gap: 12px; }
+    .stat-title { font-size: .84rem; }
+    .stat-value { font-size: 1.6rem; }
 }
 
 /* 24. VERY SMALL */
@@ -426,6 +443,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     .brand span { display: none; }
     .content { padding-left: 13px; padding-right: 13px; }
     .welcome { padding: 22px 18px; }
+    .stats-grid { grid-template-columns: 1fr; }
     .welcome h2 { font-size: 1.18rem; }
     .welcome p { font-size: .84rem; }
     .section-heading h3 { font-size: .86rem; }
@@ -538,32 +556,18 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             </details>
 
             <!-- BAGIAN PEMADAMAN -->
-            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') || Request::is('internal/damtan/kelola-izin-keramaian*') ? 'open' : '' }}>
+            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
-                    <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
-                        <i class="fas fa-fire-extinguisher"></i> Input data
-                    </a>
-
-                    <!-- MENU BARU: REKAP LAYANAN & OBJEK -->
-                    <a href="/internal/damtan/rekap-layanan" class="{{ Request::is('internal/damtan/rekap-layanan*') ? 'active' : '' }}">
-                        <i class="fas fa-truck-medical"></i> Input Rekap Layanan
-                    </a>
                     <a href="/internal/damtan/rekap-objek" class="{{ Request::is('internal/damtan/rekap-objek*') ? 'active' : '' }}">
-                        <i class="fas fa-house-chimney-crack"></i> Input Rekap Objek Kebakaran
-                    </a>
-
-                    <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
-                        <i class="fas fa-file-signature"></i> Buat Surat Korban
+                        <i class="fas fa-house-chimney-crack"></i><span class="lbl">Kelola Rekap Objek Kebakaran</span>
                     </a>
                     <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
-                        <i class="fas fa-clipboard-list"></i> Kelola Data Laporan
+                        <i class="fas fa-clipboard-list"></i><span class="lbl">Kelola Data Laporan</span>
                     </a>
                     <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
-                        <i class="fas fa-folder-open"></i> Kelola Surat Korban
+                        <i class="fas fa-folder-open"></i><span class="lbl">Kelola Surat Korban</span>
                     </a>
-                    
-                    <!-- MENU KELOLA SURAT KERAMAIAN -->
                     <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
                         <i class="fas fa-users-rectangle"></i><span class="lbl">Kelola Surat Keramaian</span>
                     </a>
@@ -609,7 +613,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 </div>
             </details>
 
-            <!-- BAGIAN KEPEGAWAIAN (Dipindahkan ke bawah Sapra) -->
+            <!-- BAGIAN KEPEGAWAIAN -->
             <details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') ? 'open' : '' }}>
                 <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
@@ -623,7 +627,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             </details>
         @endhasanyrole
 
-        <!-- MANAJEMEN INFORMASI (sudah termasuk Pemetaan SIGAP) -->
+        <!-- MANAJEMEN INFORMASI -->
         @hasanyrole('Super User|Operator')
             <div class="side-kicker">Konten publik</div>
             <details class="side-group" {{ Request::is('internal/operator*') || Request::is('internal/peta-sigap*') ? 'open' : '' }}>
@@ -633,7 +637,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                         <i class="far fa-newspaper"></i><span class="lbl">Input &amp; Kelola Berita</span>
                     </a>
                     <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
-                        <i class="far fa-image"></i><span class="lbl">Kelola Info Grafis</span>
+                        <i class="far fa-image"></i><span class="lbl">Kelola Infografis</span>
                     </a>
                     <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
                         <i class="fab fa-instagram"></i><span class="lbl">Kelola Berita Medsos</span>
@@ -656,7 +660,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             </details>
         @endhasanyrole
 
-        <!-- PENGATURAN AKUN -->
+<!-- PENGATURAN AKUN -->
         <div class="side-kicker">Akun</div>
         <details class="side-group" {{ request()->is('internal/profil*') || request()->is('internal/kelola-user*') || request()->is('internal/kelola-pemohon*') ? 'open' : '' }}>
             <summary><i class="fas fa-user-gear grp-ico"></i><span class="grp-label">Pengaturan akun</span><i class="fas fa-chevron-down chev"></i></summary>
@@ -669,11 +673,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     <a href="{{ url('/internal/kelola-user') }}" class="{{ request()->is('internal/kelola-user*') ? 'active' : '' }}">
                         <i class="fas fa-users-gear"></i><span class="lbl">Kelola Pengguna</span>
                     </a>
+                    
+                    <!-- Pindahkan Kelola Akun Pemohon ke dalam blok hasrole ini -->
+                    <a href="{{ url('/internal/kelola-pemohon') }}" class="{{ request()->is('internal/kelola-pemohon*') ? 'active' : '' }}">
+                        <i class="fas fa-address-book"></i><span class="lbl">Kelola Akun Pemohon</span>
+                    </a>
                 @endhasrole
-
-                <a href="{{ url('/internal/kelola-pemohon') }}" class="{{ request()->is('internal/kelola-pemohon*') ? 'active' : '' }}">
-                    <i class="fas fa-address-book"></i><span class="lbl">Kelola Akun Pemohon</span>
-                </a>
             </div>
         </details>
 
@@ -687,6 +692,135 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             <p>Ringkasan sistem informasi internal Disdamkartan Kota Jambi.</p>
         </div>
 
+        @php
+            /*
+             * Hitung jumlah data. Menerima satu/lebih nama tabel kandidat;
+             * memakai tabel pertama yang ada. Null = tabel tidak ditemukan.
+             * Nama tabel sudah disesuaikan dengan database simerahkoja.
+             */
+            $count = function ($tables, $sumColumn = null) {
+                foreach ((array) $tables as $t) {
+                    if (\Illuminate\Support\Facades\Schema::hasTable($t)) {
+                        $q = \Illuminate\Support\Facades\DB::table($t);
+                        return $sumColumn ? (int) $q->sum($sumColumn) : (int) $q->count();
+                    }
+                }
+                return null;
+            };
+
+            // Jumlahkan SEMUA tabel yang ada (untuk menu yang datanya tersebar di beberapa tabel)
+            $countAll = function (array $tables) use ($count) {
+                $total = null;
+                foreach ($tables as $t) {
+                    $n = $count($t);
+                    if ($n !== null) $total = ($total ?? 0) + $n;
+                }
+                return $total;
+            };
+
+            $rekapTotals = \Illuminate\Support\Facades\Schema::hasTable('rekap_layanan')
+                ? \Illuminate\Support\Facades\DB::table('rekap_layanan')
+                    ->select('kategori', \Illuminate\Support\Facades\DB::raw('SUM(jumlah) as total'))
+                    ->groupBy('kategori')->pluck('total', 'kategori')->toArray()
+                : [];
+
+            $ops = 'Super User|Sapra|Damtan|Pencegahan|Sekretariat|Operator';
+
+            // Urutan section & item mengikuti sidebar.
+            // item: [label, satuan, ikon FA, href, jumlah, tone, (opsional) 'skip' => tidak masuk total]
+            $sections = [
+                [
+                    'id' => 'pencegahan', 'title' => 'Bagian Pencegahan', 'icon' => 'fa-shield-halved', 'roles' => $ops,
+                    'items' => [
+                        ['Peningkatan Kapasitas Aparatur', 'kegiatan', 'fa-arrow-trend-up', '/internal/pencegahan/peningkatan-kapasitas', $count('peningkatan_kapasitas'), 'ic-primary'],
+                        ['Pencegahan Kebakaran & Inspeksi', 'inspeksi', 'fa-magnifying-glass-chart', '/internal/pencegahan/inspeksi-kebakaran', $countAll(['inspeksi_bangunans', 'jadwal_inspeksis']), 'ic-danger'],
+                        ['Pemberdayaan Masyarakat & Dunia Usaha', 'kegiatan', 'fa-handshake-angle', '/internal/pencegahan/pemberdayaan-masyarakat', $countAll(['sosialisasi', 'pembinaan', 'pelatihan', 'pelatihan_keluarga', 'fire_drills']), 'ic-info'],
+                        ['Kelola Edukasi', 'permohonan', 'fa-bullhorn', '/internal/pencegahan/kelola-edukasi', $count('permohonan_edukasi'), 'ic-primary'],
+                        ['Kelola Redkar', 'data', 'fa-users-rectangle', '/internal/pencegahan/kelola-redkar', $count('redkar_registrations'), 'ic-info'],
+                        ['Kelola RPKBGL', 'permohonan', 'fa-building-circle-check', '/internal/pencegahan/kelola-rpkbgl', $count('permohonan_rpkbgl'), 'ic-primary'],
+                        ['Kelola SKK', 'permohonan (baru + perpanjangan)', 'fa-file-shield', '/internal/pencegahan/kelola-skk', ($count('permohonan_skk') ?? 0) + ($count('permohonan_perpanjang_skk') ?? 0), 'ic-danger'],
+                    ],
+                ],
+                [
+                    'id' => 'pemadaman', 'title' => 'Bagian Pemadaman', 'icon' => 'fa-fire-extinguisher', 'roles' => $ops,
+                    'items' => [
+                        ['Kelola Rekap Objek Kebakaran', 'kejadian kebakaran', 'fa-house-chimney-crack', '/internal/damtan/rekap-objek', (\Illuminate\Support\Facades\Schema::hasTable('laporan_penyelamatans') ? \Illuminate\Support\Facades\DB::table('laporan_penyelamatans')->whereNotNull('kategori_kebakaran')->where('kategori_kebakaran', '!=', '')->count() : null), 'ic-danger', 'skip' => true],
+                        ['Kelola Data Laporan', 'laporan', 'fa-clipboard-list', '/internal/damtan/data-laporan', $count('laporan_penyelamatans'), 'ic-danger'],
+                        ['Kelola Surat Korban', 'surat terbit', 'fa-folder-open', '/internal/surat-korban/data', $count('surat_korbans'), 'ic-primary'],
+                        ['Kelola Surat Keramaian', 'surat izin', 'fa-users-rectangle', route('internal.izin-keramaian.index'), $count('izin_keramaian'), 'ic-info'],
+                    ],
+                ],
+                [
+                    'id' => 'rekap', 'title' => 'Rekap Layanan & Penyelamatan', 'icon' => 'fa-truck-medical', 'roles' => $ops, 'chip' => false,
+                    'total' => $count('rekap_layanan', 'jumlah'),
+                    'items' => [
+                        ['Kebakaran', 'layanan', 'fa-fire-flame-curved', '/internal/damtan/rekap-layanan', $rekapTotals['kebakaran'] ?? 0, 'ic-danger'],
+                        ['Evakuasi Ular', 'layanan', 'fa-staff-snake', '/internal/damtan/rekap-layanan', $rekapTotals['evakuasi_ular'] ?? 0, 'ic-primary'],
+                        ['Rescue Darat & Air', 'layanan', 'fa-life-ring', '/internal/damtan/rekap-layanan', $rekapTotals['rescue_darat_air'] ?? 0, 'ic-info'],
+                        ['Evakuasi Tawon/Lebah', 'layanan', 'fa-bug', '/internal/damtan/rekap-layanan', $rekapTotals['evakuasi_tawon'] ?? 0, 'ic-primary'],
+                        ['Edukasi & Kunjungan', 'layanan', 'fa-users', '/internal/damtan/rekap-layanan', $rekapTotals['edukasi_kunjungan'] ?? 0, 'ic-info'],
+                        ['Evakuasi Hewan Lainnya', 'layanan', 'fa-cat', '/internal/damtan/rekap-layanan', $rekapTotals['evakuasi_hewan'] ?? 0, 'ic-primary'],
+                        ['Pemeriksaan Gedung', 'layanan', 'fa-building-circle-check', '/internal/damtan/rekap-layanan', $rekapTotals['pemeriksaan_gedung'] ?? 0, 'ic-danger'],
+                        ['Evakuasi Cincin/Anting', 'layanan', 'fa-ring', '/internal/damtan/rekap-layanan', $rekapTotals['evakuasi_cincin'] ?? 0, 'ic-primary'],
+                    ],
+                ],
+                [
+                    'id' => 'sapra', 'title' => 'Bagian Sapra', 'icon' => 'fa-warehouse', 'roles' => $ops,
+                    'items' => [
+                        ['Sarana Pemadam Kebakaran', 'unit', 'fa-fire-extinguisher', '/sapra/sarana-mako', $countAll(['sarana_kebakaran', 'sarana_pos']), 'ic-danger'],
+                        ['Prasarana Pemadam Kebakaran', 'data', 'fa-building', '/sapra/prasarana-mako', $countAll(['prasarana', 'prasarana_pos', 'prasaranas']), 'ic-primary'],
+                        ['Sarana Penyelamatan & Evakuasi', 'unit', 'fa-life-ring', '/sapra/sarana-penyelamatan', $countAll(['sarana_penyelamatan', 'sarana_penyelamatan_pos', 'sarana_penyelamatans']), 'ic-info'],
+                        ['Sarana Pemeriksaan Proteksi Kebakaran', 'unit', 'fa-search-location', '/sapra/sarana-pemeriksaan', $count('sarana_pemeriksaan'), 'ic-primary'],
+                        ['Kelola Data Pos', 'pos', 'fa-warehouse', '/sapra/kelola-pos', $countAll(['pos_pemadam', 'lokasi_pos']), 'ic-info'],
+                        ['Sumber Air', 'titik', 'fa-droplet', '/sapra/data_hidrant_gedung', (\Illuminate\Support\Facades\Schema::hasTable('titik_sigaps') ? \Illuminate\Support\Facades\DB::table('titik_sigaps')->where('kategori', 'sumber_air')->count() : null), 'ic-info'],
+                        ['Data Hidrant Kota Jambi', 'hidrant', 'fa-map-location-dot', '/sapra/data-hidrant-kota', $count('hidran_kota'), 'ic-primary'],
+                        ['Mutu Baku Kebutuhan', 'data', 'fa-boxes-stacked', '/sapra/kebutuhan-sarpras', $count('kebutuhan_sarpras'), 'ic-primary'],
+                        ['Serah Terima Barang', 'transaksi', 'fa-people-carry-box', '/sapra/distribusi-staff', $count('distribusi_barang_staff'), 'ic-info'],
+                    ],
+                ],
+                [
+                    'id' => 'kepegawaian', 'title' => 'Kepegawaian', 'icon' => 'fa-user-tie', 'roles' => $ops,
+                    'items' => [
+                        ['Data Urut Kepegawaian', 'pegawai', 'fa-user-tie', '/internal/kepegawaian/duk', $count('pegawais'), 'ic-primary'],
+                        ['Program Kerja', 'program', 'fa-file-contract', '/internal/program-kerja', $count('dokumen'), 'ic-info'],
+                    ],
+                ],
+                [
+                    'id' => 'informasi', 'title' => 'Manajemen Informasi', 'icon' => 'fa-newspaper', 'roles' => 'Super User|Operator',
+                    'items' => [
+                        ['Berita', 'berita', 'fa-newspaper', '/internal/operator/kelola-berita', $count('berita'), 'ic-primary'],
+                        ['Infografis', 'Infografis', 'fa-image', '/internal/operator/infografis', $count('infografis'), 'ic-info'],
+                        ['Berita Medsos', 'unggahan', 'fa-brands fa-instagram', '/internal/operator/berita-medsos', $count('berita_medsos'), 'ic-danger'],
+                        ['Ujung-Ujung Damkar', 'video', 'fa-brands fa-youtube', '/internal/operator/ujung-damkar', $count('ujung_damkar'), 'ic-danger'],
+                        ['Edu Damkar', 'materi', 'fa-graduation-cap', '/internal/operator/edu-damkar', $count('edu_damkar'), 'ic-primary'],
+                        ['Titik Peta Sigap', 'titik', 'fa-location-dot', '/internal/peta-sigap/data', $count('titik_sigaps'), 'ic-info'],
+                    ],
+                ],
+                [
+                    'id' => 'akun', 'title' => 'Pengaturan Akun', 'icon' => 'fa-user-gear', 'roles' => 'Super User',
+                    'items' => [
+                        ['Kelola Pengguna', 'akun pegawai', 'fa-users-gear', url('/internal/kelola-user'), $count('users'), 'ic-primary'],
+                        ['Kelola Akun Pemohon', 'akun pemohon', 'fa-address-book', url('/internal/kelola-pemohon'), $count('pemohons'), 'ic-info'],
+                    ],
+                ],
+            ];
+
+            // Filter berdasarkan role & hitung total tiap section
+            $visible = [];
+            foreach ($sections as $s) {
+                if (!Auth::user()->hasAnyRole(explode('|', $s['roles']))) continue;
+                if (!isset($s['total'])) {
+                    $s['total'] = 0;
+                    foreach ($s['items'] as $it) {
+                        if (empty($it['skip']) && $it[4] !== null) $s['total'] += $it[4];
+                    }
+                }
+                $visible[] = $s;
+            }
+            $fmt = fn ($n) => $n === null ? '–' : number_format($n, 0, ',', '.');
+        
+        @endphp
+
         <section class="welcome">
             <span class="welcome-badge"><i class="fas fa-shield-halved"></i> {{ Auth::user()->hasRole('Super User') ? 'Super user' : 'Pegawai internal' }}</span>
             <h2>Selamat bekerja, {{ Auth::user()->nama_lengkap ?? 'Rekan kerja' }}.</h2>
@@ -695,218 +829,48 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             @else
                 <p>Anda dapat berkolaborasi mengelola laporan dari seluruh modul layanan Disdamkartan.</p>
             @endhasrole
-        </section>
 
-        @hasanyrole('Super User|Sapra|Damtan|Pencegahan|Sekretariat|Operator')
-
-        <!-- 1. BAGIAN PENCEGAHAN -->
-        <div class="mb-5">
-            <div class="section-heading">
-                <span class="section-heading-ico"><i class="fas fa-shield-halved"></i></span>
-                <h3>Bagian Pencegahan</h3>
-                <span class="line"></span>
-            </div>
-
-            <div class="stats-grid">
-                <a href="/internal/pencegahan/kelola-rpkbgl" class="stat-card">
-                    <div class="stat-ico ic-primary"><i class="fas fa-building"></i></div>
-                    <div>
-                        <div class="stat-title">Permohonan RPKBGL</div>
-                        <div class="stat-value">
-                            {{ \Illuminate\Support\Facades\Schema::hasTable('permohonan_rpkbgl') ? \Illuminate\Support\Facades\DB::table('permohonan_rpkbgl')->count() : 0 }}
-                        </div>
-                    </div>
-                </a>
-
-                <a href="/internal/pencegahan/kelola-skk" class="stat-card">
-                    <div class="stat-ico ic-primary"><i class="fas fa-shield-halved"></i></div>
-                    <div>
-                        <div class="stat-title">Permohonan SKK (Total)</div>
-                        <div class="stat-value">
-                            @php
-                                $skkBaru = \Illuminate\Support\Facades\Schema::hasTable('permohonan_skk') ? \Illuminate\Support\Facades\DB::table('permohonan_skk')->count() : 0;
-                                $skkPerpanjang = \Illuminate\Support\Facades\Schema::hasTable('permohonan_perpanjang_skk') ? \Illuminate\Support\Facades\DB::table('permohonan_perpanjang_skk')->count() : 0;
-                            @endphp
-                            {{ $skkBaru + $skkPerpanjang }}
-                        </div>
-                    </div>
-                </a>
-
-                <a href="/internal/pencegahan/kelola-edukasi" class="stat-card">
-                    <div class="stat-ico ic-primary"><i class="fas fa-bullhorn"></i></div>
-                    <div>
-                        <div class="stat-title">Permohonan Edukasi</div>
-                        <div class="stat-value">
-                            {{ \Illuminate\Support\Facades\Schema::hasTable('permohonan_edukasi') ? \Illuminate\Support\Facades\DB::table('permohonan_edukasi')->count() : 0 }}
-                        </div>
-                    </div>
-                </a>
-
-                <a href="/internal/pencegahan/kelola-redkar" class="stat-card">
-                    <div class="stat-ico ic-primary"><i class="fas fa-users"></i></div>
-                    <div>
-                        <div class="stat-title">Kelola Redkar</div>
-                        <div class="stat-value">
-                            {{ \Illuminate\Support\Facades\Schema::hasTable('redkar') ? \Illuminate\Support\Facades\DB::table('redkar')->count() : 0 }}
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <!-- 2. BAGIAN PEMADAMAN -->
-        <div class="mb-5">
-            <div class="section-heading">
-                <span class="section-heading-ico"><i class="fas fa-fire-extinguisher"></i></span>
-                <h3>Bagian Pemadaman</h3>
-                <span class="line"></span>
-            </div>
-
-            <div class="stats-grid">
-                <a href="/internal/damtan/input-data" class="stat-card">
-                    <div class="stat-ico ic-danger"><i class="fas fa-fire-extinguisher"></i></div>
-                    <div>
-                        <div class="stat-title">Input Data Baru</div>
-                        <div class="stat-value"><i class="fas fa-plus" style="font-size: 1.25rem;"></i></div>
-                    </div>
-                </a>
-
-                <a href="/internal/surat-korban/create" class="stat-card">
-                    <div class="stat-ico ic-primary"><i class="fas fa-file-signature"></i></div>
-                    <div>
-                        <div class="stat-title">Buat Surat Korban</div>
-                        <div class="stat-value"><i class="fas fa-plus" style="font-size: 1.25rem;"></i></div>
-                    </div>
-                </a>
-
-                <a href="/internal/damtan/data-laporan" class="stat-card">
-                    <div class="stat-ico ic-danger"><i class="fas fa-clipboard-list"></i></div>
-                    <div>
-                        <div class="stat-title">Siaga Darurat (Pemadaman)</div>
-                        <div class="stat-value">0</div>
-                    </div>
-                </a>
-
-                <a href="/internal/surat-korban/data" class="stat-card">
-                    <div class="stat-ico ic-primary"><i class="fas fa-folder"></i></div>
-                    <div>
-                        <div class="stat-title">Surat Korban Terbit</div>
-                        <div class="stat-value">0</div>
-                    </div>
-                </a>
-
-                <!-- KARTU BARU: REKAP LAYANAN -->
-                <a href="/internal/damtan/rekap-layanan" class="stat-card">
-                    <div class="stat-ico ic-danger"><i class="fas fa-truck-medical"></i></div>
-                    <div>
-                        <div class="stat-title">Input Rekap Layanan</div>
-                        <div class="stat-value"><i class="fas fa-plus" style="font-size: 1.25rem;"></i></div>
-                    </div>
-                </a>
-
-                <a href="/internal/damtan/rekap-layanan" class="stat-card">
-                    <div class="stat-ico ic-info"><i class="fas fa-chart-simple"></i></div>
-                    <div>
-                        <div class="stat-title">Total Rekap Layanan</div>
-                        <div class="stat-value">
-                            {{ \Illuminate\Support\Facades\Schema::hasTable('rekap_layanan') ? number_format(\Illuminate\Support\Facades\DB::table('rekap_layanan')->sum('jumlah'), 0, ',', '.') : 0 }}
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <!-- 2B. REKAP LAYANAN & PENYELAMATAN (PER KATEGORI) -->
-        @php
-            $rekapTotals = \Illuminate\Support\Facades\Schema::hasTable('rekap_layanan')
-                ? \Illuminate\Support\Facades\DB::table('rekap_layanan')
-                    ->select('kategori', \Illuminate\Support\Facades\DB::raw('SUM(jumlah) as total'))
-                    ->groupBy('kategori')->pluck('total', 'kategori')->toArray()
-                : [];
-            $rekapKategori = [
-                'kebakaran'          => ['Kebakaran',              'fa-fire-flame-curved',     'ic-danger'],
-                'evakuasi_ular'      => ['Evakuasi Ular',          'fa-staff-snake',           'ic-primary'],
-                'rescue_darat_air'   => ['Rescue Darat & Air',     'fa-life-ring',             'ic-info'],
-                'evakuasi_tawon'     => ['Evakuasi Tawon/Lebah',   'fa-bug',                   'ic-primary'],
-                'edukasi_kunjungan'  => ['Edukasi & Kunjungan',    'fa-users',                 'ic-info'],
-                'evakuasi_hewan'     => ['Evakuasi Hewan Lainnya', 'fa-cat',                   'ic-primary'],
-                'pemeriksaan_gedung' => ['Pemeriksaan Gedung',     'fa-building-circle-check', 'ic-danger'],
-                'evakuasi_cincin'    => ['Evakuasi Cincin/Anting', 'fa-ring',                  'ic-primary'],
-            ];
-        @endphp
-
-        <div class="mb-5">
-            <div class="section-heading">
-                <span class="section-heading-ico"><i class="fas fa-truck-medical"></i></span>
-                <h3>Rekap Layanan &amp; Penyelamatan</h3>
-                <span class="line"></span>
-            </div>
-
-            <div class="stats-grid">
-                @foreach($rekapKategori as $key => [$nama, $ikon, $warna])
-                    <a href="/internal/damtan/rekap-layanan" class="stat-card">
-                        <div class="stat-ico {{ $warna }}"><i class="fas {{ $ikon }}"></i></div>
-                        <div>
-                            <div class="stat-title">{{ $nama }}</div>
-                            <div class="stat-value">{{ number_format($rekapTotals[$key] ?? 0, 0, ',', '.') }}</div>
-                        </div>
-                    </a>
+            <div class="overview">
+                @foreach($visible as $s)
+                    @if(($s['chip'] ?? true) && $s['id'] !== 'akun')
+                        <a href="#sec-{{ $s['id'] }}" class="ov-item">
+                            <strong>{{ $fmt($s['total']) }}</strong>
+                            <span>{{ $s['title'] }}</span>
+                        </a>
+                    @endif
                 @endforeach
             </div>
-        </div>
+        </section>
 
-        <!-- 3. BAGIAN SAPRA -->
-        <div class="mb-4">
-            <div class="section-heading">
-                <span class="section-heading-ico"><i class="fas fa-warehouse"></i></span>
-                <h3>Bagian Sarana &amp; Prasarana</h3>
-                <span class="line"></span>
-            </div>
 
-            <div class="stats-grid">
-                <a href="/sapra/data-hidrant-kota" class="stat-card">
-                    <div class="stat-ico ic-info"><i class="fas fa-map-marker-alt"></i></div>
-                    <div>
-                        <div class="stat-title">Total Hidrant Kota</div>
-                        <div class="stat-value">
-                            {{ \Illuminate\Support\Facades\Schema::hasTable('hidran_kota') ? \Illuminate\Support\Facades\DB::table('hidran_kota')->count() : 0 }}
-                        </div>
-                    </div>
-                </a>
 
-                <a href="/sapra/kelola-pos" class="stat-card">
-                    <div class="stat-ico ic-primary"><i class="fas fa-warehouse"></i></div>
-                    <div>
-                        <div class="stat-title">Data Pos</div>
-                        <div class="stat-value">
-                            {{ \Illuminate\Support\Facades\Schema::hasTable('pos_pemadam') ? \Illuminate\Support\Facades\DB::table('pos_pemadam')->count() : 0 }}
-                        </div>
-                    </div>
-                </a>
+        @foreach($visible as $s)
+            <section class="dash-section" id="sec-{{ $s['id'] }}">
+                <div class="section-heading">
+                    <span class="section-heading-ico"><i class="fas {{ $s['icon'] }}"></i></span>
+                    <h3>{{ $s['title'] }}</h3>
+                    <span class="section-meta">{{ count($s['items']) }} menu &middot; <b>{{ $fmt($s['total']) }}</b> data</span>
+                </div>
 
-                <a href="/sapra/kebutuhan-sarpras" class="stat-card">
-                    <div class="stat-ico ic-info"><i class="fas fa-boxes-stacked"></i></div>
-                    <div>
-                        <div class="stat-title">Mutu Baku Kebutuhan</div>
-                        <div class="stat-value">
-                            {{ \Illuminate\Support\Facades\Schema::hasTable('kebutuhan_sarpras') ? \Illuminate\Support\Facades\DB::table('kebutuhan_sarpras')->count() : 0 }}
-                        </div>
-                    </div>
-                </a>
+                <div class="stats-grid">
+                    @foreach($s['items'] as $it)
+                        <a href="{{ $it[3] }}" class="stat-card">
+                            <div class="stat-top">
+                                <div class="stat-ico {{ $it[5] }}"><i class="{{ str_contains($it[2], 'fa-brands') ? $it[2] : 'fas ' . $it[2] }}"></i></div>
+                                <span class="stat-go"><i class="fas fa-arrow-right"></i></span>
+                            </div>
+                            <div>
+                                <div class="stat-value {{ $it[4] === null ? 'is-empty' : '' }}" @if($it[4] === null) title="Tabel data belum ditemukan" @endif>{{ $fmt($it[4]) }}</div>
+                                <div class="stat-title">{{ $it[0] }}</div>
+                                <div class="stat-unit">{{ $it[1] }}</div>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            </section>
+        @endforeach
 
-                <a href="/sapra/distribusi-staff" class="stat-card">
-                    <div class="stat-ico ic-primary"><i class="fas fa-people-carry-box"></i></div>
-                    <div>
-                        <div class="stat-title">Serah Terima Barang</div>
-                        <div class="stat-value">
-                            {{ \Illuminate\Support\Facades\Schema::hasTable('distribusi_barang_staff') ? \Illuminate\Support\Facades\DB::table('distribusi_barang_staff')->count() : 0 }}
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
 
-        @endhasanyrole
 
     </main>
 </div>

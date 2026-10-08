@@ -435,7 +435,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
                 <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="/edu-damkar">Edu Damkar</a></li>
-                    <li><a href="/infografis">Info Grafis</a></li>
+                    <li><a href="/infografis">Infografis</a></li>
                     <li><a href="/media-informasi">Media Informasi</a></li>
                     <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
                 </ul>
