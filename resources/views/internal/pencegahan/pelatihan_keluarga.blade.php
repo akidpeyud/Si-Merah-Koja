@@ -318,17 +318,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .custom-nav-tabs .nav-link:hover { color: var(--ink); background: var(--navy-soft); }
 .custom-nav-tabs .nav-link.active { color: var(--navy); border-bottom-color: var(--navy); }
 
-.table-title {
-    display: flex; align-items: center; gap: 12px;
-    font-family: var(--font-display); font-weight: 700; font-size: 1rem;
-    color: var(--ink); letter-spacing: -.01em; margin: 26px 0 14px;
-}
-.table-title .ico {
-    width: 32px; height: 32px; border-radius: 9px; background: var(--navy); color: #fff;
-    display: grid; place-items: center; font-size: .78rem;
-    box-shadow: 0 4px 8px rgba(22,58,99,.12);
-}
-
 .table-scroll-wrapper {
     width: 100%; overflow-x: auto; background: #fff;
     border-radius: var(--r-md); border: 1px solid var(--line);
@@ -352,16 +341,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .table-detailed tbody tr { transition: background .15s; }
 .table-detailed tbody tr:hover { background: var(--paper); }
 
-.badge-soft-blue {
-    display: inline-block; background: var(--info-soft); color: var(--info);
-    padding: 5px 12px; font-weight: 700; font-size: .78rem; border-radius: 6px;
-    border: 1px solid rgba(37, 99, 235, .15);
-}
-.badge-diklat {
-    display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .03em;
-    padding: 5px 10px; border-radius: 6px; background: var(--navy-soft); color: var(--navy);
-}
-
 .aksi-wrap { display: flex; justify-content: center; align-items: center; gap: 6px; }
 .aksi-wrap form { margin: 0; display: inline-flex; }
 .btn-action {
@@ -383,19 +362,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     background: var(--navy); color: #fff; display: grid; place-items: center;
     font-size: .78rem; box-shadow: 0 4px 8px rgba(22,58,99,.12);
 }
-.section-heading-ico.amber { background: var(--amber); color: var(--ink); box-shadow: 0 4px 8px rgba(244,183,64,.25); }
 .section-heading h3 { flex: none; font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: var(--ink); letter-spacing: -.01em; white-space: nowrap; margin: 0; }
 .section-heading .line { flex: 1 1 auto; min-width: 24px; height: 1px; background: linear-gradient(to right, var(--line), transparent 90%); }
 
-.table-detailed.table-compact { min-width: 1000px; }
 .table-detailed th.th-sub { background: rgba(255,255,255,.08); }
 .table-detailed th.th-group { border-bottom: 1px solid var(--ink-3); }
-.badge-tahun {
-    display: inline-block; margin-top: 4px; padding: 3px 8px; border-radius: 6px;
-    background: var(--navy-soft); color: var(--navy); font-weight: 700; font-size: .68rem; letter-spacing: .03em;
-}
-.total-cell { text-align: center; font-weight: 700; color: var(--navy); }
-
 
 /* ==========================================================
    TABEL PELATIHAN KELUARGA (rapi + Perempuan / Laki-laki)
@@ -437,19 +408,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .table-peserta tfoot td.foot-label { text-align: right; text-transform: uppercase; letter-spacing: .05em; font-size: .72rem; color: var(--steel); }
 
+/* tombol link dokumentasi */
+.media-links { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
 .btn-media {
     display: inline-flex; align-items: center; gap: 6px;
     color: var(--info); font-weight: 600; font-size: .82rem;
-    padding: 5px 12px; border-radius: 8px; background: transparent; border: 0;
-    transition: background .2s;
+    padding: 5px 12px; border-radius: 8px; background: var(--info-soft);
+    border: 0; transition: background .2s, color .2s;
 }
-.btn-media:hover { background: var(--info-soft); }
+.btn-media:hover { background: var(--info); color: #fff; }
 .media-empty { color: var(--steel-soft); }
-
-.media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
-.media-grid .media-item { border-radius: var(--r-sm); overflow: hidden; background: var(--paper); border: 1px solid var(--line); aspect-ratio: 4 / 3; }
-.media-grid img, .media-grid video { width: 100%; height: 100%; object-fit: cover; display: block; }
-.modal-title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
 
 /* RESPONSIVE TABLET */
 @media (max-width: 1100px) {
@@ -667,17 +635,17 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             </details>
         @endhasanyrole
 
-        <!-- MANAJEMEN INFORMASI -->
-        @hasanyrole('Super User|Operator')
+        <!-- MANAJEMEN INFORMASI: semua pegawai internal bisa melihat menu ini -->
+        @hasanyrole('Super User|Sapra|Damtan|Pencegahan|Sekretariat|Operator')
             <div class="side-kicker">Konten publik</div>
             <details class="side-group" {{ Request::is('internal/operator*') || Request::is('internal/peta-sigap*') ? 'open' : '' }}>
                 <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen Informasi</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
-                        <i class="far fa-newspaper"></i><span class="lbl">Input &amp; Kelola Berita</span>
+                        <i class="far fa-newspaper"></i><span class="lbl">Kelola Berita</span>
                     </a>
                     <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
-                        <i class="far fa-image"></i> Kelola Infografis
+                        <i class="far fa-image"></i><span class="lbl">Kelola Infografis</span>
                     </a>
                     <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
                         <i class="fab fa-instagram"></i><span class="lbl">Kelola Berita Medsos</span>
@@ -690,9 +658,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     </a>
 
                     <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
+                    
+                    <!-- Khusus untuk Input Titik, dibatasi hanya untuk Super User & Operator -->
+                    @hasanyrole('Super User|Operator')
                     <a href="/internal/peta-sigap/input" class="{{ Request::is('internal/peta-sigap/input*') ? 'active' : '' }}">
                         <i class="fas fa-plus"></i><span class="lbl">Input Titik Peta</span>
                     </a>
+                    @endhasanyrole
+
                     <a href="/internal/peta-sigap/data" class="{{ Request::is('internal/peta-sigap/data*') ? 'active' : '' }}">
                         <i class="fas fa-table-list"></i><span class="lbl">Kelola Data Titik</span>
                     </a>
@@ -818,15 +791,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                             $p = (int) ($item->peserta_perempuan ?? 0);
                             $l = (int) ($item->peserta_laki_laki ?? 0);
 
-                            $media = $item->foto_video ?? null;
-                            if (is_string($media)) {
-                                $decoded = json_decode($media, true);
-                                $media = is_array($decoded) ? $decoded : [$media];
-                            }
-                            $media = collect($media ?? [])->filter()->map(function ($m) {
-                                return \Illuminate\Support\Str::startsWith($m, ['http', '/'])
-                                    ? $m : url('/uploads/pemberdayaan/' . $m);
-                            })->values();
+                            // Link dokumentasi: satu link per baris (atau dipisah koma / spasi)
+                            $links = collect(preg_split('/[\r\n,\s]+/', (string) ($item->link_dokumentasi ?? '')))
+                                ->map(fn ($u) => trim($u))
+                                ->filter(fn ($u) => preg_match('#^https?://#i', $u))
+                                ->values();
                         @endphp
                         <tr>
                             <td class="col-center fw-bold">{{ $loop->iteration }}</td>
@@ -845,10 +814,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                             <td class="col-center"><span class="count-pill male"><i class="fas fa-mars"></i>{{ $l }}</span></td>
                             <td class="col-center"><span class="count-pill total">{{ $p + $l }}</span></td>
                             <td class="col-center">
-                                @if($media->isNotEmpty())
-                                    <button type="button" class="btn-media" data-media='@json($media)' data-title="{{ $item->kelurahan ?? 'Dokumentasi' }}">
-                                        <i class="fas fa-camera"></i> Lihat
-                                    </button>
+                                @if($links->isNotEmpty())
+                                    <div class="media-links">
+                                        @foreach($links as $i => $u)
+                                            <a href="{{ $u }}" target="_blank" rel="noopener noreferrer" class="btn-media">
+                                                <i class="fas fa-link"></i> {{ $links->count() > 1 ? 'Link ' . ($i + 1) : 'Lihat' }}
+                                            </a>
+                                        @endforeach
+                                    </div>
                                 @else
                                     <span class="media-empty">-</span>
                                 @endif
@@ -896,21 +869,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             </div>
         </div>
 
-        <!-- MODAL FOTO & VIDEO -->
-        <div class="modal fade" id="mediaModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content" style="border-radius: var(--r-md); border: 0;">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="mediaModalTitle">Dokumentasi</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="media-grid" id="mediaGrid"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </main>
 </div>
 
@@ -946,7 +904,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     if (backdrop) backdrop.addEventListener('click', closeSide);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
 
-
     /* ---------- Pencarian tabel ---------- */
     var searchInput = document.querySelector('.search-box input');
     var tbody = document.querySelector('.table-peserta tbody');
@@ -959,35 +916,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             });
         });
     }
-
-    /* ---------- Modal foto & video ---------- */
-    document.querySelectorAll('.btn-media').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            var list = [];
-            try { list = JSON.parse(btn.getAttribute('data-media')) || []; } catch (e) {}
-            var grid = document.getElementById('mediaGrid');
-            grid.innerHTML = '';
-            list.forEach(function (url) {
-                var box = document.createElement('div');
-                box.className = 'media-item';
-                var el;
-                if (/\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(url)) {
-                    el = document.createElement('video');
-                    el.src = url; el.controls = true;
-                } else {
-                    el = document.createElement('img');
-                    el.src = url; el.alt = 'Dokumentasi'; el.loading = 'lazy';
-                }
-                box.appendChild(el);
-                grid.appendChild(box);
-            });
-            document.getElementById('mediaModalTitle').textContent = 'Dokumentasi - ' + (btn.getAttribute('data-title') || '');
-            if (window.bootstrap) new bootstrap.Modal(document.getElementById('mediaModal')).show();
-        });
-    });
-    document.getElementById('mediaModal').addEventListener('hidden.bs.modal', function () {
-        document.querySelectorAll('#mediaGrid video').forEach(function (v) { v.pause(); });
-    });
 
     /* ---------- Hanya satu grup sidebar terbuka pada satu waktu ---------- */
     var groups = document.querySelectorAll('.side-group');
