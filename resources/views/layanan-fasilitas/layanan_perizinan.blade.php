@@ -24,7 +24,7 @@
     $galat          = $errors->all() ?? [];
     
     // URL SURAT PERMOHONAN DIISI DI SINI
-    $url_surat_permohonan = 'FORMULIR-1.docx';
+    $url_surat_permohonan = asset('dokumen/FORMULIR-1.docx');
 
     $to_arr = function ($d) { return (is_object($d) && method_exists($d, 'toArray')) ? $d->toArray() : (array) $d; };
     $val    = function ($k) use ($old, $h) { return $h($old[$k] ?? ''); };

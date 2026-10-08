@@ -84,7 +84,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .brand img { height: 34px; width: auto; flex: none; }
 .brand span { font-family: var(--font-display); font-weight: 700; font-size: 1.08rem; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; }
 .topbar-right { display: flex; align-items: center; gap: 12px; }
-.user-chip { display: flex; align-items: center; gap: 10px; padding: 5px 14px 5px 5px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); }
+.user-chip { display: flex; align-items: center; gap: 10px; padding: 5px 14px 5px 5px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); transition: background .2s, border-color .2s;}
+.user-chip:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.18); }
 .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: #ffffff; color: var(--ink); display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: .9rem; flex: none; }
 .user-meta { display: grid; line-height: 1.25; }
 .user-meta strong { font-size: .84rem; font-weight: 700; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #ffffff; }
@@ -440,6 +441,7 @@ table.dataTable.table-simerah > thead > tr > th { border-bottom: 1px solid var(-
                 @endhasrole
             </div>
         </details>
+
     </aside>
 
     <!-- KONTEN UTAMA -->
@@ -457,17 +459,7 @@ table.dataTable.table-simerah > thead > tr > th { border-bottom: 1px solid var(-
             @endhasanyrole
         </div>
 
-        <div class="section-heading">
-            <span class="section-heading-ico"><i class="fas fa-map-location-dot"></i></span>
-            <h3>Daftar Titik Peta Tayang</h3>
-            <span class="line"></span>
-            <span class="count-pill">
-                <i class="fas fa-location-dot"></i> {{ isset($titikSigaps) ? count($titikSigaps) : 0 }} Titik
-            </span>
-        </div>
-
-        <div class="card-box">
-            @if(isset($titikSigaps) && count($titikSigaps) > 0)
+        <div class="table-card mt-2">
             <div class="table-responsive">
                 <table id="tabelTitik" class="table table-simerah align-middle w-100">
                     <thead>
@@ -602,7 +594,6 @@ table.dataTable.table-simerah > thead > tr > th { border-bottom: 1px solid var(-
         jQuery('#tabelTitik').DataTable({
             responsive: true,
             language: {
-                search: "Cari data:",
                 lengthMenu: "Tampilkan _MENU_ entri per halaman",
                 zeroRecords: "Data tidak ditemukan",
                 info: "Menampilkan halaman _PAGE_ dari _PAGES_",

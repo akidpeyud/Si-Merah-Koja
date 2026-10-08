@@ -10,7 +10,7 @@ class PetaController extends Controller
     // ==========================================
     // FUNGSI HALAMAN PUBLIK
     // ==========================================
-    
+
     public function sigap()
     {
         return view('public.sigap');
@@ -36,7 +36,7 @@ class PetaController extends Controller
     {
         // Opsional: jika input dan tabel digabung dalam 1 halaman
         $titikSigaps = TitikSigap::orderBy('created_at', 'desc')->get();
-        
+
         return view('internal.peta-sigap.inputdata_peta', compact('titikSigaps')); 
     }
 
@@ -72,11 +72,11 @@ class PetaController extends Controller
     /**
      * UPDATE: Tampilkan Form Edit Data
      */
-public function edit($id)
-{
-    $titik = TitikSigap::findOrFail($id);
-    return view('internal.peta-sigap.edit_peta', compact('titik'));
-}
+    public function edit($id)
+    {
+        $titik = TitikSigap::findOrFail($id);
+        return view('internal.peta-sigap.edit_peta', compact('titik'));
+    }
 
     /**
      * UPDATE: Simpan Perubahan Data
@@ -94,7 +94,7 @@ public function edit($id)
         ]);
 
         $titik = TitikSigap::findOrFail($id);
-        
+
         $titik->update([
             'kategori'   => $request->kategori,
             'nama'       => $request->nama,
@@ -120,6 +120,21 @@ public function edit($id)
         return redirect()->back()->with('success', 'Titik berhasil dihapus!');
     }
 
+    /**
+     * EXPORT: Download Data as PDF
+     */
+    public function exportPdf()
+    {
+        // Ambil data dari database
+        $titikSigaps = TitikSigap::orderBy('created_at', 'desc')->get();
+
+        // Load view khusus untuk format PDF (pastikan file ini sudah dibuat)
+        $pdf = \PDF::loadView('internal.peta-sigap.pdf', compact('titikSigaps'));
+
+        // Kembalikan response berupa unduhan file PDF
+        return $pdf->download('Data_Titik_SIGAP.pdf');
+    }
+
     // ==========================================
     // FUNGSI API (UNTUK PETA PUBLIK)
     // ==========================================
@@ -130,7 +145,7 @@ public function edit($id)
     public function apiData()
     {
         $titiks = TitikSigap::all();
-        
+
         $formattedTitik = $titiks->map(function($titik) {
             return [
                 'id'         => $titik->id,
@@ -145,5 +160,13 @@ public function edit($id)
         });
 
         return response()->json($formattedTitik);
+    }
+    /**
+     * EXPORT: Download Data as Excel
+     */
+    public function exportExcel()
+    {
+        // Pastikan Anda mengimport class TitikSigapExport di bagian atas controller jika tidak pakai namespace penuh
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\TitikSigapExport, 'Data_Titik_SIGAP.xlsx');
     }
 }

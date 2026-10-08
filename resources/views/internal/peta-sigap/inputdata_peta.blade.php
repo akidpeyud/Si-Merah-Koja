@@ -104,15 +104,15 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .side-group summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: var(--r-sm); font-size: .78rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--navy); user-select: none; }
 .side-group summary::-webkit-details-marker { display: none; }
 .side-group summary:hover { background: #f3f6fa; }
-.side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); }
-.side-group summary .grp-label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.side-group summary .chev { flex: none; font-size: .7rem; transition: transform .25s ease; }
+.side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); margin-top: 3px; }
+.side-group summary .grp-label { flex: 1 1 auto; min-width: 0; white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.4; }
+.side-group summary .chev { flex: none; font-size: .7rem; margin-top: 4px; transition: transform .25s ease; }
 .side-group[open] summary .chev { transform: rotate(180deg); }
 .side-sub { display: grid; gap: 3px; padding: 6px 4px 10px 12px; border-left: 2px solid var(--line); margin: 2px 0 8px 22px; }
 .side-sub a { display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: var(--r-sm); font-size: .84rem; font-weight: 500; line-height: 1.4; color: var(--steel); transition: background .2s, color .2s, transform .2s; }
 .side-sub a:hover { background: var(--navy-light); color: var(--navy-dark); transform: translateX(2px); }
 .side-sub a.active { background: var(--navy-soft); color: var(--navy); font-weight: 600; }
-.side-sub a i { width: 18px; text-align: center; font-size: .88rem; opacity: .75; }
+.side-sub a i { width: 18px; text-align: center; font-size: .88rem; opacity: .75; flex: none; margin-top: 3px; }
 .side-sub a:hover i, .side-sub a.active i { opacity: 1; }
 .side-kicker { padding: 18px 14px 6px; font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--steel-soft); }
 .sidebar-backdrop { display: none; }
@@ -254,7 +254,7 @@ table.dataTable.table-simerah > thead > tr > th { border-bottom: 1px solid var(-
             <span class="user-avatar">{{ strtoupper(substr(Auth::user()->nama_lengkap ?? 'O', 0, 1)) }}</span>
             <div class="user-meta">
                 <strong>{{ Auth::user()->nama_lengkap ?? 'Rekan kerja' }}</strong>
-                <small>{{ str_replace('_', ' ', Auth::user()->role ?? '') }}</small>
+                <small>{{ Auth::user()->role ?? '' }}</small>
             </div>
         </div>
         <form action="/logout" method="POST" style="margin:0;">
@@ -406,19 +406,19 @@ table.dataTable.table-simerah > thead > tr > th { border-bottom: 1px solid var(-
                     <a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
                         <i class="fas fa-graduation-cap"></i><span class="lbl">Edu Damkar</span>
                     </a>
+                    @endhasanyrole
 
+                    @hasanyrole('Super User|Operator|User')
                     <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
-                    @hasanyrole('Operator|Super User')
                     <a href="/internal/peta-sigap/input" class="{{ Request::is('internal/peta-sigap/input*') ? 'active' : '' }}">
                         <i class="fas fa-plus"></i><span class="lbl">Input Titik Peta</span>
                     </a>
-                    @endhasanyrole
-                    <a href="/internal/peta-sigap/data" class="{{ Request::is('internal/peta-sigap/data*') || Request::is('internal/peta-sigap/edit*') ? 'active' : '' }}">
+                    <a href="/internal/peta-sigap/data" class="{{ Request::is('internal/peta-sigap/data*') ? 'active' : '' }}">
                         <i class="fas fa-table-list"></i><span class="lbl">Kelola Data Titik</span>
                     </a>
+                    @endhasanyrole
                 </div>
             </details>
-
         @endhasanyrole
 
         <!-- PENGATURAN AKUN -->
@@ -440,6 +440,7 @@ table.dataTable.table-simerah > thead > tr > th { border-bottom: 1px solid var(-
                 @endhasrole
             </div>
         </details>
+
     </aside>
 
     <!-- KONTEN UTAMA -->
@@ -599,6 +600,12 @@ table.dataTable.table-simerah > thead > tr > th { border-bottom: 1px solid var(-
 
             </div>
         </form>
+        @else
+        <div class="alert alert-danger" role="alert">
+            <i class="fas fa-lock me-2"></i> Anda tidak memiliki akses untuk membuka halaman ini.
+        </div>
+        @endhasanyrole
+
     </main>
 </div>
 
@@ -654,8 +661,8 @@ table.dataTable.table-simerah > thead > tr > th { border-bottom: 1px solid var(-
     var initialLng = parseFloat('{{ old('longitude') }}');
     if (isNaN(initialLat) || isNaN(initialLng)) { initialLat = defaultLat; initialLng = defaultLng; }
 
-    var latInput = document.getElementById('latInput');
-    var lngInput = document.getElementById('lngInput');
+        var latInput = document.getElementById('latInput');
+        var lngInput = document.getElementById('lngInput');
 
     var map = L.map('mapPicker').setView([initialLat, initialLng], 13);
 
@@ -691,6 +698,50 @@ table.dataTable.table-simerah > thead > tr > th { border-bottom: 1px solid var(-
                 updateMapFromInputs();
             }
         }
+
+        // Fungsi handle paste dari Google Maps (Format: "-1.6180, 103.6006")
+        function handlePaste(e) {
+            var pastedText = (e.clipboardData || window.clipboardData).getData('text');
+            
+            if (pastedText.includes(',')) {
+                var parts = pastedText.split(',');
+                var parsedLat = parseFloat(parts[0].trim());
+                var parsedLng = parseFloat(parts[1].trim());
+
+                if (!isNaN(parsedLat) && !isNaN(parsedLng)) {
+                    e.preventDefault(); 
+                    latInput.value = parsedLat;
+                    lngInput.value = parsedLng;
+                    updateMapFromInputs();
+                }
+            }
+        }
+
+        latInput.addEventListener('input', updateMapFromInputs);
+        lngInput.addEventListener('input', updateMapFromInputs);
+        latInput.addEventListener('paste', handlePaste);
+        lngInput.addEventListener('paste', handlePaste);
+
+        marker.on('dragend', function (e) {
+            var position = marker.getLatLng();
+            latInput.value = position.lat.toFixed(6);
+            lngInput.value = position.lng.toFixed(6);
+        });
+
+        map.on('click', function (e) {
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
+            marker.setLatLng([lat, lng]);
+            latInput.value = lat.toFixed(6);
+            lngInput.value = lng.toFixed(6);
+        });
+
+        var initialLat = latInput.value ? parseFloat(latInput.value) : defaultLat;
+        var initialLng = lngInput.value ? parseFloat(lngInput.value) : defaultLng;
+        
+        latInput.value = initialLat;
+        lngInput.value = initialLng;
+        updateMapFromInputs();
     }
 
     latInput.addEventListener('input', updateMapFromInputs);
