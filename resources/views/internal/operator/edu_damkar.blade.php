@@ -232,7 +232,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         <div class="user-chip">
             <span class="user-avatar">{{ strtoupper(substr(Auth::user()->nama_lengkap ?? 'O', 0, 1)) }}</span>
             <div class="user-meta">
-                <strong>{{ Auth::user()->nama_lengkap ?? 'Operator Media' }}</strong>
+                <strong>{{ Auth::user()->nama_lengkap ?? 'Rekan kerja' }}</strong>
                 <small>{{ str_replace('_', ' ', Auth::user()->role ?? '') }}</small>
             </div>
         </div>
@@ -249,130 +249,172 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar" aria-label="Navigasi internal">
         <a href="/internal/index" class="side-link {{ Request::is('internal/index') ? 'active' : '' }}">
-            <i class="fas fa-house"></i> Dashboard utama
+            <i class="fas fa-house"></i><span class="lbl">Dashboard utama</span>
         </a>
 
-        @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
+        <!-- SEMUA MENU DITAMPILKAN KEPADA SEMUA ROLE -->
+        @hasanyrole('Super User|Sapra|Damtan|Pencegahan|Sekretariat|Operator')
+
             <div class="side-kicker">Modul operasional</div>
 
+            <!-- BAGIAN PENCEGAHAN -->
             <details class="side-group" {{ Request::is('internal/pencegahan*') ? 'open' : '' }}>
                 <summary><i class="fas fa-shield-halved grp-ico"></i><span class="grp-label">Bagian pencegahan</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
-                    <a href="/internal/pencegahan/peningkatan-kapasitas"><i class="fas fa-arrow-trend-up"></i> Peningkatan Kapasitas Aparatur</a>
-                    <a href="/internal/pencegahan/inspeksi-kebakaran"><i class="fas fa-magnifying-glass-chart"></i> Pencegahan Kebakaran dan Inspeksi</a>
-                    <a href="/internal/pencegahan/pemberdayaan-masyarakat"><i class="fas fa-handshake-angle"></i> Pemberdayaan Masyarakat dan Dunia Usaha</a>
-                    <a href="/internal/pencegahan/kelola-edukasi"><i class="fas fa-bullhorn"></i> Kelola Edukasi</a>
-                    <a href="/internal/pencegahan/kelola-redkar"><i class="fas fa-users-rectangle"></i> Kelola Redkar</a>
-                    <a href="/internal/pencegahan/kelola-rpkbgl"><i class="fas fa-building-circle-check"></i> Kelola RPKBGL</a>
-                    <a href="/internal/pencegahan/kelola-skk"><i class="fas fa-file-shield"></i> Kelola SKK</a>
+                    <a href="/internal/pencegahan/peningkatan-kapasitas" class="{{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}">
+                        <i class="fas fa-arrow-trend-up"></i><span class="lbl">Peningkatan Kapasitas Aparatur</span>
+                    </a>
+                    <a href="/internal/pencegahan/inspeksi-kebakaran" class="{{ Request::is('internal/pencegahan/inspeksi-kebakaran*') ? 'active' : '' }}">
+                        <i class="fas fa-magnifying-glass-chart"></i><span class="lbl">Pencegahan Kebakaran dan Inspeksi</span>
+                    </a>
+                    <a href="/internal/pencegahan/pemberdayaan-masyarakat" class="{{ Request::is('internal/pencegahan/pemberdayaan-masyarakat*') ? 'active' : '' }}">
+                        <i class="fas fa-handshake-angle"></i><span class="lbl">Pemberdayaan Masyarakat dan Dunia Usaha</span>
+                    </a>
+                    <a href="/internal/pencegahan/kelola-edukasi" class="{{ Request::is('internal/pencegahan/kelola-edukasi*') ? 'active' : '' }}">
+                        <i class="fas fa-bullhorn"></i><span class="lbl">Kelola Edukasi</span>
+                    </a>
+                    <a href="/internal/pencegahan/kelola-redkar" class="{{ Request::is('internal/pencegahan/kelola-redkar*') ? 'active' : '' }}">
+                        <i class="fas fa-users-rectangle"></i><span class="lbl">Kelola Redkar</span>
+                    </a>
+                    <a href="/internal/pencegahan/kelola-rpkbgl" class="{{ Request::is('internal/pencegahan/kelola-rpkbgl*') ? 'active' : '' }}">
+                        <i class="fas fa-building-circle-check"></i><span class="lbl">Kelola RPKBGL</span>
+                    </a>
+                    <a href="/internal/pencegahan/kelola-skk" class="{{ Request::is('internal/pencegahan/kelola-skk*') ? 'active' : '' }}">
+                        <i class="fas fa-file-shield"></i><span class="lbl">Kelola SKK</span>
+                    </a>
                 </div>
             </details>
 
-            <!-- BAGIAN PEMADAMAN -->
+           <!-- BAGIAN PEMADAMAN -->
             <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') || Request::is('internal/damtan/kelola-izin-keramaian*') ? 'open' : '' }}>
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
-                        <i class="fas fa-fire-extinguisher"></i> Input data
+                        <i class="fas fa-fire-extinguisher"></i><span class="lbl">Input data</span>
                     </a>
-
-                    <!-- MENU BARU: REKAP LAYANAN & OBJEK -->
                     <a href="/internal/damtan/rekap-layanan" class="{{ Request::is('internal/damtan/rekap-layanan*') ? 'active' : '' }}">
-                        <i class="fas fa-truck-medical"></i> Input Rekap Layanan
+                        <i class="fas fa-truck-medical"></i><span class="lbl">Input Rekap Layanan</span>
                     </a>
                     <a href="/internal/damtan/rekap-objek" class="{{ Request::is('internal/damtan/rekap-objek*') ? 'active' : '' }}">
-                        <i class="fas fa-house-chimney-crack"></i> Input Rekap Objek Kebakaran
+                        <i class="fas fa-house-chimney-crack"></i><span class="lbl">Input Rekap Objek Kebakaran</span>
                     </a>
-
                     <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
-                        <i class="fas fa-file-signature"></i> Buat Surat Korban
+                        <i class="fas fa-file-signature"></i><span class="lbl">Buat Surat Korban</span>
                     </a>
                     <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
-                        <i class="fas fa-clipboard-list"></i> Kelola Data Laporan
+                        <i class="fas fa-clipboard-list"></i><span class="lbl">Kelola Data Laporan</span>
                     </a>
                     <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
-                        <i class="fas fa-folder-open"></i> Kelola Surat Korban
+                        <i class="fas fa-folder-open"></i><span class="lbl">Kelola Surat Korban</span>
                     </a>
-                    
-                    <!-- MENU KELOLA SURAT KERAMAIAN -->
                     <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
                         <i class="fas fa-users-rectangle"></i><span class="lbl">Kelola Surat Keramaian</span>
                     </a>
                 </div>
             </details>
 
-            <details class="side-group" {{ Request::is('internal/kepegawaian*') ? 'open' : '' }}>
-                <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
-                <div class="side-sub">
-                    <a href="/internal/kepegawaian/duk"><i class="fas fa-user-tie"></i> Data Urut Kepegawaian</a>
-                </div>
-            </details>
-
+            <!-- BAGIAN SAPRA -->
             <details class="side-group" {{ Request::is('sapra*') ? 'open' : '' }}>
                 <summary><i class="fas fa-warehouse grp-ico"></i><span class="grp-label">Bagian sapra</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <span class="side-kicker" style="padding-left:2px;">Sarana &amp; Prasarana</span>
-                    <a href="/sapra/sarana-mako"><i class="fas fa-fire-extinguisher"></i> Sarana pemadam kebakaran</a>
-                    <a href="/sapra/prasarana-mako"><i class="fas fa-building"></i> Prasarana pemadam kebakaran</a>
-                    <a href="/sapra/sarana-penyelamatan"><i class="fas fa-life-ring"></i> Sarana Penyelamatan &amp; Evakuasi</a>
-                    <a href="/sapra/sarana-pemeriksaan"><i class="fas fa-search-location"></i> Sarana Pemeriksaan Proteksi Kebakaran</a>
-                    <a href="/sapra/kelola-pos"><i class="fas fa-warehouse"></i> Kelola Data Pos</a>
+                    <a href="/sapra/sarana-mako" class="{{ Request::is('sapra/sarana-mako*') ? 'active' : '' }}">
+                        <i class="fas fa-fire-extinguisher"></i><span class="lbl">Sarana pemadam kebakaran</span>
+                    </a>
+                    <a href="/sapra/prasarana-mako" class="{{ Request::is('sapra/prasarana-mako*') ? 'active' : '' }}">
+                        <i class="fas fa-building"></i><span class="lbl">Prasarana pemadam kebakaran</span>
+                    </a>
+                    <a href="/sapra/sarana-penyelamatan" class="{{ Request::is('sapra/sarana-penyelamatan*') ? 'active' : '' }}">
+                        <i class="fas fa-life-ring"></i><span class="lbl">Sarana Penyelamatan &amp; Evakuasi</span>
+                    </a>
+                    <a href="/sapra/sarana-pemeriksaan" class="{{ Request::is('sapra/sarana-pemeriksaan*') ? 'active' : '' }}">
+                        <i class="fas fa-search-location"></i><span class="lbl">Sarana Pemeriksaan Proteksi Kebakaran</span>
+                    </a>
+                    <a href="/sapra/kelola-pos" class="{{ Request::is('sapra/kelola-pos*') ? 'active' : '' }}">
+                        <i class="fas fa-warehouse"></i><span class="lbl">Kelola Data Pos</span>
+                    </a>
+
                     <span class="side-kicker" style="padding-left:2px;">Manajemen Air</span>
-                    <a href="/sapra/data_hidrant_gedung"><i class="fas fa-droplet"></i> Sumber Air</a>
-                    <a href="/sapra/data-hidrant-kota"><i class="fas fa-map-location-dot"></i> Data Hidrant Kota Jambi</a>
+                    <a href="/sapra/data_hidrant_gedung" class="{{ Request::is('sapra/data_hidrant_gedung*') ? 'active' : '' }}">
+                        <i class="fas fa-droplet"></i><span class="lbl">Sumber Air</span>
+                    </a>
+                    <a href="/sapra/data-hidrant-kota" class="{{ Request::is('sapra/data-hidrant-kota*') ? 'active' : '' }}">
+                        <i class="fas fa-map-location-dot"></i><span class="lbl">Data Hidrant Kota Jambi</span>
+                    </a>
+
                     <span class="side-kicker" style="padding-left:2px;">Logistik &amp; Distribusi</span>
-                    <a href="/sapra/kebutuhan-sarpras"><i class="fas fa-boxes-stacked"></i> Mutu Baku Kebutuhan</a>
-                    <a href="/sapra/distribusi-staff"><i class="fas fa-people-carry-box"></i> Serah terima Barang</a>
+                    <a href="/sapra/kebutuhan-sarpras" class="{{ Request::is('sapra/kebutuhan-sarpras*') ? 'active' : '' }}">
+                        <i class="fas fa-boxes-stacked"></i><span class="lbl">Mutu Baku Kebutuhan</span>
+                    </a>
+                    <a href="/sapra/distribusi-staff" class="{{ Request::is('sapra/distribusi-staff*') ? 'active' : '' }}">
+                        <i class="fas fa-people-carry-box"></i><span class="lbl">Serah terima Barang</span>
+                    </a>
                 </div>
             </details>
-        @endif
 
-        @if(in_array(Auth::user()->role, ['operator', 'user', 'super_user']))
+            <!-- BAGIAN KEPEGAWAIAN -->
+            <details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') ? 'open' : '' }}>
+                <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
+                <div class="side-sub">
+                    <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
+                        <i class="fas fa-user-tie"></i><span class="lbl">Data Urut Kepegawaian</span>
+                    </a>
+                    <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
+                        <i class="fas fa-file-contract"></i><span class="lbl">Program Kerja</span>
+                    </a>
+                </div>
+            </details>
+
+            <!-- MANAJEMEN INFORMASI -->
             <div class="side-kicker">Konten publik</div>
             <details class="side-group" {{ Request::is('internal/operator*') || Request::is('internal/peta-sigap*') ? 'open' : '' }}>
                 <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen Informasi</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
+                    <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
+                        <i class="far fa-newspaper"></i><span class="lbl">Input &amp; Kelola Berita</span>
+                    </a>
+                    <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
+                        <i class="far fa-image"></i><span class="lbl">Kelola Infografis</span>
+                    </a>
+                    <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
+                        <i class="fab fa-instagram"></i><span class="lbl">Kelola Berita Medsos</span>
+                    </a>
+                    <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
+                        <i class="fab fa-youtube"></i><span class="lbl">Ujung-Ujung Damkar</span>
+                    </a>
+                    <a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
+                        <i class="fas fa-graduation-cap"></i><span class="lbl">Edu Damkar</span>
+                    </a>
 
-                    @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
-                        <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
-                            <i class="far fa-newspaper"></i><span class="lbl">Input &amp; Kelola Berita</span>
-                        </a>
-                        <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
-                            <i class="far fa-image"></i><span class="lbl">Kelola Infografis</span>
-                        </a>
-                        <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
-                            <i class="fab fa-instagram"></i><span class="lbl">Kelola Berita Medsos</span>
-                        </a>
-                        <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
-                            <i class="fab fa-youtube"></i><span class="lbl">Ujung-Ujung Damkar</span>
-                        </a>
-                        <a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
-                            <i class="fas fa-graduation-cap"></i><span class="lbl">Edu Damkar</span>
-                        </a>
-                    @endif
-
-                    @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
-                        <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
-                        <a href="/internal/peta-sigap/input" class="{{ Request::is('internal/peta-sigap/input*') ? 'active' : '' }}">
-                            <i class="fas fa-plus"></i><span class="lbl">Input Titik Peta</span>
-                        </a>
-                        <a href="/internal/peta-sigap/data" class="{{ Request::is('internal/peta-sigap/data*') ? 'active' : '' }}">
-                            <i class="fas fa-table-list"></i><span class="lbl">Kelola Data Titik</span>
-                        </a>
-                    @endif
-
+                    <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
+                    <a href="/internal/peta-sigap/input" class="{{ Request::is('internal/peta-sigap/input*') ? 'active' : '' }}">
+                        <i class="fas fa-plus"></i><span class="lbl">Input Titik Peta</span>
+                    </a>
+                    <a href="/internal/peta-sigap/data" class="{{ Request::is('internal/peta-sigap/data*') ? 'active' : '' }}">
+                        <i class="fas fa-table-list"></i><span class="lbl">Kelola Data Titik</span>
+                    </a>
                 </div>
             </details>
-        @endif
+
+        @endhasanyrole
+
+        <!-- PENGATURAN AKUN -->
         <div class="side-kicker">Akun</div>
-        <details class="side-group">
+        <details class="side-group" {{ request()->is('internal/profil*') || request()->is('internal/kelola-user*') || request()->is('internal/kelola-pemohon*') ? 'open' : '' }}>
             <summary><i class="fas fa-user-gear grp-ico"></i><span class="grp-label">Pengaturan akun</span><i class="fas fa-chevron-down chev"></i></summary>
             <div class="side-sub">
-                <a href="{{ url('/internal/profil') }}"><i class="fas fa-user-pen"></i> Profil Saya</a>
-                @if(auth()->user()->role === 'super_user')
-                    <a href="{{ url('/internal/kelola-user') }}"><i class="fas fa-users-gear"></i> Kelola Pengguna</a>
-                @endif
-                <a href="{{ url('/internal/kelola-pemohon') }}"><i class="fas fa-address-book"></i> Kelola Akun Pemohon</a>
+                <a href="{{ url('/internal/profil') }}" class="{{ request()->is('internal/profil*') ? 'active' : '' }}">
+                    <i class="fas fa-user-pen"></i><span class="lbl">Profil Saya</span>
+                </a>
+
+                @hasrole('Super User')
+                    <a href="{{ url('/internal/kelola-user') }}" class="{{ request()->is('internal/kelola-user*') ? 'active' : '' }}">
+                        <i class="fas fa-users-gear"></i><span class="lbl">Kelola Pengguna</span>
+                    </a>
+                    <a href="{{ url('/internal/kelola-pemohon') }}" class="{{ request()->is('internal/kelola-pemohon*') ? 'active' : '' }}">
+                        <i class="fas fa-address-book"></i><span class="lbl">Kelola Akun Pemohon</span>
+                    </a>
+                @endhasrole
             </div>
         </details>
     </aside>
@@ -384,9 +426,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 <h1>Kelola Edu Damkar</h1>
                 <p>Unggah dan kelola tautan video edukasi pencegahan serta penanganan kebakaran di halaman utama.</p>
             </div>
+            
+            @hasanyrole('Operator|Super User')
             <button type="button" class="btn-simerah-danger w-mobile-100" data-bs-toggle="modal" data-bs-target="#modalTambah">
                 <i class="fas fa-plus"></i> Tambah Video Edukasi
             </button>
+            @endhasanyrole
         </div>
 
         <div class="section-heading">
@@ -406,7 +451,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                             <th style="width: 6%;">No</th>
                             <th style="width: 22%;">Thumbnail</th>
                             <th style="width: 48%;">Judul Materi Edukasi &amp; Tautan</th>
+                            
+                            @hasanyrole('Operator|Super User')
                             <th style="width: 24%;" class="text-center">Aksi</th>
+                            @endhasanyrole
                         </tr>
                     </thead>
                     <tbody>
@@ -430,6 +478,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                                     @endif
                                 </div>
                             </td>
+                            
+                            @hasanyrole('Operator|Super User')
                             <td class="text-center">
                                 <div class="action-group">
                                     <button type="button" class="btn-edit-item"
@@ -446,47 +496,51 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                                     </form>
                                 </div>
                             </td>
-                        </tr>
 
-                        <!-- Modal Edit per Item -->
-                        <div class="modal fade" id="modalEdit{{ $item->id }}" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <form action="/internal/operator/edu-damkar/update/{{ $item->id }}" method="POST">
-                                        @csrf
-                                        @method('PUT')
-                                        <div class="modal-header">
-                                            <h5 class="modal-title"><i class="fas fa-pen-to-square text-warning"></i> Edit Video Edu Damkar</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label class="form-label">Link Video YouTube <span class="text-danger">*</span></label>
-                                                <input type="url" class="form-control" name="link" value="{{ $item->link_asli }}" required>
+                            <!-- Modal Edit per Item (Hanya dirender untuk Operator & Super User) -->
+                            <div class="modal fade" id="modalEdit{{ $item->id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <form action="/internal/operator/edu-damkar/update/{{ $item->id }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="modal-header">
+                                                <h5 class="modal-title"><i class="fas fa-pen-to-square text-warning"></i> Edit Video Edu Damkar</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                                             </div>
-                                            <div class="mb-1">
-                                                <label class="form-label">Judul Materi Edukasi <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" name="judul" value="{{ $item->judul }}" required>
+                                            <div class="modal-body text-start">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Link Video YouTube <span class="text-danger">*</span></label>
+                                                    <input type="url" class="form-control" name="link" value="{{ $item->link_asli }}" required>
+                                                </div>
+                                                <div class="mb-1">
+                                                    <label class="form-label">Judul Materi Edukasi <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" name="judul" value="{{ $item->judul }}" required>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn-simerah-secondary" data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn-simerah-danger"><i class="fas fa-floppy-disk"></i> Simpan Perubahan</button>
-                                        </div>
-                                    </form>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn-simerah-secondary" data-bs-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn-simerah-danger"><i class="fas fa-floppy-disk"></i> Simpan Perubahan</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                            @endhasanyrole
+                        </tr>
                         @empty
                         <tr>
-                            <td colspan="4">
+                            <td colspan="@hasanyrole('Operator|Super User') 4 @else 3 @endhasanyrole">
                                 <div class="empty-state">
                                     <div class="empty-ico"><i class="fas fa-graduation-cap"></i></div>
                                     <h4>Belum Ada Video Edu Damkar</h4>
                                     <p>Tambahkan tautan video edukasi dari YouTube (seperti cara penggunaan APAR, langkah evakuasi, dll) agar tampil di halaman utama.</p>
+                                    
+                                    @hasanyrole('Operator|Super User')
                                     <button type="button" class="btn-simerah-danger" data-bs-toggle="modal" data-bs-target="#modalTambah">
                                         <i class="fas fa-plus"></i> Tambah Video Edukasi Pertama
                                     </button>
+                                    @endhasanyrole
                                 </div>
                             </td>
                         </tr>
@@ -498,7 +552,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     </main>
 </div>
 
-<!-- MODAL TAMBAH VIDEO EDUKASI -->
+<!-- MODAL TAMBAH VIDEO EDUKASI (Hanya Dirender untuk Operator & Super User) -->
+@hasanyrole('Operator|Super User')
 <div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -510,7 +565,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body text-start">
                     <div class="mb-3">
                         <label for="ytLinkInput" class="form-label">Link Video YouTube <span class="text-danger">*</span></label>
                         <input type="url" class="form-control" name="link" id="ytLinkInput" placeholder="https://www.youtube.com/watch?v=..." required>
@@ -541,6 +596,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         </div>
     </div>
 </div>
+@endhasanyrole
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>

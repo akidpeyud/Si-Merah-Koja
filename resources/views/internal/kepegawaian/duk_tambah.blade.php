@@ -279,7 +279,7 @@
                 </div>
             </details>
 
-            <!-- BAGIAN PEMADAMAN -->
+           <!-- BAGIAN PEMADAMAN -->
             <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') || Request::is('internal/damtan/kelola-izin-keramaian*') ? 'open' : '' }}>
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
@@ -602,7 +602,12 @@
                 
                 <div class="d-flex justify-content-end gap-3">
                     <a href="{{ route('kepegawaian.duk.index') }}" class="btn-secondary-custom">Batal</a>
+                    
+                    <!-- TOMBOL SUBMIT HANYA UNTUK SEKRETARIAT DAN SUPER USER -->
+                    @hasanyrole('Sekretariat|Super User')
                     <button type="submit" class="btn-primary-custom"><i class="fas fa-save"></i> Simpan Data</button>
+                    @endhasanyrole
+
                 </div>
             </form>
         </div>
