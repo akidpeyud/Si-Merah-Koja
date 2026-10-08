@@ -9,6 +9,9 @@
     ];
     $tab_aktif = 'skk';
 
+    // URL Surat Permohonan SKK
+    $url_surat_permohonan = asset('dokumen/FORMULIR-2.docx');
+
     // Data wilayah Kota Jambi
     $dataWilayah = [
         'Alam Barajo'   => ['Bagan Pete', 'Beliung', 'Kenali Besar', 'Mayang Mangurai', 'Pinang Merah', 'Rawa Sari', 'Simpang Rimbo'],
@@ -618,7 +621,11 @@
                             <span class="ck-ico"><i class="fas fa-file-signature"></i></span>
                             <div>
                                 Unggah surat permohonan bermaterai
-                                <br><span class="muted">Templat surat permohonan belum tersedia</span>
+                                @if($url_surat_permohonan)
+                                    <br><a class="text-link" href="{{ $url_surat_permohonan }}" download>Unduh surat permohonan</a>
+                                @else
+                                    <br><span class="muted">Templat surat permohonan belum tersedia</span>
+                                @endif
                             </div>
                         </li>
                         <li>

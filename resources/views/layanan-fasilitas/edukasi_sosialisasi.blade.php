@@ -4,6 +4,9 @@
     // Tangkap data lama
     $old = session()->getOldInput() ?: [];
     
+    // URL Surat Permohonan Edukasi & Sosialisasi
+    $url_surat_permohonan = asset('dokumen/FORMULIR-3.docx');
+
     // Data wilayah Kota Jambi
     $dataWilayah = [
         'Alam Barajo'   => ['Bagan Pete', 'Beliung', 'Kenali Besar', 'Mayang Mangurai', 'Pinang Merah', 'Rawa Sari', 'Simpang Rimbo'],
@@ -399,7 +402,11 @@
                                 <span class="ck-ico"><i class="fas fa-file-signature"></i></span>
                                 <div>
                                     Unggah <strong>Surat Permohonan Bermaterai</strong>.
-                                    <br><a href="#" class="inline">Unduh templat surat (jika ada)</a>
+                                    @if($url_surat_permohonan)
+                                        <br><a href="{{ $url_surat_permohonan }}" class="inline" download><i class="fas fa-download"></i> Unduh surat permohonan</a>
+                                    @else
+                                        <br><span class="muted">Templat surat permohonan belum tersedia</span>
+                                    @endif
                                 </div>
                             </li>
                             <li>

@@ -298,31 +298,32 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* 16. WELCOME */
 .welcome {
     position: relative; overflow: hidden;
-    border-radius: var(--r-lg);
-    background: linear-gradient(135deg, var(--ink) 0%, var(--ink-2) 100%);
-    padding: clamp(28px, 4.5vw, 40px);
-    color: #fff; margin-bottom: 38px; box-shadow: var(--shadow-md);
+    border-radius: 22px;
+    background:
+        radial-gradient(60% 120% at 100% 0%, rgba(59,118,184,.38), transparent 62%),
+        linear-gradient(135deg, var(--ink) 0%, var(--ink-2) 100%);
+    padding: clamp(26px, 4vw, 40px);
+    color: #fff; margin-bottom: 40px; box-shadow: var(--shadow-md);
 }
-.welcome::after {
-    content: ""; position: absolute; right: -10%; top: -60%;
-    width: 55%; aspect-ratio: 1;
-    background: radial-gradient(closest-side, rgba(55,105,160,.30), transparent 70%);
-    pointer-events: none;
+.welcome::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .5;
+    background-image: radial-gradient(rgba(255,255,255,.10) 1px, transparent 1.4px);
+    background-size: 22px 22px;
+    -webkit-mask-image: linear-gradient(115deg, transparent 35%, #000 100%);
+            mask-image: linear-gradient(115deg, transparent 35%, #000 100%);
 }
-.welcome-badge {
-    position: relative; display: inline-flex; align-items: center; gap: 8px;
-    padding: 7px 14px; border-radius: 999px;
-    background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.12);
-    font-size: .78rem; font-weight: 700; letter-spacing: .03em;
-    text-transform: uppercase; margin-bottom: 16px;
+.welcome > * { position: relative; }
+.welcome-date {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: .84rem; font-weight: 500; color: rgba(255,255,255,.66); margin-bottom: 10px;
 }
-.welcome-badge i { color: var(--amber); }
+.welcome-date i { color: var(--amber); font-size: .8rem; }
 .welcome h2 {
-    position: relative; font-family: var(--font-display); font-weight: 700;
-    font-size: clamp(1.35rem, 2.6vw, 1.75rem);
-    line-height: 1.3; letter-spacing: -.015em; max-width: 42ch; margin-bottom: 8px;
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(1.5rem, 3vw, 2.05rem);
+    line-height: 1.2; letter-spacing: -.02em; max-width: 30ch; margin-bottom: 8px;
 }
-.welcome p { position: relative; max-width: 58ch; color: rgba(255,255,255,.72); font-size: .95rem; line-height: 1.6; }
+.welcome-sub { max-width: 60ch; color: rgba(255,255,255,.70); font-size: .95rem; line-height: 1.6; }
 
 /* 17. SECTION HEADING */
 .dash-section { margin-bottom: 40px; scroll-margin-top: calc(var(--topbar-h) + 20px); }
@@ -342,23 +343,39 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .section-meta b { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
 
-/* 18. OVERVIEW STRIP (di dalam welcome) */
+/* 18. OVERVIEW PANEL (satu panel, sel dipisah garis) */
 .overview {
-    position: relative; display: grid; gap: 10px; margin-top: 26px;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    display: grid; margin-top: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    border-radius: 16px; overflow: hidden;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    backdrop-filter: blur(6px);
 }
 .ov-item {
-    display: flex; flex-direction: column; gap: 2px;
-    padding: 14px 16px; border-radius: 12px;
-    background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.10);
-    transition: background .2s, border-color .2s;
+    position: relative; display: flex; flex-direction: column; gap: 14px;
+    padding: 18px 20px;
+    border-right: 1px solid rgba(255,255,255,.10);
+    transition: background .2s;
 }
-.ov-item:hover { background: rgba(255,255,255,.13); border-color: rgba(255,255,255,.22); }
+.ov-item:last-child { border-right: 0; }
+.ov-item:hover { background: rgba(255,255,255,.09); }
+.ov-ico {
+    width: 34px; height: 34px; border-radius: 10px;
+    display: grid; place-items: center; font-size: .82rem;
+    background: rgba(244,183,64,.16); color: var(--amber);
+}
 .ov-item strong {
-    font-family: var(--font-display); font-weight: 700; font-size: 1.65rem;
-    line-height: 1.1; font-variant-numeric: tabular-nums; color: #fff;
+    display: block; font-family: var(--font-display); font-weight: 700;
+    font-size: 1.9rem; line-height: 1; letter-spacing: -.02em;
+    font-variant-numeric: tabular-nums; color: #fff;
 }
-.ov-item span { font-size: .8rem; color: rgba(255,255,255,.70); font-weight: 500; }
+.ov-item span.ov-label { display: block; margin-top: 6px; font-size: .82rem; color: rgba(255,255,255,.68); font-weight: 500; line-height: 1.3; }
+.ov-go {
+    position: absolute; top: 18px; right: 16px; font-size: .7rem;
+    color: rgba(255,255,255,.35); transition: color .2s, transform .2s;
+}
+.ov-item:hover .ov-go { color: #fff; transform: translateX(2px); }
 
 /* 19. STAT GRID */
 .stats-grid {
@@ -405,7 +422,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     .topbar { padding: 0 20px; }
     .content { padding: 32px 26px 60px; }
     .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .overview { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .overview { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .ov-item:nth-child(3n) { border-right: 0; }
+    .ov-item:nth-child(n+4) { border-top: 1px solid rgba(255,255,255,.10); }
 }
 
 /* 23. MOBILE */
@@ -426,7 +445,13 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     .page-head p { font-size: .88rem; }
     .welcome { padding: 25px 22px; margin-bottom: 30px; border-radius: 15px; }
     .welcome h2 { font-size: 1.3rem; }
-    .welcome p { font-size: .88rem; }
+    .welcome-sub { font-size: .88rem; }
+    .overview { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 24px; }
+    .ov-item { padding: 15px 16px; gap: 10px; }
+    .ov-item:nth-child(3n) { border-right: 1px solid rgba(255,255,255,.10); }
+    .ov-item:nth-child(2n) { border-right: 0; }
+    .ov-item:nth-child(n+3) { border-top: 1px solid rgba(255,255,255,.10); }
+    .ov-item strong { font-size: 1.6rem; }
     .section-heading { gap: 9px; }
     .section-heading-ico { width: 30px; height: 30px; }
     .section-heading h3 { font-size: .92rem; }
@@ -445,7 +470,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     .welcome { padding: 22px 18px; }
     .stats-grid { grid-template-columns: 1fr; }
     .welcome h2 { font-size: 1.18rem; }
-    .welcome p { font-size: .84rem; }
+    .welcome-sub { font-size: .84rem; }
     .section-heading h3 { font-size: .86rem; }
 }
 
@@ -627,14 +652,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             </details>
         @endhasanyrole
 
-        <!-- MANAJEMEN INFORMASI -->
-        @hasanyrole('Super User|Operator')
+        <!-- MANAJEMEN INFORMASI: semua pegawai internal bisa melihat menu ini -->
+        @hasanyrole('Super User|Sapra|Damtan|Pencegahan|Sekretariat|Operator')
             <div class="side-kicker">Konten publik</div>
             <details class="side-group" {{ Request::is('internal/operator*') || Request::is('internal/peta-sigap*') ? 'open' : '' }}>
                 <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen Informasi</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
-                        <i class="far fa-newspaper"></i><span class="lbl">Input &amp; Kelola Berita</span>
+                        <i class="far fa-newspaper"></i><span class="lbl">Kelola Berita</span>
                     </a>
                     <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
                         <i class="far fa-image"></i><span class="lbl">Kelola Infografis</span>
@@ -650,9 +675,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     </a>
 
                     <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
+                    @hasanyrole('Super User|Operator')
                     <a href="/internal/peta-sigap/input" class="{{ Request::is('internal/peta-sigap/input*') ? 'active' : '' }}">
                         <i class="fas fa-plus"></i><span class="lbl">Input Titik Peta</span>
                     </a>
+                    @endhasanyrole
+
                     <a href="/internal/peta-sigap/data" class="{{ Request::is('internal/peta-sigap/data*') ? 'active' : '' }}">
                         <i class="fas fa-table-list"></i><span class="lbl">Kelola Data Titik</span>
                     </a>
@@ -660,7 +688,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             </details>
         @endhasanyrole
 
-<!-- PENGATURAN AKUN -->
+        <!-- PENGATURAN AKUN -->
         <div class="side-kicker">Akun</div>
         <details class="side-group" {{ request()->is('internal/profil*') || request()->is('internal/kelola-user*') || request()->is('internal/kelola-pemohon*') ? 'open' : '' }}>
             <summary><i class="fas fa-user-gear grp-ico"></i><span class="grp-label">Pengaturan akun</span><i class="fas fa-chevron-down chev"></i></summary>
@@ -772,7 +800,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                         ['Sarana Penyelamatan & Evakuasi', 'unit', 'fa-life-ring', '/sapra/sarana-penyelamatan', $countAll(['sarana_penyelamatan', 'sarana_penyelamatan_pos', 'sarana_penyelamatans']), 'ic-info'],
                         ['Sarana Pemeriksaan Proteksi Kebakaran', 'unit', 'fa-search-location', '/sapra/sarana-pemeriksaan', $count('sarana_pemeriksaan'), 'ic-primary'],
                         ['Kelola Data Pos', 'pos', 'fa-warehouse', '/sapra/kelola-pos', $countAll(['pos_pemadam', 'lokasi_pos']), 'ic-info'],
-                        ['Sumber Air', 'titik', 'fa-droplet', '/sapra/data_hidrant_gedung', (\Illuminate\Support\Facades\Schema::hasTable('titik_sigaps') ? \Illuminate\Support\Facades\DB::table('titik_sigaps')->where('kategori', 'sumber_air')->count() : null), 'ic-info'],
+                        ['Sumber Air', 'titik', 'fa-droplet', '/sapra/data_hidrant_gedung', $count(['data_hidrant_gedung', 'hidran_gedung', 'hidrant_gedung', 'sumber_air']), 'ic-info'],
                         ['Data Hidrant Kota Jambi', 'hidrant', 'fa-map-location-dot', '/sapra/data-hidrant-kota', $count('hidran_kota'), 'ic-primary'],
                         ['Mutu Baku Kebutuhan', 'data', 'fa-boxes-stacked', '/sapra/kebutuhan-sarpras', $count('kebutuhan_sarpras'), 'ic-primary'],
                         ['Serah Terima Barang', 'transaksi', 'fa-people-carry-box', '/sapra/distribusi-staff', $count('distribusi_barang_staff'), 'ic-info'],
@@ -786,10 +814,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     ],
                 ],
                 [
-                    'id' => 'informasi', 'title' => 'Manajemen Informasi', 'icon' => 'fa-newspaper', 'roles' => 'Super User|Operator',
+                    'id' => 'informasi', 'title' => 'Manajemen Informasi', 'icon' => 'fa-newspaper', 'roles' => $ops,
                     'items' => [
                         ['Berita', 'berita', 'fa-newspaper', '/internal/operator/kelola-berita', $count('berita'), 'ic-primary'],
-                        ['Infografis', 'Infografis', 'fa-image', '/internal/operator/infografis', $count('infografis'), 'ic-info'],
+                        ['Info Grafis', 'info grafis', 'fa-image', '/internal/operator/infografis', $count('infografis'), 'ic-info'],
                         ['Berita Medsos', 'unggahan', 'fa-brands fa-instagram', '/internal/operator/berita-medsos', $count('berita_medsos'), 'ic-danger'],
                         ['Ujung-Ujung Damkar', 'video', 'fa-brands fa-youtube', '/internal/operator/ujung-damkar', $count('ujung_damkar'), 'ic-danger'],
                         ['Edu Damkar', 'materi', 'fa-graduation-cap', '/internal/operator/edu-damkar', $count('edu_damkar'), 'ic-primary'],
@@ -822,20 +850,28 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         @endphp
 
         <section class="welcome">
-            <span class="welcome-badge"><i class="fas fa-shield-halved"></i> {{ Auth::user()->hasRole('Super User') ? 'Super user' : 'Pegawai internal' }}</span>
-            <h2>Selamat bekerja, {{ Auth::user()->nama_lengkap ?? 'Rekan kerja' }}.</h2>
+            @php
+                $jam = (int) now()->format('H');
+                $sapaan = $jam < 11 ? 'Selamat pagi' : ($jam < 15 ? 'Selamat siang' : ($jam < 18 ? 'Selamat sore' : 'Selamat malam'));
+            @endphp
+            <span class="welcome-date"><i class="far fa-calendar"></i> {{ now()->locale('id')->translatedFormat('l, j F Y') }}</span>
+            <h2>{{ $sapaan }}, {{ Auth::user()->nama_lengkap ?? 'Rekan kerja' }}.</h2>
             @hasrole('Super User')
-                <p>Anda memiliki kendali penuh untuk memantau dan mengelola seluruh modul operasional maupun sistem.</p>
+                <p class="welcome-sub">Anda memiliki kendali penuh untuk memantau dan mengelola seluruh modul operasional maupun sistem.</p>
             @else
-                <p>Anda dapat berkolaborasi mengelola laporan dari seluruh modul layanan Disdamkartan.</p>
+                <p class="welcome-sub">Anda dapat berkolaborasi mengelola laporan dari seluruh modul layanan Disdamkartan.</p>
             @endhasrole
 
             <div class="overview">
                 @foreach($visible as $s)
                     @if(($s['chip'] ?? true) && $s['id'] !== 'akun')
                         <a href="#sec-{{ $s['id'] }}" class="ov-item">
-                            <strong>{{ $fmt($s['total']) }}</strong>
-                            <span>{{ $s['title'] }}</span>
+                            <span class="ov-ico"><i class="fas {{ $s['icon'] }}"></i></span>
+                            <i class="fas fa-arrow-down ov-go"></i>
+                            <div>
+                                <strong>{{ $fmt($s['total']) }}</strong>
+                                <span class="ov-label">{{ $s['title'] }}</span>
+                            </div>
                         </a>
                     @endif
                 @endforeach
