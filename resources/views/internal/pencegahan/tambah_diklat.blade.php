@@ -147,7 +147,7 @@
             <div class="collapse" id="collapseBerita" data-bs-parent="#sidebarAccordion">
                 <div class="sidebar-submenu">
                     <a href="/internal/operator/kelola-berita" class="sidebar-item"><i class="fas fa-newspaper"></i> Input & Kelola Berita</a>
-                    <a href="/internal/operator/infografis" class="sidebar-item"><i class="fas fa-image"></i> Kelola Info Grafis</a>
+                    <a href="/internal/operator/infografis" class="sidebar-item"><i class="fas fa-image"></i> Kelola Infografis</a>
                 </div>
             </div>
         </aside>

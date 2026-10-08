@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-    <title>Kelola Info Grafis | SIMERAH KOJA</title>
+    <title>Kelola Infografis | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
 
     <!-- Fonts -->
@@ -807,7 +807,7 @@ button {
                             <i class="far fa-newspaper"></i><span class="lbl">Input &amp; Kelola Berita</span>
                         </a>
                         <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
-                            <i class="far fa-image"></i><span class="lbl">Kelola Info Grafis</span>
+                            <i class="far fa-image"></i><span class="lbl">Kelola Infografis</span>
                         </a>
                         <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
                             <i class="fab fa-instagram"></i><span class="lbl">Kelola Berita Medsos</span>
@@ -861,8 +861,8 @@ button {
 
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
             <div class="page-head m-0">
-                <h1>Kelola Info Grafis</h1>
-                <p>Unggah dan atur gambar info grafis edukasi yang tampil di halaman utama publik.</p>
+                <h1>Kelola Infografis</h1>
+                <p>Unggah dan atur gambar Infografis edukasi yang tampil di halaman utama publik.</p>
             </div>
             <button class="btn-simerah-danger" data-bs-toggle="modal" data-bs-target="#modalTambah">
                 <i class="fas fa-plus"></i> Tambah Infografis
@@ -902,7 +902,7 @@ button {
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-4">Belum ada data info grafis yang diunggah.</td>
+                            <td colspan="4" class="text-center text-muted py-4">Belum ada data Infografis yang diunggah.</td>
                         </tr>
                         @endforelse
                     </tbody>

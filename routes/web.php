@@ -72,7 +72,7 @@ Route::get('/ujung-ujung-damkar', function () {
     return view('kabardamkar.ujung-damkar', compact('daftar_ujung_damkar'));
 })->name('publik.ujung-damkar');
 
-// TAMBAHKAN RUTE INFO GRAFIS DI SINI
+// TAMBAHKAN RUTE Infografis DI SINI
 Route::get('/infografis', function () {
     $daftar_infografis = App\Models\Infografis::latest()->get();
     return view('kabardamkar.infografis', compact('daftar_infografis')); 
@@ -657,11 +657,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-operator', [PencegahanController::class, 'indexDiklatOperator']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-ppl', [PencegahanController::class, 'indexDiklatPpl']);
 
-    // ROUTE DUK KEPEGAWAIAN
+// ROUTE DUK KEPEGAWAIAN
     Route::prefix('internal/kepegawaian')->name('kepegawaian.')->group(function () {
         Route::get('/duk', [DukController::class, 'index'])->name('duk.index');
         Route::get('/duk/tambah', [DukController::class, 'create'])->name('duk.create'); 
         Route::post('/duk', [DukController::class, 'store'])->name('duk.store');
+        
+        // TAMBAHKAN DUA BARIS INI UNTUK EDIT & UPDATE
+        Route::get('/duk/{id}/edit', [DukController::class, 'edit'])->name('duk.edit');
+        Route::put('/duk/{id}', [DukController::class, 'update'])->name('duk.update');
+        
         Route::delete('/duk/{id}', [DukController::class, 'destroy'])->name('duk.destroy');
     });
 
@@ -722,3 +727,7 @@ Route::get('/download-format-surat', function () {
 // Tambahkan route edit dan update untuk Edukasi
 Route::get('/internal/pencegahan/kelola-edukasi/{id}/edit', [PermohonanEdukasiController::class, 'edit'])->name('edukasi.offline.edit');
 Route::put('/internal/pencegahan/kelola-edukasi/{id}', [PermohonanEdukasiController::class, 'update'])->name('edukasi.offline.update');
+
+// Route untuk SIGAP
+Route::get('/internal/peta-sigap/export-pdf', [PetaController::class, 'exportPdf'])->name('peta.export.pdf');
+Route::get('/internal/peta-sigap/export-excel', [PetaController::class, 'exportExcel'])->name('peta.export.excel');

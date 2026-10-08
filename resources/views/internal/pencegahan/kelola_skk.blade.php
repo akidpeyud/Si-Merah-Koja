@@ -220,13 +220,22 @@
             transition: all 0.2s ease; cursor: pointer;
         }
         .btn-action i { font-size: 0.8rem; }
-        .btn-action:hover { filter: brightness(0.95); transform: translateY(-1px); }
+        .btn-action:hover { filter: brightness(0.95); transform: translateY(-1px); color: white; }
         
         .bg-detail { background-color: var(--info-soft); color: var(--info); }
+        .bg-detail:hover { background-color: var(--info); color: white; }
+        
         .bg-status { background-color: var(--success-soft); color: var(--success); }
+        .bg-status:hover { background-color: var(--success); color: white; }
+        
         .bg-cetak { background-color: var(--paper); color: var(--steel); border: 1px solid var(--line); }
+        .bg-cetak:hover { background-color: var(--steel-soft); color: white; border-color: var(--steel-soft);}
+        
         .bg-edit { background-color: var(--amber-soft); color: var(--amber-dark); }
+        .bg-edit:hover { background-color: var(--amber); color: var(--ink-3); }
+        
         .bg-delete { background-color: var(--signal-soft); color: var(--signal); }
+        .bg-delete:hover { background-color: var(--signal); color: white; }
 
         .lampiran-badge { font-size: 0.72rem; padding: 6px 10px; border-radius: 6px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; color: #fff; transition: opacity 0.2s;}
         .lampiran-badge:hover { opacity: 0.9; color: #fff; }
@@ -336,12 +345,12 @@
             <i class="fas fa-house"></i><span class="lbl">Dashboard utama</span>
         </a>
 
-        @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
+        @hasanyrole('Super User|Sapra|Damtan|Pencegahan|Sekretariat|Operator')
 
             <div class="side-kicker">Modul operasional</div>
 
             <!-- BAGIAN PENCEGAHAN -->
-            <details class="side-group" open>
+            <details class="side-group" {{ Request::is('internal/pencegahan*') ? 'open' : '' }}>
                 <summary><i class="fas fa-shield-halved grp-ico"></i><span class="grp-label">Bagian pencegahan</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/pencegahan/peningkatan-kapasitas" class="{{ Request::is('internal/pencegahan/peningkatan-kapasitas*') ? 'active' : '' }}">
@@ -380,14 +389,12 @@
                     <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
                         <i class="fas fa-file-signature"></i><span class="lbl">Buat Surat Korban</span>
                     </a>
-                    <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') ? 'active' : '' }}">
+                    <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
                         <i class="fas fa-clipboard-list"></i><span class="lbl">Kelola Data Laporan</span>
                     </a>
-                    <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') ? 'active' : '' }}">
-                        <i class="fas fa-folder"></i><span class="lbl">Kelola Surat Korban</span>
+                    <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
+                        <i class="fas fa-folder-open"></i><span class="lbl">Kelola Surat Korban</span>
                     </a>
-                    
-                    <!-- KELOLA SURAT KERAMAIAN DIPINDAHKAN KE SINI -->
                     <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
                         <i class="fas fa-users-rectangle"></i><span class="lbl">Kelola Surat Keramaian</span>
                     </a>
@@ -433,7 +440,7 @@
                 </div>
             </details>
 
-            <!-- BAGIAN KEPEGAWAIAN (DIPINDAHKAN KE BAWAH SAPRA) -->
+            <!-- BAGIAN KEPEGAWAIAN -->
             <details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') ? 'open' : '' }}>
                 <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
@@ -445,46 +452,40 @@
                     </a>
                 </div>
             </details>
-        @endif
+        @endhasanyrole
 
         <!-- MANAJEMEN INFORMASI -->
-        @if(in_array(Auth::user()->role, ['operator', 'user', 'super_user']))
+        @hasanyrole('Super User|Operator')
             <div class="side-kicker">Konten publik</div>
             <details class="side-group" {{ Request::is('internal/operator*') || Request::is('internal/peta-sigap*') ? 'open' : '' }}>
                 <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen Informasi</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
+                    <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
+                        <i class="far fa-newspaper"></i><span class="lbl">Input &amp; Kelola Berita</span>
+                    </a>
+                    <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
+                        <i class="far fa-image"></i><span class="lbl">Kelola Infografis</span>
+                    </a>
+                    <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
+                        <i class="fab fa-instagram"></i><span class="lbl">Kelola Berita Medsos</span>
+                    </a>
+                    <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
+                        <i class="fab fa-youtube"></i><span class="lbl">Ujung-Ujung Damkar</span>
+                    </a>
+                    <a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
+                        <i class="fas fa-graduation-cap"></i><span class="lbl">Edu Damkar</span>
+                    </a>
 
-                    @if(Auth::user()->role === 'operator' || Auth::user()->role === 'super_user')
-                        <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
-                            <i class="far fa-newspaper"></i><span class="lbl">Input &amp; Kelola Berita</span>
-                        </a>
-                        <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
-                            <i class="far fa-image"></i><span class="lbl">Kelola Info Grafis</span>
-                        </a>
-                        <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
-                            <i class="fab fa-instagram"></i><span class="lbl">Kelola Berita Medsos</span>
-                        </a>
-                        <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
-                            <i class="fab fa-youtube"></i><span class="lbl">Ujung-Ujung Damkar</span>
-                        </a>
-                        <a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
-                            <i class="fas fa-graduation-cap"></i><span class="lbl">Edu Damkar</span>
-                        </a>
-                    @endif
-
-                    @if(Auth::user()->role === 'user' || Auth::user()->role === 'super_user')
-                        <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
-                        <a href="/internal/peta-sigap/input" class="{{ Request::is('internal/peta-sigap/input*') ? 'active' : '' }}">
-                            <i class="fas fa-plus"></i><span class="lbl">Input Titik Peta</span>
-                        </a>
-                        <a href="/internal/peta-sigap/data" class="{{ Request::is('internal/peta-sigap/data*') ? 'active' : '' }}">
-                            <i class="fas fa-table-list"></i><span class="lbl">Kelola Data Titik</span>
-                        </a>
-                    @endif
-
+                    <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
+                    <a href="/internal/peta-sigap/input" class="{{ Request::is('internal/peta-sigap/input*') ? 'active' : '' }}">
+                        <i class="fas fa-plus"></i><span class="lbl">Input Titik Peta</span>
+                    </a>
+                    <a href="/internal/peta-sigap/data" class="{{ Request::is('internal/peta-sigap/data*') ? 'active' : '' }}">
+                        <i class="fas fa-table-list"></i><span class="lbl">Kelola Data Titik</span>
+                    </a>
                 </div>
             </details>
-        @endif
+        @endhasanyrole
 
         <!-- PENGATURAN AKUN -->
         <div class="side-kicker">Akun</div>
@@ -494,18 +495,19 @@
                 <a href="{{ url('/internal/profil') }}" class="{{ request()->is('internal/profil*') ? 'active' : '' }}">
                     <i class="fas fa-user-pen"></i><span class="lbl">Profil Saya</span>
                 </a>
-                
-                @if(auth()->user()->role === 'super_user')
+
+                @hasrole('Super User')
                     <a href="{{ url('/internal/kelola-user') }}" class="{{ request()->is('internal/kelola-user*') ? 'active' : '' }}">
                         <i class="fas fa-users-gear"></i><span class="lbl">Kelola Pengguna</span>
                     </a>
-                @endif
-                
+                @endhasrole
+
                 <a href="{{ url('/internal/kelola-pemohon') }}" class="{{ request()->is('internal/kelola-pemohon*') ? 'active' : '' }}">
                     <i class="fas fa-address-book"></i><span class="lbl">Kelola Akun Pemohon</span>
                 </a>
             </div>
         </details>
+
     </aside>
 
     <!-- ==================== KONTEN UTAMA ==================== -->
@@ -517,7 +519,13 @@
                 <p>Kelola pengajuan Sertifikat Keamanan Kebakaran (Baru &amp; Perpanjangan).</p>
             </div>
             <div class="d-flex gap-2 flex-wrap">
+                <!-- ==============================================
+                     TOMBOL TAMBAH DIBUNGKUS HAK AKSES
+                     ============================================== -->
+                @hasanyrole('Pencegahan|Super User')
                 <a href="{{ route('skk.create') }}" class="btn-add"><i class="fas fa-plus"></i> Tambah SKK</a>
+                @endhasanyrole
+
                 <button onclick="window.print()" class="btn-print-rekap"><i class="fas fa-print"></i> Cetak Rekap</button>
             </div>
         </div>
@@ -576,25 +584,33 @@
                                         @else <span class="badge-status status-tidak-memenuhi"><i class="fas fa-times-circle"></i> Ditolak</span>
                                         @endif
                                     </td>
+
+                                    <!-- ==============================================
+                                         KOLOM LAMPIRAN DENGAN CEK DATA OFFLINE
+                                         ============================================== -->
                                     <td class="no-print-col text-center">
-                                        @if($p->file_surat_permohonan && $p->file_surat_permohonan !== 'offline_registered')
+                                        @if($p->file_surat_permohonan && $p->file_surat_permohonan !== 'offline_registered' && $p->file_surat_permohonan !== 'Tidak dilampirkan (Offline)')
                                             <a href="{{ asset('storage/' . $p->file_surat_permohonan) }}" target="_blank" class="lampiran-badge pdf text-decoration-none mb-1"><i class="fas fa-file-pdf"></i> Surat</a>
                                         @else
-                                            <a href="javascript:void(0);" onclick="alert('Lampiran Kosong');" class="lampiran-badge kosong text-decoration-none mb-1"><i class="fas fa-file-pdf"></i> Surat</a>
+                                            <a href="javascript:void(0);" onclick="alert('Tidak ada data lampiran Surat Permohonan (Offline)');" class="lampiran-badge kosong text-decoration-none mb-1"><i class="fas fa-file-pdf"></i> Surat</a>
                                         @endif
 
-                                        @if($p->file_persyaratan_lainnya)
+                                        @if($p->file_persyaratan_lainnya && $p->file_persyaratan_lainnya !== '["Tidak dilampirkan (Offline)"]')
                                             <br><a href="{{ asset('storage/' . $p->file_persyaratan_lainnya) }}" target="_blank" class="lampiran-badge syarat text-decoration-none mt-1"><i class="fas fa-paperclip"></i> Syarat</a>
                                         @else
-                                            <br><a href="javascript:void(0);" onclick="alert('Lampiran Kosong');" class="lampiran-badge kosong text-decoration-none mt-1"><i class="fas fa-paperclip"></i> Syarat</a>
+                                            <br><a href="javascript:void(0);" onclick="alert('Tidak ada data lampiran Syarat Lainnya (Offline)');" class="lampiran-badge kosong text-decoration-none mt-1"><i class="fas fa-paperclip"></i> Syarat</a>
                                         @endif
                                     </td>
+
                                     <td class="no-print-col">
                                         <div class="btn-action-group">
                                             <a href="/internal/pencegahan/kelola-skk/{{ $p->id }}?tipe=baru" class="btn-action bg-detail"><i class="fas fa-search me-1"></i> Detail</a>
-                                            <button type="button" class="btn-action bg-status" data-bs-toggle="modal" data-bs-target="#modalStatusBaru{{ $p->id }}"><i class="fas fa-edit me-1"></i> Status</button>
                                             
-                                            <!-- TOMBOL CRUD -->
+                                            <!-- ==============================================
+                                                 TOMBOL UPDATE/CRUD DIBUNGKUS HAK AKSES
+                                                 ============================================== -->
+                                            @hasanyrole('Pencegahan|Super User')
+                                            <button type="button" class="btn-action bg-status" data-bs-toggle="modal" data-bs-target="#modalStatusBaru{{ $p->id }}"><i class="fas fa-edit me-1"></i> Status</button>
                                             <div class="d-flex gap-1">
                                                 <a href="{{ route('skk.edit', $p->id) }}" class="btn-action bg-edit w-50"><i class="fas fa-pencil-alt"></i></a>
                                                 <form action="{{ route('skk.destroy', $p->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data permohonan SKK ini?');" class="w-50 m-0">
@@ -602,13 +618,15 @@
                                                     <button type="submit" class="btn-action bg-delete w-100"><i class="fas fa-trash"></i></button>
                                                 </form>
                                             </div>
+                                            @endhasanyrole
 
                                             <a href="/internal/pencegahan/kelola-skk/{{ $p->id }}?tipe=baru&auto_print=true" target="_blank" class="btn-action bg-cetak"><i class="fas fa-print me-1"></i> Cetak</a>
                                         </div>
                                     </td>
                                 </tr>
 
-                                <!-- MODAL UPDATE STATUS SKK BARU -->
+                                <!-- MODAL UPDATE STATUS SKK BARU (DIBUNGKUS HAK AKSES) -->
+                                @hasanyrole('Pencegahan|Super User')
                                 <div class="modal fade" id="modalStatusBaru{{ $p->id }}" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
@@ -638,6 +656,8 @@
                                         </div>
                                     </div>
                                 </div>
+                                @endhasanyrole
+                                
                                 @empty
                                 <tr>
                                     <td colspan="7" class="text-center py-5 text-muted"><i class="fas fa-folder-open mb-2" style="font-size: 32px; color: var(--line-dark);"></i><br>Belum ada pengajuan SKK Baru.</td>
@@ -689,25 +709,33 @@
                                         @else <span class="badge-status status-tidak-memenuhi"><i class="fas fa-times-circle"></i> Ditolak</span>
                                         @endif
                                     </td>
+                                    
+                                    <!-- ==============================================
+                                         KOLOM LAMPIRAN DENGAN CEK DATA OFFLINE
+                                         ============================================== -->
                                     <td class="no-print-col text-center">
-                                        @if($p->file_surat_permohonan && $p->file_surat_permohonan !== 'offline_registered')
+                                        @if($p->file_surat_permohonan && $p->file_surat_permohonan !== 'offline_registered' && $p->file_surat_permohonan !== 'Tidak dilampirkan (Offline)')
                                             <a href="{{ asset('storage/' . $p->file_surat_permohonan) }}" target="_blank" class="lampiran-badge pdf text-decoration-none mb-1"><i class="fas fa-file-pdf"></i> Surat</a>
                                         @else
-                                            <a href="javascript:void(0);" onclick="alert('Lampiran Kosong');" class="lampiran-badge kosong text-decoration-none mb-1"><i class="fas fa-file-pdf"></i> Surat</a>
+                                            <a href="javascript:void(0);" onclick="alert('Tidak ada data lampiran Surat Permohonan (Offline)');" class="lampiran-badge kosong text-decoration-none mb-1"><i class="fas fa-file-pdf"></i> Surat</a>
                                         @endif
 
-                                        @if($p->file_persyaratan_lainnya)
+                                        @if($p->file_persyaratan_lainnya && $p->file_persyaratan_lainnya !== '["Tidak dilampirkan (Offline)"]')
                                             <br><a href="{{ asset('storage/' . $p->file_persyaratan_lainnya) }}" target="_blank" class="lampiran-badge syarat text-decoration-none mt-1"><i class="fas fa-paperclip"></i> Syarat</a>
                                         @else
-                                            <br><a href="javascript:void(0);" onclick="alert('Lampiran Kosong');" class="lampiran-badge kosong text-decoration-none mt-1"><i class="fas fa-paperclip"></i> Syarat</a>
+                                            <br><a href="javascript:void(0);" onclick="alert('Tidak ada data lampiran Syarat Lainnya (Offline)');" class="lampiran-badge kosong text-decoration-none mt-1"><i class="fas fa-paperclip"></i> Syarat</a>
                                         @endif
                                     </td>
+
                                     <td class="no-print-col">
                                         <div class="btn-action-group">
                                             <a href="/internal/pencegahan/kelola-skk/{{ $p->id }}?tipe=perpanjang" class="btn-action bg-detail"><i class="fas fa-search me-1"></i> Detail</a>
-                                            <button type="button" class="btn-action bg-status" data-bs-toggle="modal" data-bs-target="#modalStatusPerpanjang{{ $p->id }}"><i class="fas fa-edit me-1"></i> Status</button>
                                             
-                                            <!-- TOMBOL CRUD -->
+                                            <!-- ==============================================
+                                                 TOMBOL UPDATE/CRUD DIBUNGKUS HAK AKSES
+                                                 ============================================== -->
+                                            @hasanyrole('Pencegahan|Super User')
+                                            <button type="button" class="btn-action bg-status" data-bs-toggle="modal" data-bs-target="#modalStatusPerpanjang{{ $p->id }}"><i class="fas fa-edit me-1"></i> Status</button>
                                             <div class="d-flex gap-1">
                                                 <a href="{{ route('skk.edit', $p->id) }}" class="btn-action bg-edit w-50"><i class="fas fa-pencil-alt"></i></a>
                                                 <form action="{{ route('skk.destroy', $p->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data permohonan SKK ini?');" class="w-50 m-0">
@@ -715,13 +743,15 @@
                                                     <button type="submit" class="btn-action bg-delete w-100"><i class="fas fa-trash"></i></button>
                                                 </form>
                                             </div>
+                                            @endhasanyrole
 
                                             <a href="/internal/pencegahan/kelola-skk/{{ $p->id }}?tipe=perpanjang&auto_print=true" target="_blank" class="btn-action bg-cetak"><i class="fas fa-print me-1"></i> Cetak</a>
                                         </div>
                                     </td>
                                 </tr>
 
-                                <!-- MODAL UPDATE STATUS PERPANJANG SKK -->
+                                <!-- MODAL UPDATE STATUS PERPANJANG SKK (DIBUNGKUS HAK AKSES) -->
+                                @hasanyrole('Pencegahan|Super User')
                                 <div class="modal fade" id="modalStatusPerpanjang{{ $p->id }}" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
@@ -751,6 +781,8 @@
                                         </div>
                                     </div>
                                 </div>
+                                @endhasanyrole
+                                
                                 @empty
                                 <tr>
                                     <td colspan="7" class="text-center py-5 text-muted"><i class="fas fa-folder-open mb-2" style="font-size: 32px; color: var(--line-dark);"></i><br>Belum ada pengajuan Perpanjang SKK.</td>

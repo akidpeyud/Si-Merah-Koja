@@ -9,6 +9,9 @@
     ];
     $tab_aktif = 'keramaian';
 
+    // URL Template Surat Pernyataan Izin Keramaian
+    $url_surat_permohonan = asset('dokumen/FORMULIR-4.pdf');
+
     $inv = function ($n) use ($errors) { return $errors->has($n) ? ' is-invalid' : ''; };
     $fe  = function ($n) use ($errors) {
         return $errors->has($n)
@@ -432,7 +435,7 @@
                 <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="/edu-damkar">Edu Damkar</a></li>
-                    <li><a href="/infografis">Info Grafis</a></li>
+                    <li><a href="/infografis">Infografis</a></li>
                     <li><a href="/media-informasi">Media Informasi</a></li>
                     <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
                 </ul>
@@ -542,7 +545,7 @@
                             <div>
                                 Unggah surat pernyataan yang telah ditandatangani di atas <strong>materai Rp 10.000</strong>.
                                 <br>
-                                <a class="inline" href="{{ route('download.format.surat') }}" style="display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 0.85rem; background: var(--paper); padding: 6px 12px; border-radius: 6px; border: 1px solid var(--line);">
+                                <a class="inline" href="{{ $url_surat_permohonan }}" download style="display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 0.85rem; background: var(--paper); padding: 6px 12px; border-radius: 6px; border: 1px solid var(--line);">
                                     <i class="fas fa-download"></i> Unduh Surat Kosong
                                 </a>
                             </div>
@@ -717,7 +720,7 @@
                             <div>
                                 <strong>Perhatian:</strong> Surat pernyataan wajib diunduh, diisi lengkap, diberi materai Rp 10.000, dan ditandatangani sebelum diunggah kembali ke dalam form ini.
                                 <br>
-                                <a href="{{ route('download.format.surat') }}" style="margin-top: 8px; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: #b77900; text-decoration: underline;">
+                                <a href="{{ $url_surat_permohonan }}" download style="margin-top: 8px; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: #b77900; text-decoration: underline;">
                                     <i class="fas fa-download"></i> Klik di sini untuk mengunduh format surat
                                 </a>
                             </div>

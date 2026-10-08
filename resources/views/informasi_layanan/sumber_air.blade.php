@@ -26,7 +26,10 @@
         ],
         'pemadaman' => [
             'label' => 'Bagian pemadaman',
-            'items' => [],
+            'items' => [
+                ['url' => '/informasi-layanan?panel=rekap_layanan',   'label' => 'Rekap Layanan & Penyelamatan', 'ico' => 'fa-truck-fast'],
+                ['url' => '/informasi-layanan?panel=objek_kebakaran', 'label' => 'Rekapitulasi Objek Kebakaran', 'ico' => 'fa-fire'],
+            ],
         ],
         'sapra' => [
             'label' => 'Bagian sapra',
