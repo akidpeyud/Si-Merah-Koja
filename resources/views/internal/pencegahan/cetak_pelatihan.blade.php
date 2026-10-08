@@ -40,11 +40,22 @@
             font-weight: bold;
             text-transform: uppercase;
         }
-        .img-thumb {
-            max-width: 70px;
-            max-height: 70px;
-            object-fit: cover;
-            border-radius: 4px;
+        /* kolom link dokumentasi */
+        td.col-link {
+            text-align: left;
+            font-size: 8pt;
+            line-height: 1.35;
+        }
+        td.col-link .link-item {
+            display: block;
+            word-break: break-all;
+            overflow-wrap: anywhere;
+            margin-bottom: 3px;
+        }
+        td.col-link .link-item:last-child { margin-bottom: 0; }
+        td.col-link a {
+            color: #0b3d91;
+            text-decoration: underline;
         }
         @media print {
             table.data-table th {
@@ -94,7 +105,7 @@
                 <th rowspan="2">KELURAHAN</th>
                 <th rowspan="2">KECAMATAN</th>
                 <th colspan="3">JUMLAH PESERTA</th>
-                <th rowspan="2" style="width: 100px;">FOTO DAN VIDEO</th>
+                <th rowspan="2" style="width: 200px;">LINK DOKUMENTASI</th>
             </tr>
             <tr>
                 <th style="width: 80px;">PEREMPUAN</th>
@@ -118,6 +129,12 @@
                     $total_semua_perempuan += $perempuan;
                     $total_semua_lakilaki += $lakilaki;
                     $total_semua_peserta += $total_peserta;
+
+                    // Link dokumentasi: satu link per baris (atau dipisah koma / spasi)
+                    $links = collect(preg_split('/[\r\n,\s]+/', (string) ($item->link_dokumentasi ?? '')))
+                        ->map(fn ($u) => trim($u))
+                        ->filter(fn ($u) => preg_match('#^https?://#i', $u))
+                        ->values();
                 @endphp
                 <tr>
                     <td>{{ $index + 1 }}</td>
@@ -135,9 +152,13 @@
                     <td>{{ $perempuan }}</td>
                     <td>{{ $lakilaki }}</td>
                     <td><strong>{{ $total_peserta }}</strong></td>
-                    <td>
-                        @if(!empty($item->foto_video))
-                            <img src="{{ asset('uploads/pelatihan/' . $item->foto_video) }}" class="img-thumb" alt="Foto">
+                    <td class="{{ $links->isNotEmpty() ? 'col-link' : '' }}">
+                        @if($links->isNotEmpty())
+                            @foreach($links as $i => $u)
+                                <span class="link-item">
+                                    @if($links->count() > 1)<strong>{{ $i + 1 }}.</strong> @endif<a href="{{ $u }}" target="_blank" rel="noopener noreferrer">{{ $u }}</a>
+                                </span>
+                            @endforeach
                         @else
                             -
                         @endif

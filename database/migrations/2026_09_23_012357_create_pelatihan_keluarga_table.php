@@ -21,8 +21,8 @@ return new class extends Migration
             $table->unsignedInteger('peserta_perempuan')->default(0);
             $table->unsignedInteger('peserta_laki_laki')->default(0);
 
-            // Dokumentasi (path file foto/video)
-            $table->string('foto_video')->nullable();
+            // Dokumentasi (link Google Drive, satu link per baris)
+            $table->text('link_dokumentasi')->nullable();
 
             $table->timestamps();
 
