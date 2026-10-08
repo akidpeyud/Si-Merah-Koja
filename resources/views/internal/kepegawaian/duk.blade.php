@@ -310,14 +310,6 @@
                 </div>
             </details>
 
-            <!-- BAGIAN KEPEGAWAIAN -->
-            <details class="side-group" {{ Request::is('internal/kepegawaian*') ? 'open' : '' }}>
-                <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
-                <div class="side-sub">
-                    <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}"><i class="fas fa-user-tie"></i> Data Urut Kepegawaian</a>
-                </div>
-            </details>
-
             <!-- BAGIAN SAPRA -->
             <details class="side-group" {{ Request::is('sapra*') ? 'open' : '' }}>
                 <summary><i class="fas fa-warehouse grp-ico"></i><span class="grp-label">Bagian sapra</span><i class="fas fa-chevron-down chev"></i></summary>
@@ -357,7 +349,7 @@
                 </div>
             </details>
 
-            <!-- BAGIAN KEPEGAWAIAN -->
+            <!-- BAGIAN KEPEGAWAIAN (YANG BENAR DAN LENGKAP) -->
             <details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') ? 'open' : '' }}>
                 <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
@@ -469,9 +461,9 @@
                             <th>Masa Kerja</th>
                             <th>Pendidikan Terakhir</th>
                             <th>Status Pegawai</th>
-                            @role('Sekretariat')
+                            @hasanyrole('Sekretariat|Super User')
                             <th class="text-center" width="10%">Aksi</th>
-                            @endrole
+                            @endhasanyrole
                         </tr>
                     </thead>
                     <tbody>
@@ -505,27 +497,21 @@
                                 @endif
                             </td>
                             
-                            @role('Sekretariat')
+                            @hasanyrole('Sekretariat|Super User')
                             <td class="text-center">
-<!-- Pembatasan akses CRUD Update & Delete -->
-                                @hasanyrole('Super User|Sekretariat')
-                                    <!-- PERBAIKAN: href mengarah ke route edit -->
-                                    <a href="{{ route('kepegawaian.duk.edit', $pegawai->id) }}" class="btn btn-sm btn-outline-primary" style="border-radius: 6px;" title="Edit"><i class="fas fa-edit"></i></a>
-                                    
-                                    <form action="{{ route('kepegawaian.duk.destroy', $pegawai->id ?? 1) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" style="border-radius: 6px;" title="Hapus" onclick="return confirm('Yakin ingin menghapus pegawai ini?')"><i class="fas fa-trash"></i></button>
-                                    </form>
-                                @else
-                                    <span class="text-muted" style="font-size: 0.8rem;"><i>Tidak ada akses</i></span>
-                                @endhasanyrole
+                                <a href="{{ route('kepegawaian.duk.edit', $pegawai->id) }}" class="btn btn-sm btn-outline-primary" style="border-radius: 6px;" title="Edit"><i class="fas fa-edit"></i></a>
+                                
+                                <form action="{{ route('kepegawaian.duk.destroy', $pegawai->id ?? 1) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" style="border-radius: 6px;" title="Hapus" onclick="return confirm('Yakin ingin menghapus pegawai ini?')"><i class="fas fa-trash"></i></button>
+                                </form>
                             </td>
-                            @endrole
+                            @endhasanyrole
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="@role('Sekretariat') 9 @else 8 @endrole" class="text-center py-5">
+                            <td colspan="@hasanyrole('Sekretariat|Super User') 9 @else 8 @endhasanyrole" class="text-center py-5">
                                 <div class="text-muted">
                                     <i class="fas fa-folder-open mb-3" style="font-size: 2.5rem; color: var(--steel-soft); opacity: 0.7;"></i><br>
                                     Belum ada data pegawai. Silakan tambah data baru.

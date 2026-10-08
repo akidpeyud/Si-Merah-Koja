@@ -603,10 +603,10 @@
                 <div class="d-flex justify-content-end gap-3">
                     <a href="{{ route('kepegawaian.duk.index') }}" class="btn-secondary-custom">Batal</a>
                     
-                    <!-- TOMBOL SUBMIT HANYA UNTUK SEKRETARIAT -->
-                    @role('Sekretariat')
+                    <!-- TOMBOL SUBMIT HANYA UNTUK SEKRETARIAT DAN SUPER USER -->
+                    @hasanyrole('Sekretariat|Super User')
                     <button type="submit" class="btn-primary-custom"><i class="fas fa-save"></i> Simpan Data</button>
-                    @endrole
+                    @endhasanyrole
 
                 </div>
             </form>
