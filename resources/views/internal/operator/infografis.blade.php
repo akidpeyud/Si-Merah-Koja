@@ -719,25 +719,38 @@ button {
                 </div>
             </details>
 
-            <!-- BAGIAN PEMADAMAN -->
-            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
+           <!-- BAGIAN PEMADAMAN -->
+            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') || Request::is('internal/damtan/kelola-izin-keramaian*') ? 'open' : '' }}>
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
                         <i class="fas fa-fire-extinguisher"></i> Input data
                     </a>
+
+                    <!-- MENU BARU: REKAP LAYANAN & OBJEK -->
+                    <a href="/internal/damtan/rekap-layanan" class="{{ Request::is('internal/damtan/rekap-layanan*') ? 'active' : '' }}">
+                        <i class="fas fa-truck-medical"></i> Input Rekap Layanan
+                    </a>
+                    <a href="/internal/damtan/rekap-objek" class="{{ Request::is('internal/damtan/rekap-objek*') ? 'active' : '' }}">
+                        <i class="fas fa-house-chimney-crack"></i> Input Rekap Objek Kebakaran
+                    </a>
+
                     <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
                         <i class="fas fa-file-signature"></i> Buat Surat Korban
                     </a>
-                    <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') ? 'active' : '' }}">
+                    <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
                         <i class="fas fa-clipboard-list"></i> Kelola Data Laporan
                     </a>
-                    <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') ? 'active' : '' }}">
-                        <i class="fas fa-folder"></i> Kelola Surat Korban
+                    <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
+                        <i class="fas fa-folder-open"></i> Kelola Surat Korban
+                    </a>
+                    
+                    <!-- MENU KELOLA SURAT KERAMAIAN -->
+                    <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
+                        <i class="fas fa-users-rectangle"></i><span class="lbl">Kelola Surat Keramaian</span>
                     </a>
                 </div>
             </details>
-
             <!-- BAGIAN KEPEGAWAIAN -->
             <details class="side-group" {{ Request::is('internal/kepegawaian*') ? 'open' : '' }}>
                 <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
@@ -823,7 +836,6 @@ button {
                 <a href="{{ url('/internal/kelola-pemohon') }}" class="{{ request()->is('internal/kelola-pemohon*') ? 'active' : '' }}">
                     <i class="fas fa-address-book"></i> Kelola Akun Pemohon
                 </a>
-                
             </div>
         </details>
 
@@ -837,9 +849,13 @@ button {
                 <h1>Kelola Info Grafis</h1>
                 <p>Unggah dan atur gambar info grafis edukasi yang tampil di halaman utama publik.</p>
             </div>
+            
+            <!-- Tombol Tambah Hanya untuk Operator -->
+            @role('Operator')
             <button class="btn-simerah-danger" data-bs-toggle="modal" data-bs-target="#modalTambah">
                 <i class="fas fa-plus"></i> Tambah Infografis
             </button>
+            @endrole
         </div>
 
         <div class="card-box">
@@ -850,7 +866,11 @@ button {
                             <th style="width: 5%;">No</th>
                             <th style="width: 25%;">Preview Gambar</th>
                             <th style="width: 45%;">Judul / Keterangan</th>
+                            
+                            <!-- Header Aksi Hanya untuk Operator -->
+                            @role('Operator')
                             <th style="width: 25%;" class="text-center">Aksi</th>
+                            @endrole
                         </tr>
                     </thead>
                     <tbody>
@@ -863,6 +883,9 @@ button {
                             <td>
                                 <span class="fw-bold text-dark">{{ $item->judul ?? 'Tanpa Judul' }}</span>
                             </td>
+                            
+                            <!-- Kolom Aksi Hanya untuk Operator -->
+                            @role('Operator')
                             <td class="text-center">
                                 <form action="/internal/operator/infografis/hapus/{{ $item->id }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus infografis ini?')" style="display:inline;">
                                     @csrf
@@ -872,10 +895,12 @@ button {
                                     </button>
                                 </form>
                             </td>
+                            @endrole
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-4">Belum ada data info grafis yang diunggah.</td>
+                            <!-- Dinamis colspan berdasarkan Role -->
+                            <td colspan="@role('Operator') 4 @else 3 @endrole" class="text-center text-muted py-4">Belum ada data info grafis yang diunggah.</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -886,7 +911,8 @@ button {
     </main>
 </div>
 
-<!-- Modal Tambah Infografis -->
+<!-- Modal Tambah Infografis (Hanya Dirender untuk Operator) -->
+@role('Operator')
 <div class="modal fade" id="modalTambah" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -915,6 +941,7 @@ button {
         </div>
     </div>
 </div>
+@endrole
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 

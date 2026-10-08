@@ -1386,9 +1386,12 @@ button {
                 <h1>Kelola Ujung-Ujung Damkar</h1>
                 <p>Unggah dan kelola tautan video YouTube untuk ditampilkan pada bagian Ujung-Ujung Damkar di halaman utama.</p>
             </div>
+            
+            @role('Operator')
             <button type="button" class="btn-simerah-danger w-mobile-100" data-bs-toggle="modal" data-bs-target="#modalTambah">
                 <i class="fas fa-plus"></i> Tambah Video
             </button>
+            @endrole
         </div>
 
         <!-- Section Heading dengan Indikator Jumlah Data -->
@@ -1410,7 +1413,10 @@ button {
                             <th style="width: 6%;">No</th>
                             <th style="width: 22%;">Thumbnail</th>
                             <th style="width: 52%;">Judul Kegiatan &amp; Tautan</th>
+                            
+                            @role('Operator')
                             <th style="width: 20%;" class="text-center">Aksi</th>
+                            @endrole
                         </tr>
                     </thead>
                     <tbody>
@@ -1436,6 +1442,8 @@ button {
                                     @endif
                                 </div>
                             </td>
+                            
+                            @role('Operator')
                             <td class="text-center">
                                 <form action="/internal/operator/ujung-damkar/hapus/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus video ini dari daftar tayang?')" style="display:inline;">
                                     @csrf
@@ -1445,19 +1453,23 @@ button {
                                     </button>
                                 </form>
                             </td>
+                            @endrole
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4">
+                            <td colspan="@role('Operator') 4 @else 3 @endrole">
                                 <div class="empty-state">
                                     <div class="empty-ico">
                                         <i class="fab fa-youtube"></i>
                                     </div>
                                     <h4>Belum Ada Video Ujung-Ujung Damkar</h4>
-                                    <p>Tambahkan tautan video dokumentasi atau edukasi dari YouTube agar tampil di halaman publik SIMERAH KOJA.</p>
+                                    <p>Tambahkan tautan video dokumentasi atau edukasi dari YouTube agar tampil di halaman publik SIMERAH KOJA[cite: 10].</p>
+                                    
+                                    @role('Operator')
                                     <button type="button" class="btn-simerah-danger" data-bs-toggle="modal" data-bs-target="#modalTambah">
                                         <i class="fas fa-plus"></i> Tambah Video Pertama
                                     </button>
+                                    @endrole
                                 </div>
                             </td>
                         </tr>
@@ -1470,7 +1482,8 @@ button {
     </main>
 </div>
 
-<!-- ==================== MODAL TAMBAH VIDEO ==================== -->
+<!-- ==================== MODAL TAMBAH VIDEO (Hanya Dirender untuk Operator) ==================== -->
+@role('Operator')
 <div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -1514,6 +1527,7 @@ button {
         </div>
     </div>
 </div>
+@endrole
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>

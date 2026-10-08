@@ -268,13 +268,36 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 </div>
             </details>
 
-            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
+            <!-- BAGIAN PEMADAMAN -->
+            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') || Request::is('internal/damtan/kelola-izin-keramaian*') ? 'open' : '' }}>
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
-                    <a href="/internal/damtan/input-data"><i class="fas fa-fire-extinguisher"></i> Input data</a>
-                    <a href="/internal/surat-korban/create"><i class="fas fa-file-signature"></i> Buat Surat Korban</a>
-                    <a href="/internal/damtan/data-laporan"><i class="fas fa-clipboard-list"></i> Kelola Data Laporan</a>
-                    <a href="/internal/surat-korban/data"><i class="fas fa-folder"></i> Kelola Surat Korban</a>
+                    <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
+                        <i class="fas fa-fire-extinguisher"></i> Input data
+                    </a>
+
+                    <!-- MENU BARU: REKAP LAYANAN & OBJEK -->
+                    <a href="/internal/damtan/rekap-layanan" class="{{ Request::is('internal/damtan/rekap-layanan*') ? 'active' : '' }}">
+                        <i class="fas fa-truck-medical"></i> Input Rekap Layanan
+                    </a>
+                    <a href="/internal/damtan/rekap-objek" class="{{ Request::is('internal/damtan/rekap-objek*') ? 'active' : '' }}">
+                        <i class="fas fa-house-chimney-crack"></i> Input Rekap Objek Kebakaran
+                    </a>
+
+                    <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
+                        <i class="fas fa-file-signature"></i> Buat Surat Korban
+                    </a>
+                    <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
+                        <i class="fas fa-clipboard-list"></i> Kelola Data Laporan
+                    </a>
+                    <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
+                        <i class="fas fa-folder-open"></i> Kelola Surat Korban
+                    </a>
+                    
+                    <!-- MENU KELOLA SURAT KERAMAIAN -->
+                    <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
+                        <i class="fas fa-users-rectangle"></i><span class="lbl">Kelola Surat Keramaian</span>
+                    </a>
                 </div>
             </details>
 
@@ -348,9 +371,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 <h1>Kelola Edu Damkar</h1>
                 <p>Unggah dan kelola tautan video edukasi pencegahan serta penanganan kebakaran di halaman utama.</p>
             </div>
+            
+            @role('Operator')
             <button type="button" class="btn-simerah-danger w-mobile-100" data-bs-toggle="modal" data-bs-target="#modalTambah">
                 <i class="fas fa-plus"></i> Tambah Video Edukasi
             </button>
+            @endrole
         </div>
 
         <div class="section-heading">
@@ -370,7 +396,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                             <th style="width: 6%;">No</th>
                             <th style="width: 22%;">Thumbnail</th>
                             <th style="width: 48%;">Judul Materi Edukasi &amp; Tautan</th>
+                            
+                            @role('Operator')
                             <th style="width: 24%;" class="text-center">Aksi</th>
+                            @endrole
                         </tr>
                     </thead>
                     <tbody>
@@ -394,6 +423,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                                     @endif
                                 </div>
                             </td>
+                            
+                            @role('Operator')
                             <td class="text-center">
                                 <div class="action-group">
                                     <button type="button" class="btn-edit-item"
@@ -410,47 +441,51 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                                     </form>
                                 </div>
                             </td>
-                        </tr>
 
-                        <!-- Modal Edit per Item -->
-                        <div class="modal fade" id="modalEdit{{ $item->id }}" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <form action="/internal/operator/edu-damkar/update/{{ $item->id }}" method="POST">
-                                        @csrf
-                                        @method('PUT')
-                                        <div class="modal-header">
-                                            <h5 class="modal-title"><i class="fas fa-pen-to-square text-warning"></i> Edit Video Edu Damkar</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label class="form-label">Link Video YouTube <span class="text-danger">*</span></label>
-                                                <input type="url" class="form-control" name="link" value="{{ $item->link_asli }}" required>
+                            <!-- Modal Edit per Item (Hanya dirender untuk Operator) -->
+                            <div class="modal fade" id="modalEdit{{ $item->id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <form action="/internal/operator/edu-damkar/update/{{ $item->id }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="modal-header">
+                                                <h5 class="modal-title"><i class="fas fa-pen-to-square text-warning"></i> Edit Video Edu Damkar</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                                             </div>
-                                            <div class="mb-1">
-                                                <label class="form-label">Judul Materi Edukasi <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" name="judul" value="{{ $item->judul }}" required>
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Link Video YouTube <span class="text-danger">*</span></label>
+                                                    <input type="url" class="form-control" name="link" value="{{ $item->link_asli }}" required>
+                                                </div>
+                                                <div class="mb-1">
+                                                    <label class="form-label">Judul Materi Edukasi <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" name="judul" value="{{ $item->judul }}" required>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn-simerah-secondary" data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn-simerah-danger"><i class="fas fa-floppy-disk"></i> Simpan Perubahan</button>
-                                        </div>
-                                    </form>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn-simerah-secondary" data-bs-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn-simerah-danger"><i class="fas fa-floppy-disk"></i> Simpan Perubahan</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                            @endrole
+                        </tr>
                         @empty
                         <tr>
-                            <td colspan="4">
+                            <td colspan="@role('Operator') 4 @else 3 @endrole">
                                 <div class="empty-state">
                                     <div class="empty-ico"><i class="fas fa-graduation-cap"></i></div>
                                     <h4>Belum Ada Video Edu Damkar</h4>
                                     <p>Tambahkan tautan video edukasi dari YouTube (seperti cara penggunaan APAR, langkah evakuasi, dll) agar tampil di halaman utama.</p>
+                                    
+                                    @role('Operator')
                                     <button type="button" class="btn-simerah-danger" data-bs-toggle="modal" data-bs-target="#modalTambah">
                                         <i class="fas fa-plus"></i> Tambah Video Edukasi Pertama
                                     </button>
+                                    @endrole
                                 </div>
                             </td>
                         </tr>
@@ -462,7 +497,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     </main>
 </div>
 
-<!-- MODAL TAMBAH VIDEO EDUKASI -->
+<!-- MODAL TAMBAH VIDEO EDUKASI (Hanya Dirender untuk Operator) -->
+@role('Operator')
 <div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -505,6 +541,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         </div>
     </div>
 </div>
+@endrole
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>

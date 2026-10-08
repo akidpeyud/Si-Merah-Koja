@@ -737,21 +737,35 @@ button {
                 </div>
             </details>
 
-            <!-- BAGIAN PEMADAMAN -->
-            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
+           <!-- BAGIAN PEMADAMAN -->
+            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') || Request::is('internal/damtan/kelola-izin-keramaian*') ? 'open' : '' }}>
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
                         <i class="fas fa-fire-extinguisher"></i> Input data
                     </a>
+
+                    <!-- MENU BARU: REKAP LAYANAN & OBJEK -->
+                    <a href="/internal/damtan/rekap-layanan" class="{{ Request::is('internal/damtan/rekap-layanan*') ? 'active' : '' }}">
+                        <i class="fas fa-truck-medical"></i> Input Rekap Layanan
+                    </a>
+                    <a href="/internal/damtan/rekap-objek" class="{{ Request::is('internal/damtan/rekap-objek*') ? 'active' : '' }}">
+                        <i class="fas fa-house-chimney-crack"></i> Input Rekap Objek Kebakaran
+                    </a>
+
                     <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
                         <i class="fas fa-file-signature"></i> Buat Surat Korban
                     </a>
-                    <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') ? 'active' : '' }}">
+                    <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
                         <i class="fas fa-clipboard-list"></i> Kelola Data Laporan
                     </a>
-                    <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') ? 'active' : '' }}">
-                        <i class="fas fa-folder"></i> Kelola Surat Korban
+                    <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
+                        <i class="fas fa-folder-open"></i> Kelola Surat Korban
+                    </a>
+                    
+                    <!-- MENU KELOLA SURAT KERAMAIAN -->
+                    <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
+                        <i class="fas fa-users-rectangle"></i><span class="lbl">Kelola Surat Keramaian</span>
                     </a>
                 </div>
             </details>
@@ -814,11 +828,10 @@ button {
                     <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
                         <i class="fab fa-instagram"></i> Kelola Berita Medsos
                     </a>
-                     </a>
                     <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
-    <i class="fab fa-youtube"></i> Ujung-Ujung Damkar
-</a>
-<a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
+                        <i class="fab fa-youtube"></i> Ujung-Ujung Damkar
+                    </a>
+                    <a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
                         <i class="fas fa-graduation-cap"></i> Edu Damkar
                     </a>
                 </div>
@@ -854,9 +867,13 @@ button {
                 <h1>Kelola Berita Media Sosial</h1>
                 <p>Tambah, sinkronisasi tautan, dan arsipkan publikasi medsos instansi.</p>
             </div>
+            
+            <!-- Tombol Tambah Hanya untuk Operator -->
+            @role('Operator')
             <button class="btn-simerah-danger" data-bs-toggle="modal" data-bs-target="#modalTambah">
                 <i class="fas fa-plus"></i> Tambah Berita Medsos
             </button>
+            @endrole
         </div>
 
         @php
@@ -873,7 +890,11 @@ button {
                             <th style="width: 15%;">Foto</th>
                             <th style="width: 35%;">Judul Berita & Kategori</th>
                             <th style="width: 25%;">Tanggal & Sumber</th>
+                            
+                            <!-- Header Aksi Hanya untuk Operator -->
+                            @role('Operator')
                             <th style="width: 20%;" class="text-center">Aksi</th>
+                            @endrole
                         </tr>
                     </thead>
                     <tbody>
@@ -899,6 +920,9 @@ button {
                                 <div class="small fw-semibold text-dark"><i class="far fa-calendar-alt text-muted me-1"></i> {{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y H:i') }}</div>
                                 <div class="small text-muted"><i class="fab fa-instagram me-1"></i> {{ $item->sumber }}</div>
                             </td>
+                            
+                            <!-- Tombol Aksi (Edit & Hapus) Hanya untuk Operator -->
+                            @role('Operator')
                             <td class="text-center">
                                 <button class="btn btn-warning btn-sm text-white fw-bold px-2 me-1" data-bs-toggle="modal" data-bs-target="#modalEdit{{ $item->id }}" title="Edit">
                                     <i class="fas fa-pen-to-square"></i>
@@ -911,63 +935,65 @@ button {
                                     </button>
                                 </form>
                             </td>
-                        </tr>
 
-                        <!-- Modal Edit -->
-                        <div class="modal fade" id="modalEdit{{ $item->id }}" tabindex="-1">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <form action="/internal/operator/berita-medsos/update/{{ $item->id }}" method="POST" enctype="multipart/form-data">
-                                        @csrf
-                                        @method('PUT')
-                                        <div class="modal-header">
-                                            <h5 class="modal-title fs-6"><i class="fas fa-pen-to-square me-2 text-warning"></i>Edit Berita Media Sosial</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <div class="modal-body text-start">
-                                            <div class="mb-3">
-                                                <label class="form-label">Judul Berita</label>
-                                                <input type="text" class="form-control" name="judul" value="{{ $item->judul }}" required>
+                            <!-- Modal Edit Hanya Dirender untuk Operator -->
+                            <div class="modal fade" id="modalEdit{{ $item->id }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form action="/internal/operator/berita-medsos/update/{{ $item->id }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="modal-header">
+                                                <h5 class="modal-title fs-6"><i class="fas fa-pen-to-square me-2 text-warning"></i>Edit Berita Media Sosial</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Kategori Berita <span class="text-danger">*</span></label>
-                                                <select class="form-select" name="kategori_id" required>
-                                                    <option value="">-- Pilih Kategori --</option>
-                                                    @foreach($kategoriData as $kat)
-                                                        <option value="{{ $kat->id }}" {{ $item->kategori_id == $kat->id ? 'selected' : '' }}>
-                                                            {{ $kat->nama_kategori }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
+                                            <div class="modal-body text-start">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Judul Berita</label>
+                                                    <input type="text" class="form-control" name="judul" value="{{ $item->judul }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Kategori Berita <span class="text-danger">*</span></label>
+                                                    <select class="form-select" name="kategori_id" required>
+                                                        <option value="">-- Pilih Kategori --</option>
+                                                        @foreach($kategoriData as $kat)
+                                                            <option value="{{ $kat->id }}" {{ $item->kategori_id == $kat->id ? 'selected' : '' }}>
+                                                                {{ $kat->nama_kategori }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Tanggal & Waktu</label>
+                                                    <input type="datetime-local" class="form-control" name="tanggal" value="{{ \Carbon\Carbon::parse($item->tanggal)->format('Y-m-d\TH:i') }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Sumber Akun</label>
+                                                    <input type="text" class="form-control" name="sumber" value="{{ $item->sumber }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Link Postingan (Opsional)</label>
+                                                    <input type="url" class="form-control" name="link" value="{{ $item->link }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Ganti Foto (Opsional)</label>
+                                                    <input type="file" class="form-control" name="gambar" accept=".jpg,.jpeg,.png">
+                                                </div>
                                             </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Tanggal & Waktu</label>
-                                                <input type="datetime-local" class="form-control" name="tanggal" value="{{ \Carbon\Carbon::parse($item->tanggal)->format('Y-m-d\TH:i') }}" required>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-navy btn-sm fw-bold text-white" style="background:var(--navy);">Simpan Perubahan</button>
                                             </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Sumber Akun</label>
-                                                <input type="text" class="form-control" name="sumber" value="{{ $item->sumber }}" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Link Postingan (Opsional)</label>
-                                                <input type="url" class="form-control" name="link" value="{{ $item->link }}">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Ganti Foto (Opsional)</label>
-                                                <input type="file" class="form-control" name="gambar" accept=".jpg,.jpeg,.png">
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn btn-navy btn-sm fw-bold text-white" style="background:var(--navy);">Simpan Perubahan</button>
-                                        </div>
-                                    </form>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                            @endrole
+                        </tr>
                         @empty
                         <tr>
-                            <td colspan="5" class="text-center text-muted py-4">Belum ada data berita media sosial yang diunggah.</td>
+                            <!-- Colspan disesuaikan agar layout tidak hancur saat Aksi disembunyikan -->
+                            <td colspan="@role('Operator') 5 @else 4 @endrole" class="text-center text-muted py-4">Belum ada data berita media sosial yang diunggah.</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -978,7 +1004,8 @@ button {
     </main>
 </div>
 
-<!-- Modal Tambah Berita Medsos (Hybrid) -->
+<!-- Modal Tambah Berita Medsos (Hybrid) - Hanya untuk Operator -->
+@role('Operator')
 <div class="modal fade" id="modalTambah" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -1045,6 +1072,7 @@ button {
         </div>
     </div>
 </div>
+@endrole
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -1091,82 +1119,85 @@ button {
     });
 
     /* ---------- Fitur Tarik Data Otomatis ---------- */
-    document.getElementById('btnTarikData').addEventListener('click', function() {
-        let urlInput = document.getElementById('inputLink').value.trim();
-        let btn = this;
+    var btnTarikData = document.getElementById('btnTarikData');
+    if (btnTarikData) {
+        btnTarikData.addEventListener('click', function() {
+            let urlInput = document.getElementById('inputLink').value.trim();
+            let btn = this;
 
-        if(!urlInput) {
-            alert("Mohon tempelkan tautan link postingan terlebih dahulu!");
-            return;
-        }
-
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Proses...';
-        btn.disabled = true;
-
-        let ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
-        let match = urlInput.match(ytRegex);
-
-        if (match && match[1].length === 11) {
-            let videoId = match[1];
-            let thumbUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-
-            document.getElementById('imgPreview').src = thumbUrl;
-            document.getElementById('inputGambarUrl').value = thumbUrl;
-            document.getElementById('previewArea').classList.remove('d-none');
-
-            if(document.getElementById('inputJudul').value === '') {
-                document.getElementById('inputJudul').value = "Video Publikasi YouTube";
+            if(!urlInput) {
+                alert("Mohon tempelkan tautan link postingan terlebih dahulu!");
+                return;
             }
 
-            document.getElementById('inputGambarManual').value = '';
-            document.getElementById('uploadManualArea').style.opacity = '0.5';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Proses...';
+            btn.disabled = true;
 
-            btn.innerHTML = 'Tarik Data';
-            btn.disabled = false;
-            return;
-        }
+            let ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+            let match = urlInput.match(ytRegex);
 
-        fetch('/internal/fetch-link-preview', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ url: urlInput })
-        })
-        .then(async response => {
-            const isJson = response.headers.get('content-type')?.includes('application/json');
-            const data = isJson ? await response.json() : null;
+            if (match && match[1].length === 11) {
+                let videoId = match[1];
+                let thumbUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
 
-            if (!response.ok) {
-                throw new Error((data && data.error) ? data.error : 'Server website menolak permintaan cuplikan preview.');
-            }
-            return data;
-        })
-        .then(data => {
-            btn.innerHTML = 'Tarik Data';
-            btn.disabled = false;
-
-            if(data && data.title) {
-                document.getElementById('inputJudul').value = data.title;
-            }
-
-            if(data && data.image) {
-                document.getElementById('imgPreview').src = data.image;
-                document.getElementById('inputGambarUrl').value = data.image;
+                document.getElementById('imgPreview').src = thumbUrl;
+                document.getElementById('inputGambarUrl').value = thumbUrl;
                 document.getElementById('previewArea').classList.remove('d-none');
+
+                if(document.getElementById('inputJudul').value === '') {
+                    document.getElementById('inputJudul').value = "Video Publikasi YouTube";
+                }
+
                 document.getElementById('inputGambarManual').value = '';
                 document.getElementById('uploadManualArea').style.opacity = '0.5';
-            } else {
-                alert("Gambar tidak dapat diekstrak secara otomatis. Silakan unggah foto manual pada kolom yang tersedia.");
+
+                btn.innerHTML = 'Tarik Data';
+                btn.disabled = false;
+                return;
             }
-        })
-        .catch(error => {
-            btn.innerHTML = 'Tarik Data';
-            btn.disabled = false;
-            alert('Gagal mengambil data otomatis (' + error.message + '). Silakan isi form dan upload gambar secara manual.');
+
+            fetch('/internal/fetch-link-preview', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ url: urlInput })
+            })
+            .then(async response => {
+                const isJson = response.headers.get('content-type')?.includes('application/json');
+                const data = isJson ? await response.json() : null;
+
+                if (!response.ok) {
+                    throw new Error((data && data.error) ? data.error : 'Server website menolak permintaan cuplikan preview.');
+                }
+                return data;
+            })
+            .then(data => {
+                btn.innerHTML = 'Tarik Data';
+                btn.disabled = false;
+
+                if(data && data.title) {
+                    document.getElementById('inputJudul').value = data.title;
+                }
+
+                if(data && data.image) {
+                    document.getElementById('imgPreview').src = data.image;
+                    document.getElementById('inputGambarUrl').value = data.image;
+                    document.getElementById('previewArea').classList.remove('d-none');
+                    document.getElementById('inputGambarManual').value = '';
+                    document.getElementById('uploadManualArea').style.opacity = '0.5';
+                } else {
+                    alert("Gambar tidak dapat diekstrak secara otomatis. Silakan unggah foto manual pada kolom yang tersedia.");
+                }
+            })
+            .catch(error => {
+                btn.innerHTML = 'Tarik Data';
+                btn.disabled = false;
+                alert('Gagal mengambil data otomatis (' + error.message + '). Silakan isi form dan upload gambar secara manual.');
+            });
         });
-    });
+    }
 })();
 </script>
 </body>

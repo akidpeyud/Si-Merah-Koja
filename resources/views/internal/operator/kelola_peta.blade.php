@@ -242,8 +242,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 </a>
             </div>
         </details>
-        
-        <!-- Tambahkan menu-menu lainnya sesuai kebutuhanmu -->
     </aside>
 
     <!-- ==================== MAIN CONTENT ==================== -->
@@ -255,7 +253,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         </div>
 
         <div class="row">
-            <!-- Kolom Form Input -->
+            <!-- Kolom Form Input: Hanya bisa diakses/disimpan oleh Operator -->
+            @role('Operator')
             <div class="col-lg-5">
                 <div class="card-box">
                     <h2 class="card-title">Detail Informasi Titik</h2>
@@ -299,12 +298,13 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     </form>
                 </div>
             </div>
+            @endrole
 
-            <!-- Kolom Map Interaktif -->
-            <div class="col-lg-7">
+            <!-- Kolom Map Interaktif (Lebar menyesuaikan apakah form input muncul atau tidak) -->
+            <div class="{{ Auth::user()->hasRole('Operator') ? 'col-lg-7' : 'col-lg-12' }}">
                 <div class="card-box h-100">
                     <h2 class="card-title">Penentuan Titik Koordinat (Klik pada Peta)</h2>
-                    <p class="text-muted small mb-3">Silakan klik atau geser peta untuk menentukan titik koordinat lokasi yang tepat.</p>
+                    <p class="text-muted small mb-3">Silakan klik atau geser peta untuk menentukan titik koordinat lokasi yang tepat[cite: 9].</p>
                     
                     <div id="mapPreview"></div>
                     
@@ -320,7 +320,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             </div>
         </div>
 
-        <!-- Tabel Riwayat Data Baru (Opsional, untuk admin review cepat) -->
+        <!-- Tabel Riwayat Data Baru -->
         <div class="card-box mt-4">
             <h2 class="card-title">Data Titik Peta Terbaru</h2>
             <div class="table-responsive">
@@ -330,7 +330,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                             <th style="width: 25%;">Kategori</th>
                             <th style="width: 35%;">Nama Titik</th>
                             <th style="width: 25%;">Koordinat</th>
+                            
+                            <!-- Header Aksi hanya muncul untuk Operator -->
+                            @role('Operator')
                             <th style="width: 15%;" class="text-center">Aksi</th>
+                            @endrole
                         </tr>
                     </thead>
                     <tbody>
@@ -348,6 +352,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                             <td class="font-monospace text-muted small">
                                 Lat: -1.5931<br>Lng: 103.6210
                             </td>
+                            
+                            <!-- Tombol Aksi (Edit & Hapus) hanya untuk Operator -->
+                            @role('Operator')
                             <td class="text-center">
                                 <a href="#" class="action-btn btn-edit mx-1" title="Edit">
                                     <i class="fas fa-pen-to-square"></i>
@@ -356,6 +363,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                                     <i class="fas fa-trash-can"></i>
                                 </button>
                             </td>
+                            @endrole
                         </tr>
                     </tbody>
                 </table>
@@ -411,7 +419,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     });
 
     /* ---------- Leaflet Map Input Interaktif ---------- */
-    // Titik default tengah Jambi
     var initialLat = -1.6101; 
     var initialLng = 103.6131;
 
@@ -422,7 +429,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         attribution: '&copy; OpenStreetMap'
     }).addTo(map);
 
-    // Bikin marker yang bisa ditarik/digeser (draggable)
     var marker = L.marker([initialLat, initialLng], {
         draggable: true
     }).addTo(map);
@@ -432,25 +438,23 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     var textLat = document.getElementById('textLat');
     var textLng = document.getElementById('textLng');
 
-    // Set nilai awal form input hidden
-    latInput.value = initialLat;
-    lngInput.value = initialLng;
-
-    // Fungsi update teks & value saat marker bergerak
-    function updateCoordinate(lat, lng) {
-        latInput.value = lat.toFixed(6);
-        lngInput.value = lng.toFixed(6);
-        textLat.textContent = lat.toFixed(6);
-        textLng.textContent = lng.toFixed(6);
+    if (latInput && lngInput) {
+        latInput.value = initialLat;
+        lngInput.value = initialLng;
     }
 
-    // Event saat marker digeser manual
+    function updateCoordinate(lat, lng) {
+        if (latInput) latInput.value = lat.toFixed(6);
+        if (lngInput) lngInput.value = lng.toFixed(6);
+        if (textLat) textLat.textContent = lat.toFixed(6);
+        if (textLng) textLng.textContent = lng.toFixed(6);
+    }
+
     marker.on('dragend', function (e) {
         var position = marker.getLatLng();
         updateCoordinate(position.lat, position.lng);
     });
 
-    // Event saat peta diklik, marker pindah ke titik klik
     map.on('click', function(e) {
         marker.setLatLng(e.latlng);
         updateCoordinate(e.latlng.lat, e.latlng.lng);
