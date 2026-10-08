@@ -9,10 +9,10 @@ use Illuminate\Support\Facades\Storage;
 
 class BeritaController extends Controller
 {
-    // Cek Hak Akses Operator
+    // Cek Hak Akses Operator (untuk tambah, edit, hapus)
     private function cekAkses() {
-        if (!Auth::check() || !in_array(Auth::user()->role, ['operator', 'super_user'])) {
-            abort(403, 'Akses Ditolak! Halaman ini khusus untuk Operator.');
+        if (!Auth::check() || strtolower(trim(Auth::user()->role)) !== 'operator') {
+            abort(403, 'Akses Ditolak! Hanya Operator yang boleh menambah, mengedit, atau menghapus berita.');
         }
     }
 
@@ -23,10 +23,9 @@ class BeritaController extends Controller
         return view('public.berita_detail', compact('berita'));
     }
 
-    // Read Internal (Tabel Kelola Berita)
+    // Read Internal (Tabel Kelola Berita) - semua role yang login boleh melihat
     public function indexInternal()
     {
-        $this->cekAkses();
         $berita = Berita::orderBy('tanggal_kejadian', 'desc')->get();
         return view('internal.operator.kelola_berita', compact('berita'));
     }
