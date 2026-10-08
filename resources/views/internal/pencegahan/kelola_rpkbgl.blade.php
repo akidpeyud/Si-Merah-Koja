@@ -506,13 +506,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     </a>
                 </div>
             </details>
-        @endhasanyrole="fas fa-plus"></i><span class="lbl">Input Titik Peta</span>
-                    </a>
-                    <a href="/internal/peta-sigap/data" class="{{ Request::is('internal/peta-sigap/data*') ? 'active' : '' }}">
-                        <i class="fas fa-table-list"></i><span class="lbl">Kelola Data Titik</span>
-                    </a>
-                </div>
-            </details>
         @endhasanyrole
 
         <!-- PENGATURAN AKUN -->
