@@ -450,7 +450,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             </details>
         @endhasanyrole
 
-        <!-- MANAJEMEN INFORMASI: semua pegawai internal bisa melihat menu ini -->
+       <!-- MANAJEMEN INFORMASI: semua pegawai internal bisa melihat menu ini -->
         @hasanyrole('Super User|Sapra|Damtan|Pencegahan|Sekretariat|Operator')
             <div class="side-kicker">Konten publik</div>
             <details class="side-group" {{ Request::is('internal/operator*') || Request::is('internal/peta-sigap*') ? 'open' : '' }}>
@@ -481,13 +481,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     </a>
                     @endhasanyrole
 
-                    <a href="/internal/peta-sigap/data" class="{{ Request::is('internal/peta-sigap/data*') ? 'active' : '' }}">
-                        <i class="fas fa-table-list"></i><span class="lbl">Kelola Data Titik</span>
-                    </a>
-                </div>
-            </details>
-        @endhasanyrole="fas fa-plus"></i><span class="lbl">Input Titik Peta</span>
-                    </a>
                     <a href="/internal/peta-sigap/data" class="{{ Request::is('internal/peta-sigap/data*') ? 'active' : '' }}">
                         <i class="fas fa-table-list"></i><span class="lbl">Kelola Data Titik</span>
                     </a>
