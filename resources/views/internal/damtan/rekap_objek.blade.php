@@ -409,6 +409,42 @@ textarea.f-control { height: auto; padding: 12px 14px; resize: vertical; min-hei
                     </a>
                 </div>
             </details>
+        @endhasanyrole<!-- MANAJEMEN INFORMASI: semua pegawai internal bisa melihat menu ini -->
+        @hasanyrole('Super User|Sapra|Damtan|Pencegahan|Sekretariat|Operator')
+            <div class="side-kicker">Konten publik</div>
+            <details class="side-group" {{ Request::is('internal/operator*') || Request::is('internal/peta-sigap*') ? 'open' : '' }}>
+                <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen Informasi</span><i class="fas fa-chevron-down chev"></i></summary>
+                <div class="side-sub">
+                    <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
+                        <i class="far fa-newspaper"></i><span class="lbl">Kelola Berita</span>
+                    </a>
+                    <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
+                        <i class="far fa-image"></i><span class="lbl">Kelola Infografis</span>
+                    </a>
+                    <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
+                        <i class="fab fa-instagram"></i><span class="lbl">Kelola Berita Medsos</span>
+                    </a>
+                    <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
+                        <i class="fab fa-youtube"></i><span class="lbl">Ujung-Ujung Damkar</span>
+                    </a>
+                    <a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
+                        <i class="fas fa-graduation-cap"></i><span class="lbl">Edu Damkar</span>
+                    </a>
+
+                    <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
+                    
+                    <!-- Khusus untuk Input Titik, dibatasi hanya untuk Super User & Operator -->
+                    @hasanyrole('Super User|Operator')
+                    <a href="/internal/peta-sigap/input" class="{{ Request::is('internal/peta-sigap/input*') ? 'active' : '' }}">
+                        <i class="fas fa-plus"></i><span class="lbl">Input Titik Peta</span>
+                    </a>
+                    @endhasanyrole
+
+                    <a href="/internal/peta-sigap/data" class="{{ Request::is('internal/peta-sigap/data*') ? 'active' : '' }}">
+                        <i class="fas fa-table-list"></i><span class="lbl">Kelola Data Titik</span>
+                    </a>
+                </div>
+            </details>
         @endhasanyrole
 
         <!-- PENGATURAN AKUN -->
