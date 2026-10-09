@@ -38,6 +38,7 @@ class PemberdayaanController extends Controller
     }
 
     // 3. PROSES SIMPAN DATA KE DATABASE (STORE)
+    // Dokumentasi berupa LINK (Google Drive dll), bukan upload file
     public function store(Request $request)
     {
         $request->validate([
@@ -48,10 +49,17 @@ class PemberdayaanController extends Controller
             'posyandu_sekolah'    => 'required|string|max:150',
             'peserta_perempuan'   => 'required|integer|min:0',
             'peserta_laki_laki'   => 'required|integer|min:0',
-            'foto_video'          => 'nullable|file|mimes:jpg,jpeg,png,webp,mp4,mov,webm|max:51200',
+            'link_dokumentasi'    => 'nullable|string|max:3000',
         ]);
 
-        $data = [
+        $links = $this->parseLinkDokumentasi($request->input('link_dokumentasi'));
+        if ($links === false) {
+            return back()->withInput()->withErrors([
+                'link_dokumentasi' => 'Ada link yang tidak valid. Setiap link harus diawali http:// atau https://',
+            ]);
+        }
+
+        DB::table('sosialisasi_edukasi')->insert([
             'tanggal_pelaksanaan' => $request->tanggal_pelaksanaan,
             'kecamatan'           => $request->kecamatan,
             'kelurahan'           => $request->kelurahan,
@@ -59,19 +67,10 @@ class PemberdayaanController extends Controller
             'posyandu_sekolah'    => $request->posyandu_sekolah,
             'peserta_perempuan'   => $request->peserta_perempuan ?? 0,
             'peserta_laki_laki'   => $request->peserta_laki_laki ?? 0,
+            'link_dokumentasi'    => $links,
             'created_at'          => now(),
             'updated_at'          => now(),
-        ];
-
-        // Cek kalau user upload foto/video
-        if ($request->hasFile('foto_video')) {
-            $file = $request->file('foto_video');
-            $namaFile = time() . "_" . $file->getClientOriginalName();
-            $file->move(public_path('uploads/pemberdayaan'), $namaFile);
-            $data['foto_video'] = $namaFile;
-        }
-
-        DB::table('sosialisasi_edukasi')->insert($data);
+        ]);
 
         return redirect('/internal/pencegahan/pemberdayaan-masyarakat/sosialisasi')
             ->with('success', 'Data Sosialisasi & Edukasi berhasil ditambahkan!');
@@ -100,10 +99,17 @@ class PemberdayaanController extends Controller
             'posyandu_sekolah'    => 'required|string|max:150',
             'peserta_perempuan'   => 'required|integer|min:0',
             'peserta_laki_laki'   => 'required|integer|min:0',
-            'foto_video'          => 'nullable|file|mimes:jpg,jpeg,png,webp,mp4,mov,webm|max:51200',
+            'link_dokumentasi'    => 'nullable|string|max:3000',
         ]);
 
-        $updateData = [
+        $links = $this->parseLinkDokumentasi($request->input('link_dokumentasi'));
+        if ($links === false) {
+            return back()->withInput()->withErrors([
+                'link_dokumentasi' => 'Ada link yang tidak valid. Setiap link harus diawali http:// atau https://',
+            ]);
+        }
+
+        DB::table('sosialisasi_edukasi')->where('id', $id)->update([
             'tanggal_pelaksanaan' => $request->tanggal_pelaksanaan,
             'kecamatan'           => $request->kecamatan,
             'kelurahan'           => $request->kelurahan,
@@ -111,18 +117,9 @@ class PemberdayaanController extends Controller
             'posyandu_sekolah'    => $request->posyandu_sekolah,
             'peserta_perempuan'   => $request->peserta_perempuan ?? 0,
             'peserta_laki_laki'   => $request->peserta_laki_laki ?? 0,
+            'link_dokumentasi'    => $links,
             'updated_at'          => now(),
-        ];
-
-        // Cek kalau user upload foto/video baru untuk mengganti yang lama
-        if ($request->hasFile('foto_video')) {
-            $file = $request->file('foto_video');
-            $namaFile = time() . "_" . $file->getClientOriginalName();
-            $file->move(public_path('uploads/pemberdayaan'), $namaFile);
-            $updateData['foto_video'] = $namaFile;
-        }
-
-        DB::table('sosialisasi_edukasi')->where('id', $id)->update($updateData);
+        ]);
 
         return redirect('/internal/pencegahan/pemberdayaan-masyarakat/sosialisasi')
             ->with('success', 'Data Sosialisasi & Edukasi berhasil diperbarui!');
@@ -135,6 +132,44 @@ class PemberdayaanController extends Controller
 
         return redirect('/internal/pencegahan/pemberdayaan-masyarakat/sosialisasi')
             ->with('success', 'Data Sosialisasi & Edukasi berhasil dihapus!');
+    }
+
+    /**
+     * Pecah input link per baris.
+     * Return: string (dipisah baris baru), null kalau kosong, atau false kalau ada link tidak valid.
+     */
+    private function parseLinkDokumentasi($raw)
+    {
+        $links = collect(preg_split('/\r\n|\r|\n/', (string) $raw))
+            ->map(fn ($l) => trim($l))
+            ->filter()
+            ->values();
+
+        foreach ($links as $l) {
+            if (!preg_match('#^https?://#i', $l) || !filter_var($l, FILTER_VALIDATE_URL)) {
+                return false;
+            }
+        }
+
+        return $links->isEmpty() ? null : $links->implode("\n");
+    }
+
+    /**
+     * Ubah teks link (banyak baris) jadi HTML aman untuk sel Excel.
+     */
+    private function linkUntukExcel($raw)
+    {
+        $links = collect(preg_split('/[\r\n,\s]+/', (string) $raw))
+            ->map(fn ($u) => trim($u))
+            ->filter(fn ($u) => preg_match('#^https?://#i', $u))
+            ->values();
+
+        if ($links->isEmpty()) {
+            return '-';
+        }
+
+        return $links->map(fn ($u, $i) => ($links->count() > 1 ? ($i + 1) . '. ' : '') . e($u))
+                     ->implode('<br>');
     }
 
     // 7. CETAK PDF SOSIALISASI
@@ -162,7 +197,7 @@ class PemberdayaanController extends Controller
         $html .= '<th rowspan="2" style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">KECAMATAN</th>';
         $html .= '<th rowspan="2" style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">POSYANDU / NAMA SEKOLAH</th>';
         $html .= '<th colspan="3" style="background-color: #0f172a; color: white; text-align: center;">JUMLAH PESERTA</th>';
-        $html .= '<th rowspan="2" style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">FOTO DAN VIDEO</th>';
+        $html .= '<th rowspan="2" style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">LINK DOKUMENTASI</th>';
         $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<th style="background-color: #0f172a; color: white; text-align: center;">PEREMPUAN</th>';
@@ -190,14 +225,14 @@ class PemberdayaanController extends Controller
             $html .= '<tr>';
             $html .= '<td style="text-align: center;">' . ($index + 1) . '</td>';
             $html .= '<td style="text-align: center;">' . $tanggal . '</td>';
-            $html .= '<td style="text-align: center;">' . ($row->rt ?? '-') . '</td>';
-            $html .= '<td>' . ($row->kelurahan ?? '-') . '</td>';
-            $html .= '<td>' . ($row->kecamatan ?? '-') . '</td>';
-            $html .= '<td>' . ($row->posyandu_sekolah ?? '-') . '</td>';
+            $html .= '<td style="text-align: center;">' . e($row->rt ?? '-') . '</td>';
+            $html .= '<td>' . e($row->kelurahan ?? '-') . '</td>';
+            $html .= '<td>' . e($row->kecamatan ?? '-') . '</td>';
+            $html .= '<td>' . e($row->posyandu_sekolah ?? '-') . '</td>';
             $html .= '<td style="text-align: center;">' . $perempuan . '</td>';
             $html .= '<td style="text-align: center;">' . $lakilaki . '</td>';
             $html .= '<td style="text-align: center;"><b>' . $total_peserta . '</b></td>';
-            $html .= '<td style="text-align: center;">' . (!empty($row->foto_video) ? 'Ada Media' : '-') . '</td>';
+            $html .= '<td>' . $this->linkUntukExcel($row->link_dokumentasi ?? '') . '</td>';
             $html .= '</tr>';
         }
 
@@ -242,6 +277,7 @@ class PemberdayaanController extends Controller
         $html .= '<th rowspan="2" style="background-color: #1f2937; color: white; text-align: center; vertical-align: middle;">KELURAHAN</th>';
         $html .= '<th rowspan="2" style="background-color: #1f2937; color: white; text-align: center; vertical-align: middle;">KECAMATAN</th>';
         $html .= '<th colspan="3" style="background-color: #1f2937; color: white; text-align: center;">JUMLAH PESERTA</th>';
+        $html .= '<th rowspan="2" style="background-color: #1f2937; color: white; text-align: center; vertical-align: middle;">LINK DOKUMENTASI</th>';
         $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<th style="background-color: #1f2937; color: white; text-align: center;">PEREMPUAN</th>';
@@ -273,12 +309,13 @@ class PemberdayaanController extends Controller
             $html .= '<tr>';
             $html .= '<td style="text-align: center;">' . ($index + 1) . '</td>';
             $html .= '<td>' . $tanggal . '</td>';
-            $html .= '<td>' . ($row->rt ?? '-') . '</td>';
-            $html .= '<td>' . ($row->kelurahan ?? '-') . '</td>';
-            $html .= '<td>' . ($row->kecamatan ?? '-') . '</td>';
+            $html .= '<td>' . e($row->rt ?? '-') . '</td>';
+            $html .= '<td>' . e($row->kelurahan ?? '-') . '</td>';
+            $html .= '<td>' . e($row->kecamatan ?? '-') . '</td>';
             $html .= '<td style="text-align: center;">' . $perempuan . '</td>';
             $html .= '<td style="text-align: center;">' . $lakilaki . '</td>';
             $html .= '<td style="text-align: center;"><b>' . $total_peserta . '</b></td>';
+            $html .= '<td>' . $this->linkUntukExcel($row->link_dokumentasi ?? '') . '</td>';
             $html .= '</tr>';
         }
 
@@ -288,6 +325,7 @@ class PemberdayaanController extends Controller
         $html .= '<td style="text-align: center; font-weight: bold; background-color: #f3f4f6;">' . $total_semua_perempuan . '</td>';
         $html .= '<td style="text-align: center; font-weight: bold; background-color: #f3f4f6;">' . $total_semua_lakilaki . '</td>';
         $html .= '<td style="text-align: center; font-weight: bold; background-color: #f3f4f6;">' . $total_semua_peserta . '</td>';
+        $html .= '<td style="background-color: #f3f4f6;"></td>';
         $html .= '</tr>';
 
         $html .= '</tbody>';

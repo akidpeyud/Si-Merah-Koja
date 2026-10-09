@@ -8,30 +8,32 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('sosialisasi', function (Blueprint $table) {
+        Schema::create('sosialisasi_edukasi', function (Blueprint $table) {
             $table->id();
-            
-            // Detail Kegiatan
-            $table->string('nama_kegiatan');
-            $table->string('lokasi');
+
+            // Informasi pelaksanaan
             $table->date('tanggal_pelaksanaan');
-            $table->time('waktu_mulai');
-            $table->time('waktu_selesai');
-            
-            // Sasaran & Peserta
-            $table->string('sasaran_peserta');
-            $table->integer('jumlah_peserta');
-            
-            // File & Catatan
-            $table->string('surat_permohonan')->nullable(); // Untuk path upload Surat Permohonan
-            $table->text('catatan')->nullable();
-            
+            $table->string('kecamatan', 100);
+            $table->string('kelurahan', 100);
+            $table->string('rt');
+            $table->string('posyandu_sekolah', 150);
+
+            // Jumlah peserta
+            $table->unsignedInteger('peserta_perempuan')->default(0);
+            $table->unsignedInteger('peserta_laki_laki')->default(0);
+
+            // Dokumentasi (link Google Drive, satu link per baris)
+            $table->text('link_dokumentasi')->nullable();
+
             $table->timestamps();
+
+            $table->index('tanggal_pelaksanaan');
+            $table->index(['kecamatan', 'kelurahan']);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('sosialisasi');
+        Schema::dropIfExists('sosialisasi_edukasi');
     }
 };
