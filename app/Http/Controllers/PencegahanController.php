@@ -419,6 +419,7 @@ class PencegahanController extends Controller
 
     // ==========================================
     // BAGIAN PELATIHAN KELUARGA (DAMKAR GOES TO RT)
+    // Dokumentasi berupa LINK (Google Drive dll), bukan upload file
     // ==========================================
     public function indexPelatihanKeluarga()
     {
@@ -433,14 +434,26 @@ class PencegahanController extends Controller
 
     public function storePelatihanKeluarga(Request $request)
     {
-        PelatihanKeluarga::create([
-            'tanggal_pelaksanaan' => $request->tanggal_pelaksanaan,
-            'rt'                  => $request->rt,
-            'kelurahan'           => $request->kelurahan,
-            'kecamatan'           => $request->kecamatan,
-            'peserta_perempuan'   => $request->peserta_perempuan ?? 0,
-            'peserta_laki_laki'   => $request->peserta_laki_laki ?? 0,
+        $validated = $request->validate([
+            'tanggal_pelaksanaan' => 'required|date',
+            'kecamatan'           => 'required|string|max:100',
+            'kelurahan'           => 'required|string|max:100',
+            'rt'                  => 'required|string|max:255',
+            'peserta_perempuan'   => 'required|integer|min:0',
+            'peserta_laki_laki'   => 'required|integer|min:0',
+            'link_dokumentasi'    => 'nullable|string|max:3000',
         ]);
+
+        $links = $this->parseLinkDokumentasi($request->input('link_dokumentasi'));
+        if ($links === false) {
+            return back()->withInput()->withErrors([
+                'link_dokumentasi' => 'Ada link yang tidak valid. Setiap link harus diawali http:// atau https://',
+            ]);
+        }
+
+        $validated['link_dokumentasi'] = $links;
+
+        PelatihanKeluarga::create($validated);
 
         return redirect()->route('pelatihan_keluarga.index')->with('success', 'Data berhasil ditambahkan!');
     }
@@ -454,14 +467,27 @@ class PencegahanController extends Controller
     public function updatePelatihanKeluarga(Request $request, $id)
     {
         $item = PelatihanKeluarga::findOrFail($id);
-        $item->update([
-            'tanggal_pelaksanaan' => $request->tanggal_pelaksanaan,
-            'rt'                  => $request->rt,
-            'kelurahan'           => $request->kelurahan,
-            'kecamatan'           => $request->kecamatan,
-            'peserta_perempuan'   => $request->peserta_perempuan ?? 0,
-            'peserta_laki_laki'   => $request->peserta_laki_laki ?? 0,
+
+        $validated = $request->validate([
+            'tanggal_pelaksanaan' => 'required|date',
+            'kecamatan'           => 'required|string|max:100',
+            'kelurahan'           => 'required|string|max:100',
+            'rt'                  => 'required|string|max:255',
+            'peserta_perempuan'   => 'required|integer|min:0',
+            'peserta_laki_laki'   => 'required|integer|min:0',
+            'link_dokumentasi'    => 'nullable|string|max:3000',
         ]);
+
+        $links = $this->parseLinkDokumentasi($request->input('link_dokumentasi'));
+        if ($links === false) {
+            return back()->withInput()->withErrors([
+                'link_dokumentasi' => 'Ada link yang tidak valid. Setiap link harus diawali http:// atau https://',
+            ]);
+        }
+
+        $validated['link_dokumentasi'] = $links;
+
+        $item->update($validated);
 
         return redirect()->route('pelatihan_keluarga.index')->with('success', 'Data berhasil diperbarui!');
     }
@@ -472,6 +498,26 @@ class PencegahanController extends Controller
         $item->delete();
 
         return redirect()->back()->with('success', 'Data berhasil dihapus!');
+    }
+
+    /**
+     * Pecah input link per baris.
+     * Return: string (dipisah baris baru), null kalau kosong, atau false kalau ada link tidak valid.
+     */
+    private function parseLinkDokumentasi($raw)
+    {
+        $links = collect(preg_split('/\r\n|\r|\n/', (string) $raw))
+            ->map(fn ($l) => trim($l))
+            ->filter()
+            ->values();
+
+        foreach ($links as $l) {
+            if (!preg_match('#^https?://#i', $l) || !filter_var($l, FILTER_VALIDATE_URL)) {
+                return false;
+            }
+        }
+
+        return $links->isEmpty() ? null : $links->implode("\n");
     }
 
     // ==========================================
@@ -551,7 +597,8 @@ class PencegahanController extends Controller
         };
         return response()->stream($callback, 200, $headers);
     }
-public function cetak()
+
+    public function cetak()
     {
         // Ubah nama variabel penampung menjadi $data
         $data = FireDrill::orderBy('tanggal_pelaksanaan', 'desc')->get();
