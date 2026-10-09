@@ -22,18 +22,47 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
+        /* ==========================================================
+           SIMERAH KOJA - CLEAN NAVY DASHBOARD
+           ========================================================== */
         :root {
-            --ink: #0d1b2a; --ink-2: #132a43; --ink-3: #1d3856;
-            --navy: #163a63; --navy-dark: #0d2947; --navy-light: #eaf1f8; --navy-soft: rgba(22, 58, 99, .08);
-            --paper: #f5f7fa; --white: #ffffff;
-            --signal: #dc3545; --signal-dark: #b42332; --signal-soft: rgba(220, 53, 69, .09);
-            --amber: #f4b740; --success: #198754; --info: #2563eb; --info-soft: rgba(37, 99, 235, .09);
-            --steel: #64748b; --steel-soft: #94a3b8;
-            --line: #e2e8f0; --line-dark: #cbd5e1;
+            --ink: #0d1b2a;
+            --ink-2: #132a43;
+            --ink-3: #1d3856;
+
+            --navy: #163a63;
+            --navy-dark: #0d2947;
+            --navy-light: #eaf1f8;
+            --navy-soft: rgba(22, 58, 99, .08);
+
+            --paper: #f5f7fa;
+            --white: #ffffff;
+
+            --signal: #dc3545;
+            --signal-dark: #b42332;
+            --signal-soft: rgba(220, 53, 69, .09);
+
+            --amber: #f4b740;
+            --success: #198754;
+            --info: #2563eb;
+            --info-soft: rgba(37, 99, 235, .09);
+
+            --steel: #64748b;
+            --steel-soft: #94a3b8;
+
+            --line: #e2e8f0;
+            --line-dark: #cbd5e1;
+
             --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
             --font-body: 'Instrument Sans', system-ui, sans-serif;
-            --r-lg: 18px; --r-md: 14px; --r-sm: 10px;
-            --sidebar-w: 288px; --topbar-h: 70px;
+
+            --r-lg: 18px;
+            --r-md: 14px;
+            --r-sm: 10px;
+
+            --sidebar-w: 272px;
+            --topbar-h: 70px;
+
             --shadow-xs: 0 1px 2px rgba(13, 27, 42, .04);
             --shadow-sm: 0 4px 12px rgba(13, 27, 42, .06);
             --shadow-md: 0 10px 25px rgba(13, 27, 42, .08);
@@ -49,17 +78,22 @@
         button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
         :focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; border-radius: 6px; }
 
-        /* GLOBAL ALERTS */
-        #globalSuccessAlert, #globalErrorAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); color: white; padding: 16px 24px; border-radius: 12px; z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        /* ==========================================================
+           GLOBAL ALERTS
+           ========================================================== */
+        #globalSuccessAlert, #globalErrorAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); color: white; padding: 16px 24px; border-radius: var(--r-md); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         #globalSuccessAlert { background-color: var(--success); box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); }
         #globalErrorAlert { background-color: var(--signal); box-shadow: 0 10px 25px -5px rgba(229, 57, 45, 0.4); }
         .alert-icon { font-size: 22px; }
         .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px; transition: opacity 0.2s; }
         .btn-close-alert:hover { opacity: 1; }
+
         @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
         @keyframes fadeOutUpCenter { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -50px); opacity: 0; } }
 
-        /* TOPBAR */
+        /* ==========================================================
+           TOPBAR
+           ========================================================== */
         .topbar { position: sticky; top: 0; z-index: 1020; height: var(--topbar-h); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 28px; background: var(--ink); border-bottom: 1px solid rgba(255,255,255,.08); box-shadow: 0 2px 12px rgba(13, 27, 42, .16); }
         .topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
         .side-toggle { display: none; width: 40px; height: 40px; border-radius: 10px; align-items: center; justify-content: center; font-size: 1.05rem; color: #fff; transition: background .2s, transform .2s; }
@@ -68,6 +102,7 @@
         .brand { display: flex; align-items: center; gap: 12px; min-width: 0; color: #fff; }
         .brand img { height: 34px; width: auto; flex: none; }
         .brand span { font-family: var(--font-display); font-weight: 700; font-size: 1.08rem; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; }
+
         .topbar-right { display: flex; align-items: center; gap: 12px; }
         .user-chip { display: flex; align-items: center; gap: 10px; padding: 5px 14px 5px 5px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); transition: background .2s, border-color .2s; }
         .user-chip:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.18); }
@@ -78,11 +113,17 @@
         .btn-logout { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 17px; border-radius: 999px; background: #ffffff; color: var(--ink); font-weight: 600; font-size: .84rem; border: none; transition: background .2s, color .2s, transform .1s, box-shadow .2s; }
         .btn-logout:hover { background: #e8eef5; color: var(--ink); box-shadow: 0 4px 10px rgba(0,0,0,.12); }
         .btn-logout:active { transform: scale(.97); }
-        @media (max-width: 900px) { .side-toggle { display: inline-flex; } .user-meta { display: none; } }
 
-        /* SHELL & SIDEBAR */
+        @media (max-width: 900px) {
+            .side-toggle { display: inline-flex; }
+            .user-meta { display: none; }
+        }
+
+        /* ==========================================================
+           SHELL & SIDEBAR
+           ========================================================== */
         .shell { display: flex; align-items: flex-start; min-height: calc(100vh - var(--topbar-h)); }
-        .sidebar { width: var(--sidebar-w); flex: none; position: sticky; top: var(--topbar-h); height: calc(100vh - var(--topbar-h)); overflow-y: auto; overflow-x: hidden; background: #ffffff; border-right: 1px solid var(--line); padding: 20px 14px 32px; scrollbar-width: thin; scrollbar-color: #d8dee8 transparent; }
+        .sidebar { width: var(--sidebar-w); flex: none; position: sticky; top: var(--topbar-h); height: calc(100vh - var(--topbar-h)); overflow-y: auto; background: #ffffff; border-right: 1px solid var(--line); padding: 20px 14px 32px; scrollbar-width: thin; scrollbar-color: #d8dee8 transparent; }
         .sidebar::-webkit-scrollbar { width: 6px; }
         .sidebar::-webkit-scrollbar-track { background: transparent; }
         .sidebar::-webkit-scrollbar-thumb { background-color: #d8dee8; border-radius: 20px; }
@@ -93,6 +134,7 @@
         .side-link i { width: 20px; text-align: center; font-size: 1rem; color: var(--steel); transition: color .2s; flex: none; margin-top: 3px; }
         .side-link:hover i { color: var(--ink); }
         .side-link.active i { color: #ffffff; }
+
         .lbl { flex: 1 1 auto; min-width: 0; overflow-wrap: break-word; line-height: 1.4; }
 
         .side-group + .side-group { margin-top: 6px; }
@@ -100,7 +142,7 @@
         .side-group summary::-webkit-details-marker { display: none; }
         .side-group summary:hover { background: #f3f6fa; }
         .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); margin-top: 3px; }
-        .side-group summary .grp-label { flex: 1 1 auto; min-width: 0; white-space: normal; line-height: 1.4; }
+        .side-group summary .grp-label { flex: 1 1 auto; min-width: 0; white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.4; }
         .side-group summary .chev { flex: none; font-size: .7rem; margin-top: 4px; transition: transform .25s ease; }
         .side-group[open] summary .chev { transform: rotate(180deg); }
 
@@ -120,32 +162,81 @@
             body.side-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
         }
 
-        /* MAIN CONTENT & TABLE */
+        /* ==========================================================
+           MAIN CONTENT & TABLE STYLING
+           ========================================================== */
         .content { flex: 1; min-width: 0; padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 80px; }
+
         .page-header { margin-bottom: 28px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
-        .page-header-text h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 4px; color: var(--ink); }
+        .page-header-text h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 5px; color: var(--ink); }
         .page-header-text p { color: var(--steel); font-size: .95rem; margin-bottom: 0; }
 
-        .card-custom { background: #ffffff; border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--shadow-xs); overflow: hidden; transition: box-shadow .2s ease, border-color .2s ease; }
-        .card-custom:hover { box-shadow: var(--shadow-sm); border-color: #d2dae5; }
+        .card-custom {
+            background: #ffffff;
+            border: 1px solid var(--line);
+            border-radius: var(--r-md);
+            box-shadow: var(--shadow-xs);
+            overflow: hidden;
+        }
 
-        .form-control, .form-select { font-family: var(--font-body); min-height: 42px; font-size: .9rem; color: var(--ink); background-color: var(--white); border: 1px solid var(--line-dark); border-radius: 8px; padding: 8px 14px; transition: all 0.2s ease; box-shadow: none; }
-        .form-control:focus, .form-select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+        /* Form Filter Styles */
+        .form-control, .form-select {
+            font-family: var(--font-body);
+            min-height: 42px;
+            font-size: .9rem;
+            color: var(--ink);
+            background-color: var(--white);
+            border: 1px solid var(--line-dark);
+            border-radius: 8px;
+            padding: 8px 14px;
+            transition: all 0.2s ease;
+            box-shadow: none;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--navy);
+            box-shadow: 0 0 0 3px var(--navy-soft);
+        }
         .form-control::placeholder { color: var(--steel-soft); }
-        .input-group-text { background-color: #f8fafc; border: 1px solid var(--line-dark); color: var(--steel); font-weight: 600; border-radius: 8px; font-size: 0.9rem; }
+
+        .input-group-text {
+            background-color: #f8fafc;
+            border: 1px solid var(--line-dark);
+            color: var(--steel);
+            font-weight: 600;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
         .input-group > .form-control { border-top-right-radius: 0; border-bottom-right-radius: 0; }
         .input-group > .input-group-text { border-top-left-radius: 0; border-bottom-left-radius: 0; }
 
-        .btn-custom-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 24px; background: var(--navy); color: #fff; border: none; border-radius: 8px; font-size: .92rem; font-weight: 600; transition: all .2s ease; text-decoration: none; }
+        /* Buttons */
+        .btn-custom-primary {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            min-height: 44px; padding: 0 24px;
+            background: var(--navy); color: #fff;
+            border: none; border-radius: 8px;
+            font-size: .92rem; font-weight: 600;
+            transition: all .2s ease; text-decoration: none;
+        }
         .btn-custom-primary:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13, 27, 42, .15); color: #fff; }
-        .btn-custom-light { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 24px; background: var(--white); color: var(--ink); border: 1px solid var(--line-dark); border-radius: 8px; font-size: .92rem; font-weight: 600; transition: all .2s ease; }
+
+        .btn-custom-light {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            min-height: 44px; padding: 0 24px;
+            background: var(--white); color: var(--ink);
+            border: 1px solid var(--line-dark); border-radius: 8px;
+            font-size: .92rem; font-weight: 600;
+            transition: all .2s ease;
+        }
         .btn-custom-light:hover { background: #f8fafc; border-color: var(--steel-soft); color: var(--ink); }
 
+        /* Table Custom Styles */
         .table { margin-bottom: 0; }
         .table th { background-color: #f8fafc; color: var(--ink-3); font-weight: 700; font-size: 13px; padding: 16px; border-bottom: 1px solid var(--line); font-family: var(--font-display); letter-spacing: 0.02em; }
         .table td { padding: 16px; font-size: 14px; color: var(--ink); vertical-align: middle; border-bottom: 1px solid var(--line); }
         .table tbody tr:hover { background-color: var(--paper); }
 
+        /* Action Buttons */
         .action-btn { width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: none; font-size: 13px; transition: all 0.2s; text-decoration: none; }
         .action-btn.view { background-color: var(--info-soft); color: var(--info); }
         .action-btn.view:hover { background-color: #dbeafe; }
@@ -156,10 +247,11 @@
 
         .badge-custom { padding: 6px 12px; font-weight: 600; font-size: 11px; border-radius: 6px; }
 
+        /* Pagination */
         .pagination-container nav ul.pagination { margin-bottom: 0 !important; }
         .pagination-container nav p { display: none; }
 
-        /* STYLE KHUSUS CETAK PDF */
+        /* --- STYLES KHUSUS UNTUK CETAK PDF --- */
         @page { margin: 0; }
         @media print {
             .topbar, .sidebar, .sidebar-backdrop, .page-header, .card-header, .card-footer,
@@ -171,7 +263,7 @@
             .card-body { padding: 0 !important; }
             .table { width: 100% !important; border-collapse: collapse; margin-bottom: 20px; }
             .table th, .table td { border: 1px solid black !important; padding: 8px !important; text-align: left; }
-            .table th { background-color: #f2f2f2 !important; font-weight: bold; color: black !important; text-align: center !important; }
+            .table th { background-color: #f2f2f2 !important; font-weight: bold; color: black !important; text-align: left !important; }
             th:last-child, td:last-child { display: none !important; }
         }
     </style>
@@ -199,7 +291,7 @@
 <script>
     function closeAlert(id) {
         let alertBox = document.getElementById(id);
-        if (alertBox) {
+        if(alertBox) {
             alertBox.style.animation = 'fadeOutUpCenter 0.4s ease forwards';
             setTimeout(() => alertBox.remove(), 400);
         }
@@ -209,7 +301,7 @@
 </script>
 
 <!-- ==================== TOPBAR ==================== -->
-<header class="topbar d-print-none">
+<header class="topbar">
     <div class="topbar-left">
         <button class="side-toggle" type="button" id="sideToggle" aria-label="Buka menu" aria-expanded="false" aria-controls="sidebar">
             <i class="fas fa-bars"></i>
@@ -224,7 +316,7 @@
             <span class="user-avatar">{{ strtoupper(substr(Auth::user()->nama_lengkap ?? 'R', 0, 1)) }}</span>
             <div class="user-meta">
                 <strong>{{ Auth::user()->nama_lengkap ?? 'Rekan kerja' }}</strong>
-                <small>{{ str_replace('_', ' ', Auth::user()->role ?? '') }}</small>
+                <small>{{ Auth::user()->getRoleNames()->first() ?? str_replace('_', ' ', Auth::user()->role ?? '') }}</small>
             </div>
         </div>
         <form action="/logout" method="POST" style="margin:0;">
@@ -238,7 +330,7 @@
     <div class="sidebar-backdrop" id="sideBackdrop"></div>
 
     <!-- ==================== SIDEBAR ==================== -->
-    <aside class="sidebar d-print-none" id="sidebar" aria-label="Navigasi internal">
+    <aside class="sidebar" id="sidebar" aria-label="Navigasi internal">
 
         <a href="/internal/index" class="side-link {{ Request::is('internal/index') ? 'active' : '' }}">
             <i class="fas fa-house"></i><span class="lbl">Dashboard utama</span>
@@ -277,15 +369,28 @@
             </details>
 
             <!-- BAGIAN PEMADAMAN -->
-            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
+            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') || Request::is('internal/damtan/kelola-izin-keramaian*') ? 'open' : '' }}>
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
+                    
+                    <!-- KUNCI MENU REKAP HANYA UNTUK DAMTAN & SUPER USER -->
+                    @php
+                        $aksesMenuRekap = false;
+                        if (method_exists(Auth::user(), 'hasAnyRole')) {
+                            $aksesMenuRekap = Auth::user()->hasAnyRole(['Damtan', 'Super User']);
+                        }
+                    @endphp
+
+                    @if($aksesMenuRekap)
                     <a href="/internal/damtan/rekap-layanan" class="{{ Request::is('internal/damtan/rekap-layanan*') ? 'active' : '' }}">
                         <i class="fas fa-truck-medical"></i><span class="lbl">Input Rekap Layanan</span>
                     </a>
                     <a href="/internal/damtan/rekap-objek" class="{{ Request::is('internal/damtan/rekap-objek*') ? 'active' : '' }}">
                         <i class="fas fa-house-chimney-crack"></i><span class="lbl">Input Rekap Objek Kebakaran</span>
                     </a>
+                    @endif
+                    <!-- BATAS KUNCI MENU REKAP -->
+
                     <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
                         <i class="fas fa-clipboard-list"></i><span class="lbl">Kelola Data Laporan</span>
                     </a>
@@ -351,53 +456,7 @@
             </details>
         @endhasanyrole
 
-        <!-- MANAJEMEN INFORMASI -->
-        @hasanyrole('Super User|Operator')
-            <div class="side-kicker">Konten publik</div>
-            <details class="side-group" {{ Request::is('internal/operator*') || Request::is('internal/peta-sigap*') ? 'open' : '' }}>
-                <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen Informasi</span><i class="fas fa-chevron-down chev"></i></summary>
-                <div class="side-sub">
-                    <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
-                        <i class="far fa-newspaper"></i><span class="lbl">Input &amp; Kelola Berita</span>
-                    </a>
-                    <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
-                        <i class="far fa-image"></i><span class="lbl">Kelola Infografis</span>
-                    </a>
-                    <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
-                        <i class="fab fa-instagram"></i><span class="lbl">Kelola Berita Medsos</span>
-                    </a>
-                    <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
-                        <i class="fab fa-youtube"></i><span class="lbl">Ujung-Ujung Damkar</span>
-                    </a>
-                    <a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
-                        <i class="fas fa-graduation-cap"></i><span class="lbl">Edu Damkar</span>
-                    </a>
-
-                    <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
-                    <a href="/internal/peta-sigap/input" class="{{ Request::is('internal/peta-sigap/input*') ? 'active' : '' }}">
-                        <i class="fas fa-plus"></i><span class="lbl">Input Titik Peta</span>
-                    </a>
-                    <a href="/internal/peta-sigap/data" class="{{ Request::is('internal/peta-sigap/data*') ? 'active' : '' }}">
-                        <i class="fas fa-table-list"></i><span class="lbl">Kelola Data Titik</span>
-                    </a>
-                </div>
-            </details>
-        @endhasanyrole
-
-        <!-- PENGATURAN AKUN -->
-        <div class="side-kicker">Akun</div>
-        <details class="side-group" {{ request()->is('internal/profil*') || request()->is('internal/kelola-user*') || request()->is('internal/kelola-pemohon*') ? 'open' : '' }}>
-            <summary><i class="fas fa-user-gear grp-ico"></i><span class="grp-label">Pengaturan akun</span><i class="fas fa-chevron-down chev"></i></summary>
-            <div class="side-sub">
-                <a href="{{ url('/internal/profil') }}" class="{{ request()->is('internal/profil*') ? 'active' : '' }}">
-                    <i class="fas fa-user-pen"></i><span class="lbl">Profil Saya</span>
-                </a>
-
-                @hasrole('Super User')
-                    <a href="{{ url('/internal/kelola-user') }}" class="{{ request()->is('internal/kelola-user*') ? 'active' : '' }}">
-                        <i class="fas fa-users-gear"></i><span class="lbl">Kelola Pengguna</span>
-                    </a>
-                @endhasrole<!-- MANAJEMEN INFORMASI: semua pegawai internal bisa melihat menu ini -->
+        <!-- MANAJEMEN INFORMASI: semua pegawai internal bisa melihat menu ini -->
         @hasanyrole('Super User|Sapra|Damtan|Pencegahan|Sekretariat|Operator')
             <div class="side-kicker">Konten publik</div>
             <details class="side-group" {{ Request::is('internal/operator*') || Request::is('internal/peta-sigap*') ? 'open' : '' }}>
@@ -420,7 +479,7 @@
                     </a>
 
                     <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
-                    
+
                     <!-- Khusus untuk Input Titik, dibatasi hanya untuk Super User & Operator -->
                     @hasanyrole('Super User|Operator')
                     <a href="/internal/peta-sigap/input" class="{{ Request::is('internal/peta-sigap/input*') ? 'active' : '' }}">
@@ -435,16 +494,31 @@
             </details>
         @endhasanyrole
 
-                <a href="{{ url('/internal/kelola-pemohon') }}" class="{{ request()->is('internal/kelola-pemohon*') ? 'active' : '' }}">
-                    <i class="fas fa-address-book"></i><span class="lbl">Kelola Akun Pemohon</span>
+        <!-- PENGATURAN AKUN -->
+        <div class="side-kicker">Akun</div>
+        <details class="side-group" {{ request()->is('internal/profil*') || request()->is('internal/kelola-user*') || request()->is('internal/kelola-pemohon*') ? 'open' : '' }}>
+            <summary><i class="fas fa-user-gear grp-ico"></i><span class="grp-label">Pengaturan akun</span><i class="fas fa-chevron-down chev"></i></summary>
+            <div class="side-sub">
+                <a href="{{ url('/internal/profil') }}" class="{{ request()->is('internal/profil*') ? 'active' : '' }}">
+                    <i class="fas fa-user-pen"></i><span class="lbl">Profil Saya</span>
                 </a>
+
+                @hasrole('Super User')
+                    <a href="{{ url('/internal/kelola-user') }}" class="{{ request()->is('internal/kelola-user*') ? 'active' : '' }}">
+                        <i class="fas fa-users-gear"></i><span class="lbl">Kelola Pengguna</span>
+                    </a>
+
+                    <a href="{{ url('/internal/kelola-pemohon') }}" class="{{ request()->is('internal/kelola-pemohon*') ? 'active' : '' }}">
+                        <i class="fas fa-address-book"></i><span class="lbl">Kelola Akun Pemohon</span>
+                    </a>
+                @endhasrole
             </div>
         </details>
     </aside>
 
     <!-- ==================== KONTEN UTAMA ==================== -->
     <main class="content">
-        <div class="page-header d-print-none">
+        <div class="page-header">
             <div class="page-header-text">
                 <h1>Data Laporan Penyelamatan</h1>
                 <p>Daftar seluruh laporan kejadian yang telah diinput ke dalam sistem.</p>
@@ -466,7 +540,7 @@
 
         <div class="card-custom">
             <!-- Filter & Search Bar -->
-            <div class="card-header bg-white p-4 border-bottom border-light d-print-none">
+            <div class="card-header bg-white p-4 border-bottom border-light">
                 <div class="row g-3">
                     <div class="col-md-4">
                         <div class="input-group">
@@ -523,7 +597,7 @@
                                 <th width="20%">Kategori Kejadian</th>
                                 <th width="10%">Prioritas</th>
                                 <th width="15%">Status Evakuasi</th>
-                                <th class="text-center d-print-none" width="15%">Aksi</th>
+                                <th class="text-center" width="15%">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
@@ -570,7 +644,7 @@
                                         <i class="fas fa-check-circle me-1"></i>Terekam
                                     </span>
                                 </td>
-                                <td class="text-center d-print-none">
+                                <td class="text-center">
                                     <!-- LIHAT: SEMUA ROLE -->
                                     <a href="/internal/damtan/lihat-data/{{ $row->id }}" class="action-btn view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
 
@@ -598,7 +672,7 @@
                 </div>
             </div>
 
-            <div class="card-footer bg-white p-4 d-flex justify-content-between align-items-center border-top d-print-none">
+            <div class="card-footer bg-white p-4 d-flex justify-content-between align-items-center border-top">
                 <span class="text-muted" style="font-size: 13px;" id="dataCount">
                     Menampilkan {{ $data_laporan->firstItem() ?? 0 }} - {{ $data_laporan->lastItem() ?? 0 }} dari total {{ $data_laporan->total() }} laporan
                 </span>
@@ -610,16 +684,17 @@
     </main>
 </div>
 
+<!-- Script Bootstrap & Fungsi Search/Filter JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     (function () {
         'use strict';
-        /* Sidebar (Mobile Toggle) */
+        /* ---------- Sidebar (Mobile Toggle) ---------- */
         var toggle = document.getElementById('sideToggle');
         var backdrop = document.getElementById('sideBackdrop');
         function closeSide() {
             document.body.classList.remove('side-open');
-            if (toggle) toggle.setAttribute('aria-expanded', 'false');
+            if(toggle) toggle.setAttribute('aria-expanded', 'false');
         }
         if (toggle) {
             toggle.addEventListener('click', function () {
@@ -630,7 +705,7 @@
         if (backdrop) backdrop.addEventListener('click', closeSide);
         document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
 
-        /* Eksklusivitas Accordion Sidebar */
+        /* ---------- Eksklusivitas Accordion Sidebar ---------- */
         var groups = document.querySelectorAll('.side-group');
         groups.forEach(function (g) {
             g.addEventListener('toggle', function () {
@@ -641,8 +716,8 @@
         });
     })();
 
-    /* Search & Filter */
-    document.addEventListener('DOMContentLoaded', function () {
+    /* ---------- FUNGSI SEARCH & FILTER FRONTEND ---------- */
+    document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('searchInput');
         const filterKategori = document.getElementById('filterKategori');
         const tableBody = document.getElementById('tableBody');
@@ -653,6 +728,7 @@
             const categoryTerm = filterKategori.value.toLowerCase();
 
             for (let i = 0; i < rows.length; i++) {
+                // Abaikan baris "Belum ada data"
                 if (rows[i].getElementsByTagName('td').length === 1) continue;
 
                 const rowText = rows[i].textContent.toLowerCase();
