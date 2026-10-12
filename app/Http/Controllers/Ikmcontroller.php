@@ -2,82 +2,141 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\IkmResponden;
+use App\Models\IkmResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class IkmController extends Controller
 {
-    /** Halaman publik IKM: hasil survei + formulir survei */
+    /** 9 unsur pelayanan (Permenpan RB No. 14 Tahun 2017). */
+    private const UNSUR = [
+        1 => 'Persyaratan',
+        2 => 'Sistem, Mekanisme, dan Prosedur',
+        3 => 'Waktu Penyelesaian',
+        4 => 'Biaya/Tarif',
+        5 => 'Produk Spesifikasi Jenis Pelayanan',
+        6 => 'Kompetensi Pelaksana',
+        7 => 'Perilaku Pelaksana',
+        8 => 'Penanganan Pengaduan, Saran dan Masukan',
+        9 => 'Sarana dan Prasarana',
+    ];
+
+    /**
+     * Kolom di tabel ikm_responses untuk tiap unsur.
+     * Unsur 1 dan 2 punya dua pernyataan, nilainya dirata-rata dulu.
+     */
+    private const UNSUR_KOLOM = [
+        1 => ['u1_a', 'u1_b'],
+        2 => ['u2_a', 'u2_b'],
+        3 => ['u3'],
+        4 => ['u4'],
+        5 => ['u5'],
+        6 => ['u6'],
+        7 => ['u7'],
+        8 => ['u8'],
+        9 => ['u9'],
+    ];
+
+    /** Halaman IKM: hasil survei + form pengisian dalam satu halaman. */
     public function index(Request $request)
     {
-        $daftar_tahun = IkmResponden::selectRaw('YEAR(created_at) as tahun')
-            ->distinct()->orderByDesc('tahun')->pluck('tahun')->map(fn ($t) => (int) $t)->all();
+        $daftar_tahun = IkmResponse::query()
+            ->selectRaw('YEAR(tanggal_layanan) AS th')
+            ->distinct()
+            ->pluck('th')
+            ->push((int) date('Y'))
+            ->map(fn ($t) => (int) $t)
+            ->unique()
+            ->sortDesc()
+            ->values()
+            ->all();
 
-        $tahun = (int) ($request->query('tahun') ?: ($daftar_tahun[0] ?? now()->year));
+        $tahun = (int) $request->query('tahun', date('Y'));
+        if (! in_array($tahun, $daftar_tahun, true)) {
+            $tahun = (int) date('Y');
+        }
 
-        $kolom = array_map(fn ($i) => "u{$i}", range(1, 9));
-        $select = 'COUNT(*) as jumlah, ' . implode(', ', array_map(fn ($k) => "AVG({$k}) as {$k}", $kolom));
-        $agg = IkmResponden::whereYear('created_at', $tahun)->selectRaw($select)->first();
+        $kolom = collect(self::UNSUR_KOLOM)
+            ->map(fn ($cols, $i) => 'AVG((' . implode(' + ', $cols) . ') / ' . count($cols) . ") AS n{$i}")
+            ->implode(', ');
 
-        $jumlah = (int) ($agg->jumlah ?? 0);
+        $hasil = IkmResponse::query()
+            ->whereYear('tanggal_layanan', $tahun)
+            ->selectRaw("COUNT(*) AS jumlah, {$kolom}")
+            ->first();
+
+        $jumlah = (int) ($hasil->jumlah ?? 0);
+
         $nrr = [];
-        $ikm = null;
-        $mutu = null;
+        $ikm = 0.0;
 
         if ($jumlah > 0) {
-            foreach (range(1, 9) as $i) {
-                $nrr[$i] = round((float) $agg->{"u{$i}"}, 2);
+            $total = 0.0;
+            foreach (array_keys(self::UNSUR) as $i) {
+                $rata = (float) $hasil->{"n{$i}"};
+                $nrr[$i] = round($rata, 2);
+                $total += $rata;
             }
-            // IKM = jumlah (NRR x bobot 1/9) x 25  -> skala 25 - 100
-            $ikm = round((array_sum($nrr) / 9) * 25, 2);
-            $mutu = $this->mutu($ikm);
+            // IKM = rata-rata NRR x 25
+            $ikm = round(($total / count(self::UNSUR)) * 25, 2);
         }
 
         return view('galery.ikm.index', [
-            'unsur'        => IkmResponden::UNSUR,
-            'jenis_layanan' => IkmResponden::JENIS_LAYANAN,
+            'tahun'        => $tahun,
+            'daftar_tahun' => $daftar_tahun,
+            'unsur'        => self::UNSUR,
             'jumlah'       => $jumlah,
             'nrr'          => $nrr,
             'ikm'          => $ikm,
-            'mutu'         => $mutu,
-            'tahun'        => $tahun,
-            'daftar_tahun' => $daftar_tahun,
+            'mutu'         => $this->mutu($ikm),
         ]);
     }
 
-    /** Simpan jawaban survei */
+    /** Simpan jawaban survei dari form. */
     public function store(Request $request)
     {
-        // Honeypot anti-spam: bot biasanya mengisi kolom ini
+        // Honeypot: bot biasanya mengisi field "website". Pura-pura sukses saja.
         if ($request->filled('website')) {
-            return redirect()->route('ikm.index');
+            return redirect()->route('ikm.index')
+                ->with('ikm_sukses', 'Terima kasih, survei Anda telah terkirim.');
         }
 
-        $aturan = [
-            'nama'          => ['nullable', 'string', 'max:100'],
-            'jenis_layanan' => ['required', 'string', 'max:100'],
-            'saran'         => ['nullable', 'string', 'max:1000'],
+        $rules = [
+            'tanggal_layanan'    => ['required', 'date', 'before_or_equal:today'],
+            'pendidikan'         => ['required', Rule::in(IkmResponse::PENDIDIKAN)],
+            'usia'               => ['required', 'integer', 'between:5,100'],
+            'pekerjaan'          => ['required', Rule::in(IkmResponse::PEKERJAAN)],
+            'disabilitas'        => ['nullable', 'boolean'],
+            'kritik_saran'       => ['required', 'string', 'max:1000'],
+            'kepercayaan_pusat'  => ['required', 'integer', 'between:1,10'],
+            'kepercayaan_daerah' => ['required', 'integer', 'between:1,10'],
         ];
-        foreach (range(1, 9) as $i) {
-            $aturan["u{$i}"] = ['required', 'integer', 'between:1,4'];
+
+        // 11 pernyataan unsur + 5 integritas: nilai 1-4
+        foreach (IkmResponse::kolomPenilaian() as $field) {
+            $rules[$field] = ['required', 'integer', Rule::in(array_keys(IkmResponse::SKALA))];
         }
 
-        $data = $request->validate($aturan, [
-            'required' => 'Mohon lengkapi semua penilaian.',
-        ]);
+        $data = $request->validate($rules);
 
-        IkmResponden::create($data);
+        $data['disabilitas'] = $request->boolean('disabilitas');
+        $data['ip_address']  = $request->ip();
 
-        return redirect(route('ikm.index') . '#hasil')
-            ->with('success', 'Terima kasih! Penilaian Anda sudah kami terima.');
+        IkmResponse::create($data);
+
+        return redirect()->route('ikm.index')
+            ->withFragment('survei')
+            ->with('ikm_sukses', 'Terima kasih, survei Anda berhasil dikirim.');
     }
 
-    /** Konversi nilai IKM ke mutu pelayanan */
+    /** Konversi nilai IKM ke mutu pelayanan (A-D). */
     private function mutu(float $ikm): array
     {
-        if ($ikm >= 88.31) return ['kode' => 'A', 'nama' => 'Sangat baik'];
-        if ($ikm >= 76.61) return ['kode' => 'B', 'nama' => 'Baik'];
-        if ($ikm >= 65.00) return ['kode' => 'C', 'nama' => 'Kurang baik'];
-        return ['kode' => 'D', 'nama' => 'Tidak baik'];
+        return match (true) {
+            $ikm >= 88.31 => ['kode' => 'A', 'nama' => 'Sangat baik'],
+            $ikm >= 76.61 => ['kode' => 'B', 'nama' => 'Baik'],
+            $ikm >= 65.00 => ['kode' => 'C', 'nama' => 'Kurang baik'],
+            default       => ['kode' => 'D', 'nama' => 'Tidak baik'],
+        };
     }
 }

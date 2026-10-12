@@ -7,6 +7,14 @@
     $wa_link   = "https://wa.me/" . $no_whatsapp . "?text=" . $pesan_wa;
     $maps_link = "https://www.google.com/maps/place/6PC59JJ2%2BQ76/@-1.6180875,103.6006406,871m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-1.6180875!4d103.6006406?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D";
     $play_store_url = "";
+
+    // Seluruh pertanyaan survei didefinisikan di App\Models\IkmResponse (dipakai form, validasi, dan hitung IKM)
+    $aspek_unsur      = \App\Models\IkmResponse::unsur();
+    $aspek_integritas = \App\Models\IkmResponse::integritas();
+    $skala_jawaban    = \App\Models\IkmResponse::SKALA;       // [1 => 'Sangat tidak setuju', ... 4 => 'Sangat setuju']
+    $opsi_pendidikan  = \App\Models\IkmResponse::PENDIDIKAN;
+    $opsi_pekerjaan   = \App\Models\IkmResponse::PEKERJAAN;
+    $kepercayaan      = \App\Models\IkmResponse::KEPERCAYAAN;
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -15,7 +23,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
     <meta name="description" content="Indeks Kepuasan Masyarakat (IKM) Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi. Lihat hasil survei dan sampaikan penilaian Anda.">
-    <title>Indeks Kepuasan Masyarakat - Galery | SIMERAH KOJA</title>
+    <title>Indeks Kepuasan Masyarakat - Galeri | SIMERAH KOJA</title>
 
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -38,7 +46,14 @@
             --display:'Bricolage Grotesque',system-ui,sans-serif;
             --body:'Instrument Sans',system-ui,sans-serif;
             --wrap:1180px;
-            --header:68px;
+            --header-h:64px;
+            --nav-wrap:1300px;
+            --signal-d:#c22b20;
+            --font-display:var(--display);
+            --font-body:var(--body);
+            --r-lg:28px;
+            --r-md:18px;
+            --r-sm:10px;
             --shadow:0 18px 45px rgba(13,27,42,.09);
         }
 
@@ -60,72 +75,126 @@
         :focus-visible{outline:3px solid var(--amber);outline-offset:3px;border-radius:7px}
         .wrap{width:min(var(--wrap),calc(100% - 40px));margin:auto}
 
-        /* ================= HEADER (disamakan dengan homepage) ================= */
-        .site-header{
-            position:sticky;top:0;z-index:60;
-            background:rgba(8,22,35,.88);
-            backdrop-filter:blur(18px) saturate(1.35);
-            -webkit-backdrop-filter:blur(18px) saturate(1.35);
-            border-bottom:1px solid rgba(255,255,255,.08);
+/* ==========================================================
+           HEADER & NAVBAR (banyak menu + multilevel dropdown)
+           ========================================================== */
+        .site-header {
+            position: sticky; top: 0; z-index: 60;
+            background: rgba(13, 27, 42, .85);
+            -webkit-backdrop-filter: blur(14px) saturate(1.4);
+            backdrop-filter: blur(14px) saturate(1.4);
+            border-bottom: 1px solid rgba(255,255,255,.08);
         }
-        .nav{
-            width:min(var(--wrap),calc(100% - 40px));
-            height:var(--header);
-            margin:auto;
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:20px;
+        .nav {
+            max-width: var(--nav-wrap); margin: 0 auto; min-height: var(--header-h);
+            padding: 0 clamp(16px, 4vw, 32px);
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
         }
-        .brand{display:flex;align-items:center;gap:9px;flex:none}
-        .brand img{height:37px;width:auto;object-fit:contain}
+        .brand { display: flex; align-items: center; gap: 12px; flex: none; }
+        .brand img { height: 38px; width: auto; }
 
-        .menu{display:flex;align-items:center;gap:2px}
-        .menu>li{position:relative}
-        .menu-link,.menu-trigger{
-            display:inline-flex;align-items:center;gap:8px;
-            padding:9px 13px;border-radius:999px;
-            color:rgba(255,255,255,.88);
-            font-size:.88rem;font-weight:600;
-            transition:.2s ease;
+        .menu { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; }
+        .menu > li { position: relative; }
+        .menu-link, .menu-trigger {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 10px; border-radius: 999px;
+            color: rgba(255,255,255,.88); font-size: .85rem; font-weight: 500;
+            transition: background .2s, color .2s; white-space: nowrap;
         }
-        .menu-link:hover,.menu-trigger:hover,.has-drop.open>.menu-trigger,.menu>li.current>.menu-trigger{
-            color:#fff;background:rgba(255,255,255,.10)
-        }
-        .menu-trigger i{font-size:.62rem;transition:transform .2s}
-        .has-drop.open>.menu-trigger i{transform:rotate(180deg)}
-        .menu .btn-login{margin-left:8px;padding:10px 20px;background:var(--signal);color:#fff}
-        .menu .btn-login:hover{background:var(--signal-dark);transform:translateY(-1px)}
+        .menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger { background: rgba(255,255,255,.1); color: #fff; }
+        .menu-trigger i { font-size: .6rem; transition: transform .2s; }
+        .has-drop.open > .menu-trigger i { transform: rotate(180deg); }
+        .menu .btn-login { background: var(--signal); color: #fff; margin-left: 6px; font-weight: 600; padding: 8px 18px; }
+        .menu .btn-login:hover { background: var(--signal-d); }
 
-        .dropdown{
-            display:none;position:absolute;top:calc(100% + 10px);left:0;
-            min-width:245px;padding:7px;
-            background:#10283e;border:1px solid rgba(255,255,255,.1);
-            border-radius:16px;box-shadow:0 24px 55px rgba(0,0,0,.35)
+        .dropdown {
+            display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 260px;
+            background: var(--ink-2); border: 1px solid rgba(255,255,255,.1);
+            border-radius: var(--r-md); padding: 8px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
         }
-        .dropdown::before{content:"";position:absolute;left:0;right:0;top:-10px;height:10px}
-        .dropdown a,.sub-trigger{display:block;padding:10px 13px;border-radius:10px;color:rgba(255,255,255,.84);font-size:.9rem}
-        .dropdown a:hover,.dropdown a[aria-current=page],.sub-trigger:hover,.has-sub.open>.sub-trigger,.has-sub.current>.sub-trigger{background:rgba(255,255,255,.09);color:#fff}
-        .has-drop.open .dropdown{display:block}
 
-        /* Submenu (Galery > Berita) */
-        .has-sub{position:relative}
-        .sub-trigger{
-            width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;
-            font-weight:400
-        }
-        .sub-trigger i{font-size:.62rem;transition:transform .2s}
-        .submenu{
-            display:none;position:absolute;top:-7px;left:calc(100% + 14px);
-            min-width:215px;padding:7px;
-            background:#10283e;border:1px solid rgba(255,255,255,.1);
-            border-radius:16px;box-shadow:0 24px 55px rgba(0,0,0,.35)
-        }
-        .submenu::before{content:"";position:absolute;top:0;bottom:0;left:-16px;width:16px}
-        .has-sub.open>.submenu{display:block}
+        /* Agar dropdown di menu sebelah kanan tidak melebar keluar batas layar */
+        .menu > li:nth-last-child(-n+4) .dropdown { left: auto; right: 0; }
 
-        .nav-toggle{display:none;width:44px;height:44px;border-radius:12px;color:#fff;font-size:1.1rem}
-        .nav-toggle:hover{background:rgba(255,255,255,.1)}
+        .dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
+        .dropdown a {
+            display: block; padding: 10px 14px; border-radius: var(--r-sm);
+            font-size: .9rem; color: rgba(255,255,255,.85); line-height: 1.4; white-space: normal;
+        }
+        .dropdown a:hover { background: rgba(255,255,255,.08); color: #fff; }
+
+        .dropdown .btn-logout {
+            width: 100%; text-align: left; padding: 11px 14px; border-radius: var(--r-sm);
+            font-size: .92rem; color: #ff8b8b; display: flex; align-items: center; gap: 8px;
+            transition: background .2s, color .2s; cursor: pointer;
+        }
+        .dropdown .btn-logout:hover { background: rgba(255, 255, 255, .1); color: #ffb8b8; }
+
+        .has-drop.open > .dropdown { display: block; }
+
+        /* ---------- MULTILEVEL DROPDOWN (Galeri > Berita) ---------- */
+        .has-sub { position: relative; }
+        .has-sub > .sub-trigger {
+            width: 100%; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            padding: 10px 14px; border-radius: var(--r-sm); font-size: .9rem; line-height: 1.4;
+            color: rgba(255,255,255,.85); background: transparent; border: none; cursor: pointer;
+            font-family: inherit; transition: background .2s, color .2s;
+        }
+        .has-sub > .sub-trigger i { font-size: .7rem; transition: transform .2s; }
+        .has-sub.open > .sub-trigger i { transform: rotate(90deg); }
+        .has-sub > .sub-trigger:hover, .has-sub.open > .sub-trigger { background: rgba(255,255,255,.1); color: #fff; }
+
+        .dropdown-sub {
+            display: none; position: absolute; top: -8px; left: 100%; min-width: 230px;
+            background: var(--ink-2); border: 1px solid rgba(255,255,255,.1);
+            border-radius: var(--r-md); padding: 8px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
+            margin-left: 4px; z-index: 10;
+        }
+        .dropdown-sub::before { content: ""; position: absolute; top: 0; bottom: 0; left: -10px; width: 10px; }
+        .has-sub.open > .dropdown-sub { display: block; }
+
+        @media (hover: hover) and (min-width: 1251px) {
+            .has-drop:hover > .dropdown { display: block; }
+            .has-sub:hover > .dropdown-sub { display: block; }
+            .has-sub:hover > .sub-trigger { background: rgba(255,255,255,.1); color: #fff; }
+
+            /* Submenu dibuka ke KIRI karena Galeri ada di sisi kanan navbar */
+            .dropdown-sub { left: auto; right: 100%; margin-left: 0; margin-right: 4px; }
+            .dropdown-sub::before { left: auto; right: -10px; }
+            .has-sub > .sub-trigger i { transform: rotate(180deg); }
+            .has-sub.open > .sub-trigger i { transform: rotate(180deg); }
+        }
+
+        .nav-toggle { display: none; width: 44px; height: 44px; border-radius: 12px; color: #fff; font-size: 1.15rem; }
+        .nav-toggle:hover { background: rgba(255,255,255,.1); }
+
+        /* Breakpoint 1250px karena item menu sangat banyak */
+        @media (max-width: 1250px) {
+            .nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
+            .menu {
+                display: none; position: fixed; top: var(--header-h); left: 0; right: 0;
+                max-height: calc(100dvh - var(--header-h)); overflow-y: auto;
+                flex-direction: column; align-items: stretch; gap: 4px; flex-wrap: nowrap;
+                padding: 16px clamp(16px, 4vw, 32px) 28px; background: var(--ink);
+                border-bottom: 1px solid rgba(255,255,255,.1);
+            }
+            .nav-open .menu { display: flex; }
+            .menu-link, .menu-trigger { width: 100%; justify-content: space-between; padding: 14px 16px; border-radius: 14px; font-size: 1rem; white-space: normal; }
+            .dropdown { position: static; margin: 2px 0 8px 12px; box-shadow: none; background: transparent; border: 0; border-left: 2px solid rgba(255,255,255,.12); border-radius: 0; min-width: 100%; }
+            .dropdown::before { display: none; }
+            .menu .btn-login { margin: 8px 0 0; justify-content: center; padding: 14px; }
+
+            /* Responsive multilevel */
+            .has-sub > .sub-trigger { padding: 14px 16px; border-radius: 14px; font-size: 1rem; }
+            .has-sub.open > .sub-trigger i { transform: rotate(90deg); }
+            .dropdown-sub { position: static; margin: 4px 0 4px 12px; box-shadow: none; background: transparent; border: 0; border-left: 2px solid rgba(255,255,255,.12); border-radius: 0; padding: 0; min-width: 100%; }
+            .dropdown-sub::before { display: none; }
+        }
+
+        /* Penanda halaman aktif (Galeri > Berita > halaman ini) */
+        .menu > li.current > .menu-trigger { background: rgba(255,255,255,.1); color: #fff; }
+        .has-sub.current > .sub-trigger { background: rgba(255,255,255,.1); color: #fff; }
+        .dropdown-sub a[aria-current="page"] { background: rgba(255,255,255,.09); color: #fff; font-weight: 600; }
 
         /* ================= HERO ================= */
         .page-hero{
@@ -342,18 +411,13 @@
         /* ================= IKM ================= */
         .ikm-page .content-head{margin-top:48px}
         .ikm-page .content-head:first-child{margin-top:48px}
-        .alert{display:flex;align-items:center;gap:10px;margin-top:36px;padding:14px 18px;border-radius:14px;font-size:.92rem;font-weight:600}
-        .alert.ok{background:#e7f7ee;border:1px solid #b8e6cb;color:#13633a}
-        .alert.err{margin:0 0 20px;background:#fdecea;border:1px solid #f6c3be;color:#a3231a}
-        .alert.ok+.content-head{margin-top:28px}
-
         .year-pills{display:inline-flex;gap:4px;padding:5px;background:#fff;border:1px solid var(--line);border-radius:999px}
         .year-pills a{padding:7px 16px;border-radius:999px;font-size:.84rem;font-weight:700;color:var(--steel);transition:.2s}
         .year-pills a:hover{background:var(--soft);color:var(--ink)}
         .year-pills a[aria-current=page]{background:var(--ink);color:#fff}
 
         .ikm-summary{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:22px;align-items:stretch}
-        .ikm-score,.ikm-bars,.survey-form{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 7px 24px rgba(13,27,42,.055)}
+        .ikm-score,.ikm-bars{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 7px 24px rgba(13,27,42,.055)}
         .ikm-score{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;padding:34px 24px}
         .ikm-label{font-size:.8rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--steel)}
         .ikm-num{font-family:var(--display);font-weight:800;font-size:clamp(3.4rem,8vw,5rem);line-height:1;letter-spacing:-.04em}
@@ -376,39 +440,51 @@
         .bar-track{height:9px;border-radius:99px;background:var(--soft);overflow:hidden}
         .bar-track i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--amber),var(--signal));transition:width .8s cubic-bezier(.2,.75,.25,1)}
 
-        .survey-form{padding:clamp(20px,4vw,36px);display:grid;gap:18px}
-        .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
-        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-        .field{display:grid;gap:7px}
-        .field>span{font-size:.86rem;font-weight:700}
-        .field em{font-style:normal;font-weight:500;color:var(--steel)}
-        .field input,.field select,.field textarea{
-            width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;
-            background:#fff;font:inherit;color:var(--ink);transition:border-color .2s,box-shadow .2s
+        /* Kartu ajakan isi survei (tautan resmi SKM) */
+        .survey-cta{
+            display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:clamp(18px,3vw,32px);
+            padding:clamp(22px,4vw,38px);border-radius:22px;color:#fff;position:relative;overflow:hidden;
+            background:radial-gradient(70% 140% at 100% 0%,rgba(229,57,45,.35),transparent 60%),linear-gradient(120deg,var(--ink),var(--ink-3));
+            box-shadow:0 18px 45px rgba(13,27,42,.18)
         }
-        .field textarea{resize:vertical;min-height:100px}
-        .field input:focus,.field select:focus,.field textarea:focus{outline:0;border-color:var(--signal);box-shadow:0 0 0 4px rgba(229,57,45,.12)}
-
-        .q{border:0;padding:18px;border-radius:16px;background:var(--paper);min-width:0}
-        .q legend{padding:0 4px;font-weight:700;font-size:.95rem;line-height:1.4;float:left;width:100%;margin-bottom:12px}
-        .q legend b{display:inline-grid;place-items:center;width:24px;height:24px;margin-right:8px;border-radius:8px;background:var(--ink);color:#fff;font-size:.75rem}
-        .opts{clear:both;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-        .opt{position:relative;cursor:pointer}
-        .opt input{position:absolute;opacity:0;inset:0;cursor:pointer}
-        .opt span{display:block;padding:11px 8px;text-align:center;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:.85rem;font-weight:700;color:var(--steel);transition:.2s}
-        .opt:hover span{border-color:#b9c4d0;color:var(--ink)}
-        .opt input:checked+span{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:0 6px 14px rgba(13,27,42,.18)}
-        .opt input:focus-visible+span{outline:3px solid var(--amber);outline-offset:2px}
-
+        .survey-cta-ico{width:68px;height:68px;border-radius:20px;display:grid;place-items:center;font-size:1.7rem;color:var(--amber);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14)}
+        .survey-cta h3{font-family:var(--display);font-size:clamp(1.3rem,2.6vw,1.8rem);line-height:1.15;letter-spacing:-.03em}
+        .survey-cta p{margin-top:8px;max-width:58ch;color:rgba(255,255,255,.74);font-size:.96rem}
+        .survey-cta-points{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px 20px;font-size:.86rem;color:rgba(255,255,255,.86)}
+        .survey-cta-points li{display:inline-flex;align-items:center;gap:8px}
+        .survey-cta-points i{color:var(--amber);font-size:.75rem}
         .btn-send{
-            justify-self:start;display:inline-flex;align-items:center;gap:10px;
-            padding:14px 28px;border-radius:999px;background:var(--signal);color:#fff;
-            font-weight:800;font-size:.95rem;box-shadow:0 12px 26px -8px rgba(229,57,45,.55);transition:.2s
+            display:inline-flex;align-items:center;justify-content:center;gap:10px;white-space:nowrap;
+            padding:15px 28px;border-radius:999px;background:var(--signal);color:#fff;
+            font-weight:800;font-size:.95rem;box-shadow:0 12px 26px -8px rgba(229,57,45,.6);transition:.2s
         }
-        .btn-send:hover{background:var(--signal-dark);transform:translateY(-2px)}
+        .btn-send:hover{background:var(--signal-d);transform:translateY(-2px)}
+        .hero-actions{margin-top:26px}
+
+        @media (max-width:820px){
+            .survey-cta{grid-template-columns:1fr;text-align:left}
+            .survey-cta .btn-send{justify-self:stretch}
+        }
+        /* Aspek yang dinilai (sesuai form SKM) */
+        .aspek-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+        .aspek-card{display:flex;gap:14px;padding:20px;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 7px 24px rgba(13,27,42,.055);transition:transform .3s,border-color .3s,box-shadow .3s}
+        .aspek-card:hover{transform:translateY(-4px);border-color:rgba(229,57,45,.25);box-shadow:0 18px 40px rgba(13,27,42,.1)}
+        .aspek-no{flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--ink);color:#fff;font-family:var(--display);font-weight:800;font-size:.95rem}
+        .aspek-no.int{background:rgba(229,57,45,.1);color:var(--signal-d);font-size:1rem}
+        .aspek-card h3{font-family:var(--display);font-size:1.02rem;line-height:1.25;letter-spacing:-.02em;margin-bottom:8px}
+        .aspek-card ul{display:grid;gap:6px}
+        .aspek-card li{position:relative;padding-left:14px;font-size:.86rem;line-height:1.5;color:var(--steel)}
+        .aspek-card li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--amber)}
+        .aspek-card p{font-size:.86rem;line-height:1.5;color:var(--steel)}
+        .skala{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:26px;padding:16px 20px;background:#fff;border:1px solid var(--line);border-radius:18px}
+        .skala>span{font-size:.84rem;font-weight:800;margin-right:4px}
+        .skala b{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:var(--paper);font-size:.82rem;font-weight:700;color:var(--ink-2)}
+        .skala b i{font-style:normal;display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--ink);color:#fff;font-size:.7rem}
+        .survey-cta-title{display:block;margin-bottom:8px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--amber)}
+        @media (max-width:991px){.aspek-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+        @media (max-width:600px){.aspek-grid{grid-template-columns:1fr}}
 
         @media (max-width:900px){.ikm-summary{grid-template-columns:1fr}}
-        @media (max-width:640px){.form-row{grid-template-columns:1fr}.opts{grid-template-columns:repeat(2,minmax(0,1fr))}.btn-send{justify-self:stretch;justify-content:center}}
 
         /* ================= MODAL DIALOG (YOUTUBE) ================= */
         dialog{
@@ -436,89 +512,58 @@
         }
         .video-frame iframe{width:100%;height:100%;border:0}
 
-        /* ================= FOOTER ================= */
-        .footer{background:var(--ink);color:rgba(255,255,255,.69);padding:80px 0 30px}
-        .footer-grid{display:grid;grid-template-columns:1.05fr 1.2fr .75fr;gap:54px}
-        .footer h3{font-family:var(--display);color:#fff;font-size:1.1rem;margin-bottom:15px}
-        .footer-about img{height:88px;width:auto;margin-bottom:17px}
-        .footer-about p{max-width:44ch;font-size:.91rem}
-        .map{position:relative;height:195px;border-radius:18px;overflow:hidden;background:var(--ink-2);border:1px solid rgba(255,255,255,.08)}
-        .map iframe{width:100%;height:100%;border:0;filter:grayscale(.25) contrast(1.04);transition:.3s}
-        .map-link{position:absolute;inset:0;z-index:2;display:flex;align-items:flex-end;justify-content:flex-end;padding:12px}
-        .map-link span{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;background:var(--signal);color:#fff;font-size:.78rem;font-weight:800;box-shadow:0 9px 20px rgba(0,0,0,.28);transition:.2s}
-        .map-link:hover span{background:var(--signal-dark);transform:translateY(-2px)}
-        .map:hover iframe{filter:none}
-        .find{display:inline-flex;align-items:center;gap:9px;margin-top:13px;color:#fff;font-size:.86rem;font-weight:700;transition:.2s}
-        .find i{color:var(--signal)}
-        .find:hover{color:var(--amber);gap:13px}
-        .app-dl{margin-top:20px}.app-dl p{font-size:.82rem;margin-bottom:9px}.app-dl img{height:42px;width:auto}
-        .footer-links li+li{margin-top:7px}
-        .footer-links a{display:flex;align-items:center;gap:9px;padding:5px 0;font-size:.88rem;transition:.2s}
-        .footer-links a i{font-size:.65rem;color:var(--signal)}
-        .footer-links a:hover{color:#fff;gap:13px}
-        .footer-bar{margin-top:58px;padding-top:25px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;font-size:.8rem}
-        .social{display:flex;gap:7px;flex-wrap:wrap}
-        .social a{width:39px;height:39px;border-radius:11px;display:grid;place-items:center;background:rgba(255,255,255,.075);color:#fff;transition:.2s}
-        .social a:hover{background:var(--signal);transform:translateY(-3px)}
+/* ==========================================================
+           FOOTER
+           ========================================================== */
+        .footer { background: var(--ink); color: rgba(255,255,255,.7); padding: clamp(56px, 8vw, 96px) 0 32px; }
+        .footer-grid { display: grid; grid-template-columns: 1.1fr 1.2fr .8fr; gap: clamp(32px, 5vw, 64px); }
+        .footer h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: #fff; margin-bottom: 16px; }
+        .footer-about img { height: 96px; width: auto; margin-bottom: 20px; }
+        .footer-about p { max-width: 42ch; font-size: .95rem; }
+        .footer-contact { margin-top: 24px; display: grid; gap: 12px; }
+        .footer-contact a { display: inline-flex; align-items: center; gap: 12px; color: rgba(255,255,255,.9); font-size: .95rem; font-weight: 500; transition: color .2s; }
+        .footer-contact a i { color: var(--signal); font-size: 1.2rem; width: 20px; text-align: center; }
+        .footer-contact a:hover { color: var(--amber); }
+
+        .map { position: relative; height: 190px; border-radius: var(--r-md); overflow: hidden; background: var(--ink-2); }
+        .map iframe { width: 100%; height: 100%; border: 0; pointer-events: none; filter: grayscale(.3) contrast(1.05); transition: filter .3s; }
+        .map-link { position: absolute; inset: 0; z-index: 2; display: flex; align-items: flex-end; justify-content: flex-end; padding: 12px; border-radius: var(--r-md); }
+        .map-link span { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: var(--signal); color: #fff; font-size: .85rem; font-weight: 700; box-shadow: 0 8px 20px rgba(0,0,0,.35); transition: background .2s, transform .2s; }
+        .map-link:hover span, .map-link:focus-visible span { background: var(--signal-d); transform: translateY(-2px); }
+        .map:hover iframe { filter: none; }
+        .find { margin-top: 14px; display: inline-flex; align-items: center; gap: 10px; font-weight: 600; color: #fff; transition: color .2s, gap .2s; }
+        .find i { color: var(--signal); }
+        .find:hover { color: var(--amber); gap: 14px; }
+        .footer-links li + li { margin-top: 8px; }
+        .footer-links a { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: .95rem; transition: color .2s, gap .2s; }
+        .footer-links a i { font-size: .7rem; color: var(--signal); }
+        .footer-links a:hover { color: #fff; gap: 14px; }
+        .footer-bar { margin-top: clamp(40px, 6vw, 72px); padding-top: 28px; border-top: 1px solid rgba(255,255,255,.1); display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; align-items: center; font-size: .88rem; }
+        .social { display: flex; flex-wrap: wrap; gap: 8px; }
+        .social a { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: rgba(255,255,255,.08); color: #fff; transition: background .2s, transform .2s; }
+        .social a:hover { background: var(--signal); transform: translateY(-3px); }
+        @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr; } }
 
         /* ================= SOS ================= */
         .beacon{position:relative;width:10px;height:10px;border-radius:50%;background:#fff;flex:none}
         .beacon::after{content:"";position:absolute;inset:0;border-radius:50%;background:#fff;animation:ping 1.8s cubic-bezier(0,0,.2,1) infinite}
         @keyframes ping{0%{transform:scale(1);opacity:.7}100%{transform:scale(3.2);opacity:0}}
-        .sos-fab{
-            position:fixed;right:22px;bottom:22px;z-index:70;
-            display:flex;flex-direction:column;align-items:flex-end;gap:10px;
-            opacity:0;visibility:hidden;transform:translateY(16px);transition:.3s
-        }
-        .sos-fab.show{opacity:1;visibility:visible;transform:none}
-        .sos-fab-btn{
-            display:inline-flex;align-items:center;gap:9px;padding:13px 19px;
-            border-radius:999px;background:var(--signal);color:#fff;font-weight:800;
-            box-shadow:0 15px 30px -7px rgba(229,57,45,.55);transition:.2s
-        }
-        .sos-fab-btn:hover{background:var(--signal-dark);transform:translateY(-2px)}
-        .sos-sheet{display:none;width:min(320px,calc(100vw - 28px));padding:7px;border-radius:18px;background:var(--ink);border:1px solid rgba(255,255,255,.1);box-shadow:0 24px 48px rgba(0,0,0,.4)}
-        .sos-fab.open .sos-sheet{display:grid;gap:5px}
-        .sos-sheet a{display:flex;align-items:center;gap:13px;padding:12px 13px;border-radius:12px;color:#fff;font-weight:700;font-size:.9rem}
-        .sos-sheet a:hover{background:rgba(255,255,255,.09)}
-        .sos-sheet a i{width:21px;text-align:center;font-size:1.05rem}
-        .sos-sheet .wa i{color:#25d366}.sos-sheet .tel i{color:#38bdf8}.sos-sheet .n112 i{color:#f87171}
+        .sos-fab { position: fixed; right: clamp(14px, 3vw, 28px); bottom: clamp(14px, 3vw, 28px); z-index: 70; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; opacity: 0; visibility: hidden; transform: translateY(16px); transition: opacity .3s, transform .3s, visibility .3s; }
+        .sos-fab.show { opacity: 1; visibility: visible; transform: none; }
+        .sos-fab-btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; background: var(--signal); color: #fff; font-weight: 700; box-shadow: 0 14px 30px -6px rgba(229,57,45,.6); }
+        .sos-fab-btn:hover { background: var(--signal-d); }
+        .sos-sheet { display: none; width: min(320px, calc(100vw - 28px)); padding: 8px; border-radius: 20px; background: var(--ink); border: 1px solid rgba(255,255,255,.12); box-shadow: 0 24px 48px rgba(0,0,0,.45); }
+        .sos-fab.open .sos-sheet { display: grid; gap: 6px; }
+        .sos-sheet a { display: flex; align-items: center; gap: 14px; padding: 13px 14px; border-radius: 14px; color: #fff; font-weight: 600; }
+        .sos-sheet a:hover { background: rgba(255,255,255,.1); }
+        .sos-sheet a i { width: 22px; text-align: center; font-size: 1.15rem; }
+        .sos-sheet .wa i { color: #25d366; } .sos-sheet .tel i { color: #38bdf8; } .sos-sheet .n112 i { color: #f87171; }
 
         /* ================= RESPONSIVE ================= */
-        @media (hover:hover) and (min-width:992px){
-            .has-drop:hover .dropdown{display:block}
-            .has-sub:hover>.submenu{display:block}
-        }
-        /* Layar desktop sempit: submenu dibuka ke kiri agar tidak keluar layar */
-        @media (min-width:992px) and (max-width:1500px){
-            .submenu{left:auto;right:calc(100% + 14px)}
-            .submenu::before{left:auto;right:-16px}
-            .sub-trigger i{transform:rotate(180deg)}
-        }
         @media (max-width:1100px){
-            .menu-link,.menu-trigger{padding-left:10px;padding-right:10px;font-size:.82rem}
             .media-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-            .footer-grid{grid-template-columns:1fr 1fr}
-            .footer-links{grid-column:span 2}
         }
         @media (max-width:991px){
-            .nav-toggle{display:inline-flex;align-items:center;justify-content:center}
-            .menu{
-                display:none;position:fixed;top:var(--header);left:0;right:0;
-                max-height:calc(100dvh - var(--header));overflow-y:auto;
-                flex-direction:column;align-items:stretch;gap:4px;
-                padding:14px 16px 25px;background:var(--ink);
-                border-bottom:1px solid rgba(255,255,255,.1)
-            }
-            .nav-open .menu{display:flex}
-            .menu-link,.menu-trigger{width:100%;justify-content:space-between;padding:13px 14px;border-radius:13px;font-size:.95rem}
-            .dropdown{position:static;margin:1px 0 7px 10px;box-shadow:none;background:transparent;border:0;border-left:2px solid rgba(255,255,255,.12);border-radius:0}
-            .dropdown::before{display:none}
-            .submenu{position:static;margin:1px 0 4px 10px;min-width:0;box-shadow:none;background:transparent;border:0;border-left:2px solid rgba(255,255,255,.12);border-radius:0}
-            .submenu::before{display:none}
-            .sub-trigger i{transform:rotate(90deg)}
-            .has-sub.open>.sub-trigger i{transform:rotate(-90deg)}
-            .menu .btn-login{margin:7px 0 0;justify-content:center;padding:13px}
             .page-hero{padding:43px 0 78px}
             .media-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
         }
@@ -528,21 +573,70 @@
         }
         @media (max-width:700px){
             .wrap{width:min(calc(100% - 28px),1180px)}
-            .brand img{height:32px}
             .page-hero h1{font-size:clamp(2.8rem,15vw,4.5rem)}
-            .footer{padding-top:60px}
-            .footer-grid{grid-template-columns:1fr;gap:38px}
-            .footer-links{grid-column:auto}
-            .footer-bar{margin-top:42px;align-items:flex-start}
-            .sos-fab{right:14px;bottom:14px}
         }
         @media (max-width:520px){
             .media-grid{grid-template-columns:1fr}
         }
         @media (max-width:390px){
-            .brand img{height:28px}
             .media-body{padding:16px}
             .media-thumb{aspect-ratio:16/10}
+        }
+
+        /* ================= FORM SURVEI (DALAM HALAMAN) ================= */
+        .ikm-form{scroll-margin-top:90px;background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 7px 24px rgba(13,27,42,.055);overflow:hidden}
+        .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+        .form-progress{padding:20px 28px 18px;border-bottom:1px solid var(--soft);background:var(--paper)}
+        .form-progress-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;font-size:.82rem;font-weight:700;color:var(--steel)}
+        .form-progress-top strong{color:var(--ink);font-family:var(--display);font-size:1.1rem;letter-spacing:-.02em}
+        .form-bar{height:6px;border-radius:99px;background:var(--line);margin-top:12px;overflow:hidden}
+        .form-bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--amber),var(--signal));transition:width .4s cubic-bezier(.2,.75,.25,1)}
+        .form-alert{margin:20px 28px 0;padding:12px 16px;border-radius:12px;background:#fdecea;color:var(--signal-dark);font-size:.88rem;font-weight:600;display:flex;gap:10px;align-items:center}
+        .step{border:0;min-width:0;padding:10px 28px 6px}
+        .step[hidden]{display:none}
+        .q{padding:18px 0;border-bottom:1px solid var(--soft)}
+        .q:last-child{border-bottom:0}
+        .lbl{display:block;font-weight:700;font-size:.95rem;line-height:1.45;margin-bottom:12px;color:var(--ink)}
+        .req{color:var(--signal)}
+        .field{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font:inherit;font-size:.95rem;color:var(--ink);transition:border-color .2s,box-shadow .2s}
+        .field:focus{outline:none;border-color:var(--ink-3);box-shadow:0 0 0 4px rgba(24,59,90,.1)}
+        textarea.field{resize:vertical;min-height:110px}
+        .opts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+        .opt{position:relative;cursor:pointer}
+        .opt input,.num input{position:absolute;opacity:0;inset:0;width:100%;height:100%;cursor:pointer;margin:0}
+        .opt span{display:flex;align-items:center;justify-content:center;text-align:center;min-height:52px;padding:10px 12px;border:1.5px solid var(--line);border-radius:14px;background:var(--paper);font-size:.88rem;font-weight:700;color:var(--ink-2);transition:.2s}
+        .opt:hover span{border-color:var(--ink-3);background:#fff}
+        .opt input:checked + span{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:0 8px 18px -8px rgba(13,27,42,.55)}
+        .opt input:focus-visible + span,.num input:focus-visible + span{outline:3px solid var(--amber);outline-offset:2px}
+        .opts-num{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px}
+        .num{position:relative;cursor:pointer}
+        .num span{display:grid;place-items:center;height:44px;border:1.5px solid var(--line);border-radius:12px;background:var(--paper);font-weight:800;font-size:.9rem;transition:.2s}
+        .num:hover span{border-color:var(--ink-3);background:#fff}
+        .num input:checked + span{background:var(--signal);border-color:var(--signal);color:#fff}
+        .switch{display:flex;align-items:center;gap:12px;cursor:pointer;font-size:.92rem;font-weight:600}
+        .switch input{position:absolute;opacity:0}
+        .switch i{position:relative;flex:none;width:44px;height:26px;border-radius:99px;background:var(--line);transition:.2s}
+        .switch i::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.2);transition:.2s}
+        .switch input:checked + i{background:var(--ink)}
+        .switch input:checked + i::after{transform:translateX(18px)}
+        .switch input:focus-visible + i{outline:3px solid var(--amber);outline-offset:2px}
+        .err{display:none;margin-top:8px;color:var(--signal-dark);font-size:.8rem;font-weight:700}
+        .q-err .err{display:block}
+        .q-err .field{border-color:var(--signal)}
+        .q-err .opt span,.q-err .num span{border-color:rgba(229,57,45,.5)}
+        .form-nav{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;padding:22px 28px 28px;border-top:1px solid var(--soft);background:var(--paper)}
+        .form-nav [hidden]{display:none}
+        .btn-ghost{display:inline-flex;align-items:center;gap:10px;padding:15px 24px;border-radius:999px;background:#fff;border:1px solid var(--line);font-weight:800;font-size:.95rem;color:var(--ink);transition:.2s}
+        .btn-ghost:hover{background:var(--soft)}
+        .survey-done{text-align:center;padding:clamp(34px,6vw,60px) 24px;background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 7px 24px rgba(13,27,42,.055)}
+        .survey-done-ico{font-size:3.2rem;color:#1f9d5c}
+        .survey-done h3{font-family:var(--display);font-size:clamp(1.3rem,2.6vw,1.8rem);letter-spacing:-.03em;margin:10px 0 8px}
+        .survey-done p{max-width:52ch;margin:0 auto 22px;color:var(--steel)}
+        @media (max-width:760px){
+            .opts{grid-template-columns:repeat(2,minmax(0,1fr))}
+            .opts-num{grid-template-columns:repeat(5,minmax(0,1fr))}
+            .step,.form-progress,.form-nav{padding-left:18px;padding-right:18px}
+            .form-alert{margin-left:18px;margin-right:18px}
         }
     </style>
 </head>
@@ -551,58 +645,120 @@
 <!-- ==================== HEADER ==================== -->
 <header class="site-header" id="siteHeader">
     <nav class="nav" aria-label="Navigasi utama">
-        <a href="/" class="brand" aria-label="SIMERAH KOJA, beranda">
-            <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
-            <img src="/images/logo.png" alt="Logo Damkar">
-            <img src="/images/logo-redkar.png" alt="Logo Redkar">
-        </a>
+        <div class="brand">
+            <a href="/" aria-label="SIMERAH KOJA, beranda">
+                <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
+            </a>
+            <a href="/login" title="Login Internal Pegawai">
+                <img src="/images/logo.png" alt="Logo Damkar">
+            </a>
+            <a href="/redkar" aria-label="Redkar">
+                <img src="/images/logo-redkar.png" alt="Logo Redkar">
+            </a>
+        </div>
 
         <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="menu">
             <i class="fas fa-bars"></i>
         </button>
 
         <ul class="menu" id="menu">
+            <!-- 1. Layanan Kedaruratan -->
             <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan kedaruratan <i class="fas fa-chevron-down"></i></button>
+                <button class="menu-trigger" type="button" aria-expanded="false">Layanan Kedaruratan <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="{{ $wa_link }}" target="_blank" rel="noopener">WhatsApp</a></li>
-                    <li><a href="tel:{{ $no_telepon }}">Telepon</a></li>
                     <li><a href="tel:112">Call Center 112</a></li>
-                </ul>
-            </li>
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Program kerja <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/sotk">SOTK</a></li>
-                    <li><a href="/perencanaan">Perencanaan</a></li>
-                    <li><a href="/pelaporan">Pelaporan</a></li>
-                    <li><a href="/sop">SOP</a></li>
-                    <li><a href="/produkhukum">Produk hukum</a></li>
-                </ul>
-            </li>
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
-                    <li><a href="/layanan-fasilitas/skk">SKK &amp; Perpanjang SKK</a></li>
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
-                    <li><a href="/public-sigap">SIGAP</a></li>
-                    <li><a href="/informasi-layanan">Informasi layanan</a></li>
+                    <li><a href="tel:{{ $no_telepon }}">Telp</a></li>
+                    <li><a href="{{ $wa_link }}" target="_blank" rel="noopener">WA</a></li>
                 </ul>
             </li>
 
-            {{-- Menu Galery: sama seperti di homepage (IKM, Pengumuman, Berita > ...) --}}
-            <li class="has-drop current">
-                <button class="menu-trigger" type="button" aria-expanded="false">Galery <i class="fas fa-chevron-down"></i></button>
+            <!-- 2. Sigapkar -->
+            <li><a class="menu-link" href="/public-sigap">Sigapkar</a></li>
+
+            <!-- 3. Layanan -->
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    {{-- GANTI href IKM & Pengumuman sesuai yang dipakai di homepage --}}
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
+                    <li><a href="#">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
+                    <li><a href="#">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
+                    <li><a href="/layanan-fasilitas/skk">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
+                </ul>
+            </li>
+
+            <!-- 4. Produk Hukum -->
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="/produkhukum">Undang-Undang</a></li>
+                    <li><a href="/produkhukum">Peraturan Pemerintah</a></li>
+                    <li><a href="/produkhukum">Peraturan Menteri</a></li>
+                    <li><a href="/produkhukum">Peraturan Daerah</a></li>
+                    <li><a href="/produkhukum">Peraturan Kepala Daerah</a></li>
+                </ul>
+            </li>
+
+            <!-- 5. Profil -->
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Profil <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="#">Visi Misi</a></li>
+                    <li><a href="/sotk">SOTK</a></li>
+                    <li><a href="#">Tupoksi</a></li>
+                    <li><a href="#">Kepegawaian</a></li>
+                    <li><a href="#">Program Kegiatan</a></li>
+                    <li><a href="#">Cascading</a></li>
+                </ul>
+            </li>
+
+            <!-- 6. Standar Operasional Prosedur -->
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">SOP <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="/sop">Pencegahan</a></li>
+                    <li><a href="/sop">Pemadaman Kebakaran</a></li>
+                    <li><a href="/sop">Penyelamatan dan Evakuasi</a></li>
+                    <li><a href="/sop">Sarana dan Prasarana</a></li>
+                    <li><a href="/sop">Kepegawaian</a></li>
+                    <li><a href="/sop">Keuangan</a></li>
+                </ul>
+            </li>
+
+            <!-- 7. Dokumen -->
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Dokumen <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="/perencanaan">Renstra</a></li>
+                    <li><a href="/perencanaan">Renja</a></li>
+                    <li><a href="#">SPM</a></li>
+                    <li><a href="#">SAKIP</a></li>
+                    <li><a href="/pelaporan">LPPD</a></li>
+                </ul>
+            </li>
+
+            <!-- 8. Sarana dan Prasarana -->
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Sarpras <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="#">Sarana</a></li>
+                    <li><a href="#">Prasarana</a></li>
+                </ul>
+            </li>
+
+            <!-- 9. Galeri (DENGAN NESTED DROPDOWN) -->
+            <li class="has-drop current">
+                <button class="menu-trigger" type="button" aria-expanded="false">Galeri <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
                     <li><a href="/ikm" aria-current="page">IKM (Indeks Kepuasan Masyarakat)</a></li>
                     <li><a href="/pengumuman">Pengumuman</a></li>
                     <li class="has-sub">
-                        <button class="sub-trigger" type="button" aria-expanded="false">Berita <i class="fas fa-chevron-right"></i></button>
-                        <ul class="submenu">
+                        <button class="sub-trigger" type="button" aria-expanded="false">
+                            Berita <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <ul class="dropdown-sub">
                             <li><a href="/edu-damkar">Edu Damkar</a></li>
-                            <li><a href="/infografis">Infografis</a></li>
+                            <li><a href="{{ route('publik.infografis') }}">Infografis</a></li>
                             <li><a href="/media-informasi">Media Informasi</a></li>
                             <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
                         </ul>
@@ -610,7 +766,7 @@
                 </ul>
             </li>
 
-            <li><a class="menu-link" href="/redkar">Redkar</a></li>
+            <!-- Fitur Login / User Session -->
             @if(session()->has('pemohon_id'))
                 <li class="has-drop">
                     <button class="menu-trigger btn-login" type="button" aria-expanded="false">
@@ -630,7 +786,6 @@
             @else
                 <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
             @endif
-
         </ul>
     </nav>
 </header>
@@ -643,7 +798,7 @@
         <nav aria-label="Breadcrumb" class="rise">
             <ol class="crumbs">
                 <li><a href="/">Beranda</a></li>
-                <li><a href="#">Galery</a></li>
+                <li><a href="#">Galeri</a></li>
                 <li><span aria-current="page">Indeks Kepuasan Masyarakat</span></li>
             </ol>
         </nav>
@@ -651,16 +806,15 @@
         <h1 class="rise d1">Indeks Kepuasan Masyarakat</h1>
         <p class="rise d2">Penilaian Anda terhadap pelayanan Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi membantu kami terus berbenah.</p>
         <div class="hero-line rise d3"></div>
+        <div class="hero-actions rise d3">
+            <a class="btn-send" href="#survei"><i class="fas fa-pen-to-square"></i> Isi survei sekarang</a>
+        </div>
     </div>
 </section>
 
 <!-- ==================== BODY & KONTEN ==================== -->
 <div class="page-body ikm-page">
     <div class="wrap">
-
-        @if(session('success'))
-            <div class="alert ok" role="status"><i class="fas fa-circle-check"></i> {{ session('success') }}</div>
-        @endif
 
         <!-- ===== HASIL SURVEI ===== -->
         <div class="content-head" id="hasil">
@@ -700,14 +854,14 @@
 
             <div class="ikm-bars">
                 <h3>Nilai per unsur pelayanan <small>skala 1 &ndash; 4</small></h3>
-                @foreach($unsur as $i => $label)
+                @foreach($aspek_unsur as $i => $a)
                     @php
                         $nilai = $nrr[$i] ?? null;
                         $pct = $nilai ? ($nilai / 4) * 100 : 0;
                     @endphp
                     <div class="bar-row">
                         <div class="bar-top">
-                            <span>{{ $label }}</span>
+                            <span>{{ $a['nama'] }}</span>
                             <b>{{ $nilai !== null ? number_format($nilai, 2, ',', '.') : '-' }}</b>
                         </div>
                         <div class="bar-track"><i style="width: {{ $pct }}%"></i></div>
@@ -716,59 +870,195 @@
             </div>
         </section>
 
-        <!-- ===== FORM SURVEI ===== -->
+        <!-- ===== ISI SURVEI (FORM LANGSUNG DI HALAMAN) ===== -->
         <div class="content-head" id="survei">
             <div>
                 <h2>Isi survei kepuasan</h2>
-                <p>Survei bersifat anonim. Nama boleh dikosongkan, dan hanya butuh sekitar 2 menit.</p>
+                <p>Survei Kepuasan Masyarakat &middot; Pemadaman dan Pengendalian Kejadian Kebakaran. Seluruh pertanyaan berupa pilihan, tanpa nama dan tanpa login.</p>
             </div>
         </div>
 
-        <form class="survey-form" method="POST" action="{{ route('ikm.store') }}">
-            @csrf
-            <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        @if(session('ikm_sukses'))
+            <section class="survey-done" role="status">
+                <span class="survey-done-ico"><i class="fas fa-circle-check"></i></span>
+                <h3>{{ session('ikm_sukses') }}</h3>
+                <p>Masukan Anda menjadi bahan kami untuk terus memperbaiki pelayanan Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+                <a class="btn-send" href="{{ route('ikm.index') }}#survei"><i class="fas fa-rotate-right"></i> Isi survei lagi</a>
+            </section>
+        @else
+            @php
+                $langkah = [];
+                foreach ($aspek_unsur as $a) {
+                    $langkah[] = ['judul' => $a['nama'], 'pertanyaan' => $a['pernyataan']];
+                }
+                foreach ($aspek_integritas as $ig) {
+                    $langkah[] = ['judul' => $ig['nama'], 'pertanyaan' => [$ig['field'] => $ig['pernyataan']]];
+                }
+            @endphp
 
-            @if($errors->any())
-                <div class="alert err" role="alert"><i class="fas fa-triangle-exclamation"></i> {{ $errors->first() }}</div>
-            @endif
+            <form id="ikmForm" class="ikm-form" method="POST" action="{{ route('ikm.store') }}" novalidate @if($errors->any()) data-has-errors="1" @endif>
+                @csrf
+                <div class="hp" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
 
-            <div class="form-row">
-                <label class="field">
-                    <span>Nama <em>(opsional)</em></span>
-                    <input type="text" name="nama" value="{{ old('nama') }}" maxlength="100" placeholder="Boleh dikosongkan">
-                </label>
-                <label class="field">
-                    <span>Layanan yang Anda gunakan</span>
-                    <select name="jenis_layanan" required>
-                        <option value="" disabled {{ old('jenis_layanan') ? '' : 'selected' }}>Pilih layanan</option>
-                        @foreach($jenis_layanan as $jl)
-                            <option value="{{ $jl }}" {{ old('jenis_layanan') === $jl ? 'selected' : '' }}>{{ $jl }}</option>
-                        @endforeach
-                    </select>
-                </label>
-            </div>
+                <div class="form-progress">
+                    <div class="form-progress-top">
+                        <strong id="stepTitle">Identitas Responden</strong>
+                        <span id="stepLabel"></span>
+                    </div>
+                    <div class="form-bar"><i id="stepBar"></i></div>
+                </div>
 
-            @foreach($unsur as $i => $label)
-                <fieldset class="q">
-                    <legend><b>{{ $i }}</b> Bagaimana penilaian Anda terhadap {{ mb_strtolower($label) }}?</legend>
-                    <div class="opts">
-                        @foreach([1 => 'Tidak baik', 2 => 'Kurang baik', 3 => 'Baik', 4 => 'Sangat baik'] as $val => $txt)
-                            <label class="opt">
-                                <input type="radio" name="u{{ $i }}" value="{{ $val }}" {{ (string) old('u' . $i) === (string) $val ? 'checked' : '' }} required>
-                                <span>{{ $txt }}</span>
-                            </label>
-                        @endforeach
+                @if($errors->any())
+                    <div class="form-alert" role="alert"><i class="fas fa-triangle-exclamation"></i> Masih ada isian yang belum lengkap. Silakan periksa bagian yang ditandai.</div>
+                @endif
+
+                {{-- Bagian 1: Identitas --}}
+                <fieldset class="step" data-title="Identitas Responden">
+                    <div class="q {{ $errors->has('tanggal_layanan') ? 'q-err' : '' }}">
+                        <label class="lbl" for="f-tanggal">Tanggal menerima layanan <span class="req">*</span></label>
+                        <input class="field" type="date" id="f-tanggal" name="tanggal_layanan" value="{{ old('tanggal_layanan') }}" max="{{ date('Y-m-d') }}" required>
+                        <small class="err">{{ $errors->first('tanggal_layanan') ?: 'Pilih tanggal yang valid.' }}</small>
+                    </div>
+
+                    <div class="q {{ $errors->has('pendidikan') ? 'q-err' : '' }}">
+                        <label class="lbl" for="f-pendidikan">Pendidikan <span class="req">*</span></label>
+                        <select class="field" id="f-pendidikan" name="pendidikan" required>
+                            <option value="">Pilih Pendidikan</option>
+                            @foreach($opsi_pendidikan as $o)
+                                <option value="{{ $o }}" {{ old('pendidikan') === $o ? 'selected' : '' }}>{{ $o }}</option>
+                            @endforeach
+                        </select>
+                        <small class="err">{{ $errors->first('pendidikan') ?: 'Pilih pendidikan Anda.' }}</small>
+                    </div>
+
+                    <div class="q {{ $errors->has('usia') ? 'q-err' : '' }}">
+                        <label class="lbl" for="f-usia">Usia <span class="req">*</span></label>
+                        <input class="field" type="number" id="f-usia" name="usia" value="{{ old('usia') }}" min="5" max="100" inputmode="numeric" placeholder="Usia" required>
+                        <small class="err">{{ $errors->first('usia') ?: 'Isi usia antara 5 dan 100 tahun.' }}</small>
+                    </div>
+
+                    <div class="q {{ $errors->has('pekerjaan') ? 'q-err' : '' }}">
+                        <label class="lbl" for="f-pekerjaan">Pekerjaan <span class="req">*</span></label>
+                        <select class="field" id="f-pekerjaan" name="pekerjaan" required>
+                            <option value="">Pilih Pekerjaan</option>
+                            @foreach($opsi_pekerjaan as $o)
+                                <option value="{{ $o }}" {{ old('pekerjaan') === $o ? 'selected' : '' }}>{{ $o }}</option>
+                            @endforeach
+                        </select>
+                        <small class="err">{{ $errors->first('pekerjaan') ?: 'Pilih pekerjaan Anda.' }}</small>
+                    </div>
+
+                    <div class="q">
+                        <label class="switch">
+                            <input type="checkbox" name="disabilitas" value="1" {{ old('disabilitas') ? 'checked' : '' }}>
+                            <i></i>
+                            <span>Saya penyandang disabilitas / pendamping penyandang disabilitas</span>
+                        </label>
                     </div>
                 </fieldset>
+
+                {{-- Bagian 2-15: 9 unsur + 5 integritas --}}
+                @foreach($langkah as $l)
+                    <fieldset class="step" data-title="{{ $l['judul'] }}" hidden>
+                        @foreach($l['pertanyaan'] as $field => $teks)
+                            <div class="q {{ $errors->has($field) ? 'q-err' : '' }}">
+                                <p class="lbl" id="q-{{ $field }}">{{ $teks }} <span class="req">*</span></p>
+                                <div class="opts" role="radiogroup" aria-labelledby="q-{{ $field }}">
+                                    @foreach($skala_jawaban as $nilai => $label)
+                                        <label class="opt">
+                                            <input type="radio" name="{{ $field }}" value="{{ $nilai }}" {{ (string) old($field) === (string) $nilai ? 'checked' : '' }} required>
+                                            <span>{{ $label }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                                <small class="err">{{ $errors->first($field) ?: 'Pilih salah satu jawaban.' }}</small>
+                            </div>
+                        @endforeach
+                    </fieldset>
+                @endforeach
+
+                {{-- Bagian terakhir: kritik, saran, kepercayaan --}}
+                <fieldset class="step" data-title="Kritik, Saran dan Penutup" hidden>
+                    <div class="q {{ $errors->has('kritik_saran') ? 'q-err' : '' }}">
+                        <label class="lbl" for="f-kritik">Kritik dan saran <span class="req">*</span></label>
+                        <textarea class="field" id="f-kritik" name="kritik_saran" rows="4" maxlength="1000" placeholder="Tulis kritik dan saran Anda" required>{{ old('kritik_saran') }}</textarea>
+                        <small class="err">{{ $errors->first('kritik_saran') ?: 'Kritik dan saran wajib diisi.' }}</small>
+                    </div>
+
+                    @foreach($kepercayaan as $field => $teks)
+                        <div class="q {{ $errors->has($field) ? 'q-err' : '' }}">
+                            <p class="lbl" id="q-{{ $field }}">{{ $teks }} <span class="req">*</span></p>
+                            <div class="opts-num" role="radiogroup" aria-labelledby="q-{{ $field }}">
+                                @for($n = 1; $n <= 10; $n++)
+                                    <label class="num">
+                                        <input type="radio" name="{{ $field }}" value="{{ $n }}" {{ (string) old($field) === (string) $n ? 'checked' : '' }} required>
+                                        <span>{{ $n }}</span>
+                                    </label>
+                                @endfor
+                            </div>
+                            <small class="err">{{ $errors->first($field) ?: 'Pilih satu angka.' }}</small>
+                        </div>
+                    @endforeach
+                </fieldset>
+
+                <div class="form-nav">
+                    <button type="button" class="btn-ghost" id="btnPrev" hidden><i class="fas fa-arrow-left"></i> Sebelumnya</button>
+                    <button type="button" class="btn-send" id="btnNext">Selanjutnya <i class="fas fa-arrow-right"></i></button>
+                    <button type="submit" class="btn-send" id="btnSend" hidden><i class="fas fa-paper-plane"></i> Kirim survei</button>
+                </div>
+            </form>
+        @endif
+
+
+        <!-- ===== ASPEK YANG DINILAI (SESUAI FORM SKM) ===== -->
+        <div class="content-head" id="aspek">
+            <div>
+                <h2>Apa saja yang dinilai</h2>
+                <p>Pertanyaan pada survei mencakup 9 unsur pelayanan dan 5 aspek integritas, ditambah kritik dan saran.</p>
+            </div>
+        </div>
+
+        <div class="aspek-grid">
+            @foreach($aspek_unsur as $no => $a)
+                <article class="aspek-card">
+                    <span class="aspek-no">{{ $no }}</span>
+                    <div>
+                        <h3>{{ $a['nama'] }}</h3>
+                        <ul>
+                            @foreach($a['pernyataan'] as $p)
+                                <li>{{ $p }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </article>
             @endforeach
+        </div>
 
-            <label class="field">
-                <span>Saran dan masukan <em>(opsional)</em></span>
-                <textarea name="saran" rows="4" maxlength="1000" placeholder="Tulis saran Anda untuk perbaikan pelayanan">{{ old('saran') }}</textarea>
-            </label>
+        <div class="content-head">
+            <div>
+                <h2>Penilaian integritas pelayanan</h2>
+                <p>Lima pernyataan tambahan untuk memastikan pelayanan bersih dan adil.</p>
+            </div>
+        </div>
 
-            <button type="submit" class="btn-send"><i class="fas fa-paper-plane"></i> Kirim penilaian</button>
-        </form>
+        <div class="aspek-grid">
+            @foreach($aspek_integritas as $ig)
+                <article class="aspek-card">
+                    <span class="aspek-no int"><i class="fas {{ $ig['ikon'] }}"></i></span>
+                    <div>
+                        <h3>{{ $ig['nama'] }}</h3>
+                        <p>{{ $ig['pernyataan'] }}</p>
+                    </div>
+                </article>
+            @endforeach
+        </div>
+
+        <div class="skala" aria-label="Pilihan jawaban">
+            <span>Pilihan jawaban:</span>
+            @foreach($skala_jawaban as $n => $s)
+                <b><i>{{ $n }}</i> {{ $s }}</b>
+            @endforeach
+        </div>
 
     </div>
 </div>
@@ -782,7 +1072,16 @@
             <div class="footer-about">
                 <img src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA" loading="lazy">
                 <h3>Tentang kami</h3>
-                <p>SIMERAH KOJA merupakan sistem informasi pemerintahan berbasis elektronik yang terintegrasi pada Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+                <p>SIMERAH KOJA merupakan sistem informasi pemerintahan berbasis elektronik yang terintegrasi pada dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+
+                <div class="footer-contact">
+                    <a href="{{ $wa_link }}" target="_blank" rel="noopener">
+                        <i class="fab fa-whatsapp"></i> {{ $no_whatsapp }} (WhatsApp)
+                    </a>
+                    <a href="tel:{{ $no_telepon }}">
+                        <i class="fas fa-phone-alt"></i> {{ $telepon_tampil }} (Call Center Damkar)
+                    </a>
+                </div>
             </div>
 
             <div>
@@ -796,15 +1095,6 @@
                     </a>
                 </div>
                 <a class="find" href="{{ $maps_link }}" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Temukan kami di peta</a>
-
-                @if ($play_store_url)
-                <div class="app-dl">
-                    <p>Unduh aplikasi SIMERAH KOJA</p>
-                    <a href="{{ $play_store_url }}" target="_blank" rel="noopener">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Dapatkan di Google Play">
-                    </a>
-                </div>
-                @endif
             </div>
 
             <div class="footer-links">
@@ -902,7 +1192,7 @@
         if (!e.target.closest('.has-drop')) closeDrops(null);
     });
 
-    header.querySelectorAll('.dropdown a, .submenu a, .menu-link').forEach(function (a) {
+    header.querySelectorAll('.dropdown a, .dropdown-sub a, .menu-link').forEach(function (a) {
         a.addEventListener('click', function () {
             header.classList.remove('nav-open');
             toggle.setAttribute('aria-expanded', 'false');
@@ -932,6 +1222,82 @@
         fabBtn.setAttribute('aria-expanded', open);
     });
 
+})();
+</script>
+<script>
+(function () {
+    'use strict';
+    var form = document.getElementById('ikmForm');
+    if (!form) { return; }
+
+    var steps = [].slice.call(form.querySelectorAll('.step'));
+    var btnPrev = document.getElementById('btnPrev');
+    var btnNext = document.getElementById('btnNext');
+    var btnSend = document.getElementById('btnSend');
+    var elTitle = document.getElementById('stepTitle');
+    var elLabel = document.getElementById('stepLabel');
+    var elBar   = document.getElementById('stepBar');
+    var cur = 0;
+
+    function show(i, scroll) {
+        cur = i;
+        steps.forEach(function (s, k) { s.hidden = (k !== i); });
+        elTitle.textContent = steps[i].getAttribute('data-title');
+        elLabel.textContent = 'Bagian ' + (i + 1) + ' dari ' + steps.length;
+        elBar.style.width = ((i + 1) / steps.length * 100) + '%';
+        btnPrev.hidden = (i === 0);
+        btnNext.hidden = (i === steps.length - 1);
+        btnSend.hidden = (i !== steps.length - 1);
+        if (scroll) { form.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    }
+
+    function qOk(q) {
+        var radios = q.querySelectorAll('input[type=radio]');
+        if (radios.length) {
+            return [].some.call(radios, function (r) { return r.checked; });
+        }
+        var c = q.querySelector('input:not([type=checkbox]),select,textarea');
+        return !c || !c.required || (c.value.trim() !== '' && c.checkValidity());
+    }
+
+    function stepOk(step) {
+        var ok = true;
+        step.querySelectorAll('.q').forEach(function (q) {
+            var good = qOk(q);
+            q.classList.toggle('q-err', !good);
+            if (!good) { ok = false; }
+        });
+        return ok;
+    }
+
+    form.addEventListener('change', function (e) {
+        var q = e.target.closest('.q');
+        if (q && qOk(q)) { q.classList.remove('q-err'); }
+    });
+
+    btnPrev.addEventListener('click', function () { if (cur > 0) { show(cur - 1, true); } });
+    btnNext.addEventListener('click', function () {
+        if (stepOk(steps[cur]) && cur < steps.length - 1) { show(cur + 1, true); }
+    });
+
+    form.addEventListener('submit', function (e) {
+        for (var i = 0; i < steps.length; i++) {
+            if (!stepOk(steps[i])) {
+                e.preventDefault();
+                show(i, true);
+                return;
+            }
+        }
+    });
+
+    /* Kalau server menolak (validasi), buka bagian pertama yang bermasalah */
+    var first = 0;
+    if (form.getAttribute('data-has-errors')) {
+        for (var k = 0; k < steps.length; k++) {
+            if (steps[k].querySelector('.q-err')) { first = k; break; }
+        }
+    }
+    show(first, !!form.getAttribute('data-has-errors'));
 })();
 </script>
 </body>

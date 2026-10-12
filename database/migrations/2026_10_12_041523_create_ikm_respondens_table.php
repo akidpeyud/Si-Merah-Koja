@@ -8,23 +8,38 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('ikm_respondens', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama', 100)->nullable();
-            $table->string('jenis_layanan', 100);
+        Schema::create('ikm_responses', function (Blueprint $t) {
+            $t->id();
 
-            // 9 unsur pelayanan (Permenpan RB No. 14 Tahun 2017), nilai 1-4
-            for ($i = 1; $i <= 9; $i++) {
-                $table->unsignedTinyInteger("u{$i}");
+            // Identitas responden
+            $t->date('tanggal_layanan')->index();
+            $t->string('pendidikan', 30);
+            $t->unsignedTinyInteger('usia');
+            $t->string('pekerjaan', 40);
+            $t->boolean('disabilitas')->default(false);
+
+            // 9 unsur pelayanan (11 pernyataan), nilai 1-4
+            foreach (['u1_a', 'u1_b', 'u2_a', 'u2_b', 'u3', 'u4', 'u5', 'u6', 'u7', 'u8', 'u9'] as $k) {
+                $t->unsignedTinyInteger($k);
             }
 
-            $table->text('saran')->nullable();
-            $table->timestamps();
+            // 5 aspek integritas, nilai 1-4
+            foreach (['diskriminasi', 'kecurangan', 'gratifikasi', 'pungli', 'percaloan'] as $k) {
+                $t->unsignedTinyInteger($k);
+            }
+
+            // Penutup
+            $t->text('kritik_saran');
+            $t->unsignedTinyInteger('kepercayaan_pusat');   // 1-10
+            $t->unsignedTinyInteger('kepercayaan_daerah');  // 1-10
+
+            $t->string('ip_address', 45)->nullable();
+            $t->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('ikm_respondens');
+        Schema::dropIfExists('ikm_responses');
     }
 };

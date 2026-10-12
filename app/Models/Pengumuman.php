@@ -2,35 +2,33 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 class Pengumuman extends Model
 {
+    use HasFactory;
+
+    // KASIH TAHU LARAVEL NAMA TABEL YANG BENAR
     protected $table = 'pengumumans';
 
+    // Kategori bawaan sesuai controller Anda
+    public const KATEGORI = ['Umum', 'Kepegawaian', 'Layanan', 'Penting']; 
+
+    // Kolom-kolom yang diizinkan untuk diisi dari form
     protected $fillable = [
-        'judul', 'kategori', 'isi', 'lampiran', 'penting', 'dipublikasikan', 'tanggal',
+        'judul',
+        'kategori',
+        'isi',
+        'lampiran',
+        'penting',
+        'dipublikasikan',
+        'tanggal',
     ];
 
-    protected $casts = [
-        'penting'        => 'boolean',
-        'dipublikasikan' => 'boolean',
-        'tanggal'        => 'date',
-    ];
-
-    public const KATEGORI = ['Umum', 'Layanan', 'Kegiatan', 'Perizinan', 'Lowongan'];
-
-    /** Hanya pengumuman yang sudah dipublikasikan */
-    public function scopeTerbit(Builder $query): Builder
+    // Filter khusus (scope) untuk menampilkan pengumuman yang sudah terbit saja
+    public function scopeTerbit($query)
     {
         return $query->where('dipublikasikan', true);
-    }
-
-    /** Ringkasan isi tanpa tag HTML, untuk kartu daftar */
-    public function getRingkasanAttribute(): string
-    {
-        return Str::limit(trim(preg_replace('/\s+/', ' ', strip_tags($this->isi))), 160);
     }
 }
