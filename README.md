@@ -15,7 +15,7 @@ Untuk mempermudah proses _development_ dan _testing_, gunakan daftar akun di baw
 
 ### 🏢 1. Akun Internal (Pegawai / Admin / Operator)
 
-👉 **URL Login:** `http://localhost:8000/login`  
+👉 **URL Login:** `/login`  
 ⚠️ **Password untuk semua akun internal:** `Damkar123`
 
 | Nama Lengkap           | Email Login                  | Hak Akses (Role)      |
@@ -32,7 +32,7 @@ Untuk mempermudah proses _development_ dan _testing_, gunakan daftar akun di baw
 
 ### 🧑‍🚒 2. Akun Anggota REDKAR (Relawan)
 
-👉 **URL Login:** `http://localhost:8000/login-redkar`  
+👉 **URL Login:** `/login-redkar`  
 ⚠ **Password untuk semua akun REDKAR:** `password123`
 
 | Nama Relawan         | Username Login | Status Akun           |
@@ -45,7 +45,7 @@ Untuk mempermudah proses _development_ dan _testing_, gunakan daftar akun di baw
 
 ### 📝 3. Akun Pemohon Publik (Masyarakat/Perusahaan)
 
-👉 **URL Login:** `http://localhost:8000/pemohon/login`  
+👉 **URL Login:** `/pemohon/login`  
 ⚠️ **Password untuk semua akun Pemohon:** `password123`
 
 | Nama Pemohon         | Email Login         | Role           |

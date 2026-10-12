@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use App\Models\User;
 use Spatie\Permission\Models\Role; 
+use Spatie\Permission\Models\Permission; 
 
 class UsersTableSeeder extends Seeder
 {
@@ -22,6 +23,9 @@ class UsersTableSeeder extends Seeder
         DB::table('redkar_registrations')->truncate();
         DB::table('pemohons')->truncate();
 
+        // Bersihkan cache spatie permission (Sangat disarankan saat seeding)
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
         Schema::enableForeignKeyConstraints();
 
 
@@ -34,7 +38,7 @@ class UsersTableSeeder extends Seeder
                 'nama_lengkap' => 'Andika Dwi Putra',
                 'email' => 'dwiputdika@gmail.com',
                 'nomor_pegawai' => '23112021',
-                'role' => 'Super User', // Disesuaikan
+                'role' => 'Super User', 
                 'email_verified_at' => null,
                 'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
@@ -46,7 +50,7 @@ class UsersTableSeeder extends Seeder
                 'nama_lengkap' => 'Dhimas Zaky Abiyyu',
                 'email' => 'dhimaszaky102005@gmail.com',
                 'nomor_pegawai' => '23112018',
-                'role' => 'Sapra', // Disesuaikan
+                'role' => 'Sapra', 
                 'email_verified_at' => null,
                 'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
@@ -58,7 +62,7 @@ class UsersTableSeeder extends Seeder
                 'nama_lengkap' => 'Ananda Gita April',
                 'email' => 'siipooke@gmail.com',
                 'nomor_pegawai' => '23112017',
-                'role' => 'Sekretariat', // Disesuaikan
+                'role' => 'Sekretariat', 
                 'email_verified_at' => null,
                 'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
@@ -70,7 +74,7 @@ class UsersTableSeeder extends Seeder
                 'nama_lengkap' => 'M. Suwanda',
                 'email' => 'mebius3105@gmail.com',
                 'nomor_pegawai' => '23111006',
-                'role' => 'Damtan', // Disesuaikan
+                'role' => 'Damtan', 
                 'email_verified_at' => null,
                 'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
@@ -82,7 +86,7 @@ class UsersTableSeeder extends Seeder
                 'nama_lengkap' => 'M Ariffan Hidayah',
                 'email' => 'erikpramana68@gmail.com',
                 'nomor_pegawai' => '23112007',
-                'role' => 'Pencegahan', // Disesuaikan
+                'role' => 'Pencegahan', 
                 'email_verified_at' => null,
                 'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
@@ -94,7 +98,7 @@ class UsersTableSeeder extends Seeder
                 'nama_lengkap' => 'Natasha Romanoff',
                 'email' => 'adingbing11@gmail.com',
                 'nomor_pegawai' => '231120xx',
-                'role' => 'Operator', // Disesuaikan
+                'role' => 'Operator', 
                 'email_verified_at' => null,
                 'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
@@ -106,7 +110,7 @@ class UsersTableSeeder extends Seeder
                 'nama_lengkap' => 'Operator Berita',
                 'email' => 'berita.damkar@gmail.com',
                 'nomor_pegawai' => '23113001',
-                'role' => 'Operator', // Disesuaikan
+                'role' => 'Operator', 
                 'email_verified_at' => null,
                 'password' => Hash::make('Damkar123'),
                 'remember_token' => null,
@@ -118,12 +122,37 @@ class UsersTableSeeder extends Seeder
         // ========================================================
         // TAMBAHAN SPATIE: 1. BUAT ROLE DULU DI DATABASE
         // ========================================================
-        Role::firstOrCreate(['name' => 'Super User']);
-        Role::firstOrCreate(['name' => 'Sapra']);
-        Role::firstOrCreate(['name' => 'Damtan']);
-        Role::firstOrCreate(['name' => 'Pencegahan']);
-        Role::firstOrCreate(['name' => 'Sekretariat']);
-        Role::firstOrCreate(['name' => 'Operator']);
+        $roleSuperUser  = Role::firstOrCreate(['name' => 'Super User']);
+        $roleSapra      = Role::firstOrCreate(['name' => 'Sapra']);
+        $roleDamtan     = Role::firstOrCreate(['name' => 'Damtan']);
+        $rolePencegahan = Role::firstOrCreate(['name' => 'Pencegahan']);
+        $roleSekretariat= Role::firstOrCreate(['name' => 'Sekretariat']);
+        $roleOperator   = Role::firstOrCreate(['name' => 'Operator']);
+
+        // ========================================================
+        // TAMBAHAN SPATIE: 1.5 BUAT PERMISSION UNTUK DATA ASN
+        // ========================================================
+        $asnPermissions = [
+            'asn-list',
+            'asn-create',
+            'asn-edit',
+            'asn-delete'
+        ];
+
+        foreach ($asnPermissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
+
+        // 1. Assign full CRUD permission ke role Super User & Sekretariat
+        $roleSuperUser->givePermissionTo($asnPermissions);
+        $roleSekretariat->givePermissionTo($asnPermissions);
+
+        // 2. Assign HANYA list (Read Only) ke role lainnya
+        $roleSapra->givePermissionTo('asn-list');
+        $roleDamtan->givePermissionTo('asn-list');
+        $rolePencegahan->givePermissionTo('asn-list');
+        $roleOperator->givePermissionTo('asn-list');
+
 
         // ========================================================
         // TAMBAHAN SPATIE: 2. ASSIGN ROLE KE MASING-MASING USER
@@ -135,6 +164,7 @@ class UsersTableSeeder extends Seeder
         User::find(5)->assignRole('Pencegahan'); 
         User::find(6)->assignRole('Operator');   
         User::find(7)->assignRole('Operator');   
+
 
         // ========================================================
         // 2. SEEDER AKUN REDKAR (BERDASARKAN STRUKTUR TABEL)
@@ -183,53 +213,22 @@ class UsersTableSeeder extends Seeder
                 'status_perkawinan'         => 'Kawin',
                 'agama'                     => 'Islam',
                 'nomor_telp'                => '085211223344',
-                'file_ktp'                  => null,
+                'file_ktp'                  => null, 
                 'alamat'                    => 'Jl. Pahlawan No. 45',
                 'rt_rw'                     => '02/05',
                 'kode_pos'                  => '36124',
-                'provinsi'                  => 'JAMBI',
-                'kabupaten_kota'            => 'KOTA JAMBI',
+                'provinsi'                  => 'JAMBI', 
+                'kabupaten_kota'            => 'KOTA JAMBI', 
                 'kecamatan'                 => 'Jambi Selatan',
                 'kelurahan'                 => 'Pakuan Baru',
                 'pendidikan_terakhir'       => 'SMA',
                 'latar_belakang_pendidikan' => 'IPS',
                 'pekerjaan'                 => 'Wiraswasta',
                 'sehat_jasmani'             => 'Ya',
-                'buta_warna'                => 'Tidak',
+                'buta_warna'                => 'Tidak', 
                 'golongan_darah'            => 'O',
                 'status_akun'               => 'Nonaktif', 
                 'status_pendaftaran'        => 'Pending', 
-                'created_at'                => now(),
-                'updated_at'                => now(),
-            ],
-            [
-                'id'                        => 'RDKR-' . (time() + 2) . '-' . rand(100, 999), 
-                'username'                  => 'siti_relawan',
-                'password'                  => Hash::make('password123'), 
-                'nik'                       => '1571234567890003',
-                'nama_lengkap'              => 'Siti Aminah',
-                'jenis_kelamin'             => 'Perempuan',
-                'tempat_lahir'              => 'Muaro Jambi',
-                'tanggal_lahir'             => '1995-08-20',
-                'status_perkawinan'         => 'Belum Kawin',
-                'agama'                     => 'Islam',
-                'nomor_telp'                => '082133445566',
-                'file_ktp'                  => null,
-                'alamat'                    => 'Jl. Sudirman Blok C',
-                'rt_rw'                     => '04/02',
-                'kode_pos'                  => '36125',
-                'provinsi'                  => 'JAMBI',
-                'kabupaten_kota'            => 'KOTA JAMBI',
-                'kecamatan'                 => 'Danau Sipin',
-                'kelurahan'                 => 'Legok',
-                'pendidikan_terakhir'       => 'D3',
-                'latar_belakang_pendidikan' => 'Keperawatan',
-                'pekerjaan'                 => 'Perawat',
-                'sehat_jasmani'             => 'Ya',
-                'buta_warna'                => 'Tidak',
-                'golongan_darah'            => 'A',
-                'status_akun'               => 'Aktif',
-                'status_pendaftaran'        => 'Diterima',
                 'created_at'                => now(),
                 'updated_at'                => now(),
             ]
@@ -244,16 +243,6 @@ class UsersTableSeeder extends Seeder
                 'nama_lengkap' => 'Natasha Romanoff', 
                 'email'        => 'natasha@gmail.com',
                 'no_whatsapp'  => '081234567890',
-                'password'     => Hash::make('password123'), 
-                'role'         => 'pemohon', 
-                'created_at'   => now(),
-                'updated_at'   => now(),
-            ],
-            [
-                'nik'          => '1571234567890003', 
-                'nama_lengkap' => 'Steve Rogers', 
-                'email'        => 'steve@gmail.com',
-                'no_whatsapp'  => '081298765432',
                 'password'     => Hash::make('password123'), 
                 'role'         => 'pemohon', 
                 'created_at'   => now(),
