@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Middleware\RoleMiddleware; // DIPERBAIKI: dipakai langsung tanpa alias
+use Spatie\Permission\Middleware\RoleMiddleware;
 use App\Http\Middleware\CekLoginPemohon;
 use App\Http\Middleware\CekOperator;
 use App\Http\Controllers\AuthController;
@@ -172,9 +172,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/internal/kelola-pemohon', function () { return view('pemohon.kelola_pemohon'); })->name('internal.pemohon');
 
-    // --- B. MANAJEMEN INFORMASI (lihat: semua role | tambah/edit/hapus: operator saja) ---
+    // --- B. MANAJEMEN INFORMASI ---
 
-    // Halaman daftar -> semua role yang login
+    // Halaman daftar -> semua role yang login bisa lihat
     Route::get('/internal/operator/kelola-berita', [BeritaController::class, 'indexInternal']);
     Route::get('/internal/operator/infografis', [OperatorMedsosController::class, 'indexInfografis']);
     Route::get('/internal/operator/berita-medsos', [OperatorMedsosController::class, 'indexMedsos']);
@@ -182,8 +182,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/operator/edu-damkar', [OperatorMedsosController::class, 'indexEduDamkar'])->name('edu-damkar.index');
     Route::get('/internal/operator/pengumuman', [PengumumanController::class, 'indexInternal'])->name('operator.pengumuman.index');
 
-    // Tambah / edit / hapus -> operator saja
-    Route::middleware([CekOperator::class])->group(function () {
+    // Tambah / edit / hapus -> diizinkan untuk Operator ATAU Super User
+    Route::middleware([RoleMiddleware::class . ':Operator|Super User'])->group(function () {
 
         // Berita
         Route::get('/internal/operator/kelola-berita/tambah', [BeritaController::class, 'create']);
@@ -245,7 +245,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/damtan/kelola-izin-keramaian', [IzinKeramaianController::class, 'indexInternal'])->name('internal.izin-keramaian.index');
 
     // Hanya Damtan & Super User: aksi tulis (harus di atas rute {id} agar tidak bentrok)
-    // DIPERBAIKI: memakai class middleware langsung, bukan alias 'role'
     Route::middleware([RoleMiddleware::class . ':Damtan|Super User'])->group(function () {
         Route::get('/internal/damtan/kelola-izin-keramaian/edit/{id}', [IzinKeramaianController::class, 'editInternal'])->name('internal.izin-keramaian.edit');
         Route::put('/internal/damtan/kelola-izin-keramaian/update/{id}', [IzinKeramaianController::class, 'updateInternal'])->name('internal.izin-keramaian.update');
