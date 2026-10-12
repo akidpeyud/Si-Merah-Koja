@@ -430,6 +430,10 @@ textarea.form-control { min-height: 100px; padding: 10px 14px; }
                     <a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
                         <i class="fas fa-graduation-cap"></i><span class="lbl">Edu Damkar</span>
                     </a>
+                      <!-- MENU PENGUMUMAN -->
+                    <a href="/internal/operator/pengumuman" class="{{ Request::is('internal/operator/pengumuman*') || Request::is('internal/operator/opratorpengumuman*') ? 'active' : '' }}">
+                        <i class="fas fa-bullhorn"></i><span class="lbl">Kelola Pengumuman</span>
+                    </a>
                     @endhasanyrole
 
                     @hasanyrole('Super User|Operator|User')

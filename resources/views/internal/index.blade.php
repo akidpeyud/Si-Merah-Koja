@@ -682,6 +682,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     <a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
                         <i class="fas fa-graduation-cap"></i><span class="lbl">Edu Damkar</span>
                     </a>
+                    <!-- TAMBAHAN MENU KELOLA PENGUMUMAN UNTUK OPERATOR -->
+                    <a href="/internal/operator/pengumuman" class="{{ Request::is('internal/operator/pengumuman*') || Request::is('internal/operator/opratorpengumuman*') ? 'active' : '' }}">
+                        <i class="fas fa-bullhorn"></i><span class="lbl">Kelola Pengumuman</span>
+                    </a>
 
                     <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
                     @hasanyrole('Super User|Operator')
@@ -830,6 +834,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                         ['Berita Medsos', 'unggahan', 'fa-brands fa-instagram', '/internal/operator/berita-medsos', $count('berita_medsos'), 'ic-danger'],
                         ['Ujung-Ujung Damkar', 'video', 'fa-brands fa-youtube', '/internal/operator/ujung-damkar', $count('ujung_damkar'), 'ic-danger'],
                         ['Edu Damkar', 'materi', 'fa-graduation-cap', '/internal/operator/edu-damkar', $count('edu_damkar'), 'ic-primary'],
+                        // TAMBAHAN KARTU STATISTIK UNTUK PENGUMUMAN
+                        ['Kelola Pengumuman', 'informasi', 'fa-bullhorn', '/internal/operator/pengumuman', $count(['pengumuman', 'pengumumans']), 'ic-info'],
                         ['Titik Peta Sigap', 'titik', 'fa-location-dot', '/internal/peta-sigap/data', $count('titik_sigaps'), 'ic-info'],
                     ],
                 ],

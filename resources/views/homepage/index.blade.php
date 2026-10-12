@@ -105,7 +105,7 @@
         .btn-outline:hover { border-color: var(--ink); background: var(--ink); color: #fff; }
 
         /* ==========================================================
-           HEADER & NAVBAR (Disesuaikan untuk banyak menu)
+           HEADER & NAVBAR (banyak menu + multilevel dropdown)
            ========================================================== */
         .site-header {
             position: sticky; top: 0; z-index: 60;
@@ -126,8 +126,8 @@
         .menu > li { position: relative; }
         .menu-link, .menu-trigger {
             display: inline-flex; align-items: center; gap: 6px;
-            padding: 8px 10px; border-radius: 999px; /* Padding dikurangi agar tidak melebar */
-            color: rgba(255,255,255,.88); font-size: .85rem; font-weight: 500; /* Font size dikurangi */
+            padding: 8px 10px; border-radius: 999px;
+            color: rgba(255,255,255,.88); font-size: .85rem; font-weight: 500;
             transition: background .2s, color .2s; white-space: nowrap;
         }
         .menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger { background: rgba(255,255,255,.1); color: #fff; }
@@ -141,33 +141,63 @@
             background: var(--ink-2); border: 1px solid rgba(255,255,255,.1);
             border-radius: var(--r-md); padding: 8px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
         }
-        
+
         /* Agar dropdown di menu sebelah kanan tidak melebar keluar batas layar */
         .menu > li:nth-last-child(-n+4) .dropdown { left: auto; right: 0; }
 
         .dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
-        .dropdown a { 
-            display: block; padding: 10px 14px; border-radius: var(--r-sm); 
-            font-size: .9rem; color: rgba(255,255,255,.85); line-height: 1.4; white-space: normal; 
+        .dropdown a {
+            display: block; padding: 10px 14px; border-radius: var(--r-sm);
+            font-size: .9rem; color: rgba(255,255,255,.85); line-height: 1.4; white-space: normal;
         }
         .dropdown a:hover { background: rgba(255,255,255,.08); color: #fff; }
-        
+
         .dropdown .btn-logout {
-            width: 100%; text-align: left; padding: 11px 14px; border-radius: var(--r-sm); 
-            font-size: .92rem; color: #ff8b8b; display: flex; align-items: center; gap: 8px; 
+            width: 100%; text-align: left; padding: 11px 14px; border-radius: var(--r-sm);
+            font-size: .92rem; color: #ff8b8b; display: flex; align-items: center; gap: 8px;
             transition: background .2s, color .2s; cursor: pointer;
         }
         .dropdown .btn-logout:hover { background: rgba(255, 255, 255, .1); color: #ffb8b8; }
 
-        .has-drop.open .dropdown { display: block; }
+        .has-drop.open > .dropdown { display: block; }
+
+        /* ---------- MULTILEVEL DROPDOWN (Galeri > Berita) ---------- */
+        .has-sub { position: relative; }
+        .has-sub > .sub-trigger {
+            width: 100%; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            padding: 10px 14px; border-radius: var(--r-sm); font-size: .9rem; line-height: 1.4;
+            color: rgba(255,255,255,.85); background: transparent; border: none; cursor: pointer;
+            font-family: inherit; transition: background .2s, color .2s;
+        }
+        .has-sub > .sub-trigger i { font-size: .7rem; transition: transform .2s; }
+        .has-sub.open > .sub-trigger i { transform: rotate(90deg); }
+        .has-sub > .sub-trigger:hover, .has-sub.open > .sub-trigger { background: rgba(255,255,255,.1); color: #fff; }
+
+        .dropdown-sub {
+            display: none; position: absolute; top: -8px; left: 100%; min-width: 230px;
+            background: var(--ink-2); border: 1px solid rgba(255,255,255,.1);
+            border-radius: var(--r-md); padding: 8px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
+            margin-left: 4px; z-index: 10;
+        }
+        .dropdown-sub::before { content: ""; position: absolute; top: 0; bottom: 0; left: -10px; width: 10px; }
+        .has-sub.open > .dropdown-sub { display: block; }
+
         @media (hover: hover) and (min-width: 1251px) {
-            .has-drop:hover .dropdown { display: block; }
+            .has-drop:hover > .dropdown { display: block; }
+            .has-sub:hover > .dropdown-sub { display: block; }
+            .has-sub:hover > .sub-trigger { background: rgba(255,255,255,.1); color: #fff; }
+
+            /* Submenu dibuka ke KIRI karena Galeri ada di sisi kanan navbar */
+            .dropdown-sub { left: auto; right: 100%; margin-left: 0; margin-right: 4px; }
+            .dropdown-sub::before { left: auto; right: -10px; }
+            .has-sub > .sub-trigger i { transform: rotate(180deg); }
+            .has-sub.open > .sub-trigger i { transform: rotate(180deg); }
         }
 
         .nav-toggle { display: none; width: 44px; height: 44px; border-radius: 12px; color: #fff; font-size: 1.15rem; }
         .nav-toggle:hover { background: rgba(255,255,255,.1); }
 
-        /* Breakpoint diubah ke 1250px karena item menu sangat banyak */
+        /* Breakpoint 1250px karena item menu sangat banyak */
         @media (max-width: 1250px) {
             .nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
             .menu {
@@ -182,6 +212,12 @@
             .dropdown { position: static; margin: 2px 0 8px 12px; box-shadow: none; background: transparent; border: 0; border-left: 2px solid rgba(255,255,255,.12); border-radius: 0; min-width: 100%; }
             .dropdown::before { display: none; }
             .menu .btn-login { margin: 8px 0 0; justify-content: center; padding: 14px; }
+
+            /* Responsive multilevel */
+            .has-sub > .sub-trigger { padding: 14px 16px; border-radius: 14px; font-size: 1rem; }
+            .has-sub.open > .sub-trigger i { transform: rotate(90deg); }
+            .dropdown-sub { position: static; margin: 4px 0 4px 12px; box-shadow: none; background: transparent; border: 0; border-left: 2px solid rgba(255,255,255,.12); border-radius: 0; padding: 0; min-width: 100%; }
+            .dropdown-sub::before { display: none; }
         }
 
         /* ==========================================================
@@ -208,7 +244,7 @@
         }
         .hero-logos { display: flex; align-items: center; gap: 18px; margin-bottom: clamp(24px, 4vw, 40px); }
         .hero-logos img { height: clamp(44px, 6vw, 60px); width: auto; filter: drop-shadow(0 6px 14px rgba(0,0,0,.35)); }
-        
+
         .hero h1 { font-family: var(--font-display); font-weight: 800; font-stretch: 82%; font-size: clamp(3.4rem, 10.5vw, 8rem); line-height: .9; letter-spacing: -0.035em; text-wrap: balance; }
         .hero-full { margin-top: 20px; font-weight: 600; font-size: clamp(.95rem, 1.6vw, 1.1rem); color: rgba(255,255,255,.85); letter-spacing: .01em; }
         .hero-lead { margin-top: 14px; max-width: 46ch; color: rgba(255,255,255,.7); font-size: clamp(1rem, 1.5vw, 1.15rem); }
@@ -291,7 +327,7 @@
         @media (max-width: 860px) { .about { grid-template-columns: 1fr; } .about-art { max-width: 380px; } }
 
         /* ==========================================================
-           KEJADIAN & EVAKUASI 
+           KEJADIAN & EVAKUASI
            ========================================================== */
         #kejadian { padding-top: clamp(36px, 5vw, 64px); padding-bottom: clamp(48px, 7vw, 88px); }
         #kejadian .sec-head { align-items: center; margin-bottom: 12px; }
@@ -394,6 +430,9 @@
         .social a:hover { background: var(--signal); transform: translateY(-3px); }
         @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr; } }
 
+        /* ==========================================================
+           TOMBOL LAPOR MENGAMBANG & DIALOG
+           ========================================================== */
         .sos-fab { position: fixed; right: clamp(14px, 3vw, 28px); bottom: clamp(14px, 3vw, 28px); z-index: 70; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; opacity: 0; visibility: hidden; transform: translateY(16px); transition: opacity .3s, transform .3s, visibility .3s; }
         .sos-fab.show { opacity: 1; visibility: visible; transform: none; }
         .sos-fab-btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; background: var(--signal); color: #fff; font-weight: 700; box-shadow: 0 14px 30px -6px rgba(229,57,45,.6); }
@@ -415,7 +454,12 @@
         .video-frame { aspect-ratio: 16 / 9; border-radius: var(--r-md); overflow: hidden; background: #000; }
         .video-frame iframe { width: 100%; height: 100%; border: 0; }
 
-        @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } .hero-bg.b2 { opacity: 0; } .ticker-track { overflow-x: auto; } }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+            .hero-bg.b2 { opacity: 0; }
+            .ticker-track { overflow-x: auto; }
+        }
     </style>
 </head>
 <body>
@@ -533,13 +577,23 @@
                 </ul>
             </li>
 
-            <!-- 9. Galeri -->
+            <!-- 9. Galeri (DENGAN NESTED DROPDOWN) -->
             <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Galeri <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="#">IKM</a></li>
-                    <li><a href="#">Pengumuman</a></li>
-                    <li><a href="{{ route('publik.infografis') ?? '#' }}">Berita</a></li>
+                    <li><a href="/ikm">IKM (Indeks Kepuasan Masyarakat)</a></li>
+                    <li><a href="/pengumuman">Pengumuman</a></li>
+                    <li class="has-sub">
+                        <button class="sub-trigger" type="button" aria-expanded="false">
+                            Berita <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <ul class="dropdown-sub">
+                            <li><a href="/edu-damkar">Edu Damkar</a></li>
+                            <li><a href="{{ route('publik.infografis') }}">Infografis</a></li>
+                            <li><a href="/media-informasi">Media Informasi</a></li>
+                            <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
 
@@ -583,7 +637,7 @@
                 </a>
                 <img src="/images/logo-redkar.png" alt="Logo Redkar">
             </div>
-            
+
             <div class="hero-title-wrapper rise d1" style="display: flex; align-items: center; gap: clamp(16px, 3vw, 28px); margin-bottom: 8px;">
                 <img src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA" style="height: clamp(80px, 12vw, 140px); width: auto; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); flex: none;">
                 <h1 id="judul-hero" style="margin: 0;">
@@ -592,13 +646,13 @@
             </div>
 
             <p class="hero-full rise d2">
-                <span style="color: var(--signal);">S</span>istem 
-                <span style="color: var(--signal);">I</span>nfor<span style="color: var(--signal);">m</span>asi 
-                P<span style="color: var(--signal);">e</span>nanggulangan 
-                Kebaka<span style="color: var(--signal);">r</span>an 
-                dan Penyelam<span style="color: var(--signal);">a</span>tan 
-                Daera<span style="color: var(--signal);">h</span> 
-                <span style="color: var(--signal);">Ko</span>ta 
+                <span style="color: var(--signal);">S</span>istem
+                <span style="color: var(--signal);">I</span>nfor<span style="color: var(--signal);">m</span>asi
+                P<span style="color: var(--signal);">e</span>nanggulangan
+                Kebaka<span style="color: var(--signal);">r</span>an
+                dan Penyelam<span style="color: var(--signal);">a</span>tan
+                Daera<span style="color: var(--signal);">h</span>
+                <span style="color: var(--signal);">Ko</span>ta
                 <span style="color: var(--signal);">Ja</span>mbi
             </p>
             <p class="hero-lead rise d2">Lapor kebakaran dan penyelamatan langsung ke petugas, atau urus perizinan proteksi kebakaran secara digital.</p>
@@ -831,9 +885,9 @@
 
         <div class="media-grid">
             @forelse($daftarMedsos as $medsos)
-                @php 
-                    $namaKatCard = str_replace('Lainya', 'Lainnya', $medsos->kategori->nama_kategori ?? 'Informasi'); 
-                    
+                @php
+                    $namaKatCard = str_replace('Lainya', 'Lainnya', $medsos->kategori->nama_kategori ?? 'Informasi');
+
                     $s = strtolower($medsos->sumber ?? '');
                     $ikonSumber = 'fas fa-share-nodes';
                     if (str_contains($s, 'instagram')) $ikonSumber = 'fab fa-instagram';
@@ -842,7 +896,7 @@
                     if (str_contains($s, 'facebook'))  $ikonSumber = 'fab fa-facebook-f';
                     if (str_contains($s, 'twitter'))   $ikonSumber = 'fab fa-twitter';
                 @endphp
-                
+
                 <article class="media-card">
                     <div style="position: relative; background: var(--paper); aspect-ratio: 4 / 3; overflow: hidden;">
                         @if($medsos->kategori)
@@ -940,7 +994,7 @@
                 <img src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA" loading="lazy">
                 <h3>Tentang kami</h3>
                 <p>SIMERAH KOJA merupakan sistem informasi pemerintahan berbasis elektronik yang terintegrasi pada dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
-                
+
                 <div class="footer-contact">
                     <a href="{{ $wa_link }}" target="_blank" rel="noopener">
                         <i class="fab fa-whatsapp"></i> {{ $no_whatsapp }} (WhatsApp)
@@ -1021,6 +1075,14 @@
     var header = document.getElementById('siteHeader');
     var toggle = header.querySelector('.nav-toggle');
     var drops = header.querySelectorAll('.has-drop');
+    var subs = header.querySelectorAll('.has-sub');
+
+    function closeSubs() {
+        subs.forEach(function (s) {
+            s.classList.remove('open');
+            s.querySelector('.sub-trigger').setAttribute('aria-expanded', 'false');
+        });
+    }
 
     function closeDrops(except) {
         drops.forEach(function (li) {
@@ -1029,6 +1091,7 @@
                 li.querySelector('.menu-trigger').setAttribute('aria-expanded', 'false');
             }
         });
+        if (!except) closeSubs();
     }
 
     toggle.addEventListener('click', function () {
@@ -1044,6 +1107,17 @@
             var open = li.classList.toggle('open');
             btn.setAttribute('aria-expanded', open);
             closeDrops(li);
+        });
+    });
+
+    // MULTILEVEL DROPDOWN (Galeri > Berita)
+    subs.forEach(function (li) {
+        var btn = li.querySelector('.sub-trigger');
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var open = li.classList.toggle('open');
+            btn.setAttribute('aria-expanded', open);
         });
     });
 
