@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
     <meta name="description" content="Peta Kecamatan dan Titik Operasional - SIMERAH KOJA Dinas Pemadam Kebakaran Kota Jambi.">
-    <title>Peta Operasional SIGAP - SIMERAH KOJA</title>
+    <title>Peta Operasional SIGAPKAR - SIMERAH KOJA</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
@@ -136,7 +136,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 }
 
 /* ==========================================================
-   HERO SIGAP (lebih ringkas)
+   HERO SIGAPKAR (lebih ringkas)
    ========================================================== */
 .page-hero {
     position: relative; overflow: hidden; color: #fff;
@@ -427,7 +427,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
                     <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
                     <li><a href="/layanan-fasilitas/skk">SKK &amp; Perpanjang SKK</a></li>
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
-                    <li><a href="/public-sigap">SIGAP</a></li>
+                    <li><a href="/public-SIGAPKAR">SIGAPKAR</a></li>
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
             </li>
@@ -456,9 +456,9 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
                     <li><span aria-current="page">Peta Operasional</span></li>
                 </ol>
             </nav>
-            <div class="hero-kicker"><i class="fas fa-map-marked-alt"></i> SIGAP SIMERAH</div>
-            <h1>SIGAP Kota Jambi</h1>
-            <h2>Sistem Informasi Geografis Antisipasi dan Penanggulangan</h2>
+            <div class="hero-kicker"><i class="fas fa-map-marked-alt"></i> SIGAPKAR SIMERAH KOJA</div>
+            <h1>SIGAPKAR Kota Jambi</h1>
+            <h2>Sistem Informasi Geografis Antisipasi dan Penanggulangan Kebakaran Kota Jambi</h2>
             <div class="hero-line"></div>
         </div>
     </section>
