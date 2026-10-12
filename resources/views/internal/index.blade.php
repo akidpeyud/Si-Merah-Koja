@@ -818,7 +818,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     'id' => 'kepegawaian', 'title' => 'Kepegawaian', 'icon' => 'fa-user-tie', 'roles' => $ops,
                     'items' => [
                         ['Data Urut Kepegawaian', 'pegawai', 'fa-user-tie', '/internal/kepegawaian/duk', $count('pegawais'), 'ic-primary'],
-                        ['Rekap Data ASN', 'data', 'fa-users', '/internal/data-asn', $count('data_asns'), 'ic-danger'], /* TAMBAHAN REKAP DATA ASN */
+                        ['Rekap Data ASN', 'data', 'fa-users', '/internal/data-asn', ($count('data_asns', 'pns') + $count('data_asns', 'pppk')), 'ic-danger'],
                         ['Program Kerja', 'program', 'fa-file-contract', '/internal/program-kerja', $count('dokumen'), 'ic-info'],
                     ],
                 ],

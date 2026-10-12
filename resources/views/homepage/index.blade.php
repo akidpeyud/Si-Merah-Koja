@@ -61,7 +61,7 @@
             --r-lg: 28px;
             --r-md: 18px;
             --r-sm: 10px;
-            --wrap: 1200px;
+            --wrap: 1300px; /* Sedikit dilebarkan untuk navbar padat */
             --header-h: 64px;
         }
 
@@ -90,23 +90,12 @@
         .bg-ink { background: var(--ink); color: #fff; }
 
         .sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: clamp(32px, 5vw, 56px); flex-wrap: wrap; }
-        .sec-head h2 {
-            font-family: var(--font-display);
-            font-weight: 700;
-            font-stretch: 90%;
-            font-size: clamp(2rem, 4.4vw, 3.25rem);
-            line-height: 1.05;
-            letter-spacing: -0.025em;
-        }
+        .sec-head h2 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(2rem, 4.4vw, 3.25rem); line-height: 1.05; letter-spacing: -0.025em; }
         .sec-head p { margin-top: 12px; max-width: 52ch; color: var(--steel); font-size: 1.05rem; }
         .bg-ink .sec-head p { color: rgba(255,255,255,.7); }
         .sec-head img { width: clamp(140px, 20vw, 240px); flex: none; }
 
-        .btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-            padding: 14px 24px; border-radius: 999px; font-weight: 600; font-size: .95rem;
-            transition: background .2s, transform .2s, border-color .2s, color .2s;
-        }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 24px; border-radius: 999px; font-weight: 600; font-size: .95rem; transition: background .2s, transform .2s, border-color .2s, color .2s; }
         .btn:active { transform: scale(.97); }
         .btn-light { background: #fff; color: var(--ink); }
         .btn-light:hover { background: var(--amber); }
@@ -116,7 +105,7 @@
         .btn-outline:hover { border-color: var(--ink); background: var(--ink); color: #fff; }
 
         /* ==========================================================
-           HEADER
+           HEADER & NAVBAR (Disesuaikan untuk banyak menu)
            ========================================================== */
         .site-header {
             position: sticky; top: 0; z-index: 60;
@@ -126,34 +115,41 @@
             border-bottom: 1px solid rgba(255,255,255,.08);
         }
         .nav {
-            max-width: var(--wrap); margin: 0 auto; height: var(--header-h);
+            max-width: var(--wrap); margin: 0 auto; min-height: var(--header-h);
             padding: 0 clamp(16px, 4vw, 32px);
-            display: flex; align-items: center; justify-content: space-between; gap: 24px;
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
         }
-        .brand { display: flex; align-items: center; gap: 12px; }
+        .brand { display: flex; align-items: center; gap: 12px; flex: none; }
         .brand img { height: 38px; width: auto; }
 
-        .menu { display: flex; align-items: center; gap: 2px; }
+        .menu { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; }
         .menu > li { position: relative; }
         .menu-link, .menu-trigger {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 9px 14px; border-radius: 999px;
-            color: rgba(255,255,255,.88); font-size: .92rem; font-weight: 500;
-            transition: background .2s, color .2s;
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 10px; border-radius: 999px; /* Padding dikurangi agar tidak melebar */
+            color: rgba(255,255,255,.88); font-size: .85rem; font-weight: 500; /* Font size dikurangi */
+            transition: background .2s, color .2s; white-space: nowrap;
         }
         .menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger { background: rgba(255,255,255,.1); color: #fff; }
-        .menu-trigger i { font-size: .65rem; transition: transform .2s; }
+        .menu-trigger i { font-size: .6rem; transition: transform .2s; }
         .has-drop.open > .menu-trigger i { transform: rotate(180deg); }
-        .menu .btn-login { background: var(--signal); color: #fff; margin-left: 10px; font-weight: 600; padding: 9px 22px; }
+        .menu .btn-login { background: var(--signal); color: #fff; margin-left: 6px; font-weight: 600; padding: 8px 18px; }
         .menu .btn-login:hover { background: var(--signal-d); }
 
         .dropdown {
-            display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 250px;
+            display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 260px;
             background: var(--ink-2); border: 1px solid rgba(255,255,255,.1);
-            border-radius: var(--r-md); padding: 6px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
+            border-radius: var(--r-md); padding: 8px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
         }
+        
+        /* Agar dropdown di menu sebelah kanan tidak melebar keluar batas layar */
+        .menu > li:nth-last-child(-n+4) .dropdown { left: auto; right: 0; }
+
         .dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
-        .dropdown a { display: block; padding: 11px 14px; border-radius: var(--r-sm); font-size: .92rem; color: rgba(255,255,255,.85); }
+        .dropdown a { 
+            display: block; padding: 10px 14px; border-radius: var(--r-sm); 
+            font-size: .9rem; color: rgba(255,255,255,.85); line-height: 1.4; white-space: normal; 
+        }
         .dropdown a:hover { background: rgba(255,255,255,.08); color: #fff; }
         
         .dropdown .btn-logout {
@@ -164,25 +160,26 @@
         .dropdown .btn-logout:hover { background: rgba(255, 255, 255, .1); color: #ffb8b8; }
 
         .has-drop.open .dropdown { display: block; }
-        @media (hover: hover) and (min-width: 992px) {
+        @media (hover: hover) and (min-width: 1251px) {
             .has-drop:hover .dropdown { display: block; }
         }
 
         .nav-toggle { display: none; width: 44px; height: 44px; border-radius: 12px; color: #fff; font-size: 1.15rem; }
         .nav-toggle:hover { background: rgba(255,255,255,.1); }
 
-        @media (max-width: 991px) {
+        /* Breakpoint diubah ke 1250px karena item menu sangat banyak */
+        @media (max-width: 1250px) {
             .nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
             .menu {
                 display: none; position: fixed; top: var(--header-h); left: 0; right: 0;
                 max-height: calc(100dvh - var(--header-h)); overflow-y: auto;
-                flex-direction: column; align-items: stretch; gap: 4px;
+                flex-direction: column; align-items: stretch; gap: 4px; flex-wrap: nowrap;
                 padding: 16px clamp(16px, 4vw, 32px) 28px; background: var(--ink);
                 border-bottom: 1px solid rgba(255,255,255,.1);
             }
             .nav-open .menu { display: flex; }
-            .menu-link, .menu-trigger { width: 100%; justify-content: space-between; padding: 14px 16px; border-radius: 14px; font-size: 1rem; }
-            .dropdown { position: static; margin: 2px 0 8px 12px; box-shadow: none; background: transparent; border: 0; border-left: 2px solid rgba(255,255,255,.12); border-radius: 0; }
+            .menu-link, .menu-trigger { width: 100%; justify-content: space-between; padding: 14px 16px; border-radius: 14px; font-size: 1rem; white-space: normal; }
+            .dropdown { position: static; margin: 2px 0 8px 12px; box-shadow: none; background: transparent; border: 0; border-left: 2px solid rgba(255,255,255,.12); border-radius: 0; min-width: 100%; }
             .dropdown::before { display: none; }
             .menu .btn-login { margin: 8px 0 0; justify-content: center; padding: 14px; }
         }
@@ -192,8 +189,7 @@
            ========================================================== */
         .hero {
             position: relative; isolation: isolate; color: #fff; background: var(--ink); overflow: hidden;
-            min-height: calc(100svh - var(--header-h));
-            display: flex; flex-direction: column;
+            min-height: calc(100svh - var(--header-h)); display: flex; flex-direction: column;
         }
         .hero-bg { position: absolute; inset: 0; z-index: -2; background-size: cover; background-position: center; }
         .hero-bg.b1 { background-image: url('/images/background1.png'); }
@@ -201,9 +197,7 @@
         @keyframes crossfade { 0%, 40% { opacity: 0; } 50%, 90% { opacity: 1; } 100% { opacity: 0; } }
         .hero::before {
             content: ""; position: absolute; inset: 0; z-index: -1;
-            background:
-                radial-gradient(60% 55% at 8% 100%, rgba(229,57,45,.38), transparent 70%),
-                linear-gradient(100deg, rgba(13,27,42,.97) 0%, rgba(13,27,42,.84) 48%, rgba(13,27,42,.62) 100%);
+            background: radial-gradient(60% 55% at 8% 100%, rgba(229,57,45,.38), transparent 70%), linear-gradient(100deg, rgba(13,27,42,.97) 0%, rgba(13,27,42,.84) 48%, rgba(13,27,42,.62) 100%);
         }
 
         .hero-inner {
@@ -215,11 +209,7 @@
         .hero-logos { display: flex; align-items: center; gap: 18px; margin-bottom: clamp(24px, 4vw, 40px); }
         .hero-logos img { height: clamp(44px, 6vw, 60px); width: auto; filter: drop-shadow(0 6px 14px rgba(0,0,0,.35)); }
         
-        .hero h1 {
-            font-family: var(--font-display); font-weight: 800; font-stretch: 82%;
-            font-size: clamp(3.4rem, 10.5vw, 8rem); line-height: .9; letter-spacing: -0.035em;
-            text-wrap: balance;
-        }
+        .hero h1 { font-family: var(--font-display); font-weight: 800; font-stretch: 82%; font-size: clamp(3.4rem, 10.5vw, 8rem); line-height: .9; letter-spacing: -0.035em; text-wrap: balance; }
         .hero-full { margin-top: 20px; font-weight: 600; font-size: clamp(.95rem, 1.6vw, 1.1rem); color: rgba(255,255,255,.85); letter-spacing: .01em; }
         .hero-lead { margin-top: 14px; max-width: 46ch; color: rgba(255,255,255,.7); font-size: clamp(1rem, 1.5vw, 1.15rem); }
         .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
@@ -240,11 +230,7 @@
         .beacon { position: relative; width: 12px; height: 12px; border-radius: 50%; background: var(--signal); flex: none; }
         .beacon::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--signal); animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
         @keyframes ping { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(3.2); opacity: 0; } }
-        .sos h2 {
-            font-family: var(--font-display); font-weight: 700; font-stretch: 90%;
-            font-size: clamp(1.5rem, 2.6vw, 2rem); line-height: 1.1; letter-spacing: -0.02em;
-            margin: 14px 0 22px;
-        }
+        .sos h2 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.5rem, 2.6vw, 2rem); line-height: 1.1; letter-spacing: -0.02em; margin: 14px 0 22px; }
         .sos-list { display: grid; gap: 10px; }
         .sos-link {
             display: grid; grid-template-columns: 48px 1fr auto; align-items: center; gap: 14px;
@@ -290,11 +276,7 @@
            TENTANG
            ========================================================== */
         .about { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(32px, 6vw, 88px); align-items: center; }
-        .about-art {
-            position: relative; aspect-ratio: 1 / 1; border-radius: var(--r-lg); overflow: hidden;
-            background: radial-gradient(70% 70% at 50% 40%, var(--ink-3), var(--ink));
-            display: grid; place-items: center; padding: 12%;
-        }
+        .about-art { position: relative; aspect-ratio: 1 / 1; border-radius: var(--r-lg); overflow: hidden; background: radial-gradient(70% 70% at 50% 40%, var(--ink-3), var(--ink)); display: grid; place-items: center; padding: 12%; }
         .about-art::after { content: ""; position: absolute; inset: auto -20% -40% -20%; height: 70%; background: radial-gradient(closest-side, rgba(229,57,45,.45), transparent); }
         .about-art img { position: relative; z-index: 1; width: 100%; filter: drop-shadow(0 20px 30px rgba(0,0,0,.4)); }
         .about-copy p { color: #3b4b5e; font-size: 1.06rem; max-width: 60ch; }
@@ -309,140 +291,36 @@
         @media (max-width: 860px) { .about { grid-template-columns: 1fr; } .about-art { max-width: 380px; } }
 
         /* ==========================================================
-           KEJADIAN & EVAKUASI (RAPAT KE JUDUL TANPA JARAK BERLEBIH)
+           KEJADIAN & EVAKUASI 
            ========================================================== */
-        #kejadian {
-            padding-top: clamp(36px, 5vw, 64px);
-            padding-bottom: clamp(48px, 7vw, 88px);
-        }
-        #kejadian .sec-head {
-            align-items: center;
-            margin-bottom: 12px; /* Jarak ke gambar berita diperkecil */
-        }
-        #kejadian .sec-head p {
-            margin-top: 6px;
-        }
-        #kejadian .sec-head img {
-            width: clamp(130px, 16vw, 180px);
-            margin-top: -24px;    /* Mencegah tinggi gambar mobil mendorong kartu berita ke bawah */
-            margin-bottom: -24px;
-        }
-        .kj-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 20px;
-        }
-        .kj-item {
-            display: block;
-            text-align: left;
-            width: 100%;
-        }
-        .kj-thumb {
-            position: relative;
-            aspect-ratio: 16 / 10;
-            border-radius: var(--r-md);
-            overflow: hidden;
-            background: repeating-linear-gradient(135deg, var(--ink-2) 0 16px, var(--ink-3) 16px 32px);
-            border: 1px solid var(--line);
-            box-shadow: 0 8px 20px -12px rgba(13,27,42,.15);
-            transition: border-color .25s, transform .25s, box-shadow .25s;
-        }
-        .kj-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform .5s;
-        }
-        .kj-item:hover .kj-thumb {
-            border-color: var(--signal);
-            transform: translateY(-4px);
-            box-shadow: 0 16px 28px -12px rgba(13,27,42,.25);
-        }
-        .kj-item:hover .kj-thumb img {
-            transform: scale(1.04);
-        }
-        .kj-ph {
-            width: 100%;
-            height: 100%;
-            display: grid;
-            place-content: center;
-            justify-items: center;
-            gap: 8px;
-            color: rgba(255,255,255,.75);
-            font-weight: 600;
-            font-size: .85rem;
-        }
-        .kj-ph i {
-            font-size: 1.8rem;
-            color: var(--signal);
-        }
-        .kj-date {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            padding: 5px 10px;
-            border-radius: 8px;
-            text-align: center;
-            line-height: 1.1;
-            color: #fff;
-            background: rgba(13,27,42,.85);
-            -webkit-backdrop-filter: blur(6px);
-            backdrop-filter: blur(6px);
-            z-index: 2;
-        }
-        .kj-date.baru {
-            background: rgba(229,57,45,.95);
-        }
-        .kj-date b {
-            display: block;
-            font-family: var(--font-display);
-            font-size: 1.05rem;
-            font-weight: 800;
-        }
-        .kj-date span {
-            display: block;
-            font-size: .65rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        .kj-item h3 {
-            margin-top: 10px;
-            font-size: .98rem;
-            font-weight: 700;
-            line-height: 1.35;
-            color: var(--ink);
-            text-transform: uppercase;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            transition: color .2s;
-        }
-        .kj-item:hover h3 {
-            color: var(--signal);
-        }
-
-        .empty {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 40px 24px;
-            border: 1.5px dashed var(--line);
-            border-radius: var(--r-md);
-            color: var(--steel);
-            background: rgba(255,255,255,.5);
-        }
+        #kejadian { padding-top: clamp(36px, 5vw, 64px); padding-bottom: clamp(48px, 7vw, 88px); }
+        #kejadian .sec-head { align-items: center; margin-bottom: 12px; }
+        #kejadian .sec-head p { margin-top: 6px; }
+        #kejadian .sec-head img { width: clamp(130px, 16vw, 180px); margin-top: -24px; margin-bottom: -24px; }
+        .kj-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+        .kj-item { display: block; text-align: left; width: 100%; }
+        .kj-thumb { position: relative; aspect-ratio: 16 / 10; border-radius: var(--r-md); overflow: hidden; background: repeating-linear-gradient(135deg, var(--ink-2) 0 16px, var(--ink-3) 16px 32px); border: 1px solid var(--line); box-shadow: 0 8px 20px -12px rgba(13,27,42,.15); transition: border-color .25s, transform .25s, box-shadow .25s; }
+        .kj-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+        .kj-item:hover .kj-thumb { border-color: var(--signal); transform: translateY(-4px); box-shadow: 0 16px 28px -12px rgba(13,27,42,.25); }
+        .kj-item:hover .kj-thumb img { transform: scale(1.04); }
+        .kj-ph { width: 100%; height: 100%; display: grid; place-content: center; justify-items: center; gap: 8px; color: rgba(255,255,255,.75); font-weight: 600; font-size: .85rem; }
+        .kj-ph i { font-size: 1.8rem; color: var(--signal); }
+        .kj-date { position: absolute; top: 10px; left: 10px; padding: 5px 10px; border-radius: 8px; text-align: center; line-height: 1.1; color: #fff; background: rgba(13,27,42,.85); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); z-index: 2; }
+        .kj-date.baru { background: rgba(229,57,45,.95); }
+        .kj-date b { display: block; font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; }
+        .kj-date span { display: block; font-size: .65rem; font-weight: 600; text-transform: uppercase; }
+        .kj-item h3 { margin-top: 10px; font-size: .98rem; font-weight: 700; line-height: 1.35; color: var(--ink); text-transform: uppercase; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; transition: color .2s; }
+        .kj-item:hover h3 { color: var(--signal); }
+        .empty { grid-column: 1 / -1; text-align: center; padding: 40px 24px; border: 1.5px dashed var(--line); border-radius: var(--r-md); color: var(--steel); background: rgba(255,255,255,.5); }
         .empty i { font-size: 1.8rem; color: #b8c3d0; margin-bottom: 10px; }
         .empty h3 { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
         .empty p { margin-top: 4px; font-size: .92rem; }
 
-        @media (max-width: 960px) {
-            .kj-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            #kejadian .sec-head img { margin-top: 0; margin-bottom: 0; }
-        }
+        @media (max-width: 960px) { .kj-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } #kejadian .sec-head img { margin-top: 0; margin-bottom: 0; } }
         @media (max-width: 480px) { .kj-grid { grid-template-columns: 1fr; } }
 
         /* ==========================================================
-           VIDEO EDUKASI (EDU DAMKAR)
+           VIDEO EDUKASI & LAINNYA
            ========================================================== */
         .vid-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
         .vid { text-align: left; display: block; width: 100%; }
@@ -460,9 +338,6 @@
         @media (max-width: 960px) { .vid-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
         @media (max-width: 480px) { .vid-grid { grid-template-columns: 1fr; } }
 
-        /* ==========================================================
-           Infografis & MEDIA INFORMASI
-           ========================================================== */
         .grafis { columns: 3 260px; column-gap: 20px; }
         .grafis-item { display: block; width: 100%; break-inside: avoid; margin-bottom: 20px; position: relative; border-radius: var(--r-md); overflow: hidden; background: #fff; box-shadow: 0 1px 0 var(--line), 0 12px 28px -18px rgba(13,27,42,.35); }
         .grafis-item img { width: 100%; height: auto; transition: transform .5s; }
@@ -472,56 +347,29 @@
         @media (hover: none) { .grafis-item .zoom { opacity: 1; transform: none; } }
 
         .sub-head { margin: clamp(64px, 9vw, 112px) 0 clamp(28px, 4vw, 48px); }
-
         .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
         .media-card { display: flex; flex-direction: column; background: #fff; border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line); transition: transform .3s, box-shadow .3s; }
         .media-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px -15px rgba(13,27,42,.15); border-color: transparent;}
 
-        /* ==========================================================
-           UJUNG-UJUNG DAMKAR (FORMAT VIDEO)
-           ========================================================== */
         .giat { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(32px, 6vw, 88px); align-items: start; }
         .giat-art { position: sticky; top: calc(var(--header-h) + 32px); border-radius: var(--r-lg); background: var(--paper); padding: clamp(24px, 5vw, 48px); }
         .giat-art img { width: 100%; max-width: 380px; margin: 0 auto; filter: drop-shadow(0 20px 28px rgba(13,27,42,.2)); }
+        .giat-vid-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+        .giat .vid h3 { color: var(--ink); font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
+        .giat .vid-thumb { border: 1px solid var(--line); box-shadow: 0 10px 24px -12px rgba(13,27,42,.18); }
+        .giat .vid[disabled] .vid-play span { background: rgba(255,255,255,.22); color: #fff; }
 
-        .giat-vid-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 22px;
-        }
-        .giat .vid h3 {
-            color: var(--ink);
-            font-family: var(--font-display);
-            font-weight: 700;
-            font-size: 1.05rem;
-        }
-        .giat .vid-thumb {
-            border: 1px solid var(--line);
-            box-shadow: 0 10px 24px -12px rgba(13,27,42,.18);
-        }
-        .giat .vid[disabled] .vid-play span {
-            background: rgba(255,255,255,.22);
-            color: #fff;
-        }
-
-        @media (max-width: 860px) {
-            .giat { grid-template-columns: 1fr; }
-            .giat-art { position: static; max-width: 420px; margin: 0 auto; }
-        }
-        @media (max-width: 540px) {
-            .giat-vid-grid { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 860px) { .giat { grid-template-columns: 1fr; } .giat-art { position: static; max-width: 420px; margin: 0 auto; } }
+        @media (max-width: 540px) { .giat-vid-grid { grid-template-columns: 1fr; } }
 
         /* ==========================================================
-           FOOTER & INFO KONTAK
+           FOOTER
            ========================================================== */
         .footer { background: var(--ink); color: rgba(255,255,255,.7); padding: clamp(56px, 8vw, 96px) 0 32px; }
         .footer-grid { display: grid; grid-template-columns: 1.1fr 1.2fr .8fr; gap: clamp(32px, 5vw, 64px); }
         .footer h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: #fff; margin-bottom: 16px; }
-        
         .footer-about img { height: 96px; width: auto; margin-bottom: 20px; }
         .footer-about p { max-width: 42ch; font-size: .95rem; }
-        
         .footer-contact { margin-top: 24px; display: grid; gap: 12px; }
         .footer-contact a { display: inline-flex; align-items: center; gap: 12px; color: rgba(255,255,255,.9); font-size: .95rem; font-weight: 500; transition: color .2s; }
         .footer-contact a i { color: var(--signal); font-size: 1.2rem; width: 20px; text-align: center; }
@@ -546,9 +394,6 @@
         .social a:hover { background: var(--signal); transform: translateY(-3px); }
         @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr; } }
 
-        /* ==========================================================
-           TOMBOL LAPOR MENGAMBANG & DIALOG
-           ========================================================== */
         .sos-fab { position: fixed; right: clamp(14px, 3vw, 28px); bottom: clamp(14px, 3vw, 28px); z-index: 70; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; opacity: 0; visibility: hidden; transform: translateY(16px); transition: opacity .3s, transform .3s, visibility .3s; }
         .sos-fab.show { opacity: 1; visibility: visible; transform: none; }
         .sos-fab-btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; background: var(--signal); color: #fff; font-weight: 700; box-shadow: 0 14px 30px -6px rgba(229,57,45,.6); }
@@ -570,12 +415,7 @@
         .video-frame { aspect-ratio: 16 / 9; border-radius: var(--r-md); overflow: hidden; background: #000; }
         .video-frame iframe { width: 100%; height: 100%; border: 0; }
 
-        @media (prefers-reduced-motion: reduce) {
-            html { scroll-behavior: auto; }
-            *, *::before, *::after { animation: none !important; transition: none !important; }
-            .hero-bg.b2 { opacity: 0; }
-            .ticker-track { overflow-x: auto; }
-        }
+        @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } .hero-bg.b2 { opacity: 0; } .ticker-track { overflow-x: auto; } }
     </style>
 </head>
 <body>
@@ -609,45 +449,101 @@
         </button>
 
         <ul class="menu" id="menu">
+            <!-- 1. Layanan Kedaruratan -->
             <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan kedaruratan <i class="fas fa-chevron-down"></i></button>
+                <button class="menu-trigger" type="button" aria-expanded="false">Layanan Kedaruratan <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="{{ $wa_link }}" target="_blank" rel="noopener">WhatsApp</a></li>
-                    <li><a href="tel:{{ $no_telepon }}">Telepon</a></li>
                     <li><a href="tel:112">Call Center 112</a></li>
+                    <li><a href="tel:{{ $no_telepon }}">Telp</a></li>
+                    <li><a href="{{ $wa_link }}" target="_blank" rel="noopener">WA</a></li>
                 </ul>
             </li>
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Program kerja <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/sotk">SOTK</a></li>
-                    <li><a href="/perencanaan">Perencanaan</a></li>
-                    <li><a href="/pelaporan">Pelaporan</a></li>
-                    <li><a href="/sop">SOP</a></li>
-                    <li><a href="/produkhukum">Produk hukum</a></li>
-                </ul>
-            </li>
+
+            <!-- 2. Sigapkar -->
+            <li><a class="menu-link" href="/public-sigap">Sigapkar</a></li>
+
+            <!-- 3. Layanan -->
             <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
-                    <li><a href="/layanan-fasilitas/skk">SKK &amp; Perpanjang SKK</a></li>
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
-                    <li><a href="/public-sigap">SIGAP</a></li>
-                    <li><a href="/informasi-layanan">Informasi layanan</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
+                    <li><a href="#">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
+                    <li><a href="#">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
+                    <li><a href="/layanan-fasilitas/skk">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
                 </ul>
             </li>
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/edu-damkar">Edu Damkar</a></li>
-                    <a href="{{ route('publik.infografis') }}">Infografis</a>
-                    <li><a href="/media-informasi">Media Informasi</a></li>
-                    <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
-                </ul>
-            </li>
-            <li><a class="menu-link" href="/redkar">Redkar</a></li>
 
+            <!-- 4. Produk Hukum -->
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="/produkhukum">Undang-Undang</a></li>
+                    <li><a href="/produkhukum">Peraturan Pemerintah</a></li>
+                    <li><a href="/produkhukum">Peraturan Menteri</a></li>
+                    <li><a href="/produkhukum">Peraturan Daerah</a></li>
+                    <li><a href="/produkhukum">Peraturan Kepala Daerah</a></li>
+                </ul>
+            </li>
+
+            <!-- 5. Profil -->
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Profil <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="#">Visi Misi</a></li>
+                    <li><a href="/sotk">SOTK</a></li>
+                    <li><a href="#">Tupoksi</a></li>
+                    <li><a href="#">Kepegawaian</a></li>
+                    <li><a href="#">Program Kegiatan</a></li>
+                    <li><a href="#">Cascading</a></li>
+                </ul>
+            </li>
+
+            <!-- 6. Standar Operasional Prosedur -->
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">SOP <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="/sop">Pencegahan</a></li>
+                    <li><a href="/sop">Pemadaman Kebakaran</a></li>
+                    <li><a href="/sop">Penyelamatan dan Evakuasi</a></li>
+                    <li><a href="/sop">Sarana dan Prasarana</a></li>
+                    <li><a href="/sop">Kepegawaian</a></li>
+                    <li><a href="/sop">Keuangan</a></li>
+                </ul>
+            </li>
+
+            <!-- 7. Dokumen -->
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Dokumen <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="/perencanaan">Renstra</a></li>
+                    <li><a href="/perencanaan">Renja</a></li>
+                    <li><a href="#">SPM</a></li>
+                    <li><a href="#">SAKIP</a></li>
+                    <li><a href="/pelaporan">LPPD</a></li>
+                </ul>
+            </li>
+
+            <!-- 8. Sarana dan Prasarana -->
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Sarpras <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="#">Sarana</a></li>
+                    <li><a href="#">Prasarana</a></li>
+                </ul>
+            </li>
+
+            <!-- 9. Galeri -->
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Galeri <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="#">IKM</a></li>
+                    <li><a href="#">Pengumuman</a></li>
+                    <li><a href="{{ route('publik.infografis') ?? '#' }}">Berita</a></li>
+                </ul>
+            </li>
+
+            <!-- Fitur Login / User Session -->
             @if(session()->has('pemohon_id'))
                 <li class="has-drop">
                     <button class="menu-trigger btn-login" type="button" aria-expanded="false">
@@ -667,7 +563,6 @@
             @else
                 <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
             @endif
-
         </ul>
     </nav>
 </header>
@@ -805,7 +700,6 @@
         </div>
 
         <div class="kj-grid">
-
             @forelse($listBerita as $berita)
                 @php
                     $tgl  = \Carbon\Carbon::parse($berita->tanggal_kejadian)->locale('id');
