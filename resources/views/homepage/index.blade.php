@@ -547,12 +547,12 @@
             <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">SOP <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="/sop">Pencegahan</a></li>
-                    <li><a href="/sop">Pemadaman Kebakaran</a></li>
-                    <li><a href="/sop">Penyelamatan dan Evakuasi</a></li>
-                    <li><a href="/sop">Sarana dan Prasarana</a></li>
-                    <li><a href="/sop">Kepegawaian</a></li>
-                    <li><a href="/sop">Keuangan</a></li>
+                    <li><a href="/sop/pencegahan">Pencegahan</a></li>
+                    <li><a href="/sop/pemadaman">Pemadaman Kebakaran</a></li>
+                    <li><a href="/sop/penyelamatan">Penyelamatan dan Evakuasi</a></li>
+                    <li><a href="/sop/sarpras">Sarana dan Prasarana</a></li>
+                    <li><a href="/sop/kepegawaian">Kepegawaian</a></li>
+                    <li><a href="/sop/keuangan">Keuangan</a></li>
                 </ul>
             </li>
 

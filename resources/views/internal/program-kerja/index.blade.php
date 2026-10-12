@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-    <title>Kelola Program Kerja | SIMERAH KOJA</title>
+    <title>Kelola SOP | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -444,7 +444,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                         <i class="fas fa-user-tie"></i><span class="lbl">Data Urut Kepegawaian</span>
                     </a>
                     <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
-                        <i class="fas fa-file-contract"></i><span class="lbl">Program Kerja</span>
+                        <i class="fas fa-file-contract"></i><span class="lbl">SOP & Dokumen</span>
                     </a>
                 </div>
             </details>
@@ -515,13 +515,13 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
         <div class="page-head">
             <div class="page-head-text">
-                <h1>Kelola Program Kerja</h1>
-                <p>Manajemen file SOTK, SOP, Perencanaan, Pelaporan, dan Produk Hukum untuk publik.</p>
+                <h1>Kelola SOP</h1>
+                <p>Manajemen file Standar Operasional Prosedur (SOP) untuk publik.</p>
             </div>
             <!-- Tombol Tambah Modal dengan Pembatasan Akses -->
             @hasanyrole('Super User|Sekretariat')
             <button type="button" class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modalTambah">
-                <i class="fas fa-plus"></i> Tambah Dokumen
+                <i class="fas fa-plus"></i> Tambah SOP
             </button>
             @endhasanyrole
         </div>
@@ -529,7 +529,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         <!-- Tabel Data -->
         <div class="base-card">
             <div class="card-title-custom">
-                <div class="title-left">Daftar Dokumen Terpublikasi</div>
+                <div class="title-left">Daftar SOP Terpublikasi</div>
             </div>
 
             <div class="table-responsive">
@@ -538,8 +538,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                         <tr>
                             <th width="5%">No</th>
                             <th>Judul Dokumen</th>
-                            <th width="15%">Kategori</th>
-                            <th width="15%">Sub Kategori</th>
+                            <th width="20%">Bagian SOP</th>
                             <th width="15%">File</th>
                             <th width="12%" class="text-center">Aksi</th>
                         </tr>
@@ -549,14 +548,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     <tr>
         <td>{{ $index + 1 }}</td>
         <td><strong>{{ $item->judul_dokumen }}</strong></td>
-        <td><span class="badge-kategori">{{ $item->kategori }}</span></td>
-        <td>
-            @if($item->sub_kategori)
-                {{ $item->sub_kategori }}
-            @else
-                <span class="text-muted">-</span>
-            @endif
-        </td>
+        <td><span class="badge-kategori">{{ $item->sub_kategori ?? 'Umum' }}</span></td>
         <td>
             <a href="/internal/program-kerja/download/{{ $item->id }}" class="text-primary text-decoration-none">
                 <i class="fas fa-download"></i> Unduh File
@@ -565,7 +557,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         <td class="text-center">
             <!-- Pembatasan Akses Hapus / Edit pada tabel -->
             @hasanyrole('Super User|Sekretariat')
-            <form action="{{ route('program-kerja.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus dokumen ini?');">
+            <form action="{{ route('program-kerja.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus SOP ini?');">
                 @csrf
                 @method('DELETE')
                 <!-- Tombol Edit belum ada routenya dari web.php, sementara gunakan button type button -->
@@ -579,7 +571,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     </tr>
     @empty
     <tr>
-        <td colspan="6" class="text-center py-4 text-muted">Belum ada dokumen yang diunggah.</td>
+        <td colspan="5" class="text-center py-4 text-muted">Belum ada SOP yang diunggah.</td>
     </tr>
     @endforelse
 </tbody>
@@ -597,7 +589,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalTambahLabel">Tambah Dokumen Baru</h5>
+                <h5 class="modal-title" id="modalTambahLabel">Tambah SOP Baru</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <!-- ACTION FORM SUDAH DIPERBAIKI -->
@@ -605,32 +597,25 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 @csrf
                 <div class="modal-body">
                     
+                    <!-- Kategori di-set hidden dan selalu bernilai SOP -->
+                    <input type="hidden" name="kategori" value="SOP">
+                    
                     <div class="mb-3">
-                        <label class="form-label">Judul Dokumen</label>
+                        <label class="form-label">Judul SOP</label>
                         <input type="text" name="judul_dokumen" class="form-control" placeholder="Contoh: SOP Penanganan Kebakaran 2026" required>
                     </div>
 
+                    <!-- Input 6 Sub Kategori Sesuai Menu Publik -->
                     <div class="mb-3">
-                        <label class="form-label">Kategori Utama</label>
-                        <select name="kategori" id="selectKategori" class="form-select" required>
-                            <option value="" disabled selected>Pilih Kategori...</option>
-                            <option value="SOTK">SOTK</option>
-                            <option value="SOP">SOP</option>
-                            <option value="Perencanaan">Perencanaan</option>
-                            <option value="Pelaporan">Pelaporan</option>
-                            <option value="Produk Hukum">Produk Hukum</option>
-                        </select>
-                    </div>
-
-                    <!-- Input Sub Kategori (Awalnya Disembunyikan via JS) -->
-                    <div class="mb-3" id="wrapperSubKategori" style="display: none;">
-                        <label class="form-label">Sub Kategori <small class="text-muted">(Khusus SOP)</small></label>
-                        <select name="sub_kategori" id="selectSubKategori" class="form-select">
-                            <option value="" disabled selected>Pilih Sub Bagian...</option>
-                            <option value="Sekretariat">Sekretariat</option>
-                            <option value="Sapra">Sapra</option>
-                            <option value="Damtan">Damtan</option>
+                        <label class="form-label">Bagian SOP</label>
+                        <select name="sub_kategori" class="form-select" required>
+                            <option value="" disabled selected>Pilih Bagian...</option>
                             <option value="Pencegahan">Pencegahan</option>
+                            <option value="Pemadaman Kebakaran">Pemadaman Kebakaran</option>
+                            <option value="Penyelamatan dan Evakuasi">Penyelamatan dan Evakuasi</option>
+                            <option value="Sarana dan Prasarana">Sarana dan Prasarana</option>
+                            <option value="Kepegawaian">Kepegawaian</option>
+                            <option value="Keuangan">Keuangan</option>
                         </select>
                     </div>
 
@@ -644,7 +629,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light border" data-bs-dismiss="modal" style="min-height: 44px; border-radius: 8px;">Batal</button>
                     <button type="submit" class="btn-primary-custom">
-                        <i class="fas fa-save"></i> Simpan Dokumen
+                        <i class="fas fa-save"></i> Simpan SOP
                     </button>
                 </div>
             </form>
@@ -699,25 +684,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         });
     });
 
-    /* ---------- LOGIK DYNAMIC SUB KATEGORI ---------- */
-    var katSelect = document.getElementById('selectKategori');
-    var subKatWrapper = document.getElementById('wrapperSubKategori');
-    var subKatSelect = document.getElementById('selectSubKategori');
-
-    if(katSelect && subKatWrapper && subKatSelect) {
-        katSelect.addEventListener('change', function() {
-            // Jika kategori yang dipilih adalah SOP, munculkan dropdown sub kategori
-            if(this.value === 'SOP') {
-                subKatWrapper.style.display = 'block';
-                subKatSelect.setAttribute('required', 'required'); // Wajib diisi
-            } else {
-                // Jika selain SOP, sembunyikan dan reset value-nya
-                subKatWrapper.style.display = 'none';
-                subKatSelect.removeAttribute('required');
-                subKatSelect.value = ''; // Kosongkan
-            }
-        });
-    }
 })();
 </script>
 </body>

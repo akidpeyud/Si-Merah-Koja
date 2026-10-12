@@ -56,6 +56,14 @@ Route::get('/perencanaan', function () { return view('programkerja.perencanaan')
 Route::get('/produkhukum', function () { return view('programkerja.produkhukum'); });
 Route::get('/sop', function () { return view('programkerja.sop'); });
 
+// Rute 6 Bagian SOP Baru
+Route::get('/sop/pencegahan', function () { return view('public.sop.pencegahan'); });
+Route::get('/sop/pemadaman', function () { return view('public.sop.pemadaman'); });
+Route::get('/sop/penyelamatan', function () { return view('public.sop.penyelamatan'); });
+Route::get('/sop/sarpras', function () { return view('public.sop.sarpras'); });
+Route::get('/sop/kepegawaian', function () { return view('public.sop.kepegawaian'); });
+Route::get('/sop/keuangan', function () { return view('public.sop.keuangan'); });
+
 // Informasi Layanan (Publik)
 Route::get('/informasi-layanan', [InformasiLayananController::class, 'index'])->name('informasi-layanan.index');
 Route::get('/informasi-sarana', [PublicController::class, 'informasiSarana']);

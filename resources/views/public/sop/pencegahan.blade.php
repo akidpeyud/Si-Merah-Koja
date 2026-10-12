@@ -5,27 +5,32 @@
 
     /* ------------------------------------------------------------
        PENGATURAN HALAMAN
-       Halaman ini dipakai bersama untuk 5 tab Program Kerja.
+       Tab disesuaikan untuk 6 Bagian SOP.
        ------------------------------------------------------------ */
     $tabs = [
-        'sotk'        => ['url' => '/sotk',        'label' => 'SOTK',         'ico' => 'fa-sitemap',       'judul' => 'Struktur Organisasi dan Tata Kerja (SOTK)'],
-        'sop'         => ['url' => '/sop',         'label' => 'SOP',          'ico' => 'fa-list-check',    'judul' => 'Standar Operasional Prosedur (SOP)'],
-        'perencanaan' => ['url' => '/perencanaan', 'label' => 'Perencanaan',  'ico' => 'fa-bullseye',      'judul' => 'Dokumen perencanaan'],
-        'pelaporan'   => ['url' => '/pelaporan',   'label' => 'Pelaporan',    'ico' => 'fa-file-lines',    'judul' => 'Dokumen pelaporan'],
-        'produkhukum' => ['url' => '/produkhukum', 'label' => 'Produk hukum', 'ico' => 'fa-scale-balanced','judul' => 'Produk hukum'],
+        'pencegahan'   => ['url' => '/sop/pencegahan',   'label' => 'Pencegahan',              'ico' => 'fa-shield-halved',       'judul' => 'SOP Pencegahan'],
+        'pemadaman'    => ['url' => '/sop/pemadaman',    'label' => 'Pemadaman Kebakaran',     'ico' => 'fa-fire-extinguisher',   'judul' => 'SOP Pemadaman Kebakaran'],
+        'penyelamatan' => ['url' => '/sop/penyelamatan', 'label' => 'Penyelamatan & Evakuasi', 'ico' => 'fa-life-ring',           'judul' => 'SOP Penyelamatan dan Evakuasi'],
+        'sarpras'      => ['url' => '/sop/sarpras',      'label' => 'Sarana & Prasarana',      'ico' => 'fa-warehouse',           'judul' => 'SOP Sarana dan Prasarana'],
+        'kepegawaian'  => ['url' => '/sop/kepegawaian',  'label' => 'Kepegawaian',             'ico' => 'fa-user-tie',            'judul' => 'SOP Kepegawaian'],
+        'keuangan'     => ['url' => '/sop/keuangan',     'label' => 'Keuangan',                'ico' => 'fa-coins',               'judul' => 'SOP Keuangan'],
     ];
-    $tab_aktif = 'sop';
+    
+    // Set tab aktif
+    $tab_aktif = 'pencegahan';
 
     // ============================================================
-    // AMBIL DATA DARI DATABASE (DENGAN ROUTE CONTROLLER)
+    // AMBIL DATA DARI DATABASE KHUSUS SOP PENCEGAHAN
     // ============================================================
-    $dokumenDB = Dokumen::where('kategori', 'SOP')->latest()->get();
+    $dokumenDB = Dokumen::where('kategori', 'SOP')
+                        ->where('sub_kategori', 'Pencegahan')
+                        ->latest()
+                        ->get();
 
     $dokumen_list = [];
     foreach ($dokumenDB as $doc) {
         $dokumen_list[] = [
-            'judul'        => $doc->sub_kategori ? "[{$doc->sub_kategori}] {$doc->judul_dokumen}" : $doc->judul_dokumen,
-            // Hapus kata /internal/program-kerja/ dan ganti menjadi /dokumen/
+            'judul'        => $doc->judul_dokumen,
             'url'          => url('/dokumen/view/' . $doc->id), 
             'url_download' => url('/dokumen/download/' . $doc->id),
             'ext'          => pathinfo($doc->nama_file, PATHINFO_EXTENSION) 
@@ -34,6 +39,7 @@
     
     $jumlah = count($dokumen_list);
 
+    // Konfigurasi Kontak Default
     $no_whatsapp    = "628117113113";
     $no_telepon     = "074141171";
     $telepon_tampil = "(0741) 41171";
@@ -50,7 +56,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
     <meta name="description" content="<?= $h($tabs[$tab_aktif]['judul']) ?> Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.">
-    <title><?= $h($tabs[$tab_aktif]['label']) ?> - Program kerja | SIMERAH KOJA</title>
+    <title><?= $h($tabs[$tab_aktif]['label']) ?> - SOP | SIMERAH KOJA</title>
 
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -189,23 +195,65 @@
         @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 
         .page-body { background: var(--paper); padding-bottom: clamp(64px, 9vw, 112px); }
-        .tabs-wrap { position: relative; z-index: 2; margin-top: -30px; }
+
+        /* =======================================================
+           TABS: selalu SATU BARIS
+           - Layar lebar (>= 1200px): dipadatkan agar semua 6 tab muat
+             tanpa scroll.
+           - Layar lebih sempit: tetap satu baris, bisa digeser, dan
+             tab aktif otomatis digulir ke tengah (lihat JS).
+           ======================================================= */
+        .tabs-wrap {
+            position: relative;
+            z-index: 2;
+            margin-top: -30px;
+            display: flex;
+            justify-content: center;
+        }
         .tabs {
-            display: flex; gap: 6px; padding: 7px; width: max-content; max-width: 100%;
-            background: #fff; border: 1px solid var(--line); border-radius: 999px;
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: flex-start; /* jangan center: mencegah tab pertama terpotong saat overflow */
+            gap: 4px;
+            padding: 6px;
+            min-width: 0;
+            max-width: 100%;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 999px;
             box-shadow: 0 18px 36px -20px rgba(13,27,42,.45);
-            overflow-x: auto; scrollbar-width: none;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x proximity;
         }
         .tabs::-webkit-scrollbar { display: none; }
+        .tabs::after { content: ''; flex: 0 0 1px; } /* ruang di ujung kanan saat di-scroll */
+
         .tab {
-            display: inline-flex; align-items: center; gap: 10px; white-space: nowrap;
-            padding: 11px 20px; border-radius: 999px; font-weight: 600; font-size: .92rem; color: var(--steel);
+            flex: 0 0 auto;
+            display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+            padding: 10px 15px; border-radius: 999px; font-weight: 600; font-size: .88rem; color: var(--steel);
+            scroll-snap-align: center;
             transition: background .2s, color .2s;
         }
-        .tab i { font-size: .95rem; }
+        .tab i { font-size: .9rem; }
         .tab:hover { background: var(--paper); color: var(--ink); }
         .tab[aria-current="page"] { background: var(--ink); color: #fff; }
         .tab[aria-current="page"] i { color: var(--amber); }
+
+        /* Layar lebar: semua tab muat, rata tengah, tanpa scroll */
+        @media (min-width: 1200px) {
+            .tabs { justify-content: center; overflow: visible; }
+            .tabs::after { display: none; }
+        }
+
+        /* Layar sempit: tab lebih ringkas & memenuhi lebar kontainer */
+        @media (max-width: 991px) {
+            .tabs-wrap { justify-content: flex-start; }
+            .tabs { width: 100%; }
+            .tab { padding: 10px 16px; }
+        }
 
         .doc-layout { display: grid; gap: 24px; margin-top: 28px; }
 
@@ -339,11 +387,14 @@
                 </ul>
             </li>
             <li class="has-drop current">
-                <button class="menu-trigger" type="button" aria-expanded="false">Program kerja <i class="fas fa-chevron-down"></i></button>
+                <button class="menu-trigger" type="button" aria-expanded="false">SOP <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <?php foreach (['sotk', 'perencanaan', 'pelaporan', 'sop', 'produkhukum'] as $k): ?>
-                        <li><a href="<?= $h($tabs[$k]['url']) ?>" <?php if ($k === $tab_aktif): ?> aria-current="page" <?php endif; ?>><?= $h($tabs[$k]['label']) ?></a></li>
-                    <?php endforeach; ?>
+                    <li><a href="/sop/pencegahan">Pencegahan</a></li>
+                    <li><a href="/sop/pemadaman">Pemadaman Kebakaran</a></li>
+                    <li><a href="/sop/penyelamatan">Penyelamatan dan Evakuasi</a></li>
+                    <li><a href="/sop/sarpras">Sarana dan Prasarana</a></li>
+                    <li><a href="/sop/kepegawaian">Kepegawaian</a></li>
+                    <li><a href="/sop/keuangan">Keuangan</a></li>
                 </ul>
             </li>
             <li class="has-drop">
@@ -396,18 +447,19 @@
         <nav aria-label="Breadcrumb" class="rise">
             <ol class="crumbs">
                 <li><a href="/">Beranda</a></li>
-                <li><a href="/sotk">Program kerja</a></li>
+                <li><a href="/sop">SOP</a></li>
                 <li><span aria-current="page"><?= $h($tabs[$tab_aktif]['label']) ?></span></li>
             </ol>
         </nav>
-        <h1 class="rise d1">Program kerja</h1>
-        <p class="rise d2">Struktur organisasi, prosedur, perencanaan, pelaporan, dan produk hukum Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+        <h1 class="rise d1">Standar Operasional Prosedur</h1>
+        <p class="rise d2">Standar Operasional Prosedur (SOP) bagian <?= $h($tabs[$tab_aktif]['label']) ?> Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
 </section>
 
 <div class="page-body">
     <div class="wrap tabs-wrap">
-        <nav class="tabs" aria-label="Kategori program kerja">
+        <!-- Tab Navigasi Horizontal -->
+        <nav class="tabs" aria-label="Kategori SOP">
             <?php foreach ($tabs as $key => $tab): ?>
                 <a class="tab" href="<?= $h($tab['url']) ?>" <?php if ($key === $tab_aktif): ?> aria-current="page" <?php endif; ?>>
                     <i class="fas <?= $h($tab['ico']) ?>"></i> <?= $h($tab['label']) ?>
@@ -449,7 +501,6 @@
                         $url_download = (string) ($d['url_download'] ?? $url);
                         $ada          = $url !== '';
                         
-                        // Perbaikan: Ambil eksistensi file langsung dari array yang di-passing Controller, bukan menebak dari URL route
                         $ext          = $ada ? strtoupper($d['ext'] ?? 'PDF') : '';
                         $ext          = $ext ?: 'PDF';
                         $ico          = ['PDF' => 'fa-file-pdf', 'DOC' => 'fa-file-word', 'DOCX' => 'fa-file-word', 'XLS' => 'fa-file-excel', 'XLSX' => 'fa-file-excel'][$ext] ?? 'fa-file-lines';
@@ -467,7 +518,6 @@
                             <p class="doc-meta"><?= $ada ? 'Dokumen ' . $h($ext) : 'Berkas belum diunggah' ?></p>
                         </div>
                         <?php if ($ada): ?>
-                        <!-- Perbaikan: Tombol menggunakan Route View dan Route Download, serta hapus atribut native download -->
                         <div class="doc-actions">
                             <a class="tool" href="<?= $h($url) ?>" target="_blank" rel="noopener" aria-label="Buka <?= $h($judul) ?>"><i class="fas fa-arrow-up-right-from-square"></i> Buka</a>
                             <a class="tool" href="<?= $h($url_download) ?>" aria-label="Unduh <?= $h($judul) ?>"><i class="fas fa-download"></i> Unduh</a>
@@ -671,6 +721,13 @@
             if (count) count.textContent = n + ' dokumen';
             none.hidden = n !== 0;
         });
+    }
+
+    // Gulirkan tab aktif ke tengah agar tab (mis. "Keuangan") selalu terlihat di layar kecil
+    var tabsEl = document.querySelector('.tabs');
+    var activeTab = document.querySelector('.tab[aria-current="page"]');
+    if (tabsEl && activeTab && tabsEl.scrollWidth > tabsEl.clientWidth) {
+        tabsEl.scrollLeft = activeTab.offsetLeft - (tabsEl.clientWidth - activeTab.offsetWidth) / 2;
     }
 })();
 </script>
