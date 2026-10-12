@@ -7,13 +7,6 @@
     $wa_link   = "https://wa.me/" . $no_whatsapp . "?text=" . $pesan_wa;
     $maps_link = "https://www.google.com/maps/place/6PC59JJ2%2BQ76/@-1.6180875,103.6006406,871m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-1.6180875!4d103.6006406?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D";
     $play_store_url = "";
-
-    // Ambil data Edu Damkar (hanya yang memiliki youtube_id)
-    $listEduDamkar = isset($daftar_edu_damkar) && count($daftar_edu_damkar)
-        ? collect($daftar_edu_damkar)->filter(fn($item) => !empty($item->youtube_id))
-        : (\Illuminate\Support\Facades\Schema::hasTable('edu_damkar')
-            ? \App\Models\EduDamkar::whereNotNull('youtube_id')->where('youtube_id', '!=', '')->latest()->get()
-            : collect());
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -21,8 +14,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-    <meta name="description" content="Kumpulan video edukasi, tindakan praktis, dan saran dari petugas Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.">
-    <title>Edu Damkar - Kabar Damkar | SIMERAH KOJA</title>
+    <meta name="description" content="Indeks Kepuasan Masyarakat (IKM) Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi. Lihat hasil survei dan sampaikan penilaian Anda.">
+    <title>Indeks Kepuasan Masyarakat - Galery | SIMERAH KOJA</title>
 
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -67,7 +60,7 @@
         :focus-visible{outline:3px solid var(--amber);outline-offset:3px;border-radius:7px}
         .wrap{width:min(var(--wrap),calc(100% - 40px));margin:auto}
 
-        /* ================= HEADER ================= */
+        /* ================= HEADER (disamakan dengan homepage) ================= */
         .site-header{
             position:sticky;top:0;z-index:60;
             background:rgba(8,22,35,.88);
@@ -76,7 +69,7 @@
             border-bottom:1px solid rgba(255,255,255,.08);
         }
         .nav{
-            width:min(1240px,calc(100% - 32px));
+            width:min(var(--wrap),calc(100% - 40px));
             height:var(--header);
             margin:auto;
             display:flex;
@@ -86,7 +79,6 @@
         }
         .brand{display:flex;align-items:center;gap:9px;flex:none}
         .brand img{height:37px;width:auto;object-fit:contain}
-        .brand img+img{padding-left:9px;border-left:1px solid rgba(255,255,255,.16)}
 
         .menu{display:flex;align-items:center;gap:2px}
         .menu>li{position:relative}
@@ -112,9 +104,25 @@
             border-radius:16px;box-shadow:0 24px 55px rgba(0,0,0,.35)
         }
         .dropdown::before{content:"";position:absolute;left:0;right:0;top:-10px;height:10px}
-        .dropdown a{display:block;padding:10px 13px;border-radius:10px;color:rgba(255,255,255,.84);font-size:.9rem}
-        .dropdown a:hover,.dropdown a[aria-current=page]{background:rgba(255,255,255,.09);color:#fff}
+        .dropdown a,.sub-trigger{display:block;padding:10px 13px;border-radius:10px;color:rgba(255,255,255,.84);font-size:.9rem}
+        .dropdown a:hover,.dropdown a[aria-current=page],.sub-trigger:hover,.has-sub.open>.sub-trigger,.has-sub.current>.sub-trigger{background:rgba(255,255,255,.09);color:#fff}
         .has-drop.open .dropdown{display:block}
+
+        /* Submenu (Galery > Berita) */
+        .has-sub{position:relative}
+        .sub-trigger{
+            width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;
+            font-weight:400
+        }
+        .sub-trigger i{font-size:.62rem;transition:transform .2s}
+        .submenu{
+            display:none;position:absolute;top:-7px;left:calc(100% + 14px);
+            min-width:215px;padding:7px;
+            background:#10283e;border:1px solid rgba(255,255,255,.1);
+            border-radius:16px;box-shadow:0 24px 55px rgba(0,0,0,.35)
+        }
+        .submenu::before{content:"";position:absolute;top:0;bottom:0;left:-16px;width:16px}
+        .has-sub.open>.submenu{display:block}
 
         .nav-toggle{display:none;width:44px;height:44px;border-radius:12px;color:#fff;font-size:1.1rem}
         .nav-toggle:hover{background:rgba(255,255,255,.1)}
@@ -215,7 +223,7 @@
 
         /* ================= CONTENT ================= */
         .page-body{background:var(--paper);min-height:50vh;padding-bottom:95px}
-        
+
         .content-head{
             display:flex;align-items:end;justify-content:space-between;gap:20px;
             margin:48px 0 22px
@@ -331,6 +339,77 @@
         .empty-filter i{font-size:2.8rem;color:#c8d1db;margin-bottom:12px}
         .empty-filter h2{font-family:var(--display);color:var(--ink);margin-bottom:5px}
 
+        /* ================= IKM ================= */
+        .ikm-page .content-head{margin-top:48px}
+        .ikm-page .content-head:first-child{margin-top:48px}
+        .alert{display:flex;align-items:center;gap:10px;margin-top:36px;padding:14px 18px;border-radius:14px;font-size:.92rem;font-weight:600}
+        .alert.ok{background:#e7f7ee;border:1px solid #b8e6cb;color:#13633a}
+        .alert.err{margin:0 0 20px;background:#fdecea;border:1px solid #f6c3be;color:#a3231a}
+        .alert.ok+.content-head{margin-top:28px}
+
+        .year-pills{display:inline-flex;gap:4px;padding:5px;background:#fff;border:1px solid var(--line);border-radius:999px}
+        .year-pills a{padding:7px 16px;border-radius:999px;font-size:.84rem;font-weight:700;color:var(--steel);transition:.2s}
+        .year-pills a:hover{background:var(--soft);color:var(--ink)}
+        .year-pills a[aria-current=page]{background:var(--ink);color:#fff}
+
+        .ikm-summary{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:22px;align-items:stretch}
+        .ikm-score,.ikm-bars,.survey-form{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 7px 24px rgba(13,27,42,.055)}
+        .ikm-score{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;padding:34px 24px}
+        .ikm-label{font-size:.8rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--steel)}
+        .ikm-num{font-family:var(--display);font-weight:800;font-size:clamp(3.4rem,8vw,5rem);line-height:1;letter-spacing:-.04em}
+        .ikm-none{font-family:var(--display);font-size:1.5rem}
+        .ikm-empty-ico{font-size:2.6rem;color:#c8d1db;margin-bottom:6px}
+        .ikm-resp{display:inline-flex;align-items:center;gap:8px;color:var(--steel);font-size:.88rem;font-weight:600}
+        .ikm-mutu{margin-top:6px;padding:7px 16px;border-radius:999px;font-size:.84rem;font-weight:800;color:#fff}
+        .mutu-a{background:#1f9d5c}.mutu-b{background:#2f7fd1}.mutu-c{background:#e59a12}.mutu-d{background:var(--signal)}
+        .mutu-legend{margin-top:20px;padding-top:18px;border-top:1px solid var(--soft);width:100%;display:grid;gap:7px;text-align:left;font-size:.8rem;color:var(--steel)}
+        .mutu-legend li{display:flex;align-items:center;gap:10px}
+        .mutu-legend b{display:grid;place-items:center;width:22px;height:22px;border-radius:7px;color:#fff;font-size:.75rem}
+
+        .ikm-bars{padding:28px}
+        .ikm-bars h3{font-family:var(--display);font-size:1.15rem;letter-spacing:-.02em;margin-bottom:18px}
+        .ikm-bars h3 small{font-family:var(--body);font-weight:600;font-size:.76rem;color:var(--steel);margin-left:6px}
+        .bar-row+.bar-row{margin-top:14px}
+        .bar-top{display:flex;justify-content:space-between;gap:14px;font-size:.88rem;margin-bottom:6px}
+        .bar-top span{color:var(--ink-2);font-weight:600}
+        .bar-top b{font-variant-numeric:tabular-nums}
+        .bar-track{height:9px;border-radius:99px;background:var(--soft);overflow:hidden}
+        .bar-track i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--amber),var(--signal));transition:width .8s cubic-bezier(.2,.75,.25,1)}
+
+        .survey-form{padding:clamp(20px,4vw,36px);display:grid;gap:18px}
+        .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+        .field{display:grid;gap:7px}
+        .field>span{font-size:.86rem;font-weight:700}
+        .field em{font-style:normal;font-weight:500;color:var(--steel)}
+        .field input,.field select,.field textarea{
+            width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;
+            background:#fff;font:inherit;color:var(--ink);transition:border-color .2s,box-shadow .2s
+        }
+        .field textarea{resize:vertical;min-height:100px}
+        .field input:focus,.field select:focus,.field textarea:focus{outline:0;border-color:var(--signal);box-shadow:0 0 0 4px rgba(229,57,45,.12)}
+
+        .q{border:0;padding:18px;border-radius:16px;background:var(--paper);min-width:0}
+        .q legend{padding:0 4px;font-weight:700;font-size:.95rem;line-height:1.4;float:left;width:100%;margin-bottom:12px}
+        .q legend b{display:inline-grid;place-items:center;width:24px;height:24px;margin-right:8px;border-radius:8px;background:var(--ink);color:#fff;font-size:.75rem}
+        .opts{clear:both;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+        .opt{position:relative;cursor:pointer}
+        .opt input{position:absolute;opacity:0;inset:0;cursor:pointer}
+        .opt span{display:block;padding:11px 8px;text-align:center;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:.85rem;font-weight:700;color:var(--steel);transition:.2s}
+        .opt:hover span{border-color:#b9c4d0;color:var(--ink)}
+        .opt input:checked+span{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:0 6px 14px rgba(13,27,42,.18)}
+        .opt input:focus-visible+span{outline:3px solid var(--amber);outline-offset:2px}
+
+        .btn-send{
+            justify-self:start;display:inline-flex;align-items:center;gap:10px;
+            padding:14px 28px;border-radius:999px;background:var(--signal);color:#fff;
+            font-weight:800;font-size:.95rem;box-shadow:0 12px 26px -8px rgba(229,57,45,.55);transition:.2s
+        }
+        .btn-send:hover{background:var(--signal-dark);transform:translateY(-2px)}
+
+        @media (max-width:900px){.ikm-summary{grid-template-columns:1fr}}
+        @media (max-width:640px){.form-row{grid-template-columns:1fr}.opts{grid-template-columns:repeat(2,minmax(0,1fr))}.btn-send{justify-self:stretch;justify-content:center}}
+
         /* ================= MODAL DIALOG (YOUTUBE) ================= */
         dialog{
             border:0;padding:0;background:transparent;
@@ -406,7 +485,16 @@
         .sos-sheet .wa i{color:#25d366}.sos-sheet .tel i{color:#38bdf8}.sos-sheet .n112 i{color:#f87171}
 
         /* ================= RESPONSIVE ================= */
-        @media (hover:hover) and (min-width:992px){.has-drop:hover .dropdown{display:block}}
+        @media (hover:hover) and (min-width:992px){
+            .has-drop:hover .dropdown{display:block}
+            .has-sub:hover>.submenu{display:block}
+        }
+        /* Layar desktop sempit: submenu dibuka ke kiri agar tidak keluar layar */
+        @media (min-width:992px) and (max-width:1500px){
+            .submenu{left:auto;right:calc(100% + 14px)}
+            .submenu::before{left:auto;right:-16px}
+            .sub-trigger i{transform:rotate(180deg)}
+        }
         @media (max-width:1100px){
             .menu-link,.menu-trigger{padding-left:10px;padding-right:10px;font-size:.82rem}
             .media-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -426,6 +514,10 @@
             .menu-link,.menu-trigger{width:100%;justify-content:space-between;padding:13px 14px;border-radius:13px;font-size:.95rem}
             .dropdown{position:static;margin:1px 0 7px 10px;box-shadow:none;background:transparent;border:0;border-left:2px solid rgba(255,255,255,.12);border-radius:0}
             .dropdown::before{display:none}
+            .submenu{position:static;margin:1px 0 4px 10px;min-width:0;box-shadow:none;background:transparent;border:0;border-left:2px solid rgba(255,255,255,.12);border-radius:0}
+            .submenu::before{display:none}
+            .sub-trigger i{transform:rotate(90deg)}
+            .has-sub.open>.sub-trigger i{transform:rotate(-90deg)}
             .menu .btn-login{margin:7px 0 0;justify-content:center;padding:13px}
             .page-hero{padding:43px 0 78px}
             .media-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -437,7 +529,6 @@
         @media (max-width:700px){
             .wrap{width:min(calc(100% - 28px),1180px)}
             .brand img{height:32px}
-            .brand img+img{padding-left:7px}
             .page-hero h1{font-size:clamp(2.8rem,15vw,4.5rem)}
             .footer{padding-top:60px}
             .footer-grid{grid-template-columns:1fr;gap:38px}
@@ -450,7 +541,6 @@
         }
         @media (max-width:390px){
             .brand img{height:28px}
-            .brand img+img{padding-left:5px}
             .media-body{padding:16px}
             .media-thumb{aspect-ratio:16/10}
         }
@@ -490,7 +580,7 @@
                     <li><a href="/produkhukum">Produk hukum</a></li>
                 </ul>
             </li>
-             <li class="has-drop">
+            <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
@@ -500,17 +590,28 @@
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
             </li>
+
+            {{-- Menu Galery: sama seperti di homepage (IKM, Pengumuman, Berita > ...) --}}
             <li class="has-drop current">
-                <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
+                <button class="menu-trigger" type="button" aria-expanded="false">Galery <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                   <li><a href="/edu-damkar" aria-current="page">Edu Damkar</a></li>
-                   <li><a href="/infografis">Infografis</a></li>
-                    <li><a href="/media-informasi">Media Informasi</a></li>
-                    <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
+                    {{-- GANTI href IKM & Pengumuman sesuai yang dipakai di homepage --}}
+                    <li><a href="/ikm" aria-current="page">IKM (Indeks Kepuasan Masyarakat)</a></li>
+                    <li><a href="/pengumuman">Pengumuman</a></li>
+                    <li class="has-sub">
+                        <button class="sub-trigger" type="button" aria-expanded="false">Berita <i class="fas fa-chevron-right"></i></button>
+                        <ul class="submenu">
+                            <li><a href="/edu-damkar">Edu Damkar</a></li>
+                            <li><a href="/infografis">Infografis</a></li>
+                            <li><a href="/media-informasi">Media Informasi</a></li>
+                            <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
+
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
-                       @if(session()->has('pemohon_id'))
+            @if(session()->has('pemohon_id'))
                 <li class="has-drop">
                     <button class="menu-trigger btn-login" type="button" aria-expanded="false">
                         <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
@@ -542,99 +643,137 @@
         <nav aria-label="Breadcrumb" class="rise">
             <ol class="crumbs">
                 <li><a href="/">Beranda</a></li>
-                <li><a href="#">Kabar Damkar</a></li>
-                <li><span aria-current="page">Edu Damkar</span></li>
+                <li><a href="#">Galery</a></li>
+                <li><span aria-current="page">Indeks Kepuasan Masyarakat</span></li>
             </ol>
         </nav>
-        <div class="hero-kicker rise"><i class="fas fa-fire-extinguisher"></i> Edukasi &amp; Pencegahan</div>
-        <h1 class="rise d1">Edu Damkar</h1>
-        <p class="rise d2">Kumpulan video edukasi, tindakan praktis, dan saran dari petugas untuk mencegah serta menghadapi keadaan darurat kebakaran.</p>
+        <div class="hero-kicker rise"><i class="fas fa-face-smile"></i> Survei Pelayanan Publik</div>
+        <h1 class="rise d1">Indeks Kepuasan Masyarakat</h1>
+        <p class="rise d2">Penilaian Anda terhadap pelayanan Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi membantu kami terus berbenah.</p>
         <div class="hero-line rise d3"></div>
     </div>
 </section>
 
-<!-- ==================== SUB NAVIGATION (PILL MENU) ==================== -->
-<div class="page-nav-wrap rise d3">
-    <nav class="page-nav" aria-label="Sub menu Kabar Damkar">
-        <a href="/edu-damkar" class="active"><i class="fas fa-video"></i> Edu Damkar</a>
-        <a href="/infografis"><i class="fas fa-image"></i> Infografis</a>
-        <a href="/media-informasi"><i class="fas fa-newspaper"></i> Media Informasi</a>
-        <a href="/ujung-ujung-damkar"><i class="fas fa-fire-extinguisher"></i> Ujung-ujung Damkar</a>
-    </nav>
-</div>
-
 <!-- ==================== BODY & KONTEN ==================== -->
-<div class="page-body">
-    <div class="wrap media-layout">
-        <div class="content-head">
+<div class="page-body ikm-page">
+    <div class="wrap">
+
+        @if(session('success'))
+            <div class="alert ok" role="status"><i class="fas fa-circle-check"></i> {{ session('success') }}</div>
+        @endif
+
+        <!-- ===== HASIL SURVEI ===== -->
+        <div class="content-head" id="hasil">
             <div>
-                <h2>Video edukasi terbaru</h2>
-                <p>Klik pada video untuk menonton panduan keselamatan secara langsung.</p>
+                <h2>Hasil survei kepuasan</h2>
+                <p>Periode tahun {{ $tahun }}. Nilai dihitung dari 9 unsur pelayanan menurut Permenpan RB No. 14 Tahun 2017.</p>
+            </div>
+            @if(count($daftar_tahun) > 1)
+                <nav class="year-pills" aria-label="Pilih tahun">
+                    @foreach($daftar_tahun as $th)
+                        <a href="{{ route('ikm.index', ['tahun' => $th]) }}" @if($th == $tahun) aria-current="page" @endif>{{ $th }}</a>
+                    @endforeach
+                </nav>
+            @endif
+        </div>
+
+        <section class="ikm-summary">
+            <div class="ikm-score">
+                @if($jumlah > 0)
+                    <span class="ikm-label">Nilai IKM</span>
+                    <strong class="ikm-num">{{ number_format($ikm, 2, ',', '.') }}</strong>
+                    <span class="ikm-mutu mutu-{{ strtolower($mutu['kode']) }}">Mutu {{ $mutu['kode'] }} &middot; {{ $mutu['nama'] }}</span>
+                    <span class="ikm-resp"><i class="fas fa-users"></i> {{ number_format($jumlah, 0, ',', '.') }} responden</span>
+                @else
+                    <i class="fas fa-chart-simple ikm-empty-ico"></i>
+                    <strong class="ikm-none">Belum ada data</strong>
+                    <span class="ikm-resp">Hasil akan tampil setelah ada responden pada tahun {{ $tahun }}.</span>
+                @endif
+
+                <ul class="mutu-legend" aria-label="Keterangan mutu">
+                    <li><b class="mutu-a">A</b> 88,31 &ndash; 100 &middot; Sangat baik</li>
+                    <li><b class="mutu-b">B</b> 76,61 &ndash; 88,30 &middot; Baik</li>
+                    <li><b class="mutu-c">C</b> 65,00 &ndash; 76,60 &middot; Kurang baik</li>
+                    <li><b class="mutu-d">D</b> 25,00 &ndash; 64,99 &middot; Tidak baik</li>
+                </ul>
+            </div>
+
+            <div class="ikm-bars">
+                <h3>Nilai per unsur pelayanan <small>skala 1 &ndash; 4</small></h3>
+                @foreach($unsur as $i => $label)
+                    @php
+                        $nilai = $nrr[$i] ?? null;
+                        $pct = $nilai ? ($nilai / 4) * 100 : 0;
+                    @endphp
+                    <div class="bar-row">
+                        <div class="bar-top">
+                            <span>{{ $label }}</span>
+                            <b>{{ $nilai !== null ? number_format($nilai, 2, ',', '.') : '-' }}</b>
+                        </div>
+                        <div class="bar-track"><i style="width: {{ $pct }}%"></i></div>
+                    </div>
+                @endforeach
+            </div>
+        </section>
+
+        <!-- ===== FORM SURVEI ===== -->
+        <div class="content-head" id="survei">
+            <div>
+                <h2>Isi survei kepuasan</h2>
+                <p>Survei bersifat anonim. Nama boleh dikosongkan, dan hanya butuh sekitar 2 menit.</p>
             </div>
         </div>
 
-        <div class="media-grid" id="eduGrid">
-            @forelse($listEduDamkar as $v)
-                @php
-                    $ytId = $v->youtube_id;
-                    $thumbUrl = "https://i.ytimg.com/vi/{$ytId}/hqdefault.jpg";
-                @endphp
+        <form class="survey-form" method="POST" action="{{ route('ikm.store') }}">
+            @csrf
+            <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
 
-                <button type="button"
-                        class="media-card"
-                        data-yt="{{ $ytId }}"
-                        data-title="{{ $v->judul }}">
-                    <div class="media-thumb">
-                        <span class="media-tag">Video Edukasi</span>
-                        <span class="media-source" aria-hidden="true">
-                            <i class="fab fa-youtube"></i>
-                        </span>
-                        <img src="{{ $thumbUrl }}"
-                             alt="{{ $v->judul }}"
-                             loading="lazy"
-                             onerror="this.src='/images/placeholder.jpg'">
-                        <span class="photo-play" aria-hidden="true">
-                            <i class="fas fa-play"></i>
-                        </span>
+            @if($errors->any())
+                <div class="alert err" role="alert"><i class="fas fa-triangle-exclamation"></i> {{ $errors->first() }}</div>
+            @endif
+
+            <div class="form-row">
+                <label class="field">
+                    <span>Nama <em>(opsional)</em></span>
+                    <input type="text" name="nama" value="{{ old('nama') }}" maxlength="100" placeholder="Boleh dikosongkan">
+                </label>
+                <label class="field">
+                    <span>Layanan yang Anda gunakan</span>
+                    <select name="jenis_layanan" required>
+                        <option value="" disabled {{ old('jenis_layanan') ? '' : 'selected' }}>Pilih layanan</option>
+                        @foreach($jenis_layanan as $jl)
+                            <option value="{{ $jl }}" {{ old('jenis_layanan') === $jl ? 'selected' : '' }}>{{ $jl }}</option>
+                        @endforeach
+                    </select>
+                </label>
+            </div>
+
+            @foreach($unsur as $i => $label)
+                <fieldset class="q">
+                    <legend><b>{{ $i }}</b> Bagaimana penilaian Anda terhadap {{ mb_strtolower($label) }}?</legend>
+                    <div class="opts">
+                        @foreach([1 => 'Tidak baik', 2 => 'Kurang baik', 3 => 'Baik', 4 => 'Sangat baik'] as $val => $txt)
+                            <label class="opt">
+                                <input type="radio" name="u{{ $i }}" value="{{ $val }}" {{ (string) old('u' . $i) === (string) $val ? 'checked' : '' }} required>
+                                <span>{{ $txt }}</span>
+                            </label>
+                        @endforeach
                     </div>
-                    <div class="media-body">
-                        <h3>{{ $v->judul }}</h3>
-                        <div class="media-meta">
-                            @if(!empty($v->created_at) || !empty($v->tanggal))
-                                <span>
-                                    <i class="far fa-calendar-alt"></i>
-                                    {{ \Carbon\Carbon::parse($v->tanggal ?? $v->created_at)->locale('id')->translatedFormat('d M Y') }}
-                                </span>
-                            @endif
-                            <span>
-                                <i class="fab fa-youtube"></i>
-                                YouTube Damkar
-                            </span>
-                        </div>
-                        <span class="media-link">
-                            Tonton video
-                            <i class="fas fa-play"></i>
-                        </span>
-                    </div>
-                </button>
-            @empty
-                <div class="empty-filter">
-                    <i class="fas fa-video-slash"></i>
-                    <h2>Belum ada video edukasi</h2>
-                    <p>Video edukasi akan tampil di sini setelah diunggah oleh petugas.</p>
-                </div>
-            @endforelse
-        </div>
+                </fieldset>
+            @endforeach
+
+            <label class="field">
+                <span>Saran dan masukan <em>(opsional)</em></span>
+                <textarea name="saran" rows="4" maxlength="1000" placeholder="Tulis saran Anda untuk perbaikan pelayanan">{{ old('saran') }}</textarea>
+            </label>
+
+            <button type="submit" class="btn-send"><i class="fas fa-paper-plane"></i> Kirim penilaian</button>
+        </form>
+
     </div>
 </div>
 
 </main>
-
-<!-- ==================== MODAL DIALOG (YOUTUBE) ==================== -->
-<dialog id="mediaDialog" aria-label="Pemutar video edukasi">
-    <button type="button" class="dlg-close" aria-label="Tutup"><i class="fas fa-times"></i></button>
-    <div class="video-frame" id="dialogContent"></div>
-</dialog>
 
 <!-- ==================== FOOTER ==================== -->
 <footer class="footer">
@@ -712,6 +851,16 @@
     var header = document.getElementById('siteHeader');
     var toggle = header.querySelector('.nav-toggle');
     var drops = header.querySelectorAll('.has-drop');
+    var subs = header.querySelectorAll('.has-sub');
+
+    function closeSubs(except) {
+        subs.forEach(function (li) {
+            if (li !== except) {
+                li.classList.remove('open');
+                li.querySelector('.sub-trigger').setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
 
     function closeDrops(except) {
         drops.forEach(function (li) {
@@ -720,6 +869,7 @@
                 li.querySelector('.menu-trigger').setAttribute('aria-expanded', 'false');
             }
         });
+        if (!except) closeSubs(null);
     }
 
     toggle.addEventListener('click', function () {
@@ -738,44 +888,27 @@
         });
     });
 
+    subs.forEach(function (li) {
+        var btn = li.querySelector('.sub-trigger');
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var open = li.classList.toggle('open');
+            btn.setAttribute('aria-expanded', open);
+            closeSubs(li);
+        });
+    });
+
     document.addEventListener('click', function (e) {
         if (!e.target.closest('.has-drop')) closeDrops(null);
     });
 
-    header.querySelectorAll('.dropdown a, .menu-link').forEach(function (a) {
+    header.querySelectorAll('.dropdown a, .submenu a, .menu-link').forEach(function (a) {
         a.addEventListener('click', function () {
             header.classList.remove('nav-open');
             toggle.setAttribute('aria-expanded', 'false');
             toggle.querySelector('i').className = 'fas fa-bars';
             closeDrops(null);
         });
-    });
-
-    /* ---------- Modal Dialog (Video YouTube) ---------- */
-    var mDialog = document.getElementById('mediaDialog');
-    var dContent = document.getElementById('dialogContent');
-    var cards = document.querySelectorAll('#eduGrid .media-card');
-
-    cards.forEach(function (card) {
-        card.addEventListener('click', function () {
-            var ytId = card.getAttribute('data-yt');
-            var title = card.getAttribute('data-title') || 'Video Edukasi';
-
-            if (ytId) {
-                dContent.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + ytId + '?autoplay=1" title="' + title.replace(/"/g, '&quot;') + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
-                mDialog.showModal();
-            }
-        });
-    });
-
-    function closeDialog() {
-        dContent.innerHTML = '';
-        mDialog.close();
-    }
-
-    mDialog.querySelector('.dlg-close').addEventListener('click', closeDialog);
-    mDialog.addEventListener('click', function (e) {
-        if (e.target === mDialog) closeDialog();
     });
 
     document.addEventListener('keydown', function (e) {

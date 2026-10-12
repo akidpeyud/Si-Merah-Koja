@@ -7,15 +7,6 @@
     $wa_link   = "https://wa.me/" . $no_whatsapp . "?text=" . $pesan_wa;
     $maps_link = "https://www.google.com/maps/place/6PC59JJ2%2BQ76/@-1.6180875,103.6006406,871m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-1.6180875!4d103.6006406?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D";
     $play_store_url = "";
-
-    // Fungsi pembantu untuk icon sumber sosmed
-    $ikonSumber = function ($sumber) {
-        $s = strtolower($sumber ?? '');
-        if (str_contains($s, 'instagram')) return 'fab fa-instagram';
-        if (str_contains($s, 'youtube'))   return 'fab fa-youtube';
-        if (str_contains($s, 'tiktok'))    return 'fab fa-tiktok';
-        return 'fas fa-share-nodes';
-    };
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -23,8 +14,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-    <meta name="description" content="Kabar terbaru dari media sosial Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.">
-    <title>Media Informasi - Kabar Damkar | SIMERAH KOJA</title>
+    <meta name="description" content="{{ \Illuminate\Support\Str::limit(strip_tags($pengumuman->isi), 150) }}">
+    <title>{{ $pengumuman->judul }} - Pengumuman | SIMERAH KOJA</title>
 
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -65,11 +56,11 @@
         img{max-width:100%;display:block}
         a{color:inherit;text-decoration:none}
         ul,ol{list-style:none}
-        button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+        button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
         :focus-visible{outline:3px solid var(--amber);outline-offset:3px;border-radius:7px}
         .wrap{width:min(var(--wrap),calc(100% - 40px));margin:auto}
 
-        /* ================= HEADER ================= */
+        /* ================= HEADER (disamakan dengan homepage) ================= */
         .site-header{
             position:sticky;top:0;z-index:60;
             background:rgba(8,22,35,.88);
@@ -78,7 +69,7 @@
             border-bottom:1px solid rgba(255,255,255,.08);
         }
         .nav{
-            width:min(1240px,calc(100% - 32px));
+            width:min(var(--wrap),calc(100% - 40px));
             height:var(--header);
             margin:auto;
             display:flex;
@@ -88,7 +79,6 @@
         }
         .brand{display:flex;align-items:center;gap:9px;flex:none}
         .brand img{height:37px;width:auto;object-fit:contain}
-        .brand img+img{padding-left:9px;border-left:1px solid rgba(255,255,255,.16)}
 
         .menu{display:flex;align-items:center;gap:2px}
         .menu>li{position:relative}
@@ -114,9 +104,25 @@
             border-radius:16px;box-shadow:0 24px 55px rgba(0,0,0,.35)
         }
         .dropdown::before{content:"";position:absolute;left:0;right:0;top:-10px;height:10px}
-        .dropdown a{display:block;padding:10px 13px;border-radius:10px;color:rgba(255,255,255,.84);font-size:.9rem}
-        .dropdown a:hover,.dropdown a[aria-current=page]{background:rgba(255,255,255,.09);color:#fff}
+        .dropdown a,.sub-trigger{display:block;padding:10px 13px;border-radius:10px;color:rgba(255,255,255,.84);font-size:.9rem}
+        .dropdown a:hover,.dropdown a[aria-current=page],.sub-trigger:hover,.has-sub.open>.sub-trigger,.has-sub.current>.sub-trigger{background:rgba(255,255,255,.09);color:#fff}
         .has-drop.open .dropdown{display:block}
+
+        /* Submenu (Galery > Berita) */
+        .has-sub{position:relative}
+        .sub-trigger{
+            width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;
+            font-weight:400
+        }
+        .sub-trigger i{font-size:.62rem;transition:transform .2s}
+        .submenu{
+            display:none;position:absolute;top:-7px;left:calc(100% + 14px);
+            min-width:215px;padding:7px;
+            background:#10283e;border:1px solid rgba(255,255,255,.1);
+            border-radius:16px;box-shadow:0 24px 55px rgba(0,0,0,.35)
+        }
+        .submenu::before{content:"";position:absolute;top:0;bottom:0;left:-16px;width:16px}
+        .has-sub.open>.submenu{display:block}
 
         .nav-toggle{display:none;width:44px;height:44px;border-radius:12px;color:#fff;font-size:1.1rem}
         .nav-toggle:hover{background:rgba(255,255,255,.1)}
@@ -217,30 +223,10 @@
 
         /* ================= CONTENT ================= */
         .page-body{background:var(--paper);min-height:50vh;padding-bottom:95px}
-        .tabs-wrap{position:relative;z-index:4;margin-top:30px;margin-bottom:20px;}
-        .tabs{
-            width:100%;
-            display:flex;flex-wrap:wrap;justify-content:center;gap:7px;
-            padding:12px;
-            background:rgba(255,255,255,.96);
-            border:1px solid rgba(224,230,237,.95);
-            border-radius:22px;
-            box-shadow:0 16px 38px rgba(13,27,42,.09);
-            backdrop-filter:blur(12px)
-        }
-        .tab{
-            display:inline-flex;align-items:center;justify-content:center;
-            min-height:38px;padding:8px 16px;
-            border-radius:999px;white-space:nowrap;
-            color:var(--steel);font-size:.82rem;font-weight:700;
-            transition:.2s ease
-        }
-        .tab:hover{background:var(--soft);color:var(--ink);transform:translateY(-1px)}
-        .tab[aria-current=page]{background:var(--ink);color:#fff;box-shadow:0 6px 14px rgba(13,27,42,.15)}
 
         .content-head{
             display:flex;align-items:end;justify-content:space-between;gap:20px;
-            margin:22px 0 19px
+            margin:48px 0 22px
         }
         .content-head h2{
             font-family:var(--display);font-size:clamp(1.65rem,3vw,2.2rem);
@@ -248,16 +234,15 @@
         }
         .content-head p{margin-top:6px;color:var(--steel);font-size:.9rem}
 
-        /* ================= PHOTO-FIRST CARDS ================= */
+        /* ================= 4-COLUMN VIDEO GRID ================= */
         .media-grid{
             display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(280px,340px));
-            justify-content:center;
-            gap:24px;
+            grid-template-columns:repeat(4,minmax(0,1fr));
+            gap:22px;
         }
         .media-card{
             position:relative;display:flex;flex-direction:column;
-            min-width:0;background:#fff;border:1px solid var(--line);
+            width:100%;min-width:0;background:#fff;border:1px solid var(--line);
             border-radius:22px;overflow:hidden;
             box-shadow:0 7px 24px rgba(13,27,42,.055);
             transition:transform .35s cubic-bezier(.2,.75,.25,1),box-shadow .35s,border-color .35s
@@ -265,11 +250,11 @@
         .media-card:hover{
             transform:translateY(-8px);
             box-shadow:0 24px 55px rgba(13,27,42,.14);
-            border-color:rgba(229,57,45,.20)
+            border-color:rgba(229,57,45,.25)
         }
         .media-thumb{
             position:relative;aspect-ratio:16/10;
-            overflow:hidden;background:#dfe5eb
+            overflow:hidden;background:#dfe5eb;width:100%
         }
         .media-thumb::after{
             content:"";position:absolute;inset:0;
@@ -284,66 +269,65 @@
         .media-card:hover .media-thumb img{transform:scale(1.065);filter:saturate(1.06)}
 
         .media-tag{
-            position:absolute;z-index:3;top:13px;left:13px;
-            max-width:calc(100% - 26px);
-            padding:6px 10px;border-radius:8px;
+            position:absolute;z-index:3;top:12px;left:12px;
+            max-width:calc(100% - 24px);
+            padding:5px 10px;border-radius:8px;
             background:rgba(255,255,255,.95);color:var(--signal-dark);
-            font-size:.65rem;font-weight:800;letter-spacing:.045em;
+            font-size:.63rem;font-weight:800;letter-spacing:.045em;
             text-transform:uppercase;box-shadow:0 5px 14px rgba(0,0,0,.13);
             backdrop-filter:blur(6px)
         }
         .media-source{
-            position:absolute;z-index:3;right:13px;top:13px;
-            width:34px;height:34px;border-radius:50%;
+            position:absolute;z-index:3;right:12px;top:12px;
+            width:32px;height:32px;border-radius:50%;
             display:grid;place-items:center;
             color:#fff;background:rgba(7,20,33,.68);
             border:1px solid rgba(255,255,255,.2);
-            backdrop-filter:blur(8px);font-size:.82rem
+            backdrop-filter:blur(8px);font-size:.8rem
         }
         .media-source .fa-youtube{color:#ff3838}
-        .media-source .fa-instagram{color:#ff5ab3}
-        .media-source .fa-tiktok{color:#fff}
 
         .photo-play{
             position:absolute;z-index:3;left:50%;top:50%;
-            transform:translate(-50%,-42%) scale(.92);
-            width:48px;height:48px;border-radius:50%;
+            transform:translate(-50%,-45%) scale(.94);
+            width:50px;height:50px;border-radius:50%;
             display:grid;place-items:center;
             color:#fff;background:rgba(229,57,45,.94);
-            box-shadow:0 10px 25px rgba(0,0,0,.28);
-            opacity:0;transition:.3s ease
+            box-shadow:0 10px 25px rgba(0,0,0,.32);
+            opacity:.92;transition:.3s ease
         }
         .photo-play i{margin-left:2px}
-        .media-card:hover .photo-play{opacity:1;transform:translate(-50%,-50%) scale(1)}
+        .media-card:hover .photo-play{
+            opacity:1;transform:translate(-50%,-50%) scale(1.08);
+            background:var(--signal)
+        }
 
-        .media-body{padding:18px 19px 18px;display:flex;flex-direction:column;flex:1}
+        .media-body{padding:16px 17px 16px;display:flex;flex-direction:column;flex:1;width:100%}
         .media-body h3{
-            font-family:var(--display);font-weight:750;font-size:1.08rem;
-            line-height:1.3;letter-spacing:-.018em;
+            font-family:var(--display);font-weight:750;font-size:1rem;
+            line-height:1.32;letter-spacing:-.018em;
             display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
-            overflow:hidden;min-height:2.8em;margin-bottom:12px;
+            overflow:hidden;min-height:2.64em;margin-bottom:10px;
             transition:color .2s
         }
         .media-card:hover h3{color:var(--signal-dark)}
         .media-meta{
-            display:flex;align-items:center;flex-wrap:wrap;gap:7px 13px;
-            color:var(--steel);font-size:.76rem;font-weight:600;margin-bottom:17px
+            display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;
+            color:var(--steel);font-size:.74rem;font-weight:600;margin-bottom:14px
         }
-        .media-meta span{display:inline-flex;align-items:center;gap:6px}
-        .media-meta i{font-size:.72rem}
+        .media-meta span{display:inline-flex;align-items:center;gap:5px}
+        .media-meta i{font-size:.7rem}
         .media-meta .fa-youtube{color:#f00}
-        .media-meta .fa-instagram{color:#d6249f}
-        .media-meta .fa-tiktok{color:#111}
 
         .media-link{
             margin-top:auto;display:flex;align-items:center;justify-content:space-between;
-            padding-top:13px;border-top:1px solid var(--soft);
-            color:var(--ink);font-size:.82rem;font-weight:800
+            padding-top:12px;border-top:1px solid var(--soft);
+            color:var(--ink);font-size:.8rem;font-weight:800;width:100%
         }
         .media-link i{
-            width:29px;height:29px;border-radius:50%;
+            width:28px;height:28px;border-radius:50%;
             display:grid;place-items:center;
-            background:var(--soft);color:var(--ink);transition:.25s
+            background:var(--soft);color:var(--ink);transition:.25s;font-size:.75rem
         }
         .media-card:hover .media-link{color:var(--signal-dark)}
         .media-card:hover .media-link i{background:var(--signal);color:#fff;transform:translateX(3px)}
@@ -355,15 +339,106 @@
         .empty-filter i{font-size:2.8rem;color:#c8d1db;margin-bottom:12px}
         .empty-filter h2{font-family:var(--display);color:var(--ink);margin-bottom:5px}
 
+        /* ================= PENGUMUMAN ================= */
+        .page-hero h1.h1-judul{font-size:clamp(1.9rem,4.4vw,3.3rem);line-height:1.1;letter-spacing:-.035em;max-width:900px}
+        .pg-page .wrap{padding-top:44px}
+
+        .pg-filter{display:flex;gap:10px;max-width:640px}
+        .pg-search{flex:1;display:flex;align-items:center;gap:10px;padding:0 16px;background:#fff;border:1.5px solid var(--line);border-radius:999px;transition:border-color .2s,box-shadow .2s}
+        .pg-search:focus-within{border-color:var(--signal);box-shadow:0 0 0 4px rgba(229,57,45,.12)}
+        .pg-search i{color:var(--steel)}
+        .pg-search input{flex:1;min-width:0;padding:13px 0;border:0;outline:0;background:transparent;font:inherit;color:var(--ink)}
+        .pg-btn{padding:0 24px;border-radius:999px;background:var(--ink);color:#fff;font-weight:800;font-size:.9rem;transition:.2s}
+        .pg-btn:hover{background:var(--signal)}
+
+        .pg-cats{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 30px}
+        .pg-cats a{padding:8px 16px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:.84rem;font-weight:700;color:var(--steel);transition:.2s}
+        .pg-cats a:hover{color:var(--ink);background:var(--soft)}
+        .pg-cats a[aria-current=page]{background:var(--ink);border-color:var(--ink);color:#fff}
+
+        .pg-list{display:grid;gap:16px}
+        .pg-card{
+            display:grid;grid-template-columns:86px 1fr;gap:22px;align-items:start;
+            padding:22px;background:#fff;border:1px solid var(--line);border-radius:22px;
+            box-shadow:0 7px 24px rgba(13,27,42,.055);
+            transition:transform .3s cubic-bezier(.2,.75,.25,1),box-shadow .3s,border-color .3s
+        }
+        .pg-card:hover{transform:translateY(-4px);box-shadow:0 20px 45px rgba(13,27,42,.12);border-color:rgba(229,57,45,.25)}
+        .pg-card.is-penting{border-left:5px solid var(--signal)}
+        .pg-date{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 6px;border-radius:16px;background:var(--ink);color:#fff;line-height:1.1;text-align:center}
+        .pg-date b{font-family:var(--display);font-size:1.9rem;font-weight:800}
+        .pg-date span{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--amber)}
+        .pg-date small{margin-top:3px;font-size:.7rem;opacity:.7}
+        .pg-main{min-width:0}
+        .pg-tags,.pg-article-meta{display:flex;flex-wrap:wrap;align-items:center;gap:7px}
+        .tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:8px;background:var(--soft);color:var(--ink-2);font-size:.68rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+        .tag-penting{background:rgba(229,57,45,.12);color:var(--signal-dark)}
+        .tag-file{background:#eef6ff;color:#2762a8}
+        .pg-main h3{margin-top:10px;font-family:var(--display);font-weight:750;font-size:1.2rem;line-height:1.3;letter-spacing:-.02em;transition:color .2s}
+        .pg-card:hover h3{color:var(--signal-dark)}
+        .pg-main p{margin-top:6px;color:var(--steel);font-size:.92rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+        .pg-more{display:inline-flex;align-items:center;gap:8px;margin-top:12px;font-size:.82rem;font-weight:800;color:var(--ink);transition:.2s}
+        .pg-card:hover .pg-more{color:var(--signal-dark);gap:12px}
+
+        .pg-detail{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:26px;align-items:start}
+        .pg-article{padding:clamp(22px,4vw,40px);background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 7px 24px rgba(13,27,42,.055)}
+        .pg-time{display:inline-flex;align-items:center;gap:7px;color:var(--steel);font-size:.82rem;font-weight:600}
+        .pg-body{margin-top:22px;font-size:1.02rem;line-height:1.8;color:#27384a;overflow-wrap:anywhere}
+        .pg-attach{display:inline-flex;align-items:center;gap:14px;margin-top:28px;padding:14px 20px;border-radius:16px;background:var(--paper);border:1px solid var(--line);transition:.2s}
+        .pg-attach:hover{border-color:var(--signal);transform:translateY(-2px)}
+        .pg-attach-ico{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:var(--signal);color:#fff;font-size:1.1rem}
+        .pg-attach b{display:block;font-size:.95rem}
+        .pg-attach small{display:block;color:var(--steel);font-size:.78rem;max-width:30ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .pg-back{display:inline-flex;align-items:center;gap:9px;margin:30px 0 0 0;display:flex;font-size:.88rem;font-weight:800;color:var(--steel);transition:.2s}
+        .pg-back:hover{color:var(--signal-dark);gap:13px}
+        .pg-side{padding:22px;background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 7px 24px rgba(13,27,42,.055);position:sticky;top:calc(var(--header) + 20px)}
+        .pg-side h3{font-family:var(--display);font-size:1.05rem;margin-bottom:12px}
+        .pg-side a{display:block;padding:12px 0;border-top:1px solid var(--soft)}
+        .pg-side a small{display:block;color:var(--steel);font-size:.74rem;font-weight:600}
+        .pg-side a span{display:block;margin-top:2px;font-weight:700;font-size:.92rem;line-height:1.35;transition:color .2s}
+        .pg-side a:hover span{color:var(--signal-dark)}
+
+        /* paginasi */
         .pagination-container{display:flex;justify-content:center;padding-top:30px}
         .pagination{display:flex;gap:5px;list-style:none}
-        .page-link{
-            display:block;color:var(--ink);border-radius:9px!important;
-            border:1px solid var(--line);font-weight:700;padding:8px 15px;
-            background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.02)
-        }
+        .page-link{display:block;color:var(--ink);border-radius:9px!important;border:1px solid var(--line);font-weight:700;padding:8px 15px;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.02)}
         .page-item.active .page-link{background:var(--ink);border-color:var(--ink);color:#fff}
+        .page-item.disabled .page-link{opacity:.5}
         .page-link:hover{background:var(--soft);color:var(--signal)}
+
+        @media (max-width:991px){.pg-detail{grid-template-columns:1fr}.pg-side{position:static}}
+        @media (max-width:560px){
+            .pg-card{grid-template-columns:1fr;gap:14px}
+            .pg-date{flex-direction:row;justify-content:flex-start;gap:8px;padding:8px 14px;justify-self:start}
+            .pg-date b{font-size:1.3rem}
+            .pg-filter{flex-direction:column}.pg-btn{padding:13px}
+        }
+
+        /* ================= MODAL DIALOG (YOUTUBE) ================= */
+        dialog{
+            border:0;padding:0;background:transparent;
+            width:min(960px,94vw);margin:auto;overflow:visible
+        }
+        dialog::backdrop{
+            background:rgba(7,14,24,.86);
+            backdrop-filter:blur(6px);
+            -webkit-backdrop-filter:blur(6px)
+        }
+        .dlg-close{
+            position:absolute;top:-52px;right:0;
+            width:42px;height:42px;border-radius:50%;
+            background:#fff;color:var(--ink);font-size:1.05rem;
+            display:grid;place-items:center;
+            box-shadow:0 8px 22px rgba(0,0,0,.3);transition:.2s
+        }
+        .dlg-close:hover{background:var(--signal);color:#fff;transform:scale(1.06)}
+        .video-frame{
+            aspect-ratio:16/9;border-radius:20px;
+            overflow:hidden;background:#000;
+            box-shadow:0 25px 60px rgba(0,0,0,.5);
+            display:grid;place-items:center
+        }
+        .video-frame iframe{width:100%;height:100%;border:0}
 
         /* ================= FOOTER ================= */
         .footer{background:var(--ink);color:rgba(255,255,255,.69);padding:80px 0 30px}
@@ -414,9 +489,19 @@
         .sos-sheet .wa i{color:#25d366}.sos-sheet .tel i{color:#38bdf8}.sos-sheet .n112 i{color:#f87171}
 
         /* ================= RESPONSIVE ================= */
-        @media (hover:hover) and (min-width:992px){.has-drop:hover .dropdown{display:block}}
+        @media (hover:hover) and (min-width:992px){
+            .has-drop:hover .dropdown{display:block}
+            .has-sub:hover>.submenu{display:block}
+        }
+        /* Layar desktop sempit: submenu dibuka ke kiri agar tidak keluar layar */
+        @media (min-width:992px) and (max-width:1500px){
+            .submenu{left:auto;right:calc(100% + 14px)}
+            .submenu::before{left:auto;right:-16px}
+            .sub-trigger i{transform:rotate(180deg)}
+        }
         @media (max-width:1100px){
             .menu-link,.menu-trigger{padding-left:10px;padding-right:10px;font-size:.82rem}
+            .media-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
             .footer-grid{grid-template-columns:1fr 1fr}
             .footer-links{grid-column:span 2}
         }
@@ -433,37 +518,37 @@
             .menu-link,.menu-trigger{width:100%;justify-content:space-between;padding:13px 14px;border-radius:13px;font-size:.95rem}
             .dropdown{position:static;margin:1px 0 7px 10px;box-shadow:none;background:transparent;border:0;border-left:2px solid rgba(255,255,255,.12);border-radius:0}
             .dropdown::before{display:none}
+            .submenu{position:static;margin:1px 0 4px 10px;min-width:0;box-shadow:none;background:transparent;border:0;border-left:2px solid rgba(255,255,255,.12);border-radius:0}
+            .submenu::before{display:none}
+            .sub-trigger i{transform:rotate(90deg)}
+            .has-sub.open>.sub-trigger i{transform:rotate(-90deg)}
             .menu .btn-login{margin:7px 0 0;justify-content:center;padding:13px}
             .page-hero{padding:43px 0 78px}
+            .media-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
         }
         @media (max-width:768px){
             .page-nav { justify-content: flex-start; padding: 6px 12px; }
             .page-nav a { padding: 8px 16px; font-size: 0.85rem; }
         }
         @media (max-width:700px){
-            .wrap{width:min(100% - 28px,1180px)}
+            .wrap{width:min(calc(100% - 28px),1180px)}
             .brand img{height:32px}
-            .brand img+img{padding-left:7px}
             .page-hero h1{font-size:clamp(2.8rem,15vw,4.5rem)}
-            .tabs{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
-            .tabs::-webkit-scrollbar{display:none}
-            .tab{flex:none}
-            .content-head{margin-top:32px}
-            .media-grid{grid-template-columns:minmax(0,360px)}
             .footer{padding-top:60px}
             .footer-grid{grid-template-columns:1fr;gap:38px}
             .footer-links{grid-column:auto}
             .footer-bar{margin-top:42px;align-items:flex-start}
             .sos-fab{right:14px;bottom:14px}
         }
+        @media (max-width:520px){
+            .media-grid{grid-template-columns:1fr}
+        }
         @media (max-width:390px){
             .brand img{height:28px}
-            .brand img+img{padding-left:5px}
             .media-body{padding:16px}
             .media-thumb{aspect-ratio:16/10}
         }
     </style>
-
 </head>
 <body>
 
@@ -499,7 +584,7 @@
                     <li><a href="/produkhukum">Produk hukum</a></li>
                 </ul>
             </li>
-          <li class="has-drop">
+            <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
@@ -509,17 +594,26 @@
                     <li><a href="/informasi-layanan">Informasi layanan</a></li>
                 </ul>
             </li>
-            
+
+            {{-- Menu Galery: sama seperti di homepage (IKM, Pengumuman, Berita > ...) --}}
             <li class="has-drop current">
-                <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
+                <button class="menu-trigger" type="button" aria-expanded="false">Galery <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="/edu-damkar">Edu Damkar</a></li>
-                    <li><a href="/infografis">Infografis</a></li>
-                    <li><a href="/media-informasi" aria-current="page">Media Informasi</a></li>
-                    <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
+                    {{-- GANTI href IKM & Pengumuman sesuai yang dipakai di homepage --}}
+                    <li><a href="/ikm">IKM (Indeks Kepuasan Masyarakat)</a></li>
+                    <li><a href="/pengumuman" aria-current="page">Pengumuman</a></li>
+                    <li class="has-sub">
+                        <button class="sub-trigger" type="button" aria-expanded="false">Berita <i class="fas fa-chevron-right"></i></button>
+                        <ul class="submenu">
+                            <li><a href="/edu-damkar">Edu Damkar</a></li>
+                            <li><a href="/infografis">Infografis</a></li>
+                            <li><a href="/media-informasi">Media Informasi</a></li>
+                            <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
-            
+
             <li><a class="menu-link" href="/redkar">Redkar</a></li>
             @if(session()->has('pemohon_id'))
                 <li class="has-drop">
@@ -530,7 +624,7 @@
                         <li>
                             <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
                                 @csrf
-                                <button type="submit" class="btn-logout" style="width: 100%; text-align: left; padding: 10px 13px; color: #ff8b8b; font-size: .9rem;">
+                                <button type="submit" class="btn-logout">
                                     <i class="fas fa-sign-out-alt"></i> Keluar
                                 </button>
                             </form>
@@ -553,100 +647,50 @@
         <nav aria-label="Breadcrumb" class="rise">
             <ol class="crumbs">
                 <li><a href="/">Beranda</a></li>
-                <li><a href="#">Kabar Damkar</a></li>
-                <li><span aria-current="page">Media informasi</span></li>
+                <li><a href="#">Galery</a></li>
+                <li><a href="{{ route('pengumuman.index') }}">Pengumuman</a></li>
+                <li><span aria-current="page">Detail</span></li>
             </ol>
         </nav>
-        <div class="hero-kicker rise"><i class="fas fa-bullhorn"></i> Kabar Damkar Kota Jambi</div>
-        <h1 class="rise d1">Media informasi</h1>
-        <p class="rise d2">Kumpulan informasi, dokumentasi kegiatan, dan kabar terbaru dari media sosial Damkar Kota Jambi.</p>
+        <div class="hero-kicker rise"><i class="fas fa-bullhorn"></i> Pengumuman</div>
+        <h1 class="h1-judul rise d1">{{ $pengumuman->judul }}</h1>
         <div class="hero-line rise d3"></div>
     </div>
 </section>
 
-<!-- ==================== SUB NAVIGATION (PILL MENU) ==================== -->
-<div class="page-nav-wrap rise d3">
-    <nav class="page-nav" aria-label="Sub menu Kabar Damkar">
-        <a href="/edu-damkar"><i class="fas fa-video"></i> Edu Damkar</a>
-        <a href="/infografis"><i class="fas fa-image"></i> Infografis</a>
-        <a href="/media-informasi" class="active"><i class="fas fa-newspaper"></i> Media Informasi</a>
-        <a href="/ujung-ujung-damkar"><i class="fas fa-fire-extinguisher"></i> Ujung-ujung Damkar</a>
-    </nav>
-</div>
-
 <!-- ==================== BODY & KONTEN ==================== -->
-<div class="page-body">
-    
-    <!-- Tab Filter Kategori -->
-    <div class="wrap tabs-wrap">
-        <nav class="tabs" aria-label="Filter kategori">
-            <a class="tab" href="{{ route('media.informasi') }}" {!! empty($kategoriId) ? 'aria-current="page"' : '' !!}>
-                Semua
-            </a>
-            @foreach($daftar_kategori as $kat)
-                @php $namaKatBersih = str_replace('Lainya', 'Lainnya', $kat->nama_kategori); @endphp
-                <a class="tab" href="{{ route('media.informasi', ['kategori' => $kat->id]) }}" {!! ($kategoriId == $kat->id) ? 'aria-current="page"' : '' !!}>
-                    {{ $namaKatBersih }}
-                </a>
-            @endforeach
-        </nav>
-    </div>
+<div class="page-body pg-page">
+    <div class="wrap pg-detail">
 
-    <!-- Grid Berita -->
-    <div class="wrap media-layout">
-        <div class="content-head">
-            <div>
-                <h2>Dokumentasi terbaru</h2>
-                <p>Geser kursor ke foto untuk melihat detail dan membuka sumber berita.</p>
+        <article class="pg-article">
+            <div class="pg-article-meta">
+                @if($pengumuman->penting)<span class="tag tag-penting"><i class="fas fa-bullhorn"></i> Penting</span>@endif
+                <span class="tag">{{ $pengumuman->kategori }}</span>
+                <span class="pg-time"><i class="far fa-calendar-alt"></i> {{ $pengumuman->tanggal->copy()->locale('id')->translatedFormat('d F Y') }}</span>
             </div>
-        </div>
-        <div class="media-grid">
-            @forelse($medsos as $item)
-                @php
-                    $s = strtolower($item->sumber ?? '');
-                    $ikonSumber = 'fas fa-share-nodes';
-                    if (str_contains($s, 'instagram')) $ikonSumber = 'fab fa-instagram';
-                    if (str_contains($s, 'youtube'))   $ikonSumber = 'fab fa-youtube';
-                    if (str_contains($s, 'tiktok'))    $ikonSumber = 'fab fa-tiktok';
-                    
-                    $namaKategoriItem = str_replace('Lainya', 'Lainnya', $item->kategori->nama_kategori ?? 'Informasi');
-                @endphp
 
-                <a href="{{ $item->link ?? '#' }}" target="_blank" rel="noopener" class="media-card">
-                    <div class="media-thumb">
-                        <span class="media-tag">{{ $namaKategoriItem }}</span>
-                        <span class="media-source" aria-hidden="true"><i class="{{ $ikonSumber }}"></i></span>
-                        <img src="{{ asset('storage/' . $item->gambar) }}"
-                             alt="{{ $item->judul }}"
-                             loading="lazy"
-                             onerror="this.src='/images/placeholder.jpg'">
-                        @if(str_contains($s, 'youtube'))
-                            <span class="photo-play" aria-hidden="true"><i class="fas fa-play"></i></span>
-                        @endif
-                    </div>
-                    <div class="media-body">
-                        <h3>{{ $item->judul }}</h3>
-                        <div class="media-meta">
-                            <span><i class="far fa-calendar-alt"></i>{{ \Carbon\Carbon::parse($item->tanggal)->locale('id')->translatedFormat('d M Y, H:i') }}</span>
-                            <span><i class="{{ $ikonSumber }}"></i>{{ $item->sumber }}</span>
-                        </div>
-                        <span class="media-link">Lihat informasi <i class="fas fa-arrow-right"></i></span>
-                    </div>
+            <div class="pg-body">{!! nl2br(e($pengumuman->isi)) !!}</div>
+
+            @if($pengumuman->lampiran)
+                <a class="pg-attach" href="{{ asset('storage/' . $pengumuman->lampiran) }}" target="_blank" rel="noopener">
+                    <span class="pg-attach-ico"><i class="fas fa-file-arrow-down"></i></span>
+                    <span><b>Unduh lampiran</b><small>{{ basename($pengumuman->lampiran) }}</small></span>
                 </a>
-            @empty
-                <div class="empty-filter">
-                    <i class="far fa-newspaper"></i>
-                    <h2>Belum ada berita</h2>
-                    <p>Konten media sosial untuk kategori ini belum tersedia saat ini.</p>
-                </div>
-            @endforelse
-        </div>
+            @endif
 
-        <!-- Pagination -->
-        @if(isset($medsos) && $medsos->hasPages())
-            <div class="pagination-container">
-                {{ $medsos->links('pagination::bootstrap-5') }}
-            </div>
+            <a class="pg-back" href="{{ route('pengumuman.index') }}"><i class="fas fa-arrow-left"></i> Kembali ke daftar pengumuman</a>
+        </article>
+
+        @if($lainnya->count())
+            <aside class="pg-side" aria-label="Pengumuman lainnya">
+                <h3>Pengumuman lainnya</h3>
+                @foreach($lainnya as $l)
+                    <a href="{{ route('pengumuman.show', $l->id) }}">
+                        <small>{{ $l->tanggal->copy()->locale('id')->translatedFormat('d M Y') }} &middot; {{ $l->kategori }}</small>
+                        <span>{{ $l->judul }}</span>
+                    </a>
+                @endforeach
+            </aside>
         @endif
     </div>
 </div>
@@ -660,7 +704,7 @@
             <div class="footer-about">
                 <img src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA" loading="lazy">
                 <h3>Tentang kami</h3>
-                <p>SIMERAH KOJA merupakan sistem informasi pemerintahan berbasis elektronik yang terintegrasi pada dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+                <p>SIMERAH KOJA merupakan sistem informasi pemerintahan berbasis elektronik yang terintegrasi pada Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
             </div>
 
             <div>
@@ -729,6 +773,16 @@
     var header = document.getElementById('siteHeader');
     var toggle = header.querySelector('.nav-toggle');
     var drops = header.querySelectorAll('.has-drop');
+    var subs = header.querySelectorAll('.has-sub');
+
+    function closeSubs(except) {
+        subs.forEach(function (li) {
+            if (li !== except) {
+                li.classList.remove('open');
+                li.querySelector('.sub-trigger').setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
 
     function closeDrops(except) {
         drops.forEach(function (li) {
@@ -737,6 +791,7 @@
                 li.querySelector('.menu-trigger').setAttribute('aria-expanded', 'false');
             }
         });
+        if (!except) closeSubs(null);
     }
 
     toggle.addEventListener('click', function () {
@@ -755,11 +810,21 @@
         });
     });
 
+    subs.forEach(function (li) {
+        var btn = li.querySelector('.sub-trigger');
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var open = li.classList.toggle('open');
+            btn.setAttribute('aria-expanded', open);
+            closeSubs(li);
+        });
+    });
+
     document.addEventListener('click', function (e) {
         if (!e.target.closest('.has-drop')) closeDrops(null);
     });
 
-    header.querySelectorAll('.dropdown a, .menu-link').forEach(function (a) {
+    header.querySelectorAll('.dropdown a, .submenu a, .menu-link').forEach(function (a) {
         a.addEventListener('click', function () {
             header.classList.remove('nav-open');
             toggle.setAttribute('aria-expanded', 'false');

@@ -17,6 +17,7 @@ use App\Http\Controllers\SuratKorbanController;
 use App\Http\Controllers\PermohonanRpkbglController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\KabarDamkarController;
+use App\Http\Controllers\IkmController;
 use App\Http\Controllers\PencegahanController;
 use App\Http\Controllers\SkkAdminController;
 use App\Http\Controllers\PemberdayaanController;
@@ -24,6 +25,7 @@ use App\Http\Controllers\PemohonAuthController;
 use App\Http\Controllers\PermohonanSkkController;
 use App\Http\Controllers\PermohonanEdukasiController;
 use App\Http\Controllers\PetaController;
+use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\IzinKeramaianController;
 use App\Http\Controllers\FireDrillController;
 use App\Http\Controllers\ProgramKerjaController;
@@ -63,21 +65,29 @@ Route::get('/sumber-air', [PublicController::class, 'sumberAir']);
 Route::get('/hidrant-kota', [PublicController::class, 'hidrantKota']);
 Route::get('/public-sigap', [PetaController::class, 'sigap']);
 
-// Halaman Publik Edu Damkar & Ujung-ujung Damkar
+Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman.index');
+Route::get('/pengumuman/{id}', [PengumumanController::class, 'show'])->whereNumber('id')->name('pengumuman.show');
+
+// Indeks Kepuasan Masyarakat (IKM) - folder: resources/views/galery/ikm
+Route::get('/ikm', [IkmController::class, 'index'])->name('ikm.index');
+Route::post('/ikm', [IkmController::class, 'store'])->middleware('throttle:5,10')->name('ikm.store');
+
+// Halaman Publik Edu Damkar & Ujung-ujung Damkar (folder: resources/views/galery/berita)
+// Catatan: nama view memakai STRIP (edu-damkar), sesuai nama file blade-nya.
 Route::get('/edu-damkar', function () {
     $daftar_edu_damkar = EduDamkar::latest()->get();
-    return view('kabardamkar.edu-damkar', compact('daftar_edu_damkar'));
+    return view('galery.berita.edu-damkar', compact('daftar_edu_damkar'));
 })->name('publik.edu-damkar');
 
 Route::get('/ujung-ujung-damkar', function () {
     $daftar_ujung_damkar = UjungDamkar::latest()->get();
-    return view('kabardamkar.ujung-damkar', compact('daftar_ujung_damkar'));
+    return view('galery.berita.ujung-damkar', compact('daftar_ujung_damkar'));
 })->name('publik.ujung-damkar');
 
-// Halaman Publik Infografis
+// Halaman Publik Infografis (folder: resources/views/galery/berita)
 Route::get('/infografis', function () {
     $daftar_infografis = Infografis::latest()->get();
-    return view('kabardamkar.infografis', compact('daftar_infografis'));
+    return view('galery.berita.infografis', compact('daftar_infografis'));
 })->name('publik.infografis');
 
 // ==========================================
@@ -238,7 +248,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Semua role: detail (lihat & cetak)
     Route::get('/internal/damtan/kelola-izin-keramaian/{id}', [IzinKeramaianController::class, 'showInternal'])->name('internal.izin-keramaian.show');
-    
+
     // ==========================================
     // REKAP LAYANAN PEMADAMAN
     // ==========================================
