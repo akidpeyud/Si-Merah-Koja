@@ -572,8 +572,8 @@
             <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Sarpras <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="#">Sarana</a></li>
-                    <li><a href="#">Prasarana</a></li>
+                   <a href="{{ route('sarpras.sarana') }}">Sarana</a>
+                    <a href="{{ route('sarpras.prasarana') }}">Prasarana</a>
                 </ul>
             </li>
 
