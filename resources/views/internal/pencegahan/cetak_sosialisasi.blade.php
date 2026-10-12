@@ -41,6 +41,20 @@
             font-weight: bold;
             text-transform: uppercase;
         }
+
+        /* Kolom link dokumentasi: tampilkan URL lengkap, otomatis turun baris */
+        .col-link {
+            width: 210px;
+            text-align: center;
+            font-size: 8pt;
+            line-height: 1.35;
+            word-break: break-all;
+        }
+        .col-link a {
+            color: #1a4fa0;
+            text-decoration: underline;
+        }
+
         @media print {
             th {
                 background-color: #f0f0f0 !important;
@@ -90,7 +104,7 @@
                 <th rowspan="2">KECAMATAN</th>
                 <th rowspan="2">POSYANDU / NAMA SEKOLAH</th>
                 <th colspan="3">JUMLAH PESERTA</th>
-                <th rowspan="2" style="width: 90px;">FOTO DAN VIDEO</th>
+                <th rowspan="2" style="width: 210px;">LINK DOKUMENTASI</th>
             </tr>
             <tr>
                 <th style="width: 75px;">PEREMPUAN</th>
@@ -135,14 +149,14 @@
                     <td>{{ $perempuan }}</td>
                     <td>{{ $lakilaki }}</td>
                     <td><strong>{{ $total_peserta }}</strong></td>
-                    <td style="text-align: left; font-size: 9pt;">
+                    <td class="col-link">
                         @forelse ($links as $i => $link)
                             @php
                                 $url = preg_match('/^https?:\/\//i', $link) ? $link : 'https://' . $link;
                             @endphp
-                            <a href="{{ $url }}" target="_blank" style="color: #0000EE; text-decoration: underline;">Link {{ $i + 1 }}</a><br>
+                            {{ count($links) > 1 ? ($i + 1) . '. ' : '' }}<a href="{{ $url }}" target="_blank" rel="noopener">{{ $url }}</a>@if(!$loop->last)<br>@endif
                         @empty
-                            <div style="text-align: center;">-</div>
+                            -
                         @endforelse
                     </td>
                 </tr>
