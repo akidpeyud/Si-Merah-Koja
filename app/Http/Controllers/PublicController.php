@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Schema;
 use App\Models\InspeksiBangunan;
 use App\Models\FireDrill;
 use App\Models\PelatihanKeluarga;
+// Sarpras (halaman baru: sapra_home)
+Route::get('/sarpras/sarana', [SapraHomeController::class, 'sarana'])->name('sarpras.sarana');
+Route::get('/sarpras/prasarana', [SapraHomeController::class, 'prasarana'])->name('sarpras.prasarana');
 
 class PublicController extends Controller
 {
@@ -98,4 +101,5 @@ class PublicController extends Controller
         $dataMaintenance = DB::table('hidran_kota')->orderBy('id', 'asc')->get();
         return view('informasi_layanan.hidrant_kota', compact('dataMaintenance'));
     }
+    
 }
