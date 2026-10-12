@@ -16,16 +16,6 @@
             padding: 10px;
             color: #000;
         }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            position: relative;
-            border-bottom: 3px double #000;
-            padding-bottom: 10px;
-        }
-        .header h3, .header h2, .header p {
-            margin: 2px 0;
-        }
         .title {
             text-align: center;
             margin: 15px 0;
@@ -51,14 +41,6 @@
             font-weight: bold;
             text-transform: uppercase;
         }
-        /* Style khusus gambar agar rapi di tabel */
-        .img-thumb {
-            max-width: 70px;
-            max-height: 70px;
-            object-fit: cover;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
         @media print {
             th {
                 background-color: #f0f0f0 !important;
@@ -68,27 +50,28 @@
     </style>
 </head>
 <body onload="window.print()">
-<!-- KOP SURAT -->
-<table style="width: 100%; border-collapse: collapse; border: none; margin-bottom: 15px; border-bottom: 3px double #000; padding-bottom: 10px;">
-    <tr>
-        <!-- Logo Jambi (Kiri) -->
-        <td style="width: 15%; text-align: left; vertical-align: middle; border: none;">
-            <img src="{{ asset('images/jambi.png') }}" alt="Logo Jambi" style="width: 75px; height: auto;">
-        </td>
-        
-        <!-- Teks Kop Surat (Tengah) -->
-        <td style="width: 70%; text-align: center; vertical-align: middle; border: none;">
-            <h2 style="margin: 0; font-size: 16pt; font-weight: bold; text-transform: uppercase;">PEMERINTAH KOTA JAMBI</h2>
-            <h3 style="margin: 3px 0; font-size: 13pt; font-weight: bold; text-transform: uppercase;">DINAS PEMADAM KEBAKARAN DAN PENYELAMATAN</h3>
-            <p style="margin: 0; font-size: 9pt;">Jl. HOS Cokroaminoto No. 113 Telp. 0741-41171</p>
-        </td>
 
-        <!-- Logo Damkar / Brama Jaya (Kanan) -->
-        <td style="width: 15%; text-align: right; vertical-align: middle; border: none;">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo Damkar" style="width: 75px; height: auto;">
-        </td>
-    </tr>
-</table>
+    <!-- KOP SURAT -->
+    <table style="width: 100%; border-collapse: collapse; border: none; margin-bottom: 15px; border-bottom: 3px double #000; padding-bottom: 10px;">
+        <tr>
+            <!-- Logo Jambi (Kiri) -->
+            <td style="width: 15%; text-align: left; vertical-align: middle; border: none;">
+                <img src="{{ asset('images/jambi.png') }}" alt="Logo Jambi" style="width: 75px; height: auto;">
+            </td>
+
+            <!-- Teks Kop Surat (Tengah) -->
+            <td style="width: 70%; text-align: center; vertical-align: middle; border: none;">
+                <h2 style="margin: 0; font-size: 16pt; font-weight: bold; text-transform: uppercase;">PEMERINTAH KOTA JAMBI</h2>
+                <h3 style="margin: 3px 0; font-size: 13pt; font-weight: bold; text-transform: uppercase;">DINAS PEMADAM KEBAKARAN DAN PENYELAMATAN</h3>
+                <p style="margin: 0; font-size: 9pt;">Jl. HOS Cokroaminoto No. 113 Telp. 0741-41171</p>
+            </td>
+
+            <!-- Logo Damkar / Brama Jaya (Kanan) -->
+            <td style="width: 15%; text-align: right; vertical-align: middle; border: none;">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo Damkar" style="width: 75px; height: auto;">
+            </td>
+        </tr>
+    </table>
 
     <!-- JUDUL LAPORAN -->
     <div class="title">
@@ -131,6 +114,9 @@
                     $total_semua_perempuan += $perempuan;
                     $total_semua_lakilaki += $lakilaki;
                     $total_semua_peserta += $total_peserta;
+
+                    // Pecah link_dokumentasi (satu link per baris)
+                    $links = array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $item->link_dokumentasi ?? ''))));
                 @endphp
                 <tr>
                     <td>{{ $index + 1 }}</td>
@@ -149,13 +135,15 @@
                     <td>{{ $perempuan }}</td>
                     <td>{{ $lakilaki }}</td>
                     <td><strong>{{ $total_peserta }}</strong></td>
-                    <td>
-                        @if(!empty($item->foto_video))
-                            {{-- Menampilkan foto jika file tersimpan di uploads/pemberdayaan/ --}}
-                            <img src="{{ asset('uploads/pemberdayaan/' . $item->foto_video) }}" class="img-thumb" alt="Foto">
-                        @else
-                            -
-                        @endif
+                    <td style="text-align: left; font-size: 9pt;">
+                        @forelse ($links as $i => $link)
+                            @php
+                                $url = preg_match('/^https?:\/\//i', $link) ? $link : 'https://' . $link;
+                            @endphp
+                            <a href="{{ $url }}" target="_blank" style="color: #0000EE; text-decoration: underline;">Link {{ $i + 1 }}</a><br>
+                        @empty
+                            <div style="text-align: center;">-</div>
+                        @endforelse
                     </td>
                 </tr>
             @empty
