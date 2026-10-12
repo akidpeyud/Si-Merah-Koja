@@ -642,12 +642,18 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             </details>
 
             <!-- BAGIAN KEPEGAWAIAN -->
-            <details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') ? 'open' : '' }}>
+            <details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') || Request::is('internal/data-asn*') ? 'open' : '' }}>
                 <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
                         <i class="fas fa-user-tie"></i><span class="lbl">Data Urut Kepegawaian</span>
                     </a>
+                    
+                    <!-- TAMBAHAN MENU REKAP DATA ASN -->
+                    <a href="/internal/data-asn" class="{{ Request::is('internal/data-asn*') ? 'active' : '' }}">
+                        <i class="fas fa-users"></i><span class="lbl">Rekap Data ASN</span>
+                    </a>
+
                     <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
                         <i class="fas fa-file-contract"></i><span class="lbl">Program Kerja</span>
                     </a>
@@ -705,7 +711,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                         <i class="fas fa-users-gear"></i><span class="lbl">Kelola Pengguna</span>
                     </a>
                     
-                    <!-- Pindahkan Kelola Akun Pemohon ke dalam blok hasrole ini -->
                     <a href="{{ url('/internal/kelola-pemohon') }}" class="{{ request()->is('internal/kelola-pemohon*') ? 'active' : '' }}">
                         <i class="fas fa-address-book"></i><span class="lbl">Kelola Akun Pemohon</span>
                     </a>
@@ -813,6 +818,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     'id' => 'kepegawaian', 'title' => 'Kepegawaian', 'icon' => 'fa-user-tie', 'roles' => $ops,
                     'items' => [
                         ['Data Urut Kepegawaian', 'pegawai', 'fa-user-tie', '/internal/kepegawaian/duk', $count('pegawais'), 'ic-primary'],
+                        ['Rekap Data ASN', 'data', 'fa-users', '/internal/data-asn', $count('data_asns'), 'ic-danger'], /* TAMBAHAN REKAP DATA ASN */
                         ['Program Kerja', 'program', 'fa-file-contract', '/internal/program-kerja', $count('dokumen'), 'ic-info'],
                     ],
                 ],
