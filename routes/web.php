@@ -31,13 +31,14 @@ use App\Http\Controllers\FireDrillController;
 use App\Http\Controllers\ProgramKerjaController;
 use App\Http\Controllers\InformasiLayananController;
 use App\Http\Controllers\DataAsnController;
+use App\Http\Controllers\DokumenPublikController;
+use App\Http\Controllers\SapraHomeController;
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
 use App\Models\EduDamkar;
 use App\Models\UjungDamkar;
-use App\Http\Controllers\SapraHomeController;
-
+use App\Models\DokumenPublik;
 
 // ==========================================
 // 1. RUTE PUBLIK (HALAMAN UTAMA & INFO)
@@ -55,6 +56,14 @@ Route::get('/pelaporan', function () { return view('programkerja.pelaporan'); })
 Route::get('/perencanaan', function () { return view('programkerja.perencanaan'); });
 Route::get('/produkhukum', function () { return view('programkerja.produkhukum'); });
 Route::get('/sop', function () { return view('programkerja.sop'); });
+
+// Rute 6 Bagian SOP Baru
+Route::get('/sop/pencegahan', function () { return view('public.sop.pencegahan'); });
+Route::get('/sop/pemadaman', function () { return view('public.sop.pemadaman'); });
+Route::get('/sop/penyelamatan', function () { return view('public.sop.penyelamatan'); });
+Route::get('/sop/sarpras', function () { return view('public.sop.sarpras'); });
+Route::get('/sop/kepegawaian', function () { return view('public.sop.kepegawaian'); });
+Route::get('/sop/keuangan', function () { return view('public.sop.keuangan'); });
 
 // Informasi Layanan (Publik)
 Route::get('/informasi-layanan', [InformasiLayananController::class, 'index'])->name('informasi-layanan.index');
@@ -792,3 +801,35 @@ Route::get('/public-sigap', [PetaController::class, 'sigap']);
 Route::get('/sarpras/sarana', [SapraHomeController::class, 'sarana'])->name('sarpras.sarana');
 Route::get('/sarpras/prasarana', [SapraHomeController::class, 'prasarana'])->name('sarpras.prasarana');
 
+// Route untuk Dokumen Publik
+Route::resource('dokumen-publik', DokumenPublikController::class);
+// Route untuk dokumen publik tampilan Renstra
+Route::get('/dokumen/renstra', function () {
+    $dokumens = DokumenPublik::where('kategori', 'Renstra')->latest()->get();
+    return view('public.dokumen-publik.renstra', compact('dokumens'));
+});
+
+// Route untuk dokumen publik tampilan Renja
+Route::get('/dokumen/renja', function () {
+    $dokumens = DokumenPublik::where('kategori', 'Renja')->latest()->get();
+    return view('public.dokumen-publik.renja', compact('dokumens'));
+});
+
+// Route untuk dokumen publik tampilan SPM
+Route::get('/dokumen/spm', function () {
+    $dokumens = DokumenPublik::where('kategori', 'SPM')->latest()->get();
+    return view('public.dokumen-publik.spm', compact('dokumens'));
+});
+
+// Route untuk dokumen publik tampilan SAKIP
+Route::get('/dokumen/sakip', function () {
+    $dokumens = DokumenPublik::where('kategori', 'SAKIP')->latest()->get();
+    return view('public.dokumen-publik.sakip', compact('dokumens'));
+});
+
+// Route untuk dokumen publik tampilan LPPD
+Route::get('/dokumen/lppd', function () {
+    $dokumens = DokumenPublik::where('kategori', 'LPPD')->latest()->get();
+    return view('public.dokumen-publik.lppd', compact('dokumens'));
+});
+Route::get('/dokumen-publik/view/{id}', [DokumenPublikController::class, 'showFile']);

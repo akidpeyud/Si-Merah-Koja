@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-    <title>Kelola Program Kerja | SIMERAH KOJA</title>
+    <title>Kelola SOP | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -185,6 +185,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     border-bottom: 1px solid var(--line);
     font-family: var(--font-display);
     font-size: 1.05rem; font-weight: 700; color: var(--ink);
+    flex-wrap: wrap; gap: 12px;
 }
 .card-title-custom .title-left { display: flex; align-items: center; gap: 10px; }
 .card-title-custom .title-left::before {
@@ -270,7 +271,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 <!-- BLOK TOAST ERROR HANDLING -->
 <div class="toast-wrap" id="toastWrap" aria-live="polite">
-    <!-- Notifikasi Sukses -->
     @if(session('success'))
         <div class="toast ok" data-toast>
             <span class="toast-ico"><i class="fas fa-check"></i></span>
@@ -279,7 +279,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         </div>
     @endif
 
-    <!-- Notifikasi Error dari Catch Controller -->
     @if(session('error'))
         <div class="toast err" data-toast>
             <span class="toast-ico"><i class="fas fa-exclamation-triangle"></i></span>
@@ -288,7 +287,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         </div>
     @endif
 
-    <!-- Notifikasi Error dari Validasi Request -->
     @if($errors->any())
         @foreach($errors->all() as $error)
             <div class="toast err" data-toast>
@@ -330,7 +328,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
     <div class="sidebar-backdrop" id="sideBackdrop"></div>
 
-    <!-- ==================== SIDEBAR TERINTEGRASI ==================== -->
+    <!-- ==================== SIDEBAR ==================== -->
     <aside class="sidebar" id="sidebar" aria-label="Navigasi internal">
 
         <a href="/internal/index" class="side-link {{ Request::is('internal/index') ? 'active' : '' }}">
@@ -341,7 +339,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
             <div class="side-kicker">Modul operasional</div>
 
-            <!-- BAGIAN PENCEGAHAN -->
             <details class="side-group" {{ Request::is('internal/pencegahan*') ? 'open' : '' }}>
                 <summary><i class="fas fa-shield-halved grp-ico"></i><span class="grp-label">Bagian pencegahan</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
@@ -369,7 +366,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 </div>
             </details>
 
-            <!-- BAGIAN PEMADAMAN -->
             <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') || Request::is('internal/damtan/kelola-izin-keramaian*') ? 'open' : '' }}>
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
@@ -397,7 +393,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 </div>
             </details>
 
-            <!-- BAGIAN SAPRA -->
             <details class="side-group" {{ Request::is('sapra*') ? 'open' : '' }}>
                 <summary><i class="fas fa-warehouse grp-ico"></i><span class="grp-label">Bagian sapra</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
@@ -436,7 +431,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 </div>
             </details>
 
-            <!-- BAGIAN KEPEGAWAIAN -->
             <details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') ? 'open' : '' }}>
                 <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
@@ -444,13 +438,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                         <i class="fas fa-user-tie"></i><span class="lbl">Data Urut Kepegawaian</span>
                     </a>
                     <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
-                        <i class="fas fa-file-contract"></i><span class="lbl">Program Kerja</span>
+                        <i class="fas fa-file-contract"></i><span class="lbl">SOP & Dokumen</span>
                     </a>
                 </div>
             </details>
         @endhasanyrole
 
-       <!-- MANAJEMEN INFORMASI: semua pegawai internal bisa melihat menu ini -->
         @hasanyrole('Super User|Sapra|Damtan|Pencegahan|Sekretariat|Operator')
             <div class="side-kicker">Konten publik</div>
             <details class="side-group" {{ Request::is('internal/operator*') || Request::is('internal/peta-sigap*') ? 'open' : '' }}>
@@ -474,7 +467,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
                     <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
                     
-                    <!-- Khusus untuk Input Titik, dibatasi hanya untuk Super User & Operator -->
                     @hasanyrole('Super User|Operator')
                     <a href="/internal/peta-sigap/input" class="{{ Request::is('internal/peta-sigap/input*') ? 'active' : '' }}">
                         <i class="fas fa-plus"></i><span class="lbl">Input Titik Peta</span>
@@ -488,7 +480,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             </details>
         @endhasanyrole
 
-        <!-- PENGATURAN AKUN -->
         <div class="side-kicker">Akun</div>
         <details class="side-group" {{ request()->is('internal/profil*') || request()->is('internal/kelola-user*') || request()->is('internal/kelola-pemohon*') ? 'open' : '' }}>
             <summary><i class="fas fa-user-gear grp-ico"></i><span class="grp-label">Pengaturan akun</span><i class="fas fa-chevron-down chev"></i></summary>
@@ -515,21 +506,33 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
         <div class="page-head">
             <div class="page-head-text">
-                <h1>Kelola Program Kerja</h1>
-                <p>Manajemen file SOTK, SOP, Perencanaan, Pelaporan, dan Produk Hukum untuk publik.</p>
+                <h1>Kelola SOP</h1>
+                <p>Manajemen file Standar Operasional Prosedur (SOP) untuk publik.</p>
             </div>
-            <!-- Tombol Tambah Modal dengan Pembatasan Akses -->
             @hasanyrole('Super User|Sekretariat')
             <button type="button" class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modalTambah">
-                <i class="fas fa-plus"></i> Tambah Dokumen
+                <i class="fas fa-plus"></i> Tambah SOP
             </button>
             @endhasanyrole
         </div>
 
-        <!-- Tabel Data -->
+        <!-- Tabel Data & Filter -->
         <div class="base-card">
             <div class="card-title-custom">
-                <div class="title-left">Daftar Dokumen Terpublikasi</div>
+                <div class="title-left">Daftar SOP Terpublikasi</div>
+                
+                <!-- Form Filter Dropdown Berdasarkan Bagian SOP -->
+                <form method="GET" action="{{ route('program-kerja.index') }}" class="d-flex align-items-center">
+                    <select name="sub_kategori" class="form-select form-select-sm" style="min-width: 240px;" onchange="this.form.submit()">
+                        <option value="">-- Semua Bagian SOP --</option>
+                        <option value="Pencegahan" {{ request('sub_kategori') == 'Pencegahan' ? 'selected' : '' }}>Pencegahan</option>
+                        <option value="Pemadaman Kebakaran" {{ request('sub_kategori') == 'Pemadaman Kebakaran' ? 'selected' : '' }}>Pemadaman Kebakaran</option>
+                        <option value="Penyelamatan dan Evakuasi" {{ request('sub_kategori') == 'Penyelamatan dan Evakuasi' ? 'selected' : '' }}>Penyelamatan dan Evakuasi</option>
+                        <option value="Sarana dan Prasarana" {{ request('sub_kategori') == 'Sarana dan Prasarana' ? 'selected' : '' }}>Sarana dan Prasarana</option>
+                        <option value="Kepegawaian" {{ request('sub_kategori') == 'Kepegawaian' ? 'selected' : '' }}>Kepegawaian</option>
+                        <option value="Keuangan" {{ request('sub_kategori') == 'Keuangan' ? 'selected' : '' }}>Keuangan</option>
+                    </select>
+                </form>
             </div>
 
             <div class="table-responsive">
@@ -538,8 +541,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                         <tr>
                             <th width="5%">No</th>
                             <th>Judul Dokumen</th>
-                            <th width="15%">Kategori</th>
-                            <th width="15%">Sub Kategori</th>
+                            <th width="20%">Bagian SOP</th>
                             <th width="15%">File</th>
                             <th width="12%" class="text-center">Aksi</th>
                         </tr>
@@ -549,26 +551,17 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     <tr>
         <td>{{ $index + 1 }}</td>
         <td><strong>{{ $item->judul_dokumen }}</strong></td>
-        <td><span class="badge-kategori">{{ $item->kategori }}</span></td>
-        <td>
-            @if($item->sub_kategori)
-                {{ $item->sub_kategori }}
-            @else
-                <span class="text-muted">-</span>
-            @endif
-        </td>
+        <td><span class="badge-kategori">{{ $item->sub_kategori ?? 'Umum' }}</span></td>
         <td>
             <a href="/internal/program-kerja/download/{{ $item->id }}" class="text-primary text-decoration-none">
                 <i class="fas fa-download"></i> Unduh File
             </a>
         </td>
         <td class="text-center">
-            <!-- Pembatasan Akses Hapus / Edit pada tabel -->
             @hasanyrole('Super User|Sekretariat')
-            <form action="{{ route('program-kerja.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus dokumen ini?');">
+            <form action="{{ route('program-kerja.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus SOP ini?');">
                 @csrf
                 @method('DELETE')
-                <!-- Tombol Edit belum ada routenya dari web.php, sementara gunakan button type button -->
                 <button type="button" class="btn-icon edit" title="Edit Data"><i class="fas fa-pen"></i></button>
                 <button type="submit" class="btn-icon delete" title="Hapus Data"><i class="fas fa-trash"></i></button>
             </form>
@@ -579,7 +572,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     </tr>
     @empty
     <tr>
-        <td colspan="6" class="text-center py-4 text-muted">Belum ada dokumen yang diunggah.</td>
+        <td colspan="5" class="text-center py-4 text-muted">Belum ada SOP yang diunggah untuk bagian ini.</td>
     </tr>
     @endforelse
 </tbody>
@@ -597,46 +590,36 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalTambahLabel">Tambah Dokumen Baru</h5>
+                <h5 class="modal-title" id="modalTambahLabel">Tambah SOP Baru</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <!-- ACTION FORM SUDAH DIPERBAIKI -->
             <form action="{{ route('program-kerja.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     
+                    <input type="hidden" name="kategori" value="SOP">
+                    
                     <div class="mb-3">
-                        <label class="form-label">Judul Dokumen</label>
+                        <label class="form-label">Judul SOP</label>
                         <input type="text" name="judul_dokumen" class="form-control" placeholder="Contoh: SOP Penanganan Kebakaran 2026" required>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Kategori Utama</label>
-                        <select name="kategori" id="selectKategori" class="form-select" required>
-                            <option value="" disabled selected>Pilih Kategori...</option>
-                            <option value="SOTK">SOTK</option>
-                            <option value="SOP">SOP</option>
-                            <option value="Perencanaan">Perencanaan</option>
-                            <option value="Pelaporan">Pelaporan</option>
-                            <option value="Produk Hukum">Produk Hukum</option>
-                        </select>
-                    </div>
-
-                    <!-- Input Sub Kategori (Awalnya Disembunyikan via JS) -->
-                    <div class="mb-3" id="wrapperSubKategori" style="display: none;">
-                        <label class="form-label">Sub Kategori <small class="text-muted">(Khusus SOP)</small></label>
-                        <select name="sub_kategori" id="selectSubKategori" class="form-select">
-                            <option value="" disabled selected>Pilih Sub Bagian...</option>
-                            <option value="Sekretariat">Sekretariat</option>
-                            <option value="Sapra">Sapra</option>
-                            <option value="Damtan">Damtan</option>
+                        <label class="form-label">Bagian SOP</label>
+                        <select name="sub_kategori" class="form-select" required>
+                            <option value="" disabled selected>Pilih Bagian...</option>
                             <option value="Pencegahan">Pencegahan</option>
+                            <option value="Pemadaman Kebakaran">Pemadaman Kebakaran</option>
+                            <option value="Penyelamatan dan Evakuasi">Penyelamatan dan Evakuasi</option>
+                            <option value="Sarana dan Prasarana">Sarana dan Prasarana</option>
+                            <option value="Kepegawaian">Kepegawaian</option>
+                            <option value="Keuangan">Keuangan</option>
                         </select>
                     </div>
 
                     <div class="mb-2">
                         <label class="form-label">Upload File (PDF/JPG/PNG)</label>
-                            <input type="file" name="file_dokumen" class="form-control" accept=".pdf,.jpg,.jpeg,.png" required>
+                        <input type="file" name="file_dokumen" class="form-control" accept=".pdf,.jpg,.jpeg,.png" required>
                         <small class="text-muted mt-1 d-block">Maksimal ukuran file 5MB.</small>
                     </div>
 
@@ -644,7 +627,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light border" data-bs-dismiss="modal" style="min-height: 44px; border-radius: 8px;">Batal</button>
                     <button type="submit" class="btn-primary-custom">
-                        <i class="fas fa-save"></i> Simpan Dokumen
+                        <i class="fas fa-save"></i> Simpan SOP
                     </button>
                 </div>
             </form>
@@ -653,7 +636,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 </div>
 @endhasanyrole
 
-<!-- Script Bootstrap JS (Wajib untuk Modal) -->
+<!-- Script Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
@@ -668,7 +651,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         };
         var x = t.querySelector('[data-toast-close]');
         if (x) x.addEventListener('click', hide);
-        // Toast akan tertutup otomatis setelah 5 detik
         setTimeout(hide, 5000);
     });
 
@@ -699,25 +681,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         });
     });
 
-    /* ---------- LOGIK DYNAMIC SUB KATEGORI ---------- */
-    var katSelect = document.getElementById('selectKategori');
-    var subKatWrapper = document.getElementById('wrapperSubKategori');
-    var subKatSelect = document.getElementById('selectSubKategori');
-
-    if(katSelect && subKatWrapper && subKatSelect) {
-        katSelect.addEventListener('change', function() {
-            // Jika kategori yang dipilih adalah SOP, munculkan dropdown sub kategori
-            if(this.value === 'SOP') {
-                subKatWrapper.style.display = 'block';
-                subKatSelect.setAttribute('required', 'required'); // Wajib diisi
-            } else {
-                // Jika selain SOP, sembunyikan dan reset value-nya
-                subKatWrapper.style.display = 'none';
-                subKatSelect.removeAttribute('required');
-                subKatSelect.value = ''; // Kosongkan
-            }
-        });
-    }
 })();
 </script>
 </body>

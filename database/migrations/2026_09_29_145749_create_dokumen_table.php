@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('dokumen', function (Blueprint $table) {
+        Schema::create('dokumen_sop', function (Blueprint $table) {
             $table->id();
             $table->string('judul_dokumen');
             $table->string('nama_file');
@@ -22,12 +22,14 @@ return new class extends Migration
                 'Produk Hukum'
             ]);
             
-            // Kolom sub-kategori khusus SOP (nullable karena tidak semua punya sub)
+            // Kolom sub-kategori khusus SOP disesuaikan menjadi 6 bagian
             $table->enum('sub_kategori', [
-                'Sekretariat', 
-                'Sapra', 
-                'Damtan', 
-                'Pencegahan'
+                'Pencegahan', 
+                'Pemadaman Kebakaran', 
+                'Penyelamatan dan Evakuasi', 
+                'Sarana dan Prasarana', 
+                'Kepegawaian', 
+                'Keuangan'
             ])->nullable();
             
             $table->timestamps();

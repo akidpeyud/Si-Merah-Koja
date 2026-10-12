@@ -10,7 +10,7 @@ class Dokumen extends Model
     use HasFactory;
 
     // Menentukan nama tabel secara eksplisit (karena default laravel adalah 'dokumens')
-    protected $table = 'dokumen';
+    protected $table = 'dokumen_sop';
 
     // Menentukan kolom apa saja yang boleh diisi (Mass Assignment)
     protected $fillable = [
