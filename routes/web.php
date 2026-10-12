@@ -30,6 +30,7 @@ use App\Http\Controllers\IzinKeramaianController;
 use App\Http\Controllers\FireDrillController;
 use App\Http\Controllers\ProgramKerjaController;
 use App\Http\Controllers\InformasiLayananController;
+use App\Http\Controllers\DataAsnController;
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
@@ -706,6 +707,14 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/duk/{id}', [DukController::class, 'update'])->name('duk.update');
         Route::delete('/duk/{id}', [DukController::class, 'destroy'])->name('duk.destroy');
     });
+
+    // --- REKAP DATA ASN ---
+    Route::get('/internal/data-asn', [DataAsnController::class, 'index'])->name('data-asn.index');
+    Route::get('/internal/data-asn/create', [DataAsnController::class, 'create'])->name('data-asn.create');
+    Route::post('/internal/data-asn', [DataAsnController::class, 'store'])->name('data-asn.store');
+    Route::get('/internal/data-asn/{dataAsn}/edit', [DataAsnController::class, 'edit'])->name('data-asn.edit');
+    Route::put('/internal/data-asn/{dataAsn}', [DataAsnController::class, 'update'])->name('data-asn.update');
+    Route::delete('/internal/data-asn/{dataAsn}', [DataAsnController::class, 'destroy'])->name('data-asn.destroy');
 
     // --- G. PROGRAM KERJA ---
     Route::get('/internal/program-kerja', [ProgramKerjaController::class, 'index'])->name('program-kerja.index');
