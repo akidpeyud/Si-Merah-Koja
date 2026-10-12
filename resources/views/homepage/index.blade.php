@@ -467,8 +467,8 @@
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
                     <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
-                    <li><a href="#">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
-                    <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
+                    <li><a href="/layanan-fasilitas/izin-keramaian" aria-current="page">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</a></li>   <li><a href="/informasi-layanan">Informasi layanan</a></li>
                     <li><a href="#">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
                     <li><a href="/layanan-fasilitas/skk">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
                 </ul>
