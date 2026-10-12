@@ -36,6 +36,8 @@ use App\Models\Infografis;
 use App\Models\BeritaMedsos;
 use App\Models\EduDamkar;
 use App\Models\UjungDamkar;
+use App\Http\Controllers\SapraHomeController;
+
 
 // ==========================================
 // 1. RUTE PUBLIK (HALAMAN UTAMA & INFO)
@@ -782,3 +784,12 @@ Route::get('/download-format-surat', function () {
         return abort(404, 'File PDF tidak ditemukan di folder public/dokumen/');
     }
 })->name('download.format.surat');
+
+Route::get('/sumber-air', [PublicController::class, 'sumberAir']);
+Route::get('/hidrant-kota', [PublicController::class, 'hidrantKota']);
+Route::get('/public-sigap', [PetaController::class, 'sigap']);
+
+// Sarpras (halaman baru: sapra_home)
+Route::get('/sarpras/sarana', [SapraHomeController::class, 'sarana'])->name('sarpras.sarana');
+Route::get('/sarpras/prasarana', [SapraHomeController::class, 'prasarana'])->name('sarpras.prasarana');
+
