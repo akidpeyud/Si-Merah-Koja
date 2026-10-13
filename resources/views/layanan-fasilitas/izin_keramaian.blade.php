@@ -5,7 +5,9 @@
     $layanan = [
         'rpkbgl'    => ['url' => '/layanan-fasilitas/layanan_perizinan', 'label' => 'RPKBGL', 'ico' => 'fa-building', 'ket' => 'Layanan perizinan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan'],
         'skk'       => ['url' => '/layanan-fasilitas/skk',                'label' => 'SKK (Baru & Perpanjangan)', 'ico' => 'fa-user-shield', 'ket' => 'Layanan perizinan penerbitan & perpanjangan Sertifikat Keamanan Kebakaran'],
-        'keramaian' => ['url' => '/layanan-fasilitas/izin-keramaian',     'label' => 'Izin Keramaian', 'ico' => 'fa-users', 'ket' => 'Pengajuan Rekomendasi Izin Keramaian'],
+        'keramaian' => ['url' => '/layanan-fasilitas/izin-keramaian',     'label' => 'Event Keramaian', 'ico' => 'fa-users', 'ket' => 'Pengajuan Rekomendasi Event Keramaian'],
+        'edukasi'   => ['url' => '/layanan-fasilitas/edukasi_sosialisasi', 'label' => 'Edukasi & Sosialisasi', 'ico' => 'fa-bullhorn', 'ket' => 'Pengajuan Kunjungan Edukasi & Sosialisasi'],
+        'sarana'    => ['url' => '/layanan-fasilitas/penggunaan-sarana',  'label' => 'Penggunaan Sarana Pemadam', 'ico' => 'fa-truck-droplet', 'ket' => 'Permohonan Penggunaan Sarana Pemadam Kebakaran'],
     ];
     $tab_aktif = 'keramaian';
 
@@ -35,7 +37,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
     <meta name="description" content="Ajukan Rekomendasi Izin Keramaian secara daring di Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.">
-    <title>Izin Keramaian - Layanan perizinan | SIMERAH KOJA</title>
+    <title>Izin Keramaian - Layanan | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,6 +46,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        /* ==========================================================
+           TOKENS & BASE
+           ========================================================== */
         :root {
             --ink: #0d1b2a;
             --ink-2: #132a43;
@@ -62,7 +67,7 @@
             --r-lg: 28px;
             --r-md: 18px;
             --r-sm: 10px;
-            --wrap: 1200px;
+            --wrap: 1300px;
             --header-h: 64px;
         }
 
@@ -88,114 +93,185 @@
         .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: clamp(16px, 4vw, 32px); padding-right: clamp(16px, 4vw, 32px); }
 
         /* ==========================================================
-           HEADER & NAVBAR (sama dengan homepage)
+           HEADER & NAVBAR (Sesuai Index)
            ========================================================== */
         .site-header {
             position: sticky; top: 0; z-index: 60;
-            background: rgba(13, 27, 42, .85);
+            background: rgba(13, 27, 42, .88);
             -webkit-backdrop-filter: blur(14px) saturate(1.4);
             backdrop-filter: blur(14px) saturate(1.4);
             border-bottom: 1px solid rgba(255,255,255,.08);
         }
         .nav {
-            max-width: 1300px; margin: 0 auto; min-height: var(--header-h);
-            padding: 0 clamp(16px, 4vw, 32px);
-            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            max-width: 1440px; margin: 0 auto; min-height: var(--header-h);
+            padding: 0 clamp(16px, 3vw, 32px);
+            display: flex; align-items: center; justify-content: space-between; gap: 24px;
         }
-        .brand { display: flex; align-items: center; gap: 12px; flex: none; }
-        .brand img { height: 38px; width: auto; }
 
-        .menu { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; }
+        .brand { display: flex; align-items: center; flex: none; }
+        .brand a { display: flex; align-items: center; }
+        .brand a + a { margin-left: 14px; padding-left: 14px; border-left: 1px solid rgba(255,255,255,.16); }
+        .brand img { height: 36px; width: auto; }
+
+        .nav-panel { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+
+        .menu { display: flex; align-items: center; justify-content: center; gap: 2px; flex: 1; min-width: 0; }
         .menu > li { position: relative; }
+
         .menu-link, .menu-trigger {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 8px 10px; border-radius: 999px;
-            color: rgba(255,255,255,.88); font-size: .85rem; font-weight: 500;
-            transition: background .2s, color .2s; white-space: nowrap;
+            position: relative; display: inline-flex; align-items: center; gap: 6px;
+            padding: 10px 11px; color: rgba(255,255,255,.78);
+            font-size: .875rem; font-weight: 500; letter-spacing: .005em; white-space: nowrap;
+            transition: color .2s;
         }
-        .menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger, .menu > li.current > .menu-trigger { background: rgba(255,255,255,.1); color: #fff; }
-        .menu-trigger i { font-size: .6rem; transition: transform .2s; }
-        .has-drop.open > .menu-trigger i { transform: rotate(180deg); }
-        .menu .btn-login { background: var(--signal); color: #fff; margin-left: 6px; font-weight: 600; padding: 8px 18px; }
-        .menu .btn-login:hover { background: var(--signal-d); }
+        .menu-link::after, .menu-trigger::after {
+            content: ""; position: absolute; left: 11px; right: 11px; bottom: 2px; height: 2px;
+            border-radius: 2px; background: var(--amber);
+            transform: scaleX(0); transform-origin: left; transition: transform .25s ease;
+        }
+        .menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger, .menu-link.is-active, .menu > li.current > .menu-trigger { color: #fff; }
+        .menu-link:hover::after, .menu-trigger:hover::after, .has-drop.open > .menu-trigger::after, .menu-link.is-active::after, .menu > li.current > .menu-trigger::after { transform: scaleX(1); }
+
+        .menu-trigger i { font-size: .6rem; opacity: .6; transition: transform .2s, opacity .2s; }
+        .has-drop.open > .menu-trigger i { transform: rotate(180deg); opacity: 1; }
+
+        .nav-actions { display: flex; align-items: center; gap: 10px; flex: none; }
+        .nav-actions > li { position: relative; }
+
+        .btn-nav {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            height: 40px; padding: 0 16px; border-radius: 999px;
+            font-size: .875rem; font-weight: 600; white-space: nowrap;
+            transition: background .2s, border-color .2s, color .2s, transform .2s;
+        }
+        .btn-nav:active { transform: scale(.97); }
+        .btn-nav i.fa-chevron-down { font-size: .6rem; opacity: .8; transition: transform .2s; }
+        .has-drop.open > .btn-nav i.fa-chevron-down { transform: rotate(180deg); }
+
+        .btn-nav--alert { background: var(--signal); color: #fff; }
+        .btn-nav--alert:hover, .has-drop.open > .btn-nav--alert { background: var(--signal-d); }
+        .btn-nav--alert .beacon { width: 8px; height: 8px; background: #fff; }
+        .btn-nav--alert .beacon::after { background: #fff; }
+
+        .btn-nav--ghost { border: 1.5px solid rgba(255,255,255,.3); color: #fff; }
+        .btn-nav--ghost:hover, .has-drop.open > .btn-nav--ghost { border-color: #fff; background: rgba(255,255,255,.08); }
 
         .dropdown {
-            display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 260px;
+            position: absolute; top: calc(100% + 14px); left: 50%; min-width: 250px; width: max-content; max-width: 320px;
             background: var(--ink-2); border: 1px solid rgba(255,255,255,.1);
-            border-radius: var(--r-md); padding: 8px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
+            border-radius: 16px; padding: 8px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
+            visibility: hidden; opacity: 0; pointer-events: none;
+            transform: translate(-50%, 6px);
+            transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s;
         }
-        /* Dropdown menu sisi kanan tidak keluar layar */
-        .menu > li:nth-last-child(-n+4) .dropdown { left: auto; right: 0; }
-        .dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
-        .dropdown a {
-            display: block; padding: 10px 14px; border-radius: var(--r-sm);
-            font-size: .9rem; color: rgba(255,255,255,.85); line-height: 1.4; white-space: normal;
+        .nav-actions .dropdown { left: auto; right: 0; transform: translate(0, 6px); }
+        .dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -14px; height: 14px; }
+        .dropdown::after {
+            content: ""; position: absolute; top: -6px; left: 50%; width: 10px; height: 10px; margin-left: -5px;
+            background: var(--ink-2); border-top: 1px solid rgba(255,255,255,.1); border-left: 1px solid rgba(255,255,255,.1);
+            transform: rotate(45deg);
         }
-        .dropdown a:hover, .dropdown a[aria-current="page"] { background: rgba(255,255,255,.1); color: #fff; }
+        .nav-actions .dropdown::after { left: auto; right: 24px; margin-left: 0; }
 
-        .dropdown .btn-logout {
-            width: 100%; text-align: left; padding: 11px 14px; border-radius: var(--r-sm);
-            font-size: .92rem; color: #ff8b8b; display: flex; align-items: center; gap: 8px;
-            transition: background .2s, color .2s; cursor: pointer;
+        .has-drop.open > .dropdown {
+            visibility: visible; opacity: 1; pointer-events: auto;
+            transform: translate(-50%, 0); transition-delay: 0s;
         }
-        .dropdown .btn-logout:hover { background: rgba(255,255,255,.1); color: #ffb8b8; }
+        .nav-actions .has-drop.open > .dropdown { transform: translate(0, 0); }
 
-        .has-drop.open > .dropdown { display: block; }
+        .dropdown a, .dropdown .btn-logout {
+            display: flex; align-items: center; gap: 12px; width: 100%;
+            padding: 10px 14px; border-radius: var(--r-sm);
+            font-size: .9rem; line-height: 1.4; color: rgba(255,255,255,.85); text-align: left; white-space: normal;
+            transition: background .15s, color .15s;
+        }
+        .dropdown a:hover, .dropdown a[aria-current="page"] { background: rgba(255,255,255,.08); color: #fff; }
+        .dropdown a i { width: 18px; text-align: center; font-size: 1rem; flex: none; }
+        .dropdown a .fa-phone-alt { color: #38bdf8; }
+        .dropdown a .fa-whatsapp  { color: #25d366; }
+        .dropdown a .fa-headset   { color: #f87171; }
+        .dropdown .btn-logout { color: #ff8b8b; cursor: pointer; }
+        .dropdown .btn-logout:hover { background: rgba(255,255,255,.08); color: #ffb8b8; }
 
-        /* Multilevel dropdown (Galeri > Berita) */
         .has-sub { position: relative; }
         .has-sub > .sub-trigger {
-            width: 100%; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 10px;
-            padding: 10px 14px; border-radius: var(--r-sm); font-size: .9rem; line-height: 1.4;
-            color: rgba(255,255,255,.85); background: transparent; border: none; cursor: pointer;
-            font-family: inherit; transition: background .2s, color .2s;
+            width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            padding: 10px 14px; border-radius: var(--r-sm); font-size: .9rem; line-height: 1.4; text-align: left;
+            color: rgba(255,255,255,.85); transition: background .15s, color .15s;
         }
-        .has-sub > .sub-trigger i { font-size: .7rem; transition: transform .2s; }
-        .has-sub.open > .sub-trigger i { transform: rotate(90deg); }
-        .has-sub > .sub-trigger:hover, .has-sub.open > .sub-trigger { background: rgba(255,255,255,.1); color: #fff; }
+        .has-sub > .sub-trigger i { font-size: .65rem; opacity: .7; transition: transform .2s; }
+        .has-sub > .sub-trigger:hover, .has-sub.open > .sub-trigger { background: rgba(255,255,255,.08); color: #fff; }
 
         .dropdown-sub {
-            display: none; position: absolute; top: -8px; left: 100%; min-width: 230px;
+            display: none; position: absolute; top: -8px; left: 100%; min-width: 230px; margin-left: 6px; z-index: 10;
             background: var(--ink-2); border: 1px solid rgba(255,255,255,.1);
-            border-radius: var(--r-md); padding: 8px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
-            margin-left: 4px; z-index: 10;
+            border-radius: 16px; padding: 8px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
         }
-        .dropdown-sub::before { content: ""; position: absolute; top: 0; bottom: 0; left: -10px; width: 10px; }
+        .dropdown-sub::before { content: ""; position: absolute; top: 0; bottom: 0; left: -12px; width: 12px; }
         .has-sub.open > .dropdown-sub { display: block; }
 
-        @media (hover: hover) and (min-width: 1251px) {
-            .has-drop:hover > .dropdown { display: block; }
-            .has-sub:hover > .dropdown-sub { display: block; }
-            .has-sub:hover > .sub-trigger { background: rgba(255,255,255,.1); color: #fff; }
-            .dropdown-sub { left: auto; right: 100%; margin-left: 0; margin-right: 4px; }
-            .dropdown-sub::before { left: auto; right: -10px; }
-            .has-sub > .sub-trigger i { transform: rotate(180deg); }
-            .has-sub.open > .sub-trigger i { transform: rotate(180deg); }
-        }
-
-        .nav-toggle { display: none; width: 44px; height: 44px; border-radius: 12px; color: #fff; font-size: 1.15rem; }
+        .nav-toggle { display: none; width: 44px; height: 44px; border-radius: 12px; color: #fff; font-size: 1.15rem; align-items: center; justify-content: center; }
         .nav-toggle:hover { background: rgba(255,255,255,.1); }
 
-        @media (max-width: 1250px) {
-            .nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
-            .menu {
-                display: none; position: fixed; top: var(--header-h); left: 0; right: 0;
-                max-height: calc(100dvh - var(--header-h)); overflow-y: auto;
-                flex-direction: column; align-items: stretch; gap: 4px; flex-wrap: nowrap;
-                padding: 16px clamp(16px, 4vw, 32px) 28px; background: var(--ink);
-                border-bottom: 1px solid rgba(255,255,255,.1);
-            }
-            .nav-open .menu { display: flex; }
-            .menu-link, .menu-trigger { width: 100%; justify-content: space-between; padding: 14px 16px; border-radius: 14px; font-size: 1rem; white-space: normal; }
-            .dropdown { position: static; margin: 2px 0 8px 12px; box-shadow: none; background: transparent; border: 0; border-left: 2px solid rgba(255,255,255,.12); border-radius: 0; min-width: 100%; }
-            .dropdown::before { display: none; }
-            .menu .btn-login { margin: 8px 0 0; justify-content: center; padding: 14px; }
+        @media (hover: hover) and (min-width: 1201px) {
+            .has-drop:hover > .dropdown { visibility: visible; opacity: 1; pointer-events: auto; transform: translate(-50%, 0); transition-delay: 0s; }
+            .nav-actions .has-drop:hover > .dropdown { transform: translate(0, 0); }
+            .has-drop:hover > .menu-trigger { color: #fff; }
+            .has-drop:hover > .menu-trigger::after { transform: scaleX(1); }
+            .has-sub:hover > .dropdown-sub { display: block; }
+            .has-sub:hover > .sub-trigger { background: rgba(255,255,255,.08); color: #fff; }
 
-            .has-sub > .sub-trigger { padding: 14px 16px; border-radius: 14px; font-size: 1rem; }
+            .dropdown-sub { left: auto; right: 100%; margin-left: 0; margin-right: 6px; }
+            .dropdown-sub::before { left: auto; right: -12px; }
+            .has-sub > .sub-trigger i { transform: rotate(180deg); }
+        }
+
+        @media (max-width: 1200px) {
+            .nav { gap: 12px; }
+            .nav-toggle { display: inline-flex; margin-left: auto; }
+
+            .nav-panel {
+                display: none; position: absolute; top: 100%; left: 0; right: 0;
+                max-height: calc(100dvh - var(--header-h)); overflow-y: auto; overscroll-behavior: contain;
+                flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 20px;
+                padding: 8px clamp(16px, 4vw, 32px) 28px;
+                background: var(--ink); border-bottom: 1px solid rgba(255,255,255,.1);
+                box-shadow: 0 30px 40px rgba(0,0,0,.35);
+            }
+            .nav-open .nav-panel { display: flex; }
+
+            .menu { flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 0; flex: none; }
+            .menu > li { border-bottom: 1px solid rgba(255,255,255,.08); }
+            .menu-link, .menu-trigger { width: 100%; justify-content: space-between; padding: 16px 4px; font-size: 1rem; white-space: normal; color: rgba(255,255,255,.9); }
+            .menu-link::after, .menu-trigger::after { display: none; }
+            .menu-link.is-active { color: var(--amber); }
+            .menu > li.current > .menu-trigger { color: var(--amber); }
+            .menu-trigger i { font-size: .7rem; }
+
+            .nav-actions { flex-direction: column; align-items: stretch; gap: 10px; }
+            .btn-nav { height: 48px; font-size: 1rem; }
+            .nav-actions .has-drop > .btn-nav { width: 100%; }
+
+            .dropdown, .nav-actions .dropdown {
+                display: none; position: static; min-width: 0; width: auto; max-width: none; margin: 0 0 12px 4px; padding: 0 0 0 12px;
+                background: transparent; border: 0; border-left: 2px solid rgba(255,255,255,.14); border-radius: 0; box-shadow: none;
+                visibility: visible; opacity: 1; pointer-events: auto; transform: none; transition: none;
+            }
+            .dropdown::before, .dropdown::after { display: none; }
+            .has-drop.open > .dropdown, .nav-actions .has-drop.open > .dropdown { display: block; transform: none; }
+            .dropdown a, .dropdown .btn-logout { padding: 13px 12px; font-size: .95rem; }
+
+            .has-sub > .sub-trigger { padding: 13px 12px; font-size: .95rem; }
             .has-sub.open > .sub-trigger i { transform: rotate(90deg); }
-            .dropdown-sub { position: static; margin: 4px 0 4px 12px; box-shadow: none; background: transparent; border: 0; border-left: 2px solid rgba(255,255,255,.12); border-radius: 0; padding: 0; min-width: 100%; }
+            .dropdown-sub { position: static; margin: 2px 0 6px 8px; padding: 0 0 0 10px; min-width: 0; background: transparent; border: 0; border-left: 2px solid rgba(255,255,255,.14); border-radius: 0; box-shadow: none; }
             .dropdown-sub::before { display: none; }
         }
+
+        @media (max-width: 480px) {
+            .brand img { height: 30px; }
+            .brand a + a { margin-left: 10px; padding-left: 10px; }
+        }
+        body.nav-lock { overflow: hidden; }
 
         /* ==========================================================
            HERO HALAMAN
@@ -222,6 +298,11 @@
         }
         .page-hero p { margin-top: 18px; max-width: 56ch; color: rgba(255,255,255,.75); font-size: clamp(1rem, 1.5vw, 1.15rem); }
 
+        .rise { animation: rise .8s cubic-bezier(.16,.84,.3,1) both; }
+        .rise.d1 { animation-delay: .08s; } .rise.d2 { animation-delay: .18s; }
+        @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+
+        /* BODY LAYOUT */
         .page-body { background: var(--paper); padding-bottom: clamp(64px, 9vw, 112px); }
         .tabs-wrap { position: relative; z-index: 2; margin-top: -30px; }
         .tabs {
@@ -448,136 +529,136 @@
             </a>
         </div>
 
-        <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="menu">
+        <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="navPanel">
             <i class="fas fa-bars"></i>
         </button>
 
-        <ul class="menu" id="menu">
-            <!-- 1. Layanan Kedaruratan -->
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan Kedaruratan <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="tel:112">Call Center 112</a></li>
-                    <li><a href="tel:{{ $no_telepon }}">Telp</a></li>
-                    <li><a href="{{ $wa_link }}" target="_blank" rel="noopener">WA</a></li>
-                </ul>
-            </li>
+        <div class="nav-panel" id="navPanel">
+            <!-- ===== Menu utama ===== -->
+            <ul class="menu">
+                <li><a class="menu-link {{ request()->is('public-sigap*') ? 'is-active' : '' }}" href="/public-sigap">Sigapkar</a></li>
 
-            <!-- 2. Sigapkar -->
-            <li><a class="menu-link" href="/public-sigap">Sigapkar</a></li>
-
-            <!-- 3. Layanan (halaman aktif) -->
-            <li class="has-drop current">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
-                    <li><a href="/layanan-fasilitas/izin-keramaian" aria-current="page">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
-                    <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
-                    <li><a href="#">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
-                    <li><a href="/layanan-fasilitas/skk">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
-                </ul>
-            </li>
-
-            <!-- 4. Produk Hukum -->
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/produkhukum">Undang-Undang</a></li>
-                    <li><a href="/produkhukum">Peraturan Pemerintah</a></li>
-                    <li><a href="/produkhukum">Peraturan Menteri</a></li>
-                    <li><a href="/produkhukum">Peraturan Daerah</a></li>
-                    <li><a href="/produkhukum">Peraturan Kepala Daerah</a></li>
-                </ul>
-            </li>
-
-            <!-- 5. Profil -->
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Profil <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="#">Visi Misi</a></li>
-                    <li><a href="/sotk">SOTK</a></li>
-                    <li><a href="#">Tupoksi</a></li>
-                    <li><a href="#">Kepegawaian</a></li>
-                    <li><a href="#">Program Kegiatan</a></li>
-                    <li><a href="#">Cascading</a></li>
-                </ul>
-            </li>
-
-            <!-- 6. SOP -->
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">SOP <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/sop">Pencegahan</a></li>
-                    <li><a href="/sop">Pemadaman Kebakaran</a></li>
-                    <li><a href="/sop">Penyelamatan dan Evakuasi</a></li>
-                    <li><a href="/sop">Sarana dan Prasarana</a></li>
-                    <li><a href="/sop">Kepegawaian</a></li>
-                    <li><a href="/sop">Keuangan</a></li>
-                </ul>
-            </li>
-
-            <!-- 7. Dokumen -->
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Dokumen <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/perencanaan">Renstra</a></li>
-                    <li><a href="/perencanaan">Renja</a></li>
-                    <li><a href="#">SPM</a></li>
-                    <li><a href="#">SAKIP</a></li>
-                    <li><a href="/pelaporan">LPPD</a></li>
-                </ul>
-            </li>
-
-            <!-- 8. Sarpras -->
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Sarpras <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="{{ route('sarpras.sarana') }}">Sarana</a></li>
-                    <li><a href="{{ route('sarpras.prasarana') }}">Prasarana</a></li>
-                </ul>
-            </li>
-
-            <!-- 9. Galeri (nested dropdown) -->
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Galeri <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/ikm">IKM (Indeks Kepuasan Masyarakat)</a></li>
-                    <li><a href="/pengumuman">Pengumuman</a></li>
-                    <li class="has-sub">
-                        <button class="sub-trigger" type="button" aria-expanded="false">
-                            Berita <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <ul class="dropdown-sub">
-                            <li><a href="/edu-damkar">Edu Damkar</a></li>
-                            <li><a href="{{ route('publik.infografis') }}">Infografis</a></li>
-                            <li><a href="/media-informasi">Media Informasi</a></li>
-                            <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-
-            <!-- Login / User Session -->
-            @if(session()->has('pemohon_id'))
-                <li class="has-drop">
-                    <button class="menu-trigger btn-login" type="button" aria-expanded="false">
-                        <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
-                    </button>
+                <li class="has-drop current">
+                    <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
-                        <li>
-                            <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
-                                @csrf
-                                <button type="submit" class="btn-logout">
-                                    <i class="fas fa-sign-out-alt"></i> Keluar
-                                </button>
-                            </form>
+                        <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
+                        <li><a href="/layanan-fasilitas/izin-keramaian" aria-current="page">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
+                        <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
+                        <li><a href="/layanan-fasilitas/penggunaan-sarana">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
+                        <li><a href="/layanan-fasilitas/skk">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-drop">
+                    <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
+                    <ul class="dropdown">
+                        <li><a href="/produkhukum">Undang-Undang</a></li>
+                        <li><a href="/produkhukum">Peraturan Pemerintah</a></li>
+                        <li><a href="/produkhukum">Peraturan Menteri</a></li>
+                        <li><a href="/produkhukum">Peraturan Daerah</a></li>
+                        <li><a href="/produkhukum">Peraturan Kepala Daerah</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-drop">
+                    <button class="menu-trigger" type="button" aria-expanded="false">Profil <i class="fas fa-chevron-down"></i></button>
+                    <ul class="dropdown">
+                        <li><a href="#">Visi Misi</a></li>
+                        <li><a href="/sotk">SOTK</a></li>
+                        <li><a href="#">Tupoksi</a></li>
+                        <li><a href="#">Kepegawaian</a></li>
+                        <li><a href="#">Program Kegiatan</a></li>
+                        <li><a href="#">Cascading</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-drop">
+                    <button class="menu-trigger" type="button" aria-expanded="false">SOP <i class="fas fa-chevron-down"></i></button>
+                    <ul class="dropdown">
+                        <li><a href="/sop">Pencegahan</a></li>
+                        <li><a href="/sop">Pemadaman Kebakaran</a></li>
+                        <li><a href="/sop">Penyelamatan dan Evakuasi</a></li>
+                        <li><a href="/sop">Sarana dan Prasarana</a></li>
+                        <li><a href="/sop">Kepegawaian</a></li>
+                        <li><a href="/sop">Keuangan</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-drop">
+                    <button class="menu-trigger" type="button" aria-expanded="false">Dokumen <i class="fas fa-chevron-down"></i></button>
+                    <ul class="dropdown">
+                        <li><a href="/perencanaan">Renstra</a></li>
+                        <li><a href="/perencanaan">Renja</a></li>
+                        <li><a href="#">SPM</a></li>
+                        <li><a href="#">SAKIP</a></li>
+                        <li><a href="/pelaporan">LPPD</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-drop">
+                    <button class="menu-trigger" type="button" aria-expanded="false">Sarpras <i class="fas fa-chevron-down"></i></button>
+                    <ul class="dropdown">
+                        <li><a href="{{ route('sarpras.sarana') }}">Sarana</a></li>
+                        <li><a href="{{ route('sarpras.prasarana') }}">Prasarana</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-drop">
+                    <button class="menu-trigger" type="button" aria-expanded="false">Galeri <i class="fas fa-chevron-down"></i></button>
+                    <ul class="dropdown">
+                        <li><a href="/ikm">IKM (Indeks Kepuasan Masyarakat)</a></li>
+                        <li><a href="/pengumuman">Pengumuman</a></li>
+                        <li class="has-sub">
+                            <button class="sub-trigger" type="button" aria-expanded="false">
+                                Berita <i class="fas fa-chevron-right"></i>
+                            </button>
+                            <ul class="dropdown-sub">
+                                <li><a href="/edu-damkar">Edu Damkar</a></li>
+                                <li><a href="{{ route('publik.infografis') }}">Infografis</a></li>
+                                <li><a href="/media-informasi">Media Informasi</a></li>
+                                <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </li>
-            @else
-                <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
-            @endif
-        </ul>
+
+                <li><a class="menu-link {{ request()->is('redkar*') ? 'is-active' : '' }}" href="/redkar">Redkar</a></li>
+            </ul>
+
+            <!-- ===== Tombol kanan: Lapor darurat + Masuk ===== -->
+            <ul class="nav-actions">
+                <li class="has-drop">
+                    <button class="btn-nav btn-nav--alert menu-trigger-cta" type="button" aria-expanded="false">
+                        <span class="beacon" aria-hidden="true"></span> Lapor darurat <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <ul class="dropdown">
+                        <li><a href="tel:112"><i class="fas fa-headset"></i> Call Center 112</a></li>
+                        <li><a href="tel:{{ $no_telepon }}"><i class="fas fa-phone-alt"></i> Telepon {{ $telepon_tampil }}</a></li>
+                        <li><a href="{{ $wa_link }}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
+                    </ul>
+                </li>
+
+                @if(session()->has('pemohon_id'))
+                    <li class="has-drop">
+                        <button class="btn-nav btn-nav--ghost menu-trigger-cta" type="button" aria-expanded="false">
+                            <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <ul class="dropdown">
+                            <li>
+                                <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
+                                    @csrf
+                                    <button type="submit" class="btn-logout">
+                                        <i class="fas fa-sign-out-alt"></i> Keluar
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                @else
+                    <li><a class="btn-nav btn-nav--ghost" href="{{ route('pemohon.login') }}">Masuk</a></li>
+                @endif
+            </ul>
+        </div>
     </nav>
 </header>
 
@@ -589,12 +670,12 @@
         <nav aria-label="Breadcrumb" class="rise">
             <ol class="crumbs">
                 <li><a href="/">Beranda</a></li>
-                <li><a href="/layanan-fasilitas/layanan_perizinan">Layanan perizinan</a></li>
+                <li><a href="/layanan-fasilitas/layanan_perizinan">Layanan</a></li>
                 <li><span aria-current="page">{{ $layanan[$tab_aktif]['label'] }}</span></li>
             </ol>
         </nav>
-        <h1 class="rise d1">Layanan perizinan</h1>
-        <p class="rise d2">Ajukan Rekomendasi Izin Keramaian secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+        <h1 class="rise d1">Rekomendasi Event Keramaian</h1>
+        <p class="rise d2">Ajukan Rekomendasi Event Keramaian secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
 </section>
 
@@ -623,7 +704,7 @@
                 <span class="c-ico"><i class="fas fa-file-circle-check"></i></span>
                 <div>
                     <small>Produk layanan</small>
-                    <strong>Rekomendasi Izin Keramaian</strong>
+                    <strong>Rekomendasi Event Keramaian</strong>
                 </div>
             </div>
             <div class="fact">
@@ -649,7 +730,7 @@
                     <ol class="checklist">
                         <li>
                             <span class="ck-ico"><i class="fas fa-pen-to-square"></i></span>
-                            <div>Isi formulir pengajuan izin keramaian secara elektronik melalui <strong>simerah.jambikota.go.id</strong></div>
+                            <div>Isi formulir pengajuan event keramaian secara elektronik melalui <strong>simerah.jambikota.go.id</strong></div>
                         </li>
                         <li>
                             <span class="ck-ico"><i class="fas fa-image"></i></span>
@@ -676,8 +757,8 @@
                     <div class="form-title">
                         <i class="fas fa-file-pen"></i>
                         <div>
-                            <h2>Formulir Rekomendasi Izin Keramaian</h2>
-                            <p>Pengajuan Rekomendasi Izin Keramaian Masyarakat</p>
+                            <h2>Formulir Rekomendasi Event Keramaian</h2>
+                            <p>Pengajuan Rekomendasi Event Keramaian Masyarakat</p>
                         </div>
                     </div>
                     <span class="form-note"><span class="req" aria-hidden="true">*</span> wajib diisi</span>
@@ -702,7 +783,7 @@
 
                     <div class="alert" style="background: #eef2f6; color: var(--ink-3); border: 1px solid var(--line);" role="alert">
                         <i class="fas fa-info-circle"></i>
-                        <div><strong>Perhatian:</strong> Pengajuan rekomendasi Izin Keramaian dilakukan <strong>7 Hari sebelum kegiatan</strong> dilaksanakan.</div>
+                        <div><strong>Perhatian:</strong> Pengajuan rekomendasi Event Keramaian dilakukan <strong>Min 7 Hari sebelum kegiatan</strong> dilaksanakan.</div>
                     </div>
 
                     <fieldset class="fs">
@@ -933,7 +1014,7 @@
         <a class="n112" href="tel:112"><i class="fas fa-headset"></i> Call Center 112</a>
     </div>
     <button class="sos-fab-btn" type="button" aria-expanded="false" aria-controls="sosSheet">
-        <span class="beacon" aria-hidden="true"></span> Lapor darurat
+        <span class="beacon" style="background:#fff" aria-hidden="true"></span> Lapor darurat
     </button>
 </div>
 
@@ -945,6 +1026,11 @@
     var toggle = header.querySelector('.nav-toggle');
     var drops = header.querySelectorAll('.has-drop');
     var subs = header.querySelectorAll('.has-sub');
+    var desktop = window.matchMedia('(hover: hover) and (min-width: 1201px)');
+
+    function triggerOf(li) {
+        return li.querySelector(':scope > .menu-trigger, :scope > .menu-trigger-cta');
+    }
 
     function closeSubs() {
         subs.forEach(function (s) {
@@ -957,25 +1043,38 @@
         drops.forEach(function (li) {
             if (li !== except) {
                 li.classList.remove('open');
-                li.querySelector('.menu-trigger').setAttribute('aria-expanded', 'false');
+                triggerOf(li).setAttribute('aria-expanded', 'false');
             }
         });
         if (!except) closeSubs();
     }
 
-    toggle.addEventListener('click', function () {
-        var open = header.classList.toggle('nav-open');
+    function setMobileMenu(open) {
+        header.classList.toggle('nav-open', open);
+        document.body.classList.toggle('nav-lock', open);
         toggle.setAttribute('aria-expanded', open);
         toggle.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
         toggle.querySelector('i').className = open ? 'fas fa-times' : 'fas fa-bars';
+        if (!open) closeDrops(null);
+    }
+
+    toggle.addEventListener('click', function () {
+        setMobileMenu(!header.classList.contains('nav-open'));
     });
 
     drops.forEach(function (li) {
-        var btn = li.querySelector('.menu-trigger');
+        var btn = triggerOf(li);
         btn.addEventListener('click', function () {
             var open = li.classList.toggle('open');
             btn.setAttribute('aria-expanded', open);
             closeDrops(li);
+        });
+
+        li.addEventListener('mouseleave', function () {
+            if (!desktop.matches) return;
+            li.classList.remove('open');
+            btn.setAttribute('aria-expanded', 'false');
+            closeSubs();
         });
     });
 
@@ -995,7 +1094,14 @@
     });
 
     document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') closeDrops(null);
+        if (e.key === 'Escape') {
+            closeDrops(null);
+            if (header.classList.contains('nav-open')) setMobileMenu(false);
+        }
+    });
+
+    window.matchMedia('(min-width: 1201px)').addEventListener('change', function (e) {
+        if (e.matches) setMobileMenu(false);
     });
 
     var fab = document.getElementById('sosFab');

@@ -453,7 +453,7 @@
     <main class="content">
         <div class="page-header">
             <div class="page-header-text">
-                <h1>Kelola Izin Keramaian</h1>
+                <h1>Kelola Event Keramaian</h1>
                 <p>Daftar seluruh pengajuan rekomendasi izin keramaian masyarakat.</p>
             </div>
         </div>

@@ -9,21 +9,28 @@ use Illuminate\Support\Facades\Validator;
 
 class ProgramKerjaController extends Controller
 {
-    // 1. Menampilkan Halaman Dashboard CRUD
-    public function index()
+    // 1. Menampilkan Halaman Dashboard CRUD dengan Fitur Filter
+    public function index(Request $request)
     {
-        $dokumen = Dokumen::latest()->get(); 
+        $query = Dokumen::where('kategori', 'SOP');
+
+        // Filter berdasarkan sub_kategori jika dipilih
+        if ($request->filled('sub_kategori')) {
+            $query->where('sub_kategori', $request->sub_kategori);
+        }
+
+        $dokumen = $query->latest()->get(); 
         return view('internal.program-kerja.index', compact('dokumen'));
     }
 
     // 2. Menyimpan Data dan Upload File
     public function store(Request $request)
     {
-        // Menggunakan Validator manual agar kita bisa mengembalikan form input (withInput)
+        // Validasi dengan 6 bagian SOP yang baru
         $validator = Validator::make($request->all(), [
             'judul_dokumen' => 'required|string|max:255',
             'kategori'      => 'required|in:SOTK,SOP,Perencanaan,Pelaporan,Produk Hukum',
-            'sub_kategori'  => 'nullable|in:Sekretariat,Sapra,Damtan,Pencegahan',
+            'sub_kategori'  => 'required|in:Pencegahan,Pemadaman Kebakaran,Penyelamatan dan Evakuasi,Sarana dan Prasarana,Kepegawaian,Keuangan',
             'file_dokumen'  => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120', 
         ]);
 
@@ -52,7 +59,7 @@ class ProgramKerjaController extends Controller
             // Pindahkan file secara fisik langsung ke folder tujuan
             $file->move($tujuan_upload, $namaFile);
 
-            // Simpan ke database
+            // Simpan ke database (menggunakan model Dokumen yang terhubung ke dokumen_sop)
             Dokumen::create([
                 'judul_dokumen' => $request->judul_dokumen,
                 'kategori'      => $request->kategori,
@@ -60,10 +67,9 @@ class ProgramKerjaController extends Controller
                 'nama_file'     => $namaFile,
             ]);
 
-            return redirect()->back()->with('success', 'Dokumen berhasil diunggah dan disimpan!');
+            return redirect()->back()->with('success', 'Dokumen SOP berhasil diunggah dan disimpan!');
             
         } catch (\Exception $e) {
-            // Memunculkan pesan error asli di layar (Toast merah) jika gagal masuk DB / gagal pindah file
             return redirect()->back()
                 ->withInput()
                 ->with('error', 'Gagal sistem: ' . $e->getMessage());

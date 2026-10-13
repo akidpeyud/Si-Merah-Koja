@@ -146,10 +146,14 @@
         .action-btn { width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: none; font-size: 13px; transition: all 0.2s; text-decoration: none; }
         .action-btn.view { background-color: var(--info-soft); color: var(--info); }
         .action-btn.view:hover { background-color: #dbeafe; }
-        .action-btn.edit { background-color: rgba(255, 182, 39, 0.15); color: #d97706; margin: 0 5px; }
+        .action-btn.edit { background-color: rgba(255, 182, 39, 0.15); color: #d97706; }
         .action-btn.edit:hover { background-color: rgba(255, 182, 39, 0.25); }
-        .action-btn.delete { background-color: var(--signal-soft); color: var(--signal); margin-left: 5px; }
+        .action-btn.delete { background-color: var(--signal-soft); color: var(--signal); }
         .action-btn.delete:hover { background-color: #fecaca; }
+
+        /* Susunan tombol aksi: sejajar satu baris dengan jarak seragam */
+        .action-wrap { display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; }
+        .action-wrap form { margin: 0; display: inline-flex; }
 
         .badge-status { display: inline-block; padding: 6px 12px; font-weight: 600; font-size: 0.8rem; border-radius: 6px; }
         .badge-menunggu { background-color: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
@@ -448,11 +452,11 @@
                                 <th class="text-center" width="5%">No</th>
                                 <th width="18%">Nama Pemohon</th>
                                 <th width="13%">Kontak</th>
-                                <th width="22%">Kegiatan</th>
+                                <th width="19%">Kegiatan</th>
                                 <th width="12%">Sarana</th>
                                 <th width="12%">Tgl Kegiatan</th>
                                 <th width="12%">Status</th>
-                                <th class="text-center" width="11%">Aksi</th>
+                                <th class="text-center" width="14%">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
@@ -502,18 +506,20 @@
                                     @endhasanyrole
                                 </td>
                                 <td class="text-center">
-                                    <!-- Detail: semua role -->
-                                    <a href="{{ route('internal.penggunaan-sarana.show', $row->id) }}" class="action-btn view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
+                                    <div class="action-wrap">
+                                        <!-- Detail: semua role -->
+                                        <a href="{{ route('internal.penggunaan-sarana.show', $row->id) }}" class="action-btn view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
 
-                                    <!-- EDIT & HAPUS: HANYA DAMTAN DAN SUPER USER -->
-                                    @hasanyrole('Damtan|Super User')
-                                    <a href="{{ route('internal.penggunaan-sarana.edit', $row->id) }}" class="action-btn edit" title="Edit Data"><i class="fas fa-edit"></i></a>
-                                    <form action="{{ route('internal.penggunaan-sarana.destroy', $row->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus permohonan ini secara permanen?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="action-btn delete" title="Hapus"><i class="fas fa-trash"></i></button>
-                                    </form>
-                                    @endhasanyrole
+                                        <!-- EDIT & HAPUS: HANYA DAMTAN DAN SUPER USER -->
+                                        @hasanyrole('Damtan|Super User')
+                                        <a href="{{ route('internal.penggunaan-sarana.edit', $row->id) }}" class="action-btn edit" title="Edit Data"><i class="fas fa-edit"></i></a>
+                                        <form action="{{ route('internal.penggunaan-sarana.destroy', $row->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus permohonan ini secara permanen?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="action-btn delete" title="Hapus"><i class="fas fa-trash"></i></button>
+                                        </form>
+                                        @endhasanyrole
+                                    </div>
                                 </td>
                             </tr>
                             @empty
