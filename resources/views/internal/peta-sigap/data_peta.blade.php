@@ -426,7 +426,10 @@ table.dataTable > tbody > tr > td {
                     <a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
                         <i class="fas fa-graduation-cap"></i><span class="lbl">Edu Damkar</span>
                     </a>
-
+  <!-- MENU PENGUMUMAN -->
+                    <a href="/internal/operator/pengumuman" class="{{ Request::is('internal/operator/pengumuman*') || Request::is('internal/operator/opratorpengumuman*') ? 'active' : '' }}">
+                        <i class="fas fa-bullhorn"></i><span class="lbl">Kelola Pengumuman</span>
+                    </a>
                     <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
                     
                     @hasanyrole('Super User|Operator')

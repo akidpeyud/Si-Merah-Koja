@@ -413,12 +413,18 @@
             </details>
 
             <!-- BAGIAN KEPEGAWAIAN -->
-            <details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') ? 'open' : '' }}>
+            <details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') || Request::is('internal/data-asn*') ? 'open' : '' }}>
                 <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
                         <i class="fas fa-user-tie"></i><span class="lbl">Data Urut Kepegawaian</span>
                     </a>
+                    
+                    <!-- TAMBAHAN MENU REKAP DATA ASN -->
+                    <a href="/internal/data-asn" class="{{ Request::is('internal/data-asn*') ? 'active' : '' }}">
+                        <i class="fas fa-users"></i><span class="lbl">Rekap Data ASN</span>
+                    </a>
+
                     <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
                         <i class="fas fa-file-contract"></i><span class="lbl">Program Kerja</span>
                     </a>

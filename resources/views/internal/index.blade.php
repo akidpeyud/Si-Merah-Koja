@@ -343,7 +343,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .section-meta b { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
 
-/* 18. OVERVIEW PANEL (satu panel, sel dipisah garis) */
+/* 18. OVERVIEW PANEL */
 .overview {
     display: grid; margin-top: 30px;
     grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
@@ -642,20 +642,26 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             </details>
 
             <!-- BAGIAN KEPEGAWAIAN -->
-            <details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') || Request::is('internal/data-asn*') ? 'open' : '' }}>
+            <details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') || Request::is('internal/data-asn*') || Request::is('dokumen-publik*') ? 'open' : '' }}>
                 <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
                         <i class="fas fa-user-tie"></i><span class="lbl">Data Urut Kepegawaian</span>
                     </a>
                     
-                    <!-- TAMBAHAN MENU REKAP DATA ASN -->
+                    <!-- REKAP DATA ASN -->
                     <a href="/internal/data-asn" class="{{ Request::is('internal/data-asn*') ? 'active' : '' }}">
                         <i class="fas fa-users"></i><span class="lbl">Rekap Data ASN</span>
                     </a>
 
+                    <!-- PROGRAM KERJA DIUBAH MENJADI SOP & DOKUMEN -->
                     <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
-                        <i class="fas fa-file-contract"></i><span class="lbl">Program Kerja</span>
+                        <i class="fas fa-file-contract"></i><span class="lbl">SOP &amp; Dokumen</span>
+                    </a>
+
+                    <!-- MENU DOKUMEN PUBLIK DITAMBAHKAN DI BAGIAN KEPEGAWAIAN -->
+                    <a href="{{ route('dokumen-publik.index') }}" class="{{ Request::is('dokumen-publik*') ? 'active' : '' }}">
+                        <i class="fas fa-file-lines"></i><span class="lbl">Dokumen Publik</span>
                     </a>
                 </div>
             </details>
@@ -681,6 +687,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     </a>
                     <a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
                         <i class="fas fa-graduation-cap"></i><span class="lbl">Edu Damkar</span>
+                    </a>
+                    <a href="/internal/operator/pengumuman" class="{{ Request::is('internal/operator/pengumuman*') || Request::is('internal/operator/opratorpengumuman*') ? 'active' : '' }}">
+                        <i class="fas fa-bullhorn"></i><span class="lbl">Kelola Pengumuman</span>
                     </a>
 
                     <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
@@ -729,11 +738,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         </div>
 
         @php
-            /*
-             * Hitung jumlah data. Menerima satu/lebih nama tabel kandidat;
-             * memakai tabel pertama yang ada. Null = tabel tidak ditemukan.
-             * Nama tabel sudah disesuaikan dengan database simerahkoja.
-             */
             $count = function ($tables, $sumColumn = null) {
                 foreach ((array) $tables as $t) {
                     if (\Illuminate\Support\Facades\Schema::hasTable($t)) {
@@ -744,7 +748,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 return null;
             };
 
-            // Jumlahkan SEMUA tabel yang ada (untuk menu yang datanya tersebar di beberapa tabel)
             $countAll = function (array $tables) use ($count) {
                 $total = null;
                 foreach ($tables as $t) {
@@ -762,8 +765,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
             $ops = 'Super User|Sapra|Damtan|Pencegahan|Sekretariat|Operator';
 
-            // Urutan section & item mengikuti sidebar.
-            // item: [label, satuan, ikon FA, href, jumlah, tone, (opsional) 'skip' => tidak masuk total]
             $sections = [
                 [
                     'id' => 'pencegahan', 'title' => 'Bagian Pencegahan', 'icon' => 'fa-shield-halved', 'roles' => $ops,
@@ -819,7 +820,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     'items' => [
                         ['Data Urut Kepegawaian', 'pegawai', 'fa-user-tie', '/internal/kepegawaian/duk', $count('pegawais'), 'ic-primary'],
                         ['Rekap Data ASN', 'data', 'fa-users', '/internal/data-asn', ($count('data_asns', 'pns') + $count('data_asns', 'pppk')), 'ic-danger'],
-                        ['Program Kerja', 'program', 'fa-file-contract', '/internal/program-kerja', $count('dokumen'), 'ic-info'],
+                        ['SOP & Dokumen', 'program', 'fa-file-contract', '/internal/program-kerja', $count('dokumen'), 'ic-info'],
+                        // STATISTIK KARTU DOKUMEN PUBLIK
+                        ['Dokumen Publik', 'dokumen', 'fa-file-lines', route('dokumen-publik.index'), $count('dokumen_publik'), 'ic-primary'],
                     ],
                 ],
                 [
@@ -830,6 +833,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                         ['Berita Medsos', 'unggahan', 'fa-brands fa-instagram', '/internal/operator/berita-medsos', $count('berita_medsos'), 'ic-danger'],
                         ['Ujung-Ujung Damkar', 'video', 'fa-brands fa-youtube', '/internal/operator/ujung-damkar', $count('ujung_damkar'), 'ic-danger'],
                         ['Edu Damkar', 'materi', 'fa-graduation-cap', '/internal/operator/edu-damkar', $count('edu_damkar'), 'ic-primary'],
+                        ['Kelola Pengumuman', 'informasi', 'fa-bullhorn', '/internal/operator/pengumuman', $count(['pengumuman', 'pengumumans']), 'ic-info'],
                         ['Titik Peta Sigap', 'titik', 'fa-location-dot', '/internal/peta-sigap/data', $count('titik_sigaps'), 'ic-info'],
                     ],
                 ],
@@ -842,7 +846,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 ],
             ];
 
-            // Filter berdasarkan role & hitung total tiap section
             $visible = [];
             foreach ($sections as $s) {
                 if (!Auth::user()->hasAnyRole(explode('|', $s['roles']))) continue;
@@ -887,8 +890,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             </div>
         </section>
 
-
-
         @foreach($visible as $s)
             <section class="dash-section" id="sec-{{ $s['id'] }}">
                 <div class="section-heading">
@@ -915,8 +916,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             </section>
         @endforeach
 
-
-
     </main>
 </div>
 
@@ -924,7 +923,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 (function () {
     'use strict';
 
-    /* ---------- Notifikasi ---------- */
     document.querySelectorAll('[data-toast]').forEach(function (t) {
         var hide = function () {
             t.classList.add('leaving');
@@ -935,7 +933,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         setTimeout(hide, 4500);
     });
 
-    /* ---------- Sidebar (mobile) ---------- */
     var toggle = document.getElementById('sideToggle');
     var backdrop = document.getElementById('sideBackdrop');
 
@@ -952,7 +949,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     if (backdrop) backdrop.addEventListener('click', closeSide);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
 
-    /* ---------- Grup sidebar: hanya satu terbuka ---------- */
     var groups = document.querySelectorAll('.side-group');
     groups.forEach(function (g) {
         g.addEventListener('toggle', function () {

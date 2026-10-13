@@ -287,7 +287,7 @@
     <div class="sidebar-backdrop" id="sideBackdrop"></div>
 
     <!-- ==================== SIDEBAR ==================== -->
-    <aside class="sidebar d-print-none" id="sidebar" aria-label="Navigasi internal">
+    <aside class="sidebar" id="sidebar" aria-label="Navigasi internal">
 
         <a href="/internal/index" class="side-link {{ Request::is('internal/index') ? 'active' : '' }}">
             <i class="fas fa-house"></i><span class="lbl">Dashboard utama</span>
@@ -329,12 +329,15 @@
             <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') || Request::is('internal/damtan/kelola-izin-keramaian*') ? 'open' : '' }}>
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
+                    <!-- Hanya Damtan & Super User yang melihat dua menu input ini -->
+                    @hasanyrole('Damtan|Super User')
                     <a href="/internal/damtan/rekap-layanan" class="{{ Request::is('internal/damtan/rekap-layanan*') ? 'active' : '' }}">
                         <i class="fas fa-truck-medical"></i><span class="lbl">Input Rekap Layanan</span>
                     </a>
                     <a href="/internal/damtan/rekap-objek" class="{{ Request::is('internal/damtan/rekap-objek*') ? 'active' : '' }}">
                         <i class="fas fa-house-chimney-crack"></i><span class="lbl">Input Rekap Objek Kebakaran</span>
                     </a>
+                    @endhasanyrole
                     <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
                         <i class="fas fa-clipboard-list"></i><span class="lbl">Kelola Data Laporan</span>
                     </a>
@@ -387,12 +390,18 @@
             </details>
 
             <!-- BAGIAN KEPEGAWAIAN -->
-            <details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') ? 'open' : '' }}>
+            <details class="side-group" {{ Request::is('internal/kepegawaian*') || Request::is('internal/program-kerja*') || Request::is('internal/data-asn*') ? 'open' : '' }}>
                 <summary><i class="fas fa-user-tie grp-ico"></i><span class="grp-label">Kepegawaian</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
                         <i class="fas fa-user-tie"></i><span class="lbl">Data Urut Kepegawaian</span>
                     </a>
+                    
+                    <!-- TAMBAHAN MENU REKAP DATA ASN -->
+                    <a href="/internal/data-asn" class="{{ Request::is('internal/data-asn*') ? 'active' : '' }}">
+                        <i class="fas fa-users"></i><span class="lbl">Rekap Data ASN</span>
+                    </a>
+
                     <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
                         <i class="fas fa-file-contract"></i><span class="lbl">Program Kerja</span>
                     </a>
@@ -400,38 +409,7 @@
             </details>
         @endhasanyrole
 
-        <!-- MANAJEMEN INFORMASI -->
-        @hasanyrole('Super User|Operator')
-            <div class="side-kicker">Konten publik</div>
-            <details class="side-group" {{ Request::is('internal/operator*') || Request::is('internal/peta-sigap*') ? 'open' : '' }}>
-                <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen Informasi</span><i class="fas fa-chevron-down chev"></i></summary>
-                <div class="side-sub">
-                    <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
-                        <i class="far fa-newspaper"></i><span class="lbl">Input &amp; Kelola Berita</span>
-                    </a>
-                    <a href="/internal/operator/infografis" class="{{ Request::is('internal/operator/infografis*') ? 'active' : '' }}">
-                        <i class="far fa-image"></i><span class="lbl">Kelola Infografis</span>
-                    </a>
-                    <a href="/internal/operator/berita-medsos" class="{{ Request::is('internal/operator/berita-medsos*') ? 'active' : '' }}">
-                        <i class="fab fa-instagram"></i><span class="lbl">Kelola Berita Medsos</span>
-                    </a>
-                    <a href="/internal/operator/ujung-damkar" class="{{ Request::is('internal/operator/ujung-damkar*') ? 'active' : '' }}">
-                        <i class="fab fa-youtube"></i><span class="lbl">Ujung-Ujung Damkar</span>
-                    </a>
-                    <a href="/internal/operator/edu-damkar" class="{{ Request::is('internal/operator/edu-damkar*') ? 'active' : '' }}">
-                        <i class="fas fa-graduation-cap"></i><span class="lbl">Edu Damkar</span>
-                    </a>
-
-                    <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
-                    <a href="/internal/peta-sigap/input" class="{{ Request::is('internal/peta-sigap/input*') ? 'active' : '' }}">
-                        <i class="fas fa-plus"></i><span class="lbl">Input Titik Peta</span>
-                    </a>
-                    <a href="/internal/peta-sigap/data" class="{{ Request::is('internal/peta-sigap/data*') ? 'active' : '' }}">
-                        <i class="fas fa-table-list"></i><span class="lbl">Kelola Data Titik</span>
-                    </a>
-                </div>
-            </details>
-        @endhasanyrole<!-- MANAJEMEN INFORMASI: semua pegawai internal bisa melihat menu ini -->
+        <!-- MANAJEMEN INFORMASI: semua pegawai internal bisa melihat menu ini -->
         @hasanyrole('Super User|Sapra|Damtan|Pencegahan|Sekretariat|Operator')
             <div class="side-kicker">Konten publik</div>
             <details class="side-group" {{ Request::is('internal/operator*') || Request::is('internal/peta-sigap*') ? 'open' : '' }}>
@@ -454,7 +432,7 @@
                     </a>
 
                     <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
-                    
+
                     <!-- Khusus untuk Input Titik, dibatasi hanya untuk Super User & Operator -->
                     @hasanyrole('Super User|Operator')
                     <a href="/internal/peta-sigap/input" class="{{ Request::is('internal/peta-sigap/input*') ? 'active' : '' }}">
@@ -924,7 +902,7 @@
                                             <option value="faktor_alam" {{ ($dokumentasi->dugaan_penyebab ?? '') == 'faktor_alam' ? 'selected' : '' }}>Faktor alam</option>
                                             <option value="lainnya" {{ ($dokumentasi->dugaan_penyebab ?? '') == 'lainnya' ? 'selected' : '' }}>Lainnya</option>
                                         </select>
-                                        <input type="text" class="form-control w-50" name="dugaan_penyebab_lainnya" id="dugaan_penyebab_lainnya" value="{{ $dokumentasi->dugaan_penyebab_lainnya ?? '' }}" {{ ($dokumentasi->dugaan_penyebab == 'lainnya') ? '' : 'disabled' }}>
+                                        <input type="text" class="form-control w-50" name="dugaan_penyebab_lainnya" id="dugaan_penyebab_lainnya" value="{{ $dokumentasi->dugaan_penyebab_lainnya ?? '' }}" {{ (($dokumentasi->dugaan_penyebab ?? '') == 'lainnya') ? '' : 'disabled' }}>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -978,7 +956,10 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label class="field-label"><i class="fas fa-phone-alt"></i> No. Kontak Saksi/Warga</label>
-                                    <input type="text" name="kontak_saksi" class="form-control" value="{{ $dokumentasi->kontak_saksi ?? '' }}">
+                                    <input type="text" name="kontak_saksi" id="kontak_saksi" class="form-control"
+                                           value="{{ preg_replace('/\D/', '', $dokumentasi->kontak_saksi ?? '') }}"
+                                           placeholder="08xxxxxxxxxx" inputmode="numeric" pattern="[0-9]*" maxlength="15"
+                                           title="Hanya boleh angka" autocomplete="off">
                                 </div>
                             </div>
                             
@@ -1003,7 +984,7 @@
                                             <option value="5T" {{ ($dokumentasi->cara_bertindak ?? '') == '5T' ? 'selected' : '' }}>5 T (Terencana, Terukur, Terarah, Terlayani & Tuntas)</option>
                                             <option value="lainnya" {{ ($dokumentasi->cara_bertindak ?? '') == 'lainnya' ? 'selected' : '' }}>Lainnya...</option>
                                         </select>
-                                        <input type="text" class="form-control w-50" name="cara_bertindak_lainnya" id="cara_bertindak_lainnya" value="{{ $dokumentasi->cara_bertindak_lainnya ?? '' }}" {{ ($dokumentasi->cara_bertindak == 'lainnya') ? '' : 'disabled' }}>
+                                        <input type="text" class="form-control w-50" name="cara_bertindak_lainnya" id="cara_bertindak_lainnya" value="{{ $dokumentasi->cara_bertindak_lainnya ?? '' }}" {{ (($dokumentasi->cara_bertindak ?? '') == 'lainnya') ? '' : 'disabled' }}>
                                     </div>
                                 </div>
                             </div>
@@ -1052,7 +1033,7 @@
                                                 <option value="biawak" {{ ($khusus->jenis_hewan ?? '') == 'biawak' ? 'selected' : '' }}>Biawak</option>
                                                 <option value="lainnya" {{ ($khusus->jenis_hewan ?? '') == 'lainnya' ? 'selected' : '' }}>Lainnya</option>
                                             </select>
-                                            <input type="text" class="form-control w-50" name="jenis_hewan_lainnya" id="jenis_hewan_lainnya" value="{{ $khusus->jenis_hewan_lainnya ?? '' }}" {{ ($khusus->jenis_hewan == 'lainnya') ? '' : 'disabled' }}>
+                                            <input type="text" class="form-control w-50" name="jenis_hewan_lainnya" id="jenis_hewan_lainnya" value="{{ $khusus->jenis_hewan_lainnya ?? '' }}" {{ (($khusus->jenis_hewan ?? '') == 'lainnya') ? '' : 'disabled' }}>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -1308,8 +1289,13 @@
                 
                 if(currentKoor && currentKoor.includes(',')) {
                     let parts = currentKoor.split(',');
-                    lat = parseFloat(parts[0].trim());
-                    lng = parseFloat(parts[1].trim());
+                    let pLat = parseFloat(parts[0].trim());
+                    let pLng = parseFloat(parts[1].trim());
+                    // Pakai koordinat dari input hanya jika valid
+                    if (!isNaN(pLat) && !isNaN(pLng)) {
+                        lat = pLat;
+                        lng = pLng;
+                    }
                 }
 
                 map = L.map('map').setView([lat, lng], 13);
@@ -1379,6 +1365,15 @@
     setupLainnyaLogic('dugaan_penyebab', 'dugaan_penyebab_lainnya');
     setupLainnyaLogic('cara_bertindak', 'cara_bertindak_lainnya');
     setupLainnyaLogic('jenis_hewan', 'jenis_hewan_lainnya');
+
+    /* ---------- No. Kontak Saksi: hanya angka ---------- */
+    var kontakSaksi = document.getElementById('kontak_saksi');
+    if (kontakSaksi) {
+        // Hapus semua karakter non-angka saat mengetik atau menempel (paste)
+        kontakSaksi.addEventListener('input', function () {
+            this.value = this.value.replace(/\D/g, '');
+        });
+    }
 
     /* ---------- AUTO-ARAHKAN KE TAB & KOLOM YANG KOSONG SAAT ERROR ---------- */
     // Menambahkan pengamanan ganda melalui Javascript Form Submit Event

@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Middleware\RoleMiddleware; // DIPERBAIKI: dipakai langsung tanpa alias
+use Spatie\Permission\Middleware\RoleMiddleware;
 use App\Http\Middleware\CekLoginPemohon;
 use App\Http\Middleware\CekOperator;
 use App\Http\Controllers\AuthController;
@@ -17,6 +17,7 @@ use App\Http\Controllers\SuratKorbanController;
 use App\Http\Controllers\PermohonanRpkbglController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\KabarDamkarController;
+use App\Http\Controllers\IkmController;
 use App\Http\Controllers\PencegahanController;
 use App\Http\Controllers\SkkAdminController;
 use App\Http\Controllers\PemberdayaanController;
@@ -24,18 +25,20 @@ use App\Http\Controllers\PemohonAuthController;
 use App\Http\Controllers\PermohonanSkkController;
 use App\Http\Controllers\PermohonanEdukasiController;
 use App\Http\Controllers\PetaController;
+use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\IzinKeramaianController;
 use App\Http\Controllers\FireDrillController;
 use App\Http\Controllers\ProgramKerjaController;
 use App\Http\Controllers\InformasiLayananController;
 use App\Http\Controllers\DataAsnController;
+use App\Http\Controllers\DokumenPublikController;
+use App\Http\Controllers\SapraHomeController;
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
 use App\Models\EduDamkar;
 use App\Models\UjungDamkar;
-use App\Http\Controllers\SapraHomeController;
-
+use App\Models\DokumenPublik;
 
 // ==========================================
 // 1. RUTE PUBLIK (HALAMAN UTAMA & INFO)
@@ -54,6 +57,14 @@ Route::get('/perencanaan', function () { return view('programkerja.perencanaan')
 Route::get('/produkhukum', function () { return view('programkerja.produkhukum'); });
 Route::get('/sop', function () { return view('programkerja.sop'); });
 
+// Rute 6 Bagian SOP Baru
+Route::get('/sop/pencegahan', function () { return view('public.sop.pencegahan'); });
+Route::get('/sop/pemadaman', function () { return view('public.sop.pemadaman'); });
+Route::get('/sop/penyelamatan', function () { return view('public.sop.penyelamatan'); });
+Route::get('/sop/sarpras', function () { return view('public.sop.sarpras'); });
+Route::get('/sop/kepegawaian', function () { return view('public.sop.kepegawaian'); });
+Route::get('/sop/keuangan', function () { return view('public.sop.keuangan'); });
+
 // Informasi Layanan (Publik)
 Route::get('/informasi-layanan', [InformasiLayananController::class, 'index'])->name('informasi-layanan.index');
 Route::get('/informasi-sarana', [PublicController::class, 'informasiSarana']);
@@ -66,21 +77,29 @@ Route::get('/sumber-air', [PublicController::class, 'sumberAir']);
 Route::get('/hidrant-kota', [PublicController::class, 'hidrantKota']);
 Route::get('/public-sigap', [PetaController::class, 'sigap']);
 
-// Halaman Publik Edu Damkar & Ujung-ujung Damkar
+Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman.index');
+Route::get('/pengumuman/{id}', [PengumumanController::class, 'show'])->whereNumber('id')->name('pengumuman.show');
+
+// Indeks Kepuasan Masyarakat (IKM) - folder: resources/views/galery/ikm
+Route::get('/ikm', [IkmController::class, 'index'])->name('ikm.index');
+Route::post('/ikm', [IkmController::class, 'store'])->middleware('throttle:5,10')->name('ikm.store');
+
+// Halaman Publik Edu Damkar & Ujung-ujung Damkar (folder: resources/views/galery/berita)
+// Catatan: nama view memakai STRIP (edu-damkar), sesuai nama file blade-nya.
 Route::get('/edu-damkar', function () {
     $daftar_edu_damkar = EduDamkar::latest()->get();
-    return view('kabardamkar.edu-damkar', compact('daftar_edu_damkar'));
+    return view('galery.berita.edu-damkar', compact('daftar_edu_damkar'));
 })->name('publik.edu-damkar');
 
 Route::get('/ujung-ujung-damkar', function () {
     $daftar_ujung_damkar = UjungDamkar::latest()->get();
-    return view('kabardamkar.ujung-damkar', compact('daftar_ujung_damkar'));
+    return view('galery.berita.ujung-damkar', compact('daftar_ujung_damkar'));
 })->name('publik.ujung-damkar');
 
-// Halaman Publik Infografis
+// Halaman Publik Infografis (folder: resources/views/galery/berita)
 Route::get('/infografis', function () {
     $daftar_infografis = Infografis::latest()->get();
-    return view('kabardamkar.infografis', compact('daftar_infografis'));
+    return view('galery.berita.infografis', compact('daftar_infografis'));
 })->name('publik.infografis');
 
 // ==========================================
@@ -164,17 +183,18 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/internal/kelola-pemohon', function () { return view('pemohon.kelola_pemohon'); })->name('internal.pemohon');
 
-    // --- B. MANAJEMEN INFORMASI (lihat: semua role | tambah/edit/hapus: operator saja) ---
+    // --- B. MANAJEMEN INFORMASI ---
 
-    // Halaman daftar -> semua role yang login
+    // Halaman daftar -> semua role yang login bisa lihat
     Route::get('/internal/operator/kelola-berita', [BeritaController::class, 'indexInternal']);
     Route::get('/internal/operator/infografis', [OperatorMedsosController::class, 'indexInfografis']);
     Route::get('/internal/operator/berita-medsos', [OperatorMedsosController::class, 'indexMedsos']);
     Route::get('/internal/operator/ujung-damkar', [OperatorMedsosController::class, 'indexUjungDamkar'])->name('ujung-damkar.index');
     Route::get('/internal/operator/edu-damkar', [OperatorMedsosController::class, 'indexEduDamkar'])->name('edu-damkar.index');
+    Route::get('/internal/operator/pengumuman', [PengumumanController::class, 'indexInternal'])->name('operator.pengumuman.index');
 
-    // Tambah / edit / hapus -> operator saja
-    Route::middleware([CekOperator::class])->group(function () {
+    // Tambah / edit / hapus -> diizinkan untuk Operator ATAU Super User
+    Route::middleware([RoleMiddleware::class . ':Operator|Super User'])->group(function () {
 
         // Berita
         Route::get('/internal/operator/kelola-berita/tambah', [BeritaController::class, 'create']);
@@ -201,6 +221,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/internal/operator/edu-damkar/store', [OperatorMedsosController::class, 'storeEduDamkar'])->name('edu-damkar.store');
         Route::put('/internal/operator/edu-damkar/update/{id}', [OperatorMedsosController::class, 'updateEduDamkar'])->name('edu-damkar.update');
         Route::delete('/internal/operator/edu-damkar/hapus/{id}', [OperatorMedsosController::class, 'destroyEduDamkar'])->name('edu-damkar.destroy');
+
+        // Pengumuman
+        Route::post('/internal/operator/pengumuman/store', [PengumumanController::class, 'store'])->name('operator.pengumuman.store');
+        Route::put('/internal/operator/pengumuman/update/{id}', [PengumumanController::class, 'update'])->name('operator.pengumuman.update');
+        Route::delete('/internal/operator/pengumuman/hapus/{id}', [PengumumanController::class, 'destroy'])->name('operator.pengumuman.destroy');
     });
 
     // --- C. DAMTAN (PEMADAMAN & PENYELAMATAN) ---
@@ -231,7 +256,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/damtan/kelola-izin-keramaian', [IzinKeramaianController::class, 'indexInternal'])->name('internal.izin-keramaian.index');
 
     // Hanya Damtan & Super User: aksi tulis (harus di atas rute {id} agar tidak bentrok)
-    // DIPERBAIKI: memakai class middleware langsung, bukan alias 'role'
     Route::middleware([RoleMiddleware::class . ':Damtan|Super User'])->group(function () {
         Route::get('/internal/damtan/kelola-izin-keramaian/edit/{id}', [IzinKeramaianController::class, 'editInternal'])->name('internal.izin-keramaian.edit');
         Route::put('/internal/damtan/kelola-izin-keramaian/update/{id}', [IzinKeramaianController::class, 'updateInternal'])->name('internal.izin-keramaian.update');
@@ -241,7 +265,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Semua role: detail (lihat & cetak)
     Route::get('/internal/damtan/kelola-izin-keramaian/{id}', [IzinKeramaianController::class, 'showInternal'])->name('internal.izin-keramaian.show');
-    
+
     // ==========================================
     // REKAP LAYANAN PEMADAMAN
     // ==========================================
@@ -777,3 +801,35 @@ Route::get('/public-sigap', [PetaController::class, 'sigap']);
 Route::get('/sarpras/sarana', [SapraHomeController::class, 'sarana'])->name('sarpras.sarana');
 Route::get('/sarpras/prasarana', [SapraHomeController::class, 'prasarana'])->name('sarpras.prasarana');
 
+// Route untuk Dokumen Publik
+Route::resource('dokumen-publik', DokumenPublikController::class);
+// Route untuk dokumen publik tampilan Renstra
+Route::get('/dokumen/renstra', function () {
+    $dokumens = DokumenPublik::where('kategori', 'Renstra')->latest()->get();
+    return view('public.dokumen-publik.renstra', compact('dokumens'));
+});
+
+// Route untuk dokumen publik tampilan Renja
+Route::get('/dokumen/renja', function () {
+    $dokumens = DokumenPublik::where('kategori', 'Renja')->latest()->get();
+    return view('public.dokumen-publik.renja', compact('dokumens'));
+});
+
+// Route untuk dokumen publik tampilan SPM
+Route::get('/dokumen/spm', function () {
+    $dokumens = DokumenPublik::where('kategori', 'SPM')->latest()->get();
+    return view('public.dokumen-publik.spm', compact('dokumens'));
+});
+
+// Route untuk dokumen publik tampilan SAKIP
+Route::get('/dokumen/sakip', function () {
+    $dokumens = DokumenPublik::where('kategori', 'SAKIP')->latest()->get();
+    return view('public.dokumen-publik.sakip', compact('dokumens'));
+});
+
+// Route untuk dokumen publik tampilan LPPD
+Route::get('/dokumen/lppd', function () {
+    $dokumens = DokumenPublik::where('kategori', 'LPPD')->latest()->get();
+    return view('public.dokumen-publik.lppd', compact('dokumens'));
+});
+Route::get('/dokumen-publik/view/{id}', [DokumenPublikController::class, 'showFile']);
