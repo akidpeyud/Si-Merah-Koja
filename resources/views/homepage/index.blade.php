@@ -571,100 +571,10 @@
             <i class="fas fa-bars"></i>
         </button>
 
-        <ul class="menu" id="menu">
-            <!-- 1. Layanan Kedaruratan -->
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan Kedaruratan <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="tel:112">Call Center 112</a></li>
-                    <li><a href="tel:{{ $no_telepon }}">Telp</a></li>
-                    <li><a href="{{ $wa_link }}" target="_blank" rel="noopener">WA</a></li>
-                </ul>
-            </li>
-
-            <!-- 2. Sigapkar -->
-            <li><a class="menu-link" href="/public-sigap">Sigapkar</a></li>
-
-            <!-- 3. Layanan -->
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
-                    <li><a href="/layanan-fasilitas/izin-keramaian" aria-current="page">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
-                    <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</a></li>   <li><a href="/informasi-layanan">Informasi layanan</a></li>
-                    <li><a href="#">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
-                    <li><a href="/layanan-fasilitas/skk">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
-                </ul>
-            </li>
-
-            <!-- 4. Produk Hukum -->
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/produkhukum">Undang-Undang</a></li>
-                    <li><a href="/produkhukum">Peraturan Pemerintah</a></li>
-                    <li><a href="/produkhukum">Peraturan Menteri</a></li>
-                    <li><a href="/produkhukum">Peraturan Daerah</a></li>
-                    <li><a href="/produkhukum">Peraturan Kepala Daerah</a></li>
-                </ul>
-            </li>
-
-            <!-- 5. Profil -->
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Profil <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="#">Visi Misi</a></li>
-                    <li><a href="/sotk">SOTK</a></li>
-                    <li><a href="#">Tupoksi</a></li>
-                    <li><a href="#">Kepegawaian</a></li>
-                    <li><a href="#">Program Kegiatan</a></li>
-                    <li><a href="#">Cascading</a></li>
-                </ul>
-            </li>
-
-            <!-- 6. Standar Operasional Prosedur -->
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">SOP <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/sop">Pencegahan</a></li>
-                    <li><a href="/sop">Pemadaman Kebakaran</a></li>
-                    <li><a href="/sop">Penyelamatan dan Evakuasi</a></li>
-                    <li><a href="/sop">Sarana dan Prasarana</a></li>
-                    <li><a href="/sop">Kepegawaian</a></li>
-                    <li><a href="/sop">Keuangan</a></li>
-                </ul>
-            </li>
-
-            <!-- 7. Dokumen -->
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Dokumen <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/perencanaan">Renstra</a></li>
-                    <li><a href="/perencanaan">Renja</a></li>
-                    <li><a href="#">SPM</a></li>
-                    <li><a href="#">SAKIP</a></li>
-                    <li><a href="/pelaporan">LPPD</a></li>
-                </ul>
-            </li>
-
-            <!-- 8. Sarana dan Prasarana -->
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Sarpras <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                   <a href="{{ route('sarpras.sarana') }}">Sarana</a>
-                    <a href="{{ route('sarpras.prasarana') }}">Prasarana</a>
-                </ul>
-            </li>
-
-            <!-- 9. Galeri -->
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Galeri <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="#">IKM</a></li>
-                    <li><a href="#">Pengumuman</a></li>
-                    <li><a href="{{ route('publik.infografis') ?? '#' }}">Berita</a></li>
-                </ul>
-            </li>
+        <div class="nav-panel" id="navPanel">
+            <!-- ===== Menu utama ===== -->
+            <ul class="menu">
+                <li><a class="menu-link {{ request()->is('public-sigap*') ? 'is-active' : '' }}" href="/public-sigap">Sigapkar</a></li>
 
                 <li class="has-drop">
                     <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
