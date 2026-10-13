@@ -598,7 +598,7 @@
                 </ol>
             </nav>
             <h1 class="rise d1">Kunjungan Edukasi <br>&amp; Sosialisasi</h1>
-            <p class="rise d2">Ajukan permohonan kunjungan edukasi dan pelatihan penanggulangan kebakaran untuk sekolah, kampus, institusi, maupun masyarakat umum Kota Jambi secara daring.</p>
+            <p class="rise d2">Ajukan Permohonan Kunjungan Edukasi dan Sosialisasi ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
         </div>
     </section>
 
