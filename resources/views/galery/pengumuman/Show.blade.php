@@ -214,9 +214,9 @@
             <a href="/" aria-label="SIMERAH KOJA, beranda">
                 <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
             </a>
-<a href="/dashboard" title="Kembali ke Dashboard">
-    <img src="/images/logo.png" alt="Logo Damkar">
-</a>
+            <a href="/" title="Beranda">
+                <img src="/images/logo.png" alt="Logo Damkar">
+            </a>
             <a href="/redkar" aria-label="Redkar">
                 <img src="/images/logo-redkar.png" alt="Logo Redkar">
             </a>
