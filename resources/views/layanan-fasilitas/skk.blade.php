@@ -7,8 +7,9 @@
     $layanan = [
         'rpkbgl'    => ['url' => '/layanan-fasilitas/layanan_perizinan', 'label' => 'RPKBGL', 'ico' => 'fa-building', 'ket' => 'Layanan perizinan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan'],
         'skk'       => ['url' => '/layanan-fasilitas/skk',                'label' => 'SKK (Baru & Perpanjangan)', 'ico' => 'fa-user-shield', 'ket' => 'Layanan perizinan penerbitan & perpanjangan Sertifikat Keamanan Kebakaran'],
-        'keramaian' => ['url' => '/layanan-fasilitas/izin-keramaian',     'label' => 'Izin Keramaian', 'ico' => 'fa-users', 'ket' => 'Pengajuan Rekomendasi Izin Keramaian'],
+        'keramaian' => ['url' => '/layanan-fasilitas/izin-keramaian',     'label' => 'Event Keramaian', 'ico' => 'fa-users', 'ket' => 'Pengajuan Rekomendasi Event Keramaian'],
         'edukasi'   => ['url' => '/layanan-fasilitas/edukasi_sosialisasi', 'label' => 'Edukasi & Sosialisasi', 'ico' => 'fa-bullhorn', 'ket' => 'Pengajuan Kunjungan Edukasi & Sosialisasi'],
+        'sarana'    => ['url' => '/layanan-fasilitas/penggunaan-sarana',  'label' => 'Penggunaan Sarana Pemadam', 'ico' => 'fa-truck-droplet', 'ket' => 'Permohonan Penggunaan Sarana Pemadam Kebakaran'],
     ];
     $tab_aktif = 'skk';
 
@@ -114,7 +115,7 @@
         .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: clamp(16px, 4vw, 32px); padding-right: clamp(16px, 4vw, 32px); }
 
         /* ==========================================================
-           HEADER & NAVBAR (Sesuai Index)
+           HEADER & NAVBAR
            ========================================================== */
         .site-header {
             position: sticky; top: 0; z-index: 60;
@@ -171,8 +172,8 @@
 
         .btn-nav--alert { background: var(--signal); color: #fff; }
         .btn-nav--alert:hover, .has-drop.open > .btn-nav--alert { background: var(--signal-d); }
-        .btn-nav--alert .beacon { width: 8px; height: 8px; background: #fff; }
-        .btn-nav--alert .beacon::after { background: #fff; }
+        .btn-nav--alert .beacon { width: 8px; height: 8px; background: #fff; border-radius: 50%; position: relative; }
+        .btn-nav--alert .beacon::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #fff; animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
 
         .btn-nav--ghost { border: 1.5px solid rgba(255,255,255,.3); color: #fff; }
         .btn-nav--ghost:hover, .has-drop.open > .btn-nav--ghost { border-color: #fff; background: rgba(255,255,255,.08); }
@@ -206,7 +207,7 @@
             font-size: .9rem; line-height: 1.4; color: rgba(255,255,255,.85); text-align: left; white-space: normal;
             transition: background .15s, color .15s;
         }
-        .dropdown a:hover, .dropdown a[aria-current="page"] { background: rgba(255,255,255,.08); color: #fff; }
+        .dropdown a:hover, .dropdown a:focus-visible, .dropdown a[aria-current="page"] { background: rgba(255,255,255,.08); color: #fff; }
         .dropdown a i { width: 18px; text-align: center; font-size: 1rem; flex: none; }
         .dropdown a .fa-phone-alt { color: #38bdf8; }
         .dropdown a .fa-whatsapp  { color: #25d366; }
@@ -589,11 +590,17 @@
 <!-- ==================== HEADER ==================== -->
 <header class="site-header" id="siteHeader">
     <nav class="nav" aria-label="Navigasi utama">
-        <a href="/" class="brand" aria-label="SIMERAH KOJA, beranda">
-            <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
-            <img src="/images/logo.png" alt="Logo Damkar">
-            <img src="/images/logo-redkar.png" alt="Logo Redkar">
-        </a>
+        <div class="brand">
+            <a href="/" aria-label="SIMERAH KOJA, beranda">
+                <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
+            </a>
+            <a href="/" title="Beranda">
+                <img src="/images/logo.png" alt="Logo Damkar">
+            </a>
+            <a href="/redkar" aria-label="Redkar">
+                <img src="/images/logo-redkar.png" alt="Logo Redkar">
+            </a>
+        </div>
 
         <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="navPanel">
             <i class="fas fa-bars"></i>
@@ -610,31 +617,31 @@
                         <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
                         <li><a href="/layanan-fasilitas/izin-keramaian">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
                         <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
-                        <li><a href="#">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
+                        <li><a href="/layanan-fasilitas/penggunaan-sarana">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
                         <li><a href="/layanan-fasilitas/skk" aria-current="page">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
                     </ul>
                 </li>
 
-                <li class="has-drop">
+<li class="has-drop">
                     <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
-                        <li><a href="/produkhukum">Undang-Undang</a></li>
-                        <li><a href="/produkhukum">Peraturan Pemerintah</a></li>
-                        <li><a href="/produkhukum">Peraturan Menteri</a></li>
-                        <li><a href="/produkhukum">Peraturan Daerah</a></li>
-                        <li><a href="/produkhukum">Peraturan Kepala Daerah</a></li>
+                        <li><a href="/produk-hukum/undang-undang">Undang-Undang</a></li>
+                        <li><a href="/produk-hukum/peraturan-pemerintah">Peraturan Pemerintah</a></li>
+                        <li><a href="/produk-hukum/peraturan-menteri">Peraturan Menteri</a></li>
+                        <li><a href="/produk-hukum/peraturan-daerah">Peraturan Daerah</a></li>
+                        <li><a href="/produk-hukum/peraturan-kepala-daerah">Peraturan Kepala Daerah</a></li>
                     </ul>
                 </li>
 
                 <li class="has-drop">
                     <button class="menu-trigger" type="button" aria-expanded="false">Profil <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
-                        <li><a href="#">Visi Misi</a></li>
-                        <li><a href="/sotk">SOTK</a></li>
-                        <li><a href="#">Tupoksi</a></li>
-                        <li><a href="#">Kepegawaian</a></li>
-                        <li><a href="#">Program Kegiatan</a></li>
-                        <li><a href="#">Cascading</a></li>
+                        <li><a href="/profil/visi-misi">Visi Misi</a></li>
+                        <li><a href="/profil/sotk">SOTK</a></li>
+                        <li><a href="/profil/tupoksi">Tupoksi</a></li>
+                        <li><a href="/profil/kepegawaian">Kepegawaian</a></li>
+                        <li><a href="/profil/program-kegiatan">Program Kegiatan</a></li>
+                        <li><a href="/profil/cascading">Cascading</a></li>
                     </ul>
                 </li>
 
@@ -736,12 +743,12 @@
         <nav aria-label="Breadcrumb" class="rise">
             <ol class="crumbs">
                 <li><a href="/">Beranda</a></li>
-                <li><a href="/layanan-fasilitas/layanan_perizinan">Layanan perizinan</a></li>
+                <li><a href="/layanan-fasilitas/layanan_perizinan">Layanan</a></li>
                 <li><span aria-current="page">SKK</span></li>
             </ol>
         </nav>
-        <h1 class="rise d1">Layanan perizinan</h1>
-        <p class="rise d2">Ajukan rekomendasi proteksi kebakaran, sertifikat keamanan kebakaran, dan izin keramaian secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+        <h1 class="rise d1">Sertifikat Keamanan Kebakaran</h1>
+        <p class="rise d2">Ajukan  Permohonan Sertifikat Keamanan Kebakaran secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
 </section>
 
@@ -813,7 +820,7 @@
                             <span class="ck-ico"><i class="fas fa-pen-to-square"></i></span>
                             <div>Pilih dan isi formulir Pembuatan Baru atau Perpanjangan Sertifikat Keamanan Kebakaran (SKK)</div>
                         </li>
-                        <li>
+                        <li>    
                             <span class="ck-ico"><i class="fas fa-file-signature"></i></span>
                             <div>
                                 Unggah surat permohonan bermaterai

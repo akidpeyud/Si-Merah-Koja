@@ -503,11 +503,11 @@
                 <li class="has-drop {{ request()->is('layanan-fasilitas*') ? 'current' : '' }}">
                     <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
-                        <li><a href="/layanan-fasilitas/edukasi_sosialisasi" {!! request()->is('layanan-fasilitas/edukasi_sosialisasi') ? 'aria-current="page"' : '' !!}>Kunjungan, Edukasi dan Sosialisasi</a></li>
-                        <li><a href="/layanan-fasilitas/izin-keramaian" {!! request()->is('layanan-fasilitas/izin-keramaian') ? 'aria-current="page"' : '' !!}>Rekomendasi Izin Pengamanan Event Keramaian</a></li>
-                        <li><a href="/layanan-fasilitas/layanan_perizinan" {!! request()->is('layanan-fasilitas/layanan_perizinan') ? 'aria-current="page"' : '' !!}>Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
-                        <li><a href="#">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
-                        <li><a href="/layanan-fasilitas/skk" {!! request()->is('layanan-fasilitas/skk') ? 'aria-current="page"' : '' !!}>Permohonan Sertifikat Keselamatan Kebakaran</a></li>
+                        <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
+                        <li><a href="/layanan-fasilitas/izin-keramaian">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
+                        <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
+                        <li><a href="/layanan-fasilitas/penggunaan-sarana">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
+                        <li><a href="/layanan-fasilitas/skk">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
                     </ul>
                 </li>
 

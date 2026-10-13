@@ -515,7 +515,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
             <a href="/" aria-label="SIMERAH KOJA, beranda">
                 <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
             </a>
-            <a href="/login" title="Login Internal Pegawai">
+            <a href="/" title="Beranda">
                 <img src="/images/logo.png" alt="Logo Damkar">
             </a>
             <a href="/redkar" aria-label="Redkar">
@@ -538,31 +538,31 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
                         <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
                         <li><a href="/layanan-fasilitas/izin-keramaian">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
                         <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
-                        <li><a href="#">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
+                        <li><a href="/layanan-fasilitas/penggunaan-sarana">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
                         <li><a href="/layanan-fasilitas/skk">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
                     </ul>
                 </li>
 
-                <li class="has-drop">
+<li class="has-drop">
                     <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
-                        <li><a href="/produkhukum">Undang-Undang</a></li>
-                        <li><a href="/produkhukum">Peraturan Pemerintah</a></li>
-                        <li><a href="/produkhukum">Peraturan Menteri</a></li>
-                        <li><a href="/produkhukum">Peraturan Daerah</a></li>
-                        <li><a href="/produkhukum">Peraturan Kepala Daerah</a></li>
+                        <li><a href="/produk-hukum/undang-undang">Undang-Undang</a></li>
+                        <li><a href="/produk-hukum/peraturan-pemerintah">Peraturan Pemerintah</a></li>
+                        <li><a href="/produk-hukum/peraturan-menteri">Peraturan Menteri</a></li>
+                        <li><a href="/produk-hukum/peraturan-daerah">Peraturan Daerah</a></li>
+                        <li><a href="/produk-hukum/peraturan-kepala-daerah">Peraturan Kepala Daerah</a></li>
                     </ul>
                 </li>
 
                 <li class="has-drop">
                     <button class="menu-trigger" type="button" aria-expanded="false">Profil <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
-                        <li><a href="#">Visi Misi</a></li>
-                        <li><a href="/sotk">SOTK</a></li>
-                        <li><a href="#">Tupoksi</a></li>
-                        <li><a href="#">Kepegawaian</a></li>
-                        <li><a href="#">Program Kegiatan</a></li>
-                        <li><a href="#">Cascading</a></li>
+                        <li><a href="/profil/visi-misi">Visi Misi</a></li>
+                        <li><a href="/profil/sotk">SOTK</a></li>
+                        <li><a href="/profil/tupoksi">Tupoksi</a></li>
+                        <li><a href="/profil/kepegawaian">Kepegawaian</a></li>
+                        <li><a href="/profil/program-kegiatan">Program Kegiatan</a></li>
+                        <li><a href="/profil/cascading">Cascading</a></li>
                     </ul>
                 </li>
 
