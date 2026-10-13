@@ -86,7 +86,7 @@
             --r-lg: 28px;
             --r-md: 18px;
             --r-sm: 10px;
-            --wrap: 1300px; /* Lebar sama persis dengan index */
+            --wrap: 1300px;
             --header-h: 64px;
         }
 
@@ -112,7 +112,7 @@
         .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: clamp(16px, 4vw, 32px); padding-right: clamp(16px, 4vw, 32px); }
 
         /* ==========================================================
-           HEADER & NAVBAR MULTI-DROPDOWN (Identik dengan index)
+           HEADER & NAVBAR MULTI-DROPDOWN
            ========================================================== */
         .site-header {
             position: sticky; top: 0; z-index: 1000;
@@ -484,76 +484,148 @@
 
 <header class="site-header" id="siteHeader">
     <nav class="nav" aria-label="Navigasi utama">
-        <a href="/" class="brand" aria-label="SIMERAH KOJA, beranda">
-            <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
-            <img src="/images/logo.png" alt="Logo Damkar">
-            <img src="/images/logo-redkar.png" alt="Logo Redkar">
-        </a>
+        <div class="brand">
+            <a href="/" aria-label="SIMERAH KOJA, beranda">
+                <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
+            </a>
+            <a href="/" title="Beranda">
+                <img src="/images/logo.png" alt="Logo Damkar">
+            </a>
+            <a href="/redkar" aria-label="Redkar">
+                <img src="/images/logo-redkar.png" alt="Logo Redkar">
+            </a>
+        </div>
 
-        <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="menu">
+        <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="navPanel">
             <i class="fas fa-bars"></i>
         </button>
 
-        <ul class="menu" id="menu">
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan kedaruratan <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="<?= $h($wa_link) ?>" target="_blank" rel="noopener">WhatsApp</a></li>
-                    <li><a href="tel:<?= $h($no_telepon) ?>">Telepon</a></li>
-                    <li><a href="tel:112">Call Center 112</a></li>
-                </ul>
-            </li>
-            <li class="has-drop current">
-                <button class="menu-trigger" type="button" aria-expanded="false">SOP <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/sop/pencegahan">Pencegahan</a></li>
-                    <li><a href="/sop/pemadaman" aria-current="page">Pemadaman Kebakaran</a></li>
-                    <li><a href="/sop/penyelamatan">Penyelamatan dan Evakuasi</a></li>
-                    <li><a href="/sop/sarpras">Sarana dan Prasarana</a></li>
-                    <li><a href="/sop/kepegawaian">Kepegawaian</a></li>
-                    <li><a href="/sop/keuangan">Keuangan</a></li>
-                </ul>
-            </li>
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan<i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
-                    <li><a href="/layanan-fasilitas/skk">SKK &amp; Perpanjang SKK</a></li>
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
-                    <li><a href="/public-sigap">SIGAP</a></li>
-                    <li><a href="/informasi-layanan">Informasi layanan</a></li>
-                </ul>
-            </li>
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/edu-damkar">Edu Damkar</a></li>
-                    <li><a href="/infografis">Infografis</a></li>
-                    <li><a href="/media-informasi">Media Informasi</a></li>
-                    <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
-                </ul>
-            </li>
-            <li><a class="menu-link" href="/redkar">Redkar</a></li>
-                @if(session()->has('pemohon_id'))
+        <div class="nav-panel" id="navPanel">
+            <!-- ===== Menu utama ===== -->
+            <ul class="menu">
+                <li><a class="menu-link {{ request()->is('public-sigap*') ? 'is-active' : '' }}" href="/public-sigap">Sigapkar</a></li>
+
                 <li class="has-drop">
-                    <button class="menu-trigger btn-login" type="button" aria-expanded="false">
-                        <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
-                    </button>
+                    <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
-                        <li>
-                            <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
-                                @csrf
-                                <button type="submit" class="btn-logout">
-                                    <i class="fas fa-sign-out-alt"></i> Keluar
-                                </button>
-                            </form>
+                        <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
+                        <li><a href="/layanan-fasilitas/izin-keramaian">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
+                        <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
+                        <li><a href="#">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
+                        <li><a href="/layanan-fasilitas/skk">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-drop">
+                    <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
+                    <ul class="dropdown">
+                        <li><a href="/produkhukum">Undang-Undang</a></li>
+                        <li><a href="/produkhukum">Peraturan Pemerintah</a></li>
+                        <li><a href="/produkhukum">Peraturan Menteri</a></li>
+                        <li><a href="/produkhukum">Peraturan Daerah</a></li>
+                        <li><a href="/produkhukum">Peraturan Kepala Daerah</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-drop">
+                    <button class="menu-trigger" type="button" aria-expanded="false">Profil <i class="fas fa-chevron-down"></i></button>
+                    <ul class="dropdown">
+                        <li><a href="#">Visi Misi</a></li>
+                        <li><a href="/sotk">SOTK</a></li>
+                        <li><a href="#">Tupoksi</a></li>
+                        <li><a href="#">Kepegawaian</a></li>
+                        <li><a href="#">Program Kegiatan</a></li>
+                        <li><a href="#">Cascading</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-drop current">
+                    <button class="menu-trigger" type="button" aria-expanded="false">SOP <i class="fas fa-chevron-down"></i></button>
+                    <ul class="dropdown">
+                        <li><a href="/sop/pencegahan">Pencegahan</a></li>
+                        <li><a href="/sop/pemadaman" aria-current="page">Pemadaman Kebakaran</a></li>
+                        <li><a href="/sop/penyelamatan">Penyelamatan dan Evakuasi</a></li>
+                        <li><a href="/sop/sarpras">Sarana dan Prasarana</a></li>
+                        <li><a href="/sop/kepegawaian">Kepegawaian</a></li>
+                        <li><a href="/sop/keuangan">Keuangan</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-drop">
+                    <button class="menu-trigger" type="button" aria-expanded="false">Dokumen <i class="fas fa-chevron-down"></i></button>
+                    <ul class="dropdown">
+                        <li><a href="/dokumen/renstra">Renstra</a></li>
+                        <li><a href="/dokumen/renja">Renja</a></li>
+                        <li><a href="/dokumen/spm">SPM</a></li>
+                        <li><a href="/dokumen/sakip">SAKIP</a></li>
+                        <li><a href="/dokumen/lppd">LPPD</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-drop">
+                    <button class="menu-trigger" type="button" aria-expanded="false">Sarpras <i class="fas fa-chevron-down"></i></button>
+                    <ul class="dropdown">
+                        <li><a href="{{ route('sarpras.sarana') }}">Sarana</a></li>
+                        <li><a href="{{ route('sarpras.prasarana') }}">Prasarana</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-drop">
+                    <button class="menu-trigger" type="button" aria-expanded="false">Galeri <i class="fas fa-chevron-down"></i></button>
+                    <ul class="dropdown">
+                        <li><a href="/ikm">IKM (Indeks Kepuasan Masyarakat)</a></li>
+                        <li><a href="/pengumuman">Pengumuman</a></li>
+                        <li class="has-sub">
+                            <button class="sub-trigger" type="button" aria-expanded="false">
+                                Berita <i class="fas fa-chevron-right"></i>
+                            </button>
+                            <ul class="dropdown-sub">
+                                <li><a href="/edu-damkar">Edu Damkar</a></li>
+                                <li><a href="{{ route('publik.infografis') }}">Infografis</a></li>
+                                <li><a href="/media-informasi">Media Informasi</a></li>
+                                <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </li>
-            @else
-                <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
-            @endif
-        </ul>
+
+                <li><a class="menu-link {{ request()->is('redkar*') ? 'is-active' : '' }}" href="/redkar">Redkar</a></li>
+            </ul>
+
+            <!-- ===== Tombol kanan: Lapor darurat + Masuk ===== -->
+            <ul class="nav-actions">
+                <li class="has-drop">
+                    <button class="btn-nav btn-nav--alert menu-trigger-cta" type="button" aria-expanded="false">
+                        <span class="beacon" aria-hidden="true"></span> Lapor darurat <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <ul class="dropdown">
+                        <li><a href="tel:112"><i class="fas fa-headset"></i> Call Center 112</a></li>
+                        <li><a href="tel:{{ $no_telepon }}"><i class="fas fa-phone-alt"></i> Telepon {{ $telepon_tampil }}</a></li>
+                        <li><a href="{{ $wa_link }}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
+                    </ul>
+                </li>
+
+                @if(session()->has('pemohon_id'))
+                    <li class="has-drop">
+                        <button class="btn-nav btn-nav--ghost menu-trigger-cta" type="button" aria-expanded="false">
+                            <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <ul class="dropdown">
+                            <li>
+                                <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
+                                    @csrf
+                                    <button type="submit" class="btn-logout">
+                                        <i class="fas fa-sign-out-alt"></i> Keluar
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                @else
+                    <li><a class="btn-nav btn-nav--ghost" href="{{ route('pemohon.login') }}">Masuk</a></li>
+                @endif
+            </ul>
+        </div>
     </nav>
 </header>
 
