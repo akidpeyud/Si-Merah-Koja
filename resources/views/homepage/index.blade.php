@@ -559,7 +559,7 @@
             <a href="/" aria-label="SIMERAH KOJA, beranda">
                 <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
             </a>
-            <a href="/" title="Beranda">
+            <a href="/login" title="Login Internal Pegawai">
                 <img src="/images/logo.png" alt="Logo Damkar">
             </a>
             <a href="/redkar" aria-label="Redkar">
