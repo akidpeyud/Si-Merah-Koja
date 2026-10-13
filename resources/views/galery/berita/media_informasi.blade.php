@@ -24,7 +24,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
     <meta name="description" content="Kabar terbaru dari media sosial Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.">
-    <title>Media Informasi - Kabar Damkar | SIMERAH KOJA</title>
+    <title>Media Informasi - Galeri | SIMERAH KOJA</title>
 
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,7 +47,14 @@
             --display:'Bricolage Grotesque',system-ui,sans-serif;
             --body:'Instrument Sans',system-ui,sans-serif;
             --wrap:1180px;
-            --header:68px;
+            --header-h:64px;
+            --nav-wrap:1300px;
+            --signal-d:#c22b20;
+            --font-display:var(--display);
+            --font-body:var(--body);
+            --r-lg:28px;
+            --r-md:18px;
+            --r-sm:10px;
             --shadow:0 18px 45px rgba(13,27,42,.09);
         }
 
@@ -65,61 +72,130 @@
         img{max-width:100%;display:block}
         a{color:inherit;text-decoration:none}
         ul,ol{list-style:none}
-        button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+        button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
         :focus-visible{outline:3px solid var(--amber);outline-offset:3px;border-radius:7px}
         .wrap{width:min(var(--wrap),calc(100% - 40px));margin:auto}
 
-        /* ================= HEADER ================= */
-        .site-header{
-            position:sticky;top:0;z-index:60;
-            background:rgba(8,22,35,.88);
-            backdrop-filter:blur(18px) saturate(1.35);
-            -webkit-backdrop-filter:blur(18px) saturate(1.35);
-            border-bottom:1px solid rgba(255,255,255,.08);
+/* ==========================================================
+           HEADER & NAVBAR (banyak menu + multilevel dropdown)
+           ========================================================== */
+        .site-header {
+            position: sticky; top: 0; z-index: 60;
+            background: rgba(13, 27, 42, .85);
+            -webkit-backdrop-filter: blur(14px) saturate(1.4);
+            backdrop-filter: blur(14px) saturate(1.4);
+            border-bottom: 1px solid rgba(255,255,255,.08);
         }
-        .nav{
-            width:min(1240px,calc(100% - 32px));
-            height:var(--header);
-            margin:auto;
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:20px;
+        .nav {
+            max-width: var(--nav-wrap); margin: 0 auto; min-height: var(--header-h);
+            padding: 0 clamp(16px, 4vw, 32px);
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
         }
-        .brand{display:flex;align-items:center;gap:9px;flex:none}
-        .brand img{height:37px;width:auto;object-fit:contain}
-        .brand img+img{padding-left:9px;border-left:1px solid rgba(255,255,255,.16)}
+        .brand { display: flex; align-items: center; gap: 12px; flex: none; }
+        .brand img { height: 38px; width: auto; }
 
-        .menu{display:flex;align-items:center;gap:2px}
-        .menu>li{position:relative}
-        .menu-link,.menu-trigger{
-            display:inline-flex;align-items:center;gap:8px;
-            padding:9px 13px;border-radius:999px;
-            color:rgba(255,255,255,.88);
-            font-size:.88rem;font-weight:600;
-            transition:.2s ease;
+        .menu { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; }
+        .menu > li { position: relative; }
+        .menu-link, .menu-trigger {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 10px; border-radius: 999px;
+            color: rgba(255,255,255,.88); font-size: .85rem; font-weight: 500;
+            transition: background .2s, color .2s; white-space: nowrap;
         }
-        .menu-link:hover,.menu-trigger:hover,.has-drop.open>.menu-trigger,.menu>li.current>.menu-trigger{
-            color:#fff;background:rgba(255,255,255,.10)
-        }
-        .menu-trigger i{font-size:.62rem;transition:transform .2s}
-        .has-drop.open>.menu-trigger i{transform:rotate(180deg)}
-        .menu .btn-login{margin-left:8px;padding:10px 20px;background:var(--signal);color:#fff}
-        .menu .btn-login:hover{background:var(--signal-dark);transform:translateY(-1px)}
+        .menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger { background: rgba(255,255,255,.1); color: #fff; }
+        .menu-trigger i { font-size: .6rem; transition: transform .2s; }
+        .has-drop.open > .menu-trigger i { transform: rotate(180deg); }
+        .menu .btn-login { background: var(--signal); color: #fff; margin-left: 6px; font-weight: 600; padding: 8px 18px; }
+        .menu .btn-login:hover { background: var(--signal-d); }
 
-        .dropdown{
-            display:none;position:absolute;top:calc(100% + 10px);left:0;
-            min-width:245px;padding:7px;
-            background:#10283e;border:1px solid rgba(255,255,255,.1);
-            border-radius:16px;box-shadow:0 24px 55px rgba(0,0,0,.35)
+        .dropdown {
+            display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 260px;
+            background: var(--ink-2); border: 1px solid rgba(255,255,255,.1);
+            border-radius: var(--r-md); padding: 8px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
         }
-        .dropdown::before{content:"";position:absolute;left:0;right:0;top:-10px;height:10px}
-        .dropdown a{display:block;padding:10px 13px;border-radius:10px;color:rgba(255,255,255,.84);font-size:.9rem}
-        .dropdown a:hover,.dropdown a[aria-current=page]{background:rgba(255,255,255,.09);color:#fff}
-        .has-drop.open .dropdown{display:block}
 
-        .nav-toggle{display:none;width:44px;height:44px;border-radius:12px;color:#fff;font-size:1.1rem}
-        .nav-toggle:hover{background:rgba(255,255,255,.1)}
+        /* Agar dropdown di menu sebelah kanan tidak melebar keluar batas layar */
+        .menu > li:nth-last-child(-n+4) .dropdown { left: auto; right: 0; }
+
+        .dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
+        .dropdown a {
+            display: block; padding: 10px 14px; border-radius: var(--r-sm);
+            font-size: .9rem; color: rgba(255,255,255,.85); line-height: 1.4; white-space: normal;
+        }
+        .dropdown a:hover { background: rgba(255,255,255,.08); color: #fff; }
+
+        .dropdown .btn-logout {
+            width: 100%; text-align: left; padding: 11px 14px; border-radius: var(--r-sm);
+            font-size: .92rem; color: #ff8b8b; display: flex; align-items: center; gap: 8px;
+            transition: background .2s, color .2s; cursor: pointer;
+        }
+        .dropdown .btn-logout:hover { background: rgba(255, 255, 255, .1); color: #ffb8b8; }
+
+        .has-drop.open > .dropdown { display: block; }
+
+        /* ---------- MULTILEVEL DROPDOWN (Galeri > Berita) ---------- */
+        .has-sub { position: relative; }
+        .has-sub > .sub-trigger {
+            width: 100%; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            padding: 10px 14px; border-radius: var(--r-sm); font-size: .9rem; line-height: 1.4;
+            color: rgba(255,255,255,.85); background: transparent; border: none; cursor: pointer;
+            font-family: inherit; transition: background .2s, color .2s;
+        }
+        .has-sub > .sub-trigger i { font-size: .7rem; transition: transform .2s; }
+        .has-sub.open > .sub-trigger i { transform: rotate(90deg); }
+        .has-sub > .sub-trigger:hover, .has-sub.open > .sub-trigger { background: rgba(255,255,255,.1); color: #fff; }
+
+        .dropdown-sub {
+            display: none; position: absolute; top: -8px; left: 100%; min-width: 230px;
+            background: var(--ink-2); border: 1px solid rgba(255,255,255,.1);
+            border-radius: var(--r-md); padding: 8px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
+            margin-left: 4px; z-index: 10;
+        }
+        .dropdown-sub::before { content: ""; position: absolute; top: 0; bottom: 0; left: -10px; width: 10px; }
+        .has-sub.open > .dropdown-sub { display: block; }
+
+        @media (hover: hover) and (min-width: 1251px) {
+            .has-drop:hover > .dropdown { display: block; }
+            .has-sub:hover > .dropdown-sub { display: block; }
+            .has-sub:hover > .sub-trigger { background: rgba(255,255,255,.1); color: #fff; }
+
+            /* Submenu dibuka ke KIRI karena Galeri ada di sisi kanan navbar */
+            .dropdown-sub { left: auto; right: 100%; margin-left: 0; margin-right: 4px; }
+            .dropdown-sub::before { left: auto; right: -10px; }
+            .has-sub > .sub-trigger i { transform: rotate(180deg); }
+            .has-sub.open > .sub-trigger i { transform: rotate(180deg); }
+        }
+
+        .nav-toggle { display: none; width: 44px; height: 44px; border-radius: 12px; color: #fff; font-size: 1.15rem; }
+        .nav-toggle:hover { background: rgba(255,255,255,.1); }
+
+        /* Breakpoint 1250px karena item menu sangat banyak */
+        @media (max-width: 1250px) {
+            .nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
+            .menu {
+                display: none; position: fixed; top: var(--header-h); left: 0; right: 0;
+                max-height: calc(100dvh - var(--header-h)); overflow-y: auto;
+                flex-direction: column; align-items: stretch; gap: 4px; flex-wrap: nowrap;
+                padding: 16px clamp(16px, 4vw, 32px) 28px; background: var(--ink);
+                border-bottom: 1px solid rgba(255,255,255,.1);
+            }
+            .nav-open .menu { display: flex; }
+            .menu-link, .menu-trigger { width: 100%; justify-content: space-between; padding: 14px 16px; border-radius: 14px; font-size: 1rem; white-space: normal; }
+            .dropdown { position: static; margin: 2px 0 8px 12px; box-shadow: none; background: transparent; border: 0; border-left: 2px solid rgba(255,255,255,.12); border-radius: 0; min-width: 100%; }
+            .dropdown::before { display: none; }
+            .menu .btn-login { margin: 8px 0 0; justify-content: center; padding: 14px; }
+
+            /* Responsive multilevel */
+            .has-sub > .sub-trigger { padding: 14px 16px; border-radius: 14px; font-size: 1rem; }
+            .has-sub.open > .sub-trigger i { transform: rotate(90deg); }
+            .dropdown-sub { position: static; margin: 4px 0 4px 12px; box-shadow: none; background: transparent; border: 0; border-left: 2px solid rgba(255,255,255,.12); border-radius: 0; padding: 0; min-width: 100%; }
+            .dropdown-sub::before { display: none; }
+        }
+
+        /* Penanda halaman aktif (Galeri > Berita > halaman ini) */
+        .menu > li.current > .menu-trigger { background: rgba(255,255,255,.1); color: #fff; }
+        .has-sub.current > .sub-trigger { background: rgba(255,255,255,.1); color: #fff; }
+        .dropdown-sub a[aria-current="page"] { background: rgba(255,255,255,.09); color: #fff; font-weight: 600; }
 
         /* ================= HERO ================= */
         .page-hero{
@@ -251,9 +327,8 @@
         /* ================= PHOTO-FIRST CARDS ================= */
         .media-grid{
             display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(280px,340px));
-            justify-content:center;
-            gap:24px;
+            grid-template-columns:repeat(4,minmax(0,1fr));
+            gap:22px;
         }
         .media-card{
             position:relative;display:flex;flex-direction:column;
@@ -365,76 +440,60 @@
         .page-item.active .page-link{background:var(--ink);border-color:var(--ink);color:#fff}
         .page-link:hover{background:var(--soft);color:var(--signal)}
 
-        /* ================= FOOTER ================= */
-        .footer{background:var(--ink);color:rgba(255,255,255,.69);padding:80px 0 30px}
-        .footer-grid{display:grid;grid-template-columns:1.05fr 1.2fr .75fr;gap:54px}
-        .footer h3{font-family:var(--display);color:#fff;font-size:1.1rem;margin-bottom:15px}
-        .footer-about img{height:88px;width:auto;margin-bottom:17px}
-        .footer-about p{max-width:44ch;font-size:.91rem}
-        .map{position:relative;height:195px;border-radius:18px;overflow:hidden;background:var(--ink-2);border:1px solid rgba(255,255,255,.08)}
-        .map iframe{width:100%;height:100%;border:0;filter:grayscale(.25) contrast(1.04);transition:.3s}
-        .map-link{position:absolute;inset:0;z-index:2;display:flex;align-items:flex-end;justify-content:flex-end;padding:12px}
-        .map-link span{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;background:var(--signal);color:#fff;font-size:.78rem;font-weight:800;box-shadow:0 9px 20px rgba(0,0,0,.28);transition:.2s}
-        .map-link:hover span{background:var(--signal-dark);transform:translateY(-2px)}
-        .map:hover iframe{filter:none}
-        .find{display:inline-flex;align-items:center;gap:9px;margin-top:13px;color:#fff;font-size:.86rem;font-weight:700;transition:.2s}
-        .find i{color:var(--signal)}
-        .find:hover{color:var(--amber);gap:13px}
-        .app-dl{margin-top:20px}.app-dl p{font-size:.82rem;margin-bottom:9px}.app-dl img{height:42px;width:auto}
-        .footer-links li+li{margin-top:7px}
-        .footer-links a{display:flex;align-items:center;gap:9px;padding:5px 0;font-size:.88rem;transition:.2s}
-        .footer-links a i{font-size:.65rem;color:var(--signal)}
-        .footer-links a:hover{color:#fff;gap:13px}
-        .footer-bar{margin-top:58px;padding-top:25px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;font-size:.8rem}
-        .social{display:flex;gap:7px;flex-wrap:wrap}
-        .social a{width:39px;height:39px;border-radius:11px;display:grid;place-items:center;background:rgba(255,255,255,.075);color:#fff;transition:.2s}
-        .social a:hover{background:var(--signal);transform:translateY(-3px)}
+/* ==========================================================
+           FOOTER
+           ========================================================== */
+        .footer { background: var(--ink); color: rgba(255,255,255,.7); padding: clamp(56px, 8vw, 96px) 0 32px; }
+        .footer-grid { display: grid; grid-template-columns: 1.1fr 1.2fr .8fr; gap: clamp(32px, 5vw, 64px); }
+        .footer h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: #fff; margin-bottom: 16px; }
+        .footer-about img { height: 96px; width: auto; margin-bottom: 20px; }
+        .footer-about p { max-width: 42ch; font-size: .95rem; }
+        .footer-contact { margin-top: 24px; display: grid; gap: 12px; }
+        .footer-contact a { display: inline-flex; align-items: center; gap: 12px; color: rgba(255,255,255,.9); font-size: .95rem; font-weight: 500; transition: color .2s; }
+        .footer-contact a i { color: var(--signal); font-size: 1.2rem; width: 20px; text-align: center; }
+        .footer-contact a:hover { color: var(--amber); }
+
+        .map { position: relative; height: 190px; border-radius: var(--r-md); overflow: hidden; background: var(--ink-2); }
+        .map iframe { width: 100%; height: 100%; border: 0; pointer-events: none; filter: grayscale(.3) contrast(1.05); transition: filter .3s; }
+        .map-link { position: absolute; inset: 0; z-index: 2; display: flex; align-items: flex-end; justify-content: flex-end; padding: 12px; border-radius: var(--r-md); }
+        .map-link span { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: var(--signal); color: #fff; font-size: .85rem; font-weight: 700; box-shadow: 0 8px 20px rgba(0,0,0,.35); transition: background .2s, transform .2s; }
+        .map-link:hover span, .map-link:focus-visible span { background: var(--signal-d); transform: translateY(-2px); }
+        .map:hover iframe { filter: none; }
+        .find { margin-top: 14px; display: inline-flex; align-items: center; gap: 10px; font-weight: 600; color: #fff; transition: color .2s, gap .2s; }
+        .find i { color: var(--signal); }
+        .find:hover { color: var(--amber); gap: 14px; }
+        .footer-links li + li { margin-top: 8px; }
+        .footer-links a { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: .95rem; transition: color .2s, gap .2s; }
+        .footer-links a i { font-size: .7rem; color: var(--signal); }
+        .footer-links a:hover { color: #fff; gap: 14px; }
+        .footer-bar { margin-top: clamp(40px, 6vw, 72px); padding-top: 28px; border-top: 1px solid rgba(255,255,255,.1); display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; align-items: center; font-size: .88rem; }
+        .social { display: flex; flex-wrap: wrap; gap: 8px; }
+        .social a { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: rgba(255,255,255,.08); color: #fff; transition: background .2s, transform .2s; }
+        .social a:hover { background: var(--signal); transform: translateY(-3px); }
+        @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr; } }
 
         /* ================= SOS ================= */
         .beacon{position:relative;width:10px;height:10px;border-radius:50%;background:#fff;flex:none}
         .beacon::after{content:"";position:absolute;inset:0;border-radius:50%;background:#fff;animation:ping 1.8s cubic-bezier(0,0,.2,1) infinite}
         @keyframes ping{0%{transform:scale(1);opacity:.7}100%{transform:scale(3.2);opacity:0}}
-        .sos-fab{
-            position:fixed;right:22px;bottom:22px;z-index:70;
-            display:flex;flex-direction:column;align-items:flex-end;gap:10px;
-            opacity:0;visibility:hidden;transform:translateY(16px);transition:.3s
-        }
-        .sos-fab.show{opacity:1;visibility:visible;transform:none}
-        .sos-fab-btn{
-            display:inline-flex;align-items:center;gap:9px;padding:13px 19px;
-            border-radius:999px;background:var(--signal);color:#fff;font-weight:800;
-            box-shadow:0 15px 30px -7px rgba(229,57,45,.55);transition:.2s
-        }
-        .sos-fab-btn:hover{background:var(--signal-dark);transform:translateY(-2px)}
-        .sos-sheet{display:none;width:min(320px,calc(100vw - 28px));padding:7px;border-radius:18px;background:var(--ink);border:1px solid rgba(255,255,255,.1);box-shadow:0 24px 48px rgba(0,0,0,.4)}
-        .sos-fab.open .sos-sheet{display:grid;gap:5px}
-        .sos-sheet a{display:flex;align-items:center;gap:13px;padding:12px 13px;border-radius:12px;color:#fff;font-weight:700;font-size:.9rem}
-        .sos-sheet a:hover{background:rgba(255,255,255,.09)}
-        .sos-sheet a i{width:21px;text-align:center;font-size:1.05rem}
-        .sos-sheet .wa i{color:#25d366}.sos-sheet .tel i{color:#38bdf8}.sos-sheet .n112 i{color:#f87171}
+        .sos-fab { position: fixed; right: clamp(14px, 3vw, 28px); bottom: clamp(14px, 3vw, 28px); z-index: 70; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; opacity: 0; visibility: hidden; transform: translateY(16px); transition: opacity .3s, transform .3s, visibility .3s; }
+        .sos-fab.show { opacity: 1; visibility: visible; transform: none; }
+        .sos-fab-btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; background: var(--signal); color: #fff; font-weight: 700; box-shadow: 0 14px 30px -6px rgba(229,57,45,.6); }
+        .sos-fab-btn:hover { background: var(--signal-d); }
+        .sos-sheet { display: none; width: min(320px, calc(100vw - 28px)); padding: 8px; border-radius: 20px; background: var(--ink); border: 1px solid rgba(255,255,255,.12); box-shadow: 0 24px 48px rgba(0,0,0,.45); }
+        .sos-fab.open .sos-sheet { display: grid; gap: 6px; }
+        .sos-sheet a { display: flex; align-items: center; gap: 14px; padding: 13px 14px; border-radius: 14px; color: #fff; font-weight: 600; }
+        .sos-sheet a:hover { background: rgba(255,255,255,.1); }
+        .sos-sheet a i { width: 22px; text-align: center; font-size: 1.15rem; }
+        .sos-sheet .wa i { color: #25d366; } .sos-sheet .tel i { color: #38bdf8; } .sos-sheet .n112 i { color: #f87171; }
 
         /* ================= RESPONSIVE ================= */
-        @media (hover:hover) and (min-width:992px){.has-drop:hover .dropdown{display:block}}
         @media (max-width:1100px){
-            .menu-link,.menu-trigger{padding-left:10px;padding-right:10px;font-size:.82rem}
-            .footer-grid{grid-template-columns:1fr 1fr}
-            .footer-links{grid-column:span 2}
+            .media-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
         }
         @media (max-width:991px){
-            .nav-toggle{display:inline-flex;align-items:center;justify-content:center}
-            .menu{
-                display:none;position:fixed;top:var(--header);left:0;right:0;
-                max-height:calc(100dvh - var(--header));overflow-y:auto;
-                flex-direction:column;align-items:stretch;gap:4px;
-                padding:14px 16px 25px;background:var(--ink);
-                border-bottom:1px solid rgba(255,255,255,.1)
-            }
-            .nav-open .menu{display:flex}
-            .menu-link,.menu-trigger{width:100%;justify-content:space-between;padding:13px 14px;border-radius:13px;font-size:.95rem}
-            .dropdown{position:static;margin:1px 0 7px 10px;box-shadow:none;background:transparent;border:0;border-left:2px solid rgba(255,255,255,.12);border-radius:0}
-            .dropdown::before{display:none}
-            .menu .btn-login{margin:7px 0 0;justify-content:center;padding:13px}
             .page-hero{padding:43px 0 78px}
+            .media-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
         }
         @media (max-width:768px){
             .page-nav { justify-content: flex-start; padding: 6px 12px; }
@@ -442,23 +501,16 @@
         }
         @media (max-width:700px){
             .wrap{width:min(100% - 28px,1180px)}
-            .brand img{height:32px}
-            .brand img+img{padding-left:7px}
             .page-hero h1{font-size:clamp(2.8rem,15vw,4.5rem)}
             .tabs{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
             .tabs::-webkit-scrollbar{display:none}
             .tab{flex:none}
             .content-head{margin-top:32px}
-            .media-grid{grid-template-columns:minmax(0,360px)}
-            .footer{padding-top:60px}
-            .footer-grid{grid-template-columns:1fr;gap:38px}
-            .footer-links{grid-column:auto}
-            .footer-bar{margin-top:42px;align-items:flex-start}
-            .sos-fab{right:14px;bottom:14px}
+        }
+        @media (max-width:520px){
+            .media-grid{grid-template-columns:1fr}
         }
         @media (max-width:390px){
-            .brand img{height:28px}
-            .brand img+img{padding-left:5px}
             .media-body{padding:16px}
             .media-thumb{aspect-ratio:16/10}
         }
@@ -470,57 +522,128 @@
 <!-- ==================== HEADER ==================== -->
 <header class="site-header" id="siteHeader">
     <nav class="nav" aria-label="Navigasi utama">
-        <a href="/" class="brand" aria-label="SIMERAH KOJA, beranda">
-            <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
-            <img src="/images/logo.png" alt="Logo Damkar">
-            <img src="/images/logo-redkar.png" alt="Logo Redkar">
-        </a>
+        <div class="brand">
+            <a href="/" aria-label="SIMERAH KOJA, beranda">
+                <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
+            </a>
+            <a href="/login" title="Login Internal Pegawai">
+                <img src="/images/logo.png" alt="Logo Damkar">
+            </a>
+            <a href="/redkar" aria-label="Redkar">
+                <img src="/images/logo-redkar.png" alt="Logo Redkar">
+            </a>
+        </div>
 
         <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="menu">
             <i class="fas fa-bars"></i>
         </button>
 
         <ul class="menu" id="menu">
+            <!-- 1. Layanan Kedaruratan -->
             <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan kedaruratan <i class="fas fa-chevron-down"></i></button>
+                <button class="menu-trigger" type="button" aria-expanded="false">Layanan Kedaruratan <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="{{ $wa_link }}" target="_blank" rel="noopener">WhatsApp</a></li>
-                    <li><a href="tel:{{ $no_telepon }}">Telepon</a></li>
                     <li><a href="tel:112">Call Center 112</a></li>
+                    <li><a href="tel:{{ $no_telepon }}">Telp</a></li>
+                    <li><a href="{{ $wa_link }}" target="_blank" rel="noopener">WA</a></li>
                 </ul>
             </li>
+
+            <!-- 2. Sigapkar -->
+            <li><a class="menu-link" href="/public-sigap">Sigapkar</a></li>
+
+            <!-- 3. Layanan -->
             <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Program kerja <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/sotk">SOTK</a></li>
-                    <li><a href="/perencanaan">Perencanaan</a></li>
-                    <li><a href="/pelaporan">Pelaporan</a></li>
-                    <li><a href="/sop">SOP</a></li>
-                    <li><a href="/produkhukum">Produk hukum</a></li>
-                </ul>
-            </li>
-          <li class="has-drop">
                 <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
-                    <li><a href="/layanan-fasilitas/skk">SKK &amp; Perpanjang SKK</a></li>
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
-                    <li><a href="/public-sigap">SIGAP</a></li>
-                    <li><a href="/informasi-layanan">Informasi layanan</a></li>
+                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
+                    <li><a href="#">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
+                    <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
+                    <li><a href="#">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
+                    <li><a href="/layanan-fasilitas/skk">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
                 </ul>
             </li>
-            
-            <li class="has-drop current">
-                <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
+
+            <!-- 4. Produk Hukum -->
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <li><a href="/edu-damkar">Edu Damkar</a></li>
-                    <li><a href="/infografis">Infografis</a></li>
-                    <li><a href="/media-informasi" aria-current="page">Media Informasi</a></li>
-                    <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
+                    <li><a href="/produkhukum">Undang-Undang</a></li>
+                    <li><a href="/produkhukum">Peraturan Pemerintah</a></li>
+                    <li><a href="/produkhukum">Peraturan Menteri</a></li>
+                    <li><a href="/produkhukum">Peraturan Daerah</a></li>
+                    <li><a href="/produkhukum">Peraturan Kepala Daerah</a></li>
                 </ul>
             </li>
-            
-            <li><a class="menu-link" href="/redkar">Redkar</a></li>
+
+            <!-- 5. Profil -->
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Profil <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="#">Visi Misi</a></li>
+                    <li><a href="/sotk">SOTK</a></li>
+                    <li><a href="#">Tupoksi</a></li>
+                    <li><a href="#">Kepegawaian</a></li>
+                    <li><a href="#">Program Kegiatan</a></li>
+                    <li><a href="#">Cascading</a></li>
+                </ul>
+            </li>
+
+            <!-- 6. Standar Operasional Prosedur -->
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">SOP <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="/sop">Pencegahan</a></li>
+                    <li><a href="/sop">Pemadaman Kebakaran</a></li>
+                    <li><a href="/sop">Penyelamatan dan Evakuasi</a></li>
+                    <li><a href="/sop">Sarana dan Prasarana</a></li>
+                    <li><a href="/sop">Kepegawaian</a></li>
+                    <li><a href="/sop">Keuangan</a></li>
+                </ul>
+            </li>
+
+            <!-- 7. Dokumen -->
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Dokumen <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="/perencanaan">Renstra</a></li>
+                    <li><a href="/perencanaan">Renja</a></li>
+                    <li><a href="#">SPM</a></li>
+                    <li><a href="#">SAKIP</a></li>
+                    <li><a href="/pelaporan">LPPD</a></li>
+                </ul>
+            </li>
+
+            <!-- 8. Sarana dan Prasarana -->
+            <li class="has-drop">
+                <button class="menu-trigger" type="button" aria-expanded="false">Sarpras <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="#">Sarana</a></li>
+                    <li><a href="#">Prasarana</a></li>
+                </ul>
+            </li>
+
+            <!-- 9. Galeri (DENGAN NESTED DROPDOWN) -->
+            <li class="has-drop current">
+                <button class="menu-trigger" type="button" aria-expanded="false">Galeri <i class="fas fa-chevron-down"></i></button>
+                <ul class="dropdown">
+                    <li><a href="/ikm">IKM (Indeks Kepuasan Masyarakat)</a></li>
+                    <li><a href="/pengumuman">Pengumuman</a></li>
+                    <li class="has-sub current">
+                        <button class="sub-trigger" type="button" aria-expanded="false">
+                            Berita <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <ul class="dropdown-sub">
+                            <li><a href="/edu-damkar">Edu Damkar</a></li>
+                            <li><a href="{{ route('publik.infografis') }}">Infografis</a></li>
+                            <li><a href="/media-informasi" aria-current="page">Media Informasi</a></li>
+                            <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Fitur Login / User Session -->
             @if(session()->has('pemohon_id'))
                 <li class="has-drop">
                     <button class="menu-trigger btn-login" type="button" aria-expanded="false">
@@ -530,7 +653,7 @@
                         <li>
                             <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
                                 @csrf
-                                <button type="submit" class="btn-logout" style="width: 100%; text-align: left; padding: 10px 13px; color: #ff8b8b; font-size: .9rem;">
+                                <button type="submit" class="btn-logout">
                                     <i class="fas fa-sign-out-alt"></i> Keluar
                                 </button>
                             </form>
@@ -540,7 +663,6 @@
             @else
                 <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
             @endif
-
         </ul>
     </nav>
 </header>
@@ -553,7 +675,8 @@
         <nav aria-label="Breadcrumb" class="rise">
             <ol class="crumbs">
                 <li><a href="/">Beranda</a></li>
-                <li><a href="#">Kabar Damkar</a></li>
+                <li><a href="#">Galeri</a></li>
+                <li><a href="#">Berita</a></li>
                 <li><span aria-current="page">Media informasi</span></li>
             </ol>
         </nav>
@@ -566,7 +689,7 @@
 
 <!-- ==================== SUB NAVIGATION (PILL MENU) ==================== -->
 <div class="page-nav-wrap rise d3">
-    <nav class="page-nav" aria-label="Sub menu Kabar Damkar">
+    <nav class="page-nav" aria-label="Sub menu Berita">
         <a href="/edu-damkar"><i class="fas fa-video"></i> Edu Damkar</a>
         <a href="/infografis"><i class="fas fa-image"></i> Infografis</a>
         <a href="/media-informasi" class="active"><i class="fas fa-newspaper"></i> Media Informasi</a>
@@ -661,6 +784,15 @@
                 <img src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA" loading="lazy">
                 <h3>Tentang kami</h3>
                 <p>SIMERAH KOJA merupakan sistem informasi pemerintahan berbasis elektronik yang terintegrasi pada dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+
+                <div class="footer-contact">
+                    <a href="{{ $wa_link }}" target="_blank" rel="noopener">
+                        <i class="fab fa-whatsapp"></i> {{ $no_whatsapp }} (WhatsApp)
+                    </a>
+                    <a href="tel:{{ $no_telepon }}">
+                        <i class="fas fa-phone-alt"></i> {{ $telepon_tampil }} (Call Center Damkar)
+                    </a>
+                </div>
             </div>
 
             <div>
@@ -674,15 +806,6 @@
                     </a>
                 </div>
                 <a class="find" href="{{ $maps_link }}" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Temukan kami di peta</a>
-
-                @if ($play_store_url)
-                <div class="app-dl">
-                    <p>Unduh aplikasi SIMERAH KOJA</p>
-                    <a href="{{ $play_store_url }}" target="_blank" rel="noopener">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Dapatkan di Google Play">
-                    </a>
-                </div>
-                @endif
             </div>
 
             <div class="footer-links">
@@ -729,6 +852,16 @@
     var header = document.getElementById('siteHeader');
     var toggle = header.querySelector('.nav-toggle');
     var drops = header.querySelectorAll('.has-drop');
+    var subs = header.querySelectorAll('.has-sub');
+
+    function closeSubs(except) {
+        subs.forEach(function (li) {
+            if (li !== except) {
+                li.classList.remove('open');
+                li.querySelector('.sub-trigger').setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
 
     function closeDrops(except) {
         drops.forEach(function (li) {
@@ -737,6 +870,7 @@
                 li.querySelector('.menu-trigger').setAttribute('aria-expanded', 'false');
             }
         });
+        if (!except) closeSubs(null);
     }
 
     toggle.addEventListener('click', function () {
@@ -755,11 +889,21 @@
         });
     });
 
+    subs.forEach(function (li) {
+        var btn = li.querySelector('.sub-trigger');
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var open = li.classList.toggle('open');
+            btn.setAttribute('aria-expanded', open);
+            closeSubs(li);
+        });
+    });
+
     document.addEventListener('click', function (e) {
         if (!e.target.closest('.has-drop')) closeDrops(null);
     });
 
-    header.querySelectorAll('.dropdown a, .menu-link').forEach(function (a) {
+    header.querySelectorAll('.dropdown a, .dropdown-sub a, .menu-link').forEach(function (a) {
         a.addEventListener('click', function () {
             header.classList.remove('nav-open');
             toggle.setAttribute('aria-expanded', 'false');
@@ -767,7 +911,6 @@
             closeDrops(null);
         });
     });
-
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') closeDrops(null);
     });

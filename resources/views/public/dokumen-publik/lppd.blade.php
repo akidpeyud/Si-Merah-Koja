@@ -1,45 +1,51 @@
 <?php
-    use App\Models\Dokumen;
+    use App\Models\DokumenPublik;
 
     $h = function ($v) { return htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8'); };
 
     /* ------------------------------------------------------------
-       PENGATURAN HALAMAN
-       Halaman ini dipakai bersama untuk 5 tab Program Kerja.
+       PENGATURAN HALAMAN PUBLIK DOKUMEN
+       Tab disesuaikan untuk 5 Kategori Dokumen Publik.
        ------------------------------------------------------------ */
     $tabs = [
-        'sotk'        => ['url' => '/sotk',        'label' => 'SOTK',         'ico' => 'fa-sitemap',       'judul' => 'Struktur Organisasi dan Tata Kerja (SOTK)'],
-        'sop'         => ['url' => '/sop',         'label' => 'SOP',          'ico' => 'fa-list-check',    'judul' => 'Standar Operasional Prosedur (SOP)'],
-        'perencanaan' => ['url' => '/perencanaan', 'label' => 'Perencanaan',  'ico' => 'fa-bullseye',      'judul' => 'Dokumen perencanaan'],
-        'pelaporan'   => ['url' => '/pelaporan',   'label' => 'Pelaporan',    'ico' => 'fa-file-lines',    'judul' => 'Dokumen pelaporan'],
-        'produkhukum' => ['url' => '/produkhukum', 'label' => 'Produk hukum', 'ico' => 'fa-scale-balanced','judul' => 'Produk hukum'],
+        'renstra' => ['url' => '/dokumen/renstra', 'label' => 'Renstra', 'ico' => 'fa-file-lines', 'judul' => 'Rencana Strategis (Renstra)'],
+        'renja'   => ['url' => '/dokumen/renja',   'label' => 'Renja',   'ico' => 'fa-file-lines', 'judul' => 'Rencana Kerja (Renja)'],
+        'spm'     => ['url' => '/dokumen/spm',     'label' => 'SPM',     'ico' => 'fa-file-shield', 'judul' => 'Standar Pelayanan Minimal (SPM)'],
+        'sakip'   => ['url' => '/dokumen/sakip',   'label' => 'SAKIP',   'ico' => 'fa-chart-pie',  'judul' => 'Sistem Akuntabilitas Kinerja Instansi Pemerintahan (SAKIP)'],
+        'lppd'    => ['url' => '/dokumen/lppd',    'label' => 'LPPD',    'ico' => 'fa-book',       'judul' => 'Laporan Penyelenggaraan Pemerintahan Daerah (LPPD)'],
     ];
-    $tab_aktif = 'sop';
+    
+    // Set tab aktif ke lppd
+    $tab_aktif = 'lppd';
 
     // ============================================================
-    // AMBIL DATA DARI DATABASE (DENGAN ROUTE CONTROLLER)
+    // AMBIL DATA DARI DATABASE KHUSUS KATEGORI LPPD
     // ============================================================
-    $dokumenDB = Dokumen::where('kategori', 'SOP')->latest()->get();
+    $dokumenDB = DokumenPublik::where('kategori', 'LPPD')
+                              ->latest()
+                              ->get();
 
-    $dokumen_list = [];
+$dokumen_list = [];
     foreach ($dokumenDB as $doc) {
         $dokumen_list[] = [
-            'judul'        => $doc->sub_kategori ? "[{$doc->sub_kategori}] {$doc->judul_dokumen}" : $doc->judul_dokumen,
-            // Hapus kata /internal/program-kerja/ dan ganti menjadi /dokumen/
-            'url'          => url('/dokumen/view/' . $doc->id), 
-            'url_download' => url('/dokumen/download/' . $doc->id),
-            'ext'          => pathinfo($doc->nama_file, PATHINFO_EXTENSION) 
+            'judul'        => $doc->judul,
+            'tahun'        => $doc->tahun,
+            'deskripsi'    => $doc->deskripsi,
+            'url'          => url('/dokumen-publik/view/' . $doc->id), // <-- UBAH BAGIAN INI
+            'url_download' => asset('storage/' . $doc->file_path),     // Biarkan ini menggunakan asset untuk download
+            'ext'          => pathinfo($doc->file_path, PATHINFO_EXTENSION) 
         ];
     }
     
     $jumlah = count($dokumen_list);
 
+    // Konfigurasi Kontak Default
     $no_whatsapp    = "628117113113";
     $no_telepon     = "074141171";
     $telepon_tampil = "(0741) 41171";
     $pesan_wa = "Terimakasih%20telah%20menghubungi%20%F0%9F%94%A5%F0%9F%94%A5%F0%9F%94%A5..%0ASistem%20Informasi%20Penanggulangan%20Kebakaran%20dan%20Penyelamatan%20Daerah%20Kota%20Jambi%20(SIMERAH%20KOJA)%0A%0AMohon%20Isi%20Laporan%20Pengaduan%3A%20%0A%0ANama%20Pelapor%20%20%20%3A%0ANo.%20HP%20Pelapor%20%3A%0AAlamat%20Pelapor%20%3A%0AJenis%20Laporan%20%20%20%3A%20%20(Kebakaran%2FEvakuasi)%0A%0AAlamat%20Kejadian%20%3A%0A%0AKirim%20Peta%20Lokasi%20kejadian%20(Google%20Maps)%20%3A%0A%0AKirim%20Foto%20%26%20Video%20Kejadian%20%3A%0A%0ALaporan%20akan%20segera%20kami%20tindaklanjuti%20%F0%9F%9A%92%F0%9F%9A%92%F0%9F%9A%92%0ASalam%20YUDHA%20BRAMA%20JAYA%20Dinas%20Pemadam%20Kebakaran%20%26%20Penyelamatan%20Kota%20Jambi.";
     $wa_link   = "https://wa.me/" . $no_whatsapp . "?text=" . $pesan_wa;
-    $maps_link = "https://www.google.com/maps/place/6PC59JJ2%2BQ76/@-1.6180875,103.6006406,871m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-1.6180875!4d103.6006406?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D";
+    $maps_link = "https://www.google.com/maps/place/6PC59JJ2%2BQ76/@-1.6180875,103.6006406,871m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-1.6180875!4d103.6006406?entry=ttu";
 
     $play_store_url = "";
 ?>
@@ -50,7 +56,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
     <meta name="description" content="<?= $h($tabs[$tab_aktif]['judul']) ?> Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.">
-    <title><?= $h($tabs[$tab_aktif]['label']) ?> - Program kerja | SIMERAH KOJA</title>
+    <title><?= $h($tabs[$tab_aktif]['label']) ?> - Dokumen Publik | SIMERAH KOJA</title>
 
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -189,23 +195,56 @@
         @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 
         .page-body { background: var(--paper); padding-bottom: clamp(64px, 9vw, 112px); }
-        .tabs-wrap { position: relative; z-index: 2; margin-top: -30px; }
+
+        .tabs-wrap {
+            position: relative;
+            z-index: 2;
+            margin-top: -30px;
+            display: flex;
+            justify-content: center;
+        }
         .tabs {
-            display: flex; gap: 6px; padding: 7px; width: max-content; max-width: 100%;
-            background: #fff; border: 1px solid var(--line); border-radius: 999px;
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            gap: 4px;
+            padding: 6px;
+            min-width: 0;
+            max-width: 100%;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 999px;
             box-shadow: 0 18px 36px -20px rgba(13,27,42,.45);
-            overflow-x: auto; scrollbar-width: none;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x proximity;
         }
         .tabs::-webkit-scrollbar { display: none; }
+        .tabs::after { content: ''; flex: 0 0 1px; }
+
         .tab {
-            display: inline-flex; align-items: center; gap: 10px; white-space: nowrap;
-            padding: 11px 20px; border-radius: 999px; font-weight: 600; font-size: .92rem; color: var(--steel);
+            flex: 0 0 auto;
+            display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+            padding: 10px 15px; border-radius: 999px; font-weight: 600; font-size: .88rem; color: var(--steel);
+            scroll-snap-align: center;
             transition: background .2s, color .2s;
         }
-        .tab i { font-size: .95rem; }
+        .tab i { font-size: .9rem; }
         .tab:hover { background: var(--paper); color: var(--ink); }
         .tab[aria-current="page"] { background: var(--ink); color: #fff; }
         .tab[aria-current="page"] i { color: var(--amber); }
+
+        @media (min-width: 1200px) {
+            .tabs { justify-content: center; overflow: visible; }
+            .tabs::after { display: none; }
+        }
+
+        @media (max-width: 991px) {
+            .tabs-wrap { justify-content: flex-start; }
+            .tabs { width: 100%; }
+            .tab { padding: 10px 16px; }
+        }
 
         .doc-layout { display: grid; gap: 24px; margin-top: 28px; }
 
@@ -218,10 +257,6 @@
         .contact-list span, .contact-list a { font-weight: 600; font-size: .95rem; line-height: 1.45; word-break: break-word; }
         .contact-list a { transition: color .2s; }
         .contact-list a:hover { color: var(--signal-d); text-decoration: underline; text-underline-offset: 4px; }
-        .social-title { margin: 24px 0 12px; padding-top: 20px; border-top: 1px solid var(--line); font-size: .85rem; color: var(--steel); }
-        .social { display: flex; flex-wrap: wrap; gap: 8px; }
-        .social a { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: var(--paper); color: var(--ink); transition: background .2s, color .2s, transform .2s; }
-        .social a:hover { background: var(--signal); color: #fff; transform: translateY(-3px); }
 
         .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
         .doc-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
@@ -268,51 +303,6 @@
             .doc-search, .doc-search input { width: 100%; }
             .doc-filter { width: 100%; }
         }
-
-        .footer { background: var(--ink); color: rgba(255,255,255,.7); padding: clamp(56px, 8vw, 96px) 0 32px; }
-        .footer-grid { display: grid; grid-template-columns: 1.1fr 1.2fr .8fr; gap: clamp(32px, 5vw, 64px); }
-        .footer h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: #fff; margin-bottom: 16px; }
-        .footer-about img { height: 96px; width: auto; margin-bottom: 20px; }
-        .footer-about p { max-width: 42ch; font-size: .95rem; }
-        .map { position: relative; height: 190px; border-radius: var(--r-md); overflow: hidden; background: var(--ink-2); }
-        .map iframe { width: 100%; height: 100%; border: 0; pointer-events: none; filter: grayscale(.3) contrast(1.05); transition: filter .3s; }
-        .map-link { position: absolute; inset: 0; z-index: 2; display: flex; align-items: flex-end; justify-content: flex-end; padding: 12px; border-radius: var(--r-md); }
-        .map-link span { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: var(--signal); color: #fff; font-size: .85rem; font-weight: 700; box-shadow: 0 8px 20px rgba(0,0,0,.35); transition: background .2s, transform .2s; }
-        .map-link:hover span, .map-link:focus-visible span { background: var(--signal-d); transform: translateY(-2px); }
-        .map:hover iframe { filter: none; }
-        .find { margin-top: 14px; display: inline-flex; align-items: center; gap: 10px; font-weight: 600; color: #fff; transition: color .2s, gap .2s; }
-        .find i { color: var(--signal); }
-        .find:hover { color: var(--amber); gap: 14px; }
-        .app-dl { margin-top: 22px; }
-        .app-dl p { font-size: .88rem; margin-bottom: 10px; }
-        .app-dl img { height: 44px; width: auto; }
-        .footer-links li + li { margin-top: 8px; }
-        .footer-links a { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: .95rem; transition: color .2s, gap .2s; }
-        .footer-links a i { font-size: .7rem; color: var(--signal); }
-        .footer-links a:hover { color: #fff; gap: 14px; }
-        .footer-bar { margin-top: clamp(40px, 6vw, 72px); padding-top: 28px; border-top: 1px solid rgba(255,255,255,.1); display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; align-items: center; font-size: .88rem; }
-        .footer .social a { background: rgba(255,255,255,.08); color: #fff; }
-        .footer .social a:hover { background: var(--signal); }
-        @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr; } }
-
-        .beacon { position: relative; width: 12px; height: 12px; border-radius: 50%; background: #fff; flex: none; }
-        .beacon::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #fff; animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
-        @keyframes ping { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(3.2); opacity: 0; } }
-        .sos-fab { position: fixed; right: clamp(14px, 3vw, 28px); bottom: clamp(14px, 3vw, 28px); z-index: 70; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; opacity: 0; visibility: hidden; transform: translateY(16px); transition: opacity .3s, transform .3s, visibility .3s; }
-        .sos-fab.show { opacity: 1; visibility: visible; transform: none; }
-        .sos-fab-btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; background: var(--signal); color: #fff; font-weight: 700; box-shadow: 0 14px 30px -6px rgba(229,57,45,.6); }
-        .sos-fab-btn:hover { background: var(--signal-d); }
-        .sos-sheet { display: none; width: min(320px, calc(100vw - 28px)); padding: 8px; border-radius: 20px; background: var(--ink); border: 1px solid rgba(255,255,255,.12); box-shadow: 0 24px 48px rgba(0,0,0,.45); }
-        .sos-fab.open .sos-sheet { display: grid; gap: 6px; }
-        .sos-sheet a { display: flex; align-items: center; gap: 14px; padding: 13px 14px; border-radius: 14px; color: #fff; font-weight: 600; }
-        .sos-sheet a:hover { background: rgba(255,255,255,.1); }
-        .sos-sheet a i { width: 22px; text-align: center; font-size: 1.15rem; }
-        .sos-sheet .wa i { color: #25d366; } .sos-sheet .tel i { color: #38bdf8; } .sos-sheet .n112 i { color: #f87171; }
-
-        @media (prefers-reduced-motion: reduce) {
-            html { scroll-behavior: auto; }
-            *, *::before, *::after { animation: none !important; transition: none !important; }
-        }
     </style>
 </head>
 <body>
@@ -339,52 +329,16 @@
                 </ul>
             </li>
             <li class="has-drop current">
-                <button class="menu-trigger" type="button" aria-expanded="false">Program kerja <i class="fas fa-chevron-down"></i></button>
+                <button class="menu-trigger" type="button" aria-expanded="false">Dokumen Publik <i class="fas fa-chevron-down"></i></button>
                 <ul class="dropdown">
-                    <?php foreach (['sotk', 'perencanaan', 'pelaporan', 'sop', 'produkhukum'] as $k): ?>
-                        <li><a href="<?= $h($tabs[$k]['url']) ?>" <?php if ($k === $tab_aktif): ?> aria-current="page" <?php endif; ?>><?= $h($tabs[$k]['label']) ?></a></li>
-                    <?php endforeach; ?>
+                    <li><a href="/dokumen/renstra">Renstra</a></li>
+                    <li><a href="/dokumen/renja">Renja</a></li>
+                    <li><a href="/dokumen/spm">SPM</a></li>
+                    <li><a href="/dokumen/sakip">SAKIP</a></li>
+                    <li><a href="/dokumen/lppd">LPPD</a></li>
                 </ul>
             </li>
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan<i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
-                    <li><a href="/layanan-fasilitas/skk">SKK &amp; Perpanjang SKK</a></li>
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
-                    <li><a href="/public-sigap">SIGAP</a></li>
-                    <li><a href="/informasi-layanan">Informasi layanan</a></li>
-                </ul>
-            </li>
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/edu-damkar">Edu Damkar</a></li>
-                    <li><a href="/infografis">Infografis</a></li>
-                    <li><a href="/media-informasi">Media Informasi</a></li>
-                    <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
-                </ul>
-            </li>
-            <li><a class="menu-link" href="/redkar">Redkar</a></li>
-                @if(session()->has('pemohon_id'))
-                <li class="has-drop">
-                    <button class="menu-trigger btn-login" type="button" aria-expanded="false">
-                        <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <ul class="dropdown">
-                        <li>
-                            <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
-                                @csrf
-                                <button type="submit" class="btn-logout">
-                                    <i class="fas fa-sign-out-alt"></i> Keluar
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
-                </li>
-            @else
-                <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
-            @endif
+            <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
         </ul>
     </nav>
 </header>
@@ -396,18 +350,19 @@
         <nav aria-label="Breadcrumb" class="rise">
             <ol class="crumbs">
                 <li><a href="/">Beranda</a></li>
-                <li><a href="/sotk">Program kerja</a></li>
+                <li><a href="/dokumen/renstra">Dokumen Publik</a></li>
                 <li><span aria-current="page"><?= $h($tabs[$tab_aktif]['label']) ?></span></li>
             </ol>
         </nav>
-        <h1 class="rise d1">Program kerja</h1>
-        <p class="rise d2">Struktur organisasi, prosedur, perencanaan, pelaporan, dan produk hukum Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+        <h1 class="rise d1">Laporan Penyelenggaraan Pemerintahan Daerah (LPPD)</h1>
+        <p class="rise d2">Dokumen Laporan Penyelenggaraan Pemerintahan Daerah (LPPD) Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
 </section>
 
 <div class="page-body">
     <div class="wrap tabs-wrap">
-        <nav class="tabs" aria-label="Kategori program kerja">
+        <!-- Tab Navigasi Horizontal Dokumen Publik -->
+        <nav class="tabs" aria-label="Kategori Dokumen Publik">
             <?php foreach ($tabs as $key => $tab): ?>
                 <a class="tab" href="<?= $h($tab['url']) ?>" <?php if ($key === $tab_aktif): ?> aria-current="page" <?php endif; ?>>
                     <i class="fas <?= $h($tab['ico']) ?>"></i> <?= $h($tab['label']) ?>
@@ -443,13 +398,13 @@
                 <?php if ($jumlah): ?>
                 <ul class="doc-list">
                     <?php foreach ($dokumen_list as $d):
-                        $d            = (is_object($d) && method_exists($d, 'toArray')) ? $d->toArray() : (array) $d;
                         $judul        = (string) ($d['judul'] ?? '');
+                        $tahun        = (string) ($d['tahun'] ?? '');
+                        $deskripsi    = (string) ($d['deskripsi'] ?? '');
                         $url          = (string) ($d['url'] ?? '');
                         $url_download = (string) ($d['url_download'] ?? $url);
                         $ada          = $url !== '';
                         
-                        // Perbaikan: Ambil eksistensi file langsung dari array yang di-passing Controller, bukan menebak dari URL route
                         $ext          = $ada ? strtoupper($d['ext'] ?? 'PDF') : '';
                         $ext          = $ext ?: 'PDF';
                         $ico          = ['PDF' => 'fa-file-pdf', 'DOC' => 'fa-file-word', 'DOCX' => 'fa-file-word', 'XLS' => 'fa-file-excel', 'XLSX' => 'fa-file-excel'][$ext] ?? 'fa-file-lines';
@@ -464,13 +419,16 @@
                                     <?= $h($judul) ?>
                                 <?php endif; ?>
                             </p>
-                            <p class="doc-meta"><?= $ada ? 'Dokumen ' . $h($ext) : 'Berkas belum diunggah' ?></p>
+                            <p class="doc-meta">
+                                @if($tahun) Tahun: {{ $tahun }} &bull; @endif 
+                                {{ $ada ? 'Dokumen ' . $h($ext) : 'Berkas belum diunggah' }}
+                                @if($deskripsi) <br><small>{{ $deskripsi }}</small> @endif
+                            </p>
                         </div>
                         <?php if ($ada): ?>
-                        <!-- Perbaikan: Tombol menggunakan Route View dan Route Download, serta hapus atribut native download -->
                         <div class="doc-actions">
                             <a class="tool" href="<?= $h($url) ?>" target="_blank" rel="noopener" aria-label="Buka <?= $h($judul) ?>"><i class="fas fa-arrow-up-right-from-square"></i> Buka</a>
-                            <a class="tool" href="<?= $h($url_download) ?>" aria-label="Unduh <?= $h($judul) ?>"><i class="fas fa-download"></i> Unduh</a>
+                            <a class="tool" href="<?= $h($url_download) ?>" download aria-label="Unduh <?= $h($judul) ?>"><i class="fas fa-download"></i> Unduh</a>
                         </div>
                         <?php endif; ?>
                     </li>
@@ -513,16 +471,6 @@
                             </div>
                         </li>
                     </ul>
-
-                    <p class="social-title">Ikuti kami</p>
-                    <div class="social">
-                        <a href="mailto:damkar.jbi@gmail.com" title="Email" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                        <a href="https://twitter.com/damkarkotajambi" target="_blank" rel="noopener" title="Twitter / X" aria-label="Twitter / X"><i class="fab fa-twitter"></i></a>
-                        <a href="https://www.facebook.com/DamkarKotaJambi" target="_blank" rel="noopener" title="Facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://www.youtube.com/@damkarkotajambi" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                        <a href="https://www.tiktok.com/@damkar.kota.jambi" target="_blank" rel="noopener" title="TikTok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-                        <a href="https://www.instagram.com/damkar.kotajambi/" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    </div>
                 </div>
             </aside>
 
@@ -531,72 +479,6 @@
 </div>
 
 </main>
-
-<footer class="footer">
-    <div class="wrap">
-        <div class="footer-grid">
-            <div class="footer-about">
-                <img src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA" loading="lazy">
-                <h3>Tentang kami</h3>
-                <p>SIMERAH KOJA merupakan sistem informasi pemerintahan berbasis elektronik yang terintegrasi pada dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
-            </div>
-
-            <div>
-                <div class="map">
-                    <iframe
-                        title="Lokasi Dinas Pemadam Kebakaran Kota Jambi"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.202353147814!2d103.600648!3d-1.618096!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e22c8c6a234f6b1%3A0x4d537f0a82384f88!2sDinas%20Pemadam%20Kebakaran%20Kota%20Jambi!5e1!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid"
-                        tabindex="-1" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    <a class="map-link" href="<?= $h($maps_link) ?>" target="_blank" rel="noopener" aria-label="Buka lokasi Dinas Pemadam Kebakaran Kota Jambi di Google Maps">
-                        <span><i class="fas fa-location-arrow"></i> Buka di Google Maps</span>
-                    </a>
-                </div>
-                <a class="find" href="<?= $h($maps_link) ?>" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Temukan kami di peta</a>
-
-                <?php if ($play_store_url): ?>
-                <div class="app-dl">
-                    <p>Unduh aplikasi SIMERAH KOJA</p>
-                    <a href="<?= $h($play_store_url) ?>" target="_blank" rel="noopener">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Dapatkan di Google Play">
-                    </a>
-                </div>
-                <?php endif; ?>
-            </div>
-
-            <div class="footer-links">
-                <h3>Link terkait</h3>
-                <ul>
-                    <li><a href="https://damkar.jambikota.go.id/" target="_blank" rel="noopener"><i class="fas fa-angle-right"></i> Official Damkar</a></li>
-                    <li><a href="https://jambikota.go.id/" target="_blank" rel="noopener"><i class="fas fa-angle-right"></i> Website Jambikota</a></li>
-                    <li><a href="https://sikoja.jambikota.go.id/" target="_blank" rel="noopener"><i class="fas fa-angle-right"></i> SIKOJA</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="footer-bar">
-            <div>SIMERAH KOJA &copy; <?= $h(date('Y')) ?>. Hak cipta dilindungi.</div>
-            <div class="social">
-                <a href="mailto:damkar.jbi@gmail.com" title="Email" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                <a href="https://twitter.com/damkarkotajambi" target="_blank" rel="noopener" title="Twitter / X" aria-label="Twitter / X"><i class="fab fa-twitter"></i></a>
-                <a href="https://www.facebook.com/DamkarKotaJambi" target="_blank" rel="noopener" title="Facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://www.youtube.com/@damkarkotajambi" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                <a href="https://www.tiktok.com/@damkar.kota.jambi" target="_blank" rel="noopener" title="TikTok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-                <a href="https://www.instagram.com/damkar.kotajambi/" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            </div>
-        </div>
-    </div>
-</footer>
-
-<div class="sos-fab" id="sosFab">
-    <div class="sos-sheet" id="sosSheet">
-        <a class="wa" href="<?= $h($wa_link) ?>" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Lapor lewat WhatsApp</a>
-        <a class="tel" href="tel:<?= $h($no_telepon) ?>"><i class="fas fa-phone-alt"></i> Telepon <?= $h($telepon_tampil) ?></a>
-        <a class="n112" href="tel:112"><i class="fas fa-headset"></i> Call Center 112</a>
-    </div>
-    <button class="sos-fab-btn" type="button" aria-expanded="false" aria-controls="sosSheet">
-        <span class="beacon" aria-hidden="true"></span> Lapor darurat
-    </button>
-</div>
 
 <script>
 (function () {
@@ -639,22 +521,6 @@
         if (e.key === 'Escape') closeDrops(null);
     });
 
-    var fab = document.getElementById('sosFab');
-    var fabBtn = fab.querySelector('.sos-fab-btn');
-
-    function updateFab() {
-        var show = window.scrollY > 320;
-        fab.classList.toggle('show', show);
-        if (!show) { fab.classList.remove('open'); fabBtn.setAttribute('aria-expanded', 'false'); }
-    }
-    window.addEventListener('scroll', updateFab, { passive: true });
-    updateFab();
-
-    fabBtn.addEventListener('click', function () {
-        var open = fab.classList.toggle('open');
-        fabBtn.setAttribute('aria-expanded', open);
-    });
-
     var search = document.getElementById('docSearch');
     if (search) {
         var rows = document.querySelectorAll('.doc-row');
@@ -671,6 +537,12 @@
             if (count) count.textContent = n + ' dokumen';
             none.hidden = n !== 0;
         });
+    }
+
+    var tabsEl = document.querySelector('.tabs');
+    var activeTab = document.querySelector('.tab[aria-current="page"]');
+    if (tabsEl && activeTab && tabsEl.scrollWidth > tabsEl.clientWidth) {
+        tabsEl.scrollLeft = activeTab.offsetLeft - (tabsEl.clientWidth - activeTab.offsetWidth) / 2;
     }
 })();
 </script>
