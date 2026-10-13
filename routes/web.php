@@ -27,6 +27,7 @@ use App\Http\Controllers\PermohonanEdukasiController;
 use App\Http\Controllers\PetaController;
 use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\IzinKeramaianController;
+use App\Http\Controllers\PenggunaanSaranaController;
 use App\Http\Controllers\FireDrillController;
 use App\Http\Controllers\ProgramKerjaController;
 use App\Http\Controllers\InformasiLayananController;
@@ -125,6 +126,13 @@ Route::middleware([CekLoginPemohon::class])->group(function () {
     // Izin Keramaian
     Route::get('/layanan-fasilitas/izin-keramaian', [IzinKeramaianController::class, 'index'])->name('izin-keramaian.index');
     Route::post('/layanan-fasilitas/izin-keramaian', [IzinKeramaianController::class, 'store'])->name('izin-keramaian.store');
+
+    // Permohonan Penggunaan Sarana Pemadam
+    // View: resources/views/layanan-fasilitas/penggunaan-sarana.blade.php
+    Route::get('/layanan-fasilitas/penggunaan-sarana', function () {
+        return view('layanan-fasilitas.penggunaan-sarana');
+    })->name('penggunaan-sarana');
+    Route::post('/layanan-fasilitas/penggunaan-sarana', [PenggunaanSaranaController::class, 'store'])->name('penggunaan-sarana.store');
 
     // Edukasi
     Route::get('/layanan-fasilitas/edukasi_sosialisasi', function () { return view('layanan-fasilitas.edukasi_sosialisasi'); });
@@ -256,6 +264,29 @@ Route::middleware(['auth'])->group(function () {
 
     // Semua role: detail (lihat & cetak)
     Route::get('/internal/damtan/kelola-izin-keramaian/{id}', [IzinKeramaianController::class, 'showInternal'])->name('internal.izin-keramaian.show');
+
+    // ==========================================================
+    // KELOLA PENGGUNAAN SARANA (ADMIN BAGIAN PEMADAMAN)
+    // - LIHAT (index & detail) : semua role yang login
+    // - UBAH STATUS / EDIT / UPDATE / HAPUS : HANYA Damtan & Super User
+    // Method yang harus ada di PenggunaanSaranaController:
+    //   indexInternal, showInternal, editInternal, updateInternal,
+    //   updateStatusInternal, destroyInternal
+    // ==========================================================
+
+    // Semua role: hanya lihat
+    Route::get('/internal/damtan/kelola-penggunaan-sarana', [PenggunaanSaranaController::class, 'indexInternal'])->name('internal.penggunaan-sarana.index');
+
+    // Hanya Damtan & Super User: aksi tulis (harus di atas rute {id} agar tidak bentrok)
+    Route::middleware([RoleMiddleware::class . ':Damtan|Super User'])->group(function () {
+        Route::get('/internal/damtan/kelola-penggunaan-sarana/edit/{id}', [PenggunaanSaranaController::class, 'editInternal'])->name('internal.penggunaan-sarana.edit');
+        Route::put('/internal/damtan/kelola-penggunaan-sarana/update/{id}', [PenggunaanSaranaController::class, 'updateInternal'])->name('internal.penggunaan-sarana.update');
+        Route::post('/internal/damtan/kelola-penggunaan-sarana/update-status/{id}', [PenggunaanSaranaController::class, 'updateStatusInternal'])->name('internal.penggunaan-sarana.update_status');
+        Route::delete('/internal/damtan/kelola-penggunaan-sarana/hapus/{id}', [PenggunaanSaranaController::class, 'destroyInternal'])->name('internal.penggunaan-sarana.destroy');
+    });
+
+    // Semua role: detail (lihat & cetak)
+    Route::get('/internal/damtan/kelola-penggunaan-sarana/{id}', [PenggunaanSaranaController::class, 'showInternal'])->name('internal.penggunaan-sarana.show');
 
     // ==========================================
     // REKAP LAYANAN PEMADAMAN
@@ -791,4 +822,3 @@ Route::get('/public-sigap', [PetaController::class, 'sigap']);
 // Sarpras (halaman baru: sapra_home)
 Route::get('/sarpras/sarana', [SapraHomeController::class, 'sarana'])->name('sarpras.sarana');
 Route::get('/sarpras/prasarana', [SapraHomeController::class, 'prasarana'])->name('sarpras.prasarana');
-

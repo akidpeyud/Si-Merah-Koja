@@ -264,11 +264,10 @@
             </details>
 
             <!-- BAGIAN PEMADAMAN -->
-            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') || Request::is('internal/damtan/kelola-izin-keramaian*') ? 'open' : '' }}>
+            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
                 <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
-                    
-                    <!-- KUNCI MENU REKAP HANYA UNTUK DAMTAN & SUPER USER -->
+
                     @php
                         $aksesMenuRekap = false;
                         if (method_exists(Auth::user(), 'hasAnyRole')) {
@@ -284,7 +283,6 @@
                         <i class="fas fa-house-chimney-crack"></i><span class="lbl">Input Rekap Objek Kebakaran</span>
                     </a>
                     @endif
-                    <!-- BATAS KUNCI MENU REKAP -->
 
                     <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
                         <i class="fas fa-clipboard-list"></i><span class="lbl">Kelola Data Laporan</span>
@@ -294,6 +292,9 @@
                     </a>
                     <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
                         <i class="fas fa-users-rectangle"></i><span class="lbl">Kelola Surat Keramaian</span>
+                    </a>
+                    <a href="{{ route('internal.penggunaan-sarana.index') }}" class="{{ Request::is('internal/damtan/kelola-penggunaan-sarana*') ? 'active' : '' }}">
+                        <i class="fas fa-truck-droplet"></i><span class="lbl">Kelola Penggunaan Sarana</span>
                     </a>
                 </div>
             </details>
