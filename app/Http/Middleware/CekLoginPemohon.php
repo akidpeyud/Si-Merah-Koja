@@ -24,6 +24,10 @@ class CekLoginPemohon
             return $next($request);
         }
 
+        // MENYIMPAN URL TUJUAN (INTENDED URL) SEBELUM REDIRECT
+        // Baris ini sangat penting agar pengguna dikembalikan ke layanan yang mereka klik
+        session(['url.intended' => url()->current()]);
+
         // Jika belum login sama sekali, arahkan ke halaman login pemohon dengan pesan flash
         return redirect()->route('pemohon.login')
             ->with('error', 'Silakan masuk atau daftar akun terlebih dahulu untuk mengakses layanan ini.');
