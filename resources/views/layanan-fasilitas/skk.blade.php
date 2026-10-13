@@ -115,7 +115,7 @@
         .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: clamp(16px, 4vw, 32px); padding-right: clamp(16px, 4vw, 32px); }
 
         /* ==========================================================
-           HEADER & NAVBAR (Sesuai Index)
+           HEADER & NAVBAR
            ========================================================== */
         .site-header {
             position: sticky; top: 0; z-index: 60;
@@ -172,8 +172,8 @@
 
         .btn-nav--alert { background: var(--signal); color: #fff; }
         .btn-nav--alert:hover, .has-drop.open > .btn-nav--alert { background: var(--signal-d); }
-        .btn-nav--alert .beacon { width: 8px; height: 8px; background: #fff; }
-        .btn-nav--alert .beacon::after { background: #fff; }
+        .btn-nav--alert .beacon { width: 8px; height: 8px; background: #fff; border-radius: 50%; position: relative; }
+        .btn-nav--alert .beacon::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #fff; animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
 
         .btn-nav--ghost { border: 1.5px solid rgba(255,255,255,.3); color: #fff; }
         .btn-nav--ghost:hover, .has-drop.open > .btn-nav--ghost { border-color: #fff; background: rgba(255,255,255,.08); }
@@ -207,7 +207,7 @@
             font-size: .9rem; line-height: 1.4; color: rgba(255,255,255,.85); text-align: left; white-space: normal;
             transition: background .15s, color .15s;
         }
-        .dropdown a:hover, .dropdown a[aria-current="page"] { background: rgba(255,255,255,.08); color: #fff; }
+        .dropdown a:hover, .dropdown a:focus-visible, .dropdown a[aria-current="page"] { background: rgba(255,255,255,.08); color: #fff; }
         .dropdown a i { width: 18px; text-align: center; font-size: 1rem; flex: none; }
         .dropdown a .fa-phone-alt { color: #38bdf8; }
         .dropdown a .fa-whatsapp  { color: #25d366; }
@@ -590,11 +590,17 @@
 <!-- ==================== HEADER ==================== -->
 <header class="site-header" id="siteHeader">
     <nav class="nav" aria-label="Navigasi utama">
-        <a href="/" class="brand" aria-label="SIMERAH KOJA, beranda">
-            <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
-            <img src="/images/logo.png" alt="Logo Damkar">
-            <img src="/images/logo-redkar.png" alt="Logo Redkar">
-        </a>
+        <div class="brand">
+            <a href="/" aria-label="SIMERAH KOJA, beranda">
+                <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
+            </a>
+            <a href="/" title="Beranda">
+                <img src="/images/logo.png" alt="Logo Damkar">
+            </a>
+            <a href="/redkar" aria-label="Redkar">
+                <img src="/images/logo-redkar.png" alt="Logo Redkar">
+            </a>
+        </div>
 
         <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="navPanel">
             <i class="fas fa-bars"></i>
@@ -611,7 +617,7 @@
                         <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
                         <li><a href="/layanan-fasilitas/izin-keramaian">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
                         <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
-                        <li><a href="#">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
+                        <li><a href="/layanan-fasilitas/penggunaan-sarana">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
                         <li><a href="/layanan-fasilitas/skk" aria-current="page">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
                     </ul>
                 </li>

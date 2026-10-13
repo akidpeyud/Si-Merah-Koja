@@ -13,7 +13,7 @@
     ];
     
     // Tab aktif default untuk halaman ini adalah RKBGL
-    $tab_aktif = $tab_aktif ?? 'RKBGL';
+    $tab_aktif = $tab_aktif ?? 'rpkbgl';
 
     $old            = session()->getOldInput() ?? []; 
     $pesan_sukses   = session('success') ?? '';
@@ -561,7 +561,7 @@
             <a href="/" aria-label="SIMERAH KOJA, beranda">
                 <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
             </a>
-            <a href="/login" title="Login Internal Pegawai">
+            <a href="/" title="Beranda">
                 <img src="/images/logo.png" alt="Logo Damkar">
             </a>
             <a href="/redkar" aria-label="Redkar">
@@ -584,7 +584,7 @@
                         <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
                         <li><a href="/layanan-fasilitas/izin-keramaian">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
                         <li><a href="/layanan-fasilitas/layanan_perizinan" aria-current="page">Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
-                        <li><a href="#">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
+                        <li><a href="/layanan-fasilitas/penggunaan-sarana">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
                         <li><a href="/layanan-fasilitas/skk">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
                     </ul>
                 </li>
