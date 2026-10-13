@@ -864,3 +864,43 @@ Route::get('/dokumen/lppd', function () {
     return view('public.dokumen-publik.lppd', compact('dokumens'));
 });
 Route::get('/dokumen-publik/view/{id}', [DokumenPublikController::class, 'showFile']);
+// ==========================================
+// RUTE MENU PRODUK HUKUM
+// ==========================================
+Route::get('/produk-hukum/undang-undang', function () { 
+    return view('public.produk-hukum.undang-undang'); 
+});
+Route::get('/produk-hukum/peraturan-pemerintah', function () { 
+    return view('public.produk-hukum.peraturan-pemerintah'); 
+});
+Route::get('/produk-hukum/peraturan-menteri', function () { 
+    return view('public.produk-hukum.peraturan-menteri'); 
+});
+Route::get('/produk-hukum/peraturan-daerah', function () { 
+    return view('public.produk-hukum.peraturan-daerah'); 
+});
+Route::get('/produk-hukum/peraturan-kepala-daerah', function () { 
+    return view('public.produk-hukum.peraturan-kepala-daerah'); 
+});
+
+// ==========================================
+// RUTE MENU PROFIL
+// ==========================================
+Route::get('/profil/visi-misi', function () { 
+    return view('public.profil.visi-misi'); 
+});
+Route::get('/profil/sotk', function () { 
+    return view('public.profil.sotk'); 
+});
+Route::get('/profil/tupoksi', function () { 
+    return view('public.profil.tupoksi'); 
+});
+Route::get('/profil/kepegawaian', function () { 
+    return view('public.profil.kepegawaian'); 
+});
+Route::get('/profil/program-kegiatan', function () { 
+    return view('public.profil.program-kegiatan'); 
+});
+Route::get('/profil/cascading', function () { 
+    return view('public.profil.cascading'); 
+});

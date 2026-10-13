@@ -586,16 +586,29 @@
                         <li><a href="/layanan-fasilitas/skk">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
                     </ul>
                 </li>
-
-                <li class="has-drop">
+<li class="has-drop">
                     <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
-                        <li><a href="/produkhukum">Undang-Undang</a></li>
-                        <li><a href="/produkhukum">Peraturan Pemerintah</a></li>
-                        <li><a href="/produkhukum">Peraturan Menteri</a></li>
-                        <li><a href="/produkhukum">Peraturan Daerah</a></li>
-                        <li><a href="/produkhukum">Peraturan Kepala Daerah</a></li>
+                        <li><a href="/produk-hukum/undang-undang">Undang-Undang</a></li>
+                        <li><a href="/produk-hukum/peraturan-pemerintah">Peraturan Pemerintah</a></li>
+                        <li><a href="/produk-hukum/peraturan-menteri">Peraturan Menteri</a></li>
+                        <li><a href="/produk-hukum/peraturan-daerah">Peraturan Daerah</a></li>
+                        <li><a href="/produk-hukum/peraturan-kepala-daerah">Peraturan Kepala Daerah</a></li>
                     </ul>
+                </li>
+
+                <li class="has-drop">
+                    <button class="menu-trigger" type="button" aria-expanded="false">Profil <i class="fas fa-chevron-down"></i></button>
+                    <ul class="dropdown">
+                        <li><a href="/profil/visi-misi">Visi Misi</a></li>
+                        <li><a href="/profil/sotk">SOTK</a></li>
+                        <li><a href="/profil/tupoksi">Tupoksi</a></li>
+                        <li><a href="/profil/kepegawaian">Kepegawaian</a></li>
+                        <li><a href="/profil/program-kegiatan">Program Kegiatan</a></li>
+                        <li><a href="/profil/cascading">Cascading</a></li>
+                    </ul>
+                </li>
+                
                 </li>
 
                 <li class="has-drop">
