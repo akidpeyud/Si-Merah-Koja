@@ -55,6 +55,9 @@ class PemohonAuthController extends Controller
         // Cek apakah data ada dan passwordnya cocok
         if ($pemohon && Hash::check($request->password, $pemohon->password)) {
             
+            // Regenerate session ID untuk keamanan (mencegah session fixation)
+            $request->session()->regenerate();
+            
             // Buat session login manual untuk pemohon
             session([
                 'pemohon_id' => $pemohon->id,
@@ -64,7 +67,7 @@ class PemohonAuthController extends Controller
             ]);
 
             // Arahkan kembali ke halaman yang tadinya ingin dia tuju
-            return redirect()->intended('/layanan-fasilitas/layanan_perizinan');
+            return redirect()->intended('/layanan-fasilitas/layanan_perizinan')->with('success', 'Berhasil login!');
         }
 
         return back()->withErrors([
