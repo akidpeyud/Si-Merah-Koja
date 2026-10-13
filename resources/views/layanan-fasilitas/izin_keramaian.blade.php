@@ -5,8 +5,9 @@
     $layanan = [
         'rpkbgl'    => ['url' => '/layanan-fasilitas/layanan_perizinan', 'label' => 'RPKBGL', 'ico' => 'fa-building', 'ket' => 'Layanan perizinan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan'],
         'skk'       => ['url' => '/layanan-fasilitas/skk',                'label' => 'SKK (Baru & Perpanjangan)', 'ico' => 'fa-user-shield', 'ket' => 'Layanan perizinan penerbitan & perpanjangan Sertifikat Keamanan Kebakaran'],
-        'keramaian' => ['url' => '/layanan-fasilitas/izin-keramaian',     'label' => 'Izin Keramaian', 'ico' => 'fa-users', 'ket' => 'Pengajuan Rekomendasi Izin Keramaian'],
+        'keramaian' => ['url' => '/layanan-fasilitas/izin-keramaian',     'label' => 'Event Keramaian', 'ico' => 'fa-users', 'ket' => 'Pengajuan Rekomendasi Event Keramaian'],
         'edukasi'   => ['url' => '/layanan-fasilitas/edukasi_sosialisasi', 'label' => 'Edukasi & Sosialisasi', 'ico' => 'fa-bullhorn', 'ket' => 'Pengajuan Kunjungan Edukasi & Sosialisasi'],
+        'sarana'    => ['url' => '/layanan-fasilitas/penggunaan-sarana',  'label' => 'Penggunaan Sarana Pemadam', 'ico' => 'fa-truck-droplet', 'ket' => 'Permohonan Penggunaan Sarana Pemadam Kebakaran'],
     ];
     $tab_aktif = 'keramaian';
 
@@ -128,8 +129,8 @@
             border-radius: 2px; background: var(--amber);
             transform: scaleX(0); transform-origin: left; transition: transform .25s ease;
         }
-        .menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger, .menu-link.is-active { color: #fff; }
-        .menu-link:hover::after, .menu-trigger:hover::after, .has-drop.open > .menu-trigger::after, .menu-link.is-active::after { transform: scaleX(1); }
+        .menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger, .menu-link.is-active, .menu > li.current > .menu-trigger { color: #fff; }
+        .menu-link:hover::after, .menu-trigger:hover::after, .has-drop.open > .menu-trigger::after, .menu-link.is-active::after, .menu > li.current > .menu-trigger::after { transform: scaleX(1); }
 
         .menu-trigger i { font-size: .6rem; opacity: .6; transition: transform .2s, opacity .2s; }
         .has-drop.open > .menu-trigger i { transform: rotate(180deg); opacity: 1; }
@@ -244,6 +245,7 @@
             .menu-link, .menu-trigger { width: 100%; justify-content: space-between; padding: 16px 4px; font-size: 1rem; white-space: normal; color: rgba(255,255,255,.9); }
             .menu-link::after, .menu-trigger::after { display: none; }
             .menu-link.is-active { color: var(--amber); }
+            .menu > li.current > .menu-trigger { color: var(--amber); }
             .menu-trigger i { font-size: .7rem; }
 
             .nav-actions { flex-direction: column; align-items: stretch; gap: 10px; }
@@ -408,7 +410,7 @@
         .input:hover { border-color: #b8c3d0; }
         .input:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(255,182,39,.5); }
         .input:user-invalid, .input.is-invalid { border-color: var(--signal); }
-        
+
         .unit { position: relative; }
         .unit .input { padding-right: 54px; }
         .unit span { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: .88rem; font-weight: 600; color: var(--steel); pointer-events: none; }
@@ -542,7 +544,7 @@
                         <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
                         <li><a href="/layanan-fasilitas/izin-keramaian" aria-current="page">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
                         <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
-                        <li><a href="#">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
+                        <li><a href="/layanan-fasilitas/penggunaan-sarana">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
                         <li><a href="/layanan-fasilitas/skk">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
                     </ul>
                 </li>
@@ -573,23 +575,23 @@
                 <li class="has-drop">
                     <button class="menu-trigger" type="button" aria-expanded="false">SOP <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
-                        <li><a href="/sop/pencegahan">Pencegahan</a></li>
-                        <li><a href="/sop/pemadaman">Pemadaman Kebakaran</a></li>
-                        <li><a href="/sop/penyelamatan">Penyelamatan dan Evakuasi</a></li>
-                        <li><a href="/sop/sarpras">Sarana dan Prasarana</a></li>
-                        <li><a href="/sop/kepegawaian">Kepegawaian</a></li>
-                        <li><a href="/sop/keuangan">Keuangan</a></li>
+                        <li><a href="/sop">Pencegahan</a></li>
+                        <li><a href="/sop">Pemadaman Kebakaran</a></li>
+                        <li><a href="/sop">Penyelamatan dan Evakuasi</a></li>
+                        <li><a href="/sop">Sarana dan Prasarana</a></li>
+                        <li><a href="/sop">Kepegawaian</a></li>
+                        <li><a href="/sop">Keuangan</a></li>
                     </ul>
                 </li>
 
                 <li class="has-drop">
                     <button class="menu-trigger" type="button" aria-expanded="false">Dokumen <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
-                        <li><a href="/dokumen/renstra">Renstra</a></li>
-                        <li><a href="/dokumen/renja">Renja</a></li>
-                        <li><a href="/dokumen/spm">SPM</a></li>
-                        <li><a href="/dokumen/sakip">SAKIP</a></li>
-                        <li><a href="/dokumen/lppd">LPPD</a></li>
+                        <li><a href="/perencanaan">Renstra</a></li>
+                        <li><a href="/perencanaan">Renja</a></li>
+                        <li><a href="#">SPM</a></li>
+                        <li><a href="#">SAKIP</a></li>
+                        <li><a href="/pelaporan">LPPD</a></li>
                     </ul>
                 </li>
 
@@ -672,8 +674,8 @@
                 <li><span aria-current="page">{{ $layanan[$tab_aktif]['label'] }}</span></li>
             </ol>
         </nav>
-        <h1 class="rise d1">Rekomendasi Izin Keramaian</h1>
-        <p class="rise d2">Ajukan Rekomendasi Izin Keramaian secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+        <h1 class="rise d1">Rekomendasi Event Keramaian</h1>
+        <p class="rise d2">Ajukan Rekomendasi Event Keramaian secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
 </section>
 
@@ -702,7 +704,7 @@
                 <span class="c-ico"><i class="fas fa-file-circle-check"></i></span>
                 <div>
                     <small>Produk layanan</small>
-                    <strong>Rekomendasi Izin Keramaian</strong>
+                    <strong>Rekomendasi Event Keramaian</strong>
                 </div>
             </div>
             <div class="fact">
@@ -728,7 +730,7 @@
                     <ol class="checklist">
                         <li>
                             <span class="ck-ico"><i class="fas fa-pen-to-square"></i></span>
-                            <div>Isi formulir pengajuan izin keramaian secara elektronik melalui <strong>simerah.jambikota.go.id</strong></div>
+                            <div>Isi formulir pengajuan event keramaian secara elektronik melalui <strong>simerah.jambikota.go.id</strong></div>
                         </li>
                         <li>
                             <span class="ck-ico"><i class="fas fa-image"></i></span>
@@ -755,8 +757,8 @@
                     <div class="form-title">
                         <i class="fas fa-file-pen"></i>
                         <div>
-                            <h2>Formulir Rekomendasi Izin Keramaian</h2>
-                            <p>Pengajuan Rekomendasi Izin Keramaian Masyarakat</p>
+                            <h2>Formulir Rekomendasi Event Keramaian</h2>
+                            <p>Pengajuan Rekomendasi Event Keramaian Masyarakat</p>
                         </div>
                     </div>
                     <span class="form-note"><span class="req" aria-hidden="true">*</span> wajib diisi</span>
@@ -781,7 +783,7 @@
 
                     <div class="alert" style="background: #eef2f6; color: var(--ink-3); border: 1px solid var(--line);" role="alert">
                         <i class="fas fa-info-circle"></i>
-                        <div><strong>Perhatian:</strong> Pengajuan rekomendasi Izin Keramaian dilakukan <strong>7 Hari sebelum kegiatan</strong> dilaksanakan.</div>
+                        <div><strong>Perhatian:</strong> Pengajuan rekomendasi Event Keramaian dilakukan <strong>Min 7 Hari sebelum kegiatan</strong> dilaksanakan.</div>
                     </div>
 
                     <fieldset class="fs">
@@ -866,7 +868,7 @@
                                 </div>
                                 {!! $fe('jumlah_penonton') !!}
                             </div>
-                            
+
                             <div class="field full">
                                 <span class="label" id="lbl-jalur">Jalur Evakuasi (Upload Photo) <span class="req" aria-hidden="true">*</span></span>
                                 <label class="dropzone{{ $inv('foto_jalur_evakuasi') }}" data-dropzone data-max="5">
@@ -908,7 +910,7 @@
 
                     <fieldset class="fs">
                         <legend><i class="fas fa-file-signature"></i> 5. Berkas Persyaratan</legend>
-                        
+
                         <div class="alert" style="background: #fff8e6; color: #9c6500; border: 1px solid #ffe58f; margin-bottom: 24px;" role="alert">
                             <i class="fas fa-exclamation-triangle"></i>
                             <div>
@@ -1067,7 +1069,7 @@
             btn.setAttribute('aria-expanded', open);
             closeDrops(li);
         });
-        
+
         li.addEventListener('mouseleave', function () {
             if (!desktop.matches) return;
             li.classList.remove('open');
@@ -1076,6 +1078,7 @@
         });
     });
 
+    // Multilevel dropdown (Galeri > Berita)
     subs.forEach(function (li) {
         var btn = li.querySelector('.sub-trigger');
         btn.addEventListener('click', function (e) {
