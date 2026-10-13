@@ -737,12 +737,12 @@
         <nav aria-label="Breadcrumb" class="rise">
             <ol class="crumbs">
                 <li><a href="/">Beranda</a></li>
-                <li><a href="/layanan-fasilitas/layanan_perizinan">Layanan perizinan</a></li>
+                <li><a href="/layanan-fasilitas/layanan_perizinan">Layanan</a></li>
                 <li><span aria-current="page">SKK</span></li>
             </ol>
         </nav>
-        <h1 class="rise d1">Layanan perizinan</h1>
-        <p class="rise d2">Ajukan rekomendasi proteksi kebakaran, sertifikat keamanan kebakaran, dan izin keramaian secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+        <h1 class="rise d1">Sertifikat Keamanan Kebakaran</h1>
+        <p class="rise d2">Ajukan  Permohonan Sertifikat Keamanan Kebakaran secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
 </section>
 
@@ -814,7 +814,7 @@
                             <span class="ck-ico"><i class="fas fa-pen-to-square"></i></span>
                             <div>Pilih dan isi formulir Pembuatan Baru atau Perpanjangan Sertifikat Keamanan Kebakaran (SKK)</div>
                         </li>
-                        <li>
+                        <li>    
                             <span class="ck-ico"><i class="fas fa-file-signature"></i></span>
                             <div>
                                 Unggah surat permohonan bermaterai

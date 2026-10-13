@@ -35,7 +35,6 @@ return new class extends Migration
             // Domisili
             $table->text('alamat');
             $table->string('rt_rw', 10);
-            $table->string('kode_pos', 10);
             $table->string('provinsi')->default('JAMBI');
             $table->string('kabupaten_kota')->default('KOTA JAMBI');
             $table->string('kecamatan', 50);
