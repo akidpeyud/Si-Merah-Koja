@@ -34,6 +34,8 @@ use App\Http\Controllers\InformasiLayananController;
 use App\Http\Controllers\DataAsnController;
 use App\Http\Controllers\DokumenPublikController;
 use App\Http\Controllers\SapraHomeController;
+use App\Http\Controllers\ProdukHukumController;
+use App\Http\Controllers\ProfilInstansiController;
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
@@ -904,3 +906,93 @@ Route::get('/profil/program-kegiatan', function () {
 Route::get('/profil/cascading', function () { 
     return view('public.profil.cascading'); 
 });
+
+// Route untuk Produk Hukum Internal
+Route::prefix('internal/produk-hukum')->name('internal.produk-hukum.')->middleware(['auth'])->group(function () {
+    Route::get('/{kategori}', [ProdukHukumController::class, 'index'])->name('index');
+    Route::post('/{kategori}', [ProdukHukumController::class, 'store'])->name('store');
+    Route::put('/{kategori}/{id}', [ProdukHukumController::class, 'update'])->name('update');
+    Route::delete('/{kategori}/{id}', [ProdukHukumController::class, 'destroy'])->name('destroy');
+});
+Route::prefix('internal/produk-hukum')->name('internal.produk-hukum.')->middleware(['auth'])->group(function () {
+    Route::get('/{kategori}', [ProdukHukumController::class, 'index'])->name('index');
+    Route::get('/{kategori}/create', [ProdukHukumController::class, 'create'])->name('create');
+    Route::post('/{kategori}', [ProdukHukumController::class, 'store'])->name('store');
+    Route::get('/{kategori}/{id}/edit', [ProdukHukumController::class, 'edit'])->name('edit');
+    Route::put('/{kategori}/{id}', [ProdukHukumController::class, 'update'])->name('update');
+    Route::delete('/{kategori}/{id}', [ProdukHukumController::class, 'destroy'])->name('destroy');
+    // TAMBAHKAN 2 ROUTE INI UNTUK LIHAT & DOWNLOAD FILE
+    Route::get('/{kategori}/{id}/view', [ProdukHukumController::class, 'viewFile'])->name('view-file');
+    Route::get('/{kategori}/{id}/download', [ProdukHukumController::class, 'downloadFile'])->name('download-file');
+
+    Route::get('/{kategori}/{id}/edit', [ProdukHukumController::class, 'edit'])->name('edit');
+    Route::put('/{kategori}/{id}', [ProdukHukumController::class, 'update'])->name('update');
+    Route::delete('/{kategori}/{id}', [ProdukHukumController::class, 'destroy'])->name('destroy');
+});
+
+// Rute untuk Profil
+Route::prefix('internal/profil-instansi')->name('internal.profil-instansi.')->middleware(['auth'])->group(function () {
+    Route::get('/{kategori}', [ProfilInstansiController::class, 'index'])->name('index');
+    Route::get('/{kategori}/create', [ProfilInstansiController::class, 'create'])->name('create');
+    Route::post('/{kategori}', [ProfilInstansiController::class, 'store'])->name('store');
+    
+    // Route Lihat & Unduh PDF
+    Route::get('/{kategori}/{id}/view', [ProfilInstansiController::class, 'viewFile'])->name('view-file');
+    Route::get('/{kategori}/{id}/download', [ProfilInstansiController::class, 'downloadFile'])->name('download-file');
+
+    Route::get('/{kategori}/{id}/edit', [ProfilInstansiController::class, 'edit'])->name('edit');
+    Route::put('/{kategori}/{id}', [ProfilInstansiController::class, 'update'])->name('update');
+    Route::delete('/{kategori}/{id}', [ProfilInstansiController::class, 'destroy'])->name('destroy');
+});
+// ==========================================
+// RUTE MENU PRODUK HUKUM
+// ==========================================
+Route::get('/produk-hukum/undang-undang', function () { 
+    return view('public.produk-hukum.undang-undang'); 
+});
+Route::get('/produk-hukum/peraturan-pemerintah', function () { 
+    return view('public.produk-hukum.peraturan-pemerintah'); 
+});
+Route::get('/produk-hukum/peraturan-menteri', function () { 
+    return view('public.produk-hukum.peraturan-menteri'); 
+});
+Route::get('/produk-hukum/peraturan-daerah', function () { 
+    return view('public.produk-hukum.peraturan-daerah'); 
+});
+Route::get('/produk-hukum/peraturan-kepala-daerah', function () { 
+    return view('public.produk-hukum.peraturan-kepala-daerah'); 
+});
+
+// TAMBAHKAN 2 RUTE PUBLIK INI AGAR BISA DIBUKA TANPA LOGIN:
+Route::get('/produk-hukum/{kategori}/{id}/view', [ProdukHukumController::class, 'viewFile'])->name('publik.produk-hukum.view');
+Route::get('/produk-hukum/{kategori}/{id}/download', [ProdukHukumController::class, 'downloadFile'])->name('publik.produk-hukum.download');
+
+// ==========================================
+// RUTE MENU PROFIL
+// ==========================================
+Route::get('/profil/visi-misi', function () { 
+    return view('public.profil.visi-misi'); 
+});
+Route::get('/profil/sotk', function () { 
+    return view('public.profil.sotk'); 
+});
+Route::get('/profil/tupoksi', function () { 
+    return view('public.profil.tupoksi'); 
+});
+Route::get('/profil/kepegawaian', function () { 
+    return view('public.profil.kepegawaian'); 
+});
+Route::get('/profil/program-kegiatan', function () { 
+    return view('public.profil.program-kegiatan'); 
+});
+Route::get('/profil/cascading', function () { 
+    return view('public.profil.cascading'); 
+});
+// TAMBAHKAN DI BAWAH RUTE MENU PROFIL (routes/web.php):
+Route::get('/profil/{kategori}/{id}/view', [ProfilInstansiController::class, 'viewFile'])->name('publik.profil.view');
+Route::get('/profil/{kategori}/{id}/download', [ProfilInstansiController::class, 'downloadFile'])->name('publik.profil.download');
+Route::get('/dokumen-publik/download/{id}', [DokumenPublikController::class, 'download'])->name('publik.dokumen-publik.download');
+
+// TAMBAHKAN 2 RUTE PUBLIK INI AGAR BISA DIBUKA TANPA LOGIN:
+Route::get('/profil/{kategori}/{id}/view', [ProfilInstansiController::class, 'viewFile'])->name('publik.profil.view');
+Route::get('/profil/{kategori}/{id}/download', [ProfilInstansiController::class, 'downloadFile'])->name('publik.profil.download');
