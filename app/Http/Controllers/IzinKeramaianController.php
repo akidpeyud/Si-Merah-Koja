@@ -82,6 +82,44 @@ class IzinKeramaianController extends Controller
     }
 
     /**
+     * Cek status permohonan berdasarkan NIK / No HP (dipanggil lewat fetch/AJAX)
+     */
+    public function cekStatus(Request $request)
+    {
+        $request->validate([
+            'kontak' => ['required', 'digits_between:9,20'],
+        ], [
+            'kontak.required'       => 'Masukkan NIK atau No HP/WA.',
+            'kontak.digits_between' => 'Masukkan NIK (16 digit) atau nomor HP/WA yang valid.',
+        ]);
+
+        $kontak = $request->input('kontak');
+
+        // 'Pending' di database ditampilkan sebagai 'Menunggu' ke masyarakat
+        $label = ['Pending' => 'Menunggu'];
+
+        $data = IzinKeramaian::where(function ($q) use ($kontak) {
+                $q->where('nik', $kontak)->orWhere('no_hp', $kontak);
+            })
+            ->latest()
+            ->limit(10)
+            ->get()
+            ->map(function ($r) use ($label) {
+                $status = $r->status_permohonan ?: 'Pending';
+                return [
+                    'kegiatan' => $r->nama_acara,
+                    'nama'     => $r->nama,
+                    'lokasi'   => $r->lokasi_acara,
+                    'tanggal'  => \Carbon\Carbon::parse($r->tgl_pelaksanaan)->translatedFormat('d F Y'),
+                    'diajukan' => optional($r->created_at)->translatedFormat('d F Y'),
+                    'status'   => $label[$status] ?? $status,
+                ];
+            });
+
+        return response()->json(['data' => $data]);
+    }
+
+    /**
      * ==============================================
      * FUNGSI UNTUK DASHBOARD INTERNAL (ADMIN DAMTAN)
      * ==============================================
