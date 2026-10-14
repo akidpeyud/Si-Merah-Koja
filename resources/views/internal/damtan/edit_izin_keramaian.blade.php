@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Data Izin Keramaian | SIMERAH KOJA</title>
+    <title>Edit Data Event Keramaian | SIMERAH KOJA</title>
     <!-- Gunakan link CSS Bootstrap dan FontAwesome bawaan template-mu di sini -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -18,7 +18,7 @@
 
 <div class="container mt-5 mb-5" style="max-width: 900px;">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold m-0"><i class="fas fa-edit text-warning me-2"></i> Edit Data Izin Keramaian</h3>
+        <h3 class="fw-bold m-0"><i class="fas fa-edit text-warning me-2"></i> Edit Data Event Keramaian</h3>
         <a href="{{ route('internal.izin-keramaian.index') }}" class="btn btn-outline-secondary rounded-pill"><i class="fas fa-arrow-left me-2"></i> Kembali</a>
     </div>
 

@@ -456,12 +456,25 @@
                 <i class="fas fa-chevron-down chev"></i>
             </summary>
             <div class="side-sub">
-                <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
-                    <i class="fas fa-user-tie"></i> Data Urut Kepegawaian
-                </a>
-                <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
-                    <i class="fas fa-file-contract"></i> Program Kerja
-                </a>
+               <a href="/internal/kepegawaian/duk" class="{{ Request::is('internal/kepegawaian/duk*') ? 'active' : '' }}">
+                        <i class="fas fa-user-tie"></i><span class="lbl">Data Urut Kepegawaian</span>
+                    </a>
+                    
+                    <!-- REKAP DATA ASN -->
+                    <a href="/internal/data-asn" class="{{ Request::is('internal/data-asn*') ? 'active' : '' }}">
+                        <i class="fas fa-users"></i><span class="lbl">Rekap Data ASN</span>
+                    </a>
+
+                    <!-- PROGRAM KERJA DIUBAH MENJADI SOP & DOKUMEN -->
+                    <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
+                        <i class="fas fa-file-contract"></i><span class="lbl">SOP &amp; Dokumen</span>
+                    </a>
+
+                    <!-- MENU DOKUMEN PUBLIK DITAMBAHKAN DI BAGIAN KEPEGAWAIAN -->
+                    <a href="{{ route('dokumen-publik.index') }}" class="{{ Request::is('dokumen-publik*') ? 'active' : '' }}">
+                        <i class="fas fa-file-lines"></i><span class="lbl">Dokumen Publik</span>
+                    </a>
+
             </div>
         </details>
 
