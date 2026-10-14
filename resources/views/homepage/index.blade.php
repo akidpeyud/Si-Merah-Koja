@@ -527,11 +527,49 @@
         dialog::backdrop { background: rgba(7,14,24,.86); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
         .dlg-close { position: absolute; top: -52px; right: 0; width: 44px; height: 44px; border-radius: 50%; background: #fff; color: var(--ink); font-size: 1.1rem; display: grid; place-items: center; }
         .dlg-close:hover { background: var(--amber); }
-        #lightbox img { max-height: 80dvh; width: auto; margin: 0 auto; border-radius: var(--r-md); box-shadow: 0 30px 60px rgba(0,0,0,.5); }
+        #lightbox img { max-height: calc(94dvh - 170px); max-width: 100%; width: auto; margin: 0 auto; border-radius: var(--r-md); box-shadow: 0 30px 60px rgba(0,0,0,.5); transition: opacity .2s; }
+        #lightbox img.is-loading { opacity: .35; }
         #lightbox p { margin-top: 14px; text-align: center; font-weight: 600; }
         #videoDialog { width: min(960px, 94vw); }
         .video-frame { aspect-ratio: 16 / 9; border-radius: var(--r-md); overflow: hidden; background: #000; }
         .video-frame iframe { width: 100%; height: 100%; border: 0; }
+
+
+        /* ==========================================================
+           INTERAKSI
+           ========================================================== */
+        .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+        /* Progres baca + bayangan header saat halaman digulir */
+        .site-header { transition: box-shadow .25s; }
+        .site-header.is-scrolled { box-shadow: 0 12px 30px -14px rgba(0,0,0,.55); }
+        .progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; pointer-events: none; transform: scaleX(0); transform-origin: left; background: linear-gradient(90deg, var(--amber), var(--signal)); }
+
+        /* Navigasi bagian di sisi kanan (desktop) */
+        .rail { position: fixed; right: 14px; top: 50%; transform: translateY(-50%); z-index: 55; display: none; flex-direction: column; gap: 2px; padding: 10px 5px; border-radius: 999px; background: rgba(13,27,42,.78); border: 1px solid rgba(255,255,255,.1); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 12px 30px -10px rgba(0,0,0,.45); }
+        @media (min-width: 1200px) { .rail { display: flex; } }
+        .rail a { position: relative; width: 22px; height: 22px; display: grid; place-items: center; }
+        .rail a::before { content: ""; width: 8px; height: 8px; border-radius: 999px; background: #fff; opacity: .4; transition: height .25s, opacity .25s, background .25s; }
+        .rail a:hover::before, .rail a:focus-visible::before { opacity: .9; }
+        .rail a.is-active::before { height: 20px; opacity: 1; background: var(--amber); }
+        .rail a span { position: absolute; right: calc(100% + 12px); top: 50%; transform: translate(6px, -50%); padding: 6px 12px; border-radius: 8px; background: var(--ink); color: #fff; font-size: .8rem; font-weight: 600; white-space: nowrap; box-shadow: 0 8px 20px rgba(0,0,0,.3); opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; }
+        .rail a:hover span, .rail a:focus-visible span { opacity: 1; transform: translate(0, -50%); }
+
+        /* Saring media informasi */
+        .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: -8px 0 24px; }
+        .chips[hidden] { display: none; }
+        .chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; font-size: .88rem; font-weight: 600; background: #fff; color: var(--ink); border: 1.5px solid var(--line); transition: background .2s, color .2s, border-color .2s; }
+        .chip small { font-size: .75rem; font-weight: 600; opacity: .6; font-variant-numeric: tabular-nums; }
+        .chip:hover { border-color: var(--ink); }
+        .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+        .media-card[hidden] { display: none; }
+
+        /* Navigasi galeri lightbox */
+        .lb-bar { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 14px; }
+        .lb-bar[hidden] { display: none; }
+        .lb-bar button { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.14); color: #fff; transition: background .2s, color .2s; }
+        .lb-bar button:hover { background: var(--amber); color: var(--ink); }
+        .lb-count { min-width: 64px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; color: rgba(255,255,255,.8); }
 
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
@@ -567,7 +605,7 @@
             </a>
         </div>
 
-        <button class="nav-toggle" type="button" aria-label="Bukaa menu" aria-expanded="false" aria-controls="navPanel">
+        <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="navPanel">
             <i class="fas fa-bars"></i>
         </button>
 
@@ -697,12 +735,13 @@
             </ul>
         </div>
     </nav>
+    <div class="progress" id="progress" aria-hidden="true"></div>
 </header>
 
 <main>
 
 <!-- ==================== HERO ==================== -->
-<section class="hero" aria-labelledby="judul-hero">
+<section class="hero" id="beranda" aria-labelledby="judul-hero">
     <div class="hero-bg b1"></div>
     <div class="hero-bg b2"></div>
 
@@ -961,6 +1000,9 @@
             $daftarMedsos = collect($daftar_medsos ?? []);
         @endphp
 
+        <div class="chips" id="mediaChips" role="group" aria-label="Saring berdasarkan kategori" hidden></div>
+        <p class="sr-only" id="mediaStatus" aria-live="polite"></p>
+
         <div class="media-grid">
             @forelse($daftarMedsos as $medsos)
                 @php
@@ -975,7 +1017,7 @@
                     if (str_contains($s, 'twitter'))   $ikonSumber = 'fab fa-twitter';
                 @endphp
 
-                <article class="media-card">
+                <article class="media-card" data-kat="{{ $namaKatCard }}">
                     <div style="position: relative; background: var(--paper); aspect-ratio: 4 / 3; overflow: hidden;">
                         @if($medsos->kategori)
                             <span style="position: absolute; top: 12px; left: 12px; padding: 4px 12px; border-radius: 6px; font-size: .7rem; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; background: rgba(255, 255, 255, 0.95); color: var(--signal-d); z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.08); backdrop-filter: blur(4px);">{{ $namaKatCard }}</span>
@@ -1120,6 +1162,16 @@
     </div>
 </footer>
 
+<!-- ==================== NAVIGASI BAGIAN (rail) ==================== -->
+<nav class="rail" aria-label="Lompat ke bagian halaman">
+    <a href="#beranda" class="is-active" aria-current="true"><span>Beranda</span></a>
+    <a href="#tentang"><span>Tentang</span></a>
+    <a href="#kejadian"><span>Kejadian</span></a>
+    <a href="#video"><span>Edu Damkar</span></a>
+    <a href="#infografis"><span>Infografis</span></a>
+    <a href="#giat"><span>Ujung-ujung Damkar</span></a>
+</nav>
+
 <!-- ==================== TOMBOL LAPOR MENGAMBANG ==================== -->
 <div class="sos-fab" id="sosFab">
     <div class="sos-sheet" id="sosSheet">
@@ -1133,10 +1185,15 @@
 </div>
 
 <!-- ==================== DIALOG ==================== -->
-<dialog id="lightbox">
+<dialog id="lightbox" aria-label="Penampil infografis">
     <button type="button" class="dlg-close" aria-label="Tutup"><i class="fas fa-times"></i></button>
     <img src="" alt="">
     <p></p>
+    <div class="lb-bar" hidden>
+        <button type="button" class="lb-prev" aria-label="Gambar sebelumnya"><i class="fas fa-chevron-left"></i></button>
+        <span class="lb-count" aria-live="polite"></span>
+        <button type="button" class="lb-next" aria-label="Gambar berikutnya"><i class="fas fa-chevron-right"></i></button>
+    </div>
 </dialog>
 
 <dialog id="videoDialog">
@@ -1248,22 +1305,69 @@
         var open = fab.classList.toggle('open');
         fabBtn.setAttribute('aria-expanded', open);
     });
+    function closeFab() { fab.classList.remove('open'); fabBtn.setAttribute('aria-expanded', 'false'); }
+    document.addEventListener('click', function (e) { if (!e.target.closest('#sosFab')) closeFab(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeFab(); });
 
+    // ---------- Lightbox galeri: tombol, keyboard, geser ----------
     var lightbox = document.getElementById('lightbox');
     var lbImg = lightbox.querySelector('img');
     var lbTxt = lightbox.querySelector('p');
+    var lbBar = lightbox.querySelector('.lb-bar');
+    var lbCount = lightbox.querySelector('.lb-count');
+    var lbItems = [].slice.call(document.querySelectorAll('[data-lightbox]'));
+    var lbIndex = 0;
 
-    document.querySelectorAll('[data-lightbox]').forEach(function (btn) {
+    function lbShow(i) {
+        if (!lbItems.length) return;
+        lbIndex = (i + lbItems.length) % lbItems.length;
+        var b = lbItems[lbIndex];
+        var src = b.getAttribute('data-src');
+        var title = b.getAttribute('data-title');
+        if (lbImg.getAttribute('src') !== src) {
+            lbImg.classList.add('is-loading');
+            lbImg.onload = function () { lbImg.classList.remove('is-loading'); };
+            lbImg.onerror = function () { lbImg.classList.remove('is-loading'); };
+        }
+        lbImg.src = src;
+        lbImg.alt = title;
+        lbTxt.textContent = title;
+        lbCount.textContent = (lbIndex + 1) + ' / ' + lbItems.length;
+        [1, -1].forEach(function (d) {
+            var n = lbItems[(lbIndex + d + lbItems.length) % lbItems.length];
+            if (n) { (new Image()).src = n.getAttribute('data-src'); }
+        });
+    }
+
+    lbItems.forEach(function (btn, i) {
         btn.addEventListener('click', function () {
-            lbImg.src = btn.getAttribute('data-src');
-            lbImg.alt = btn.getAttribute('data-title');
-            lbTxt.textContent = btn.getAttribute('data-title');
+            lbBar.hidden = lbItems.length < 2;
+            lbShow(i);
             lightbox.showModal();
         });
     });
 
+    lightbox.querySelector('.lb-prev').addEventListener('click', function () { lbShow(lbIndex - 1); });
+    lightbox.querySelector('.lb-next').addEventListener('click', function () { lbShow(lbIndex + 1); });
     lightbox.querySelector('.dlg-close').addEventListener('click', function () { lightbox.close(); });
     lightbox.addEventListener('click', function (e) { if (e.target === lightbox) lightbox.close(); });
+
+    document.addEventListener('keydown', function (e) {
+        if (!lightbox.open) return;
+        if (e.key === 'ArrowLeft') lbShow(lbIndex - 1);
+        if (e.key === 'ArrowRight') lbShow(lbIndex + 1);
+    });
+
+    var touchX = 0, touchY = 0;
+    lightbox.addEventListener('touchstart', function (e) {
+        touchX = e.changedTouches[0].clientX;
+        touchY = e.changedTouches[0].clientY;
+    }, { passive: true });
+    lightbox.addEventListener('touchend', function (e) {
+        var dx = e.changedTouches[0].clientX - touchX;
+        var dy = e.changedTouches[0].clientY - touchY;
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) lbShow(lbIndex + (dx < 0 ? 1 : -1));
+    }, { passive: true });
 
     var vDialog = document.getElementById('videoDialog');
     var vFrame = vDialog.querySelector('iframe');
@@ -1271,6 +1375,7 @@
     document.querySelectorAll('.vid:not([disabled])').forEach(function (v) {
         v.addEventListener('click', function () {
             var yt = v.getAttribute('data-yt');
+            vDialog.setAttribute('aria-label', v.getAttribute('data-title') || 'Video');
             vFrame.src = 'https://www.youtube-nocookie.com/embed/' + yt + '?autoplay=1';
             vDialog.showModal();
         });
@@ -1280,12 +1385,94 @@
         vFrame.src = '';
         vDialog.close();
     });
+    // Tombol Esc juga harus menghentikan video
+    vDialog.addEventListener('close', function () { vFrame.src = ''; });
     vDialog.addEventListener('click', function (e) {
         if (e.target === vDialog) {
             vFrame.src = '';
             vDialog.close();
         }
     });
+
+    // ---------- Progres baca + header ----------
+    var progress = document.getElementById('progress');
+    var ticking = false;
+    function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function () {
+            var h = document.documentElement.scrollHeight - window.innerHeight;
+            var p = h > 0 ? Math.min(1, window.scrollY / h) : 0;
+            progress.style.transform = 'scaleX(' + p + ')';
+            header.classList.toggle('is-scrolled', window.scrollY > 8);
+            ticking = false;
+        });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    onScroll();
+
+    // ---------- Navigasi bagian (scroll-spy) ----------
+    var railLinks = [].slice.call(document.querySelectorAll('.rail a'));
+    var spyMap = {};
+    railLinks.forEach(function (a) { spyMap[a.getAttribute('href').slice(1)] = a; });
+    if ('IntersectionObserver' in window) {
+        var spy = new IntersectionObserver(function (entries) {
+            entries.forEach(function (en) {
+                if (!en.isIntersecting) return;
+                railLinks.forEach(function (l) { l.classList.remove('is-active'); l.removeAttribute('aria-current'); });
+                var a = spyMap[en.target.id];
+                if (a) { a.classList.add('is-active'); a.setAttribute('aria-current', 'true'); }
+            });
+        }, { rootMargin: '-45% 0px -50% 0px' });
+        Object.keys(spyMap).forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) spy.observe(el);
+        });
+    }
+
+    // ---------- Saring media informasi per kategori ----------
+    var chipBox = document.getElementById('mediaChips');
+    var mediaStatus = document.getElementById('mediaStatus');
+    var mediaCards = [].slice.call(document.querySelectorAll('.media-card[data-kat]'));
+    if (chipBox && mediaCards.length) {
+        var counts = {};
+        mediaCards.forEach(function (c) {
+            var k = c.getAttribute('data-kat');
+            counts[k] = (counts[k] || 0) + 1;
+        });
+        var cats = Object.keys(counts);
+        if (cats.length > 1) {
+            var chipEls = [];
+            var apply = function (kat) {
+                var shown = 0;
+                mediaCards.forEach(function (c) {
+                    var ok = kat === null || c.getAttribute('data-kat') === kat;
+                    c.hidden = !ok;
+                    if (ok) shown++;
+                });
+                chipEls.forEach(function (el) {
+                    el.btn.setAttribute('aria-pressed', el.kat === kat ? 'true' : 'false');
+                });
+                mediaStatus.textContent = 'Menampilkan ' + shown + ' unggahan' + (kat ? ' kategori ' + kat : '');
+            };
+            [null].concat(cats).forEach(function (kat) {
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'chip';
+                btn.appendChild(document.createTextNode(kat === null ? 'Semua' : kat));
+                var small = document.createElement('small');
+                small.textContent = kat === null ? mediaCards.length : counts[kat];
+                btn.appendChild(small);
+                btn.addEventListener('click', function () { apply(kat); });
+                chipBox.appendChild(btn);
+                chipEls.push({ kat: kat, btn: btn });
+            });
+            chipBox.hidden = false;
+            apply(null);
+            mediaStatus.textContent = '';
+        }
+    }
 })();
 </script>
 </body>
