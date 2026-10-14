@@ -138,6 +138,12 @@
         .btn-custom-light { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 24px; background: var(--white); color: var(--ink); border: 1px solid var(--line-dark); border-radius: 8px; font-size: .92rem; font-weight: 600; transition: all .2s ease; }
         .btn-custom-light:hover { background: #f8fafc; border-color: var(--steel-soft); color: var(--ink); }
 
+        /* Tombol Cetak PDF */
+        .header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .btn-print { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 24px; background: var(--signal); color: #ffffff; border: 1px solid var(--signal); border-radius: 8px; font-size: .92rem; font-weight: 600; transition: background .2s, border-color .2s, transform .1s, box-shadow .2s; }
+        .btn-print:hover { background: var(--signal-dark); border-color: var(--signal-dark); color: #ffffff; box-shadow: 0 6px 14px rgba(220, 53, 69, .25); }
+        .btn-print:active { transform: scale(.97); }
+
         .table { margin-bottom: 0; }
         .table th { background-color: #f8fafc; color: var(--ink-3); font-weight: 700; font-size: 13px; padding: 16px; border-bottom: 1px solid var(--line); font-family: var(--font-display); letter-spacing: 0.02em; }
         .table td { padding: 16px; font-size: 14px; color: var(--ink); vertical-align: middle; border-bottom: 1px solid var(--line); }
@@ -169,6 +175,61 @@
     .detail-title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
     .foto-lokasi { max-width: 100%; max-height: 320px; border-radius: var(--r-sm); border: 1px solid var(--line); object-fit: cover; }
         /* PAGE-STYLES */
+
+        /* ==========================================================
+           KOP & FOOTER CETAK (tersembunyi di layar, tampil saat dicetak)
+           ========================================================== */
+        .print-only { display: none; }
+
+        .print-kop { align-items: center; gap: 16px; padding-bottom: 12px; margin-bottom: 18px; border-bottom: 3px double var(--ink); }
+        .print-kop img { height: 64px; width: auto; flex: none; }
+        .print-kop-text { flex: 1; text-align: center; line-height: 1.35; }
+        .print-kop-text .kop-1 { font-size: 11pt; font-weight: 600; text-transform: uppercase; }
+        .print-kop-text .kop-2 { font-size: 14pt; font-weight: 800; text-transform: uppercase; letter-spacing: .02em; }
+        .print-kop-text .kop-3 { font-size: 9pt; color: #444; }
+        .print-title { text-align: center; margin-bottom: 18px; }
+        .print-title h2 { font-family: var(--font-display); font-size: 14pt; font-weight: 800; text-transform: uppercase; margin-bottom: 2px; }
+        .print-title p { font-size: 10pt; color: #444; margin: 0; }
+        .print-footer { margin-top: 24px; padding-top: 10px; border-top: 1px solid #999; font-size: 8.5pt; color: #555; justify-content: space-between; }
+
+        /* ==========================================================
+           PENGATURAN CETAK / SIMPAN PDF
+           ========================================================== */
+        @media print {
+            /* margin 0 = header/footer bawaan browser (tanggal & judul) tidak muncul */
+            @page { size: A4; margin: 0; }
+
+            html, body { background: #ffffff !important; }
+            body { padding: 14mm !important; font-size: 10.5pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+            /* sembunyikan elemen antarmuka */
+            .topbar, .sidebar, .sidebar-backdrop, .no-print,
+            #globalSuccessAlert, #globalErrorAlert { display: none !important; }
+
+            .shell { display: block; min-height: 0; }
+            .content { padding: 0 !important; }
+
+            /* tampilkan kop & footer cetak */
+            .print-only { display: block; }
+            .print-kop.print-only, .print-footer.print-only { display: flex; }
+
+            /* judul halaman bawaan diganti kop cetak */
+            .page-header { display: none !important; }
+
+            /* dua kolom tetap berdampingan di kertas A4 */
+            .row > .col-lg-6 { flex: 0 0 auto; width: 50%; }
+            .row > .col-md-6 { flex: 0 0 auto; width: 50%; }
+            .row { --bs-gutter-x: 14px; --bs-gutter-y: 14px; }
+
+            .card-custom { box-shadow: none !important; border: 1px solid #bbb; break-inside: avoid; page-break-inside: avoid; }
+            .card-custom.p-4 { padding: 14px !important; }
+            .detail-title { font-size: 11pt; margin-bottom: 12px; }
+            .detail-label { font-size: 8pt; }
+            .detail-value { font-size: 10pt; margin-bottom: 10px; }
+            .foto-lokasi { max-height: 200px; }
+
+            a[href]:after { content: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -283,10 +344,10 @@
 
                     @if($aksesMenuRekap)
                     <a href="/internal/damtan/rekap-layanan" class="{{ Request::is('internal/damtan/rekap-layanan*') ? 'active' : '' }}">
-                        <i class="fas fa-truck-medical"></i><span class="lbl">Input Rekap Layanan</span>
+                        <i class="fas fa-truck-medical"></i><span class="lbl">Kelola Rekap Layanan</span>
                     </a>
                     <a href="/internal/damtan/rekap-objek" class="{{ Request::is('internal/damtan/rekap-objek*') ? 'active' : '' }}">
-                        <i class="fas fa-house-chimney-crack"></i><span class="lbl">Input Rekap Objek Kebakaran</span>
+                        <i class="fas fa-house-chimney-crack"></i><span class="lbl">Kelola Rekap Objek Kebakaran</span>
                     </a>
                     @endif
 
@@ -430,14 +491,34 @@
         default     => '',
     };
     $suratIsPdf = \Illuminate\Support\Str::endsWith(strtolower($row->surat_permohonan), '.pdf');
+    $namaFilePdf = 'Permohonan-Penggunaan-Sarana-' . \Illuminate\Support\Str::slug($row->nama);
 @endphp
+
+<!-- ===== KOP CETAK (hanya tampil saat dicetak / disimpan PDF) ===== -->
+<div class="print-kop print-only">
+    <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
+    <div class="print-kop-text">
+        <div class="kop-1">Pemerintah Kota Jambi</div>
+        <div class="kop-2">Dinas Pemadam Kebakaran dan Penyelamatan</div>
+        <div class="kop-3">SIMERAH KOJA &middot; Sistem Informasi Penanggulangan Kebakaran dan Penyelamatan Daerah Kota Jambi</div>
+    </div>
+    <img src="/images/logo.png" alt="Logo Damkar">
+</div>
+
+<div class="print-title print-only">
+    <h2>Detail Permohonan Penggunaan Sarana</h2>
+    <p>Atas nama {{ $row->nama }} &middot; Status: <strong>{{ $row->status }}</strong></p>
+</div>
 
 <div class="page-header">
     <div class="page-header-text">
         <h1>Detail Penggunaan Sarana</h1>
         <p>Permohonan atas nama <strong>{{ $row->nama }}</strong> &middot; <span class="badge-status {{ $badge }}">{{ $row->status }}</span></p>
     </div>
-    <a href="{{ route('internal.penggunaan-sarana.index') }}" class="btn-custom-light"><i class="fas fa-arrow-left"></i> Kembali</a>
+    <div class="header-actions no-print">
+        <a href="{{ route('internal.penggunaan-sarana.index') }}" class="btn-custom-light"><i class="fas fa-arrow-left"></i> Kembali</a>
+        <button type="button" class="btn-print" onclick="cetakPdf()"><i class="fas fa-file-pdf"></i> Cetak PDF</button>
+    </div>
 </div>
 
 <div class="row g-4">
@@ -514,9 +595,10 @@
                 <div class="col-md-6">
                     <div class="detail-label">Surat Permohonan</div>
                     @if($suratIsPdf)
-                        <a href="{{ asset('storage/' . $row->surat_permohonan) }}" target="_blank" class="btn-custom-light">
+                        <a href="{{ asset('storage/' . $row->surat_permohonan) }}" target="_blank" class="btn-custom-light no-print">
                             <i class="fas fa-file-pdf"></i> Buka Surat (PDF)
                         </a>
+                        <div class="detail-value print-only">Surat permohonan terlampir dalam format PDF pada sistem.</div>
                     @else
                         <a href="{{ asset('storage/' . $row->surat_permohonan) }}" target="_blank">
                             <img src="{{ asset('storage/' . $row->surat_permohonan) }}" alt="Surat permohonan" class="foto-lokasi">
@@ -528,8 +610,14 @@
     </div>
 </div>
 
+<!-- ===== FOOTER CETAK ===== -->
+<div class="print-footer print-only">
+    <span>Dicetak dari SIMERAH KOJA oleh {{ Auth::user()->nama_lengkap ?? 'Admin Damkar' }}</span>
+    <span>{{ \Carbon\Carbon::now()->translatedFormat('d F Y, H:i') }} WIB</span>
+</div>
+
 @hasanyrole('Damtan|Super User')
-<div class="mt-4">
+<div class="mt-4 no-print">
     <a href="{{ route('internal.penggunaan-sarana.edit', $row->id) }}" class="btn-custom-light"><i class="fas fa-edit"></i> Edit Data</a>
 </div>
 @endhasanyrole
@@ -566,6 +654,14 @@
             });
         });
     })();
+
+    /* Cetak / simpan PDF: nama file mengikuti nama pemohon */
+    var judulAsli = document.title;
+    function cetakPdf() {
+        document.title = @json($namaFilePdf);
+        window.print();
+    }
+    window.addEventListener('afterprint', function () { document.title = judulAsli; });
 </script>
 </body>
 </html>

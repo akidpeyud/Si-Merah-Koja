@@ -410,6 +410,8 @@
         .input:hover { border-color: #b8c3d0; }
         .input:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(255,182,39,.5); }
         .input:user-invalid, .input.is-invalid { border-color: var(--signal); }
+        .input.is-low, .input.is-low:hover, .input.is-low:focus { border-color: var(--signal); box-shadow: 0 0 0 3px rgba(229,57,45,.18); }
+        .hint.is-low { color: var(--signal-d); font-weight: 600; }
 
         .unit { position: relative; }
         .unit .input { padding-right: 54px; }
@@ -497,6 +499,27 @@
         .sos-sheet a:hover { background: rgba(255,255,255,.1); }
         .sos-sheet a i { width: 22px; text-align: center; font-size: 1.15rem; }
         .sos-sheet .wa i { color: #25d366; } .sos-sheet .tel i { color: #38bdf8; } .sos-sheet .n112 i { color: #f87171; }
+
+        /* ---------- Cek status permohonan ---------- */
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+        .cs-desc { font-size: .9rem; color: var(--steel); line-height: 1.5; margin-bottom: 14px; }
+        .cs-form { display: flex; gap: 10px; }
+        .cs-form .input { flex: 1; min-width: 0; }
+        .cs-btn { flex: none; height: 48px; padding: 0 20px; font-size: .92rem; }
+        .cs-btn[disabled] { opacity: .6; cursor: progress; }
+        .cs-list { display: grid; gap: 12px; margin-top: 16px; }
+        .cs-list:empty { display: none; }
+        .cs-item { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: #fff; }
+        .cs-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+        .cs-kegiatan { font-weight: 700; font-size: .95rem; line-height: 1.35; overflow-wrap: anywhere; }
+        .cs-meta { margin-top: 6px; font-size: .82rem; color: var(--steel); line-height: 1.55; overflow-wrap: anywhere; }
+        .cs-note { margin-top: 10px; padding: 8px 10px; border-radius: 10px; font-size: .84rem; line-height: 1.45; }
+        .cs-badge { flex: none; padding: 4px 10px; border-radius: 999px; font-size: .78rem; font-weight: 700; border: 1px solid; white-space: nowrap; }
+        .cs-menunggu  { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+        .cs-proses    { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+        .cs-disetujui { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+        .cs-ditolak   { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+        .cs-empty { padding: 14px 16px; border: 1px dashed var(--line); border-radius: 14px; font-size: .9rem; color: var(--steel); text-align: center; }
 
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
@@ -749,6 +772,24 @@
                     </ol>
                 </section>
 
+                <!-- Cek status permohonan -->
+                <section class="side-card" id="cek-status" aria-label="Cek status permohonan">
+                    <div class="card-head">
+                        <span class="c-ico"><i class="fas fa-magnifying-glass"></i></span>
+                        <h2>Cek Status Permohonan</h2>
+                    </div>
+                    <p class="cs-desc">Masukkan NIK atau No HP/WA yang Anda gunakan saat mengajukan permohonan.</p>
+
+                    <form class="cs-form" id="csForm" novalidate>
+                        <label class="sr-only" for="csKontak">NIK atau No HP/WA</label>
+                        <input class="input" type="text" id="csKontak" name="kontak" inputmode="numeric" maxlength="20" autocomplete="off" placeholder="NIK atau No HP/WA" required>
+                        <button type="submit" class="btn btn-dark cs-btn" id="csBtn"><i class="fas fa-search"></i> Cek</button>
+                    </form>
+
+                    <p class="field-err" id="csErr" role="alert"></p>
+                    <ul class="cs-list" id="csList" aria-live="polite"></ul>
+                </section>
+
             </aside>
 
             <!-- Formulir -->
@@ -890,19 +931,25 @@
                             <div class="field">
                                 <label class="label" for="jumlah_apar">APAR <span class="req" aria-hidden="true">*</span></label>
                                 <div class="unit">
-                                    <input class="input{{ $inv('jumlah_apar') }}" type="number" id="jumlah_apar" name="jumlah_apar" value="{{ old('jumlah_apar', 8) }}" min="8" required aria-describedby="hint-apar">
+                                    <input class="input{{ $inv('jumlah_apar') }}" type="number" id="jumlah_apar" name="jumlah_apar"
+                                           value="{{ old('jumlah_apar', 0) }}" min="0" step="1" inputmode="numeric" required
+                                           data-min="8" data-pesan="Jumlah APAR minimal 8 buah"
+                                           aria-describedby="hint-apar">
                                     <span aria-hidden="true">Buah</span>
                                 </div>
-                                <p class="hint" id="hint-apar"><i class="fas fa-arrow-right"></i> Minimal 8 buah</p>
+                                <p class="hint" id="hint-apar"><i class="fas fa-circle-info"></i> Jumlah APAR minimal <strong>8 buah</strong></p>
                                 {!! $fe('jumlah_apar') !!}
                             </div>
                             <div class="field">
                                 <label class="label" for="jumlah_staff">Staff Terlatih (Bisa menggunakan APAR) <span class="req" aria-hidden="true">*</span></label>
                                 <div class="unit">
-                                    <input class="input{{ $inv('jumlah_staff') }}" type="number" id="jumlah_staff" name="jumlah_staff" value="{{ old('jumlah_staff', 4) }}" min="4" required aria-describedby="hint-staff">
+                                    <input class="input{{ $inv('jumlah_staff') }}" type="number" id="jumlah_staff" name="jumlah_staff"
+                                           value="{{ old('jumlah_staff', 0) }}" min="0" step="1" inputmode="numeric" required
+                                           data-min="4" data-pesan="Staff terlatih minimal 4 orang"
+                                           aria-describedby="hint-staff">
                                     <span aria-hidden="true">Orang</span>
                                 </div>
-                                <p class="hint" id="hint-staff"><i class="fas fa-arrow-right"></i> Minimal 4 orang</p>
+                                <p class="hint" id="hint-staff"><i class="fas fa-circle-info"></i> Staff terlatih minimal <strong>4 orang</strong></p>
                                 {!! $fe('jumlah_staff') !!}
                             </div>
                         </div>
@@ -1130,6 +1177,27 @@
         setTimeout(hideToast, 5000);
     }
 
+    // Peringatan jumlah minimal (APAR min 8, Staff min 4)
+    document.querySelectorAll('input[data-min]').forEach(function (inp) {
+        var min = parseInt(inp.getAttribute('data-min'), 10);
+        var hint = document.getElementById(inp.getAttribute('aria-describedby'));
+
+        function cek(tampil) {
+            var nilai = parseInt(inp.value, 10);
+            var rendah = isNaN(nilai) || nilai < min;
+            inp.setCustomValidity(rendah ? inp.getAttribute('data-pesan') : '');
+            if (tampil) {
+                inp.classList.toggle('is-low', rendah);
+                if (hint) hint.classList.toggle('is-low', rendah);
+            }
+        }
+
+        inp.addEventListener('input', function () { cek(true); });
+        inp.addEventListener('blur', function () { cek(true); });
+        inp.addEventListener('invalid', function () { cek(true); });
+        cek(inp.classList.contains('is-invalid'));
+    });
+
     function fmtSize(b) {
         return b < 1048576 ? Math.max(1, Math.round(b / 1024)) + ' KB' : (b / 1048576).toFixed(1) + ' MB';
     }
@@ -1169,6 +1237,119 @@
                 list.appendChild(li);
             });
             dz.classList.toggle('has-files', files.length > 0);
+        });
+    });
+})();
+</script>
+
+<!-- ==================== CEK STATUS PERMOHONAN ==================== -->
+<script>
+(function () {
+    'use strict';
+
+    var form = document.getElementById('csForm');
+    if (!form) return;
+
+    var input = document.getElementById('csKontak');
+    var btn   = document.getElementById('csBtn');
+    var err   = document.getElementById('csErr');
+    var list  = document.getElementById('csList');
+
+    var STATUS = {
+        'Menunggu':  { cls: 'cs-menunggu',  txt: 'Permohonan diterima dan menunggu verifikasi petugas.' },
+        'Proses':    { cls: 'cs-proses',    txt: 'Permohonan sedang diproses oleh petugas.' },
+        'Disetujui': { cls: 'cs-disetujui', txt: 'Permohonan disetujui. Silakan hubungi petugas untuk tindak lanjut.' },
+        'Ditolak':   { cls: 'cs-ditolak',   txt: 'Permohonan ditolak. Hubungi petugas untuk informasi lebih lanjut.' }
+    };
+
+    input.addEventListener('input', function () {
+        input.value = input.value.replace(/[^0-9]/g, '');
+    });
+
+    function el(tag, cls, text) {
+        var e = document.createElement(tag);
+        if (cls) e.className = cls;
+        if (text !== undefined) e.textContent = text;
+        return e;
+    }
+
+    function render(items) {
+        list.textContent = '';
+
+        if (!items.length) {
+            list.appendChild(el('li', 'cs-empty', 'Tidak ditemukan permohonan dengan NIK / No HP tersebut.'));
+            return;
+        }
+
+        items.forEach(function (it) {
+            var st = STATUS[it.status] || { cls: 'cs-menunggu', txt: '' };
+
+            var li  = el('li', 'cs-item');
+            var top = el('div', 'cs-top');
+            top.appendChild(el('div', 'cs-kegiatan', it.kegiatan));
+            top.appendChild(el('span', 'cs-badge ' + st.cls, it.status));
+            li.appendChild(top);
+
+            var meta = el('div', 'cs-meta');
+            meta.appendChild(document.createTextNode('Pemohon: ' + it.nama));
+            meta.appendChild(document.createElement('br'));
+            meta.appendChild(document.createTextNode('Lokasi: ' + it.lokasi));
+            meta.appendChild(document.createElement('br'));
+            meta.appendChild(document.createTextNode('Tgl acara: ' + it.tanggal));
+            if (it.diajukan) {
+                meta.appendChild(document.createElement('br'));
+                meta.appendChild(document.createTextNode('Diajukan: ' + it.diajukan));
+            }
+            li.appendChild(meta);
+
+            if (st.txt) {
+                li.appendChild(el('div', 'cs-note ' + st.cls, st.txt));
+            }
+            list.appendChild(li);
+        });
+    }
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        err.textContent = '';
+        list.textContent = '';
+
+        var val = input.value.trim();
+        if (val.length < 9) {
+            err.textContent = 'Masukkan NIK (16 digit) atau nomor HP/WA yang valid.';
+            input.focus();
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari';
+
+        fetch('{{ route('izin-keramaian.cek-status') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ kontak: val })
+        })
+        .then(function (res) {
+            return res.json().catch(function () { return {}; }).then(function (body) {
+                return { status: res.status, ok: res.ok, body: body };
+            });
+        })
+        .then(function (r) {
+            if (r.ok) { render(r.body.data || []); return; }
+            if (r.status === 429) { err.textContent = 'Terlalu banyak percobaan. Coba lagi sebentar lagi.'; return; }
+            if (r.status === 419) { err.textContent = 'Sesi berakhir. Muat ulang halaman lalu coba lagi.'; return; }
+            err.textContent = (r.body && r.body.message) || 'Terjadi kesalahan. Coba lagi.';
+        })
+        .catch(function () {
+            err.textContent = 'Gagal terhubung ke server. Periksa koneksi Anda.';
+        })
+        .finally(function () {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-search"></i> Cek';
         });
     });
 })();
