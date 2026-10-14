@@ -567,7 +567,7 @@
             </a>
         </div>
 
-        <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="navPanel">
+        <button class="nav-toggle" type="button" aria-label="Bukaa menu" aria-expanded="false" aria-controls="navPanel">
             <i class="fas fa-bars"></i>
         </button>
 
