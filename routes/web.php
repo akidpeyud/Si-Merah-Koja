@@ -88,7 +88,6 @@ Route::get('/ikm', [IkmController::class, 'index'])->name('ikm.index');
 Route::post('/ikm', [IkmController::class, 'store'])->middleware('throttle:5,10')->name('ikm.store');
 
 // Halaman Publik Edu Damkar & Ujung-ujung Damkar (folder: resources/views/galery/berita)
-// Catatan: nama view memakai STRIP (edu-damkar), sesuai nama file blade-nya.
 Route::get('/edu-damkar', function () {
     $daftar_edu_damkar = EduDamkar::latest()->get();
     return view('galery.berita.edu-damkar', compact('daftar_edu_damkar'));
@@ -105,6 +104,7 @@ Route::get('/infografis', function () {
     return view('galery.berita.infografis', compact('daftar_infografis'));
 })->name('publik.infografis');
 
+
 // ==========================================
 // 2. RUTE AKUN PEMOHON (MASYARAKAT / PERUSAHAAN)
 // ==========================================
@@ -120,46 +120,48 @@ Route::post('/pemohon/logout', [PemohonAuthController::class, 'logout'])->name('
 // ==========================================
 Route::middleware([CekLoginPemohon::class])->group(function () {
 
-    // Halaman Menu Layanan Perizinan Utama
+    // --- 1. RPKBGL ---
     Route::get('/layanan-fasilitas/layanan_perizinan', function () {
         return view('layanan-fasilitas.layanan_perizinan');
     })->name('layanan-fasilitas.perizinan');
 
-    // RPKBGL (sisi pemohon: hanya form buat & simpan)
-    // Rute admin RPKBGL (index, show, update-status, destroy) ada di grup auth internal (bagian 6.E)
     Route::get('/internal/pencegahan/kelola-rpkbgl/create', [PermohonanRpkbglController::class, 'create']);
     Route::post('/internal/pencegahan/kelola-rpkbgl', [PermohonanRpkbglController::class, 'store'])->name('permohonan.store');
+    Route::post('/layanan-fasilitas/layanan_perizinan/cek-status', [PermohonanRpkbglController::class, 'cekStatus'])
+        ->middleware('throttle:10,1')
+        ->name('permohonan.cek-status');
 
-    // SKK
+    // --- 2. SKK (Baru & Perpanjangan) ---
     Route::get('/layanan-fasilitas/skk', function () { return view('layanan-fasilitas.skk'); });
     Route::post('/permohonan-skk', [PermohonanSkkController::class, 'store'])->name('permohonan.skk.store');
+    Route::post('/layanan-fasilitas/skk/cek-status', [PermohonanSkkController::class, 'cekStatus'])
+        ->middleware('throttle:10,1')
+        ->name('permohonan.skk.cek-status');
 
-    // Izin Keramaian
+    // --- 3. Izin Keramaian ---
     Route::get('/layanan-fasilitas/izin-keramaian', [IzinKeramaianController::class, 'index'])->name('izin-keramaian.index');
     Route::post('/layanan-fasilitas/izin-keramaian', [IzinKeramaianController::class, 'store'])->name('izin-keramaian.store');
-
-    // Cek status permohonan izin keramaian (NIK / No HP), dipanggil lewat fetch/AJAX
     Route::post('/layanan-fasilitas/izin-keramaian/cek-status', [IzinKeramaianController::class, 'cekStatus'])
         ->middleware('throttle:10,1')
         ->name('izin-keramaian.cek-status');
 
-    // Permohonan Penggunaan Sarana Pemadam
-    // View: resources/views/layanan-fasilitas/penggunaan-sarana.blade.php
+    // --- 4. Permohonan Penggunaan Sarana Pemadam ---
     Route::get('/layanan-fasilitas/penggunaan-sarana', function () {
         return view('layanan-fasilitas.penggunaan-sarana');
     })->name('penggunaan-sarana');
     Route::post('/layanan-fasilitas/penggunaan-sarana', [PenggunaanSaranaController::class, 'store'])->name('penggunaan-sarana.store');
-
-    // Cek status permohonan penggunaan sarana (NIK / No HP), dipanggil lewat fetch/AJAX
     Route::post('/layanan-fasilitas/penggunaan-sarana/cek-status', [PenggunaanSaranaController::class, 'cekStatus'])
         ->middleware('throttle:10,1')
         ->name('penggunaan-sarana.cek-status');
 
-    // Edukasi
+    // --- 5. Edukasi & Sosialisasi ---
     Route::get('/layanan-fasilitas/edukasi_sosialisasi', function () { return view('layanan-fasilitas.edukasi_sosialisasi'); });
     Route::post('/layanan-fasilitas/edukasi_sosialisasi/store', [PermohonanEdukasiController::class, 'store'])->name('permohonan.edukasi.store');
+    Route::post('/layanan-fasilitas/edukasi_sosialisasi/cek-status', [PermohonanEdukasiController::class, 'cekStatus'])
+        ->middleware('throttle:10,1')
+        ->name('permohonan.edukasi.cek-status');
 
-    // Redkar (Publik)
+    // --- 6. Redkar (Publik) ---
     Route::get('/redkar', [RedkarController::class, 'index'])->name('redkar.register');
     Route::post('/redkar', [RedkarController::class, 'store']);
 });
@@ -204,8 +206,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/kelola-pemohon', function () { return view('pemohon.kelola_pemohon'); })->name('internal.pemohon');
 
     // --- B. MANAJEMEN INFORMASI ---
-
-    // Halaman daftar -> semua role yang login bisa lihat
     Route::get('/internal/operator/kelola-berita', [BeritaController::class, 'indexInternal']);
     Route::get('/internal/operator/infografis', [OperatorMedsosController::class, 'indexInfografis']);
     Route::get('/internal/operator/berita-medsos', [OperatorMedsosController::class, 'indexMedsos']);
@@ -213,7 +213,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/operator/edu-damkar', [OperatorMedsosController::class, 'indexEduDamkar'])->name('edu-damkar.index');
     Route::get('/internal/operator/pengumuman', [PengumumanController::class, 'indexInternal'])->name('operator.pengumuman.index');
 
-    // Tambah / edit / hapus -> diizinkan untuk Operator ATAU Super User
     Route::middleware([RoleMiddleware::class . ':Operator|Super User'])->group(function () {
 
         // Berita
@@ -266,16 +265,9 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/internal/surat-korban/update/{id}', [DamtanController::class, 'updateSurat']);
     Route::delete('/internal/surat-korban/delete/{id}', [DamtanController::class, 'destroySurat']);
 
-    // ==========================================================
     // KELOLA SURAT KERAMAIAN (ADMIN BAGIAN PEMADAMAN)
-    // - LIHAT (index & detail) : semua role yang login
-    // - UBAH STATUS / EDIT / UPDATE / HAPUS : HANYA Damtan & Super User
-    // ==========================================================
-
-    // Semua role: hanya lihat
     Route::get('/internal/damtan/kelola-izin-keramaian', [IzinKeramaianController::class, 'indexInternal'])->name('internal.izin-keramaian.index');
 
-    // Hanya Damtan & Super User: aksi tulis (harus di atas rute {id} agar tidak bentrok)
     Route::middleware([RoleMiddleware::class . ':Damtan|Super User'])->group(function () {
         Route::get('/internal/damtan/kelola-izin-keramaian/edit/{id}', [IzinKeramaianController::class, 'editInternal'])->name('internal.izin-keramaian.edit');
         Route::put('/internal/damtan/kelola-izin-keramaian/update/{id}', [IzinKeramaianController::class, 'updateInternal'])->name('internal.izin-keramaian.update');
@@ -283,22 +275,11 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/internal/damtan/kelola-izin-keramaian/hapus/{id}', [IzinKeramaianController::class, 'destroyInternal'])->name('internal.izin-keramaian.destroy');
     });
 
-    // Semua role: detail (lihat & cetak)
     Route::get('/internal/damtan/kelola-izin-keramaian/{id}', [IzinKeramaianController::class, 'showInternal'])->name('internal.izin-keramaian.show');
 
-    // ==========================================================
     // KELOLA PENGGUNAAN SARANA (ADMIN BAGIAN PEMADAMAN)
-    // - LIHAT (index & detail) : semua role yang login
-    // - UBAH STATUS / EDIT / UPDATE / HAPUS : HANYA Damtan & Super User
-    // Method yang harus ada di PenggunaanSaranaController:
-    //   indexInternal, showInternal, editInternal, updateInternal,
-    //   updateStatusInternal, destroyInternal
-    // ==========================================================
-
-    // Semua role: hanya lihat
     Route::get('/internal/damtan/kelola-penggunaan-sarana', [PenggunaanSaranaController::class, 'indexInternal'])->name('internal.penggunaan-sarana.index');
 
-    // Hanya Damtan & Super User: aksi tulis (harus di atas rute {id} agar tidak bentrok)
     Route::middleware([RoleMiddleware::class . ':Damtan|Super User'])->group(function () {
         Route::get('/internal/damtan/kelola-penggunaan-sarana/edit/{id}', [PenggunaanSaranaController::class, 'editInternal'])->name('internal.penggunaan-sarana.edit');
         Route::put('/internal/damtan/kelola-penggunaan-sarana/update/{id}', [PenggunaanSaranaController::class, 'updateInternal'])->name('internal.penggunaan-sarana.update');
@@ -306,12 +287,9 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/internal/damtan/kelola-penggunaan-sarana/hapus/{id}', [PenggunaanSaranaController::class, 'destroyInternal'])->name('internal.penggunaan-sarana.destroy');
     });
 
-    // Semua role: detail (lihat & cetak)
     Route::get('/internal/damtan/kelola-penggunaan-sarana/{id}', [PenggunaanSaranaController::class, 'showInternal'])->name('internal.penggunaan-sarana.show');
 
-    // ==========================================
     // REKAP LAYANAN PEMADAMAN
-    // ==========================================
     Route::get('/internal/damtan/rekap-layanan', [DamtanController::class, 'rekapLayanan'])->name('damtan.rekap_layanan');
     Route::post('/internal/damtan/rekap-layanan', [DamtanController::class, 'storeRekapLayanan']);
     Route::delete('/internal/damtan/rekap-layanan/{id}', [DamtanController::class, 'destroyRekapLayanan']);
@@ -380,7 +358,6 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/sapra/sarana-pemeriksaan/delete/{id}', [SapraController::class, 'destroySaranaPemeriksaan']);
     Route::get('/sapra/sarana-pemeriksaan/cetak', [SapraController::class, 'cetakPdfSaranaPemeriksaan']);
 
-
     // --- E. PENCEGAHAN ---
 
     // 1. KELOLA REDKAR
@@ -394,14 +371,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/internal/pencegahan/simpan-redkar-offline', [RedkarController::class, 'storeRedkarOffline']);
 
     // 2. KELOLA RPKBGL (sisi admin/pegawai)
-    // Catatan: GET /create dan POST / (store) untuk pemohon ada di grup CekLoginPemohon (bagian 3).
-    // Karena grup itu didaftarkan lebih dulu, /create tidak akan tertangkap oleh /{id} di bawah.
     Route::get('/internal/pencegahan/kelola-rpkbgl', [PermohonanRpkbglController::class, 'index']);
     Route::get('/internal/pencegahan/kelola-rpkbgl/{id}', [PermohonanRpkbglController::class, 'show'])->name('permohonan.show');
     Route::post('/internal/pencegahan/kelola-rpkbgl/update-status/{id}', [PermohonanRpkbglController::class, 'updateStatus']);
     Route::delete('/internal/pencegahan/kelola-rpkbgl/{id}', [PermohonanRpkbglController::class, 'destroy']);
 
-    // (Hanya view manual admin di luar controller, jika masih butuh)
     Route::get('/internal/pencegahan/kelola-rpkbgl-admin', function () {
         return view('internal.pencegahan.kelola_rpkbgl', [
             'permohonan' => App\Models\PermohonanRpkbgl::orderBy('created_at', 'desc')->get()
@@ -422,24 +396,17 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/internal/pencegahan/kelola-perpanjang-skk/update-status/{id}', [SkkAdminController::class, 'updateStatusPerpanjang'])->name('skk.update_status_perpanjang');
 
     // 4. Kelola Edukasi
-    // Rute utama (Halaman Tabel)
     Route::get('/internal/pencegahan/kelola-edukasi', [PermohonanEdukasiController::class, 'index']);
-
-    // Rute Tambah Offline (Harus di atas rute {id})
     Route::get('/internal/pencegahan/kelola-edukasi/tambah', [PermohonanEdukasiController::class, 'createOffline'])->name('edukasi.offline.create');
     Route::post('/internal/pencegahan/kelola-edukasi/simpan-offline', [PermohonanEdukasiController::class, 'storeOffline'])->name('edukasi.offline.store');
-
-    // Rute Edit & Update (sebelumnya di luar grup auth, sekarang dipindah ke sini)
     Route::get('/internal/pencegahan/kelola-edukasi/{id}/edit', [PermohonanEdukasiController::class, 'edit'])->name('edukasi.offline.edit');
     Route::put('/internal/pencegahan/kelola-edukasi/{id}', [PermohonanEdukasiController::class, 'update'])->name('edukasi.offline.update');
 
-    // Rute Update Status
     Route::post('/internal/pencegahan/kelola-edukasi/update-status/{id}', function (Illuminate\Http\Request $request, $id) {
         App\Models\PermohonanEdukasi::where('id', $id)->update(['status_permohonan' => $request->status_permohonan]);
         return redirect()->back()->with('success', 'Status Permohonan Edukasi berhasil diperbarui!');
     });
 
-    // Rute Detail (Harus di paling bawah grup edukasi)
     Route::get('/internal/pencegahan/kelola-edukasi/{id}', [PermohonanEdukasiController::class, 'show']);
 
     // 5. Inspeksi Kebakaran & Fire Drill
@@ -460,7 +427,6 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/internal/pencegahan/fire-drill/{id}', [PencegahanController::class, 'updateFireDrill'])->name('fire_drill.update');
     Route::delete('/internal/pencegahan/fire-drill/{id}', [PencegahanController::class, 'destroyFireDrill'])->name('fire_drill.destroy');
 
-    // Gabungan rute cetak Fire Drill
     Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/excel', [FireDrillController::class, 'excel'])->name('fire_drill.excel');
     Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/cetak', [FireDrillController::class, 'cetak'])->name('fire_drill.cetak');
     Route::get('/internal/pencegahan/fire-drill/export/pdf', [FireDrillController::class, 'cetakPdf']);
@@ -780,9 +746,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/internal/program-kerja/store', [ProgramKerjaController::class, 'store'])->name('program-kerja.store');
     Route::delete('/internal/program-kerja/hapus/{id}', [ProgramKerjaController::class, 'destroy'])->name('program-kerja.destroy');
 
-    // ==========================================
-    // ROUTE DOKUMEN INTERNAL / EXPORT YANG DILINDUNGI
-    // ==========================================
+    // --- H. EXPORT PETA SIGAP ---
     Route::get('/internal/peta-sigap/export-pdf', [PetaController::class, 'exportPdf'])->name('peta.export.pdf');
     Route::get('/internal/peta-sigap/export-excel', [PetaController::class, 'exportExcel'])->name('peta.export.excel');
 
@@ -790,7 +754,7 @@ Route::middleware(['auth'])->group(function () {
 
 
 // ==========================================
-// 7. ROUTE API PETA SIGAP
+// 7. ROUTE API & ADMIN PETA SIGAP
 // ==========================================
 
 // Route API Publik Peta SIGAP
@@ -799,30 +763,21 @@ Route::get('/api/titik', [PetaController::class, 'apiData']);
 
 // Route Admin Peta SIGAP
 Route::prefix('internal/peta-sigap')->middleware(['auth'])->group(function () {
-    // Create (Tampilkan form & Proses Simpan)
     Route::get('/input', [PetaController::class, 'input']);
     Route::post('/store', [PetaController::class, 'store']);
-
-    // Read (Tampilkan Halaman Kelola Data/Tabel)
     Route::get('/data', [PetaController::class, 'data']);
-
-    // Update (Tampilkan Form Edit & Proses Update)
     Route::get('/edit/{id}', [PetaController::class, 'edit']);
     Route::put('/update/{id}', [PetaController::class, 'update']);
-
-    // Delete (Proses Hapus)
     Route::delete('/hapus/{id}', [PetaController::class, 'destroy']);
 });
 
 
 // ==========================================
-// 8. ROUTE DOKUMEN PUBLIK
+// 8. ROUTE DOKUMEN PUBLIK, PRODUK HUKUM & PROFIL
 // ==========================================
 
-// Buka / Lihat File Dokumen (Publik)
+// Buka / Lihat & Download File Dokumen Program Kerja (Publik)
 Route::get('/dokumen/view/{id}', [ProgramKerjaController::class, 'viewFile'])->name('dokumen.view');
-
-// Download File Dokumen (Publik)
 Route::get('/dokumen/download/{id}', [ProgramKerjaController::class, 'download'])->name('dokumen.download');
 
 // Download Format Surat Izin Keramaian
@@ -836,173 +791,79 @@ Route::get('/download-format-surat', function () {
     }
 })->name('download.format.surat');
 
-Route::get('/sumber-air', [PublicController::class, 'sumberAir']);
-Route::get('/hidrant-kota', [PublicController::class, 'hidrantKota']);
-Route::get('/public-sigap', [PetaController::class, 'sigap']);
-
 // Sarpras (halaman baru: sapra_home)
 Route::get('/sarpras/sarana', [SapraHomeController::class, 'sarana'])->name('sarpras.sarana');
 Route::get('/sarpras/prasarana', [SapraHomeController::class, 'prasarana'])->name('sarpras.prasarana');
 
 // Route untuk Dokumen Publik
 Route::resource('dokumen-publik', DokumenPublikController::class);
-// Route untuk dokumen publik tampilan Renstra
+Route::get('/dokumen-publik/view/{id}', [DokumenPublikController::class, 'showFile']);
+Route::get('/dokumen-publik/download/{id}', [DokumenPublikController::class, 'download'])->name('publik.dokumen-publik.download');
+
 Route::get('/dokumen/renstra', function () {
     $dokumens = DokumenPublik::where('kategori', 'Renstra')->latest()->get();
     return view('public.dokumen-publik.renstra', compact('dokumens'));
 });
 
-// Route untuk dokumen publik tampilan Renja
 Route::get('/dokumen/renja', function () {
     $dokumens = DokumenPublik::where('kategori', 'Renja')->latest()->get();
     return view('public.dokumen-publik.renja', compact('dokumens'));
 });
 
-// Route untuk dokumen publik tampilan SPM
 Route::get('/dokumen/spm', function () {
     $dokumens = DokumenPublik::where('kategori', 'SPM')->latest()->get();
     return view('public.dokumen-publik.spm', compact('dokumens'));
 });
 
-// Route untuk dokumen publik tampilan SAKIP
 Route::get('/dokumen/sakip', function () {
     $dokumens = DokumenPublik::where('kategori', 'SAKIP')->latest()->get();
     return view('public.dokumen-publik.sakip', compact('dokumens'));
 });
 
-// Route untuk dokumen publik tampilan LPPD
 Route::get('/dokumen/lppd', function () {
     $dokumens = DokumenPublik::where('kategori', 'LPPD')->latest()->get();
     return view('public.dokumen-publik.lppd', compact('dokumens'));
 });
-Route::get('/dokumen-publik/view/{id}', [DokumenPublikController::class, 'showFile']);
-// ==========================================
-// RUTE MENU PRODUK HUKUM
-// ==========================================
-Route::get('/produk-hukum/undang-undang', function () { 
-    return view('public.produk-hukum.undang-undang'); 
-});
-Route::get('/produk-hukum/peraturan-pemerintah', function () { 
-    return view('public.produk-hukum.peraturan-pemerintah'); 
-});
-Route::get('/produk-hukum/peraturan-menteri', function () { 
-    return view('public.produk-hukum.peraturan-menteri'); 
-});
-Route::get('/produk-hukum/peraturan-daerah', function () { 
-    return view('public.produk-hukum.peraturan-daerah'); 
-});
-Route::get('/produk-hukum/peraturan-kepala-daerah', function () { 
-    return view('public.produk-hukum.peraturan-kepala-daerah'); 
-});
 
-// ==========================================
-// RUTE MENU PROFIL
-// ==========================================
-Route::get('/profil/visi-misi', function () { 
-    return view('public.profil.visi-misi'); 
-});
-Route::get('/profil/sotk', function () { 
-    return view('public.profil.sotk'); 
-});
-Route::get('/profil/tupoksi', function () { 
-    return view('public.profil.tupoksi'); 
-});
-Route::get('/profil/kepegawaian', function () { 
-    return view('public.profil.kepegawaian'); 
-});
-Route::get('/profil/program-kegiatan', function () { 
-    return view('public.profil.program-kegiatan'); 
-});
-Route::get('/profil/cascading', function () { 
-    return view('public.profil.cascading'); 
-});
-
-// Route untuk Produk Hukum Internal
-Route::prefix('internal/produk-hukum')->name('internal.produk-hukum.')->middleware(['auth'])->group(function () {
-    Route::get('/{kategori}', [ProdukHukumController::class, 'index'])->name('index');
-    Route::post('/{kategori}', [ProdukHukumController::class, 'store'])->name('store');
-    Route::put('/{kategori}/{id}', [ProdukHukumController::class, 'update'])->name('update');
-    Route::delete('/{kategori}/{id}', [ProdukHukumController::class, 'destroy'])->name('destroy');
-});
+// --- RUTE INTERNAL PRODUK HUKUM ---
 Route::prefix('internal/produk-hukum')->name('internal.produk-hukum.')->middleware(['auth'])->group(function () {
     Route::get('/{kategori}', [ProdukHukumController::class, 'index'])->name('index');
     Route::get('/{kategori}/create', [ProdukHukumController::class, 'create'])->name('create');
     Route::post('/{kategori}', [ProdukHukumController::class, 'store'])->name('store');
-    Route::get('/{kategori}/{id}/edit', [ProdukHukumController::class, 'edit'])->name('edit');
-    Route::put('/{kategori}/{id}', [ProdukHukumController::class, 'update'])->name('update');
-    Route::delete('/{kategori}/{id}', [ProdukHukumController::class, 'destroy'])->name('destroy');
-    // TAMBAHKAN 2 ROUTE INI UNTUK LIHAT & DOWNLOAD FILE
     Route::get('/{kategori}/{id}/view', [ProdukHukumController::class, 'viewFile'])->name('view-file');
     Route::get('/{kategori}/{id}/download', [ProdukHukumController::class, 'downloadFile'])->name('download-file');
-
     Route::get('/{kategori}/{id}/edit', [ProdukHukumController::class, 'edit'])->name('edit');
     Route::put('/{kategori}/{id}', [ProdukHukumController::class, 'update'])->name('update');
     Route::delete('/{kategori}/{id}', [ProdukHukumController::class, 'destroy'])->name('destroy');
 });
 
-// Rute untuk Profil
+// --- RUTE PUBLIK PRODUK HUKUM ---
+Route::get('/produk-hukum/undang-undang', function () { return view('public.produk-hukum.undang-undang'); });
+Route::get('/produk-hukum/peraturan-pemerintah', function () { return view('public.produk-hukum.peraturan-pemerintah'); });
+Route::get('/produk-hukum/peraturan-menteri', function () { return view('public.produk-hukum.peraturan-menteri'); });
+Route::get('/produk-hukum/peraturan-daerah', function () { return view('public.produk-hukum.peraturan-daerah'); });
+Route::get('/produk-hukum/peraturan-kepala-daerah', function () { return view('public.produk-hukum.peraturan-kepala-daerah'); });
+Route::get('/produk-hukum/{kategori}/{id}/view', [ProdukHukumController::class, 'viewFile'])->name('publik.produk-hukum.view');
+Route::get('/produk-hukum/{kategori}/{id}/download', [ProdukHukumController::class, 'downloadFile'])->name('publik.produk-hukum.download');
+
+// --- RUTE INTERNAL PROFIL INSTANSI ---
 Route::prefix('internal/profil-instansi')->name('internal.profil-instansi.')->middleware(['auth'])->group(function () {
     Route::get('/{kategori}', [ProfilInstansiController::class, 'index'])->name('index');
     Route::get('/{kategori}/create', [ProfilInstansiController::class, 'create'])->name('create');
     Route::post('/{kategori}', [ProfilInstansiController::class, 'store'])->name('store');
-    
-    // Route Lihat & Unduh PDF
     Route::get('/{kategori}/{id}/view', [ProfilInstansiController::class, 'viewFile'])->name('view-file');
     Route::get('/{kategori}/{id}/download', [ProfilInstansiController::class, 'downloadFile'])->name('download-file');
-
     Route::get('/{kategori}/{id}/edit', [ProfilInstansiController::class, 'edit'])->name('edit');
     Route::put('/{kategori}/{id}', [ProfilInstansiController::class, 'update'])->name('update');
     Route::delete('/{kategori}/{id}', [ProfilInstansiController::class, 'destroy'])->name('destroy');
 });
-// ==========================================
-// RUTE MENU PRODUK HUKUM
-// ==========================================
-Route::get('/produk-hukum/undang-undang', function () { 
-    return view('public.produk-hukum.undang-undang'); 
-});
-Route::get('/produk-hukum/peraturan-pemerintah', function () { 
-    return view('public.produk-hukum.peraturan-pemerintah'); 
-});
-Route::get('/produk-hukum/peraturan-menteri', function () { 
-    return view('public.produk-hukum.peraturan-menteri'); 
-});
-Route::get('/produk-hukum/peraturan-daerah', function () { 
-    return view('public.produk-hukum.peraturan-daerah'); 
-});
-Route::get('/produk-hukum/peraturan-kepala-daerah', function () { 
-    return view('public.produk-hukum.peraturan-kepala-daerah'); 
-});
 
-// TAMBAHKAN 2 RUTE PUBLIK INI AGAR BISA DIBUKA TANPA LOGIN:
-Route::get('/produk-hukum/{kategori}/{id}/view', [ProdukHukumController::class, 'viewFile'])->name('publik.produk-hukum.view');
-Route::get('/produk-hukum/{kategori}/{id}/download', [ProdukHukumController::class, 'downloadFile'])->name('publik.produk-hukum.download');
-
-// ==========================================
-// RUTE MENU PROFIL
-// ==========================================
-Route::get('/profil/visi-misi', function () { 
-    return view('public.profil.visi-misi'); 
-});
-Route::get('/profil/sotk', function () { 
-    return view('public.profil.sotk'); 
-});
-Route::get('/profil/tupoksi', function () { 
-    return view('public.profil.tupoksi'); 
-});
-Route::get('/profil/kepegawaian', function () { 
-    return view('public.profil.kepegawaian'); 
-});
-Route::get('/profil/program-kegiatan', function () { 
-    return view('public.profil.program-kegiatan'); 
-});
-Route::get('/profil/cascading', function () { 
-    return view('public.profil.cascading'); 
-});
-// TAMBAHKAN DI BAWAH RUTE MENU PROFIL (routes/web.php):
-Route::get('/profil/{kategori}/{id}/view', [ProfilInstansiController::class, 'viewFile'])->name('publik.profil.view');
-Route::get('/profil/{kategori}/{id}/download', [ProfilInstansiController::class, 'downloadFile'])->name('publik.profil.download');
-Route::get('/dokumen-publik/download/{id}', [DokumenPublikController::class, 'download'])->name('publik.dokumen-publik.download');
-
-// TAMBAHKAN 2 RUTE PUBLIK INI AGAR BISA DIBUKA TANPA LOGIN:
+// --- RUTE PUBLIK PROFIL INSTANSI ---
+Route::get('/profil/visi-misi', function () { return view('public.profil.visi-misi'); });
+Route::get('/profil/sotk', function () { return view('public.profil.sotk'); });
+Route::get('/profil/tupoksi', function () { return view('public.profil.tupoksi'); });
+Route::get('/profil/kepegawaian', function () { return view('public.profil.kepegawaian'); });
+Route::get('/profil/program-kegiatan', function () { return view('public.profil.program-kegiatan'); });
+Route::get('/profil/cascading', function () { return view('public.profil.cascading'); });
 Route::get('/profil/{kategori}/{id}/view', [ProfilInstansiController::class, 'viewFile'])->name('publik.profil.view');
 Route::get('/profil/{kategori}/{id}/download', [ProfilInstansiController::class, 'downloadFile'])->name('publik.profil.download');

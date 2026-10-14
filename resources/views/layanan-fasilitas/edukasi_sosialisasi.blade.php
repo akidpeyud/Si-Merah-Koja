@@ -93,6 +93,7 @@
         :focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; border-radius: 6px; }
 
         .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: clamp(16px, 4vw, 32px); padding-right: clamp(16px, 4vw, 32px); }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
         /* ==========================================================
            HEADER & NAVBAR (Sesuai Index)
@@ -374,6 +375,9 @@
         .label { display: block; margin-bottom: 8px; font-size: .9rem; font-weight: 600; line-height: 1.35; }
         .req { color: var(--signal-d); margin-left: 2px; }
         .hint { margin-top: 6px; font-size: .8rem; color: var(--steel); line-height: 1.4; }
+        .field-err { margin-top: 6px; display: flex; gap: 8px; align-items: flex-start; font-size: .82rem; font-weight: 500; line-height: 1.4; color: var(--signal-d); }
+        .field-err i { margin-top: 2px; }
+        .field-err:empty { display: none; }
 
         .input { display: block; width: 100%; height: 48px; padding: 0 16px; border: 1px solid var(--line); border-radius: 14px; background: #fff; font: inherit; font-size: .95rem; color: var(--ink); transition: border-color .2s, box-shadow .2s; }
         .input.textarea { height: auto; padding: 12px 16px; resize: vertical; }
@@ -399,11 +403,33 @@
         .dz-files li { display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); font-size: .82rem; font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
 
         .form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; padding-top: 4px; }
-        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 30px; border-radius: 999px; font-weight: 700; font-size: 1rem; transition: background .2s, box-shadow .2s; border: none;}
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 30px; border-radius: 999px; font-weight: 700; font-size: 1rem; transition: background .2s, box-shadow .2s; border: none; cursor: pointer;}
         .btn-primary { background: var(--signal); color: #fff; box-shadow: 0 14px 30px -10px rgba(229,57,45,.6); }
         .btn-primary:hover { background: var(--signal-d); }
+        .btn-dark { background: var(--ink); color: #fff; }
+        .btn-dark:hover { background: var(--ink-3); }
         .form-actions p { font-size: .88rem; color: var(--steel); margin: 0;}
         @media (max-width: 640px) { .form-actions .btn { width: 100%; } }
+
+        /* ---------- Cek status permohonan ---------- */
+        .cs-desc { font-size: .9rem; color: var(--steel); line-height: 1.5; margin-bottom: 14px; }
+        .cs-form { display: flex; gap: 10px; }
+        .cs-form .input { flex: 1; min-width: 0; }
+        .cs-btn { flex: none; height: 48px; padding: 0 20px; font-size: .92rem; }
+        .cs-btn[disabled] { opacity: .6; cursor: progress; }
+        .cs-list { display: grid; gap: 12px; margin-top: 16px; }
+        .cs-list:empty { display: none; }
+        .cs-item { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: #fff; }
+        .cs-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+        .cs-kegiatan { font-weight: 700; font-size: .95rem; line-height: 1.35; overflow-wrap: anywhere; }
+        .cs-meta { margin-top: 6px; font-size: .82rem; color: var(--steel); line-height: 1.55; overflow-wrap: anywhere; }
+        .cs-note { margin-top: 10px; padding: 8px 10px; border-radius: 10px; font-size: .84rem; line-height: 1.45; }
+        .cs-badge { flex: none; padding: 4px 10px; border-radius: 999px; font-size: .78rem; font-weight: 700; border: 1px solid; white-space: nowrap; }
+        .cs-menunggu  { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+        .cs-proses    { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+        .cs-disetujui { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+        .cs-ditolak   { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+        .cs-empty { padding: 14px 16px; border: 1px dashed var(--line); border-radius: 14px; font-size: .9rem; color: var(--steel); text-align: center; }
 
         /* FOOTER */
         .footer { background: var(--ink); color: rgba(255,255,255,.7); padding: clamp(56px, 8vw, 96px) 0 32px; }
@@ -474,7 +500,7 @@
                     </ul>
                 </li>
 
-<li class="has-drop">
+                <li class="has-drop">
                     <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
                         <li><a href="/produk-hukum/undang-undang">Undang-Undang</a></li>
@@ -605,7 +631,7 @@
 
     <div class="page-body">
         
-        <!-- Tab layanan (Tambahan Baru) -->
+        <!-- Tab layanan -->
         <div class="wrap tabs-wrap">
             <nav class="tabs" aria-label="Jenis layanan perizinan">
                 <?php foreach ($layanan as $key => $l): ?>
@@ -681,6 +707,24 @@
                         </ol>
                     </section>
 
+                    <!-- Cek status permohonan -->
+                    <section class="side-card" id="cek-status" aria-label="Cek status permohonan">
+                        <div class="card-head">
+                            <span class="c-ico"><i class="fas fa-magnifying-glass"></i></span>
+                            <h2>Cek Status Permohonan</h2>
+                        </div>
+                        <p class="cs-desc">Masukkan NIK atau No Kontak / WhatsApp yang Anda gunakan saat mengajukan permohonan.</p>
+
+                        <form class="cs-form" id="csForm" novalidate>
+                            <label class="sr-only" for="csKontak">NIK atau No Kontak / WhatsApp</label>
+                            <input class="input" type="text" id="csKontak" name="kontak" inputmode="numeric" maxlength="16" autocomplete="off" placeholder="NIK atau Nomor WA" required>
+                            <button type="submit" class="btn btn-dark cs-btn" id="csBtn"><i class="fas fa-search"></i> Cek</button>
+                        </form>
+
+                        <p class="field-err" id="csErr" role="alert"></p>
+                        <ul class="cs-list" id="csList" aria-live="polite"></ul>
+                    </section>
+
                 </aside>
 
                 <!-- FORMULIR PENGAJUAN -->
@@ -750,11 +794,11 @@
                                 </div>
                                 <div class="field">
                                     <label class="label" for="nik">NIK KTP <span class="req">*</span></label>
-                                    <input class="input" type="text" id="nik" name="nik" value="{{ old('nik') }}" inputmode="numeric" pattern="[0-9]{16}" maxlength="16" placeholder="16 Digit" required>
+                                    <input class="input" type="text" id="nik" name="nik" value="{{ old('nik') }}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" inputmode="numeric" pattern="[0-9]{16}" maxlength="16" placeholder="16 Digit" required>
                                 </div>
                                 <div class="field">
                                     <label class="label" for="no_kontak">No Kontak / WhatsApp <span class="req">*</span></label>
-                                    <input class="input" type="tel" id="no_kontak" name="no_kontak" value="{{ old('no_kontak') }}" placeholder="08xxxxxxxxxx" required>
+                                    <input class="input" type="tel" id="no_kontak" name="no_kontak" value="{{ old('no_kontak') }}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" inputmode="numeric" maxlength="13" placeholder="08xxxxxxxxxx (Maks 13 digit)" required>
                                 </div>
                             </div>
                         </fieldset>
@@ -1038,6 +1082,121 @@
         });
     });
 
+})();
+</script>
+
+<!-- ==================== CEK STATUS PERMOHONAN ==================== -->
+<script>
+(function () {
+    'use strict';
+
+    var form = document.getElementById('csForm');
+    if (!form) return;
+
+    var input = document.getElementById('csKontak');
+    var btn   = document.getElementById('csBtn');
+    var err   = document.getElementById('csErr');
+    var list  = document.getElementById('csList');
+
+    var STATUS = {
+        'Menunggu':  { cls: 'cs-menunggu',  txt: 'Permohonan diterima dan menunggu verifikasi petugas.' },
+        'Proses':    { cls: 'cs-proses',    txt: 'Permohonan sedang diproses oleh petugas.' },
+        'Disetujui': { cls: 'cs-disetujui', txt: 'Permohonan disetujui. Silakan hubungi petugas untuk tindak lanjut.' },
+        'Ditolak':   { cls: 'cs-ditolak',   txt: 'Permohonan ditolak. Hubungi petugas untuk informasi lebih lanjut.' }
+    };
+
+    input.addEventListener('input', function () {
+        input.value = input.value.replace(/[^0-9]/g, '');
+    });
+
+    function el(tag, cls, text) {
+        var e = document.createElement(tag);
+        if (cls) e.className = cls;
+        if (text !== undefined) e.textContent = text;
+        return e;
+    }
+
+    function render(items) {
+        list.textContent = '';
+
+        if (!items.length) {
+            list.appendChild(el('li', 'cs-empty', 'Tidak ditemukan permohonan dengan NIK / Nomor WA tersebut.'));
+            return;
+        }
+
+        items.forEach(function (it) {
+            var st = STATUS[it.status] || { cls: 'cs-menunggu', txt: '' };
+
+            var li  = el('li', 'cs-item');
+            var top = el('div', 'cs-top');
+            top.appendChild(el('div', 'cs-kegiatan', it.institusi || it.kegiatan || 'Kunjungan Edukasi'));
+            top.appendChild(el('span', 'cs-badge ' + st.cls, it.status));
+            li.appendChild(top);
+
+            var meta = el('div', 'cs-meta');
+            meta.appendChild(document.createTextNode('Penanggung Jawab: ' + (it.nama_pemohon || it.nama || '-')));
+            meta.appendChild(document.createElement('br'));
+            meta.appendChild(document.createTextNode('Lokasi: ' + (it.alamat_institusi || it.lokasi || '-')));
+            if (it.tgl_kegiatan || it.tanggal) {
+                meta.appendChild(document.createElement('br'));
+                meta.appendChild(document.createTextNode('Rencana Kunjungan: ' + (it.tgl_kegiatan || it.tanggal)));
+            }
+            if (it.diajukan) {
+                meta.appendChild(document.createElement('br'));
+                meta.appendChild(document.createTextNode('Diajukan: ' + it.diajukan));
+            }
+            li.appendChild(meta);
+
+            if (st.txt) {
+                li.appendChild(el('div', 'cs-note ' + st.cls, st.txt));
+            }
+            list.appendChild(li);
+        });
+    }
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        err.textContent = '';
+        list.textContent = '';
+
+        var val = input.value.trim();
+        if (val.length < 9) {
+            err.textContent = 'Masukkan NIK (16 digit) atau Nomor WhatsApp yang valid.';
+            input.focus();
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari';
+
+        fetch('{{ route('permohonan.edukasi.cek-status') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ kontak: val })
+        })
+        .then(function (res) {
+            return res.json().catch(function () { return {}; }).then(function (body) {
+                return { status: res.status, ok: res.ok, body: body };
+            });
+        })
+        .then(function (r) {
+            if (r.ok) { render(r.body.data || []); return; }
+            if (r.status === 429) { err.textContent = 'Terlalu banyak percobaan. Coba lagi sebentar lagi.'; return; }
+            if (r.status === 419) { err.textContent = 'Sesi berakhir. Muat ulang halaman lalu coba lagi.'; return; }
+            err.textContent = (r.body && r.body.message) || 'Terjadi kesalahan. Coba lagi.';
+        })
+        .catch(function () {
+            err.textContent = 'Gagal terhubung ke server. Periksa koneksi Anda.';
+        })
+        .finally(function () {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-search"></i> Cek';
+        });
+    });
 })();
 </script>
 </body>

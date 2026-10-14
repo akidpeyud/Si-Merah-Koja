@@ -11,9 +11,6 @@ class PermohonanRpkbglController extends Controller
     // =========================================================================
     // 1. TAMPILKAN HALAMAN UTAMA (INDEX ADMIN)
     // =========================================================================
-// =========================================================================
-    // 1. TAMPILKAN HALAMAN UTAMA (INDEX ADMIN)
-    // =========================================================================
     public function index()
     {
         // Menggunakan Eloquent Model (Bukan DB::table)
@@ -48,18 +45,18 @@ class PermohonanRpkbglController extends Controller
     }
 
     // =========================================================================
-    // 3. PROSES SIMPAN DATA (KODE ASLI ANDA)
+    // 3. PROSES SIMPAN DATA
     // =========================================================================
     public function store(Request $request)
     {
         // 1. Validasi input dari form HTML
-        // Catatan: persyaratan_lainnya.* diubah menjadi nullable agar tidak error jika dikosongkan
+        // Catatan: no_wa dibatasi maksimal 13 digit angka
         $request->validate([
             'nama_pemohon'          => 'required|string|max:150',
             'email_pemohon'         => 'required|email|max:100',
-            'no_wa'                 => 'required|string|max:25',
+            'no_wa'                 => 'required|string|max:13|regex:/^[0-9]+$/',
             'nama_usaha'            => 'required|string|max:150',
-            'nik'                   => 'required|string|max:30',
+            'nik'                   => 'required|string|size:16|regex:/^[0-9]+$/',
             'alamat_pemilik'        => 'required|string',
             'kategori'              => 'required|string|max:100',
             'alamat_bangunan'       => 'required|string',
@@ -71,9 +68,12 @@ class PermohonanRpkbglController extends Controller
             'surat_permohonan'      => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120', // Maks 5MB
             'persyaratan_lainnya.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ], [
-            'required' => 'Kolom :attribute wajib diisi.',
-            'mimes'    => 'Format file :attribute harus PDF, JPG, JPEG, atau PNG.',
-            'max'      => 'Ukuran file maksimal 5MB.'
+            'required'     => 'Kolom :attribute wajib diisi.',
+            'no_wa.max'    => 'Nomor WhatsApp maksimal 13 digit.',
+            'no_wa.regex'  => 'Nomor WhatsApp hanya boleh berisi angka.',
+            'nik.size'     => 'NIK harus berjumlah 16 digit.',
+            'mimes'        => 'Format file :attribute harus PDF, JPG, JPEG, atau PNG.',
+            'max'          => 'Ukuran file maksimal 5MB.'
         ]);
 
         try {
@@ -120,7 +120,7 @@ class PermohonanRpkbglController extends Controller
                 'updated_at'               => now(),
             ]);
 
-            // 5. Sukses, kembali ke form dengan trigger SweetAlert
+            // 5. Sukses, kembali ke form dengan trigger SweetAlert / Flash Session
             return redirect()->back()->with('success', 'Permohonan RPKBGL Anda berhasil dikirim dan akan segera diproses dalam 14 hari kerja.');
 
         } catch (\Exception $e) {
@@ -171,6 +171,7 @@ class PermohonanRpkbglController extends Controller
 
         return redirect()->back()->with('success', 'Data dan berkas permohonan berhasil dihapus selamanya.');
     }
+
     // =========================================================================
     // 6. TAMPILKAN DETAIL DATA (SHOW ADMIN)
     // =========================================================================
@@ -181,5 +182,55 @@ class PermohonanRpkbglController extends Controller
         
         // Kembalikan ke tampilan detail dengan membawa data $permohonan
         return view('internal.pencegahan.detail_rpkbgl', compact('permohonan'));
+    }
+
+    // =========================================================================
+    // 7. CEK STATUS PERMOHONAN (PUBLIK VIA AJAX)
+    // =========================================================================
+    public function cekStatus(Request $request)
+    {
+        $request->validate([
+            'kontak' => 'required|string|min:9|max:20',
+        ], [
+            'kontak.required' => 'Masukkan NIK atau Nomor WhatsApp.',
+            'kontak.min'      => 'Masukkan minimal 9 digit angka.',
+        ]);
+
+        $kontak = trim($request->kontak);
+
+        // Cari berdasarkan kolom nik_pemilik_usaha atau no_whatsapp
+        $items = PermohonanRpkbgl::where('nik_pemilik_usaha', $kontak)
+            ->orWhere('no_whatsapp', $kontak)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($row) {
+                // Konversi nilai status_permohonan di DB (misal: 'Pending') 
+                // agar sesuai dengan dictionary warna badge di JavaScript ('Menunggu', 'Proses', 'Disetujui', 'Ditolak')
+                $rawStatus = strtolower(trim($row->status_permohonan ?? 'pending'));
+                
+                $statusMap = [
+                    'pending'   => 'Menunggu',
+                    'menunggu'  => 'Menunggu',
+                    'proses'    => 'Proses',
+                    'diproses'  => 'Proses',
+                    'disetujui' => 'Disetujui',
+                    'selesai'   => 'Disetujui',
+                    'ditolak'   => 'Ditolak',
+                ];
+
+                $statusTampil = $statusMap[$rawStatus] ?? ucfirst($row->status_permohonan);
+
+                return [
+                    'nama_usaha'      => $row->nama_usaha,
+                    'nama_pemohon'    => $row->nama_pemohon,
+                    'alamat_bangunan' => $row->alamat_bangunan . ($row->kelurahan ? ', Kel. ' . $row->kelurahan : '') . ($row->kecamatan ? ', Kec. ' . $row->kecamatan : ''),
+                    'diajukan'        => $row->created_at ? $row->created_at->format('d M Y H:i') : '-',
+                    'status'          => $statusTampil,
+                ];
+            });
+
+        return response()->json([
+            'data' => $items,
+        ]);
     }
 }
