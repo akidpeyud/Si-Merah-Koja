@@ -397,38 +397,41 @@
         </details>
 
         <!-- BAGIAN PEMADAMAN (menu input/buat hanya untuk Sapra) -->
-        <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
-            <summary>
-                <i class="fas fa-fire-extinguisher grp-ico"></i>
-                <span class="grp-label">BAGIAN PEMADAMAN</span>
-                <i class="fas fa-chevron-down chev"></i>
-            </summary>
-            <div class="side-sub">
-                @if($bisaCrud)
-                    <a href="/internal/damtan/input-data" class="{{ Request::is('internal/damtan/input-data*') ? 'active' : '' }}">
-                        <i class="fas fa-fire-extinguisher"></i> Input data
-                    </a>
+        <!-- BAGIAN PEMADAMAN -->
+            <details class="side-group" {{ Request::is('internal/damtan*') || Request::is('internal/surat-korban*') ? 'open' : '' }}>
+                <summary><i class="fas fa-fire-extinguisher grp-ico"></i><span class="grp-label">Bagian pemadaman</span><i class="fas fa-chevron-down chev"></i></summary>
+                <div class="side-sub">
+
+                    @php
+                        $aksesMenuRekap = false;
+                        if (method_exists(Auth::user(), 'hasAnyRole')) {
+                            $aksesMenuRekap = Auth::user()->hasAnyRole(['Damtan', 'Super User']);
+                        }
+                    @endphp
+
+                    @if($aksesMenuRekap)
                     <a href="/internal/damtan/rekap-layanan" class="{{ Request::is('internal/damtan/rekap-layanan*') ? 'active' : '' }}">
-                        <i class="fas fa-truck-medical"></i> Input Rekap Layanan
+                        <i class="fas fa-truck-medical"></i><span class="lbl">Input Rekap Layanan</span>
                     </a>
                     <a href="/internal/damtan/rekap-objek" class="{{ Request::is('internal/damtan/rekap-objek*') ? 'active' : '' }}">
-                        <i class="fas fa-house-chimney-crack"></i> Input Rekap Objek Kebakaran
+                        <i class="fas fa-house-chimney-crack"></i><span class="lbl">Input Rekap Objek Kebakaran</span>
                     </a>
-                    <a href="/internal/surat-korban/create" class="{{ Request::is('internal/surat-korban/create*') ? 'active' : '' }}">
-                        <i class="fas fa-file-signature"></i> Buat Surat Korban
+                    @endif
+
+                    <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
+                        <i class="fas fa-clipboard-list"></i><span class="lbl">Kelola Data Laporan</span>
                     </a>
-                @endif
-                <a href="/internal/damtan/data-laporan" class="{{ Request::is('internal/damtan/data-laporan*') || Request::is('internal/damtan/lihat-data*') || Request::is('internal/damtan/edit-data*') ? 'active' : '' }}">
-                    <i class="fas fa-clipboard-list"></i> Kelola Data Laporan
-                </a>
-                <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
-                    <i class="fas fa-folder-open"></i> Kelola Surat Korban
-                </a>
-                <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
-                    <i class="fas fa-users-rectangle"></i> Kelola Surat Keramaian
-                </a>
-            </div>
-        </details>
+                    <a href="/internal/surat-korban/data" class="{{ Request::is('internal/surat-korban/data*') || Request::is('internal/surat-korban/edit*') ? 'active' : '' }}">
+                        <i class="fas fa-folder-open"></i><span class="lbl">Kelola Surat Korban</span>
+                    </a>
+                    <a href="{{ route('internal.izin-keramaian.index') }}" class="{{ Request::is('internal/damtan/kelola-izin-keramaian*') ? 'active' : '' }}">
+                        <i class="fas fa-users-rectangle"></i><span class="lbl">Kelola Surat Keramaian</span>
+                    </a>
+                    <a href="{{ route('internal.penggunaan-sarana.index') }}" class="{{ Request::is('internal/damtan/kelola-penggunaan-sarana*') ? 'active' : '' }}">
+                        <i class="fas fa-truck-droplet"></i><span class="lbl">Kelola Penggunaan Sarana</span>
+                    </a>
+                </div>
+            </details>
 
        
 
