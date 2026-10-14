@@ -176,6 +176,58 @@ class PenggunaanSaranaController extends Controller
     }
 
     // =====================================================================
+    // CEK STATUS PERMOHONAN (SISI PEMOHON, dipanggil via fetch/AJAX)
+    // =====================================================================
+    public function cekStatus(Request $request)
+    {
+        $request->validate([
+            'kontak' => 'required|string|max:20',
+        ], [
+            'kontak.required' => 'Masukkan NIK atau nomor HP/WA.',
+            'kontak.max'      => 'NIK atau nomor HP/WA terlalu panjang.',
+        ]);
+
+        $kontak = preg_replace('/\D/', '', $request->kontak);
+
+        if (strlen($kontak) < 9) {
+            return response()->json(['message' => 'NIK (16 digit) atau nomor HP/WA tidak valid.'], 422);
+        }
+
+        // Variasi penulisan nomor HP: 08xx / 628xx
+        $varian = [$kontak];
+        if (str_starts_with($kontak, '62')) {
+            $varian[] = '0' . substr($kontak, 2);
+        } elseif (str_starts_with($kontak, '0')) {
+            $varian[] = '62' . substr($kontak, 1);
+        }
+
+        $hasil = PenggunaanSarana::where(function ($q) use ($kontak, $varian) {
+                $q->where('nik', $kontak)->orWhereIn('no_hp', $varian);
+            })
+            ->latest()
+            ->limit(10)
+            ->get()
+            ->map(fn ($r) => [
+                // Data pribadi disamarkan: hanya info yang perlu untuk mengenali permohonan
+                'nama'     => $this->maskNama($r->nama),
+                'kegiatan' => $r->nama_kegiatan,
+                'sarana'   => $r->sarana,
+                'tanggal'  => \Carbon\Carbon::parse($r->tgl_pelaksanaan)->translatedFormat('d F Y'),
+                'diajukan' => optional($r->created_at)->translatedFormat('d M Y'),
+                'status'   => $r->status,
+            ]);
+
+        return response()->json(['data' => $hasil]);
+    }
+
+    private function maskNama(string $nama): string
+    {
+        return collect(preg_split('/\s+/', trim($nama)))
+            ->map(fn ($kata) => mb_substr($kata, 0, 2) . str_repeat('*', max(mb_strlen($kata) - 2, 0)))
+            ->implode(' ');
+    }
+
+    // =====================================================================
     // HELPER
     // =====================================================================
     private function hapusFile(?string $path): void

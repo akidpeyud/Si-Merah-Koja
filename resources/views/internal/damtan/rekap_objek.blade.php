@@ -340,10 +340,10 @@ textarea.f-control { height: auto; padding: 12px 14px; resize: vertical; min-hei
 
                     @if($aksesMenuRekap)
                     <a href="/internal/damtan/rekap-layanan" class="{{ Request::is('internal/damtan/rekap-layanan*') ? 'active' : '' }}">
-                        <i class="fas fa-truck-medical"></i><span class="lbl">Input Rekap Layanan</span>
+                        <i class="fas fa-truck-medical"></i><span class="lbl">Kelola Rekap Layanan</span>
                     </a>
                     <a href="/internal/damtan/rekap-objek" class="{{ Request::is('internal/damtan/rekap-objek*') ? 'active' : '' }}">
-                        <i class="fas fa-house-chimney-crack"></i><span class="lbl">Input Rekap Objek Kebakaran</span>
+                        <i class="fas fa-house-chimney-crack"></i><span class="lbl">Kelola Rekap Objek Kebakaran</span>
                     </a>
                     @endif
 

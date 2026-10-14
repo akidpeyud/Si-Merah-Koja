@@ -175,16 +175,24 @@
         @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 
         /* ==========================================================
-           PILL TAB
+           PILL TAB & TOMBOL PINDAH SARANA/PRASARANA
            ========================================================== */
         .page-nav-wrap { display: flex; justify-content: center; margin-top: -30px; position: relative; z-index: 10; padding: 0 20px; }
-        .page-nav { display: inline-flex; background: #fff; padding: 6px; border-radius: 999px; box-shadow: 0 12px 35px rgba(13,27,42,.1); gap: 4px; overflow-x: auto; max-width: 100%; border: 1px solid rgba(0,0,0,.04); scrollbar-width: none; }
+        .page-nav { display: inline-flex; align-items: center; background: #fff; padding: 6px; border-radius: 999px; box-shadow: 0 12px 35px rgba(13,27,42,.1); gap: 4px; overflow-x: auto; max-width: 100%; border: 1px solid rgba(0,0,0,.04); scrollbar-width: none; }
         .page-nav::-webkit-scrollbar { display: none; }
         .page-nav button { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 999px; font-size: .9rem; font-weight: 700; color: var(--steel); white-space: nowrap; transition: .3s; }
         .page-nav button:hover { color: var(--ink-2); background: var(--soft); }
         .page-nav button.active { background: var(--ink); color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.15); }
         .page-nav button.active i { color: var(--amber); }
-        @media (max-width: 768px) { .page-nav { justify-content: flex-start; } .page-nav button { padding: 8px 16px; font-size: .85rem; } }
+
+        /* Pemisah & Tombol Pindah Halaman (Sarana <-> Prasarana) */
+        .page-nav .nav-sep { width: 1.5px; align-self: stretch; margin: 6px 4px; background: var(--line); flex: none; }
+        .page-nav a.nav-switch { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 999px; font-size: .88rem; font-weight: 700; color: var(--signal-d); background: #fdeceb; border: 1px solid #f5c2be; white-space: nowrap; transition: .25s; flex: none; }
+        .page-nav a.nav-switch:hover { background: var(--signal); color: #fff; border-color: var(--signal); box-shadow: 0 6px 16px -4px rgba(229,57,45,.55); transform: translateY(-1px); }
+        .page-nav a.nav-switch i.arr { font-size: .78rem; transition: transform .2s; }
+        .page-nav a.nav-switch:hover i.arr { transform: translateX(3px); }
+
+        @media (max-width: 768px) { .page-nav { justify-content: flex-start; } .page-nav button, .page-nav a.nav-switch { padding: 8px 16px; font-size: .85rem; } }
 
         /* ==========================================================
            KONTEN UMUM
@@ -507,7 +515,7 @@
         .page-hero p { max-width: 62ch; line-height: 1.75; }
         .page-nav-wrap { margin-top: -28px; padding: 0 18px; }
         .page-nav { padding: 7px; gap: 5px; }
-        .page-nav button { padding: 11px 20px; font-size: .88rem; }
+        .page-nav button, .page-nav a.nav-switch { padding: 11px 20px; font-size: .88rem; }
         .page-body { padding-top: 38px; }
         .panel-head { padding: 24px 28px; }
         .chips { padding-top: 20px; }
@@ -535,7 +543,7 @@
             .page-hero p { margin-top: 14px; font-size: .96rem; }
             .page-nav-wrap { margin-top: -25px; padding: 0 12px; justify-content: stretch; }
             .page-nav { display: flex; width: 100%; border-radius: 17px; padding: 6px; }
-            .page-nav button { flex: 0 0 auto; padding: 10px 14px; font-size: .82rem; }
+            .page-nav button, .page-nav a.nav-switch { flex: 0 0 auto; padding: 10px 14px; font-size: .82rem; }
             .page-body { padding-top: 28px; padding-bottom: 64px; }
             .panel-card { border-radius: 18px; }
             .panel-head { padding: 20px 18px; align-items: flex-start; }
@@ -752,6 +760,18 @@
                     <i class="fas {{ $t['ico'] }}"></i> {{ $t['label'] }}
                 </button>
             @endforeach
+
+            <span class="nav-sep" aria-hidden="true"></span>
+
+            @if($path_sarana)
+                <a href="{{ route('sarpras.prasarana') }}" class="nav-switch">
+                    <i class="fas fa-building"></i> Halaman Prasarana <i class="fas fa-arrow-right arr"></i>
+                </a>
+            @else
+                <a href="{{ route('sarpras.sarana') }}" class="nav-switch">
+                    <i class="fas fa-fire-extinguisher"></i> Halaman Sarana <i class="fas fa-arrow-right arr"></i>
+                </a>
+            @endif
         </nav>
     </div>
 
@@ -792,7 +812,7 @@
                 @php
                     $rows = collect($t['data']);
                     $defs = [
-                        ['id' => 'pilar',  'kat' => 'Hidrant Pilar',  'ico' => 'fa-faucet-drip', 'tone' => 'red',   'field' => null,     'fieldLabel' => null,            'nameLabel' => 'Lokasi / Area', 'desc' => 'Hidrant di tepi jalan'],
+                        ['id' => 'pilar',  'kat' => 'Hidrant Pilar',  'ico' => 'fa-faucet-drip', 'tone' => 'red',   'field' => null,     'fieldLabel' => null,             'nameLabel' => 'Lokasi / Area', 'desc' => 'Hidrant di tepi jalan'],
                         ['id' => 'gedung', 'kat' => 'Hidrant Gedung', 'ico' => 'fa-building',    'tone' => 'blue',  'field' => 'jumlah', 'fieldLabel' => 'Jumlah (Unit)', 'nameLabel' => 'Nama Gedung',   'desc' => 'Hidrant di dalam gedung'],
                         ['id' => 'embung', 'kat' => 'Embung',         'ico' => 'fa-water',       'tone' => 'teal',  'field' => 'luas',   'fieldLabel' => 'Kapasitas Air', 'nameLabel' => 'Nama Lokasi',   'desc' => 'Tampungan air buatan'],
                         ['id' => 'danau',  'kat' => 'Danau',          'ico' => 'fa-droplet',     'tone' => 'amber', 'field' => 'luas',   'fieldLabel' => 'Kapasitas Air', 'nameLabel' => 'Nama Danau',    'desc' => 'Sumber air alami'],
