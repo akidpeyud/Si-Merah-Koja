@@ -136,12 +136,22 @@ Route::middleware([CekLoginPemohon::class])->group(function () {
     Route::get('/layanan-fasilitas/izin-keramaian', [IzinKeramaianController::class, 'index'])->name('izin-keramaian.index');
     Route::post('/layanan-fasilitas/izin-keramaian', [IzinKeramaianController::class, 'store'])->name('izin-keramaian.store');
 
+    // Cek status permohonan izin keramaian (NIK / No HP), dipanggil lewat fetch/AJAX
+    Route::post('/layanan-fasilitas/izin-keramaian/cek-status', [IzinKeramaianController::class, 'cekStatus'])
+        ->middleware('throttle:10,1')
+        ->name('izin-keramaian.cek-status');
+
     // Permohonan Penggunaan Sarana Pemadam
     // View: resources/views/layanan-fasilitas/penggunaan-sarana.blade.php
     Route::get('/layanan-fasilitas/penggunaan-sarana', function () {
         return view('layanan-fasilitas.penggunaan-sarana');
     })->name('penggunaan-sarana');
     Route::post('/layanan-fasilitas/penggunaan-sarana', [PenggunaanSaranaController::class, 'store'])->name('penggunaan-sarana.store');
+
+    // Cek status permohonan penggunaan sarana (NIK / No HP), dipanggil lewat fetch/AJAX
+    Route::post('/layanan-fasilitas/penggunaan-sarana/cek-status', [PenggunaanSaranaController::class, 'cekStatus'])
+        ->middleware('throttle:10,1')
+        ->name('penggunaan-sarana.cek-status');
 
     // Edukasi
     Route::get('/layanan-fasilitas/edukasi_sosialisasi', function () { return view('layanan-fasilitas.edukasi_sosialisasi'); });
