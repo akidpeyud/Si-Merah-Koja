@@ -65,6 +65,38 @@
     --shadow-lg: 0 20px 45px rgba(13, 27, 42, .14);
 }
 
+/* 1b. SECTION TONES
+   Satu warna per bagian dipakai konsisten di ringkasan, judul seksi, dan kartu.
+   --tone-dark* : untuk permukaan gelap (hero)  |  --tone* : untuk permukaan terang */
+:root, .tone-slate {
+    --tone: #475569;  --tone-soft: #edf1f6;
+    --tone-dark: #cbd5e1; --tone-dark-bg: rgba(203,213,225,.14); --tone-dark-ring: rgba(203,213,225,.30);
+}
+.tone-blue {
+    --tone: #1d4ed8;  --tone-soft: #e6eefc;
+    --tone-dark: #8ec5ff; --tone-dark-bg: rgba(96,165,250,.16); --tone-dark-ring: rgba(96,165,250,.38);
+}
+.tone-red {
+    --tone: #b91c1c;  --tone-soft: #fdeaec;
+    --tone-dark: #ff9d9d; --tone-dark-bg: rgba(248,113,113,.16); --tone-dark-ring: rgba(248,113,113,.38);
+}
+.tone-orange {
+    --tone: #c2410c;  --tone-soft: #fdeee3;
+    --tone-dark: #ffb47e; --tone-dark-bg: rgba(251,146,60,.16); --tone-dark-ring: rgba(251,146,60,.38);
+}
+.tone-amber {
+    --tone: #a16207;  --tone-soft: #fdf3d7;
+    --tone-dark: #f6c453; --tone-dark-bg: rgba(244,183,64,.16); --tone-dark-ring: rgba(244,183,64,.40);
+}
+.tone-green {
+    --tone: #047857;  --tone-soft: #e1f5ec;
+    --tone-dark: #6ee7b7; --tone-dark-bg: rgba(52,211,153,.16); --tone-dark-ring: rgba(52,211,153,.38);
+}
+.tone-violet {
+    --tone: #6d28d9;  --tone-soft: #eee8fd;
+    --tone-dark: #c4b5fd; --tone-dark-bg: rgba(167,139,250,.18); --tone-dark-ring: rgba(167,139,250,.40);
+}
+
 /* 2. RESET */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -298,19 +330,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* 16. WELCOME */
 .welcome {
     position: relative; overflow: hidden;
-    border-radius: 22px;
+    border-radius: 24px;
     background:
-        radial-gradient(60% 120% at 100% 0%, rgba(59,118,184,.38), transparent 62%),
+        radial-gradient(70% 140% at 100% 0%, rgba(59,118,184,.32), transparent 60%),
         linear-gradient(135deg, var(--ink) 0%, var(--ink-2) 100%);
-    padding: clamp(26px, 4vw, 40px);
-    color: #fff; margin-bottom: 40px; box-shadow: var(--shadow-md);
-}
-.welcome::before {
-    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .5;
-    background-image: radial-gradient(rgba(255,255,255,.10) 1px, transparent 1.4px);
-    background-size: 22px 22px;
-    -webkit-mask-image: linear-gradient(115deg, transparent 35%, #000 100%);
-            mask-image: linear-gradient(115deg, transparent 35%, #000 100%);
+    padding: clamp(26px, 4vw, 44px);
+    color: #fff; margin-bottom: 44px; box-shadow: var(--shadow-md);
 }
 .welcome > * { position: relative; }
 .welcome-date {
@@ -329,9 +354,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .dash-section { margin-bottom: 40px; scroll-margin-top: calc(var(--topbar-h) + 20px); }
 .section-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
 .section-heading-ico {
-    flex: none; width: 34px; height: 34px; border-radius: 10px;
-    background: var(--navy); color: #fff;
-    display: grid; place-items: center; font-size: .82rem;
+    flex: none; width: 38px; height: 38px; border-radius: 11px;
+    background: var(--tone-soft); color: var(--tone);
+    display: grid; place-items: center; font-size: .95rem;
 }
 .section-heading h3 {
     font-family: var(--font-display); font-weight: 700;
@@ -343,39 +368,52 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .section-meta b { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
 
-/* 18. OVERVIEW PANEL */
+/* 18. OVERVIEW (kartu modul di hero) */
 .overview {
-    display: grid; margin-top: 30px;
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-    border-radius: 16px; overflow: hidden;
-    background: rgba(255,255,255,.06);
-    border: 1px solid rgba(255,255,255,.12);
-    backdrop-filter: blur(6px);
+    display: grid; margin-top: 32px; gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
 }
 .ov-item {
-    position: relative; display: flex; flex-direction: column; gap: 14px;
-    padding: 18px 20px;
-    border-right: 1px solid rgba(255,255,255,.10);
-    transition: background .2s;
+    position: relative; isolation: isolate; overflow: hidden;
+    display: flex; flex-direction: column; gap: 20px;
+    padding: 20px 18px 18px;
+    border-radius: 18px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.10);
+    transition: background .2s, border-color .2s, transform .2s;
 }
-.ov-item:last-child { border-right: 0; }
-.ov-item:hover { background: rgba(255,255,255,.09); }
+.ov-item::before {
+    content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background: radial-gradient(90% 80% at 0% 0%, var(--tone-dark-bg), transparent 70%);
+}
+.ov-item:hover { background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.24); transform: translateY(-2px); }
+
 .ov-ico {
-    width: 34px; height: 34px; border-radius: 10px;
-    display: grid; place-items: center; font-size: .82rem;
-    background: rgba(244,183,64,.16); color: var(--amber);
+    width: 58px; height: 58px; border-radius: 17px;
+    display: grid; place-items: center; font-size: 1.5rem;
+    color: var(--tone-dark);
+    background: var(--tone-dark-bg);
+    box-shadow: inset 0 0 0 1px var(--tone-dark-ring);
+    transition: transform .25s cubic-bezier(.16,.84,.3,1);
 }
-.ov-item strong {
+.ov-item:hover .ov-ico { transform: scale(1.06); }
+
+.ov-title {
     display: block; font-family: var(--font-display); font-weight: 700;
-    font-size: 1.9rem; line-height: 1; letter-spacing: -.02em;
-    font-variant-numeric: tabular-nums; color: #fff;
+    font-size: 1.02rem; line-height: 1.25; letter-spacing: -.01em; color: #fff;
 }
-.ov-item span.ov-label { display: block; margin-top: 6px; font-size: .82rem; color: rgba(255,255,255,.68); font-weight: 500; line-height: 1.3; }
+.ov-desc {
+    display: block; margin-top: 5px;
+    font-size: .8rem; line-height: 1.45; color: rgba(255,255,255,.62);
+}
 .ov-go {
-    position: absolute; top: 18px; right: 16px; font-size: .7rem;
-    color: rgba(255,255,255,.35); transition: color .2s, transform .2s;
+    position: absolute; top: 16px; right: 16px;
+    width: 26px; height: 26px; border-radius: 50%;
+    display: grid; place-items: center; font-size: .66rem;
+    color: rgba(255,255,255,.45); background: rgba(255,255,255,.07);
+    transition: color .2s, background .2s, transform .2s;
 }
-.ov-item:hover .ov-go { color: #fff; transform: translateX(2px); }
+.ov-item:hover .ov-go { color: var(--ink); background: #fff; transform: translateY(2px); }
 
 /* 19. STAT GRID */
 .stats-grid {
@@ -386,26 +424,28 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 /* 20. STAT CARD */
 .stat-card {
-    display: flex; flex-direction: column; align-items: stretch; gap: 16px;
+    display: flex; flex-direction: column; align-items: stretch; gap: 18px;
     padding: 18px; background: #fff;
-    border-radius: var(--r-md); border: 1px solid var(--line);
+    border-radius: 16px; border: 1px solid var(--line);
     transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease;
 }
-.stat-card:hover { box-shadow: var(--shadow-sm); border-color: #cbd5e3; transform: translateY(-2px); }
+.stat-card:hover {
+    box-shadow: var(--shadow-sm);
+    border-color: color-mix(in srgb, var(--tone) 38%, var(--line));
+    transform: translateY(-2px);
+}
 .stat-top { display: flex; align-items: center; justify-content: space-between; }
 .stat-ico {
-    width: 40px; height: 40px; border-radius: 11px;
-    display: grid; place-items: center; font-size: .95rem;
+    width: 42px; height: 42px; border-radius: 12px;
+    display: grid; place-items: center; font-size: 1rem;
+    background: var(--tone-soft); color: var(--tone);
 }
 .stat-go {
     width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
     font-size: .7rem; color: var(--steel-soft); background: var(--paper);
     transition: background .2s, color .2s, transform .2s;
 }
-.stat-card:hover .stat-go { background: var(--ink); color: #fff; transform: translateX(2px); }
-.ic-primary { background: var(--navy-soft); color: var(--navy); }
-.ic-danger { background: var(--signal-soft); color: var(--signal-dark); }
-.ic-info { background: var(--info-soft); color: var(--info); }
+.stat-card:hover .stat-go { background: var(--tone); color: #fff; transform: translateX(2px); }
 
 /* 21. STAT TEXT */
 .stat-value {
@@ -423,8 +463,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     .content { padding: 32px 26px 60px; }
     .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .overview { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .ov-item:nth-child(3n) { border-right: 0; }
-    .ov-item:nth-child(n+4) { border-top: 1px solid rgba(255,255,255,.10); }
 }
 
 /* 23. MOBILE */
@@ -446,12 +484,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     .welcome { padding: 25px 22px; margin-bottom: 30px; border-radius: 15px; }
     .welcome h2 { font-size: 1.3rem; }
     .welcome-sub { font-size: .88rem; }
-    .overview { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 24px; }
-    .ov-item { padding: 15px 16px; gap: 10px; }
-    .ov-item:nth-child(3n) { border-right: 1px solid rgba(255,255,255,.10); }
-    .ov-item:nth-child(2n) { border-right: 0; }
-    .ov-item:nth-child(n+3) { border-top: 1px solid rgba(255,255,255,.10); }
-    .ov-item strong { font-size: 1.6rem; }
+    .overview { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 24px; gap: 10px; }
+    .ov-item { padding: 16px 14px 14px; gap: 14px; border-radius: 15px; }
+    .ov-ico { width: 48px; height: 48px; border-radius: 14px; font-size: 1.25rem; }
+    .ov-title { font-size: .92rem; }
+    .ov-desc { font-size: .76rem; }
+    .ov-go { top: 12px; right: 12px; }
     .section-heading { gap: 9px; }
     .section-heading-ico { width: 30px; height: 30px; }
     .section-heading h3 { font-size: .92rem; }
@@ -469,6 +507,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     .content { padding-left: 13px; padding-right: 13px; }
     .welcome { padding: 22px 18px; }
     .stats-grid { grid-template-columns: 1fr; }
+    .overview { grid-template-columns: 1fr; }
+    .ov-item { flex-direction: row; align-items: center; gap: 14px; padding-right: 52px; }
+    .ov-go { top: 50%; margin-top: -13px; }
+    .ov-item:hover .ov-go { transform: none; }
     .welcome h2 { font-size: 1.18rem; }
     .welcome-sub { font-size: .84rem; }
     .section-heading h3 { font-size: .86rem; }
@@ -828,7 +870,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
             $sections = [
                 [
-                    'id' => 'pencegahan', 'title' => 'Bagian Pencegahan', 'icon' => 'fa-shield-halved', 'roles' => $ops,
+                    'id' => 'pencegahan', 'title' => 'Bagian Pencegahan', 'icon' => 'fa-shield-halved', 'tone' => 'blue', 'desc' => 'Inspeksi, edukasi, dan perizinan keselamatan', 'roles' => $ops,
                     'items' => [
                         ['Peningkatan Kapasitas Aparatur', 'kegiatan', 'fa-arrow-trend-up', '/internal/pencegahan/peningkatan-kapasitas', $count('peningkatan_kapasitas'), 'ic-primary'],
                         ['Pencegahan Kebakaran & Inspeksi', 'inspeksi', 'fa-magnifying-glass-chart', '/internal/pencegahan/inspeksi-kebakaran', $countAll(['inspeksi_bangunans', 'jadwal_inspeksis']), 'ic-danger'],
@@ -840,7 +882,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     ],
                 ],
                 [
-                    'id' => 'pemadaman', 'title' => 'Bagian Pemadaman', 'icon' => 'fa-fire-extinguisher', 'roles' => $ops,
+                    'id' => 'pemadaman', 'title' => 'Bagian Pemadaman', 'icon' => 'fa-fire-extinguisher', 'tone' => 'red', 'desc' => 'Laporan kejadian dan surat layanan', 'roles' => $ops,
                     'items' => [
                         ['Kelola Rekap Objek Kebakaran', 'kejadian kebakaran', 'fa-house-chimney-crack', '/internal/damtan/rekap-objek', (\Illuminate\Support\Facades\Schema::hasTable('laporan_penyelamatans') ? \Illuminate\Support\Facades\DB::table('laporan_penyelamatans')->whereNotNull('kategori_kebakaran')->where('kategori_kebakaran', '!=', '')->count() : null), 'ic-danger', 'skip' => true],
                         ['Kelola Data Laporan', 'laporan', 'fa-clipboard-list', '/internal/damtan/data-laporan', $count('laporan_penyelamatans'), 'ic-danger'],
@@ -849,7 +891,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     ],
                 ],
                 [
-                    'id' => 'rekap', 'title' => 'Rekap Layanan & Penyelamatan', 'icon' => 'fa-truck-medical', 'roles' => $ops, 'chip' => false,
+                    'id' => 'rekap', 'title' => 'Rekap Layanan & Penyelamatan', 'icon' => 'fa-truck-medical', 'tone' => 'orange', 'roles' => $ops, 'chip' => false,
                     'total' => $count('rekap_layanan', 'jumlah'),
                     'items' => [
                         ['Kebakaran', 'layanan', 'fa-fire-flame-curved', '/internal/damtan/rekap-layanan', $rekapTotals['kebakaran'] ?? 0, 'ic-danger'],
@@ -863,7 +905,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     ],
                 ],
                 [
-                    'id' => 'sapra', 'title' => 'Bagian Sapra', 'icon' => 'fa-warehouse', 'roles' => $ops,
+                    'id' => 'sapra', 'title' => 'Bagian Sapra', 'icon' => 'fa-warehouse', 'tone' => 'amber', 'desc' => 'Sarana, prasarana, dan sumber air', 'roles' => $ops,
                     'items' => [
                         ['Sarana Pemadam Kebakaran', 'unit', 'fa-fire-extinguisher', '/sapra/sarana-mako', $countAll(['sarana_kebakaran', 'sarana_pos']), 'ic-danger'],
                         ['Prasarana Pemadam Kebakaran', 'data', 'fa-building', '/sapra/prasarana-mako', $countAll(['prasarana', 'prasarana_pos', 'prasaranas']), 'ic-primary'],
@@ -877,7 +919,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     ],
                 ],
                 [
-                    'id' => 'kepegawaian', 'title' => 'Kepegawaian', 'icon' => 'fa-user-tie', 'roles' => $ops,
+                    'id' => 'kepegawaian', 'title' => 'Kepegawaian', 'icon' => 'fa-user-tie', 'tone' => 'green', 'desc' => 'Data pegawai, ASN, dan dokumen SOP', 'roles' => $ops,
                     'items' => [
                         ['Data Urut Kepegawaian', 'pegawai', 'fa-user-tie', '/internal/kepegawaian/duk', $count('pegawais'), 'ic-primary'],
                         ['Rekap Data ASN', 'data', 'fa-users', '/internal/data-asn', ($count('data_asns', 'pns') + $count('data_asns', 'pppk')), 'ic-danger'],
@@ -886,7 +928,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     ],
                 ],
                 [
-                    'id' => 'informasi', 'title' => 'Manajemen Informasi', 'icon' => 'fa-newspaper', 'roles' => $ops,
+                    'id' => 'informasi', 'title' => 'Manajemen Informasi', 'icon' => 'fa-newspaper', 'tone' => 'violet', 'desc' => 'Berita, produk hukum, dan profil instansi', 'roles' => $ops,
                     'items' => [
                         ['Berita', 'berita', 'fa-newspaper', '/internal/operator/kelola-berita', $count('berita'), 'ic-primary'],
                         ['Info Grafis', 'info grafis', 'fa-image', '/internal/operator/infografis', $count('infografis'), 'ic-info'],
@@ -914,7 +956,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     ],
                 ],
                 [
-                    'id' => 'akun', 'title' => 'Pengaturan Akun', 'icon' => 'fa-user-gear', 'roles' => 'Super User',
+                    'id' => 'akun', 'title' => 'Pengaturan Akun', 'icon' => 'fa-user-gear', 'tone' => 'slate', 'roles' => 'Super User',
                     'items' => [
                         ['Kelola Pengguna', 'akun pegawai', 'fa-users-gear', url('/internal/kelola-user'), $count('users'), 'ic-primary'],
                         ['Kelola Akun Pemohon', 'akun pemohon', 'fa-address-book', url('/internal/kelola-pemohon'), $count('pemohons'), 'ic-info'],
@@ -953,13 +995,13 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             <div class="overview">
                 @foreach($visible as $s)
                     @if(($s['chip'] ?? true) && $s['id'] !== 'akun')
-                        <a href="#sec-{{ $s['id'] }}" class="ov-item">
-                            <span class="ov-ico"><i class="fas {{ $s['icon'] }}"></i></span>
-                            <i class="fas fa-arrow-down ov-go"></i>
-                            <div>
-                                <strong>{{ $fmt($s['total']) }}</strong>
-                                <span class="ov-label">{{ $s['title'] }}</span>
-                            </div>
+                        <a href="#sec-{{ $s['id'] }}" class="ov-item tone-{{ $s['tone'] ?? 'slate' }}">
+                            <span class="ov-go" aria-hidden="true"><i class="fas fa-arrow-down"></i></span>
+                            <span class="ov-ico" aria-hidden="true"><i class="fas {{ $s['icon'] }}"></i></span>
+                            <span class="ov-text">
+                                <strong class="ov-title">{{ $s['title'] }}</strong>
+                                <span class="ov-desc">{{ $s['desc'] ?? '' }}</span>
+                            </span>
                         </a>
                     @endif
                 @endforeach
@@ -967,7 +1009,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         </section>
 
         @foreach($visible as $s)
-            <section class="dash-section" id="sec-{{ $s['id'] }}">
+            <section class="dash-section tone-{{ $s['tone'] ?? 'slate' }}" id="sec-{{ $s['id'] }}">
                 <div class="section-heading">
                     <span class="section-heading-ico"><i class="fas {{ $s['icon'] }}"></i></span>
                     <h3>{{ $s['title'] }}</h3>
@@ -978,7 +1020,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     @foreach($s['items'] as $it)
                         <a href="{{ $it[3] }}" class="stat-card">
                             <div class="stat-top">
-                                <div class="stat-ico {{ $it[5] }}"><i class="{{ str_contains($it[2], 'fa-brands') ? $it[2] : 'fas ' . $it[2] }}"></i></div>
+                                <div class="stat-ico"><i class="{{ str_contains($it[2], 'fa-brands') ? $it[2] : 'fas ' . $it[2] }}"></i></div>
                                 <span class="stat-go"><i class="fas fa-arrow-right"></i></span>
                             </div>
                             <div>
