@@ -436,6 +436,27 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 .popup a:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3); }
 
 /* ==========================================================
+   GRAFIK STATISTIK
+   ========================================================== */
+.stats { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 24px; }
+.stats[hidden] { display: none; }
+
+.stat-card {
+    background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg);
+    padding: 24px; box-shadow: var(--shadow-sm);
+}
+.stat-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+.stat-head h3 { font-family: var(--display); font-size: 1.05rem; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.stat-head p { margin-top: 2px; font-size: .8rem; color: var(--muted); }
+.stat-total {
+    flex: none; padding: 4px 12px; border-radius: 999px;
+    background: var(--soft); color: var(--ink-3); font-size: .75rem; font-weight: 700; white-space: nowrap;
+}
+.chart-box { position: relative; height: 340px; }
+.stat-hint { margin-top: 14px; font-size: .75rem; color: var(--muted); }
+.stat-hint i { margin-right: 6px; }
+
+/* ==========================================================
    FOOTER
    ========================================================== */
 .footer { background: #0f172a; color: rgba(255,255,255,0.7); padding: 80px 0 30px; }
@@ -492,6 +513,9 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
     .filter-list { flex: none; }
     #daftar-titik { max-height: 240px; }
     .map-list { border-left: none; border-top: 1px solid var(--line); max-height: 380px; }
+
+    .stats { grid-template-columns: 1fr; }
+    .chart-box { height: 300px; }
 }
 @media (max-width: 768px) {
     .chips { grid-template-columns: 1fr 1fr; }
@@ -502,6 +526,8 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
     .chips { grid-template-columns: 1fr; }
     .brand span { display: none; }
     .sos-fab { right: 20px; bottom: 20px; }
+    .stat-card { padding: 18px; }
+    .stat-head { flex-direction: column; gap: 8px; }
 }
 </style>
 
@@ -543,7 +569,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
                     </ul>
                 </li>
 
-<li class="has-drop">
+                <li class="has-drop">
                     <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
                         <li><a href="/produk-hukum/undang-undang">Undang-Undang</a></li>
@@ -728,6 +754,34 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
                 </aside>
 
             </div>
+
+            <!-- ==================== GRAFIK ==================== -->
+            <section class="stats" id="stats" aria-label="Statistik titik operasional" hidden>
+                <article class="stat-card">
+                    <div class="stat-head">
+                        <div>
+                            <h3>Titik per kategori</h3>
+                            <p>Jumlah titik tersimpan menurut jenisnya</p>
+                        </div>
+                        <span class="stat-total" id="total-kat"></span>
+                    </div>
+                    <div class="chart-box"><canvas id="grafik-kategori" role="img" aria-label="Grafik batang jumlah titik per kategori"></canvas></div>
+                    <p class="stat-hint"><i class="fas fa-hand-pointer"></i>Klik batang untuk memfilter peta.</p>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-head">
+                        <div>
+                            <h3>Sebaran per kecamatan</h3>
+                            <p id="sub-kec">Semua kategori</p>
+                        </div>
+                        <span class="stat-total" id="total-kec"></span>
+                    </div>
+                    <div class="chart-box"><canvas id="grafik-kecamatan" role="img" aria-label="Grafik batang jumlah titik per kecamatan"></canvas></div>
+                    <p class="stat-hint"><i class="fas fa-hand-pointer"></i>Klik batang untuk menyorot kecamatan di peta.</p>
+                </article>
+            </section>
+
         </div>
     </div>
 </main>
@@ -795,6 +849,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 
 <!-- ==================== SCRIPTS ==================== -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
 (function () {
     'use strict';
@@ -854,7 +909,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
             btn.setAttribute('aria-expanded', open);
             closeDrops(li);
         });
-        
+
         li.addEventListener('mouseleave', function () {
             if (!desktop.matches) return;
             li.classList.remove('open');
@@ -1048,12 +1103,152 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
         });
     }
 
+    /* =========================================================
+       6b. GRAFIK BATANG (Chart.js)
+       ========================================================= */
+    const charts = {};
+    const PUDAR = '40'; // alpha hex untuk batang yang tidak dipilih
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Angka di atas batang (khusus grafik kategori)
+    const labelAngka = {
+        id: 'labelAngka',
+        afterDatasetsDraw(c) {
+            const ctx = c.ctx;
+            ctx.save();
+            ctx.font = '700 12px ' + Chart.defaults.font.family;
+            ctx.fillStyle = '#0f172a';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom';
+            c.getDatasetMeta(0).data.forEach((bar, i) => ctx.fillText(c.data.datasets[0].data[i], bar.x, bar.y - 4));
+            ctx.restore();
+        }
+    };
+
+    // Buat grafik sekali, lalu cukup perbarui data & legenda
+    function aturGrafik(nama, canvasId, config) {
+        if (charts[nama]) {
+            charts[nama].data = config.data;
+            charts[nama].options.plugins.legend.display = config.options.plugins.legend.display;
+            charts[nama].update();
+            return;
+        }
+        charts[nama] = new Chart($(canvasId), config);
+    }
+
+    function renderGrafik() {
+        const ada = data.titik.length > 0;
+        $('stats').hidden = !ada;
+        if (!ada || typeof Chart === 'undefined') return;
+
+        Chart.defaults.font.family = "'Instrument Sans', system-ui, sans-serif";
+        Chart.defaults.color = '#64748b';
+
+        const keys = Object.keys(KATEGORI);
+        const aktifKat = state.kategori;
+        const warnaBatang = (warna, aktif) => aktif ? warna : warna + PUDAR;
+        const kursor = (e, els) => { e.native.target.style.cursor = els.length ? 'pointer' : 'default'; };
+        const grid = { color: '#e2e8f0', drawTicks: false };
+        const tooltip = {
+            backgroundColor: '#0f172a', padding: 10, cornerRadius: 8, boxPadding: 4,
+            titleFont: { weight: '700' }
+        };
+
+        /* ---------- Grafik 1: titik per kategori ---------- */
+        const totalKat = keys.map(k => data.titik.filter(p => p.kategori === k).length);
+        $('total-kat').textContent = data.titik.length + ' titik';
+
+        aturGrafik('kat', 'grafik-kategori', {
+            type: 'bar',
+            plugins: [labelAngka],
+            data: {
+                labels: keys.map(k => KATEGORI[k].label),
+                datasets: [{
+                    data: totalKat,
+                    backgroundColor: keys.map(k => warnaBatang(KATEGORI[k].warna, !aktifKat || aktifKat === k)),
+                    borderRadius: 8, borderSkipped: false, maxBarThickness: 56
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                animation: { duration: reduceMotion ? 0 : 500 },
+                layout: { padding: { top: 22 } },
+                onClick: (e, els) => {
+                    if (!els.length) return;
+                    setKategori(keys[els[0].index]);
+                    $('map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                },
+                onHover: kursor,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { ...tooltip, callbacks: { label: c => ` ${c.parsed.y} titik` } }
+                },
+                scales: {
+                    x: { grid: { display: false }, border: { display: false } },
+                    y: { beginAtZero: true, ticks: { precision: 0, padding: 8 }, grid, border: { display: false } }
+                }
+            }
+        });
+
+        /* ---------- Grafik 2: sebaran per kecamatan ---------- */
+        const per = {};
+        data.kecamatan.forEach(n => { per[n] = {}; });
+        data.titik.forEach(p => {
+            if (per[p.kecamatan]) per[p.kecamatan][p.kategori] = (per[p.kecamatan][p.kategori] || 0) + 1;
+        });
+
+        const katTampil = aktifKat ? [aktifKat] : keys;
+        const jumlah = n => katTampil.reduce((s, k) => s + (per[n][k] || 0), 0);
+        const labels = [...data.kecamatan].sort((a, b) => jumlah(b) - jumlah(a) || a.localeCompare(b));
+
+        $('sub-kec').textContent = aktifKat ? KATEGORI[aktifKat].label : 'Semua kategori';
+        $('total-kec').textContent = labels.reduce((s, n) => s + jumlah(n), 0) + ' titik';
+
+        aturGrafik('kec', 'grafik-kecamatan', {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: katTampil.map(k => ({
+                    label: KATEGORI[k].label,
+                    data: labels.map(n => per[n][k] || 0),
+                    backgroundColor: labels.map(n => warnaBatang(KATEGORI[k].warna, !state.kecamatan || state.kecamatan === n)),
+                    borderRadius: 4, borderSkipped: false, maxBarThickness: 22
+                }))
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true, maintainAspectRatio: false,
+                animation: { duration: reduceMotion ? 0 : 500 },
+                onClick: (e, els, chart) => {
+                    if (!els.length) return;
+                    const n = chart.data.labels[els[0].index];
+                    if (n === state.kecamatan) setKecamatan('');
+                    else fokusKecamatan(n);
+                    $('map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                },
+                onHover: kursor,
+                plugins: {
+                    legend: {
+                        display: !aktifKat, position: 'top', align: 'start',
+                        labels: { usePointStyle: true, pointStyle: 'rectRounded', boxWidth: 10, boxHeight: 10, padding: 16 }
+                    },
+                    tooltip: { ...tooltip, mode: 'index', intersect: false, callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.x}` } }
+                },
+                scales: {
+                    x: { stacked: true, beginAtZero: true, ticks: { precision: 0 }, grid, border: { display: false } },
+                    y: { stacked: true, grid: { display: false }, border: { display: false } }
+                }
+            }
+        });
+    }
+
     function render() {
         renderChips();
         renderFilter();
         renderDaftarKecamatan();
         renderDaftarTitik();
         renderMarker();
+        try { renderGrafik(); } catch (e) { console.error('Grafik gagal dimuat:', e); }
     }
 
     /* =========================================================
