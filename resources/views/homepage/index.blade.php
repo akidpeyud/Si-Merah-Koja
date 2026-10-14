@@ -609,20 +609,6 @@
                     </ul>
                 </li>
                 
-                </li>
-
-                <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Profil <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="#">Visi Misi</a></li>
-                        <li><a href="/sotk">SOTK</a></li>
-                        <li><a href="#">Tupoksi</a></li>
-                        <li><a href="#">Kepegawaian</a></li>
-                        <li><a href="#">Program Kegiatan</a></li>
-                        <li><a href="#">Cascading</a></li>
-                    </ul>
-                </li>
-
                 <li class="has-drop">
                     <button class="menu-trigger" type="button" aria-expanded="false">SOP <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
