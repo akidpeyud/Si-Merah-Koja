@@ -201,7 +201,6 @@
         .panel { display: none; animation: rise .5s both; }
         .panel.show { display: block; }
         .panel-card { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
-        .panel-flat { }
         .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 22px 28px; border-bottom: 1px solid var(--line); }
         .panel-head h2 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: 1.5rem; letter-spacing: -0.02em; }
         .panel-head .count { font-size: .85rem; font-weight: 700; color: var(--signal-d); background: #fdeceb; padding: 4px 14px; border-radius: 999px; }
@@ -230,34 +229,241 @@
         .pi-map { flex-basis: 100%; height: 260px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: var(--soft); }
         .pi-map iframe { width: 100%; height: 100%; border: 0; }
 
-        .search { margin: 16px 28px 0; display: flex; align-items: center; gap: 10px; padding: 10px 18px; border: 1.5px solid var(--line); border-radius: 999px; background: var(--paper); max-width: 380px; transition: .2s; }
+        /* Bar Pencarian + Saklar Tampilan Galeri/Tabel */
+        .gen-bar { margin: 18px 28px 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+        .search { display: flex; align-items: center; gap: 10px; padding: 10px 18px; border: 1.5px solid var(--line); border-radius: 999px; background: var(--paper); flex: 1 1 280px; max-width: 420px; transition: .2s; }
         .search:focus-within { border-color: var(--ink); background: #fff; box-shadow: 0 0 0 4px rgba(255,182,39,.4); }
         .search i { color: var(--steel); font-size: .9rem; }
         .search input { border: 0; background: none; outline: 0; width: 100%; font: inherit; font-size: .92rem; }
 
-        .tbl-wrap { overflow-x: auto; padding: 16px 28px 28px; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: .92rem; }
-        thead th { text-align: left; font-size: .72rem; text-transform: uppercase; letter-spacing: .07em; color: var(--steel); background: var(--paper); padding: 11px 14px; white-space: nowrap; }
-        thead th:first-child { border-radius: 12px 0 0 12px; }
-        thead th:last-child { border-radius: 0 12px 12px 0; }
-        td { padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
-        tbody tr { transition: background .15s; }
-        tbody tr:hover { background: #f8fafc; }
-        tbody tr:last-child td { border-bottom: 0; }
-        td.c-no, th.c-no { width: 52px; color: var(--steel); font-weight: 600; }
-        td.c-img, th.c-img { width: 110px; }
-        td.c-jml, th.c-jml { width: 90px; text-align: center; }
-        td.c-nama { min-width: 220px; }
-        td .nama { font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: .98rem; line-height: 1.3; letter-spacing: -0.005em; color: var(--ink); }
-        .jml { display: inline-block; min-width: 38px; padding: 3px 12px; border-radius: 8px; background: #eaf0ff; border: 1px solid #c9d8fb; color: var(--blue); font-weight: 700; font-size: .85rem; text-align: center; }
-        td img { width: 88px; height: 62px; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); }
-        td .noimg { width: 88px; height: 62px; border-radius: 10px; border: 1px dashed var(--line); display: grid; place-items: center; color: #c0cad6; }
-        td a.zoom { position: relative; display: inline-block; cursor: zoom-in; border-radius: 10px; }
-        td a.zoom img { transition: transform .2s, box-shadow .2s; }
-        td a.zoom:hover img { transform: scale(1.05); box-shadow: 0 10px 20px -8px rgba(13,27,42,.45); }
-        td a.zoom::after { content: "\f00e"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; right: 6px; bottom: 6px; width: 22px; height: 22px; border-radius: 50%; background: rgba(13,27,42,.7); color: #fff; font-size: .65rem; display: grid; place-items: center; opacity: 0; transition: opacity .2s; }
-        td a.zoom:hover::after { opacity: 1; }
+        .tbl-wrap { overflow-x: auto; padding: 20px 28px 30px; }
         .no-result { text-align: center; padding: 36px 16px; color: var(--steel); }
+
+        /* ==========================================================
+           MODE 1 (DEFAULT): GALERI KARTU BESAR (TANPA PERLU ZOOM)
+           ========================================================== */
+        .tbl-wrap.mode-gallery { overflow-x: visible; }
+        .tbl-wrap.mode-gallery table,
+        .tbl-wrap.mode-gallery tbody { display: block; width: 100%; }
+        .tbl-wrap.mode-gallery thead { display: none; }
+        .tbl-wrap.mode-gallery tbody {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 22px;
+        }
+        .tbl-wrap.mode-gallery tbody tr {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            border: 1.5px solid var(--line);
+            border-radius: var(--r-md);
+            overflow: hidden;
+            box-shadow: 0 8px 24px -12px rgba(13,27,42,.1);
+            transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+        }
+        .tbl-wrap.mode-gallery tbody tr:hover {
+            transform: translateY(-5px);
+            border-color: #c3cfde;
+            box-shadow: 0 20px 36px -16px rgba(13,27,42,.22);
+        }
+        .tbl-wrap.mode-gallery td {
+            display: block;
+            width: 100%;
+            padding: 0;
+            border: 0;
+        }
+
+        /* Nomor Urut Melayang di Atas Foto */
+        .tbl-wrap.mode-gallery td.c-no {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 3;
+            width: auto;
+            pointer-events: none;
+        }
+        .tbl-wrap.mode-gallery td.c-no .no {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 34px;
+            height: 30px;
+            padding: 0 10px;
+            border-radius: 999px;
+            background: rgba(13, 27, 42, .82);
+            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255,255,255,.18);
+            color: #fff;
+            font-family: var(--font-display);
+            font-size: .82rem;
+            font-weight: 800;
+            box-shadow: 0 4px 12px rgba(0,0,0,.25);
+        }
+        .tbl-wrap.mode-gallery td.c-no .no::before { content: "#"; opacity: .65; margin-right: 1px; }
+
+        /* Area Gambar Utama Besar & Jelas */
+        .tbl-wrap.mode-gallery td.c-img {
+            order: 1;
+            width: 100%;
+            height: 230px;
+            background: var(--paper);
+            border-bottom: 1px solid var(--line);
+            overflow: hidden;
+        }
+        .tbl-wrap.mode-gallery td.c-img a.zoom {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
+            position: relative;
+        }
+        .tbl-wrap.mode-gallery td.c-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            border: 0;
+            border-radius: 0;
+            transition: transform .45s ease;
+        }
+        .tbl-wrap.mode-gallery tbody tr:hover td.c-img img {
+            transform: scale(1.05);
+        }
+        .tbl-wrap.mode-gallery td.c-img a.zoom::after {
+            content: "\f065  Layar penuh";
+            font-family: "Font Awesome 6 Free", var(--font-body);
+            font-weight: 700;
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            width: auto;
+            height: auto;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(13, 27, 42, .82);
+            color: #fff;
+            font-size: .74rem;
+            letter-spacing: .01em;
+            display: inline-flex;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(4px);
+            transition: opacity .2s, transform .2s;
+        }
+        .tbl-wrap.mode-gallery td.c-img a.zoom:hover::after {
+            opacity: 1;
+            transform: none;
+        }
+        .tbl-wrap.mode-gallery td.c-img .noimg {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            border-radius: 0;
+            background: repeating-linear-gradient(135deg, var(--paper) 0 14px, var(--soft) 14px 28px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #94a3b8;
+            font-size: .84rem;
+            font-weight: 600;
+        }
+        .tbl-wrap.mode-gallery td.c-img .noimg i { font-size: 2.2rem; color: #cbd5e1; }
+
+        /* Nama Sarana / Prasarana & Badge di Bawah Gambar */
+        .tbl-wrap.mode-gallery td.c-nama {
+            order: 2;
+            min-width: 0;
+            padding: 18px 20px 10px;
+        }
+        .tbl-wrap.mode-gallery td.c-nama .nama {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-stretch: 92%;
+            font-size: 1.08rem;
+            line-height: 1.35;
+            color: var(--ink);
+        }
+        .item-badges {
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .ibadge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            background: var(--paper);
+            border: 1px solid var(--line);
+            font-size: .76rem;
+            font-weight: 700;
+            color: var(--steel);
+        }
+        .ibadge i { color: var(--signal-d); }
+        .ibadge.plat i { color: var(--blue); }
+
+        /* Baris Jumlah & Kolom Lain di Dalam Kartu */
+        .tbl-wrap.mode-gallery td.c-jml,
+        .tbl-wrap.mode-gallery td.c-etc {
+            order: 3;
+            width: 100%;
+            padding: 9px 20px;
+            border-top: 1px dashed var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: .88rem;
+            text-align: right;
+            color: var(--ink-2);
+            font-weight: 600;
+        }
+        .tbl-wrap.mode-gallery td.c-jml::before,
+        .tbl-wrap.mode-gallery td.c-etc::before {
+            content: attr(data-label);
+            font-size: .76rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            color: var(--steel);
+            text-align: left;
+            flex: none;
+        }
+        .tbl-wrap.mode-gallery tbody tr > td:last-child {
+            padding-bottom: 16px;
+        }
+
+        /* ==========================================================
+           MODE 2: TABEL LEBAR (GAMBAR TETAP DIPERBESAR 150x104)
+           ========================================================== */
+        .tbl-wrap.mode-table table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: .92rem; }
+        .tbl-wrap.mode-table thead th { text-align: left; font-size: .72rem; text-transform: uppercase; letter-spacing: .07em; color: var(--steel); background: var(--paper); padding: 12px 14px; white-space: nowrap; }
+        .tbl-wrap.mode-table thead th:first-child { border-radius: 12px 0 0 12px; }
+        .tbl-wrap.mode-table thead th:last-child { border-radius: 0 12px 12px 0; }
+        .tbl-wrap.mode-table td { padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+        .tbl-wrap.mode-table tbody tr { transition: background .15s; }
+        .tbl-wrap.mode-table tbody tr:hover { background: #f8fafc; }
+        .tbl-wrap.mode-table tbody tr:last-child td { border-bottom: 0; }
+        .tbl-wrap.mode-table td.c-no, .tbl-wrap.mode-table th.c-no { width: 52px; color: var(--steel); font-weight: 600; }
+        .tbl-wrap.mode-table td.c-img, .tbl-wrap.mode-table th.c-img { width: 170px; }
+        .tbl-wrap.mode-table td.c-jml, .tbl-wrap.mode-table th.c-jml { width: 100px; text-align: center; }
+        .tbl-wrap.mode-table td.c-nama { min-width: 220px; }
+        .tbl-wrap.mode-table td .nama { font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1rem; line-height: 1.35; letter-spacing: -0.005em; color: var(--ink); }
+        .jml { display: inline-block; min-width: 38px; padding: 4px 12px; border-radius: 8px; background: #eaf0ff; border: 1px solid #c9d8fb; color: var(--blue); font-weight: 700; font-size: .85rem; text-align: center; }
+        .tbl-wrap.mode-table td img { width: 150px; height: 104px; object-fit: cover; border-radius: 12px; border: 1px solid var(--line); }
+        .tbl-wrap.mode-table td .noimg { width: 150px; height: 104px; border-radius: 12px; border: 1px dashed var(--line); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #94a3b8; font-size: .75rem; }
+        .tbl-wrap.mode-table td .noimg i { font-size: 1.4rem; color: #c0cad6; }
+        .tbl-wrap.mode-table td a.zoom { position: relative; display: inline-block; cursor: zoom-in; border-radius: 12px; }
+        .tbl-wrap.mode-table td a.zoom img { transition: transform .2s, box-shadow .2s; }
+        .tbl-wrap.mode-table td a.zoom:hover img { transform: scale(1.04); box-shadow: 0 10px 20px -8px rgba(13,27,42,.45); }
+        .tbl-wrap.mode-table td a.zoom::after { content: "\f00e"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; right: 8px; bottom: 8px; width: 26px; height: 26px; border-radius: 50%; background: rgba(13,27,42,.75); color: #fff; font-size: .7rem; display: grid; place-items: center; opacity: 0; transition: opacity .2s; }
+        .tbl-wrap.mode-table td a.zoom:hover::after { opacity: 1; }
 
         /* ==========================================================
            PANEL RICH (Sumber Air & Hidrant Kota)
@@ -432,19 +638,22 @@
 
         @media (max-width: 700px) {
             .panel-head, .chips { padding-left: 18px; padding-right: 18px; }
-            .pos-info, .search { margin-left: 18px; margin-right: 18px; }
-            .tbl-wrap { padding: 8px 18px 20px; overflow-x: visible; }
-            .panel-card thead { display: none; }
-            .panel-card table, .panel-card tbody { display: block; }
-            .panel-card tbody tr { display: grid; grid-template-columns: 76px 1fr auto; gap: 4px 14px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); }
-            .panel-card tbody tr:last-child { border-bottom: 0; }
-            .panel-card td { display: block; border: 0; padding: 0; }
-            td.c-no { display: none; }
-            td.c-img { grid-column: 1; grid-row: 1 / span 3; width: auto; }
-            td.c-nama { grid-column: 2; min-width: 0; }
-            td.c-jml { grid-column: 3; grid-row: 1; width: auto; }
-            td.c-etc { grid-column: 2 / -1; font-size: .85rem; color: var(--steel); }
-            td img, td .noimg { width: 76px; height: 58px; }
+            .pos-info, .gen-bar { margin-left: 18px; margin-right: 18px; }
+            .search { max-width: 100%; }
+            .tbl-wrap { padding: 14px 18px 24px; overflow-x: visible; }
+            .tbl-wrap.mode-gallery tbody { grid-template-columns: 1fr; gap: 16px; }
+            .tbl-wrap.mode-gallery td.c-img { height: 210px; }
+            .tbl-wrap.mode-table thead { display: none; }
+            .tbl-wrap.mode-table table, .tbl-wrap.mode-table tbody { display: block; }
+            .tbl-wrap.mode-table tbody tr { display: grid; grid-template-columns: 110px 1fr auto; gap: 6px 14px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); }
+            .tbl-wrap.mode-table tbody tr:last-child { border-bottom: 0; }
+            .tbl-wrap.mode-table td { display: block; border: 0; padding: 0; }
+            .tbl-wrap.mode-table td.c-no { display: none; }
+            .tbl-wrap.mode-table td.c-img { grid-column: 1; grid-row: 1 / span 3; width: auto; }
+            .tbl-wrap.mode-table td.c-nama { grid-column: 2; min-width: 0; }
+            .tbl-wrap.mode-table td.c-jml { grid-column: 3; grid-row: 1; width: auto; }
+            .tbl-wrap.mode-table td.c-etc { grid-column: 2 / -1; font-size: .85rem; color: var(--steel); }
+            .tbl-wrap.mode-table td img, .tbl-wrap.mode-table td .noimg { width: 110px; height: 80px; }
             .pi-map { height: 220px; }
         }
 
@@ -1177,7 +1386,7 @@
                 </section>
 
             {{-- ============================================================
-                 TAB LAIN (mis. Prasarana Pemadam): tabel per pos
+                 TAB LAIN (Sarana / Prasarana per Pos): Galeri Kartu Besar & Tabel
                  ============================================================ --}}
             @else
                 @php
@@ -1205,6 +1414,7 @@
                     $kolTampil = array_values(array_diff($kolDasar, $kolBadge));
                     $kolNama   = collect($kolTampil)->first(fn ($c) => preg_match('/jenis|nama/i', $c));
                     if (!$kolNama) { $kolBadge = []; $kolTampil = $kolDasar; }
+                    $adaGambar = collect($kolTampil)->contains(fn ($c) => preg_match('/foto|gambar/i', $c));
                 @endphp
                 <section class="panel {{ $loop->first ? 'show' : '' }}" id="panel-{{ $key }}" data-panel="{{ $key }}" data-type="generic">
                   <div class="panel-card">
@@ -1246,11 +1456,20 @@
                             </div>
                         @endif
 
-                        <label class="search"><i class="fas fa-search"></i>
-                            <input type="search" placeholder="Cari nama prasarana..." data-search="{{ $key }}" autocomplete="off">
-                        </label>
+                        <div class="gen-bar">
+                            <label class="search"><i class="fas fa-search"></i>
+                                <input type="search" placeholder="Cari nama {{ $path_sarana ? 'sarana' : 'prasarana' }}..." data-search="{{ $key }}" autocomplete="off">
+                            </label>
 
-                        <div class="tbl-wrap">
+                            @if($adaGambar)
+                                <div class="seg" data-gen-view="{{ $key }}" role="group" aria-label="Mode tampilan">
+                                    <button type="button" data-gmode="gallery" aria-pressed="true"><i class="fas fa-table-cells-large"></i> Galeri</button>
+                                    <button type="button" data-gmode="table" aria-pressed="false"><i class="fas fa-list"></i> Tabel</button>
+                                </div>
+                            @endif
+                        </div>
+
+                        <div class="tbl-wrap {{ $adaGambar ? 'mode-gallery' : 'mode-table' }}" data-wrap="{{ $key }}">
                             <table id="tbl-{{ $key }}">
                                 <thead><tr>
                                     <th class="c-no">No</th>
@@ -1269,20 +1488,34 @@
                                                     : ($c === $kolNama ? 'c-nama'
                                                     : (preg_match('/^jumlah$/i', $c) ? 'c-jml' : 'c-etc'));
                                             @endphp
-                                            <td class="{{ $cls }}">
+                                            <td class="{{ $cls }}" data-label="{{ $labelKol($c) }}">
                                                 @if($cls === 'c-img')
                                                     @php $src = !empty($r[$c]) ? $gambar($r[$c]) : null; @endphp
                                                     @if($src)
-                                                        <a href="{{ $src }}" class="zoom" data-full="{{ $src }}" aria-label="Lihat gambar"><img src="{{ $src }}" alt="" loading="lazy"></a>
+                                                        <a href="{{ $src }}" class="zoom" data-full="{{ $src }}" aria-label="Lihat gambar">
+                                                            <img src="{{ $src }}" alt="{{ $kolNama ? ($r[$kolNama] ?? '') : '' }}" loading="lazy">
+                                                        </a>
                                                     @else
-                                                        <span class="noimg"><i class="far fa-image"></i></span>
+                                                        <span class="noimg"><i class="far fa-image"></i><span>Belum ada foto</span></span>
                                                     @endif
                                                 @elseif($cls === 'c-nama')
                                                     <p class="nama">{{ mb_strtoupper((string) ($r[$c] ?? '-')) }}</p>
+                                                    @if(!empty($kolBadge))
+                                                        <div class="item-badges">
+                                                            @foreach($kolBadge as $b)
+                                                                @if(!empty($r[$b]) && $r[$b] !== '-')
+                                                                    <span class="ibadge {{ preg_match('/plat/i', $b) ? 'plat' : '' }}">
+                                                                        <i class="fas {{ preg_match('/tahun/i', $b) ? 'fa-calendar-check' : 'fa-car' }}"></i>
+                                                                        {{ preg_match('/tahun/i', $b) ? 'Tahun ' . $r[$b] : mb_strtoupper((string) $r[$b]) }}
+                                                                    </span>
+                                                                @endif
+                                                            @endforeach
+                                                        </div>
+                                                    @endif
                                                 @elseif($cls === 'c-jml')
                                                     <span class="jml">{{ $r[$c] ?? '-' }}</span>
                                                 @else
-                                                    {{ $r[$c] ?? '-' }}
+                                                    {{ ($r[$c] ?? '') !== '' ? $r[$c] : '-' }}
                                                 @endif
                                             </td>
                                         @endforeach
@@ -1477,7 +1710,7 @@
     if (location.hash) openTab(location.hash.slice(1));
 
     /* ==========================================================
-       PANEL GENERIC: filter pos + cari, nomor dihitung ulang
+       PANEL GENERIC: filter pos + cari + mode galeri/tabel
        ========================================================== */
     function terapkan(key) {
         var panel = document.getElementById('panel-' + key);
@@ -1543,6 +1776,21 @@
             });
             isiInfo(box.closest('.panel'), c);
             terapkan(box.dataset.chips);
+        });
+    });
+    document.querySelectorAll('[data-gen-view]').forEach(function (seg) {
+        var key = seg.dataset.genView;
+        var wrap = document.querySelector('[data-wrap="' + key + '"]');
+        var vbtns = seg.querySelectorAll('button');
+        vbtns.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var mode = btn.dataset.gmode;
+                vbtns.forEach(function (b) { b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); });
+                if (wrap) {
+                    wrap.classList.toggle('mode-gallery', mode === 'gallery');
+                    wrap.classList.toggle('mode-table', mode === 'table');
+                }
+            });
         });
     });
     document.querySelectorAll('[data-type="generic"]').forEach(function (p) { terapkan(p.dataset.panel); });
