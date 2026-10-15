@@ -77,14 +77,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const loader = document.getElementById('simerah-loader');
     const loaderMsg = document.getElementById('simerah-loader-msg');
 
-    // Sembunyikan splash screen saat halaman selesai dimuat
-    window.addEventListener('load', () => loader.classList.add('is-hidden'));
-    // Fallback jika asset lama dimuat (maksimal 1.2 detik)
-    setTimeout(() => loader.classList.add('is-hidden'), 1200);
+    const hideLoader = () => {
+        if (loader) loader.classList.add('is-hidden');
+    };
 
-    // Fix agar loader tidak nyangkut saat tombol Back browser ditekan
+    // Sembunyikan splash screen saat halaman selesai atau maksimal 800ms
+    window.addEventListener('load', hideLoader);
+    setTimeout(hideLoader, 800);
+
     window.addEventListener('pageshow', (e) => {
-        if (e.persisted) loader.classList.add('is-hidden');
+        if (e.persisted) hideLoader();
     });
 
     // A. OTOMATIS MUNCULKAN LOADING SAAT SUBMIT FORM (LOGIN / INPUT / CRUD)
@@ -93,7 +95,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const form = e.target;
         if (form.tagName !== 'FORM' || form.hasAttribute('data-no-loader')) return;
 
-        // Cek apakah ini form DELETE (Hapus Data CRUD)
         const methodInput = form.querySelector('input[name="_method"]');
         const isDelete = methodInput && methodInput.value.toUpperCase() === 'DELETE';
 
@@ -120,7 +121,6 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // Munculkan loading saat form biasa (Tambah, Edit, Login, Pengaduan Publik) di-submit
         loaderMsg.textContent = 'Memproses data, mohon tunggu...';
         loader.classList.remove('is-hidden');
     });
@@ -174,4 +174,10 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     @endif
 });
+
+// Extra safeguard langsung di luar DOMContentLoaded jika skrip melambat
+setTimeout(function() {
+    const l = document.getElementById('simerah-loader');
+    if (l) l.classList.add('is-hidden');
+}, 1000);
 </script>
