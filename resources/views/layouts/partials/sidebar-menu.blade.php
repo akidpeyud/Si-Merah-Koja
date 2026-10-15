@@ -22,6 +22,7 @@
                 ['Kelola Data Laporan', '/internal/damtan/data-laporan', 'fa-clipboard-list'],
                 ['Kelola Surat Korban', '/internal/surat-korban/data', 'fa-folder-open'],
                 ['Kelola Surat Keramaian', route('internal.izin-keramaian.index'), 'fa-users-rectangle'],
+                ['Kelola Penggunaan Sarana', url('/internal/damtan/kelola-penggunaan-sarana'), 'fa-truck-droplet'],
                 ['Rekap Layanan & Penyelamatan', '/internal/damtan/rekap-layanan', 'fa-truck-medical'],
             ],
         ],
@@ -81,10 +82,12 @@
             ],
         ],
         [
-            'title' => 'Pengaturan Akun', 'icon' => 'fa-user-gear', 'roles' => 'Super User', 'kicker' => 'Sistem',
+            'title' => 'Pengaturan Akun', 'icon' => 'fa-user-gear', 'roles' => $ops, 'kicker' => 'Akun',
             'items' => [
-                ['Kelola Pengguna', url('/internal/kelola-user'), 'fa-users-gear'],
-                ['Kelola Akun Pemohon', url('/internal/kelola-pemohon'), 'fa-address-book'],
+                // Item ke-4 (opsional) = batasan role khusus item
+                ['Profil Saya', url('/internal/profil'), 'fa-user-pen'],
+                ['Kelola Pengguna', url('/internal/kelola-user'), 'fa-users-gear', 'Super User'],
+                ['Kelola Akun Pemohon', url('/internal/kelola-pemohon'), 'fa-address-book', 'Super User'],
             ],
         ],
     ];
@@ -112,6 +115,7 @@
             </summary>
             <div class="side-sub">
                 @foreach($g['items'] as $it)
+                    @continue(!empty($it[3]) && !Auth::user()->hasAnyRole(explode('|', $it[3])))
                     <a href="{{ $it[1] }}" class="{{ $isActive($it[1]) ? 'active' : '' }}">
                         <i class="{{ $iconClass($it[2]) }}" style="width:18px;text-align:center;margin-top:3px;"></i>
                         <span class="lbl">{{ $it[0] }}</span>
