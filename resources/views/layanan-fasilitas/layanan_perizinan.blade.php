@@ -823,11 +823,11 @@
                     </div>
                     <p class="cs-desc">Masukkan NIK atau Nomor WhatsApp yang Anda gunakan saat mengajukan permohonan.</p>
 
-                    <form class="cs-form" id="csForm" novalidate>
-                        <label class="sr-only" for="csKontak">NIK atau Nomor WhatsApp</label>
-                        <input class="input" type="text" id="csKontak" name="kontak" inputmode="numeric" maxlength="16" autocomplete="off" placeholder="NIK atau Nomor WA" required>
-                        <button type="submit" class="btn btn-dark cs-btn" id="csBtn"><i class="fas fa-search"></i> Cek</button>
-                    </form>
+<form class="cs-form" id="csForm" data-no-loader="true" novalidate>
+    <label class="sr-only" for="csKontak">NIK atau No Kontak / WhatsApp</label>
+    <input class="input" type="text" id="csKontak" name="kontak" inputmode="numeric" maxlength="16" autocomplete="off" placeholder="NIK atau Nomor WA" required>
+    <button type="submit" class="btn btn-dark cs-btn" id="csBtn"><i class="fas fa-search"></i> Cek</button>
+</form>
 
                     <p class="field-err" id="csErr" role="alert"></p>
                     <ul class="cs-list" id="csList" aria-live="polite"></ul>

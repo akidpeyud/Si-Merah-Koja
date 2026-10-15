@@ -334,6 +334,12 @@
         .perizinan-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; margin-top: 24px; align-items: start; }
         @media (min-width: 992px) {
             .perizinan-layout { grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); gap: 32px; }
+            /* Kolom informasi ikut menempel saat halaman di-scroll */
+            .info-stack {
+                position: sticky; top: calc(var(--header-h) + 16px); align-self: start;
+                max-height: calc(100dvh - var(--header-h) - 32px);
+                overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
+            }
         }
         .info-stack { display: grid; gap: 16px; }
         #formulir { scroll-margin-top: calc(var(--header-h) + 16px); }
@@ -780,11 +786,11 @@
                     </div>
                     <p class="cs-desc">Masukkan NIK atau No HP/WA yang Anda gunakan saat mengajukan permohonan.</p>
 
-                    <form class="cs-form" id="csForm" novalidate>
-                        <label class="sr-only" for="csKontak">NIK atau No HP/WA</label>
-                        <input class="input" type="text" id="csKontak" name="kontak" inputmode="numeric" maxlength="20" autocomplete="off" placeholder="NIK atau No HP/WA" required>
-                        <button type="submit" class="btn btn-dark cs-btn" id="csBtn"><i class="fas fa-search"></i> Cek</button>
-                    </form>
+<form class="cs-form" id="csForm" data-no-loader="true" novalidate>
+    <label class="sr-only" for="csKontak">NIK atau No Kontak / WhatsApp</label>
+    <input class="input" type="text" id="csKontak" name="kontak" inputmode="numeric" maxlength="16" autocomplete="off" placeholder="NIK atau Nomor WA" required>
+    <button type="submit" class="btn btn-dark cs-btn" id="csBtn"><i class="fas fa-search"></i> Cek</button>
+</form>
 
                     <p class="field-err" id="csErr" role="alert"></p>
                     <ul class="cs-list" id="csList" aria-live="polite"></ul>
