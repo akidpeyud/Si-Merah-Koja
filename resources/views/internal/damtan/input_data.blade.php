@@ -2,13 +2,243 @@
 
 @section('title', 'Input Data Penyelamatan')
 
-@push('styles')
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<style>
-    :root {
-                --ink: #0d1b2a;
-                --ink-2: #132a43;
-                --ink-3: #1d3856;
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* ==========================================================
+           SIMERAH KOJA - CLEAN NAVY DASHBOARD
+           ========================================================== */
+        :root {
+            --ink: #0d1b2a;
+            --ink-2: #132a43;
+            --ink-3: #1d3856;
+
+            --navy: #163a63;
+            --navy-dark: #0d2947;
+            --navy-light: #eaf1f8;
+            --navy-soft: rgba(22, 58, 99, .08);
+
+            --paper: #f5f7fa;
+            --white: #ffffff;
+
+            --signal: #dc3545;
+            --signal-dark: #b42332;
+            --signal-soft: rgba(220, 53, 69, .09);
+
+            --amber: #f4b740;
+            --success: #198754;
+            --info: #2563eb;
+            --info-soft: rgba(37, 99, 235, .09);
+
+            --steel: #64748b;
+            --steel-soft: #94a3b8;
+
+            --line: #e2e8f0;
+            --line-dark: #cbd5e1;
+
+            --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+            --font-body: 'Instrument Sans', system-ui, sans-serif;
+
+            --r-lg: 18px;
+            --r-md: 14px;
+            --r-sm: 10px;
+
+            --sidebar-w: 272px;
+            --topbar-h: 70px;
+
+            --shadow-xs: 0 1px 2px rgba(13, 27, 42, .04);
+            --shadow-sm: 0 4px 12px rgba(13, 27, 42, .06);
+            --shadow-md: 0 10px 25px rgba(13, 27, 42, .08);
+            --shadow-lg: 0 20px 45px rgba(13, 27, 42, .14);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--ink);
+            background: var(--paper);
+            -webkit-font-smoothing: antialiased;
+        }
+        img { max-width: 100%; display: block; }
+        a { color: inherit; text-decoration: none; }
+        ul, ol { list-style: none; margin: 0; padding: 0; }
+        button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+        :focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; border-radius: 6px; }
+
+        /* ==========================================================
+           TOAST / NOTIFICATION (SISTEM POPUP MODERN)
+           ========================================================== */
+        .toast-wrap { position: fixed; z-index: 9999; top: 20px; left: 50%; transform: translateX(-50%); display: grid; gap: 10px; width: max-content; max-width: calc(100vw - 24px); pointer-events: none; }
+        .toast { display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px; border-radius: 999px; background: #ffffff; border: 1px solid var(--line); box-shadow: var(--shadow-lg); font-weight: 600; font-size: .92rem; animation: toastIn .45s cubic-bezier(.16,.84,.3,1) both; pointer-events: auto; }
+        .toast.leaving { animation: toastOut .3s ease forwards; }
+        .toast-ico { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: .78rem; }
+        .toast.ok .toast-ico { background: var(--success); }
+        .toast.err .toast-ico { background: var(--signal); }
+        .toast-x { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); transition: background .2s, color .2s; }
+        .toast-x:hover { background: var(--ink); color: #fff; }
+        @keyframes toastIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: none; } }
+        @keyframes toastOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-20px); } }
+
+        /* ==========================================================
+           TOPBAR
+           ========================================================== */
+        .topbar { position: sticky; top: 0; z-index: 1020; height: var(--topbar-h); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 28px; background: var(--ink); border-bottom: 1px solid rgba(255,255,255,.08); box-shadow: 0 2px 12px rgba(13, 27, 42, .16); }
+        .topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+        .side-toggle { display: none; width: 40px; height: 40px; border-radius: 10px; align-items: center; justify-content: center; font-size: 1.05rem; color: #fff; transition: background .2s, transform .2s; }
+        .side-toggle:hover { background: rgba(255,255,255,.10); }
+        .side-toggle:active { transform: scale(.95); }
+        .brand { display: flex; align-items: center; gap: 12px; min-width: 0; color: #fff; }
+        .brand img { height: 34px; width: auto; flex: none; }
+        .brand span { font-family: var(--font-display); font-weight: 700; font-size: 1.08rem; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .user-chip { display: flex; align-items: center; gap: 10px; padding: 5px 14px 5px 5px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); transition: background .2s, border-color .2s; }
+        .user-chip:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.18); }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: #ffffff; color: var(--ink); display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: .9rem; flex: none; }
+        .user-meta { display: grid; line-height: 1.25; }
+        .user-meta strong { font-size: .84rem; font-weight: 700; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #ffffff; }
+        .user-meta small { font-size: .72rem; color: rgba(255,255,255,.62); text-transform: capitalize; font-weight: 500; }
+        .btn-logout { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 17px; border-radius: 999px; background: #ffffff; color: var(--ink); font-weight: 600; font-size: .84rem; border: none; transition: background .2s, color .2s, transform .1s, box-shadow .2s; }
+        .btn-logout:hover { background: #e8eef5; color: var(--ink); box-shadow: 0 4px 10px rgba(0,0,0,.12); }
+        .btn-logout:active { transform: scale(.97); }
+
+        @media (max-width: 900px) {
+            .side-toggle { display: inline-flex; }
+            .user-meta { display: none; }
+        }
+
+        /* ==========================================================
+           SHELL & SIDEBAR
+           ========================================================== */
+        .shell { display: flex; align-items: flex-start; min-height: calc(100vh - var(--topbar-h)); }
+        .sidebar { width: var(--sidebar-w); flex: none; position: sticky; top: var(--topbar-h); height: calc(100vh - var(--topbar-h)); overflow-y: auto; background: #ffffff; border-right: 1px solid var(--line); padding: 20px 14px 32px; scrollbar-width: thin; scrollbar-color: #d8dee8 transparent; }
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-track { background: transparent; }
+        .sidebar::-webkit-scrollbar-thumb { background-color: #d8dee8; border-radius: 20px; }
+
+        .side-link { display: flex; align-items: flex-start; gap: 14px; padding: 11px 14px; border-radius: var(--r-sm); font-size: .89rem; font-weight: 600; color: var(--ink); transition: background .2s, color .2s, transform .2s; margin-bottom: 4px; }
+        .side-link:hover { background: #f3f6fa; color: var(--ink); transform: translateX(1px); }
+        .side-link.active { background: var(--ink); color: #ffffff; box-shadow: 0 4px 10px rgba(13,27,42,.10); }
+        .side-link i { width: 20px; text-align: center; font-size: 1rem; color: var(--steel); transition: color .2s; flex: none; margin-top: 3px; }
+        .side-link:hover i { color: var(--ink); }
+        .side-link.active i { color: #ffffff; }
+
+        .lbl { flex: 1 1 auto; min-width: 0; overflow-wrap: break-word; line-height: 1.4; }
+
+        .side-group + .side-group { margin-top: 6px; }
+        .side-group summary { list-style: none; cursor: pointer; display: flex; align-items: flex-start; gap: 12px; padding: 11px 14px; border-radius: var(--r-sm); font-size: .78rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--navy); transition: background .2s, color .2s; user-select: none; }
+        .side-group summary::-webkit-details-marker { display: none; }
+        .side-group summary:hover { background: #f3f6fa; }
+        .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); margin-top: 3px; }
+        .side-group summary .grp-label { flex: 1 1 auto; min-width: 0; white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.4; }
+        .side-group summary .chev { flex: none; font-size: .7rem; margin-top: 4px; transition: transform .25s ease; }
+        .side-group[open] summary .chev { transform: rotate(180deg); }
+
+        .side-sub { display: grid; gap: 3px; padding: 6px 0 10px 8px; border-left: 2px solid var(--line); margin: 2px 0 8px 18px; }
+        .side-sub a { display: flex; align-items: flex-start; gap: 12px; padding: 9px 10px; border-radius: var(--r-sm); font-size: .84rem; font-weight: 500; line-height: 1.4; color: var(--steel); transition: background .2s, color .2s, transform .2s; }
+        .side-sub a:hover { background: var(--navy-light); color: var(--navy-dark); transform: translateX(2px); }
+        .side-sub a.active { background: var(--navy-soft); color: var(--navy); font-weight: 600; }
+        .side-sub a i { width: 18px; text-align: center; font-size: .88rem; opacity: .75; flex: none; margin-top: 3px; }
+        .side-sub a:hover i, .side-sub a.active i { opacity: 1; }
+
+        .side-kicker { padding: 18px 14px 6px; font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--steel-soft); }
+        .sidebar-backdrop { display: none; }
+
+        @media (max-width: 900px) {
+            .sidebar { position: fixed; z-index: 1010; top: var(--topbar-h); left: 0; height: calc(100dvh - var(--topbar-h)); transform: translateX(-100%); transition: transform .3s cubic-bezier(.4,0,.2,1); box-shadow: var(--shadow-lg); }
+            body.side-open .sidebar { transform: none; }
+            .sidebar-backdrop { display: block; position: fixed; inset: var(--topbar-h) 0 0 0; z-index: 1000; background: rgba(13,27,42,.45); opacity: 0; pointer-events: none; transition: opacity .3s; }
+            body.side-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
+        }
+
+        /* ==========================================================
+           MAIN CONTENT & FORM STYLING
+           ========================================================== */
+        .content { flex: 1; min-width: 0; padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 80px; }
+        
+        .page-head { margin-bottom: 26px; }
+        .page-head h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 5px; color: var(--ink); }
+        .page-head p { color: var(--steel); font-size: .95rem; margin-bottom: 0;}
+
+        /* Custom Card Form */
+        .card-custom { background: #ffffff; border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--shadow-xs); transition: box-shadow .2s ease, border-color .2s ease; }
+        .card-custom:hover { box-shadow: var(--shadow-sm); border-color: #d2dae5; }
+
+        /* Custom Tabs */
+        .card-header-tabs { background-color: #f8fafc; border-bottom: 1px solid var(--line); padding: 16px 24px 0 24px; border-radius: var(--r-md) var(--r-md) 0 0; }
+        .nav-tabs-custom { border-bottom: none; display: flex; gap: 4px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+        .nav-tabs-custom::-webkit-scrollbar { display: none; } 
+        
+        .nav-tabs-custom .nav-item { margin-bottom: -1px; }
+        .nav-tabs-custom .nav-link { font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; color: var(--steel); background: transparent; border: 1px solid transparent; border-radius: 8px 8px 0 0; padding: 12px 20px; transition: all 0.2s ease; }
+        .nav-tabs-custom .nav-link:hover { color: var(--navy); border-color: transparent transparent var(--line) transparent; }
+        .nav-tabs-custom .nav-link.active { color: var(--navy); background: #ffffff; border-color: var(--line) var(--line) #ffffff var(--line); }
+
+        /* Section Title Block */
+        .section-title-block { display: flex; align-items: center; gap: 12px; background: var(--navy-soft); padding: 14px 20px; border-radius: 8px; border-left: 4px solid var(--navy); font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--navy-dark); margin-bottom: 24px; }
+        .section-title-block i { font-size: 1.1rem; color: var(--navy); }
+
+        /* Form Elements */
+        .field-label { font-size: .84rem; font-weight: 700; color: var(--ink-2); margin-bottom: 6px; display: inline-flex; align-items: center; }
+        .field-label i { margin-right: 8px; font-size: .85rem; color: var(--steel-soft); }
+
+        .form-control, .form-select { font-family: var(--font-body); min-height: 42px; font-size: .9rem; color: var(--ink); background-color: var(--white); border: 1px solid var(--line-dark); border-radius: 8px; padding: 8px 14px; transition: all 0.2s ease; box-shadow: none; }
+        .form-control:focus, .form-select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+        .form-control:disabled, .form-select:disabled { background-color: #f1f5f9; cursor: not-allowed; opacity: 1; border-color: var(--line); color: var(--steel);}
+        .form-control::placeholder { color: var(--steel-soft); }
+
+        .input-group-text { background-color: #f8fafc; border: 1px solid var(--line-dark); color: var(--steel); font-weight: 600; border-radius: 8px; font-size: 0.9rem; }
+        .input-group > .form-control { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+        .input-group > .input-group-text { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+        
+        /* Custom Checkboxes / Radios (Pill shape) */
+        .form-check-inline { background-color: var(--white); border: 1px solid var(--line-dark); padding: 8px 16px 8px 36px; border-radius: 50px; margin-right: 6px; margin-bottom: 8px; transition: all 0.2s; position: relative; display: inline-flex; align-items: center; }
+        .form-check-inline:hover { border-color: var(--navy); background-color: var(--navy-light); }
+        .form-check-inline .form-check-input { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); margin: 0 !important; cursor: pointer; }
+        .form-check-inline .form-check-label { cursor: pointer; font-size: .88rem; font-weight: 600; color: var(--ink-2); width: 100%; margin-bottom: 0; transition: color 0.2s; }
+        
+        .form-check-input.prio-rendah:checked ~ label { color: var(--steel); font-weight: 700; }
+        .form-check-input.prio-sedang:checked ~ label { color: var(--info); font-weight: 700; }
+        .form-check-input.prio-tinggi:checked ~ label { color: var(--amber); font-weight: 700; }
+        .form-check-input.prio-darurat:checked ~ label { color: var(--signal); font-weight: 700; }
+
+        /* Buttons */
+        .btn-custom-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 24px; background: var(--navy); color: #fff; border: none; border-radius: 8px; font-size: .92rem; font-weight: 600; transition: all .2s ease; }
+        .btn-custom-primary:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13, 27, 42, .15); color: #fff;}
+        .btn-custom-primary:active { transform: translateY(0); }
+        
+        .btn-custom-light { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 24px; background: var(--white); color: var(--ink); border: 1px solid var(--line-dark); border-radius: 8px; font-size: .92rem; font-weight: 600; transition: all .2s ease; text-decoration: none; }
+        .btn-custom-light:hover { background: #f8fafc; border-color: var(--steel-soft); color: var(--ink); }
+
+        .btn-outline-primary { color: var(--navy); border-color: var(--navy); font-weight: 600; border-radius: 8px; background: transparent; min-height: 42px; font-size: 0.9rem; }
+        .btn-outline-primary:hover { background-color: var(--navy); color: #fff; border-color: var(--navy);}
+
+        /* Area Highlight abu-abu */
+        .highlight-area { background-color: #f8fafc; border: 1px solid var(--line); border-radius: 12px; padding: 24px 20px; margin-bottom: 24px; }
+    </style>
+</head>
+<body>
+
+<!-- ==================== SISTEM NOTIFIKASI POPUP (TOAST) ==================== -->
+<div class="toast-wrap" id="toastWrap" aria-live="polite">
+    @if(session('success'))
+        <div class="toast ok" data-toast>
+            <span class="toast-ico"><i class="fas fa-check"></i></span>
+            <span>{{ session('success') }}</span>
+            <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="toast err" data-toast>
+            <span class="toast-ico"><i class="fas fa-triangle-exclamation"></i></span>
+            <span>{{ session('error') }}</span>
+            <button type="button" class="toast-x" aria-label="Tutup notifikasi" data-toast-close><i class="fas fa-times"></i></button>
+        </div>
+    @endif
     
                 --navy: #163a63;
                 --navy-dark: #0d2947;
@@ -284,9 +514,12 @@
                                     <div class="input-group mb-2">
                                         <input type="text" class="form-control" id="inputKoordinat" name="koordinat" placeholder="-1.61157, 103.57860">
                                     </div>
-                                    <button type="button" class="btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#mapModal">
-                                        <i class="fas fa-map-marked-alt me-1"></i> Buka Peta Interaktif
+                                    <button type="button" class="btn-outline-primary w-100" id="btnGoogleMaps">
+                                        <i class="fab fa-google me-1"></i> Buka Google Maps
                                     </button>
+                                    <small class="text-muted d-block mt-1" style="font-size:.75rem; line-height:1.35;">
+                                        Klik kanan titik di Google Maps, klik angka koordinat untuk menyalin, lalu tempel di kolom di atas.
+                                    </small>
                                 </div>
                             </div>
                         </div>
@@ -825,33 +1058,8 @@
             </div>
         </div>
 
-<!-- ==================== PETA MODAL ==================== -->
-<div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content p-2">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title fs-5" id="mapModalLabel"><i class="fas fa-map-marked-alt text-primary me-2"></i>Pilih Titik Lokasi Kejadian</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div id="map"></div>
-      </div>
-      <div class="modal-footer border-0 pt-0 d-flex justify-content-between align-items-center">
-        <span class="text-muted" style="font-size: 13px; line-height: 1.4;">
-            Geser pin merah atau klik peta untuk menentukan koordinat.<br>
-            Koordinat saat ini: <strong id="latlngDisplay" class="text-dark">-1.61157, 103.57860</strong>
-        </span>
-        <div class="d-flex gap-2">
-            <button type="button" class="btn-custom-light" style="padding: 8px 16px; min-height: unset;" data-bs-dismiss="modal">Tutup</button>
-            <button type="button" class="btn-custom-primary" style="padding: 8px 16px; min-height: unset;" onclick="simpanKoordinat()">Gunakan Koordinat</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- ==================== SCRIPTS ==================== -->
-@endsection
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 @push('scripts')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -859,44 +1067,75 @@
 (function () {
     'use strict';
 
-    /* ---------- Leaflet Map Logic ---------- */
-    let map;
-    let marker;
-    const myModalEl = document.getElementById('mapModal');
+    /* ---------- Notifikasi (Toast) ---------- */
+    document.querySelectorAll('[data-toast]').forEach(function (t) {
+        var hide = function () {
+            t.classList.add('leaving');
+            setTimeout(function () { t.remove(); }, 350);
+        };
+        var x = t.querySelector('[data-toast-close]');
+        if (x) x.addEventListener('click', hide);
+        setTimeout(hide, 4500);
+    });
 
-    if (myModalEl) {
-        myModalEl.addEventListener('shown.bs.modal', event => {
-            if(!map) {
-                map = L.map('map').setView([-1.61157, 103.57860], 13);
-                
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap contributors'
-                }).addTo(map);
+    /* ---------- Sidebar (Mobile Toggle) ---------- */
+    var toggle = document.getElementById('sideToggle');
+    var backdrop = document.getElementById('sideBackdrop');
 
-                marker = L.marker([-1.61157, 103.57860], {draggable: true}).addTo(map);
+    function closeSide() {
+        document.body.classList.remove('side-open');
+        if(toggle) toggle.setAttribute('aria-expanded', 'false');
+    }
+    if (toggle) {
+        toggle.addEventListener('click', function () {
+            var open = document.body.classList.toggle('side-open');
+            toggle.setAttribute('aria-expanded', open);
+        });
+    }
+    if (backdrop) backdrop.addEventListener('click', closeSide);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
 
-                marker.on('dragend', function (e) {
-                    document.getElementById('latlngDisplay').innerText = marker.getLatLng().lat.toFixed(5) + ', ' + marker.getLatLng().lng.toFixed(5);
-                });
-
-                map.on('click', function(e){
-                    marker.setLatLng(e.latlng);
-                    document.getElementById('latlngDisplay').innerText = e.latlng.lat.toFixed(5) + ', ' + e.latlng.lng.toFixed(5);
-                });
+    /* ---------- Eksklusivitas Accordion Sidebar (hanya satu grup terbuka) ---------- */
+    var groups = document.querySelectorAll('.side-group');
+    groups.forEach(function (g) {
+        g.addEventListener('toggle', function () {
+            if (g.open) {
+                groups.forEach(function (o) { if (o !== g) o.open = false; });
             }
-            setTimeout(function() { map.invalidateSize(); }, 10);
+        });
+    });
+
+    /* ==========================================================
+       GOOGLE MAPS (buka di tab baru)
+       ========================================================== */
+    var DEFAULT_LATLNG = [-1.61157, 103.57860];   // Kota Jambi
+    var inputKoordinat = document.getElementById('inputKoordinat');
+    var btnGoogleMaps = document.getElementById('btnGoogleMaps');
+
+    // Baca "lat, lng" dari input; kembalikan null jika tidak valid
+    function parseKoordinat(str) {
+        if (!str) return null;
+        var m = str.trim().match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);
+        if (!m) return null;
+        var lat = parseFloat(m[1]), lng = parseFloat(m[2]);
+        if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
+        return [lat, lng];
+    }
+
+    // Buka Google Maps di tab baru (pakai koordinat di kolom jika ada, jika tidak Kota Jambi)
+    if (btnGoogleMaps) {
+        btnGoogleMaps.addEventListener('click', function () {
+            var ll = parseKoordinat(inputKoordinat.value) || DEFAULT_LATLNG;
+            window.open('https://www.google.com/maps/search/?api=1&query=' + ll[0] + ',' + ll[1], '_blank', 'noopener');
         });
     }
 
-    /* ---------- Simpan Koordinat ke Input ---------- */
-    window.simpanKoordinat = function() {
-        if(marker) {
-            const lat = marker.getLatLng().lat.toFixed(5);
-            const lng = marker.getLatLng().lng.toFixed(5);
-            document.getElementById('inputKoordinat').value = lat + ', ' + lng;
-        }
-        let modalInstance = bootstrap.Modal.getInstance(myModalEl);
-        if(modalInstance) modalInstance.hide();
+    // Rapikan hasil tempel (dari "lat, lng" atau link Google Maps) ke format 5 desimal
+    if (inputKoordinat) {
+        inputKoordinat.addEventListener('change', function () {
+            var m = this.value.match(/(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)/);
+            if (m) this.value = parseFloat(m[1]).toFixed(5) + ', ' + parseFloat(m[2]).toFixed(5);
+        });
     }
 
     /* ---------- LOGIKA INPUT LAINNYA ---------- */
