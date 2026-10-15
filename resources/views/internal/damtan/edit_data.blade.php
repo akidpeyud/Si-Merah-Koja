@@ -21,8 +21,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <style>
         /* ==========================================================
@@ -214,11 +212,6 @@
         .btn-outline-primary:hover { background-color: var(--navy); color: #fff; border-color: var(--navy);}
 
         .highlight-area { background-color: #f8fafc; border: 1px solid var(--line); border-radius: 12px; padding: 24px 20px; margin-bottom: 24px; }
-
-        #map { height: 400px; width: 100%; border-radius: 8px; border: 1px solid var(--line-dark); z-index: 1;}
-        .modal-content { border-radius: var(--r-md); border: none; box-shadow: var(--shadow-lg); }
-        .modal-header { border-bottom: 1px solid var(--line); }
-        .modal-title { font-family: var(--font-display); font-weight: 700; color: var(--ink); }
 
         /* Error state border */
         .is-invalid { border-color: var(--signal) !important; box-shadow: 0 0 0 3px var(--signal-soft) !important; }
@@ -661,9 +654,12 @@
                                     <div class="input-group mb-2">
                                         <input type="text" class="form-control" id="inputKoordinat" name="koordinat" value="{{ $laporan->koordinat }}">
                                     </div>
-                                    <button type="button" class="btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#mapModal">
-                                        <i class="fas fa-map-marked-alt me-1"></i> Buka Peta Interaktif
+                                    <button type="button" class="btn-outline-primary w-100" id="btnGoogleMaps">
+                                        <i class="fab fa-google me-1"></i> Buka Google Maps
                                     </button>
+                                    <small class="text-muted d-block mt-1" style="font-size:.75rem; line-height:1.35;">
+                                        Klik kanan titik di Google Maps, klik angka koordinat untuk menyalin, lalu tempel di kolom di atas.
+                                    </small>
                                 </div>
                             </div>
                         </div>
@@ -1215,34 +1211,8 @@
     </main>
 </div>
 
-<!-- ==================== PETA MODAL ==================== -->
-<div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content p-2">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title fs-5" id="mapModalLabel"><i class="fas fa-map-marked-alt text-primary me-2"></i>Pilih Titik Lokasi Kejadian</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div id="map"></div>
-      </div>
-      <div class="modal-footer border-0 pt-0 d-flex justify-content-between align-items-center">
-        <span class="text-muted" style="font-size: 13px; line-height: 1.4;">
-            Geser pin merah atau klik peta untuk menentukan koordinat.<br>
-            Koordinat saat ini: <strong id="latlngDisplay" class="text-dark">-1.61157, 103.57860</strong>
-        </span>
-        <div class="d-flex gap-2">
-            <button type="button" class="btn-custom-light" style="padding: 8px 16px; min-height: unset;" data-bs-dismiss="modal">Tutup</button>
-            <button type="button" class="btn-custom-primary" style="padding: 8px 16px; min-height: unset;" onclick="simpanKoordinat()">Gunakan Koordinat</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- ==================== SCRIPTS ==================== -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 (function () {
@@ -1286,61 +1256,37 @@
         });
     });
 
-    /* ---------- Leaflet Map Logic ---------- */
-    let map;
-    let marker;
-    const myModalEl = document.getElementById('mapModal');
+    /* ==========================================================
+       GOOGLE MAPS (buka di tab baru)
+       ========================================================== */
+    var DEFAULT_LATLNG = [-1.61157, 103.57860];   // Kota Jambi
+    var inputKoordinat = document.getElementById('inputKoordinat');
+    var btnGoogleMaps = document.getElementById('btnGoogleMaps');
 
-    if (myModalEl) {
-        myModalEl.addEventListener('shown.bs.modal', event => {
-            if(!map) {
-                let lat = -1.61157;
-                let lng = 103.57860;
-                let currentKoor = document.getElementById('inputKoordinat').value;
-                
-                if(currentKoor && currentKoor.includes(',')) {
-                    let parts = currentKoor.split(',');
-                    let pLat = parseFloat(parts[0].trim());
-                    let pLng = parseFloat(parts[1].trim());
-                    // Pakai koordinat dari input hanya jika valid
-                    if (!isNaN(pLat) && !isNaN(pLng)) {
-                        lat = pLat;
-                        lng = pLng;
-                    }
-                }
+    // Baca "lat, lng" dari input; kembalikan null jika tidak valid
+    function parseKoordinat(str) {
+        if (!str) return null;
+        var m = str.trim().match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);
+        if (!m) return null;
+        var lat = parseFloat(m[1]), lng = parseFloat(m[2]);
+        if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
+        return [lat, lng];
+    }
 
-                map = L.map('map').setView([lat, lng], 13);
-                
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap contributors'
-                }).addTo(map);
-
-                marker = L.marker([lat, lng], {draggable: true}).addTo(map);
-                document.getElementById('latlngDisplay').innerText = lat.toFixed(5) + ', ' + lng.toFixed(5);
-
-                marker.on('dragend', function (e) {
-                    let newLat = marker.getLatLng().lat.toFixed(5);
-                    let newLng = marker.getLatLng().lng.toFixed(5);
-                    document.getElementById('latlngDisplay').innerText = newLat + ', ' + newLng;
-                });
-
-                map.on('click', function(e){
-                    marker.setLatLng(e.latlng);
-                    document.getElementById('latlngDisplay').innerText = e.latlng.lat.toFixed(5) + ', ' + e.latlng.lng.toFixed(5);
-                });
-            }
-            setTimeout(function() { map.invalidateSize(); }, 10);
+    // Buka Google Maps di tab baru (pakai koordinat di kolom jika ada, jika tidak Kota Jambi)
+    if (btnGoogleMaps) {
+        btnGoogleMaps.addEventListener('click', function () {
+            var ll = parseKoordinat(inputKoordinat.value) || DEFAULT_LATLNG;
+            window.open('https://www.google.com/maps/search/?api=1&query=' + ll[0] + ',' + ll[1], '_blank', 'noopener');
         });
     }
 
-    window.simpanKoordinat = function() {
-        if(marker) {
-            const lat = marker.getLatLng().lat.toFixed(5);
-            const lng = marker.getLatLng().lng.toFixed(5);
-            document.getElementById('inputKoordinat').value = lat + ', ' + lng;
-        }
-        let modalInstance = bootstrap.Modal.getInstance(myModalEl);
-        if(modalInstance) modalInstance.hide();
+    // Rapikan hasil tempel (dari "lat, lng" atau link Google Maps) ke format 5 desimal
+    if (inputKoordinat) {
+        inputKoordinat.addEventListener('change', function () {
+            var m = this.value.match(/(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)/);
+            if (m) this.value = parseFloat(m[1]).toFixed(5) + ', ' + parseFloat(m[2]).toFixed(5);
+        });
     }
 
     /* ---------- LOGIKA KOLOM "LAINNYA" (Otomatis Enable/Disable) ---------- */
