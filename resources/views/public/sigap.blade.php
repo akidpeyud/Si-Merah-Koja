@@ -311,7 +311,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
     min-height: 640px; max-height: 820px;
 }
 
-/* ===== SIDEBAR KIRI: tanpa scroll ===== */
+/* ===== SIDEBAR KIRI ===== */
 .map-sidebar {
     border-right: 1px solid var(--line);
     background: #fff;
@@ -321,29 +321,29 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 }
 .map-sidebar-header {
     flex: 1; min-height: 0;
-    padding: 22px 20px 18px;
+    padding: 20px 20px 16px;
     display: flex; flex-direction: column;
 }
 .map-sidebar-header h2 { font-family: var(--display); font-size: 1.15rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
 .map-sidebar-header p { color: var(--muted); font-size: .8rem; line-height: 1.45; }
 
-.filter-section { margin-top: 16px; }
-.lbl { display: block; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 8px; }
+.filter-section { margin-top: 14px; }
+.lbl { display: block; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; }
 
 /* Daftar titik mengisi sisa ruang, hanya bagian ini yang scroll */
 .filter-list { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 #daftar-titik { list-style: none; flex: 1; min-height: 0; overflow-y: auto; margin: 10px 0 0; padding-right: 4px; }
 
-/* Chip kategori ringkas */
-.chips { display: grid; gap: 6px; }
+/* Chip kategori (disesuaikan untuk 7 kategori) */
+.chips { display: grid; gap: 5px; max-height: 245px; overflow-y: auto; padding-right: 2px; }
 .chip {
     width: 100%; display: flex; align-items: center; gap: 10px;
-    padding: 6px 10px; border: 1px solid transparent; border-radius: 10px;
-    background: var(--soft); font-size: .85rem; font-weight: 600; color: var(--ink-2);
+    padding: 5px 10px; border: 1px solid transparent; border-radius: 10px;
+    background: var(--soft); font-size: .82rem; font-weight: 600; color: var(--ink-2);
     transition: all .2s ease; text-align: left;
 }
 .chip:hover { background: #fff; border-color: var(--line); box-shadow: var(--shadow-sm); }
-.chip .dot { width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center; color: #fff; font-size: .75rem; flex: none; }
+.chip .dot { width: 24px; height: 24px; border-radius: 7px; display: grid; place-items: center; color: #fff; font-size: .72rem; flex: none; }
 .chip span:nth-child(2) { flex: 1; }
 .chip b { min-width: 26px; text-align: center; font-size: .7rem; font-weight: 700; color: var(--ink-3); background: #e2e8f0; padding: 2px 8px; border-radius: 6px; }
 .chip.off { opacity: .55; background: #fafafa; }
@@ -366,8 +366,8 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 .count-badge:empty { display: none; }
 
 /* Scrollbar tipis */
-.list-scroll::-webkit-scrollbar, #daftar-titik::-webkit-scrollbar { width: 4px; }
-.list-scroll::-webkit-scrollbar-thumb, #daftar-titik::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.list-scroll::-webkit-scrollbar, #daftar-titik::-webkit-scrollbar, .chips::-webkit-scrollbar { width: 4px; }
+.list-scroll::-webkit-scrollbar-thumb, #daftar-titik::-webkit-scrollbar-thumb, .chips::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
 /* ===== PANEL KANAN: kecamatan ringkas ===== */
 .map-list { border-left: 1px solid var(--line); display: flex; flex-direction: column; background: #fff; min-height: 0; overflow: hidden; }
@@ -511,6 +511,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
     #map { order: -1; height: 60vh; min-height: 400px; }
     .map-sidebar { border-right: none; border-top: 1px solid var(--line); overflow: visible; }
     .filter-list { flex: none; }
+    .chips { max-height: none; }
     #daftar-titik { max-height: 240px; }
     .map-list { border-left: none; border-top: 1px solid var(--line); max-height: 380px; }
 
@@ -956,17 +957,36 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
     updateFab();
 
     /* =========================================================
-       2. KONFIGURASI & STATE PETA
+       2. KONFIGURASI & STATE PETA (DENGAN 3 JENIS HYDRANT)
        ========================================================= */
     const KOLOM_NAMA = ['kecamatan', 'KECAMATAN', 'Kecamatan', 'WADMKC', 'NAMOBJ', 'nama', 'NAME_3'];
     const PALET = ['#2563eb', '#dc2626', '#f59e0b', '#10b981', '#8b5cf6', '#ea580c', '#0f172a', '#334155', '#64748b', '#f43f5e', '#14b8a6'];
+    
+    // Pemisahan Hydrant Kota, Hydrant Pilar, dan Hydrant Gedung
     const KATEGORI = {
-        kebakaran:    { label: 'Kebakaran',    warna: '#dc2626', ikon: 'fa-fire' },
-        sumber_air:   { label: 'Sumber Air',   warna: '#2563eb', ikon: 'fa-water' },
-        hydrant:      { label: 'Hydrant',      warna: '#f59e0b', ikon: 'fa-fire-extinguisher' },
-        penyelamatan: { label: 'Penyelamatan', warna: '#10b981', ikon: 'fa-life-ring' },
-        pos:          { label: 'Pos Damkar',   warna: '#0f172a', ikon: 'fa-building' }
+        kebakaran:      { label: 'Kebakaran',      warna: '#dc2626', ikon: 'fa-fire' },
+        sumber_air:     { label: 'Sumber Air',     warna: '#2563eb', ikon: 'fa-water' },
+        hydrant:        { label: 'Hydrant Kota',   warna: '#f59e0b', ikon: 'fa-fire-extinguisher' },
+        hydrant_pilar:  { label: 'Hydrant Pilar',  warna: '#8b5cf6', ikon: 'fa-faucet-drip' },
+        hydrant_gedung: { label: 'Hydrant Gedung', warna: '#0d9488', ikon: 'fa-building-shield' },
+        penyelamatan:   { label: 'Penyelamatan',   warna: '#10b981', ikon: 'fa-life-ring' },
+        pos:            { label: 'Pos Damkar',     warna: '#0f172a', ikon: 'fa-building' }
     };
+
+    // Fungsi deteksi otomatis sub-kategori hydrant dari nama / keterangan seeder
+    function klasifikasiKategori(p) {
+        if (p.kategori === 'hydrant') {
+            const teks = `${p.nama || ''} ${p.keterangan || ''}`.toLowerCase();
+            if (teks.includes('hidrant pilar') || teks.includes('hydrant pilar')) {
+                return 'hydrant_pilar';
+            }
+            if (teks.includes('hidrant gedung') || teks.includes('hydrant gedung')) {
+                return 'hydrant_gedung';
+            }
+            return 'hydrant'; // Default: Hydrant Kota
+        }
+        return p.kategori;
+    }
 
     const state = { kategori: null, kecamatan: '', qKec: '', qTitik: '' };
 
@@ -978,9 +998,9 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
     let geojson;
 
     const el = {
-        ringkas: $('ringkas'), kategori: $('kategori'), select: $('filter-kecamatan'),
-        cariKec: $('cari'), countKec: $('list-count'), daftarKec: $('daftar-kecamatan'),
-        cariTitik: $('cari-titik'), judulTitik: $('judul-titik'), countTitik: $('count-titik'), daftarTitik: $('daftar-titik')
+        ringkas: $('ringkas'), kategori: $('kategori'), select:$('filter-kecamatan'),
+        cariKec: $('cari'), countKec: $('list-count'), daftarKec:$('daftar-kecamatan'),
+        cariTitik: $('cari-titik'), judulTitik:$('judul-titik'), countTitik: $('count-titik'), daftarTitik:$('daftar-titik')
     };
 
     const getNama = p => { for (const k of KOLOM_NAMA) if (p[k]) return p[k]; return 'Tanpa nama'; };
@@ -1166,7 +1186,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
                 datasets: [{
                     data: totalKat,
                     backgroundColor: keys.map(k => warnaBatang(KATEGORI[k].warna, !aktifKat || aktifKat === k)),
-                    borderRadius: 8, borderSkipped: false, maxBarThickness: 56
+                    borderRadius: 8, borderSkipped: false, maxBarThickness: 48
                 }]
             },
             options: {
@@ -1230,7 +1250,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
                 plugins: {
                     legend: {
                         display: !aktifKat, position: 'top', align: 'start',
-                        labels: { usePointStyle: true, pointStyle: 'rectRounded', boxWidth: 10, boxHeight: 10, padding: 16 }
+                        labels: { usePointStyle: true, pointStyle: 'rectRounded', boxWidth: 10, boxHeight: 10, padding: 14 }
                     },
                     tooltip: { ...tooltip, mode: 'index', intersect: false, callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.x}` } }
                 },
@@ -1360,8 +1380,20 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
         map.fitBounds(geojson.getBounds());
 
         if (titik) {
-            data.titik = titik.filter(p => KATEGORI[p.kategori] && isFinite(p.lat) && isFinite(p.lng));
-            data.titik.forEach(p => { p.kecamatan = p.kecamatan || cariKecamatan(+p.lat, +p.lng); });
+            data.titik = titik.map(p => {
+                const kat = klasifikasiKategori(p);
+                let lat = +p.lat;
+                let lng = +p.lng;
+
+                // Geser sedikit koordinat Hydrant Gedung (~13m) agar tidak menumpuk dengan Hydrant Pilar di gedung yang sama
+                if (kat === 'hydrant_gedung') {
+                    lng += 0.00012;
+                }
+
+                return { ...p, kategori: kat, lat, lng };
+            }).filter(p => KATEGORI[p.kategori] && isFinite(p.lat) && isFinite(p.lng));
+
+            data.titik.forEach(p => { p.kecamatan = p.kecamatan || cariKecamatan(p.lat, p.lng); });
             el.ringkas.textContent = `Total ${data.titik.length} titik tersimpan. Silakan pilih kategori titik.`;
         } else {
             el.ringkas.textContent = 'Gagal memuat data titik. Batas wilayah tetap ditampilkan.';
