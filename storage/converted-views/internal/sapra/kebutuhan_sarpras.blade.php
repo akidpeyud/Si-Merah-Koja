@@ -1,0 +1,731 @@
+@extends('layouts.dashboard')
+
+@section('title', 'Mutu Baku Kebutuhan')
+
+@push('styles')
+<style>
+    :root {
+                --ink: #0d1b2a;
+                --ink-2: #132a43;
+                --ink-3: #1d3856;
+    
+                --navy: #163a63;
+                --navy-dark: #0d2947;
+                --navy-light: #eaf1f8;
+                --navy-soft: rgba(22, 58, 99, .08);
+    
+                --paper: #f5f7fa;
+                --white: #ffffff;
+    
+                --signal: #dc3545;
+                --signal-dark: #b42332;
+                --signal-tint: #fdeceb;
+                --signal-soft: rgba(220, 53, 69, .09);
+    
+                --amber: #f4b740;
+                --green: #16a34a;
+                --success: #198754;
+                --blue: #2563eb;
+                --blue-d: #1d4fd6;
+                --info: #2563eb;
+                --info-soft: rgba(37, 99, 235, .09);
+    
+                --steel: #64748b;
+                --steel-soft: #94a3b8;
+    
+                --line: #e2e8f0;
+                --line-dark: #d5dce6;
+    
+                --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+                --font-body: 'Instrument Sans', system-ui, sans-serif;
+    
+                --r-lg: 18px;
+                --r-md: 14px;
+                --r-sm: 10px;
+    
+                --sidebar-w: 272px;
+                --topbar-h: 70px;
+    
+                --shadow-xs: 0 1px 2px rgba(13, 27, 42, .04);
+                --shadow-sm: 0 4px 12px rgba(13, 27, 42, .06);
+                --shadow-md: 0 10px 25px rgba(13, 27, 42, .08);
+                --shadow-lg: 0 20px 45px rgba(13, 27, 42, .14);
+            }
+    body { font-family: var(--font-body); font-size: 1rem; line-height: 1.6; color: var(--ink); background: var(--paper); -webkit-font-smoothing: antialiased; overflow: hidden; }
+    body:has(dialog[open]) { overflow: hidden; }
+    a { color: inherit; text-decoration: none; transition: color .2s, background .2s, border-color .2s; }
+    button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; transition: background .2s, color .2s, transform .2s, box-shadow .2s; }
+    table { border-collapse: collapse; width: 100%; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #d5dce6; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    .toast-ico { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: .78rem; background: var(--success); }
+    .user-chip { display: flex; align-items: center; gap: 10px; padding: 5px 14px 5px 5px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); transition: background .2s; }
+    .user-chip:hover { background: rgba(255,255,255,.12); }
+    .btn-logout { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 17px; border-radius: 999px; background: #ffffff; color: var(--ink); font-weight: 600; font-size: .84rem; border: none; transition: background .2s, box-shadow .2s; }
+    .btn-logout:hover { background: #e8eef5; box-shadow: 0 4px 10px rgba(0,0,0,.12); }
+    @media (max-width: 900px) {
+        .topbar { padding: 0 16px; }
+    }
+    .shell { display: flex; align-items: flex-start; height: calc(100vh - var(--topbar-h)); }
+    .sidebar { width: var(--sidebar-w); flex: none; position: sticky; top: var(--topbar-h); height: calc(100vh - var(--topbar-h)); overflow-y: auto; background: #ffffff; border-right: 1px solid var(--line); padding: 20px 14px 32px; scrollbar-width: thin; scrollbar-color: #d8dee8 transparent; display: flex; flex-direction: column; gap: 4px;}
+    .side-link { display: flex; align-items: center; gap: 14px; padding: 11px 14px; border-radius: var(--r-sm); font-size: .89rem; font-weight: 600; color: var(--ink); transition: background .2s, color .2s, transform .2s; margin-bottom: 4px; }
+    .side-link.active { background: var(--navy-soft); color: var(--navy); font-weight: 700; }
+    .side-link i { width: 20px; text-align: center; font-size: 1rem; color: var(--steel); transition: color .2s; }
+    .side-link:hover i, .side-link.active i { color: var(--navy); }
+    .side-group summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: var(--r-sm); font-size: .78rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--navy); transition: background .2s, color .2s; user-select: none; }
+    .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); }
+    .side-group summary .chev { margin-left: auto; font-size: 0.65rem; transition: transform .25s ease; }
+    .side-group[open] > summary .chev { transform: rotate(180deg); }
+    .side-sub { display: grid; gap: 3px; padding: 6px 4px 10px 12px; border-left: 2px solid var(--line); margin: 2px 0 8px 22px; }
+    .side-sub a { display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: var(--r-sm); font-size: .84rem; font-weight: 500; line-height: 1.4; color: var(--steel); transition: background .2s, color .2s, transform .2s; }
+    .side-sub a i { width: 18px; text-align: center; font-size: .88rem; opacity: .75; }
+    .side-kicker { padding: 18px 14px 6px; font-size: 0.68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--steel-soft); margin-top: 8px; }
+    .side-sub-kicker { display: block; padding: 12px 12px 4px 0; font-size: 0.65rem; font-weight: 800; color: var(--steel-soft); text-transform: uppercase; letter-spacing: 0.05em; }
+    .side-divider { height: 1px; background: var(--line); margin: 6px 14px; flex: none; }
+    @media (max-width: 900px) {
+        .sidebar { position: fixed; z-index: 90; top: var(--topbar-h); left: 0; height: calc(100dvh - var(--topbar-h)); transform: translateX(-100%); transition: transform .3s ease; box-shadow: var(--shadow-lg); }
+        .sidebar-backdrop { display: block; position: fixed; inset: var(--topbar-h) 0 0 0; z-index: 80; background: rgba(13,27,42,.45); opacity: 0; pointer-events: none; transition: opacity .3s; }
+    }
+    .content { flex: 1; min-width: 0; height: 100%; overflow-y: auto; padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 80px; }
+    .page-toolbar { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 26px; }
+    .page-toolbar h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; color: var(--ink); margin-bottom: 5px; text-transform: uppercase;}
+    .page-toolbar p { color: var(--steel); font-size: .95rem; }
+    .toolbar-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+    .mode-badge { display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; padding: 6px 14px; border-radius: 999px; background: var(--info-soft); color: var(--info); border: 1px solid rgba(37, 99, 235, .2); font-size: .78rem; font-weight: 700; }
+    .search { position: relative; width: 280px; max-width: 100%; }
+    .search i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--steel); font-size: .85rem; pointer-events: none; }
+    .search input { width: 100%; height: 44px; padding: 0 16px 0 42px; border-radius: 999px; border: 1px solid var(--line-dark); background: #fff; font: inherit; font-size: .9rem; color: var(--ink); transition: border-color .2s, box-shadow .2s; }
+    .search input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+    .btn { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; border-radius: 8px; font-weight: 600; font-size: .88rem; transition: background .2s, transform .1s, box-shadow .2s; white-space: nowrap; border: none;}
+    .btn:active { transform: translateY(0); }
+    .btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+    .btn-primary { background: var(--navy); color: #fff; }
+    .btn-primary:hover { background: var(--navy-dark); }
+    .btn-outline { background: #fff; border: 1px solid var(--line-dark); color: var(--ink); }
+    .btn-outline:hover { border-color: var(--navy); background: var(--paper); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-success:hover { background: #146c43; }
+    details.dropdown { position: relative; display: inline-block; }
+    details.dropdown summary { list-style: none; cursor: pointer; }
+    details.dropdown summary::-webkit-details-marker { display: none; }
+    details.dropdown[open] summary { border-color: var(--navy); background: var(--paper); }
+    .dropdown-menu { position: absolute; top: calc(100% + 8px); right: 0; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow-md); min-width: 220px; z-index: 100; padding: 8px; display: grid; gap: 4px; }
+    .dropdown-menu a { padding: 10px 14px; font-size: .88rem; font-weight: 600; color: var(--ink); border-radius: 8px; display: flex; align-items: center; gap: 10px; transition: background .2s; }
+    .dropdown-menu a:hover { background: var(--paper); }
+    .dropdown-menu a i.fa-print { color: var(--blue); }
+    .dropdown-menu a i.fa-file-excel { color: var(--success); }
+    .tabs { display: flex; gap: 6px; padding: 7px; width: max-content; max-width: 100%; background: #fff; border: 1px solid var(--line); border-radius: 999px; box-shadow: var(--shadow-xs); overflow-x: auto; scrollbar-width: none; margin-bottom: 24px; }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; padding: 10px 18px; border-radius: 999px; font-weight: 700; font-size: .86rem; color: var(--steel); transition: background .2s, color .2s, box-shadow .2s; }
+    .tab i { font-size: .9rem; }
+    .tab:hover { background: var(--paper); color: var(--ink); }
+    .tab[aria-selected="true"] { background: var(--navy); color: #fff; box-shadow: var(--shadow-sm); }
+    .panel[hidden] { display: none; }
+    .table-wrap { background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; margin-top: 10px; box-shadow: var(--shadow-xs); transition: box-shadow .2s, border-color .2s; }
+    .table-wrap:hover { box-shadow: var(--shadow-sm); border-color: #d2dae5; }
+    .table-scroll { overflow-x: auto; }
+    .data-table { font-size: .88rem; min-width: 800px; width: 100%; text-align: left;}
+    .data-table thead th { background: var(--paper); color: var(--steel); padding: 16px 14px; font-weight: 700; font-size: .75rem; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10;}
+    .data-table thead th.c { text-align: center; }
+    .data-table.bordered th, .data-table.bordered td { border: 1px solid var(--line); }
+    .data-table.bordered thead th { border-color: var(--line); background: var(--paper); color: var(--steel); }
+    .data-table.bordered thead th.bg-blue { background: var(--navy); color: #fff; border-color: var(--navy-dark); }
+    .data-table.bordered thead th.bg-light-col { background: var(--navy-light); color: var(--navy-dark); border-color: var(--line); }
+    .data-table tbody td { padding: 16px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; color: var(--ink); }
+    .data-table tbody td.c { text-align: center; }
+    .data-table tbody tr { transition: background .2s; }
+    .data-table tbody tr:hover { background: #f8fafc; }
+    .data-table tbody tr:last-child td { border-bottom: 0; }
+    .row-total { background: var(--paper); border-top: 3px solid var(--line-dark) !important; }
+    .row-total td { font-weight: 800; font-size: .95rem; }
+    .cell-name { font-weight: 700; font-size: .95rem; text-transform: uppercase; margin-bottom: 4px; color: var(--ink); }
+    .cell-empty { text-align: center; padding: 60px 16px; color: var(--steel-soft); font-weight: 600; font-size: 1rem;}
+    .badge-qty { display: inline-flex; align-items: center; justify-content: center; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: .85rem; min-width: 45px; border: 1px solid transparent; }
+    .bg-butuh { background: #f1f5f9; color: #334155; border-color: #cbd5e1; }
+    .bg-sedia { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+    .bg-kurang { background: var(--signal-tint); color: var(--signal-dark); border-color: #f9c9c4; }
+    .bg-aman { background: #f0f9ff; color: #0284c7; border-color: #bae6fd; }
+    .bg-masuk { background: #eff6ff; color: var(--blue); border-color: #bfdbfe; }
+    .bg-success-solid { background: var(--success); color: #fff; padding: 4px 10px; border-radius: 6px; font-size: .8rem; }
+    .txt-mini { font-size: .7rem; color: var(--steel); font-weight: 700; margin-top: 4px; display: block; }
+    .row-actions { display: inline-flex; gap: 8px; justify-content: center; }
+    .icon-btn { width: 34px; height: 34px; border-radius: 8px; display: inline-grid; place-items: center; font-size: .85rem; color: #fff; transition: background .2s, transform .1s; }
+    .icon-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-xs); }
+    .icon-btn.edit { background: var(--navy); }
+    .icon-btn.edit:hover { background: var(--navy-dark); }
+    .icon-btn.delete { background: var(--signal); }
+    .icon-btn.delete:hover { background: var(--signal-dark); }
+    .icon-btn.delete-sm { width: 26px; height: 26px; border-radius: 6px; font-size: .75rem; background: transparent; color: var(--signal); padding: 0; box-shadow: none;}
+    .icon-btn.delete-sm:hover { color: var(--signal-dark); background: var(--signal-tint); transform: none; box-shadow: none;}
+    .f-alert { display: flex; align-items: flex-start; gap: 10px; padding: 12px 16px; border-radius: 8px; font-size: .85rem; line-height: 1.5; margin-bottom: 16px; }
+    .f-alert.info { background: #eff6ff; color: #1e3a8a; border: 1px solid #bfdbfe; }
+    .f-alert.warn { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+    dialog.sheet { margin: auto; padding: 0; border: 0; border-radius: var(--r-md); width: min(560px, calc(100vw - 24px)); max-height: min(90vh, 780px); background: #fff; color: var(--ink); overflow: hidden; box-shadow: var(--shadow-lg); }
+    dialog.sheet[open] { display: flex; flex-direction: column; animation: pop .22s cubic-bezier(.16,.84,.3,1); }
+    dialog.sheet::backdrop { background: rgba(13,27,42,.6); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+    @keyframes pop { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+    .sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 20px 24px; border-bottom: 1px solid var(--line); background: #fafafa; }
+    .sheet-head h2 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: var(--ink); margin:0;}
+    .sheet-x { flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); transition: background .2s, color .2s; color: var(--steel); }
+    .sheet-x:hover { background: var(--signal-soft); color: var(--signal-dark); }
+    .sheet-body { padding: 24px; overflow-y: auto; display: grid; gap: 16px; }
+    .sheet-foot { padding: 16px 24px; border-top: 1px solid var(--line); background: #fafafa; display: flex; justify-content: flex-end; gap: 12px; }
+    .f-label { display: block; margin-bottom: 6px; font-size: .84rem; font-weight: 600; color: var(--ink); }
+    .f-input { display: block; width: 100%; height: 44px; padding: 0 14px; border: 1px solid var(--line-dark); border-radius: 8px; background: #fff; font: inherit; font-size: .92rem; color: var(--ink); transition: border-color .2s, box-shadow .2s; }
+    .f-input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+    select.f-input { appearance: none; -webkit-appearance: none; padding-right: 40px; cursor: pointer; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%235b6c7f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 14px center; }
+    .f-input::placeholder { color: var(--steel-soft); }
+    .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 480px) {
+        .f-row { grid-template-columns: 1fr; }
+    }
+    .btn-cancel { height: 42px; padding: 0 20px; border-radius: 8px; background: #fff; border: 1px solid var(--line-dark); color: var(--ink); font-weight: 600; font-size: .88rem; transition: background .2s, border-color .2s; }
+    .btn-cancel:hover { background: var(--paper); border-color: var(--steel); }
+    .btn-save { height: 42px; padding: 0 24px; border-radius: 8px; background: var(--navy); color: #fff; border: none; font-weight: 600; font-size: .88rem; transition: background .2s; }
+    .btn-save:hover { background: var(--navy-dark); }
+    .btn-save.success { background: var(--success); }
+    .btn-save.success:hover { background: #146c43; }
+    .ss { position: relative; }
+    .ss-btn { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; height: 44px; padding: 0 14px; border: 1px solid var(--line-dark); border-radius: 8px; background: #fff; font: inherit; font-size: .92rem; color: var(--ink); text-align: left; cursor: pointer; transition: border-color .2s, box-shadow .2s; }
+    .ss-btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ss-btn.placeholder span { color: var(--steel-soft); }
+    .ss-btn i { font-size: .7rem; color: var(--steel); transition: transform .2s; flex: none; }
+    .ss.open .ss-btn { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+    .ss.open .ss-btn i { transform: rotate(180deg); }
+    .ss-panel { display: none; margin-top: 6px; background: #fff; border: 1px solid var(--line-dark); border-radius: 8px; box-shadow: var(--shadow-sm); overflow: hidden; }
+    .ss.open .ss-panel { display: block; }
+    .ss-search { position: relative; padding: 8px; border-bottom: 1px solid var(--line); background: var(--paper); }
+    .ss-search i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--steel); font-size: .8rem; pointer-events: none; }
+    .ss-search input { width: 100%; height: 38px; padding: 0 12px 0 34px; border: 1px solid var(--line-dark); border-radius: 6px; font: inherit; font-size: .88rem; background: #fff; color: var(--ink); }
+    .ss-search input:focus { outline: none; border-color: var(--navy); }
+    .ss-list { max-height: 200px; overflow-y: auto; padding: 4px; }
+    .ss-opt { padding: 9px 12px; border-radius: 6px; font-size: .88rem; cursor: pointer; color: var(--ink); }
+    .ss-opt:hover, .ss-opt.hl { background: var(--paper); color: var(--blue-d); }
+    .ss-opt.sel { background: var(--navy-light); color: var(--navy-dark); font-weight: 700; }
+    .ss-opt mark { background: #fff3c4; color: inherit; border-radius: 3px; padding: 0 1px; }
+    .ss-empty { padding: 16px; text-align: center; color: var(--steel-soft); font-size: .85rem; font-weight: 600; }
+    @media print {
+        .topbar, .sidebar, .sidebar-backdrop, .page-toolbar .toolbar-actions, .tabs, .row-actions, dialog, .toast-wrap, .mode-badge { display: none !important; }
+        body { background: #fff !important; }
+        .shell { display: block !important; }
+        .content { padding: 0 !important; overflow: visible !important; height: auto !important; }
+        .table-wrap { border: none !important; box-shadow: none !important; }
+        .panel { display: none !important; }
+        .panel[data-print-active] { display: block !important; }
+        * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    }
+</style>
+@endpush
+
+@section('content')
+@php
+    /* ------------------------------------------------------------
+       LOGIKA AKUN (Spatie Permission)
+       Role: Super User, Sapra, Sekretariat, Damtan, Pencegahan, Operator
+       Aturan: HANYA role "Sapra" (+ Super User) yang boleh CRUD.
+       Role lain: lihat & cetak saja.
+       ------------------------------------------------------------ */
+    $user       = Auth::user();
+    $namaRole   = $user->getRoleNames()->first() ?? '';
+    $bisaCrud   = $user->hasRole('Sapra') || $user->hasRole('Super User');
+    $isSuper    = $user->hasRole('Super User');
+    $bisaKonten = $user->hasAnyRole(['Operator', 'Super User']);
+    $activeTab  = session('active_tab', 'mutubaku');
+@endphp
+
+@section('content')
+
+        <div class="page-toolbar">
+            <div>
+                <h1>MUTU BAKU {{ \Carbon\Carbon::now()->translatedFormat('F Y') }}</h1>
+                <p>Rekapitulasi analisis kebutuhan sarana prasarana dan riwayat pengadaan tahunan.</p>
+                @unless($bisaCrud)
+                    <span class="mode-badge"><i class="fas fa-eye"></i> Mode lihat &amp; cetak</span>
+                @endunless
+            </div>
+            <div class="toolbar-actions">
+                <label class="search">
+                    <span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Cari uraian barang</span>
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Cari uraian barang..." autocomplete="off">
+                </label>
+
+                <!-- DROPDOWN CETAK NATIVE CSS -->
+                <details class="dropdown">
+                    <summary class="btn btn-outline" aria-haspopup="menu"><i class="fas fa-print"></i> Cetak / Export</summary>
+                    <div class="dropdown-menu" role="menu">
+                        <a href="/sapra/kebutuhan-sarpras/cetak" target="_blank"><i class="fas fa-print"></i> Cetak Dokumen (Print)</a>
+                        <a href="/sapra/kebutuhan-sarpras/cetak?export=excel"><i class="fas fa-file-excel"></i> Download Excel (.xls)</a>
+                    </div>
+                </details>
+
+                @if($bisaCrud)
+                    <button type="button" class="btn btn-primary" data-open="dlgTambah"><i class="fas fa-plus"></i> Tambah Kebutuhan</button>
+                @endif
+            </div>
+        </div>
+
+        <!-- TABS (MUTU BAKU vs PENGADAAN) -->
+        <nav class="tabs" role="tablist" aria-label="Pilih tabel">
+            <button type="button" class="tab" role="tab" data-tab="panel-mutubaku" aria-selected="{{ $activeTab == 'mutubaku' ? 'true' : 'false' }}">
+                <i class="fas fa-clipboard-list"></i> Mutu Baku Kebutuhan
+            </button>
+            <button type="button" class="tab" role="tab" data-tab="panel-pengadaan" aria-selected="{{ $activeTab == 'pengadaan' ? 'true' : 'false' }}">
+                <i class="fas fa-truck-loading"></i> Riwayat Pengadaan
+            </button>
+        </nav>
+
+        <!-- PANEL 1: MUTU BAKU -->
+        <div class="panel" id="panel-mutubaku" role="tabpanel" @if($activeTab != 'mutubaku') hidden @endif @if($activeTab == 'mutubaku') data-print-active @endif>
+            <div class="table-wrap">
+                <div class="table-scroll">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th class="c" style="width:5%">No</th>
+                                <th style="width:35%">Uraian Barang / Jasa</th>
+                                <th class="c" style="width:15%">Dibutuhkan</th>
+                                <th class="c" style="width:10%">Tersedia</th>
+                                <th class="c" style="width:15%; background-color: var(--navy); color: #fff;">Masuk Thn {{ date('Y') }}</th>
+                                <th class="c" style="width:10%">Belum Tersedia</th>
+                                @if($bisaCrud)
+                                    <th class="c" style="width:10%">Aksi</th>
+                                @endif
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($dataKebutuhan as $index => $item)
+                            <tr class="data-row">
+                                <td class="c">{{ $loop->iteration }}</td>
+                                <td class="data-name">
+                                    <div class="cell-name">{{ $item->uraian }}</div>
+                                </td>
+                                <td class="c"><span class="badge-qty bg-butuh">{{ $item->jumlah_dibutuhkan }}</span></td>
+                                <td class="c"><span class="badge-qty bg-sedia">{{ $item->jumlah_tersedia }}</span></td>
+
+                                <td class="c">
+                                    @if(isset($realisasiTahunIni) && isset($realisasiTahunIni[$item->id]))
+                                        <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                                            <span class="bg-success-solid">+{{ $realisasiTahunIni[$item->id]->total_masuk }} Unit</span>
+                                            <span class="txt-mini"><i class="fas fa-calendar-alt"></i> {{ \Carbon\Carbon::parse($realisasiTahunIni[$item->id]->tgl_masuk)->format('d M Y') }}</span>
+                                        </div>
+                                    @else
+                                        <span style="color: var(--steel); font-size: 1.2rem;">-</span>
+                                    @endif
+                                </td>
+
+                                <td class="c">
+                                    @if($item->jumlah_belum_tersedia > 0)
+                                        <span class="badge-qty bg-kurang">{{ $item->jumlah_belum_tersedia }}</span>
+                                    @else
+                                        <span class="badge-qty bg-aman"><i class="fas fa-check" style="margin-right:4px;"></i> Lengkap</span>
+                                    @endif
+                                </td>
+
+                                @if($bisaCrud)
+                                <td class="c">
+                                    <div class="row-actions">
+                                        <button type="button" class="icon-btn edit" data-open="dlgEdit{{ $item->id }}" aria-label="Edit"><i class="fas fa-pen"></i></button>
+                                        <form action="/sapra/kebutuhan-sarpras/delete/{{ $item->id }}" method="POST" style="margin:0;" onsubmit="return confirm('Yakin ingin menghapus data kebutuhan ini? Semua riwayat pengadaannya juga akan ikut terhapus lho!');">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="icon-btn delete" aria-label="Hapus"><i class="fas fa-trash"></i></button>
+                                        </form>
+                                    </div>
+                                </td>
+                                @endif
+                            </tr>
+
+                            @if($bisaCrud)
+                            <!-- Dialog Edit Mutu Baku -->
+                            <dialog class="sheet" id="dlgEdit{{ $item->id }}">
+                                <div class="sheet-head">
+                                    <h2>Edit Data Kebutuhan</h2>
+                                    <button type="button" class="sheet-x" data-close aria-label="Tutup"><i class="fas fa-times"></i></button>
+                                </div>
+                                <form action="/sapra/kebutuhan-sarpras/update/{{ $item->id }}" method="POST">
+                                    @csrf @method('PUT')
+                                    <div class="sheet-body">
+                                        <div>
+                                            <label class="f-label" for="uraian{{ $item->id }}">Uraian Barang / Jasa</label>
+                                            <input class="f-input" type="text" id="uraian{{ $item->id }}" name="uraian" value="{{ $item->uraian }}" required>
+                                        </div>
+                                        <div class="f-row">
+                                            <div>
+                                                <label class="f-label" for="butuh{{ $item->id }}">Target Dibutuhkan</label>
+                                                <input class="f-input" type="number" id="butuh{{ $item->id }}" name="jumlah_dibutuhkan" value="{{ $item->jumlah_dibutuhkan }}" required>
+                                            </div>
+                                            <div>
+                                                <label class="f-label" for="sedia{{ $item->id }}">Stok Saat Ini (Tersedia)</label>
+                                                <input class="f-input" type="number" id="sedia{{ $item->id }}" name="jumlah_tersedia" value="{{ $item->jumlah_tersedia }}" required>
+                                            </div>
+                                        </div>
+                                        <div class="f-alert warn">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            <div><b>Catatan:</b> Sebaiknya update Stok (Tersedia) melalui menu <b>Riwayat Pengadaan</b> agar tercatat historinya. Ubah angka di sini hanya untuk penyesuaian stok awal.</div>
+                                        </div>
+                                    </div>
+                                    <div class="sheet-foot">
+                                        <button type="button" class="btn-cancel" data-close>Batal</button>
+                                        <button type="submit" class="btn-save">Simpan perubahan</button>
+                                    </div>
+                                </form>
+                            </dialog>
+                            @endif
+                            @empty
+                            <tr>
+                                <td colspan="{{ $bisaCrud ? 7 : 6 }}" class="cell-empty">Belum ada data mutu baku.</td>
+                            </tr>
+                            @endforelse
+
+                            <!-- Baris Total -->
+                            @if(isset($dataKebutuhan) && $dataKebutuhan->count() > 0)
+                                <tr class="row-total">
+                                    <td colspan="2" style="text-align: right; padding-right: 20px;">TOTAL KESELURUHAN :</td>
+                                    <td class="c"><span class="badge-qty bg-butuh">{{ $dataKebutuhan->sum('jumlah_dibutuhkan') }}</span></td>
+                                    <td class="c"><span class="badge-qty bg-sedia">{{ $dataKebutuhan->sum('jumlah_tersedia') }}</span></td>
+                                    <td class="c"><span class="badge-qty bg-masuk">+{{ isset($realisasiTahunIni) ? $realisasiTahunIni->sum('total_masuk') : 0 }}</span></td>
+                                    <td class="c"><span class="badge-qty bg-kurang">{{ $dataKebutuhan->sum('jumlah_belum_tersedia') }}</span></td>
+                                    @if($bisaCrud)
+                                        <td></td>
+                                    @endif
+                                </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL 2: RIWAYAT PENGADAAN -->
+        <div class="panel" id="panel-pengadaan" role="tabpanel" @if($activeTab != 'pengadaan') hidden @endif @if($activeTab == 'pengadaan') data-print-active @endif>
+
+            @if($bisaCrud)
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 14px;">
+                <button class="btn btn-success" data-open="dlgTambahPengadaan"><i class="fas fa-truck-loading"></i> Input Riwayat Pengadaan</button>
+            </div>
+            @endif
+
+            <div class="table-wrap">
+                <div class="table-scroll">
+                    <table class="data-table bordered">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" class="c" style="width:5%; vertical-align: middle;">No</th>
+                                <th rowspan="2" style="width:25%; vertical-align: middle;">Nama Barang</th>
+                                <th colspan="{{ count($listTahun ?? []) }}" class="c" style="border-bottom: 1px solid var(--line);">Tahun Pengadaan</th>
+                                <th rowspan="2" class="c bg-blue" style="width:10%; vertical-align: middle;">Stok</th>
+                            </tr>
+                            <tr>
+                                @foreach($listTahun ?? [] as $tahun)
+                                    <th class="c bg-light-col">{{ $tahun }}</th>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($dataKebutuhan as $item)
+                                <tr class="data-row">
+                                    <td class="c">{{ $loop->iteration }}</td>
+                                    <td class="data-name">
+                                        <div class="cell-name">{{ $item->uraian }}</div>
+                                    </td>
+
+                                    @foreach($listTahun as $tahun)
+                                        <td class="c">
+                                            @if(isset($pengadaanMapped[$item->id][$tahun]))
+                                                <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                                    <span style="font-weight: 700; color: var(--ink);">{{ $pengadaanMapped[$item->id][$tahun] }}</span>
+                                                    @if($bisaCrud)
+                                                    <form action="/sapra/pengadaan-sarpras/delete/{{ $item->id }}/{{ $tahun }}" method="POST" style="margin:0;" onsubmit="return confirm('Yakin ingin membatalkan pengadaan tahun {{ $tahun }} ini? Stok Mutu Baku akan otomatis dikurangi kembali.');">
+                                                        @csrf @method('DELETE')
+                                                        <button type="submit" class="icon-btn delete-sm" title="Batalkan Pengadaan"><i class="fas fa-times"></i></button>
+                                                    </form>
+                                                    @endif
+                                                </div>
+                                            @else
+                                                <span style="color: var(--steel);">-</span>
+                                            @endif
+                                        </td>
+                                    @endforeach
+
+                                    <td class="c" style="background: var(--paper); font-weight: 800; color: var(--navy);">
+                                        {{ $item->jumlah_tersedia }}
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="{{ count($listTahun ?? []) + 3 }}" class="cell-empty">Belum ada data barang.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+@if($bisaCrud)
+<!-- ==================== DIALOG TAMBAH KEBUTUHAN ==================== -->
+<dialog class="sheet" id="dlgTambah">
+    <div class="sheet-head">
+        <h2>Tambah Kebutuhan Baru</h2>
+        <button type="button" class="sheet-x" data-close aria-label="Tutup"><i class="fas fa-times"></i></button>
+    </div>
+    <form action="/sapra/kebutuhan-sarpras/store" method="POST">
+        @csrf
+        <div class="sheet-body">
+            <div>
+                <label class="f-label" for="tambahUraian">Uraian Barang / Jasa</label>
+                <input class="f-input" type="text" id="tambahUraian" name="uraian" placeholder="Contoh: MOBIL KOMANDO" required>
+            </div>
+            <div class="f-row">
+                <div>
+                    <label class="f-label" for="tambahButuh">Jumlah Dibutuhkan</label>
+                    <input class="f-input" type="number" id="tambahButuh" name="jumlah_dibutuhkan" value="0" required>
+                </div>
+                <div>
+                    <label class="f-label" for="tambahSedia">Jumlah Tersedia (Stok Awal)</label>
+                    <input class="f-input" type="number" id="tambahSedia" name="jumlah_tersedia" value="0" required>
+                </div>
+            </div>
+            <div class="f-alert info">
+                <i class="fas fa-info-circle"></i>
+                <div>Kolom "Belum Tersedia" akan dihitung otomatis oleh sistem berdasarkan input Anda.</div>
+            </div>
+        </div>
+        <div class="sheet-foot">
+            <button type="button" class="btn-cancel" data-close>Batal</button>
+            <button type="submit" class="btn-save">Simpan data</button>
+        </div>
+    </form>
+</dialog>
+
+<!-- ==================== DIALOG TAMBAH PENGADAAN ==================== -->
+<dialog class="sheet" id="dlgTambahPengadaan">
+    <div class="sheet-head">
+        <h2>Input Riwayat Pengadaan Baru</h2>
+        <button type="button" class="sheet-x" data-close aria-label="Tutup"><i class="fas fa-times"></i></button>
+    </div>
+    <form action="/sapra/pengadaan-sarpras/store" method="POST">
+        @csrf
+        <div class="sheet-body">
+            <div class="f-alert info" style="margin-bottom: 0;">
+                <i class="fas fa-info-circle"></i>
+                <div>Data yang diinput di sini akan otomatis <b>menambah STOK</b> di tabel Mutu Baku Kebutuhan.</div>
+            </div>
+            <div>
+                <label class="f-label">Pilih Barang / Jasa</label>
+                <select class="f-input" id="kebutuhan_id" name="kebutuhan_id" required>
+                    <option value="">-- Pilih Barang --</option>
+                    @foreach($dataKebutuhan as $item)
+                        <option value="{{ $item->id }}">{{ $item->uraian }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="f-row">
+                <div>
+                    <label class="f-label" for="tahun">Tahun Pengadaan</label>
+                    <input class="f-input" type="number" id="tahun" name="tahun" value="{{ date('Y') }}" max="{{ date('Y') }}" required>
+                </div>
+                <div>
+                    <label class="f-label" for="jumlah">Jumlah Masuk (Unit)</label>
+                    <input class="f-input" type="number" id="jumlah" name="jumlah" min="1" placeholder="Cth: 5" required>
+                </div>
+            </div>
+        </div>
+        <div class="sheet-foot">
+            <button type="button" class="btn-cancel" data-close>Batal</button>
+            <button type="submit" class="btn-save success">Simpan pengadaan</button>
+        </div>
+    </form>
+</dialog>
+@endif
+@endsection
+
+@push('scripts')
+<script>
+(function () {
+    'use strict';
+
+    /* ---------- Native Dropdown Tutup Otomatis ---------- */
+    document.addEventListener('click', function(e) {
+        document.querySelectorAll('details.dropdown').forEach(function(d) {
+            if (!d.contains(e.target)) d.removeAttribute('open');
+        });
+    });
+
+    /* ---------- Tabs Navigation ---------- */
+    var searchInput = document.getElementById('searchInput');
+    var tabs = document.querySelectorAll('.tab');
+    tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            tabs.forEach(function (t) { t.setAttribute('aria-selected', 'false'); });
+            tab.setAttribute('aria-selected', 'true');
+
+            document.querySelectorAll('.panel').forEach(function (p) {
+                var active = p.id === tab.dataset.tab;
+                p.hidden = !active;
+                if (active) { p.setAttribute('data-print-active', ''); } else { p.removeAttribute('data-print-active'); }
+            });
+
+            if (searchInput) {
+                searchInput.value = '';
+                document.querySelectorAll('.data-row').forEach(function (row) { row.style.display = ''; });
+            }
+        });
+    });
+
+    /* ---------- Modal / Dialog ---------- */
+    document.querySelectorAll('[data-open]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var dlg = document.getElementById(btn.dataset.open);
+            if (dlg && dlg.showModal) dlg.showModal();
+        });
+    });
+
+    document.querySelectorAll('dialog').forEach(function (dlg) {
+        dlg.addEventListener('click', function (e) {
+            if (e.target === dlg || e.target.closest('[data-close]')) dlg.close();
+        });
+    });
+
+    /* ---------- Live Search Table ---------- */
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            var q = searchInput.value.trim().toLowerCase();
+            var activePanel = document.querySelector('.panel:not([hidden])');
+            if (!activePanel) return;
+
+            activePanel.querySelectorAll('.data-row').forEach(function (row) {
+                if (row.classList.contains('row-total')) return;
+
+                var cell = row.querySelector('.data-name');
+                if (cell) {
+                    row.style.display = cell.textContent.toLowerCase().indexOf(q) !== -1 ? '' : 'none';
+                }
+            });
+        });
+    }
+
+    /* ---------- Searchable Select (realtime) untuk Pilih Barang / Jasa ---------- */
+    function makeSearchable(select) {
+        var wrap = document.createElement('div');
+        wrap.className = 'ss';
+        wrap.innerHTML =
+            '<button type="button" class="ss-btn placeholder" aria-haspopup="listbox" aria-expanded="false"><span></span><i class="fas fa-chevron-down"></i></button>' +
+            '<div class="ss-panel">' +
+                '<div class="ss-search"><i class="fas fa-search"></i><input type="text" placeholder="Ketik untuk mencari barang..." autocomplete="off"></div>' +
+                '<div class="ss-list" role="listbox"></div>' +
+            '</div>';
+
+        select.parentNode.insertBefore(wrap, select);
+        select.style.display = 'none';
+        select.removeAttribute('required');
+        wrap.appendChild(select);
+
+        var btn = wrap.querySelector('.ss-btn');
+        var label = btn.querySelector('span');
+        var input = wrap.querySelector('.ss-search input');
+        var list = wrap.querySelector('.ss-list');
+        var options = Array.prototype.slice.call(select.options).filter(function (o) { return o.value !== ''; });
+        var placeholderText = select.options[0] ? select.options[0].textContent : '-- Pilih Barang --';
+        var hlIndex = -1;
+
+        function esc(s) {
+            return s.replace(/[&<>"]/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+            });
+        }
+
+        function syncLabel() {
+            var cur = options.find(function (o) { return o.value === select.value; });
+            label.textContent = cur ? cur.textContent : placeholderText;
+            btn.classList.toggle('placeholder', !cur);
+        }
+
+        function setHl() {
+            var items = list.querySelectorAll('.ss-opt');
+            items.forEach(function (el, i) { el.classList.toggle('hl', i === hlIndex); });
+            if (items[hlIndex]) items[hlIndex].scrollIntoView({ block: 'nearest' });
+        }
+
+        function render(q) {
+            q = (q || '').toLowerCase().trim();
+            list.innerHTML = '';
+            var shown = options.filter(function (o) { return o.textContent.toLowerCase().indexOf(q) !== -1; });
+            if (!shown.length) {
+                list.innerHTML = '<div class="ss-empty">Barang tidak ditemukan</div>';
+                hlIndex = -1;
+                return;
+            }
+            shown.forEach(function (o) {
+                var d = document.createElement('div');
+                d.className = 'ss-opt' + (o.value === select.value ? ' sel' : '');
+                d.setAttribute('role', 'option');
+                d.dataset.value = o.value;
+                var text = o.textContent;
+                if (q) {
+                    var i = text.toLowerCase().indexOf(q);
+                    d.innerHTML = esc(text.slice(0, i)) + '<mark>' + esc(text.slice(i, i + q.length)) + '</mark>' + esc(text.slice(i + q.length));
+                } else {
+                    d.textContent = text;
+                }
+                list.appendChild(d);
+            });
+            hlIndex = 0;
+            setHl();
+        }
+
+        function open() {
+            wrap.classList.add('open');
+            btn.setAttribute('aria-expanded', 'true');
+            input.value = '';
+            render('');
+            setTimeout(function () { input.focus(); }, 0);
+        }
+        function close() {
+            wrap.classList.remove('open');
+            btn.setAttribute('aria-expanded', 'false');
+        }
+        function choose(val) {
+            select.value = val;
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+            syncLabel();
+            close();
+            btn.focus();
+        }
+
+        btn.addEventListener('click', function () { wrap.classList.contains('open') ? close() : open(); });
+        input.addEventListener('input', function () { render(input.value); });
+        input.addEventListener('keydown', function (e) {
+            var items = list.querySelectorAll('.ss-opt');
+            if (e.key === 'ArrowDown') { e.preventDefault(); hlIndex = Math.min(hlIndex + 1, items.length - 1); setHl(); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); hlIndex = Math.max(hlIndex - 1, 0); setHl(); }
+            else if (e.key === 'Enter') { e.preventDefault(); if (items[hlIndex]) choose(items[hlIndex].dataset.value); }
+            else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(); btn.focus(); }
+        });
+        list.addEventListener('mousedown', function (e) {
+            var opt = e.target.closest('.ss-opt');
+            if (opt) { e.preventDefault(); choose(opt.dataset.value); }
+        });
+        document.addEventListener('click', function (e) { if (!wrap.contains(e.target)) close(); });
+
+        var form = select.closest('form');
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                if (!select.value) {
+                    e.preventDefault();
+                    btn.style.borderColor = 'var(--signal)';
+                    open();
+                }
+            });
+        }
+        select.addEventListener('change', function () { btn.style.borderColor = ''; syncLabel(); });
+
+        syncLabel();
+    }
+
+    document.querySelectorAll('select[name="kebutuhan_id"]').forEach(makeSearchable);
+})();
+</script>
+@endpush

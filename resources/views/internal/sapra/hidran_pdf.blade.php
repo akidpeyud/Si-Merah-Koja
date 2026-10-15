@@ -31,7 +31,9 @@
         ],
     ];
 @endphp
-<!DOCTYPE html>
+@extends('layouts.dashboard')
+
+@section('content')
 <html>
 <head>
     <meta charset="UTF-8">
