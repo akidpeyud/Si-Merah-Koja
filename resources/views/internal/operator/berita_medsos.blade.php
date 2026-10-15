@@ -619,10 +619,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
                     @if($aksesMenuRekap)
                     <a href="/internal/damtan/rekap-layanan" class="{{ Request::is('internal/damtan/rekap-layanan*') ? 'active' : '' }}">
-                        <i class="fas fa-truck-medical"></i><span class="lbl">Input Rekap Layanan</span>
+                        <i class="fas fa-truck-medical"></i><span class="lbl">Kelola Rekap Layanan</span>
                     </a>
                     <a href="/internal/damtan/rekap-objek" class="{{ Request::is('internal/damtan/rekap-objek*') ? 'active' : '' }}">
-                        <i class="fas fa-house-chimney-crack"></i><span class="lbl">Input Rekap Objek Kebakaran</span>
+                        <i class="fas fa-house-chimney-crack"></i><span class="lbl">Kelola Rekap Objek Kebakaran</span>
                     </a>
                     @endif
 
@@ -640,7 +640,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                     </a>
                 </div>
             </details>
-
 
             <!-- BAGIAN SAPRA -->
             <details class="side-group" {{ Request::is('sapra*') ? 'open' : '' }}>
@@ -694,12 +693,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                         <i class="fas fa-users"></i><span class="lbl">Rekap Data ASN</span>
                     </a>
 
-                    <!-- PROGRAM KERJA DIUBAH MENJADI SOP & DOKUMEN -->
+                    <!-- SOP & DOKUMEN -->
                     <a href="/internal/program-kerja" class="{{ Request::is('internal/program-kerja*') ? 'active' : '' }}">
                         <i class="fas fa-file-contract"></i><span class="lbl">SOP &amp; Dokumen</span>
                     </a>
 
-                    <!-- MENU DOKUMEN PUBLIK DITAMBAHKAN DI BAGIAN KEPEGAWAIAN -->
+                    <!-- DOKUMEN PUBLIK -->
                     <a href="{{ route('dokumen-publik.index') }}" class="{{ Request::is('dokumen-publik*') ? 'active' : '' }}">
                         <i class="fas fa-file-lines"></i><span class="lbl">Dokumen Publik</span>
                     </a>
@@ -710,7 +709,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         <!-- MANAJEMEN INFORMASI: semua pegawai internal bisa melihat menu ini -->
         @hasanyrole('Super User|Sapra|Damtan|Pencegahan|Sekretariat|Operator')
             <div class="side-kicker">Konten publik</div>
-            <details class="side-group" {{ Request::is('internal/operator*') || Request::is('internal/peta-sigap*') ? 'open' : '' }}>
+            <details class="side-group" {{ Request::is('internal/operator*') || Request::is('internal/peta-sigap*') || Request::is('internal/produk-hukum*') || Request::is('internal/profil-instansi*') ? 'open' : '' }}>
                 <summary><i class="far fa-newspaper grp-ico"></i><span class="grp-label">Manajemen Informasi</span><i class="fas fa-chevron-down chev"></i></summary>
                 <div class="side-sub">
                     <a href="/internal/operator/kelola-berita" class="{{ Request::is('internal/operator/kelola-berita*') ? 'active' : '' }}">
@@ -732,6 +731,43 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                         <i class="fas fa-bullhorn"></i><span class="lbl">Kelola Pengumuman</span>
                     </a>
 
+                    <!-- PRODUK HUKUM -->
+                    <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PRODUK HUKUM</div>
+                    <a href="/internal/produk-hukum/undang-undang" class="{{ Request::is('internal/produk-hukum/undang-undang*') ? 'active' : '' }}">
+                        <i class="fas fa-scale-balanced"></i><span class="lbl">Undang-Undang</span>
+                    </a>
+                    <a href="/internal/produk-hukum/peraturan-pemerintah" class="{{ Request::is('internal/produk-hukum/peraturan-pemerintah*') ? 'active' : '' }}">
+                        <i class="fas fa-landmark"></i><span class="lbl">Peraturan Pemerintah</span>
+                    </a>
+                    <a href="/internal/produk-hukum/peraturan-menteri" class="{{ Request::is('internal/produk-hukum/peraturan-menteri*') ? 'active' : '' }}">
+                        <i class="fas fa-book-bookmark"></i><span class="lbl">Peraturan Menteri</span>
+                    </a>
+                    <a href="/internal/produk-hukum/peraturan-daerah" class="{{ Request::is('internal/produk-hukum/peraturan-daerah*') ? 'active' : '' }}">
+                        <i class="fas fa-file-shield"></i><span class="lbl">Peraturan Daerah</span>
+                    </a>
+                    <a href="/internal/produk-hukum/peraturan-kepala-daerah" class="{{ Request::is('internal/produk-hukum/peraturan-kepala-daerah*') ? 'active' : '' }}">
+                        <i class="fas fa-file-signature"></i><span class="lbl">Peraturan Kepala Daerah</span>
+                    </a>
+
+                    <!-- PROFIL (Tanpa Kepegawaian) -->
+                    <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PROFIL</div>
+                    <a href="/internal/profil-instansi/visi-misi" class="{{ Request::is('internal/profil-instansi/visi-misi*') ? 'active' : '' }}">
+                        <i class="fas fa-bullseye"></i><span class="lbl">Visi Misi</span>
+                    </a>
+                    <a href="/internal/profil-instansi/sotk" class="{{ Request::is('internal/profil-instansi/sotk*') ? 'active' : '' }}">
+                        <i class="fas fa-sitemap"></i><span class="lbl">SOTK</span>
+                    </a>
+                    <a href="/internal/profil-instansi/tupoksi" class="{{ Request::is('internal/profil-instansi/tupoksi*') ? 'active' : '' }}">
+                        <i class="fas fa-list-check"></i><span class="lbl">Tupoksi</span>
+                    </a>
+                    <a href="/internal/profil-instansi/program-kegiatan" class="{{ Request::is('internal/profil-instansi/program-kegiatan*') ? 'active' : '' }}">
+                        <i class="fas fa-calendar-check"></i><span class="lbl">Program Kegiatan</span>
+                    </a>
+                    <a href="/internal/profil-instansi/cascading" class="{{ Request::is('internal/profil-instansi/cascading*') ? 'active' : '' }}">
+                        <i class="fas fa-diagram-project"></i><span class="lbl">Cascading</span>
+                    </a>
+
+                    <!-- PEMETAAN SIGAP -->
                     <div class="side-kicker" style="padding: 12px 10px 4px; margin-left: 0; font-size: 0.65rem;">PEMETAAN SIGAP</div>
                     @hasanyrole('Super User|Operator')
                     <a href="/internal/peta-sigap/input" class="{{ Request::is('internal/peta-sigap/input*') ? 'active' : '' }}">
@@ -748,10 +784,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
         <!-- PENGATURAN AKUN -->
         <div class="side-kicker">Akun</div>
-        <details class="side-group" {{ request()->is('internal/profil*') || request()->is('internal/kelola-user*') || request()->is('internal/kelola-pemohon*') ? 'open' : '' }}>
+        <details class="side-group" {{ request()->is('internal/profil') || request()->is('internal/profil/*') || request()->is('internal/kelola-user*') || request()->is('internal/kelola-pemohon*') ? 'open' : '' }}>
             <summary><i class="fas fa-user-gear grp-ico"></i><span class="grp-label">Pengaturan akun</span><i class="fas fa-chevron-down chev"></i></summary>
             <div class="side-sub">
-                <a href="{{ url('/internal/profil') }}" class="{{ request()->is('internal/profil*') ? 'active' : '' }}">
+                <a href="{{ url('/internal/profil') }}" class="{{ request()->is('internal/profil') || request()->is('internal/profil/*') ? 'active' : '' }}">
                     <i class="fas fa-user-pen"></i><span class="lbl">Profil Saya</span>
                 </a>
 
