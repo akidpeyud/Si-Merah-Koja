@@ -1263,7 +1263,7 @@
     /* ==========================================================
        GOOGLE MAPS (buka di tab baru)
        ========================================================== */
-    var DEFAULT_LATLNG = [-1.61157, 103.57860];   // Kota Jambi
+    var DEFAULT_LATLNG = [-1.6180524600704744, 103.60062412413868];   // Titik awal Google Maps
     var inputKoordinat = document.getElementById('inputKoordinat');
     var btnGoogleMaps = document.getElementById('btnGoogleMaps');
 
