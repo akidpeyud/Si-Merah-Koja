@@ -6,6 +6,7 @@ use App\Models\PermohonanEdukasi;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class PermohonanEdukasiController extends Controller
 {
@@ -60,8 +61,8 @@ class PermohonanEdukasiController extends Controller
             }],
             'nama_pemohon'       => 'required|string|max:150',
             'jabatan_pemohon'    => 'required|string|max:100',
-            'nik'                => 'required|string|max:16',
-            'no_kontak'          => 'required|string|max:25',
+            'nik'                => 'required|string|size:16|regex:/^[0-9]+$/',
+            'no_kontak'          => 'required|string|max:13|regex:/^[0-9]+$/',
             'tgl_kegiatan'       => 'required|date',
             'usia_3_6'           => 'nullable|integer|min:0',
             'usia_7_12'          => 'nullable|integer|min:0',
@@ -69,6 +70,11 @@ class PermohonanEdukasiController extends Controller
             'usia_18_keatas'     => 'nullable|integer|min:0',
             'surat_permohonan'   => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
             'syarat_lainnya.*'   => 'nullable|file|mimes:pdf,jpg,jpeg,png,zip,rar|max:10240',
+        ], [
+            'no_kontak.max'   => 'No Kontak / WhatsApp maksimal 13 digit.',
+            'no_kontak.regex' => 'No Kontak / WhatsApp hanya boleh berisi angka.',
+            'nik.size'        => 'NIK harus berjumlah 16 digit.',
+            'nik.regex'       => 'NIK hanya boleh berisi angka.',
         ]);
 
         // Upload Surat Permohonan Wajib
@@ -117,7 +123,7 @@ class PermohonanEdukasiController extends Controller
         // Validasi input khusus form admin
         $request->validate([
             'nama_pemohon'     => 'required|string|max:150',
-            'no_kontak'        => 'required|string|max:25',
+            'no_kontak'        => 'required|string|max:13|regex:/^[0-9]+$/',
             'institusi'        => 'required|string|max:150',
             'kecamatan'        => 'required|string',
             'tgl_kegiatan'     => 'required|date',
@@ -207,7 +213,7 @@ class PermohonanEdukasiController extends Controller
             'nama_pemohon'     => 'required|string|max:150',
             'jabatan_pemohon'  => 'required|string|max:100',
             'nik'              => 'required|string|max:16',
-            'no_kontak'        => 'required|string|max:25',
+            'no_kontak'        => 'required|string|max:13|regex:/^[0-9]+$/',
             'tgl_kegiatan'     => 'required|date',
             'usia_3_6'         => 'nullable|integer|min:0',
             'usia_7_12'        => 'nullable|integer|min:0',
@@ -273,5 +279,64 @@ class PermohonanEdukasiController extends Controller
         $edukasi->update($data);
 
         return redirect('/internal/pencegahan/kelola-edukasi')->with('success', 'Data Kunjungan Edukasi berhasil diperbarui!');
+    }
+
+    // =========================================================================
+    // CEK STATUS PERMOHONAN EDUKASI & SOSIALISASI (PUBLIK VIA AJAX)
+    // =========================================================================
+    public function cekStatus(Request $request)
+    {
+        $request->validate([
+            'kontak' => 'required|string|min:9|max:20',
+        ], [
+            'kontak.required' => 'Masukkan NIK atau No Kontak / WhatsApp.',
+            'kontak.min'      => 'Masukkan minimal 9 digit angka.',
+        ]);
+
+        $kontak = trim($request->kontak);
+
+        $statusMap = [
+            'pending'   => 'Menunggu',
+            'menunggu'  => 'Menunggu',
+            'proses'    => 'Proses',
+            'diproses'  => 'Proses',
+            'disetujui' => 'Disetujui',
+            'selesai'   => 'Disetujui',
+            'ditolak'   => 'Ditolak',
+        ];
+
+        $items = PermohonanEdukasi::where('nik', $kontak)
+            ->orWhere('no_kontak', $kontak)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($row) use ($statusMap) {
+                $rawStatus = strtolower(trim($row->status_permohonan ?? 'pending'));
+                $statusTampil = $statusMap[$rawStatus] ?? ucfirst($row->status_permohonan);
+
+                // Merapikan tampilan alamat (menghindari tampilan "-" jika dari input offline)
+                $alamatParts = [];
+                if (!empty($row->alamat_institusi) && $row->alamat_institusi !== '-') {
+                    $alamatParts[] = $row->alamat_institusi;
+                }
+                if (!empty($row->kelurahan) && $row->kelurahan !== '-') {
+                    $alamatParts[] = 'Kel. ' . $row->kelurahan;
+                }
+                if (!empty($row->kecamatan) && $row->kecamatan !== '-') {
+                    $alamatParts[] = 'Kec. ' . $row->kecamatan;
+                }
+
+                return [
+                    'institusi'        => $row->institusi,
+                    'nama_pemohon'     => $row->nama_pemohon,
+                    'alamat_institusi' => !empty($alamatParts) ? implode(', ', $alamatParts) : '-',
+                    'tgl_kegiatan'     => $row->tgl_kegiatan ? Carbon::parse($row->tgl_kegiatan)->format('d M Y') : '-',
+                    'diajukan'         => $row->created_at ? $row->created_at->format('d M Y H:i') : '-',
+                    'status'           => $statusTampil,
+                ];
+            });
+
+        return response()->json([
+            'data' => $items,
+        ]);
     }
 }
