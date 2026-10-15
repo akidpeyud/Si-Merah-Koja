@@ -11,7 +11,9 @@
     $isSuper    = $user->hasRole('Super User');
     $bisaKonten = $user->hasAnyRole(['Operator', 'Super User']);
 @endphp
-<!DOCTYPE html>
+@extends('layouts.dashboard')
+
+@section('content')
 <html lang="id">
 <head>
     <meta charset="UTF-8">

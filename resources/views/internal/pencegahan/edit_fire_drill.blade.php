@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+@extends('layouts.dashboard')
+
+@section('content')
 <html lang="id">
 <head>
     <meta charset="UTF-8">

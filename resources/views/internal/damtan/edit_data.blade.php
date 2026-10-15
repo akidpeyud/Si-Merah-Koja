@@ -4,7 +4,9 @@
         abort(403, 'Anda tidak memiliki hak akses untuk mengubah data laporan. Role Anda hanya dapat melihat dan mencetak.');
     }
 @endphp
-<!DOCTYPE html>
+@extends('layouts.dashboard')
+
+@section('content')
 <html lang="id">
 <head>
     <meta charset="UTF-8">

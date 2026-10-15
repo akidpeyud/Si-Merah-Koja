@@ -12,7 +12,9 @@
     $bisaKonten = $user->hasAnyRole(['Operator', 'Super User']);
     $activeTab  = session('active_tab', 'mutubaku');
 @endphp
-<!DOCTYPE html>
+@extends('layouts.dashboard')
+
+@section('content')
 <html lang="id">
 <head>
     <meta charset="UTF-8">
