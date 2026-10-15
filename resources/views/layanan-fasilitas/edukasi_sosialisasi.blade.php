@@ -715,7 +715,7 @@
                         </div>
                         <p class="cs-desc">Masukkan NIK atau No Kontak / WhatsApp yang Anda gunakan saat mengajukan permohonan.</p>
 
-                        <form class="cs-form" id="csForm" novalidate>
+                        <form class="cs-form" id="csForm" data-no-loader="true" novalidate>
                             <label class="sr-only" for="csKontak">NIK atau No Kontak / WhatsApp</label>
                             <input class="input" type="text" id="csKontak" name="kontak" inputmode="numeric" maxlength="16" autocomplete="off" placeholder="NIK atau Nomor WA" required>
                             <button type="submit" class="btn btn-dark cs-btn" id="csBtn"><i class="fas fa-search"></i> Cek</button>
@@ -1092,6 +1092,9 @@
 
     var form = document.getElementById('csForm');
     if (!form) return;
+
+    // Tambahkan atribut agar diabaikan oleh loader global
+    form.setAttribute('data-no-loader', 'true');
 
     var input = document.getElementById('csKontak');
     var btn   = document.getElementById('csBtn');
