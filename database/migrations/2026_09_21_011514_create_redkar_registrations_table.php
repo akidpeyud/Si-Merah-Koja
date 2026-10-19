@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('redkar_registrations', function (Blueprint $table) {
-            // ID diubah jadi string karena controllermu memakai format "RDK-..."
+            // ID diubah jadi string karena controller memakai format "RDK-..."
             $table->string('id')->primary();
             
-            // Autentikasi Relawan (Ini yang bikin error Unknown Column tadi)
+            // Autentikasi Relawan
             $table->string('username')->unique();
             $table->string('password');
             
@@ -29,10 +29,10 @@ return new class extends Migration
             $table->string('agama');
             $table->string('nomor_telp', 20);
             
-            // Berkas KTP (Nama kolom disesuaikan dengan controller: 'file_ktp')
+            // Berkas KTP (Nama kolom disesuaikan dengan controller: 'file_ktp' atau 'foto_ktp' sesuai database Anda)
             $table->string('file_ktp')->nullable();
             
-            // Domisili
+            // Domisili (Kolom kode pos telah dihapus)
             $table->text('alamat');
             $table->string('rt_rw', 10);
             $table->string('provinsi')->default('JAMBI');
