@@ -361,10 +361,19 @@ class PencegahanController extends Controller
     // ==========================================
     // BAGIAN FIRE DRILL
     // ==========================================
+   // ==========================================
+    // BAGIAN FIRE DRILL (REVISI DINAMIS & PESERTA)
+    // ==========================================
     public function indexFireDrill()
     {
-        $data_fire_drill = FireDrill::all();
-        return view('internal.pencegahan.fire_drill', compact('data_fire_drill'));
+        // Urutkan dari tahun terbaru dan ID terbaru
+        $data_fire_drill = FireDrill::orderBy('tahun', 'desc')->orderBy('id', 'desc')->get();
+        
+        // Ambil daftar tahun & instansi unik untuk dropdown filter
+        $daftar_tahun = $data_fire_drill->pluck('tahun')->unique()->sortDesc()->values();
+        $daftar_instansi = $data_fire_drill->pluck('nama_instansi')->unique()->sort()->values();
+
+        return view('internal.pencegahan.fire_drill', compact('data_fire_drill', 'daftar_tahun', 'daftar_instansi'));
     }
 
     public function createFireDrill()
@@ -374,14 +383,29 @@ class PencegahanController extends Controller
 
     public function storeFireDrill(Request $request)
     {
+        // Bersihkan daftar nama peserta per baris (jika diisi)
+        $listLaki = $this->bersihkanDaftarNama($request->nama_peserta_laki_laki);
+        $listPerempuan = $this->bersihkanDaftarNama($request->nama_peserta_perempuan);
+
+        // Jika daftar nama diisi, jumlah otomatis mengikuti banyaknya nama (atau pakai input angka jika kosong)
+        $jmlLaki = count($listLaki) > 0 ? count($listLaki) : (int) ($request->peserta_laki_laki ?? 0);
+        $jmlPerempuan = count($listPerempuan) > 0 ? count($listPerempuan) : (int) ($request->peserta_perempuan ?? 0);
+        
+        // Jika hanya mengisi total_peserta (seperti data arsip 2023-2024)
+        $total = ($jmlLaki + $jmlPerempuan) > 0 
+            ? ($jmlLaki + $jmlPerempuan) 
+            : (int) ($request->total_peserta ?? 0);
+
         FireDrill::create([
-            'nama_instansi'       => $request->nama_instansi,
-            'tahun'               => $request->tahun,
-            'tanggal_pelaksanaan' => $request->tanggal_pelaksanaan,
-            'tempat_pelaksanaan'  => $request->tempat_pelaksanaan,
-            'peserta_laki_laki'   => $request->peserta_laki_laki ?? 0,
-            'peserta_perempuan'   => $request->peserta_perempuan ?? 0,
-            'total_peserta'       => ($request->peserta_laki_laki + $request->peserta_perempuan),
+            'nama_instansi'          => $request->nama_instansi,
+            'tahun'                  => $request->tahun,
+            'tanggal_pelaksanaan'    => $request->tanggal_pelaksanaan,
+            'tempat_pelaksanaan'     => $request->tempat_pelaksanaan,
+            'peserta_laki_laki'      => $jmlLaki,
+            'peserta_perempuan'      => $jmlPerempuan,
+            'nama_peserta_laki_laki' => count($listLaki) > 0 ? implode("\n", $listLaki) : null,
+            'nama_peserta_perempuan' => count($listPerempuan) > 0 ? implode("\n", $listPerempuan) : null,
+            'total_peserta'          => $total,
         ]);
 
         return redirect('/internal/pencegahan/inspeksi-kebakaran/fire-drill')->with('success', 'Data Fire Drill berhasil ditambahkan!');
@@ -396,14 +420,27 @@ class PencegahanController extends Controller
     public function updateFireDrill(Request $request, $id)
     {
         $item = FireDrill::findOrFail($id);
+
+        $listLaki = $this->bersihkanDaftarNama($request->nama_peserta_laki_laki);
+        $listPerempuan = $this->bersihkanDaftarNama($request->nama_peserta_perempuan);
+
+        $jmlLaki = count($listLaki) > 0 ? count($listLaki) : (int) ($request->peserta_laki_laki ?? 0);
+        $jmlPerempuan = count($listPerempuan) > 0 ? count($listPerempuan) : (int) ($request->peserta_perempuan ?? 0);
+        
+        $total = ($jmlLaki + $jmlPerempuan) > 0 
+            ? ($jmlLaki + $jmlPerempuan) 
+            : (int) ($request->total_peserta ?? 0);
+
         $item->update([
-            'nama_instansi'       => $request->nama_instansi,
-            'tahun'               => $request->tahun,
-            'tanggal_pelaksanaan' => $request->tanggal_pelaksanaan,
-            'tempat_pelaksanaan'  => $request->tempat_pelaksanaan,
-            'peserta_laki_laki'   => $request->peserta_laki_laki ?? 0,
-            'peserta_perempuan'   => $request->peserta_perempuan ?? 0,
-            'total_peserta'       => ($request->peserta_laki_laki + $request->peserta_perempuan),
+            'nama_instansi'          => $request->nama_instansi,
+            'tahun'                  => $request->tahun,
+            'tanggal_pelaksanaan'    => $request->tanggal_pelaksanaan,
+            'tempat_pelaksanaan'     => $request->tempat_pelaksanaan,
+            'peserta_laki_laki'      => $jmlLaki,
+            'peserta_perempuan'      => $jmlPerempuan,
+            'nama_peserta_laki_laki' => count($listLaki) > 0 ? implode("\n", $listLaki) : null,
+            'nama_peserta_perempuan' => count($listPerempuan) > 0 ? implode("\n", $listPerempuan) : null,
+            'total_peserta'          => $total,
         ]);
 
         return redirect('/internal/pencegahan/inspeksi-kebakaran/fire-drill')->with('success', 'Data Fire Drill berhasil diperbarui!');
@@ -417,6 +454,21 @@ class PencegahanController extends Controller
         return redirect()->back()->with('success', 'Data Fire Drill berhasil dihapus!');
     }
 
+    /**
+     * Helper: Memecah teks textarea per baris dan menghapus penomoran awal (misal "1. Zaky" -> "Zaky")
+     */
+    private function bersihkanDaftarNama($rawText)
+    {
+        if (empty($rawText)) return [];
+        return collect(preg_split('/\r\n|\r|\n/', (string) $rawText))
+            ->map(function ($line) {
+                // Hapus angka urutan di depan jika user mengetik "1. Zaky" agar tidak dobel saat ditampilkan
+                return trim(preg_replace('/^\d+[\.\)\-\s]+/', '', trim($line)));
+            })
+            ->filter()
+            ->values()
+            ->all();
+    }
     // ==========================================
     // BAGIAN PELATIHAN KELUARGA (DAMKAR GOES TO RT)
     // Dokumentasi berupa LINK (Google Drive dll), bukan upload file
@@ -563,48 +615,232 @@ class PencegahanController extends Controller
     // ==========================================
     // FUNGSI DOWNLOAD EXCEL & PDF (FIRE DRILL)
     // ==========================================
-    public function cetakExcelFireDrill()
+   // ==========================================
+    // FUNGSI DOWNLOAD EXCEL & PDF (FIRE DRILL)
+    // ==========================================
+   // ==========================================
+    // FUNGSI DOWNLOAD EXCEL & PDF (FIRE DRILL)
+    // ==========================================
+    public function cetakExcelFireDrill(Request $request)
     {
-        $data = FireDrill::orderBy('tanggal_pelaksanaan', 'desc')->get();
-        $filename = "Data_Fire_Drill_" . date('Ymd') . ".csv";
-        
+        $tahunDipilih = $request->query('tahun');
+        $instansiDipilih = $request->query('instansi');
+
+        // Urutkan tahun dari terlama ke terbaru (2023, 2024, 2025, 2026) seperti Sheet1 Excel asli
+        $query = FireDrill::orderBy('tahun', 'asc')->orderBy('id', 'asc');
+
+        if (!empty($tahunDipilih)) {
+            $query->where('tahun', $tahunDipilih);
+        }
+        if (!empty($instansiDipilih)) {
+            $query->whereRaw('LOWER(nama_instansi) = ?', [strtolower($instansiDipilih)]);
+        }
+
+        $data = $query->get();
+        $groupedByYear = $data->groupBy('tahun');
+
+        $labelFile = !empty($tahunDipilih) ? "Tahun_{$tahunDipilih}" : "Semua_Tahun";
+        $filename = "Data_Fire_Drill_{$labelFile}_" . date('Ymd') . ".xls";
+
         $headers = [
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=$filename",
+            "Content-Type"        => "application/vnd.ms-excel; charset=utf-8",
+            "Content-Disposition" => "attachment; filename=\"$filename\"",
             "Pragma"              => "no-cache",
             "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
             "Expires"             => "0"
         ];
 
-        $columns = ['NO', 'NAMA INSTANSI', 'TAHUN', 'TANGGAL PELAKSANAAN', 'TEMPAT PELAKSANAAN', 'PESERTA LAKI-LAKI', 'PESERTA PEREMPUAN', 'TOTAL PESERTA'];
+        $callback = function() use ($groupedByYear, $tahunDipilih) {
+            echo '<meta charset="UTF-8">';
+            echo '<style>
+                    table { border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt; }
+                    th, td { border: 1px solid #000000; padding: 6px 10px; }
+                    .judul-utama { font-weight: bold; font-size: 12pt; text-align: center; border: none !important; }
+                    .baris-kosong td { border: none !important; height: 14px; }
+                    .th-abu { background-color: #d9d9d9; font-weight: bold; text-align: center; vertical-align: middle; }
+                    .td-center { text-align: center; vertical-align: middle; }
+                    .td-middle { vertical-align: middle; }
+                    .td-top { vertical-align: top; }
+                    .tr-total td { font-weight: bold; background-color: #f2f2f2; }
+                  </style>';
 
-        $callback = function() use($data, $columns) {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, $columns);
-            foreach ($data as $index => $row) {
-                fputcsv($file, [
-                    $index + 1,
-                    $row->nama_instansi ?? '-',
-                    $row->tahun ?? '-',
-                    $row->tanggal_pelaksanaan ?? '-',
-                    $row->tempat_pelaksanaan ?? '-',
-                    $row->peserta_laki_laki ?? '0',
-                    $row->peserta_perempuan ?? '0',
-                    $row->total_peserta ?? '0'
-                ]);
+            echo '<table>';
+
+            if ($groupedByYear->isEmpty()) {
+                echo '<tr><td colspan="5" class="judul-utama">BELUM ADA DATA FIRE DRILL</td></tr>';
             }
-            fclose($file);
+
+            $firstBlock = true;
+            foreach ($groupedByYear as $tahun => $items) {
+                // Cek apakah di tahun ini ada rincian Laki-laki/Perempuan atau Daftar Nama Peserta
+                $adaGender = $items->contains(fn($i) => ($i->peserta_laki_laki > 0 || $i->peserta_perempuan > 0));
+                $adaNamaPeserta = $items->contains(fn($i) => (!empty(trim($i->nama_peserta_laki_laki ?? '')) || !empty(trim($i->nama_peserta_perempuan ?? ''))));
+
+                // Tentukan jumlah kolom tabel tahun ini (5 kolom untuk 2023-2024, 7 kolom untuk 2025+, 9 kolom jika ada daftar nama)
+                $jmlKolom = 5;
+                if ($adaGender) $jmlKolom = 7;
+                if ($adaNamaPeserta) $jmlKolom = 9;
+
+                if (!$firstBlock) {
+                    echo '<tr class="baris-kosong"><td colspan="' . $jmlKolom . '"></td></tr>';
+                    echo '<tr class="baris-kosong"><td colspan="' . $jmlKolom . '"></td></tr>';
+                }
+
+                // Judul Header seperti di Excel Disdamkartan
+                if ($firstBlock) {
+                    echo '<tr><td colspan="' . $jmlKolom . '" class="judul-utama">INSTANSI PEMERINTAH / SWASTA</td></tr>';
+                    echo '<tr><td colspan="' . $jmlKolom . '" class="judul-utama">YANG MELAKSANAKAN PELATIHAN PEMADAM KEBAKARAN</td></tr>';
+                }
+                echo '<tr><td colspan="' . $jmlKolom . '" class="judul-utama">TAHUN ' . e($tahun) . '</td></tr>';
+                echo '<tr class="baris-kosong"><td colspan="' . $jmlKolom . '"></td></tr>';
+
+                // Header Kolom Tabel
+                if (!$adaGender && !$adaNamaPeserta) {
+                    // Format 5 Kolom (Persis Tahun 2023 & 2024 di Excel)
+                    echo '<tr class="th-abu">
+                            <th width="45">NO</th>
+                            <th width="340">NAMA INSTANSI</th>
+                            <th width="200">TANGGAL PELAKSANAAN</th>
+                            <th width="340">TEMPAT PELAKSANAAN</th>
+                            <th width="140">JUMLAH PESERTA</th>
+                          </tr>';
+                } elseif ($adaGender && !$adaNamaPeserta) {
+                    // Format 7 Kolom (Persis Tahun 2025 & 2026 di Excel tanpa daftar nama individu)
+                    echo '<tr class="th-abu">
+                            <th width="45">NO</th>
+                            <th width="320">NAMA INSTANSI</th>
+                            <th width="190">TANGGAL PELAKSANAAN</th>
+                            <th width="300">TEMPAT PELAKSANAAN</th>
+                            <th width="100">Laki-laki</th>
+                            <th width="100">Perempuan</th>
+                            <th width="140">JUMLAH PESERTA</th>
+                          </tr>';
+                } else {
+                    // Format 9 Kolom (Jika ada input daftar nama peserta Laki-laki & Perempuan)
+                    echo '<tr class="th-abu">
+                            <th rowspan="2" width="45">NO</th>
+                            <th rowspan="2" width="280">NAMA INSTANSI</th>
+                            <th rowspan="2" width="180">TANGGAL PELAKSANAAN</th>
+                            <th rowspan="2" width="260">TEMPAT PELAKSANAAN</th>
+                            <th colspan="3">JUMLAH PESERTA</th>
+                            <th colspan="2">DAFTAR NAMA PESERTA</th>
+                          </tr>
+                          <tr class="th-abu">
+                            <th width="90">Laki-laki</th>
+                            <th width="90">Perempuan</th>
+                            <th width="110">TOTAL</th>
+                            <th width="220">PESERTA LAKI-LAKI</th>
+                            <th width="220">PESERTA PEREMPUAN</th>
+                          </tr>';
+                }
+
+                $totalLakiTahun = 0;
+                $totalPerempuanTahun = 0;
+                $totalPesertaTahun = 0;
+
+                foreach ($items->values() as $idx => $item) {
+                    $totalLakiTahun += (int) ($item->peserta_laki_laki ?? 0);
+                    $totalPerempuanTahun += (int) ($item->peserta_perempuan ?? 0);
+                    $totalPesertaTahun += (int) ($item->total_peserta ?? 0);
+
+                    if (!$adaGender && !$adaNamaPeserta) {
+                        echo '<tr>
+                                <td class="td-center">' . ($idx + 1) . '</td>
+                                <td class="td-middle">' . e($item->nama_instansi) . '</td>
+                                <td class="td-middle">' . e($item->tanggal_pelaksanaan) . '</td>
+                                <td class="td-middle">' . e($item->tempat_pelaksanaan) . '</td>
+                                <td class="td-center">' . ($item->total_peserta ?: '') . '</td>
+                              </tr>';
+                    } elseif ($adaGender && !$adaNamaPeserta) {
+                        $punyaLP = ($item->peserta_laki_laki > 0 || $item->peserta_perempuan > 0);
+                        echo '<tr>
+                                <td class="td-center">' . ($idx + 1) . '</td>
+                                <td class="td-middle">' . e($item->nama_instansi) . '</td>
+                                <td class="td-middle">' . e($item->tanggal_pelaksanaan) . '</td>
+                                <td class="td-middle">' . e($item->tempat_pelaksanaan) . '</td>
+                                <td class="td-center">' . ($punyaLP ? $item->peserta_laki_laki : '-') . '</td>
+                                <td class="td-center">' . ($punyaLP ? $item->peserta_perempuan : '-') . '</td>
+                                <td class="td-center">' . ($item->total_peserta ?: '') . '</td>
+                              </tr>';
+                    } else {
+                        $listLaki = !empty($item->nama_peserta_laki_laki)
+                            ? array_values(array_filter(preg_split('/\r\n|\r|\n/', trim($item->nama_peserta_laki_laki))))
+                            : [];
+                        $listPerempuan = !empty($item->nama_peserta_perempuan)
+                            ? array_values(array_filter(preg_split('/\r\n|\r|\n/', trim($item->nama_peserta_perempuan))))
+                            : [];
+                        $punyaLP = ($item->peserta_laki_laki > 0 || $item->peserta_perempuan > 0 || count($listLaki) > 0 || count($listPerempuan) > 0);
+                        $maxBaris = max(1, count($listLaki), count($listPerempuan));
+
+                        for ($b = 0; $b < $maxBaris; $b++) {
+                            echo '<tr>';
+                            if ($b === 0) {
+                                echo '<td rowspan="' . $maxBaris . '" class="td-center">' . ($idx + 1) . '</td>';
+                                echo '<td rowspan="' . $maxBaris . '" class="td-middle">' . e($item->nama_instansi) . '</td>';
+                                echo '<td rowspan="' . $maxBaris . '" class="td-middle">' . e($item->tanggal_pelaksanaan) . '</td>';
+                                echo '<td rowspan="' . $maxBaris . '" class="td-middle">' . e($item->tempat_pelaksanaan) . '</td>';
+                                echo '<td rowspan="' . $maxBaris . '" class="td-center">' . ($punyaLP ? ($item->peserta_laki_laki ?? 0) : '-') . '</td>';
+                                echo '<td rowspan="' . $maxBaris . '" class="td-center">' . ($punyaLP ? ($item->peserta_perempuan ?? 0) : '-') . '</td>';
+                                echo '<td rowspan="' . $maxBaris . '" class="td-center" style="font-weight:bold;">' . ($item->total_peserta ?? 0) . '</td>';
+                            }
+                            $namaL = isset($listLaki[$b]) ? (($b + 1) . '. ' . e($listLaki[$b])) : ($b === 0 && count($listLaki) === 0 ? '-' : '');
+                            $namaP = isset($listPerempuan[$b]) ? (($b + 1) . '. ' . e($listPerempuan[$b])) : ($b === 0 && count($listPerempuan) === 0 ? '-' : '');
+                            echo '<td class="td-top">' . $namaL . '</td>';
+                            echo '<td class="td-top">' . $namaP . '</td>';
+                            echo '</tr>';
+                        }
+                    }
+                }
+
+                // Baris JUMLAH TOTAL di bawah setiap tahun (Persis Excel Asli)
+                if (!$adaGender && !$adaNamaPeserta) {
+                    echo '<tr class="tr-total">
+                            <td colspan="4" class="td-center">JUMLAH TOTAL</td>
+                            <td class="td-center">' . $totalPesertaTahun . '</td>
+                          </tr>';
+                } elseif ($adaGender && !$adaNamaPeserta) {
+                    echo '<tr class="tr-total">
+                            <td colspan="4" class="td-center">JUMLAH TOTAL</td>
+                            <td class="td-center">' . $totalLakiTahun . '</td>
+                            <td class="td-center">' . $totalPerempuanTahun . '</td>
+                            <td class="td-center">' . $totalPesertaTahun . '</td>
+                          </tr>';
+                } else {
+                    echo '<tr class="tr-total">
+                            <td colspan="4" class="td-center">JUMLAH TOTAL</td>
+                            <td class="td-center">' . $totalLakiTahun . '</td>
+                            <td class="td-center">' . $totalPerempuanTahun . '</td>
+                            <td class="td-center">' . $totalPesertaTahun . '</td>
+                            <td colspan="2"></td>
+                          </tr>';
+                }
+
+                $firstBlock = false;
+            }
+
+            echo '</table>';
         };
+
         return response()->stream($callback, 200, $headers);
     }
 
-    public function cetak()
+    public function cetak(Request $request)
     {
-        // Ubah nama variabel penampung menjadi $data
-        $data = FireDrill::orderBy('tanggal_pelaksanaan', 'desc')->get();
-        
-        // Kirimkan variabel 'data' ke dalam view
-        return view('internal.pencegahan.cetak_pdf_fire_drill', compact('data'));
-    }
-    
+        $tahunDipilih = $request->query('tahun');
+        $instansiDipilih = $request->query('instansi');
+
+        $query = FireDrill::orderBy('tahun', 'asc')->orderBy('id', 'asc');
+
+        if (!empty($tahunDipilih)) {
+            $query->where('tahun', $tahunDipilih);
+        }
+        if (!empty($instansiDipilih)) {
+            $query->whereRaw('LOWER(nama_instansi) = ?', [strtolower($instansiDipilih)]);
+        }
+
+        $data = $query->get();
+        $groupedByYear = $data->groupBy('tahun');
+
+        return view('internal.pencegahan.cetak_pdf_fire_drill', compact('data', 'groupedByYear', 'tahunDipilih', 'instansiDipilih'));
+    }   
 }
