@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\IkmResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class IkmController extends Controller
@@ -37,8 +38,132 @@ class IkmController extends Controller
         9 => ['u9'],
     ];
 
-    /** Halaman IKM: hasil survei + form pengisian dalam satu halaman. */
+    // =========================================================================
+    // 1. BAGIAN PUBLIK (Untuk Halaman Depan / Masyarakat)
+    // =========================================================================
+
     public function index(Request $request)
+    {
+        if ($request->boolean('ulang')) {
+            session()->forget('ikm_sukses');
+        }
+
+        [$tahun, $daftar_tahun, $jumlah, $nrr, $ikm] = $this->hitungStatistik($request);
+
+        return view('galery.ikm.index', [
+            'tahun'        => $tahun,
+            'daftar_tahun' => $daftar_tahun,
+            'unsur'        => self::UNSUR,
+            'jumlah'       => $jumlah,
+            'nrr'          => $nrr,
+            'ikm'          => $ikm,
+            'mutu'         => $this->mutu($ikm),
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        if ($request->filled('website')) {
+            return redirect()->route('ikm.index')
+                ->withFragment('survei')
+                ->with('ikm_sukses', 'Terima kasih, survei Anda telah terkirim.');
+        }
+
+        $rules = [
+            'tanggal_layanan'    => ['required', 'date', 'before_or_equal:today'],
+            'pendidikan'         => ['required', Rule::in(IkmResponse::PENDIDIKAN)],
+            'usia'               => ['required', 'integer', 'between:18,100'],
+            'pekerjaan'          => ['required', Rule::in(IkmResponse::PEKERJAAN)],
+            'disabilitas'        => ['nullable', 'boolean'],
+            'kritik_saran'       => ['required', 'string', 'max:1000'],
+            'kepercayaan_pusat'  => ['required', 'integer', 'between:1,10'],
+            'kepercayaan_daerah' => ['required', 'integer', 'between:1,10'],
+        ];
+
+        $messages = [
+            'usia.between' => 'Usia responden minimal 18 tahun (antara 18 hingga 100 tahun).',
+            'usia.min'     => 'Usia responden minimal 18 tahun.',
+        ];
+
+        foreach (IkmResponse::kolomPenilaian() as $field) {
+            $rules[$field] = ['required', 'integer', Rule::in(array_keys(IkmResponse::SKALA))];
+        }
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            return redirect()->route('ikm.index')
+                ->withFragment('survei')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $data = $validator->validated();
+        $data['disabilitas'] = $request->boolean('disabilitas');
+        $data['ip_address']  = $request->ip();
+
+        IkmResponse::create($data);
+
+        return redirect()->route('ikm.index')
+            ->withFragment('survei')
+            ->with('ikm_sukses', 'Terima kasih, survei Anda berhasil dikirim.');
+    }
+
+
+    // =========================================================================
+    // 2. BAGIAN INTERNAL (Untuk Dashboard Operator / Admin)
+    // =========================================================================
+
+    public function indexInternal(Request $request)
+    {
+        [$tahun, $daftar_tahun, $jumlah, $nrr, $ikm] = $this->hitungStatistik($request);
+
+        $cari      = trim((string) $request->query('q', ''));
+        $pekerjaan = $request->query('pekerjaan', '');
+
+        $responden = IkmResponse::query()
+            ->whereYear('tanggal_layanan', $tahun)
+            ->when($cari !== '', function ($q) use ($cari) {
+                $q->where(function ($sub) use ($cari) {
+                    $sub->where('kritik_saran', 'like', "%{$cari}%")
+                        ->orWhere('pekerjaan', 'like', "%{$cari}%")
+                        ->orWhere('pendidikan', 'like', "%{$cari}%");
+                });
+            })
+            ->when($pekerjaan !== '', fn ($q) => $q->where('pekerjaan', $pekerjaan))
+            ->orderByDesc('tanggal_layanan')
+            ->orderByDesc('id')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('internal.operator.kelola_ikm', [
+            'tahun'        => $tahun,
+            'daftar_tahun' => $daftar_tahun,
+            'unsur'        => self::UNSUR,
+            'jumlah'       => $jumlah,
+            'nrr'          => $nrr,
+            'ikm'          => $ikm,
+            'mutu'         => $this->mutu($ikm),
+            'responden'    => $responden,
+            'cari'         => $cari,
+            'pekerjaan'    => $pekerjaan,
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $responden = IkmResponse::findOrFail($id);
+        $responden->delete();
+
+        return redirect()->back()->with('success', 'Data survei dan saran responden berhasil dihapus!');
+    }
+
+
+    // =========================================================================
+    // 3. HELPER PERHITUNGAN IKM
+    // =========================================================================
+
+    private function hitungStatistik(Request $request): array
     {
         $daftar_tahun = IkmResponse::query()
             ->selectRaw('YEAR(tanggal_layanan) AS th')
@@ -77,59 +202,12 @@ class IkmController extends Controller
                 $nrr[$i] = round($rata, 2);
                 $total += $rata;
             }
-            // IKM = rata-rata NRR x 25
             $ikm = round(($total / count(self::UNSUR)) * 25, 2);
         }
 
-        return view('galery.ikm.index', [
-            'tahun'        => $tahun,
-            'daftar_tahun' => $daftar_tahun,
-            'unsur'        => self::UNSUR,
-            'jumlah'       => $jumlah,
-            'nrr'          => $nrr,
-            'ikm'          => $ikm,
-            'mutu'         => $this->mutu($ikm),
-        ]);
+        return [$tahun, $daftar_tahun, $jumlah, $nrr, $ikm];
     }
 
-    /** Simpan jawaban survei dari form. */
-    public function store(Request $request)
-    {
-        // Honeypot: bot biasanya mengisi field "website". Pura-pura sukses saja.
-        if ($request->filled('website')) {
-            return redirect()->route('ikm.index')
-                ->with('ikm_sukses', 'Terima kasih, survei Anda telah terkirim.');
-        }
-
-        $rules = [
-            'tanggal_layanan'    => ['required', 'date', 'before_or_equal:today'],
-            'pendidikan'         => ['required', Rule::in(IkmResponse::PENDIDIKAN)],
-            'usia'               => ['required', 'integer', 'between:5,100'],
-            'pekerjaan'          => ['required', Rule::in(IkmResponse::PEKERJAAN)],
-            'disabilitas'        => ['nullable', 'boolean'],
-            'kritik_saran'       => ['required', 'string', 'max:1000'],
-            'kepercayaan_pusat'  => ['required', 'integer', 'between:1,10'],
-            'kepercayaan_daerah' => ['required', 'integer', 'between:1,10'],
-        ];
-
-        // 11 pernyataan unsur + 5 integritas: nilai 1-4
-        foreach (IkmResponse::kolomPenilaian() as $field) {
-            $rules[$field] = ['required', 'integer', Rule::in(array_keys(IkmResponse::SKALA))];
-        }
-
-        $data = $request->validate($rules);
-
-        $data['disabilitas'] = $request->boolean('disabilitas');
-        $data['ip_address']  = $request->ip();
-
-        IkmResponse::create($data);
-
-        return redirect()->route('ikm.index')
-            ->withFragment('survei')
-            ->with('ikm_sukses', 'Terima kasih, survei Anda berhasil dikirim.');
-    }
-
-    /** Konversi nilai IKM ke mutu pelayanan (A-D). */
     private function mutu(float $ikm): array
     {
         return match (true) {
