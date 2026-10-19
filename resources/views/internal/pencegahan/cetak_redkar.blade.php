@@ -1,6 +1,4 @@
-@extends('layouts.dashboard')
-
-@section('content')
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -13,7 +11,7 @@
             color: #000; 
             background-color: #525659; 
             margin: 0; 
-            padding: 10px; 
+            padding: 20px 10px; 
             display: flex; 
             justify-content: center; 
         }
@@ -21,70 +19,82 @@
         .document-page { 
             background: #fff; 
             width: 210mm; 
-            height: 297mm; /* Mengunci tinggi agar pas 1 halaman penuh */
-            padding: 12mm 15mm; 
-            box-shadow: 0 0 10px rgba(0,0,0,0.5); 
+            min-height: 297mm; 
+            padding: 15mm 20mm; 
+            box-shadow: 0 0 15px rgba(0,0,0,0.5); 
             box-sizing: border-box; 
             position: relative;
-            overflow: hidden;
         }
         
-        /* Kop Surat Resmi (Dipadatkan) */
+        /* Kop Surat Resmi */
         .kop-surat { 
             display: flex; 
             align-items: center; 
             border-bottom: 3px double #000; 
-            padding-bottom: 8px; 
-            margin-bottom: 15px; 
+            padding-bottom: 10px; 
+            margin-bottom: 20px; 
         }
         .kop-surat img { width: 70px; height: auto; }
         .kop-teks { flex: 1; text-align: center; padding: 0 10px; }
         .kop-teks h2 { margin: 0; font-size: 14pt; font-weight: bold; text-transform: uppercase; }
         .kop-teks h1 { margin: 3px 0; font-size: 16pt; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
-        .kop-teks p { margin: 1px 0 0 0; font-size: 9pt; font-family: 'Arial', sans-serif; }
+        .kop-teks p { margin: 2px 0 0 0; font-size: 9pt; font-family: 'Arial', sans-serif; }
 
         .doc-title { 
             text-align: center; 
             font-size: 13pt; 
             font-weight: bold; 
-            margin-bottom: 5px; 
+            margin-bottom: 4px; 
             text-decoration: underline; 
             letter-spacing: 0.5px; 
+            text-transform: uppercase;
         }
 
-        /* Nomor Pendaftaran */
+        /* Nomor Registrasi */
         .no-pendaftaran {
             text-align: center;
             font-size: 11pt;
-            margin-bottom: 15px;
+            margin-bottom: 22px;
             font-weight: bold;
         }
         
-        /* Tabel Data Diri (Dipadatkan jaraknya) */
+        /* Tabel Data Diri */
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            margin-bottom: 15px; 
+            margin-bottom: 20px; 
             font-size: 11.5pt; 
-            line-height: 1.4; 
+            line-height: 1.5; 
         }
-        td { padding: 4px 3px; vertical-align: top; }
+        td { padding: 5px 4px; vertical-align: top; }
         .label-col { width: 35%; }
         .separator { width: 3%; text-align: center; }
         .value-col { width: 62%; font-weight: bold; text-transform: capitalize; }
 
+        /* Tabel Sub-detail untuk Riwayat Kesehatan agar titik dua sejajar */
+        .sub-table {
+            width: 100%;
+            margin: 0;
+            border-collapse: collapse;
+        }
+        .sub-table td {
+            padding: 1px 0;
+            font-weight: normal;
+        }
+
         /* Area Tanda Tangan */
         .signature-section {
-            margin-top: 25px; 
-            text-align: right; 
-            padding-right: 30px; 
+            margin-top: 35px; 
+             float: right;
+            width: 240px;
+            text-align: center; 
             font-size: 11.5pt;
         }
         .signature-space {
-            height: 65px;
+            height: 70px;
         }
 
-        /* Tombol melayang untuk download */
+        /* Tombol melayang untuk cetak/download */
         .btn-print { 
             background-color: #10b981; 
             color: white; 
@@ -102,9 +112,9 @@
             font-family: 'Arial', sans-serif; 
             z-index: 1000;
         }
-        .btn-print:hover { background-color: #059669; }
+        .btn-print:hover { background-color: #059669; transform: translateY(-1px); }
 
-        /* Aturan Print Murni 1 Halaman */
+        /* Aturan Print Murni 1 Halaman A4 */
         @media print {
             @page {
                 size: A4 portrait;
@@ -122,7 +132,7 @@
                 width: 100%;
                 height: 100vh;
                 box-shadow: none;
-                padding: 10mm 15mm;
+                padding: 12mm 18mm;
                 margin: 0;
             }
 
@@ -152,90 +162,100 @@
         </div>
 
         <div class="doc-title">
-            FORMULIR PENDAFTARAN RELAWAN PEMADAM KEBAKARAN (REDKAR)
+            DATA BIODATA RELAWAN PEMADAM KEBAKARAN (REDKAR)
         </div>
         <div class="no-pendaftaran">
-            No. Register: {{ $relawan->id }}
+            No. Register: {{ str_pad($relawan->id, 4, '0', STR_PAD_LEFT) }} / REDKAR-JBI / {{ \Carbon\Carbon::parse($relawan->created_at)->format('Y') }}
         </div>
 
         <table>
             <tr>
-                <td class="label-col">1. Tanggal Pendaftaran</td>
+                <td class="label-col">1. Tanggal Pendataan</td>
                 <td class="separator">:</td>
                 <td class="value-col">{{ \Carbon\Carbon::parse($relawan->created_at)->locale('id')->isoFormat('D MMMM Y') }}</td>
             </tr>
             <tr>
-                <td class="label-col">2. Username (Akun Sistem)</td>
-                <td class="separator">:</td>
-                <td class="value-col" style="text-transform: none;">{{ $relawan->username }}</td>
-            </tr>
-            <tr>
-                <td class="label-col">3. NIK (Nomor KTP)</td>
+                <td class="label-col">2. NIK (Nomor KTP)</td>
                 <td class="separator">:</td>
                 <td class="value-col">{{ $relawan->nik }}</td>
             </tr>
             <tr>
-                <td class="label-col">4. Nama Lengkap</td>
+                <td class="label-col">3. Nama Lengkap</td>
                 <td class="separator">:</td>
                 <td class="value-col">{{ $relawan->nama_lengkap }}</td>
             </tr>
             <tr>
-                <td class="label-col">5. Jenis Kelamin</td>
+                <td class="label-col">4. Jenis Kelamin</td>
                 <td class="separator">:</td>
                 <td class="value-col">{{ $relawan->jenis_kelamin == 'L' ? 'Laki-Laki' : ($relawan->jenis_kelamin == 'P' ? 'Perempuan' : $relawan->jenis_kelamin) }}</td>
             </tr>
             <tr>
-                <td class="label-col">6. Tempat, Tanggal Lahir</td>
+                <td class="label-col">5. Tempat, Tanggal Lahir</td>
                 <td class="separator">:</td>
                 <td class="value-col">{{ $relawan->tempat_lahir }}, {{ \Carbon\Carbon::parse($relawan->tanggal_lahir)->locale('id')->isoFormat('D MMMM Y') }}</td>
             </tr>
             <tr>
-                <td class="label-col">7. Status Perkawinan</td>
+                <td class="label-col">6. Status Perkawinan</td>
                 <td class="separator">:</td>
                 <td class="value-col">{{ $relawan->status_perkawinan }}</td>
             </tr>
             <tr>
-                <td class="label-col">8. Agama</td>
+                <td class="label-col">7. Agama</td>
                 <td class="separator">:</td>
                 <td class="value-col">{{ $relawan->agama }}</td>
             </tr>
             <tr>
-                <td class="label-col">9. Nomor Telepon / WA</td>
+                <td class="label-col">8. Nomor Telepon / WA</td>
                 <td class="separator">:</td>
                 <td class="value-col">{{ $relawan->nomor_telp }}</td>
             </tr>
             <tr>
-                <td class="label-col">10. Pendidikan Terakhir</td>
+                <td class="label-col">9. Pendidikan Terakhir</td>
                 <td class="separator">:</td>
-                <td class="value-col">{{ strtoupper($relawan->pendidikan_terakhir) }} - ({{ $relawan->latar_belakang_pendidikan }})</td>
+                <td class="value-col">
+                    {{ strtoupper($relawan->pendidikan_terakhir) }}
+                    @if($relawan->latar_belakang_pendidikan)
+                        ({{ $relawan->latar_belakang_pendidikan }})
+                    @endif
+                </td>
             </tr>
             <tr>
-                <td class="label-col">11. Pekerjaan</td>
+                <td class="label-col">10. Pekerjaan</td>
                 <td class="separator">:</td>
                 <td class="value-col">{{ $relawan->pekerjaan }}</td>
             </tr>
             <tr>
-                <td class="label-col">12. Alamat Lengkap</td>
+                <td class="label-col">11. Alamat Lengkap</td>
                 <td class="separator">:</td>
-                <td class="value-col" style="line-height: 1.4;">
+                <td class="value-col" style="line-height: 1.45;">
                     {{ $relawan->alamat }}, RT/RW {{ $relawan->rt_rw }}<br>
                     Kel. {{ $relawan->kelurahan }}, Kec. {{ $relawan->kecamatan }}<br>
-                    {{ $relawan->kabupaten_kota }}, {{ $relawan->provinsi }} - {{ $relawan->kode_pos }}
+                    {{ $relawan->kabupaten_kota }}, {{ $relawan->provinsi }} {{ $relawan->kode_pos ? '- ' . $relawan->kode_pos : '' }}
                 </td>
             </tr>
             <tr>
-                <td class="label-col">13. Riwayat Kesehatan</td>
+                <td class="label-col">12. Keterangan Kesehatan</td>
                 <td class="separator">:</td>
-                <td class="value-col" style="font-weight: normal; line-height: 1.4;">
-                    - Sehat Jasmani & Rohani : <b>{{ $relawan->sehat_jasmani }}</b><br>
-                    - Golongan Darah &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <b>{{ strtoupper($relawan->golongan_darah) }}</b>
+                <td class="value-col">
+                    <table class="sub-table">
+                        <tr>
+                            <td style="width: 175px;">- Sehat Jasmani & Rohani</td>
+                            <td style="width: 15px;">:</td>
+                            <td><b>{{ $relawan->sehat_jasmani }}</b></td>
+                        </tr>
+                        <tr>
+                            <td>- Golongan Darah</td>
+                            <td>:</td>
+                            <td><b>{{ strtoupper($relawan->golongan_darah) }}</b></td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
         </table>
 
         <div class="signature-section">
-            <p>Jambi, {{ \Carbon\Carbon::parse($relawan->created_at)->locale('id')->isoFormat('D MMMM Y') }}</p>
-            <p style="margin-bottom: 0;">Calon Relawan,</p>
+            <p style="margin: 0 0 4px 0;">Jambi, {{ \Carbon\Carbon::parse($relawan->created_at)->locale('id')->isoFormat('D MMMM Y') }}</p>
+            <p style="margin: 0;">Anggota Relawan (REDKAR),</p>
             <div class="signature-space"></div>
             <p style="font-weight: bold; text-decoration: underline; text-transform: uppercase; margin: 0;">{{ $relawan->nama_lengkap }}</p>
         </div>

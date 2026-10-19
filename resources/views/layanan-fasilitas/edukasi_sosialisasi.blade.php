@@ -637,8 +637,6 @@
                         </li>
                     </ul>
                 </li>
-
-                <li><a class="menu-link {{ request()->is('redkar*') ? 'is-active' : '' }}" href="/redkar">Redkar</a></li>
             </ul>
 
             <!-- ===== Tombol kanan: Lapor darurat + Masuk ===== -->
@@ -738,13 +736,13 @@
                     <section class="side-card">
                         <div class="card-head">
                             <span class="c-ico"><i class="fas fa-clipboard-check"></i></span>
-                            <h2>Persyaratan</h2>
+                            <h2>Persyaratan Kunjungan &amp; Edukasi</h2>
                         </div>
                         <ol class="checklist">
                             <li>
                                 <span class="ck-ico"><i class="fas fa-file-signature"></i></span>
                                 <div>
-                                    Unggah <strong>Surat Permohonan Bermaterai</strong>.
+                                    Menyampaikan surat permohonan selambat-lambatnya 7 hari sebelum kunjungan yang ditandatangani oleh pejabat instansi, lembaga, dan organisasi.
                                     @if($url_surat_permohonan)
                                         <br><a href="{{ $url_surat_permohonan }}" class="inline" download><i class="fas fa-download"></i> Unduh surat permohonan</a>
                                     @else
@@ -753,15 +751,21 @@
                                 </div>
                             </li>
                             <li>
-                                <span class="ck-ico"><i class="fas fa-folder-open"></i></span>
+                                <span class="ck-ico"><i class="fas fa-users"></i></span>
                                 <div>
-                                    Unggah detail persyaratan lainnya (opsional/bisa dalam format ZIP):
-                                    <ul class="muted mt-2" style="font-size: .85rem; padding-left:14px; list-style:circle;">
-                                        <li>Foto copy KTP Penanggung Jawab</li>
-                                        <li>Data Peserta Edukasi & Jadwal</li>
-                                        <li>Surat Kesediaan Membawa Peralatan</li>
-                                        <li>Pernyataan Kesediaan Sarpras Proteksi Gedung</li>
-                                    </ul>
+                                    Menyampaikan data peserta kunjungan dan edukasi.
+                                </div>
+                            </li>
+                            <li>
+                                <span class="ck-ico"><i class="fas fa-fire-extinguisher"></i></span>
+                                <div>
+                                    Menyiapkan bahan praktek lapangan (APAR dan BBM).
+                                </div>
+                            </li>
+                            <li>
+                                <span class="ck-ico"><i class="fas fa-star"></i></span>
+                                <div>
+                                    Mengisi Indeks Kepuasan Masyarakat.
                                 </div>
                             </li>
                         </ol>
@@ -898,12 +902,13 @@
                             <div class="fields">
                                 <div class="field full">
                                     <label class="label" for="tgl_kegiatan"><span>Rencana Tanggal Pelaksanaan <span class="req">*</span></span></label>
-                                    <input class="input{{ $inv('tgl_kegiatan') }}" type="date" id="tgl_kegiatan" name="tgl_kegiatan" value="{{ old('tgl_kegiatan') }}" min="{{ date('Y-m-d') }}" required style="max-width: 280px;">
+                                    <input class="input{{ $inv('tgl_kegiatan') }}" type="date" id="tgl_kegiatan" name="tgl_kegiatan" value="{{ old('tgl_kegiatan') }}" min="{{ date('Y-m-d', strtotime('+7 days')) }}" required style="max-width: 280px;">
+                                    <p class="hint">Permohonan wajib diajukan selambat-lambatnya 7 hari sebelum tanggal kunjungan.</p>
                                     <p class="pw-status" id="tgl_msg" aria-live="polite"></p>
                                     {!! $fe('tgl_kegiatan') !!}
                                 </div>
                                 <div class="field full">
-                                    <label class="label" style="margin-bottom: 12px;"><span>Jumlah & Perkiraan Usia Peserta</span></label>
+                                    <label class="label" style="margin-bottom: 12px;"><span>Jumlah & Perkiraan Usia Peserta (Data Peserta)</span></label>
                                     <div class="grid-age">
                                         <div>
                                             <span class="hint d-block mb-1 text-center">Usia 3 - 6 Tahun</span>
@@ -927,10 +932,10 @@
                         </fieldset>
 
                         <fieldset class="fs">
-                            <legend><i class="fas fa-paperclip"></i> Unggah Berkas</legend>
+                            <legend><i class="fas fa-paperclip"></i> Unggah Berkas &amp; Persiapan Lapangan</legend>
                             <div class="fields">
                                 <div class="field full">
-                                    <span class="label"><span>Surat Permohonan Bermaterai <span class="req">*</span></span></span>
+                                    <span class="label"><span>Surat Permohonan Bermaterai (Ditandatangani Pejabat Instansi/Lembaga/Organisasi) <span class="req">*</span></span></span>
                                     <div class="dropzone{{ $inv('surat_permohonan') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png">
                                         <input type="file" id="surat_permohonan" name="surat_permohonan" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required aria-label="Unggah Surat Permohonan Bermaterai">
                                         
@@ -955,14 +960,14 @@
                                 </div>
 
                                 <div class="field full">
-                                    <span class="label"><span>Persyaratan Lainnya (Opsional)</span></span>
+                                    <span class="label"><span>Persyaratan Lainnya &amp; Bahan Praktek Lapangan (APAR &amp; BBM) <span class="req">*</span></span></span>
                                     <div class="dropzone{{ $inv('syarat_lainnya') }}" data-dropzone data-max="10" data-ext="pdf,jpg,jpeg,png,zip,rar">
-                                        <input type="file" id="syarat_lainnya" name="syarat_lainnya[]" accept=".pdf,.jpg,.jpeg,.png,.zip,.rar" multiple aria-label="Unggah Persyaratan Lainnya">
+                                        <input type="file" id="syarat_lainnya" name="syarat_lainnya[]" accept=".pdf,.jpg,.jpeg,.png,.zip,.rar" multiple required aria-label="Unggah Persyaratan Lainnya dan Kesiapan APAR/BBM">
                                         
                                         <div class="dz-prompt">
                                             <span class="dz-ico" style="background:#eaf1f8; color:#2f6fed;"><i class="fas fa-folder-open"></i></span>
-                                            <span class="dz-text"><strong>Tarik berkas tambahan ke sini</strong> atau <u>pilih dari perangkat</u></span>
-                                            <span class="hint">Jadikan 1 file ZIP/RAR jika lebih dari 1 dokumen (Maks 10 MB per berkas)</span>
+                                            <span class="dz-text"><strong>Tarik berkas kesiapan APAR &amp; BBM ke sini</strong> atau <u>pilih dari perangkat</u></span>
+                                            <span class="hint">Sertakan dokumen kesiapan bahan praktek (APAR & BBM) dan data peserta dalam 1 file ZIP/RAR (Maks 10 MB)</span>
                                         </div>
 
                                         <div class="dz-preview">
@@ -983,7 +988,7 @@
 
                         <div class="form-actions border-top pt-4">
                             <button type="submit" class="btn btn-primary" id="btn_submit_edukasi"><i class="fas fa-paper-plane"></i> Kirim Pengajuan Edukasi</button>
-                            <p>Notifikasi jadwal akan dikirimkan ke WhatsApp pemohon.</p>
+                            <p>Setelah kegiatan selesai, pemohon diwajibkan mengisi Indeks Kepuasan Masyarakat (IKM).</p>
                         </div>
                     </form>
                 </section>
@@ -1239,7 +1244,7 @@
     nikInput.addEventListener('input', validateNik);
     if (nikInput.value) validateNik();
 
-    /* ---------- Validasi WhatsApp Real-Time (Tanpa Badge "Aktif") ---------- */
+    /* ---------- Validasi WhatsApp Real-Time ---------- */
     function validateWa() {
         let val = waInput.value.replace(/\D/g, '');
         if (val.startsWith('628')) {
@@ -1287,7 +1292,7 @@
     waInput.addEventListener('input', validateWa);
     if (waInput.value) validateWa();
 
-    /* ---------- Validasi Tanggal Pelaksanaan ---------- */
+    /* ---------- Validasi Tanggal Pelaksanaan (Minimal H+7 / 7 Hari Sebelum Kunjungan) ---------- */
     function validateDate() {
         if (!tglInput.value) {
             tglMsg.className = 'pw-status';
@@ -1299,18 +1304,19 @@
         }
 
         const selected = new Date(tglInput.value + 'T00:00:00');
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const minDate = new Date();
+        minDate.setDate(minDate.getDate() + 7);
+        minDate.setHours(0, 0, 0, 0);
 
-        if (selected < today) {
+        if (selected < minDate) {
             tglMsg.className = 'pw-status show mismatch';
-            tglMsg.innerHTML = '<i class="fas fa-circle-xmark"></i> Tanggal pelaksanaan tidak boleh di masa lalu';
+            tglMsg.innerHTML = '<i class="fas fa-circle-xmark"></i> Tanggal kunjungan wajib minimal 7 hari dari hari ini (selambat-lambatnya H-7)';
             tglInput.classList.add('is-invalid');
             tglInput.classList.remove('is-valid');
             isDateValid = false;
         } else {
             tglMsg.className = 'pw-status show match';
-            tglMsg.innerHTML = '<i class="fas fa-calendar-check"></i> Tanggal pelaksanaan memenuhi syarat';
+            tglMsg.innerHTML = '<i class="fas fa-calendar-check"></i> Tanggal pelaksanaan memenuhi syarat minimal H-7';
             tglInput.classList.add('is-valid');
             tglInput.classList.remove('is-invalid');
             isDateValid = true;
@@ -1450,7 +1456,6 @@
     var form = document.getElementById('csForm');
     if (!form) return;
 
-    // Tambahkan atribut agar diabaikan oleh loader global
     form.setAttribute('data-no-loader', 'true');
 
     var input = document.getElementById('csKontak');
