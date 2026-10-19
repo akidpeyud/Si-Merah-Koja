@@ -58,7 +58,7 @@
     .side-group summary .chev { flex: none; font-size: .7rem; margin-top: 4px; transition: transform .25s ease; }
     .page-head { margin-bottom: 26px; }
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; margin-bottom: 38px; }
-    .stat-card { display: flex; flex-direction: column; padding: 18px; background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); text-align: left; }
+    .stat-card { display: flex; flex-direction: column; padding: 18px; background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); text-align: left; transition: box-shadow .2s, border-color .2s, transform .2s; }
     .stat-card:hover { border-color: var(--navy); transform: translateY(-3px); box-shadow: var(--shadow-sm); }
     .stat-card.picked { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
     .stat-ico { width: 40px; height: 40px; border-radius: var(--r-sm); display: grid; place-items: center; font-size: 1rem; margin-bottom: 14px; }
@@ -113,8 +113,6 @@
     }
 @endphp
 
-@section('content')
-
         <div class="page-head">
             <h1>Input Rekap Layanan &amp; Penyelamatan</h1>
             <p>Data rekapitulasi penanganan kejadian kebakaran dan evakuasi/penyelamatan masyarakat.</p>
@@ -157,19 +155,22 @@
                                     <div class="col-md-4">
                                         <label class="field-label"><i class="fas fa-calendar-alt"></i> Tanggal <span class="text-danger">*</span></label>
                                         <input type="date" id="tanggal" name="tanggal" class="form-control" value="{{ old('tanggal', date('Y-m-d')) }}" max="{{ date('Y-m-d') }}" required>
+                                        @error('tanggal')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                                     </div>
                                     <div class="col-md-4">
                                         <label class="field-label"><i class="fas fa-tags"></i> Jenis Layanan <span class="text-danger">*</span></label>
                                         <select class="form-select" id="kategori" name="kategori" required>
-                                            <option selected value="">-- Pilih jenis layanan --</option>
+                                            <option value="">-- Pilih jenis layanan --</option>
                                             @foreach($kategori as $key => [$nama])
                                                 <option value="{{ $key }}" {{ old('kategori') === $key ? 'selected' : '' }}>{{ $nama }}</option>
                                             @endforeach
                                         </select>
+                                        @error('kategori')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                                     </div>
                                     <div class="col-md-4">
                                         <label class="field-label"><i class="fas fa-hashtag"></i> Jumlah Kejadian <span class="text-danger">*</span></label>
                                         <input type="number" min="1" id="jumlah" name="jumlah" class="form-control" value="{{ old('jumlah', 1) }}" required>
+                                        @error('jumlah')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                                     </div>
                                 </div>
                             </div>
@@ -241,6 +242,51 @@
                 </table>
             </div>
         </div>
-
-<!-- ==================== SCRIPTS ==================== -->
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    'use strict';
+
+    /* Sidebar mobile */
+    var toggle = document.getElementById('sideToggle');
+    var backdrop = document.getElementById('sideBackdrop');
+    function closeSide() { document.body.classList.remove('side-open'); if (toggle) toggle.setAttribute('aria-expanded', 'false'); }
+    if (toggle) toggle.addEventListener('click', function () {
+        var open = document.body.classList.toggle('side-open');
+        toggle.setAttribute('aria-expanded', open);
+    });
+    if (backdrop) backdrop.addEventListener('click', closeSide);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
+
+    /* Grup sidebar: hanya satu terbuka */
+    var groups = document.querySelectorAll('.side-group');
+    groups.forEach(function (g) {
+        g.addEventListener('toggle', function () {
+            if (g.open) groups.forEach(function (o) { if (o !== g) o.open = false; });
+        });
+    });
+
+    /* Klik kartu total = pilih jenis layanan di form */
+    var select = document.getElementById('kategori');
+    var cards = document.querySelectorAll('[data-pick]');
+    cards.forEach(function (c) {
+        c.addEventListener('click', function () {
+            select.value = c.dataset.pick;
+            cards.forEach(function (o) { o.classList.toggle('picked', o === c); });
+            document.getElementById('rekapForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setTimeout(function () { document.getElementById('jumlah').focus(); }, 350);
+        });
+    });
+    select.addEventListener('change', function () {
+        cards.forEach(function (o) { o.classList.toggle('picked', o.dataset.pick === select.value); });
+    });
+
+    /* Validasi ringan sebelum kirim */
+    document.getElementById('rekapForm').addEventListener('submit', function (e) {
+        if (!select.value) { e.preventDefault(); select.focus(); alert('Pilih jenis layanan dulu.'); }
+    });
+})();
+</script>
+@endpush

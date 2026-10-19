@@ -1,32 +1,30 @@
-@extends('layouts.dashboard')
-
-@section('content')
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Cetak Surat Keterangan Korban Kebakaran</title>
     <style>
-        /* PENGATURAN KERTAS & MENGHILANGKAN TEXT BROWSER */
-        @page { 
-            size: A4 portrait; 
-            margin: 0; 
+        @page { size: A4 portrait; margin: 0; }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0; padding: 0;
+            background: #525659;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000;
         }
-        
-        body { 
-            margin: 0; padding: 0; background: #525659; 
-            display: flex; justify-content: center; 
-            font-family: 'Times New Roman', Times, serif; 
-            font-size: 12pt; 
-            color: #000; 
-        }
-        
+
+        body { display: flex; justify-content: center; }
+
         .kertas-surat {
             width: 210mm;
             min-height: 297mm;
-            background: white;
-            padding: 10mm 20mm 10mm 25mm; 
-            box-sizing: border-box;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            background: #fff;
+            padding: 10mm 20mm 10mm 25mm;
+            box-shadow: 0 0 10px rgba(0,0,0,.5);
             margin: 20px 0;
             position: relative;
         }
@@ -38,20 +36,19 @@
         .kop-text { text-align: center; }
         .kop-text h2 { margin: 0; font-size: 14pt; font-weight: normal; }
         .kop-text h1 { margin: 0; font-size: 16pt; font-weight: bold; line-height: 1.1; }
-        .kop-text p { margin: 2px 0 0 0; font-size: 10pt; }
+        .kop-text p  { margin: 2px 0 0 0; font-size: 10pt; }
 
         .garis-kop {
-            border-top: 3px solid black;
-            border-bottom: 1px solid black;
+            border-top: 3px solid #000;
+            border-bottom: 1px solid #000;
             height: 2px;
-            margin-top: 5px;
-            margin-bottom: 10px;
+            margin: 5px 0 10px;
         }
 
-        /* 2. JUDUL SURAT */
+        /* 2. JUDUL */
         .judul-surat { text-align: center; margin-bottom: 10px; line-height: 1.1; }
         .judul-surat h3 { margin: 0; font-size: 12pt; font-weight: bold; text-decoration: underline; }
-        .judul-surat p { margin: 0; font-size: 12pt; }
+        .judul-surat p  { margin: 0; font-size: 12pt; }
 
         /* 3. DASAR HUKUM */
         .dasar-hukum { margin-bottom: 8px; text-align: justify; line-height: 1.1; }
@@ -61,48 +58,55 @@
         .td-nomor { width: 30px; text-align: right; padding-right: 8px; }
         .td-isi { text-align: justify; }
 
-        /* 4. TABEL BIODATA */
-        .teks-pembuka { text-align: justify; margin-bottom: 4px; line-height: 1.1; }
-        .tabel-biodata { width: 100%; margin-left: 0; margin-bottom: 8px; border-collapse: collapse; line-height: 1.1; }
+        /* 4. BIODATA */
+        .teks-pembuka { text-align: justify; margin: 0 0 4px; line-height: 1.1; }
+        .tabel-biodata { width: 100%; margin-bottom: 8px; border-collapse: collapse; line-height: 1.1; }
         .tabel-biodata td { vertical-align: top; padding: 1px 0; }
         .td-label { width: 160px; }
         .td-titik { width: 15px; text-align: left; }
 
-        /* 5. ISI SURAT */
-        .teks-isi { text-align: justify; line-height: 1.1; margin-bottom: 6px; }
+        /* 5. ISI */
+        .teks-isi { text-align: justify; line-height: 1.1; margin: 0 0 6px; }
 
-        /* 6. TANDA TANGAN (LEBAR KOTAK DIPERKECIL JADI 240px AGAR LEBIH MENTOK KANAN) */
+        /* 6. TANDA TANGAN */
         .ttd-container { width: 100%; margin-top: 10px; display: flex; justify-content: flex-end; }
-        .ttd-box { width: 240px; text-align: left; line-height: 1.1; } 
+        .ttd-box { width: 240px; text-align: left; line-height: 1.1; }
         .ttd-info { display: flex; margin-bottom: 2px; }
-        .ttd-info-label { width: 100px; } 
+        .ttd-info-label { width: 100px; }
         .ttd-info-titik { width: 10px; }
-        .ttd-instansi { margin-top: 5px; margin-bottom: 45px; } 
+        .ttd-instansi { margin-top: 5px; margin-bottom: 45px; }
         .ttd-nama { font-weight: bold; text-decoration: underline; margin-bottom: 2px; }
 
         /* 7. TEMBUSAN */
         .tembusan { margin-top: 10px; font-size: 10pt; line-height: 1.1; }
-        .tembusan p { margin: 0 0 2px 0; }
+        .tembusan p  { margin: 0 0 2px 0; }
         .tembusan ol { margin: 0; padding-left: 15px; }
 
-        /* PENGATURAN SAAT DI-PRINT */
+        /* TOMBOL CETAK */
+        .btn-print {
+            position: fixed; bottom: 30px; right: 30px;
+            background: #10b981; color: #fff; border: none;
+            padding: 15px 25px; font-size: 16px; font-weight: bold;
+            border-radius: 50px; cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,.3); z-index: 999;
+        }
+        .btn-print:hover { background: #059669; }
+
+        /* SAAT DI-PRINT */
         @media print {
-            body { background: white; margin: 0; }
-            .kertas-surat { 
-                box-shadow: none; 
-                margin: 0; 
-                padding: 10mm 20mm 5mm 25mm !important; 
-                width: 100%; 
-                height: 297mm; 
-                overflow: hidden; 
-                page-break-after: avoid; 
+            html, body { background: #fff; display: block; }
+            .kertas-surat {
+                box-shadow: none;
+                margin: 0;
+                width: 210mm;
+                height: 297mm;
+                padding: 10mm 20mm 5mm 25mm;
+                overflow: hidden;
+                page-break-after: avoid;
                 page-break-inside: avoid;
             }
-            .btn-print { display: none; }
+            .btn-print { display: none !important; }
         }
-
-        .btn-print { position: fixed; bottom: 30px; right: 30px; background: #10b981; color: white; border: none; padding: 15px 25px; font-size: 16px; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-weight: bold; z-index: 999; }
-        .btn-print:hover { background: #059669; }
     </style>
 </head>
 <body>
@@ -110,7 +114,7 @@
     <button class="btn-print" onclick="window.print()">Cetak PDF Sekarang</button>
 
     <div class="kertas-surat">
-        
+
         <!-- 1. KOP SURAT -->
         <table class="tabel-kop">
             <tr>
@@ -123,17 +127,17 @@
                     <p>Jl. Hos. Cokroaminoto No. 113 Telp. 0741-41171<br>JAMBI</p>
                 </td>
                 <td style="width: 15%; text-align: right;">
-                   <img src="{{ asset('images/logo.png') }}" alt="Logo Damkar" style="width: 100px; height: auto;">
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo Damkar" style="width: 100px; height: auto;">
                 </td>
             </tr>
         </table>
-        
+
         <div class="garis-kop"></div>
 
-        <!-- 2. JUDUL SURAT -->
+        <!-- 2. JUDUL -->
         <div class="judul-surat">
             <h3>SURAT KETERANGAN KORBAN KEBAKARAN</h3>
-            <p>Nomor: ${nomor_naskah}</p>
+            <p>Nomor: {{ $surat->nomor_naskah ?? '................................' }}</p>
         </div>
 
         <!-- 3. DASAR HUKUM -->
@@ -161,7 +165,7 @@
 
         <p class="teks-pembuka">Kepala Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi Provinsi Jambi dengan ini menerangkan:</p>
 
-        <!-- 4. TABEL BIODATA -->
+        <!-- 4. BIODATA -->
         <table class="tabel-biodata">
             <tr>
                 <td class="td-label">Nama</td>
@@ -181,7 +185,10 @@
             <tr>
                 <td class="td-label">Tempat/Tgl. Lahir</td>
                 <td class="td-titik">:</td>
-                <td>{{ ucwords(strtolower($surat->tempat_lahir ?? '')) }}, {{ isset($surat->tanggal_lahir) ? \Carbon\Carbon::parse($surat->tanggal_lahir)->format('d-m-Y') : '' }}</td>
+                <td>
+                    {{ ucwords(strtolower($surat->tempat_lahir ?? '')) }},
+                    {{ !empty($surat->tanggal_lahir) ? \Carbon\Carbon::parse($surat->tanggal_lahir)->format('d-m-Y') : '' }}
+                </td>
             </tr>
             <tr>
                 <td class="td-label">Alamat</td>
@@ -200,11 +207,16 @@
             </tr>
         </table>
 
-        <!-- 5. PARAGRAF ISI SURAT -->
+        <!-- 5. ISI SURAT -->
         <p class="teks-isi">
-            Adalah <strong>Benar Korban Kebakaran</strong> {{ ucwords(strtolower($surat->objek_terbakar ?? '')) }} yang Terjadi pada Hari {{ ucwords(strtolower($surat->hari_kejadian ?? '')) }} Tanggal {{ isset($surat->tanggal_kejadian) ? \Carbon\Carbon::parse($surat->tanggal_kejadian)->translatedFormat('d F Y') : '' }}, Pukul {{ isset($surat->waktu_kejadian) ? \Carbon\Carbon::parse($surat->waktu_kejadian)->format('H.i') : '' }} WIB beralamat sebagaimana tersebut diatas dan telah dilakukan pemadaman oleh Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.
+            Adalah <strong>Benar Korban Kebakaran</strong>
+            {{ ucwords(strtolower($surat->objek_terbakar ?? '')) }}
+            yang Terjadi pada Hari {{ ucwords(strtolower($surat->hari_kejadian ?? '')) }}
+            Tanggal {{ !empty($surat->tanggal_kejadian) ? \Carbon\Carbon::parse($surat->tanggal_kejadian)->translatedFormat('d F Y') : '' }},
+            Pukul {{ !empty($surat->waktu_kejadian) ? \Carbon\Carbon::parse($surat->waktu_kejadian)->format('H.i') : '' }} WIB
+            beralamat sebagaimana tersebut diatas dan telah dilakukan pemadaman oleh Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.
         </p>
-        
+
         <p class="teks-isi">Demikian surat keterangan korban kebakaran ini dibuat dengan sebenarnya untuk dipergunakan sebagaimana mestinya.</p>
 
         <!-- 6. TANDA TANGAN -->
@@ -218,19 +230,19 @@
                 <div class="ttd-info">
                     <div class="ttd-info-label">Tanggal</div>
                     <div class="ttd-info-titik">:</div>
-                    <div>${tanggal_naskah}</div>
+                    <div>{{ $surat->tanggal_naskah ?? now()->translatedFormat('d F Y') }}</div>
                 </div>
-                
+
                 <div class="ttd-instansi">
                     Dinas Pemadam Kebakaran dan<br>
                     Penyelamatan Kota Jambi<br>
                     <br><br>
-                    ${ttd_pengirim}
+                    {{ $surat->ttd_pengirim ?? '' }}
                 </div>
 
-                <div class="ttd-nama">${nama_pengirim}</div>
+                <div class="ttd-nama">{{ $surat->nama_pengirim ?? '.............................' }}</div>
                 <div>Pembina Utama Muda</div>
-                <div>NIP. ${nip_pengirim}</div>
+                <div>NIP. {{ $surat->nip_pengirim ?? '.............................' }}</div>
             </div>
         </div>
 

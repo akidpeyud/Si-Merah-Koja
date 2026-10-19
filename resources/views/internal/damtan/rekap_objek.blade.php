@@ -124,8 +124,6 @@
     }
 @endphp
 
-@section('content')
-
         <div class="page-head">
             <h1>Input Rekap Objek Kebakaran</h1>
             <p>Bagian Pemadaman &amp; Penyelamatan - Disdamkartan Kota Jambi. Data yang disimpan di sini tampil sebagai angka di halaman publik.</p>
