@@ -216,6 +216,7 @@
                 ['Ujung-Ujung Damkar', 'video', 'fa-brands fa-youtube', '/internal/operator/ujung-damkar', $count('ujung_damkar'), 'ic-danger'],
                 ['Edu Damkar', 'materi', 'fa-graduation-cap', '/internal/operator/edu-damkar', $count('edu_damkar'), 'ic-primary'],
                 ['Kelola Pengumuman', 'informasi', 'fa-bullhorn', '/internal/operator/pengumuman', $count(['pengumuman', 'pengumumans']), 'ic-info'],
+                ['Kelola IKM', 'responden', 'fa-face-smile', '/internal/operator/ikm', $count('ikm_responses'), 'ic-primary'],
 
                 ['Undang-Undang', 'dokumen hukum', 'fa-scale-balanced', '/internal/produk-hukum/undang-undang', $countKategoriHukum('undang-undang'), 'ic-primary'],
                 ['Peraturan Pemerintah', 'dokumen hukum', 'fa-landmark', '/internal/produk-hukum/peraturan-pemerintah', $countKategoriHukum('peraturan-pemerintah'), 'ic-info'],

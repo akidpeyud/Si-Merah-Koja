@@ -58,6 +58,7 @@
                 ['Ujung-Ujung Damkar', '/internal/operator/ujung-damkar', 'fa-brands fa-youtube'],
                 ['Edu Damkar', '/internal/operator/edu-damkar', 'fa-graduation-cap'],
                 ['Kelola Pengumuman', '/internal/operator/pengumuman', 'fa-bullhorn'],
+                ['Kelola IKM', '/internal/operator/ikm', 'fa-face-smile'],
                 ['Titik Peta Sigap', '/internal/peta-sigap/data', 'fa-location-dot'],
             ],
         ],
