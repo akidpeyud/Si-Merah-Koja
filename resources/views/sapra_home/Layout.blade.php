@@ -959,6 +959,7 @@
             <h1 class="rise d1">@yield('judul')</h1>
             <p class="rise d2">@yield('deskripsi')</p>
         </div>
+        @include('layouts.partials.hero-logos', ['float' => true])
     </section>
 
     {{-- PILL NAV --}}

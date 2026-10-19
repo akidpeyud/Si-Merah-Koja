@@ -765,6 +765,7 @@
         <p class="rise d2">Kumpulan informasi, dokumentasi kegiatan, dan kabar terbaru dari media sosial Damkar Kota Jambi.</p>
         <div class="hero-line rise d3"></div>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <!-- ==================== SUB NAVIGATION (PILL MENU) ==================== -->

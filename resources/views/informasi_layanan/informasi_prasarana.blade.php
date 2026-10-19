@@ -462,6 +462,7 @@
         <h1 class="rise d1">Informasi layanan</h1>
         <p class="rise d2">Galeri publik transparansi data bangunan dan fasilitas fisik di tiap pos.</p>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <div class="page-body">

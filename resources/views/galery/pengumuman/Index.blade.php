@@ -560,6 +560,7 @@
         <p class="rise d2">Informasi dan pemberitahuan resmi dari Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
         <div class="hero-line rise d3"></div>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <!-- ==================== BODY & KONTEN ==================== -->

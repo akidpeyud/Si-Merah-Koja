@@ -846,6 +846,7 @@
         <h1 class="rise d1">Sertifikat Keamanan Kebakaran</h1>
         <p class="rise d2">Ajukan Permohonan Sertifikat Keamanan Kebakaran secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <div class="page-body">

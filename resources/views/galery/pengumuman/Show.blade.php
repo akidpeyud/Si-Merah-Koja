@@ -516,6 +516,7 @@
         <h1 class="h1-judul rise d1">{{ $pengumuman->judul }}</h1>
         <div class="hero-line rise d3"></div>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <!-- ==================== BODY & KONTEN ==================== -->

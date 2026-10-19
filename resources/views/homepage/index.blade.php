@@ -780,7 +780,7 @@
             </li>
             <li><img src="/images/logo-redkar.png" alt="Logo Redkar" decoding="async"></li>
             <li><img src="/images/jambibahagia.png" alt="Logo Kota Jambi Bahagia" decoding="async"></li>
-            <li><img src="/images/bangga%20melayani%20bangsa.png" alt="Logo Bangga Melayani Bangsa" decoding="async"></li>
+            <li><img src="/images/bangga-melayani-bangsa.png" alt="Logo Bangga Melayani Bangsa" decoding="async"></li>
             <li><img src="/images/berakhlak.png" alt="Logo BerAKHLAK" decoding="async"></li>
         </ul>
     </div>

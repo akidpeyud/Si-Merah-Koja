@@ -766,6 +766,7 @@
         <h1 class="rise d1">Rekomendasi Event Keramaian</h1>
         <p class="rise d2">Ajukan Rekomendasi Event Keramaian secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <div class="page-body">

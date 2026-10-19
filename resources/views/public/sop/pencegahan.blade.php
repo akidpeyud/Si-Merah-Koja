@@ -643,6 +643,7 @@
         <h1 class="rise d1">Standar Operasional Prosedur</h1>
         <p class="rise d2">Standar Operasional Prosedur (SOP) bagian <?= $h($tabs[$tab_aktif]['label']) ?> Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <div class="page-body">

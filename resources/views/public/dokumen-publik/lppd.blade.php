@@ -590,6 +590,7 @@
         <h1 class="rise d1">Laporan Penyelenggaraan Pemerintahan Daerah (LPPD)</h1>
         <p class="rise d2">Dokumen Laporan Penyelenggaraan Pemerintahan Daerah (LPPD) Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <div class="page-body">
