@@ -393,6 +393,7 @@
         <h1 class="rise d1">Program kerja</h1>
         <p class="rise d2">Struktur organisasi, prosedur, perencanaan, pelaporan, dan produk hukum Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <div class="page-body">

@@ -903,6 +903,7 @@
             <a class="btn-send" href="#survei" id="btnHeroSurvei"><i class="fas fa-pen-to-square"></i> Isi survei sekarang</a>
         </div>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <!-- ==================== BODY & KONTEN ==================== -->

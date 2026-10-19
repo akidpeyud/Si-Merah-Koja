@@ -594,6 +594,7 @@
         <h1 class="rise d1">Rencana Kerja (Renja)</h1>
         <p class="rise d2">Dokumen Rencana Kerja (Renja) Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <div class="page-body">

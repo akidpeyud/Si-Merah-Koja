@@ -541,6 +541,7 @@
         <h1 class="rise d1">Data Hidrant Kota Jambi</h1>
         <p class="rise d2">Informasi dan pemetaan kondisi jaringan hidrant yang tersebar di wilayah Kota Jambi.</p>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <div class="page-body">

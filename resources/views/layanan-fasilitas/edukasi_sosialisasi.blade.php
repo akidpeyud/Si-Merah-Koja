@@ -692,6 +692,7 @@
             <h1 class="rise d1">Kunjungan Edukasi <br>&amp; Sosialisasi</h1>
             <p class="rise d2">Ajukan Permohonan Kunjungan Edukasi dan Sosialisasi ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
         </div>
+        @include('layouts.partials.hero-logos', ['float' => true])
     </section>
 
     <div class="page-body">

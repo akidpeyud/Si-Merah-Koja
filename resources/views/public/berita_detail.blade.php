@@ -402,6 +402,7 @@
         <h1 class="rise d1">Detail Berita</h1>
         <div class="hero-line rise d3"></div>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <!-- ==================== BODY & KONTEN ==================== -->
