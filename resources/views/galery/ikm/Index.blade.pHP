@@ -503,7 +503,20 @@
         .ikm-num{font-family:var(--display);font-weight:800;font-size:clamp(3.4rem,8vw,5rem);line-height:1;letter-spacing:-.04em}
         .ikm-none{font-family:var(--display);font-size:1.5rem}
         .ikm-empty-ico{font-size:2.6rem;color:#c8d1db;margin-bottom:6px}
-        .ikm-resp{display:inline-flex;align-items:center;gap:8px;color:var(--steel);font-size:.88rem;font-weight:600}
+       .ikm-resp{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    margin-top:8px;
+    color:#000;
+    font-size:1.3rem;
+    font-weight:800;
+    text-shadow:0 2px 6px rgba(0,0,0,0.22);
+}
+.ikm-resp i{
+    font-size:1.35rem;
+    color:#000;
+}
         .ikm-mutu{margin-top:6px;padding:7px 16px;border-radius:999px;font-size:.84rem;font-weight:800;color:#fff}
         .mutu-a{background:#1f9d5c}.mutu-b{background:#2f7fd1}.mutu-c{background:#e59a12}.mutu-d{background:var(--signal)}
         .mutu-legend{margin-top:20px;padding-top:18px;border-top:1px solid var(--soft);width:100%;display:grid;gap:7px;text-align:left;font-size:.8rem;color:var(--steel)}
@@ -665,6 +678,7 @@
 
         /* ================= FORM SURVEI (DALAM HALAMAN) ================= */
         .ikm-form{scroll-margin-top:90px;background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 7px 24px rgba(13,27,42,.055);overflow:hidden}
+        .ikm-form[hidden], .survey-done[hidden]{display:none !important}
         .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
         .form-progress{padding:20px 28px 18px;border-bottom:1px solid var(--soft);background:var(--paper)}
         .form-progress-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;font-size:.82rem;font-weight:700;color:var(--steel)}
@@ -756,7 +770,7 @@
                         <li><a href="/layanan-fasilitas/skk">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
                     </ul>
                 </li>
-<li class="has-drop">
+                <li class="has-drop">
                     <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
                         <li><a href="/produk-hukum/undang-undang">Undang-Undang</a></li>
@@ -886,7 +900,7 @@
         <p class="rise d2">Penilaian Anda terhadap pelayanan Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi membantu kami terus berbenah.</p>
         <div class="hero-line rise d3"></div>
         <div class="hero-actions rise d3">
-            <a class="btn-send" href="#survei"><i class="fas fa-pen-to-square"></i> Isi survei sekarang</a>
+            <a class="btn-send" href="#survei" id="btnHeroSurvei"><i class="fas fa-pen-to-square"></i> Isi survei sekarang</a>
         </div>
     </div>
 </section>
@@ -958,135 +972,137 @@
         </div>
 
         @if(session('ikm_sukses'))
-            <section class="survey-done" role="status">
+            <section class="survey-done" id="surveyDoneBox" role="status">
                 <span class="survey-done-ico"><i class="fas fa-circle-check"></i></span>
                 <h3>{{ session('ikm_sukses') }}</h3>
                 <p>Masukan Anda menjadi bahan kami untuk terus memperbaiki pelayanan Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
-                <a class="btn-send" href="{{ route('ikm.index') }}#survei"><i class="fas fa-rotate-right"></i> Isi survei lagi</a>
+                <a class="btn-send" id="btnRepeatSurvey" href="{{ route('ikm.index', ['ulang' => 1]) }}#survei">
+                    <i class="fas fa-rotate-right"></i> Isi survei lagi
+                </a>
             </section>
-        @else
-            @php
-                $langkah = [];
-                foreach ($aspek_unsur as $a) {
-                    $langkah[] = ['judul' => $a['nama'], 'pertanyaan' => $a['pernyataan']];
-                }
-                foreach ($aspek_integritas as $ig) {
-                    $langkah[] = ['judul' => $ig['nama'], 'pertanyaan' => [$ig['field'] => $ig['pernyataan']]];
-                }
-            @endphp
+        @endif
 
-            <form id="ikmForm" class="ikm-form" method="POST" action="{{ route('ikm.store') }}" novalidate @if($errors->any()) data-has-errors="1" @endif>
-                @csrf
-                <div class="hp" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+        @php
+            $langkah = [];
+            foreach ($aspek_unsur as $a) {
+                $langkah[] = ['judul' => $a['nama'], 'pertanyaan' => $a['pernyataan']];
+            }
+            foreach ($aspek_integritas as $ig) {
+                $langkah[] = ['judul' => $ig['nama'], 'pertanyaan' => [$ig['field'] => $ig['pernyataan']]];
+            }
+        @endphp
 
-                <div class="form-progress">
-                    <div class="form-progress-top">
-                        <strong id="stepTitle">Identitas Responden</strong>
-                        <span id="stepLabel"></span>
-                    </div>
-                    <div class="form-bar"><i id="stepBar"></i></div>
+        <form id="ikmForm" class="ikm-form" method="POST" action="{{ route('ikm.store') }}" novalidate @if($errors->any()) data-has-errors="1" @endif @if(session('ikm_sukses')) hidden @endif>
+            @csrf
+            <div class="hp" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+
+            <div class="form-progress">
+                <div class="form-progress-top">
+                    <strong id="stepTitle">Identitas Responden</strong>
+                    <span id="stepLabel"></span>
+                </div>
+                <div class="form-bar"><i id="stepBar"></i></div>
+            </div>
+
+            @if($errors->any())
+                <div class="form-alert" role="alert"><i class="fas fa-triangle-exclamation"></i> Masih ada isian yang belum lengkap atau belum sesuai. Silakan periksa bagian yang ditandai.</div>
+            @endif
+
+            {{-- Bagian 1: Identitas --}}
+            <fieldset class="step" data-title="Identitas Responden">
+                <div class="q {{ $errors->has('tanggal_layanan') ? 'q-err' : '' }}">
+                    <label class="lbl" for="f-tanggal">Tanggal menerima layanan <span class="req">*</span></label>
+                    <input class="field" type="date" id="f-tanggal" name="tanggal_layanan" value="{{ old('tanggal_layanan') }}" max="{{ date('Y-m-d') }}" required>
+                    <small class="err">{{ $errors->first('tanggal_layanan') ?: 'Pilih tanggal yang valid.' }}</small>
                 </div>
 
-                @if($errors->any())
-                    <div class="form-alert" role="alert"><i class="fas fa-triangle-exclamation"></i> Masih ada isian yang belum lengkap. Silakan periksa bagian yang ditandai.</div>
-                @endif
-
-                {{-- Bagian 1: Identitas --}}
-                <fieldset class="step" data-title="Identitas Responden">
-                    <div class="q {{ $errors->has('tanggal_layanan') ? 'q-err' : '' }}">
-                        <label class="lbl" for="f-tanggal">Tanggal menerima layanan <span class="req">*</span></label>
-                        <input class="field" type="date" id="f-tanggal" name="tanggal_layanan" value="{{ old('tanggal_layanan') }}" max="{{ date('Y-m-d') }}" required>
-                        <small class="err">{{ $errors->first('tanggal_layanan') ?: 'Pilih tanggal yang valid.' }}</small>
-                    </div>
-
-                    <div class="q {{ $errors->has('pendidikan') ? 'q-err' : '' }}">
-                        <label class="lbl" for="f-pendidikan">Pendidikan <span class="req">*</span></label>
-                        <select class="field" id="f-pendidikan" name="pendidikan" required>
-                            <option value="">Pilih Pendidikan</option>
-                            @foreach($opsi_pendidikan as $o)
-                                <option value="{{ $o }}" {{ old('pendidikan') === $o ? 'selected' : '' }}>{{ $o }}</option>
-                            @endforeach
-                        </select>
-                        <small class="err">{{ $errors->first('pendidikan') ?: 'Pilih pendidikan Anda.' }}</small>
-                    </div>
-
-                    <div class="q {{ $errors->has('usia') ? 'q-err' : '' }}">
-                        <label class="lbl" for="f-usia">Usia <span class="req">*</span></label>
-                        <input class="field" type="number" id="f-usia" name="usia" value="{{ old('usia') }}" min="5" max="100" inputmode="numeric" placeholder="Usia" required>
-                        <small class="err">{{ $errors->first('usia') ?: 'Isi usia antara 5 dan 100 tahun.' }}</small>
-                    </div>
-
-                    <div class="q {{ $errors->has('pekerjaan') ? 'q-err' : '' }}">
-                        <label class="lbl" for="f-pekerjaan">Pekerjaan <span class="req">*</span></label>
-                        <select class="field" id="f-pekerjaan" name="pekerjaan" required>
-                            <option value="">Pilih Pekerjaan</option>
-                            @foreach($opsi_pekerjaan as $o)
-                                <option value="{{ $o }}" {{ old('pekerjaan') === $o ? 'selected' : '' }}>{{ $o }}</option>
-                            @endforeach
-                        </select>
-                        <small class="err">{{ $errors->first('pekerjaan') ?: 'Pilih pekerjaan Anda.' }}</small>
-                    </div>
-
-                    <div class="q">
-                        <label class="switch">
-                            <input type="checkbox" name="disabilitas" value="1" {{ old('disabilitas') ? 'checked' : '' }}>
-                            <i></i>
-                            <span>Saya penyandang disabilitas / pendamping penyandang disabilitas</span>
-                        </label>
-                    </div>
-                </fieldset>
-
-                {{-- Bagian 2-15: 9 unsur + 5 integritas --}}
-                @foreach($langkah as $l)
-                    <fieldset class="step" data-title="{{ $l['judul'] }}" hidden>
-                        @foreach($l['pertanyaan'] as $field => $teks)
-                            <div class="q {{ $errors->has($field) ? 'q-err' : '' }}">
-                                <p class="lbl" id="q-{{ $field }}">{{ $teks }} <span class="req">*</span></p>
-                                <div class="opts" role="radiogroup" aria-labelledby="q-{{ $field }}">
-                                    @foreach($skala_jawaban as $nilai => $label)
-                                        <label class="opt">
-                                            <input type="radio" name="{{ $field }}" value="{{ $nilai }}" {{ (string) old($field) === (string) $nilai ? 'checked' : '' }} required>
-                                            <span>{{ $label }}</span>
-                                        </label>
-                                    @endforeach
-                                </div>
-                                <small class="err">{{ $errors->first($field) ?: 'Pilih salah satu jawaban.' }}</small>
-                            </div>
+                <div class="q {{ $errors->has('pendidikan') ? 'q-err' : '' }}">
+                    <label class="lbl" for="f-pendidikan">Pendidikan <span class="req">*</span></label>
+                    <select class="field" id="f-pendidikan" name="pendidikan" required>
+                        <option value="">Pilih Pendidikan</option>
+                        @foreach($opsi_pendidikan as $o)
+                            <option value="{{ $o }}" {{ old('pendidikan') === $o ? 'selected' : '' }}>{{ $o }}</option>
                         @endforeach
-                    </fieldset>
-                @endforeach
+                    </select>
+                    <small class="err">{{ $errors->first('pendidikan') ?: 'Pilih pendidikan Anda.' }}</small>
+                </div>
 
-                {{-- Bagian terakhir: kritik, saran, kepercayaan --}}
-                <fieldset class="step" data-title="Kritik, Saran dan Penutup" hidden>
-                    <div class="q {{ $errors->has('kritik_saran') ? 'q-err' : '' }}">
-                        <label class="lbl" for="f-kritik">Kritik dan saran <span class="req">*</span></label>
-                        <textarea class="field" id="f-kritik" name="kritik_saran" rows="4" maxlength="1000" placeholder="Tulis kritik dan saran Anda" required>{{ old('kritik_saran') }}</textarea>
-                        <small class="err">{{ $errors->first('kritik_saran') ?: 'Kritik dan saran wajib diisi.' }}</small>
-                    </div>
+                <div class="q {{ $errors->has('usia') ? 'q-err' : '' }}">
+                    <label class="lbl" for="f-usia">Usia (minimal 18 tahun) <span class="req">*</span></label>
+                    <input class="field" type="number" id="f-usia" name="usia" value="{{ old('usia') }}" min="18" max="100" inputmode="numeric" placeholder="Minimal 18 tahun" required>
+                    <small class="err">{{ $errors->first('usia') ?: 'Usia responden minimal 18 tahun (antara 18 dan 100 tahun).' }}</small>
+                </div>
 
-                    @foreach($kepercayaan as $field => $teks)
+                <div class="q {{ $errors->has('pekerjaan') ? 'q-err' : '' }}">
+                    <label class="lbl" for="f-pekerjaan">Pekerjaan <span class="req">*</span></label>
+                    <select class="field" id="f-pekerjaan" name="pekerjaan" required>
+                        <option value="">Pilih Pekerjaan</option>
+                        @foreach($opsi_pekerjaan as $o)
+                            <option value="{{ $o }}" {{ old('pekerjaan') === $o ? 'selected' : '' }}>{{ $o }}</option>
+                        @endforeach
+                    </select>
+                    <small class="err">{{ $errors->first('pekerjaan') ?: 'Pilih pekerjaan Anda.' }}</small>
+                </div>
+
+                <div class="q">
+                    <label class="switch">
+                        <input type="checkbox" name="disabilitas" value="1" {{ old('disabilitas') ? 'checked' : '' }}>
+                        <i></i>
+                        <span>Saya penyandang disabilitas / pendamping penyandang disabilitas</span>
+                    </label>
+                </div>
+            </fieldset>
+
+            {{-- Bagian 2-15: 9 unsur + 5 integritas --}}
+            @foreach($langkah as $l)
+                <fieldset class="step" data-title="{{ $l['judul'] }}" hidden>
+                    @foreach($l['pertanyaan'] as $field => $teks)
                         <div class="q {{ $errors->has($field) ? 'q-err' : '' }}">
                             <p class="lbl" id="q-{{ $field }}">{{ $teks }} <span class="req">*</span></p>
-                            <div class="opts-num" role="radiogroup" aria-labelledby="q-{{ $field }}">
-                                @for($n = 1; $n <= 10; $n++)
-                                    <label class="num">
-                                        <input type="radio" name="{{ $field }}" value="{{ $n }}" {{ (string) old($field) === (string) $n ? 'checked' : '' }} required>
-                                        <span>{{ $n }}</span>
+                            <div class="opts" role="radiogroup" aria-labelledby="q-{{ $field }}">
+                                @foreach($skala_jawaban as $nilai => $label)
+                                    <label class="opt">
+                                        <input type="radio" name="{{ $field }}" value="{{ $nilai }}" {{ (string) old($field) === (string) $nilai ? 'checked' : '' }} required>
+                                        <span>{{ $label }}</span>
                                     </label>
-                                @endfor
+                                @endforeach
                             </div>
-                            <small class="err">{{ $errors->first($field) ?: 'Pilih satu angka.' }}</small>
+                            <small class="err">{{ $errors->first($field) ?: 'Pilih salah satu jawaban.' }}</small>
                         </div>
                     @endforeach
                 </fieldset>
+            @endforeach
 
-                <div class="form-nav">
-                    <button type="button" class="btn-ghost" id="btnPrev" hidden><i class="fas fa-arrow-left"></i> Sebelumnya</button>
-                    <button type="button" class="btn-send" id="btnNext">Selanjutnya <i class="fas fa-arrow-right"></i></button>
-                    <button type="submit" class="btn-send" id="btnSend" hidden><i class="fas fa-paper-plane"></i> Kirim survei</button>
+            {{-- Bagian terakhir: kritik, saran, kepercayaan --}}
+            <fieldset class="step" data-title="Kritik, Saran dan Penutup" hidden>
+                <div class="q {{ $errors->has('kritik_saran') ? 'q-err' : '' }}">
+                    <label class="lbl" for="f-kritik">Kritik dan saran <span class="req">*</span></label>
+                    <textarea class="field" id="f-kritik" name="kritik_saran" rows="4" maxlength="1000" placeholder="Tulis kritik dan saran Anda" required>{{ old('kritik_saran') }}</textarea>
+                    <small class="err">{{ $errors->first('kritik_saran') ?: 'Kritik dan saran wajib diisi.' }}</small>
                 </div>
-            </form>
-        @endif
+
+                @foreach($kepercayaan as $field => $teks)
+                    <div class="q {{ $errors->has($field) ? 'q-err' : '' }}">
+                        <p class="lbl" id="q-{{ $field }}">{{ $teks }} <span class="req">*</span></p>
+                        <div class="opts-num" role="radiogroup" aria-labelledby="q-{{ $field }}">
+                            @for($n = 1; $n <= 10; $n++)
+                                <label class="num">
+                                    <input type="radio" name="{{ $field }}" value="{{ $n }}" {{ (string) old($field) === (string) $n ? 'checked' : '' }} required>
+                                    <span>{{ $n }}</span>
+                                </label>
+                            @endfor
+                        </div>
+                        <small class="err">{{ $errors->first($field) ?: 'Pilih satu angka.' }}</small>
+                    </div>
+                @endforeach
+            </fieldset>
+
+            <div class="form-nav">
+                <button type="button" class="btn-ghost" id="btnPrev" hidden><i class="fas fa-arrow-left"></i> Sebelumnya</button>
+                <button type="button" class="btn-send" id="btnNext">Selanjutnya <i class="fas fa-arrow-right"></i></button>
+                <button type="submit" class="btn-send" id="btnSend" hidden><i class="fas fa-paper-plane"></i> Kirim survei</button>
+            </div>
+        </form>
 
 
         <!-- ===== ASPEK YANG DINILAI (SESUAI FORM SKM) ===== -->
@@ -1325,14 +1341,17 @@
     var form = document.getElementById('ikmForm');
     if (!form) { return; }
 
-    var steps = [].slice.call(form.querySelectorAll('.step'));
-    var btnPrev = document.getElementById('btnPrev');
-    var btnNext = document.getElementById('btnNext');
-    var btnSend = document.getElementById('btnSend');
-    var elTitle = document.getElementById('stepTitle');
-    var elLabel = document.getElementById('stepLabel');
-    var elBar   = document.getElementById('stepBar');
-    var cur = 0;
+    var doneBox       = document.getElementById('surveyDoneBox');
+    var btnRepeat     = document.getElementById('btnRepeatSurvey');
+    var btnHeroSurvei = document.getElementById('btnHeroSurvei');
+    var steps         = [].slice.call(form.querySelectorAll('.step'));
+    var btnPrev       = document.getElementById('btnPrev');
+    var btnNext       = document.getElementById('btnNext');
+    var btnSend       = document.getElementById('btnSend');
+    var elTitle       = document.getElementById('stepTitle');
+    var elLabel       = document.getElementById('stepLabel');
+    var elBar         = document.getElementById('stepBar');
+    var cur           = 0;
 
     function show(i, scroll) {
         cur = i;
@@ -1344,6 +1363,28 @@
         btnNext.hidden = (i === steps.length - 1);
         btnSend.hidden = (i !== steps.length - 1);
         if (scroll) { form.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    }
+
+    function openFreshForm(e) {
+        if (doneBox && !doneBox.hidden) {
+            if (e) { e.preventDefault(); }
+            doneBox.hidden = true;
+            form.hidden = false;
+            form.reset();
+            form.querySelectorAll('.q-err').forEach(function (q) { q.classList.remove('q-err'); });
+            show(0, true);
+        }
+    }
+
+    if (btnRepeat) {
+        btnRepeat.addEventListener('click', openFreshForm);
+    }
+    if (btnHeroSurvei) {
+        btnHeroSurvei.addEventListener('click', function (e) {
+            if (doneBox && !doneBox.hidden) {
+                openFreshForm(e);
+            }
+        });
     }
 
     function qOk(q) {
@@ -1366,6 +1407,11 @@
     }
 
     form.addEventListener('change', function (e) {
+        var q = e.target.closest('.q');
+        if (q && qOk(q)) { q.classList.remove('q-err'); }
+    });
+
+    form.addEventListener('input', function (e) {
         var q = e.target.closest('.q');
         if (q && qOk(q)) { q.classList.remove('q-err'); }
     });

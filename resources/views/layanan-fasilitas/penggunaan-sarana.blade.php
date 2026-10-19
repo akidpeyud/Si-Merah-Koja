@@ -2,13 +2,7 @@
     /* ------------------------------------------------------------
        PENGATURAN HALAMAN
        ------------------------------------------------------------ */
-    $layanan = [
-        'rpkbgl'    => ['url' => '/layanan-fasilitas/layanan_perizinan', 'label' => 'RPKBGL', 'ico' => 'fa-building', 'ket' => 'Layanan perizinan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan'],
-        'skk'       => ['url' => '/layanan-fasilitas/skk',                'label' => 'SKK (Baru & Perpanjangan)', 'ico' => 'fa-user-shield', 'ket' => 'Layanan perizinan penerbitan & perpanjangan Sertifikat Keamanan Kebakaran'],
-        'keramaian' => ['url' => '/layanan-fasilitas/izin-keramaian',     'label' => 'Event Keramaian', 'ico' => 'fa-users', 'ket' => 'Pengajuan Rekomendasi Event Keramaian'],
-        'edukasi'   => ['url' => '/layanan-fasilitas/edukasi_sosialisasi', 'label' => 'Edukasi & Sosialisasi', 'ico' => 'fa-bullhorn', 'ket' => 'Pengajuan Kunjungan Edukasi & Sosialisasi'],
-        'sarana'    => ['url' => '/layanan-fasilitas/penggunaan-sarana',  'label' => 'Penggunaan Sarana Pemadam', 'ico' => 'fa-truck-droplet', 'ket' => 'Permohonan Penggunaan Sarana Pemadam Kebakaran'],
-    ];
+    $layanan = config('layanan'); // urutan, label & ikon diatur di config/layanan.php
     $tab_aktif = 'sarana';
 
     // Daftar sarana yang bisa dimohonkan
@@ -16,16 +10,17 @@
 
     // Jenis pemohon => label & keterangan berkas persyaratan
     $jenis_pemohon = [
-        'perorangan' => ['label' => 'Perorangan',      'ico' => 'fa-user',     'berkas' => 'Surat permohonan penggunaan sarana pemadam.'],
-        'fasum'      => ['label' => 'Fasilitas Umum',  'ico' => 'fa-people-roof', 'berkas' => 'Surat permohonan yang diketahui oleh Ketua RT dan Lurah.'],
+        'perorangan' => ['label' => 'Perorangan',      'ico' => 'fa-user',             'berkas' => 'Surat permohonan penggunaan sarana pemadam.'],
+        'fasum'      => ['label' => 'Fasilitas Umum',  'ico' => 'fa-people-roof',      'berkas' => 'Surat permohonan yang diketahui oleh Ketua RT dan Lurah.'],
         'instansi'   => ['label' => 'Instansi',        'ico' => 'fa-building-columns', 'berkas' => 'Surat permohonan dari pimpinan instansi.'],
     ];
     $jenis_terpilih = old('jenis_pemohon', 'perorangan');
     if (!isset($jenis_pemohon[$jenis_terpilih])) { $jenis_terpilih = 'perorangan'; }
 
-    $inv = function ($n) use ($errors) { return $errors->has($n) ? ' is-invalid' : ''; };
+    // Penanda kolom galat (Sesuai standar REDKAR)
+    $inv = function ($n) use ($errors) { return (isset($errors) && is_object($errors) && $errors->has($n)) ? ' is-invalid' : ''; };
     $fe  = function ($n) use ($errors) {
-        return $errors->has($n)
+        return (isset($errors) && is_object($errors) && $errors->has($n))
             ? '<p class="field-err"><i class="fas fa-circle-exclamation"></i> ' . e($errors->first($n)) . '</p>'
             : '';
     };
@@ -43,7 +38,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="theme-color" content="#0d1b2a">
     <meta name="description" content="Ajukan permohonan penggunaan sarana pemadam secara daring di Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.">
     <title>Penggunaan Sarana Pemadam - Layanan perizinan | SIMERAH KOJA</title>
@@ -55,6 +50,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        /* ==========================================================
+           TOKENS & BASE
+           ========================================================== */
         :root {
             --ink: #0d1b2a;
             --ink-2: #132a43;
@@ -66,6 +64,10 @@
             --amber: #ffb627;
             --steel: #5b6c7f;
             --line: #dbe2ea;
+            --ok: #16a34a;
+            --ok-bg: #dcfce7;
+            --warn: #d97706;
+            --warn-bg: #fef3c7;
 
             --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
             --font-body: 'Instrument Sans', system-ui, sans-serif;
@@ -78,7 +80,7 @@
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
+        html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
         body {
             font-family: var(--font-body);
             font-size: 1rem;
@@ -135,8 +137,8 @@
             border-radius: 2px; background: var(--amber);
             transform: scaleX(0); transform-origin: left; transition: transform .25s ease;
         }
-        .menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger, .menu-link.is-active { color: #fff; }
-        .menu-link:hover::after, .menu-trigger:hover::after, .has-drop.open > .menu-trigger::after, .menu-link.is-active::after { transform: scaleX(1); }
+        .menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger, .menu-link.is-active, .menu > li.current > .menu-trigger { color: #fff; }
+        .menu-link:hover::after, .menu-trigger:hover::after, .has-drop.open > .menu-trigger::after, .menu-link.is-active::after, .menu > li.current > .menu-trigger::after { transform: scaleX(1); }
 
         .menu-trigger i { font-size: .6rem; opacity: .6; transition: transform .2s, opacity .2s; }
         .has-drop.open > .menu-trigger i { transform: rotate(180deg); opacity: 1; }
@@ -250,7 +252,7 @@
             .menu > li { border-bottom: 1px solid rgba(255,255,255,.08); }
             .menu-link, .menu-trigger { width: 100%; justify-content: space-between; padding: 16px 4px; font-size: 1rem; white-space: normal; color: rgba(255,255,255,.9); }
             .menu-link::after, .menu-trigger::after { display: none; }
-            .menu-link.is-active { color: var(--amber); }
+            .menu-link.is-active, .menu > li.current > .menu-trigger { color: var(--amber); }
             .menu-trigger i { font-size: .7rem; }
 
             .nav-actions { flex-direction: column; align-items: stretch; gap: 10px; }
@@ -303,6 +305,10 @@
         }
         .page-hero p { margin-top: 18px; max-width: 56ch; color: rgba(255,255,255,.75); font-size: clamp(1rem, 1.5vw, 1.15rem); }
 
+        .rise { animation: rise .8s cubic-bezier(.16,.84,.3,1) both; }
+        .rise.d1 { animation-delay: .08s; } .rise.d2 { animation-delay: .18s; }
+        @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+
         .page-body { background: var(--paper); padding-bottom: clamp(64px, 9vw, 112px); }
         .tabs-wrap { position: relative; z-index: 2; margin-top: -30px; }
         .tabs {
@@ -334,7 +340,6 @@
         .perizinan-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; margin-top: 24px; align-items: start; }
         @media (min-width: 992px) {
             .perizinan-layout { grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); gap: 32px; }
-            /* Kolom informasi ikut menempel saat halaman di-scroll */
             .info-stack {
                 position: sticky; top: calc(var(--header-h) + 16px); align-self: start;
                 max-height: calc(100dvh - var(--header-h) - 32px);
@@ -359,7 +364,8 @@
         .checklist .muted { color: var(--steel); }
         .checklist a.inline { font-weight: 600; color: var(--signal-d); text-decoration: underline; text-underline-offset: 3px; }
 
-        .form-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
+        /* FORMULIR & VALIDASI REAL-TIME */
+        .form-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; box-shadow: 0 10px 30px rgba(13, 27, 42, 0.03); }
         .form-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; padding: 18px clamp(18px, 3vw, 32px); border-bottom: 1px solid var(--line); }
         .form-title { display: flex; align-items: center; gap: 14px; min-width: 0; }
         .form-title > i { flex: none; width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: var(--ink); color: var(--amber); font-size: 1.05rem; }
@@ -369,7 +375,7 @@
 
         .form-body { padding: clamp(18px, 3vw, 32px); display: grid; gap: 36px; }
         .alert { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 14px; font-size: .92rem; line-height: 1.5; }
-        .alert i { margin-top: 3px; }
+        .alert i { margin-top: 3px; flex: none; }
         .alert.err { background: #fdeceb; color: #8f1d15; border: 1px solid #f5c3bf; }
         .alert.ok { background: #e8f7ee; color: #14532d; border: 1px solid #bce5cb; }
         .alert ul { display: grid; gap: 2px; margin-top: 4px; padding-left: 18px; list-style: disc; }
@@ -380,15 +386,15 @@
         .fs legend i { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: #fdeceb; color: var(--signal-d); font-size: .85rem; }
 
         .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 20px; }
-        .field { min-width: 0; }
+        .field { min-width: 0; display: flex; flex-direction: column; }
         .field.full { grid-column: 1 / -1; }
         @media (max-width: 768px) { .fields { grid-template-columns: minmax(0, 1fr); } }
 
-        .label { display: block; margin-bottom: 8px; font-size: .9rem; font-weight: 600; line-height: 1.35; }
+        .label { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; font-size: .9rem; font-weight: 600; line-height: 1.35; color: var(--ink); }
         .req { color: var(--signal-d); margin-left: 2px; }
         .hint { margin-top: 6px; font-size: .8rem; color: var(--steel); line-height: 1.4; }
         .field-err { margin-top: 6px; display: flex; gap: 8px; align-items: flex-start; font-size: .82rem; font-weight: 500; line-height: 1.4; color: var(--signal-d); }
-        .field-err i { margin-top: 2px; }
+        .field-err i { margin-top: 2px; flex: none; }
         .field-err:empty { display: none; }
 
         .input {
@@ -398,13 +404,38 @@
             transition: border-color .2s, box-shadow .2s;
         }
         .input::placeholder { color: #93a1b1; }
-        .input:hover { border-color: #b8c3d0; }
+        .input:hover:not(:disabled) { border-color: #b8c3d0; }
         .input:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(255,182,39,.5); }
         .input:user-invalid, .input.is-invalid { border-color: var(--signal); }
+        .input.is-valid { border-color: var(--ok); }
+        .input.is-valid:focus { border-color: var(--ok); box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.25); }
         select.input { appearance: none; -webkit-appearance: none; padding-right: 44px; cursor: pointer;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235b6c7f' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
             background-repeat: no-repeat; background-position: right 16px center; }
         textarea.input { height: auto; min-height: 96px; padding: 12px 16px; resize: vertical; line-height: 1.5; }
+
+        /* BADGE & STATUS VALIDASI REAL-TIME (Sesuai REDKAR) */
+        .pw-badge {
+            display: none; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px;
+            font-size: .72rem; font-weight: 700; letter-spacing: .01em;
+        }
+        .pw-badge.show { display: inline-flex; }
+        .pw-badge.match { background: var(--ok-bg); color: var(--ok); }
+        .pw-badge.warn { background: var(--warn-bg); color: var(--warn); }
+        .pw-badge.mismatch { background: #fdeceb; color: var(--signal-d); }
+
+        .pw-status {
+            margin-top: 6px; display: none; align-items: center; gap: 6px;
+            font-size: .8rem; font-weight: 600; line-height: 1.35;
+        }
+        .pw-status.show { display: inline-flex; }
+        .pw-status.match { color: var(--ok); }
+        .pw-status.warn { color: var(--warn); }
+        .pw-status.mismatch { color: var(--signal-d); }
+
+        @media (max-width: 640px) {
+            .input, select.input, textarea.input { font-size: 16px; }
+        }
 
         /* Pilihan jenis pemohon */
         .choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
@@ -422,28 +453,83 @@
         .choice input:checked + span i { background: var(--ink); color: var(--amber); }
         .choice input:focus-visible + span { outline: 3px solid var(--amber); outline-offset: 3px; }
 
+        /* DROPZONE & PRATINJAU GAMBAR (Sesuai REDKAR) */
         .dropzone {
-            position: relative; display: grid; justify-items: center; gap: 8px; text-align: center;
+            position: relative; display: grid; justify-items: center; gap: 10px; text-align: center;
             padding: 26px 20px; border: 2px dashed #b8c3d0; border-radius: var(--r-md);
             background: var(--paper); color: var(--steel); font-size: .92rem; line-height: 1.45;
-            cursor: pointer; transition: border-color .2s, background .2s;
+            cursor: pointer; transition: border-color .2s, background .2s, box-shadow .2s;
         }
         .dropzone:hover, .dropzone.is-over { border-color: var(--signal); background: #fdeceb; }
         .dropzone:focus-within { outline: 3px solid var(--amber); outline-offset: 3px; }
-        .dropzone.has-files { border-style: solid; border-color: var(--ink); background: #fff; }
-        .dropzone.is-invalid { border-color: var(--signal); }
-        .dropzone input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-        .dz-ico { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: #fff; border: 1px solid var(--line); color: var(--signal-d); font-size: 1.2rem; }
+        .dropzone.has-files { border-style: solid; border-color: var(--ink); background: #fff; cursor: default; }
+        .dropzone.is-invalid { border-color: var(--signal); background: #fff5f5; }
+        .dropzone input[type="file"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 1; }
+        .dropzone.has-files input[type="file"] { pointer-events: none; }
+
+        .dz-prompt { display: grid; justify-items: center; gap: 8px; transition: opacity .2s; }
+        .dropzone.has-files .dz-prompt { display: none; }
+        .dz-ico { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: #fff; border: 1px solid var(--line); color: var(--signal-d); font-size: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,.04); }
         .dz-text strong { color: var(--ink); }
         .dz-text u { text-underline-offset: 3px; color: var(--signal-d); font-weight: 600; }
-        .dz-files { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+
+        .dz-preview {
+            display: none; width: 100%; flex-direction: column; align-items: center; gap: 12px;
+            z-index: 2; position: relative; animation: fadeInPreview .25s ease;
+        }
+        .dropzone.has-files .dz-preview { display: flex; }
+        @keyframes fadeInPreview { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+        .dz-img-wrap {
+            position: relative; width: 100%; max-width: 420px; aspect-ratio: 16 / 10; max-height: 240px;
+            border-radius: 14px; overflow: hidden; border: 1px solid var(--line);
+            background: var(--ink); box-shadow: 0 8px 24px rgba(13, 27, 42, 0.12);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .dz-img-wrap img { width: 100%; height: 100%; object-fit: contain; background: #0d1b2a; }
+        .dz-badge-ok {
+            position: absolute; top: 10px; left: 10px; display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 10px; border-radius: 999px; background: rgba(13, 27, 42, 0.82); backdrop-filter: blur(6px);
+            color: #4ade80; font-size: .75rem; font-weight: 700; letter-spacing: .02em;
+        }
+
+        .dz-meta {
+            display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+            width: 100%; padding: 10px 14px; border-radius: 12px; background: var(--paper); border: 1px solid var(--line);
+        }
+        .dz-files { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; flex: 1; }
         .dz-files:empty { display: none; }
-        .dz-files li { display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); font-size: .82rem; font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+        .dz-files li {
+            display: inline-flex; align-items: center; gap: 7px; padding: 4px 10px; border-radius: 999px;
+            background: #fff; border: 1px solid var(--line); font-size: .82rem; font-weight: 600; color: var(--ink);
+            overflow-wrap: anywhere;
+        }
+        .dz-files li i { color: var(--ok); flex: none; }
+        .dz-files li span.f-size { color: var(--steel); font-weight: 500; font-size: .78rem; }
+
+        .dz-actions { display: flex; align-items: center; gap: 6px; flex: none; }
+        .btn-dz {
+            display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px;
+            font-size: .78rem; font-weight: 700; transition: background .15s, color .15s, transform .15s;
+        }
+        .btn-dz:active { transform: scale(.96); }
+        .btn-dz--change { background: #fff; border: 1px solid var(--line); color: var(--ink); }
+        .btn-dz--change:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+        .btn-dz--remove { background: #fdeceb; color: var(--signal-d); }
+        .btn-dz--remove:hover { background: var(--signal); color: #fff; }
+
+        @media (max-width: 480px) {
+            .dz-meta { flex-direction: column; align-items: stretch; text-align: left; }
+            .dz-actions { width: 100%; justify-content: stretch; }
+            .btn-dz { flex: 1; justify-content: center; padding: 8px 10px; }
+        }
 
         .form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; padding-top: 4px; }
-        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 30px; border-radius: 999px; font-weight: 700; font-size: 1rem; transition: background .2s, box-shadow .2s; cursor: pointer; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 30px; border-radius: 999px; font-weight: 700; font-size: 1rem; transition: background .2s, box-shadow .2s, transform .15s; cursor: pointer; border: none; }
+        .btn:active:not(:disabled) { transform: scale(.98); }
         .btn-primary { background: var(--signal); color: #fff; box-shadow: 0 14px 30px -10px rgba(229,57,45,.6); }
-        .btn-primary:hover { background: var(--signal-d); }
+        .btn-primary:hover:not(:disabled) { background: var(--signal-d); }
+        .btn-primary:disabled { background: #fca5a5; cursor: not-allowed; box-shadow: none; }
         .btn-dark { background: var(--ink); color: #fff; }
         .btn-dark:hover { background: var(--ink-3); }
         .form-actions p { font-size: .88rem; color: var(--steel); }
@@ -569,11 +655,7 @@
                 <li class="has-drop current">
                     <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
-                        <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
-                        <li><a href="/layanan-fasilitas/izin-keramaian">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
-                        <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
-                        <li><a href="/layanan-fasilitas/penggunaan-sarana" aria-current="page">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
-                        <li><a href="/layanan-fasilitas/skk">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
+                        @include('layouts.partials.layanan-dropdown')
                     </ul>
                 </li>
 
@@ -709,13 +791,7 @@
 
 <div class="page-body">
     <div class="wrap tabs-wrap">
-        <nav class="tabs" aria-label="Jenis layanan perizinan">
-            @foreach($layanan as $key => $l)
-                <a class="tab" href="{{ $l['url'] }}" title="{{ $l['ket'] }}" @if($key === $tab_aktif) aria-current="page" @endif>
-                    <i class="fas {{ $l['ico'] }}"></i> {{ $l['label'] }}
-                </a>
-            @endforeach
-        </nav>
+        @include('layouts.partials.layanan-tabs')
     </div>
 
     <div class="wrap">
@@ -786,11 +862,11 @@
                     </div>
                     <p class="cs-desc">Masukkan NIK atau No HP/WA yang Anda gunakan saat mengajukan permohonan.</p>
 
-<form class="cs-form" id="csForm" data-no-loader="true" novalidate>
-    <label class="sr-only" for="csKontak">NIK atau No Kontak / WhatsApp</label>
-    <input class="input" type="text" id="csKontak" name="kontak" inputmode="numeric" maxlength="16" autocomplete="off" placeholder="NIK atau Nomor WA" required>
-    <button type="submit" class="btn btn-dark cs-btn" id="csBtn"><i class="fas fa-search"></i> Cek</button>
-</form>
+                    <form class="cs-form" id="csForm" data-no-loader="true" novalidate>
+                        <label class="sr-only" for="csKontak">NIK atau No Kontak / WhatsApp</label>
+                        <input class="input" type="text" id="csKontak" name="kontak" inputmode="numeric" maxlength="16" autocomplete="off" placeholder="NIK atau Nomor WA" required>
+                        <button type="submit" class="btn btn-dark cs-btn" id="csBtn"><i class="fas fa-search"></i> Cek</button>
+                    </form>
 
                     <p class="field-err" id="csErr" role="alert"></p>
                     <ul class="cs-list" id="csList" aria-live="polite"></ul>
@@ -811,14 +887,14 @@
                     <span class="form-note"><span class="req" aria-hidden="true">*</span> wajib diisi</span>
                 </div>
 
-                <form class="form-body" action="{{ route('penggunaan-sarana.store') }}" method="POST" enctype="multipart/form-data">
+                <form class="form-body" action="{{ route('penggunaan-sarana.store') }}" method="POST" enctype="multipart/form-data" id="form_sarana">
                     @csrf
 
                     @if($errors->any())
                         <div class="alert err" role="alert">
                             <i class="fas fa-triangle-exclamation"></i>
                             <div>
-                                Permohonan belum terkirim. Mohon periksa kembali form Anda:
+                                <strong>Permohonan belum terkirim. Mohon periksa kembali form Anda:</strong>
                                 <ul>
                                     @foreach($errors->all() as $err)
                                         <li>{{ $err }}</li>
@@ -833,22 +909,30 @@
                         <legend><i class="fas fa-user"></i> 1. Data Pemohon</legend>
                         <div class="fields">
                             <div class="field full">
-                                <label class="label" for="nama">Nama <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="nama"><span>Nama <span class="req" aria-hidden="true">*</span></span></label>
                                 <input class="input{{ $inv('nama') }}" type="text" id="nama" name="nama" value="{{ old('nama') }}" autocomplete="name" required>
                                 {!! $fe('nama') !!}
                             </div>
                             <div class="field">
-                                <label class="label" for="nik">NIK <span class="req" aria-hidden="true">*</span></label>
-                                <input class="input{{ $inv('nik') }}" type="text" id="nik" name="nik" value="{{ old('nik') }}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" inputmode="numeric" pattern="[0-9]{16}" maxlength="16" placeholder="16 digit NIK" required>
+                                <label class="label" for="nik">
+                                    <span>NIK <span class="req" aria-hidden="true">*</span></span>
+                                    <span class="pw-badge" id="nik_badge">0/16</span>
+                                </label>
+                                <input class="input{{ $inv('nik') }}" type="text" id="nik" name="nik" value="{{ old('nik') }}" inputmode="numeric" pattern="[0-9]{16}" maxlength="16" placeholder="16 digit NIK" required>
+                                <p class="pw-status" id="nik_msg" aria-live="polite"></p>
                                 {!! $fe('nik') !!}
                             </div>
                             <div class="field">
-                                <label class="label" for="no_hp">No HP/WA <span class="req" aria-hidden="true">*</span></label>
-                                <input class="input{{ $inv('no_hp') }}" type="tel" id="no_hp" name="no_hp" value="{{ old('no_hp') }}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" inputmode="tel" autocomplete="tel" placeholder="08xxxxxxxxxx" required>
+                                <label class="label" for="no_hp">
+                                    <span>No HP/WA <span class="req" aria-hidden="true">*</span></span>
+                                    <span class="pw-badge" id="wa_badge"></span>
+                                </label>
+                                <input class="input{{ $inv('no_hp') }}" type="tel" id="no_hp" name="no_hp" value="{{ old('no_hp') }}" inputmode="tel" maxlength="14" autocomplete="tel" placeholder="Contoh: 081234567890" required>
+                                <p class="pw-status" id="wa_msg" aria-live="polite"></p>
                                 {!! $fe('no_hp') !!}
                             </div>
                             <div class="field full">
-                                <label class="label" for="alamat">Alamat <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="alamat"><span>Alamat <span class="req" aria-hidden="true">*</span></span></label>
                                 <input class="input{{ $inv('alamat') }}" type="text" id="alamat" name="alamat" value="{{ old('alamat') }}" autocomplete="street-address" required>
                                 {!! $fe('alamat') !!}
                             </div>
@@ -860,7 +944,7 @@
                         <legend><i class="fas fa-briefcase"></i> 2. Data Instansi / Fasilitas Umum / Perorangan</legend>
                         <div class="fields">
                             <div class="field full">
-                                <span class="label" id="lbl-jenis">Jenis Pemohon <span class="req" aria-hidden="true">*</span></span>
+                                <span class="label" id="lbl-jenis"><span>Jenis Pemohon <span class="req" aria-hidden="true">*</span></span></span>
                                 <div class="choices" role="radiogroup" aria-labelledby="lbl-jenis">
                                     @foreach($jenis_pemohon as $key => $jp)
                                         <label class="choice">
@@ -872,17 +956,17 @@
                                 {!! $fe('jenis_pemohon') !!}
                             </div>
                             <div class="field full">
-                                <label class="label" for="nama_penanggung_jawab">Nama Penanggung Jawab <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="nama_penanggung_jawab"><span>Nama Penanggung Jawab <span class="req" aria-hidden="true">*</span></span></label>
                                 <input class="input{{ $inv('nama_penanggung_jawab') }}" type="text" id="nama_penanggung_jawab" name="nama_penanggung_jawab" value="{{ old('nama_penanggung_jawab') }}" required>
                                 {!! $fe('nama_penanggung_jawab') !!}
                             </div>
                             <div class="field full">
-                                <label class="label" for="nama_instansi">Nama Instansi / Fasilitas Umum / Perorangan <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="nama_instansi"><span>Nama Instansi / Fasilitas Umum / Perorangan <span class="req" aria-hidden="true">*</span></span></label>
                                 <input class="input{{ $inv('nama_instansi') }}" type="text" id="nama_instansi" name="nama_instansi" value="{{ old('nama_instansi') }}" required>
                                 {!! $fe('nama_instansi') !!}
                             </div>
                             <div class="field full">
-                                <label class="label" for="alamat_instansi">Alamat <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="alamat_instansi"><span>Alamat <span class="req" aria-hidden="true">*</span></span></label>
                                 <input class="input{{ $inv('alamat_instansi') }}" type="text" id="alamat_instansi" name="alamat_instansi" value="{{ old('alamat_instansi') }}" required>
                                 {!! $fe('alamat_instansi') !!}
                             </div>
@@ -894,7 +978,7 @@
                         <legend><i class="fas fa-truck-droplet"></i> 3. Sarana yang Diajukan</legend>
                         <div class="fields">
                             <div class="field full">
-                                <label class="label" for="sarana">Sarana yang Diajukan <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="sarana"><span>Sarana yang Diajukan <span class="req" aria-hidden="true">*</span></span></label>
                                 <select class="input{{ $inv('sarana') }}" id="sarana" name="sarana" required>
                                     <option value="" disabled @selected(!old('sarana'))>Pilih sarana</option>
                                     @foreach($daftar_sarana as $s)
@@ -904,7 +988,7 @@
                                 {!! $fe('sarana') !!}
                             </div>
                             <div class="field full">
-                                <label class="label" for="kegunaan">Kegunaan Sarana <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="kegunaan"><span>Kegunaan Sarana <span class="req" aria-hidden="true">*</span></span></label>
                                 <textarea class="input{{ $inv('kegunaan') }}" id="kegunaan" name="kegunaan" rows="3" placeholder="Contoh: untuk keperluan pengisian air bersih" required>{{ old('kegunaan') }}</textarea>
                                 {!! $fe('kegunaan') !!}
                             </div>
@@ -916,22 +1000,26 @@
                         <legend><i class="fas fa-map-marker-alt"></i> 4. Data Lokasi Kegiatan</legend>
                         <div class="fields">
                             <div class="field full">
-                                <label class="label" for="nama_kegiatan">Nama Kegiatan <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="nama_kegiatan"><span>Nama Kegiatan <span class="req" aria-hidden="true">*</span></span></label>
                                 <input class="input{{ $inv('nama_kegiatan') }}" type="text" id="nama_kegiatan" name="nama_kegiatan" value="{{ old('nama_kegiatan') }}" required>
                                 {!! $fe('nama_kegiatan') !!}
                             </div>
                             <div class="field full">
-                                <label class="label" for="lokasi_kegiatan">Lokasi Kegiatan <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="lokasi_kegiatan"><span>Lokasi Kegiatan <span class="req" aria-hidden="true">*</span></span></label>
                                 <input class="input{{ $inv('lokasi_kegiatan') }}" type="text" id="lokasi_kegiatan" name="lokasi_kegiatan" value="{{ old('lokasi_kegiatan') }}" required>
                                 {!! $fe('lokasi_kegiatan') !!}
                             </div>
                             <div class="field">
-                                <label class="label" for="tgl_pelaksanaan">Tgl. Pelaksanaan <span class="req" aria-hidden="true">*</span></label>
-                                <input class="input{{ $inv('tgl_pelaksanaan') }}" type="date" id="tgl_pelaksanaan" name="tgl_pelaksanaan" value="{{ old('tgl_pelaksanaan') }}" required>
+                                <label class="label" for="tgl_pelaksanaan">
+                                    <span>Tgl. Pelaksanaan <span class="req" aria-hidden="true">*</span></span>
+                                    <span class="pw-badge" id="tgl_badge"></span>
+                                </label>
+                                <input class="input{{ $inv('tgl_pelaksanaan') }}" type="date" id="tgl_pelaksanaan" name="tgl_pelaksanaan" value="{{ old('tgl_pelaksanaan') }}" min="{{ date('Y-m-d') }}" required>
+                                <p class="pw-status" id="tgl_msg" aria-live="polite"></p>
                                 {!! $fe('tgl_pelaksanaan') !!}
                             </div>
                             <div class="field">
-                                <label class="label">Waktu Pelaksanaan <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label"><span>Waktu Pelaksanaan <span class="req" aria-hidden="true">*</span></span></label>
                                 <div style="display: flex; gap: 10px; align-items: center;">
                                     <input class="input{{ $inv('waktu_mulai') }}" type="time" id="waktu_mulai" name="waktu_mulai" value="{{ old('waktu_mulai') }}" required style="flex:1;" aria-label="Waktu mulai">
                                     <span style="font-size: .9rem; color: var(--steel); font-weight: 600;">s/d</span>
@@ -942,13 +1030,29 @@
                             </div>
 
                             <div class="field full">
-                                <span class="label" id="lbl-foto">Foto Lokasi Kegiatan (Upload Photo) <span class="req" aria-hidden="true">*</span></span>
-                                <label class="dropzone{{ $inv('foto_lokasi') }}" data-dropzone data-max="5">
-                                    <input type="file" name="foto_lokasi" accept=".jpg,.jpeg,.png" required aria-labelledby="lbl-foto">
-                                    <span class="dz-ico"><i class="fas fa-image"></i></span>
-                                    <span class="dz-text"><strong>Tarik foto ke sini</strong> atau <u>pilih dari perangkat</u></span>
-                                    <ul class="dz-files" aria-live="polite"></ul>
-                                </label>
+                                <span class="label" id="lbl-foto"><span>Foto Lokasi Kegiatan (Upload Photo) <span class="req" aria-hidden="true">*</span></span></span>
+                                <div class="dropzone{{ $inv('foto_lokasi') }}" data-dropzone data-max="5" data-ext="jpg,jpeg,png">
+                                    <input type="file" id="foto_lokasi" name="foto_lokasi" accept="image/jpeg,image/png,.jpg,.jpeg,.png" required aria-labelledby="lbl-foto">
+                                    
+                                    <div class="dz-prompt">
+                                        <span class="dz-ico"><i class="fas fa-image"></i></span>
+                                        <span class="dz-text"><strong>Tarik foto ke sini</strong> atau <u>pilih dari perangkat</u></span>
+                                    </div>
+
+                                    <div class="dz-preview">
+                                        <div class="dz-img-wrap">
+                                            <span class="dz-badge-ok"><i class="fas fa-circle-check"></i> Siap Diunggah</span>
+                                            <img src="" alt="Pratinjau Lokasi Kegiatan" data-dz-img>
+                                        </div>
+                                        <div class="dz-meta">
+                                            <ul class="dz-files" aria-live="polite"></ul>
+                                            <div class="dz-actions">
+                                                <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
+                                                <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <p class="hint">Format JPG atau PNG. Maksimal 5 MB.</p>
                                 <p class="field-err dz-msg" role="alert"></p>
                                 {!! $fe('foto_lokasi') !!}
@@ -967,14 +1071,26 @@
 
                         <div class="fields">
                             <div class="field full">
-                                <span class="label" id="lbl-permohonan">Unggah Surat Permohonan <span class="req" aria-hidden="true">*</span></span>
-                                <label class="dropzone{{ $inv('surat_permohonan') }}" data-dropzone data-max="5">
-                                    <input type="file" name="surat_permohonan" accept=".pdf,.jpg,.jpeg,.png" required aria-labelledby="lbl-permohonan">
-                                    <span class="dz-ico"><i class="fas fa-file-pdf"></i></span>
-                                    <span class="dz-text"><strong>Tarik berkas ke sini</strong> atau <u>pilih dari perangkat</u></span>
-                                    <ul class="dz-files" aria-live="polite"></ul>
-                                </label>
-                                <p class="hint">Format PDF, JPG, atau PNG. Maksimal 5 MB.</p>
+                                <span class="label" id="lbl-permohonan"><span>Unggah Surat Permohonan <span class="req" aria-hidden="true">*</span></span></span>
+                                <div class="dropzone{{ $inv('surat_permohonan') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png,zip,rar">
+                                    <input type="file" id="surat_permohonan" name="surat_permohonan" accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,application/pdf,image/jpeg,image/png,application/zip,application/x-zip-compressed" required aria-labelledby="lbl-permohonan">
+                                    
+                                    <div class="dz-prompt">
+                                        <span class="dz-ico"><i class="fas fa-file-pdf"></i></span>
+                                        <span class="dz-text"><strong>Tarik berkas ke sini</strong> atau <u>pilih dari perangkat</u></span>
+                                    </div>
+
+                                    <div class="dz-preview">
+                                        <div class="dz-meta">
+                                            <ul class="dz-files" aria-live="polite"></ul>
+                                            <div class="dz-actions">
+                                                <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
+                                                <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="hint">Format PDF, JPG, PNG, atau ZIP/RAR. Maksimal 5 MB.</p>
                                 <p class="field-err dz-msg" role="alert"></p>
                                 {!! $fe('surat_permohonan') !!}
                             </div>
@@ -982,7 +1098,7 @@
                     </fieldset>
 
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Kirim permohonan</button>
+                        <button type="submit" class="btn btn-primary" id="btn_submit_sarana"><i class="fas fa-paper-plane"></i> Kirim permohonan</button>
                     </div>
                 </form>
             </section>
@@ -1079,7 +1195,8 @@
     function closeSubs() {
         subs.forEach(function (s) {
             s.classList.remove('open');
-            s.querySelector('.sub-trigger').setAttribute('aria-expanded', 'false');
+            var st = s.querySelector('.sub-trigger');
+            if (st) st.setAttribute('aria-expanded', 'false');
         });
     }
 
@@ -1087,7 +1204,8 @@
         drops.forEach(function (li) {
             if (li !== except) {
                 li.classList.remove('open');
-                triggerOf(li).setAttribute('aria-expanded', 'false');
+                var tr = triggerOf(li);
+                if (tr) tr.setAttribute('aria-expanded', 'false');
             }
         });
         if (!except) closeSubs();
@@ -1108,6 +1226,7 @@
 
     drops.forEach(function (li) {
         var btn = triggerOf(li);
+        if (!btn) return;
         btn.addEventListener('click', function () {
             var open = li.classList.toggle('open');
             btn.setAttribute('aria-expanded', open);
@@ -1124,6 +1243,7 @@
 
     subs.forEach(function (li) {
         var btn = li.querySelector('.sub-trigger');
+        if (!btn) return;
         btn.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -1174,7 +1294,7 @@
         setTimeout(hideToast, 5000);
     }
 
-    // Keterangan berkas mengikuti jenis pemohon
+    /* ---------- Keterangan berkas mengikuti jenis pemohon ---------- */
     var berkasInfo = document.getElementById('berkas-info');
     document.querySelectorAll('input[name="jenis_pemohon"]').forEach(function (r) {
         r.addEventListener('change', function () {
@@ -1182,46 +1302,280 @@
         });
     });
 
-    function fmtSize(b) {
-        return b < 1048576 ? Math.max(1, Math.round(b / 1024)) + ' KB' : (b / 1048576).toFixed(1) + ' MB';
+    /* ---------- State Validasi Form Real-Time (Standar REDKAR) ---------- */
+    const btnSubmit = document.getElementById('btn_submit_sarana');
+
+    const nikInput = document.getElementById('nik');
+    const nikBadge = document.getElementById('nik_badge');
+    const nikMsg   = document.getElementById('nik_msg');
+
+    const waInput = document.getElementById('no_hp');
+    const waBadge = document.getElementById('wa_badge');
+    const waMsg   = document.getElementById('wa_msg');
+
+    const tglInput = document.getElementById('tgl_pelaksanaan');
+    const tglBadge = document.getElementById('tgl_badge');
+    const tglMsg   = document.getElementById('tgl_msg');
+
+    let isNikValid  = true;
+    let isWaValid   = true;
+    let isDateValid = true;
+    let isFileValid = true;
+
+    function syncSubmitButton() {
+        if (btnSubmit) {
+            btnSubmit.disabled = !(isNikValid && isWaValid && isDateValid && isFileValid);
+        }
     }
 
-    document.querySelectorAll('[data-dropzone]').forEach(function (dz) {
+    /* ---------- Validasi NIK Real-Time ---------- */
+    function validateNik() {
+        let val = nikInput.value.replace(/\D/g, '').slice(0, 16);
+        if (nikInput.value !== val) nikInput.value = val;
+
+        if (!val) {
+            nikBadge.className = 'pw-badge';
+            nikBadge.innerHTML = '';
+            nikMsg.className = 'pw-status';
+            nikMsg.innerHTML = '';
+            nikInput.classList.remove('is-valid', 'is-invalid');
+            isNikValid = true;
+        } else if (val.length < 16) {
+            let kurang = 16 - val.length;
+            nikBadge.className = 'pw-badge show mismatch';
+            nikBadge.innerHTML = val.length + '/16';
+            nikMsg.className = 'pw-status show mismatch';
+            nikMsg.innerHTML = '<i class="fas fa-circle-exclamation"></i> Kurang ' + kurang + ' digit angka lagi';
+            nikInput.classList.add('is-invalid');
+            nikInput.classList.remove('is-valid');
+            isNikValid = false;
+        } else {
+            nikBadge.className = 'pw-badge show match';
+            nikBadge.innerHTML = '<i class="fas fa-check"></i> 16/16';
+            nikMsg.className = 'pw-status show match';
+            nikMsg.innerHTML = '<i class="fas fa-circle-check"></i> Format 16 digit NIK sesuai';
+            nikInput.classList.add('is-valid');
+            nikInput.classList.remove('is-invalid');
+            isNikValid = true;
+        }
+        syncSubmitButton();
+    }
+    nikInput.addEventListener('input', validateNik);
+    if (nikInput.value) validateNik();
+
+    /* ---------- Validasi WhatsApp Real-Time (Tanpa Badge "Aktif") ---------- */
+    function validateWa() {
+        let val = waInput.value.replace(/\D/g, '');
+        if (val.startsWith('628')) {
+            val = '08' + val.slice(3);
+        } else if (val.startsWith('8')) {
+            val = '08' + val.slice(1);
+        }
+        val = val.slice(0, 14);
+        if (waInput.value !== val) waInput.value = val;
+
+        if (!val) {
+            waBadge.className = 'pw-badge';
+            waBadge.innerHTML = '';
+            waMsg.className = 'pw-status';
+            waMsg.innerHTML = '';
+            waInput.classList.remove('is-valid', 'is-invalid');
+            isWaValid = true;
+        } else if (!val.startsWith('08')) {
+            waBadge.className = 'pw-badge show mismatch';
+            waBadge.innerHTML = 'Format Salah';
+            waMsg.className = 'pw-status show mismatch';
+            waMsg.innerHTML = '<i class="fas fa-circle-xmark"></i> Nomor harus diawali dengan 08';
+            waInput.classList.add('is-invalid');
+            waInput.classList.remove('is-valid');
+            isWaValid = false;
+        } else if (val.length < 10) {
+            waBadge.className = 'pw-badge show mismatch';
+            waBadge.innerHTML = val.length + ' Digit';
+            waMsg.className = 'pw-status show mismatch';
+            waMsg.innerHTML = '<i class="fas fa-circle-exclamation"></i> Nomor terlalu pendek (minimal 10 digit)';
+            waInput.classList.add('is-invalid');
+            waInput.classList.remove('is-valid');
+            isWaValid = false;
+        } else {
+            waBadge.className = 'pw-badge';
+            waBadge.innerHTML = '';
+            waMsg.className = 'pw-status show match';
+            waMsg.innerHTML = '<i class="fas fa-circle-check"></i> Format nomor WhatsApp valid (' + val.length + ' digit)';
+            waInput.classList.add('is-valid');
+            waInput.classList.remove('is-invalid');
+            isWaValid = true;
+        }
+        syncSubmitButton();
+    }
+    waInput.addEventListener('input', validateWa);
+    if (waInput.value) validateWa();
+
+    /* ---------- Validasi Tanggal Pelaksanaan ---------- */
+    function validateDate() {
+        if (!tglInput.value) {
+            tglBadge.className = 'pw-badge';
+            tglBadge.innerHTML = '';
+            tglMsg.className = 'pw-status';
+            tglMsg.innerHTML = '';
+            tglInput.classList.remove('is-valid', 'is-invalid');
+            isDateValid = true;
+            syncSubmitButton();
+            return;
+        }
+
+        const selected = new Date(tglInput.value + 'T00:00:00');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (selected < today) {
+            tglBadge.className = 'pw-badge show mismatch';
+            tglBadge.innerHTML = '<i class="fas fa-xmark"></i> Tidak Valid';
+            tglMsg.className = 'pw-status show mismatch';
+            tglMsg.innerHTML = '<i class="fas fa-circle-exclamation"></i> Tanggal pelaksanaan tidak boleh di masa lalu';
+            tglInput.classList.add('is-invalid');
+            tglInput.classList.remove('is-valid');
+            isDateValid = false;
+        } else {
+            tglBadge.className = 'pw-badge show match';
+            tglBadge.innerHTML = '<i class="fas fa-check"></i> Sesuai';
+            tglMsg.className = 'pw-status show match';
+            tglMsg.innerHTML = '<i class="fas fa-calendar-check"></i> Tanggal pelaksanaan memenuhi syarat';
+            tglInput.classList.add('is-valid');
+            tglInput.classList.remove('is-invalid');
+            isDateValid = true;
+        }
+        syncSubmitButton();
+    }
+    tglInput.addEventListener('change', validateDate);
+    if (tglInput.value) validateDate();
+
+    /* ---------- Area Unggah Berkas & Pratinjau Gambar (Dropzone) ---------- */
+    function fmtSize(b) {
+        return b < 1048576 ? Math.max(1, Math.round(b / 1024)) + ' KB' : (b / 1048576).toFixed(2) + ' MB';
+    }
+
+    var dropzones = document.querySelectorAll('[data-dropzone]');
+
+    function checkAllDropzonesValid() {
+        var allOk = true;
+        dropzones.forEach(function (d) {
+            if (d.classList.contains('is-invalid')) allOk = false;
+        });
+        isFileValid = allOk;
+        syncSubmitButton();
+    }
+
+    dropzones.forEach(function (dz) {
         var input = dz.querySelector('input[type="file"]');
         var list = dz.querySelector('.dz-files');
-        var maxMb = parseFloat(dz.getAttribute('data-max')) || 0;
+        var imgPreview = dz.querySelector('[data-dz-img]');
+        var btnRemove = dz.querySelector('[data-dz-remove]');
+        var btnChange = dz.querySelector('[data-dz-change]');
+        var maxMb = parseFloat(dz.getAttribute('data-max')) || 5;
+        var allowedExt = (dz.getAttribute('data-ext') || 'pdf,jpg,jpeg,png').split(',');
         var msg = dz.parentNode.querySelector('.dz-msg');
 
-        ['dragenter', 'dragover'].forEach(function (t) {
-            dz.addEventListener(t, function () { dz.classList.add('is-over'); });
-        });
-        ['dragleave', 'drop'].forEach(function (t) {
-            dz.addEventListener(t, function () { dz.classList.remove('is-over'); });
-        });
+        function resetDropzone() {
+            input.value = '';
+            list.innerHTML = '';
+            if (imgPreview) imgPreview.removeAttribute('src');
+            dz.classList.remove('has-files', 'is-over');
+        }
 
-        input.addEventListener('change', function () {
-            list.textContent = '';
-            if (msg) msg.textContent = '';
+        function handleFiles(files) {
+            list.innerHTML = '';
+            if (msg) msg.innerHTML = '';
             dz.classList.remove('is-invalid');
 
-            var files = Array.prototype.slice.call(input.files);
-            var terlalubesar = files.some(function (f) { return maxMb && f.size > maxMb * 1048576; });
-
-            if (terlalubesar) {
-                input.value = '';
-                dz.classList.remove('has-files');
-                dz.classList.add('is-invalid');
-                if (msg) msg.textContent = 'Ukuran berkas melebihi ' + maxMb + ' MB. Pilih berkas yang lebih kecil.';
+            if (!files || !files.length) {
+                resetDropzone();
+                checkAllDropzonesValid();
                 return;
             }
 
-            files.forEach(function (f) {
-                var li = document.createElement('li');
-                li.textContent = f.name + ' (' + fmtSize(f.size) + ')';
-                list.appendChild(li);
+            var file = files[0];
+            var ext = (file.name.split('.').pop() || '').toLowerCase();
+
+            if (allowedExt.indexOf(ext) === -1) {
+                resetDropzone();
+                dz.classList.add('is-invalid');
+                if (msg) msg.innerHTML = '<i class="fas fa-circle-exclamation"></i> Format berkas "' + file.name + '" tidak didukung. Gunakan: ' + allowedExt.join(', ').toUpperCase() + '.';
+                checkAllDropzonesValid();
+                return;
+            }
+
+            if (maxMb && file.size > maxMb * 1048576) {
+                resetDropzone();
+                dz.classList.add('is-invalid');
+                if (msg) msg.innerHTML = '<i class="fas fa-circle-exclamation"></i> Ukuran berkas (' + fmtSize(file.size) + ') melebihi batas maksimal ' + maxMb + ' MB.';
+                checkAllDropzonesValid();
+                return;
+            }
+
+            var li = document.createElement('li');
+            li.innerHTML = '<i class="fas fa-circle-check"></i> <span>' + file.name + '</span> <span class="f-size">(' + fmtSize(file.size) + ')</span>';
+            list.appendChild(li);
+
+            if (imgPreview && window.FileReader && file.type.indexOf('image/') === 0) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    imgPreview.src = e.target.result;
+                    dz.classList.add('has-files');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                dz.classList.add('has-files');
+            }
+            checkAllDropzonesValid();
+        }
+
+        ['dragenter', 'dragover'].forEach(function (t) {
+            dz.addEventListener(t, function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dz.classList.add('is-over');
             });
-            dz.classList.toggle('has-files', files.length > 0);
         });
+
+        ['dragleave', 'drop'].forEach(function (t) {
+            dz.addEventListener(t, function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dz.classList.remove('is-over');
+            });
+        });
+
+        dz.addEventListener('drop', function (e) {
+            var dt = e.dataTransfer;
+            if (dt && dt.files && dt.files.length) {
+                input.files = dt.files;
+                handleFiles(dt.files);
+            }
+        });
+
+        input.addEventListener('change', function () {
+            handleFiles(input.files);
+        });
+
+        if (btnChange) {
+            btnChange.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                input.click();
+            });
+        }
+
+        if (btnRemove) {
+            btnRemove.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (msg) msg.innerHTML = '';
+                dz.classList.remove('is-invalid');
+                resetDropzone();
+                checkAllDropzonesValid();
+            });
+        }
     });
 })();
 </script>
@@ -1246,9 +1600,12 @@
         'Ditolak':   { cls: 'cs-ditolak',   txt: 'Permohonan ditolak. Hubungi petugas untuk informasi lebih lanjut.' }
     };
 
-    // hanya angka
     input.addEventListener('input', function () {
-        input.value = input.value.replace(/[^0-9]/g, '');
+        let val = input.value.replace(/\D/g, '');
+        if (val.startsWith('628')) {
+            val = '08' + val.slice(3);
+        }
+        input.value = val.slice(0, 16);
     });
 
     function el(tag, cls, text) {
@@ -1296,12 +1653,15 @@
 
     form.addEventListener('submit', function (e) {
         e.preventDefault();
-        err.textContent = '';
+        err.innerHTML = '';
         list.textContent = '';
 
         var val = input.value.trim();
-        if (val.length < 9) {
-            err.textContent = 'Masukkan NIK (16 digit) atau nomor HP/WA yang valid.';
+        var isNik = val.length === 16;
+        var isWa  = val.startsWith('08') && val.length >= 10 && val.length <= 14;
+
+        if (!isNik && !isWa) {
+            err.innerHTML = '<i class="fas fa-circle-exclamation"></i> Masukkan 16 digit NIK atau Nomor WhatsApp (diawali 08, 10-14 digit) yang valid.';
             input.focus();
             return;
         }
@@ -1325,12 +1685,12 @@
         })
         .then(function (r) {
             if (r.ok) { render(r.body.data || []); return; }
-            if (r.status === 429) { err.textContent = 'Terlalu banyak percobaan. Coba lagi sebentar lagi.'; return; }
-            if (r.status === 419) { err.textContent = 'Sesi berakhir. Muat ulang halaman lalu coba lagi.'; return; }
-            err.textContent = (r.body && r.body.message) || 'Terjadi kesalahan. Coba lagi.';
+            if (r.status === 429) { err.innerHTML = '<i class="fas fa-circle-exclamation"></i> Terlalu banyak percobaan. Coba lagi sebentar lagi.'; return; }
+            if (r.status === 419) { err.innerHTML = '<i class="fas fa-circle-exclamation"></i> Sesi berakhir. Muat ulang halaman lalu coba lagi.'; return; }
+            err.innerHTML = '<i class="fas fa-circle-exclamation"></i> ' + ((r.body && r.body.message) || 'Terjadi kesalahan. Coba lagi.');
         })
         .catch(function () {
-            err.textContent = 'Gagal terhubung ke server. Periksa koneksi Anda.';
+            err.innerHTML = '<i class="fas fa-circle-exclamation"></i> Gagal terhubung ke server. Periksa koneksi Anda.';
         })
         .finally(function () {
             btn.disabled = false;

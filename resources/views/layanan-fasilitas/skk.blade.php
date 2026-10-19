@@ -4,13 +4,7 @@
     /* ------------------------------------------------------------
        PENGATURAN HALAMAN
        ------------------------------------------------------------ */
-    $layanan = [
-        'rpkbgl'    => ['url' => '/layanan-fasilitas/layanan_perizinan', 'label' => 'RPKBGL', 'ico' => 'fa-building', 'ket' => 'Layanan perizinan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan'],
-        'skk'       => ['url' => '/layanan-fasilitas/skk',                'label' => 'SKK (Baru & Perpanjangan)', 'ico' => 'fa-user-shield', 'ket' => 'Layanan perizinan penerbitan & perpanjangan Sertifikat Keamanan Kebakaran'],
-        'keramaian' => ['url' => '/layanan-fasilitas/izin-keramaian',     'label' => 'Event Keramaian', 'ico' => 'fa-users', 'ket' => 'Pengajuan Rekomendasi Event Keramaian'],
-        'edukasi'   => ['url' => '/layanan-fasilitas/edukasi_sosialisasi', 'label' => 'Edukasi & Sosialisasi', 'ico' => 'fa-bullhorn', 'ket' => 'Pengajuan Kunjungan Edukasi & Sosialisasi'],
-        'sarana'    => ['url' => '/layanan-fasilitas/penggunaan-sarana',  'label' => 'Penggunaan Sarana Pemadam', 'ico' => 'fa-truck-droplet', 'ket' => 'Permohonan Penggunaan Sarana Pemadam Kebakaran'],
-    ];
+    $layanan = config('layanan'); // urutan, label & ikon diatur di config/layanan.php
     $tab_aktif = 'skk';
 
     // URL Surat Permohonan SKK
@@ -36,9 +30,9 @@
     $oldKel = old('kelurahan');
     $oldJenis = old('jenis_permohonan');
 
-    $inv = function ($n) use ($errors) { return $errors->has($n) ? ' is-invalid' : ''; };
+    $inv = function ($n) use ($errors) { return (isset($errors) && is_object($errors) && $errors->has($n)) ? ' is-invalid' : ''; };
     $fe  = function ($n) use ($errors) {
-        return $errors->has($n)
+        return (isset($errors) && is_object($errors) && $errors->has($n))
             ? '<p class="field-err"><i class="fas fa-circle-exclamation"></i> ' . e($errors->first($n)) . '</p>'
             : '';
     };
@@ -56,7 +50,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="theme-color" content="#0d1b2a">
     <meta name="description" content="Ajukan dan perpanjang Sertifikat Keamanan Kebakaran (SKK) secara daring di Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.">
     <title>SKK - Layanan perizinan | SIMERAH KOJA</title>
@@ -82,6 +76,10 @@
             --amber: #ffb627;
             --steel: #5b6c7f;
             --line: #dbe2ea;
+            --ok: #16a34a;
+            --ok-bg: #dcfce7;
+            --warn: #d97706;
+            --warn-bg: #fef3c7;
 
             --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
             --font-body: 'Instrument Sans', system-ui, sans-serif;
@@ -94,7 +92,7 @@
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
+        html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
         body {
             font-family: var(--font-body);
             font-size: 1rem;
@@ -152,8 +150,8 @@
             border-radius: 2px; background: var(--amber);
             transform: scaleX(0); transform-origin: left; transition: transform .25s ease;
         }
-        .menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger, .menu-link.is-active { color: #fff; }
-        .menu-link:hover::after, .menu-trigger:hover::after, .has-drop.open > .menu-trigger::after, .menu-link.is-active::after { transform: scaleX(1); }
+        .menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger, .menu-link.is-active, .menu > li.current > .menu-trigger { color: #fff; }
+        .menu-link:hover::after, .menu-trigger:hover::after, .has-drop.open > .menu-trigger::after, .menu-link.is-active::after, .menu > li.current > .menu-trigger::after { transform: scaleX(1); }
 
         .menu-trigger i { font-size: .6rem; opacity: .6; transition: transform .2s, opacity .2s; }
         .has-drop.open > .menu-trigger i { transform: rotate(180deg); opacity: 1; }
@@ -267,7 +265,7 @@
             .menu > li { border-bottom: 1px solid rgba(255,255,255,.08); }
             .menu-link, .menu-trigger { width: 100%; justify-content: space-between; padding: 16px 4px; font-size: 1rem; white-space: normal; color: rgba(255,255,255,.9); }
             .menu-link::after, .menu-trigger::after { display: none; }
-            .menu-link.is-active { color: var(--amber); }
+            .menu-link.is-active, .menu > li.current > .menu-trigger { color: var(--amber); }
             .menu-trigger i { font-size: .7rem; }
 
             .nav-actions { flex-direction: column; align-items: stretch; gap: 10px; }
@@ -358,6 +356,11 @@
         .perizinan-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; margin-top: 24px; align-items: start; }
         @media (min-width: 992px) {
             .perizinan-layout { grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); gap: 32px; }
+            .info-stack {
+                position: sticky; top: calc(var(--header-h) + 16px); align-self: start;
+                max-height: calc(100dvh - var(--header-h) - 32px);
+                overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
+            }
         }
         .info-stack { display: grid; gap: 16px; }
         #formulir { scroll-margin-top: calc(var(--header-h) + 16px); }
@@ -398,7 +401,7 @@
         .steps li:last-child::before { background: var(--signal); }
 
         /* FORMULIR */
-        .form-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
+        .form-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; box-shadow: 0 10px 30px rgba(13, 27, 42, 0.03); }
         .form-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; padding: 18px clamp(18px, 3vw, 32px); border-bottom: 1px solid var(--line); }
         .form-title { display: flex; align-items: center; gap: 14px; min-width: 0; }
         .form-title > i { flex: none; width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: var(--ink); color: var(--amber); font-size: 1.05rem; }
@@ -408,7 +411,7 @@
 
         .form-body { padding: clamp(18px, 3vw, 32px); display: grid; gap: 36px; }
         .alert { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 14px; font-size: .92rem; line-height: 1.5; }
-        .alert i { margin-top: 3px; }
+        .alert i { margin-top: 3px; flex: none; }
         .alert.ok { background: #e8f7ee; color: #14532d; border: 1px solid #bce5cb; }
         .alert.err { background: #fdeceb; color: #8f1d15; border: 1px solid #f5c3bf; }
         .alert ul { display: grid; gap: 2px; margin-top: 4px; padding-left: 18px; list-style: disc; }
@@ -427,11 +430,11 @@
 
         .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 20px; }
         .fields-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px 20px; }
-        .field { min-width: 0; }
+        .field { min-width: 0; display: flex; flex-direction: column; }
         .field.full { grid-column: 1 / -1; }
         @media (max-width: 768px) { .fields, .fields-4 { grid-template-columns: minmax(0, 1fr); } }
 
-        .label { display: block; margin-bottom: 8px; font-size: .9rem; font-weight: 600; line-height: 1.35; }
+        .label { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; font-size: .9rem; font-weight: 600; line-height: 1.35; color: var(--ink); }
         .req { color: var(--signal-d); margin-left: 2px; }
         .hint { margin-top: 6px; font-size: .8rem; color: var(--steel); line-height: 1.4; }
         .field-err { margin-top: 6px; display: flex; gap: 8px; align-items: flex-start; font-size: .82rem; font-weight: 500; line-height: 1.4; color: var(--signal-d); }
@@ -445,9 +448,11 @@
             transition: border-color .2s, box-shadow .2s;
         }
         .input::placeholder { color: #93a1b1; }
-        .input:hover { border-color: #b8c3d0; }
+        .input:hover:not(:disabled) { border-color: #b8c3d0; }
         .input:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(255,182,39,.5); }
         .input:user-invalid, .input.is-invalid { border-color: var(--signal); }
+        .input.is-valid { border-color: var(--ok); }
+        .input.is-valid:focus { border-color: var(--ok); box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.25); }
         select.input {
             appearance: none; -webkit-appearance: none; padding-right: 42px; cursor: pointer;
             background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%235b6c7f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 16px center;
@@ -456,29 +461,106 @@
         .unit .input { padding-right: 54px; }
         .unit span { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: .88rem; font-weight: 600; color: var(--steel); pointer-events: none; }
 
-        /* Area unggah berkas */
+        /* BADGE & STATUS VALIDASI REAL-TIME (Sesuai REDKAR) */
+        .pw-badge {
+            display: none; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px;
+            font-size: .72rem; font-weight: 700; letter-spacing: .01em;
+        }
+        .pw-badge.show { display: inline-flex; }
+        .pw-badge.match { background: var(--ok-bg); color: var(--ok); }
+        .pw-badge.warn { background: var(--warn-bg); color: var(--warn); }
+        .pw-badge.mismatch { background: #fdeceb; color: var(--signal-d); }
+
+        .pw-status {
+            margin-top: 6px; display: none; align-items: center; gap: 6px;
+            font-size: .8rem; font-weight: 600; line-height: 1.35;
+        }
+        .pw-status.show { display: inline-flex; }
+        .pw-status.match { color: var(--ok); }
+        .pw-status.warn { color: var(--warn); }
+        .pw-status.mismatch { color: var(--signal-d); }
+
+        @media (max-width: 640px) {
+            .input, select.input, textarea.input { font-size: 16px; }
+        }
+
+        /* DROPZONE & PRATINJAU GAMBAR (Sesuai REDKAR) */
         .dropzone {
-            position: relative; display: grid; justify-items: center; gap: 8px; text-align: center;
+            position: relative; display: grid; justify-items: center; gap: 10px; text-align: center;
             padding: 26px 20px; border: 2px dashed #b8c3d0; border-radius: var(--r-md);
             background: var(--paper); color: var(--steel); font-size: .92rem; line-height: 1.45;
-            cursor: pointer; transition: border-color .2s, background .2s;
+            cursor: pointer; transition: border-color .2s, background .2s, box-shadow .2s;
         }
         .dropzone:hover, .dropzone.is-over { border-color: var(--signal); background: #fdeceb; }
         .dropzone:focus-within { outline: 3px solid var(--amber); outline-offset: 3px; }
-        .dropzone.has-files { border-style: solid; border-color: var(--ink); background: #fff; }
-        .dropzone.is-invalid { border-color: var(--signal); }
-        .dropzone input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-        .dz-ico { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: #fff; border: 1px solid var(--line); color: var(--signal-d); font-size: 1.2rem; }
+        .dropzone.has-files { border-style: solid; border-color: var(--ink); background: #fff; cursor: default; }
+        .dropzone.is-invalid { border-color: var(--signal); background: #fff5f5; }
+        .dropzone input[type="file"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 1; }
+        .dropzone.has-files input[type="file"] { pointer-events: none; }
+
+        .dz-prompt { display: grid; justify-items: center; gap: 8px; transition: opacity .2s; }
+        .dropzone.has-files .dz-prompt { display: none; }
+        .dz-ico { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: #fff; border: 1px solid var(--line); color: var(--signal-d); font-size: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,.04); }
         .dz-text strong { color: var(--ink); }
         .dz-text u { text-underline-offset: 3px; color: var(--signal-d); font-weight: 600; }
-        .dz-files { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+
+        .dz-preview {
+            display: none; width: 100%; flex-direction: column; align-items: center; gap: 12px;
+            z-index: 2; position: relative; animation: fadeInPreview .25s ease;
+        }
+        .dropzone.has-files .dz-preview { display: flex; }
+        @keyframes fadeInPreview { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+        .dz-img-wrap {
+            position: relative; width: 100%; max-width: 420px; aspect-ratio: 16 / 10; max-height: 240px;
+            border-radius: 14px; overflow: hidden; border: 1px solid var(--line);
+            background: var(--ink); box-shadow: 0 8px 24px rgba(13, 27, 42, 0.12);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .dz-img-wrap img { width: 100%; height: 100%; object-fit: contain; background: #0d1b2a; }
+        .dz-badge-ok {
+            position: absolute; top: 10px; left: 10px; display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 10px; border-radius: 999px; background: rgba(13, 27, 42, 0.82); backdrop-filter: blur(6px);
+            color: #4ade80; font-size: .75rem; font-weight: 700; letter-spacing: .02em;
+        }
+
+        .dz-meta {
+            display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+            width: 100%; padding: 10px 14px; border-radius: 12px; background: var(--paper); border: 1px solid var(--line);
+        }
+        .dz-files { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; flex: 1; }
         .dz-files:empty { display: none; }
-        .dz-files li { display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); font-size: .82rem; font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+        .dz-files li {
+            display: inline-flex; align-items: center; gap: 7px; padding: 4px 10px; border-radius: 999px;
+            background: #fff; border: 1px solid var(--line); font-size: .82rem; font-weight: 600; color: var(--ink);
+            overflow-wrap: anywhere;
+        }
+        .dz-files li i { color: var(--ok); flex: none; }
+        .dz-files li span.f-size { color: var(--steel); font-weight: 500; font-size: .78rem; }
+
+        .dz-actions { display: flex; align-items: center; gap: 6px; flex: none; }
+        .btn-dz {
+            display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px;
+            font-size: .78rem; font-weight: 700; transition: background .15s, color .15s, transform .15s;
+        }
+        .btn-dz:active { transform: scale(.96); }
+        .btn-dz--change { background: #fff; border: 1px solid var(--line); color: var(--ink); }
+        .btn-dz--change:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+        .btn-dz--remove { background: #fdeceb; color: var(--signal-d); }
+        .btn-dz--remove:hover { background: var(--signal); color: #fff; }
+
+        @media (max-width: 480px) {
+            .dz-meta { flex-direction: column; align-items: stretch; text-align: left; }
+            .dz-actions { width: 100%; justify-content: stretch; }
+            .btn-dz { flex: 1; justify-content: center; padding: 8px 10px; }
+        }
 
         .form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; padding-top: 4px; }
-        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 30px; border-radius: 999px; font-weight: 700; font-size: 1rem; transition: background .2s, box-shadow .2s; cursor: pointer; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 30px; border-radius: 999px; font-weight: 700; font-size: 1rem; transition: background .2s, box-shadow .2s, transform .15s; cursor: pointer; border: none; }
+        .btn:active:not(:disabled) { transform: scale(.98); }
         .btn-primary { background: var(--signal); color: #fff; box-shadow: 0 14px 30px -10px rgba(229,57,45,.6); }
-        .btn-primary:hover { background: var(--signal-d); }
+        .btn-primary:hover:not(:disabled) { background: var(--signal-d); }
+        .btn-primary:disabled { background: #fca5a5; cursor: not-allowed; box-shadow: none; }
         .btn-dark { background: var(--ink); color: #fff; }
         .btn-dark:hover { background: var(--ink-3); }
         .form-actions p { font-size: .88rem; color: var(--steel); }
@@ -632,11 +714,7 @@
                 <li class="has-drop current">
                     <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
-                        <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
-                        <li><a href="/layanan-fasilitas/izin-keramaian">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
-                        <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
-                        <li><a href="/layanan-fasilitas/penggunaan-sarana">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
-                        <li><a href="/layanan-fasilitas/skk" aria-current="page">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
+                        @include('layouts.partials.layanan-dropdown')
                     </ul>
                 </li>
 
@@ -772,13 +850,7 @@
 
 <div class="page-body">
     <div class="wrap tabs-wrap">
-        <nav class="tabs" aria-label="Jenis layanan perizinan">
-            @foreach($layanan as $key => $l)
-                <a class="tab" href="{{ $l['url'] }}" title="{{ $l['ket'] }}" @if($key === $tab_aktif) aria-current="page" @endif>
-                    <i class="fas {{ $l['ico'] }}"></i> {{ $l['label'] }}
-                </a>
-            @endforeach
-        </nav>
+        @include('layouts.partials.layanan-tabs')
     </div>
 
     <div class="wrap">
@@ -882,14 +954,14 @@
                     <span class="form-note"><span class="req" aria-hidden="true">*</span> wajib diisi</span>
                 </div>
 
-                <form class="form-body" action="{{ route('permohonan.skk.store') }}" method="POST" enctype="multipart/form-data">
+                <form class="form-body" action="{{ route('permohonan.skk.store') }}" method="POST" enctype="multipart/form-data" id="form_skk">
                     @csrf
 
                     @if($errors->any())
                         <div class="alert err" role="alert">
                             <i class="fas fa-triangle-exclamation"></i>
                             <div>
-                                Mohon periksa kembali form Anda:
+                                <strong>Permohonan belum terkirim. Mohon periksa kembali form Anda:</strong>
                                 <ul>
                                     @foreach($errors->all() as $err)
                                         <li>{{ $err }}</li>
@@ -903,7 +975,7 @@
                         <legend><i class="fas fa-list-check"></i> Jenis Permohonan</legend>
                         <div class="fields">
                             <div class="field full">
-                                <label class="label">Pilih Jenis Layanan SKK <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label"><span>Pilih Jenis Layanan SKK <span class="req" aria-hidden="true">*</span></span></label>
                                 <div class="radio-group">
                                     <label class="radio-card">
                                         <input type="radio" name="jenis_permohonan" value="Baru" required onchange="toggleSkkLama()" @if($oldJenis == 'Baru' || empty($oldJenis)) checked @endif>
@@ -923,18 +995,26 @@
                         <legend><i class="fas fa-user"></i> Data Pemohon / Pemilik Gedung</legend>
                         <div class="fields">
                             <div class="field full">
-                                <label class="label" for="nama_pemohon">Nama pemohon <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="nama_pemohon"><span>Nama pemohon <span class="req" aria-hidden="true">*</span></span></label>
                                 <input class="input{{ $inv('nama_pemohon') }}" type="text" id="nama_pemohon" name="nama_pemohon" value="{{ old('nama_pemohon') }}" autocomplete="name" required>
                                 {!! $fe('nama_pemohon') !!}
                             </div>
                             <div class="field">
-                                <label class="label" for="email_pemohon">Email pemohon <span class="req" aria-hidden="true">*</span></label>
-                                <input class="input{{ $inv('email_pemohon') }}" type="email" id="email_pemohon" name="email_pemohon" value="{{ old('email_pemohon') }}" autocomplete="email" required>
+                                <label class="label" for="email_pemohon">
+                                    <span>Email pemohon <span class="req" aria-hidden="true">*</span></span>
+                                    <span class="pw-badge" id="email_badge"></span>
+                                </label>
+                                <input class="input{{ $inv('email_pemohon') }}" type="email" id="email_pemohon" name="email_pemohon" value="{{ old('email_pemohon') }}" autocomplete="email" placeholder="Contoh: nama@email.com" required aria-describedby="email_msg">
+                                <p class="pw-status" id="email_msg" aria-live="polite"></p>
                                 {!! $fe('email_pemohon') !!}
                             </div>
                             <div class="field">
-                                <label class="label" for="no_whatsapp">Nomor WhatsApp <span class="req" aria-hidden="true">*</span></label>
-                                <input class="input{{ $inv('no_whatsapp') }}" type="tel" id="no_whatsapp" name="no_whatsapp" value="{{ old('no_whatsapp') }}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" inputmode="numeric" maxlength="13" autocomplete="tel" placeholder="Contoh: 08123456789 (Maks 13 digit)" required aria-describedby="hint-wa">
+                                <label class="label" for="no_whatsapp">
+                                    <span>Nomor WhatsApp <span class="req" aria-hidden="true">*</span></span>
+                                    <span class="pw-badge" id="wa_badge"></span>
+                                </label>
+                                <input class="input{{ $inv('no_whatsapp') }}" type="tel" id="no_whatsapp" name="no_whatsapp" value="{{ old('no_whatsapp') }}" inputmode="tel" maxlength="13" autocomplete="tel" placeholder="Contoh: 08123456789 (Maks 13 digit)" required aria-describedby="wa_msg">
+                                <p class="pw-status" id="wa_msg" aria-live="polite"></p>
                                 {!! $fe('no_whatsapp') !!}
                             </div>
                         </div>
@@ -944,18 +1024,22 @@
                         <legend><i class="fas fa-briefcase"></i> Data Usaha / Perusahaan</legend>
                         <div class="fields">
                             <div class="field full">
-                                <label class="label" for="nama_usaha">Nama Instansi / Perusahaan <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="nama_usaha"><span>Nama Instansi / Perusahaan <span class="req" aria-hidden="true">*</span></span></label>
                                 <input class="input{{ $inv('nama_usaha') }}" type="text" id="nama_usaha" name="nama_usaha" value="{{ old('nama_usaha') }}" autocomplete="organization" required aria-describedby="hint-usaha">
                                 <p class="hint" id="hint-usaha">PT, CV, Lembaga, atau Perorangan pengelola gedung.</p>
                                 {!! $fe('nama_usaha') !!}
                             </div>
                             <div class="field">
-                                <label class="label" for="nik_pemilik_usaha">NIK Pemilik Usaha <span class="req" aria-hidden="true">*</span></label>
-                                <input class="input{{ $inv('nik_pemilik_usaha') }}" type="text" id="nik_pemilik_usaha" name="nik_pemilik_usaha" value="{{ old('nik_pemilik_usaha') }}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" inputmode="numeric" pattern="[0-9]{16}" maxlength="16" placeholder="16 digit NIK" required>
+                                <label class="label" for="nik_pemilik_usaha">
+                                    <span>NIK Pemilik Usaha <span class="req" aria-hidden="true">*</span></span>
+                                    <span class="pw-badge" id="nik_badge">0/16</span>
+                                </label>
+                                <input class="input{{ $inv('nik_pemilik_usaha') }}" type="text" id="nik_pemilik_usaha" name="nik_pemilik_usaha" value="{{ old('nik_pemilik_usaha') }}" inputmode="numeric" pattern="[0-9]{16}" maxlength="16" placeholder="16 digit NIK" required aria-describedby="nik_msg">
+                                <p class="pw-status" id="nik_msg" aria-live="polite"></p>
                                 {!! $fe('nik_pemilik_usaha') !!}
                             </div>
                             <div class="field">
-                                <label class="label" for="alamat_pemilik_usaha">Alamat Pemilik Usaha <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="alamat_pemilik_usaha"><span>Alamat Pemilik Usaha <span class="req" aria-hidden="true">*</span></span></label>
                                 <input class="input{{ $inv('alamat_pemilik_usaha') }}" type="text" id="alamat_pemilik_usaha" name="alamat_pemilik_usaha" value="{{ old('alamat_pemilik_usaha') }}" autocomplete="street-address" required>
                                 {!! $fe('alamat_pemilik_usaha') !!}
                             </div>
@@ -966,12 +1050,12 @@
                         <legend><i class="fas fa-building"></i> Data Bangunan Gedung</legend>
                         <div class="fields">
                             <div class="field full">
-                                <label class="label" for="nama_bangunan">Nama Bangunan Gedung <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="nama_bangunan"><span>Nama Bangunan Gedung <span class="req" aria-hidden="true">*</span></span></label>
                                 <input class="input{{ $inv('nama_bangunan') }}" type="text" id="nama_bangunan" name="nama_bangunan" value="{{ old('nama_bangunan') }}" placeholder="Contoh: Gedung Perkantoran Abadi / Mall Jambi" required>
                                 {!! $fe('nama_bangunan') !!}
                             </div>
                             <div class="field">
-                                <label class="label" for="kategori_bangunan">Fungsi Bangunan Gedung <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="kategori_bangunan"><span>Fungsi Bangunan Gedung <span class="req" aria-hidden="true">*</span></span></label>
                                 <select class="input{{ $inv('kategori_bangunan') }}" id="kategori_bangunan" name="kategori_bangunan" required>
                                     <option value="" disabled @if(!old('kategori_bangunan')) selected @endif>Pilih fungsi bangunan</option>
                                     @foreach($kategori_list as $kat)
@@ -981,22 +1065,22 @@
                                 {!! $fe('kategori_bangunan') !!}
                             </div>
                             <div class="field">
-                                <label class="label" for="konstruksi_bangunan">Konstruksi Bangunan <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="konstruksi_bangunan"><span>Konstruksi Bangunan <span class="req" aria-hidden="true">*</span></span></label>
                                 <input class="input{{ $inv('konstruksi_bangunan') }}" type="text" id="konstruksi_bangunan" name="konstruksi_bangunan" value="{{ old('konstruksi_bangunan') }}" placeholder="Contoh: Cor Beton Bertulang / Baja" required>
                                 {!! $fe('konstruksi_bangunan') !!}
                             </div>
                             <div class="field full">
-                                <label class="label" for="nomor_imb">Nomor IMB / PBG <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="nomor_imb"><span>Nomor IMB / PBG <span class="req" aria-hidden="true">*</span></span></label>
                                 <input class="input{{ $inv('nomor_imb') }}" type="text" id="nomor_imb" name="nomor_imb" value="{{ old('nomor_imb') }}" placeholder="Masukkan Nomor Izin Mendirikan Bangunan" required>
                                 {!! $fe('nomor_imb') !!}
                             </div>
                             <div class="field full">
-                                <label class="label" for="alamat_bangunan">Alamat Lengkap Bangunan Gedung <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="alamat_bangunan"><span>Alamat Lengkap Bangunan Gedung <span class="req" aria-hidden="true">*</span></span></label>
                                 <input class="input{{ $inv('alamat_bangunan') }}" type="text" id="alamat_bangunan" name="alamat_bangunan" value="{{ old('alamat_bangunan') }}" required>
                                 {!! $fe('alamat_bangunan') !!}
                             </div>
                             <div class="field">
-                                <label class="label" for="kecamatan">Kecamatan <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="kecamatan"><span>Kecamatan <span class="req" aria-hidden="true">*</span></span></label>
                                 <select class="input{{ $inv('kecamatan') }}" id="kecamatan" name="kecamatan" required>
                                     <option value="" disabled @if(!$oldKec) selected @endif>Pilih kecamatan</option>
                                     @foreach(array_keys($dataWilayah) as $kc)
@@ -1006,7 +1090,7 @@
                                 {!! $fe('kecamatan') !!}
                             </div>
                             <div class="field">
-                                <label class="label" for="kelurahan">Kelurahan <span class="req" aria-hidden="true">*</span></label>
+                                <label class="label" for="kelurahan"><span>Kelurahan <span class="req" aria-hidden="true">*</span></span></label>
                                 <select class="input{{ $inv('kelurahan') }}" id="kelurahan" name="kelurahan" required>
                                     @if($oldKec && isset($dataWilayah[$oldKec]))
                                         <option value="" disabled @if(!$oldKel) selected @endif>Pilih kelurahan</option>
@@ -1024,7 +1108,7 @@
                             <div class="field full">
                                 <div class="fields-4">
                                     <div class="field">
-                                        <label class="label" for="luas_lahan">Luas Tanah <span class="req" aria-hidden="true">*</span></label>
+                                        <label class="label" for="luas_lahan"><span>Luas Tanah <span class="req" aria-hidden="true">*</span></span></label>
                                         <div class="unit">
                                             <input class="input{{ $inv('luas_lahan') }}" type="number" id="luas_lahan" name="luas_lahan" value="{{ old('luas_lahan') }}" min="0" step="0.01" inputmode="decimal" required>
                                             <span aria-hidden="true">m&sup2;</span>
@@ -1032,7 +1116,7 @@
                                         {!! $fe('luas_lahan') !!}
                                     </div>
                                     <div class="field">
-                                        <label class="label" for="luas_bangunan">Luas Bangunan <span class="req" aria-hidden="true">*</span></label>
+                                        <label class="label" for="luas_bangunan"><span>Luas Bangunan <span class="req" aria-hidden="true">*</span></span></label>
                                         <div class="unit">
                                             <input class="input{{ $inv('luas_bangunan') }}" type="number" id="luas_bangunan" name="luas_bangunan" value="{{ old('luas_bangunan') }}" min="0" step="0.01" inputmode="decimal" required>
                                             <span aria-hidden="true">m&sup2;</span>
@@ -1040,7 +1124,7 @@
                                         {!! $fe('luas_bangunan') !!}
                                     </div>
                                     <div class="field">
-                                        <label class="label" for="jumlah_lantai">Jumlah Lantai <span class="req" aria-hidden="true">*</span></label>
+                                        <label class="label" for="jumlah_lantai"><span>Jumlah Lantai <span class="req" aria-hidden="true">*</span></span></label>
                                         <div class="unit">
                                             <input class="input{{ $inv('jumlah_lantai') }}" type="number" id="jumlah_lantai" name="jumlah_lantai" value="{{ old('jumlah_lantai') }}" min="1" step="1" inputmode="numeric" required>
                                             <span aria-hidden="true">Lantai</span>
@@ -1048,7 +1132,7 @@
                                         {!! $fe('jumlah_lantai') !!}
                                     </div>
                                     <div class="field">
-                                        <label class="label" for="tinggi_bangunan">Tinggi Bangunan <span class="req" aria-hidden="true">*</span></label>
+                                        <label class="label" for="tinggi_bangunan"><span>Tinggi Bangunan <span class="req" aria-hidden="true">*</span></span></label>
                                         <div class="unit">
                                             <input class="input{{ $inv('tinggi_bangunan') }}" type="number" id="tinggi_bangunan" name="tinggi_bangunan" value="{{ old('tinggi_bangunan') }}" min="0" step="0.01" inputmode="decimal" required>
                                             <span aria-hidden="true">Meter</span>
@@ -1066,40 +1150,76 @@
 
                             <!-- Kolom Dinamis: Khusus SKK Perpanjangan -->
                             <div class="field full" id="field_skk_lama" style="display: none;">
-                                <span class="label" id="lbl-skklama">Sertifikat Keamanan Kebakaran (SKK) Tahun Lalu <span class="req" aria-hidden="true">*</span></span>
-                                <label class="dropzone{{ $inv('file_skk_lama') }}" data-dropzone data-max="5">
+                                <span class="label" id="lbl-skklama"><span>Sertifikat Keamanan Kebakaran (SKK) Tahun Lalu <span class="req" aria-hidden="true">*</span></span></span>
+                                <div class="dropzone{{ $inv('file_skk_lama') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png">
                                     <input type="file" id="file_skk_lama" name="file_skk_lama" accept=".pdf,.jpg,.jpeg,.png" aria-labelledby="lbl-skklama">
-                                    <span class="dz-ico"><i class="fas fa-file-shield"></i></span>
-                                    <span class="dz-text"><strong>Tarik berkas SKK lama</strong> atau <u>pilih dari perangkat</u></span>
-                                    <ul class="dz-files" aria-live="polite"></ul>
-                                </label>
+
+                                    <div class="dz-prompt">
+                                        <span class="dz-ico"><i class="fas fa-file-shield"></i></span>
+                                        <span class="dz-text"><strong>Tarik berkas SKK lama</strong> atau <u>pilih dari perangkat</u></span>
+                                    </div>
+
+                                    <div class="dz-preview">
+                                        <div class="dz-meta">
+                                            <ul class="dz-files" aria-live="polite"></ul>
+                                            <div class="dz-actions">
+                                                <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
+                                                <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <p class="hint" style="color:var(--signal-d); font-weight:600;"><i class="fas fa-info-circle"></i> Wajib dilampirkan untuk permohonan Perpanjangan SKK.</p>
                                 <p class="field-err dz-msg" role="alert"></p>
                                 {!! $fe('file_skk_lama') !!}
                             </div>
                             
                             <div class="field full">
-                                <span class="label" id="lbl-surat">Surat permohonan bermaterai <span class="req" aria-hidden="true">*</span></span>
-                                <label class="dropzone{{ $inv('file_surat_permohonan') }}" data-dropzone data-max="5">
+                                <span class="label" id="lbl-surat"><span>Surat permohonan bermaterai <span class="req" aria-hidden="true">*</span></span></span>
+                                <div class="dropzone{{ $inv('file_surat_permohonan') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png">
                                     <input type="file" id="file_surat" name="file_surat_permohonan" accept=".pdf,.jpg,.jpeg,.png" required aria-labelledby="lbl-surat" aria-describedby="hint-surat">
-                                    <span class="dz-ico"><i class="fas fa-cloud-arrow-up"></i></span>
-                                    <span class="dz-text"><strong>Tarik berkas ke sini</strong> atau <u>pilih dari perangkat</u></span>
-                                    <ul class="dz-files" aria-live="polite"></ul>
-                                </label>
+
+                                    <div class="dz-prompt">
+                                        <span class="dz-ico"><i class="fas fa-cloud-arrow-up"></i></span>
+                                        <span class="dz-text"><strong>Tarik berkas ke sini</strong> atau <u>pilih dari perangkat</u></span>
+                                    </div>
+
+                                    <div class="dz-preview">
+                                        <div class="dz-meta">
+                                            <ul class="dz-files" aria-live="polite"></ul>
+                                            <div class="dz-actions">
+                                                <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
+                                                <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <p class="hint" id="hint-surat">Format PDF, JPG, atau PNG. Maksimal 5 MB.</p>
                                 <p class="field-err dz-msg" role="alert"></p>
                                 {!! $fe('file_surat_permohonan') !!}
                             </div>
                             
                             <div class="field full">
-                                <span class="label" id="lbl-lain">Persyaratan lainnya</span>
-                                <label class="dropzone{{ $inv('file_persyaratan_lainnya') }}" data-dropzone data-max="10">
+                                <span class="label" id="lbl-lain"><span>Persyaratan lainnya</span></span>
+                                <div class="dropzone{{ $inv('file_persyaratan_lainnya') }}" data-dropzone data-max="10" data-ext="pdf,zip,rar">
                                     <input type="file" id="file_lain" name="file_persyaratan_lainnya" accept=".pdf,.zip,.rar" aria-labelledby="lbl-lain" aria-describedby="hint-lain">
-                                    <span class="dz-ico"><i class="fas fa-cloud-arrow-up"></i></span>
-                                    <span class="dz-text"><strong>Tarik berkas ke sini</strong> atau <u>pilih dari perangkat</u></span>
-                                    <ul class="dz-files" aria-live="polite"></ul>
-                                </label>
-                                <p class="hint" id="hint-lain">Format PDF atau ZIP, maksimal 10 MB. Daftar berkas yang diminta ada di <button type="button" class="text-link" data-open-modal>detail persyaratan</button>.</p>
+
+                                    <div class="dz-prompt">
+                                        <span class="dz-ico"><i class="fas fa-cloud-arrow-up"></i></span>
+                                        <span class="dz-text"><strong>Tarik berkas ke sini</strong> atau <u>pilih dari perangkat</u></span>
+                                    </div>
+
+                                    <div class="dz-preview">
+                                        <div class="dz-meta">
+                                            <ul class="dz-files" aria-live="polite"></ul>
+                                            <div class="dz-actions">
+                                                <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
+                                                <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="hint" id="hint-lain">Format PDF, ZIP, atau RAR. Maksimal 10 MB. Daftar berkas yang diminta ada di <button type="button" class="text-link" data-open-modal>detail persyaratan</button>.</p>
                                 <p class="field-err dz-msg" role="alert"></p>
                                 {!! $fe('file_persyaratan_lainnya') !!}
                             </div>
@@ -1107,7 +1227,7 @@
                     </fieldset>
 
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Kirim permohonan</button>
+                        <button type="submit" class="btn btn-primary" id="btn_submit_skk"><i class="fas fa-paper-plane"></i> Kirim permohonan</button>
                         <p>Permohonan diproses dalam 14 hari kerja.</p>
                     </div>
                 </form>
@@ -1285,7 +1405,8 @@
     function closeSubs() {
         subs.forEach(function (s) {
             s.classList.remove('open');
-            s.querySelector('.sub-trigger').setAttribute('aria-expanded', 'false');
+            var st = s.querySelector('.sub-trigger');
+            if (st) st.setAttribute('aria-expanded', 'false');
         });
     }
 
@@ -1293,7 +1414,8 @@
         drops.forEach(function (li) {
             if (li !== except) {
                 li.classList.remove('open');
-                triggerOf(li).setAttribute('aria-expanded', 'false');
+                var tr = triggerOf(li);
+                if (tr) tr.setAttribute('aria-expanded', 'false');
             }
         });
         if (!except) closeSubs();
@@ -1314,6 +1436,7 @@
 
     drops.forEach(function (li) {
         var btn = triggerOf(li);
+        if (!btn) return;
         btn.addEventListener('click', function () {
             var open = li.classList.toggle('open');
             btn.setAttribute('aria-expanded', open);
@@ -1330,6 +1453,7 @@
 
     subs.forEach(function (li) {
         var btn = li.querySelector('.sub-trigger');
+        if (!btn) return;
         btn.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -1406,78 +1530,335 @@
         });
     });
 
-    window.toggleSkkLama = function() {
+    /* ---------- State Validasi Form Real-Time (Standar REDKAR) ---------- */
+    var btnSubmit = document.getElementById('btn_submit_skk');
+
+    var nikInput = document.getElementById('nik_pemilik_usaha');
+    var nikBadge = document.getElementById('nik_badge');
+    var nikMsg   = document.getElementById('nik_msg');
+
+    var waInput = document.getElementById('no_whatsapp');
+    var waBadge = document.getElementById('wa_badge');
+    var waMsg   = document.getElementById('wa_msg');
+
+    var emailInput = document.getElementById('email_pemohon');
+    var emailBadge = document.getElementById('email_badge');
+    var emailMsg   = document.getElementById('email_msg');
+
+    var isNikValid   = true;
+    var isWaValid    = true;
+    var isEmailValid = true;
+    var isFileValid  = true;
+
+    function syncSubmitButton() {
+        if (btnSubmit) {
+            btnSubmit.disabled = !(isNikValid && isWaValid && isEmailValid && isFileValid);
+        }
+    }
+
+    /* ---------- Validasi NIK Real-Time ---------- */
+    function validateNik() {
+        var val = nikInput.value.replace(/\D/g, '').slice(0, 16);
+        if (nikInput.value !== val) nikInput.value = val;
+
+        if (!val) {
+            nikBadge.className = 'pw-badge';
+            nikBadge.innerHTML = '';
+            nikMsg.className = 'pw-status';
+            nikMsg.innerHTML = '';
+            nikInput.classList.remove('is-valid', 'is-invalid');
+            isNikValid = true;
+        } else if (val.length < 16) {
+            var kurang = 16 - val.length;
+            nikBadge.className = 'pw-badge show mismatch';
+            nikBadge.innerHTML = val.length + '/16';
+            nikMsg.className = 'pw-status show mismatch';
+            nikMsg.innerHTML = '<i class="fas fa-circle-exclamation"></i> Kurang ' + kurang + ' digit angka lagi';
+            nikInput.classList.add('is-invalid');
+            nikInput.classList.remove('is-valid');
+            isNikValid = false;
+        } else {
+            nikBadge.className = 'pw-badge show match';
+            nikBadge.innerHTML = '<i class="fas fa-check"></i> 16/16';
+            nikMsg.className = 'pw-status show match';
+            nikMsg.innerHTML = '<i class="fas fa-circle-check"></i> Format 16 digit NIK sesuai';
+            nikInput.classList.add('is-valid');
+            nikInput.classList.remove('is-invalid');
+            isNikValid = true;
+        }
+        syncSubmitButton();
+    }
+    nikInput.addEventListener('input', validateNik);
+    if (nikInput.value) validateNik();
+
+    /* ---------- Validasi WhatsApp Real-Time ---------- */
+    function validateWa() {
+        var val = waInput.value.replace(/\D/g, '');
+        if (val.indexOf('628') === 0) {
+            val = '08' + val.slice(3);
+        } else if (val.indexOf('8') === 0) {
+            val = '08' + val.slice(1);
+        }
+        val = val.slice(0, 13);
+        if (waInput.value !== val) waInput.value = val;
+
+        if (!val) {
+            waBadge.className = 'pw-badge';
+            waBadge.innerHTML = '';
+            waMsg.className = 'pw-status';
+            waMsg.innerHTML = '';
+            waInput.classList.remove('is-valid', 'is-invalid');
+            isWaValid = true;
+        } else if (val.indexOf('08') !== 0) {
+            waBadge.className = 'pw-badge show mismatch';
+            waBadge.innerHTML = 'Format Salah';
+            waMsg.className = 'pw-status show mismatch';
+            waMsg.innerHTML = '<i class="fas fa-circle-xmark"></i> Nomor harus diawali dengan 08';
+            waInput.classList.add('is-invalid');
+            waInput.classList.remove('is-valid');
+            isWaValid = false;
+        } else if (val.length < 10) {
+            waBadge.className = 'pw-badge show mismatch';
+            waBadge.innerHTML = val.length + ' Digit';
+            waMsg.className = 'pw-status show mismatch';
+            waMsg.innerHTML = '<i class="fas fa-circle-exclamation"></i> Nomor terlalu pendek (minimal 10 digit)';
+            waInput.classList.add('is-invalid');
+            waInput.classList.remove('is-valid');
+            isWaValid = false;
+        } else {
+            waBadge.className = 'pw-badge';
+            waBadge.innerHTML = '';
+            waMsg.className = 'pw-status show match';
+            waMsg.innerHTML = '<i class="fas fa-circle-check"></i> Format nomor WhatsApp valid (' + val.length + ' digit)';
+            waInput.classList.add('is-valid');
+            waInput.classList.remove('is-invalid');
+            isWaValid = true;
+        }
+        syncSubmitButton();
+    }
+    waInput.addEventListener('input', validateWa);
+    if (waInput.value) validateWa();
+
+    /* ---------- Validasi Email Real-Time ---------- */
+    var emailRe = /^[A-Za-z0-9._%+\-]+@[A-Za-z0-9\-]+(\.[A-Za-z0-9\-]+)*\.[A-Za-z]{2,}$/;
+
+    function validateEmail() {
+        var val = emailInput.value.trim();
+
+        if (!val) {
+            emailBadge.className = 'pw-badge';
+            emailBadge.innerHTML = '';
+            emailMsg.className = 'pw-status';
+            emailMsg.innerHTML = '';
+            emailInput.classList.remove('is-valid', 'is-invalid');
+            isEmailValid = true;
+        } else if (!emailRe.test(val)) {
+            emailBadge.className = 'pw-badge show mismatch';
+            emailBadge.innerHTML = 'Format Salah';
+            emailMsg.className = 'pw-status show mismatch';
+            emailMsg.innerHTML = '<i class="fas fa-circle-xmark"></i> Format email tidak valid (contoh: nama@email.com)';
+            emailInput.classList.add('is-invalid');
+            emailInput.classList.remove('is-valid');
+            isEmailValid = false;
+        } else {
+            emailBadge.className = 'pw-badge show match';
+            emailBadge.innerHTML = '<i class="fas fa-check"></i> Valid';
+            emailMsg.className = 'pw-status show match';
+            emailMsg.innerHTML = '<i class="fas fa-circle-check"></i> Format alamat email sesuai';
+            emailInput.classList.add('is-valid');
+            emailInput.classList.remove('is-invalid');
+            isEmailValid = true;
+        }
+        syncSubmitButton();
+    }
+    emailInput.addEventListener('input', validateEmail);
+    emailInput.addEventListener('blur', validateEmail);
+    if (emailInput.value) validateEmail();
+
+    /* ---------- Area Unggah Berkas & Pratinjau (Dropzone) ---------- */
+    function fmtSize(b) {
+        return b < 1048576 ? Math.max(1, Math.round(b / 1024)) + ' KB' : (b / 1048576).toFixed(2) + ' MB';
+    }
+
+    var dropzones = document.querySelectorAll('[data-dropzone]');
+
+    function checkAllDropzonesValid() {
+        var allOk = true;
+        dropzones.forEach(function (d) {
+            if (d._bad) allOk = false;
+        });
+        isFileValid = allOk;
+        syncSubmitButton();
+    }
+
+    dropzones.forEach(function (dz) {
+        var input = dz.querySelector('input[type="file"]');
+        var list = dz.querySelector('.dz-files');
+        var imgPreview = dz.querySelector('[data-dz-img]');
+        var btnRemove = dz.querySelector('[data-dz-remove]');
+        var btnChange = dz.querySelector('[data-dz-change]');
+        var maxMb = parseFloat(dz.getAttribute('data-max')) || 5;
+        var allowedExt = (dz.getAttribute('data-ext') || 'pdf,jpg,jpeg,png').split(',');
+        var msg = dz.parentNode.querySelector('.dz-msg');
+
+        dz._bad = false;
+
+        function showError(text) {
+            dz.classList.add('is-invalid');
+            dz._bad = true;
+            if (msg) {
+                msg.textContent = '';
+                var ic = document.createElement('i');
+                ic.className = 'fas fa-circle-exclamation';
+                msg.appendChild(ic);
+                msg.appendChild(document.createTextNode(' ' + text));
+            }
+        }
+
+        function resetDropzone() {
+            input.value = '';
+            list.innerHTML = '';
+            if (imgPreview) imgPreview.removeAttribute('src');
+            dz.classList.remove('has-files', 'is-over');
+        }
+
+        // dipakai juga oleh toggleSkkLama()
+        dz._reset = function () {
+            if (msg) msg.textContent = '';
+            dz.classList.remove('is-invalid');
+            dz._bad = false;
+            resetDropzone();
+            checkAllDropzonesValid();
+        };
+
+        function handleFiles(files) {
+            list.innerHTML = '';
+            if (msg) msg.textContent = '';
+            dz.classList.remove('is-invalid');
+            dz._bad = false;
+
+            if (!files || !files.length) {
+                resetDropzone();
+                checkAllDropzonesValid();
+                return;
+            }
+
+            var file = files[0];
+            var ext = (file.name.split('.').pop() || '').toLowerCase();
+
+            if (allowedExt.indexOf(ext) === -1) {
+                resetDropzone();
+                showError('Format berkas "' + file.name + '" tidak didukung. Gunakan: ' + allowedExt.join(', ').toUpperCase() + '.');
+                checkAllDropzonesValid();
+                return;
+            }
+
+            if (maxMb && file.size > maxMb * 1048576) {
+                resetDropzone();
+                showError('Ukuran berkas (' + fmtSize(file.size) + ') melebihi batas maksimal ' + maxMb + ' MB.');
+                checkAllDropzonesValid();
+                return;
+            }
+
+            var li = document.createElement('li');
+            var ok = document.createElement('i');
+            ok.className = 'fas fa-circle-check';
+            var nm = document.createElement('span');
+            nm.textContent = file.name;
+            var sz = document.createElement('span');
+            sz.className = 'f-size';
+            sz.textContent = '(' + fmtSize(file.size) + ')';
+            li.appendChild(ok);
+            li.appendChild(document.createTextNode(' '));
+            li.appendChild(nm);
+            li.appendChild(document.createTextNode(' '));
+            li.appendChild(sz);
+            list.appendChild(li);
+
+            if (imgPreview && window.FileReader && file.type.indexOf('image/') === 0) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    imgPreview.src = e.target.result;
+                    dz.classList.add('has-files');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                dz.classList.add('has-files');
+            }
+            checkAllDropzonesValid();
+        }
+
+        ['dragenter', 'dragover'].forEach(function (t) {
+            dz.addEventListener(t, function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dz.classList.add('is-over');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(function (t) {
+            dz.addEventListener(t, function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dz.classList.remove('is-over');
+            });
+        });
+
+        dz.addEventListener('drop', function (e) {
+            var dt = e.dataTransfer;
+            if (dt && dt.files && dt.files.length) {
+                input.files = dt.files;
+                handleFiles(dt.files);
+            }
+        });
+
+        input.addEventListener('change', function () {
+            handleFiles(input.files);
+        });
+
+        if (btnChange) {
+            btnChange.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                input.click();
+            });
+        }
+
+        if (btnRemove) {
+            btnRemove.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dz._reset();
+            });
+        }
+    });
+
+    /* ---------- Kolom SKK lama: hanya untuk Perpanjangan ---------- */
+    window.toggleSkkLama = function () {
         var radios = document.getElementsByName('jenis_permohonan');
         var isPerpanjang = false;
-        
+
         for (var i = 0; i < radios.length; i++) {
             if (radios[i].checked && radios[i].value === 'Perpanjangan') {
                 isPerpanjang = true;
                 break;
             }
         }
-        
+
         var wrap = document.getElementById('field_skk_lama');
         var input = document.getElementById('file_skk_lama');
-        
-        if(isPerpanjang) {
-            wrap.style.display = 'block';
+        var dzLama = wrap.querySelector('.dropzone');
+
+        if (isPerpanjang) {
+            wrap.style.display = 'flex';
             input.setAttribute('required', 'required');
         } else {
             wrap.style.display = 'none';
             input.removeAttribute('required');
-            input.value = '';
-            var list = wrap.querySelector('.dz-files');
-            if(list) list.innerHTML = '';
-            wrap.querySelector('.dropzone').classList.remove('has-files', 'is-invalid');
+            if (dzLama && dzLama._reset) dzLama._reset();
         }
     };
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        toggleSkkLama();
-    });
-
-    function fmtSize(b) {
-        return b < 1048576 ? Math.max(1, Math.round(b / 1024)) + ' KB' : (b / 1048576).toFixed(1) + ' MB';
-    }
-
-    document.querySelectorAll('[data-dropzone]').forEach(function (dz) {
-        var input = dz.querySelector('input[type="file"]');
-        var list = dz.querySelector('.dz-files');
-        var maxMb = parseFloat(dz.getAttribute('data-max')) || 0;
-        var msg = dz.parentNode.querySelector('.dz-msg');
-
-        ['dragenter', 'dragover'].forEach(function (t) {
-            dz.addEventListener(t, function () { dz.classList.add('is-over'); });
-        });
-        ['dragleave', 'drop'].forEach(function (t) {
-            dz.addEventListener(t, function () { dz.classList.remove('is-over'); });
-        });
-
-        input.addEventListener('change', function () {
-            list.textContent = '';
-            if (msg) msg.textContent = '';
-            dz.classList.remove('is-invalid');
-
-            var files = Array.prototype.slice.call(input.files);
-            var terlalubesar = files.some(function (f) { return maxMb && f.size > maxMb * 1048576; });
-
-            if (terlalubesar) {
-                input.value = '';
-                dz.classList.remove('has-files');
-                dz.classList.add('is-invalid');
-                if (msg) msg.textContent = 'Ukuran berkas melebihi ' + maxMb + ' MB. Pilih berkas yang lebih kecil.';
-                return;
-            }
-
-            files.forEach(function (f) {
-                var li = document.createElement('li');
-                li.textContent = f.name + ' (' + fmtSize(f.size) + ')';
-                list.appendChild(li);
-            });
-            dz.classList.toggle('has-files', files.length > 0);
-        });
-    });
+    toggleSkkLama();
 })();
 </script>
 
@@ -1502,7 +1883,11 @@
     };
 
     input.addEventListener('input', function () {
-        input.value = input.value.replace(/[^0-9]/g, '');
+        var val = input.value.replace(/\D/g, '');
+        if (val.indexOf('628') === 0) {
+            val = '08' + val.slice(3);
+        }
+        input.value = val.slice(0, 16);
     });
 
     function el(tag, cls, text) {
@@ -1549,12 +1934,15 @@
 
     form.addEventListener('submit', function (e) {
         e.preventDefault();
-        err.textContent = '';
+        err.innerHTML = '';
         list.textContent = '';
 
         var val = input.value.trim();
-        if (val.length < 9) {
-            err.textContent = 'Masukkan NIK (16 digit) atau Nomor WhatsApp yang valid.';
+        var isNik = val.length === 16;
+        var isWa  = val.indexOf('08') === 0 && val.length >= 10 && val.length <= 13;
+
+        if (!isNik && !isWa) {
+            err.innerHTML = '<i class="fas fa-circle-exclamation"></i> Masukkan 16 digit NIK atau Nomor WhatsApp (diawali 08, 10-13 digit) yang valid.';
             input.focus();
             return;
         }
@@ -1578,12 +1966,15 @@
         })
         .then(function (r) {
             if (r.ok) { render(r.body.data || []); return; }
-            if (r.status === 429) { err.textContent = 'Terlalu banyak percobaan. Coba lagi sebentar lagi.'; return; }
-            if (r.status === 419) { err.textContent = 'Sesi berakhir. Muat ulang halaman lalu coba lagi.'; return; }
-            err.textContent = (r.body && r.body.message) || 'Terjadi kesalahan. Coba lagi.';
+            if (r.status === 429) { err.innerHTML = '<i class="fas fa-circle-exclamation"></i> Terlalu banyak percobaan. Coba lagi sebentar lagi.'; return; }
+            if (r.status === 419) { err.innerHTML = '<i class="fas fa-circle-exclamation"></i> Sesi berakhir. Muat ulang halaman lalu coba lagi.'; return; }
+            err.textContent = '';
+            var ic = document.createElement('i'); ic.className = 'fas fa-circle-exclamation';
+            err.appendChild(ic);
+            err.appendChild(document.createTextNode(' ' + ((r.body && r.body.message) || 'Terjadi kesalahan. Coba lagi.')));
         })
         .catch(function () {
-            err.textContent = 'Gagal terhubung ke server. Periksa koneksi Anda.';
+            err.innerHTML = '<i class="fas fa-circle-exclamation"></i> Gagal terhubung ke server. Periksa koneksi Anda.';
         })
         .finally(function () {
             btn.disabled = false;

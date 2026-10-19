@@ -317,12 +317,36 @@
 
         .hero-inner {
             flex: 1; width: 100%; max-width: var(--wrap); margin: 0 auto;
-            padding: clamp(40px, 7vw, 88px) clamp(16px, 4vw, 32px) clamp(40px, 6vw, 72px);
+            padding: clamp(28px, 5vw, 56px) clamp(16px, 4vw, 32px) clamp(40px, 6vw, 72px);
             display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
             gap: clamp(32px, 5vw, 80px); align-items: center;
         }
-        .hero-logos { display: flex; align-items: center; gap: 18px; margin-bottom: clamp(24px, 4vw, 40px); }
-        .hero-logos img { height: clamp(44px, 6vw, 60px); width: auto; filter: drop-shadow(0 6px 14px rgba(0,0,0,.35)); }
+        /* Bilah logo: satu baris di tengah atas hero. Kapsul terang dipakai karena logo program
+           (Jambi Bahagia, Bangga Melayani Bangsa, BerAKHLAK) bertulisan gelap. */
+        .hero-brandbar {
+            width: 100%; max-width: var(--wrap); margin: 0 auto;
+            padding: clamp(24px, 4vw, 44px) clamp(16px, 4vw, 32px) 0;
+            display: flex; justify-content: center;
+        }
+        .logo-strip {
+            display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center;
+            gap: 12px clamp(16px, 2.6vw, 30px); max-width: 100%;
+            padding: 12px clamp(20px, 3.2vw, 36px);
+            background: rgba(255,255,255,.96); border-radius: 999px;
+            box-shadow: 0 18px 40px -18px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.5);
+        }
+        .logo-strip li { display: flex; align-items: center; }
+        .logo-strip a { display: flex; align-items: center; }
+        .logo-strip img { height: clamp(32px, 4.4vw, 48px); width: auto; max-width: 100%; object-fit: contain; }
+        @media (max-width: 600px) {
+            .logo-strip { border-radius: 26px; padding: 12px 18px; }
+            .logo-strip img { height: 34px; }
+        }
+
+        .hero-title { display: flex; flex-wrap: wrap; align-items: center; gap: clamp(16px, 3vw, 28px); margin-bottom: 8px; }
+        .hero-mark { height: clamp(80px, 12vw, 140px); width: auto; flex: none; filter: drop-shadow(0 10px 20px rgba(0,0,0,.5)); }
+        .hero-title h1 { margin: 0; }
+        .hl { color: var(--signal); }
 
         .hero h1 { font-family: var(--font-display); font-weight: 800; font-stretch: 82%; font-size: clamp(3.4rem, 10.5vw, 8rem); line-height: .9; letter-spacing: -0.035em; text-wrap: balance; }
         .hero-full { margin-top: 20px; font-weight: 600; font-size: clamp(.95rem, 1.6vw, 1.1rem); color: rgba(255,255,255,.85); letter-spacing: .01em; }
@@ -745,32 +769,41 @@
     <div class="hero-bg b1"></div>
     <div class="hero-bg b2"></div>
 
+    <!-- Bilah logo (tengah) -->
+    <div class="hero-brandbar rise">
+        <ul class="logo-strip" aria-label="Logo pemerintah dan program">
+            <li><img src="/images/jambi.png" alt="Logo Pemkot Jambi" decoding="async"></li>
+            <li>
+                <a href="/login" title="Login Internal Pegawai">
+                    <img src="/images/logo.png" alt="Logo Damkar" decoding="async">
+                </a>
+            </li>
+            <li><img src="/images/logo-redkar.png" alt="Logo Redkar" decoding="async"></li>
+            <li><img src="/images/jambibahagia.png" alt="Logo Kota Jambi Bahagia" decoding="async"></li>
+            <li><img src="/images/bangga%20melayani%20bangsa.png" alt="Logo Bangga Melayani Bangsa" decoding="async"></li>
+            <li><img src="/images/berakhlak.png" alt="Logo BerAKHLAK" decoding="async"></li>
+        </ul>
+    </div>
+
     <div class="hero-inner">
         <div>
-            <div class="hero-logos rise">
-                <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
-                <a href="/login" title="Login Internal Pegawai">
-                    <img src="/images/logo.png" alt="Logo Damkar">
-                </a>
-                <img src="/images/logo-redkar.png" alt="Logo Redkar">
-            </div>
 
-            <div class="hero-title-wrapper rise d1" style="display: flex; align-items: center; gap: clamp(16px, 3vw, 28px); margin-bottom: 8px;">
-                <img src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA" style="height: clamp(80px, 12vw, 140px); width: auto; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); flex: none;">
-                <h1 id="judul-hero" style="margin: 0;">
-                    <span style="color: var(--signal);">SIMERAH</span><br>KOJA
+            <div class="hero-title rise d1">
+                <img class="hero-mark" src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA">
+                <h1 id="judul-hero">
+                    <span class="hl">SIMERAH</span><br>KOJA
                 </h1>
             </div>
 
             <p class="hero-full rise d2">
-                <span style="color: var(--signal);">S</span>istem
-                <span style="color: var(--signal);">I</span>nfor<span style="color: var(--signal);">m</span>asi
-                P<span style="color: var(--signal);">e</span>nanggulangan
-                Kebaka<span style="color: var(--signal);">r</span>an
-                dan Penyelam<span style="color: var(--signal);">a</span>tan
-                Daera<span style="color: var(--signal);">h</span>
-                <span style="color: var(--signal);">Ko</span>ta
-                <span style="color: var(--signal);">Ja</span>mbi
+                <span class="hl">S</span>istem
+                <span class="hl">I</span>nfor<span class="hl">m</span>asi
+                P<span class="hl">e</span>nanggulangan
+                Kebaka<span class="hl">r</span>an
+                dan Penyelam<span class="hl">a</span>tan
+                Daera<span class="hl">h</span>
+                <span class="hl">Ko</span>ta
+                <span class="hl">Ja</span>mbi
             </p>
             <p class="hero-lead rise d2">Lapor kebakaran dan penyelamatan langsung ke petugas, atau urus perizinan proteksi kebakaran secara digital.</p>
             <div class="hero-cta rise d3">

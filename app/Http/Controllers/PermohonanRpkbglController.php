@@ -66,7 +66,7 @@ class PermohonanRpkbglController extends Controller
             'luas_bangunan'         => 'required|numeric',
             'tinggi_bangunan'       => 'required|numeric',
             'surat_permohonan'      => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120', // Maks 5MB
-            'persyaratan_lainnya.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'persyaratan_lainnya.*' => 'required|file|mimes:pdf,jpg,jpeg,png,zip,rar|max:10240',
         ], [
             'required'     => 'Kolom :attribute wajib diisi.',
             'no_wa.max'    => 'Nomor WhatsApp maksimal 13 digit.',
