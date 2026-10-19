@@ -36,11 +36,93 @@ class DamtanController extends Controller
         $laporan = LaporanPenyelamatan::findOrFail($id);
         
         // Menggunakan relasi Eloquent atau Query Builder
-        $teknis = LpTeknisLogistik::where('laporan_id', $id)->first();
-        $dokumentasi = LpDokumentasi::where('laporan_id', $id)->first();
-        $khusus = LpKategoriKhusus::where('laporan_id', $id)->first();
+        $teknis = LpTeknisLogistik::where('laporan_id', $id)->first() ?? new LpTeknisLogistik();
+        $dokumentasi = LpDokumentasi::where('laporan_id', $id)->first() ?? new LpDokumentasi();
+        $khusus = LpKategoriKhusus::where('laporan_id', $id)->first() ?? new LpKategoriKhusus();
         
-        return view('internal.damtan.lihat_data', compact('laporan', 'teknis', 'dokumentasi', 'khusus'));
+        // ---- Data array (kolom JSON) ----
+        $arr_evakuasi     = $this->decodeList($teknis->metode_evakuasi);
+        $arr_penyelamatan = $this->decodeList($teknis->metode_penyelamatan);
+        $arr_armada       = $this->decodeList($teknis->armada);
+        $arr_peralatan    = $this->decodeList($teknis->peralatan);
+        $arr_instansi     = $this->decodeList($dokumentasi->instansi_pendukung);
+        $arr_foto         = $this->decodeList($dokumentasi->foto);
+
+        // ---- Bagian II: Teknis & Logistik ----
+        $has_teknis_dasar = $this->terisi($teknis, ['pimpinan_operasi', 'pendamping_operasi', 'satuan_tugas', 'tim_respontime', 'status_evakuasi', 'objek_terdampak', 'daftar_personel'])
+            || $this->positif($teknis, ['jumlah_personel'])
+            || !empty($arr_evakuasi) || !empty($arr_penyelamatan);
+        $has_detail_lapangan = $this->terisi($teknis, ['langkah_penanganan', 'hambatan_lapangan', 'hasil_tindakan']);
+        $has_korban = $this->positif($teknis, ['korban_selamat', 'korban_ringan', 'korban_berat', 'korban_meninggal'])
+            || $this->terisi($teknis, ['korban_hewan_aset']);
+        $has_logistik = !empty($arr_armada) || !empty($arr_peralatan)
+            || $this->terisi($teknis, ['peralatan_lain', 'konsumsi_alat'])
+            || $this->positif($teknis, ['liter_air', 'liter_foam', 'liter_bbm']);
+        $show_section_ii = $has_teknis_dasar || $has_detail_lapangan || $has_korban || $has_logistik;
+
+        // ---- Bagian III: Analisis, Evaluasi & Dokumentasi ----
+        $has_investigasi = $this->terisi($dokumentasi, ['dugaan_penyebab', 'dugaan_penyebab_lainnya', 'sumber_api'])
+            || $this->positif($dokumentasi, ['luas_area']);
+        $has_lintas_sektoral = !empty($arr_instansi)
+            || $this->terisi($dokumentasi, ['tindakan_instansi', 'kontak_saksi', 'cara_bertindak']);
+        $has_evaluasi  = $this->terisi($dokumentasi, ['kebutuhan_tambahan', 'saran_mitigasi']);
+        $has_kronologi = $this->terisi($dokumentasi, ['kronologi_lengkap']);
+        $show_section_iii = $has_investigasi || $has_lintas_sektoral || $has_evaluasi || $has_kronologi;
+
+        // ---- Bagian IV: Kategori Khusus ----
+        $has_animal = $this->terisi($khusus, ['jenis_hewan', 'spesies_hewan', 'dimensi_hewan', 'status_hewan_pasca', 'lokasi_pelepasan'])
+            || $this->positif($khusus, ['berat_hewan']);
+        $has_pohon = $this->terisi($khusus, ['jenis_objek_tumbang', 'status_utilitas', 'dampak_properti'])
+            || $this->positif($khusus, ['dimensi_objek']);
+        $has_water = $this->terisi($khusus, ['kondisi_perairan', 'metode_pencarian_air', 'daftar_penyelam'])
+            || $this->positif($khusus, ['radius_pencarian']);
+        $has_ring = $this->terisi($khusus, ['jenis_benda_bahaya', 'kondisi_anggota_tubuh', 'alat_potong_cincin', 'cuaca_operasi', 'jenis_medan', 'akses_lokasi']);
+        $show_section_iv = $has_animal || $has_pohon || $has_water || $has_ring;
+
+        return view('internal.damtan.lihat_data', compact(
+            'laporan', 'teknis', 'dokumentasi', 'khusus',
+            'arr_evakuasi', 'arr_penyelamatan', 'arr_armada', 'arr_peralatan', 'arr_instansi', 'arr_foto',
+            'has_teknis_dasar', 'has_detail_lapangan', 'has_korban', 'has_logistik', 'show_section_ii',
+            'has_investigasi', 'has_lintas_sektoral', 'has_evaluasi', 'has_kronologi', 'show_section_iii',
+            'has_animal', 'has_pohon', 'has_water', 'has_ring', 'show_section_iv'
+        ));
+    }
+
+    // ---- Helper untuk halaman Lihat Data ----
+
+    /** Ubah kolom JSON/array menjadi array bersih (tanpa nilai kosong). */
+    private function decodeList($value): array
+    {
+        if (is_string($value)) {
+            $value = json_decode($value, true);
+        }
+        if (!is_array($value)) {
+            return [];
+        }
+        return array_values(array_filter($value, fn ($v) => $v !== null && $v !== ''));
+    }
+
+    /** True jika salah satu kolom terisi. */
+    private function terisi($model, array $fields): bool
+    {
+        foreach ($fields as $f) {
+            if (!empty($model->{$f})) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** True jika salah satu kolom berisi angka lebih dari 0. */
+    private function positif($model, array $fields): bool
+    {
+        foreach ($fields as $f) {
+            $v = $model->{$f};
+            if (!empty($v) && $v > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // 4. Menyimpan data dari form (Create)
@@ -423,31 +505,54 @@ class DamtanController extends Controller
         return view('internal.damtan.cetak_surat', compact('surat'));
     }
 
-// ==========================================
+    // ==========================================
     // REKAP LAYANAN PEMADAMAN & PENYELAMATAN
     // ==========================================
 
+    /**
+     * Daftar kategori layanan pemadaman & penyelamatan.
+     * Format: 'key_di_database' => [Nama tampil, Ikon FontAwesome, Kelas warna]
+     * SESUAIKAN key dengan data yang sudah ada di kolom rekap_layanan.kategori
+     */
+    private function kategoriLayanan(): array
+    {
+        return [
+            'kebakaran'       => ['Kebakaran',                 'fa-fire',          'ic-red'],
+            'evakuasi_hewan'  => ['Evakuasi Hewan',            'fa-paw',           'ic-teal'],
+            'sarang_tawon'    => ['Evakuasi Sarang Tawon',     'fa-bug',           'ic-amber'],
+            'evakuasi_manusia'=> ['Evakuasi / Pertolongan',    'fa-person-falling','ic-blue'],
+            'pohon_tumbang'   => ['Pohon Tumbang',             'fa-tree',          'ic-steel'],
+            'pencarian_air'   => ['Pencarian di Perairan',     'fa-life-ring',     'ic-purple'],
+            'pelepasan_cincin'=> ['Pelepasan Cincin',          'fa-ring',          'ic-pink'],
+            'layanan_lainnya' => ['Layanan Lainnya',           'fa-truck-medical', 'ic-steel'],
+        ];
+    }
+
     public function rekapLayanan()
     {
-        // Ganti 'rekap_layanans' jadi 'rekap_layanan'
-        $riwayat = \Illuminate\Support\Facades\DB::table('rekap_layanan')
+        $kategori = $this->kategoriLayanan();
+        $objekKeys = array_keys($this->kategoriObjek());
+
+        $riwayat = DB::table('rekap_layanan')
+            ->whereNotIn('kategori', $objekKeys)
             ->orderBy('tanggal', 'desc')
             ->orderBy('id', 'desc')
             ->get();
             
-        $totals = \Illuminate\Support\Facades\DB::table('rekap_layanan')
-            ->select('kategori', \Illuminate\Support\Facades\DB::raw('SUM(jumlah) as total'))
+        $totals = DB::table('rekap_layanan')
+            ->whereNotIn('kategori', $objekKeys)
+            ->select('kategori', DB::raw('SUM(jumlah) as total'))
             ->groupBy('kategori')
             ->pluck('total', 'kategori');
 
-        return view('internal.damtan.rekap_layanan', compact('riwayat', 'totals'));
+        return view('internal.damtan.rekap_layanan', compact('riwayat', 'totals', 'kategori'));
     }
 
     public function storeRekapLayanan(Request $request)
     {
         $request->validate([
             'tanggal'  => 'required|date',
-            'kategori' => 'required|string',
+            'kategori' => ['required', 'in:' . implode(',', array_keys($this->kategoriLayanan()))],
             'jumlah'   => 'required|integer|min:1'
         ]);
 
@@ -478,35 +583,58 @@ class DamtanController extends Controller
     // REKAP OBJEK KEBAKARAN
     // ==========================================
 
+    /**
+     * Daftar kategori objek kebakaran.
+     * Format: 'key_di_database' => [Nama tampil, Ikon FontAwesome, Kelas warna]
+     */
+    private function kategoriObjek(): array
+    {
+        return [
+            'objek_rumah'     => ['Rumah / Hunian',       'fa-house',              'ic-red'],
+            'objek_kantor'    => ['Kantor',               'fa-building',           'ic-blue'],
+            'objek_ruko'      => ['Ruko',                 'fa-store',              'ic-amber'],
+            'objek_gudang'    => ['Gudang',               'fa-warehouse',          'ic-steel'],
+            'objek_bengkel'   => ['Bengkel',              'fa-screwdriver-wrench', 'ic-teal'],
+            'objek_mall'      => ['Mall / Pusat Belanja', 'fa-bag-shopping',       'ic-pink'],
+            'objek_restoran'  => ['Restoran / Warung',    'fa-utensils',           'ic-amber'],
+            'objek_toko'      => ['Toko',                 'fa-shop',               'ic-purple'],
+            'objek_kandang'   => ['Kandang',              'fa-paw',                'ic-teal'],
+            'objek_kendaraan' => ['Kendaraan',            'fa-car',                'ic-red'],
+            'objek_hotel'     => ['Hotel / Penginapan',   'fa-hotel',              'ic-blue'],
+            'objek_hiburan'   => ['Tempat Hiburan',       'fa-masks-theater',      'ic-purple'],
+            'objek_vital'     => ['Objek Vital',          'fa-shield-halved',      'ic-steel'],
+        ];
+    }
+
     public function rekapObjek()
     {
-        // Kategori khusus untuk halaman objek
-        $kategori_objek = ['objek_rumah', 'objek_kantor', 'objek_ruko', 'objek_gudang', 'objek_bengkel', 'objek_mall', 'objek_restoran', 'objek_toko', 'objek_kandang', 'objek_kendaraan', 'objek_hotel', 'objek_hiburan', 'objek_vital'];
+        $kategori = $this->kategoriObjek();
+        $keys = array_keys($kategori);
 
-        $riwayat = \Illuminate\Support\Facades\DB::table('rekap_layanan')
-            ->whereIn('kategori', $kategori_objek)
+        $riwayat = DB::table('rekap_layanan')
+            ->whereIn('kategori', $keys)
             ->orderBy('tanggal', 'desc')
             ->orderBy('id', 'desc')
             ->get();
-            
-        $totals = \Illuminate\Support\Facades\DB::table('rekap_layanan')
-            ->whereIn('kategori', $kategori_objek)
-            ->select('kategori', \Illuminate\Support\Facades\DB::raw('SUM(jumlah) as total'))
+
+        $totals = DB::table('rekap_layanan')
+            ->whereIn('kategori', $keys)
+            ->select('kategori', DB::raw('SUM(jumlah) as total'))
             ->groupBy('kategori')
             ->pluck('total', 'kategori');
 
-        return view('internal.damtan.rekap_objek', compact('riwayat', 'totals'));
+        return view('internal.damtan.rekap_objek', compact('riwayat', 'totals', 'kategori'));
     }
 
     public function storeRekapObjek(Request $request)
     {
         $request->validate([
             'tanggal'  => 'required|date',
-            'kategori' => 'required|string',
-            'jumlah'   => 'required|integer|min:1'
+            'kategori' => ['required', 'in:' . implode(',', array_keys($this->kategoriObjek()))],
+            'jumlah'   => 'required|integer|min:1',
         ]);
 
-        \Illuminate\Support\Facades\DB::table('rekap_layanan')->insert([
+        DB::table('rekap_layanan')->insert([
             'tanggal'    => $request->tanggal,
             'kategori'   => $request->kategori,
             'jumlah'     => $request->jumlah,
@@ -522,7 +650,7 @@ class DamtanController extends Controller
 
     public function destroyRekapObjek($id)
     {
-        \Illuminate\Support\Facades\DB::table('rekap_layanan')->where('id', $id)->delete();
+        DB::table('rekap_layanan')->where('id', $id)->delete();
         return redirect()->back()->with('success', 'Data rekap berhasil dihapus!');
     }
 }

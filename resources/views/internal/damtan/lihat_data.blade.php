@@ -76,8 +76,13 @@
     .data-value { flex-grow: 1; font-weight: 600; color: var(--ink); font-size: 0.85rem; word-break: break-word; line-height: 1.4; }
     .text-capitalize { text-transform: capitalize; }
     .text-uppercase { text-transform: uppercase; }
+
+    /* Mode saat membuat PDF: kartu tanpa bingkai/padding, kop surat tampil */
+    .card-custom.pdf-mode { box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; border-radius: 0 !important; }
+
     @media print {
         .topbar, .sidebar, .sidebar-backdrop, #action-buttons-container, .back-link, .d-print-none, .page-head { display: none !important; }
+        #pdf-header { display: block !important; }
         body, .content { background-color: white !important; padding: 0 !important; margin: 0 !important;}
         .card-custom { box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; }
         * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
@@ -85,7 +90,6 @@
 </style>
 @endpush
 
-@section('content')
 @section('content')
 
             <a href="/internal/damtan/data-laporan" class="back-link d-print-none"><i class="fas fa-arrow-left me-2"></i> Kembali ke Data Laporan</a>
@@ -1046,4 +1050,34 @@
 
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+    /* Download PDF: tampilkan kop surat sementara, lalu kembalikan tampilan semula */
+    function downloadDetailPDF() {
+        var el = document.getElementById('report-content');
+        var header = document.getElementById('pdf-header');
+
+        header.style.display = 'block';
+        el.classList.add('pdf-mode');
+
+        function pulihkan() {
+            header.style.display = 'none';
+            el.classList.remove('pdf-mode');
+        }
+
+        var opt = {
+            margin: [10, 10, 12, 10],
+            filename: @json('Laporan-' . $laporan->nomor_laporan . '.pdf'),
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: ['css', 'legacy'], avoid: ['.data-row', '.sub-header', '.section-header'] }
+        };
+
+        html2pdf().set(opt).from(el).save().then(pulihkan).catch(function (err) {
+            pulihkan();
+            console.error(err);
+            alert('Gagal membuat PDF. Silakan coba lagi.');
+        });
+    }
+</script>
 @endpush
