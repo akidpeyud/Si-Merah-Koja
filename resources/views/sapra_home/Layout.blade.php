@@ -793,11 +793,14 @@
                     }
 
                     $adaPos = in_array('pos', $kolom);
+
+                    // PERBAIKAN: chip dibuat dari SEMUA pos di tabel pos_pemadam (urut id_pos),
+                    // lalu ditambah pos lain yang muncul di data (mis. '-') agar baris tetap bisa difilter.
                     $daftarPos = $adaPos
-                        ? $rows->pluck('pos')->filter()->unique()->sortBy(function ($n) use ($urutPos) {
-                            $i = array_search($n, $urutPos, true);
-                            return $i === false ? 9999 : $i;
-                        })->values()
+                        ? collect($urutPos)
+                            ->merge($rows->pluck('pos')->filter())
+                            ->unique()
+                            ->values()
                         : collect();
                     $posAwal = $daftarPos->first();
 
@@ -915,7 +918,7 @@
                                 @endforeach
                                 </tbody>
                             </table>
-                            <p class="no-result" hidden><i class="far fa-face-frown"></i> Tidak ada data yang cocok.</p>
+                            <p class="no-result" hidden><i class="far fa-face-frown"></i> Belum ada data di pos ini.</p>
                         </div>
                     @endif
                   </div>

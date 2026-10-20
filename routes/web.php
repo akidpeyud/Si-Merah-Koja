@@ -300,7 +300,7 @@ Route::middleware(['auth'])->group(function () {
     // REKAP OBJEK KEBAKARAN
     Route::get('/internal/damtan/rekap-objek', [DamtanController::class, 'rekapObjek'])->name('damtan.rekap_objek');
     Route::post('/internal/damtan/rekap-objek', [DamtanController::class, 'storeRekapObjek']);
-    Route::delete('/internal/damtan/rekap-objek/{id}', [DamtanController::class, 'destroyRekapObjek']);
+    Route::delete('/internal/damtan/rekap-objek/{id}', [DamtanController::class, 'destroyRekapLayanan']);
 
     // --- D. SAPRA (SARANA PRASARANA) ---
     Route::get('/sapra/data-hidrant-kota', [SapraController::class, 'dataHidrantKota']);
@@ -715,9 +715,9 @@ Route::middleware(['auth'])->group(function () {
         return redirect()->back()->with('success', 'Data berhasil dihapus!');
     });
 
-    // Rute Tambahan Peningkatan Kapasitas
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/cetak-excel/{jenis}', [PencegahanController::class, 'cetakExcel']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/cetak-pdf/{jenis}', [PencegahanController::class, 'cetakPdf']);
+    // Rute Tambahan Peningkatan Kapasitas (Mendukung cetak per jenis maupun 'semua')
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/cetak-excel/{jenis?}', [PencegahanController::class, 'cetakExcel']);
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/cetak-pdf/{jenis?}', [PencegahanController::class, 'cetakPdf']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diksar', [PencegahanController::class, 'indexDiksar']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f1', [PencegahanController::class, 'indexDiklatF1']);
     Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f2', [PencegahanController::class, 'indexDiklatF2']);
