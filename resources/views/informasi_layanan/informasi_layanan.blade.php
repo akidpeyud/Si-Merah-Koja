@@ -541,6 +541,7 @@
         <h1 class="rise d1">Informasi layanan</h1>
         <p class="rise d2">Portal transparansi informasi fasilitas dan aset Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <div class="page-body">

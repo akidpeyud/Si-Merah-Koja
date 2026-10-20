@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\DokumenPublik;
@@ -9,18 +10,35 @@ class DokumenPublikController extends Controller
 {
     // Menampilkan daftar dokumen publik di halaman dashboard internal
     public function index(Request $request)
-    {
-        $query = DokumenPublik::query();
+{
+    $kategoriList = ['Renstra', 'Renja', 'SPM', 'SAKIP', 'LPPD'];
 
-        // Fitur filter berdasarkan kategori jika dipilih
-        if ($request->has('kategori') && $request->kategori != '') {
-            $query->where('kategori', $request->kategori);
-        }
+    $query = DokumenPublik::query();
 
-        $dokumens = $query->latest()->paginate(10);
-        return view('internal.dokumen-publik.index', compact('dokumens'));
+    if ($request->filled('kategori')) {
+        $query->where('kategori', $request->kategori);
     }
 
+    $dokumens = $query
+        ->orderByDesc('created_at')
+        ->orderByDesc('id')
+        ->paginate(10)
+        ->withQueryString();
+
+    $totalDokumen = DokumenPublik::count();
+
+    $statistikKategori = DokumenPublik::query()
+        ->selectRaw('kategori, COUNT(*) as total')
+        ->groupBy('kategori')
+        ->pluck('total', 'kategori');
+
+    return view('internal.dokumen-publik.index', compact(
+        'dokumens',
+        'kategoriList',
+        'totalDokumen',
+        'statistikKategori'
+    ));
+}
     // Menampilkan form tambah dokumen
     public function create()
     {
@@ -32,21 +50,18 @@ class DokumenPublikController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'judul'     => 'required|string|max:255',
-            'kategori'  => 'required|in:Renstra,Renja,SPM,SAKIP,LPPD',
-            'tahun'     => 'nullable|digits:4',
-            'file_dok'  => 'required|mimes:pdf,doc,docx|max:10240', // Maksimal 10MB
-            'deskripsi' => 'nullable|string',
+            'judul_dokumen' => 'required|string|max:255',
+            'kategori'      => 'required|in:Renstra,Renja,SPM,SAKIP,LPPD',
+            'nama_file'     => 'required|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240', // Maksimal 10MB
         ]);
 
-        $filePath = $request->file('file_dok')->store('dokumen_publik', 'public');
+        $fileName = time() . '_' . str_replace([' ', '#', '%', '&'], '_', $request->file('nama_file')->getClientOriginalName());
+        $request->file('nama_file')->storeAs('dokumen_publik', $fileName, 'public');
 
         DokumenPublik::create([
-            'judul'     => $request->judul,
-            'kategori'  => $request->kategori,
-            'tahun'     => $request->tahun,
-            'file_path' => $filePath,
-            'deskripsi' => $request->deskripsi,
+            'judul_dokumen' => $request->judul_dokumen,
+            'kategori'      => $request->kategori,
+            'nama_file'     => 'dokumen_publik/' . $fileName,
         ]);
 
         return redirect()->route('dokumen-publik.index')->with('success', 'Dokumen publik berhasil ditambahkan.');
@@ -63,30 +78,28 @@ class DokumenPublikController extends Controller
     public function update(Request $request, DokumenPublik $dokumenPublik)
     {
         $request->validate([
-            'judul'     => 'required|string|max:255',
-            'kategori'  => 'required|in:Renstra,Renja,SPM,SAKIP,LPPD',
-            'tahun'     => 'nullable|digits:4',
-            'file_dok'  => 'nullable|mimes:pdf,doc,docx|max:10240',
-            'deskripsi' => 'nullable|string',
+            'judul_dokumen' => 'required|string|max:255',
+            'kategori'      => 'required|in:Renstra,Renja,SPM,SAKIP,LPPD',
+            'nama_file'     => 'nullable|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240',
         ]);
 
-        $filePath = $dokumenPublik->file_path;
+        $fileName = $dokumenPublik->nama_file;
 
-        if ($request->hasFile('file_dok')) {
+        if ($request->hasFile('nama_file')) {
             // Hapus file lama jika ada
-            if ($filePath && Storage::disk('public')->exists($filePath)) {
-                Storage::disk('public')->delete($filePath);
+            if ($fileName && Storage::disk('public')->exists($fileName)) {
+                Storage::disk('public')->delete($fileName);
             }
             // Simpan file baru
-            $filePath = $request->file('file_dok')->store('dokumen_publik', 'public');
+            $newFileName = time() . '_' . str_replace([' ', '#', '%', '&'], '_', $request->file('nama_file')->getClientOriginalName());
+            $request->file('nama_file')->storeAs('dokumen_publik', $newFileName, 'public');
+            $fileName = 'dokumen_publik/' . $newFileName;
         }
 
         $dokumenPublik->update([
-            'judul'     => $request->judul,
-            'kategori'  => $request->kategori,
-            'tahun'     => $request->tahun,
-            'file_path' => $filePath,
-            'deskripsi' => $request->deskripsi,
+            'judul_dokumen' => $request->judul_dokumen,
+            'kategori'      => $request->kategori,
+            'nama_file'     => $fileName,
         ]);
 
         return redirect()->route('dokumen-publik.index')->with('success', 'Dokumen publik berhasil diperbarui.');
@@ -95,8 +108,8 @@ class DokumenPublikController extends Controller
     // Menghapus data dokumen
     public function destroy(DokumenPublik $dokumenPublik)
     {
-        if ($dokumenPublik->file_path && Storage::disk('public')->exists($dokumenPublik->file_path)) {
-            Storage::disk('public')->delete($dokumenPublik->file_path);
+        if ($dokumenPublik->nama_file && Storage::disk('public')->exists($dokumenPublik->nama_file)) {
+            Storage::disk('public')->delete($dokumenPublik->nama_file);
         }
 
         $dokumenPublik->delete();
@@ -104,9 +117,7 @@ class DokumenPublikController extends Controller
         return redirect()->route('dokumen-publik.index')->with('success', 'Dokumen publik berhasil dihapus.');
     }
 
-    // =========================================================================
-    // TAMBAHAN: Method untuk menampilkan dokumen ke Halaman Publik secara dinamis
-    // =========================================================================
+    // Menampilkan dokumen ke Halaman Publik secara dinamis
     public function showPublic($kategori)
     {
         $allowed = ['renstra', 'renja', 'spm', 'sakip', 'lppd'];
@@ -125,25 +136,36 @@ class DokumenPublikController extends Controller
 
         $kategoriNama = $kategoriMapping[strtolower($kategori)];
 
-        // Ambil data dokumen berdasarkan kategori yang dipilih
         $dokumens = DokumenPublik::where('kategori', $kategoriNama)->latest()->get();
 
         return view('public.dokumen-publik.index', compact('dokumens', 'kategoriNama', 'kategori'));
     }
+
     // Menampilkan file langsung di browser (Inline)
     public function showFile($id)
     {
-        $dokumen = \App\Models\DokumenPublik::findOrFail($id);
+        $dokumen = DokumenPublik::findOrFail($id);
         
-        // Dapatkan lokasi absolut file di storage
-        $filePath = storage_path('app/public/' . $dokumen->file_path);
+        $filePath = storage_path('app/public/' . $dokumen->nama_file);
 
         if (!file_exists($filePath)) {
             abort(404, 'File tidak ditemukan.');
         }
 
-        // response()->file() akan otomatis mengirim header 'Content-Disposition: inline' 
-        // sehingga PDF akan terbuka di tab baru, bukan terunduh.
         return response()->file($filePath);
+    }
+
+    // Download file
+    public function download($id)
+    {
+        $dokumen = DokumenPublik::findOrFail($id);
+        
+        $filePath = storage_path('app/public/' . $dokumen->nama_file);
+
+        if (!file_exists($filePath)) {
+            abort(404, 'File tidak ditemukan.');
+        }
+
+        return response()->download($filePath);
     }
 }

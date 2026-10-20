@@ -61,32 +61,120 @@
     .garis-kop { border-top: 3px solid black; border-bottom: 1px solid black; height: 2px; margin-top: 5px; margin-bottom: 20px; }
     .judul-laporan { text-align: center; margin-bottom: 25px; line-height: 1.2; font-family: 'Times New Roman', Times, serif; color: #000; }
     .judul-laporan h3 { margin: 0; font-size: 14pt; font-weight: bold; text-decoration: underline; }
-    .section-header { clear: both; display: flex; align-items: center; gap: 10px; margin-bottom: 12px; margin-top: 24px; padding-bottom: 6px; border-bottom: 1px solid var(--line); page-break-after: avoid; page-break-inside: avoid; }
-    .section-header h3 { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; margin: 0; color: var(--navy-dark); text-transform: uppercase; letter-spacing: 0.02em;}
-    .section-header::before { content: ''; width: 5px; height: 18px; background-color: var(--navy); border-radius: 4px; }
-    .sub-header { clear: both; display: block; width: 100%; font-size: 1rem; font-family: var(--font-display); font-weight: 700; color: var(--navy); margin-top: 16px; margin-bottom: 10px; page-break-after: avoid; page-break-inside: avoid; }
-    .pdf-grid { display: block; width: 100%; margin-bottom: 10px; }
-    .pdf-grid::after { content: ""; display: table; clear: both; }
-    .pdf-item { float: left; width: 49%; padding-right: 15px; margin-bottom: 8px; box-sizing: border-box; page-break-inside: avoid; }
-    .pdf-item-full { clear: both; display: block; width: 100%; margin-bottom: 8px; box-sizing: border-box; page-break-inside: avoid; }
-    .data-row { display: flex; align-items: flex-start; page-break-inside: avoid; break-inside: avoid; width: 100%; }
-    .data-icon { width: 24px; color: var(--navy); flex-shrink: 0; font-size: 12px; margin-top: 3px; }
-    .data-label { width: 140px; font-weight: 600; color: var(--steel); flex-shrink: 0; font-size: 0.85rem; line-height: 1.4; }
-    .data-colon { width: 10px; font-weight: 600; color: var(--steel); text-align: center; flex-shrink: 0; font-size: 0.85rem; line-height: 1.4; }
-    .data-value { flex-grow: 1; font-weight: 600; color: var(--ink); font-size: 0.85rem; word-break: break-word; line-height: 1.4; }
+    .section-header { clear: both; display: flex; align-items: center; margin: 30px 0 14px; padding: 9px 16px; background: var(--navy-light); border-left: 5px solid var(--navy); border-radius: 0 6px 6px 0; page-break-after: avoid; break-after: avoid; page-break-inside: avoid; }
+    .section-header h3 { font-family: var(--font-display); font-size: .98rem; font-weight: 700; margin: 0; color: var(--navy-dark); text-transform: uppercase; letter-spacing: .03em; }
+    .sub-header { clear: both; display: block; width: 100%; font-family: var(--font-display); font-size: .9rem; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: .03em; margin: 20px 0 6px; padding-bottom: 6px; border-bottom: 2px solid var(--navy); page-break-after: avoid; break-after: avoid; page-break-inside: avoid; }
+
+    /* Grid 2 kolom: baris selalu sejajar kiri-kanan, item panjang melebar penuh */
+    .pdf-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 40px; width: 100%; margin-bottom: 6px; }
+    .pdf-item { min-width: 0; }
+    .pdf-item-full { grid-column: 1 / -1; min-width: 0; }
+    .data-row { display: flex; align-items: flex-start; width: 100%; padding: 7px 0; border-bottom: 1px dotted var(--line-dark); page-break-inside: avoid; break-inside: avoid; }
+    .data-icon { display: none; }
+    .data-label { width: 165px; flex-shrink: 0; font-weight: 500; color: var(--steel); font-size: .85rem; line-height: 1.5; }
+    .data-colon { width: 16px; flex-shrink: 0; text-align: center; font-weight: 500; color: var(--steel); font-size: .85rem; line-height: 1.5; }
+    .data-value { flex: 1 1 auto; min-width: 0; font-weight: 600; color: var(--ink); font-size: .88rem; line-height: 1.5; word-break: break-word; }
+    .teks-panjang { white-space: pre-line; text-align: justify; font-weight: 500; }
     .text-capitalize { text-transform: capitalize; }
     .text-uppercase { text-transform: uppercase; }
+
+    .badge-prio { display: inline-block; padding: 2px 12px; border-radius: 999px; font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; border: 1px solid transparent; }
+    .badge-prio.prio-rendah  { background: #eef1f5; color: var(--steel); border-color: var(--line-dark); }
+    .badge-prio.prio-sedang  { background: #e8effd; color: var(--info); border-color: #c3d4fa; }
+    .badge-prio.prio-tinggi  { background: #fdf3dc; color: #a16207; border-color: #f4d38a; }
+    .badge-prio.prio-darurat { background: #fbe5e8; color: var(--signal); border-color: #f1b3bb; }
+
+    .dasar-hukum { margin-top: 6px; padding: 12px 16px; border: 1px solid var(--line-dark); border-left: 4px solid var(--navy); background: #f8fafc; border-radius: 4px; font-size: .85rem; line-height: 1.6; color: var(--ink-2); text-align: justify; font-style: italic; page-break-inside: avoid; }
+
+    /* Blok tanda tangan: hanya muncul di PDF / cetak */
+    .ttd-wrap { display: none; justify-content: space-between; gap: 40px; margin-top: 36px; page-break-inside: avoid; break-inside: avoid; }
+    .ttd-col { width: 46%; text-align: center; font-size: .88rem; line-height: 1.5; color: #000; }
+    .ttd-col p { margin: 0; }
+    .ttd-space { height: 80px; }
+    .ttd-nama { font-weight: 700; text-decoration: underline; }
+    .ttd-nip { font-size: .8rem; margin-top: 2px !important; }
+
+    /* Lampiran foto: 2 foto per baris, satu baris tidak terpotong antar halaman */
+    .foto-wrap { margin-bottom: 18px; }
+    .foto-row { display: flex; gap: 12px; margin-bottom: 12px; page-break-inside: avoid; break-inside: avoid; }
+    .foto-item { flex: 1 1 0; min-width: 0; max-width: calc(50% - 6px); border: 1px solid var(--line-dark); border-radius: 4px; padding: 4px; background: #fff; }
+    .foto-item img { display: block; width: 100%; height: 220px; object-fit: cover; border-radius: 2px; }
+    .foto-cap { text-align: center; font-size: .75rem; color: var(--steel); padding-top: 4px; line-height: 1.2; }
+
+    /* Mode PDF: kartu tanpa bingkai, kop surat tampil, huruf resmi (serif) */
+    .card-custom.pdf-mode { box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; border-radius: 0 !important; font-family: 'Times New Roman', Times, serif; }
+    .card-custom.pdf-mode .section-header h3,
+    .card-custom.pdf-mode .sub-header,
+    .card-custom.pdf-mode .data-label,
+    .card-custom.pdf-mode .data-colon,
+    .card-custom.pdf-mode .data-value { font-family: 'Times New Roman', Times, serif; }
+    .card-custom.pdf-mode .data-label, .card-custom.pdf-mode .data-colon { color: #222; font-weight: 400; }
+    .card-custom.pdf-mode .data-value { color: #000; font-size: .9rem; }
+    .card-custom.pdf-mode .data-row { border-bottom: 1px solid #ccc; }
+    .card-custom.pdf-mode .ttd-wrap { display: flex; }
+    /* Penyesuaian lebar A4 (konten dikunci 190 mm saat membuat PDF) */
+    .card-custom.pdf-mode .pdf-grid { column-gap: 28px; }
+    .card-custom.pdf-mode .data-label { width: 128px; }
+    .card-custom.pdf-mode .data-colon { width: 12px; }
+    .card-custom.pdf-mode .data-row { padding: 5px 0; }
+    .card-custom.pdf-mode .section-header { margin: 22px 0 10px; padding: 7px 14px; }
+    .card-custom.pdf-mode .sub-header { margin: 14px 0 4px; }
+    .card-custom.pdf-mode .foto-cap { color: #333; font-family: 'Times New Roman', Times, serif; }
+    .card-custom.pdf-mode .ttd-wrap { margin-top: 28px; }
+    .card-custom.pdf-mode .ttd-space { height: 70px; }
+
+    @media (max-width: 767.98px) {
+        .pdf-grid { grid-template-columns: 1fr; }
+        .data-label { width: 125px; }
+    }
+
+    @page { size: A4 portrait; margin: 12mm 10mm 14mm; }
+
     @media print {
         .topbar, .sidebar, .sidebar-backdrop, #action-buttons-container, .back-link, .d-print-none, .page-head { display: none !important; }
+        #pdf-header { display: block !important; }
+        .ttd-wrap { display: flex !important; }
         body, .content { background-color: white !important; padding: 0 !important; margin: 0 !important;}
-        .card-custom { box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; }
+        .card-custom { box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; font-family: 'Times New Roman', Times, serif; }
+        .pdf-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
         * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     }
 </style>
 @endpush
 
 @section('content')
-@section('content')
+
+@php
+    /* ==========================================================
+       PENYESUAIAN DENGAN FORM INPUT (nama field = atribut name di form)
+       ========================================================== */
+
+    // Rincian objek kebakaran (unit_rumah, unit_gudang, unit_ruko, dst.)
+    $objek_kb   = $laporan->objek_kebakaran ?? null;
+    $unit_objek = $objek_kb ? ($laporan->{'unit_' . $objek_kb} ?? null) : null;
+
+    $rincian_objek = [];
+    if (!empty($laporan->tipe_bangunan_rumah))     $rincian_objek[] = 'Bangunan ' . ucwords(str_replace('_', ' ', $laporan->tipe_bangunan_rumah));
+    if (!empty($unit_objek))                       $rincian_objek[] = $unit_objek . ' Unit';
+    if (!empty($laporan->nama_pasar_tempat_usaha)) $rincian_objek[] = $laporan->nama_pasar_tempat_usaha;
+    if (!empty($laporan->jenis_kendaraan))         $rincian_objek[] = strtoupper($laporan->jenis_kendaraan);
+    if (!empty($laporan->jenis_objek_vital))       $rincian_objek[] = ucwords(str_replace('_', ' ', $laporan->jenis_objek_vital));
+
+    // Field baru dari form yang mungkin belum masuk flag controller
+    $x_dasar  = !empty($teknis->satgas_operasi) || !empty($teknis->tim_quick_respon)
+                || (!empty($teknis->lama_operasi) && $teknis->lama_operasi > 0);
+    $x_korban = !empty($teknis->jiwa_terdampak) && $teknis->jiwa_terdampak > 0;
+    $x_logis  = (!empty($teknis->jumlah_air) && $teknis->jumlah_air > 0)
+                || (!empty($teknis->jumlah_armada) && $teknis->jumlah_armada > 0);
+
+    $has_teknis_dasar = ($has_teknis_dasar ?? false) || $x_dasar;
+    $has_korban       = ($has_korban ?? false) || $x_korban;
+    $has_logistik     = ($has_logistik ?? false) || $x_logis;
+    $show_section_ii  = ($show_section_ii ?? false) || $x_dasar || $x_korban || $x_logis;
+
+    // Label instansi sesuai form (value "pmi" tampil sebagai BPBD)
+    $map_instansi = ['pmi' => 'BPBD'];
+@endphp
 
             <a href="/internal/damtan/data-laporan" class="back-link d-print-none"><i class="fas fa-arrow-left me-2"></i> Kembali ke Data Laporan</a>
             <div class="page-head d-print-none mt-2">
@@ -124,7 +212,7 @@
                 <div class="section-header" style="margin-top: 0;"><h3>I. Informasi Dasar & Lokasi</h3></div>
                 
                 <div class="pdf-grid">
-                    <div class="pdf-item">
+                    <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-hashtag"></i></div>
                             <div class="data-label">Nomor Laporan</div>
@@ -134,7 +222,7 @@
                     </div>
 
                     @if(!empty($laporan->kategori_kejadian))
-                    <div class="pdf-item">
+                    <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-layer-group"></i></div>
                             <div class="data-label">Kategori Umum</div>
@@ -144,14 +232,48 @@
                     </div>
                     @endif
 
-                    @php $kategori_sub = $laporan->kategori_kebakaran ?? $laporan->kategori_non_kebakaran; @endphp
-                    @if(!empty($kategori_sub))
-                    <div class="pdf-item">
+                    {{-- Objek kebakaran (form: objek_kebakaran) --}}
+                    @if(!empty($laporan->objek_kebakaran))
+                    <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-fire"></i></div>
-                            <div class="data-label">Sub-Kategori</div>
+                            <div class="data-label">Objek Kebakaran</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value text-capitalize">{{ str_replace('_', ' ', $kategori_sub) }}</div>
+                            <div class="data-value text-capitalize">{{ str_replace('_', ' ', $laporan->objek_kebakaran) }}</div>
+                        </div>
+                    </div>
+
+                    @if(!empty($rincian_objek))
+                    <div class="pdf-item-full">
+                        <div class="data-row">
+                            <div class="data-icon"><i class="fas fa-building"></i></div>
+                            <div class="data-label">Rincian Objek</div>
+                            <div class="data-colon">:</div>
+                            <div class="data-value">{{ implode(', ', $rincian_objek) }}</div>
+                        </div>
+                    </div>
+                    @endif
+
+                    @if(!empty($laporan->keterangan_objek_kebakaran))
+                    <div class="pdf-item-full">
+                        <div class="data-row">
+                            <div class="data-icon"><i class="fas fa-align-left"></i></div>
+                            <div class="data-label">Keterangan Objek</div>
+                            <div class="data-colon">:</div>
+                            <div class="data-value teks-panjang">{{ $laporan->keterangan_objek_kebakaran }}</div>
+                        </div>
+                    </div>
+                    @endif
+                    @endif
+
+                    {{-- Non-kebakaran (form: kategori_non_kebakaran) --}}
+                    @if(!empty($laporan->kategori_non_kebakaran))
+                    <div class="pdf-item-full">
+                        <div class="data-row">
+                            <div class="data-icon"><i class="fas fa-life-ring"></i></div>
+                            <div class="data-label">Jenis Evakuasi</div>
+                            <div class="data-colon">:</div>
+                            <div class="data-value text-capitalize">{{ str_replace('_', ' ', $laporan->kategori_non_kebakaran) }}</div>
                         </div>
                     </div>
                     @endif
@@ -173,7 +295,7 @@
                             <div class="data-icon"><i class="fas fa-exclamation-circle"></i></div>
                             <div class="data-label">Tingkat Prioritas</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value text-capitalize">{{ $laporan->prioritas }}</div>
+                            <div class="data-value"><span class="badge-prio prio-{{ strtolower($laporan->prioritas) }}">{{ $laporan->prioritas }}</span></div>
                         </div>
                     </div>
                     @endif
@@ -185,6 +307,17 @@
                             <div class="data-label">Nama Pelapor</div>
                             <div class="data-colon">:</div>
                             <div class="data-value">{{ $laporan->nama_pelapor }}</div>
+                        </div>
+                    </div>
+                    @endif
+
+                    @if(!empty($laporan->telepon_pelapor))
+                    <div class="pdf-item">
+                        <div class="data-row">
+                            <div class="data-icon"><i class="fas fa-phone"></i></div>
+                            <div class="data-label">Telepon Pelapor</div>
+                            <div class="data-colon">:</div>
+                            <div class="data-value">{{ $laporan->telepon_pelapor }}</div>
                         </div>
                     </div>
                     @endif
@@ -206,7 +339,7 @@
                             <div class="data-icon"><i class="fas fa-map-signs"></i></div>
                             <div class="data-label">Alamat Kejadian</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $laporan->alamat }}</div>
+                            <div class="data-value teks-panjang">{{ $laporan->alamat }}</div>
                         </div>
                     </div>
                     @endif
@@ -236,6 +369,17 @@
 
                 <div class="sub-header">Data Waktu Operasional</div>
                 <div class="pdf-grid">
+                    @if(!empty($laporan->tanggal_kejadian))
+                    <div class="pdf-item">
+                        <div class="data-row">
+                            <div class="data-icon"><i class="fas fa-calendar-day"></i></div>
+                            <div class="data-label">Hari, Tanggal</div>
+                            <div class="data-colon">:</div>
+                            <div class="data-value">{{ !empty($laporan->hari_kejadian) ? $laporan->hari_kejadian . ', ' : '' }}{{ \Carbon\Carbon::parse($laporan->tanggal_kejadian)->format('d M Y') }}</div>
+                        </div>
+                    </div>
+                    @endif
+
                     @if(!empty($laporan->waktu_kejadian))
                     <div class="pdf-item">
                         <div class="data-row">
@@ -301,6 +445,17 @@
                         </div>
                     </div>
                     @endif
+
+                    @if(isset($laporan->respon_time) && $laporan->respon_time !== '')
+                    <div class="pdf-item">
+                        <div class="data-row">
+                            <div class="data-icon"><i class="fas fa-stopwatch"></i></div>
+                            <div class="data-label">Respon Time</div>
+                            <div class="data-colon">:</div>
+                            <div class="data-value">{{ $laporan->respon_time }} Menit</div>
+                        </div>
+                    </div>
+                    @endif
                 </div>
 
                 <!-- TAB 2: TEKNIS & LOGISTIK -->
@@ -331,24 +486,35 @@
                     </div>
                     @endif
 
-                    @if(!empty($teknis->satuan_tugas))
+                    @if(!empty($teknis->satgas_operasi))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-users-cog"></i></div>
-                            <div class="data-label">Satuan Tugas / Regu</div>
+                            <div class="data-label">Satgas Operasi</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->satuan_tugas }}</div>
+                            <div class="data-value">{{ $teknis->satgas_operasi }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->tim_respontime))
+                    @if(!empty($teknis->tim_quick_respon))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-stopwatch"></i></div>
-                            <div class="data-label">Tim Respon Time</div>
+                            <div class="data-label">Tim Quick Respon</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->tim_respontime }}</div>
+                            <div class="data-value">{{ $teknis->tim_quick_respon }}</div>
+                        </div>
+                    </div>
+                    @endif
+
+                    @if(!empty($teknis->lama_operasi) && $teknis->lama_operasi > 0)
+                    <div class="pdf-item">
+                        <div class="data-row">
+                            <div class="data-icon"><i class="fas fa-hourglass-half"></i></div>
+                            <div class="data-label">Lama Operasi</div>
+                            <div class="data-colon">:</div>
+                            <div class="data-value">{{ $teknis->lama_operasi }} Menit</div>
                         </div>
                     </div>
                     @endif
@@ -414,7 +580,7 @@
                             <div class="data-icon"><i class="fas fa-user-tag"></i></div>
                             <div class="data-label">Anggota Terlibat</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->daftar_personel }}</div>
+                            <div class="data-value teks-panjang">{{ $teknis->daftar_personel }}</div>
                         </div>
                     </div>
                     @endif
@@ -429,7 +595,7 @@
                             <div class="data-icon"><i class="fas fa-tasks"></i></div>
                             <div class="data-label">Langkah Penanganan</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->langkah_penanganan }}</div>
+                            <div class="data-value teks-panjang">{{ $teknis->langkah_penanganan }}</div>
                         </div>
                     </div>
                     @endif
@@ -440,7 +606,7 @@
                             <div class="data-icon"><i class="fas fa-exclamation-triangle"></i></div>
                             <div class="data-label">Hambatan Lapangan</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->hambatan_lapangan }}</div>
+                            <div class="data-value teks-panjang">{{ $teknis->hambatan_lapangan }}</div>
                         </div>
                     </div>
                     @endif
@@ -451,7 +617,7 @@
                             <div class="data-icon"><i class="fas fa-check-double"></i></div>
                             <div class="data-label">Hasil Tindakan</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->hasil_tindakan }}</div>
+                            <div class="data-value teks-panjang">{{ $teknis->hasil_tindakan }}</div>
                         </div>
                     </div>
                     @endif
@@ -505,13 +671,24 @@
                     </div>
                     @endif
 
+                    @if(!empty($teknis->jiwa_terdampak) && $teknis->jiwa_terdampak > 0)
+                    <div class="pdf-item">
+                        <div class="data-row">
+                            <div class="data-icon"><i class="fas fa-users"></i></div>
+                            <div class="data-label">Jiwa Terdampak</div>
+                            <div class="data-colon">:</div>
+                            <div class="data-value">{{ $teknis->jiwa_terdampak }} Jiwa</div>
+                        </div>
+                    </div>
+                    @endif
+
                     @if(!empty($teknis->korban_hewan_aset))
                     <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-cat"></i></div>
                             <div class="data-label">Korban Hewan/Aset</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->korban_hewan_aset }}</div>
+                            <div class="data-value teks-panjang">{{ $teknis->korban_hewan_aset }}</div>
                         </div>
                     </div>
                     @endif
@@ -528,6 +705,17 @@
                             <div class="data-label">Armada Diturunkan</div>
                             <div class="data-colon">:</div>
                             <div class="data-value text-capitalize">{{ str_replace('_', ' ', implode(', ', $arr_armada)) }}</div>
+                        </div>
+                    </div>
+                    @endif
+
+                    @if(!empty($teknis->jumlah_armada) && $teknis->jumlah_armada > 0)
+                    <div class="pdf-item">
+                        <div class="data-row">
+                            <div class="data-icon"><i class="fas fa-truck-moving"></i></div>
+                            <div class="data-label">Jumlah Armada</div>
+                            <div class="data-colon">:</div>
+                            <div class="data-value">{{ $teknis->jumlah_armada }} Unit</div>
                         </div>
                     </div>
                     @endif
@@ -554,13 +742,13 @@
                     </div>
                     @endif
 
-                    @if(!empty($teknis->liter_air) && $teknis->liter_air > 0)
+                    @if(!empty($teknis->jumlah_air) && $teknis->jumlah_air > 0)
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-tint"></i></div>
                             <div class="data-label">Konsumsi Air</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->liter_air }} Liter</div>
+                            <div class="data-value">{{ $teknis->jumlah_air }} Liter</div>
                         </div>
                     </div>
                     @endif
@@ -663,7 +851,7 @@
                             <div class="data-icon"><i class="fas fa-building"></i></div>
                             <div class="data-label">Instansi Pendukung</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value text-uppercase">{{ strtoupper(str_replace('_', ' ', implode(', ', $arr_instansi))) }}</div>
+                            <div class="data-value text-uppercase">{{ strtoupper(str_replace('_', ' ', implode(', ', array_map(fn($i) => $map_instansi[$i] ?? $i, $arr_instansi)))) }}</div>
                         </div>
                     </div>
                     @endif
@@ -674,7 +862,7 @@
                             <div class="data-icon"><i class="fas fa-hands-helping"></i></div>
                             <div class="data-label">Tindakan Instansi Lain</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $dokumentasi->tindakan_instansi }}</div>
+                            <div class="data-value teks-panjang">{{ $dokumentasi->tindakan_instansi }}</div>
                         </div>
                     </div>
                     @endif
@@ -696,7 +884,15 @@
                             <div class="data-icon"><i class="fas fa-clipboard-check"></i></div>
                             <div class="data-label">Cara Bertindak</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $dokumentasi->cara_bertindak }}</div>
+                            <div class="data-value">
+                                @if($dokumentasi->cara_bertindak === 'lainnya')
+                                    {{ $dokumentasi->cara_bertindak_lainnya ?? 'Lainnya' }}
+                                @elseif($dokumentasi->cara_bertindak === '5T')
+                                    5 T (Terencana, Terukur, Terarah, Terlayani & Tuntas)
+                                @else
+                                    {{ $dokumentasi->cara_bertindak }}
+                                @endif
+                            </div>
                         </div>
                     </div>
                     @endif
@@ -712,7 +908,7 @@
                             <div class="data-icon"><i class="fas fa-plus-circle"></i></div>
                             <div class="data-label">Kebutuhan Tambahan</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $dokumentasi->kebutuhan_tambahan }}</div>
+                            <div class="data-value teks-panjang">{{ $dokumentasi->kebutuhan_tambahan }}</div>
                         </div>
                     </div>
                     @endif
@@ -723,7 +919,7 @@
                             <div class="data-icon"><i class="fas fa-lightbulb"></i></div>
                             <div class="data-label">Saran Mitigasi Warga</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $dokumentasi->saran_mitigasi }}</div>
+                            <div class="data-value teks-panjang">{{ $dokumentasi->saran_mitigasi }}</div>
                         </div>
                     </div>
                     @endif
@@ -737,7 +933,7 @@
                             <div class="data-icon"><i class="fas fa-align-left"></i></div>
                             <div class="data-label">Kronologi Lengkap</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $dokumentasi->kronologi_lengkap }}</div>
+                            <div class="data-value teks-panjang">{{ $dokumentasi->kronologi_lengkap }}</div>
                         </div>
                     </div>
                 </div>
@@ -757,7 +953,11 @@
                                 <div class="data-icon"><i class="fas fa-paw"></i></div>
                                 <div class="data-label">Jenis Hewan</div>
                                 <div class="data-colon">:</div>
-                                <div class="data-value text-capitalize">{{ $khusus->jenis_hewan }}</div>
+                                <div class="data-value text-capitalize">
+                                    {{ $khusus->jenis_hewan === 'lainnya' && !empty($khusus->jenis_hewan_lainnya)
+                                        ? $khusus->jenis_hewan_lainnya
+                                        : $khusus->jenis_hewan }}
+                                </div>
                             </div>
                         </div>
                         @endif
@@ -991,15 +1191,21 @@
 
                 <!-- TAB 5: DOKUMENTASI FOTO & VIDEO -->
                 @if(!empty($arr_foto) || !empty($dokumentasi->video))
-                <div class="section-header" style="page-break-before: always;"><h3>V. Dokumentasi Lapangan</h3></div>
+                <div class="section-header"><h3>V. Dokumentasi Lapangan</h3></div>
                 
                 @if(!empty($arr_foto))
                     <div class="sub-header"><i class="fas fa-camera me-2"></i>Lampiran Foto</div>
-                    <div style="display: flex; flex-wrap: wrap; gap: 15px; width: 100%; margin-bottom: 25px;">
-                        @foreach($arr_foto as $foto)
-                            <div style="width: 48%; border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden; padding: 4px; background: #fff; page-break-inside: avoid;">
-                                <img src="{{ asset('storage/' . $foto) }}" style="width: 100%; height: 250px; object-fit: cover; border-radius: 4px;" alt="Foto Dokumentasi" onerror="this.onerror=null; this.src='https://placehold.co/600x400/e2e8f0/64748b?text=Gambar+Tidak+Ditemukan';">
+                    @php $no_foto = 0; @endphp
+                    <div class="foto-wrap">
+                        @foreach(collect($arr_foto)->chunk(2) as $baris_foto)
+                        <div class="foto-row">
+                            @foreach($baris_foto as $foto)
+                            <div class="foto-item">
+                                <img src="{{ asset('storage/' . $foto) }}" alt="Foto Dokumentasi" onerror="this.onerror=null; this.src='https://placehold.co/600x400/e2e8f0/64748b?text=Gambar+Tidak+Ditemukan';">
+                                <div class="foto-cap">Gambar {{ ++$no_foto }}</div>
                             </div>
+                            @endforeach
+                        </div>
                         @endforeach
                     </div>
                 @endif
@@ -1024,9 +1230,24 @@
                 @endif
 
                 <!-- KESIMPULAN -->
-                <div class="section-header" style="page-break-before: auto;"><h3>Kesimpulan & Dasar Pelaksanaan</h3></div>
-                <div style="font-weight: 600; font-style: italic; color: var(--steel); font-size: 13px; line-height: 1.5; margin-left: 20px; page-break-inside: avoid;">
+                <div class="section-header"><h3>Kesimpulan & Dasar Pelaksanaan</h3></div>
+                <div class="dasar-hukum">
                     Seluruh kegiatan Pelayanan Penyelamatan dan Pemadaman ini berpedoman pada Peraturan Menteri Dalam Negeri (Permendagri) Nomor 114 Tahun 2018 tentang Standar Teknis Pelayanan Dasar Pada Standar Pelayanan Minimal (SPM) Sub Urusan Kebakaran Daerah Kabupaten/Kota.
+                </div>
+
+                <!-- TANDA TANGAN (hanya tampil di PDF / cetak) -->
+                <div class="ttd-wrap">
+                    <div class="ttd-col">
+                        <p>Mengetahui,<br>Kepala Bidang Pemadaman & Penyelamatan</p>
+                        <div class="ttd-space"></div>
+                        <p class="ttd-nama">( ................................................ )</p>
+                        <p class="ttd-nip">NIP. ................................................</p>
+                    </div>
+                    <div class="ttd-col">
+                        <p>Jambi, {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('d F Y') }}<br>Pimpinan Operasi</p>
+                        <div class="ttd-space"></div>
+                        <p class="ttd-nama">( {{ !empty($teknis->pimpinan_operasi) ? $teknis->pimpinan_operasi : '................................................' }} )</p>
+                    </div>
                 </div>
 
                 <div class="d-flex justify-content-end gap-3 mt-5 pt-4 border-top d-print-none" id="action-buttons-container" data-html2canvas-ignore="true">
@@ -1046,4 +1267,78 @@
 
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+    /* Download PDF (A4): konten dikunci selebar area cetak A4 (190 mm), kop surat tampil,
+       judul bagian ditahan agar tidak terpisah dari isinya, nomor halaman ditambahkan. */
+    function downloadDetailPDF() {
+        var el = document.getElementById('report-content');
+        var header = document.getElementById('pdf-header');
+        var actions = document.getElementById('action-buttons-container');
+        var nomor = @json($laporan->nomor_laporan);
+        var wrappers = [];
+
+        header.style.display = 'block';
+        el.classList.add('pdf-mode');
+        el.style.width = '718px';          /* 190 mm pada 96 dpi */
+        el.style.maxWidth = 'none';
+        actions.style.setProperty('display', 'none', 'important');
+
+        /* Bungkus judul dengan ruang cadangan: bila judul jatuh di dasar halaman,
+           ia dipindah ke halaman berikutnya bersama isi pertamanya. */
+        el.querySelectorAll('.section-header, .sub-header').forEach(function (h) {
+            var next = h.nextElementSibling;
+            var need = (next && next.classList.contains('foto-wrap')) ? 270 : 60;
+            var w = document.createElement('div');
+            w.className = 'keep-next';
+            w.style.paddingBottom = need + 'px';
+            w.style.marginBottom = '-' + need + 'px';
+            h.parentNode.insertBefore(w, h);
+            w.appendChild(h);
+            wrappers.push(w);
+        });
+
+        function pulihkan() {
+            wrappers.forEach(function (w) {
+                var h = w.firstElementChild;
+                if (h) w.parentNode.insertBefore(h, w);
+                w.parentNode.removeChild(w);
+            });
+            header.style.display = 'none';
+            el.classList.remove('pdf-mode');
+            el.style.width = '';
+            el.style.maxWidth = '';
+            actions.style.removeProperty('display');
+        }
+
+        var opt = {
+            margin: [10, 10, 14, 10],
+            filename: @json('Laporan-' . $laporan->nomor_laporan . '.pdf'),
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: ['css', 'legacy'], avoid: ['.data-row', '.keep-next', '.foto-row', '.dasar-hukum', '.ttd-wrap'] }
+        };
+
+        html2pdf().set(opt).from(el).toPdf().get('pdf').then(function (pdf) {
+            var total = pdf.internal.getNumberOfPages();
+            var w = pdf.internal.pageSize.getWidth();
+            var h = pdf.internal.pageSize.getHeight();
+            for (var i = 1; i <= total; i++) {
+                pdf.setPage(i);
+                pdf.setDrawColor(170);
+                pdf.setLineWidth(0.2);
+                pdf.line(10, h - 11, w - 10, h - 11);
+                pdf.setFont('times', 'normal');
+                pdf.setFontSize(8);
+                pdf.setTextColor(100);
+                pdf.text('Laporan No. ' + nomor, 10, h - 7);
+                pdf.text('Halaman ' + i + ' dari ' + total, w - 10, h - 7, { align: 'right' });
+            }
+        }).save().then(pulihkan).catch(function (err) {
+            pulihkan();
+            console.error(err);
+            alert('Gagal membuat PDF. Silakan coba lagi.');
+        });
+    }
+</script>
 @endpush

@@ -530,6 +530,7 @@
         <h1 class="rise d1">Data Sumber Air</h1>
         <p class="rise d2">Pemetaan lokasi sumber air untuk keperluan pemadaman di Kota Jambi.</p>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <div class="page-body">

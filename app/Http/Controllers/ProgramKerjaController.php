@@ -23,10 +23,9 @@ class ProgramKerjaController extends Controller
         return view('internal.program-kerja.index', compact('dokumen'));
     }
 
-    // 2. Menyimpan Data dan Upload File
+    // 2. Menyimpan Data dan Upload File Baru
     public function store(Request $request)
     {
-        // Validasi dengan 6 bagian SOP yang baru
         $validator = Validator::make($request->all(), [
             'judul_dokumen' => 'required|string|max:255',
             'kategori'      => 'required|in:SOTK,SOP,Perencanaan,Pelaporan,Produk Hukum',
@@ -44,22 +43,17 @@ class ProgramKerjaController extends Controller
         try {
             $file = $request->file('file_dokumen');
             
-            // Bersihkan nama file dari spasi dan karakter khusus yang bisa merusak URL
             $namaFileAsli = str_replace([' ', '#', '%', '&'], '_', $file->getClientOriginalName());
             $namaFile = time() . '_' . $namaFileAsli;
             
-            // Tentukan jalur pasti folder tujuan
             $tujuan_upload = storage_path('app/public/dokumen');
             
-            // CEK & BUAT FOLDER OTOMATIS: Jika folder belum ada, buat foldernya!
             if (!file_exists($tujuan_upload)) {
                 mkdir($tujuan_upload, 0755, true);
             }
             
-            // Pindahkan file secara fisik langsung ke folder tujuan
             $file->move($tujuan_upload, $namaFile);
 
-            // Simpan ke database (menggunakan model Dokumen yang terhubung ke dokumen_sop)
             Dokumen::create([
                 'judul_dokumen' => $request->judul_dokumen,
                 'kategori'      => $request->kategori,
@@ -76,13 +70,73 @@ class ProgramKerjaController extends Controller
         }
     }
 
-    // 3. Menghapus Data
+    // 3. Memperbarui Data dan File (Method untuk Modal Edit)
+    public function update(Request $request, $id)
+    {
+        $dokumen = Dokumen::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [
+            'judul_dokumen' => 'required|string|max:255',
+            'kategori'      => 'required|in:SOTK,SOP,Perencanaan,Pelaporan,Produk Hukum',
+            'sub_kategori'  => 'required|in:Pencegahan,Pemadaman Kebakaran,Penyelamatan dan Evakuasi,Sarana dan Prasarana,Kepegawaian,Keuangan',
+            'file_dokumen'  => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120', 
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('error', 'Cek kembali form pembaruan Anda. Pastikan file valid.');
+        }
+
+        try {
+            $dataUpdate = [
+                'judul_dokumen' => $request->judul_dokumen,
+                'kategori'      => $request->kategori,
+                'sub_kategori'  => $request->kategori === 'SOP' ? $request->sub_kategori : null,
+            ];
+
+            // Jika user mengunggah file baru
+            if ($request->hasFile('file_dokumen')) {
+                $file = $request->file('file_dokumen');
+                
+                $namaFileAsli = str_replace([' ', '#', '%', '&'], '_', $file->getClientOriginalName());
+                $namaFile = time() . '_' . $namaFileAsli;
+                
+                $tujuan_upload = storage_path('app/public/dokumen');
+                
+                if (!file_exists($tujuan_upload)) {
+                    mkdir($tujuan_upload, 0755, true);
+                }
+                
+                // Pindahkan file baru
+                $file->move($tujuan_upload, $namaFile);
+
+                // Hapus file fisik lama jika ada
+                if ($dokumen->nama_file && Storage::disk('public')->exists('dokumen/' . $dokumen->nama_file)) {
+                    Storage::disk('public')->delete('dokumen/' . $dokumen->nama_file);
+                }
+
+                $dataUpdate['nama_file'] = $namaFile;
+            }
+
+            $dokumen->update($dataUpdate);
+
+            return redirect()->back()->with('success', 'Dokumen SOP berhasil diperbarui!');
+            
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal memperbarui sistem: ' . $e->getMessage());
+        }
+    }
+
+    // 4. Menghapus Data
     public function destroy($id)
     {
         $dokumen = Dokumen::findOrFail($id);
 
-        // Hapus file fisik jika ada
-        if (Storage::disk('public')->exists('dokumen/' . $dokumen->nama_file)) {
+        if ($dokumen->nama_file && Storage::disk('public')->exists('dokumen/' . $dokumen->nama_file)) {
             Storage::disk('public')->delete('dokumen/' . $dokumen->nama_file);
         }
 
@@ -90,7 +144,7 @@ class ProgramKerjaController extends Controller
         return redirect()->back()->with('success', 'Dokumen beserta filenya berhasil dihapus!');
     }
     
-    // 4. Buka / Lihat File (Publik)
+    // 5. Buka / Lihat File (Publik)
     public function viewFile($id)
     {
         $dokumen = Dokumen::find($id);
@@ -108,7 +162,7 @@ class ProgramKerjaController extends Controller
         return response()->file($path);
     }
 
-    // 5. Download File (Publik)
+    // 6. Download File (Publik)
     public function download($id)
     {
         $dokumen = Dokumen::find($id);

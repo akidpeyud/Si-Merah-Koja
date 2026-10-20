@@ -55,6 +55,9 @@
     $maps_link = "https://www.google.com/maps/place/6PC59JJ2%2BQ76/@-1.6180875,103.6006406,871m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-1.6180875!4d103.6006406?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D";
 
     $play_store_url = "";
+
+    // Pemeriksaan minimal 14 hari setelah permohonan (H-14)
+    $min_date_pemeriksaan = date('Y-m-d', strtotime('+14 days'));
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -363,11 +366,8 @@
         .perizinan-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; margin-top: 24px; align-items: start; }
         @media (min-width: 992px) {
             .perizinan-layout { grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); gap: 32px; }
-            .info-stack {
-                position: sticky; top: calc(var(--header-h) + 16px); align-self: start;
-                max-height: calc(100dvh - var(--header-h) - 32px);
-                overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
-            }
+            /* Sticky tanpa scroll internal; posisi top dihitung JS agar seluruh isi tetap terlihat */
+            .info-stack { position: sticky; align-self: start; top: var(--stick-top, calc(var(--header-h) + 16px)); }
         }
         .info-stack { display: grid; gap: 16px; }
         #formulir { scroll-margin-top: calc(var(--header-h) + 16px); }
@@ -623,6 +623,102 @@
             html { scroll-behavior: auto; }
             *, *::before, *::after { animation: none !important; transition: none !important; }
         }
+
+        /* ==========================================================
+           ANIMASI MASUK, KOLOM RESPONSIF & GAYA KARTU
+           ========================================================== */
+        @keyframes animInUp { from { opacity: 0; transform: translateY(32px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes animInLeft { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes animSubIn { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeInPreview { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+        @keyframes dzOk { 0% { box-shadow: 0 0 0 0 rgba(22,163,74,.45); } 100% { box-shadow: 0 0 0 14px rgba(22,163,74,0); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        [data-anim] { opacity: 0; will-change: transform, opacity; }
+        [data-anim="up"].is-inview { animation: animInUp .75s cubic-bezier(.16, 1, .3, 1) forwards; animation-delay: var(--d, 0s); }
+        [data-anim="left"].is-inview { animation: animInLeft .7s cubic-bezier(.16, 1, .3, 1) forwards; animation-delay: var(--d, 0s); }
+        [data-anim="sub"].is-inview { animation: animSubIn .55s cubic-bezier(.16, 1, .3, 1) forwards; animation-delay: var(--d, 0s); }
+
+        .fact { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+        .fact:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -10px rgba(13,27,42,.18); border-color: #cbd5e1; }
+        .side-card { box-shadow: 0 8px 24px rgba(13,27,42,.03); transition: box-shadow .25s ease; }
+        .side-card:hover { box-shadow: 0 14px 30px rgba(13,27,42,.06); }
+
+        /* Kolom kiri ringkas */
+        .info-stack { gap: 16px; }
+        .info-stack .side-card { padding: clamp(16px, 2.4vw, 22px); }
+        .info-stack .card-head { margin-bottom: 14px; }
+        .info-stack .card-head h2 { font-size: 1.08rem; }
+        .info-stack .checklist { gap: 12px; }
+        .info-stack .checklist > li {
+            grid-template-columns: 34px minmax(0, 1fr); gap: 12px; padding: 12px; font-size: .9rem;
+            background: var(--paper); border: 1px solid var(--line); border-radius: 14px;
+            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+        .info-stack .checklist > li:hover { transform: translateX(4px); border-color: var(--signal); box-shadow: 0 4px 12px rgba(229,57,45,.08); }
+        .info-stack .ck-ico { width: 34px; height: 34px; }
+        .ck-title { display: block; margin-bottom: 4px; font-weight: 700; color: var(--ink); }
+        .ck-highlight { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; padding: 4px 10px; border-radius: 8px; background: var(--warn-bg); color: #92400e; font-size: .82rem; font-weight: 700; }
+
+        /* Daftar persyaratan administrasi (menimpa .checklist li agar item turunan tidak ikut grid) */
+        .info-stack .checklist .admin-sublist { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; margin-top: 8px; }
+        @media (min-width: 520px) and (max-width: 991px) { .info-stack .checklist .admin-sublist { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        .info-stack .checklist .admin-sublist li {
+            display: flex; align-items: flex-start; gap: 10px; grid-template-columns: none; padding: 8px 10px; border-radius: 10px;
+            background: #fff; border: 1px solid var(--line); font-size: .84rem; line-height: 1.4;
+            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+        .info-stack .checklist .admin-sublist li:hover { transform: translateX(4px); border-color: var(--signal); box-shadow: 0 4px 12px rgba(229,57,45,.08); }
+        .admin-sublist li > i { flex: none; width: 18px; margin-top: 3px; text-align: center; font-size: .9rem; color: var(--signal-d); }
+        .badge-khusus { display: inline-block; margin-top: 3px; padding: 2px 7px; border-radius: 6px; background: #fdeceb; color: var(--signal-d); font-size: .72rem; font-weight: 700; }
+        .sub-note { display: inline-block; margin-top: 2px; font-size: .78rem; color: var(--steel); }
+        .checklist a.inline { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--line); background: var(--paper); font-size: .78rem; text-decoration: none; transition: background .2s, color .2s, border-color .2s; }
+        .checklist a.inline:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+
+        /* Item administrasi: daftar selebar kartu, tidak menjorok */
+        .info-stack .checklist > li.has-sublist { display: block; }
+        .info-stack .checklist > li.has-sublist:hover { transform: none; }
+        .ck-row { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; align-items: start; }
+        .info-stack .checklist > li.has-sublist .admin-sublist { margin-top: 12px; width: 100%; }
+
+        /* Peringatan di formulir */
+        .alert-info { background: #eef2f6; color: var(--ink-3); border: 1px solid var(--line); }
+        .alert-warn { background: #fff8e6; color: #9c6500; border: 1px solid #ffe58f; margin-bottom: 20px; }
+        .alert-link { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: #b77900; text-decoration: underline; text-underline-offset: 3px; }
+        .alert-link:hover { color: #7a5200; }
+
+        /* Judul bagian & kolom isian muncul bergantian */
+        .fs[data-anim] { opacity: 1; will-change: auto; }
+        .fs[data-anim].is-inview { animation: none; }
+        .fs[data-anim] > legend, .fs[data-anim] .field { opacity: 0; }
+        .fs.is-inview > legend { animation: animInLeft .55s cubic-bezier(.16, 1, .3, 1) both; }
+        .fs.is-inview .field { animation: animInUp .65s cubic-bezier(.16, 1, .3, 1) both; animation-delay: calc(.1s + var(--i, 0) * .07s); }
+        @media (max-width: 520px) { .form-body { gap: 28px; } .fs legend { font-size: 1.05rem; } }
+
+        /* Unggah berkas: 1 baris untuk 1 upload */
+        .upl-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 18px; font-size: .88rem; font-weight: 600; color: var(--steel); }
+        .upl-bar { flex: 1 1 140px; height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; }
+        .upl-bar i { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, var(--amber), var(--ok)); transition: width .5s cubic-bezier(.16, 1, .3, 1); }
+        .upload-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+        .upload-card { min-width: 0; display: flex; flex-direction: column; padding: 16px clamp(14px, 2.5vw, 20px) 14px; border: 1px solid var(--line); border-radius: var(--r-md); background: #fff; }
+        .upload-card .label { align-items: flex-start; flex-wrap: wrap; }
+        .upload-card .dropzone { padding: 20px 16px; }
+        .upload-card .dropzone.has-files { border-color: var(--ok); animation: dzOk .45s ease; }
+        .upload-card.is-off .dropzone, .upload-card.is-off .hint { opacity: .5; }
+        .upload-card.is-off .dropzone { pointer-events: none; background: #eef1f5; border-style: dotted; }
+        .dropzone[data-srv="1"] { border-color: var(--signal); background: #fff5f5; }
+        .dz-files li { animation: fadeInPreview .3s ease both; }
+        .dz-preview { animation: fadeInPreview .25s ease; }
+
+        .btn .spin { animation: spin .8s linear infinite; }
+        .cs-item { animation: animInUp .5s cubic-bezier(.16, 1, .3, 1) both; animation-delay: calc(var(--i, 0) * .08s); }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+            [data-anim], .fs[data-anim] > legend, .fs[data-anim] .field { opacity: 1 !important; transform: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -731,7 +827,7 @@
                     </ul>
                 </li>
 
-                <li><a class="menu-link {{ request()->is('redkar*') ? 'is-active' : '' }}" href="/redkar">Redkar</a></li>
+ 
             </ul>
 
             <!-- ===== Tombol kanan: Lapor darurat + Masuk ===== -->
@@ -786,6 +882,7 @@
         <h1 class="rise d1">Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</h1>
         <p class="rise d2">Ajukan Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <div class="page-body">
@@ -798,21 +895,21 @@
 
         <!-- Ringkasan -->
         <div class="facts">
-            <div class="fact">
+            <div class="fact" data-anim="up" style="--d: .05s">
                 <span class="c-ico"><i class="fas fa-clock"></i></span>
                 <div>
                     <small>Waktu penyelesaian</small>
                     <strong>14 hari kerja</strong>
                 </div>
             </div>
-            <div class="fact">
+            <div class="fact" data-anim="up" style="--d: .15s">
                 <span class="c-ico"><i class="fas fa-file-circle-check"></i></span>
                 <div>
                     <small>Produk layanan</small>
                     <strong>Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</strong>
                 </div>
             </div>
-            <div class="fact">
+            <div class="fact" data-anim="up" style="--d: .25s">
                 <span class="c-ico"><i class="fab fa-whatsapp"></i></span>
                 <div>
                     <small>Pengaduan layanan</small>
@@ -825,41 +922,63 @@
 
             <!-- Informasi -->
             <aside class="info-stack" aria-label="Informasi layanan">
-                <a class="jump" href="#formulir"><i class="fas fa-arrow-down"></i> Langsung ke formulir</a>
+                <a class="jump" href="#formulir" data-anim="up" style="--d: .1s"><i class="fas fa-arrow-down"></i> Langsung ke formulir</a>
 
-                <section class="side-card">
+                <section class="side-card" data-anim="left" style="--d: .15s">
                     <div class="card-head">
                         <span class="c-ico"><i class="fas fa-clipboard-check"></i></span>
                         <h2>Persyaratan</h2>
                     </div>
                     <ol class="checklist">
-                        <li>
-                            <span class="ck-ico"><i class="fas fa-pen-to-square"></i></span>
-                            <div>Isi formulir rekomendasi proteksi kebakaran secara elektronik melalui <strong>simerah.jambikota.go.id</strong></div>
-                        </li>
-                        <li>
-                            <span class="ck-ico"><i class="fas fa-file-signature"></i></span>
+                        <li data-anim="up" style="--d: .22s">
+                            <span class="ck-ico"><i class="fas fa-calendar-day"></i></span>
                             <div>
-                                Unggah surat permohonan bermaterai
-                                <?php if ($url_surat_permohonan): ?>
-                                    <br><a class="inline" href="<?= $h($url_surat_permohonan) ?>" download><i class="fas fa-download"></i> Unduh surat permohonan</a>
-                                <?php else: ?>
-                                    <br><span class="muted">Templat surat permohonan belum tersedia</span>
-                                <?php endif; ?>
+                                <span class="ck-title">Batas waktu permohonan</span>
+                                Menyampaikan surat permohonan selambat-lambatnya <strong>14 hari sebelum pemeriksaan</strong>.
+                                <span class="ck-highlight"><i class="fas fa-clock"></i> Wajib H-14 sebelum pemeriksaan</span>
                             </div>
                         </li>
-                        <li>
-                            <span class="ck-ico"><i class="fas fa-folder-open"></i></span>
-                            <div>
-                                Unggah detail persyaratan RKBGL lainnya (bisa dalam format ZIP)
-                                <br><button type="button" class="tool" data-open-modal><i class="fas fa-list-ul"></i> Lihat detail</button>
+                        <li class="has-sublist" data-anim="up" style="--d: .30s">
+                            <div class="ck-row">
+                                <span class="ck-ico"><i class="fas fa-file-circle-check"></i></span>
+                                <div>
+                                    <span class="ck-title">Persyaratan administrasi</span>
+                                    Melampirkan persyaratan administrasi berikut:
+                                </div>
                             </div>
+                            <ul class="admin-sublist">
+                                    <li data-anim="sub" style="--d: .36s">
+                                        <i class="fas fa-envelope-open-text"></i>
+                                        <div>
+                                            <span>Surat permohonan</span>
+                                            <?php if ($url_surat_permohonan): ?>
+                                                <br><a class="inline" href="<?= $h($url_surat_permohonan) ?>" download><i class="fas fa-download"></i> Unduh format surat</a>
+                                            <?php else: ?>
+                                                <br><span class="muted">Templat surat permohonan belum tersedia</span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </li>
+                                    <li data-anim="sub" style="--d: .41s"><i class="fas fa-id-card"></i><span>Fotokopi KTP penanggung jawab gedung</span></li>
+                                    <li data-anim="sub" style="--d: .46s"><i class="fas fa-building-circle-check"></i><span>NIB (Nomor Induk Berusaha)</span></li>
+                                    <li data-anim="sub" style="--d: .51s"><i class="fas fa-stamp"></i><span>PBG atau IMB</span></li>
+                                    <li data-anim="sub" style="--d: .56s"><i class="fas fa-bolt"></i><span>SLO listrik</span></li>
+                                    <li data-anim="sub" style="--d: .61s"><i class="fas fa-certificate"></i><span>SLF bangunan</span></li>
+                                    <li data-anim="sub" style="--d: .66s"><i class="fas fa-map"></i><span>Denah bangunan</span></li>
+                                    <li data-anim="sub" style="--d: .71s">
+                                        <i class="fas fa-elevator"></i>
+                                        <div><span>PJK3</span><br><span class="badge-khusus">Apabila ada lift</span></div>
+                                    </li>
+                                    <li data-anim="sub" style="--d: .76s">
+                                        <i class="fas fa-fire-extinguisher"></i>
+                                        <div><span>Data teknis sistem proteksi kebakaran</span><br><span class="sub-note">Aktif, pasif, sarana penyelamatan, dan utilitas bangunan</span></div>
+                                    </li>
+                                </ul>
                         </li>
                     </ol>
                 </section>
 
                 <!-- Cek status permohonan -->
-                <section class="side-card" id="cek-status" aria-label="Cek status permohonan">
+                <section class="side-card" id="cek-status" aria-label="Cek status permohonan" data-anim="left" style="--d: .3s">
                     <div class="card-head">
                         <span class="c-ico"><i class="fas fa-magnifying-glass"></i></span>
                         <h2>Cek Status Permohonan</h2>
@@ -878,7 +997,7 @@
             </aside>
 
             <!-- Formulir RKBGL -->
-            <section class="form-panel" id="formulir" aria-label="Formulir permohonan">
+            <section class="form-panel" id="formulir" aria-label="Formulir permohonan" data-anim="up" style="--d: .2s">
                 <div class="form-bar">
                     <div class="form-title">
                         <i class="fas fa-file-pen"></i>
@@ -908,7 +1027,12 @@
                         </div>
                     <?php endif; ?>
 
-                    <fieldset class="fs">
+                    <div class="alert alert-info" role="note" data-anim="up" style="--d: .25s">
+                        <i class="fas fa-info-circle"></i>
+                        <div><strong>Perhatian:</strong> surat permohonan disampaikan <strong>selambat-lambatnya 14 hari sebelum pemeriksaan</strong>. Pilih tanggal pemeriksaan pada bagian Data bangunan.</div>
+                    </div>
+
+                    <fieldset class="fs" data-anim="up">
                         <legend><i class="fas fa-user"></i> Data pemohon</legend>
                         <div class="fields">
                             <div class="field full">
@@ -937,7 +1061,7 @@
                         </div>
                     </fieldset>
 
-                    <fieldset class="fs">
+                    <fieldset class="fs" data-anim="up">
                         <legend><i class="fas fa-briefcase"></i> Data usaha</legend>
                         <div class="fields">
                             <div class="field full">
@@ -963,7 +1087,7 @@
                         </div>
                     </fieldset>
 
-                    <fieldset class="fs">
+                    <fieldset class="fs" data-anim="up">
                         <legend><i class="fas fa-building"></i> Data bangunan</legend>
                         <div class="fields">
                             <div class="field">
@@ -1035,62 +1159,305 @@
                                 <p class="pw-status" id="tinggi_bangunan_msg" aria-live="polite"></p>
                                 {!! $fe('tinggi_bangunan') !!}
                             </div>
+                            <div class="field">
+                                <label class="label" for="ada_lift"><span>Apakah bangunan memiliki lift? <span class="req" aria-hidden="true">*</span></span></label>
+                                <select class="input{{ $inv('ada_lift') }}" id="ada_lift" name="ada_lift" required aria-describedby="hint-lift">
+                                    <option value="" disabled <?= empty($old['ada_lift']) ? 'selected' : '' ?>>Pilih jawaban</option>
+                                    <option value="ya" <?= (($old['ada_lift'] ?? '') === 'ya') ? 'selected' : '' ?>>Ya, ada lift</option>
+                                    <option value="tidak" <?= (($old['ada_lift'] ?? '') === 'tidak') ? 'selected' : '' ?>>Tidak ada lift</option>
+                                </select>
+                                <p class="hint" id="hint-lift"><i class="fas fa-circle-info"></i> Jika ada lift, wajib melampirkan PJK3.</p>
+                                {!! $fe('ada_lift') !!}
+                            </div>
+                            <div class="field">
+                                <label class="label" for="tgl_pemeriksaan">
+                                    <span>Rencana tanggal pemeriksaan <span class="req" aria-hidden="true">*</span></span>
+                                    <span class="pw-badge" id="tgl_badge"></span>
+                                </label>
+                                <input class="input{{ $inv('tgl_pemeriksaan') }}" type="date" id="tgl_pemeriksaan" name="tgl_pemeriksaan" value="<?= $val('tgl_pemeriksaan') ?>" min="<?= $h($min_date_pemeriksaan) ?>" required>
+                                <p class="pw-status" id="tgl_msg" aria-live="polite"></p>
+                                <p class="hint">Surat permohonan disampaikan selambat-lambatnya 14 hari sebelum pemeriksaan.</p>
+                                {!! $fe('tgl_pemeriksaan') !!}
+                            </div>
                         </div>
                     </fieldset>
 
-                    <fieldset class="fs">
-                        <legend><i class="fas fa-paperclip"></i> Berkas</legend>
-                        <div class="fields">
-                            <div class="field full">
-                                <span class="label" id="lbl-surat"><span>Surat permohonan bermaterai <span class="req" aria-hidden="true">*</span></span></span>
-                                <div class="dropzone{{ $inv('surat_permohonan') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png">
-                                    <input type="file" id="surat_permohonan" name="surat_permohonan" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required aria-labelledby="lbl-surat">
-                                    
-                                    <div class="dz-prompt">
-                                        <span class="dz-ico"><i class="fas fa-cloud-arrow-up"></i></span>
-                                        <span class="dz-text"><strong>Tarik berkas ke sini</strong> atau <u>pilih dari perangkat</u></span>
-                                        <span class="hint">(Maksimal 5 MB, format PDF/JPG/PNG)</span>
-                                    </div>
+                    <fieldset class="fs" data-anim="up">
+                        <legend><i class="fas fa-paperclip"></i> Berkas persyaratan administrasi</legend>
 
-                                    <div class="dz-preview">
-                                        <div class="dz-meta">
-                                            <ul class="dz-files" aria-live="polite"></ul>
-                                            <div class="dz-actions">
-                                                <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
-                                                <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
-                                            </div>
+                        <div class="alert alert-warn" role="note">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>
+                                <strong>Lampirkan seluruh persyaratan administrasi</strong> berikut: surat permohonan, fotokopi KTP penanggung jawab gedung, NIB, PBG atau IMB, SLO listrik, SLF bangunan, denah bangunan, PJK3 (apabila ada lift), serta data teknis sistem proteksi kebakaran (aktif, pasif, sarana penyelamatan, dan utilitas bangunan).
+                            </div>
+                        </div>
+
+                        <div class="upl-summary" aria-live="polite">
+                            <span id="uplCount">0 dari 8 berkas wajib terunggah</span>
+                            <span class="upl-bar" aria-hidden="true"><i id="uplBar"></i></span>
+                        </div>
+
+                        <div class="upload-grid">
+                        <div class="upload-card" data-required data-anim="up" style="--d: .04s">
+                            <span class="label" id="lbl-surat_permohonan"><span>Surat permohonan bermaterai <span class="req" aria-hidden="true">*</span></span></span>
+                            <div class="dropzone{{ $inv('surat_permohonan') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png">
+                                <input type="file" id="surat_permohonan" name="surat_permohonan" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required aria-labelledby="lbl-surat_permohonan">
+
+                                <div class="dz-prompt">
+                                    <span class="dz-ico"><i class="fas fa-envelope-open-text"></i></span>
+                                    <span class="dz-text"><strong>Tarik surat permohonan ke sini</strong> atau <u>pilih dari perangkat</u></span>
+                                    <span class="hint">Maksimal 5 MB, format PDF/JPG/PNG</span>
+                                </div>
+
+                                <div class="dz-preview">
+                                    <div class="dz-meta">
+                                        <ul class="dz-files" aria-live="polite"></ul>
+                                        <div class="dz-actions">
+                                            <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
+                                            <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
                                         </div>
                                     </div>
                                 </div>
-                                <p class="field-err dz-msg" role="alert"></p>
-                                {!! $fe('surat_permohonan') !!}
                             </div>
+                            <p class="hint">Ditujukan kepada Kepala Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.<?php if ($url_surat_permohonan): ?> <a class="alert-link" href="<?= $h($url_surat_permohonan) ?>" download><i class="fas fa-download"></i> Unduh format surat</a><?php endif; ?></p>
+                            
+                            <p class="field-err dz-msg" role="alert"></p>
+                            {!! $fe('surat_permohonan') !!}
+                        </div>
+                        <div class="upload-card" data-required data-anim="up" style="--d: .04s">
+                            <span class="label" id="lbl-fotokopi_ktp"><span>Fotokopi KTP penanggung jawab gedung <span class="req" aria-hidden="true">*</span></span></span>
+                            <div class="dropzone{{ $inv('fotokopi_ktp') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png">
+                                <input type="file" id="fotokopi_ktp" name="fotokopi_ktp" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required aria-labelledby="lbl-fotokopi_ktp">
 
-                            <div class="field full">
-                                <span class="label" id="lbl-lain"><span>Persyaratan lainnya <span class="req" aria-hidden="true">*</span></span></span>
-                                <div class="dropzone{{ $inv('persyaratan_lainnya') }}" data-dropzone data-max="10" data-ext="pdf,jpg,jpeg,png,zip,rar">
-                                    <input type="file" id="persyaratan_lainnya" name="persyaratan_lainnya[]" accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,application/pdf,image/jpeg,image/png,application/zip,application/x-zip-compressed" multiple required aria-labelledby="lbl-lain" aria-describedby="hint-lain">
-                                    
-                                    <div class="dz-prompt">
-                                        <span class="dz-ico" style="background:#eaf1f8; color:#2f6fed;"><i class="fas fa-folder-open"></i></span>
-                                        <span class="dz-text"><strong>Tarik beberapa berkas atau file ZIP ke sini</strong> atau <u>pilih dari perangkat</u></span>
-                                        <span class="hint">Format PDF, JPG, PNG, atau jadikan 1 file ZIP/RAR (Maksimal 10 MB per berkas)</span>
-                                    </div>
+                                <div class="dz-prompt">
+                                    <span class="dz-ico"><i class="fas fa-id-card"></i></span>
+                                    <span class="dz-text"><strong>Tarik fotokopi KTP ke sini</strong> atau <u>pilih dari perangkat</u></span>
+                                    <span class="hint">Maksimal 5 MB, format PDF/JPG/PNG</span>
+                                </div>
 
-                                    <div class="dz-preview">
-                                        <div class="dz-meta">
-                                            <ul class="dz-files" aria-live="polite"></ul>
-                                            <div class="dz-actions">
-                                                <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
-                                                <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
-                                            </div>
+                                <div class="dz-preview">
+                                    <div class="dz-meta">
+                                        <ul class="dz-files" aria-live="polite"></ul>
+                                        <div class="dz-actions">
+                                            <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
+                                            <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
                                         </div>
                                     </div>
                                 </div>
-                                <p class="hint" id="hint-lain">Daftar berkas yang diminta ada di <button type="button" class="card-link" style="margin:0;display:inline" data-open-modal>detail persyaratan</button>.</p>
-                                <p class="field-err dz-msg" role="alert"></p>
-                                {!! $fe('persyaratan_lainnya') !!}
                             </div>
+                            <p class="hint">KTP harus terbaca jelas dan masih berlaku.</p>
+                            
+                            <p class="field-err dz-msg" role="alert"></p>
+                            {!! $fe('fotokopi_ktp') !!}
+                        </div>
+                        <div class="upload-card" data-required data-anim="up" style="--d: .04s">
+                            <span class="label" id="lbl-nib"><span>NIB (Nomor Induk Berusaha) <span class="req" aria-hidden="true">*</span></span></span>
+                            <div class="dropzone{{ $inv('nib') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png">
+                                <input type="file" id="nib" name="nib" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required aria-labelledby="lbl-nib">
+
+                                <div class="dz-prompt">
+                                    <span class="dz-ico"><i class="fas fa-building-circle-check"></i></span>
+                                    <span class="dz-text"><strong>Tarik dokumen NIB ke sini</strong> atau <u>pilih dari perangkat</u></span>
+                                    <span class="hint">Maksimal 5 MB, format PDF/JPG/PNG</span>
+                                </div>
+
+                                <div class="dz-preview">
+                                    <div class="dz-meta">
+                                        <ul class="dz-files" aria-live="polite"></ul>
+                                        <div class="dz-actions">
+                                            <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
+                                            <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                            <p class="field-err dz-msg" role="alert"></p>
+                            {!! $fe('nib') !!}
+                        </div>
+                        <div class="upload-card" data-required data-anim="up" style="--d: .04s">
+                            <span class="label" id="lbl-pbg_imb"><span>PBG atau IMB <span class="req" aria-hidden="true">*</span></span></span>
+                            <div class="dropzone{{ $inv('pbg_imb') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png">
+                                <input type="file" id="pbg_imb" name="pbg_imb" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required aria-labelledby="lbl-pbg_imb">
+
+                                <div class="dz-prompt">
+                                    <span class="dz-ico"><i class="fas fa-stamp"></i></span>
+                                    <span class="dz-text"><strong>Tarik dokumen PBG atau IMB ke sini</strong> atau <u>pilih dari perangkat</u></span>
+                                    <span class="hint">Maksimal 5 MB, format PDF/JPG/PNG</span>
+                                </div>
+
+                                <div class="dz-preview">
+                                    <div class="dz-meta">
+                                        <ul class="dz-files" aria-live="polite"></ul>
+                                        <div class="dz-actions">
+                                            <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
+                                            <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="hint">Unggah salah satu: Persetujuan Bangunan Gedung (PBG) atau Izin Mendirikan Bangunan (IMB).</p>
+                            
+                            <p class="field-err dz-msg" role="alert"></p>
+                            {!! $fe('pbg_imb') !!}
+                        </div>
+                        <div class="upload-card" data-required data-anim="up" style="--d: .04s">
+                            <span class="label" id="lbl-slo_listrik"><span>SLO listrik <span class="req" aria-hidden="true">*</span></span></span>
+                            <div class="dropzone{{ $inv('slo_listrik') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png">
+                                <input type="file" id="slo_listrik" name="slo_listrik" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required aria-labelledby="lbl-slo_listrik">
+
+                                <div class="dz-prompt">
+                                    <span class="dz-ico"><i class="fas fa-bolt"></i></span>
+                                    <span class="dz-text"><strong>Tarik dokumen SLO listrik ke sini</strong> atau <u>pilih dari perangkat</u></span>
+                                    <span class="hint">Maksimal 5 MB, format PDF/JPG/PNG</span>
+                                </div>
+
+                                <div class="dz-preview">
+                                    <div class="dz-meta">
+                                        <ul class="dz-files" aria-live="polite"></ul>
+                                        <div class="dz-actions">
+                                            <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
+                                            <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="hint">Sertifikat Laik Operasi instalasi listrik.</p>
+                            
+                            <p class="field-err dz-msg" role="alert"></p>
+                            {!! $fe('slo_listrik') !!}
+                        </div>
+                        <div class="upload-card" data-required data-anim="up" style="--d: .04s">
+                            <span class="label" id="lbl-slf_bangunan"><span>SLF bangunan <span class="req" aria-hidden="true">*</span></span></span>
+                            <div class="dropzone{{ $inv('slf_bangunan') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png">
+                                <input type="file" id="slf_bangunan" name="slf_bangunan" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required aria-labelledby="lbl-slf_bangunan">
+
+                                <div class="dz-prompt">
+                                    <span class="dz-ico"><i class="fas fa-certificate"></i></span>
+                                    <span class="dz-text"><strong>Tarik dokumen SLF bangunan ke sini</strong> atau <u>pilih dari perangkat</u></span>
+                                    <span class="hint">Maksimal 5 MB, format PDF/JPG/PNG</span>
+                                </div>
+
+                                <div class="dz-preview">
+                                    <div class="dz-meta">
+                                        <ul class="dz-files" aria-live="polite"></ul>
+                                        <div class="dz-actions">
+                                            <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
+                                            <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="hint">Sertifikat Laik Fungsi bangunan gedung.</p>
+                            
+                            <p class="field-err dz-msg" role="alert"></p>
+                            {!! $fe('slf_bangunan') !!}
+                        </div>
+                        <div class="upload-card" data-required data-anim="up" style="--d: .04s">
+                            <span class="label" id="lbl-denah_bangunan"><span>Denah bangunan <span class="req" aria-hidden="true">*</span></span></span>
+                            <div class="dropzone{{ $inv('denah_bangunan') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png">
+                                <input type="file" id="denah_bangunan" name="denah_bangunan" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required aria-labelledby="lbl-denah_bangunan">
+
+                                <div class="dz-prompt">
+                                    <span class="dz-ico"><i class="fas fa-map"></i></span>
+                                    <span class="dz-text"><strong>Tarik denah bangunan ke sini</strong> atau <u>pilih dari perangkat</u></span>
+                                    <span class="hint">Maksimal 5 MB, format PDF/JPG/PNG</span>
+                                </div>
+
+                                <div class="dz-preview">
+                                    <div class="dz-meta">
+                                        <ul class="dz-files" aria-live="polite"></ul>
+                                        <div class="dz-actions">
+                                            <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
+                                            <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="hint">Denah setiap lantai beserta posisi sarana proteksi kebakaran.</p>
+                            
+                            <p class="field-err dz-msg" role="alert"></p>
+                            {!! $fe('denah_bangunan') !!}
+                        </div>
+                        <div class="upload-card is-off" id="card_pjk3" data-anim="up" style="--d: .04s">
+                            <span class="label" id="lbl-pjk3_lift"><span>PJK3 (apabila ada lift)</span><span class="badge-khusus">Jika ada lift</span></span>
+                            <div class="dropzone{{ $inv('pjk3_lift') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png">
+                                <input type="file" id="pjk3_lift" name="pjk3_lift" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" aria-labelledby="lbl-pjk3_lift">
+
+                                <div class="dz-prompt">
+                                    <span class="dz-ico"><i class="fas fa-elevator"></i></span>
+                                    <span class="dz-text"><strong>Tarik dokumen PJK3 ke sini</strong> atau <u>pilih dari perangkat</u></span>
+                                    <span class="hint">Maksimal 5 MB, format PDF/JPG/PNG</span>
+                                </div>
+
+                                <div class="dz-preview">
+                                    <div class="dz-meta">
+                                        <ul class="dz-files" aria-live="polite"></ul>
+                                        <div class="dz-actions">
+                                            <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
+                                            <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="hint">Pelaksana Jasa Keselamatan dan Kesehatan Kerja (K3) untuk lift.</p>
+                            <p class="pw-status show warn" id="pjk3_state" aria-live="polite"><i class="fas fa-circle-info"></i> Pilih terlebih dahulu apakah bangunan memiliki lift.</p>
+                            <p class="field-err dz-msg" role="alert"></p>
+                            {!! $fe('pjk3_lift') !!}
+                        </div>
+                        <div class="upload-card" data-required data-anim="up" style="--d: .04s">
+                            <span class="label" id="lbl-data_teknis_proteksi"><span>Data teknis sistem proteksi kebakaran <span class="req" aria-hidden="true">*</span></span></span>
+                            <div class="dropzone{{ $inv('data_teknis_proteksi') }}" data-dropzone data-max="10" data-ext="pdf,jpg,jpeg,png,zip,rar">
+                                <input type="file" id="data_teknis_proteksi" name="data_teknis_proteksi[]" accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,application/pdf,image/jpeg,image/png,application/zip,application/x-zip-compressed" multiple required aria-labelledby="lbl-data_teknis_proteksi">
+
+                                <div class="dz-prompt">
+                                    <span class="dz-ico"><i class="fas fa-fire-extinguisher"></i></span>
+                                    <span class="dz-text"><strong>Tarik data teknis proteksi kebakaran ke sini</strong> atau <u>pilih dari perangkat</u></span>
+                                    <span class="hint">Maksimal 10 MB per berkas, format PDF/JPG/PNG/ZIP/RAR</span>
+                                </div>
+
+                                <div class="dz-preview">
+                                    <div class="dz-meta">
+                                        <ul class="dz-files" aria-live="polite"></ul>
+                                        <div class="dz-actions">
+                                            <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
+                                            <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="hint">Memuat sistem proteksi aktif, pasif, sarana penyelamatan, dan utilitas bangunan. Boleh beberapa berkas atau 1 file ZIP/RAR.</p>
+                            
+                            <p class="field-err dz-msg" role="alert"></p>
+                            {!! $fe('data_teknis_proteksi') !!}
+                        </div>
+                        <div class="upload-card" data-anim="up" style="--d: .04s">
+                            <span class="label" id="lbl-persyaratan_lainnya"><span>Dokumen pendukung lainnya (opsional)</span></span>
+                            <div class="dropzone{{ $inv('persyaratan_lainnya') }}" data-dropzone data-max="10" data-ext="pdf,jpg,jpeg,png,zip,rar">
+                                <input type="file" id="persyaratan_lainnya" name="persyaratan_lainnya[]" accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,application/pdf,image/jpeg,image/png,application/zip,application/x-zip-compressed" multiple aria-labelledby="lbl-persyaratan_lainnya">
+
+                                <div class="dz-prompt">
+                                    <span class="dz-ico"><i class="fas fa-folder-open"></i></span>
+                                    <span class="dz-text"><strong>Tarik berkas pendukung ke sini</strong> atau <u>pilih dari perangkat</u></span>
+                                    <span class="hint">Maksimal 10 MB per berkas, format PDF/JPG/PNG/ZIP/RAR</span>
+                                </div>
+
+                                <div class="dz-preview">
+                                    <div class="dz-meta">
+                                        <ul class="dz-files" aria-live="polite"></ul>
+                                        <div class="dz-actions">
+                                            <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
+                                            <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="hint">Daftar berkas lain yang diminta ada di <button type="button" class="card-link" style="margin:0;display:inline" data-open-modal>detail persyaratan</button>.</p>
+                            
+                            <p class="field-err dz-msg" role="alert"></p>
+                            {!! $fe('persyaratan_lainnya') !!}
+                        </div>
                         </div>
                     </fieldset>
 
@@ -1575,10 +1942,15 @@
 
     var dropzones = document.querySelectorAll('[data-dropzone]');
 
+    /* Error dari server pada dropzone ditandai data-srv agar tidak mengunci tombol kirim */
+    dropzones.forEach(function (d) {
+        if (d.classList.contains('is-invalid')) { d.dataset.srv = '1'; d.classList.remove('is-invalid'); }
+    });
+
     function checkAllDropzonesValid() {
         var allOk = true;
         dropzones.forEach(function (d) {
-            if (d.classList.contains('is-invalid')) allOk = false;
+            if (d.classList.contains('is-invalid') && d.dataset.srv !== '1') allOk = false;
         });
         isFileValid = allOk;
         syncSubmitButton();
@@ -1600,6 +1972,7 @@
         }
 
         function handleFiles(files) {
+            delete dz.dataset.srv;
             list.innerHTML = '';
             if (msg) msg.innerHTML = '';
             dz.classList.remove('is-invalid');
@@ -1612,12 +1985,13 @@
 
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
+                var safeName = file.name.replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
                 var ext = (file.name.split('.').pop() || '').toLowerCase();
 
                 if (allowedExt.indexOf(ext) === -1) {
                     resetDropzone();
                     dz.classList.add('is-invalid');
-                    if (msg) msg.innerHTML = '<i class="fas fa-circle-exclamation"></i> Format berkas "' + file.name + '" tidak didukung. Gunakan: ' + allowedExt.join(', ').toUpperCase() + '.';
+                    if (msg) msg.innerHTML = '<i class="fas fa-circle-exclamation"></i> Format berkas "' + safeName + '" tidak didukung. Gunakan: ' + allowedExt.join(', ').toUpperCase() + '.';
                     checkAllDropzonesValid();
                     return;
                 }
@@ -1625,13 +1999,13 @@
                 if (maxMb && file.size > maxMb * 1048576) {
                     resetDropzone();
                     dz.classList.add('is-invalid');
-                    if (msg) msg.innerHTML = '<i class="fas fa-circle-exclamation"></i> Ukuran berkas "' + file.name + '" (' + fmtSize(file.size) + ') melebihi batas maksimal ' + maxMb + ' MB.';
+                    if (msg) msg.innerHTML = '<i class="fas fa-circle-exclamation"></i> Ukuran berkas "' + safeName + '" (' + fmtSize(file.size) + ') melebihi batas maksimal ' + maxMb + ' MB.';
                     checkAllDropzonesValid();
                     return;
                 }
 
                 var li = document.createElement('li');
-                li.innerHTML = '<i class="fas fa-circle-check"></i> <span>' + file.name + '</span> <span class="f-size">(' + fmtSize(file.size) + ')</span>';
+                li.innerHTML = '<i class="fas fa-circle-check"></i> <span>' + safeName + '</span> <span class="f-size">(' + fmtSize(file.size) + ')</span>';
                 list.appendChild(li);
             }
 
@@ -1804,6 +2178,146 @@
             btn.innerHTML = '<i class="fas fa-search"></i> Cek';
         });
     });
+})();
+</script>
+<!-- ==================== ANIMASI MASUK, STICKY, LIFT/PJK3, TANGGAL PEMERIKSAAN ==================== -->
+<script>
+(function () {
+    'use strict';
+
+    /* Animasi masuk saat elemen terlihat di layar */
+    var items = document.querySelectorAll('[data-anim]');
+    if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries, obs) {
+            entries.forEach(function (en) {
+                if (en.isIntersecting) { en.target.classList.add('is-inview'); obs.unobserve(en.target); }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -24px 0px' });
+        items.forEach(function (el) { io.observe(el); });
+    } else {
+        items.forEach(function (el) { el.classList.add('is-inview'); });
+    }
+
+    document.querySelectorAll('.fs').forEach(function (fs) {
+        fs.querySelectorAll('.field').forEach(function (f, i) { f.style.setProperty('--i', i); });
+    });
+
+    /* Kolom kiri sticky tanpa scroll internal */
+    var stack = document.querySelector('.info-stack');
+    var header = document.getElementById('siteHeader');
+    var wide = window.matchMedia('(min-width: 992px)');
+    function updateStick() {
+        if (!stack) return;
+        if (!wide.matches) { stack.style.removeProperty('--stick-top'); return; }
+        var top = (header ? header.offsetHeight : 64) + 16;
+        var fit = window.innerHeight - stack.offsetHeight - 16;
+        stack.style.setProperty('--stick-top', Math.min(top, fit) + 'px');
+    }
+    if (stack) {
+        updateStick();
+        window.addEventListener('resize', updateStick);
+        window.addEventListener('load', updateStick);
+        if ('ResizeObserver' in window) new ResizeObserver(updateStick).observe(stack);
+        if (wide.addEventListener) wide.addEventListener('change', updateStick);
+    }
+
+    /* Ringkasan kemajuan unggah berkas wajib */
+    function updateUploadCount() {
+        var cards = document.querySelectorAll('.upload-card[data-required]:not(.is-off)');
+        var done = 0;
+        cards.forEach(function (c) { if (c.querySelector('.dropzone').classList.contains('has-files')) done++; });
+        var label = document.getElementById('uplCount');
+        var bar = document.getElementById('uplBar');
+        if (label) label.textContent = done + ' dari ' + cards.length + ' berkas wajib terunggah';
+        if (bar) bar.style.width = (cards.length ? Math.round(done / cards.length * 100) : 0) + '%';
+    }
+    document.querySelectorAll('.upload-card .dropzone').forEach(function (dz) {
+        new MutationObserver(updateUploadCount).observe(dz, { attributes: true, attributeFilter: ['class'] });
+    });
+
+    /* Lift -> PJK3 wajib hanya jika bangunan memiliki lift */
+    var lift = document.getElementById('ada_lift');
+    var card = document.getElementById('card_pjk3');
+    var state = document.getElementById('pjk3_state');
+    function togglePjk3() {
+        if (!lift || !card) return;
+        var inp = card.querySelector('input[type="file"]');
+        var ada = lift.value === 'ya';
+        card.classList.toggle('is-off', !ada);
+        if (ada) card.setAttribute('data-required', ''); else card.removeAttribute('data-required');
+        inp.disabled = !ada;
+        inp.required = ada;
+
+        if (!ada && card.querySelector('.dropzone').classList.contains('has-files')) {
+            var rm = card.querySelector('[data-dz-remove]');
+            if (rm) rm.click();
+        }
+        var star = card.querySelector('.label > span:first-child');
+        var cur = card.querySelector('.label .req');
+        if (ada && !cur && star) {
+            var r = document.createElement('span');
+            r.className = 'req'; r.setAttribute('aria-hidden', 'true'); r.textContent = ' *';
+            star.appendChild(r);
+        } else if (!ada && cur) { cur.remove(); }
+
+        if (state) {
+            if (ada) {
+                state.className = 'pw-status show mismatch';
+                state.innerHTML = '<i class="fas fa-circle-exclamation"></i> Wajib dilampirkan karena bangunan memiliki lift.';
+            } else if (lift.value === 'tidak') {
+                state.className = 'pw-status show match';
+                state.innerHTML = '<i class="fas fa-circle-check"></i> Tidak diperlukan karena bangunan tidak memiliki lift.';
+            } else {
+                state.className = 'pw-status show warn';
+                state.innerHTML = '<i class="fas fa-circle-info"></i> Pilih terlebih dahulu apakah bangunan memiliki lift.';
+            }
+        }
+        updateUploadCount();
+    }
+    if (lift) { lift.addEventListener('change', togglePjk3); togglePjk3(); }
+    updateUploadCount();
+
+    /* Tanggal pemeriksaan: minimal 14 hari dari hari ini (H-14) */
+    var tgl = document.getElementById('tgl_pemeriksaan');
+    var tglBadge = document.getElementById('tgl_badge');
+    var tglMsg = document.getElementById('tgl_msg');
+    function validateTgl() {
+        if (!tgl) return;
+        if (!tgl.value) {
+            tglBadge.className = 'pw-badge'; tglBadge.innerHTML = '';
+            tglMsg.className = 'pw-status'; tglMsg.innerHTML = '';
+            tgl.classList.remove('is-valid', 'is-invalid'); tgl.setCustomValidity('');
+            return;
+        }
+        var sel = new Date(tgl.value + 'T00:00:00');
+        var min = new Date(); min.setHours(0, 0, 0, 0); min.setDate(min.getDate() + 14);
+        if (sel < min) {
+            tglBadge.className = 'pw-badge show mismatch'; tglBadge.innerHTML = '<i class="fas fa-xmark"></i> Kurang dari H-14';
+            tglMsg.className = 'pw-status show mismatch';
+            tglMsg.innerHTML = '<i class="fas fa-circle-exclamation"></i> Surat permohonan disampaikan selambat-lambatnya 14 hari sebelum pemeriksaan';
+            tgl.classList.add('is-invalid'); tgl.classList.remove('is-valid');
+            tgl.setCustomValidity('Tanggal pemeriksaan minimal 14 hari dari hari ini');
+        } else {
+            tglBadge.className = 'pw-badge show match'; tglBadge.innerHTML = '<i class="fas fa-check"></i> Sesuai';
+            tglMsg.className = 'pw-status show match';
+            tglMsg.innerHTML = '<i class="fas fa-calendar-check"></i> Tanggal memenuhi syarat pengajuan (min. H-14)';
+            tgl.classList.add('is-valid'); tgl.classList.remove('is-invalid');
+            tgl.setCustomValidity('');
+        }
+    }
+    if (tgl) { tgl.addEventListener('change', validateTgl); tgl.addEventListener('input', validateTgl); validateTgl(); }
+
+    /* Cegah kirim ganda */
+    var form = document.getElementById('form_rpkbgl');
+    var btn = document.getElementById('btn_submit_rpkbgl');
+    if (form && btn) {
+        form.addEventListener('submit', function () {
+            setTimeout(function () {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-circle-notch spin"></i> Mengirim...';
+            }, 0);
+        });
+    }
 })();
 </script>
 </body>

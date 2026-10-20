@@ -712,7 +712,7 @@
                     </ul>
                 </li>
 
-                <li><a class="menu-link {{ request()->is('redkar*') ? 'is-active' : '' }}" href="/redkar">Redkar</a></li>
+ 
             </ul>
 
             <!-- ===== Tombol kanan: Lapor darurat + Masuk ===== -->
@@ -770,6 +770,7 @@
         <p class="rise d2">Dokumentasi video aksi penyelamatan dan layanan kemanusiaan non-kebakaran oleh petugas Damkar Kota Jambi.</p>
         <div class="hero-line rise d3"></div>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <!-- ==================== SUB NAVIGATION (PILL MENU) ==================== -->

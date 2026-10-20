@@ -657,7 +657,7 @@
                     </ul>
                 </li>
 
-                <li><a class="menu-link {{ request()->is('redkar*') ? 'is-active' : '' }}" href="/redkar">Redkar</a></li>
+ 
             </ul>
 
             <!-- ===== Tombol kanan: Lapor darurat + Masuk ===== -->
@@ -715,6 +715,7 @@
         <p class="rise d2">Kumpulan panduan bergambar, informasi visual, dan edukasi terkait pencegahan serta penanggulangan kebakaran di Kota Jambi. Ketuk gambar untuk memperbesar.</p>
         <div class="hero-line rise d3"></div>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <!-- ==================== SUB NAVIGATION (PILL MENU) ==================== -->

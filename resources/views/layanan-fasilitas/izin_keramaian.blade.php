@@ -5,8 +5,11 @@
     $layanan = config('layanan'); // urutan, label & ikon diatur di config/layanan.php
     $tab_aktif = 'keramaian';
 
-    // URL Template Surat Pernyataan Izin Keramaian
+    // URL Template Surat Pernyataan Pertanggungjawaban Mutlak / Permohonan
     $url_surat_permohonan = asset('dokumen/FORMULIR-4.pdf');
+
+    // Endpoint cek status permohonan (sesuaikan dengan route di controller Anda)
+    $url_cek_status = url('/izin-keramaian/cek-status');
 
     $inv = function ($n) use ($errors) { return (isset($errors) && $errors->has($n)) ? ' is-invalid' : ''; };
     $fe  = function ($n) use ($errors) {
@@ -23,7 +26,8 @@
     $maps_link = "https://www.google.com/maps/place/6PC59JJ2%2BQ76/@-1.6180875,103.6006406,871m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-1.6180875!4d103.6006406?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D";
 
     $play_store_url = "";
-    $min_date_keramaian = date('Y-m-d', strtotime('+7 days'));
+    // Diperbarui menjadi selambat-lambatnya 14 hari sebelum kegiatan
+    $min_date_keramaian = date('Y-m-d', strtotime('+14 days'));
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -31,7 +35,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="theme-color" content="#0d1b2a">
-    <meta name="description" content="Ajukan Rekomendasi Izin Keramaian secara daring di Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.">
+    <meta name="description" content="Ajukan Rekomendasi Pengamanan Event Pemerintah dan Swasta secara daring di Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.">
     <title>Izin Keramaian - Layanan | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
 
@@ -293,13 +297,46 @@
         .crumbs [aria-current="page"] { color: #fff; font-weight: 600; }
         .page-hero h1 {
             font-family: var(--font-display); font-weight: 800; font-stretch: 82%;
-            font-size: clamp(2.8rem, 8vw, 5.5rem); line-height: .95; letter-spacing: -0.035em;
+            font-size: clamp(2.4rem, 7vw, 5rem); line-height: .98; letter-spacing: -0.035em;
         }
-        .page-hero p { margin-top: 18px; max-width: 56ch; color: rgba(255,255,255,.75); font-size: clamp(1rem, 1.5vw, 1.15rem); }
+        .page-hero p { margin-top: 18px; max-width: 60ch; color: rgba(255,255,255,.75); font-size: clamp(1rem, 1.5vw, 1.15rem); }
 
+        /* ==========================================================
+           ANIMASI IN & KOLOM RESPONSIF
+           ========================================================== */
         .rise { animation: rise .8s cubic-bezier(.16,.84,.3,1) both; }
         .rise.d1 { animation-delay: .08s; } .rise.d2 { animation-delay: .18s; }
         @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+
+        @keyframes animInUp {
+            from { opacity: 0; transform: translateY(32px) scale(0.985); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes animInLeft {
+            from { opacity: 0; transform: translateX(-28px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes animSubIn {
+            from { opacity: 0; transform: translateX(-14px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        [data-anim] {
+            opacity: 0;
+            will-change: transform, opacity;
+        }
+        [data-anim="up"].is-inview {
+            animation: animInUp .75s cubic-bezier(.16, 1, .3, 1) forwards;
+            animation-delay: var(--d, 0s);
+        }
+        [data-anim="left"].is-inview {
+            animation: animInLeft .7s cubic-bezier(.16, 1, .3, 1) forwards;
+            animation-delay: var(--d, 0s);
+        }
+        [data-anim="sub"].is-inview {
+            animation: animSubIn .55s cubic-bezier(.16, 1, .3, 1) forwards;
+            animation-delay: var(--d, 0s);
+        }
 
         /* BODY LAYOUT */
         .page-body { background: var(--paper); padding-bottom: clamp(64px, 9vw, 112px); }
@@ -323,23 +360,48 @@
 
         .c-ico { flex: none; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--paper); color: var(--signal-d); font-size: 1rem; }
 
-        .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 28px; }
-        .fact { display: flex; align-items: center; gap: 14px; padding: 18px 20px; background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); }
+        /* Grid Responsif untuk Facts */
+        .facts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin-top: 28px;
+        }
+        .fact {
+            display: flex; align-items: center; gap: 14px; padding: 18px 20px;
+            background: #fff; border: 1px solid var(--line); border-radius: var(--r-md);
+            transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+        }
+        .fact:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -10px rgba(13, 27, 42, 0.12);
+            border-color: #cbd5e1;
+        }
         .fact .c-ico { width: 46px; height: 46px; background: #fdeceb; font-size: 1.1rem; }
         .fact small { display: block; font-size: .8rem; color: var(--steel); line-height: 1.3; margin-bottom: 2px; }
         .fact strong, .fact a { display: block; font-weight: 600; font-size: .95rem; line-height: 1.4; }
         .fact a:hover { color: var(--signal-d); text-decoration: underline; text-underline-offset: 4px; }
 
-        .perizinan-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; margin-top: 24px; align-items: start; }
+        /* Grid Responsif 2 Kolom Utama */
+        .perizinan-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 24px;
+            margin-top: 24px;
+            align-items: start;
+        }
         @media (min-width: 992px) {
-            .perizinan-layout { grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); gap: 32px; }
+            .perizinan-layout {
+                grid-template-columns: minmax(340px, 420px) minmax(0, 1fr);
+                gap: 32px;
+            }
+            /* Kolom kiri sticky, seluruh isi tampil tanpa scroll internal (posisi top diatur JS) */
             .info-stack {
-                position: sticky; top: calc(var(--header-h) + 16px); align-self: start;
-                max-height: calc(100dvh - var(--header-h) - 32px);
-                overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
+                position: sticky; align-self: start; max-height: none; overflow: visible;
+                top: var(--stick-top, calc(var(--header-h) + 16px));
             }
         }
-        .info-stack { display: grid; gap: 16px; }
+        .info-stack { display: grid; gap: 18px; }
         #formulir { scroll-margin-top: calc(var(--header-h) + 16px); }
 
         .jump { display: none; align-items: center; justify-content: center; gap: 10px; padding: 13px 20px; border-radius: 999px; background: var(--ink); color: #fff; font-weight: 600; font-size: .92rem; }
@@ -347,15 +409,75 @@
         .jump:hover { background: var(--ink-3); }
         @media (max-width: 991px) { .jump { display: inline-flex; } }
 
-        .side-card { background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); padding: clamp(20px, 3vw, 28px); }
-        .card-head { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
-        .card-head h2 { font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.25rem; line-height: 1.15; letter-spacing: -0.015em; }
+        .side-card {
+            background: #fff; border: 1px solid var(--line); border-radius: var(--r-md);
+            padding: clamp(20px, 3vw, 28px);
+            box-shadow: 0 8px 24px rgba(13, 27, 42, 0.03);
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+        .side-card:hover {
+            box-shadow: 0 14px 30px rgba(13, 27, 42, 0.06);
+        }
+        .card-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 18px; }
+        .card-head h2 { font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.2rem; line-height: 1.25; letter-spacing: -0.015em; }
+        .card-sub { display: block; font-family: var(--font-body); font-size: .78rem; font-weight: 600; color: var(--signal-d); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 3px; }
 
+        /* Styling Persyaratan & Sub-List Administrasi */
         .checklist { display: grid; gap: 18px; }
-        .checklist li { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 14px; align-items: start; font-size: .93rem; line-height: 1.5; }
-        .ck-ico { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: #fdeceb; color: var(--signal-d); font-size: .9rem; }
+        .checklist > li {
+            display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 14px; align-items: start;
+            font-size: .93rem; line-height: 1.5;
+            padding: 14px; border-radius: 14px; background: var(--paper); border: 1px solid var(--line);
+        }
+        .ck-num {
+            width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center;
+            background: var(--ink); color: var(--amber); font-family: var(--font-display); font-weight: 800; font-size: .95rem;
+        }
+        .ck-title { font-weight: 700; color: var(--ink); margin-bottom: 4px; display: block; }
+        .ck-highlight {
+            display: inline-flex; align-items: center; gap: 6px; margin-top: 6px;
+            padding: 4px 10px; border-radius: 8px; background: var(--warn-bg); color: #92400e;
+            font-size: .82rem; font-weight: 700;
+        }
+
+        .admin-sublist {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+        @media (min-width: 520px) and (max-width: 991px) {
+            /* Pada layar tablet, sub-item otomatis menjadi 2 kolom agar responsif dan rapi */
+            .admin-sublist { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        .admin-sublist li {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 10px 12px; border-radius: 10px; background: #fff;
+            border: 1px solid var(--line); font-size: .875rem; line-height: 1.4;
+            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+        .admin-sublist li:hover {
+            transform: translateX(4px);
+            border-color: var(--signal);
+            box-shadow: 0 4px 12px rgba(229, 57, 45, 0.08);
+        }
+        .admin-sublist li i {
+            color: var(--signal-d); font-size: .9rem; margin-top: 3px; flex: none;
+            width: 18px; text-align: center;
+        }
+        .badge-khusus {
+            display: inline-block; margin-top: 3px; padding: 2px 7px; border-radius: 6px;
+            background: #fdeceb; color: var(--signal-d); font-size: .72rem; font-weight: 700;
+        }
+
         .checklist .muted { color: var(--steel); }
-        .checklist a.inline { font-weight: 600; color: var(--signal-d); text-decoration: underline; text-underline-offset: 3px; }
+        .checklist a.inline {
+            font-weight: 600; color: var(--signal-d);
+            transition: background .2s, color .2s;
+        }
+        .checklist a.inline:hover {
+            background: var(--ink) !important; color: #fff !important; border-color: var(--ink) !important;
+        }
 
         /* FORMULIR & VALIDASI REAL-TIME */
         .form-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; box-shadow: 0 10px 30px rgba(13, 27, 42, 0.03); }
@@ -405,7 +527,7 @@
         .input.is-low, .input.is-low:hover, .input.is-low:focus { border-color: var(--signal); box-shadow: 0 0 0 3px rgba(229,57,45,.18); }
         .hint.is-low { color: var(--signal-d); font-weight: 600; }
 
-        /* BADGE & STATUS VALIDASI REAL-TIME (Sesuai REDKAR) */
+        /* BADGE & STATUS VALIDASI REAL-TIME */
         .pw-badge {
             display: none; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px;
             font-size: .72rem; font-weight: 700; letter-spacing: .01em;
@@ -432,7 +554,7 @@
         .unit .input { padding-right: 54px; }
         .unit span { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: .88rem; font-weight: 600; color: var(--steel); pointer-events: none; }
 
-        /* DROPZONE & PRATINJAU GAMBAR (Sesuai REDKAR) */
+        /* DROPZONE & PRATINJAU GAMBAR */
         .dropzone {
             position: relative; display: grid; justify-items: center; gap: 10px; text-align: center;
             padding: 26px 20px; border: 2px dashed #b8c3d0; border-radius: var(--r-md);
@@ -442,7 +564,7 @@
         .dropzone:hover, .dropzone.is-over { border-color: var(--signal); background: #fdeceb; }
         .dropzone:focus-within { outline: 3px solid var(--amber); outline-offset: 3px; }
         .dropzone.has-files { border-style: solid; border-color: var(--ink); background: #fff; cursor: default; }
-        .dropzone.is-invalid { border-color: var(--signal); background: #fff5f5; }
+        .dropzone.is-invalid, .dropzone[data-srv="1"] { border-color: var(--signal); background: #fff5f5; }
         .dropzone input[type="file"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 1; }
         .dropzone.has-files input[type="file"] { pointer-events: none; }
 
@@ -591,9 +713,83 @@
         .cs-ditolak   { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
         .cs-empty { padding: 14px 16px; border: 1px dashed var(--line); border-radius: 14px; font-size: .9rem; color: var(--steel); text-align: center; }
 
+
+
+        /* Kolom kiri lebih ringkas agar seluruh isi terbaca tanpa scroll */
+        .info-stack { gap: 16px; }
+        .info-stack .side-card { padding: clamp(16px, 2.4vw, 22px); }
+        .info-stack .card-head { margin-bottom: 14px; }
+        .info-stack .card-head h2 { font-size: 1.08rem; }
+        .info-stack .checklist { gap: 12px; }
+        .info-stack .checklist > li { grid-template-columns: 32px minmax(0, 1fr); gap: 12px; padding: 12px; font-size: .9rem; }
+        .info-stack .ck-num { width: 32px; height: 32px; font-size: .88rem; }
+        .info-stack .admin-sublist { gap: 6px; margin-top: 8px; }
+        .info-stack .admin-sublist li { padding: 8px 10px; font-size: .84rem; }
+
+        /* ==========================================================
+           TAMBAHAN: KOLOM RESPONSIF, ANIMASI MASUK PER KOLOM, UNGGAH BERKAS
+           ========================================================== */
+        .time-range { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+        .time-range .input { flex: 1 1 120px; min-width: 0; }
+        .time-range > span { font-size: .9rem; color: var(--steel); font-weight: 600; }
+
+        .input-select {
+            appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 44px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235b6c7f' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 16px center;
+            text-overflow: ellipsis;
+        }
+
+        /* Judul bagian & setiap kolom muncul bergantian saat bagian terlihat di layar */
+        .fs[data-anim] { opacity: 1; will-change: auto; }
+        .fs[data-anim].is-inview { animation: none; }
+        .fs[data-anim] > legend, .fs[data-anim] .field { opacity: 0; }
+        .fs.is-inview > legend { animation: animInLeft .55s cubic-bezier(.16, 1, .3, 1) both; }
+        .fs.is-inview .field {
+            animation: animInUp .65s cubic-bezier(.16, 1, .3, 1) both;
+            animation-delay: calc(.1s + var(--i, 0) * .07s);
+        }
+
+        .alert-warn { background: #fff8e6; color: #9c6500; border: 1px solid #ffe58f; margin-bottom: 20px; }
+        .alert-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-weight: 700; color: #b77900; text-decoration: underline; text-underline-offset: 3px; }
+        .alert-link:hover { color: #7a5200; }
+
+        .upl-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 18px; font-size: .88rem; font-weight: 600; color: var(--steel); }
+        .upl-bar { flex: 1 1 140px; height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; }
+        .upl-bar i { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, var(--amber), var(--ok)); transition: width .5s cubic-bezier(.16, 1, .3, 1); }
+
+        /* Kolom unggah berkas: otomatis 1 / 2 kolom sesuai lebar panel */
+        .upload-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+        .upload-card { min-width: 0; display: flex; flex-direction: column; }
+        .upload-card .label { align-items: flex-start; flex-wrap: wrap; }
+        .upload-card { padding: 16px clamp(14px, 2.5vw, 20px) 14px; border: 1px solid var(--line); border-radius: var(--r-md); background: #fff; }
+        .upload-card .dropzone { align-content: center; padding: 20px 16px; }
+        .upload-card .dz-img-wrap { aspect-ratio: 16 / 9; max-height: 200px; }
+        @media (min-width: 640px) {
+            .upload-card .dropzone:not(.has-files) { grid-auto-flow: column; justify-content: center; align-items: center; gap: 16px; }
+            .upload-card .dz-prompt { grid-auto-flow: column; justify-items: start; align-items: center; gap: 14px; text-align: left; }
+        }
+        .dz-img-wrap[hidden] { display: none; }
+        .upload-card .badge-khusus { margin-top: 0; }
+        .upload-card.is-off .dropzone, .upload-card.is-off .hint { opacity: .5; }
+        .upload-card.is-off .dropzone { pointer-events: none; background: #eef1f5; border-style: dotted; }
+        .upload-card .dropzone.has-files { border-color: var(--ok); animation: dzOk .45s ease; }
+        @keyframes dzOk { 0% { box-shadow: 0 0 0 0 rgba(22,163,74,.45); } 100% { box-shadow: 0 0 0 14px rgba(22,163,74,0); } }
+
+        .dz-files li { animation: fadeInPreview .3s ease both; }
+        .cs-item { animation: animInUp .5s cubic-bezier(.16, 1, .3, 1) both; animation-delay: calc(var(--i, 0) * .08s); }
+        .btn .spin { animation: spin .8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 520px) {
+            .form-body { gap: 28px; }
+            .fs legend { font-size: 1.05rem; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
             *, *::before, *::after { animation: none !important; transition: none !important; }
+            [data-anim], .fs[data-anim] > legend, .fs[data-anim] .field { opacity: 1 !important; transform: none !important; }
         }
     </style>
 </head>
@@ -763,9 +959,10 @@
                 <li><span aria-current="page">{{ $layanan[$tab_aktif]['label'] }}</span></li>
             </ol>
         </nav>
-        <h1 class="rise d1">Rekomendasi Event Keramaian</h1>
-        <p class="rise d2">Ajukan Rekomendasi Event Keramaian secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+        <h1 class="rise d1">Rekomendasi Pengamanan Event</h1>
+        <p class="rise d2">Ajukan Rekomendasi Pengamanan Event Pemerintah dan Swasta secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <div class="page-body">
@@ -775,22 +972,23 @@
 
     <div class="wrap">
 
+        <!-- Baris Info Singkat dengan Animasi Masuk -->
         <div class="facts">
-            <div class="fact">
+            <div class="fact" data-anim="up" style="--d: .05s">
                 <span class="c-ico"><i class="fas fa-clock"></i></span>
                 <div>
                     <small>Batas Pengajuan</small>
-                    <strong>Min 7 Hari Sebelum Acara</strong>
+                    <strong>Selambat-lambatnya 14 Hari (H-14) Sebelum Kegiatan</strong>
                 </div>
             </div>
-            <div class="fact">
+            <div class="fact" data-anim="up" style="--d: .15s">
                 <span class="c-ico"><i class="fas fa-file-circle-check"></i></span>
                 <div>
                     <small>Produk layanan</small>
-                    <strong>Rekomendasi Event Keramaian</strong>
+                    <strong>Rekomendasi Pengamanan Event Pemerintah &amp; Swasta</strong>
                 </div>
             </div>
-            <div class="fact">
+            <div class="fact" data-anim="up" style="--d: .25s">
                 <span class="c-ico"><i class="fab fa-whatsapp"></i></span>
                 <div>
                     <small>Pengaduan layanan</small>
@@ -801,39 +999,75 @@
 
         <div class="perizinan-layout">
 
-            <!-- Informasi -->
+            <!-- Kolom Kiri: Persyaratan & Cek Status -->
             <aside class="info-stack" aria-label="Informasi layanan">
-                <a class="jump" href="#formulir"><i class="fas fa-arrow-down"></i> Langsung ke formulir</a>
+                <a class="jump" href="#formulir" data-anim="up" style="--d: .1s"><i class="fas fa-arrow-down"></i> Langsung ke formulir</a>
 
-                <section class="side-card">
+                <section class="side-card" data-anim="left" style="--d: .15s">
                     <div class="card-head">
                         <span class="c-ico"><i class="fas fa-clipboard-check"></i></span>
-                        <h2>Persyaratan Pengajuan</h2>
+                        <div>
+                            <span class="card-sub">Ketentuan Layanan</span>
+                            <h2>Persyaratan Rekomendasi Pengamanan Event Pemerintah dan Swasta</h2>
+                        </div>
                     </div>
+
                     <ol class="checklist">
-                        <li>
-                            <span class="ck-ico"><i class="fas fa-pen-to-square"></i></span>
-                            <div>Isi formulir pengajuan event keramaian secara elektronik melalui <strong>simerah.jambikota.go.id</strong></div>
-                        </li>
-                        <li>
-                            <span class="ck-ico"><i class="fas fa-image"></i></span>
-                            <div>Unggah foto denah jalur evakuasi lokasi acara.</div>
-                        </li>
-                        <li>
-                            <span class="ck-ico"><i class="fas fa-file-signature"></i></span>
+                        <!-- Poin 1 -->
+                        <li data-anim="up" style="--d: .22s">
+                            <span class="ck-num">1</span>
                             <div>
-                                Unggah surat pernyataan yang telah ditandatangani di atas <strong>materai Rp 10.000</strong>.
-                                <br>
-                                <a class="inline" href="{{ $url_surat_permohonan }}" download style="display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 0.85rem; background: var(--paper); padding: 6px 12px; border-radius: 6px; border: 1px solid var(--line);">
-                                    <i class="fas fa-download"></i> Unduh Surat Kosong
-                                </a>
+                                <span class="ck-title">Batas Waktu Permohonan</span>
+                                Menyampaikan surat permohonan selambat-lambatnya <strong>14 hari sebelum kegiatan</strong> dilaksanakan.
+                                <span class="ck-highlight"><i class="fas fa-calendar-day"></i> Wajib H-14 Sebelum Acara</span>
+                            </div>
+                        </li>
+
+                        <!-- Poin 2 beserta rincian administrasi -->
+                        <li data-anim="up" style="--d: .32s">
+                            <span class="ck-num">2</span>
+                            <div>
+                                <span class="ck-title">Persyaratan Administrasi</span>
+                                Melampirkan kelengkapan persyaratan administrasi berikut:
+
+                                <ul class="admin-sublist">
+                                    <li data-anim="sub" style="--d: .38s">
+                                        <i class="fas fa-envelope-open-text"></i>
+                                        <span>Surat permohonan</span>
+                                    </li>
+                                    <li data-anim="sub" style="--d: .44s">
+                                        <i class="fas fa-id-card"></i>
+                                        <span>Fotokopi KTP penanggung jawab kegiatan</span>
+                                    </li>
+                                    <li data-anim="sub" style="--d: .50s">
+                                        <i class="fas fa-map-location-dot"></i>
+                                        <span>Sket denah lokasi (beserta posisi <strong>genset</strong>)</span>
+                                    </li>
+                                    <li data-anim="sub" style="--d: .56s">
+                                        <i class="fas fa-receipt"></i>
+                                        <div>
+                                            <span>Bukti pembayaran pajak dari BPPRD</span>
+                                            <br><span class="badge-khusus">Khusus Event Hiburan</span>
+                                        </div>
+                                    </li>
+                                    <li data-anim="sub" style="--d: .62s">
+                                        <i class="fas fa-file-signature"></i>
+                                        <div>
+                                            <span>Surat pernyataan pertanggungjawaban mutlak</span>
+                                            <br>
+                                            <a class="inline" href="{{ $url_surat_permohonan }}" download style="display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 0.8rem; background: var(--paper); padding: 5px 10px; border-radius: 6px; border: 1px solid var(--line);">
+                                                <i class="fas fa-download"></i> Unduh Format Surat
+                                            </a>
+                                        </div>
+                                    </li>
+                                </ul>
                             </div>
                         </li>
                     </ol>
                 </section>
 
                 <!-- Cek status permohonan -->
-                <section class="side-card" id="cek-status" aria-label="Cek status permohonan">
+                <section class="side-card" id="cek-status" aria-label="Cek status permohonan" data-anim="left" style="--d: .3s">
                     <div class="card-head">
                         <span class="c-ico"><i class="fas fa-magnifying-glass"></i></span>
                         <h2>Cek Status Permohonan</h2>
@@ -852,14 +1086,14 @@
 
             </aside>
 
-            <!-- Formulir -->
-            <section class="form-panel" id="formulir" aria-label="Formulir permohonan">
+            <!-- Kolom Kanan: Formulir -->
+            <section class="form-panel" id="formulir" aria-label="Formulir permohonan" data-anim="up" style="--d: .2s">
                 <div class="form-bar">
                     <div class="form-title">
                         <i class="fas fa-file-pen"></i>
                         <div>
-                            <h2>Formulir Rekomendasi Event Keramaian</h2>
-                            <p>Pengajuan Rekomendasi Event Keramaian Masyarakat</p>
+                            <h2>Formulir Rekomendasi Pengamanan Event</h2>
+                            <p>Pengajuan Rekomendasi Pengamanan Event Pemerintah dan Swasta</p>
                         </div>
                     </div>
                     <span class="form-note"><span class="req" aria-hidden="true">*</span> wajib diisi</span>
@@ -882,12 +1116,12 @@
                         </div>
                     @endif
 
-                    <div class="alert" style="background: #eef2f6; color: var(--ink-3); border: 1px solid var(--line);" role="alert">
+                    <div class="alert" style="background: #eef2f6; color: var(--ink-3); border: 1px solid var(--line); --d: .25s;" role="alert" data-anim="up">
                         <i class="fas fa-info-circle"></i>
-                        <div><strong>Perhatian:</strong> Pengajuan rekomendasi Event Keramaian dilakukan <strong>Min 7 Hari sebelum kegiatan</strong> dilaksanakan.</div>
+                        <div><strong>Perhatian:</strong> Penyampaian surat permohonan rekomendasi pengamanan event dilakukan <strong>selambat-lambatnya 14 hari sebelum kegiatan</strong> dilaksanakan.</div>
                     </div>
 
-                    <fieldset class="fs">
+                    <fieldset class="fs" data-anim="up" style="--d: .3s">
                         <legend><i class="fas fa-user"></i> 1. Data Pemohon</legend>
                         <div class="fields">
                             <div class="field full">
@@ -921,7 +1155,7 @@
                         </div>
                     </fieldset>
 
-                    <fieldset class="fs">
+                    <fieldset class="fs" data-anim="up" style="--d: .35s">
                         <legend><i class="fas fa-briefcase"></i> 2. Data Usaha / Instansi</legend>
                         <div class="fields">
                             <div class="field full">
@@ -930,25 +1164,35 @@
                                 {!! $fe('nama_direktur') !!}
                             </div>
                             <div class="field">
-                                <label class="label" for="nama_usaha"><span>Nama Usaha / Instansi <span class="req" aria-hidden="true">*</span></span></label>
+                                <label class="label" for="nama_usaha"><span>Nama Usaha / Instansi (Pemerintah/Swasta) <span class="req" aria-hidden="true">*</span></span></label>
                                 <input class="input{{ $inv('nama_usaha') }}" type="text" id="nama_usaha" name="nama_usaha" value="{{ old('nama_usaha') }}" required>
                                 {!! $fe('nama_usaha') !!}
                             </div>
                             <div class="field">
-                                <label class="label" for="no_izin_usaha"><span>No. Izin Usaha <span class="req" aria-hidden="true">*</span></span></label>
+                                <label class="label" for="no_izin_usaha"><span>No. Izin Usaha / Surat Tugas <span class="req" aria-hidden="true">*</span></span></label>
                                 <input class="input{{ $inv('no_izin_usaha') }}" type="text" id="no_izin_usaha" name="no_izin_usaha" value="{{ old('no_izin_usaha') }}" required>
                                 {!! $fe('no_izin_usaha') !!}
                             </div>
                         </div>
                     </fieldset>
 
-                    <fieldset class="fs">
+                    <fieldset class="fs" data-anim="up" style="--d: .4s">
                         <legend><i class="fas fa-map-marker-alt"></i> 3. Data Lokasi Acara</legend>
                         <div class="fields">
                             <div class="field full">
                                 <label class="label" for="nama_acara"><span>Nama Acara <span class="req" aria-hidden="true">*</span></span></label>
                                 <input class="input{{ $inv('nama_acara') }}" type="text" id="nama_acara" name="nama_acara" value="{{ old('nama_acara') }}" required>
                                 {!! $fe('nama_acara') !!}
+                            </div>
+                            <div class="field full">
+                                <label class="label" for="jenis_event"><span>Jenis Event <span class="req" aria-hidden="true">*</span></span></label>
+                                <select class="input input-select{{ $inv('jenis_event') }}" id="jenis_event" name="jenis_event" required aria-describedby="hint-jenis">
+                                    <option value="" disabled {{ old('jenis_event') ? '' : 'selected' }}>Pilih jenis event</option>
+                                    <option value="hiburan" {{ old('jenis_event') === 'hiburan' ? 'selected' : '' }}>Event Hiburan (konser, pentas seni, dsb.)</option>
+                                    <option value="non_hiburan" {{ old('jenis_event') === 'non_hiburan' ? 'selected' : '' }}>Non-Hiburan (rapat akbar, bazar, olahraga, keagamaan, dsb.)</option>
+                                </select>
+                                <p class="hint" id="hint-jenis"><i class="fas fa-circle-info"></i> Event hiburan wajib melampirkan bukti pembayaran pajak dari BPPRD.</p>
+                                {!! $fe('jenis_event') !!}
                             </div>
                             <div class="field full">
                                 <label class="label" for="lokasi_acara"><span>Lokasi Acara <span class="req" aria-hidden="true">*</span></span></label>
@@ -966,7 +1210,7 @@
                             </div>
                             <div class="field">
                                 <label class="label"><span>Waktu Pelaksanaan <span class="req" aria-hidden="true">*</span></span></label>
-                                <div style="display: flex; gap: 10px; align-items: center;">
+                                <div class="time-range">
                                     <input class="input{{ $inv('waktu_mulai') }}" type="time" id="waktu_mulai" name="waktu_mulai" value="{{ old('waktu_mulai') }}" required style="flex:1;">
                                     <span style="font-size: .9rem; color: var(--steel); font-weight: 600;">s/d</span>
                                     <input class="input{{ $inv('waktu_selesai') }}" type="time" id="waktu_selesai" name="waktu_selesai" value="{{ old('waktu_selesai') }}" required style="flex:1;">
@@ -982,39 +1226,10 @@
                                 </div>
                                 {!! $fe('jumlah_penonton') !!}
                             </div>
-
-                            <div class="field full">
-                                <span class="label" id="lbl-jalur"><span>Jalur Evakuasi (Upload Photo) <span class="req" aria-hidden="true">*</span></span></span>
-                                <div class="dropzone{{ $inv('foto_jalur_evakuasi') }}" data-dropzone data-max="5" data-ext="jpg,jpeg,png">
-                                    <input type="file" id="foto_jalur_evakuasi" name="foto_jalur_evakuasi" accept="image/jpeg,image/png,.jpg,.jpeg,.png" required aria-labelledby="lbl-jalur">
-                                    
-                                    <div class="dz-prompt">
-                                        <span class="dz-ico"><i class="fas fa-image"></i></span>
-                                        <span class="dz-text"><strong>Tarik foto ke sini</strong> atau <u>pilih dari perangkat</u></span>
-                                    </div>
-
-                                    <div class="dz-preview">
-                                        <div class="dz-img-wrap">
-                                            <span class="dz-badge-ok"><i class="fas fa-circle-check"></i> Siap Diunggah</span>
-                                            <img src="" alt="Pratinjau Jalur Evakuasi" data-dz-img>
-                                        </div>
-                                        <div class="dz-meta">
-                                            <ul class="dz-files" aria-live="polite"></ul>
-                                            <div class="dz-actions">
-                                                <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
-                                                <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <p class="hint">Format JPG atau PNG. Maksimal 5 MB.</p>
-                                <p class="field-err dz-msg" role="alert"></p>
-                                {!! $fe('foto_jalur_evakuasi') !!}
-                            </div>
                         </div>
                     </fieldset>
 
-                    <fieldset class="fs">
+                    <fieldset class="fs" data-anim="up" style="--d: .45s">
                         <legend><i class="fas fa-fire-extinguisher"></i> 4. Data Peralatan Pemadam Kebakaran yang Dimiliki</legend>
                         <div class="fields">
                             <div class="field">
@@ -1052,32 +1267,41 @@
                         </div>
                     </fieldset>
 
-                    <fieldset class="fs">
-                        <legend><i class="fas fa-file-signature"></i> 5. Berkas Persyaratan</legend>
+                    <fieldset class="fs" data-anim="up" style="--d: .5s">
+                        <legend><i class="fas fa-file-signature"></i> 5. Berkas Persyaratan Administrasi</legend>
 
-                        <div class="alert" style="background: #fff8e6; color: #9c6500; border: 1px solid #ffe58f; margin-bottom: 24px;" role="alert">
+                        <div class="alert alert-warn" role="note">
                             <i class="fas fa-exclamation-triangle"></i>
                             <div>
-                                <strong>Perhatian:</strong> Surat pernyataan wajib diunduh, diisi lengkap, diberi materai Rp 10.000, dan ditandatangani sebelum diunggah kembali ke dalam form ini.
+                                <strong>Lampirkan seluruh persyaratan administrasi</strong> berikut: surat permohonan, fotokopi KTP penanggung jawab kegiatan, sket denah lokasi (genset), bukti pembayaran pajak dari BPPRD (khusus event hiburan), dan surat pernyataan pertanggungjawaban mutlak.
                                 <br>
-                                <a href="{{ $url_surat_permohonan }}" download style="margin-top: 8px; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: #b77900; text-decoration: underline;">
-                                    <i class="fas fa-download"></i> Klik di sini untuk mengunduh format surat
+                                <a class="alert-link" href="{{ $url_surat_permohonan }}" download>
+                                    <i class="fas fa-download"></i> Unduh format Surat Pernyataan Pertanggungjawaban Mutlak
                                 </a>
                             </div>
                         </div>
 
-                        <div class="fields">
-                            <div class="field full">
-                                <span class="label" id="lbl-pernyataan"><span>Unggah Surat Pernyataan (Sudah diisi & Bermaterai) <span class="req" aria-hidden="true">*</span></span></span>
-                                <div class="dropzone{{ $inv('surat_pernyataan') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png">
-                                    <input type="file" id="surat_pernyataan" name="surat_pernyataan" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required aria-labelledby="lbl-pernyataan">
-                                    
+                        <div class="upl-summary" aria-live="polite">
+                            <span id="uplCount">0 dari 4 berkas terunggah</span>
+                            <span class="upl-bar" aria-hidden="true"><i id="uplBar"></i></span>
+                        </div>
+
+                        <div class="upload-grid">
+                            <div class="upload-card" data-anim="up" style="--d: .05s">
+                                <span class="label" id="lbl-surat_permohonan"><span>Surat Permohonan <span class="req" aria-hidden="true">*</span></span></span>
+                                <div class="dropzone{{ $inv('surat_permohonan') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png">
+                                    <input type="file" id="surat_permohonan" name="surat_permohonan" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required aria-labelledby="lbl-surat_permohonan">
+
                                     <div class="dz-prompt">
-                                        <span class="dz-ico"><i class="fas fa-file-pdf"></i></span>
-                                        <span class="dz-text"><strong>Tarik berkas ke sini</strong> atau <u>pilih dari perangkat</u></span>
+                                        <span class="dz-ico"><i class="fas fa-envelope-open-text"></i></span>
+                                        <span class="dz-text"><strong>Tarik surat permohonan ke sini</strong> atau <u>pilih dari perangkat</u></span>
                                     </div>
 
                                     <div class="dz-preview">
+                                        <div class="dz-img-wrap" hidden>
+                                            <span class="dz-badge-ok"><i class="fas fa-circle-check"></i> Siap Diunggah</span>
+                                            <img alt="Pratinjau Surat Permohonan" data-dz-img>
+                                        </div>
                                         <div class="dz-meta">
                                             <ul class="dz-files" aria-live="polite"></ul>
                                             <div class="dz-actions">
@@ -1087,7 +1311,124 @@
                                         </div>
                                     </div>
                                 </div>
-                                <p class="hint">Format PDF, JPG, atau PNG. Maksimal 5 MB.</p>
+                                <p class="hint">Surat permohonan resmi yang ditujukan kepada Kepala Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi. PDF, JPG, atau PNG (maks. 5 MB).</p>
+                                
+                                <p class="field-err dz-msg" role="alert"></p>
+                                {!! $fe('surat_permohonan') !!}
+                            </div>
+                            <div class="upload-card" data-anim="up" style="--d: .12s">
+                                <span class="label" id="lbl-fotokopi_ktp"><span>Fotokopi KTP Penanggung Jawab Kegiatan <span class="req" aria-hidden="true">*</span></span></span>
+                                <div class="dropzone{{ $inv('fotokopi_ktp') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png">
+                                    <input type="file" id="fotokopi_ktp" name="fotokopi_ktp" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required aria-labelledby="lbl-fotokopi_ktp">
+
+                                    <div class="dz-prompt">
+                                        <span class="dz-ico"><i class="fas fa-id-card"></i></span>
+                                        <span class="dz-text"><strong>Tarik fotokopi KTP ke sini</strong> atau <u>pilih dari perangkat</u></span>
+                                    </div>
+
+                                    <div class="dz-preview">
+                                        <div class="dz-img-wrap" hidden>
+                                            <span class="dz-badge-ok"><i class="fas fa-circle-check"></i> Siap Diunggah</span>
+                                            <img alt="Pratinjau Fotokopi KTP Penanggung Jawab Kegiatan" data-dz-img>
+                                        </div>
+                                        <div class="dz-meta">
+                                            <ul class="dz-files" aria-live="polite"></ul>
+                                            <div class="dz-actions">
+                                                <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
+                                                <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="hint">KTP penanggung jawab harus terbaca jelas dan masih berlaku. PDF, JPG, atau PNG (maks. 5 MB).</p>
+                                
+                                <p class="field-err dz-msg" role="alert"></p>
+                                {!! $fe('fotokopi_ktp') !!}
+                            </div>
+                            <div class="upload-card" data-anim="up" style="--d: .19s">
+                                <span class="label" id="lbl-foto_jalur_evakuasi"><span>Sket Denah Lokasi (Posisi Genset) <span class="req" aria-hidden="true">*</span></span></span>
+                                <div class="dropzone{{ $inv('foto_jalur_evakuasi') }}" data-dropzone data-max="5" data-ext="jpg,jpeg,png,pdf">
+                                    <input type="file" id="foto_jalur_evakuasi" name="foto_jalur_evakuasi" accept="image/jpeg,image/png,application/pdf,.jpg,.jpeg,.png,.pdf" required aria-labelledby="lbl-foto_jalur_evakuasi">
+
+                                    <div class="dz-prompt">
+                                        <span class="dz-ico"><i class="fas fa-map-location-dot"></i></span>
+                                        <span class="dz-text"><strong>Tarik sket denah lokasi ke sini</strong> atau <u>pilih dari perangkat</u></span>
+                                    </div>
+
+                                    <div class="dz-preview">
+                                        <div class="dz-img-wrap" hidden>
+                                            <span class="dz-badge-ok"><i class="fas fa-circle-check"></i> Siap Diunggah</span>
+                                            <img alt="Pratinjau Sket Denah Lokasi (Posisi Genset)" data-dz-img>
+                                        </div>
+                                        <div class="dz-meta">
+                                            <ul class="dz-files" aria-live="polite"></ul>
+                                            <div class="dz-actions">
+                                                <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
+                                                <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="hint">Denah memuat titik penempatan genset dan jalur evakuasi. PDF, JPG, atau PNG (maks. 5 MB).</p>
+                                
+                                <p class="field-err dz-msg" role="alert"></p>
+                                {!! $fe('foto_jalur_evakuasi') !!}
+                            </div>
+                            <div class="upload-card is-off" id="card_pajak" data-anim="up" style="--d: .26s">
+                                <span class="label" id="lbl-bukti_pajak_bpprd"><span>Bukti Pembayaran Pajak dari BPPRD</span><span class="badge-khusus">Khusus Event Hiburan</span></span>
+                                <div class="dropzone{{ $inv('bukti_pajak_bpprd') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png">
+                                    <input type="file" id="bukti_pajak_bpprd" name="bukti_pajak_bpprd" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" aria-labelledby="lbl-bukti_pajak_bpprd">
+
+                                    <div class="dz-prompt">
+                                        <span class="dz-ico"><i class="fas fa-receipt"></i></span>
+                                        <span class="dz-text"><strong>Tarik bukti pembayaran pajak ke sini</strong> atau <u>pilih dari perangkat</u></span>
+                                    </div>
+
+                                    <div class="dz-preview">
+                                        <div class="dz-img-wrap" hidden>
+                                            <span class="dz-badge-ok"><i class="fas fa-circle-check"></i> Siap Diunggah</span>
+                                            <img alt="Pratinjau Bukti Pembayaran Pajak dari BPPRD" data-dz-img>
+                                        </div>
+                                        <div class="dz-meta">
+                                            <ul class="dz-files" aria-live="polite"></ul>
+                                            <div class="dz-actions">
+                                                <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
+                                                <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="hint">Bukti pembayaran pajak hiburan dari BPPRD Kota Jambi. PDF, JPG, atau PNG (maks. 5 MB).</p>
+                                <p class="pw-status show warn" id="pajak_state" aria-live="polite"><i class="fas fa-circle-info"></i> Pilih jenis event terlebih dahulu.</p>
+                                <p class="field-err dz-msg" role="alert"></p>
+                                {!! $fe('bukti_pajak_bpprd') !!}
+                            </div>
+                            <div class="upload-card" data-anim="up" style="--d: .33s">
+                                <span class="label" id="lbl-surat_pernyataan"><span>Surat Pernyataan Pertanggungjawaban Mutlak <span class="req" aria-hidden="true">*</span></span></span>
+                                <div class="dropzone{{ $inv('surat_pernyataan') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png">
+                                    <input type="file" id="surat_pernyataan" name="surat_pernyataan" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required aria-labelledby="lbl-surat_pernyataan">
+
+                                    <div class="dz-prompt">
+                                        <span class="dz-ico"><i class="fas fa-file-signature"></i></span>
+                                        <span class="dz-text"><strong>Tarik surat pernyataan ke sini</strong> atau <u>pilih dari perangkat</u></span>
+                                    </div>
+
+                                    <div class="dz-preview">
+                                        <div class="dz-img-wrap" hidden>
+                                            <span class="dz-badge-ok"><i class="fas fa-circle-check"></i> Siap Diunggah</span>
+                                            <img alt="Pratinjau Surat Pernyataan Pertanggungjawaban Mutlak" data-dz-img>
+                                        </div>
+                                        <div class="dz-meta">
+                                            <ul class="dz-files" aria-live="polite"></ul>
+                                            <div class="dz-actions">
+                                                <button type="button" class="btn-dz btn-dz--change" data-dz-change><i class="fas fa-arrows-rotate"></i> Ganti</button>
+                                                <button type="button" class="btn-dz btn-dz--remove" data-dz-remove><i class="fas fa-trash-can"></i> Hapus</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="hint">Ditandatangani di atas materai Rp 10.000. PDF, JPG, atau PNG (maks. 5 MB).</p>
+                                
                                 <p class="field-err dz-msg" role="alert"></p>
                                 {!! $fe('surat_pernyataan') !!}
                             </div>
@@ -1166,7 +1507,7 @@
 <div class="sos-fab" id="sosFab">
     <div class="sos-sheet" id="sosSheet">
         <a class="wa" href="{{ $wa_link }}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Lapor lewat WhatsApp</a>
-        <a class="tel" href="tel:{{ $no_telepon }}"><i class="fas fa-phone-alt"></i> Telepon {{ $telepon_tampil }}</a>
+        <a class="tel" href="{{ 'tel:' . $no_telepon }}"><i class="fas fa-phone-alt"></i> Telepon {{ $telepon_tampil }}</a>
         <a class="n112" href="tel:112"><i class="fas fa-headset"></i> Call Center 112</a>
     </div>
     <button class="sos-fab-btn" type="button" aria-expanded="false" aria-controls="sosSheet">
@@ -1177,6 +1518,23 @@
 <script>
 (function () {
     'use strict';
+
+    /* ---------- Animasi In Saat Elemen Masuk Layar (IntersectionObserver) ---------- */
+    var animItems = document.querySelectorAll('[data-anim]');
+    if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries, obs) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-inview');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -24px 0px' });
+
+        animItems.forEach(function (el) { io.observe(el); });
+    } else {
+        animItems.forEach(function (el) { el.classList.add('is-inview'); });
+    }
 
     /* ---------- Navigasi Menu Multi-Dropdown ---------- */
     var header = document.getElementById('siteHeader');
@@ -1291,7 +1649,7 @@
         setTimeout(hideToast, 5000);
     }
 
-    /* ---------- State Validasi Form Real-Time (Standar REDKAR) ---------- */
+    /* ---------- State Validasi Form Real-Time ---------- */
     const btnSubmit = document.getElementById('btn_submit_keramaian');
 
     const nikInput = document.getElementById('nik');
@@ -1364,7 +1722,7 @@
     nikInput.addEventListener('input', validateNik);
     if (nikInput.value) validateNik();
 
-    /* ---------- Validasi WhatsApp Real-Time (Tanpa Badge "Aktif") ---------- */
+    /* ---------- Validasi WhatsApp Real-Time ---------- */
     function validateWa() {
         let val = waInput.value.replace(/\D/g, '');
         if (val.startsWith('628')) {
@@ -1412,7 +1770,7 @@
     waInput.addEventListener('input', validateWa);
     if (waInput.value) validateWa();
 
-    /* ---------- Validasi Tanggal Pelaksanaan (Minimal H+7 Sebelum Acara) ---------- */
+    /* ---------- Validasi Tanggal Pelaksanaan (Selambat-lambatnya H-14 Sebelum Kegiatan) ---------- */
     function validateDate() {
         if (!tglInput.value) {
             tglBadge.className = 'pw-badge';
@@ -1430,13 +1788,13 @@
         today.setHours(0, 0, 0, 0);
 
         const minDate = new Date(today);
-        minDate.setDate(today.getDate() + 7);
+        minDate.setDate(today.getDate() + 14);
 
         if (selected < minDate) {
             tglBadge.className = 'pw-badge show mismatch';
-            tglBadge.innerHTML = '<i class="fas fa-xmark"></i> Kurang dari H-7';
+            tglBadge.innerHTML = '<i class="fas fa-xmark"></i> Kurang dari H-14';
             tglMsg.className = 'pw-status show mismatch';
-            tglMsg.innerHTML = '<i class="fas fa-circle-exclamation"></i> Pengajuan minimal 7 hari sebelum tanggal acara';
+            tglMsg.innerHTML = '<i class="fas fa-circle-exclamation"></i> Permohonan disampaikan selambat-lambatnya 14 hari sebelum kegiatan';
             tglInput.classList.add('is-invalid');
             tglInput.classList.remove('is-valid');
             isDateValid = false;
@@ -1444,7 +1802,7 @@
             tglBadge.className = 'pw-badge show match';
             tglBadge.innerHTML = '<i class="fas fa-check"></i> Sesuai';
             tglMsg.className = 'pw-status show match';
-            tglMsg.innerHTML = '<i class="fas fa-calendar-check"></i> Tanggal memenuhi syarat pengajuan (Min H-7)';
+            tglMsg.innerHTML = '<i class="fas fa-calendar-check"></i> Tanggal memenuhi syarat pengajuan (Min H-14)';
             tglInput.classList.add('is-valid');
             tglInput.classList.remove('is-invalid');
             isDateValid = true;
@@ -1545,6 +1903,7 @@
         });
         isFileValid = allOk;
         syncSubmitButton();
+        if (typeof updateUploadCount === 'function') updateUploadCount();
     }
 
     dropzones.forEach(function (dz) {
@@ -1589,196 +1948,271 @@
             if (maxMb && file.size > maxMb * 1048576) {
                 resetDropzone();
                 dz.classList.add('is-invalid');
-                if (msg) msg.innerHTML = '<i class="fas fa-circle-exclamation"></i> Ukuran berkas (' + fmtSize(file.size) + ') melebihi batas maksimal ' + maxMb + ' MB.';
+                if (msg) msg.innerHTML = '<i class="fas fa-circle-exclamation"></i> Ukuran berkas "' + file.name + '" (' + fmtSize(file.size) + ') melebihi batas ' + maxMb + ' MB.';
                 checkAllDropzonesValid();
                 return;
             }
 
+            /* Pratinjau: gambar tampil sebagai thumbnail, PDF hanya tampil sebagai nama berkas */
+            var isImg = ['jpg', 'jpeg', 'png'].indexOf(ext) > -1;
+            if (imgPreview) {
+                var wrap = imgPreview.closest('.dz-img-wrap');
+                if (imgPreview._url) { URL.revokeObjectURL(imgPreview._url); imgPreview._url = null; }
+                if (isImg) {
+                    imgPreview._url = URL.createObjectURL(file);
+                    imgPreview.src = imgPreview._url;
+                    if (wrap) wrap.hidden = false;
+                } else {
+                    imgPreview.removeAttribute('src');
+                    if (wrap) wrap.hidden = true;
+                }
+            }
+
             var li = document.createElement('li');
-            li.innerHTML = '<i class="fas fa-circle-check"></i> <span>' + file.name + '</span> <span class="f-size">(' + fmtSize(file.size) + ')</span>';
+            var ico = document.createElement('i');
+            ico.className = 'fas ' + (isImg ? 'fa-file-image' : 'fa-file-pdf');
+            var nm = document.createElement('span');
+            nm.textContent = file.name;
+            var sz = document.createElement('span');
+            sz.className = 'f-size';
+            sz.textContent = fmtSize(file.size);
+            li.appendChild(ico); li.appendChild(nm); li.appendChild(sz);
             list.appendChild(li);
 
-            if (imgPreview && window.FileReader && file.type.indexOf('image/') === 0) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    imgPreview.src = e.target.result;
-                    dz.classList.add('has-files');
-                };
-                reader.readAsDataURL(file);
-            } else {
-                dz.classList.add('has-files');
-            }
+            dz.classList.add('has-files');
             checkAllDropzonesValid();
         }
 
-        ['dragenter', 'dragover'].forEach(function (t) {
-            dz.addEventListener(t, function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                dz.classList.add('is-over');
-            });
-        });
+        input.addEventListener('change', function () { handleFiles(input.files); });
 
-        ['dragleave', 'drop'].forEach(function (t) {
-            dz.addEventListener(t, function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                dz.classList.remove('is-over');
-            });
+        ['dragenter', 'dragover'].forEach(function (ev) {
+            dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add('is-over'); });
         });
-
+        ['dragleave', 'dragend'].forEach(function (ev) {
+            dz.addEventListener(ev, function () { dz.classList.remove('is-over'); });
+        });
         dz.addEventListener('drop', function (e) {
-            var dt = e.dataTransfer;
-            if (dt && dt.files && dt.files.length) {
+            e.preventDefault();
+            dz.classList.remove('is-over');
+            if (input.disabled) return;
+            var f = e.dataTransfer && e.dataTransfer.files;
+            if (!f || !f.length) return;
+            try {
+                var dt = new DataTransfer();
+                dt.items.add(f[0]);
                 input.files = dt.files;
-                handleFiles(dt.files);
+            } catch (err) {
+                input.files = f;
             }
-        });
-
-        input.addEventListener('change', function () {
             handleFiles(input.files);
         });
 
-        if (btnChange) {
-            btnChange.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                input.click();
-            });
-        }
-
-        if (btnRemove) {
-            btnRemove.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                if (msg) msg.innerHTML = '';
-                dz.classList.remove('is-invalid');
-                resetDropzone();
-                checkAllDropzonesValid();
-            });
-        }
-    });
-})();
-</script>
-
-<!-- ==================== CEK STATUS PERMOHONAN ==================== -->
-<script>
-(function () {
-    'use strict';
-
-    var form = document.getElementById('csForm');
-    if (!form) return;
-
-    var input = document.getElementById('csKontak');
-    var btn   = document.getElementById('csBtn');
-    var err   = document.getElementById('csErr');
-    var list  = document.getElementById('csList');
-
-    var STATUS = {
-        'Menunggu':  { cls: 'cs-menunggu',  txt: 'Permohonan diterima dan menunggu verifikasi petugas.' },
-        'Proses':    { cls: 'cs-proses',    txt: 'Permohonan sedang diproses oleh petugas.' },
-        'Disetujui': { cls: 'cs-disetujui', txt: 'Permohonan disetujui. Silakan hubungi petugas untuk tindak lanjut.' },
-        'Ditolak':   { cls: 'cs-ditolak',   txt: 'Permohonan ditolak. Hubungi petugas untuk informasi lebih lanjut.' }
-    };
-
-    input.addEventListener('input', function () {
-        let val = input.value.replace(/\D/g, '');
-        if (val.startsWith('628')) {
-            val = '08' + val.slice(3);
-        }
-        input.value = val.slice(0, 16);
+        if (btnChange) btnChange.addEventListener('click', function (e) { e.preventDefault(); input.click(); });
+        if (btnRemove) btnRemove.addEventListener('click', function (e) {
+            e.preventDefault();
+            var wrap = imgPreview && imgPreview.closest('.dz-img-wrap');
+            if (imgPreview && imgPreview._url) { URL.revokeObjectURL(imgPreview._url); imgPreview._url = null; }
+            if (wrap) wrap.hidden = true;
+            resetDropzone();
+            if (msg) msg.innerHTML = '';
+            dz.classList.remove('is-invalid');
+            checkAllDropzonesValid();
+        });
     });
 
-    function el(tag, cls, text) {
-        var e = document.createElement(tag);
-        if (cls) e.className = cls;
-        if (text !== undefined) e.textContent = text;
-        return e;
+    /* ---------- Jenis Event -> Bukti Pajak BPPRD wajib hanya untuk event hiburan ---------- */
+    var jenisEvent = document.getElementById('jenis_event');
+    var cardPajak  = document.getElementById('card_pajak');
+    var pajakState = document.getElementById('pajak_state');
+
+    function togglePajak() {
+        if (!jenisEvent || !cardPajak) return;
+        var inp = cardPajak.querySelector('input[type="file"]');
+        var star = cardPajak.querySelector('.label > span:first-child');
+        var hiburan = jenisEvent.value === 'hiburan';
+
+        cardPajak.classList.toggle('is-off', !hiburan);
+        inp.disabled = !hiburan;
+        inp.required = hiburan;
+
+        if (!hiburan) {
+            var rm = cardPajak.querySelector('[data-dz-remove]');
+            if (rm && cardPajak.querySelector('.dropzone').classList.contains('has-files')) rm.click();
+        }
+
+        if (pajakState) {
+            if (hiburan) {
+                pajakState.className = 'pw-status show mismatch';
+                pajakState.innerHTML = '<i class="fas fa-circle-exclamation"></i> Wajib dilampirkan untuk event hiburan.';
+            } else if (jenisEvent.value === 'non_hiburan') {
+                pajakState.className = 'pw-status show match';
+                pajakState.innerHTML = '<i class="fas fa-circle-check"></i> Tidak diperlukan untuk event non-hiburan.';
+            } else {
+                pajakState.className = 'pw-status show warn';
+                pajakState.innerHTML = '<i class="fas fa-circle-info"></i> Pilih jenis event terlebih dahulu.';
+            }
+        }
+
+        var existingStar = cardPajak.querySelector('.label .req');
+        if (hiburan && !existingStar && star) {
+            var r = document.createElement('span');
+            r.className = 'req'; r.setAttribute('aria-hidden', 'true'); r.textContent = ' *';
+            star.appendChild(r);
+        } else if (!hiburan && existingStar) {
+            existingStar.remove();
+        }
+        updateUploadCount();
+        checkAllDropzonesValid();
     }
 
-    function render(items) {
-        list.textContent = '';
+    /* ---------- Ringkasan kemajuan unggah berkas ---------- */
+    function updateUploadCount() {
+        var cards = document.querySelectorAll('.upload-grid .upload-card:not(.is-off)');
+        var done = 0;
+        cards.forEach(function (c) {
+            if (c.querySelector('.dropzone').classList.contains('has-files')) done++;
+        });
+        var label = document.getElementById('uplCount');
+        var bar = document.getElementById('uplBar');
+        if (label) label.textContent = done + ' dari ' + cards.length + ' berkas terunggah';
+        if (bar) bar.style.width = (cards.length ? Math.round(done / cards.length * 100) : 0) + '%';
+    }
 
-        if (!items.length) {
-            list.appendChild(el('li', 'cs-empty', 'Tidak ditemukan permohonan dengan NIK / No HP tersebut.'));
-            return;
+    /* Error dari server pada dropzone ditandai data-srv agar tidak mengunci tombol kirim */
+    dropzones.forEach(function (d) {
+        if (d.classList.contains('is-invalid')) { d.dataset.srv = '1'; d.classList.remove('is-invalid'); }
+        d.querySelector('input[type="file"]').addEventListener('change', function () { delete d.dataset.srv; });
+    });
+
+    if (jenisEvent) {
+        jenisEvent.addEventListener('change', togglePajak);
+        togglePajak();
+    }
+    updateUploadCount();
+
+    /* ---------- Animasi masuk bergantian untuk setiap kolom isian ---------- */
+    document.querySelectorAll('.fs').forEach(function (fs) {
+        fs.querySelectorAll('.field').forEach(function (f, i) { f.style.setProperty('--i', i); });
+    });
+
+    /* ---------- Cek Status Permohonan ---------- */
+    var csForm = document.getElementById('csForm');
+    if (csForm) {
+        var csInput = document.getElementById('csKontak');
+        var csBtn = document.getElementById('csBtn');
+        var csErr = document.getElementById('csErr');
+        var csList = document.getElementById('csList');
+        var CEK_URL = @json($url_cek_status);
+        var CSRF = '{{ csrf_token() }}';
+
+        csInput.addEventListener('input', function () { csInput.value = csInput.value.replace(/\D/g, '').slice(0, 16); });
+
+        function statusClass(st) {
+            st = String(st || '').toLowerCase();
+            if (st.indexOf('setuju') > -1 || st.indexOf('terima') > -1 || st.indexOf('selesai') > -1) return 'cs-disetujui';
+            if (st.indexOf('tolak') > -1) return 'cs-ditolak';
+            if (st.indexOf('proses') > -1 || st.indexOf('verifikasi') > -1) return 'cs-proses';
+            return 'cs-menunggu';
         }
 
-        items.forEach(function (it) {
-            var st = STATUS[it.status] || { cls: 'cs-menunggu', txt: '' };
+        function el(tag, cls, text) {
+            var n = document.createElement(tag);
+            if (cls) n.className = cls;
+            if (text !== undefined) n.textContent = text;
+            return n;
+        }
 
-            var li  = el('li', 'cs-item');
-            var top = el('div', 'cs-top');
-            top.appendChild(el('div', 'cs-kegiatan', it.kegiatan));
-            top.appendChild(el('span', 'cs-badge ' + st.cls, it.status));
-            li.appendChild(top);
+        csForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var v = csInput.value.trim();
+            csErr.innerHTML = '';
+            csList.innerHTML = '';
 
-            var meta = el('div', 'cs-meta');
-            meta.appendChild(document.createTextNode('Pemohon: ' + it.nama));
-            meta.appendChild(document.createElement('br'));
-            meta.appendChild(document.createTextNode('Lokasi: ' + it.lokasi));
-            meta.appendChild(document.createElement('br'));
-            meta.appendChild(document.createTextNode('Tgl acara: ' + it.tanggal));
-            if (it.diajukan) {
-                meta.appendChild(document.createElement('br'));
-                meta.appendChild(document.createElement('br'));
-                meta.appendChild(document.createTextNode('Diajukan: ' + it.diajukan));
+            if (v.length < 10) {
+                csErr.innerHTML = '<i class="fas fa-circle-exclamation"></i> Masukkan NIK (16 digit) atau No HP/WA (min. 10 digit).';
+                return;
             }
-            li.appendChild(meta);
 
-            if (st.txt) {
-                li.appendChild(el('div', 'cs-note ' + st.cls, st.txt));
-            }
-            list.appendChild(li);
+            csBtn.disabled = true;
+            csBtn.innerHTML = '<i class="fas fa-circle-notch spin"></i> Mencari';
+
+            fetch(CEK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': CSRF, 'X-Requested-With': 'XMLHttpRequest' },
+                body: JSON.stringify({ kontak: v })
+            })
+            .then(function (r) { if (!r.ok) throw new Error('http'); return r.json(); })
+            .then(function (res) {
+                var rows = Array.isArray(res) ? res : (res.data || res.permohonan || []);
+                if (!rows.length) {
+                    csList.appendChild(el('li', 'cs-empty', 'Belum ada permohonan dengan data tersebut.'));
+                    csList.style.display = 'grid';
+                    return;
+                }
+                rows.forEach(function (it, i) {
+                    var li = el('li', 'cs-item');
+                    li.style.setProperty('--i', i);
+                    var top = el('div', 'cs-top');
+                    top.appendChild(el('span', 'cs-kegiatan', it.nama_acara || it.kegiatan || 'Permohonan'));
+                    top.appendChild(el('span', 'cs-badge ' + statusClass(it.status), it.status_label || it.status || 'Menunggu'));
+                    li.appendChild(top);
+
+                    var meta = [];
+                    if (it.tgl_pelaksanaan) meta.push('Pelaksanaan: ' + it.tgl_pelaksanaan);
+                    if (it.lokasi_acara) meta.push('Lokasi: ' + it.lokasi_acara);
+                    if (it.created_at) meta.push('Diajukan: ' + it.created_at);
+                    if (meta.length) li.appendChild(el('div', 'cs-meta', meta.join('\n')));
+                    if (it.catatan) li.appendChild(el('div', 'cs-note cs-menunggu', it.catatan));
+                    csList.appendChild(li);
+                });
+            })
+            .catch(function () {
+                csErr.innerHTML = '<i class="fas fa-circle-exclamation"></i> Gagal memeriksa status. Silakan coba lagi.';
+            })
+            .finally(function () {
+                csBtn.disabled = false;
+                csBtn.innerHTML = '<i class="fas fa-search"></i> Cek';
+            });
         });
     }
 
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        err.innerHTML = '';
-        list.textContent = '';
+    /* ---------- Kolom kiri sticky tanpa scroll internal ----------
+       Jika tinggi kolom lebih kecil dari layar: menempel di bawah header.
+       Jika lebih tinggi: menempel dengan bagian bawahnya rata dengan dasar layar,
+       sehingga seluruh isi tetap terlihat setelah halaman digulir. */
+    var stack = document.querySelector('.info-stack');
+    var wide = window.matchMedia('(min-width: 992px)');
+    function updateStick() {
+        if (!stack) return;
+        if (!wide.matches) { stack.style.removeProperty('--stick-top'); return; }
+        var hh = header ? header.offsetHeight : 64;
+        var top = hh + 16;
+        var fit = window.innerHeight - stack.offsetHeight - 16;
+        stack.style.setProperty('--stick-top', Math.min(top, fit) + 'px');
+    }
+    if (stack) {
+        updateStick();
+        window.addEventListener('resize', updateStick);
+        window.addEventListener('load', updateStick);
+        if ('ResizeObserver' in window) new ResizeObserver(updateStick).observe(stack);
+        if (wide.addEventListener) wide.addEventListener('change', updateStick);
+    }
 
-        var val = input.value.trim();
-        var isNik = val.length === 16;
-        var isWa  = val.startsWith('08') && val.length >= 10 && val.length <= 14;
-
-        if (!isNik && !isWa) {
-            err.innerHTML = '<i class="fas fa-circle-exclamation"></i> Masukkan 16 digit NIK atau Nomor WhatsApp (diawali 08, 10-14 digit) yang valid.';
-            input.focus();
-            return;
-        }
-
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari';
-
-        fetch('{{ route('izin-keramaian.cek-status') }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ kontak: val })
-        })
-        .then(function (res) {
-            return res.json().catch(function () { return {}; }).then(function (body) {
-                return { status: res.status, ok: res.ok, body: body };
-            });
-        })
-        .then(function (r) {
-            if (r.ok) { render(r.body.data || []); return; }
-            if (r.status === 429) { err.innerHTML = '<i class="fas fa-circle-exclamation"></i> Terlalu banyak percobaan. Coba lagi sebentar lagi.'; return; }
-            if (r.status === 419) { err.innerHTML = '<i class="fas fa-circle-exclamation"></i> Sesi berakhir. Muat ulang halaman lalu coba lagi.'; return; }
-            err.innerHTML = '<i class="fas fa-circle-exclamation"></i> ' + ((r.body && r.body.message) || 'Terjadi kesalahan. Coba lagi.');
-        })
-        .catch(function () {
-            err.innerHTML = '<i class="fas fa-circle-exclamation"></i> Gagal terhubung ke server. Periksa koneksi Anda.';
-        })
-        .finally(function () {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-search"></i> Cek';
+    /* ---------- Cegah kirim ganda & fokus ke kolom yang bermasalah ---------- */
+    var formKeramaian = document.getElementById('form_keramaian');
+    if (formKeramaian) {
+        formKeramaian.addEventListener('submit', function () {
+            setTimeout(function () {
+                if (btnSubmit) {
+                    btnSubmit.disabled = true;
+                    btnSubmit.innerHTML = '<i class="fas fa-circle-notch spin"></i> Mengirim...';
+                }
+            }, 0);
         });
-    });
+        formKeramaian.addEventListener('invalid', function (e) {
+            e.target.classList.add('is-invalid');
+        }, true);
+    }
 })();
 </script>
 </body>

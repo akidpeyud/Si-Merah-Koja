@@ -8,6 +8,9 @@
 
     $path_sarana = request()->routeIs('sarpras.sarana');
     $infoPos = $infoPos ?? [];
+
+    // Hilangkan tab 'sumber-air' dan 'hidrant' secara otomatis walaupun masih dikirim dari Controller
+    $tabs = collect($tabs ?? [])->except(['sumber-air', 'hidrant'])->all();
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -38,7 +41,7 @@
             --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
             --font-body: 'Instrument Sans', system-ui, sans-serif;
 
-            --r-lg: 28px; --r-md: 18px; --r-sm: 10px;
+            --r-lg: 24px; --r-md: 17px; --r-sm: 11px;
             --wrap: 1300px; --header-h: 64px;
         }
 
@@ -50,6 +53,7 @@
         a { color: inherit; text-decoration: none; }
         ul, ol { list-style: none; }
         button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+        button, a, input, select { -webkit-tap-highlight-color: transparent; }
         :focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; border-radius: 6px; }
         .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
         .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: clamp(16px, 4vw, 32px); padding-right: clamp(16px, 4vw, 32px); }
@@ -161,15 +165,15 @@
         /* ==========================================================
            HERO HALAMAN
            ========================================================== */
-        .page-hero { position: relative; isolation: isolate; overflow: hidden; color: #fff; background: var(--ink); padding: clamp(36px, 6vw, 64px) 0 clamp(72px, 10vw, 100px); }
+        .page-hero { position: relative; isolation: isolate; overflow: hidden; color: #fff; background: var(--ink); padding: clamp(38px, 6vw, 76px) 0 clamp(68px, 9vw, 100px); }
         .page-hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(60% 55% at 8% 100%, rgba(229,57,45,.38), transparent 70%), linear-gradient(100deg, rgba(13,27,42,.97) 0%, rgba(13,27,42,.84) 48%, rgba(13,27,42,.62) 100%), url('/images/background1.png') center / cover no-repeat; }
-        .crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: .9rem; color: rgba(255,255,255,.7); margin-bottom: clamp(18px, 3vw, 26px); }
+        .crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: .86rem; color: rgba(255,255,255,.7); margin-bottom: clamp(18px, 3vw, 26px); }
         .crumbs li { display: inline-flex; align-items: center; gap: 10px; }
         .crumbs li + li::before { content: "\203A"; opacity: .5; font-size: 1.1rem; line-height: 1; }
         .crumbs a:hover { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
         .crumbs [aria-current] { color: #fff; font-weight: 600; }
-        .page-hero h1 { font-family: var(--font-display); font-weight: 800; font-stretch: 82%; font-size: clamp(2.8rem, 8vw, 5.5rem); line-height: .95; letter-spacing: -0.035em; }
-        .page-hero p { margin-top: 18px; max-width: 56ch; color: rgba(255,255,255,.75); font-size: clamp(1rem, 1.5vw, 1.15rem); }
+        .page-hero h1 { max-width: 1000px; font-family: var(--font-display); font-weight: 800; font-stretch: 82%; font-size: clamp(2.55rem, 6.6vw, 5.1rem); line-height: .98; letter-spacing: -.045em; text-wrap: balance; }
+        .page-hero p { margin-top: 18px; max-width: 62ch; line-height: 1.75; color: rgba(255,255,255,.75); font-size: clamp(1rem, 1.5vw, 1.15rem); }
         .rise { animation: rise .8s cubic-bezier(.16,.84,.3,1) both; }
         .rise.d1 { animation-delay: .08s; } .rise.d2 { animation-delay: .18s; }
         @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
@@ -177,38 +181,37 @@
         /* ==========================================================
            PILL TAB & TOMBOL PINDAH SARANA/PRASARANA
            ========================================================== */
-        .page-nav-wrap { display: flex; justify-content: center; margin-top: -30px; position: relative; z-index: 10; padding: 0 20px; }
-        .page-nav { display: inline-flex; align-items: center; background: #fff; padding: 6px; border-radius: 999px; box-shadow: 0 12px 35px rgba(13,27,42,.1); gap: 4px; overflow-x: auto; max-width: 100%; border: 1px solid rgba(0,0,0,.04); scrollbar-width: none; }
+        .page-nav-wrap { display: flex; justify-content: center; margin-top: -28px; position: relative; z-index: 10; padding: 0 18px; }
+        .page-nav { display: inline-flex; align-items: center; background: #fff; padding: 7px; border-radius: 999px; box-shadow: 0 12px 35px rgba(13,27,42,.1); gap: 5px; overflow-x: auto; max-width: 100%; border: 1px solid rgba(0,0,0,.04); scrollbar-width: none; }
         .page-nav::-webkit-scrollbar { display: none; }
-        .page-nav button { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 999px; font-size: .9rem; font-weight: 700; color: var(--steel); white-space: nowrap; transition: .3s; }
+        .page-nav button { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 999px; font-size: .88rem; font-weight: 700; color: var(--steel); white-space: nowrap; transition: .3s; }
         .page-nav button:hover { color: var(--ink-2); background: var(--soft); }
         .page-nav button.active { background: var(--ink); color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.15); }
         .page-nav button.active i { color: var(--amber); }
 
-        /* Pemisah & Tombol Pindah Halaman (Sarana <-> Prasarana) */
         .page-nav .nav-sep { width: 1.5px; align-self: stretch; margin: 6px 4px; background: var(--line); flex: none; }
-        .page-nav a.nav-switch { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 999px; font-size: .88rem; font-weight: 700; color: var(--signal-d); background: #fdeceb; border: 1px solid #f5c2be; white-space: nowrap; transition: .25s; flex: none; }
+        .page-nav a.nav-switch { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 999px; font-size: .88rem; font-weight: 700; color: var(--signal-d); background: #fdeceb; border: 1px solid #f5c2be; white-space: nowrap; transition: .25s; flex: none; }
         .page-nav a.nav-switch:hover { background: var(--signal); color: #fff; border-color: var(--signal); box-shadow: 0 6px 16px -4px rgba(229,57,45,.55); transform: translateY(-1px); }
         .page-nav a.nav-switch i.arr { font-size: .78rem; transition: transform .2s; }
         .page-nav a.nav-switch:hover i.arr { transform: translateX(3px); }
 
-        @media (max-width: 768px) { .page-nav { justify-content: flex-start; } .page-nav button, .page-nav a.nav-switch { padding: 8px 16px; font-size: .85rem; } }
+        @media (max-width: 768px) { .page-nav { justify-content: flex-start; } }
 
         /* ==========================================================
            KONTEN UMUM
            ========================================================== */
-        .page-body { padding: 40px 0 clamp(64px, 9vw, 112px); min-height: 50vh; }
+        .page-body { padding: 38px 0 clamp(64px, 9vw, 112px); min-height: 50vh; }
         .panel { display: none; animation: rise .5s both; }
         .panel.show { display: block; }
         .panel-card { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
-        .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 22px 28px; border-bottom: 1px solid var(--line); }
+        .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 24px 28px; border-bottom: 1px solid var(--line); }
         .panel-head h2 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: 1.5rem; letter-spacing: -0.02em; }
         .panel-head .count { font-size: .85rem; font-weight: 700; color: var(--signal-d); background: #fdeceb; padding: 4px 14px; border-radius: 999px; }
         .empty { text-align: center; padding: 56px 24px; color: var(--steel); }
         .empty i { font-size: 2.4rem; color: #c8d1db; margin-bottom: 10px; }
 
-        /* chip pos (tab Pemadam) */
-        .chips { display: flex; gap: 8px; padding: 18px 28px 0; overflow-x: auto; scrollbar-width: thin; }
+        /* chip pos */
+        .chips { display: flex; gap: 8px; padding: 20px 28px 0; overflow-x: auto; scrollbar-width: thin; }
         .chip { flex: none; display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border: 1px solid var(--line); border-radius: 999px; background: #fff; font-size: .8rem; font-weight: 700; color: var(--steel); text-transform: uppercase; white-space: nowrap; transition: .2s; }
         .chip em { font-style: normal; font-size: .72rem; padding: 1px 8px; border-radius: 999px; background: var(--soft); color: var(--steel); }
         .chip:hover { border-color: var(--signal); color: var(--signal-d); }
@@ -236,11 +239,16 @@
         .search i { color: var(--steel); font-size: .9rem; }
         .search input { border: 0; background: none; outline: 0; width: 100%; font: inherit; font-size: .92rem; }
 
+        .seg { display: inline-flex; padding: 4px; border-radius: 999px; background: var(--paper); border: 1.5px solid var(--line); }
+        .seg button { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 16px; border-radius: 999px; font-size: .85rem; font-weight: 700; color: var(--steel); transition: background .2s, color .2s; white-space: nowrap; }
+        .seg button:hover { color: var(--ink); }
+        .seg button[aria-pressed="true"] { background: var(--ink-2); color: #fff; }
+
         .tbl-wrap { overflow-x: auto; padding: 20px 28px 30px; }
         .no-result { text-align: center; padding: 36px 16px; color: var(--steel); }
 
         /* ==========================================================
-           MODE 1 (DEFAULT): GALERI KARTU BESAR (TANPA PERLU ZOOM)
+           MODE 1 (DEFAULT): GALERI KARTU BESAR
            ========================================================== */
         .tbl-wrap.mode-gallery { overflow-x: visible; }
         .tbl-wrap.mode-gallery table,
@@ -274,7 +282,6 @@
             border: 0;
         }
 
-        /* Nomor Urut Melayang di Atas Foto */
         .tbl-wrap.mode-gallery td.c-no {
             position: absolute;
             top: 12px;
@@ -303,7 +310,6 @@
         }
         .tbl-wrap.mode-gallery td.c-no .no::before { content: "#"; opacity: .65; margin-right: 1px; }
 
-        /* Area Gambar Utama Besar & Jelas */
         .tbl-wrap.mode-gallery td.c-img {
             order: 1;
             width: 100%;
@@ -373,7 +379,6 @@
         }
         .tbl-wrap.mode-gallery td.c-img .noimg i { font-size: 2.2rem; color: #cbd5e1; }
 
-        /* Nama Sarana / Prasarana & Badge di Bawah Gambar */
         .tbl-wrap.mode-gallery td.c-nama {
             order: 2;
             min-width: 0;
@@ -408,7 +413,6 @@
         .ibadge i { color: var(--signal-d); }
         .ibadge.plat i { color: var(--blue); }
 
-        /* Baris Jumlah & Kolom Lain di Dalam Kartu */
         .tbl-wrap.mode-gallery td.c-jml,
         .tbl-wrap.mode-gallery td.c-etc {
             order: 3;
@@ -440,7 +444,7 @@
         }
 
         /* ==========================================================
-           MODE 2: TABEL LEBAR (GAMBAR TETAP DIPERBESAR 150x104)
+           MODE 2: TABEL LEBAR
            ========================================================== */
         .tbl-wrap.mode-table table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: .92rem; }
         .tbl-wrap.mode-table thead th { text-align: left; font-size: .72rem; text-transform: uppercase; letter-spacing: .07em; color: var(--steel); background: var(--paper); padding: 12px 14px; white-space: nowrap; }
@@ -465,181 +469,24 @@
         .tbl-wrap.mode-table td a.zoom::after { content: "\f00e"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; right: 8px; bottom: 8px; width: 26px; height: 26px; border-radius: 50%; background: rgba(13,27,42,.75); color: #fff; font-size: .7rem; display: grid; place-items: center; opacity: 0; transition: opacity .2s; }
         .tbl-wrap.mode-table td a.zoom:hover::after { opacity: 1; }
 
-        /* ==========================================================
-           PANEL RICH (Sumber Air & Hidrant Kota)
-           ========================================================== */
-        .rich { display: grid; gap: 20px; min-width: 0; }
-        .rich-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: clamp(20px, 3vw, 28px); }
-        .rich-head h2 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.35rem, 2.6vw, 1.75rem); line-height: 1.2; letter-spacing: -0.015em; margin-bottom: 6px; }
-        .rich-head p { color: var(--steel); font-size: .95rem; max-width: 56ch; }
-        .total-pill { display: inline-flex; align-items: center; gap: 12px; padding: 10px 20px 10px 12px; border-radius: 999px; background: var(--ink); color: #fff; }
-        .total-pill i { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.12); color: #7dd3fc; }
-        .total-pill b { display: block; font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; line-height: 1; }
-        .total-pill span { font-size: .75rem; color: rgba(255,255,255,.7); font-weight: 600; }
-
-        /* kartu kategori (sumber air) */
-        .cat-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
-        @media (max-width: 1100px) { .cat-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-        @media (max-width: 420px) { .cat-tabs { grid-template-columns: 1fr; } }
-        .tab-card { display: flex; align-items: center; gap: 14px; text-align: left; background: #fff; border: 1.5px solid var(--line); border-radius: var(--r-md); padding: 16px; transition: border-color .2s, transform .2s, box-shadow .2s, background .2s; }
-        .tab-card:hover { transform: translateY(-2px); border-color: #b8c5d3; box-shadow: 0 14px 26px -14px rgba(13,27,42,.25); }
-        .tab-ico { flex: none; width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; font-size: 1.1rem; }
-        .tone-red .tab-ico { background: #fef2f2; color: #dc2626; }
-        .tone-blue .tab-ico { background: #eff6ff; color: #2563eb; }
-        .tone-teal .tab-ico { background: #ecfeff; color: #0891b2; }
-        .tone-amber .tab-ico { background: #fff7e6; color: #b7791f; }
-        .tab-txt { min-width: 0; }
-        .tab-num { font-family: var(--font-display); font-weight: 800; font-stretch: 90%; font-size: 1.6rem; line-height: 1; letter-spacing: -0.02em; }
-        .tab-lbl { margin-top: 4px; font-size: .82rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .tab-desc { font-size: .74rem; color: var(--steel); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .tab-card[aria-selected="true"] { background: var(--ink-2); border-color: var(--ink-2); box-shadow: 0 18px 30px -14px rgba(13,27,42,.5); }
-        .tab-card[aria-selected="true"] .tab-num, .tab-card[aria-selected="true"] .tab-lbl { color: #fff; }
-        .tab-card[aria-selected="true"] .tab-desc { color: rgba(255,255,255,.65); }
-        .tab-card[aria-selected="true"] .tab-ico { background: rgba(255,255,255,.14); color: #fff; }
-
-        /* statistik & kesiapan (hidrant) */
-        .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
-        @media (max-width: 1100px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-        @media (max-width: 480px) { .stats { grid-template-columns: 1fr; } }
-        .stat { display: flex; align-items: center; gap: 14px; background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); padding: 18px; }
-        .stat-ico { flex: none; width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; font-size: 1.1rem; background: #eef2ff; color: #1d4fd6; }
-        .stat.ok .stat-ico { background: var(--ok-tint); color: var(--ok); }
-        .stat.bad .stat-ico { background: var(--bad-tint); color: var(--bad); }
-        .stat.geo .stat-ico { background: #fff7e6; color: #b7791f; }
-        .stat-num { font-family: var(--font-display); font-weight: 800; font-stretch: 90%; font-size: 1.85rem; line-height: 1; letter-spacing: -0.02em; }
-        .stat-lbl { margin-top: 4px; font-size: .8rem; font-weight: 600; color: var(--steel); }
-        .ready { background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); padding: 20px 22px; }
-        .ready-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
-        .ready-top strong { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
-        .ready-top span { font-size: .85rem; color: var(--steel); font-weight: 500; }
-        .ready-pct { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; color: var(--ok); }
-        .bar { height: 12px; border-radius: 999px; background: var(--bad-tint); overflow: hidden; border: 1px solid var(--bad-line); }
-        .bar > i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #10b981, #059669); }
-        .bar-legend { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 12px; font-size: .82rem; font-weight: 600; color: var(--steel); }
-        .bar-legend span { display: inline-flex; align-items: center; gap: 8px; }
-        .bar-legend .sw { width: 10px; height: 10px; border-radius: 50%; }
-        .bar-legend .sw.ok { background: #059669; } .bar-legend .sw.bad { background: #f87171; }
-
-        /* toolbar */
-        .toolbar { background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); padding: 16px; display: grid; gap: 14px; }
-        .toolbar-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
-        .rsearch { position: relative; flex: 1 1 260px; min-width: 0; }
-        .rsearch i.mag { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--steel); font-size: .9rem; pointer-events: none; }
-        .rsearch input { width: 100%; height: 46px; padding: 0 44px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--paper); font: inherit; font-size: .95rem; color: var(--ink); transition: border-color .2s, box-shadow .2s, background .2s; }
-        .rsearch input:focus { outline: none; border-color: var(--ink-2); background: #fff; box-shadow: 0 0 0 4px rgba(19,42,67,.08); }
-        .rsearch .clear { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; border-radius: 50%; display: none; place-items: center; background: #e2e8f0; color: var(--steel); font-size: .75rem; }
-        .rsearch .clear.show { display: grid; }
-        .rsearch .clear:hover { background: var(--ink); color: #fff; }
-        .select { position: relative; flex: 0 1 240px; min-width: 180px; }
-        .select select { width: 100%; height: 46px; padding: 0 40px 0 18px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%235b6c7f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 16px center; appearance: none; -webkit-appearance: none; font: inherit; font-size: .92rem; font-weight: 600; color: var(--ink); cursor: pointer; }
-        .select select:focus { outline: none; border-color: var(--ink-2); box-shadow: 0 0 0 4px rgba(19,42,67,.08); background-color: #fff; }
-        .seg { display: inline-flex; padding: 4px; border-radius: 999px; background: var(--paper); border: 1.5px solid var(--line); }
-        .seg button { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 16px; border-radius: 999px; font-size: .85rem; font-weight: 700; color: var(--steel); transition: background .2s, color .2s; white-space: nowrap; }
-        .seg button:hover { color: var(--ink); }
-        .seg button[aria-pressed="true"] { background: var(--ink-2); color: #fff; }
-        .kchips { display: flex; flex-wrap: wrap; gap: 8px; }
-        .kchip { display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--line); background: #fff; font-size: .85rem; font-weight: 700; color: var(--steel); transition: all .2s; }
-        .kchip:hover { border-color: var(--ink-2); color: var(--ink); }
-        .kchip .cnt { font-size: .75rem; padding: 1px 8px; border-radius: 999px; background: var(--paper); color: var(--steel); }
-        .kchip[aria-pressed="true"] { background: var(--ink-2); border-color: var(--ink-2); color: #fff; }
-        .kchip[aria-pressed="true"] .cnt { background: rgba(255,255,255,.18); color: #fff; }
-        .kchip.ok[aria-pressed="true"] { background: var(--ok); border-color: var(--ok); }
-        .kchip.bad[aria-pressed="true"] { background: var(--bad); border-color: var(--bad); }
-        .result-line { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; font-size: .88rem; color: var(--steel); font-weight: 500; }
-        .result-line b { color: var(--ink); }
-        .btn-reset { display: none; align-items: center; gap: 8px; font-weight: 700; font-size: .85rem; color: var(--signal-d); }
-        .btn-reset.show { display: inline-flex; }
-        .btn-reset:hover { text-decoration: underline; text-underline-offset: 3px; }
-
-        /* kartu data */
-        .sub-panel { display: grid; gap: 18px; animation: rise .3s ease; }
-        .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-        @media (max-width: 700px) { .cards { grid-template-columns: 1fr; } }
-        .w-card, .h-card { position: relative; display: flex; flex-direction: column; gap: 14px; background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); padding: 20px 20px 18px; overflow: hidden; transition: transform .25s, box-shadow .25s, border-color .25s; }
-        .w-card::before, .h-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: #dc2626; }
-        .w-card.tone-blue::before { background: #2563eb; }
-        .w-card.tone-teal::before { background: #0891b2; }
-        .w-card.tone-amber::before { background: #d99a2b; }
-        .h-card::before { background: var(--ok); }
-        .h-card[data-kondisi="rusak"]::before { background: var(--bad); }
-        .w-card:hover, .h-card:hover { transform: translateY(-3px); box-shadow: 0 18px 32px -14px rgba(13,27,42,.2); border-color: #c9d4e0; }
-        .w-top { display: flex; align-items: flex-start; gap: 14px; }
-        .w-num { flex: none; width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; font-family: var(--font-display); font-weight: 800; font-size: .95rem; background: #eff6ff; color: #2563eb; }
-        .w-title, .h-title { font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.15rem; line-height: 1.25; letter-spacing: -0.01em; }
-        .w-kind, .h-num { font-size: .72rem; font-weight: 800; letter-spacing: .06em; color: var(--steel); text-transform: uppercase; margin-bottom: 2px; }
-        .w-addr { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 12px; background: var(--paper); font-size: .88rem; color: var(--steel); }
-        .w-addr i { margin-top: 4px; color: var(--signal); font-size: .8rem; }
-        .w-fact { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; padding: 6px 12px; border-radius: 8px; background: #f1f5f9; border: 1px solid #e2e8f0; color: #475569; font-weight: 700; font-size: .82rem; }
-        .w-fact i { color: #0891b2; }
-        .h-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-        .h-near { margin-top: 4px; font-size: .86rem; color: var(--steel); display: flex; gap: 8px; align-items: flex-start; }
-        .h-near i { margin-top: 4px; color: var(--signal); font-size: .75rem; }
-        .h-meta { display: grid; gap: 8px; padding: 12px 14px; border-radius: 12px; background: var(--paper); font-size: .86rem; }
-        .h-meta div { display: flex; gap: 10px; align-items: flex-start; }
-        .h-meta i { width: 16px; text-align: center; margin-top: 4px; color: var(--steel); font-size: .8rem; }
-        .h-meta span { color: var(--steel); }
-        .h-meta b { color: var(--ink); font-weight: 600; }
-        .h-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-        .h-tag { display: inline-flex; align-items: center; gap: 7px; padding: 4px 10px; border-radius: 8px; background: #f1f5f9; border: 1px solid #e2e8f0; font-size: .76rem; font-weight: 600; color: var(--steel); }
-        .h-tag b { color: var(--ink); font-weight: 700; }
-        .h-tag i { color: #0891b2; }
-        .h-note { font-size: .86rem; color: var(--steel); }
-        .h-note b { color: var(--ink); font-weight: 700; }
-        .w-foot, .h-foot { margin-top: auto; display: flex; gap: 10px; }
-        .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: .8rem; border: 1px solid transparent; white-space: nowrap; flex: none; }
-        .badge.baik { background: var(--ok-tint); color: var(--ok); border-color: var(--ok-line); }
-        .badge.rusak { background: var(--bad-tint); color: var(--bad); border-color: var(--bad-line); }
-
-        .btn-map { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 18px; background: var(--ink-2); color: #fff; border-radius: 999px; font-weight: 700; font-size: .86rem; transition: background .2s, transform .2s; white-space: nowrap; }
-        .btn-map:hover { background: var(--signal); transform: translateY(-1px); }
-        .w-foot .btn-map, .h-foot .btn-map { flex: 1; }
-        .btn-map.disabled { background: #f1f5f9; color: #94a3b8; border: 1px solid var(--line); cursor: not-allowed; }
-        .btn-map.disabled:hover { background: #f1f5f9; transform: none; }
-        .btn-map.sm { padding: 8px 16px; font-size: .82rem; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; font-weight: 600; }
-        .btn-map.sm:hover { background: #d1fae5; transform: translateY(-1px); }
-        .btn-map.sm.disabled { background: #f1f5f9; color: #94a3b8; border-color: var(--line); }
-
-        /* tabel rich */
-        .table-wrap { background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; }
-        .table-scroll { overflow-x: auto; width: 100%; }
-        .data-table { width: 100%; min-width: 820px; border-collapse: collapse; text-align: left; }
-        .data-table thead th { background: #f1f5f9; color: #475569; font-weight: 700; font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; padding: 16px 20px; border-radius: 0; }
-        .data-table tbody td { padding: 16px 20px; border-bottom: 1px solid var(--line); font-size: .93rem; }
-        .data-table tbody tr:last-child td { border-bottom: 0; }
-        .text-center { text-align: center !important; }
-        .text-bold { font-weight: 700; color: #0f172a; }
-        .sub { font-weight: 400; font-size: .85rem; color: var(--steel); }
-        .badge-urut { display: inline-flex; justify-content: center; align-items: center; width: 28px; height: 28px; background: #eff6ff; color: #2563eb; border-radius: 6px; font-weight: 700; font-size: .85rem; }
-        .badge-luas { background: #f1f5f9; color: #475569; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: .85rem; border: 1px solid #e2e8f0; }
-
-        .more { display: flex; justify-content: center; }
-        .btn-more { display: inline-flex; align-items: center; gap: 10px; height: 48px; padding: 0 28px; border-radius: 999px; background: #fff; border: 1.5px solid var(--line); font-weight: 700; font-size: .92rem; transition: all .2s; }
-        .btn-more:hover { border-color: var(--ink-2); background: var(--ink-2); color: #fff; }
-        .empty-state { text-align: center; padding: 56px 20px; color: var(--steel); background: #fff; border: 1px dashed #cbd5e1; border-radius: var(--r-md); }
-        .empty-state i.big { font-size: 3rem; color: #cbd5e1; margin-bottom: 16px; }
-        .empty-state h3 { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); margin-bottom: 4px; }
-        .empty-actions { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-        .empty-actions button { display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 999px; background: var(--ink-2); color: #fff; font-weight: 700; font-size: .85rem; }
-        .empty-actions button:hover { background: var(--signal); }
-        .empty-actions button.ghost { background: #fff; color: var(--ink); border: 1.5px solid var(--line); }
-        .empty-actions button.ghost:hover { background: var(--paper); border-color: var(--ink-2); }
-
-        .report { position: relative; overflow: hidden; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; padding: clamp(22px, 3vw, 32px); border-radius: var(--r-lg); color: #fff; background: linear-gradient(120deg, var(--ink) 0%, var(--ink-3) 100%); }
-        .report::after { content: ""; position: absolute; right: -60px; top: -60px; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(229,57,45,.5), transparent 70%); pointer-events: none; }
-        .report-txt { position: relative; z-index: 1; max-width: 56ch; }
-        .report-txt h3 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: 1.3rem; line-height: 1.2; margin-bottom: 6px; }
-        .report-txt p { font-size: .93rem; color: rgba(255,255,255,.75); }
-        .report-act { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 10px; }
-        .report-act a { display: inline-flex; align-items: center; gap: 10px; padding: 12px 22px; border-radius: 999px; font-weight: 700; font-size: .9rem; transition: transform .2s, background .2s; }
-        .report-act a:hover { transform: translateY(-2px); }
-        .report-act .wa { background: #25d366; color: #052e16; }
-        .report-act .tel { background: rgba(255,255,255,.12); color: #fff; border: 1px solid rgba(255,255,255,.2); }
-        .report-act .tel:hover { background: rgba(255,255,255,.2); }
-
         @media (max-width: 700px) {
-            .panel-head, .chips { padding-left: 18px; padding-right: 18px; }
+            .page-hero { padding: 32px 0 66px; }
+            .crumbs { gap: 7px; margin-bottom: 18px; font-size: .78rem; }
+            .crumbs li { gap: 7px; }
+            .page-hero h1 { font-size: clamp(2.35rem, 11vw, 3.65rem); line-height: 1; }
+            .page-hero p { margin-top: 14px; font-size: .96rem; }
+            .page-nav-wrap { margin-top: -25px; padding: 0 12px; justify-content: stretch; }
+            .page-nav { display: flex; width: 100%; border-radius: 17px; padding: 6px; }
+            .page-nav button, .page-nav a.nav-switch { flex: 0 0 auto; padding: 10px 14px; font-size: .82rem; }
+            .page-body { padding-top: 28px; padding-bottom: 64px; }
+            .panel-card { border-radius: 18px; }
+            .panel-head { padding: 20px 18px; align-items: flex-start; }
+            .panel-head h2 { font-size: 1.28rem; }
+            .chips { padding-left: 18px; padding-right: 18px; }
             .pos-info, .gen-bar { margin-left: 18px; margin-right: 18px; }
             .search { max-width: 100%; }
+            .seg { width: 100%; }
+            .seg button { flex: 1; justify-content: center; padding: 0 10px; }
             .tbl-wrap { padding: 14px 18px 24px; overflow-x: visible; }
             .tbl-wrap.mode-gallery tbody { grid-template-columns: 1fr; gap: 16px; }
             .tbl-wrap.mode-gallery td.c-img { height: 210px; }
@@ -658,9 +505,9 @@
         }
 
         /* lightbox gambar */
-        .lightbox { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(7,14,24,.86); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+        .lightbox { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(7,14,24,.86); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); cursor: zoom-out; }
         .lightbox.show { display: flex; }
-        .lightbox img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: var(--r-md); box-shadow: 0 30px 60px rgba(0,0,0,.5); }
+        .lightbox img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: var(--r-md); box-shadow: 0 30px 60px rgba(0,0,0,.5); cursor: default; }
         .lightbox .lb-close { position: absolute; top: 18px; right: 18px; width: 44px; height: 44px; border-radius: 50%; background: #fff; color: var(--ink); font-size: 1.1rem; display: grid; place-items: center; transition: background .2s; }
         .lightbox .lb-close:hover { background: var(--amber); }
 
@@ -670,7 +517,7 @@
         .footer { background: var(--ink); color: rgba(255,255,255,.7); padding: clamp(56px, 8vw, 96px) 0 32px; }
         .footer-grid { display: grid; grid-template-columns: 1.1fr 1.2fr .8fr; gap: clamp(32px, 5vw, 64px); }
         .footer h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: #fff; margin-bottom: 16px; }
-        .footer-about img { height: 96px; width: auto; margin-bottom: 20px; }
+        .footer-about img { height: 96px; width: auto; margin-bottom: 20px; object-fit: contain; }
         .footer-about p { max-width: 42ch; font-size: .95rem; }
         .footer-contact { margin-top: 24px; display: grid; gap: 12px; }
         .footer-contact a { display: inline-flex; align-items: center; gap: 12px; color: rgba(255,255,255,.9); font-size: .95rem; font-weight: 500; transition: color .2s; }
@@ -696,7 +543,7 @@
         @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr; } }
 
         /* ==========================================================
-           TOMBOL LAPOR MENGAMBANG (sama dengan beranda)
+           TOMBOL LAPOR MENGAMBANG
            ========================================================== */
         .beacon { position: relative; width: 12px; height: 12px; border-radius: 50%; background: var(--signal); flex: none; }
         .beacon::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: inherit; animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
@@ -712,85 +559,7 @@
         .sos-sheet a i { width: 22px; text-align: center; font-size: 1.15rem; }
         .sos-sheet .wa i { color: #25d366; } .sos-sheet .tel i { color: #38bdf8; } .sos-sheet .n112 i { color: #f87171; }
 
-        @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
-
-        /* ==========================================================
-           PENYESUAIAN LAYOUT (tanpa mengubah warna; warna = homepage)
-           ========================================================== */
-        :root { --r-lg: 24px; --r-md: 17px; --r-sm: 11px; }
-        .page-hero { padding: clamp(38px, 6vw, 76px) 0 clamp(68px, 9vw, 100px); }
-        .crumbs { font-size: .86rem; }
-        .page-hero h1 { max-width: 1000px; font-size: clamp(2.55rem, 6.6vw, 5.1rem); line-height: .98; letter-spacing: -.045em; text-wrap: balance; }
-        .page-hero p { max-width: 62ch; line-height: 1.75; }
-        .page-nav-wrap { margin-top: -28px; padding: 0 18px; }
-        .page-nav { padding: 7px; gap: 5px; }
-        .page-nav button, .page-nav a.nav-switch { padding: 11px 20px; font-size: .88rem; }
-        .page-body { padding-top: 38px; }
-        .panel-head { padding: 24px 28px; }
-        .chips { padding-top: 20px; }
-        .rich { gap: 22px; }
-        .rich-head { border-radius: 22px; padding: clamp(22px,3vw,32px); }
-        .cat-tabs { gap: 16px; }
-        .tab-card { padding: 18px; }
-        .stats { gap: 16px; }
-        .stat { padding: 20px; border-radius: 17px; }
-        .stat-num { letter-spacing: -.04em; }
-        .ready { padding: 22px 24px; }
-        .bar { height: 13px; }
-        .toolbar { padding: 18px; border-radius: 18px; }
-        .w-card, .h-card { padding: 22px; border-radius: 18px; }
-        .w-card::before, .h-card::before { width: 4px; }
-        .footer-about img { object-fit: contain; }
-        button, a, input, select { -webkit-tap-highlight-color: transparent; }
-        .lightbox { cursor: zoom-out; }
-        .lightbox img { cursor: default; }
         @media (max-width: 700px) {
-            .page-hero { padding: 32px 0 66px; }
-            .crumbs { gap: 7px; margin-bottom: 18px; font-size: .78rem; }
-            .crumbs li { gap: 7px; }
-            .page-hero h1 { font-size: clamp(2.35rem, 11vw, 3.65rem); line-height: 1; }
-            .page-hero p { margin-top: 14px; font-size: .96rem; }
-            .page-nav-wrap { margin-top: -25px; padding: 0 12px; justify-content: stretch; }
-            .page-nav { display: flex; width: 100%; border-radius: 17px; padding: 6px; }
-            .page-nav button, .page-nav a.nav-switch { flex: 0 0 auto; padding: 10px 14px; font-size: .82rem; }
-            .page-body { padding-top: 28px; padding-bottom: 64px; }
-            .panel-card { border-radius: 18px; }
-            .panel-head { padding: 20px 18px; align-items: flex-start; }
-            .panel-head h2 { font-size: 1.28rem; }
-            .rich { gap: 15px; }
-            .rich-head { border-radius: 18px; padding: 20px; align-items: flex-start; }
-            .rich-head p { font-size: .9rem; }
-            .total-pill { padding: 9px 15px 9px 10px; }
-            .total-pill i { width: 35px; height: 35px; }
-            .cat-tabs, .stats { gap: 10px; }
-            .tab-card { padding: 13px; gap: 11px; border-radius: 15px; }
-            .tab-ico, .stat-ico { width: 41px; height: 41px; border-radius: 12px; }
-            .tab-num { font-size: 1.42rem; }
-            .tab-lbl { white-space: normal; line-height: 1.25; }
-            .tab-desc { white-space: normal; line-height: 1.35; }
-            .stat { padding: 15px; gap: 11px; }
-            .stat-num { font-size: 1.6rem; }
-            .stat-lbl { line-height: 1.35; }
-            .ready { padding: 18px; }
-            .toolbar { padding: 13px; gap: 12px; }
-            .toolbar-row { gap: 9px; }
-            .rsearch { flex-basis: 100%; }
-            .select { flex: 1 1 100%; min-width: 0; }
-            .seg { width: 100%; }
-            .seg button { flex: 1; justify-content: center; padding: 0 10px; }
-            .kchips { gap: 7px; }
-            .kchip { height: 35px; padding: 0 12px; font-size: .8rem; }
-            .cards { gap: 12px; }
-            .w-card, .h-card { padding: 18px 16px 16px; gap: 12px; border-radius: 16px; }
-            .w-title, .h-title { font-size: 1.06rem; }
-            .w-foot, .h-foot { flex-wrap: wrap; }
-            .w-foot .btn-map, .h-foot .btn-map { flex-basis: 100%; }
-            .table-scroll { -webkit-overflow-scrolling: touch; }
-            .data-table thead th, .data-table tbody td { padding: 13px 14px; }
-            .report { border-radius: 19px; padding: 22px 19px; gap: 18px; }
-            .report-txt h3 { font-size: 1.2rem; }
-            .report-act { width: 100%; }
-            .report-act a { flex: 1 1 100%; justify-content: center; }
             .footer { padding-top: 48px; }
             .footer-about img { height: 78px; }
             .footer-bar { align-items: flex-start; flex-direction: column; }
@@ -799,12 +568,8 @@
         @media (max-width: 380px) {
             .wrap { padding-left: 13px; padding-right: 13px; }
             .page-hero h1 { font-size: 2.2rem; }
-            .tab-card { gap: 9px; padding: 11px; }
-            .tab-ico { width: 36px; height: 36px; }
-            .tab-num { font-size: 1.3rem; }
-            .total-pill b { font-size: 1.3rem; }
         }
-
+        @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
     </style>
 </head>
 <body>
@@ -908,7 +673,7 @@
                     </ul>
                 </li>
 
-                <li><a class="menu-link {{ request()->is('redkar*') ? 'is-active' : '' }}" href="/redkar">Redkar</a></li>
+ 
             </ul>
 
             <ul class="nav-actions">
@@ -959,6 +724,7 @@
             <h1 class="rise d1">@yield('judul')</h1>
             <p class="rise d2">@yield('deskripsi')</p>
         </div>
+        @include('layouts.partials.hero-logos', ['float' => true])
     </section>
 
     {{-- PILL NAV --}}
@@ -970,7 +736,9 @@
                 </button>
             @endforeach
 
-            <span class="nav-sep" aria-hidden="true"></span>
+            @if(!empty($tabs))
+                <span class="nav-sep" aria-hidden="true"></span>
+            @endif
 
             @if($path_sarana)
                 <a href="{{ route('sarpras.prasarana') }}" class="nav-switch">
@@ -1013,382 +781,6 @@
             @endphp
 
             @foreach($tabs as $key => $t)
-
-            {{-- ============================================================
-                 TAB: SUMBER AIR
-                 ============================================================ --}}
-            @if($key === 'sumber-air')
-                @php
-                    $rows = collect($t['data']);
-                    $defs = [
-                        ['id' => 'pilar',  'kat' => 'Hidrant Pilar',  'ico' => 'fa-faucet-drip', 'tone' => 'red',   'field' => null,     'fieldLabel' => null,             'nameLabel' => 'Lokasi / Area', 'desc' => 'Hidrant di tepi jalan'],
-                        ['id' => 'gedung', 'kat' => 'Hidrant Gedung', 'ico' => 'fa-building',    'tone' => 'blue',  'field' => 'jumlah', 'fieldLabel' => 'Jumlah (Unit)', 'nameLabel' => 'Nama Gedung',   'desc' => 'Hidrant di dalam gedung'],
-                        ['id' => 'embung', 'kat' => 'Embung',         'ico' => 'fa-water',       'tone' => 'teal',  'field' => 'luas',   'fieldLabel' => 'Kapasitas Air', 'nameLabel' => 'Nama Lokasi',   'desc' => 'Tampungan air buatan'],
-                        ['id' => 'danau',  'kat' => 'Danau',          'ico' => 'fa-droplet',     'tone' => 'amber', 'field' => 'luas',   'fieldLabel' => 'Kapasitas Air', 'nameLabel' => 'Nama Danau',    'desc' => 'Sumber air alami'],
-                    ];
-                    $groups = collect($defs)->map(function ($g) use ($rows) {
-                        $g['data'] = $rows->filter(function ($r) use ($g) {
-                            return strcasecmp(trim((string) ($r->kategori ?? '')), $g['kat']) === 0;
-                        })->values();
-                        return $g;
-                    })->all();
-                    $totalSemua = $rows->count();
-                @endphp
-                <section class="panel {{ $loop->first ? 'show' : '' }}" id="panel-{{ $key }}" data-panel="{{ $key }}" data-type="sumber">
-                    <div class="rich">
-                        <div class="rich-head">
-                            <div>
-                                <h2>{{ $t['label'] }}</h2>
-                                <p>Pilih jenis sumber air, cari lokasi terdekat, lalu buka petanya langsung di Google Maps.</p>
-                            </div>
-                            <div class="total-pill">
-                                <i class="fas fa-droplet"></i>
-                                <div><b>{{ $totalSemua }}</b><span>Total titik sumber air</span></div>
-                            </div>
-                        </div>
-
-                        <div class="cat-tabs" role="tablist" aria-label="Jenis sumber air">
-                            @foreach($groups as $g)
-                                <button type="button" role="tab" class="tab-card tone-{{ $g['tone'] }}" data-sub="{{ $g['id'] }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}">
-                                    <span class="tab-ico"><i class="fas {{ $g['ico'] }}"></i></span>
-                                    <span class="tab-txt">
-                                        <div class="tab-num" data-total="{{ $g['data']->count() }}">{{ $g['data']->count() }}</div>
-                                        <div class="tab-lbl">{{ $g['kat'] }}</div>
-                                        <div class="tab-desc">{{ $g['desc'] }}</div>
-                                    </span>
-                                </button>
-                            @endforeach
-                        </div>
-
-                        <div class="toolbar">
-                            <div class="toolbar-row">
-                                <label class="rsearch">
-                                    <span class="sr-only">Cari nama lokasi atau alamat</span>
-                                    <i class="fas fa-search mag"></i>
-                                    <input type="text" data-q placeholder="Cari nama lokasi atau alamat..." autocomplete="off">
-                                    <button type="button" class="clear" data-clear aria-label="Hapus pencarian"><i class="fas fa-times"></i></button>
-                                </label>
-                                <div class="seg" role="group" aria-label="Tampilan data">
-                                    <button type="button" data-view="card" aria-pressed="true"><i class="fas fa-table-cells-large"></i> Kartu</button>
-                                    <button type="button" data-view="table" aria-pressed="false"><i class="fas fa-list"></i> Tabel</button>
-                                </div>
-                            </div>
-                            <div class="result-line" data-result aria-live="polite"></div>
-                        </div>
-
-                        @foreach($groups as $g)
-                            @php $cnt = $g['data']->count(); @endphp
-                            <div class="sub-panel" data-sub-panel="{{ $g['id'] }}" data-total="{{ $cnt }}" @if(!$loop->first) hidden @endif>
-                                @if($cnt > 0)
-                                    <div class="cards" data-cards>
-                                        @foreach($g['data'] as $item)
-                                            @php
-                                                $href = $mapHref($item->kode_maps ?? null);
-                                                $num  = $g['id'] === 'pilar' ? ($item->no_urut ?? $loop->iteration) : $loop->iteration;
-                                                $fact = $g['field'] ? ($item->{$g['field']} ?? null) : null;
-                                                $hay  = strtolower(trim(($item->nama_gedung ?? '') . ' ' . ($item->alamat ?? '')));
-                                            @endphp
-                                            <article class="w-card tone-{{ $g['tone'] }} h-item" data-search="{{ $hay }}">
-                                                <div class="w-top">
-                                                    <span class="w-num">{{ $num }}</span>
-                                                    <div>
-                                                        <div class="w-kind">{{ $g['kat'] }}</div>
-                                                        <h3 class="w-title">{{ $item->nama_gedung }}</h3>
-                                                    </div>
-                                                </div>
-                                                <div class="w-addr"><i class="fas fa-location-dot"></i><span>{{ ($item->alamat ?? '') !== '' ? $item->alamat : '-' }}</span></div>
-                                                @if($g['field'] && $fact !== null && $fact !== '' && $fact !== '-')
-                                                    <span class="w-fact"><i class="fas {{ $g['field'] === 'jumlah' ? 'fa-hashtag' : 'fa-water' }}"></i> {{ $g['fieldLabel'] }}: {{ $fact }}</span>
-                                                @endif
-                                                <div class="w-foot">
-                                                    @if($href)
-                                                        <a href="{{ $href }}" target="_blank" rel="noopener" class="btn-map"><i class="fas fa-location-arrow"></i> Buka di Google Maps</a>
-                                                    @else
-                                                        <span class="btn-map disabled"><i class="fas fa-ban"></i> Peta belum tersedia</span>
-                                                    @endif
-                                                </div>
-                                            </article>
-                                        @endforeach
-                                    </div>
-
-                                    <div class="table-wrap" data-table hidden>
-                                        <div class="table-scroll">
-                                            <table class="data-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="text-center" width="6%">NO</th>
-                                                        <th>{{ strtoupper($g['nameLabel']) }}</th>
-                                                        <th>ALAMAT</th>
-                                                        @if($g['field'])<th class="text-center">{{ strtoupper($g['fieldLabel']) }}</th>@endif
-                                                        <th class="text-center">MAPS</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach($g['data'] as $item)
-                                                        @php
-                                                            $href = $mapHref($item->kode_maps ?? null);
-                                                            $num  = $g['id'] === 'pilar' ? ($item->no_urut ?? $loop->iteration) : $loop->iteration;
-                                                            $fact = $g['field'] ? ($item->{$g['field']} ?? null) : null;
-                                                            $hay  = strtolower(trim(($item->nama_gedung ?? '') . ' ' . ($item->alamat ?? '')));
-                                                        @endphp
-                                                        <tr class="h-item" data-search="{{ $hay }}">
-                                                            <td class="text-center">
-                                                                @if($g['id'] === 'pilar')<span class="badge-urut">{{ $num }}</span>@else<span style="color:var(--steel)">{{ $num }}</span>@endif
-                                                            </td>
-                                                            <td class="text-bold">{{ $item->nama_gedung }}</td>
-                                                            <td style="color:#475569">{{ $item->alamat ?? '-' }}</td>
-                                                            @if($g['field'])<td class="text-center"><span class="badge-luas">{{ ($fact !== null && $fact !== '' && $fact !== '-') ? $fact : '-' }}</span></td>@endif
-                                                            <td class="text-center">
-                                                                @if($href)
-                                                                    <a href="{{ $href }}" target="_blank" rel="noopener" class="btn-map sm"><i class="fas fa-location-dot"></i> Buka Map</a>
-                                                                @else
-                                                                    <span class="btn-map sm disabled"><i class="fas fa-ban"></i> Kosong</span>
-                                                                @endif
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-
-                                    <div class="empty-state" data-nohit hidden>
-                                        <i class="fas fa-magnifying-glass-location big"></i>
-                                        <h3>Lokasi tidak ditemukan</h3>
-                                        <p>Tidak ada hasil untuk pencarian ini di kategori <b>{{ $g['kat'] }}</b>.</p>
-                                        <div class="empty-actions" data-others></div>
-                                    </div>
-
-                                    <div class="more"><button type="button" class="btn-more" data-more hidden><i class="fas fa-angles-down"></i> <span>Tampilkan lebih banyak</span></button></div>
-                                @else
-                                    <div class="empty-state">
-                                        <i class="fas {{ $g['ico'] }} big"></i>
-                                        <h3>Data kosong</h3>
-                                        <p>Belum ada data {{ $g['kat'] }}</p>
-                                    </div>
-                                @endif
-                            </div>
-                        @endforeach
-
-                        <aside class="report">
-                            <div class="report-txt">
-                                <h3>Tahu lokasi sumber air yang belum terdata?</h3>
-                                <p>Kabari kami lokasi hidrant, embung, atau sumber air lain yang bisa dipakai untuk pemadaman, agar bisa kami verifikasi dan tambahkan ke peta.</p>
-                            </div>
-                            <div class="report-act">
-                                <a class="wa" href="{{ $wa_link }}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Kabari via WhatsApp</a>
-                                <a class="tel" href="tel:{{ $no_telepon }}"><i class="fas fa-phone-alt"></i> {{ $telepon_tampil }}</a>
-                            </div>
-                        </aside>
-                    </div>
-                </section>
-
-            {{-- ============================================================
-                 TAB: DATA HIDRANT KOTA
-                 ============================================================ --}}
-            @elseif($key === 'hidrant')
-                @php
-                    $semua    = collect($t['data']);
-                    $total    = $semua->count();
-                    $isBaikFn = function ($i) { return strtolower(trim((string) ($i->kondisi_hidran ?? ''))) === 'baik'; };
-                    $jmlBaik  = $semua->filter($isBaikFn)->count();
-                    $jmlRusak = $total - $jmlBaik;
-                    $persen   = $total > 0 ? round(($jmlBaik / $total) * 100) : 0;
-
-                    // Semua huruf kecil dulu, lalu Title Case, baru unique()
-                    $listKec  = $semua->pluck('kecamatan')
-                                      ->filter()
-                                      ->map(fn ($k) => ucwords(strtolower(trim($k))))
-                                      ->unique()
-                                      ->sort()
-                                      ->values();
-                @endphp
-                <section class="panel {{ $loop->first ? 'show' : '' }}" id="panel-{{ $key }}" data-panel="{{ $key }}" data-type="hidrant" data-total="{{ $total }}">
-                    <div class="rich">
-                        <div class="rich-head">
-                            <div>
-                                <h2>{{ $t['label'] }}</h2>
-                                <p>Cari hidrant terdekat dari lokasi Anda, lihat kondisinya, lalu buka petanya langsung di Google Maps.</p>
-                            </div>
-                        </div>
-
-                        <div class="stats" aria-label="Ringkasan data hidrant">
-                            <div class="stat"><div class="stat-ico"><i class="fas fa-faucet-drip"></i></div><div><div class="stat-num">{{ $total }}</div><div class="stat-lbl">Total titik hidrant</div></div></div>
-                            <div class="stat ok"><div class="stat-ico"><i class="fas fa-circle-check"></i></div><div><div class="stat-num">{{ $jmlBaik }}</div><div class="stat-lbl">Kondisi baik</div></div></div>
-                            <div class="stat bad"><div class="stat-ico"><i class="fas fa-triangle-exclamation"></i></div><div><div class="stat-num">{{ $jmlRusak }}</div><div class="stat-lbl">Perlu perbaikan</div></div></div>
-                            <div class="stat geo"><div class="stat-ico"><i class="fas fa-map-location-dot"></i></div><div><div class="stat-num">{{ $listKec->count() }}</div><div class="stat-lbl">Kecamatan terjangkau</div></div></div>
-                        </div>
-
-                        @if($total > 0)
-                            <div class="ready">
-                                <div class="ready-top">
-                                    <div>
-                                        <strong>Tingkat kesiapan hidrant</strong><br>
-                                        <span>{{ $jmlBaik }} dari {{ $total }} titik siap digunakan untuk pemadaman</span>
-                                    </div>
-                                    <div class="ready-pct">{{ $persen }}%</div>
-                                </div>
-                                <div class="bar" role="progressbar" aria-valuenow="{{ $persen }}" aria-valuemin="0" aria-valuemax="100" aria-label="Persentase hidrant kondisi baik"><i style="width: {{ $persen }}%"></i></div>
-                                <div class="bar-legend">
-                                    <span><i class="sw ok"></i> Baik ({{ $jmlBaik }})</span>
-                                    <span><i class="sw bad"></i> Rusak ({{ $jmlRusak }})</span>
-                                </div>
-                            </div>
-
-                            <div class="toolbar">
-                                <div class="toolbar-row">
-                                    <label class="rsearch">
-                                        <span class="sr-only">Cari nama jalan, kelurahan, atau kecamatan</span>
-                                        <i class="fas fa-search mag"></i>
-                                        <input type="text" data-q placeholder="Cari jalan, kelurahan, atau kecamatan..." autocomplete="off">
-                                        <button type="button" class="clear" data-clear aria-label="Hapus pencarian"><i class="fas fa-times"></i></button>
-                                    </label>
-                                    <label class="select">
-                                        <span class="sr-only">Filter kecamatan</span>
-                                        <select data-kec>
-                                            <option value="">Semua kecamatan</option>
-                                            @foreach($listKec as $kec)
-                                                <option value="{{ strtolower($kec) }}">{{ $kec }}</option>
-                                            @endforeach
-                                        </select>
-                                    </label>
-                                    <div class="seg" role="group" aria-label="Tampilan data">
-                                        <button type="button" data-view="card" aria-pressed="true"><i class="fas fa-table-cells-large"></i> Kartu</button>
-                                        <button type="button" data-view="table" aria-pressed="false"><i class="fas fa-list"></i> Tabel</button>
-                                    </div>
-                                </div>
-                                <div class="kchips" role="group" aria-label="Filter kondisi">
-                                    <button type="button" class="kchip" data-kondisi="" aria-pressed="true">Semua <span class="cnt">{{ $total }}</span></button>
-                                    <button type="button" class="kchip ok" data-kondisi="baik" aria-pressed="false"><i class="fas fa-circle-check"></i> Baik <span class="cnt">{{ $jmlBaik }}</span></button>
-                                    <button type="button" class="kchip bad" data-kondisi="rusak" aria-pressed="false"><i class="fas fa-circle-xmark"></i> Rusak <span class="cnt">{{ $jmlRusak }}</span></button>
-                                </div>
-                                <div class="result-line">
-                                    <span data-result>Menampilkan <b>{{ $total }}</b> hidrant</span>
-                                    <button type="button" class="btn-reset" data-reset><i class="fas fa-rotate-left"></i> Atur ulang filter</button>
-                                </div>
-                            </div>
-
-                            <div class="cards" data-cards>
-                                @foreach($semua as $item)
-                                    @php
-                                        $isBaik = $isBaikFn($item);
-                                        $href   = $mapHref($item->kode_map ?? null);
-                                        $hay    = strtolower(trim(($item->jalan ?? '') . ' ' . ($item->lokasi_terdekat ?? '') . ' ' . ($item->kecamatan ?? '') . ' ' . ($item->kelurahan ?? '') . ' ' . ($item->keterangan ?? '')));
-                                    @endphp
-                                    <article class="h-card h-item" data-kondisi="{{ $isBaik ? 'baik' : 'rusak' }}" data-kec="{{ strtolower(trim((string) ($item->kecamatan ?? ''))) }}" data-search="{{ $hay }}">
-                                        <div class="h-card-top">
-                                            <div>
-                                                <div class="h-num">Hidrant #{{ $loop->iteration }}</div>
-                                                <h3 class="h-title">{{ $item->jalan ?? '-' }}</h3>
-                                                <div class="h-near"><i class="fas fa-location-crosshairs"></i><span>Terdekat: {{ $item->lokasi_terdekat ?? '-' }}</span></div>
-                                            </div>
-                                            @if($isBaik)
-                                                <span class="badge baik"><i class="fas fa-check-circle"></i> Baik</span>
-                                            @else
-                                                <span class="badge rusak"><i class="fas fa-times-circle"></i> Rusak</span>
-                                            @endif
-                                        </div>
-                                        <div class="h-meta">
-                                            <div><i class="fas fa-city"></i><span>Kecamatan <b>{{ $item->kecamatan ?? '-' }}</b></span></div>
-                                            <div><i class="fas fa-location-dot"></i><span>Kelurahan <b>{{ $item->kelurahan ?? '-' }}</b> &middot; RT <b>{{ $item->rt ?? '-' }}</b></span></div>
-                                        </div>
-                                        @if(!empty($item->tekanan) || !empty($item->machino))
-                                            <div class="h-tags">
-                                                @if(!empty($item->tekanan))<span class="h-tag"><i class="fas fa-gauge-high"></i> Tekanan: <b>{{ $item->tekanan }}</b></span>@endif
-                                                @if(!empty($item->machino))<span class="h-tag"><i class="fas fa-gears"></i> Machino: <b>{{ $item->machino }}</b></span>@endif
-                                            </div>
-                                        @endif
-                                        @if(!empty($item->keterangan))
-                                            <p class="h-note"><b>Catatan:</b> {{ $item->keterangan }}</p>
-                                        @endif
-                                        <div class="h-foot">
-                                            @if($href)
-                                                <a href="{{ $href }}" target="_blank" rel="noopener" class="btn-map"><i class="fas fa-location-arrow"></i> Buka di Google Maps</a>
-                                            @else
-                                                <span class="btn-map disabled"><i class="fas fa-ban"></i> Peta belum tersedia</span>
-                                            @endif
-                                        </div>
-                                    </article>
-                                @endforeach
-                            </div>
-
-                            <div class="table-wrap" data-table hidden>
-                                <div class="table-scroll">
-                                    <table class="data-table" style="min-width: 980px;">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center" width="5%">NO</th>
-                                                <th width="24%">JALAN / LOKASI TERDEKAT</th>
-                                                <th width="18%">KEC / KELURAHAN</th>
-                                                <th class="text-center" width="10%">KONDISI</th>
-                                                <th width="14%">TEKANAN &amp; MACHINO</th>
-                                                <th width="17%">KETERANGAN</th>
-                                                <th class="text-center" width="12%">MAPS</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($semua as $item)
-                                                @php
-                                                    $isBaik = $isBaikFn($item);
-                                                    $href   = $mapHref($item->kode_map ?? null);
-                                                    $hay    = strtolower(trim(($item->jalan ?? '') . ' ' . ($item->lokasi_terdekat ?? '') . ' ' . ($item->kecamatan ?? '') . ' ' . ($item->kelurahan ?? '') . ' ' . ($item->keterangan ?? '')));
-                                                @endphp
-                                                <tr class="h-item" data-kondisi="{{ $isBaik ? 'baik' : 'rusak' }}" data-kec="{{ strtolower(trim((string) ($item->kecamatan ?? ''))) }}" data-search="{{ $hay }}">
-                                                    <td class="text-center" style="color:var(--steel)">{{ $loop->iteration }}</td>
-                                                    <td class="text-bold">{{ $item->jalan ?? '-' }}<br><span class="sub">Terdekat: {{ $item->lokasi_terdekat ?? '-' }}</span></td>
-                                                    <td>{{ $item->kecamatan ?? '-' }}<br><span class="sub">Kel. {{ $item->kelurahan ?? '-' }} (RT {{ $item->rt ?? '-' }})</span></td>
-                                                    <td class="text-center">
-                                                        @if($isBaik)<span class="badge baik"><i class="fas fa-check-circle"></i> Baik</span>@else<span class="badge rusak"><i class="fas fa-times-circle"></i> Rusak</span>@endif
-                                                    </td>
-                                                    <td><span class="sub">Tekanan:</span> {{ $item->tekanan ?? '-' }}<br><span class="sub">Machino:</span> {{ $item->machino ?? '-' }}</td>
-                                                    <td style="font-size:.9rem;color:var(--steel)">{{ $item->keterangan ?? '-' }}</td>
-                                                    <td class="text-center">
-                                                        @if($href)
-                                                            <a href="{{ $href }}" target="_blank" rel="noopener" class="btn-map sm"><i class="fas fa-location-dot"></i> Buka Map</a>
-                                                        @else
-                                                            <span class="btn-map sm disabled"><i class="fas fa-ban"></i> Kosong</span>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <div class="empty-state" data-nohit hidden>
-                                <i class="fas fa-map-location-dot big"></i>
-                                <h3>Hidrant tidak ditemukan</h3>
-                                <p>Coba kata kunci lain atau ubah filter kecamatan dan kondisi.</p>
-                                <div class="empty-actions"><button type="button" data-reset><i class="fas fa-rotate-left"></i> Atur ulang filter</button></div>
-                            </div>
-
-                            <div class="more"><button type="button" class="btn-more" data-more hidden><i class="fas fa-angles-down"></i> <span>Tampilkan lebih banyak</span></button></div>
-                        @else
-                            <div class="empty-state">
-                                <i class="fas fa-map-location-dot big"></i>
-                                <h3>Data kosong</h3>
-                                <p>Belum ada data Hidrant Kota</p>
-                            </div>
-                        @endif
-
-                        <aside class="report">
-                            <div class="report-txt">
-                                <h3>Menemukan hidrant rusak atau tersumbat?</h3>
-                                <p>Laporkan kepada kami lengkap dengan nama jalan dan foto bila ada, agar segera ditindaklanjuti tim Sarana dan Prasarana.</p>
-                            </div>
-                            <div class="report-act">
-                                <a class="wa" href="{{ $wa_link }}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Lapor via WhatsApp</a>
-                                <a class="tel" href="tel:{{ $no_telepon }}"><i class="fas fa-phone-alt"></i> {{ $telepon_tampil }}</a>
-                            </div>
-                        </aside>
-                    </div>
-                </section>
-
-            {{-- ============================================================
-                 TAB LAIN (Sarana / Prasarana per Pos): Galeri Kartu Besar & Tabel
-                 ============================================================ --}}
-            @else
                 @php
                     $rows = collect($t['data']);
                     $kolom = [];
@@ -1401,11 +793,14 @@
                     }
 
                     $adaPos = in_array('pos', $kolom);
+
+                    // PERBAIKAN: chip dibuat dari SEMUA pos di tabel pos_pemadam (urut id_pos),
+                    // lalu ditambah pos lain yang muncul di data (mis. '-') agar baris tetap bisa difilter.
                     $daftarPos = $adaPos
-                        ? $rows->pluck('pos')->filter()->unique()->sortBy(function ($n) use ($urutPos) {
-                            $i = array_search($n, $urutPos, true);
-                            return $i === false ? 9999 : $i;
-                        })->values()
+                        ? collect($urutPos)
+                            ->merge($rows->pluck('pos')->filter())
+                            ->unique()
+                            ->values()
                         : collect();
                     $posAwal = $daftarPos->first();
 
@@ -1523,13 +918,11 @@
                                 @endforeach
                                 </tbody>
                             </table>
-                            <p class="no-result" hidden><i class="far fa-face-frown"></i> Tidak ada data yang cocok.</p>
+                            <p class="no-result" hidden><i class="far fa-face-frown"></i> Belum ada data di pos ini.</p>
                         </div>
                     @endif
                   </div>
                 </section>
-            @endif
-
             @endforeach
         </div>
     </div>
@@ -1606,7 +999,6 @@
 <script>
 (function () {
     'use strict';
-    var PAGE = 12;
 
     /* ---------- Navigasi (sama dengan homepage) ---------- */
     var header = document.getElementById('siteHeader');
@@ -1710,7 +1102,7 @@
     if (location.hash) openTab(location.hash.slice(1));
 
     /* ==========================================================
-       PANEL GENERIC: filter pos + cari + mode galeri/tabel
+       PANEL SARANA / PRASARANA: filter pos + cari + mode galeri/tabel
        ========================================================== */
     function terapkan(key) {
         var panel = document.getElementById('panel-' + key);
@@ -1794,193 +1186,6 @@
         });
     });
     document.querySelectorAll('[data-type="generic"]').forEach(function (p) { terapkan(p.dataset.panel); });
-
-    /* ==========================================================
-       PANEL SUMBER AIR: tab kategori, cari, kartu/tabel, muat lebih
-       ========================================================== */
-    document.querySelectorAll('[data-type="sumber"]').forEach(function (root) {
-        var tabs = Array.prototype.slice.call(root.querySelectorAll('.tab-card'));
-        var subsP = Array.prototype.slice.call(root.querySelectorAll('.sub-panel'));
-        var qInput = root.querySelector('[data-q]');
-        var qClear = root.querySelector('[data-clear]');
-        var viewBtns = root.querySelectorAll('.seg button');
-        var resultText = root.querySelector('[data-result]');
-        var state = { q: '', view: 'card', tab: tabs.length ? tabs[0].dataset.sub : '', shown: {} };
-        subsP.forEach(function (p) { state.shown[p.dataset.subPanel] = PAGE; });
-
-        function tabLabel(id) {
-            var t = tabs.filter(function (x) { return x.dataset.sub === id; })[0];
-            return t ? t.querySelector('.tab-lbl').textContent : id;
-        }
-        function info(p) {
-            var items = Array.prototype.slice.call(p.querySelectorAll('.h-item'));
-            var cards = items.filter(function (el) { return el.closest('[data-cards]'); });
-            var rows  = items.filter(function (el) { return el.closest('[data-table]'); });
-            var hits = cards.filter(function (el) { return !state.q || el.dataset.search.indexOf(state.q) !== -1; }).length;
-            return { id: p.dataset.subPanel, cards: cards, rows: rows, hits: hits, total: parseInt(p.dataset.total, 10) || 0 };
-        }
-        function paint(list, id) {
-            var n = 0;
-            list.forEach(function (el) {
-                var ok = !state.q || el.dataset.search.indexOf(state.q) !== -1;
-                if (ok) n++;
-                el.hidden = !(ok && n <= state.shown[id]);
-            });
-        }
-        function apply() {
-            var infos = subsP.map(info), byId = {};
-            infos.forEach(function (i) { byId[i.id] = i; });
-
-            tabs.forEach(function (t) {
-                var i = byId[t.dataset.sub];
-                t.querySelector('.tab-num').textContent = state.q ? i.hits : i.total;
-                t.setAttribute('aria-selected', t.dataset.sub === state.tab ? 'true' : 'false');
-            });
-
-            subsP.forEach(function (p) {
-                var i = byId[p.dataset.subPanel];
-                p.hidden = i.id !== state.tab;
-                if (i.total === 0) return;
-                paint(i.cards, i.id); paint(i.rows, i.id);
-                var none = i.hits === 0;
-                p.querySelector('[data-cards]').hidden = none || state.view !== 'card';
-                p.querySelector('[data-table]').hidden = none || state.view !== 'table';
-                var nohit = p.querySelector('[data-nohit]');
-                nohit.hidden = !none;
-                var more = p.querySelector('[data-more]');
-                var remaining = i.hits - state.shown[i.id];
-                more.hidden = !(remaining > 0);
-                if (remaining > 0) more.querySelector('span').textContent = 'Tampilkan lebih banyak (' + remaining + ' lagi)';
-                if (none) {
-                    var box = nohit.querySelector('[data-others]');
-                    box.innerHTML = '';
-                    infos.forEach(function (o) {
-                        if (o.id !== i.id && o.hits > 0) {
-                            var b = document.createElement('button');
-                            b.type = 'button';
-                            b.textContent = o.hits + ' hasil di ' + tabLabel(o.id);
-                            b.addEventListener('click', function () { state.tab = o.id; apply(); });
-                            box.appendChild(b);
-                        }
-                    });
-                    var r = document.createElement('button');
-                    r.type = 'button'; r.className = 'ghost';
-                    r.innerHTML = '<i class="fas fa-rotate-left"></i> Hapus pencarian';
-                    r.addEventListener('click', function () { qInput.value = ''; qInput.dispatchEvent(new Event('input')); });
-                    box.appendChild(r);
-                }
-            });
-
-            var cur = byId[state.tab];
-            if (cur) {
-                if (cur.total === 0) {
-                    resultText.innerHTML = 'Belum ada data untuk <b>' + tabLabel(state.tab) + '</b>';
-                } else if (state.q) {
-                    var all = infos.reduce(function (a, x) { return a + x.hits; }, 0);
-                    resultText.innerHTML = 'Ditemukan <b>' + cur.hits + '</b> di ' + tabLabel(state.tab) + ' &middot; <b>' + all + '</b> hasil di semua kategori';
-                } else {
-                    resultText.innerHTML = 'Menampilkan <b>' + Math.min(cur.total, state.shown[state.tab]) + '</b> dari ' + cur.total + ' titik <b>' + tabLabel(state.tab) + '</b>';
-                }
-            }
-            qClear.classList.toggle('show', !!qInput.value);
-        }
-
-        tabs.forEach(function (t) { t.addEventListener('click', function () { state.tab = t.dataset.sub; apply(); }); });
-        qInput.addEventListener('input', function () {
-            state.q = qInput.value.trim().toLowerCase();
-            Object.keys(state.shown).forEach(function (k) { state.shown[k] = PAGE; });
-            apply();
-        });
-        qClear.addEventListener('click', function () { qInput.value = ''; qInput.dispatchEvent(new Event('input')); qInput.focus(); });
-        viewBtns.forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                state.view = btn.dataset.view;
-                viewBtns.forEach(function (b) { b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); });
-                apply();
-            });
-        });
-        subsP.forEach(function (p) {
-            var more = p.querySelector('[data-more]');
-            if (more) more.addEventListener('click', function () { state.shown[p.dataset.subPanel] += PAGE; apply(); });
-        });
-        apply();
-    });
-
-    /* ==========================================================
-       PANEL HIDRANT: cari, kecamatan, kondisi, kartu/tabel
-       ========================================================== */
-    document.querySelectorAll('[data-type="hidrant"]').forEach(function (root) {
-        var cardsEl = root.querySelector('[data-cards]');
-        if (!cardsEl) return;
-        var tableEl = root.querySelector('[data-table]');
-        var qInput = root.querySelector('[data-q]');
-        var qClear = root.querySelector('[data-clear]');
-        var kecSel = root.querySelector('[data-kec]');
-        var chips = root.querySelectorAll('.kchip');
-        var viewBtns = root.querySelectorAll('.seg button');
-        var emptyEl = root.querySelector('[data-nohit]');
-        var btnMore = root.querySelector('[data-more]');
-        var btnReset = root.querySelector('.btn-reset');
-        var resultText = root.querySelector('[data-result]');
-        var state = { q: '', kec: '', kondisi: '', view: 'card', shown: PAGE };
-        var cardItems = Array.prototype.slice.call(cardsEl.querySelectorAll('.h-item'));
-        var tableItems = Array.prototype.slice.call(tableEl.querySelectorAll('.h-item'));
-        var totalAll = cardItems.length;
-
-        function matches(el) {
-            if (state.kondisi && el.dataset.kondisi !== state.kondisi) return false;
-            if (state.kec && el.dataset.kec !== state.kec) return false;
-            if (state.q && el.dataset.search.indexOf(state.q) === -1) return false;
-            return true;
-        }
-        function paint(list) {
-            var n = 0;
-            list.forEach(function (el) { var ok = matches(el); if (ok) n++; el.hidden = !(ok && n <= state.shown); });
-            return n;
-        }
-        function apply() {
-            var count = paint(cardItems); paint(tableItems);
-            var filtered = !!(state.q || state.kec || state.kondisi);
-            resultText.innerHTML = filtered
-                ? 'Ditemukan <b>' + count + '</b> dari ' + totalAll + ' hidrant'
-                : 'Menampilkan <b>' + Math.min(count, state.shown) + '</b> dari ' + totalAll + ' hidrant';
-            btnReset.classList.toggle('show', filtered);
-            qClear.classList.toggle('show', !!qInput.value);
-            var empty = count === 0;
-            emptyEl.hidden = !empty;
-            cardsEl.hidden = empty || state.view !== 'card';
-            tableEl.hidden = empty || state.view !== 'table';
-            var remaining = count - state.shown;
-            btnMore.hidden = !(remaining > 0);
-            if (remaining > 0) btnMore.querySelector('span').textContent = 'Tampilkan lebih banyak (' + remaining + ' lagi)';
-        }
-        function resetAll() {
-            state.q = ''; state.kec = ''; state.kondisi = ''; state.shown = PAGE;
-            qInput.value = ''; kecSel.value = '';
-            chips.forEach(function (c) { c.setAttribute('aria-pressed', c.dataset.kondisi === '' ? 'true' : 'false'); });
-            apply();
-        }
-        qInput.addEventListener('input', function () { state.q = qInput.value.trim().toLowerCase(); state.shown = PAGE; apply(); });
-        qClear.addEventListener('click', function () { qInput.value = ''; qInput.dispatchEvent(new Event('input')); qInput.focus(); });
-        kecSel.addEventListener('change', function () { state.kec = kecSel.value; state.shown = PAGE; apply(); });
-        chips.forEach(function (chip) {
-            chip.addEventListener('click', function () {
-                state.kondisi = chip.dataset.kondisi; state.shown = PAGE;
-                chips.forEach(function (c) { c.setAttribute('aria-pressed', c === chip ? 'true' : 'false'); });
-                apply();
-            });
-        });
-        viewBtns.forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                state.view = btn.dataset.view;
-                viewBtns.forEach(function (b) { b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); });
-                apply();
-            });
-        });
-        btnMore.addEventListener('click', function () { state.shown += PAGE; apply(); });
-        root.querySelectorAll('[data-reset]').forEach(function (b) { b.addEventListener('click', resetAll); });
-        apply();
-    });
 
     /* ---------- Lightbox gambar ---------- */
     var lb = document.getElementById('lightbox');

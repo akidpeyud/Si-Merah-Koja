@@ -9,8 +9,7 @@ use App\Models\InspeksiBangunan;
 use App\Models\FireDrill;
 use App\Models\PelatihanKeluarga;
 // Sarpras (halaman baru: sapra_home)
-Route::get('/sarpras/sarana', [SapraHomeController::class, 'sarana'])->name('sarpras.sarana');
-Route::get('/sarpras/prasarana', [SapraHomeController::class, 'prasarana'])->name('sarpras.prasarana');
+
 
 class PublicController extends Controller
 {

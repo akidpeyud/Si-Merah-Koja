@@ -23,7 +23,7 @@ class RedkarController extends Controller
     // Memproses data form pendaftaran (POST /redkar)
     public function store(Request $request)
     {
-        // 1. Validasi Input
+        // 1. Validasi Input Publik
         $validatedData = $request->validate([
             'username'                  => 'required|string|max:255|unique:redkar_registrations,username',
             'password'                  => 'required|string|min:6|confirmed',
@@ -41,8 +41,8 @@ class RedkarController extends Controller
             'kelurahan'                 => 'required|string|max:50',
             'pendidikan_terakhir'       => 'required|in:SD,SMP,SMA,D3,S1,S2',
             'latar_belakang_pendidikan' => 'required|string|max:255',
-            'jenis_pekerjaan'           => 'required|string|max:100',
-            'pekerjaan_lainnya'         => 'nullable|string|max:255|required_if:jenis_pekerjaan,Lainnya',
+            'pekerjaan'                 => 'required|string|max:100',
+            'pekerjaan_lainnya'         => 'nullable|string|max:255|required_if:pekerjaan,LAINNYA',
             'sehat_jasmani'             => 'required|in:Ya,Tidak',
             'golongan_darah'            => 'required|in:A,B,AB,O,Tidak Tahu',
             'foto_ktp'                  => 'required|file|image|mimes:jpg,jpeg,png|max:2048', 
@@ -56,12 +56,11 @@ class RedkarController extends Controller
         $validatedData['password'] = Hash::make($validatedData['password']);
 
         // 3. Logika Pekerjaan Lainnya
-        $pekerjaanFinal = $request->jenis_pekerjaan;
-        if ($pekerjaanFinal === 'Lainnya') {
+        $pekerjaanFinal = $request->pekerjaan;
+        if ($pekerjaanFinal === 'LAINNYA') {
             $pekerjaanFinal = $request->pekerjaan_lainnya;
         }
         $validatedData['pekerjaan'] = $pekerjaanFinal; 
-        unset($validatedData['jenis_pekerjaan']);
         unset($validatedData['pekerjaan_lainnya']);
 
         // 4. Upload file KTP 
@@ -106,7 +105,6 @@ class RedkarController extends Controller
             return back()->withInput()->with('error', 'Password yang Anda masukkan salah.');
         }
 
-        // --- UBAH DI SINI: HANYA CEK STATUS AKUN YANG AKTIF ---
         if ($relawan->status_akun !== 'Aktif') {
             return back()->withInput()->with('error', 'Mohon maaf, akun Anda belum diaktifkan oleh admin.');
         }
@@ -116,7 +114,7 @@ class RedkarController extends Controller
         
         return redirect()->to('/redkar/dashboard')->with('success', 'Selamat datang kembali, ' . $relawan->nama_lengkap . '!');
     }
-    // --- PROSES LOGOUT REDKAR ---
+
     public function logoutRedkar(Request $request)
     {
         Auth::guard('redkar')->logout();
@@ -126,7 +124,6 @@ class RedkarController extends Controller
         return redirect('/login-redkar')->with('success', 'Anda telah berhasil keluar dari dasbor relawan.');
     }
 
-    // --- HALAMAN PROFIL REDKAR ---
     public function profilRedkar()
     {
         $user = Auth::guard('redkar')->user();
@@ -147,22 +144,6 @@ class RedkarController extends Controller
     {
         $relawan = PendaftarRedkar::findOrFail($id);
         return view('internal.pencegahan.cetak_redkar', compact('relawan'));
-    }
-
-    public function verifikasiRedkar(Request $request, $id)
-    {
-        $relawan = PendaftarRedkar::findOrFail($id);
-        
-        $request->validate([
-            'status_akun'        => 'required|in:Aktif,Nonaktif',
-            'status_pendaftaran' => 'required|in:Pending,Diterima,Ditolak'
-        ]);
-
-        $relawan->status_akun = $request->status_akun;
-        $relawan->status_pendaftaran = $request->status_pendaftaran;
-        $relawan->save();
-
-        return back()->with('success', 'Status akun dan pendaftaran relawan ' . $relawan->nama_lengkap . ' berhasil diperbarui!');
     }
 
     public function editRedkar($id)
@@ -190,21 +171,18 @@ class RedkarController extends Controller
             'kelurahan'                 => 'required|string|max:50',
             'pendidikan_terakhir'       => 'required|in:SD,SMP,SMA,D3,S1,S2',
             'latar_belakang_pendidikan' => 'required|string|max:255',
-            'jenis_pekerjaan'           => 'required|string|max:100',
-            'pekerjaan_lainnya'         => 'nullable|string|max:255|required_if:jenis_pekerjaan,Lainnya',
+            'pekerjaan'                 => 'required|string|max:100',
+            'pekerjaan_lainnya'         => 'nullable|string|max:255|required_if:pekerjaan,LAINNYA',
             'sehat_jasmani'             => 'required|in:Ya,Tidak',
             'golongan_darah'            => 'required|in:A,B,AB,O,Tidak Tahu',
-            'status_pendaftaran'        => 'required|in:Pending,Diterima,Ditolak',
             'foto_ktp'                  => 'nullable|file|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $pekerjaanFinal = $request->jenis_pekerjaan;
-        if ($pekerjaanFinal === 'Lainnya') {
+        $pekerjaanFinal = $request->pekerjaan;
+        if ($pekerjaanFinal === 'LAINNYA') {
             $pekerjaanFinal = $request->pekerjaan_lainnya;
         }
         $validatedData['pekerjaan'] = $pekerjaanFinal; 
-        
-        unset($validatedData['jenis_pekerjaan']);
         unset($validatedData['pekerjaan_lainnya']);
 
         if ($request->hasFile('foto_ktp')) {
@@ -242,9 +220,8 @@ class RedkarController extends Controller
 
     public function storeRedkarOffline(Request $request)
     {
+        // Validasi disesuaikan: Akun, password, status akun, status pendaftaran, & kode pos dihapus.
         $validatedData = $request->validate([
-            'username'                  => 'required|string|max:255|unique:redkar_registrations,username',
-            'password'                  => 'required|string|min:6',
             'nama_lengkap'              => 'required|string|max:150',
             'nik'                       => 'required|string|size:16|unique:redkar_registrations,nik',
             'nomor_telp'                => 'required|string|max:20',
@@ -259,26 +236,22 @@ class RedkarController extends Controller
             'kelurahan'                 => 'required|string|max:50',
             'pendidikan_terakhir'       => 'required|in:SD,SMP,SMA,D3,S1,S2',
             'latar_belakang_pendidikan' => 'required|string|max:255',
-            'jenis_pekerjaan'           => 'required|string|max:100',
-            'pekerjaan_lainnya'         => 'nullable|string|max:255|required_if:jenis_pekerjaan,Lainnya',
+            'pekerjaan'                 => 'required|string|max:100',
+            'pekerjaan_lainnya'         => 'nullable|string|max:255|required_if:pekerjaan,LAINNYA',
             'sehat_jasmani'             => 'required|in:Ya,Tidak',
             'golongan_darah'            => 'required|in:A,B,AB,O,Tidak Tahu',
-            'status_akun'               => 'required|in:Aktif,Nonaktif',
-            'status_pendaftaran'        => 'required|in:Pending,Diterima,Ditolak',
             'foto_ktp'                  => 'nullable|file|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $validatedData['password'] = Hash::make($validatedData['password']);
-
-        $pekerjaanFinal = $request->jenis_pekerjaan;
-        if ($pekerjaanFinal === 'Lainnya') {
+        // Mapping pekerjaan lainnya jika dipilih LAINNYA
+        $pekerjaanFinal = $request->pekerjaan;
+        if ($pekerjaanFinal === 'LAINNYA') {
             $pekerjaanFinal = $request->pekerjaan_lainnya;
         }
         $validatedData['pekerjaan'] = $pekerjaanFinal; 
-        
-        unset($validatedData['jenis_pekerjaan']);
         unset($validatedData['pekerjaan_lainnya']);
 
+        // Penanganan file KTP
         if ($request->hasFile('foto_ktp')) {
             $path = $request->file('foto_ktp')->store('ktp', 'public');
             $validatedData['file_ktp'] = $path;
@@ -287,14 +260,13 @@ class RedkarController extends Controller
         }
         unset($validatedData['foto_ktp']);
 
+        // Data default wilayah dan ID kustom
         $validatedData['provinsi'] = 'JAMBI';
         $validatedData['kabupaten_kota'] = 'KOTA JAMBI';
         $validatedData['id'] = 'RDK-' . $validatedData['nik'];
 
         PendaftarRedkar::create($validatedData);
 
-        return redirect('/internal/pencegahan/kelola-redkar')->with('success', 'Data relawan offline berhasil ditambahkan ke sistem!');
+        return redirect('/internal/pencegahan/kelola-redkar')->with('success', 'Data relawan berhasil ditambahkan ke sistem!');
     }
 }
-    
-

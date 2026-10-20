@@ -143,78 +143,248 @@ class PencegahanController extends Controller
     }
 
     // ==========================================
-    // FUNGSI DOWNLOAD EXCEL & PDF (DIKLAT)
+    // FUNGSI DOWNLOAD EXCEL & PDF (DIKLAT - MULTI SHEET 21 KOLOM)
     // ==========================================
-    public function cetakExcel($jenis)
+    public function cetakExcel($jenis = 'semua')
     {
         $map = [
-            'diksar' => 'tbl_diksar', 
-            'diklat-f1' => 'tbl_diklat_f1', 
-            'diklat-f2' => 'tbl_diklat_f2', 
-            'diklat-rescue' => 'tbl_diklat_rescue', 
-            'diklat-mfr' => 'tbl_diklat_mfr', 
-            'diklat-operator' => 'tbl_diklat_operator', 
-            'diklat-inspektur' => 'tbl_diklat_inspektur', 
-            'diklat-ppl' => 'tbl_diklat_ppl'
+            'diksar'           => ['tabel' => 'tbl_diksar',           'sheet' => 'DIKSAR',           'judul' => 'DIKSAR'],
+            'diklat-f1'        => ['tabel' => 'tbl_diklat_f1',        'sheet' => 'DIKLAT F1',        'judul' => 'DIKLAT F1'],
+            'diklat-f2'        => ['tabel' => 'tbl_diklat_f2',        'sheet' => 'DIKLAT F2',        'judul' => 'DIKLAT F2'],
+            'diklat-rescue'    => ['tabel' => 'tbl_diklat_rescue',    'sheet' => 'DIKLAT RESCUE',    'judul' => 'DIKLAT RESCUE'],
+            'diklat-mfr'       => ['tabel' => 'tbl_diklat_mfr',       'sheet' => 'DIKLAT MFR',       'judul' => 'DIKLAT MFR'],
+            'diklat-operator'  => ['tabel' => 'tbl_diklat_operator',  'sheet' => 'DIKLAT OPERATOR',  'judul' => 'DIKLAT OPERATOR'],
+            'diklat-inspektur' => ['tabel' => 'tbl_diklat_inspektur', 'sheet' => 'DIKLAT INSPEKTUR', 'judul' => 'DIKLAT INSPEKTUR'],
+            'diklat-ppl'       => ['tabel' => 'tbl_diklat_ppl',       'sheet' => 'DIKLAT PPL',       'judul' => 'DIKLAT PPL'],
         ];
-        $tabel = $map[$jenis] ?? 'tbl_diklat_f1';
-        $data = DB::table($tabel)->orderBy('id', 'desc')->get();
 
-        $filename = "Data_" . strtoupper(str_replace('-', '_', $jenis)) . "_" . date('Ymd') . ".csv";
-        
+        $jenisKey = strtolower($jenis);
+
+        // Jika cetak 1 jenis diklat saja atau cetak "semua" (8 sheet sekaligus)
+        $targetDiklat = ($jenisKey !== 'semua' && isset($map[$jenisKey]))
+            ? [$jenisKey => $map[$jenisKey]]
+            : $map;
+
+        $sheetsData = [];
+        foreach ($targetDiklat as $key => $info) {
+            $sheetsData[$key] = [
+                'sheet' => $info['sheet'],
+                'judul' => $info['judul'],
+                'data'  => \Illuminate\Support\Facades\Schema::hasTable($info['tabel'])
+                    ? DB::table($info['tabel'])->orderBy('id', 'asc')->get()
+                    : collect([]),
+            ];
+        }
+
+        $labelFile = ($jenisKey === 'semua') ? 'SEMUA_DIKLAT' : strtoupper(str_replace('-', '_', $jenisKey));
+        $filename  = "Data_{$labelFile}_" . date('Ymd') . ".xls";
+
         $headers = [
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=$filename",
+            "Content-Type"        => "application/vnd.ms-excel; charset=UTF-8",
+            "Content-Disposition" => "attachment; filename=\"$filename\"",
             "Pragma"              => "no-cache",
             "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
             "Expires"             => "0"
         ];
 
-        $columns = ['NO', 'NIP', 'NAMA', 'TEMPAT LAHIR', 'TGL LAHIR', 'NIK', 'JABATAN', 'INSTANSI', 'DITANDA TANGANI OLEH', 'TANGGAL'];
+        $esc = fn($v) => htmlspecialchars((string) ($v ?? '-'), ENT_XML1 | ENT_QUOTES, 'UTF-8');
 
-        $callback = function() use($data, $columns) {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, $columns);
-            foreach ($data as $index => $row) {
-                fputcsv($file, [
-                    $index + 1,
-                    $row->nip ?? '-',
-                    $row->nama ?? '-',
-                    $row->tempat_lahir ?? '-',
-                    $row->tgl_lahir ?? '-',
-                    $row->nik ?? '-',
-                    $row->jabatan ?? '-',
-                    $row->instansi ?? '-',
-                    $row->ditandatangani_oleh ?? '-',
-                    $row->tanggal_pelaksanaan ?? '-'
-                ]);
+        $callback = function () use ($sheetsData, $esc) {
+            echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+            echo '<?mso-application progid="Excel.Sheet"?>' . "\n";
+            echo '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+                    xmlns:o="urn:schemas-microsoft-com:office:office"
+                    xmlns:x="urn:schemas-microsoft-com:office:excel"
+                    xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">' . "\n";
+
+            // Definisi Style Excel
+            echo '<Styles>
+                    <Style ss:ID="Default" ss:Name="Normal">
+                        <Alignment ss:Vertical="Center"/>
+                        <Font ss:FontName="Arial" ss:Size="10"/>
+                    </Style>
+                    <Style ss:ID="sTitle">
+                        <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+                        <Font ss:FontName="Arial" ss:Size="11" ss:Bold="1"/>
+                    </Style>
+                    <Style ss:ID="sHead">
+                        <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+                        <Borders>
+                            <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                        </Borders>
+                        <Font ss:FontName="Arial" ss:Size="9" ss:Bold="1" ss:Color="#FFFFFF"/>
+                        <Interior ss:Color="#0D1B2A" ss:Pattern="Solid"/>
+                    </Style>
+                    <Style ss:ID="sText">
+                        <Alignment ss:Horizontal="Left" ss:Vertical="Center" ss:WrapText="1"/>
+                        <Borders>
+                            <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                        </Borders>
+                        <Font ss:FontName="Arial" ss:Size="9"/>
+                    </Style>
+                    <Style ss:ID="sCenter">
+                        <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+                        <Borders>
+                            <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                        </Borders>
+                        <Font ss:FontName="Arial" ss:Size="9"/>
+                    </Style>
+                    <Style ss:ID="sTotal">
+                        <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+                        <Borders>
+                            <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                        </Borders>
+                        <Font ss:FontName="Arial" ss:Size="9" ss:Bold="1"/>
+                        <Interior ss:Color="#F2F2F2" ss:Pattern="Solid"/>
+                    </Style>
+                  </Styles>' . "\n";
+
+            // 21 Kolom sesuai urutan tabel di halaman web & PDF
+            $columns = [
+                ['label' => 'NO',                          'width' => 35],
+                ['label' => 'NAMA',                        'width' => 150],
+                ['label' => 'TEMPAT LAHIR',                'width' => 110],
+                ['label' => 'TGL LAHIR',                   'width' => 85],
+                ['label' => 'NIK',                         'width' => 130],
+                ['label' => 'JABATAN',                     'width' => 130],
+                ['label' => 'INSTANSI / PERANGKAT DAERAH', 'width' => 180],
+                ['label' => 'DITANDA TANGANI OLEH',        'width' => 150],
+                ['label' => 'TANGGAL PELAKSANAAN',         'width' => 115],
+                ['label' => 'JUMLAH JAM PELAJARAN',        'width' => 110],
+                ['label' => 'INSTANSI PENYELENGGARA',      'width' => 160],
+                ['label' => 'PROVINSI',                    'width' => 100],
+                ['label' => 'KOTA',                        'width' => 100],
+                ['label' => 'NOMOR SERTIFIKAT',            'width' => 140],
+                ['label' => 'KODE VERIFIKASI',             'width' => 115],
+                ['label' => 'PERSENTASE PENILAIAN',        'width' => 110],
+                ['label' => 'JENIS DIKLAT',                'width' => 115],
+                ['label' => 'CREATED AT',                  'width' => 90],
+                ['label' => 'UPDATED AT',                  'width' => 90],
+                ['label' => 'TTL',                         'width' => 120],
+                ['label' => 'KET',                         'width' => 140],
+            ];
+            $mergeAcross = count($columns) - 1; // 20
+
+            foreach ($sheetsData as $sheetItem) {
+                echo '<Worksheet ss:Name="' . $esc($sheetItem['sheet']) . '"><Table>' . "\n";
+
+                foreach ($columns as $col) {
+                    echo '<Column ss:Width="' . $col['width'] . '"/>' . "\n";
+                }
+
+                // Judul Atas di setiap Sheet
+                echo '<Row ss:Height="18"><Cell ss:MergeAcross="' . $mergeAcross . '" ss:StyleID="sTitle"><Data ss:Type="String">JUMLAH APARATUR DINAS PEMADAM KEBAKARAN DAN PENYELAMATAN KOTA JAMBI</Data></Cell></Row>' . "\n";
+                echo '<Row ss:Height="18"><Cell ss:MergeAcross="' . $mergeAcross . '" ss:StyleID="sTitle"><Data ss:Type="String">YANG MEMENUHI STANDAR KUALIFIKASI PEMADAM KEBAKARAN (DATA ' . $esc($sheetItem['judul']) . ')</Data></Cell></Row>' . "\n";
+                echo '<Row ss:Height="18"><Cell ss:MergeAcross="' . $mergeAcross . '" ss:StyleID="sTitle"><Data ss:Type="String">TAHUN ' . date('Y') . '</Data></Cell></Row>' . "\n";
+                echo '<Row ss:Height="10"></Row>' . "\n";
+
+                // Header Tabel 21 Kolom
+                echo '<Row ss:Height="28">' . "\n";
+                foreach ($columns as $col) {
+                    echo '<Cell ss:StyleID="sHead"><Data ss:Type="String">' . $esc($col['label']) . '</Data></Cell>' . "\n";
+                }
+                echo '</Row>' . "\n";
+
+                // Baris Data
+                if ($sheetItem['data']->isEmpty()) {
+                    echo '<Row ss:Height="24"><Cell ss:MergeAcross="' . $mergeAcross . '" ss:StyleID="sCenter"><Data ss:Type="String">Belum ada data untuk ' . $esc($sheetItem['judul']) . '</Data></Cell></Row>' . "\n";
+                } else {
+                    foreach ($sheetItem['data'] as $index => $item) {
+                        $createdAt = !empty($item->created_at) ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-';
+                        $updatedAt = !empty($item->updated_at) ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-';
+                        $persentase = $item->persentasi_penilaian ?? $item->persentase_penilaian ?? '-';
+
+                        echo '<Row ss:AutoFitHeight="1">
+                                <Cell ss:StyleID="sCenter"><Data ss:Type="Number">' . ($index + 1) . '</Data></Cell>
+                                <Cell ss:StyleID="sText"><Data ss:Type="String">' . $esc($item->nama ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sText"><Data ss:Type="String">' . $esc($item->tempat_lahir ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sCenter"><Data ss:Type="String">' . $esc($item->tgl_lahir ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sCenter"><Data ss:Type="String">' . $esc($item->nik ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sText"><Data ss:Type="String">' . $esc($item->jabatan ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sText"><Data ss:Type="String">' . $esc($item->instansi ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sText"><Data ss:Type="String">' . $esc($item->ditandatangani_oleh ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sCenter"><Data ss:Type="String">' . $esc($item->tanggal_pelaksanaan ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sCenter"><Data ss:Type="String">' . $esc($item->jumlah_jam_pelajaran ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sText"><Data ss:Type="String">' . $esc($item->instansi_penyelenggara ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sText"><Data ss:Type="String">' . $esc($item->provinsi ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sText"><Data ss:Type="String">' . $esc($item->kota ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sCenter"><Data ss:Type="String">' . $esc($item->nomor_sertifikat ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sCenter"><Data ss:Type="String">' . $esc($item->kode_verifikasi ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sCenter"><Data ss:Type="String">' . $esc($persentase) . '</Data></Cell>
+                                <Cell ss:StyleID="sCenter"><Data ss:Type="String">' . $esc($item->jenis_diklat ?? $sheetItem['judul']) . '</Data></Cell>
+                                <Cell ss:StyleID="sCenter"><Data ss:Type="String">' . $esc($createdAt) . '</Data></Cell>
+                                <Cell ss:StyleID="sCenter"><Data ss:Type="String">' . $esc($updatedAt) . '</Data></Cell>
+                                <Cell ss:StyleID="sText"><Data ss:Type="String">' . $esc($item->ttl ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sText"><Data ss:Type="String">' . $esc($item->ket ?? '-') . '</Data></Cell>
+                              </Row>' . "\n";
+                    }
+                }
+
+                // Baris Total Data di Bawah Tabel
+                echo '<Row ss:Height="22">
+                        <Cell ss:MergeAcross="' . $mergeAcross . '" ss:StyleID="sTotal"><Data ss:Type="String">TOTAL DATA ' . $esc($sheetItem['judul']) . ': ' . $sheetItem['data']->count() . ' ORANG</Data></Cell>
+                      </Row>' . "\n";
+
+                echo '</Table></Worksheet>' . "\n";
             }
-            fclose($file);
+
+            echo '</Workbook>';
         };
 
         return response()->stream($callback, 200, $headers);
     }
 
-    public function cetakPdf($jenis)
+    public function cetakPdf($jenis = 'semua')
     {
         $map = [
-            'diksar' => 'tbl_diksar', 
-            'diklat-f1' => 'tbl_diklat_f1', 
-            'diklat-f2' => 'tbl_diklat_f2', 
-            'diklat-rescue' => 'tbl_diklat_rescue', 
-            'diklat-mfr' => 'tbl_diklat_mfr', 
-            'diklat-operator' => 'tbl_diklat_operator', 
-            'diklat-inspektur' => 'tbl_diklat_inspektur', 
-            'diklat-ppl' => 'tbl_diklat_ppl'
+            'diksar'           => ['tabel' => 'tbl_diksar',           'judul' => 'DIKSAR'],
+            'diklat-f1'        => ['tabel' => 'tbl_diklat_f1',        'judul' => 'DIKLAT F1'],
+            'diklat-f2'        => ['tabel' => 'tbl_diklat_f2',        'judul' => 'DIKLAT F2'],
+            'diklat-rescue'    => ['tabel' => 'tbl_diklat_rescue',    'judul' => 'DIKLAT RESCUE'],
+            'diklat-mfr'       => ['tabel' => 'tbl_diklat_mfr',       'judul' => 'DIKLAT MFR'],
+            'diklat-operator'  => ['tabel' => 'tbl_diklat_operator',  'judul' => 'DIKLAT OPERATOR'],
+            'diklat-inspektur' => ['tabel' => 'tbl_diklat_inspektur', 'judul' => 'DIKLAT INSPEKTUR'],
+            'diklat-ppl'       => ['tabel' => 'tbl_diklat_ppl',       'judul' => 'DIKLAT PPL'],
         ];
-        $tabel = $map[$jenis] ?? 'tbl_diklat_f1';
-        $data = DB::table($tabel)->orderBy('id', 'asc')->get();
-        
-        $judul = strtoupper(str_replace('-', ' ', $jenis));
+
+        $jenisKey = strtolower($jenis);
+
+        // Jika cetak Semua Diklat sekaligus ke PDF
+        if ($jenisKey === 'semua' || !isset($map[$jenisKey])) {
+            $semua_diklat = [];
+            foreach ($map as $key => $info) {
+                $semua_diklat[] = [
+                    'judul' => $info['judul'],
+                    'data'  => \Illuminate\Support\Facades\Schema::hasTable($info['tabel'])
+                        ? DB::table($info['tabel'])->orderBy('id', 'asc')->get()
+                        : collect([]),
+                ];
+            }
+            $judul = 'SEMUA DIKLAT';
+            return view('internal.pencegahan.cetak_pdf_diklat', compact('semua_diklat', 'judul'));
+        }
+
+        // Jika cetak 1 jenis Diklat saja
+        $tabel = $map[$jenisKey]['tabel'];
+        $judul = $map[$jenisKey]['judul'];
+        $data  = \Illuminate\Support\Facades\Schema::hasTable($tabel)
+            ? DB::table($tabel)->orderBy('id', 'asc')->get()
+            : collect([]);
 
         return view('internal.pencegahan.cetak_pdf_diklat', compact('data', 'judul'));
     }
-
 
     // ==========================================
     // BAGIAN INSPEKSI BANGUNAN
@@ -222,69 +392,53 @@ class PencegahanController extends Controller
     public function index()
     {
         $data_inspeksi = InspeksiBangunan::orderBy('tanggal_inspeksi', 'desc')->get();
-        
-        $total_inspeksi = InspeksiBangunan::count();
-        $total_fire_drill = FireDrill::count(); 
-
-        return view('internal.pencegahan.inspeksi_bangunan', compact('data_inspeksi', 'total_inspeksi', 'total_fire_drill'));
-    }
-    
-    public function indexInspeksiBangunan()
-    {
-        $data_inspeksi = InspeksiBangunan::all();
         return view('internal.pencegahan.inspeksi_bangunan', compact('data_inspeksi'));
     }
 
+    public function indexInspeksiBangunan()
+    {
+        $data_inspeksi = InspeksiBangunan::orderBy('tanggal_inspeksi', 'desc')->get();
+        return view('internal.pencegahan.inspeksi_bangunan', compact('data_inspeksi'));
+    }
+
+    // Alias: route Inspeksi Bangunan memakai nama method generik
     public function create()
     {
-        return view('internal.pencegahan.tambah_inspeksi_bangunan');
+        return $this->createInspeksiBangunan();
     }
 
     public function store(Request $request)
     {
-        $inspeksi = new InspeksiBangunan();
-        $inspeksi->nama_tempat = $request->nama_tempat;
-        $inspeksi->jenis_usaha = $request->jenis_usaha;
-        $inspeksi->tanggal_inspeksi = $request->tanggal_inspeksi;
+        return $this->storeInspeksiBangunan($request);
+    }
 
-        if ($request->hasFile('surat_perintah_tugas')) {
-            $file = $request->file('surat_perintah_tugas');
-            $nama_file = time() . '_spt.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/inspeksi'), $nama_file);
-            $inspeksi->surat_perintah_tugas = $nama_file;
-        }
+    public function edit($id)
+    {
+        return $this->editInspeksiBangunan($id);
+    }
 
-        if ($request->hasFile('berita_acara')) {
-            $file = $request->file('berita_acara');
-            $nama_file = time() . '_ba.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/inspeksi'), $nama_file);
-            $inspeksi->berita_acara = $nama_file;
-        }
+    public function update(Request $request, $id)
+    {
+        return $this->updateInspeksiBangunan($request, $id);
+    }
 
-        if ($request->hasFile('hasil_penilaian')) {
-            $file = $request->file('hasil_penilaian');
-            $nama_file = time() . '_nilai.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/inspeksi'), $nama_file);
-            $inspeksi->hasil_penilaian = $nama_file;
-        }
+    public function createInspeksiBangunan()
+    {
+        return view('internal.pencegahan.tambah_inspeksi_bangunan');
+    }
 
-        if ($request->hasFile('rekomendasi')) {
-            $file = $request->file('rekomendasi');
-            $nama_file = time() . '_rekom.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/inspeksi'), $nama_file);
-            $inspeksi->rekomendasi = $nama_file;
-        }
+    public function storeInspeksiBangunan(Request $request)
+    {
+        $validated = $request->validate([
+            'nama_tempat'      => 'required|string|max:255',
+            'tanggal_inspeksi' => 'required|date',
+            'jenis_usaha'      => 'nullable|string|max:255',
+        ]);
 
-        if ($request->hasFile('skk')) {
-            $file = $request->file('skk');
-            $nama_file = time() . '_skk.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/inspeksi'), $nama_file);
-            $inspeksi->skk = $nama_file;
-        }
+        InspeksiBangunan::create($validated);
 
-        $inspeksi->save();
-
-        return redirect('/internal/pencegahan/inspeksi-kebakaran/bangunan')->with('success', 'Data berhasil ditambahkan!');
+        return redirect('/internal/pencegahan/inspeksi-kebakaran')
+            ->with('success', 'Data Inspeksi Bangunan berhasil ditambahkan!');
     }
 
     public function editInspeksiBangunan($id)
@@ -295,50 +449,18 @@ class PencegahanController extends Controller
 
     public function updateInspeksiBangunan(Request $request, $id)
     {
-        $inspeksi = InspeksiBangunan::find($id); 
-        
-        $inspeksi->nama_tempat = $request->nama_tempat;
-        $inspeksi->jenis_usaha = $request->jenis_usaha;
-        $inspeksi->tanggal_inspeksi = $request->tanggal_inspeksi;
+        $item = InspeksiBangunan::findOrFail($id);
 
-        if ($request->hasFile('surat_perintah_tugas')) {
-            $file = $request->file('surat_perintah_tugas');
-            $nama_file = time() . '_spt.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/inspeksi'), $nama_file);
-            $inspeksi->surat_perintah_tugas = $nama_file;
-        }
+        $validated = $request->validate([
+            'nama_tempat'      => 'required|string|max:255',
+            'tanggal_inspeksi' => 'required|date',
+            'jenis_usaha'      => 'nullable|string|max:255',
+        ]);
 
-        if ($request->hasFile('berita_acara')) {
-            $file = $request->file('berita_acara');
-            $nama_file = time() . '_ba.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/inspeksi'), $nama_file);
-            $inspeksi->berita_acara = $nama_file;
-        }
+        $item->update($validated);
 
-        if ($request->hasFile('hasil_penilaian')) {
-            $file = $request->file('hasil_penilaian');
-            $nama_file = time() . '_nilai.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/inspeksi'), $nama_file);
-            $inspeksi->hasil_penilaian = $nama_file;
-        }
-
-        if ($request->hasFile('rekomendasi')) {
-            $file = $request->file('rekomendasi');
-            $nama_file = time() . '_rekom.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/inspeksi'), $nama_file);
-            $inspeksi->rekomendasi = $nama_file;
-        }
-
-        if ($request->hasFile('skk')) {
-            $file = $request->file('skk');
-            $nama_file = time() . '_skk.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/inspeksi'), $nama_file);
-            $inspeksi->skk = $nama_file;
-        }
-
-        $inspeksi->save();
-
-        return redirect('/internal/pencegahan/inspeksi-kebakaran/bangunan')->with('success', 'Data berhasil diupdate!');
+        return redirect('/internal/pencegahan/inspeksi-kebakaran')
+            ->with('success', 'Data Inspeksi Bangunan berhasil diperbarui!');
     }
 
     public function destroyInspeksiBangunan($id)
@@ -350,13 +472,13 @@ class PencegahanController extends Controller
     }
 
     // ==========================================
-    // BAGIAN FIRE DRILL
+    // BAGIAN FIRE DRILL (REVISI DINAMIS & PESERTA)
     // ==========================================
     public function indexFireDrill()
     {
-        $data_fire_drill = FireDrill::orderBy('tahun', 'desc')->orderBy('id', 'desc')->get();
-        
-        $daftar_tahun = $data_fire_drill->pluck('tahun')->unique()->sortDesc()->values();
+        // Urut tahun naik: 2023, 2024, 2025, 2026, dst.
+        $data_fire_drill = FireDrill::orderBy('tahun', 'asc')->orderBy('id', 'asc')->get();
+        $daftar_tahun = $data_fire_drill->pluck('tahun')->unique()->sort()->values();
         $daftar_instansi = $data_fire_drill->pluck('nama_instansi')->unique()->sort()->values();
 
         return view('internal.pencegahan.fire_drill', compact('data_fire_drill', 'daftar_tahun', 'daftar_instansi'));
@@ -588,197 +710,341 @@ class PencegahanController extends Controller
     }
 
     // ==========================================
-    // FUNGSI DOWNLOAD EXCEL & PDF (FIRE DRILL)
+    // FUNGSI DOWNLOAD EXCEL & PDF (FIRE DRILL - MULTI SHEET ASLI)
     // ==========================================
     public function cetakExcelFireDrill(Request $request)
     {
         $tahunDipilih = $request->query('tahun');
         $instansiDipilih = $request->query('instansi');
 
-        $query = FireDrill::orderBy('tahun', 'asc')->orderBy('id', 'asc');
+        $query = FireDrill::query();
 
-        if (!empty($tahunDipilih)) {
-            $query->where('tahun', $tahunDipilih);
+        if (filled($tahunDipilih)) {
+            $query->where('tahun', (int) $tahunDipilih);
         }
-        if (!empty($instansiDipilih)) {
+        if (filled($instansiDipilih)) {
             $query->whereRaw('LOWER(nama_instansi) = ?', [strtolower($instansiDipilih)]);
         }
 
-        $data = $query->get();
-        $groupedByYear = $data->groupBy('tahun');
+        $data = $query->orderBy('tahun', 'asc')->orderBy('id', 'asc')->get();
+        $groupedByYear = $data->groupBy('tahun')->sortKeys(); // urut 2023, 2024, 2025, 2026, ...
 
-        $labelFile = !empty($tahunDipilih) ? "Tahun_{$tahunDipilih}" : "Semua_Tahun";
+        $labelFile = filled($tahunDipilih) ? "Tahun_{$tahunDipilih}" : "Semua_Data_dan_Per_Tahun";
         $filename = "Data_Fire_Drill_{$labelFile}_" . date('Ymd') . ".xls";
 
         $headers = [
-            "Content-Type"        => "application/vnd.ms-excel; charset=utf-8",
+            "Content-Type"        => "application/vnd.ms-excel; charset=UTF-8",
             "Content-Disposition" => "attachment; filename=\"$filename\"",
             "Pragma"              => "no-cache",
             "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
             "Expires"             => "0"
         ];
 
-        $callback = function() use ($groupedByYear, $tahunDipilih) {
-            echo '<meta charset="UTF-8">';
-            echo '<style>
-                    table { border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt; }
-                    th, td { border: 1px solid #000000; padding: 6px 10px; }
-                    .judul-utama { font-weight: bold; font-size: 12pt; text-align: center; border: none !important; }
-                    .baris-kosong td { border: none !important; height: 14px; }
-                    .th-abu { background-color: #d9d9d9; font-weight: bold; text-align: center; vertical-align: middle; }
-                    .td-center { text-align: center; vertical-align: middle; }
-                    .td-middle { vertical-align: middle; }
-                    .td-top { vertical-align: top; }
-                    .tr-total td { font-weight: bold; background-color: #f2f2f2; }
-                  </style>';
+        $esc = fn($v) => htmlspecialchars((string) $v, ENT_XML1 | ENT_QUOTES, 'UTF-8');
 
-            echo '<table>';
+        // Helper membuat baris XML SpreadsheetML untuk 1 blok tahun
+        $buatBarisTahunXml = function ($tahun, $items, $pakaiHeaderAtas, $modeSheet1 = false) use ($esc) {
+            $adaGender = !$modeSheet1 && $items->contains(fn($i) => ($i->peserta_laki_laki > 0 || $i->peserta_perempuan > 0));
+            $adaNama   = !$modeSheet1 && $items->contains(fn($i) => (!empty(trim($i->nama_peserta_laki_laki ?? '')) || !empty(trim($i->nama_peserta_perempuan ?? ''))));
 
-            if ($groupedByYear->isEmpty()) {
-                echo '<tr><td colspan="5" class="judul-utama">BELUM ADA DATA FIRE DRILL</td></tr>';
+            $jmlKolom = 5;
+            if ($adaGender) $jmlKolom = 7;
+            if ($adaNama)   $jmlKolom = 9;
+            $mergeTitle = $jmlKolom - 1;
+
+            $xml = '';
+            if ($pakaiHeaderAtas) {
+                $xml .= '<Row ss:Height="18"><Cell ss:MergeAcross="' . $mergeTitle . '" ss:StyleID="sTitle"><Data ss:Type="String">INSTANSI PEMERINTAH / SWASTA</Data></Cell></Row>';
+                $xml .= '<Row ss:Height="18"><Cell ss:MergeAcross="' . $mergeTitle . '" ss:StyleID="sTitle"><Data ss:Type="String">YANG MELAKSANAKAN PELATIHAN PEMADAM KEBAKARAN</Data></Cell></Row>';
+            }
+            $xml .= '<Row ss:Height="18"><Cell ss:MergeAcross="' . $mergeTitle . '" ss:StyleID="sTitle"><Data ss:Type="String">TAHUN ' . $esc($tahun) . '</Data></Cell></Row>';
+            $xml .= '<Row ss:Height="10"></Row>';
+
+            // Header Tabel
+            if (!$adaGender && !$adaNama) {
+                $xml .= '<Row ss:Height="24">
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">NO</Data></Cell>
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">NAMA INSTANSI</Data></Cell>
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">TANGGAL PELAKSANAAN</Data></Cell>
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">TEMPAT PELAKSANAAN</Data></Cell>
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">JUMLAH PESERTA</Data></Cell>
+                         </Row>';
+            } elseif ($adaGender && !$adaNama) {
+                $xml .= '<Row ss:Height="24">
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">NO</Data></Cell>
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">NAMA INSTANSI</Data></Cell>
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">TANGGAL PELAKSANAAN</Data></Cell>
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">TEMPAT PELAKSANAAN</Data></Cell>
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">Laki-laki</Data></Cell>
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">Perempuan</Data></Cell>
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">JUMLAH PESERTA</Data></Cell>
+                         </Row>';
+            } else {
+                $xml .= '<Row ss:Height="24">
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">NO</Data></Cell>
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">NAMA INSTANSI</Data></Cell>
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">TANGGAL PELAKSANAAN</Data></Cell>
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">TEMPAT PELAKSANAAN</Data></Cell>
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">Laki-laki</Data></Cell>
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">Perempuan</Data></Cell>
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">JUMLAH PESERTA</Data></Cell>
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">DAFTAR NAMA LAKI-LAKI</Data></Cell>
+                            <Cell ss:StyleID="sHead"><Data ss:Type="String">DAFTAR NAMA PEREMPUAN</Data></Cell>
+                         </Row>';
             }
 
-            $firstBlock = true;
-            foreach ($groupedByYear as $tahun => $items) {
-                $adaGender = $items->contains(fn($i) => ($i->peserta_laki_laki > 0 || $i->peserta_perempuan > 0));
-                $adaNamaPeserta = $items->contains(fn($i) => (!empty(trim($i->nama_peserta_laki_laki ?? '')) || !empty(trim($i->nama_peserta_perempuan ?? ''))));
+            $sumLaki = 0;
+            $sumPerempuan = 0;
+            $sumTotal = 0;
 
-                $jmlKolom = 5;
-                if ($adaGender) $jmlKolom = 7;
-                if ($adaNamaPeserta) $jmlKolom = 9;
+            foreach ($items->values() as $idx => $item) {
+                $l = (int) ($item->peserta_laki_laki ?? 0);
+                $p = (int) ($item->peserta_perempuan ?? 0);
+                $t = (int) ($item->total_peserta ?? 0);
+                $sumLaki += $l;
+                $sumPerempuan += $p;
+                $sumTotal += $t;
 
-                if (!$firstBlock) {
-                    echo '<tr class="baris-kosong"><td colspan="' . $jmlKolom . '"></td></tr>';
-                    echo '<tr class="baris-kosong"><td colspan="' . $jmlKolom . '"></td></tr>';
-                }
-
-                if ($firstBlock) {
-                    echo '<tr><td colspan="' . $jmlKolom . '" class="judul-utama">INSTANSI PEMERINTAH / SWASTA</td></tr>';
-                    echo '<tr><td colspan="' . $jmlKolom . '" class="judul-utama">YANG MELAKSANAKAN PELATIHAN PEMADAM KEBAKARAN</td></tr>';
-                }
-                echo '<tr><td colspan="' . $jmlKolom . '" class="judul-utama">TAHUN ' . e($tahun) . '</td></tr>';
-                echo '<tr class="baris-kosong"><td colspan="' . $jmlKolom . '"></td></tr>';
-
-                if (!$adaGender && !$adaNamaPeserta) {
-                    echo '<tr class="th-abu">
-                            <th width="45">NO</th>
-                            <th width="340">NAMA INSTANSI</th>
-                            <th width="200">TANGGAL PELAKSANAAN</th>
-                            <th width="340">TEMPAT PELAKSANAAN</th>
-                            <th width="140">JUMLAH PESERTA</th>
-                          </tr>';
-                } elseif ($adaGender && !$adaNamaPeserta) {
-                    echo '<tr class="th-abu">
-                            <th width="45">NO</th>
-                            <th width="320">NAMA INSTANSI</th>
-                            <th width="190">TANGGAL PELAKSANAAN</th>
-                            <th width="300">TEMPAT PELAKSANAAN</th>
-                            <th width="100">Laki-laki</th>
-                            <th width="100">Perempuan</th>
-                            <th width="140">JUMLAH PESERTA</th>
-                          </tr>';
+                if (!$adaGender && !$adaNama) {
+                    $xml .= '<Row ss:AutoFitHeight="1">
+                                <Cell ss:StyleID="sCenter"><Data ss:Type="Number">' . ($idx + 1) . '</Data></Cell>
+                                <Cell ss:StyleID="sText"><Data ss:Type="String">' . $esc($item->nama_instansi ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sText"><Data ss:Type="String">' . $esc($item->tanggal_pelaksanaan ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sText"><Data ss:Type="String">' . $esc($item->tempat_pelaksanaan ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sCenter"><Data ss:Type="Number">' . $t . '</Data></Cell>
+                             </Row>';
+                } elseif ($adaGender && !$adaNama) {
+                    $punyaLP = ($l > 0 || $p > 0);
+                    $xml .= '<Row ss:AutoFitHeight="1">
+                                <Cell ss:StyleID="sCenter"><Data ss:Type="Number">' . ($idx + 1) . '</Data></Cell>
+                                <Cell ss:StyleID="sText"><Data ss:Type="String">' . $esc($item->nama_instansi ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sText"><Data ss:Type="String">' . $esc($item->tanggal_pelaksanaan ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sText"><Data ss:Type="String">' . $esc($item->tempat_pelaksanaan ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sCenter"><Data ss:Type="' . ($punyaLP ? 'Number' : 'String') . '">' . ($punyaLP ? $l : '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sCenter"><Data ss:Type="' . ($punyaLP ? 'Number' : 'String') . '">' . ($punyaLP ? $p : '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sCenter"><Data ss:Type="Number">' . $t . '</Data></Cell>
+                             </Row>';
                 } else {
-                    echo '<tr class="th-abu">
-                            <th rowspan="2" width="45">NO</th>
-                            <th rowspan="2" width="280">NAMA INSTANSI</th>
-                            <th rowspan="2" width="180">TANGGAL PELAKSANAAN</th>
-                            <th rowspan="2" width="260">TEMPAT PELAKSANAAN</th>
-                            <th colspan="3">JUMLAH PESERTA</th>
-                            <th colspan="2">DAFTAR NAMA PESERTA</th>
-                          </tr>
-                          <tr class="th-abu">
-                            <th width="90">Laki-laki</th>
-                            <th width="90">Perempuan</th>
-                            <th width="110">TOTAL</th>
-                            <th width="220">PESERTA LAKI-LAKI</th>
-                            <th width="220">PESERTA PEREMPUAN</th>
-                          </tr>';
+                    $listLaki = !empty($item->nama_peserta_laki_laki)
+                        ? array_values(array_filter(preg_split('/\r\n|\r|\n/', trim($item->nama_peserta_laki_laki))))
+                        : [];
+                    $listPerempuan = !empty($item->nama_peserta_perempuan)
+                        ? array_values(array_filter(preg_split('/\r\n|\r|\n/', trim($item->nama_peserta_perempuan))))
+                        : [];
+                    $punyaLP = ($l > 0 || $p > 0 || count($listLaki) > 0 || count($listPerempuan) > 0);
+
+                    $strLaki = count($listLaki) > 0
+                        ? collect($listLaki)->map(fn($n, $i) => ($i + 1) . '. ' . $esc($n))->implode('&#10;')
+                        : '-';
+                    $strPerempuan = count($listPerempuan) > 0
+                        ? collect($listPerempuan)->map(fn($n, $i) => ($i + 1) . '. ' . $esc($n))->implode('&#10;')
+                        : '-';
+                    $tinggiBaris = max(1, count($listLaki), count($listPerempuan)) * 16;
+
+                    $xml .= '<Row ss:Height="' . $tinggiBaris . '">
+                                <Cell ss:StyleID="sCenter"><Data ss:Type="Number">' . ($idx + 1) . '</Data></Cell>
+                                <Cell ss:StyleID="sText"><Data ss:Type="String">' . $esc($item->nama_instansi ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sText"><Data ss:Type="String">' . $esc($item->tanggal_pelaksanaan ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sText"><Data ss:Type="String">' . $esc($item->tempat_pelaksanaan ?? '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sCenter"><Data ss:Type="' . ($punyaLP ? 'Number' : 'String') . '">' . ($punyaLP ? $l : '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sCenter"><Data ss:Type="' . ($punyaLP ? 'Number' : 'String') . '">' . ($punyaLP ? $p : '-') . '</Data></Cell>
+                                <Cell ss:StyleID="sTotalNum"><Data ss:Type="Number">' . $t . '</Data></Cell>
+                                <Cell ss:StyleID="sWrapTop"><Data ss:Type="String">' . $strLaki . '</Data></Cell>
+                                <Cell ss:StyleID="sWrapTop"><Data ss:Type="String">' . $strPerempuan . '</Data></Cell>
+                             </Row>';
                 }
+            }
 
-                $totalLakiTahun = 0;
-                $totalPerempuanTahun = 0;
-                $totalPesertaTahun = 0;
+            // Baris JUMLAH TOTAL per tahun
+            if (!$adaGender && !$adaNama) {
+                $xml .= '<Row ss:Height="22">
+                            <Cell ss:MergeAcross="3" ss:StyleID="sTotalLabel"><Data ss:Type="String">JUMLAH TOTAL</Data></Cell>
+                            <Cell ss:StyleID="sTotalNum"><Data ss:Type="Number">' . $sumTotal . '</Data></Cell>
+                         </Row>';
+            } elseif ($adaGender && !$adaNama) {
+                $xml .= '<Row ss:Height="22">
+                            <Cell ss:MergeAcross="3" ss:StyleID="sTotalLabel"><Data ss:Type="String">JUMLAH TOTAL</Data></Cell>
+                            <Cell ss:StyleID="sTotalNum"><Data ss:Type="Number">' . $sumLaki . '</Data></Cell>
+                            <Cell ss:StyleID="sTotalNum"><Data ss:Type="Number">' . $sumPerempuan . '</Data></Cell>
+                            <Cell ss:StyleID="sTotalNum"><Data ss:Type="Number">' . $sumTotal . '</Data></Cell>
+                         </Row>';
+            } else {
+                $xml .= '<Row ss:Height="22">
+                            <Cell ss:MergeAcross="3" ss:StyleID="sTotalLabel"><Data ss:Type="String">JUMLAH TOTAL</Data></Cell>
+                            <Cell ss:StyleID="sTotalNum"><Data ss:Type="Number">' . $sumLaki . '</Data></Cell>
+                            <Cell ss:StyleID="sTotalNum"><Data ss:Type="Number">' . $sumPerempuan . '</Data></Cell>
+                            <Cell ss:StyleID="sTotalNum"><Data ss:Type="Number">' . $sumTotal . '</Data></Cell>
+                            <Cell ss:StyleID="sTotalLabel"><Data ss:Type="String"></Data></Cell>
+                            <Cell ss:StyleID="sTotalLabel"><Data ss:Type="String"></Data></Cell>
+                         </Row>';
+            }
 
-                foreach ($items->values() as $idx => $item) {
-                    $totalLakiTahun += (int) ($item->peserta_laki_laki ?? 0);
-                    $totalPerempuanTahun += (int) ($item->peserta_perempuan ?? 0);
-                    $totalPesertaTahun += (int) ($item->total_peserta ?? 0);
+            return [
+                'xml' => $xml,
+                'jmlKolom' => $jmlKolom,
+                'sumLaki' => $sumLaki,
+                'sumPerempuan' => $sumPerempuan,
+                'sumTotal' => $sumTotal,
+            ];
+        };
 
-                    if (!$adaGender && !$adaNamaPeserta) {
-                        echo '<tr>
-                                <td class="td-center">' . ($idx + 1) . '</td>
-                                <td class="td-middle">' . e($item->nama_instansi) . '</td>
-                                <td class="td-middle">' . e($item->tanggal_pelaksanaan) . '</td>
-                                <td class="td-middle">' . e($item->tempat_pelaksanaan) . '</td>
-                                <td class="td-center">' . ($item->total_peserta ?: '') . '</td>
-                              </tr>';
-                    } elseif ($adaGender && !$adaNamaPeserta) {
-                        $punyaLP = ($item->peserta_laki_laki > 0 || $item->peserta_perempuan > 0);
-                        echo '<tr>
-                                <td class="td-center">' . ($idx + 1) . '</td>
-                                <td class="td-middle">' . e($item->nama_instansi) . '</td>
-                                <td class="td-middle">' . e($item->tanggal_pelaksanaan) . '</td>
-                                <td class="td-middle">' . e($item->tempat_pelaksanaan) . '</td>
-                                <td class="td-center">' . ($punyaLP ? $item->peserta_laki_laki : '-') . '</td>
-                                <td class="td-center">' . ($punyaLP ? $item->peserta_perempuan : '-') . '</td>
-                                <td class="td-center">' . ($item->total_peserta ?: '') . '</td>
-                              </tr>';
-                    } else {
-                        $listLaki = !empty($item->nama_peserta_laki_laki)
-                            ? array_values(array_filter(preg_split('/\r\n|\r|\n/', trim($item->nama_peserta_laki_laki))))
-                            : [];
-                        $listPerempuan = !empty($item->nama_peserta_perempuan)
-                            ? array_values(array_filter(preg_split('/\r\n|\r|\n/', trim($item->nama_peserta_perempuan))))
-                            : [];
-                        $punyaLP = ($item->peserta_laki_laki > 0 || $item->peserta_perempuan > 0 || count($listLaki) > 0 || count($listPerempuan) > 0);
-                        $maxBaris = max(1, count($listLaki), count($listPerempuan));
+        $callback = function () use ($groupedByYear, $tahunDipilih, $buatBarisTahunXml, $esc) {
+            echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+            echo '<?mso-application progid="Excel.Sheet"?>' . "\n";
+            echo '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+                    xmlns:o="urn:schemas-microsoft-com:office:office"
+                    xmlns:x="urn:schemas-microsoft-com:office:excel"
+                    xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">' . "\n";
 
-                        for ($b = 0; $b < $maxBaris; $b++) {
-                            echo '<tr>';
-                            if ($b === 0) {
-                                echo '<td rowspan="' . $maxBaris . '" class="td-center">' . ($idx + 1) . '</td>';
-                                echo '<td rowspan="' . $maxBaris . '" class="td-middle">' . e($item->nama_instansi) . '</td>';
-                                echo '<td rowspan="' . $maxBaris . '" class="td-middle">' . e($item->tanggal_pelaksanaan) . '</td>';
-                                echo '<td rowspan="' . $maxBaris . '" class="td-middle">' . e($item->tempat_pelaksanaan) . '</td>';
-                                echo '<td rowspan="' . $maxBaris . '" class="td-center">' . ($punyaLP ? ($item->peserta_laki_laki ?? 0) : '-') . '</td>';
-                                echo '<td rowspan="' . $maxBaris . '" class="td-center">' . ($punyaLP ? ($item->peserta_perempuan ?? 0) : '-') . '</td>';
-                                echo '<td rowspan="' . $maxBaris . '" class="td-center" style="font-weight:bold;">' . ($item->total_peserta ?? 0) . '</td>';
-                            }
-                            $namaL = isset($listLaki[$b]) ? (($b + 1) . '. ' . e($listLaki[$b])) : ($b === 0 && count($listLaki) === 0 ? '-' : '');
-                            $namaP = isset($listPerempuan[$b]) ? (($b + 1) . '. ' . e($listPerempuan[$b])) : ($b === 0 && count($listPerempuan) === 0 ? '-' : '');
-                            echo '<td class="td-top">' . $namaL . '</td>';
-                            echo '<td class="td-top">' . $namaP . '</td>';
-                            echo '</tr>';
-                        }
+            // Definisi Styles Excel
+            echo '<Styles>
+                    <Style ss:ID="Default" ss:Name="Normal">
+                        <Alignment ss:Vertical="Center"/>
+                        <Font ss:FontName="Arial" ss:Size="10"/>
+                    </Style>
+                    <Style ss:ID="sTitle">
+                        <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+                        <Font ss:FontName="Arial" ss:Size="12" ss:Bold="1"/>
+                    </Style>
+                    <Style ss:ID="sHead">
+                        <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+                        <Borders>
+                            <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                        </Borders>
+                        <Font ss:FontName="Arial" ss:Size="10" ss:Bold="1"/>
+                        <Interior ss:Color="#D9D9D9" ss:Pattern="Solid"/>
+                    </Style>
+                    <Style ss:ID="sText">
+                        <Alignment ss:Horizontal="Left" ss:Vertical="Center" ss:WrapText="1"/>
+                        <Borders>
+                            <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                        </Borders>
+                        <Font ss:FontName="Arial" ss:Size="10"/>
+                    </Style>
+                    <Style ss:ID="sWrapTop">
+                        <Alignment ss:Horizontal="Left" ss:Vertical="Top" ss:WrapText="1"/>
+                        <Borders>
+                            <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                        </Borders>
+                        <Font ss:FontName="Arial" ss:Size="10"/>
+                    </Style>
+                    <Style ss:ID="sCenter">
+                        <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+                        <Borders>
+                            <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                        </Borders>
+                        <Font ss:FontName="Arial" ss:Size="10"/>
+                    </Style>
+                    <Style ss:ID="sTotalLabel">
+                        <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+                        <Borders>
+                            <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                        </Borders>
+                        <Font ss:FontName="Arial" ss:Size="10" ss:Bold="1"/>
+                        <Interior ss:Color="#F2F2F2" ss:Pattern="Solid"/>
+                    </Style>
+                    <Style ss:ID="sTotalNum">
+                        <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+                        <Borders>
+                            <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                        </Borders>
+                        <Font ss:FontName="Arial" ss:Size="10" ss:Bold="1"/>
+                        <Interior ss:Color="#F2F2F2" ss:Pattern="Solid"/>
+                    </Style>
+                    <Style ss:ID="sGrandTotal">
+                        <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+                        <Borders>
+                            <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                            <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                        </Borders>
+                        <Font ss:FontName="Arial" ss:Size="10" ss:Bold="1"/>
+                        <Interior ss:Color="#FFE699" ss:Pattern="Solid"/>
+                    </Style>
+                  </Styles>' . "\n";
+
+            // 1. SHEET "Semua Data" (Jika Cetak Semua Tahun)
+            if (!filled($tahunDipilih)) {
+                echo '<Worksheet ss:Name="Semua Data"><Table>' . "\n";
+                echo '<Column ss:Width="35"/>
+                      <Column ss:Width="260"/>
+                      <Column ss:Width="150"/>
+                      <Column ss:Width="250"/>
+                      <Column ss:Width="110"/>' . "\n";
+
+                $first = true;
+                $grandInstansi = 0;
+                $grandPeserta = 0;
+
+                foreach ($groupedByYear as $thn => $items) {
+                    if (!$first) {
+                        echo '<Row ss:Height="14"></Row>';
                     }
+                    $blok = $buatBarisTahunXml($thn, $items, $first, true);
+                    echo $blok['xml'];
+                    $grandInstansi += $items->count();
+                    $grandPeserta += $blok['sumTotal'];
+                    $first = false;
                 }
 
-                if (!$adaGender && !$adaNamaPeserta) {
-                    echo '<tr class="tr-total">
-                            <td colspan="4" class="td-center">JUMLAH TOTAL</td>
-                            <td class="td-center">' . $totalPesertaTahun . '</td>
-                          </tr>';
-                } elseif ($adaGender && !$adaNamaPeserta) {
-                    echo '<tr class="tr-total">
-                            <td colspan="4" class="td-center">JUMLAH TOTAL</td>
-                            <td class="td-center">' . $totalLakiTahun . '</td>
-                            <td class="td-center">' . $totalPerempuanTahun . '</td>
-                            <td class="td-center">' . $totalPesertaTahun . '</td>
-                          </tr>';
-                } else {
-                    echo '<tr class="tr-total">
-                            <td colspan="4" class="td-center">JUMLAH TOTAL</td>
-                            <td class="td-center">' . $totalLakiTahun . '</td>
-                            <td class="td-center">' . $totalPerempuanTahun . '</td>
-                            <td class="td-center">' . $totalPesertaTahun . '</td>
-                            <td colspan="2"></td>
-                          </tr>';
+                // Rekap Total Keseluruhan di bawah Sheet Semua Data
+                if ($groupedByYear->isNotEmpty()) {
+                    echo '<Row ss:Height="16"></Row>';
+                    echo '<Row ss:Height="24">
+                            <Cell ss:MergeAcross="3" ss:StyleID="sGrandTotal"><Data ss:Type="String">JUMLAH TOTAL KESELURUHAN SEMUA TAHUN (' . $grandInstansi . ' INSTANSI)</Data></Cell>
+                            <Cell ss:StyleID="sGrandTotal"><Data ss:Type="Number">' . $grandPeserta . '</Data></Cell>
+                          </Row>';
                 }
 
-                $firstBlock = false;
+                echo '</Table></Worksheet>' . "\n";
             }
 
-            echo '</table>';
+            // 2. SHEET MASING-MASING TAHUN (2023, 2024, 2025, 2026, dst.)
+            foreach ($groupedByYear as $thn => $items) {
+                $namaSheet = !filled($tahunDipilih) ? (string) $thn : 'Tahun ' . $thn;
+                $blok = $buatBarisTahunXml($thn, $items, true, false);
+
+                echo '<Worksheet ss:Name="' . $esc($namaSheet) . '"><Table>' . "\n";
+                echo '<Column ss:Width="35"/>
+                      <Column ss:Width="250"/>
+                      <Column ss:Width="145"/>
+                      <Column ss:Width="240"/>';
+                if ($blok['jmlKolom'] === 5) {
+                    echo '<Column ss:Width="110"/>';
+                } elseif ($blok['jmlKolom'] === 7) {
+                    echo '<Column ss:Width="80"/><Column ss:Width="80"/><Column ss:Width="110"/>';
+                } else {
+                    echo '<Column ss:Width="75"/><Column ss:Width="75"/><Column ss:Width="95"/><Column ss:Width="180"/><Column ss:Width="180"/>';
+                }
+                echo "\n" . $blok['xml'];
+                echo '</Table></Worksheet>' . "\n";
+            }
+
+            // Jika database masih kosong
+            if ($groupedByYear->isEmpty()) {
+                echo '<Worksheet ss:Name="Data Kosong"><Table><Row><Cell><Data ss:Type="String">Belum ada data Fire Drill</Data></Cell></Row></Table></Worksheet>';
+            }
+
+            echo '</Workbook>';
         };
 
         return response()->stream($callback, 200, $headers);
@@ -789,18 +1055,18 @@ class PencegahanController extends Controller
         $tahunDipilih = $request->query('tahun');
         $instansiDipilih = $request->query('instansi');
 
-        $query = FireDrill::orderBy('tahun', 'asc')->orderBy('id', 'asc');
+        $query = FireDrill::query();
 
-        if (!empty($tahunDipilih)) {
-            $query->where('tahun', $tahunDipilih);
+        if (filled($tahunDipilih)) {
+            $query->where('tahun', (int) $tahunDipilih);
         }
-        if (!empty($instansiDipilih)) {
+        if (filled($instansiDipilih)) {
             $query->whereRaw('LOWER(nama_instansi) = ?', [strtolower($instansiDipilih)]);
         }
 
-        $data = $query->get();
-        $groupedByYear = $data->groupBy('tahun');
+        $data = $query->orderBy('tahun', 'asc')->orderBy('id', 'asc')->get();
+        $groupedByYear = $data->groupBy('tahun')->sortKeys(); // urut 2023, 2024, 2025, 2026, ...
 
         return view('internal.pencegahan.cetak_pdf_fire_drill', compact('data', 'groupedByYear', 'tahunDipilih', 'instansiDipilih'));
-    }   
+    }
 }

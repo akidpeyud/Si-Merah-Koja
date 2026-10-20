@@ -1,18 +1,16 @@
-@extends('layouts.dashboard')
-
-@section('content')
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Data {{ $judul ?? 'Diklat' }} | SIMERAH KOJA</title>
+    <title>Data Rekap Peningkatan Kapasitas | SIMERAH KOJA</title>
     <style>
-        /* Kertas landscape, 21 kolom -> margin tipis & font kecil */
+        /* Kertas landscape, margin tipis & font kecil agar muat 21 kolom */
         @page { size: A4 landscape; margin: 10mm; }
 
         * { box-sizing: border-box; }
         body { font-family: 'Times New Roman', Times, serif; font-size: 11px; color: #000; margin: 0; }
 
-        /* KOP SURAT */
+        /* KOP SURAT (Hanya sekali di paling atas) */
         .kop-surat { width: 100%; border-bottom: 4px double #000; padding-bottom: 8px; margin-bottom: 12px; border-collapse: collapse; }
         .kop-surat td { border: none; padding: 0; vertical-align: middle; }
         .logo-kiri { text-align: left; width: 12%; }
@@ -22,28 +20,37 @@
         .teks-tengah .dinas { font-size: 22px; font-weight: bold; font-family: Arial, sans-serif; }
         .teks-tengah .alamat { font-size: 12px; font-family: Arial, sans-serif; }
 
-        /* JUDUL DOKUMEN */
-        .judul-dokumen { text-align: center; font-weight: bold; font-size: 12px; margin-bottom: 12px; line-height: 1.5; font-family: Arial, sans-serif; }
+        /* JUDUL UTAMA DOKUMEN */
+        .judul-dokumen { text-align: center; font-weight: bold; font-size: 12px; margin-bottom: 15px; line-height: 1.5; font-family: Arial, sans-serif; }
+
+        /* PEMISAH BAGIAN DIKLAT */
+        .section-diklat { margin-bottom: 25px; page-break-inside: avoid; }
+        .sub-judul { font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; background: #e9ecef; padding: 5px 8px; border: 1px solid #000; border-bottom: none; text-transform: uppercase; }
 
         /* TABEL DATA */
-        .table-data { width: 100%; border-collapse: collapse; table-layout: fixed; font-family: Arial, sans-serif; font-size: 7px; }
+        .table-data { width: 100%; border-collapse: collapse; table-layout: fixed; font-family: Arial, sans-serif; font-size: 7px; margin-bottom: 5px; }
         .table-data th, .table-data td {
             border: 1px solid #000; padding: 3px 4px; text-align: left; vertical-align: top;
             word-wrap: break-word; overflow-wrap: anywhere;
         }
-        .table-data th { background-color: #e9ecef; text-align: center; font-weight: bold; vertical-align: middle; text-transform: uppercase; font-size: 6.5px; }
-        .table-data thead { display: table-header-group; }   /* header diulang tiap halaman */
-        .table-data tr { page-break-inside: avoid; }
+        .table-data th { background-color: #f8f9fa; text-align: center; font-weight: bold; vertical-align: middle; text-transform: uppercase; font-size: 6.5px; }
+        .table-data thead { display: table-header-group; }
         .text-center { text-align: center; }
 
-        /* RINGKASAN & TANDA TANGAN */
-        .ringkasan { margin-top: 10px; font-family: Arial, sans-serif; font-size: 10px; }
-        .cetak-info { margin-top: 4px; font-family: Arial, sans-serif; font-size: 9px; color: #444; }
+        /* RINGKASAN & INFO CETAK */
+        .ringkasan { font-family: Arial, sans-serif; font-size: 9px; margin-top: 3px; }
+        .cetak-info { margin-top: 15px; font-family: Arial, sans-serif; font-size: 9px; color: #444; text-align: right; }
     </style>
 </head>
 <body>
 
-    <!-- KOP SURAT -->
+    @php
+        $daftarBagian = isset($semua_diklat)
+            ? $semua_diklat
+            : [['judul' => $judul ?? 'DIKLAT', 'data' => $data ?? collect([])]];
+    @endphp
+
+    <!-- KOP SURAT (HANYA MUNCUL SEKALI DI AWAL HALAMAN) -->
     <table class="kop-surat">
         <tr>
             <td class="logo-kiri">
@@ -60,101 +67,108 @@
         </tr>
     </table>
 
-    <!-- JUDUL DOKUMEN -->
+    <!-- JUDUL UTAMA -->
     <div class="judul-dokumen">
-        JUMLAH APARATUR DINAS PEMADAM KEBAKARAN DAN PENYELAMATAN KOTA JAMBI<br>
-        YANG MEMENUHI STANDAR KUALIFIKASI PEMADAM KEBAKARAN<br>
-        ( SESUAI PERMENDAGRI 16 TAHUN 2009 / DATA {{ strtoupper($judul ?? 'DIKLAT') }} )<br>
+        REKAPITULASI JUMLAH APARATUR DINAS PEMADAM KEBAKARAN DAN PENYELAMATAN KOTA JAMBI<br>
+        YANG MEMENUHI STANDAR KUALIFIKASI PEMADAM KEBAKARAN (SESUAI PERMENDAGRI 16 TAHUN 2009)<br>
         TAHUN {{ date('Y') }}
     </div>
 
-    <!-- TABEL DATA (21 KOLOM, SAMA DENGAN TABEL DI HALAMAN) -->
-    <table class="table-data">
-        <colgroup>
-            <col style="width:2.5%">  <!-- No -->
-            <col style="width:7%">    <!-- Nama -->
-            <col style="width:4.5%">  <!-- Tempat Lahir -->
-            <col style="width:4.5%">  <!-- Tgl Lahir -->
-            <col style="width:6.5%">  <!-- NIK -->
-            <col style="width:4.5%">  <!-- Jabatan -->
-            <col style="width:6%">    <!-- Instansi -->
-            <col style="width:5%">    <!-- Ditanda tangani -->
-            <col style="width:4.5%">  <!-- Tgl Pelaksanaan -->
-            <col style="width:3.5%">  <!-- Jam Pelajaran -->
-            <col style="width:5.5%">  <!-- Penyelenggara -->
-            <col style="width:4%">    <!-- Provinsi -->
-            <col style="width:4%">    <!-- Kota -->
-            <col style="width:6%">    <!-- No Sertifikat -->
-            <col style="width:4.5%">  <!-- Kode Verifikasi -->
-            <col style="width:3.5%">  <!-- Persentase -->
-            <col style="width:4%">    <!-- Jenis Diklat -->
-            <col style="width:4.5%">  <!-- Created at -->
-            <col style="width:4.5%">  <!-- Updated at -->
-            <col style="width:4%">    <!-- TTL -->
-            <col style="width:4%">    <!-- Ket -->
-        </colgroup>
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Nama</th>
-                <th>Tempat Lahir</th>
-                <th>Tgl Lahir</th>
-                <th>NIK</th>
-                <th>Jabatan</th>
-                <th>Instansi / Perangkat Daerah</th>
-                <th>Ditanda Tangani Oleh</th>
-                <th>Tanggal Pelaksanaan</th>
-                <th>Jumlah Jam Pelajaran</th>
-                <th>Instansi Penyelenggara</th>
-                <th>Provinsi</th>
-                <th>Kota</th>
-                <th>Nomor Sertifikat</th>
-                <th>Kode Verifikasi</th>
-                <th>Persentase Penilaian</th>
-                <th>Jenis Diklat</th>
-                <th>Created at</th>
-                <th>Updated at</th>
-                <th>TTL</th>
-                <th>Ket</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($data as $index => $item)
-            <tr>
-                <td class="text-center">{{ $index + 1 }}</td>
-                <td>{{ $item->nama ?? '-' }}</td>
-                <td>{{ $item->tempat_lahir ?? '-' }}</td>
-                <td>{{ $item->tgl_lahir ?? '-' }}</td>
-                <td>{{ $item->nik ?? '-' }}</td>
-                <td>{{ $item->jabatan ?? '-' }}</td>
-                <td>{{ $item->instansi ?? '-' }}</td>
-                <td>{{ $item->ditandatangani_oleh ?? '-' }}</td>
-                <td>{{ $item->tanggal_pelaksanaan ?? '-' }}</td>
-                <td class="text-center">{{ $item->jumlah_jam_pelajaran ?? '-' }}</td>
-                <td>{{ $item->instansi_penyelenggara ?? '-' }}</td>
-                <td>{{ $item->provinsi ?? '-' }}</td>
-                <td>{{ $item->kota ?? '-' }}</td>
-                <td>{{ $item->nomor_sertifikat ?? '-' }}</td>
-                <td>{{ $item->kode_verifikasi ?? '-' }}</td>
-                <td class="text-center">{{ $item->persentase_penilaian ?? '-' }}</td>
-                <td>{{ $item->jenis_diklat ?? '-' }}</td>
-                <td>{{ $item->created_at ?? '-' }}</td>
-                <td>{{ $item->updated_at ?? '-' }}</td>
-                <td>{{ $item->ttl ?? '-' }}</td>
-                <td>{{ $item->ket ?? '-' }}</td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="21" class="text-center">Belum ada data {{ $judul ?? 'Diklat' }}</td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
+    <!-- LOOPING TIAP JENIS DIKLAT -->
+    @foreach($daftarBagian as $bagian)
+    <div class="section-diklat">
+        <!-- Penanda Jenis Diklat -->
+        <div class="sub-judul">KATEGORI: DATA {{ strtoupper($bagian['judul']) }}</div>
 
-    <div class="ringkasan"><strong>Total data:</strong> {{ count($data) }} orang</div>
-    <div class="cetak-info">Dicetak pada {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('d F Y, H:i') }} WIB melalui SIMERAH KOJA</div>
+        <table class="table-data">
+            <colgroup>
+                <col style="width:2.5%">  <!-- No -->
+                <col style="width:7%">    <!-- Nama -->
+                <col style="width:4.5%">  <!-- Tempat Lahir -->
+                <col style="width:4.5%">  <!-- Tgl Lahir -->
+                <col style="width:6.5%">  <!-- NIK -->
+                <col style="width:4.5%">  <!-- Jabatan -->
+                <col style="width:6%">    <!-- Instansi -->
+                <col style="width:5%">    <!-- Ditanda tangani -->
+                <col style="width:4.5%">  <!-- Tgl Pelaksanaan -->
+                <col style="width:3.5%">  <!-- Jam Pelajaran -->
+                <col style="width:5.5%">  <!-- Penyelenggara -->
+                <col style="width:4%">    <!-- Provinsi -->
+                <col style="width:4%">    <!-- Kota -->
+                <col style="width:6%">    <!-- No Sertifikat -->
+                <col style="width:4.5%">  <!-- Kode Verifikasi -->
+                <col style="width:3.5%">  <!-- Persentase -->
+                <col style="width:4%">    <!-- Jenis Diklat -->
+                <col style="width:4.5%">  <!-- Created at -->
+                <col style="width:4.5%">  <!-- Updated at -->
+                <col style="width:4%">    <!-- TTL -->
+                <col style="width:4%">    <!-- Ket -->
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>Tempat Lahir</th>
+                    <th>Tgl Lahir</th>
+                    <th>NIK</th>
+                    <th>Jabatan</th>
+                    <th>Instansi / Perangkat Daerah</th>
+                    <th>Ditanda Tangani Oleh</th>
+                    <th>Tanggal Pelaksanaan</th>
+                    <th>Jumlah Jam Pelajaran</th>
+                    <th>Instansi Penyelenggara</th>
+                    <th>Provinsi</th>
+                    <th>Kota</th>
+                    <th>Nomor Sertifikat</th>
+                    <th>Kode Verifikasi</th>
+                    <th>Persentase Penilaian</th>
+                    <th>Jenis Diklat</th>
+                    <th>Created at</th>
+                    <th>Updated at</th>
+                    <th>TTL</th>
+                    <th>Ket</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($bagian['data'] as $index => $item)
+                <tr>
+                    <td class="text-center">{{ $index + 1 }}</td>
+                    <td>{{ $item->nama ?? '-' }}</td>
+                    <td>{{ $item->tempat_lahir ?? '-' }}</td>
+                    <td>{{ $item->tgl_lahir ?? '-' }}</td>
+                    <td>{{ $item->nik ?? '-' }}</td>
+                    <td>{{ $item->jabatan ?? '-' }}</td>
+                    <td>{{ $item->instansi ?? '-' }}</td>
+                    <td>{{ $item->ditandatangani_oleh ?? '-' }}</td>
+                    <td>{{ $item->tanggal_pelaksanaan ?? '-' }}</td>
+                    <td class="text-center">{{ $item->jumlah_jam_pelajaran ?? '-' }}</td>
+                    <td>{{ $item->instansi_penyelenggara ?? '-' }}</td>
+                    <td>{{ $item->provinsi ?? '-' }}</td>
+                    <td>{{ $item->kota ?? '-' }}</td>
+                    <td>{{ $item->nomor_sertifikat ?? '-' }}</td>
+                    <td>{{ $item->kode_verifikasi ?? '-' }}</td>
+                    <td class="text-center">{{ $item->persentasi_penilaian ?? $item->persentase_penilaian ?? '-' }}</td>
+                    <td>{{ $item->jenis_diklat ?? $bagian['judul'] }}</td>
+                    <td>{{ !empty($item->created_at) ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
+                    <td>{{ !empty($item->updated_at) ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
+                    <td>{{ $item->ttl ?? '-' }}</td>
+                    <td>{{ $item->ket ?? '-' }}</td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="21" class="text-center">Belum ada data {{ $bagian['judul'] }}</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+        <div class="ringkasan"><strong>Total data {{ $bagian['judul'] }}:</strong> {{ count($bagian['data']) }} orang</div>
+    </div>
+    @endforeach
 
-    <!-- Auto Print -->
+    <div class="cetak-info">
+        Dicetak pada {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('d F Y, H:i') }} WIB melalui SIMERAH KOJA
+    </div>
+
     <script>
         window.onload = function () { window.print(); }
     </script>

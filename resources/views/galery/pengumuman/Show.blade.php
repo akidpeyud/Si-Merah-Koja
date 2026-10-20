@@ -459,7 +459,7 @@
                     </ul>
                 </li>
 
-                <li><a class="menu-link {{ request()->is('redkar*') ? 'is-active' : '' }}" href="/redkar">Redkar</a></li>
+ 
             </ul>
 
             <!-- ===== Tombol kanan: Lapor darurat + Masuk ===== -->
@@ -516,6 +516,7 @@
         <h1 class="h1-judul rise d1">{{ $pengumuman->judul }}</h1>
         <div class="hero-line rise d3"></div>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <!-- ==================== BODY & KONTEN ==================== -->

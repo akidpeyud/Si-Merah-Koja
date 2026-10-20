@@ -536,7 +536,7 @@
                     </ul>
                 </li>
 
-                <li><a class="menu-link {{ request()->is('redkar*') ? 'is-active' : '' }}" href="/redkar">Redkar</a></li>
+ 
             </ul>
 
             <!-- ===== Tombol kanan: Lapor darurat + Masuk ===== -->
@@ -590,6 +590,7 @@
         <h1 class="rise d1">Standar Pelayanan Minimal (SPM)</h1>
         <p class="rise d2">Dokumen Standar Pelayanan Minimal (SPM) Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
+    @include('layouts.partials.hero-logos', ['float' => true])
 </section>
 
 <div class="page-body">

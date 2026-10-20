@@ -28,7 +28,6 @@ use App\Http\Controllers\PetaController;
 use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\IzinKeramaianController;
 use App\Http\Controllers\PenggunaanSaranaController;
-use App\Http\Controllers\FireDrillController;
 use App\Http\Controllers\ProgramKerjaController;
 use App\Http\Controllers\InformasiLayananController;
 use App\Http\Controllers\DataAsnController;
@@ -124,9 +123,13 @@ Route::middleware([CekLoginPemohon::class])->group(function () {
     Route::get('/layanan-fasilitas/layanan_perizinan', function () {
         return view('layanan-fasilitas.layanan_perizinan');
     })->name('layanan-fasilitas.perizinan');
-
-    Route::get('/internal/pencegahan/kelola-rpkbgl/create', [PermohonanRpkbglController::class, 'create']);
-    Route::post('/internal/pencegahan/kelola-rpkbgl', [PermohonanRpkbglController::class, 'store'])->name('permohonan.store');
+ 
+    // Form & simpan permohonan (tetap di sini, sama seperti sebelumnya)
+    Route::get('/internal/pencegahan/kelola-rpkbgl/create', [PermohonanRpkbglController::class, 'create'])
+        ->name('permohonan.create');
+    Route::post('/internal/pencegahan/kelola-rpkbgl', [PermohonanRpkbglController::class, 'store'])
+        ->name('permohonan.store');
+ 
     Route::post('/layanan-fasilitas/layanan_perizinan/cek-status', [PermohonanRpkbglController::class, 'cekStatus'])
         ->middleware('throttle:10,1')
         ->name('permohonan.cek-status');
@@ -205,7 +208,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/internal/kelola-pemohon', function () { return view('pemohon.kelola_pemohon'); })->name('internal.pemohon');
 
-        // --- B. MANAJEMEN INFORMASI ---
+    // --- B. MANAJEMEN INFORMASI ---
     Route::get('/internal/operator/kelola-berita', [BeritaController::class, 'indexInternal']);
     Route::get('/internal/operator/infografis', [OperatorMedsosController::class, 'indexInfografis']);
     Route::get('/internal/operator/berita-medsos', [OperatorMedsosController::class, 'indexMedsos']);
@@ -301,7 +304,7 @@ Route::middleware(['auth'])->group(function () {
     // REKAP OBJEK KEBAKARAN
     Route::get('/internal/damtan/rekap-objek', [DamtanController::class, 'rekapObjek'])->name('damtan.rekap_objek');
     Route::post('/internal/damtan/rekap-objek', [DamtanController::class, 'storeRekapObjek']);
-    Route::delete('/internal/damtan/rekap-objek/{id}', [DamtanController::class, 'destroyRekapObjek']);
+    Route::delete('/internal/damtan/rekap-objek/{id}', [DamtanController::class, 'destroyRekapLayanan']);
 
     // --- D. SAPRA (SARANA PRASARANA) ---
     Route::get('/sapra/data-hidrant-kota', [SapraController::class, 'dataHidrantKota']);
@@ -375,15 +378,33 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/internal/pencegahan/simpan-redkar-offline', [RedkarController::class, 'storeRedkarOffline']);
 
     // 2. KELOLA RPKBGL (sisi admin/pegawai)
-    Route::get('/internal/pencegahan/kelola-rpkbgl', [PermohonanRpkbglController::class, 'index']);
-    Route::get('/internal/pencegahan/kelola-rpkbgl/{id}', [PermohonanRpkbglController::class, 'show'])->name('permohonan.show');
-    Route::post('/internal/pencegahan/kelola-rpkbgl/update-status/{id}', [PermohonanRpkbglController::class, 'updateStatus']);
-    Route::delete('/internal/pencegahan/kelola-rpkbgl/{id}', [PermohonanRpkbglController::class, 'destroy']);
-
-    Route::get('/internal/pencegahan/kelola-rpkbgl-admin', function () {
-        return view('internal.pencegahan.kelola_rpkbgl', [
-            'permohonan' => App\Models\PermohonanRpkbgl::orderBy('created_at', 'desc')->get()
-        ]);
+ 
+    // Lihat daftar & detail: semua pegawai yang login
+    Route::get('/internal/pencegahan/kelola-rpkbgl', [PermohonanRpkbglController::class, 'index'])
+        ->name('permohonan.index');
+ 
+    // URL lama (/kelola-rpkbgl-admin) menampilkan halaman yang sama dengan index -> cukup dialihkan
+    Route::redirect('/internal/pencegahan/kelola-rpkbgl-admin', '/internal/pencegahan/kelola-rpkbgl');
+ 
+    Route::get('/internal/pencegahan/kelola-rpkbgl/{id}', [PermohonanRpkbglController::class, 'show'])
+        ->whereNumber('id')
+        ->name('permohonan.show');
+ 
+    // Ubah / hapus data: hanya role Pencegahan & Super User
+    // (sama dengan @hasanyrole('Pencegahan|Super User') yang dipakai tombolnya di Blade)
+    Route::middleware([RoleMiddleware::class . ':Pencegahan|Super User'])->group(function () {
+        Route::get('/internal/pencegahan/kelola-rpkbgl/{id}/edit', [PermohonanRpkbglController::class, 'edit'])
+            ->whereNumber('id')
+            ->name('permohonan.edit');
+        Route::put('/internal/pencegahan/kelola-rpkbgl/{id}', [PermohonanRpkbglController::class, 'update'])
+            ->whereNumber('id')
+            ->name('permohonan.update');
+        Route::post('/internal/pencegahan/kelola-rpkbgl/update-status/{id}', [PermohonanRpkbglController::class, 'updateStatus'])
+            ->whereNumber('id')
+            ->name('permohonan.update-status');
+        Route::delete('/internal/pencegahan/kelola-rpkbgl/{id}', [PermohonanRpkbglController::class, 'destroy'])
+            ->whereNumber('id')
+            ->name('permohonan.destroy');
     });
 
     // 3. Kelola SKK
@@ -431,9 +452,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/internal/pencegahan/fire-drill/{id}', [PencegahanController::class, 'updateFireDrill'])->name('fire_drill.update');
     Route::delete('/internal/pencegahan/fire-drill/{id}', [PencegahanController::class, 'destroyFireDrill'])->name('fire_drill.destroy');
 
-    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/excel', [FireDrillController::class, 'excel'])->name('fire_drill.excel');
-    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/cetak', [FireDrillController::class, 'cetak'])->name('fire_drill.cetak');
-    Route::get('/internal/pencegahan/fire-drill/export/pdf', [FireDrillController::class, 'cetakPdf']);
+    // Export Fire Drill (sudah diarahkan ke PencegahanController, mendukung ?tahun=XXXX)
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/excel', [PencegahanController::class, 'cetakExcelFireDrill'])->name('fire_drill.excel');
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/cetak', [PencegahanController::class, 'cetak'])->name('fire_drill.cetak');
+    Route::get('/internal/pencegahan/fire-drill/export/pdf', [PencegahanController::class, 'cetak']);
 
     // 6. Layanan Inspeksi (Manual)
     Route::get('/internal/pencegahan/layanan-inspeksi', function () {
@@ -717,17 +739,17 @@ Route::middleware(['auth'])->group(function () {
         return redirect()->back()->with('success', 'Data berhasil dihapus!');
     });
 
-    // Rute Tambahan Peningkatan Kapasitas
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/cetak-excel/{jenis}', [App\Http\Controllers\PencegahanController::class, 'cetakExcel']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/cetak-pdf/{jenis}', [App\Http\Controllers\PencegahanController::class, 'cetakPdf']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diksar', [App\Http\Controllers\PencegahanController::class, 'indexDiksar']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f1', [App\Http\Controllers\PencegahanController::class, 'indexDiklatF1']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f2', [App\Http\Controllers\PencegahanController::class, 'indexDiklatF2']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-inspektur', [App\Http\Controllers\PencegahanController::class, 'indexDiklatInspektur']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-mfr', [App\Http\Controllers\PencegahanController::class, 'indexDiklatMfr']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-rescue', [App\Http\Controllers\PencegahanController::class, 'indexDiklatRescue']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-operator', [App\Http\Controllers\PencegahanController::class, 'indexDiklatOperator']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-ppl', [App\Http\Controllers\PencegahanController::class, 'indexDiklatPpl']);
+    // Rute Tambahan Peningkatan Kapasitas (Mendukung cetak per jenis maupun 'semua')
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/cetak-excel/{jenis?}', [PencegahanController::class, 'cetakExcel']);
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/cetak-pdf/{jenis?}', [PencegahanController::class, 'cetakPdf']);
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/diksar', [PencegahanController::class, 'indexDiksar']);
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f1', [PencegahanController::class, 'indexDiklatF1']);
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f2', [PencegahanController::class, 'indexDiklatF2']);
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-inspektur', [PencegahanController::class, 'indexDiklatInspektur']);
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-mfr', [PencegahanController::class, 'indexDiklatMfr']);
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-rescue', [PencegahanController::class, 'indexDiklatRescue']);
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-operator', [PencegahanController::class, 'indexDiklatOperator']);
+    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-ppl', [PencegahanController::class, 'indexDiklatPpl']);
 
     // --- F. DUK KEPEGAWAIAN ---
     Route::prefix('internal/kepegawaian')->name('kepegawaian.')->group(function () {
@@ -747,11 +769,14 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/internal/data-asn/{dataAsn}', [DataAsnController::class, 'update'])->name('data-asn.update');
     Route::delete('/internal/data-asn/{dataAsn}', [DataAsnController::class, 'destroy'])->name('data-asn.destroy');
 
-    // --- G. PROGRAM KERJA ---
+ // --- G. PROGRAM KERJA ---
     Route::get('/internal/program-kerja', [ProgramKerjaController::class, 'index'])->name('program-kerja.index');
     Route::post('/internal/program-kerja/store', [ProgramKerjaController::class, 'store'])->name('program-kerja.store');
+    
+    // Tambahkan baris route update di bawah ini:
+    Route::put('/internal/program-kerja/update/{id}', [ProgramKerjaController::class, 'update'])->name('program-kerja.update');
+    
     Route::delete('/internal/program-kerja/hapus/{id}', [ProgramKerjaController::class, 'destroy'])->name('program-kerja.destroy');
-
     // --- H. EXPORT PETA SIGAP ---
     Route::get('/internal/peta-sigap/export-pdf', [PetaController::class, 'exportPdf'])->name('peta.export.pdf');
     Route::get('/internal/peta-sigap/export-excel', [PetaController::class, 'exportExcel'])->name('peta.export.excel');
@@ -830,6 +855,36 @@ Route::get('/dokumen/lppd', function () {
     $dokumens = DokumenPublik::where('kategori', 'LPPD')->latest()->get();
     return view('public.dokumen-publik.lppd', compact('dokumens'));
 });
+// --- RUTE DOKUMEN PUBLIK (DIPERBAIKI) ---
+Route::resource('dokumen-publik', DokumenPublikController::class);
+Route::get('/dokumen-publik/view/{id}', [DokumenPublikController::class, 'showFile']);
+Route::get('/dokumen-publik/download/{id}', [DokumenPublikController::class, 'download'])->name('publik.dokumen-publik.download');
+
+Route::get('/dokumen/renstra', function () {
+    $dokumens = DokumenPublik::where('kategori', 'Renstra')->latest()->get();
+    return view('public.dokumen-publik.renstra', compact('dokumens'));
+});
+
+Route::get('/dokumen/renja', function () {
+    $dokumens = DokumenPublik::where('kategori', 'Renja')->latest()->get();
+    return view('public.dokumen-publik.renja', compact('dokumens'));
+});
+
+Route::get('/dokumen/spm', function () {
+    $dokumens = DokumenPublik::where('kategori', 'SPM')->latest()->get();
+    return view('public.dokumen-publik.spm', compact('dokumens'));
+});
+
+Route::get('/dokumen/sakip', function () {
+    $dokumens = DokumenPublik::where('kategori', 'SAKIP')->latest()->get();
+    return view('public.dokumen-publik.sakip', compact('dokumens'));
+});
+
+Route::get('/dokumen/lppd', function () {
+    $dokumens = DokumenPublik::where('kategori', 'LPPD')->latest()->get();
+    return view('public.dokumen-publik.lppd', compact('dokumens'));
+});
+
 
 // --- RUTE INTERNAL PRODUK HUKUM ---
 Route::prefix('internal/produk-hukum')->name('internal.produk-hukum.')->middleware(['auth'])->group(function () {

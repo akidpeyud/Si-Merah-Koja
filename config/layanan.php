@@ -26,7 +26,7 @@ return [
     ],
     'rpkbgl' => [
         'url'   => '/layanan-fasilitas/layanan_perizinan',
-        'label' => 'RPKBGL',
+        'label' => 'RKBGL',
         'menu'  => 'Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan',
         'ico'   => 'fa-building',
         'ket'   => 'Layanan perizinan Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan',
