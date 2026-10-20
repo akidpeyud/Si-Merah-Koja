@@ -21,7 +21,7 @@
                 ['Kelola Rekap Objek Kebakaran', '/internal/damtan/rekap-objek', 'fa-house-chimney-crack'],
                 ['Kelola Data Laporan', '/internal/damtan/data-laporan', 'fa-clipboard-list'],
                 ['Kelola Surat Korban', '/internal/surat-korban/data', 'fa-folder-open'],
-                ['Kelola Surat Keramaian', route('internal.izin-keramaian.index'), 'fa-users-rectangle'],
+                ['Kelola Pengamanan Event Keramaian', route('internal.izin-keramaian.index'), 'fa-users-rectangle'],
                 ['Kelola Penggunaan Sarana', url('/internal/damtan/kelola-penggunaan-sarana'), 'fa-truck-droplet'],
                 ['Rekap Layanan & Penyelamatan', '/internal/damtan/rekap-layanan', 'fa-truck-medical'],
             ],
