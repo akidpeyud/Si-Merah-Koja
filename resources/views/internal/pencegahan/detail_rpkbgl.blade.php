@@ -99,84 +99,116 @@
         .btn-download-doc .doc-info { display: flex; flex-direction: column; line-height: 1.3; }
         .btn-download-doc .doc-info small { font-size: .75rem; color: var(--steel); font-weight: 500; }
     }
-    .document-page-print { display: none; }
+    /* =====================================================================
+       DOKUMEN CETAK - SELALU 1 HALAMAN A4
+       Elemen ini dirender "di luar layar" (bukan display:none) supaya tingginya
+       bisa diukur oleh JavaScript. Jika isi lebih tinggi dari 1 halaman, isi
+       otomatis diperkecil (lihat fungsi fitPrintToOnePage di bagian script).
+       ===================================================================== */
+    .document-page-print {
+        position: absolute;
+        left: -10000px;
+        top: 0;
+        visibility: hidden;
+        width: 210mm;
+        height: 296mm;               /* sedikit < 297mm agar tidak melahirkan halaman ke-2 */
+        padding: 10mm 15mm;
+        box-sizing: border-box;
+        overflow: hidden;
+        background: #fff;
+        color: #000;
+        font-family: 'Times New Roman', Times, serif;
+        line-height: 1.3;            /* sama di layar & kertas, supaya pengukuran akurat */
+    }
+    .document-page-print .print-fit { transform-origin: top left; }
+
+    .document-page-print .kop-surat {
+        display: flex; align-items: center;
+        border-bottom: 3px double #000;
+        padding-bottom: 6px; margin-bottom: 10px;
+    }
+    .document-page-print .kop-surat img { width: 18mm; height: auto; }
+    .document-page-print .kop-teks { flex: 1; text-align: center; padding: 0 8px; }
+    .document-page-print .kop-teks h2 { margin: 0; font-size: 12pt; font-weight: bold; text-transform: uppercase; color: #000; line-height: 1.25; }
+    .document-page-print .kop-teks h1 { margin: 2px 0; font-size: 14pt; font-weight: bold; text-transform: uppercase; letter-spacing: .3px; color: #000; line-height: 1.25; }
+    .document-page-print .kop-teks p  { margin: 1px 0 0 0; font-size: 8.5pt; font-family: Arial, sans-serif; color: #000; line-height: 1.3; }
+
+    .document-page-print .doc-title {
+        text-align: center; font-size: 12pt; font-weight: bold;
+        margin: 0 0 8px 0; text-decoration: underline; letter-spacing: .3px; color: #000;
+    }
+    .document-page-print .print-table {
+        width: 100%; border-collapse: collapse; margin: 0;
+        font-size: 10.5pt; line-height: 1.3; color: #000;
+    }
+    .document-page-print .print-table td { padding: 2px 3px; vertical-align: top; border: none; }
+    .document-page-print .print-table .label-col { width: 35%; }
+    .document-page-print .print-table .separator { width: 3%; text-align: center; }
+    .document-page-print .print-table .value-col { width: 62%; font-weight: bold; text-transform: capitalize; }
+    .document-page-print .print-table .section-title {
+        font-weight: bold; font-size: 11pt; text-decoration: underline;
+        padding-top: 8px; padding-bottom: 2px;
+    }
+    .document-page-print .signature-section {
+        margin-top: 14px; text-align: right; padding-right: 20px;
+        font-size: 10.5pt; color: #000;
+        page-break-inside: avoid; break-inside: avoid;
+    }
+    .document-page-print .signature-section p { margin: 0 0 2px 0; }
+    .document-page-print .signature-space { height: 16mm; }
+
     @media print {
-        @page {
-            size: A4 portrait;
-            margin: 0; 
-        }
-        body {
-            background-color: white !important;
-            padding: 0 !important;
+        @page { size: A4 portrait; margin: 0; }
+
+        html, body {
+            height: auto !important;
             margin: 0 !important;
-            display: block;
-            font-family: 'Times New Roman', Times, serif; 
+            padding: 0 !important;
+            background: #fff !important;
             color: #000;
         }
-        .topbar, .sidebar, .shell > .sidebar-backdrop, .page-head, .content-card, .no-print { 
-            display: none !important; 
+        .topbar, .sidebar, .shell > .sidebar-backdrop, .page-head, .content-card, .no-print {
+            display: none !important;
         }
         .shell { display: block !important; }
         .content { padding: 0 !important; margin: 0 !important; background: transparent !important; }
+
         .document-page-print {
-            display: block !important;
-            width: 100%;
-            height: 100vh;
-            padding: 15mm 20mm;
-            margin: 0;
-            box-sizing: border-box;
             position: relative;
-        }
-        .kop-surat { 
-            display: flex; 
-            align-items: center; 
-            border-bottom: 3px double #000; 
-            padding-bottom: 8px; 
-            margin-bottom: 15px; 
-        }
-        .kop-surat img { width: 70px; height: auto; }
-        .kop-teks { flex: 1; text-align: center; padding: 0 10px; }
-        .kop-teks h2 { margin: 0; font-size: 14pt; font-weight: bold; text-transform: uppercase; color: #000; }
-        .kop-teks h1 { margin: 3px 0; font-size: 16pt; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; color: #000; }
-        .kop-teks p { margin: 1px 0 0 0; font-size: 9pt; font-family: 'Arial', sans-serif; color: #000; }
-        .doc-title { 
-            text-align: center; 
-            font-size: 13pt; 
-            font-weight: bold; 
-            margin-bottom: 25px; 
-            text-decoration: underline; 
-            letter-spacing: 0.5px; 
-            color: #000;
-        }
-        .print-table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin-bottom: 15px; 
-            font-size: 11.5pt; 
-            line-height: 1.4; 
-            color: #000;
-        }
-        .print-table td { padding: 5px 3px; vertical-align: top; border: none; }
-        .print-table .label-col { width: 35%; }
-        .print-table .separator { width: 3%; text-align: center; }
-        .print-table .value-col { width: 62%; font-weight: bold; text-transform: capitalize; }
-        .print-table .section-title { font-weight: bold; font-size: 12pt; margin-top: 15px; text-decoration: underline; padding-top: 10px; padding-bottom: 5px; }
-        .signature-section {
-            margin-top: 35px; 
-            text-align: right; 
-            padding-right: 30px; 
-            font-size: 11.5pt;
-            color: #000;
-        }
-        .signature-space {
-            height: 65px;
+            left: 0; top: 0;
+            visibility: visible;
+            page-break-after: avoid;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
     }
-</style>
+        .btn-edit { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; background: rgba(244, 183, 64, .18); color: #b45309; border-radius: 8px; font-size: .9rem; font-weight: 600; text-decoration: none; transition: all .2s; }
+        .btn-edit:hover { background: #d97706; color: #fff; }
+        .doc-missing { display: flex; align-items: center; gap: 12px; padding: 12px 18px; border-radius: 8px; border: 1px dashed var(--line-dark); color: var(--steel-soft); font-size: .88rem; font-weight: 600; width: 100%; max-width: 350px; margin-bottom: 10px; }
+        .doc-missing i { font-size: 1.2rem; }
+    </style>
 @endpush
 
 @section('content')
-@section('content')
+@php
+    $offline = 'Tidak dilampirkan (Offline)';
+    $toList  = fn($v) => is_array($v) ? array_values(array_filter($v)) : (array) (json_decode($v ?? '[]', true) ?: []);
+
+    $berkasTunggal = [
+        'file_surat_permohonan' => ['label' => 'Surat Permohonan', 'dir' => 'surat',  'icon' => 'fa-file-pdf'],
+        'file_fotokopi_ktp'     => ['label' => 'Fotokopi KTP',     'dir' => 'berkas',    'icon' => 'fa-id-card'],
+        'file_nib'              => ['label' => 'NIB',              'dir' => 'berkas',    'icon' => 'fa-file-alt'],
+        'file_pbg_imb'          => ['label' => 'PBG / IMB',        'dir' => 'berkas',    'icon' => 'fa-file-alt'],
+        'file_slo_listrik'      => ['label' => 'SLO Listrik',      'dir' => 'berkas',    'icon' => 'fa-bolt'],
+        'file_slf_bangunan'     => ['label' => 'SLF Bangunan',     'dir' => 'berkas',    'icon' => 'fa-file-alt'],
+        'file_denah_bangunan'   => ['label' => 'Denah Bangunan',   'dir' => 'berkas',  'icon' => 'fa-drafting-compass'],
+        'file_pjk3'             => ['label' => 'PJK3 (Lift)',      'dir' => 'berkas',   'icon' => 'fa-file-alt'],
+    ];
+    $berkasJamak = [
+        'file_data_teknis_proteksi' => ['label' => 'Data Teknis Proteksi', 'dir' => 'berkas',    'icon' => 'fa-fire-extinguisher'],
+        'file_persyaratan_lainnya'  => ['label' => 'Syarat Lainnya',       'dir' => 'persyaratan', 'icon' => 'fa-paperclip'],
+    ];
+@endphp
 
         <!-- HEADER HALAMAN WEB -->
         <div class="page-head no-print">
@@ -188,6 +220,11 @@
                 <a href="/internal/pencegahan/kelola-rpkbgl" class="btn-back">
                     <i class="fas fa-arrow-left"></i> Kembali
                 </a>
+                @hasanyrole('Pencegahan|Super User')
+                <a href="/internal/pencegahan/kelola-rpkbgl/{{ $permohonan->id }}/edit" class="btn-edit">
+                    <i class="fas fa-pen"></i> Edit Data
+                </a>
+                @endhasanyrole
                 <button onclick="window.print()" class="btn-print">
                     <i class="fas fa-print"></i> Cetak Dokumen
                 </button>
@@ -239,15 +276,25 @@
                 </div>
                 <div class="col-md-3">
                     <div class="detail-label">Luas Lahan</div>
-                    <div class="detail-value">{{ $permohonan->luas_lahan }} m²</div>
+                    <div class="detail-value">{{ number_format($permohonan->luas_lahan, 2, ',', '.') }} m²</div>
                 </div>
                 <div class="col-md-3">
                     <div class="detail-label">Luas Bangunan</div>
-                    <div class="detail-value">{{ $permohonan->luas_bangunan }} m²</div>
+                    <div class="detail-value">{{ number_format($permohonan->luas_bangunan, 2, ',', '.') }} m²</div>
                 </div>
                 <div class="col-md-3">
                     <div class="detail-label">Tinggi Bangunan</div>
-                    <div class="detail-value">{{ $permohonan->tinggi_bangunan }} m</div>
+                    <div class="detail-value">{{ number_format($permohonan->tinggi_bangunan, 2, ',', '.') }} m</div>
+                </div>
+                <div class="col-md-3">
+                    <div class="detail-label">Ketersediaan Lift</div>
+                    <div class="detail-value">{{ $permohonan->ada_lift === 'ya' ? 'Ada lift' : ($permohonan->ada_lift === 'tidak' ? 'Tidak ada lift' : '-') }}</div>
+                </div>
+                <div class="col-md-3">
+                    <div class="detail-label">Tanggal Pemeriksaan</div>
+                    <div class="detail-value">
+                        {{ $permohonan->tgl_pemeriksaan ? \Carbon\Carbon::parse($permohonan->tgl_pemeriksaan)->format('d F Y') : 'Belum dijadwalkan' }}
+                    </div>
                 </div>
                 <div class="col-md-12">
                     <div class="detail-label">Alamat Lengkap Bangunan</div>
@@ -278,64 +325,80 @@
                 </div>
 
                 <div class="col-md-6">
-                    <h3 class="detail-section-title"><i class="fas fa-folder-open text-info"></i> Berkas Lampiran</h3>
-                    <div class="d-flex flex-column gap-2">
-                        
-                        <!-- Peringatan Alert Jika File Offline -->
-                        @if($permohonan->file_surat_permohonan)
-                            @if($permohonan->file_surat_permohonan == 'Tidak dilampirkan (Offline)')
-                                <a href="javascript:void(0)" onclick="alert('Tidak ada data lampiran Surat Permohonan (Data dimasukkan secara Offline).');" class="btn-download-doc bg-light text-secondary">
-                                    <i class="fas fa-file-pdf text-secondary"></i>
-                                    <div class="doc-info">
-                                        <span>Surat Permohonan</span>
-                                        <small>Tidak dilampirkan</small>
-                                    </div>
+                    <h3 class="detail-section-title"><i class="fas fa-history text-secondary"></i> Riwayat Data</h3>
+                    <div class="detail-label">Terakhir Diperbarui</div>
+                    <div class="detail-value">{{ $permohonan->updated_at ? $permohonan->updated_at->format('d F Y, H:i') . ' WIB' : '-' }}</div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="detail-section-title"><i class="fas fa-folder-open text-info"></i> Berkas Persyaratan</h3>
+                </div>
+
+                {{-- Berkas tunggal --}}
+                @foreach($berkasTunggal as $field => $m)
+                    @php $cur = $permohonan->$field; @endphp
+
+                    {{-- PJK3 hanya ditampilkan jika bangunan berlift atau berkasnya sudah ada --}}
+                    @continue($field === 'file_pjk3' && $permohonan->ada_lift !== 'ya' && empty($cur))
+
+                    <div class="col-md-6 col-lg-4">
+                        @if($cur === $offline)
+                            <a href="javascript:void(0)" onclick="alert('Tidak ada data lampiran {{ $m['label'] }} (Data dimasukkan secara Offline).');" class="btn-download-doc bg-light text-secondary">
+                                <i class="fas {{ $m['icon'] }} text-secondary"></i>
+                                <div class="doc-info"><span>{{ $m['label'] }}</span><small>Tidak dilampirkan</small></div>
+                            </a>
+                        @elseif($cur)
+                            <a href="{{ asset('uploads/rpkbgl/' . $m['dir'] . '/' . $cur) }}" target="_blank" class="btn-download-doc">
+                                <i class="fas {{ $m['icon'] }}"></i>
+                                <div class="doc-info"><span>{{ $m['label'] }}</span><small>{{ $field === 'file_surat_permohonan' ? 'Berkas Wajib' : 'Lihat berkas' }}</small></div>
+                            </a>
+                        @else
+                            <div class="doc-missing"><i class="fas {{ $m['icon'] }}"></i> {{ $m['label'] }} &mdash; belum diunggah</div>
+                        @endif
+                    </div>
+                @endforeach
+
+                {{-- Berkas jamak (JSON) --}}
+                @foreach($berkasJamak as $field => $m)
+                    @php $list = $toList($permohonan->$field); @endphp
+
+                    @forelse($list as $index => $namaFile)
+                        <div class="col-md-6 col-lg-4">
+                            @if($namaFile === $offline)
+                                <a href="javascript:void(0)" onclick="alert('Tidak ada data lampiran {{ $m['label'] }} (Data dimasukkan secara Offline).');" class="btn-download-doc bg-light text-secondary">
+                                    <i class="fas {{ $m['icon'] }} text-secondary"></i>
+                                    <div class="doc-info"><span>{{ $m['label'] }}</span><small>Tidak dilampirkan</small></div>
                                 </a>
                             @else
-                                <a href="{{ asset('uploads/rpkbgl/surat/' . $permohonan->file_surat_permohonan) }}" target="_blank" class="btn-download-doc">
-                                    <i class="fas fa-file-pdf"></i>
-                                    <div class="doc-info">
-                                        <span>Surat Permohonan</span>
-                                        <small>Berkas Wajib</small>
-                                    </div>
+                                <a href="{{ asset('uploads/rpkbgl/' . $m['dir'] . '/' . $namaFile) }}" target="_blank" class="btn-download-doc">
+                                    <i class="fas {{ $m['icon'] }}" @if($field === 'file_persyaratan_lainnya') style="color: #8b5cf6;" @endif></i>
+                                    <div class="doc-info"><span>{{ $m['label'] }} {{ $index + 1 }}</span><small>{{ $field === 'file_persyaratan_lainnya' ? 'Lampiran Tambahan' : 'Lihat berkas' }}</small></div>
                                 </a>
                             @endif
-                        @endif
-
-                        @if(!empty($permohonan->file_persyaratan_lainnya) && is_array($permohonan->file_persyaratan_lainnya))
-                            @foreach($permohonan->file_persyaratan_lainnya as $index => $fileLain)
-                                @if($fileLain == 'Tidak dilampirkan (Offline)')
-                                    <a href="javascript:void(0)" onclick="alert('Tidak ada data lampiran Syarat Lainnya (Data dimasukkan secara Offline).');" class="btn-download-doc bg-light text-secondary">
-                                        <i class="fas fa-paperclip text-secondary"></i>
-                                        <div class="doc-info">
-                                            <span>Syarat Lainnya</span>
-                                            <small>Tidak dilampirkan</small>
-                                        </div>
-                                    </a>
-                                @else
-                                    <a href="{{ asset('uploads/rpkbgl/persyaratan/' . $fileLain) }}" target="_blank" class="btn-download-doc">
-                                        <i class="fas fa-paperclip" style="color: #8b5cf6;"></i>
-                                        <div class="doc-info">
-                                            <span>Syarat Lainnya {{ $index + 1 }}</span>
-                                            <small>Lampiran Tambahan</small>
-                                        </div>
-                                    </a>
-                                @endif
-                            @endforeach
+                        </div>
+                    @empty
+                        @if($field === 'file_data_teknis_proteksi')
+                            <div class="col-md-6 col-lg-4">
+                                <div class="doc-missing"><i class="fas {{ $m['icon'] }}"></i> {{ $m['label'] }} &mdash; belum diunggah</div>
+                            </div>
                         @else
-                            <div class="text-muted mt-2" style="font-size: 13px; font-weight: 500;">
-                                <i class="fas fa-minus-circle me-1"></i> Tidak ada berkas tambahan.
+                            <div class="col-md-12">
+                                <div class="text-muted mt-1" style="font-size: 13px; font-weight: 500;">
+                                    <i class="fas fa-minus-circle me-1"></i> Tidak ada berkas tambahan.
+                                </div>
                             </div>
                         @endif
-
-                    </div>
-                </div>
+                    @endforelse
+                @endforeach
             </div>
         </div>
 
         <!-- ==================== TAMPILAN KERTAS PRINT ==================== -->
         <!-- Bagian ini disembunyikan di layar, dan HANYA MUNCUL DI KERTAS -->
-        <div class="document-page-print">
+        <div class="document-page-print" aria-hidden="true">
+            <div class="print-fit">
             
             <!-- KOP SURAT -->
             <div class="kop-surat">
@@ -428,6 +491,41 @@
                         Kec. {{ $permohonan->kecamatan }}, Kel. {{ $permohonan->kelurahan }}
                     </td>
                 </tr>
+                <tr>
+                    <td class="label-col">13. Ketersediaan Lift</td>
+                    <td class="separator">:</td>
+                    <td class="value-col" style="text-transform: none;">{{ $permohonan->ada_lift === 'ya' ? 'Ada' : ($permohonan->ada_lift === 'tidak' ? 'Tidak ada' : '-') }}</td>
+                </tr>
+                <tr>
+                    <td class="label-col">14. Tanggal Pemeriksaan</td>
+                    <td class="separator">:</td>
+                    <td class="value-col" style="text-transform: none;">
+                        {{ $permohonan->tgl_pemeriksaan ? \Carbon\Carbon::parse($permohonan->tgl_pemeriksaan)->locale('id')->isoFormat('D MMMM Y') : '-' }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="3" class="section-title">D. Kelengkapan Berkas</td>
+                </tr>
+                @php $no = 15; @endphp
+                @foreach($berkasTunggal as $field => $m)
+                    @continue($field === 'file_pjk3' && $permohonan->ada_lift !== 'ya' && empty($permohonan->$field))
+                    <tr>
+                        <td class="label-col">{{ $no++ }}. {{ $m['label'] }}</td>
+                        <td class="separator">:</td>
+                        <td class="value-col" style="text-transform: none;">
+                            {{ empty($permohonan->$field) ? 'Belum ada' : ($permohonan->$field === $offline ? 'Tidak dilampirkan (Offline)' : 'Ada') }}
+                        </td>
+                    </tr>
+                @endforeach
+                @foreach($berkasJamak as $field => $m)
+                    @php $jml = count(array_diff($toList($permohonan->$field), [$offline])); @endphp
+                    <tr>
+                        <td class="label-col">{{ $no++ }}. {{ $m['label'] }}</td>
+                        <td class="separator">:</td>
+                        <td class="value-col" style="text-transform: none;">{{ $jml > 0 ? $jml . ' berkas' : 'Belum ada' }}</td>
+                    </tr>
+                @endforeach
             </table>
 
             <div class="signature-section">
@@ -437,6 +535,7 @@
                 <p style="font-weight: bold; text-decoration: underline; text-transform: uppercase; margin: 0;">{{ $permohonan->nama_pemohon }}</p>
             </div>
 
+            </div><!-- /.print-fit -->
         </div>
 @endsection
 
@@ -457,6 +556,35 @@
             if (g.open) groups.forEach(function (o) { if (o !== g) o.open = false; });
         });
     });
+
+    /* ---------- Paksa dokumen cetak muat di 1 halaman A4 ---------- */
+    var MM = 96 / 25.4;                 // 1 mm dalam px (CSS)
+    function fitPrintToOnePage() {
+        var box = document.querySelector('.document-page-print');
+        if (!box) return;
+        var fit = box.querySelector('.print-fit');
+        if (!fit) return;
+
+        // reset dulu supaya pengukuran selalu dari kondisi asli
+        fit.style.transform = '';
+        fit.style.width = '';
+
+        var avail = (296 - 20) * MM;    // tinggi kertas dikurangi padding atas+bawah
+        var h = fit.offsetHeight;
+        if (h > avail) {
+            var s = (avail / h) * 0.97; // 3% cadangan
+            fit.style.transform = 'scale(' + s + ')';
+            fit.style.width = (100 / s) + '%';
+        }
+    }
+    window.addEventListener('beforeprint', fitPrintToOnePage);
+    if (window.matchMedia) {
+        var mq = window.matchMedia('print');
+        var onMq = function (e) { if (e.matches) fitPrintToOnePage(); };
+        if (mq.addEventListener) mq.addEventListener('change', onMq);
+        else if (mq.addListener) mq.addListener(onMq);   // Safari lama
+    }
+    fitPrintToOnePage();
 
     const urlParams = new URLSearchParams(window.location.search);
     if(urlParams.has('auto_print')) setTimeout(function() { window.print(); }, 500);

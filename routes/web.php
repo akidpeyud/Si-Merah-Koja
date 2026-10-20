@@ -124,9 +124,13 @@ Route::middleware([CekLoginPemohon::class])->group(function () {
     Route::get('/layanan-fasilitas/layanan_perizinan', function () {
         return view('layanan-fasilitas.layanan_perizinan');
     })->name('layanan-fasilitas.perizinan');
-
-    Route::get('/internal/pencegahan/kelola-rpkbgl/create', [PermohonanRpkbglController::class, 'create']);
-    Route::post('/internal/pencegahan/kelola-rpkbgl', [PermohonanRpkbglController::class, 'store'])->name('permohonan.store');
+ 
+    // Form & simpan permohonan (tetap di sini, sama seperti sebelumnya)
+    Route::get('/internal/pencegahan/kelola-rpkbgl/create', [PermohonanRpkbglController::class, 'create'])
+        ->name('permohonan.create');
+    Route::post('/internal/pencegahan/kelola-rpkbgl', [PermohonanRpkbglController::class, 'store'])
+        ->name('permohonan.store');
+ 
     Route::post('/layanan-fasilitas/layanan_perizinan/cek-status', [PermohonanRpkbglController::class, 'cekStatus'])
         ->middleware('throttle:10,1')
         ->name('permohonan.cek-status');
@@ -375,15 +379,33 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/internal/pencegahan/simpan-redkar-offline', [RedkarController::class, 'storeRedkarOffline']);
 
     // 2. KELOLA RPKBGL (sisi admin/pegawai)
-    Route::get('/internal/pencegahan/kelola-rpkbgl', [PermohonanRpkbglController::class, 'index']);
-    Route::get('/internal/pencegahan/kelola-rpkbgl/{id}', [PermohonanRpkbglController::class, 'show'])->name('permohonan.show');
-    Route::post('/internal/pencegahan/kelola-rpkbgl/update-status/{id}', [PermohonanRpkbglController::class, 'updateStatus']);
-    Route::delete('/internal/pencegahan/kelola-rpkbgl/{id}', [PermohonanRpkbglController::class, 'destroy']);
-
-    Route::get('/internal/pencegahan/kelola-rpkbgl-admin', function () {
-        return view('internal.pencegahan.kelola_rpkbgl', [
-            'permohonan' => App\Models\PermohonanRpkbgl::orderBy('created_at', 'desc')->get()
-        ]);
+ 
+    // Lihat daftar & detail: semua pegawai yang login
+    Route::get('/internal/pencegahan/kelola-rpkbgl', [PermohonanRpkbglController::class, 'index'])
+        ->name('permohonan.index');
+ 
+    // URL lama (/kelola-rpkbgl-admin) menampilkan halaman yang sama dengan index -> cukup dialihkan
+    Route::redirect('/internal/pencegahan/kelola-rpkbgl-admin', '/internal/pencegahan/kelola-rpkbgl');
+ 
+    Route::get('/internal/pencegahan/kelola-rpkbgl/{id}', [PermohonanRpkbglController::class, 'show'])
+        ->whereNumber('id')
+        ->name('permohonan.show');
+ 
+    // Ubah / hapus data: hanya role Pencegahan & Super User
+    // (sama dengan @hasanyrole('Pencegahan|Super User') yang dipakai tombolnya di Blade)
+    Route::middleware([RoleMiddleware::class . ':Pencegahan|Super User'])->group(function () {
+        Route::get('/internal/pencegahan/kelola-rpkbgl/{id}/edit', [PermohonanRpkbglController::class, 'edit'])
+            ->whereNumber('id')
+            ->name('permohonan.edit');
+        Route::put('/internal/pencegahan/kelola-rpkbgl/{id}', [PermohonanRpkbglController::class, 'update'])
+            ->whereNumber('id')
+            ->name('permohonan.update');
+        Route::post('/internal/pencegahan/kelola-rpkbgl/update-status/{id}', [PermohonanRpkbglController::class, 'updateStatus'])
+            ->whereNumber('id')
+            ->name('permohonan.update-status');
+        Route::delete('/internal/pencegahan/kelola-rpkbgl/{id}', [PermohonanRpkbglController::class, 'destroy'])
+            ->whereNumber('id')
+            ->name('permohonan.destroy');
     });
 
     // 3. Kelola SKK

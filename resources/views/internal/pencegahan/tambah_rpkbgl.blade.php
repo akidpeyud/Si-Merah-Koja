@@ -1,374 +1,289 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Kelola Perizinan RPKBGL')
+@section('title', 'Tambah Permohonan RPKBGL')
 
 @push('styles')
 <style>
-    .topbar {
-        position: sticky; top: 0; z-index: 1020;
-        height: var(--topbar-h);
-        display: flex; align-items: center; justify-content: space-between;
-        gap: 16px; padding: 0 28px;
-        background: var(--ink);
-        border-bottom: 1px solid rgba(255,255,255,.08);
-        box-shadow: 0 2px 12px rgba(13, 27, 42, .16);
-    }
-    .user-avatar {
-        width: 36px; height: 36px; border-radius: 50%;
-        background: #fff; color: var(--ink);
-        display: grid; place-items: center;
-        font-family: var(--font-display); font-weight: 700; font-size: .9rem; flex: none;
-    }
-    .user-meta strong {
-        font-size: .84rem; font-weight: 700; max-width: 160px;
-        overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff;
-    }
-    .btn-logout {
-        display: inline-flex; align-items: center; justify-content: center;
-        gap: 8px; height: 40px; padding: 0 17px; border-radius: 999px;
-        background: #fff; color: var(--ink);
-        font-weight: 600; font-size: .84rem; border: none;
-        transition: background .2s, color .2s, transform .1s, box-shadow .2s;
-    }
-    .sidebar {
-        width: var(--sidebar-w); flex: none;
-        position: sticky; top: var(--topbar-h);
-        height: calc(100vh - var(--topbar-h));
-        overflow-y: auto; overflow-x: hidden;
-        background: #fff; border-right: 1px solid var(--line);
-        padding: 20px 14px 32px;
-        scrollbar-width: thin; scrollbar-color: #d8dee8 transparent;
-    }
-    .side-link.active { background: var(--ink); color: #fff; box-shadow: 0 4px 10px rgba(13,27,42,.10); }
-    .side-link.active i { color: #fff; }
-    .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); margin-top: 3px; }
-    .side-group summary .grp-label {
-        flex: 1 1 auto; min-width: 0;
-        white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.4;
-    }
-    .side-group summary .chev { flex: none; font-size: .7rem; margin-top: 4px; transition: transform .25s ease; }
     .page-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 26px; gap: 16px; flex-wrap: wrap; }
-    .page-head-title h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 5px; color: var(--ink); }
-    .page-head-title p { color: var(--steel); font-size: .95rem; margin-bottom: 0; }
-    .btn-print-rekap, .btn-add { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; border-radius: 8px; font-size: .9rem; font-weight: 600; transition: all .2s; border: none; text-decoration: none; cursor: pointer; }
-    .btn-print-rekap { background: var(--navy); color: #fff; }
-    .btn-print-rekap:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13, 27, 42, .15); color: #fff; }
-    .btn-add { background: var(--success); color: #fff; }
-    .btn-add:hover { background: #146c43; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(25, 135, 84, .15); color: #fff; }
-    .content-card { background: #ffffff; border: 1px solid var(--line); border-radius: var(--r-md); padding: 24px; box-shadow: var(--shadow-xs); overflow: hidden; transition: box-shadow .2s ease, border-color .2s ease; }
-    .content-card:hover { box-shadow: var(--shadow-sm); border-color: #d2dae5; }
-    .table > :not(caption) > * > * { padding: 14px 16px; border-bottom-color: var(--line); color: var(--ink); font-size: .92rem; vertical-align: middle; }
-    .table thead th { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--steel-soft); background: var(--paper); border-bottom: 2px solid var(--line-dark); }
-    .table tbody tr { transition: background .2s; }
-    .table tbody tr:hover { background: #f8fafc; }
-    .badge-status { display: inline-flex; align-items: center; padding: 5px 12px; border-radius: 6px; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; }
-    .status-pending { background: rgba(244, 183, 64, .15); color: #d97706; }
-    .status-diproses { background: var(--info-soft); color: var(--info); }
-    .status-memenuhi { background: rgba(25, 135, 84, .15); color: var(--success); }
-    .status-tidak { background: var(--signal-soft); color: var(--signal-dark); }
-    .btn-action-group { display: flex; flex-direction: column; gap: 6px; }
-    .btn-action { display: inline-flex; align-items: center; justify-content: flex-start; gap: 6px; padding: 6px 12px; border-radius: 6px; font-size: .8rem; font-weight: 600; transition: all .2s; text-decoration: none; border: none; width: 100%; cursor: pointer; }
-    .btn-lihat { background: var(--info-soft); color: var(--info); }
-    .btn-lihat:hover { background: var(--info); color: #ffffff; }
-    .btn-update { background: var(--navy-soft); color: var(--navy); }
-    .btn-update:hover { background: var(--navy); color: #ffffff; }
-    .btn-delete { background: var(--signal-soft); color: var(--signal-dark); }
-    .btn-delete:hover { background: var(--signal); color: #ffffff; }
-    .attachment-link { display: inline-flex; align-items: center; gap: 6px; font-size: .82rem; color: var(--info); font-weight: 500; text-decoration: none; margin-bottom: 4px; transition: color .2s; }
-    .attachment-link:hover { color: var(--navy-dark); text-decoration: underline; }
+    .page-head h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 5px; color: var(--ink); }
+    .page-head p { color: var(--steel); font-size: .95rem; margin: 0; }
+    .btn-back { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; background: #fff; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; font-size: .9rem; font-weight: 600; text-decoration: none; transition: all .2s; }
+    .btn-back:hover { background: var(--paper); border-color: var(--line-dark); color: var(--ink); }
+    .btn-save { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 24px; background: var(--success); color: #fff; border: none; border-radius: 8px; font-size: .9rem; font-weight: 600; cursor: pointer; transition: all .2s; }
+    .btn-save:hover { background: #146c43; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(25, 135, 84, .15); }
+    .btn-save:disabled { opacity: .7; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .content-card { background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); padding: 32px; box-shadow: var(--shadow-xs); }
+    .form-section-title { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: var(--ink); border-bottom: 2px solid var(--line); padding-bottom: 12px; margin: 36px 0 22px; display: flex; align-items: center; gap: 10px; }
+    .form-section-title:first-child { margin-top: 0; }
+    .form-label { font-size: .8rem; font-weight: 700; color: var(--steel-soft); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }
+    .form-label .req { color: var(--signal); }
+    .form-control, .form-select { border-radius: 8px; border-color: var(--line-dark); font-size: .95rem; padding: 10px 14px; color: var(--ink); }
+    .form-control:focus, .form-select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(22, 58, 99, .12); }
+    .form-hint { font-size: .78rem; color: var(--steel); margin-top: 4px; }
+
+    .file-box { height: 100%; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); padding: 16px; }
+    .file-box-title { font-size: .9rem; font-weight: 700; color: var(--ink); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .file-box-title .badge-wajib { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; padding: 3px 8px; border-radius: 4px; background: var(--signal-soft); color: var(--signal-dark); }
+    .file-box-title .badge-opsional { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; padding: 3px 8px; border-radius: 4px; background: var(--navy-soft); color: var(--navy); }
+
+    .form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+
     @media (max-width: 700px) {
-        :root { --topbar-h: 64px; }
-        .topbar { height: var(--topbar-h); padding: 0 14px; gap: 10px; }
-        .brand { gap: 9px; }
-        .brand img { height: 30px; }
-        .brand span { font-size: .95rem; }
-        .topbar-right { gap: 7px; }
-        .user-chip { padding: 3px; border: none; background: transparent; }
-        .user-avatar { width: 34px; height: 34px; }
-        .btn-logout { width: 38px; height: 38px; padding: 0; border-radius: 10px; font-size: 0; }
-        .btn-logout i { font-size: .9rem; }
-        .content { padding: 26px 16px 50px; }
-        .page-head-title h1 { font-size: 1.55rem; }
-        .page-head-title p { font-size: .88rem; }
-    }
-    @media (max-width: 420px) {
-        .brand span { display: none; }
-        .content { padding-left: 13px; padding-right: 13px; }
-    }
-    @media print {
-        .topbar, .sidebar, .btn-print-rekap, .btn-add, .no-print-col, .page-head-title p { display: none !important; }
-        .shell { display: block; }
-        .content { padding: 0 !important; margin: 0 !important; background: white; }
-        .content-card { padding: 0; border: none; box-shadow: none; }
-        body { background-color: white; margin: 0; padding: 0; }
-        .page-head-title h1 { font-size: 1.5rem; text-align: center; width: 100%; margin-bottom: 20px; }
-        .table thead th { background: transparent; color: #000; border-bottom: 2px solid #000; }
-        .table td, .table th { border-color: #ddd; color: #000; font-size: .8rem; }
+        .content-card { padding: 20px 16px; }
+        .form-actions > * { flex: 1; justify-content: center; }
     }
 </style>
 @endpush
 
 @section('content')
-@section('content')
+@php
+    /* Nama input di sini HARUS sama dengan yang divalidasi di PermohonanRpkbglController@store */
+    $minTanggal    = now()->addDays(14)->toDateString();
+    $kecNow        = old('kecamatan');
+    $opsiKecamatan = collect(array_keys($dataWilayah))->mapWithKeys(fn ($k) => [$k => $k])->all();
+    $opsiKelurahan = collect($dataWilayah[$kecNow] ?? [])->mapWithKeys(fn ($k) => [$k => $k])->all();
 
-        <div class="page-head">
-            <div class="page-head-title">
-                <h1>Daftar Permohonan RPKBGL</h1>
-                <p>Data pengajuan Rekomendasi Proteksi Kebakaran Bangunan Gedung & Lingkungan.</p>
+    $sections = [
+        [
+            'title' => 'Informasi Pemohon', 'icon' => 'fa-user-circle text-primary',
+            'fields' => [
+                ['name' => 'nama_pemohon',  'label' => 'Nama Pemohon',   'col' => 'col-md-12', 'attr' => 'maxlength="150"'],
+                ['name' => 'email_pemohon', 'label' => 'Alamat Email',   'col' => 'col-md-6',  'type' => 'email', 'attr' => 'maxlength="100"'],
+                ['name' => 'no_wa',         'label' => 'Nomor WhatsApp', 'col' => 'col-md-6',  'type' => 'tel',   'attr' => 'maxlength="13" inputmode="numeric" pattern="[0-9]+" placeholder="08xxxxxxxxxx"', 'hint' => 'Hanya angka, maksimal 13 digit.'],
+            ],
+        ],
+        [
+            'title' => 'Informasi Usaha', 'icon' => 'fa-store text-warning',
+            'fields' => [
+                ['name' => 'nama_usaha',     'label' => 'Nama Usaha / Instansi', 'col' => 'col-md-6',  'attr' => 'maxlength="150"'],
+                ['name' => 'nik',            'label' => 'NIK Pemilik Usaha',     'col' => 'col-md-6',  'attr' => 'maxlength="16" minlength="16" inputmode="numeric" pattern="[0-9]{16}"', 'hint' => '16 digit angka.'],
+                ['name' => 'alamat_pemilik', 'label' => 'Alamat Pemilik Usaha',  'col' => 'col-md-12', 'type' => 'textarea'],
+            ],
+        ],
+        [
+            'title' => 'Rincian Bangunan', 'icon' => 'fa-building text-success',
+            'fields' => [
+                ['name' => 'kategori',        'label' => 'Kategori Bangunan',   'col' => 'col-md-6', 'attr' => 'maxlength="100"'],
+                ['name' => 'tinggi_bangunan', 'label' => 'Tinggi Bangunan (m)', 'col' => 'col-md-6', 'type' => 'number', 'attr' => 'min="0" max="999999.99" step="0.01"'],
+                ['name' => 'luas_lahan',      'label' => 'Luas Lahan (m²)',     'col' => 'col-md-6', 'type' => 'number', 'attr' => 'min="0" max="99999999.99" step="0.01"'],
+                ['name' => 'luas_bangunan',   'label' => 'Luas Bangunan (m²)',  'col' => 'col-md-6', 'type' => 'number', 'attr' => 'min="0" max="99999999.99" step="0.01"'],
+                ['name' => 'alamat_bangunan', 'label' => 'Alamat Lengkap Bangunan', 'col' => 'col-md-12', 'type' => 'textarea'],
+                ['name' => 'kecamatan', 'label' => 'Kecamatan', 'col' => 'col-md-6', 'type' => 'select',
+                    'options' => ['' => '— Pilih kecamatan —'] + $opsiKecamatan],
+                ['name' => 'kelurahan', 'label' => 'Kelurahan', 'col' => 'col-md-6', 'type' => 'select',
+                    'options' => ['' => '— Pilih kelurahan —'] + $opsiKelurahan],
+                ['name' => 'ada_lift', 'label' => 'Ketersediaan Lift', 'col' => 'col-md-6', 'type' => 'select',
+                    'options' => ['' => '— Pilih —', 'ya' => 'Ya, ada lift', 'tidak' => 'Tidak ada lift']],
+                ['name' => 'tgl_pemeriksaan', 'label' => 'Tanggal Pemeriksaan', 'col' => 'col-md-6', 'type' => 'date',
+                    'attr' => 'min="' . $minTanggal . '"', 'hint' => 'Minimal 14 hari dari hari ini (surat permohonan selambat-lambatnya H-14).'],
+            ],
+        ],
+    ];
+
+    /* Berkas tunggal (maks. 5 MB) */
+    $berkasTunggal = [
+        'surat_permohonan' => ['label' => 'Surat Permohonan'],
+        'fotokopi_ktp'     => ['label' => 'Fotokopi KTP Penanggung Jawab Gedung'],
+        'nib'              => ['label' => 'NIB'],
+        'pbg_imb'          => ['label' => 'PBG / IMB'],
+        'slo_listrik'      => ['label' => 'SLO Listrik'],
+        'slf_bangunan'     => ['label' => 'SLF Bangunan'],
+        'denah_bangunan'   => ['label' => 'Denah Bangunan'],
+        'pjk3_lift'        => ['label' => 'PJK3 (khusus bangunan berlift)', 'lift' => true],
+    ];
+@endphp
+
+<div class="page-head">
+    <div>
+        <h1>Tambah Permohonan RPKBGL</h1>
+        <p>Input data permohonan Rekomendasi Proteksi Kebakaran Bangunan Gedung &amp; Lingkungan.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="/internal/pencegahan/kelola-rpkbgl" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Kembali
+        </a>
+    </div>
+</div>
+
+@if(session('success'))
+    <div class="alert alert-success" style="border-radius: 10px;">
+        <i class="fas fa-check-circle me-1"></i> {{ session('success') }}
+    </div>
+@endif
+
+@if($errors->any())
+    <div class="alert alert-danger" style="border-radius: 10px;">
+        <strong><i class="fas fa-exclamation-triangle me-1"></i> Data belum bisa disimpan:</strong>
+        <ul class="mb-0 mt-2" style="font-size: .9rem;">
+            @foreach($errors->all() as $err)
+                <li>{{ $err }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+<form id="formTambah" method="POST" action="/internal/pencegahan/kelola-rpkbgl" enctype="multipart/form-data">
+    @csrf
+
+    <div class="content-card">
+
+        {{-- ================= DATA ================= --}}
+        @foreach($sections as $sec)
+            <h3 class="form-section-title"><i class="fas {{ $sec['icon'] }}"></i> {{ $sec['title'] }}</h3>
+            <div class="row g-3">
+                @foreach($sec['fields'] as $f)
+                    @php
+                        $name  = $f['name'];
+                        $type  = $f['type'] ?? 'text';
+                        $value = old($name);
+                        $cls   = 'form-control' . ($errors->has($name) ? ' is-invalid' : '');
+                    @endphp
+                    <div class="{{ $f['col'] }}">
+                        <label for="{{ $name }}" class="form-label">{{ $f['label'] }} <span class="req">*</span></label>
+
+                        @if($type === 'textarea')
+                            <textarea id="{{ $name }}" name="{{ $name }}" rows="3" class="{{ $cls }}" required>{{ $value }}</textarea>
+                        @elseif($type === 'select')
+                            <select id="{{ $name }}" name="{{ $name }}" class="form-select {{ $errors->has($name) ? 'is-invalid' : '' }}" required>
+                                @foreach($f['options'] as $optVal => $optLabel)
+                                    <option value="{{ $optVal }}" @selected((string) $value === (string) $optVal)>{{ $optLabel }}</option>
+                                @endforeach
+                            </select>
+                        @else
+                            <input type="{{ $type }}" id="{{ $name }}" name="{{ $name }}" value="{{ $value }}" class="{{ $cls }}" {!! $f['attr'] ?? '' !!} required>
+                        @endif
+
+                        @if(!empty($f['hint'])) <div class="form-hint">{{ $f['hint'] }}</div> @endif
+                        @error($name)
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                @endforeach
             </div>
-            
-            <div class="d-flex gap-2 flex-wrap">
-                <!-- ==============================================
-                     TOMBOL TAMBAH DIBUNGKUS HAK AKSES PENCEGAHAN
-                     ============================================== -->
-                @hasanyrole('Pencegahan|Super User')
-                <a href="/internal/pencegahan/kelola-rpkbgl/create" class="btn-add no-print-col">
-                    <i class="fas fa-plus"></i> Tambah Data
-                </a>
-                @endhasanyrole
+        @endforeach
 
-                <button onclick="window.print()" class="btn-print-rekap no-print-col">
-                    <i class="fas fa-print"></i> Cetak Rekap
-                </button>
+        {{-- ================= BERKAS ================= --}}
+        <h3 class="form-section-title"><i class="fas fa-folder-open text-info"></i> Berkas Persyaratan</h3>
+        <p class="form-hint mb-3" style="font-size: .85rem;">
+            Berkas persyaratan: PDF/JPG/PNG maks. 5 MB. Data teknis proteksi &amp; dokumen pendukung: PDF/JPG/PNG/ZIP/RAR maks. 10 MB per berkas (maks. 10 berkas).
+        </p>
+
+        <div class="row g-3">
+            @foreach($berkasTunggal as $field => $m)
+                <div class="col-md-6" @if(!empty($m['lift'])) id="boxPjk3" @endif>
+                    <div class="file-box">
+                        <div class="file-box-title">
+                            <span>{{ $m['label'] }}</span>
+                            <span class="badge-wajib">{{ empty($m['lift']) ? 'Wajib' : 'Wajib jika ada lift' }}</span>
+                        </div>
+                        <input type="file" name="{{ $field }}" id="{{ $field }}"
+                               class="form-control @error($field) is-invalid @enderror"
+                               accept=".pdf,.jpg,.jpeg,.png"
+                               @if(empty($m['lift'])) required @endif>
+                        @error($field)
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+            @endforeach
+
+            <div class="col-md-6">
+                <div class="file-box">
+                    <div class="file-box-title">
+                        <span>Data Teknis Sistem Proteksi Kebakaran</span>
+                        <span class="badge-wajib">Wajib (min. 1)</span>
+                    </div>
+                    <input type="file" name="data_teknis_proteksi[]" multiple required
+                           class="form-control @error('data_teknis_proteksi') is-invalid @enderror @error('data_teknis_proteksi.*') is-invalid @enderror"
+                           accept=".pdf,.jpg,.jpeg,.png,.zip,.rar">
+                    <div class="form-hint">Sistem proteksi aktif, pasif, sarana penyelamatan, dan utilitas. Boleh pilih lebih dari satu berkas.</div>
+                    @error('data_teknis_proteksi')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                    @error('data_teknis_proteksi.*')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
             </div>
-        </div>
 
-        <div class="content-card">
-            <div class="table-responsive">
-                <table class="table align-middle">
-                    <thead>
-                        <tr>
-                            <th>Tanggal</th>
-                            <th>Nama Pemohon</th>
-                            <th>Nama Usaha</th>
-                            <th>Kategori</th>
-                            <th>Lokasi Bangunan</th>
-                            <th>Status</th>
-                            <th class="no-print-col">Berkas Lampiran</th>
-                            <th class="no-print-col" style="width: 130px;">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($permohonan as $p)
-                        <tr>
-                            <td>
-                                <strong>{{ $p->created_at->format('d M Y') }}</strong>
-                                <div style="font-size: .8rem; color: var(--steel-soft);">{{ $p->created_at->format('H:i') }} WIB</div>
-                            </td>
-                            <td>
-                                <strong style="display: block; margin-bottom: 2px;">{{ $p->nama_pemohon }}</strong>
-                                <a href="https://wa.me/{{ preg_replace('/^0/', '62', $p->no_whatsapp) }}" target="_blank" style="font-size: .8rem; color: var(--success); text-decoration: none;">
-                                    <i class="fab fa-whatsapp"></i> {{ $p->no_whatsapp }}
-                                </a>
-                            </td>
-                            <td><strong>{{ $p->nama_usaha }}</strong></td>
-                            <td>{{ $p->kategori_bangunan }}</td>
-                            <td>
-                                {{ $p->kecamatan }}<br>
-                                <span style="font-size: .8rem; color: var(--steel);">Kel. {{ $p->kelurahan }}</span>
-                            </td>
-                            <td>
-                                @if($p->status_permohonan == 'Pending')
-                                    <span class="badge-status status-pending">Pending</span>
-                                @elseif($p->status_permohonan == 'Diproses')
-                                    <span class="badge-status status-diproses">Diproses Tim</span>
-                                @elseif($p->status_permohonan == 'Memenuhi Syarat')
-                                    <span class="badge-status status-memenuhi">Memenuhi</span>
-                                @else
-                                    <span class="badge-status status-tidak">Tidak Memenuhi</span>
-                                @endif
-                            </td>
-                            
-                            <!-- Kolom Lampiran dengan Kondisi Offline -->
-                            <td class="no-print-col">
-                                @if($p->file_surat_permohonan)
-                                    @if($p->file_surat_permohonan == 'Tidak dilampirkan (Offline)')
-                                        <a href="javascript:void(0)" onclick="alert('Tidak ada data lampiran Surat Permohonan.');" class="attachment-link d-block text-secondary">
-                                            <i class="fas fa-file-pdf"></i> Surat Permohonan (Offline)
-                                        </a>
-                                    @else
-                                        <a href="{{ asset('uploads/rpkbgl/surat/' . $p->file_surat_permohonan) }}" target="_blank" class="attachment-link d-block">
-                                            <i class="fas fa-file-pdf"></i> Surat Permohonan
-                                        </a>
-                                    @endif
-                                @endif
-                                
-                                @if(!empty($p->file_persyaratan_lainnya) && is_array($p->file_persyaratan_lainnya))
-                                    @foreach($p->file_persyaratan_lainnya as $index => $fileLain)
-                                        @if($fileLain == 'Tidak dilampirkan (Offline)')
-                                            <a href="javascript:void(0)" onclick="alert('Tidak ada data lampiran Syarat Lainnya.');" class="attachment-link d-block text-secondary">
-                                                <i class="fas fa-paperclip"></i> Syarat Lainnya (Offline)
-                                            </a>
-                                        @else
-                                            <a href="{{ asset('uploads/rpkbgl/persyaratan/' . $fileLain) }}" target="_blank" class="attachment-link d-block">
-                                                <i class="fas fa-paperclip"></i> Syarat Lainnya {{ $index + 1 }}
-                                            </a>
-                                        @endif
-                                    @endforeach
-                                @else
-                                    <span style="font-size: .75rem; color: var(--steel-soft);">- Tidak ada tambahan</span>
-                                @endif
-                            </td>
-
-                            <!-- Kolom Aksi -->
-                            <td class="no-print-col">
-                                <div class="btn-action-group">
-                                    <a href="/internal/pencegahan/kelola-rpkbgl/{{ $p->id }}" class="btn-action btn-lihat">
-                                        <i class="fas fa-search" style="width: 14px;"></i> Detail
-                                    </a>
-                                    
-                                    <!-- ==============================================
-                                         TOMBOL UPDATE & HAPUS DIBUNGKUS HAK AKSES
-                                         ============================================== -->
-                                    @hasanyrole('Pencegahan|Super User')
-                                    <button type="button" class="btn-action btn-update" 
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#modalUpdateStatus" 
-                                        data-id="{{ $p->id }}" 
-                                        data-nama="{{ $p->nama_pemohon }}" 
-                                        data-status="{{ $p->status_permohonan }}">
-                                        <i class="fas fa-edit" style="width: 14px;"></i> Update
-                                    </button>
-                                    
-                                    <button type="button" class="btn-action btn-delete" onclick="confirmDelete({{ $p->id }}, '{{ addslashes($p->nama_pemohon) }}')">
-                                        <i class="fas fa-trash" style="width: 14px;"></i> Hapus
-                                    </button>
-                                    @endhasanyrole
-                                </div>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="8" class="text-center py-5 text-muted" style="font-size: .95rem;">
-                                <i class="fas fa-folder-open mb-2" style="font-size: 2rem; color: var(--steel-soft);"></i><br>
-                                Belum ada data permohonan RPKBGL yang masuk.
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- ==============================================
-             MODAL UPDATE STATUS DIBUNGKUS HAK AKSES
-             ============================================== -->
-        @hasanyrole('Pencegahan|Super User')
-        <div class="modal fade" id="modalUpdateStatus" tabindex="-1" aria-labelledby="modalUpdateStatusLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content" style="border: none; border-radius: var(--r-md); box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-                    <form id="formUpdateStatus" method="POST" action="">
-                        @csrf
-                        <div class="modal-header" style="background: var(--paper); border-bottom: 1px solid var(--line);">
-                            <h5 class="modal-title" id="modalUpdateStatusLabel" style="font-family: var(--font-display); font-weight: 700; color: var(--ink);">
-                                <i class="fas fa-edit text-primary me-2"></i> Update Status
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body p-4">
-                            <p class="text-muted mb-3" style="font-size: 0.9rem;">
-                                Ubah status permohonan RPKBGL atas nama <strong id="modalPemohonName" class="text-dark"></strong>.
-                            </p>
-                            
-                            <div class="mb-2">
-                                <label for="selectStatus" class="form-label fw-bold" style="font-size: 0.9rem; color: var(--ink);">Status Baru</label>
-                                <select class="form-select shadow-sm" id="selectStatus" name="status_permohonan" required style="border-radius: 8px; cursor: pointer;">
-                                    <option value="Pending">Pending</option>
-                                    <option value="Diproses">Diproses Tim</option>
-                                    <option value="Memenuhi Syarat">Memenuhi Syarat</option>
-                                    <option value="Tidak Memenuhi Syarat">Tidak Memenuhi Syarat</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer" style="background: var(--paper); border-top: 1px solid var(--line);">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" style="border-radius: 8px; font-weight: 600;">Batal</button>
-                            <button type="submit" class="btn btn-primary" style="background: var(--navy); border-color: var(--navy); border-radius: 8px; font-weight: 600;">
-                                <i class="fas fa-save me-1"></i> Simpan Status
-                            </button>
-                        </div>
-                    </form>
+            <div class="col-md-6">
+                <div class="file-box">
+                    <div class="file-box-title">
+                        <span>Dokumen Pendukung Lainnya</span>
+                        <span class="badge-opsional">Opsional</span>
+                    </div>
+                    <input type="file" name="persyaratan_lainnya[]" multiple
+                           class="form-control @error('persyaratan_lainnya') is-invalid @enderror @error('persyaratan_lainnya.*') is-invalid @enderror"
+                           accept=".pdf,.jpg,.jpeg,.png,.zip,.rar">
+                    <div class="form-hint">Boleh pilih lebih dari satu berkas.</div>
+                    @error('persyaratan_lainnya')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                    @error('persyaratan_lainnya.*')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
         </div>
-        @endhasanyrole
 
-<!-- Script Bootstrap & SweetAlert -->
+        {{-- ================= AKSI ================= --}}
+        <div class="form-actions">
+            <a href="/internal/pencegahan/kelola-rpkbgl" class="btn-back">Batal</a>
+            <button type="submit" id="btnSimpan" class="btn-save">
+                <i class="fas fa-save"></i> Simpan Permohonan
+            </button>
+        </div>
+    </div>
+</form>
 @endsection
 
 @push('scripts')
 <script>
 (function () {
     'use strict';
-    /* ---------- Modal Update Status Logic ---------- */
-    var modalUpdateStatus = document.getElementById('modalUpdateStatus');
-    if (modalUpdateStatus) {
-        modalUpdateStatus.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget; 
-            var id = button.getAttribute('data-id');
-            var nama = button.getAttribute('data-nama');
-            var status = button.getAttribute('data-status');
 
-            var form = document.getElementById('formUpdateStatus');
-            form.action = '/internal/pencegahan/kelola-rpkbgl/update-status/' + id;
+    var wilayah    = @json($dataWilayah);
+    var kec        = document.getElementById('kecamatan');
+    var kel        = document.getElementById('kelurahan');
+    var selectLift = document.getElementById('ada_lift');
+    var boxPjk3    = document.getElementById('boxPjk3');
+    var inputPjk3  = document.getElementById('pjk3_lift');
 
-            document.getElementById('modalPemohonName').textContent = nama;
-            
-            var select = document.getElementById('selectStatus');
-            if(!status || status == '') status = 'Pending';
-            select.value = status;
+    /* Kelurahan mengikuti kecamatan */
+    if (kec && kel) {
+        kec.addEventListener('change', function () {
+            kel.innerHTML = '<option value="">— Pilih kelurahan —</option>';
+            (wilayah[kec.value] || []).forEach(function (nama) {
+                var o = document.createElement('option');
+                o.value = nama; o.textContent = nama;
+                kel.appendChild(o);
+            });
         });
     }
 
-    /* ---------- SweetAlert Success Notif ---------- */
-    @if(session('success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil!',
-            text: "{!! session('success') !!}",
-            confirmButtonColor: '#163a63',
-            confirmButtonText: 'Tutup'
-        });
-    @endif
-})();
-
-/* ---------- Fungsi Konfirmasi Hapus dengan SweetAlert2 ---------- */
-function confirmDelete(id, namaPemohon) {
-    Swal.fire({
-        title: 'Hapus Data?',
-        html: `Anda yakin ingin menghapus data permohonan atas nama <strong>${namaPemohon}</strong>?<br>Data tidak dapat dikembalikan.`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: '<i class="fas fa-trash"></i> Ya, Hapus',
-        cancelButtonText: 'Batal',
-        reverseButtons: true
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Membuat form virtual (dinamis) untuk mengirim request DELETE ke Laravel
-            const form = document.createElement('form');
-            form.method = 'POST';
-            
-            // Sesuaikan Route ini ke endpoint Delete controller Anda
-            form.action = `/internal/pencegahan/kelola-rpkbgl/${id}`; 
-
-            const csrfToken = document.createElement('input');
-            csrfToken.type = 'hidden';
-            csrfToken.name = '_token';
-            csrfToken.value = '{{ csrf_token() }}';
-
-            const methodField = document.createElement('input');
-            methodField.type = 'hidden';
-            methodField.name = '_method';
-            methodField.value = 'DELETE';
-
-            form.appendChild(csrfToken);
-            form.appendChild(methodField);
-            document.body.appendChild(form);
-            
-            form.submit();
+    /* PJK3 hanya wajib & tampil jika bangunan memiliki lift */
+    function togglePjk3() {
+        if (!selectLift || !boxPjk3) return;
+        var ya = selectLift.value === 'ya';
+        boxPjk3.style.display = ya ? '' : 'none';
+        if (inputPjk3) {
+            inputPjk3.required = ya;
+            if (!ya) inputPjk3.value = '';
         }
-    });
-}
+    }
+    if (selectLift) selectLift.addEventListener('change', togglePjk3);
+    togglePjk3();
+
+    /* Cegah submit ganda */
+    var form = document.getElementById('formTambah');
+    var btn  = document.getElementById('btnSimpan');
+    if (form && btn) {
+        form.addEventListener('submit', function () {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+        });
+    }
+})();
 </script>
 @endpush
