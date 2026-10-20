@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,7 +11,7 @@ class LaporanPenyelamatan extends Model
     use HasFactory;
 
     protected $table = 'laporan_penyelamatans';
-    
+
     // Mengizinkan semua kolom diisi (mass-assignment)
     protected $guarded = ['id'];
 
@@ -30,5 +31,20 @@ class LaporanPenyelamatan extends Model
     public function kategoriKhusus()
     {
         return $this->hasOne(LpKategoriKhusus::class, 'laporan_id');
+    }
+
+    /**
+     * Respon Time (menit) = Waktu Tiba di Lokasi - Waktu Terima Laporan.
+     * Tidak disimpan di database, dihitung otomatis.
+     * Pemakaian di Blade: $row->respon_time
+     */
+    public function getResponTimeAttribute()
+    {
+        if (!$this->waktu_terima || !$this->waktu_tiba) {
+            return null;
+        }
+
+        return (int) Carbon::parse($this->waktu_terima)
+            ->diffInMinutes(Carbon::parse($this->waktu_tiba), false);
     }
 }
