@@ -767,11 +767,14 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/internal/data-asn/{dataAsn}', [DataAsnController::class, 'update'])->name('data-asn.update');
     Route::delete('/internal/data-asn/{dataAsn}', [DataAsnController::class, 'destroy'])->name('data-asn.destroy');
 
-    // --- G. PROGRAM KERJA ---
+ // --- G. PROGRAM KERJA ---
     Route::get('/internal/program-kerja', [ProgramKerjaController::class, 'index'])->name('program-kerja.index');
     Route::post('/internal/program-kerja/store', [ProgramKerjaController::class, 'store'])->name('program-kerja.store');
+    
+    // Tambahkan baris route update di bawah ini:
+    Route::put('/internal/program-kerja/update/{id}', [ProgramKerjaController::class, 'update'])->name('program-kerja.update');
+    
     Route::delete('/internal/program-kerja/hapus/{id}', [ProgramKerjaController::class, 'destroy'])->name('program-kerja.destroy');
-
     // --- H. EXPORT PETA SIGAP ---
     Route::get('/internal/peta-sigap/export-pdf', [PetaController::class, 'exportPdf'])->name('peta.export.pdf');
     Route::get('/internal/peta-sigap/export-excel', [PetaController::class, 'exportExcel'])->name('peta.export.excel');
@@ -850,6 +853,36 @@ Route::get('/dokumen/lppd', function () {
     $dokumens = DokumenPublik::where('kategori', 'LPPD')->latest()->get();
     return view('public.dokumen-publik.lppd', compact('dokumens'));
 });
+// --- RUTE DOKUMEN PUBLIK (DIPERBAIKI) ---
+Route::resource('dokumen-publik', DokumenPublikController::class);
+Route::get('/dokumen-publik/view/{id}', [DokumenPublikController::class, 'showFile']);
+Route::get('/dokumen-publik/download/{id}', [DokumenPublikController::class, 'download'])->name('publik.dokumen-publik.download');
+
+Route::get('/dokumen/renstra', function () {
+    $dokumens = DokumenPublik::where('kategori', 'Renstra')->latest()->get();
+    return view('public.dokumen-publik.renstra', compact('dokumens'));
+});
+
+Route::get('/dokumen/renja', function () {
+    $dokumens = DokumenPublik::where('kategori', 'Renja')->latest()->get();
+    return view('public.dokumen-publik.renja', compact('dokumens'));
+});
+
+Route::get('/dokumen/spm', function () {
+    $dokumens = DokumenPublik::where('kategori', 'SPM')->latest()->get();
+    return view('public.dokumen-publik.spm', compact('dokumens'));
+});
+
+Route::get('/dokumen/sakip', function () {
+    $dokumens = DokumenPublik::where('kategori', 'SAKIP')->latest()->get();
+    return view('public.dokumen-publik.sakip', compact('dokumens'));
+});
+
+Route::get('/dokumen/lppd', function () {
+    $dokumens = DokumenPublik::where('kategori', 'LPPD')->latest()->get();
+    return view('public.dokumen-publik.lppd', compact('dokumens'));
+});
+
 
 // --- RUTE INTERNAL PRODUK HUKUM ---
 Route::prefix('internal/produk-hukum')->name('internal.produk-hukum.')->middleware(['auth'])->group(function () {

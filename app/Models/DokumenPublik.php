@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,10 +12,8 @@ class DokumenPublik extends Model
     protected $table = 'dokumen_publik';
 
     protected $fillable = [
-        'judul',
+        'judul_dokumen',
         'kategori',
-        'tahun',
-        'file_path',
-        'deskripsi',
+        'nama_file',
     ];
 }
