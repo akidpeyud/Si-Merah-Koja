@@ -231,6 +231,7 @@
                 <thead>
                     <tr>
                         <th class="text-center" width="50px">No</th>
+                        <th>NIP</th> <!-- KOLOM NIP BARU DI SINI -->
                         <th>Nama</th>
                         <th>Tempat Lahir</th>
                         <th>Tgl Lahir</th>
@@ -263,6 +264,7 @@
                     @forelse ($data_diklat as $index => $item)
                     <tr>
                         <td class="text-center fw-bold">{{ $index + 1 }}</td>
+                        <td>{{ $item->nip ?? '-' }}</td> <!-- DATA NIP BARU DI SINI -->
                         <td><div class="fw-bold">{{ $item->nama }}</div></td>
                         <td>{{ $item->tempat_lahir }}</td>
                         <td>{{ $item->tgl_lahir }}</td>
@@ -304,7 +306,8 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="{{ auth()->user()->hasAnyRole(['Pencegahan', 'Super User']) ? 22 : 21 }}" class="empty-state">
+                        <!-- Colspan ditambah 1 dari 22/21 menjadi 23/22 karena ada penambahan kolom NIP -->
+                        <td colspan="{{ auth()->user()->hasAnyRole(['Pencegahan', 'Super User']) ? 23 : 22 }}" class="empty-state">
                             <i class="fas fa-folder-open"></i><br>
                             Belum ada data untuk DIKSAR.
                         </td>

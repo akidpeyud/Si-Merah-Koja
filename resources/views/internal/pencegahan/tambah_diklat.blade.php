@@ -64,11 +64,15 @@
                     <!-- SECTION 1: DATA PEGAWAI -->
                     <div class="section-title text-primary first"><i class="fas fa-user-tie"></i> Data Pegawai / Aparatur</div>
                     <div class="row g-3">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="form-label">Nama Lengkap</label>
                             <input type="text" class="form-control" name="nama" placeholder="Contoh: Budi Santoso" required>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <label class="form-label">NIP (Opsional)</label>
+                            <input type="text" class="form-control" name="nip" placeholder="Masukkan NIP">
+                        </div>
+                        <div class="col-md-4">
                             <label class="form-label">Nomor Induk Kependudukan (NIK)</label>
                             <input type="text" class="form-control" name="nik" placeholder="Masukkan 16 digit NIK" required>
                         </div>

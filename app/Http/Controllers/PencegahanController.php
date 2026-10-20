@@ -113,8 +113,10 @@ class PencegahanController extends Controller
         elseif ($jenis == 'DIKLAT INSPEKTUR') { $tabel_tujuan = 'tbl_diklat_inspektur'; }
         elseif ($jenis == 'DIKLAT PPL') { $tabel_tujuan = 'tbl_diklat_ppl'; }
 
+        // Data yang akan di-insert, NIP DIPASTIKAN MASUK DI SINI
         $data = [
             'nama' => $request->nama,
+            'nip' => $request->nip,
             'nik' => $request->nik,
             'tempat_lahir' => $request->tempat_lahir,
             'tgl_lahir' => $request->tgl_lahir,
@@ -136,6 +138,7 @@ class PencegahanController extends Controller
         ];
 
         DB::table($tabel_tujuan)->insert($data);
+        
         return redirect('/internal/pencegahan/peningkatan-kapasitas')->with('success', 'Data Peningkatan Kapasitas berhasil ditambahkan!');
     }
 

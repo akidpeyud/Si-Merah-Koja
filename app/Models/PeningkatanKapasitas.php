@@ -15,6 +15,7 @@ class PeningkatanKapasitas extends Model
     // Daftarkan name input yang diizinkan masuk ke database
     protected $fillable = [
         'nama_kegiatan',
+        'nip',
         'penyelenggara',
         'tanggal_mulai',
         'tanggal_selesai',
