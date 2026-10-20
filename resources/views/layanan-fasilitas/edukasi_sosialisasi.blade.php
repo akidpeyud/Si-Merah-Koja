@@ -531,6 +531,76 @@
         .beacon { position: relative; width: 12px; height: 12px; border-radius: 50%; flex: none; }
         .beacon::after { content: ""; position: absolute; inset: 0; border-radius: 50%; animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
         @keyframes ping { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(3.2); opacity: 0; } }
+
+        /* ==========================================================
+           ANIMASI MASUK, KOLOM RESPONSIF & GAYA KARTU
+           ========================================================== */
+        @keyframes animInUp { from { opacity: 0; transform: translateY(32px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes animInLeft { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeInPreview { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+        @keyframes dzOk { 0% { box-shadow: 0 0 0 0 rgba(22,163,74,.45); } 100% { box-shadow: 0 0 0 14px rgba(22,163,74,0); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        [data-anim] { opacity: 0; will-change: transform, opacity; }
+        [data-anim="up"].is-inview { animation: animInUp .75s cubic-bezier(.16, 1, .3, 1) forwards; animation-delay: var(--d, 0s); }
+        [data-anim="left"].is-inview { animation: animInLeft .7s cubic-bezier(.16, 1, .3, 1) forwards; animation-delay: var(--d, 0s); }
+
+        /* Kartu ringkasan & kartu samping */
+        .fact { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+        .fact:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -10px rgba(13,27,42,.18); border-color: #cbd5e1; }
+        .side-card { box-shadow: 0 8px 24px rgba(13,27,42,.03); transition: box-shadow .25s ease; }
+        .side-card:hover { box-shadow: 0 14px 30px rgba(13,27,42,.06); }
+
+        /* Kolom kiri: ringkas, sticky, seluruh isi tampil tanpa scroll internal (posisi top diatur JS) */
+        .info-stack { gap: 16px; }
+        .info-stack .side-card { padding: clamp(16px, 2.4vw, 22px); }
+        .info-stack .card-head { margin-bottom: 14px; }
+        .info-stack .card-head h2 { font-size: 1.08rem; }
+        @media (min-width: 992px) {
+            .info-stack { position: sticky; align-self: start; max-height: none; overflow: visible; top: var(--stick-top, calc(var(--header-h) + 16px)); }
+        }
+
+        /* Daftar persyaratan sebagai kartu kecil */
+        .info-stack .checklist { gap: 12px; }
+        .info-stack .checklist > li {
+            grid-template-columns: 34px minmax(0, 1fr); gap: 12px; padding: 12px; font-size: .9rem;
+            background: var(--paper); border: 1px solid var(--line); border-radius: 14px;
+            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+        .info-stack .checklist > li:hover { transform: translateX(4px); border-color: var(--signal); box-shadow: 0 4px 12px rgba(229,57,45,.08); }
+        .info-stack .ck-ico { width: 34px; height: 34px; }
+        .checklist a.inline { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; padding: 5px 10px; border-radius: 6px; border: 1px solid var(--line); background: #fff; font-size: .8rem; text-decoration: none; transition: background .2s, color .2s, border-color .2s; }
+        .checklist a.inline:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+        /* Judul bagian & setiap kolom isian muncul bergantian saat bagian terlihat */
+        .fs[data-anim] { opacity: 1; will-change: auto; }
+        .fs[data-anim].is-inview { animation: none; }
+        .fs[data-anim] > legend, .fs[data-anim] .field { opacity: 0; }
+        .fs.is-inview > legend { animation: animInLeft .55s cubic-bezier(.16, 1, .3, 1) both; }
+        .fs.is-inview .field { animation: animInUp .65s cubic-bezier(.16, 1, .3, 1) both; animation-delay: calc(.1s + var(--i, 0) * .07s); }
+
+        /* Kolom responsif */
+        .grid-age { grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); }
+        .grid-age > div { min-width: 0; animation: none; }
+        .fs.is-inview .grid-age > div { animation: animInUp .6s cubic-bezier(.16, 1, .3, 1) both; animation-delay: calc(.25s + var(--i, 0) * .08s); }
+        .fs[data-anim] .grid-age > div { opacity: 0; }
+        @media (max-width: 520px) { .form-body { gap: 28px; } .fs legend { font-size: 1.05rem; } }
+
+        /* Unggah berkas: 1 baris untuk 1 upload */
+        .upload-card { padding: 16px clamp(14px, 2.5vw, 20px) 14px; border: 1px solid var(--line); border-radius: var(--r-md); background: #fff; }
+        .upload-card .dropzone { padding: 22px 16px; }
+        .upload-card .dropzone.has-files { border-color: var(--ok); animation: dzOk .45s ease; }
+        .dz-files li { animation: fadeInPreview .3s ease both; }
+        .dz-preview { animation: fadeInPreview .25s ease; }
+
+        .btn .spin { animation: spin .8s linear infinite; }
+        .cs-item { animation: animInUp .5s cubic-bezier(.16, 1, .3, 1) both; animation-delay: calc(var(--i, 0) * .08s); }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+            [data-anim], .fs[data-anim] > legend, .fs[data-anim] .field, .fs[data-anim] .grid-age > div { opacity: 1 !important; transform: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -704,21 +774,21 @@
 
             <!-- RINGKASAN FAKTA LAYANAN -->
             <div class="facts">
-                <div class="fact">
+                <div class="fact" data-anim="up" style="--d: .05s">
                     <span class="c-ico"><i class="fas fa-money-bill-wave"></i></span>
                     <div>
                         <small>Biaya Layanan</small>
                         <strong>Gratis (Tidak Dipungut Biaya)</strong>
                     </div>
                 </div>
-                <div class="fact">
+                <div class="fact" data-anim="up" style="--d: .15s">
                     <span class="c-ico"><i class="fas fa-calendar-check"></i></span>
                     <div>
                         <small>Produk Layanan</small>
                         <strong>Persetujuan Jadwal Kunjungan Edukasi</strong>
                     </div>
                 </div>
-                <div class="fact">
+                <div class="fact" data-anim="up" style="--d: .25s">
                     <span class="c-ico"><i class="fab fa-whatsapp"></i></span>
                     <div>
                         <small>Pengaduan Layanan</small>
@@ -731,15 +801,15 @@
 
                 <!-- INFORMASI SIDEBAR -->
                 <aside class="info-stack" aria-label="Informasi layanan">
-                    <a class="jump" href="#formulir"><i class="fas fa-arrow-down"></i> Langsung ke formulir</a>
+                    <a class="jump" href="#formulir" data-anim="up" style="--d: .1s"><i class="fas fa-arrow-down"></i> Langsung ke formulir</a>
 
-                    <section class="side-card">
+                    <section class="side-card" data-anim="left" style="--d: .15s">
                         <div class="card-head">
                             <span class="c-ico"><i class="fas fa-clipboard-check"></i></span>
                             <h2>Persyaratan Kunjungan &amp; Edukasi</h2>
                         </div>
                         <ol class="checklist">
-                            <li>
+                            <li data-anim="up" style="--d: .22s">
                                 <span class="ck-ico"><i class="fas fa-file-signature"></i></span>
                                 <div>
                                     Menyampaikan surat permohonan selambat-lambatnya 7 hari sebelum kunjungan yang ditandatangani oleh pejabat instansi, lembaga, dan organisasi.
@@ -750,19 +820,19 @@
                                     @endif
                                 </div>
                             </li>
-                            <li>
+                            <li data-anim="up" style="--d: .30s">
                                 <span class="ck-ico"><i class="fas fa-users"></i></span>
                                 <div>
                                     Menyampaikan data peserta kunjungan dan edukasi.
                                 </div>
                             </li>
-                            <li>
+                            <li data-anim="up" style="--d: .38s">
                                 <span class="ck-ico"><i class="fas fa-fire-extinguisher"></i></span>
                                 <div>
                                     Menyiapkan bahan praktek lapangan (APAR dan BBM).
                                 </div>
                             </li>
-                            <li>
+                            <li data-anim="up" style="--d: .46s">
                                 <span class="ck-ico"><i class="fas fa-star"></i></span>
                                 <div>
                                     Mengisi Indeks Kepuasan Masyarakat.
@@ -772,7 +842,7 @@
                     </section>
 
                     <!-- Cek status permohonan -->
-                    <section class="side-card" id="cek-status" aria-label="Cek status permohonan">
+                    <section class="side-card" id="cek-status" aria-label="Cek status permohonan" data-anim="left" style="--d: .3s">
                         <div class="card-head">
                             <span class="c-ico"><i class="fas fa-magnifying-glass"></i></span>
                             <h2>Cek Status Permohonan</h2>
@@ -792,7 +862,7 @@
                 </aside>
 
                 <!-- FORMULIR PENGAJUAN -->
-                <section class="form-panel" id="formulir">
+                <section class="form-panel" id="formulir" data-anim="up" style="--d: .2s">
                     <div class="form-bar">
                         <div class="form-title">
                             <i class="fas fa-bullhorn"></i>
@@ -821,7 +891,7 @@
                             </div>
                         @endif
 
-                        <fieldset class="fs">
+                        <fieldset class="fs" data-anim="up">
                             <legend><i class="fas fa-building"></i> Data Institusi</legend>
                             <div class="fields">
                                 <div class="field full">
@@ -863,7 +933,7 @@
                             </div>
                         </fieldset>
 
-                        <fieldset class="fs">
+                        <fieldset class="fs" data-anim="up">
                             <legend><i class="fas fa-user-tie"></i> Data Penanggung Jawab</legend>
                             <div class="fields">
                                 <div class="field">
@@ -897,7 +967,7 @@
                             </div>
                         </fieldset>
 
-                        <fieldset class="fs">
+                        <fieldset class="fs" data-anim="up">
                             <legend><i class="fas fa-calendar-day"></i> Rincian Kegiatan</legend>
                             <div class="fields">
                                 <div class="field full">
@@ -927,14 +997,18 @@
                                             <input type="number" class="input" name="usia_18_keatas" value="{{ old('usia_18_keatas', 0) }}" min="0">
                                         </div>
                                     </div>
+                                                                            <p class="hint" style="margin-top: 10px; color: var(--signal-d); font-weight: 600;">
+                                            <i class="fas fa-info-circle"></i> Wajib melampirkan daftar data anak/peserta yang mengikuti kegiatan dan mengunggahnya pada kolom <strong>Persyaratan Lainnya</strong>.
+                                        </p>
                                 </div>
+
                             </div>
                         </fieldset>
 
-                        <fieldset class="fs">
+                        <fieldset class="fs" data-anim="up">
                             <legend><i class="fas fa-paperclip"></i> Unggah Berkas &amp; Persiapan Lapangan</legend>
                             <div class="fields">
-                                <div class="field full">
+                                <div class="field full upload-card">
                                     <span class="label"><span>Surat Permohonan Bermaterai (Ditandatangani Pejabat Instansi/Lembaga/Organisasi) <span class="req">*</span></span></span>
                                     <div class="dropzone{{ $inv('surat_permohonan') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png">
                                         <input type="file" id="surat_permohonan" name="surat_permohonan" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required aria-label="Unggah Surat Permohonan Bermaterai">
@@ -959,7 +1033,7 @@
                                     {!! $fe('surat_permohonan') !!}
                                 </div>
 
-                                <div class="field full">
+                                <div class="field full upload-card">
                                     <span class="label"><span>Persyaratan Lainnya &amp; Bahan Praktek Lapangan (APAR &amp; BBM) <span class="req">*</span></span></span>
                                     <div class="dropzone{{ $inv('syarat_lainnya') }}" data-dropzone data-max="10" data-ext="pdf,jpg,jpeg,png,zip,rar">
                                         <input type="file" id="syarat_lainnya" name="syarat_lainnya[]" accept=".pdf,.jpg,.jpeg,.png,.zip,.rar" multiple required aria-label="Unggah Persyaratan Lainnya dan Kesiapan APAR/BBM">
@@ -1370,12 +1444,13 @@
 
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
+                var safeName = file.name.replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
                 var ext = (file.name.split('.').pop() || '').toLowerCase();
 
                 if (allowedExt.indexOf(ext) === -1) {
                     resetDropzone();
                     dz.classList.add('is-invalid');
-                    if (msg) msg.innerHTML = '<i class="fas fa-circle-exclamation"></i> Format berkas "' + file.name + '" tidak didukung. Gunakan: ' + allowedExt.join(', ').toUpperCase() + '.';
+                    if (msg) msg.innerHTML = '<i class="fas fa-circle-exclamation"></i> Format berkas "' + safeName + '" tidak didukung. Gunakan: ' + allowedExt.join(', ').toUpperCase() + '.';
                     checkAllDropzonesValid();
                     return;
                 }
@@ -1383,13 +1458,13 @@
                 if (maxMb && file.size > maxMb * 1048576) {
                     resetDropzone();
                     dz.classList.add('is-invalid');
-                    if (msg) msg.innerHTML = '<i class="fas fa-circle-exclamation"></i> Ukuran berkas "' + file.name + '" (' + fmtSize(file.size) + ') melebihi batas maksimal ' + maxMb + ' MB.';
+                    if (msg) msg.innerHTML = '<i class="fas fa-circle-exclamation"></i> Ukuran berkas "' + safeName + '" (' + fmtSize(file.size) + ') melebihi batas maksimal ' + maxMb + ' MB.';
                     checkAllDropzonesValid();
                     return;
                 }
 
                 var li = document.createElement('li');
-                li.innerHTML = '<i class="fas fa-circle-check"></i> <span>' + file.name + '</span> <span class="f-size">(' + fmtSize(file.size) + ')</span>';
+                li.innerHTML = '<i class="fas fa-circle-check"></i> <span>' + safeName + '</span> <span class="f-size">(' + fmtSize(file.size) + ')</span>';
                 list.appendChild(li);
             }
 
@@ -1569,6 +1644,64 @@
             btn.innerHTML = '<i class="fas fa-search"></i> Cek';
         });
     });
+})();
+</script>
+<!-- ==================== ANIMASI MASUK, STICKY & TOMBOL KIRIM ==================== -->
+<script>
+(function () {
+    'use strict';
+
+    /* Animasi masuk saat elemen terlihat di layar */
+    var items = document.querySelectorAll('[data-anim]');
+    if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries, obs) {
+            entries.forEach(function (en) {
+                if (en.isIntersecting) { en.target.classList.add('is-inview'); obs.unobserve(en.target); }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -24px 0px' });
+        items.forEach(function (el) { io.observe(el); });
+    } else {
+        items.forEach(function (el) { el.classList.add('is-inview'); });
+    }
+
+    /* Urutan animasi bergantian untuk tiap kolom isian */
+    document.querySelectorAll('.fs').forEach(function (fs) {
+        fs.querySelectorAll('.field').forEach(function (f, i) { f.style.setProperty('--i', i); });
+        fs.querySelectorAll('.grid-age > div').forEach(function (g, i) { g.style.setProperty('--i', i); });
+    });
+
+    /* Kolom kiri sticky tanpa scroll internal.
+       Muat di layar: menempel di bawah header. Lebih tinggi dari layar: menempel dengan
+       bagian bawahnya rata dasar layar, sehingga seluruh isi tetap terlihat saat digulir. */
+    var stack = document.querySelector('.info-stack');
+    var header = document.getElementById('siteHeader');
+    var wide = window.matchMedia('(min-width: 992px)');
+    function updateStick() {
+        if (!stack) return;
+        if (!wide.matches) { stack.style.removeProperty('--stick-top'); return; }
+        var top = (header ? header.offsetHeight : 64) + 16;
+        var fit = window.innerHeight - stack.offsetHeight - 16;
+        stack.style.setProperty('--stick-top', Math.min(top, fit) + 'px');
+    }
+    if (stack) {
+        updateStick();
+        window.addEventListener('resize', updateStick);
+        window.addEventListener('load', updateStick);
+        if ('ResizeObserver' in window) new ResizeObserver(updateStick).observe(stack);
+        if (wide.addEventListener) wide.addEventListener('change', updateStick);
+    }
+
+    /* Cegah kirim ganda */
+    var form = document.getElementById('form_edukasi');
+    var btn = document.getElementById('btn_submit_edukasi');
+    if (form && btn) {
+        form.addEventListener('submit', function () {
+            setTimeout(function () {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-circle-notch spin"></i> Mengirim...';
+            }, 0);
+        });
+    }
 })();
 </script>
 </body>
