@@ -46,6 +46,12 @@
         --shadow-sm: 0 4px 12px rgba(13, 27, 42, .06);
         --shadow-md: 0 10px 25px rgba(13, 27, 42, .08);
         --shadow-lg: 0 20px 45px rgba(13, 27, 42, .14);
+
+        --rekap-red: #b91c1c;
+        --rekap-red-light: #d32f2f;
+        --rekap-row-a: #eaf2fc;
+        --rekap-row-b: #f8fbff;
+        --rekap-line: #d3deee;
     }
 
     #globalSuccessAlert, #globalErrorAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); color: white; padding: 16px 24px; border-radius: var(--r-md); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -124,19 +130,89 @@
     }
     .btn-custom-light:hover { background: #f8fafc; border-color: var(--steel-soft); color: var(--ink); }
 
-    .table th { background-color: #f8fafc; color: var(--ink-3); font-weight: 700; font-size: 13px; padding: 16px; border-bottom: 1px solid var(--line); font-family: var(--font-display); letter-spacing: 0.02em; }
-    .table td { padding: 16px; font-size: 14px; color: var(--ink); vertical-align: middle; border-bottom: 1px solid var(--line); }
-    .table tbody tr:hover { background-color: var(--paper); }
+    /* ==========================================================
+       TABEL REKAP (gaya header merah)
+       ========================================================== */
+    .rekap-scroll { overflow-x: auto; padding: 20px; background: #fff; }
+    .rekap-wrap { min-width: 1180px; border: 2px solid var(--rekap-red); border-radius: 16px; overflow: hidden; background: #fff; box-shadow: var(--shadow-sm); }
+
+    .table-rekap { width: 100%; border-collapse: collapse; margin: 0; }
+
+    .table-rekap thead th {
+        background: linear-gradient(180deg, var(--rekap-red-light) 0%, #a51212 100%);
+        color: #fff;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: .92rem;
+        text-align: center;
+        vertical-align: middle;
+        padding: 14px 10px;
+        border: 0;
+        border-right: 1px solid rgba(255,255,255,.25);
+        white-space: nowrap;
+    }
+    .table-rekap thead th:last-child { border-right: 0; }
+
+    .table-rekap tbody td {
+        background: var(--rekap-row-b);
+        text-align: center;
+        vertical-align: middle;
+        padding: 12px 10px;
+        font-size: .85rem;
+        line-height: 1.4;
+        color: var(--ink-2);
+        border-bottom: 1px solid var(--rekap-line);
+        border-right: 1px solid var(--rekap-line);
+    }
+    .table-rekap tbody td:last-child { border-right: 0; }
+    .table-rekap tbody tr:last-child td { border-bottom: 0; }
+
+    .table-rekap tbody tr.alt td { background: var(--rekap-row-a); }
+    .table-rekap tbody tr:hover td { background: #dce9fa; }
+
+    .table-rekap tbody td.no-cell {
+        background: linear-gradient(180deg, #c62828 0%, #a51212 100%) !important;
+        color: #fff;
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 1.35rem;
+        border-right: 1px solid rgba(255,255,255,.25);
+    }
+
+    .col-no     { width: 64px; }
+    .col-tgl    { width: 150px; }
+    .col-jam    { width: 80px; }
+    .col-jenis  { width: 150px; }
+    .col-sebab  { width: 150px; }
+    .col-lokasi { width: 240px; }
+    .col-armada { width: 170px; }
+    .col-air    { width: 120px; }
+    .col-respon { width: 100px; }
+    .col-luas   { width: 110px; }
+    .col-aksi   { width: 130px; }
+
+    .cell-lokasi { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-align: center; }
+    .cell-muted  { color: var(--steel-soft); }
+    .cell-strong { font-weight: 600; color: var(--ink); }
+
+    .tag-non { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: .72rem; font-weight: 700; background: var(--info-soft); color: var(--info); margin-bottom: 3px; }
+    .tag-sub { display: block; font-size: .78rem; color: var(--steel); text-transform: capitalize; }
 
     .action-btn { width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: none; font-size: 13px; transition: all 0.2s; text-decoration: none; }
     .action-btn.view { background-color: var(--info-soft); color: var(--info); }
     .action-btn.view:hover { background-color: #dbeafe; }
-    .action-btn.edit { background-color: rgba(255, 182, 39, 0.15); color: #d97706; margin: 0 5px; }
-    .action-btn.edit:hover { background-color: rgba(255, 182, 39, 0.25); }
+    .action-btn.edit { background-color: rgba(255, 182, 39, 0.18); color: #d97706; }
+    .action-btn.edit:hover { background-color: rgba(255, 182, 39, 0.3); }
     .action-btn.delete { background-color: var(--signal-soft); color: var(--signal); }
     .action-btn.delete:hover { background-color: #fecaca; }
 
-    .badge-custom { padding: 6px 12px; font-weight: 600; font-size: 11px; border-radius: 6px; }
+    /* Tombol aksi sejajar satu baris, ukuran bingkai disesuaikan dengan lebar kolom Aksi */
+    .aksi-group { display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center; justify-content: center; gap: 5px; }
+    .aksi-group form { margin: 0; display: flex; }
+    .aksi-group .action-btn { width: 30px; height: 30px; font-size: 12px; flex: none; }
+
+    .empty-state td { padding: 56px 10px !important; color: var(--steel); background: #fff !important; }
+    .empty-state i { font-size: 26px; margin-bottom: 10px; color: var(--steel-soft); }
 
     .pagination-container nav ul.pagination { margin-bottom: 0 !important; }
     .pagination-container nav p { display: none; }
@@ -150,15 +226,31 @@
         .content { padding: 0 !important; margin: 0 !important; }
         .card-custom { box-shadow: none !important; border: none !important; border-radius: 0 !important; }
         .card-body { padding: 0 !important; }
-        .table { width: 100% !important; border-collapse: collapse; margin-bottom: 20px; }
-        .table th, .table td { border: 1px solid black !important; padding: 8px !important; text-align: left; }
-        .table th { background-color: #f2f2f2 !important; font-weight: bold; color: black !important; text-align: left !important; }
+
+        .rekap-scroll { padding: 0 !important; overflow: visible !important; }
+        .rekap-wrap { min-width: 0 !important; border: none !important; border-radius: 0 !important; box-shadow: none !important; }
+        .table-rekap { width: 100% !important; margin-bottom: 20px; }
+        .table-rekap thead th { background: #f2f2f2 !important; color: #000 !important; border: 1px solid #000 !important; font-size: 11px; padding: 6px !important; }
+        .table-rekap tbody td, .table-rekap tbody tr.alt td { background: #fff !important; color: #000 !important; border: 1px solid #000 !important; padding: 6px !important; font-size: 11px; }
+        .table-rekap tbody td.no-cell { background: #fff !important; color: #000 !important; font-size: 12px; }
         th:last-child, td:last-child { display: none !important; }
     }
 </style>
 @endpush
 
 @section('content')
+
+@php
+    use Carbon\Carbon;
+
+    $mapPenyebab = [
+        'arus_pendek'       => 'Arus pendek listrik',
+        'kebocoran_gas'     => 'Kebocoran gas',
+        'sambaran_petir'    => 'Sambaran petir',
+        'kelalaian_manusia' => 'Kelalaian manusia',
+        'faktor_alam'       => 'Faktor alam',
+    ];
+@endphp
 
     <div class="page-header">
         <div class="page-header-text">
@@ -187,7 +279,7 @@
                 <div class="col-md-4">
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0"><i class="fas fa-search"></i></span>
-                        <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari nomor laporan, lokasi, dsb...">
+                        <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari nomor laporan, lokasi, penyebab, dsb...">
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -198,7 +290,7 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <input type="date" class="form-control">
+                    <input type="date" id="filterTanggal" class="form-control" title="Filter tanggal kejadian">
                 </div>
                 <div class="col-md-2 text-end">
                     <button type="button" class="btn-custom-light w-100 py-2 border-light fw-bold" onclick="resetFilter()">
@@ -210,109 +302,175 @@
 
         <!-- Table Content -->
         <div class="card-body p-0">
-            <div class="table-responsive">
 
-                <!-- HEADER KHUSUS CETAK PDF -->
-                <div id="print-header" class="d-none d-print-block" style="width: 100%; margin-bottom: 20px;">
-                    <div style="display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; margin-bottom: 15px;">
-                        <div style="width: 15% !important; text-align: left !important;">
-                            <img src="/images/jambi.png" style="width: 80px; height: auto;">
-                        </div>
-                        <div style="width: 70% !important; text-align: center !important;">
-                            <div style="font-size: 14pt; color: #000; margin-bottom: 2px; font-family: 'Times New Roman', Times, serif;">PEMERINTAH KOTA JAMBI</div>
-                            <div style="font-size: 16pt; font-weight: bold; color: #000; line-height: 1.1; margin-bottom: 5px; font-family: 'Times New Roman', Times, serif;">DINAS PEMADAM KEBAKARAN<br>DAN PENYELAMATAN</div>
-                            <div style="font-size: 10pt; color: #000; font-family: 'Times New Roman', Times, serif;">Jl. Hos. Cokroaminoto No. 113 Telp. 0741-41171<br>JAMBI</div>
-                        </div>
-                        <div style="width: 15% !important; text-align: right !important;">
-                            <img src="/images/logo.png" style="width: 100px; height: auto; margin-left: auto;">
-                        </div>
+            <!-- HEADER KHUSUS CETAK PDF -->
+            <div id="print-header" class="d-none d-print-block" style="width: 100%; margin-bottom: 20px;">
+                <div style="display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; margin-bottom: 15px;">
+                    <div style="width: 15% !important; text-align: left !important;">
+                        <img src="/images/jambi.png" style="width: 80px; height: auto;">
                     </div>
-                    <div style="border-top: 3px solid black !important; border-bottom: 1px solid black !important; height: 2px !important; width: 100% !important; margin-bottom: 15px !important;"></div>
-                    <h3 style="text-align: center !important; font-weight: bold; margin-bottom: 5px; font-size: 16px; color: black; font-family: 'Times New Roman', Times, serif;">REKAPITULASI DATA LAPORAN PENYELAMATAN</h3>
-                    <p style="text-align: center !important; font-size: 12px; margin-bottom: 15px; color: black; font-family: 'Times New Roman', Times, serif;">Dicetak pada: {{ date('d F Y') }}</p>
+                    <div style="width: 70% !important; text-align: center !important;">
+                        <div style="font-size: 14pt; color: #000; margin-bottom: 2px; font-family: 'Times New Roman', Times, serif;">PEMERINTAH KOTA JAMBI</div>
+                        <div style="font-size: 16pt; font-weight: bold; color: #000; line-height: 1.1; margin-bottom: 5px; font-family: 'Times New Roman', Times, serif;">DINAS PEMADAM KEBAKARAN<br>DAN PENYELAMATAN</div>
+                        <div style="font-size: 10pt; color: #000; font-family: 'Times New Roman', Times, serif;">Jl. Hos. Cokroaminoto No. 113 Telp. 0741-41171<br>JAMBI</div>
+                    </div>
+                    <div style="width: 15% !important; text-align: right !important;">
+                        <img src="/images/logo.png" style="width: 100px; height: auto; margin-left: auto;">
+                    </div>
                 </div>
+                <div style="border-top: 3px solid black !important; border-bottom: 1px solid black !important; height: 2px !important; width: 100% !important; margin-bottom: 15px !important;"></div>
+                <h3 style="text-align: center !important; font-weight: bold; margin-bottom: 5px; font-size: 16px; color: black; font-family: 'Times New Roman', Times, serif;">REKAPITULASI DATA LAPORAN PENYELAMATAN</h3>
+                <p style="text-align: center !important; font-size: 12px; margin-bottom: 15px; color: black; font-family: 'Times New Roman', Times, serif;">Dicetak pada: {{ date('d F Y') }}</p>
+            </div>
 
-                <table class="table align-middle mb-0">
-                    <thead>
-                        <tr>
-                            <th class="text-center" width="5%">No</th>
-                            <th width="15%">No. Laporan</th>
-                            <th width="20%">Waktu Kejadian</th>
-                            <th width="20%">Kategori Kejadian</th>
-                            <th width="10%">Prioritas</th>
-                            <th width="15%">Status Evakuasi</th>
-                            <th class="text-center" width="15%">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        @forelse($data_laporan as $index => $row)
-                        <tr data-kategori="{{ strtolower($row->kategori_kejadian) == 'kebakaran' ? 'kebakaran' : 'non-kebakaran' }}">
-                            <td class="text-center text-muted">{{ $data_laporan->firstItem() + $index }}</td>
-                            <td><strong>{{ $row->nomor_laporan }}</strong></td>
-                            <td>
-                                <div class="text-dark fw-bold">
-                                    {{ $row->waktu_kejadian ? \Carbon\Carbon::parse($row->waktu_kejadian)->format('d M Y') : '-' }}
-                                </div>
-                                <div class="text-muted" style="font-size: 12px;">
-                                    <i class="far fa-clock me-1"></i>
-                                    {{ $row->waktu_kejadian ? \Carbon\Carbon::parse($row->waktu_kejadian)->format('H:i') : '-' }} WIB
-                                </div>
-                            </td>
-                            <td class="kategori-cell">
-                                @if(strtolower($row->kategori_kejadian) == 'kebakaran')
-                                    <div class="fw-bold text-danger">Kebakaran</div>
-                                    <div class="text-muted" style="font-size: 12px; text-transform: capitalize;">
-                                        {{ str_replace('_', ' ', $row->kategori_kebakaran ?? '-') }}
-                                    </div>
-                                @else
-                                    <div class="fw-bold text-primary">Non-Kebakaran</div>
-                                    <div class="text-muted" style="font-size: 12px; text-transform: capitalize;">
-                                        {{ str_replace('_', ' ', $row->kategori_non_kebakaran ?? $row->kategori_kejadian) }}
-                                    </div>
-                                @endif
-                            </td>
-                            <td>
-                                @php
-                                    $badgeClass = 'bg-secondary text-white';
-                                    if($row->prioritas == 'rendah')  $badgeClass = 'bg-secondary text-white';
-                                    if($row->prioritas == 'sedang')  $badgeClass = 'bg-primary text-white';
-                                    if($row->prioritas == 'tinggi')  $badgeClass = 'bg-warning text-dark';
-                                    if($row->prioritas == 'darurat') $badgeClass = 'bg-danger text-white';
-                                @endphp
-                                <span class="badge badge-custom {{ $badgeClass }}" style="text-transform: capitalize;">
-                                    {{ $row->prioritas ?? 'Biasa' }}
-                                </span>
-                            </td>
-                            <td>
-                                <span class="badge badge-custom bg-success bg-opacity-10 text-success border border-success">
-                                    <i class="fas fa-check-circle me-1"></i>Terekam
-                                </span>
-                            </td>
-                            <td class="text-center">
-                                <!-- LIHAT: SEMUA ROLE -->
-                                <a href="/internal/damtan/lihat-data/{{ $row->id }}" class="action-btn view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
+            <div class="rekap-scroll">
+                <div class="rekap-wrap">
+                    <table class="table-rekap">
+                        <thead>
+                            <tr>
+                                <th class="col-no">No</th>
+                                <th class="col-tgl">Tanggal Kejadian</th>
+                                <th class="col-jam">Jam</th>
+                                <th class="col-jenis">Jenis Yang Terbakar</th>
+                                <th class="col-sebab">Penyebab</th>
+                                <th class="col-lokasi">Lokasi Kejadian</th>
+                                <th class="col-armada">Armada</th>
+                                <th class="col-air">Jumlah Air</th>
+                                <th class="col-respon">Respon Time</th>
+                                <th class="col-luas">Luas Lahan</th>
+                                <th class="col-aksi">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            @forelse($data_laporan as $index => $row)
+                            @php
+                                // Ambil atribut mentah agar aman walau ada kolom yang belum dibuat
+                                $a = $row->getAttributes();
 
-                                <!-- UPDATE & DELETE: HANYA DAMTAN DAN SUPER USER -->
-                                @hasanyrole('Damtan|Super User')
-                                <a href="/internal/damtan/edit-data/{{ $row->id }}" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
-                                <form action="/internal/damtan/hapus-data/{{ $row->id }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus laporan {{ $row->nomor_laporan }} secara permanen?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="action-btn delete" title="Hapus"><i class="fas fa-trash"></i></button>
-                                </form>
-                                @endhasanyrole
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="7" class="text-center py-5 text-muted">
-                                <i class="fas fa-folder-open mb-3" style="font-size: 24px;"></i><br>
-                                Belum ada data laporan yang diinput ke dalam sistem.
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                                $isFire = strtolower($a['kategori_kejadian'] ?? '') === 'kebakaran';
+
+                                // Tanggal & jam
+                                $tglRaw = $a['tanggal_kejadian'] ?? $a['waktu_kejadian'] ?? null;
+                                $jamRaw = $a['waktu_kejadian'] ?? $a['waktu_terima'] ?? null;
+                                $tglTampil = $tglRaw ? Carbon::parse($tglRaw)->locale('id')->translatedFormat('d F Y') : '-';
+                                $tglFilter = $tglRaw ? Carbon::parse($tglRaw)->format('Y-m-d') : '';
+                                $jamTampil = $jamRaw ? Carbon::parse($jamRaw)->format('H.i') : '-';
+
+                                // Jenis yang terbakar / kategori non-kebakaran
+                                $jenisFire = !empty($a['kategori_kebakaran']) ? ucwords(str_replace('_', ' ', $a['kategori_kebakaran'])) : '-';
+                                $jenisNon  = !empty($a['kategori_non_kebakaran'])
+                                    ? str_replace('_', ' ', $a['kategori_non_kebakaran'])
+                                    : str_replace('_', ' ', $a['kategori_kejadian'] ?? '-');
+
+                                // Penyebab
+                                $p = $a['dugaan_penyebab'] ?? null;
+                                if ($p === 'lainnya') {
+                                    $penyebab = $a['dugaan_penyebab_lainnya'] ?? '-';
+                                } elseif ($p) {
+                                    $penyebab = $mapPenyebab[$p] ?? ucwords(str_replace('_', ' ', $p));
+                                } else {
+                                    $penyebab = '-';
+                                }
+
+                                // Armada
+                                // Kolom bisa tersimpan sebagai JSON biasa atau ter-encode dua kali,
+                                // jadi di-decode berulang (maks. 2x) sampai menjadi array.
+                                $jmlArmada = $a['jumlah_armada'] ?? null;
+                                $armadaTxt = '-';
+                                if ($jmlArmada !== null && $jmlArmada !== '') {
+                                    $armadaTxt = $jmlArmada . ' Unit Armada';
+                                } elseif (!empty($a['armada'])) {
+                                    $arm = $a['armada'];
+                                    for ($i = 0; $i < 2 && is_string($arm); $i++) {
+                                        $d = json_decode($arm, true);
+                                        if ($d === null) break;
+                                        $arm = $d;
+                                    }
+                                    $armadaTxt = is_array($arm)
+                                        ? (count($arm) ? implode(', ', array_map('ucfirst', $arm)) : '-')
+                                        : $arm;
+                                }
+
+                                // Jumlah air
+                                $air = $a['liter_air'] ?? null;
+                                $airTxt = (is_numeric($air) && $air > 0) ? number_format($air, 0, ',', '.') . ' Liter' : '-';
+
+                                // Respon time: dihitung otomatis (Waktu Terima -> Waktu Tiba), lihat accessor di model
+                                $rt = $row->respon_time;
+                                $responTxt = (!is_null($rt) && $rt >= 0) ? $rt . ' mnt' : '-';
+
+                                // Luas
+                                $luas = $a['luas_area'] ?? null;
+                                $luasTxt = (is_numeric($luas) && $luas > 0)
+                                    ? number_format((float) $luas, fmod((float) $luas, 1) == 0 ? 0 : 1, ',', '.') . ' m²'
+                                    : '-';
+
+                                $lokasi = !empty($a['alamat']) ? $a['alamat'] : '-';
+                            @endphp
+                            <tr data-kategori="{{ $isFire ? 'kebakaran' : 'non-kebakaran' }}" data-tanggal="{{ $tglFilter }}">
+                                <td class="no-cell">{{ $data_laporan->firstItem() + $index }}</td>
+
+                                <td class="cell-strong">{{ $tglTampil }}</td>
+
+                                <td>{{ $jamTampil }}</td>
+
+                                <td>
+                                    @if($isFire)
+                                        <span class="cell-strong">{{ $jenisFire }}</span>
+                                    @else
+                                        <span class="tag-non">Non-Kebakaran</span>
+                                        <span class="tag-sub">{{ $jenisNon }}</span>
+                                    @endif
+                                </td>
+
+                                <td>{{ $penyebab }}</td>
+
+                                <td><div class="cell-lokasi" title="{{ $lokasi }}">{{ $lokasi }}</div></td>
+
+                                <td>{{ $armadaTxt }}</td>
+
+                                <td>{!! $airTxt === '-' ? '<span class="cell-muted">-</span>' : e($airTxt) !!}</td>
+
+                                <td>{!! $responTxt === '-' ? '<span class="cell-muted">-</span>' : e($responTxt) !!}</td>
+
+                                <td>{!! $luasTxt === '-' ? '<span class="cell-muted">-</span>' : e($luasTxt) !!}</td>
+
+                                <td>
+                                    <div class="aksi-group">
+                                        <!-- LIHAT: SEMUA ROLE -->
+                                        <a href="/internal/damtan/lihat-data/{{ $row->id }}" class="action-btn view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
+
+                                        <!-- UPDATE & DELETE: HANYA DAMTAN DAN SUPER USER -->
+                                        @hasanyrole('Damtan|Super User')
+                                        <a href="/internal/damtan/edit-data/{{ $row->id }}" class="action-btn edit" title="Edit Laporan"><i class="fas fa-edit"></i></a>
+                                        <form action="/internal/damtan/hapus-data/{{ $row->id }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus laporan {{ $row->nomor_laporan }} secara permanen?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="action-btn delete" title="Hapus"><i class="fas fa-trash"></i></button>
+                                        </form>
+                                        @endhasanyrole
+                                    </div>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr class="empty-state">
+                                <td colspan="11">
+                                    <i class="fas fa-folder-open d-block"></i>
+                                    Belum ada data laporan yang diinput ke dalam sistem.
+                                </td>
+                            </tr>
+                            @endforelse
+
+                            {{-- Muncul otomatis jika pencarian/filter tidak menemukan hasil --}}
+                            <tr class="empty-state" id="noResult" hidden>
+                                <td colspan="11">
+                                    <i class="fas fa-search d-block"></i>
+                                    Tidak ada laporan yang cocok dengan pencarian atau filter.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -333,29 +491,49 @@
     document.addEventListener('DOMContentLoaded', function () {
         const searchInput    = document.getElementById('searchInput');
         const filterKategori = document.getElementById('filterKategori');
+        const filterTanggal  = document.getElementById('filterTanggal');
         const rows           = document.querySelectorAll('#tableBody tr[data-kategori]');
+        const noResult       = document.getElementById('noResult');
 
         function filterTable() {
             const searchTerm   = searchInput.value.toLowerCase().trim();
             const categoryTerm = filterKategori.value.toLowerCase();
+            const dateTerm     = filterTanggal.value;
+
+            let visible = 0;
 
             rows.forEach(function (row) {
                 const matchesSearch   = row.textContent.toLowerCase().includes(searchTerm);
                 const matchesCategory = categoryTerm === '' || row.dataset.kategori === categoryTerm;
+                const matchesDate     = dateTerm === '' || row.dataset.tanggal === dateTerm;
 
-                row.style.display = (matchesSearch && matchesCategory) ? '' : 'none';
+                const show = matchesSearch && matchesCategory && matchesDate;
+                row.style.display = show ? '' : 'none';
+
+                // Warna baris selang-seling hanya untuk baris yang tampil
+                row.classList.remove('alt');
+                if (show) {
+                    if (visible % 2 === 0) row.classList.add('alt');
+                    visible++;
+                }
             });
+
+            if (noResult) noResult.hidden = !(rows.length > 0 && visible === 0);
         }
 
         searchInput.addEventListener('input', filterTable);
         filterKategori.addEventListener('change', filterTable);
+        filterTanggal.addEventListener('change', filterTable);
 
         // dibuat global agar bisa dipanggil dari onclick="resetFilter()"
         window.resetFilter = function () {
             searchInput.value = '';
             filterKategori.value = '';
+            filterTanggal.value = '';
             filterTable();
         };
+
+        filterTable(); // terapkan warna selang-seling saat halaman dimuat
     });
 </script>
 @endpush
