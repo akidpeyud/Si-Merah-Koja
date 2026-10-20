@@ -3,10 +3,27 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Models\TitikSigap;
 
 class PetaController extends Controller
 {
+    /**
+     * Aturan validasi bersama untuk store & update.
+     * Kategori diambil dari TitikSigap::KATEGORI.
+     */
+    private function rules(): array
+    {
+        return [
+            'kategori'   => ['required', Rule::in(array_keys(TitikSigap::KATEGORI))],
+            'nama'       => 'required|string|max:255',
+            'lokasi'     => 'required|string',
+            'keterangan' => 'nullable|string',
+            'latitude'   => 'required|numeric',
+            'longitude'  => 'required|numeric',
+        ];
+    }
+
     // ==========================================
     // FUNGSI HALAMAN PUBLIK
     // ==========================================
@@ -46,20 +63,11 @@ class PetaController extends Controller
     public function store(Request $request)
     {
         // Validasi data input
-        $request->validate([
-            'kategori'   => 'required|in:kebakaran,sumber_air,hydrant,penyelamatan,pos',
-            'nama'       => 'required|string|max:255',
-            'tanggal'    => 'nullable|date',
-            'lokasi'     => 'required|string',
-            'keterangan' => 'nullable|string', // Validasi keterangan
-            'latitude'   => 'required|numeric',
-            'longitude'  => 'required|numeric',
-        ]);
+        $request->validate($this->rules());
 
         TitikSigap::create([
             'kategori'   => $request->kategori,
             'nama'       => $request->nama,
-            'tanggal'    => $request->tanggal,
             'lokasi'     => $request->lokasi,
             'keterangan' => $request->keterangan, // Masukkan keterangan
             'latitude'   => $request->latitude,
@@ -83,22 +91,13 @@ class PetaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'kategori'   => 'required|in:kebakaran,sumber_air,hydrant,penyelamatan,pos',
-            'nama'       => 'required|string|max:255',
-            'tanggal'    => 'nullable|date',
-            'lokasi'     => 'required|string',
-            'keterangan' => 'nullable|string', // Validasi keterangan
-            'latitude'   => 'required|numeric',
-            'longitude'  => 'required|numeric',
-        ]);
+        $request->validate($this->rules());
 
         $titik = TitikSigap::findOrFail($id);
 
         $titik->update([
             'kategori'   => $request->kategori,
             'nama'       => $request->nama,
-            'tanggal'    => $request->tanggal,
             'lokasi'     => $request->lokasi,
             'keterangan' => $request->keterangan, // Update keterangan
             'latitude'   => $request->latitude,
@@ -144,14 +143,14 @@ class PetaController extends Controller
      */
     public function apiData()
     {
-        $titiks = TitikSigap::all();
+        // Hanya kategori aktif; data lama (kebakaran, penyelamatan) tidak dikirim ke peta publik
+        $titiks = TitikSigap::whereIn('kategori', array_keys(TitikSigap::KATEGORI))->get();
 
         $formattedTitik = $titiks->map(function($titik) {
             return [
                 'id'         => $titik->id,
                 'kategori'   => $titik->kategori,
                 'nama'       => $titik->nama,
-                'tanggal'    => $titik->tanggal ? \Carbon\Carbon::parse($titik->tanggal)->format('d M Y') : 'Tidak diketahui',
                 'lokasi'     => $titik->lokasi,
                 'keterangan' => $titik->keterangan, // Tambahkan keterangan agar bisa dibaca di popup Maps Publik
                 'lat'        => (float) $titik->latitude,

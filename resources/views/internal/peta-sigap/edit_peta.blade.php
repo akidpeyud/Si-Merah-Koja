@@ -75,7 +75,6 @@
 @endpush
 
 @section('content')
-@section('content')
 
         <!-- Hanya Super User dan Operator yang boleh mengakses halaman Edit Peta -->
         @hasanyrole('Super User|Operator')
@@ -120,14 +119,16 @@
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-tag"></i></span>
                                 <select name="kategori" class="form-select" required>
-                                    <option value="" disabled>Pilih Kategori...</option>
-                                    <option value="kebakaran" {{ (old('kategori') ?? $titik->kategori) == 'kebakaran' ? 'selected' : '' }}>Kebakaran</option>
-                                    <option value="sumber_air" {{ (old('kategori') ?? $titik->kategori) == 'sumber_air' ? 'selected' : '' }}>Sumber Air</option>
-                                    <option value="hydrant" {{ (old('kategori') ?? $titik->kategori) == 'hydrant' ? 'selected' : '' }}>Hydrant</option>
-                                    <option value="penyelamatan" {{ (old('kategori') ?? $titik->kategori) == 'penyelamatan' ? 'selected' : '' }}>Penyelamatan</option>
-                                    <option value="pos" {{ (old('kategori') ?? $titik->kategori) == 'pos' ? 'selected' : '' }}>Pos Damkar</option>
+                                    @php $kategoriAktif = old('kategori') ?? $titik->kategori; @endphp
+                                    <option value="" disabled {{ array_key_exists($kategoriAktif, \App\Models\TitikSigap::KATEGORI) ? '' : 'selected' }}>Pilih Kategori...</option>
+                                    @foreach (\App\Models\TitikSigap::KATEGORI as $nilai => $label)
+                                        <option value="{{ $nilai }}" {{ $kategoriAktif === $nilai ? 'selected' : '' }}>{{ $label }}</option>
+                                    @endforeach
                                 </select>
                             </div>
+                            @unless (array_key_exists($titik->kategori, \App\Models\TitikSigap::KATEGORI))
+                                <small class="text-danger d-block mt-1"><i class="fas fa-exclamation-circle"></i> Kategori lama "{{ $titik->kategori }}" sudah tidak dipakai. Pilih kategori baru agar titik tampil di peta publik.</small>
+                            @endunless
                         </div>
 
                         <!-- Nama/Judul Lokasi -->
@@ -135,7 +136,7 @@
                             <label class="form-label">Nama / Judul Titik</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-font"></i></span>
-                                <input type="text" name="nama" class="form-control" placeholder="Cth: Kebakaran Lahan Alam Barajo" value="{{ old('nama') ?? $titik->nama }}" required>
+                                <input type="text" name="nama" class="form-control" placeholder="Cth: Hydrant Pilar Jl. Sultan Thaha" value="{{ old('nama') ?? $titik->nama }}" required>
                             </div>
                         </div>
 
@@ -146,18 +147,9 @@
                         </div>
                         
                         <!-- Keterangan (Opsional) -->
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label class="form-label">Keterangan (Opsional)</label>
                             <textarea name="keterangan" class="form-control" placeholder="Tambahkan keterangan lebih lanjut jika ada...">{{ old('keterangan') ?? $titik->keterangan }}</textarea>
-                        </div>
-
-                        <!-- Tanggal -->
-                        <div class="mb-4">
-                            <label class="form-label">Tanggal (Kejadian / Update)</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                                <input type="date" name="tanggal" class="form-control" value="{{ old('tanggal') ?? $titik->tanggal }}" required>
-                            </div>
                         </div>
                         
                         <div class="row">
