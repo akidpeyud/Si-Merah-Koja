@@ -116,11 +116,68 @@
     }
     .btn-reset-filter:hover { background: #f1f5f9; color: #0f172a; border-color: #94a3b8; }
 
+    /* Ringkasan Grand Total Lintas Tahun */
+    .summary-strip {
+        display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between;
+        background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+        color: #fff; padding: 16px 22px; border-radius: 14px;
+        margin-bottom: 24px; box-shadow: 0 8px 20px rgba(15, 23, 42, .12);
+    }
+    .summary-strip-title {
+        display: flex; align-items: center; gap: 12px;
+    }
+    .summary-strip-title i {
+        width: 42px; height: 42px; border-radius: 10px;
+        background: rgba(255,255,255,.12); color: #38bdf8;
+        display: grid; place-items: center; font-size: 1.1rem;
+    }
+    .summary-strip-title h4 { margin: 0; font-size: .96rem; font-weight: 800; letter-spacing: .01em; }
+    .summary-strip-title p { margin: 2px 0 0; font-size: .78rem; color: rgba(255,255,255,.75); }
+    .summary-metrics { display: flex; flex-wrap: wrap; gap: 12px; }
+    .summary-metric-box {
+        background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15);
+        padding: 8px 16px; border-radius: 10px; text-align: center; min-width: 120px;
+    }
+    .summary-metric-box span { display: block; font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; color: rgba(255,255,255,.75); font-weight: 600; }
+    .summary-metric-box strong { font-size: 1.1rem; font-weight: 800; color: #fff; }
+    .summary-metric-box.highlight { background: #f59e0b; border-color: #fbbf24; }
+    .summary-metric-box.highlight span { color: #451a03; font-weight: 700; }
+    .summary-metric-box.highlight strong { color: #0f172a; }
+
+    /* Header Pemisah Per Tahun */
+    .year-block { margin-bottom: 34px; }
+    .year-block-header {
+        display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+        margin-bottom: 12px; padding: 0 4px;
+    }
+    .year-block-title {
+        display: flex; align-items: center; gap: 10px;
+    }
+    .year-badge-icon {
+        width: 34px; height: 34px; border-radius: 9px;
+        background: #163a63; color: #fff; display: grid; place-items: center;
+        font-size: .85rem; box-shadow: 0 4px 10px rgba(22, 58, 99, .18);
+    }
+    .year-block-title h3 {
+        margin: 0; font-size: 1.08rem; font-weight: 800; color: #0f172a; letter-spacing: -.01em;
+    }
+    .year-block-pills {
+        display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    }
+    .year-stat-pill {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 5px 12px; border-radius: 999px; font-size: .78rem; font-weight: 700;
+        background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1;
+    }
+    .year-stat-pill.total {
+        background: #eff6ff; color: #1e40af; border-color: #bfdbfe;
+    }
+
     /* Tabel Utama */
     .table-scroll-wrapper {
         width: 100%; overflow-x: auto; background: #fff;
         border-radius: 14px; border: 1px solid #e2e8f0;
-        box-shadow: 0 4px 16px rgba(15, 23, 42, .04); margin-bottom: 40px;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, .04);
     }
     .table-scroll-wrapper::-webkit-scrollbar { height: 8px; }
     .table-scroll-wrapper::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -144,7 +201,32 @@
     }
     .table-detailed tbody tr { transition: background .15s ease; }
     .table-detailed tbody tr:hover { background: #f8fafc; }
-    .table-detailed tbody tr:last-child td { border-bottom: none; }
+
+    /* Baris JUMLAH TOTAL di Bawah Tabel Setiap Tahun (Persis Excel) */
+    .table-detailed tfoot tr.row-jumlah-total td {
+        background: #f1f5f9;
+        border-top: 2px solid #cbd5e1;
+        border-bottom: none;
+        padding: 14px 16px;
+        font-weight: 800;
+        font-size: .88rem;
+        color: #0f172a;
+    }
+    .total-label-cell {
+        text-align: center;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        color: #0f172a;
+    }
+    .total-val-badge {
+        display: inline-block;
+        padding: 5px 14px;
+        border-radius: 8px;
+        background: #0f172a;
+        color: #ffffff;
+        font-weight: 800;
+        font-size: .88rem;
+    }
 
     /* Komponen Sel Tabel */
     .instansi-title { font-weight: 700; color: #0f172a; font-size: .92rem; line-height: 1.35; }
@@ -166,7 +248,7 @@
         font-weight: 800; font-size: .92rem; color: #0f172a; white-space: nowrap;
     }
 
-    /* Tombol Lihat Peserta (Satu Baris Rapi) */
+    /* Tombol Lihat Peserta */
     .btn-peserta {
         display: inline-flex; align-items: center; justify-content: center; gap: 6px;
         padding: 5px 12px; border-radius: 20px; font-size: .74rem; font-weight: 700;
@@ -190,7 +272,10 @@
     .btn-edit { background: #f59e0b; color: #0f172a; }
     .btn-edit:hover { color: #0f172a; }
     .btn-delete { background: #ef4444; color: #fff; }
-    .empty-state { text-align: center; padding: 54px 16px !important; color: #64748b; font-weight: 600; }
+    .empty-state {
+        text-align: center; padding: 54px 16px !important; color: #64748b; font-weight: 600;
+        background: #fff; border-radius: 14px; border: 1px solid #e2e8f0;
+    }
 
     /* Modal Daftar Peserta Modern */
     .modal-peserta-backdrop {
@@ -242,6 +327,8 @@
         .filter-select { flex: 1 1 auto; }
         .toolbar-actions { width: 100%; }
         .modal-peserta-body { grid-template-columns: 1fr; }
+        .summary-metrics { width: 100%; }
+        .summary-metric-box { flex: 1 1 auto; }
     }
 </style>
 @endpush
@@ -249,7 +336,17 @@
 @section('content')
     @php
         $canCrud = auth()->user()->hasAnyRole(['Pencegahan', 'Super User']);
-        $listTahunCetak = ($daftar_tahun ?? collect($data_fire_drill ?? [])->pluck('tahun')->unique()->sortDesc());
+        $koleksiData = collect($data_fire_drill ?? []);
+        $listTahunCetak = ($daftar_tahun ?? $koleksiData->pluck('tahun')->unique()->sortDesc());
+
+        // Kelompokkan data per Tahun (dari tahun terbaru ke terlama untuk tampilan web)
+        $groupedByYear = $koleksiData->sortByDesc('tahun')->groupBy('tahun');
+
+        // Hitung total keseluruhan awal
+        $grandTotalInstansi  = $koleksiData->count();
+        $grandTotalLaki      = $koleksiData->sum(fn($i) => (int) ($i->peserta_laki_laki ?? 0));
+        $grandTotalPerempuan = $koleksiData->sum(fn($i) => (int) ($i->peserta_perempuan ?? 0));
+        $grandTotalPeserta   = $koleksiData->sum(fn($i) => (int) ($i->total_peserta ?? 0));
     @endphp
 
     <!-- HEADER KONTEN & TOMBOL AKSI -->
@@ -334,7 +431,7 @@
 
         <select id="filterInstansi" class="filter-select" aria-label="Filter Instansi">
             <option value="">Semua Instansi</option>
-            @foreach(($daftar_instansi ?? collect($data_fire_drill ?? [])->pluck('nama_instansi')->unique()->sort()) as $instansi)
+            @foreach(($daftar_instansi ?? $koleksiData->pluck('nama_instansi')->unique()->sort()) as $instansi)
                 <option value="{{ strtolower($instansi) }}">{{ $instansi }}</option>
             @endforeach
         </select>
@@ -351,102 +448,191 @@
         </button>
     </div>
 
-    <!-- TABEL DATA FIRE DRILL -->
-    <div class="table-scroll-wrapper">
-        <table class="table-detailed" id="tabelFireDrill">
-            <thead>
-                <tr>
-                    <th rowspan="2" class="text-center" width="60px">No</th>
-                    <th rowspan="2" width="26%">Nama Instansi</th>
-                    <th rowspan="2" width="18%">Tanggal Pelaksanaan</th>
-                    <th rowspan="2" width="22%">Tempat Pelaksanaan</th>
-                    <th colspan="3" class="text-center th-group">Jumlah &amp; Daftar Peserta</th>
-                    @hasanyrole('Pencegahan|Super User')
-                    <th rowspan="2" class="text-center" width="105px">Aksi</th>
-                    @endhasanyrole
-                </tr>
-                <tr>
-                    <th class="text-center" width="110px">Laki-laki</th>
-                    <th class="text-center" width="110px">Perempuan</th>
-                    <th class="text-center th-sub" width="145px">Total Peserta</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse(($data_fire_drill ?? []) as $index => $item)
-                @php
-                    $listLaki = !empty($item->nama_peserta_laki_laki) ? array_values(array_filter(preg_split('/\r\n|\r|\n/', trim($item->nama_peserta_laki_laki)))) : [];
-                    $listPerempuan = !empty($item->nama_peserta_perempuan) ? array_values(array_filter(preg_split('/\r\n|\r|\n/', trim($item->nama_peserta_perempuan)))) : [];
-                    $punyaDetailGender = ($item->peserta_laki_laki > 0 || $item->peserta_perempuan > 0 || count($listLaki) > 0 || count($listPerempuan) > 0);
-                    $gabunganNamaPeserta = strtolower(($item->nama_peserta_laki_laki ?? '') . ' ' . ($item->nama_peserta_perempuan ?? ''));
-                @endphp
-                <tr class="baris-data"
-                    data-tahun="{{ $item->tahun }}"
-                    data-instansi="{{ strtolower($item->nama_instansi) }}"
-                    data-pencarian="{{ strtolower($item->nama_instansi . ' ' . $item->tempat_pelaksanaan . ' ' . $item->tanggal_pelaksanaan . ' ' . $item->tahun . ' ' . $gabunganNamaPeserta) }}">
-                    
-                    <td class="text-center fw-bold nomor-urut">{{ $index + 1 }}</td>
-                    <td>
-                        <div class="instansi-title">{{ $item->nama_instansi }}</div>
-                        <span class="badge-tahun"><i class="far fa-calendar-alt"></i> Tahun {{ $item->tahun }}</span>
-                    </td>
-                    <td>{{ $item->tanggal_pelaksanaan }}</td>
-                    <td>{{ $item->tempat_pelaksanaan }}</td>
+    <!-- BANNER RINGKASAN GRAND TOTAL (OTOMATIS MENGIKUTI FILTER SEMUA TAHUN / PER TAHUN) -->
+    @if($koleksiData->isNotEmpty())
+    <div class="summary-strip" id="summaryStrip">
+        <div class="summary-strip-title">
+            <i class="fas fa-chart-pie"></i>
+            <div>
+                <h4 id="judulSummary">REKAPITULASI TOTAL PESERTA (SEMUA TAHUN)</h4>
+                <p id="subJudulSummary">Akumulasi jumlah instansi dan peserta pelatihan Fire Drill yang ditampilkan</p>
+            </div>
+        </div>
+        <div class="summary-metrics">
+            <div class="summary-metric-box">
+                <span>Total Instansi</span>
+                <strong id="grandInstansi">{{ number_format($grandTotalInstansi, 0, ',', '.') }}</strong>
+            </div>
+            <div class="summary-metric-box">
+                <span>Peserta Laki-laki</span>
+                <strong id="grandLaki">{{ number_format($grandTotalLaki, 0, ',', '.') }}</strong>
+            </div>
+            <div class="summary-metric-box">
+                <span>Peserta Perempuan</span>
+                <strong id="grandPerempuan">{{ number_format($grandTotalPerempuan, 0, ',', '.') }}</strong>
+            </div>
+            <div class="summary-metric-box highlight">
+                <span>Jumlah Total Peserta</span>
+                <strong id="grandTotal">{{ number_format($grandTotalPeserta, 0, ',', '.') }} Orang</strong>
+            </div>
+        </div>
+    </div>
+    @endif
 
-                    <td class="text-center">
-                        @if($punyaDetailGender)
-                            <span class="chip-peserta">{{ $item->peserta_laki_laki ?? 0 }} Orang</span>
-                        @else
-                            <span class="text-muted">-</span>
-                        @endif
-                    </td>
+    <!-- DAFTAR TABEL YANG DIPISAHKAN PER TAHUN + BARIS JUMLAH TOTAL TIAP TAHUN -->
+    <div id="wadahSemuaTahun">
+        @forelse($groupedByYear as $tahun => $items)
+            @php
+                $adaDetailGenderTahun = $items->contains(fn($i) => ($i->peserta_laki_laki > 0 || $i->peserta_perempuan > 0));
+                $sumLakiTahun      = $items->sum(fn($i) => (int) ($i->peserta_laki_laki ?? 0));
+                $sumPerempuanTahun = $items->sum(fn($i) => (int) ($i->peserta_perempuan ?? 0));
+                $sumTotalTahun     = $items->sum(fn($i) => (int) ($i->total_peserta ?? 0));
+            @endphp
 
-                    <td class="text-center">
-                        @if($punyaDetailGender)
-                            <span class="chip-peserta">{{ $item->peserta_perempuan ?? 0 }} Orang</span>
-                        @else
-                            <span class="text-muted">-</span>
-                        @endif
-                    </td>
+            <div class="year-block" data-year-block="{{ $tahun }}" data-has-gender="{{ $adaDetailGenderTahun ? '1' : '0' }}">
+                <div class="year-block-header">
+                    <div class="year-block-title">
+                        <span class="year-badge-icon"><i class="fas fa-calendar-check"></i></span>
+                        <h3>DATA FIRE DRILL TAHUN {{ $tahun }}</h3>
+                    </div>
+                    <div class="year-block-pills">
+                        <span class="year-stat-pill">
+                            <i class="fas fa-building text-secondary"></i>
+                            <span class="pill-jml-instansi">{{ $items->count() }}</span> Instansi
+                        </span>
+                        <span class="year-stat-pill total">
+                            <i class="fas fa-users"></i>
+                            Jumlah Total Tahun {{ $tahun }}: <strong class="pill-total-tahun">{{ number_format($sumTotalTahun, 0, ',', '.') }} Orang</strong>
+                        </span>
+                    </div>
+                </div>
 
-                    <td class="text-center">
-                        <div class="total-wrap">
-                            <span class="total-number">{{ $item->total_peserta }} Orang</span>
-                            @if(count($listLaki) > 0 || count($listPerempuan) > 0)
-                                <button type="button" class="btn-peserta"
-                                    onclick='bukaModalPeserta(@json($item->nama_instansi), @json($item->tahun), @json($listLaki), @json($listPerempuan))'>
-                                    <i class="fas fa-users"></i> Lihat Peserta
-                                </button>
-                            @endif
-                        </div>
-                    </td>
+                <div class="table-scroll-wrapper">
+                    <table class="table-detailed">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" class="text-center" width="60px">No</th>
+                                <th rowspan="2" width="26%">Nama Instansi</th>
+                                <th rowspan="2" width="18%">Tanggal Pelaksanaan</th>
+                                <th rowspan="2" width="22%">Tempat Pelaksanaan</th>
+                                <th colspan="3" class="text-center th-group">Jumlah &amp; Daftar Peserta</th>
+                                @hasanyrole('Pencegahan|Super User')
+                                <th rowspan="2" class="text-center" width="105px">Aksi</th>
+                                @endhasanyrole
+                            </tr>
+                            <tr>
+                                <th class="text-center" width="110px">Laki-laki</th>
+                                <th class="text-center" width="110px">Perempuan</th>
+                                <th class="text-center th-sub" width="145px">Jumlah Peserta</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($items->values() as $index => $item)
+                            @php
+                                $listLaki = !empty($item->nama_peserta_laki_laki) ? array_values(array_filter(preg_split('/\r\n|\r|\n/', trim($item->nama_peserta_laki_laki)))) : [];
+                                $listPerempuan = !empty($item->nama_peserta_perempuan) ? array_values(array_filter(preg_split('/\r\n|\r|\n/', trim($item->nama_peserta_perempuan)))) : [];
+                                $punyaDetailGender = ($item->peserta_laki_laki > 0 || $item->peserta_perempuan > 0 || count($listLaki) > 0 || count($listPerempuan) > 0);
+                                $gabunganNamaPeserta = strtolower(($item->nama_peserta_laki_laki ?? '') . ' ' . ($item->nama_peserta_perempuan ?? ''));
+                            @endphp
+                            <tr class="baris-data"
+                                data-tahun="{{ $item->tahun }}"
+                                data-instansi="{{ strtolower($item->nama_instansi) }}"
+                                data-laki="{{ (int) ($item->peserta_laki_laki ?? 0) }}"
+                                data-perempuan="{{ (int) ($item->peserta_perempuan ?? 0) }}"
+                                data-total="{{ (int) ($item->total_peserta ?? 0) }}"
+                                data-pencarian="{{ strtolower($item->nama_instansi . ' ' . $item->tempat_pelaksanaan . ' ' . $item->tanggal_pelaksanaan . ' ' . $item->tahun . ' ' . $gabunganNamaPeserta) }}">
+                                
+                                <td class="text-center fw-bold nomor-urut">{{ $index + 1 }}</td>
+                                <td>
+                                    <div class="instansi-title">{{ $item->nama_instansi }}</div>
+                                    <span class="badge-tahun"><i class="far fa-calendar-alt"></i> Tahun {{ $item->tahun }}</span>
+                                </td>
+                                <td>{{ $item->tanggal_pelaksanaan }}</td>
+                                <td>{{ $item->tempat_pelaksanaan }}</td>
 
-                    @hasanyrole('Pencegahan|Super User')
-                    <td>
-                        <div class="aksi-wrap">
-                            <a href="{{ route('fire_drill.edit', $item->id) }}" class="btn-action btn-edit" title="Edit Data">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <form action="{{ route('fire_drill.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn-action btn-delete" title="Hapus Data">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </td>
-                    @endhasanyrole
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="{{ $canCrud ? 8 : 7 }}" class="empty-state">
-                        <i class="fas fa-folder-open" style="font-size: 28px; color: #cbd5e1; margin-bottom: 8px;"></i><br>
-                        Belum ada data Fire Drill.
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
+                                <td class="text-center">
+                                    @if($punyaDetailGender)
+                                        <span class="chip-peserta">{{ $item->peserta_laki_laki ?? 0 }} Orang</span>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
+
+                                <td class="text-center">
+                                    @if($punyaDetailGender)
+                                        <span class="chip-peserta">{{ $item->peserta_perempuan ?? 0 }} Orang</span>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
+
+                                <td class="text-center">
+                                    <div class="total-wrap">
+                                        <span class="total-number">{{ number_format($item->total_peserta ?? 0, 0, ',', '.') }} Orang</span>
+                                        @if(count($listLaki) > 0 || count($listPerempuan) > 0)
+                                            <button type="button" class="btn-peserta"
+                                                onclick='bukaModalPeserta(@json($item->nama_instansi), @json($item->tahun), @json($listLaki), @json($listPerempuan))'>
+                                                <i class="fas fa-users"></i> Lihat Peserta
+                                            </button>
+                                        @endif
+                                    </div>
+                                </td>
+
+                                @hasanyrole('Pencegahan|Super User')
+                                <td>
+                                    <div class="aksi-wrap">
+                                        <a href="{{ route('fire_drill.edit', $item->id) }}" class="btn-action btn-edit" title="Edit Data">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('fire_drill.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn-action btn-delete" title="Hapus Data">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                                @endhasanyrole
+                            </tr>
+                            @endforeach
+                        </tbody>
+
+                        <!-- BARIS JUMLAH TOTAL PER TAHUN (PERSIS EXCEL) -->
+                        <tfoot>
+                            <tr class="row-jumlah-total">
+                                <td colspan="4" class="total-label-cell">
+                                    JUMLAH TOTAL TAHUN {{ $tahun }}
+                                </td>
+                                <td class="text-center foot-total-laki">
+                                    {{ $adaDetailGenderTahun ? number_format($sumLakiTahun, 0, ',', '.') . ' Orang' : '-' }}
+                                </td>
+                                <td class="text-center foot-total-perempuan">
+                                    {{ $adaDetailGenderTahun ? number_format($sumPerempuanTahun, 0, ',', '.') . ' Orang' : '-' }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="total-val-badge foot-total-peserta">{{ number_format($sumTotalTahun, 0, ',', '.') }} Orang</span>
+                                </td>
+                                @hasanyrole('Pencegahan|Super User')
+                                <td></td>
+                                @endhasanyrole
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        @empty
+            <div class="empty-state">
+                <i class="fas fa-folder-open" style="font-size: 28px; color: #cbd5e1; margin-bottom: 8px;"></i><br>
+                Belum ada data Fire Drill.
+            </div>
+        @endforelse
+
+        <!-- Pesan jika hasil filter tidak ditemukan -->
+        <div id="emptyFilterState" class="empty-state" style="display: none;">
+            <i class="fas fa-magnifying-glass" style="font-size: 28px; color: #cbd5e1; margin-bottom: 8px;"></i><br>
+            Data Fire Drill yang Anda cari tidak ditemukan.
+        </div>
     </div>
 
     <!-- MODAL POP-UP DAFTAR PESERTA -->
@@ -534,31 +720,113 @@
     (function () {
         'use strict';
 
-        var searchInput = document.getElementById('searchFireDrill');
+        var searchInput    = document.getElementById('searchFireDrill');
         var filterInstansi = document.getElementById('filterInstansi');
-        var filterTahun = document.getElementById('filterTahun');
-        var btnReset = document.getElementById('btnResetFilter');
-        var rows = document.querySelectorAll('#tabelFireDrill tbody tr.baris-data');
+        var filterTahun    = document.getElementById('filterTahun');
+        var btnReset       = document.getElementById('btnResetFilter');
+        var yearBlocks     = document.querySelectorAll('.year-block');
+        var emptyState     = document.getElementById('emptyFilterState');
+
+        var elJudulSummary   = document.getElementById('judulSummary');
+        var elGrandInstansi  = document.getElementById('grandInstansi');
+        var elGrandLaki      = document.getElementById('grandLaki');
+        var elGrandPerempuan = document.getElementById('grandPerempuan');
+        var elGrandTotal     = document.getElementById('grandTotal');
+
+        function formatRibuan(angka) {
+            return (Number(angka) || 0).toLocaleString('id-ID');
+        }
 
         function jalankanFilter() {
-            var q = (searchInput ? searchInput.value.trim().toLowerCase() : '');
+            var q    = (searchInput ? searchInput.value.trim().toLowerCase() : '');
             var inst = (filterInstansi ? filterInstansi.value : '');
-            var thn = (filterTahun ? filterTahun.value : '');
-            var nomor = 1;
+            var thn  = (filterTahun ? filterTahun.value : '');
 
-            rows.forEach(function (tr) {
-                var cocokCari = !q || tr.getAttribute('data-pencarian').indexOf(q) > -1;
-                var cocokInst = !inst || tr.getAttribute('data-instansi') === inst;
-                var cocokThn = !thn || tr.getAttribute('data-tahun') === thn;
+            var grandInstansi  = 0;
+            var grandLaki      = 0;
+            var grandPerempuan = 0;
+            var grandTotal     = 0;
+            var adaBlokTampil  = false;
 
-                if (cocokCari && cocokInst && cocokThn) {
-                    tr.style.display = '';
-                    var selNomor = tr.querySelector('.nomor-urut');
-                    if (selNomor) selNomor.textContent = nomor++;
+            yearBlocks.forEach(function (block) {
+                var tahunBlok = block.getAttribute('data-year-block');
+                var hasGender = block.getAttribute('data-has-gender') === '1';
+
+                // Jika filter tahun dipilih dan tidak sama dengan tahun blok ini, sembunyikan blok
+                if (thn && tahunBlok !== thn) {
+                    block.style.display = 'none';
+                    return;
+                }
+
+                var rows = block.querySelectorAll('tbody tr.baris-data');
+                var nomor = 1;
+                var subLaki = 0;
+                var subPerempuan = 0;
+                var subTotal = 0;
+                var jmlBarisCocok = 0;
+
+                rows.forEach(function (tr) {
+                    var cocokCari = !q || tr.getAttribute('data-pencarian').indexOf(q) > -1;
+                    var cocokInst = !inst || tr.getAttribute('data-instansi') === inst;
+
+                    if (cocokCari && cocokInst) {
+                        tr.style.display = '';
+                        var selNomor = tr.querySelector('.nomor-urut');
+                        if (selNomor) selNomor.textContent = nomor++;
+
+                        var l = parseInt(tr.getAttribute('data-laki'), 10) || 0;
+                        var p = parseInt(tr.getAttribute('data-perempuan'), 10) || 0;
+                        var t = parseInt(tr.getAttribute('data-total'), 10) || 0;
+
+                        subLaki += l;
+                        subPerempuan += p;
+                        subTotal += t;
+                        jmlBarisCocok++;
+                    } else {
+                        tr.style.display = 'none';
+                    }
+                });
+
+                if (jmlBarisCocok > 0) {
+                    block.style.display = '';
+                    adaBlokTampil = true;
+
+                    // Update baris JUMLAH TOTAL di bawah tabel tahun ini
+                    var footLaki = block.querySelector('.foot-total-laki');
+                    var footPerempuan = block.querySelector('.foot-total-perempuan');
+                    var footTotal = block.querySelector('.foot-total-peserta');
+                    var pillInstansi = block.querySelector('.pill-jml-instansi');
+                    var pillTotal = block.querySelector('.pill-total-tahun');
+
+                    if (footLaki) footLaki.textContent = hasGender ? formatRibuan(subLaki) + ' Orang' : '-';
+                    if (footPerempuan) footPerempuan.textContent = hasGender ? formatRibuan(subPerempuan) + ' Orang' : '-';
+                    if (footTotal) footTotal.textContent = formatRibuan(subTotal) + ' Orang';
+                    if (pillInstansi) pillInstansi.textContent = formatRibuan(jmlBarisCocok);
+                    if (pillTotal) pillTotal.textContent = formatRibuan(subTotal) + ' Orang';
+
+                    grandInstansi  += jmlBarisCocok;
+                    grandLaki      += subLaki;
+                    grandPerempuan += subPerempuan;
+                    grandTotal     += subTotal;
                 } else {
-                    tr.style.display = 'none';
+                    block.style.display = 'none';
                 }
             });
+
+            // Update Banner Grand Total di atas
+            if (elJudulSummary) {
+                elJudulSummary.textContent = thn
+                    ? 'REKAPITULASI TOTAL PESERTA (TAHUN ' + thn + ')'
+                    : 'REKAPITULASI TOTAL PESERTA (SEMUA TAHUN)';
+            }
+            if (elGrandInstansi)  elGrandInstansi.textContent  = formatRibuan(grandInstansi);
+            if (elGrandLaki)      elGrandLaki.textContent      = formatRibuan(grandLaki);
+            if (elGrandPerempuan) elGrandPerempuan.textContent = formatRibuan(grandPerempuan);
+            if (elGrandTotal)     elGrandTotal.textContent     = formatRibuan(grandTotal) + ' Orang';
+
+            if (emptyState) {
+                emptyState.style.display = adaBlokTampil ? 'none' : 'block';
+            }
         }
 
         if (searchInput) searchInput.addEventListener('input', jalankanFilter);

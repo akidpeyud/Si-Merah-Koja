@@ -28,7 +28,6 @@ use App\Http\Controllers\PetaController;
 use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\IzinKeramaianController;
 use App\Http\Controllers\PenggunaanSaranaController;
-use App\Http\Controllers\FireDrillController;
 use App\Http\Controllers\ProgramKerjaController;
 use App\Http\Controllers\InformasiLayananController;
 use App\Http\Controllers\DataAsnController;
@@ -205,7 +204,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/internal/kelola-pemohon', function () { return view('pemohon.kelola_pemohon'); })->name('internal.pemohon');
 
-        // --- B. MANAJEMEN INFORMASI ---
+    // --- B. MANAJEMEN INFORMASI ---
     Route::get('/internal/operator/kelola-berita', [BeritaController::class, 'indexInternal']);
     Route::get('/internal/operator/infografis', [OperatorMedsosController::class, 'indexInfografis']);
     Route::get('/internal/operator/berita-medsos', [OperatorMedsosController::class, 'indexMedsos']);
@@ -431,9 +430,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/internal/pencegahan/fire-drill/{id}', [PencegahanController::class, 'updateFireDrill'])->name('fire_drill.update');
     Route::delete('/internal/pencegahan/fire-drill/{id}', [PencegahanController::class, 'destroyFireDrill'])->name('fire_drill.destroy');
 
-    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/excel', [FireDrillController::class, 'excel'])->name('fire_drill.excel');
-    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/cetak', [FireDrillController::class, 'cetak'])->name('fire_drill.cetak');
-    Route::get('/internal/pencegahan/fire-drill/export/pdf', [FireDrillController::class, 'cetakPdf']);
+    // Export Fire Drill (sudah diarahkan ke PencegahanController, mendukung ?tahun=XXXX)
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/excel', [PencegahanController::class, 'cetakExcelFireDrill'])->name('fire_drill.excel');
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/cetak', [PencegahanController::class, 'cetak'])->name('fire_drill.cetak');
+    Route::get('/internal/pencegahan/fire-drill/export/pdf', [PencegahanController::class, 'cetak']);
 
     // 6. Layanan Inspeksi (Manual)
     Route::get('/internal/pencegahan/layanan-inspeksi', function () {
