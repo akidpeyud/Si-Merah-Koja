@@ -1,117 +1,436 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Buat Pelatihan Baru - SIMERAH KOJA')
+@section('title', 'Tambah Pelatihan Keluarga Tanggap Kebakaran')
 
 @push('styles')
 <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-    body { background-color: #f8fafc; color: #1e293b; }
-    .navbar-internal { background-color: #0f172a; padding: 15px 50px; border-bottom: 4px solid #10b981; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-    .nav-brand { display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; }
-    .nav-brand img { height: 40px; }
-    .nav-brand .title { font-weight: 800; font-size: 18px; letter-spacing: 0.5px; }
-    .badge-internal { background: #10b981; color: white; font-size: 10px; padding: 4px 8px; border-radius: 6px; font-weight: 700; margin-left: 10px; }
-    .badge-role { background: #3b82f6; color: white; font-size: 11px; padding: 4px 12px; border-radius: 50px; font-weight: 700; text-transform: uppercase; }
-    .user-menu { display: flex; align-items: center; gap: 20px; }
-    .user-profile { display: flex; align-items: center; gap: 10px; color: #f8fafc; font-size: 14px; font-weight: 600; }
-    .user-profile i { font-size: 22px; color: #94a3b8; }
-    .dashboard-container { display: flex; min-height: calc(100vh - 74px); }
-    .sidebar { width: 280px; background-color: #ffffff; border-right: 1px solid #e2e8f0; padding: 25px 20px; display: flex; flex-direction: column; gap: 5px; }
-    .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #64748b; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 10px; transition: all 0.2s; }
-    .sidebar-item:hover { background-color: #f1f5f9; color: #0f172a; }
-    .sidebar-item.active { background-color: #eff6ff; color: #2563eb; border-left: 4px solid #2563eb; }
-    .sidebar-item i { font-size: 16px; width: 20px; text-align: center; }
-    .sidebar-title { font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin: 20px 0 10px 10px; letter-spacing: 1px; }
-    .main-content { flex: 1; padding: 40px; }
-    .page-header h1 { font-size: 26px; font-weight: 800; color: #0f172a; }
-    .form-card { background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; padding: 35px; margin-top: 25px; }
-    .form-label { font-weight: 700; color: #334155; font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-    .form-control, .form-select { border-radius: 10px; border: 1px solid #cbd5e1; padding: 12px 15px; font-size: 14px; background-color: #f8fafc; transition: all 0.2s; }
-    .form-control:focus, .form-select:focus { border-color: #3b82f6; background-color: white; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
-    input[type=file]::file-selector-button { background-color: #e2e8f0; border: none; padding: 8px 15px; border-radius: 6px; font-weight: 600; color: #475569; cursor: pointer; margin-right: 15px; transition: all 0.2s; }
-    input[type=file]::file-selector-button:hover { background-color: #cbd5e1; color: #0f172a; }
+    .toast-wrap {
+        position: fixed; z-index: 1100; top: 18px; left: 50%;
+        transform: translateX(-50%);
+        display: grid; gap: 10px;
+        width: max-content; max-width: calc(100vw - 24px);
+    }
+    .topbar {
+        position: sticky; top: 0; z-index: 1020;
+        height: var(--topbar-h);
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 16px; padding: 0 28px;
+        background: var(--ink);
+        border-bottom: 1px solid rgba(255,255,255,.08);
+        box-shadow: 0 2px 12px rgba(13, 27, 42, .16);
+    }
+    .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); margin-top: 3px; }
+    .side-group summary .grp-label { flex: 1 1 auto; min-width: 0; white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.4; }
+    .side-group summary .chev { flex: none; font-size: .7rem; margin-top: 4px; transition: transform .25s ease; }
+    .page-head { margin-bottom: 26px; }
+    .page-head p { color: var(--steel); font-size: .95rem; }
+    .back-link {
+        display: inline-flex; align-items: center; gap: 8px;
+        color: var(--steel); font-size: .85rem; font-weight: 600;
+        margin-bottom: 14px; transition: color .2s, transform .2s;
+    }
+    .back-link:hover { color: var(--navy); transform: translateX(-2px); }
+    .form-wrapper {
+        background: #fff; border: 1px solid var(--line);
+        border-radius: var(--r-md); box-shadow: var(--shadow-xs);
+        padding: clamp(20px, 3vw, 32px);
+    }
+    .form-alert {
+        display: flex; gap: 12px; align-items: flex-start;
+        background: var(--signal-soft); border: 1px solid rgba(220,53,69,.25);
+        color: var(--signal-dark); border-radius: var(--r-sm);
+        padding: 14px 16px; margin-bottom: 20px; font-size: .88rem;
+    }
+    .form-alert i { margin-top: 3px; }
+    .form-alert ul { list-style: disc; padding-left: 18px; margin-top: 4px; }
+    .section-title {
+        display: flex; align-items: center; gap: 12px;
+        font-family: var(--font-display); font-weight: 700; font-size: 1rem;
+        color: var(--ink); letter-spacing: -.01em; margin: 30px 0 16px;
+    }
+    .section-title.first { margin-top: 0; }
+    .section-title .ico {
+        flex: none; width: 32px; height: 32px; border-radius: 9px;
+        display: grid; place-items: center; font-size: .78rem; color: #fff;
+        background: var(--navy); box-shadow: 0 4px 8px rgba(22,58,99,.12);
+    }
+    .section-title .line { flex: 1 1 auto; height: 1px; background: linear-gradient(to right, var(--line), transparent 90%); }
+    .form-label { font-weight: 600; font-size: .8rem; color: var(--steel); margin-bottom: 6px; letter-spacing: .01em; }
+    .form-label .req { color: var(--signal); margin-left: 2px; }
+    .form-control, .form-select {
+        height: 44px; border: 1px solid var(--line-dark); border-radius: var(--r-sm);
+        padding: 0 14px; font-size: .9rem; color: var(--ink); background-color: #fff;
+        transition: border-color .2s, box-shadow .2s;
+    }
+    .form-select { padding-right: 38px; }
+    .form-select:disabled { background-color: var(--paper); color: var(--steel-soft); cursor: not-allowed; }
+    textarea.form-control { height: auto; padding: 10px 14px; line-height: 1.5; resize: vertical; }
+    .form-control::placeholder { color: var(--steel-soft); }
+    .form-control:focus, .form-select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+    .form-control.is-invalid, .form-select.is-invalid { border-color: var(--signal); }
+    .form-hint { display: block; margin-top: 6px; font-size: .75rem; color: var(--steel); }
+
+    /* Kartu Input Peserta Laki-laki & Perempuan */
+    .peserta-form-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 18px 20px;
+        height: 100%;
+    }
+    .peserta-form-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding-bottom: 12px;
+        margin-bottom: 14px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .gender-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        font-size: .92rem;
+        color: var(--ink);
+        margin: 0;
+    }
+    .gender-label i { font-size: 1rem; }
+    .gender-label .fa-mars { color: #0284c7; }
+    .gender-label .fa-venus { color: #e11d48; }
+    .peserta-count-badge {
+        background: #e2e8f0;
+        color: var(--ink);
+        font-weight: 700;
+        font-size: .76rem;
+        padding: 4px 10px;
+        border-radius: 6px;
+    }
+
+    .total-box {
+        display: flex; align-items: center; justify-content: space-between; gap: 12px;
+        margin-top: 16px; padding: 12px 16px; border-radius: var(--r-sm);
+        background: var(--navy-light); color: var(--navy); font-size: .88rem; font-weight: 600;
+    }
+    .total-box strong { font-family: var(--font-display); font-size: 1.25rem; }
+    .form-actions {
+        display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px;
+        margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--line);
+    }
+    .btn-save, .btn-cancel {
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        height: 44px; padding: 0 22px; border-radius: var(--r-sm);
+        font-weight: 700; font-size: .87rem; transition: filter .2s, background .2s, transform .1s, box-shadow .2s;
+    }
+    .btn-save { background: var(--navy); color: #fff; border: none; }
+    .btn-save:hover { filter: brightness(1.1); box-shadow: var(--shadow-sm); color: #fff; }
+    .btn-save:disabled { opacity: .7; cursor: wait; }
+    .btn-cancel { background: #fff; color: var(--steel); border: 1px solid var(--line-dark); }
+    .btn-cancel:hover { background: var(--paper); color: var(--ink); }
+    .btn-save:active, .btn-cancel:active { transform: scale(.97); }
+    @media (max-width: 1100px) {
+        .topbar { padding: 0 20px; }
+        .content { padding: 32px 26px 60px; }
+    }
+    @media (max-width: 700px) {
+        :root { --topbar-h: 64px; }
+        .topbar { height: var(--topbar-h); padding: 0 14px; gap: 10px; }
+        .brand { gap: 9px; }
+        .brand img { height: 30px; }
+        .brand span { font-size: .95rem; }
+        .topbar-right { gap: 7px; }
+        .user-chip { padding: 3px; border: none; background: transparent; }
+        .user-avatar { width: 34px; height: 34px; }
+        .btn-logout { width: 38px; height: 38px; padding: 0; border-radius: 10px; font-size: 0; }
+        .btn-logout i { font-size: .9rem; }
+        .content { padding: 26px 16px 50px; }
+        .page-head { margin-bottom: 22px; }
+        .page-head h1 { font-size: 1.55rem; }
+        .page-head p { font-size: .88rem; }
+    }
+    @media (max-width: 420px) {
+        .brand span { display: none; }
+        .content { padding-left: 13px; padding-right: 13px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+    @media print {
+        .topbar { position: static; background: #fff !important; color: #000 !important; box-shadow: none; border-bottom: 1px solid #ddd; }
+        .brand span { color: #000 !important; }
+        .sidebar, .btn-logout, .toast-wrap { display: none !important; }
+        .shell { display: block; }
+        .content { padding: 20px; }
+    }
 </style>
 @endpush
 
 @section('content')
-@section('content')
 
-            <div class="page-header">
-                <a href="/internal/pencegahan/pelatihan" class="text-decoration-none" style="color: #64748b; font-size: 14px; font-weight: 600;"><i class="fas fa-arrow-left me-2"></i> Kembali ke Data Pelatihan</a>
-                <h1 class="mt-2">Form Tambah Pelatihan Keluarga (Goes to RT)</h1>
+        <a href="/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga" class="back-link">
+            <i class="fas fa-arrow-left"></i> Kembali ke Data Pelatihan Keluarga
+        </a>
+
+        <div class="page-head">
+            <h1>Form Pelatihan Keluarga Tanggap Kebakaran</h1>
+            <p>Isi informasi pelaksanaan, jumlah &amp; daftar nama peserta, serta link dokumentasi kegiatan.</p>
+        </div>
+
+        @if($errors->any())
+            <div class="form-alert" role="alert">
+                <i class="fas fa-triangle-exclamation"></i>
+                <div>
+                    <strong>Data belum bisa disimpan. Periksa kembali:</strong>
+                    <ul>
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
             </div>
+        @endif
 
-            <div class="form-card">
-                <form action="/internal/pencegahan/pelatihan/tambah" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label"><i class="fas fa-chalkboard-teacher text-primary"></i> Nama Pelatihan</label>
-                            <input type="text" class="form-control" name="nama_pelatihan" placeholder="Contoh: Pelatihan Dasar Pemadaman Api" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label"><i class="fas fa-map-marker-alt text-primary"></i> Lokasi / Tempat Pelaksanaan</label>
-                            <input type="text" class="form-control" name="lokasi" placeholder="Contoh: Mako Damkar Kota Jambi" required>
-                        </div>
+        <div class="form-wrapper">
+            {{-- Tanpa enctype: tidak ada upload file, hanya kirim teks (link) --}}
+            <form id="formPelatihan" action="/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/store" method="POST">
+                @csrf
+
+                <!-- INFORMASI PELAKSANAAN -->
+                <div class="section-title first">
+                    <span class="ico"><i class="fas fa-house-chimney"></i></span>
+                    <span>Informasi Pelaksanaan Pelatihan</span>
+                    <span class="line"></span>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label" for="tanggal_pelaksanaan">Tanggal Pelaksanaan <span class="req">*</span></label>
+                        <input type="date" id="tanggal_pelaksanaan" name="tanggal_pelaksanaan" value="{{ old('tanggal_pelaksanaan') }}" class="form-control @error('tanggal_pelaksanaan') is-invalid @enderror" required>
+                        @error('tanggal_pelaksanaan')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
-
-                    <div class="row mb-4">
-                        <div class="col-md-4">
-                            <label class="form-label"><i class="fas fa-calendar-alt text-primary"></i> Tanggal Pelaksanaan</label>
-                            <input type="date" class="form-control" name="tanggal_pelaksanaan" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label"><i class="fas fa-clock text-primary"></i> Waktu Mulai</label>
-                            <input type="time" class="form-control" name="waktu_mulai" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label"><i class="fas fa-hourglass-end text-primary"></i> Waktu Selesai</label>
-                            <input type="time" class="form-control" name="waktu_selesai" required>
-                        </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="kecamatan">Kecamatan <span class="req">*</span></label>
+                        <select id="kecamatan" name="kecamatan" class="form-select @error('kecamatan') is-invalid @enderror" data-old="{{ old('kecamatan') }}" required>
+                            <option value="" selected disabled>Pilih kecamatan</option>
+                        </select>
+                        @error('kecamatan')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="kelurahan">Kelurahan <span class="req">*</span></label>
+                        <select id="kelurahan" name="kelurahan" class="form-select @error('kelurahan') is-invalid @enderror" data-old="{{ old('kelurahan') }}" required disabled>
+                            <option value="" selected disabled>Pilih kecamatan dulu</option>
+                        </select>
+                        @error('kelurahan')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="rt">RT <span class="req">*</span></label>
+                        <input type="text" id="rt" name="rt" value="{{ old('rt') }}" class="form-control @error('rt') is-invalid @enderror" placeholder="Contoh: 03, 12, 14 dan 19" required>
+                        @error('rt')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                </div>
 
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label"><i class="fas fa-users text-primary"></i> Kategori Peserta</label>
-                            <select class="form-select" name="kategori_peserta" required>
-                                <option value="" disabled selected>Pilih Kategori...</option>
-                                <option value="Relawan REDKAR">Relawan REDKAR</option>
-                                <option value="Internal Anggota">Internal Anggota Damkar</option>
-                                <option value="Masyarakat Umum">Masyarakat Umum</option>
-                                <option value="Instansi / Perusahaan">Instansi / Perusahaan</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label"><i class="fas fa-user-friends text-primary"></i> Jumlah Kuota / Peserta</label>
-                            <div class="input-group">
-                                <input type="number" class="form-control" name="jumlah_peserta" min="1" placeholder="Misal: 50" required>
-                                <span class="input-group-text" style="background-color: #e2e8f0; border: none; font-weight: 600; color: #475569;">Orang</span>
+                <!-- JUMLAH & DAFTAR PESERTA -->
+                <div class="section-title">
+                    <span class="ico"><i class="fas fa-users"></i></span>
+                    <span>Jumlah &amp; Daftar Peserta</span>
+                    <span class="line"></span>
+                </div>
+
+                <div class="row g-3">
+                    <!-- PESERTA LAKI-LAKI -->
+                    <div class="col-md-6">
+                        <div class="peserta-form-card">
+                            <div class="peserta-form-head">
+                                <span class="gender-label">
+                                    <i class="fas fa-mars"></i> Peserta Laki-laki
+                                </span>
+                                <span class="peserta-count-badge" id="badgeLaki">{{ old('peserta_laki_laki', 0) }} Orang</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" for="peserta_laki_laki">Jumlah Laki-laki <span class="req">*</span></label>
+                                <input type="number" id="peserta_laki_laki" name="peserta_laki_laki" value="{{ old('peserta_laki_laki', 0) }}" class="form-control js-peserta @error('peserta_laki_laki') is-invalid @enderror" min="0" inputmode="numeric" required>
+                                @error('peserta_laki_laki')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+
+                            <div>
+                                <label class="form-label" for="nama_peserta_laki_laki">Daftar Nama Peserta Laki-laki</label>
+                                <textarea id="nama_peserta_laki_laki" name="nama_peserta_laki_laki" rows="5"
+                                          class="form-control @error('nama_peserta_laki_laki') is-invalid @enderror"
+                                          placeholder="Ketik satu nama per baris, contoh:&#10;Budi&#10;Andi&#10;Joko">{{ old('nama_peserta_laki_laki') }}</textarea>
+                                @error('nama_peserta_laki_laki')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                <span class="form-hint">Tulis <strong>satu nama per baris</strong> (tekan Enter untuk baris baru). Jumlah peserta akan otomatis menyesuaikan.</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- KOTAK UPLOAD FILE MATERI / MODUL -->
-                    <div class="mb-4 p-4" style="background-color: #f1f5f9; border-radius: 12px; border: 1px dashed #94a3b8;">
-                        <label class="form-label mb-2"><i class="fas fa-file-pdf text-danger"></i> Modul / Proposal Pelatihan (Opsional)</label>
-                        <input class="form-control" type="file" name="modul_pelatihan" accept=".pdf, .doc, .docx">
-                        <small class="text-muted" style="font-size: 13px; margin-top: 8px; display: block;">
-                            <i class="fas fa-info-circle me-1"></i> Upload file modul, materi, atau proposal diklat. Format: PDF, DOC, DOCX (Maks. 5MB).
-                        </small>
-                    </div>
+                    <!-- PESERTA PEREMPUAN -->
+                    <div class="col-md-6">
+                        <div class="peserta-form-card">
+                            <div class="peserta-form-head">
+                                <span class="gender-label">
+                                    <i class="fas fa-venus"></i> Peserta Perempuan
+                                </span>
+                                <span class="peserta-count-badge" id="badgePerempuan">{{ old('peserta_perempuan', 0) }} Orang</span>
+                            </div>
 
-                    <div class="mb-4">
-                        <label class="form-label"><i class="fas fa-sticky-note text-primary"></i> Catatan / Keterangan (Opsional)</label>
-                        <textarea class="form-control" name="catatan" rows="3" placeholder="Misal: Peserta wajib membawa pakaian lapangan dan sepatu safety..."></textarea>
-                    </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="peserta_perempuan">Jumlah Perempuan <span class="req">*</span></label>
+                                <input type="number" id="peserta_perempuan" name="peserta_perempuan" value="{{ old('peserta_perempuan', 0) }}" class="form-control js-peserta @error('peserta_perempuan') is-invalid @enderror" min="0" inputmode="numeric" required>
+                                @error('peserta_perempuan')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
 
-                    <div class="d-flex justify-content-end gap-3 mt-5">
-                        <a href="/internal/pencegahan/pelatihan" class="btn btn-light px-4 py-2" style="border-radius: 8px; font-weight: 600; border: 1px solid #cbd5e1;">Batal</a>
-                        <button type="submit" class="btn btn-primary px-4 py-2" style="border-radius: 8px; font-weight: 600; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);">
-                            <i class="fas fa-save me-2"></i> Simpan Data Pelatihan
-                        </button>
+                            <div>
+                                <label class="form-label" for="nama_peserta_perempuan">Daftar Nama Peserta Perempuan</label>
+                                <textarea id="nama_peserta_perempuan" name="nama_peserta_perempuan" rows="5"
+                                          class="form-control @error('nama_peserta_perempuan') is-invalid @enderror"
+                                          placeholder="Ketik satu nama per baris, contoh:&#10;Mega&#10;Wati&#10;Siti">{{ old('nama_peserta_perempuan') }}</textarea>
+                                @error('nama_peserta_perempuan')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                <span class="form-hint">Tulis <strong>satu nama per baris</strong> (tekan Enter untuk baris baru). Jumlah peserta akan otomatis menyesuaikan.</span>
+                            </div>
+                        </div>
                     </div>
+                </div>
 
-                </form>
-            </div>
+                <div class="total-box">
+                    <span>Total Seluruh Peserta</span>
+                    <strong id="totalPeserta">0 Orang</strong>
+                </div>
+
+                <!-- DOKUMENTASI (LINK) -->
+                <div class="section-title">
+                    <span class="ico"><i class="fas fa-link"></i></span>
+                    <span>Dokumentasi</span>
+                    <span class="line"></span>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label" for="link_dokumentasi">Link Dokumentasi Foto / Video (Opsional)</label>
+                        <textarea id="link_dokumentasi" name="link_dokumentasi" rows="3"
+                                  class="form-control @error('link_dokumentasi') is-invalid @enderror"
+                                  placeholder="https://drive.google.com/drive/folders/...">{{ old('link_dokumentasi') }}</textarea>
+                        @error('link_dokumentasi')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <span class="form-hint">Tempel link Google Drive. Kalau lebih dari satu, tulis <strong>satu link per baris</strong>. Pastikan akses link diatur "Siapa saja yang memiliki link".</span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga" class="btn-cancel">Batal</a>
+                    <button type="submit" class="btn-save" id="btnSave"><i class="fas fa-save"></i> Simpan Data Pelatihan</button>
+                </div>
+            </form>
+        </div>
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    'use strict';
+
+    /* ---------- Data Kecamatan -> Kelurahan (Kota Jambi) ---------- */
+    var WILAYAH = {
+        'Alam Barajo': ['Bagan Pete', 'Beliung', 'Kenali Besar', 'Mayang Mangurai', 'Pinang Merah', 'Rawasari', 'Simpang Rimbo'],
+        'Danau Sipin': ['Legok', 'Murni', 'Selamat', 'Solok Sipin', 'Sungai Putri'],
+        'Danau Teluk': ['Olak Kemang', 'Pasir Panjang', 'Tanjung Pasir', 'Tanjung Raden', 'Ulu Gedong'],
+        'Jambi Selatan': ['Pakuan Baru', 'Pasir Putih', 'Tambak Sari', 'The Hok', 'Wijaya Pura'],
+        'Jambi Timur': ['Budiman', 'Kasang', 'Kasang Jaya', 'Rajawali', 'Sijenjang', 'Sulanjana', 'Talang Banjar', 'Tanjung Pinang', 'Tanjung Sari'],
+        'Jelutung': ['Cempaka Putih', 'Handil Jaya', 'Jelutung', 'Kebun Handil', 'Lebak Bandung', 'Payo Lebar', 'Talang Jauh'],
+        'Kota Baru': ['Kenali Asam', 'Kenali Asam Atas', 'Kenali Asam Bawah', 'Paal Lima', 'Simpang III Sipin', 'Suka Karya', 'Talang Gulo'],
+        'Paal Merah': ['Bakung Jaya', 'Eka Jaya', 'Lingkar Selatan', 'Paal Merah', 'Payo Selincah', 'Talang Bakung'],
+        'Pasar Jambi': ['Beringin', 'Orang Kayo Hitam', 'Pasar Jambi', 'Sungai Asam'],
+        'Pelayangan': ['Arab Melayu', 'Jelmu', 'Mudung Laut', 'Tahtul Yaman', 'Tanjung Johor', 'Tengah'],
+        'Telanaipura': ['Aur Kenali', 'Buluran Kenali', 'Pematang Sulur', 'Penyengat Rendah', 'Simpang IV Sipin', 'Telanaipura', 'Teluk Kenali']
+    };
+
+    var selKec = document.getElementById('kecamatan');
+    var selKel = document.getElementById('kelurahan');
+
+    function addOption(select, value, text, selected) {
+        var o = document.createElement('option');
+        o.value = value; o.textContent = text;
+        if (selected) o.selected = true;
+        select.appendChild(o);
+    }
+    function fillKelurahan(kec, oldKel) {
+        selKel.innerHTML = '';
+        if (!kec || !WILAYAH[kec]) {
+            addOption(selKel, '', 'Pilih kecamatan dulu', true);
+            selKel.options[0].disabled = true;
+            selKel.disabled = true;
+            return;
+        }
+        addOption(selKel, '', 'Pilih kelurahan', !oldKel);
+        selKel.options[0].disabled = true;
+        WILAYAH[kec].forEach(function (k) { addOption(selKel, k, k, k === oldKel); });
+        selKel.disabled = false;
+    }
+    if (selKec && selKel) {
+        var oldKec = selKec.getAttribute('data-old') || '';
+        var oldKel = selKel.getAttribute('data-old') || '';
+        Object.keys(WILAYAH).forEach(function (k) { addOption(selKec, k, k, k === oldKec); });
+        selKec.options[0].selected = !oldKec;
+        fillKelurahan(oldKec, oldKel);
+        selKec.addEventListener('change', function () { fillKelurahan(selKec.value, ''); });
+    }
+
+    /* ---------- Hitung Jumlah & Daftar Peserta Otomatis ---------- */
+    var inputL = document.getElementById('peserta_laki_laki');
+    var inputP = document.getElementById('peserta_perempuan');
+    var textareaL = document.getElementById('nama_peserta_laki_laki');
+    var textareaP = document.getElementById('nama_peserta_perempuan');
+    var badgeL = document.getElementById('badgeLaki');
+    var badgeP = document.getElementById('badgePerempuan');
+    var totalEl = document.getElementById('totalPeserta');
+
+    function hitungBarisNama(teks) {
+        if (!teks) return 0;
+        return teks
+            .split(/[\r\n,;]+/)
+            .map(function (s) { return s.trim(); })
+            .filter(function (s) { return s.length > 0; })
+            .length;
+    }
+
+    function hitungTotal() {
+        var l = Math.max(0, parseInt(inputL ? inputL.value : 0, 10) || 0);
+        var p = Math.max(0, parseInt(inputP ? inputP.value : 0, 10) || 0);
+
+        if (badgeL) badgeL.textContent = l + ' Orang';
+        if (badgeP) badgeP.textContent = p + ' Orang';
+        if (totalEl) totalEl.textContent = (l + p) + ' Orang';
+    }
+
+    if (textareaL && inputL) {
+        textareaL.addEventListener('input', function () {
+            inputL.value = hitungBarisNama(this.value);
+            hitungTotal();
+        });
+    }
+
+    if (textareaP && inputP) {
+        textareaP.addEventListener('input', function () {
+            inputP.value = hitungBarisNama(this.value);
+            hitungTotal();
+        });
+    }
+
+    if (inputL) inputL.addEventListener('input', hitungTotal);
+    if (inputP) inputP.addEventListener('input', hitungTotal);
+
+    hitungTotal();
+
+    /* ---------- Cegah submit ganda ---------- */
+    var form = document.getElementById('formPelatihan');
+    var btnSave = document.getElementById('btnSave');
+    if (form && btnSave) {
+        form.addEventListener('submit', function () {
+            btnSave.disabled = true;
+            btnSave.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+        });
+    }
+})();
+</script>
+@endpush

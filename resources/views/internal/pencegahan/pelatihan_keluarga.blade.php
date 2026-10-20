@@ -27,7 +27,7 @@
     .page-toolbar { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-bottom: 8px; }
     .page-toolbar .page-head { margin-bottom: 0; }
     .toolbar-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
-    .search-box { position: relative; width: 260px; max-width: 100%; }
+    .search-box { position: relative; width: 320px; max-width: 100%; }
     .search-box i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--steel-soft); font-size: .85rem; pointer-events: none; }
     .search-box input {
         width: 100%; height: 42px; padding: 0 14px 0 38px;
@@ -111,14 +111,11 @@
         border: 1px solid var(--line); box-shadow: var(--shadow-sm); margin-bottom: 40px;
     }
     .table-card .table-scroll-wrapper { border: 0; border-radius: 0; box-shadow: none; margin-bottom: 0; }
-    .table-detailed.table-peserta { min-width: 1180px; table-layout: auto; }
+    .table-detailed.table-peserta { min-width: 1100px; table-layout: auto; }
     .table-peserta thead th { text-align: center; }
     .table-peserta thead th.th-left { text-align: left; }
     .table-peserta thead tr:first-child th { border-bottom: 1px solid var(--ink-3); }
     .table-peserta thead th.th-sub { background: var(--ink-2); font-size: .68rem; }
-    .table-peserta thead th.th-sub i { margin-right: 6px; font-size: .78rem; }
-    .table-peserta thead th.th-sub .fa-venus { color: #f9a8d4; }
-    .table-peserta thead th.th-sub .fa-mars { color: #93c5fd; }
     .table-peserta tbody td { padding: 15px; }
     .table-peserta tbody tr:nth-child(even) { background: #fafbfd; }
     .table-peserta tbody tr:hover { background: var(--navy-light); }
@@ -126,15 +123,170 @@
     .table-peserta td.col-rt { white-space: normal; min-width: 140px; max-width: 220px; text-align: center; }
     .cell-date strong { display: block; font-weight: 600; color: var(--ink); }
     .cell-date small { color: var(--steel); font-size: .74rem; }
-    .count-pill {
-        display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-        min-width: 58px; padding: 4px 12px; border-radius: 999px;
-        font-weight: 700; font-size: .82rem;
+
+    /* Styling Kolom Jumlah & Daftar Peserta */
+    .peserta-single-count {
+        font-weight: 600;
+        font-size: .85rem;
+        color: var(--ink);
     }
-    .count-pill.female { background: rgba(219, 39, 119, .09); color: #be185d; }
-    .count-pill.male   { background: var(--info-soft); color: var(--info); }
-    .count-pill.total  { background: var(--navy-soft); color: var(--navy); }
-    .count-pill i { font-size: .72rem; }
+    .total-peserta-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+    .total-peserta-angka {
+        font-weight: 700;
+        font-size: .86rem;
+        color: var(--navy);
+    }
+    .btn-lihat-nama {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        background: #f8fafc;
+        border: 1px solid #dce4ee;
+        color: var(--ink);
+        font-weight: 600;
+        font-size: .76rem;
+        line-height: 1.25;
+        cursor: pointer;
+        transition: background .2s, border-color .2s, transform .1s, box-shadow .2s;
+    }
+    .btn-lihat-nama i {
+        font-size: .82rem;
+        color: var(--ink);
+    }
+    .btn-lihat-nama:hover {
+        background: var(--navy-soft);
+        border-color: var(--navy);
+        color: var(--navy);
+        box-shadow: var(--shadow-xs);
+    }
+    .btn-lihat-nama:hover i { color: var(--navy); }
+    .btn-lihat-nama:active { transform: scale(.97); }
+
+    /* Modal Daftar Peserta */
+    .modal-peserta-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 1200;
+        background: rgba(13, 27, 42, .55);
+        backdrop-filter: blur(2px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    .modal-peserta-backdrop.show {
+        display: flex;
+    }
+    .modal-peserta-dialog {
+        width: 100%;
+        max-width: 720px;
+        background: #fff;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(13, 27, 42, .28);
+        animation: modalFadeIn .18s ease-out;
+    }
+    @keyframes modalFadeIn {
+        from { opacity: 0; transform: translateY(8px) scale(.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal-peserta-header {
+        background: var(--ink);
+        color: #fff;
+        padding: 18px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+    .modal-peserta-title {
+        font-family: var(--font-display);
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin: 0;
+        color: #fff;
+    }
+    .modal-peserta-close {
+        background: transparent;
+        border: none;
+        color: rgba(255, 255, 255, .8);
+        font-size: 1.35rem;
+        line-height: 1;
+        cursor: pointer;
+        padding: 4px;
+        transition: color .15s;
+    }
+    .modal-peserta-close:hover { color: #fff; }
+    .modal-peserta-body {
+        padding: 24px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        max-height: 75vh;
+        overflow-y: auto;
+    }
+    .peserta-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 18px 20px;
+    }
+    .peserta-card-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .peserta-card-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        font-size: .92rem;
+        color: var(--ink);
+    }
+    .peserta-card-label .fa-mars { color: #0284c7; font-size: 1rem; }
+    .peserta-card-label .fa-venus { color: #e11d48; font-size: 1rem; }
+    .peserta-card-badge {
+        background: #e2e8f0;
+        color: var(--ink);
+        font-weight: 700;
+        font-size: .76rem;
+        padding: 4px 10px;
+        border-radius: 6px;
+    }
+    .peserta-name-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+    .peserta-name-list li {
+        font-size: .88rem;
+        color: #334155;
+        padding: 2px 0;
+        word-break: break-word;
+    }
+    .peserta-name-empty {
+        font-size: .84rem;
+        color: var(--steel);
+        font-style: italic;
+    }
+
     .table-peserta tfoot td {
         background: var(--paper); font-weight: 700; font-size: .84rem;
         padding: 14px 15px; border-top: 2px solid var(--line-dark); border-bottom: 0;
@@ -154,6 +306,7 @@
         .content { padding: 32px 26px 60px; }
     }
     @media (max-width: 700px) {
+        .modal-peserta-body { grid-template-columns: 1fr; padding: 18px; }
         :root { --topbar-h: 64px; }
         .topbar { height: var(--topbar-h); padding: 0 14px; gap: 10px; }
         .brand { gap: 9px; }
@@ -182,14 +335,13 @@
     @media print {
         .topbar { position: static; background: #fff !important; color: #000 !important; box-shadow: none; border-bottom: 1px solid #ddd; }
         .brand span { color: #000 !important; }
-        .sidebar, .btn-logout, .toolbar-actions, .toast-wrap { display: none !important; }
+        .sidebar, .btn-logout, .toolbar-actions, .toast-wrap, .btn-lihat-nama { display: none !important; }
         .shell { display: block; }
         .content { padding: 20px; }
     }
 </style>
 @endpush
 
-@section('content')
 @section('content')
 
         @php
@@ -208,7 +360,7 @@
                 <!-- PENCARIAN: TERBUKA UNTUK SEMUA ROLE -->
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Cari kelurahan atau kecamatan..." aria-label="Cari kelurahan atau kecamatan">
+                    <input type="text" placeholder="Cari kelurahan, kecamatan, atau nama peserta..." aria-label="Cari kelurahan, kecamatan, atau nama peserta">
                 </div>
 
                 <!-- TOMBOL TAMBAH HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
@@ -249,8 +401,8 @@
 
         @php
             $rows = collect($data_pelatihan ?? []);
-            $totalP = $rows->sum(fn($r) => (int) ($r->peserta_perempuan ?? 0));
-            $totalL = $rows->sum(fn($r) => (int) ($r->peserta_laki_laki ?? 0));
+            $totalP = 0;
+            $totalL = 0;
         @endphp
 
         <div class="table-card">
@@ -263,7 +415,7 @@
                             <th rowspan="2">RT</th>
                             <th rowspan="2" class="th-left">Kelurahan</th>
                             <th rowspan="2" class="th-left">Kecamatan</th>
-                            <th colspan="3" class="th-group">Jumlah Peserta</th>
+                            <th colspan="3" class="th-group">Jumlah &amp; Daftar Peserta</th>
                             <th rowspan="2">Foto dan Video</th>
 
                             <!-- KOLOM AKSI (EDIT/HAPUS) HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
@@ -272,17 +424,56 @@
                             @endhasanyrole
                         </tr>
                         <tr>
-                            <th class="th-sub"><i class="fas fa-venus"></i>Perempuan</th>
-                            <th class="th-sub"><i class="fas fa-mars"></i>Laki-laki</th>
-                            <th class="th-sub">Total</th>
+                            <th class="th-sub">Laki-laki</th>
+                            <th class="th-sub">Perempuan</th>
+                            <th class="th-sub">Total Peserta</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($rows as $item)
                         @php
                             $tgl = $item->tanggal_pelaksanaan ?? null;
-                            $p = (int) ($item->peserta_perempuan ?? 0);
-                            $l = (int) ($item->peserta_laki_laki ?? 0);
+                            $tahun = $tgl ? \Carbon\Carbon::parse($tgl)->format('Y') : ($item->tahun ?? null);
+
+                            $rawNamaL = $item->nama_peserta_laki_laki
+                                ?? $item->daftar_peserta_laki_laki
+                                ?? $item->peserta_laki_nama
+                                ?? $item->nama_laki_laki
+                                ?? '';
+
+                            $rawNamaP = $item->nama_peserta_perempuan
+                                ?? $item->daftar_peserta_perempuan
+                                ?? $item->peserta_perempuan_nama
+                                ?? $item->nama_perempuan
+                                ?? '';
+
+                            $parseNama = function ($raw) {
+                                if (is_array($raw)) {
+                                    return collect($raw)->map(fn($n) => trim((string) $n))->filter()->values();
+                                }
+                                if (is_string($raw) && str_starts_with(trim($raw), '[')) {
+                                    $decoded = json_decode($raw, true);
+                                    if (is_array($decoded)) {
+                                        return collect($decoded)->map(fn($n) => trim((string) $n))->filter()->values();
+                                    }
+                                }
+                                return collect(preg_split('/[\r\n,;]+/', (string) $raw))
+                                    ->map(fn($n) => trim($n))
+                                    ->filter()
+                                    ->values();
+                            };
+
+                            $listNamaL = $parseNama($rawNamaL);
+                            $listNamaP = $parseNama($rawNamaP);
+
+                            $l = (int) ($item->peserta_laki_laki ?? $listNamaL->count());
+                            $p = (int) ($item->peserta_perempuan ?? $listNamaP->count());
+
+                            $totalL += $l;
+                            $totalP += $p;
+
+                            $lokasi = $item->kelurahan ? ('Kel. ' . $item->kelurahan . ($item->rt ? ' - RT ' . $item->rt : '')) : 'Daftar Peserta';
+                            $judulModal = $tahun ? "{$lokasi} (Tahun {$tahun})" : $lokasi;
 
                             // Link dokumentasi: satu link per baris (atau dipisah koma / spasi)
                             $links = collect(preg_split('/[\r\n,\s]+/', (string) ($item->link_dokumentasi ?? '')))
@@ -301,11 +492,35 @@
                                 @endif
                             </td>
                             <td class="col-rt">{{ $item->rt ?? '-' }}</td>
-                            <td><strong>{{ $item->kelurahan ?? '-' }}</strong></td>
+                            <td>
+                                <strong>{{ $item->kelurahan ?? '-' }}</strong>
+                                <!-- Teks tersembunyi agar nama peserta ikut terfilter saat dicari di kotak pencarian -->
+                                <span style="display:none">{{ $listNamaL->join(' ') }} {{ $listNamaP->join(' ') }}</span>
+                            </td>
                             <td>{{ $item->kecamatan ?? '-' }}</td>
-                            <td class="col-center"><span class="count-pill female"><i class="fas fa-venus"></i>{{ $p }}</span></td>
-                            <td class="col-center"><span class="count-pill male"><i class="fas fa-mars"></i>{{ $l }}</span></td>
-                            <td class="col-center"><span class="count-pill total">{{ $p + $l }}</span></td>
+                            <td class="col-center">
+                                <span class="peserta-single-count">{{ $l }} Orang</span>
+                            </td>
+                            <td class="col-center">
+                                <span class="peserta-single-count">{{ $p }} Orang</span>
+                            </td>
+                            <td class="col-center">
+                                <div class="total-peserta-cell">
+                                    <span class="total-peserta-angka">{{ $l + $p }} Orang</span>
+                                    <button
+                                        type="button"
+                                        class="btn-lihat-nama"
+                                        data-title="{{ $judulModal }}"
+                                        data-count-l="{{ $l }}"
+                                        data-count-p="{{ $p }}"
+                                        data-nama-l='@json($listNamaL)'
+                                        data-nama-p='@json($listNamaP)'
+                                        onclick="bukaModalPeserta(this)">
+                                        <i class="fas fa-users"></i>
+                                        <span>Lihat<br>Nama</span>
+                                    </button>
+                                </div>
+                            </td>
                             <td class="col-center">
                                 @if($links->isNotEmpty())
                                     <div class="media-links">
@@ -351,14 +566,47 @@
                     <tfoot>
                         <tr>
                             <td colspan="5" class="foot-label">Total seluruh peserta</td>
-                            <td class="col-center"><span class="count-pill female"><i class="fas fa-venus"></i>{{ $totalP }}</span></td>
-                            <td class="col-center"><span class="count-pill male"><i class="fas fa-mars"></i>{{ $totalL }}</span></td>
-                            <td class="col-center"><span class="count-pill total">{{ $totalP + $totalL }}</span></td>
+                            <td class="col-center"><span class="peserta-single-count">{{ $totalL }} Orang</span></td>
+                            <td class="col-center"><span class="peserta-single-count">{{ $totalP }} Orang</span></td>
+                            <td class="col-center"><span class="total-peserta-angka">{{ $totalL + $totalP }} Orang</span></td>
                             <td colspan="{{ $canCrud ? 2 : 1 }}"></td>
                         </tr>
                     </tfoot>
                     @endif
                 </table>
+            </div>
+        </div>
+
+        <!-- MODAL POP-UP DAFTAR PESERTA -->
+        <div class="modal-peserta-backdrop" id="modalDaftarPeserta" onclick="tutupModalBackdrop(event)">
+            <div class="modal-peserta-dialog" role="dialog" aria-modal="true" aria-labelledby="modalPesertaTitle">
+                <div class="modal-peserta-header">
+                    <h4 class="modal-peserta-title" id="modalPesertaTitle">Daftar Peserta</h4>
+                    <button type="button" class="modal-peserta-close" onclick="tutupModalPeserta()" aria-label="Tutup">&times;</button>
+                </div>
+                <div class="modal-peserta-body">
+                    <!-- Kolom Peserta Laki-laki -->
+                    <div class="peserta-card">
+                        <div class="peserta-card-head">
+                            <span class="peserta-card-label">
+                                <i class="fas fa-mars"></i> Peserta Laki-laki
+                            </span>
+                            <span class="peserta-card-badge" id="modalCountL">0 Orang</span>
+                        </div>
+                        <ul class="peserta-name-list" id="modalListL"></ul>
+                    </div>
+
+                    <!-- Kolom Peserta Perempuan -->
+                    <div class="peserta-card">
+                        <div class="peserta-card-head">
+                            <span class="peserta-card-label">
+                                <i class="fas fa-venus"></i> Peserta Perempuan
+                            </span>
+                            <span class="peserta-card-badge" id="modalCountP">0 Orang</span>
+                        </div>
+                        <ul class="peserta-name-list" id="modalListP"></ul>
+                    </div>
+                </div>
             </div>
         </div>
 @endsection
@@ -368,7 +616,7 @@
 (function () {
     'use strict';
 
-    /* ---------- Pencarian tabel ---------- */
+    /* ---------- Pencarian tabel (termasuk nama peserta) ---------- */
     var searchInput = document.querySelector('.search-box input');
     var tbody = document.querySelector('.table-peserta tbody');
     if (searchInput && tbody) {
@@ -381,7 +629,69 @@
         });
     }
 
-    
+    /* ---------- Modal Daftar Peserta ---------- */
+    var modal = document.getElementById('modalDaftarPeserta');
+    var titleEl = document.getElementById('modalPesertaTitle');
+    var countLEl = document.getElementById('modalCountL');
+    var countPEl = document.getElementById('modalCountP');
+    var listLEl = document.getElementById('modalListL');
+    var listPEl = document.getElementById('modalListP');
+
+    function renderList(ulElement, items) {
+        ulElement.innerHTML = '';
+        if (!Array.isArray(items) || items.length === 0) {
+            var emptyLi = document.createElement('li');
+            emptyLi.className = 'peserta-name-empty';
+            emptyLi.textContent = 'Belum ada daftar nama peserta.';
+            ulElement.appendChild(emptyLi);
+            return;
+        }
+        items.forEach(function (nama) {
+            var li = document.createElement('li');
+            li.textContent = nama;
+            ulElement.appendChild(li);
+        });
+    }
+
+    window.bukaModalPeserta = function (btn) {
+        if (!modal) return;
+        var title = btn.getAttribute('data-title') || 'Daftar Peserta';
+        var countL = btn.getAttribute('data-count-l') || 0;
+        var countP = btn.getAttribute('data-count-p') || 0;
+        var namaL = [];
+        var namaP = [];
+
+        try { namaL = JSON.parse(btn.getAttribute('data-nama-l') || '[]'); } catch (e) {}
+        try { namaP = JSON.parse(btn.getAttribute('data-nama-p') || '[]'); } catch (e) {}
+
+        titleEl.textContent = title;
+        countLEl.textContent = countL + ' Orang';
+        countPEl.textContent = countP + ' Orang';
+
+        renderList(listLEl, namaL);
+        renderList(listPEl, namaP);
+
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.tutupModalPeserta = function () {
+        if (!modal) return;
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    };
+
+    window.tutupModalBackdrop = function (e) {
+        if (e.target === modal) {
+            window.tutupModalPeserta();
+        }
+    };
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal && modal.classList.contains('show')) {
+            window.tutupModalPeserta();
+        }
+    });
 })();
 </script>
 @endpush

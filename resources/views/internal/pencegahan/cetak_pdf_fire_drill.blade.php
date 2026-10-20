@@ -6,8 +6,7 @@
     <style>
         @page { size: landscape; margin: 12mm 15mm; }
         body { font-family: Arial, sans-serif; font-size: 11px; color: #000; margin: 0; padding: 0; }
-        
-        /* Kop Surat Resmi */
+
         .kop-surat { width: 100%; border-bottom: 4px double #000; padding-bottom: 10px; margin-bottom: 16px; border-collapse: collapse; }
         .kop-surat td { border: none !important; padding: 0; vertical-align: middle; }
         .logo-kiri { text-align: left; width: 12%; }
@@ -17,11 +16,9 @@
         .teks-tengah .dinas { font-size: 21px; font-weight: bold; }
         .teks-tengah .alamat { font-size: 12px; }
 
-        /* Judul Blok Tahun seperti Excel */
         .judul-utama { text-align: center; font-weight: bold; font-size: 13px; line-height: 1.45; margin-bottom: 10px; text-transform: uppercase; }
         .sub-tahun { text-align: center; font-weight: bold; font-size: 13px; margin: 22px 0 8px; text-transform: uppercase; }
 
-        /* Tabel Data */
         .table-data { width: 100%; border-collapse: collapse; margin-bottom: 18px; font-size: 11px; }
         .table-data th, .table-data td { border: 1px solid #000; padding: 6px 8px; vertical-align: middle; }
         .table-data th {
@@ -36,6 +33,13 @@
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             font-weight: bold;
+        }
+        .tr-grand-total td {
+            background-color: #ffe699 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            font-weight: bold;
+            font-size: 11.5px;
         }
         .text-center { text-align: center; }
         .ol-peserta { margin: 0; padding-left: 16px; line-height: 1.45; text-align: left; }
@@ -70,7 +74,6 @@
         </tr>
     </table>
 
-    <!-- JUDUL UTAMA PERSIS FORMAT EXCEL -->
     <div class="judul-utama">
         INSTANSI PEMERINTAH / SWASTA<br>
         YANG MELAKSANAKAN PELATIHAN PEMADAM KEBAKARAN
@@ -84,6 +87,19 @@
 
     @php
         $groups = isset($groupedByYear) ? $groupedByYear : collect($data)->groupBy('tahun');
+
+        // Pengaman: kalau ada tahun dipilih, hanya tahun itu yang tampil
+        if (!empty($tahunDipilih)) {
+            $groups = $groups->filter(fn($items, $thn) => (string) $thn === (string) $tahunDipilih);
+        }
+
+        // Selalu urut 2023, 2024, 2025, 2026, ...
+        $groups = $groups->sortKeys();
+
+        $grandInstansi = 0;
+        $grandLaki = 0;
+        $grandPerempuan = 0;
+        $grandPeserta = 0;
     @endphp
 
     @forelse($groups as $tahun => $items)
@@ -102,7 +118,6 @@
         <table class="table-data">
             <thead>
                 @if(!$adaGender && !$adaNamaPeserta)
-                    <!-- Format 5 Kolom (Tahun 2023 & 2024) -->
                     <tr>
                         <th width="5%">NO</th>
                         <th width="33%">NAMA INSTANSI</th>
@@ -111,7 +126,6 @@
                         <th width="12%">JUMLAH PESERTA</th>
                     </tr>
                 @elseif($adaGender && !$adaNamaPeserta)
-                    <!-- Format 7 Kolom (Tahun 2025 & 2026 tanpa rincian nama) -->
                     <tr>
                         <th width="5%">NO</th>
                         <th width="29%">NAMA INSTANSI</th>
@@ -122,7 +136,6 @@
                         <th width="8%">JUMLAH PESERTA</th>
                     </tr>
                 @else
-                    <!-- Format 9 Kolom (Jika ada Daftar Nama Peserta) -->
                     <tr>
                         <th rowspan="2" width="4%">NO</th>
                         <th rowspan="2" width="20%">NAMA INSTANSI</th>
@@ -157,15 +170,15 @@
                         <td>{{ $item->tempat_pelaksanaan ?? '-' }}</td>
 
                         @if(!$adaGender && !$adaNamaPeserta)
-                            <td class="text-center">{{ $item->total_peserta ?: '-' }}</td>
+                            <td class="text-center">{{ $item->total_peserta ?: 0 }}</td>
                         @elseif($adaGender && !$adaNamaPeserta)
                             <td class="text-center">{{ $punyaLP ? ($item->peserta_laki_laki ?? 0) : '-' }}</td>
                             <td class="text-center">{{ $punyaLP ? ($item->peserta_perempuan ?? 0) : '-' }}</td>
-                            <td class="text-center">{{ $item->total_peserta ?: '-' }}</td>
+                            <td class="text-center">{{ $item->total_peserta ?: 0 }}</td>
                         @else
                             <td class="text-center">{{ $punyaLP ? ($item->peserta_laki_laki ?? 0) : '-' }}</td>
                             <td class="text-center">{{ $punyaLP ? ($item->peserta_perempuan ?? 0) : '-' }}</td>
-                            <td class="text-center" style="font-weight:bold;">{{ $item->total_peserta ?: '-' }}</td>
+                            <td class="text-center" style="font-weight:bold;">{{ $item->total_peserta ?: 0 }}</td>
                             <td style="vertical-align: top;">
                                 @if(count($listLaki) > 0)
                                     <ol class="ol-peserta">
@@ -188,29 +201,74 @@
                     </tr>
                 @endforeach
 
-                <!-- BARIS JUMLAH TOTAL -->
                 <tr class="tr-total">
-                    <td colspan="4" class="text-center">JUMLAH TOTAL</td>
+                    <td colspan="4" class="text-center">JUMLAH TOTAL TAHUN {{ $tahun }}</td>
                     @if(!$adaGender && !$adaNamaPeserta)
-                        <td class="text-center">{{ $totalPeserta }}</td>
+                        <td class="text-center">{{ number_format($totalPeserta, 0, ',', '.') }}</td>
                     @elseif($adaGender && !$adaNamaPeserta)
-                        <td class="text-center">{{ $totalLaki }}</td>
-                        <td class="text-center">{{ $totalPerempuan }}</td>
-                        <td class="text-center">{{ $totalPeserta }}</td>
+                        <td class="text-center">{{ number_format($totalLaki, 0, ',', '.') }}</td>
+                        <td class="text-center">{{ number_format($totalPerempuan, 0, ',', '.') }}</td>
+                        <td class="text-center">{{ number_format($totalPeserta, 0, ',', '.') }}</td>
                     @else
-                        <td class="text-center">{{ $totalLaki }}</td>
-                        <td class="text-center">{{ $totalPerempuan }}</td>
-                        <td class="text-center">{{ $totalPeserta }}</td>
+                        <td class="text-center">{{ number_format($totalLaki, 0, ',', '.') }}</td>
+                        <td class="text-center">{{ number_format($totalPerempuan, 0, ',', '.') }}</td>
+                        <td class="text-center">{{ number_format($totalPeserta, 0, ',', '.') }}</td>
                         <td colspan="2"></td>
                     @endif
                 </tr>
             </tbody>
         </table>
+
+        @php
+            $grandInstansi += $items->count();
+            $grandLaki += $totalLaki;
+            $grandPerempuan += $totalPerempuan;
+            $grandPeserta += $totalPeserta;
+        @endphp
     @empty
         <table class="table-data">
             <tr><td class="text-center">Belum ada data Fire Drill.</td></tr>
         </table>
     @endforelse
+
+    @if(empty($tahunDipilih) && $groups->count() > 1)
+        <div class="sub-tahun" style="margin-top: 28px;">REKAPITULASI TOTAL PESERTA PER TAHUN &amp; KESELURUHAN</div>
+        <table class="table-data">
+            <thead>
+                <tr>
+                    <th width="6%">NO</th>
+                    <th width="24%">TAHUN PELAKSANAAN</th>
+                    <th width="22%">JUMLAH INSTANSI</th>
+                    <th width="24%">RINCIAN LAKI-LAKI &amp; PEREMPUAN</th>
+                    <th width="24%">JUMLAH TOTAL PESERTA</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($groups as $thn => $items)
+                    @php
+                        $lThn = $items->sum(fn($i) => (int) ($i->peserta_laki_laki ?? 0));
+                        $pThn = $items->sum(fn($i) => (int) ($i->peserta_perempuan ?? 0));
+                        $tThn = $items->sum(fn($i) => (int) ($i->total_peserta ?? 0));
+                    @endphp
+                    <tr>
+                        <td class="text-center">{{ $loop->iteration }}</td>
+                        <td class="text-center" style="font-weight:bold;">Tahun {{ $thn }}</td>
+                        <td class="text-center">{{ $items->count() }} Instansi</td>
+                        <td class="text-center">
+                            {{ ($lThn > 0 || $pThn > 0) ? "Laki-laki: {$lThn} | Perempuan: {$pThn}" : '-' }}
+                        </td>
+                        <td class="text-center" style="font-weight:bold;">{{ number_format($tThn, 0, ',', '.') }} Orang</td>
+                    </tr>
+                @endforeach
+                <tr class="tr-grand-total">
+                    <td colspan="2" class="text-center">JUMLAH TOTAL KESELURUHAN (SEMUA TAHUN)</td>
+                    <td class="text-center">{{ number_format($grandInstansi, 0, ',', '.') }} Instansi</td>
+                    <td class="text-center">Laki-laki: {{ number_format($grandLaki, 0, ',', '.') }} | Perempuan: {{ number_format($grandPerempuan, 0, ',', '.') }}</td>
+                    <td class="text-center">{{ number_format($grandPeserta, 0, ',', '.') }} Orang</td>
+                </tr>
+            </tbody>
+        </table>
+    @endif
 
     <script>
         window.onload = function() {

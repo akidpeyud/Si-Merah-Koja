@@ -52,7 +52,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="theme-color" content="#0d1b2a">
-    <meta name="description" content="Ajukan dan perpanjang Sertifikat Keamanan Kebakaran (SKK) secara daring di Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.">
+    <meta name="description" content="Ajukan dan perpanjang Sertifikat Keselamatan Kebakaran (SKK) secara daring di Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.">
     <title>SKK - Layanan perizinan | SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
 
@@ -1043,8 +1043,8 @@
                 <li><span aria-current="page">SKK</span></li>
             </ol>
         </nav>
-        <h1 class="rise d1">Sertifikat Keamanan Kebakaran</h1>
-        <p class="rise d2">Ajukan Permohonan Sertifikat Keamanan Kebakaran secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+        <h1 class="rise d1">Sertifikat Keselamatan Kebakaran</h1>
+        <p class="rise d2">Ajukan Permohonan Sertifikat Keselamatan Kebakaran secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
     @include('layouts.partials.hero-logos', ['float' => true])
 </section>
@@ -1069,7 +1069,7 @@
                 <span class="c-ico"><i class="fas fa-certificate"></i></span>
                 <div>
                     <small>Produk layanan</small>
-                    <strong>Sertifikat Keamanan Kebakaran</strong>
+                    <strong>Sertifikat Keselamatan Kebakaran</strong>
                 </div>
             </div>
             <div class="fact" data-anim="up" style="--d: .25s">
@@ -1166,7 +1166,7 @@
                         <i class="fas fa-certificate"></i>
                         <div>
                             <h2>Formulir Permohonan SKK</h2>
-                            <p>Sertifikat Keamanan Kebakaran (Baru & Perpanjangan)</p>
+                            <p>Sertifikat Keselamatan Kebakaran (Baru & Perpanjangan)</p>
                         </div>
                     </div>
                     <span class="form-note"><span class="req" aria-hidden="true">*</span> wajib diisi</span>
@@ -1368,7 +1368,7 @@
 
                             <!-- Kolom Dinamis: Khusus SKK Perpanjangan -->
                             <div class="field full" id="field_skk_lama" style="display: none;">
-                                <span class="label" id="lbl-skklama"><span>Sertifikat Keamanan Kebakaran (SKK) Tahun Lalu <span class="req" aria-hidden="true">*</span></span></span>
+                                <span class="label" id="lbl-skklama"><span>Sertifikat Keselamatan Kebakaran (SKK) Tahun Lalu <span class="req" aria-hidden="true">*</span></span></span>
                                 <div class="dropzone{{ $inv('file_skk_lama') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png">
                                     <input type="file" id="file_skk_lama" name="file_skk_lama" accept=".pdf,.jpg,.jpeg,.png" aria-labelledby="lbl-skklama">
 
@@ -1468,7 +1468,7 @@
             <b>Khusus Perpanjangan:</b> Anda diwajibkan untuk mengunggah dokumen <b>SKK Tahun Lalu</b> pada kolom yang tersedia di formulir, di samping berkas persyaratan di bawah ini.
         </div>
         <ol class="req-list">
-            <li>Menginput Formulir Sertifikat Keamanan Kebakaran secara elektronik melalui simerah.jambikota.go.id</li>
+            <li>Menginput Formulir Sertifikat Keselamatan Kebakaran secara elektronik melalui simerah.jambikota.go.id</li>
             <li>
                 <b>Identitas pemohon/penanggung jawab</b>
                 <ul>
