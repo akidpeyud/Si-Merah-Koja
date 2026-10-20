@@ -10,13 +10,14 @@ return new class extends Migration
     {
         Schema::create('titik_sigaps', function (Blueprint $table) {
             $table->id();
-            // Enum kategori sesuai dengan pilihan di form HTML
-            $table->enum('kategori', ['kebakaran', 'sumber_air', 'hydrant', 'penyelamatan', 'pos']);
+            // Kategori memakai string (bukan enum) agar menambah / mengubah kategori
+            // tidak perlu migration baru. Nilai yang valid dikendalikan oleh
+            // TitikSigap::KATEGORI dan validasi di PetaController.
+            // Saat ini: sumber_air, hydrant, hydrant_pilar, water_truck, pos, zona_rawan
+            $table->string('kategori', 50)->index();
             $table->string('nama');
-            $table->date('tanggal')->nullable();
             $table->text('lokasi');
-            // Tambahan kolom keterangan
-            $table->text('keterangan')->nullable(); 
+            $table->text('keterangan')->nullable();
             // Tipe data decimal untuk presisi koordinat peta (Latitude dan Longitude)
             $table->decimal('latitude', 10, 8);
             $table->decimal('longitude', 11, 8);

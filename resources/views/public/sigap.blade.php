@@ -336,22 +336,22 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 }
 .map-sidebar-header {
     flex: 1; min-height: 0;
-    padding: 20px 20px 16px;
+    padding: 16px 20px 14px;
     display: flex; flex-direction: column;
 }
 .map-sidebar-header h2 { font-family: var(--display); font-size: 1.15rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
 .map-sidebar-header p { color: var(--muted); font-size: .8rem; line-height: 1.45; }
 
-.filter-section { margin-top: 14px; }
+.filter-section { margin-top: 12px; }
 .lbl { display: block; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; }
 
 .filter-list { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 #daftar-titik { list-style: none; flex: 1; min-height: 0; overflow-y: auto; margin: 10px 0 0; padding-right: 4px; }
 
 /* Chip kategori */
-.chips { display: grid; gap: 5px; max-height: 245px; overflow-y: auto; padding-right: 2px; }
+.chips { display: grid; gap: 4px; flex: none; }
 .chip {
-    width: 100%; min-height: 38px; display: flex; align-items: center; gap: 10px;
+    width: 100%; min-height: 36px; display: flex; align-items: center; gap: 10px;
     padding: 5px 10px; border: 1px solid var(--line); border-radius: 10px;
     background: #fff; box-shadow: var(--shadow-sm);
     font-size: .82rem; font-weight: 600; color: var(--ink-2);
@@ -396,6 +396,18 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 .map-list { border-left: 1px solid var(--line); display: flex; flex-direction: column; background: #fff; min-height: 0; overflow: hidden; }
 .map-list-header { padding: 18px 16px 12px; border-bottom: 1px solid rgba(226,232,240,.6); }
 .list-scroll { flex: 1; overflow-y: auto; min-height: 0; }
+/* Saklar filter kecamatan (panel kanan) */
+.kec-toggle { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; margin-bottom: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--soft); cursor: pointer; }
+.kec-toggle-text { display: flex; flex-direction: column; min-width: 0; }
+.kec-toggle-text b { font-size: .82rem; color: var(--ink); }
+.kec-toggle-text small { font-size: .7rem; color: var(--muted); line-height: 1.35; }
+.kec-toggle input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.kec-switch { position: relative; flex: none; width: 40px; height: 22px; border-radius: 999px; background: #cbd5e1; transition: background .2s; }
+.kec-switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .2s; }
+.kec-toggle input:checked + .kec-switch { background: var(--blue); }
+.kec-toggle input:checked + .kec-switch::after { transform: translateX(18px); }
+.kec-toggle input:focus-visible + .kec-switch { outline: 3px solid rgba(37, 99, 235, 0.5); outline-offset: 2px; }
+
 #daftar-kecamatan { list-style: none; margin: 0; padding: 10px 14px; }
 
 /* Item daftar */
@@ -791,6 +803,14 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 
                 <aside class="map-list" aria-label="Daftar kecamatan">
                     <div class="map-list-header">
+                        <label class="kec-toggle" for="toggle-kec">
+                            <span class="kec-toggle-text">
+                                <b>Filter kecamatan</b>
+                                <small id="toggle-kec-ket">Klik kecamatan untuk menyaring titik</small>
+                            </span>
+                            <input id="toggle-kec" type="checkbox" role="switch" checked>
+                            <span class="kec-switch" aria-hidden="true"></span>
+                        </label>
                         <div class="list-heading">
                             <span>Daftar Kecamatan</span>
                             <span id="list-count" class="count-badge"></span>
@@ -1009,7 +1029,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 
     /* =========================================================
        2. KONFIGURASI & STATE PETA
-       Hydrant: Kota = merah, Pilar = biru, Gedung = kuning
+       Hydrant: Kota = merah, Pilar = biru | Water Truck = kuning | Zona Rawan = oranye
        ========================================================= */
     const KOLOM_NAMA = ['kecamatan', 'KECAMATAN', 'Kecamatan', 'WADMKC', 'NAMOBJ', 'nama', 'NAME_3'];
     const PALET = ['#2563eb', '#dc2626', '#f59e0b', '#10b981', '#8b5cf6', '#ea580c', '#0f172a', '#334155', '#64748b', '#f43f5e', '#14b8a6'];
@@ -1018,28 +1038,29 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
     const SVG_HYDRANT = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 3h6v2h1.5v2h-9V5H9V3zm-1 5h8v2h2v2h-2v6h2v2H6v-2h2v-6H6v-2h2V8zM4 11h2v4H4v-4zm16 0h-2v4h2v-4z"/></svg>';
 
     const KATEGORI = {
-        kebakaran:      { label: 'Kebakaran',      warna: '#ea580c', ikon: 'fa-fire' },
-        sumber_air:     { label: 'Sumber Air',     warna: '#0891b2', ikon: 'fa-droplet' },
-        hydrant:        { label: 'Hydrant Kota',   warna: '#dc2626', svg: SVG_HYDRANT },
-        hydrant_pilar:  { label: 'Hydrant Pilar',  warna: '#2563eb', svg: SVG_HYDRANT },
-        hydrant_gedung: { label: 'Hydrant Gedung', warna: '#eab308', svg: SVG_HYDRANT },
-        penyelamatan:   { label: 'Penyelamatan',   warna: '#10b981', ikon: 'fa-life-ring' },
-        pos:            { label: 'Pos Damkar',     warna: '#0f172a', ikon: 'fa-building-flag' }
+        sumber_air:    { label: 'Sumber Air',    warna: '#0891b2', ikon: 'fa-droplet' },
+        hydrant:       { label: 'Hydrant Kota',  warna: '#dc2626', svg: SVG_HYDRANT },
+        hydrant_pilar: { label: 'Hydrant Pilar', warna: '#2563eb', svg: SVG_HYDRANT },
+        water_truck:   { label: 'Water Truck',   warna: '#eab308', ikon: 'fa-truck-droplet' },
+        pos:           { label: 'Pos Damkar',    warna: '#0f172a', ikon: 'fa-building-flag' },
+        zona_rawan:    { label: 'Zona Rawan Kebakaran', warna: '#f97316', ikon: 'fa-triangle-exclamation' }
     };
     const ikon = v => v.svg || `<i class="fas ${v.ikon}"></i>`;
 
-    // Deteksi otomatis sub-kategori hydrant dari nama / keterangan
+    // Deteksi otomatis sub-kategori dari nama / keterangan
     function klasifikasiKategori(p) {
+        if (p.kategori === 'water_truck') return 'water_truck';
         if (p.kategori === 'hydrant') {
             const teks = `${p.nama || ''} ${p.keterangan || ''}`.toLowerCase();
             if (/(hidran|hydran)t?\s*(pilar|pillar)/.test(teks)) return 'hydrant_pilar';
-            if (/(hidran|hydran)t?\s*gedung/.test(teks)) return 'hydrant_gedung';
+            // Data lama "hydrant gedung" kini dikelompokkan sebagai Water Truck
+            if (/(hidran|hydran)t?\s*gedung|water\s*-?\s*truck|watertruck/.test(teks)) return 'water_truck';
             return 'hydrant'; // Default: Hydrant Kota
         }
         return p.kategori;
     }
 
-    const state = { kategori: null, kecamatan: '', qKec: '', qTitik: '' };
+    const state = { kategori: null, kecamatan: '', qKec: '', qTitik: '', filterKec: true };
 
     const data = { fitur: [], kecamatan: [], titik: [] };
     const layersKec = {};   // nama kecamatan -> [layer poligon]
@@ -1051,6 +1072,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
     const el = {
         ringkas: $('ringkas'), kategori: $('kategori'), select:$('filter-kecamatan'),
         cariKec: $('cari'), countKec: $('list-count'), daftarKec:$('daftar-kecamatan'),
+        toggleKec: $('toggle-kec'), ketKec: $('toggle-kec-ket'),
         cariTitik: $('cari-titik'), judulTitik:$('judul-titik'), countTitik: $('count-titik'), daftarTitik:$('daftar-titik')
     };
 
@@ -1119,11 +1141,16 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 
     function renderFilter() {
         const aktif = !!state.kategori;
-        el.select.disabled = el.cariTitik.disabled = !aktif;
+        el.cariTitik.disabled = !aktif;
+        el.select.disabled = !aktif || !state.filterKec;
         el.cariTitik.value = state.qTitik;
 
         if (!aktif) {
             el.select.innerHTML = '<option value="">Pilih kategori terlebih dahulu...</option>';
+            return;
+        }
+        if (!state.filterKec) {
+            el.select.innerHTML = '<option value="">Filter kecamatan dimatikan</option>';
             return;
         }
         el.select.innerHTML = '<option value="">Semua Kecamatan</option>' +
@@ -1329,7 +1356,22 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
         });
     }
 
+    function renderToggle() {
+        el.toggleKec.checked = state.filterKec;
+        el.ketKec.textContent = state.filterKec
+            ? 'Klik kecamatan untuk menyaring titik'
+            : 'Dimatikan: warna kecamatan disembunyikan dan semua titik tampil';
+
+        // Tampilkan / sembunyikan warna poligon kecamatan di peta
+        if (geojson) {
+            const tampil = map.hasLayer(geojson);
+            if (state.filterKec && !tampil) geojson.addTo(map);
+            else if (!state.filterKec && tampil) map.removeLayer(geojson);
+        }
+    }
+
     function render() {
+        renderToggle();
         renderChips();
         renderFilter();
         renderDaftarKecamatan();
@@ -1359,7 +1401,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
     }
 
     function fokusKecamatan(nama) {
-        if (state.kategori) return setKecamatan(nama);
+        if (state.kategori && state.filterKec) return setKecamatan(nama);
         map.fitBounds(L.featureGroup(layersKec[nama]).getBounds(), { padding: [30, 30] });
     }
 
@@ -1389,13 +1431,12 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
             className: '', iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -18],
             html: `<div class="pin" style="background:${v.warna}">${ikon(v)}</div>`
         });
-        // Urutan baris: Kategori, Kecamatan, Lokasi, Keterangan, Tanggal
+        // Urutan baris: Kategori, Kecamatan, Lokasi, Keterangan
         const baris = [
             ['Kategori', v.label],
             ['Kecamatan', p.kecamatan],
             ['Lokasi', p.lokasi],
-            ['Keterangan', p.keterangan],
-            ['Tanggal', p.tanggal]
+            ['Keterangan', p.keterangan]
         ].filter(([, x]) => x).map(([a, b]) => `<tr><td>${esc(a)}</td><td>${esc(b)}</td></tr>`).join('');
         const popup = `<div class="popup"><h3>${esc(p.nama)}</h3><table>${baris}</table>
             <a href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}" target="_blank" rel="noopener"><i class="fas fa-directions"></i> Rute ke lokasi</a></div>`;
@@ -1412,6 +1453,14 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
        9. EVENT FILTER
        ========================================================= */
     el.select.addEventListener('change', () => setKecamatan(el.select.value));
+    el.toggleKec.addEventListener('change', () => {
+        state.filterKec = el.toggleKec.checked;
+        if (!state.filterKec) {
+            state.kecamatan = '';
+            if (geojson) map.fitBounds(geojson.getBounds());
+        }
+        render();
+    });
     el.cariKec.addEventListener('input', e => {
         state.qKec = e.target.value;
         renderDaftarKecamatan();
@@ -1448,17 +1497,10 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
         map.fitBounds(geojson.getBounds());
 
         if (titik) {
+            // Kategori yang tidak ada di KATEGORI (mis. kebakaran, penyelamatan) otomatis disaring
             data.titik = titik.map(p => {
                 const kat = klasifikasiKategori(p);
-                let lat = +p.lat;
-                let lng = +p.lng;
-
-                // Geser sedikit koordinat Hydrant Gedung (~13m) agar tidak menumpuk dengan Hydrant Pilar di gedung yang sama
-                if (kat === 'hydrant_gedung') {
-                    lng += 0.00012;
-                }
-
-                return { ...p, kategori: kat, lat, lng };
+                return { ...p, kategori: kat, lat: +p.lat, lng: +p.lng };
             }).filter(p => KATEGORI[p.kategori] && isFinite(p.lat) && isFinite(p.lng));
 
             data.titik.forEach(p => { p.kecamatan = p.kecamatan || cariKecamatan(p.lat, p.lng); });

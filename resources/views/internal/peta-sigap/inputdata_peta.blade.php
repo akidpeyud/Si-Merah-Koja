@@ -75,12 +75,11 @@
 @endpush
 
 @section('content')
-@section('content')
 
         @hasanyrole('Super User|Operator|User')
         <div class="page-head">
             <h1>Input Titik Peta SIGAP</h1>
-            <p>Tambahkan data lokasi operasional (kebakaran, hidrant, dll) untuk ditampilkan di peta publik.</p>
+            <p>Tambahkan data lokasi operasional (hydrant, water truck, sumber air, zona rawan kebakaran, dll) untuk ditampilkan di peta publik.</p>
         </div>
 
         <form action="{{ url('/internal/peta-sigap/store') }}" method="POST">
@@ -113,12 +112,10 @@
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-tag"></i></span>
                                 <select name="kategori" class="form-select" required>
-                                    <option value="" disabled selected>Pilih Kategori...</option>
-                                    <option value="kebakaran">Kebakaran</option>
-                                    <option value="sumber_air">Sumber Air</option>
-                                    <option value="hydrant">Hydrant</option>
-                                    <option value="penyelamatan">Penyelamatan</option>
-                                    <option value="pos">Pos Damkar</option>
+                                    <option value="" disabled {{ old('kategori') ? '' : 'selected' }}>Pilih Kategori...</option>
+                                    @foreach (\App\Models\TitikSigap::KATEGORI as $nilai => $label)
+                                        <option value="{{ $nilai }}" {{ old('kategori') === $nilai ? 'selected' : '' }}>{{ $label }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -128,7 +125,7 @@
                             <label class="form-label">Nama / Judul Titik</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-font"></i></span>
-                                <input type="text" name="nama" class="form-control" placeholder="Cth: Kebakaran Lahan Alam Barajo" value="{{ old('nama') }}" required>
+                                <input type="text" name="nama" class="form-control" placeholder="Cth: Hydrant Pilar Jl. Sultan Thaha" value="{{ old('nama') }}" required>
                             </div>
                         </div>
 
@@ -139,18 +136,9 @@
                         </div>
                         
                         <!-- Keterangan (Opsional) -->
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label class="form-label">Keterangan (Opsional)</label>
                             <textarea name="keterangan" class="form-control" placeholder="Tambahkan keterangan lebih lanjut jika ada...">{{ old('keterangan') }}</textarea>
-                        </div>
-
-                        <!-- Tanggal -->
-                        <div class="mb-4">
-                            <label class="form-label">Tanggal (Kejadian / Update)</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                                <input type="date" name="tanggal" class="form-control" value="{{ old('tanggal') }}" required>
-                            </div>
                         </div>
                         
                         <div class="row">
