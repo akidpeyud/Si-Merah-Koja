@@ -69,16 +69,51 @@
     .form-control:focus, .form-select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
     .form-control.is-invalid, .form-select.is-invalid { border-color: var(--signal); }
     .form-hint { display: block; margin-top: 6px; font-size: .75rem; color: var(--steel); }
-    .gender-label { display: flex; align-items: center; gap: 8px; }
-    .gender-label i { font-size: .85rem; }
-    .gender-label .fa-venus { color: #db2777; }
-    .gender-label .fa-mars { color: var(--info); }
+
+    /* Kartu Input Peserta Laki-laki & Perempuan */
+    .peserta-form-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 18px 20px;
+        height: 100%;
+    }
+    .peserta-form-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding-bottom: 12px;
+        margin-bottom: 14px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .gender-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        font-size: .92rem;
+        color: var(--ink);
+        margin: 0;
+    }
+    .gender-label i { font-size: 1rem; }
+    .gender-label .fa-mars { color: #0284c7; }
+    .gender-label .fa-venus { color: #e11d48; }
+    .peserta-count-badge {
+        background: #e2e8f0;
+        color: var(--ink);
+        font-weight: 700;
+        font-size: .76rem;
+        padding: 4px 10px;
+        border-radius: 6px;
+    }
+
     .total-box {
         display: flex; align-items: center; justify-content: space-between; gap: 12px;
         margin-top: 16px; padding: 12px 16px; border-radius: var(--r-sm);
         background: var(--navy-light); color: var(--navy); font-size: .88rem; font-weight: 600;
     }
-    .total-box strong { font-family: var(--font-display); font-size: 1.3rem; }
+    .total-box strong { font-family: var(--font-display); font-size: 1.25rem; }
     .form-actions {
         display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px;
         margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--line);
@@ -133,7 +168,6 @@
 @endpush
 
 @section('content')
-@section('content')
 
         <a href="/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga" class="back-link">
             <i class="fas fa-arrow-left"></i> Kembali ke Data Pelatihan Keluarga
@@ -141,7 +175,7 @@
 
         <div class="page-head">
             <h1>Form Pelatihan Keluarga Tanggap Kebakaran</h1>
-            <p>Isi informasi pelaksanaan, jumlah peserta, dan link dokumentasi kegiatan.</p>
+            <p>Isi informasi pelaksanaan, jumlah &amp; daftar nama peserta, serta link dokumentasi kegiatan.</p>
         </div>
 
         @if($errors->any())
@@ -197,29 +231,72 @@
                     </div>
                 </div>
 
-                <!-- JUMLAH PESERTA -->
+                <!-- JUMLAH & DAFTAR PESERTA -->
                 <div class="section-title">
                     <span class="ico"><i class="fas fa-users"></i></span>
-                    <span>Jumlah Peserta</span>
+                    <span>Jumlah &amp; Daftar Peserta</span>
                     <span class="line"></span>
                 </div>
 
                 <div class="row g-3">
+                    <!-- PESERTA LAKI-LAKI -->
                     <div class="col-md-6">
-                        <label class="form-label gender-label" for="peserta_perempuan"><i class="fas fa-venus"></i> Peserta Perempuan <span class="req">*</span></label>
-                        <input type="number" id="peserta_perempuan" name="peserta_perempuan" value="{{ old('peserta_perempuan', 0) }}" class="form-control js-peserta @error('peserta_perempuan') is-invalid @enderror" min="0" inputmode="numeric" required>
-                        @error('peserta_perempuan')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <div class="peserta-form-card">
+                            <div class="peserta-form-head">
+                                <span class="gender-label">
+                                    <i class="fas fa-mars"></i> Peserta Laki-laki
+                                </span>
+                                <span class="peserta-count-badge" id="badgeLaki">{{ old('peserta_laki_laki', 0) }} Orang</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" for="peserta_laki_laki">Jumlah Laki-laki <span class="req">*</span></label>
+                                <input type="number" id="peserta_laki_laki" name="peserta_laki_laki" value="{{ old('peserta_laki_laki', 0) }}" class="form-control js-peserta @error('peserta_laki_laki') is-invalid @enderror" min="0" inputmode="numeric" required>
+                                @error('peserta_laki_laki')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+
+                            <div>
+                                <label class="form-label" for="nama_peserta_laki_laki">Daftar Nama Peserta Laki-laki</label>
+                                <textarea id="nama_peserta_laki_laki" name="nama_peserta_laki_laki" rows="5"
+                                          class="form-control @error('nama_peserta_laki_laki') is-invalid @enderror"
+                                          placeholder="Ketik satu nama per baris, contoh:&#10;Budi&#10;Andi&#10;Joko">{{ old('nama_peserta_laki_laki') }}</textarea>
+                                @error('nama_peserta_laki_laki')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                <span class="form-hint">Tulis <strong>satu nama per baris</strong> (tekan Enter untuk baris baru). Jumlah peserta akan otomatis menyesuaikan.</span>
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- PESERTA PEREMPUAN -->
                     <div class="col-md-6">
-                        <label class="form-label gender-label" for="peserta_laki_laki"><i class="fas fa-mars"></i> Peserta Laki-laki <span class="req">*</span></label>
-                        <input type="number" id="peserta_laki_laki" name="peserta_laki_laki" value="{{ old('peserta_laki_laki', 0) }}" class="form-control js-peserta @error('peserta_laki_laki') is-invalid @enderror" min="0" inputmode="numeric" required>
-                        @error('peserta_laki_laki')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <div class="peserta-form-card">
+                            <div class="peserta-form-head">
+                                <span class="gender-label">
+                                    <i class="fas fa-venus"></i> Peserta Perempuan
+                                </span>
+                                <span class="peserta-count-badge" id="badgePerempuan">{{ old('peserta_perempuan', 0) }} Orang</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" for="peserta_perempuan">Jumlah Perempuan <span class="req">*</span></label>
+                                <input type="number" id="peserta_perempuan" name="peserta_perempuan" value="{{ old('peserta_perempuan', 0) }}" class="form-control js-peserta @error('peserta_perempuan') is-invalid @enderror" min="0" inputmode="numeric" required>
+                                @error('peserta_perempuan')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+
+                            <div>
+                                <label class="form-label" for="nama_peserta_perempuan">Daftar Nama Peserta Perempuan</label>
+                                <textarea id="nama_peserta_perempuan" name="nama_peserta_perempuan" rows="5"
+                                          class="form-control @error('nama_peserta_perempuan') is-invalid @enderror"
+                                          placeholder="Ketik satu nama per baris, contoh:&#10;Mega&#10;Wati&#10;Siti">{{ old('nama_peserta_perempuan') }}</textarea>
+                                @error('nama_peserta_perempuan')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                <span class="form-hint">Tulis <strong>satu nama per baris</strong> (tekan Enter untuk baris baru). Jumlah peserta akan otomatis menyesuaikan.</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="total-box">
-                    <span>Total peserta</span>
-                    <strong id="totalPeserta">0</strong>
+                    <span>Total Seluruh Peserta</span>
+                    <strong id="totalPeserta">0 Orang</strong>
                 </div>
 
                 <!-- DOKUMENTASI (LINK) -->
@@ -299,15 +376,50 @@
         selKec.addEventListener('change', function () { fillKelurahan(selKec.value, ''); });
     }
 
-    /* ---------- Total peserta otomatis ---------- */
-    var pesertaInputs = document.querySelectorAll('.js-peserta');
+    /* ---------- Hitung Jumlah & Daftar Peserta Otomatis ---------- */
+    var inputL = document.getElementById('peserta_laki_laki');
+    var inputP = document.getElementById('peserta_perempuan');
+    var textareaL = document.getElementById('nama_peserta_laki_laki');
+    var textareaP = document.getElementById('nama_peserta_perempuan');
+    var badgeL = document.getElementById('badgeLaki');
+    var badgeP = document.getElementById('badgePerempuan');
     var totalEl = document.getElementById('totalPeserta');
-    function hitungTotal() {
-        var t = 0;
-        pesertaInputs.forEach(function (i) { t += Math.max(0, parseInt(i.value, 10) || 0); });
-        if (totalEl) totalEl.textContent = t;
+
+    function hitungBarisNama(teks) {
+        if (!teks) return 0;
+        return teks
+            .split(/[\r\n,;]+/)
+            .map(function (s) { return s.trim(); })
+            .filter(function (s) { return s.length > 0; })
+            .length;
     }
-    pesertaInputs.forEach(function (i) { i.addEventListener('input', hitungTotal); });
+
+    function hitungTotal() {
+        var l = Math.max(0, parseInt(inputL ? inputL.value : 0, 10) || 0);
+        var p = Math.max(0, parseInt(inputP ? inputP.value : 0, 10) || 0);
+
+        if (badgeL) badgeL.textContent = l + ' Orang';
+        if (badgeP) badgeP.textContent = p + ' Orang';
+        if (totalEl) totalEl.textContent = (l + p) + ' Orang';
+    }
+
+    if (textareaL && inputL) {
+        textareaL.addEventListener('input', function () {
+            inputL.value = hitungBarisNama(this.value);
+            hitungTotal();
+        });
+    }
+
+    if (textareaP && inputP) {
+        textareaP.addEventListener('input', function () {
+            inputP.value = hitungBarisNama(this.value);
+            hitungTotal();
+        });
+    }
+
+    if (inputL) inputL.addEventListener('input', hitungTotal);
+    if (inputP) inputP.addEventListener('input', hitungTotal);
+
     hitungTotal();
 
     /* ---------- Cegah submit ganda ---------- */
@@ -319,8 +431,6 @@
             btnSave.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
         });
     }
-
-    
 })();
 </script>
 @endpush
