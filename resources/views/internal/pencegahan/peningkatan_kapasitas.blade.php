@@ -18,10 +18,16 @@
     .side-group summary .chev { flex: none; font-size: .7rem; margin-top: 4px; transition: transform .25s ease; }
     .page-head { margin-bottom: 26px; }
     .page-head p { color: var(--steel); font-size: .95rem; }
-    .btn-navy { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; background: var(--navy); color: #fff; font-weight: 600; font-size: .86rem; border: none; transition: background .2s, transform .1s, box-shadow .2s; }
+    .btn-navy { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; background: var(--navy); color: #fff; font-weight: 600; font-size: .86rem; border: none; text-decoration: none; transition: background .2s, transform .1s, box-shadow .2s; }
     .btn-navy:hover { background: var(--navy-dark); color: #fff; box-shadow: 0 4px 12px rgba(22,58,99,.22); }
     .btn-navy:active { transform: scale(.97); }
-    .btn-add { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; background: var(--success); color: #fff; font-weight: 600; font-size: .86rem; border: none; transition: background .2s, transform .1s, box-shadow .2s; }
+    .btn-excel { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; background: #198754; color: #fff; font-weight: 600; font-size: .86rem; border: none; text-decoration: none; transition: background .2s, transform .1s, box-shadow .2s; }
+    .btn-excel:hover { background: #146c43; color: #fff; box-shadow: 0 4px 12px rgba(25,135,84,.25); }
+    .btn-excel:active { transform: scale(.97); }
+    .btn-pdf { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; background: #dc3545; color: #fff; font-weight: 600; font-size: .86rem; border: none; text-decoration: none; transition: background .2s, transform .1s, box-shadow .2s; }
+    .btn-pdf:hover { background: #b02a37; color: #fff; box-shadow: 0 4px 12px rgba(220,53,69,.25); }
+    .btn-pdf:active { transform: scale(.97); }
+    .btn-add { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; background: var(--success); color: #fff; font-weight: 600; font-size: .86rem; border: none; text-decoration: none; transition: background .2s, transform .1s, box-shadow .2s; }
     .btn-add:hover { background: #148f65; color: #fff; box-shadow: 0 4px 12px rgba(25,135,84,.25); }
     .btn-add:active { transform: scale(.97); }
     .custom-nav-tabs { display: flex; flex-wrap: nowrap; gap: 6px; overflow-x: auto; margin: 6px 0 30px; border-bottom: 1px solid var(--line); scrollbar-width: thin; }
@@ -29,7 +35,7 @@
     .custom-nav-tabs .nav-link:hover { color: var(--ink); background: #f3f6fa; }
     .custom-nav-tabs .nav-link.active { color: var(--navy); border-bottom-color: var(--navy); background: transparent; }
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 44px; }
-    .stat-card { display: flex; flex-direction: column; align-items: flex-start; padding: 22px; background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); box-shadow: var(--shadow-xs); transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease; position: relative; overflow: hidden; }
+    .stat-card { display: flex; flex-direction: column; align-items: flex-start; padding: 22px; background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); box-shadow: var(--shadow-xs); transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease; position: relative; overflow: hidden; text-decoration: none; }
     .stat-card:hover { box-shadow: var(--shadow-sm); border-color: #d2dae5; transform: translateY(-3px); }
     .stat-card::after { content: "\f061"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; top: 22px; right: 20px; color: var(--steel-soft); font-size: .8rem; opacity: 0; transform: translateX(-6px); transition: opacity .2s ease, transform .2s ease; }
     .stat-card:hover::after { opacity: 1; transform: translateX(0); }
@@ -75,7 +81,7 @@
     @media print {
         .topbar { position: static; background: #fff !important; color: #000 !important; box-shadow: none; border-bottom: 1px solid #ddd; }
         .brand span { color: #000 !important; }
-        .sidebar, .btn-logout, .btn-navy, .btn-add, .custom-nav-tabs, .toast-wrap { display: none !important; }
+        .sidebar, .btn-logout, .btn-navy, .btn-excel, .btn-pdf, .btn-add, .custom-nav-tabs, .toast-wrap { display: none !important; }
         .shell { display: block; }
         .content { padding: 20px; }
         .stat-card { box-shadow: none; break-inside: avoid; }
@@ -83,7 +89,6 @@
 </style>
 @endpush
 
-@section('content')
 @section('content')
 
         <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-2">
@@ -100,10 +105,15 @@
                 </a>
                 @endhasanyrole
 
-                <!-- TOMBOL CETAK TERBUKA UNTUK SEMUA ROLE -->
-                <button type="button" onclick="window.print()" class="btn-navy">
-                    <i class="fas fa-print"></i> Cetak Rekap
-                </button>
+                <!-- TOMBOL EXCEL (MULTI-SHEET SEMUA DIKLAT) TERBUKA UNTUK SEMUA ROLE -->
+                <a href="/internal/pencegahan/peningkatan-kapasitas/cetak-excel/semua" class="btn-excel">
+                    <i class="fas fa-file-excel"></i> Excel
+                </a>
+
+                <!-- TOMBOL PDF (SEMUA DIKLAT) TERBUKA UNTUK SEMUA ROLE -->
+                <a href="/internal/pencegahan/peningkatan-kapasitas/cetak-pdf/semua" target="_blank" class="btn-pdf">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </a>
             </div>
         </div>
 
@@ -179,4 +189,5 @@
                 </div>
             </a>
         </div>
+
 @endsection
