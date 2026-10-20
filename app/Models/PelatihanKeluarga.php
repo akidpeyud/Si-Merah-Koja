@@ -17,7 +17,9 @@ class PelatihanKeluarga extends Model
         'kelurahan',
         'rt',
         'peserta_perempuan',
+        'nama_peserta_perempuan', // <-- Tambahkan ini
         'peserta_laki_laki',
+        'nama_peserta_laki_laki', // <-- Tambahkan ini
         'link_dokumentasi',
     ];
 }
