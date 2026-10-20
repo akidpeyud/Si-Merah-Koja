@@ -1,409 +1,444 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Edit Data Relawan')
+@section('title', 'Edit Data Relawan REDKAR')
 
 @push('styles')
 <style>
-    :root {
-                --ink: #0d1b2a;
-                --ink-2: #132a43;
-                --ink-3: #1d3856;
-                --paper: #f7f9fc;
-                --white: #ffffff;
-    
-                --navy: #1e3a5f;
-                --navy-d: #14283f;
-                --navy-tint: rgba(30, 58, 95, .09);
-    
-                --signal: #e5392d;
-                --signal-d: #c22b20;
-                --signal-tint: rgba(229, 57, 45, .09);
-    
-                --amber: #ffb627;
-                --success: #10b981;
-                --info: #2f6fed;
-                --info-tint: rgba(47, 111, 237, .09);
-                --ink-tint: rgba(13, 27, 42, .055);
-    
-                --steel: #64748b;
-                --steel-soft: #94a3b8;
-                --line: #e6eaf1;
-    
-                --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
-                --font-body: 'Instrument Sans', system-ui, sans-serif;
-    
-                --r-lg: 20px;
-                --r-md: 14px;
-                --r-sm: 10px;
-    
-                --sidebar-w: 272px;
-                --topbar-h: 72px;
-    
-                --shadow-xs: 0 1px 2px rgba(13, 27, 42, .05);
-                --shadow-sm: 0 2px 8px -2px rgba(13, 27, 42, .08);
-                --shadow-md: 0 12px 24px -8px rgba(13, 27, 42, .12);
-                --shadow-lg: 0 24px 48px -16px rgba(13, 27, 42, .18);
-            }
-    .topbar {
-                position: sticky; top: 0; z-index: 60; height: var(--topbar-h);
-                display: flex; align-items: center; justify-content: space-between; gap: 16px;
-                padding: 0 28px; background: rgba(255,255,255,.86);
-                -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
-                border-bottom: 1px solid var(--line);
-            }
-    .side-toggle { display: none; width: 40px; height: 40px; border-radius: 12px; align-items: center; justify-content: center; font-size: 1.05rem; transition: background .2s; }
-    .side-toggle:hover { background: var(--paper); }
-    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
-    .brand span { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: 1.08rem; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .topbar-right { display: flex; align-items: center; gap: 14px; }
-    .user-chip { display: flex; align-items: center; gap: 10px; padding: 6px 16px 6px 6px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); }
-    .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: .9rem; flex: none; }
-    .user-meta strong { font-size: .85rem; font-weight: 700; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); }
-    .user-meta small { font-size: .74rem; color: var(--steel); text-transform: capitalize; font-weight: 500; }
-    .btn-logout { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border-radius: 999px; background: var(--navy); color: #fff; font-weight: 600; font-size: .85rem; transition: background .2s, transform .1s; border: none; }
-    .btn-logout:hover { background: var(--navy-d); }
-    .btn-logout:active { transform: scale(.98); }
-    .sidebar {
-                width: var(--sidebar-w); flex: none; position: sticky; top: var(--topbar-h);
-                height: calc(100vh - var(--topbar-h)); overflow-y: auto;
-                background: #fff; border-right: 1px solid var(--line);
-                padding: 20px 14px 32px;
-                scrollbar-width: thin;
-                scrollbar-color: var(--line) transparent;
-            }
-    .sidebar::-webkit-scrollbar-thumb { background-color: var(--line); border-radius: 20px; }
-    .side-link {
-                display: flex; align-items: center; gap: 14px; padding: 11px 14px; border-radius: var(--r-sm);
-                font-size: .9rem; font-weight: 600; color: var(--ink); transition: background .2s, color .2s;
-                margin-bottom: 4px;
-            }
-    .side-link:hover { background: var(--paper); }
-    .side-link.active { background: var(--ink); color: #fff; }
-    .side-link i { width: 20px; text-align: center; font-size: 1rem; color: var(--steel); transition: color .2s; }
-    .side-link.active i { color: var(--amber); }
-    .side-group summary {
-                list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px;
-                padding: 11px 14px; border-radius: var(--r-sm); font-size: .8rem; font-weight: 700;
-                letter-spacing: .04em; text-transform: uppercase; color: var(--navy); transition: background .2s;
-                user-select: none;
-            }
-    .side-group summary:hover { background: var(--paper); }
-    .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); }
-    .side-group summary .grp-label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .side-group summary .chev { flex: none; font-size: .7rem; transition: transform .25s ease; }
-    .side-sub { display: grid; gap: 3px; padding: 6px 4px 10px 12px; border-left: 2px solid var(--line); margin: 2px 0 8px 22px; }
-    .side-sub a {
-                display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: var(--r-sm);
-                font-size: .85rem; font-weight: 500; line-height: 1.4; color: var(--steel);
-                transition: background .2s, color .2s, transform .2s;
-            }
-    .side-sub a:hover { background: var(--paper); color: var(--ink); transform: translateX(2px); }
-    .side-sub a.active { background: var(--navy-tint); color: var(--navy-d); font-weight: 600; }
-    .side-sub a i { width: 18px; text-align: center; font-size: .9rem; opacity: .75; }
-    .side-kicker { padding: 18px 14px 6px; font-size: .7rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--steel-soft); }
-    @media (max-width: 900px) {
-        .sidebar {
-                    position: fixed; z-index: 90; top: var(--topbar-h); left: 0;
-                    height: calc(100dvh - var(--topbar-h)); transform: translateX(-100%);
-                    transition: transform .3s cubic-bezier(.4,0,.2,1); box-shadow: var(--shadow-lg);
-                }
-        .sidebar-backdrop {
-                    display: block; position: fixed; inset: var(--topbar-h) 0 0 0; z-index: 80;
-                    background: rgba(13,27,42,.4); opacity: 0; pointer-events: none; transition: opacity .3s;
-                }
+    /* =========================================================
+       FORM REDKAR — gaya khusus halaman (tambah & edit)
+       Memakai variabel warna dari layouts.dashboard (dengan fallback)
+       ========================================================= */
+    .rkf {
+        --rk-ink: var(--ink, #0d1b2a);
+        --rk-navy: var(--navy, #1b365d);
+        --rk-steel: var(--steel, #4a5a6e);
+        --rk-muted: var(--steel-soft, #7b8a9c);
+        --rk-line: var(--line, #e4e9f0);
+        --rk-paper: var(--paper, #f6f8fb);
+        --rk-red: var(--signal, #e5383b);
+        --rk-red-soft: var(--signal-soft, #fdeaea);
+        --rk-green: var(--success, #10b981);
+        --rk-green-soft: #e3f7ef;
+        --rk-blue-soft: var(--info-soft, #e6eefd);
+        max-width: 980px; margin: 0 auto;
     }
-    .page-head { margin-bottom: 28px; }
-    .page-head h1 { font-family: var(--font-display); font-weight: 700; font-stretch: 90%; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 4px; color: var(--ink); }
-    .page-head p { color: var(--steel); font-size: .98rem; }
-    .content-card {
-                background: #fff; border-radius: var(--r-lg); border: 1px solid var(--line);
-                padding: clamp(24px, 4vw, 36px); box-shadow: var(--shadow-sm); width: 100%; max-width: 1000px; margin: 0 auto;
-            }
-    .section-title {
-                font-family: var(--font-display); font-weight: 700; font-size: 1.05rem;
-                color: var(--navy); text-transform: uppercase; letter-spacing: 0.04em;
-                margin-top: 32px; margin-bottom: 20px; padding-bottom: 8px; border-bottom: 2px solid var(--navy-tint);
-            }
-    .section-title:first-of-type { margin-top: 0; }
-    .form-label { font-size: 0.85rem; font-weight: 700; color: var(--ink); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.03em; }
-    .form-control, .form-select {
-                font-size: 0.95rem; padding: 12px 16px; border-radius: var(--r-sm); border: 1px solid var(--line);
-                background-color: #fff; color: var(--ink); transition: border-color .2s, box-shadow .2s;
-            }
-    .form-control:focus, .form-select:focus {
-                border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-tint); background-color: #fff;
-            }
-    .btn-update {
-                display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-                background-color: var(--info); color: white; font-weight: 700; font-size: 0.95rem;
-                padding: 14px 28px; border: none; border-radius: 999px; width: 100%; transition: background .2s, transform .1s;
-                box-shadow: 0 4px 12px rgba(47, 111, 237, 0.25);
-            }
-    .btn-update:hover { background-color: #1d55c7; }
-    .btn-update:active { transform: scale(0.98); }
-    .btn-back {
-                display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-                background-color: var(--paper); color: var(--steel); font-weight: 600; font-size: 0.95rem;
-                padding: 14px 28px; border: 1px solid var(--line); border-radius: 999px; width: 100%;
-                text-decoration: none; text-align: center; transition: background .2s, color .2s;
-            }
-    .btn-back:hover { background-color: var(--line); color: var(--ink); }
+
+    /* ---------- Header ---------- */
+    .rkf-hero {
+        position: relative; overflow: hidden;
+        display: flex; align-items: flex-end; justify-content: space-between;
+        gap: 16px; flex-wrap: wrap;
+        padding: 26px 30px; margin-bottom: 20px;
+        border-radius: 20px; color: #fff;
+        background:
+            radial-gradient(480px 200px at 100% 0%, rgba(229, 56, 59, .36), transparent 70%),
+            linear-gradient(120deg, var(--rk-ink) 0%, var(--rk-navy) 100%);
+    }
+    .rkf-hero::after {
+        content: ""; position: absolute; right: -40px; bottom: -70px;
+        width: 200px; height: 200px; border-radius: 50%;
+        border: 26px solid rgba(255, 255, 255, .05); pointer-events: none;
+    }
+    .rkf-hero > * { position: relative; z-index: 1; }
+    .rkf-back {
+        display: inline-flex; align-items: center; gap: 8px;
+        margin-bottom: 12px; padding: 5px 12px; border-radius: 999px;
+        background: rgba(255, 255, 255, .12); color: #fff;
+        font-size: .8rem; font-weight: 600; text-decoration: none;
+        transition: background .2s;
+    }
+    .rkf-back:hover { background: rgba(255, 255, 255, .22); color: #fff; }
+    .rkf-back:focus-visible { outline: 3px solid rgba(255, 255, 255, .6); outline-offset: 2px; }
+    .rkf-hero h1 {
+        font-family: var(--font-display, inherit); font-weight: 700;
+        letter-spacing: -.02em; line-height: 1.2;
+        font-size: clamp(1.4rem, 2.6vw, 1.85rem); margin: 0 0 6px;
+    }
+    .rkf-hero p { margin: 0; color: rgba(255, 255, 255, .72); font-size: .93rem; max-width: 52ch; }
+    .rkf-id {
+        padding: 9px 14px; border-radius: 12px;
+        background: rgba(255, 255, 255, .1); border: 1px solid rgba(255, 255, 255, .18);
+        font-size: .8rem; color: rgba(255, 255, 255, .75); line-height: 1.35;
+    }
+    .rkf-id strong { display: block; color: #fff; font-size: 1rem; }
+
+    /* ---------- Alert error ---------- */
+    .rkf-alert {
+        display: flex; gap: 14px; align-items: flex-start;
+        padding: 16px 18px; margin-bottom: 20px;
+        background: var(--rk-red-soft); border: 1px solid #f6c4c5;
+        border-left: 4px solid var(--rk-red); border-radius: 14px; color: #7a1d1f;
+    }
+    .rkf-alert > i { margin-top: 3px; color: var(--rk-red); }
+    .rkf-alert strong { display: block; margin-bottom: 4px; }
+    .rkf-alert ul { margin: 0; padding-left: 18px; font-size: .9rem; }
+    .rkf-alert .btn-close { margin-left: auto; }
+
+    /* ---------- Seksi form ---------- */
+    .rkf-sec {
+        background: #fff; border: 1px solid var(--rk-line);
+        border-radius: 20px; padding: 24px 26px 26px; margin-bottom: 16px;
+    }
+    .rkf-sec-head { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .rkf-sec-num {
+        flex: none; width: 40px; height: 40px; border-radius: 12px;
+        display: grid; place-items: center;
+        background: var(--rk-blue-soft); color: var(--rk-navy); font-size: .95rem;
+    }
+    .rkf-sec-head h2 {
+        font-family: var(--font-display, inherit); font-size: 1.08rem; font-weight: 700;
+        color: var(--rk-ink); margin: 0; line-height: 1.25;
+    }
+    .rkf-sec-head p { margin: 2px 0 0; font-size: .82rem; color: var(--rk-muted); }
+
+    /* ---------- Input ---------- */
+    .rkf .form-label { font-size: .84rem; font-weight: 600; color: var(--rk-ink); margin-bottom: 6px; }
+    .rkf .form-control, .rkf .form-select {
+        font-size: .94rem; padding: 11px 14px; border-radius: 12px;
+        border: 1px solid var(--rk-line); background-color: var(--rk-paper); color: var(--rk-ink);
+        transition: border-color .2s, box-shadow .2s, background-color .2s;
+    }
+    .rkf .form-select { padding-right: 38px; }
+    .rkf .form-control::placeholder { color: #9aa7b6; }
+    .rkf .form-control:hover, .rkf .form-select:hover { border-color: #cdd6e2; }
+    .rkf .form-control:focus, .rkf .form-select:focus {
+        background-color: #fff; border-color: var(--rk-navy);
+        box-shadow: 0 0 0 4px rgba(27, 54, 93, .12);
+    }
+    .rkf-hint { margin-top: 6px; font-size: .78rem; color: var(--rk-muted); }
+    .rkf-hint.ok { color: #0b7a56; font-weight: 600; }
+    .rkf-field-error { margin-top: 8px; font-size: .82rem; font-weight: 600; color: var(--rk-red); }
+
+    /* ---------- Upload KTP ---------- */
+    .rkf-drop {
+        position: relative; display: flex; align-items: center; gap: 16px;
+        padding: 18px 20px; cursor: pointer;
+        border: 2px dashed #cdd6e2; border-radius: 16px; background: var(--rk-paper);
+        transition: border-color .2s, background .2s;
+    }
+    .rkf-drop:hover, .rkf-drop.has-file { border-color: var(--rk-navy); background: #f1f5fb; }
+    .rkf-drop:focus-within { border-color: var(--rk-navy); box-shadow: 0 0 0 4px rgba(27, 54, 93, .12); }
+    .rkf-drop input[type="file"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+    .rkf-drop-ico {
+        flex: none; width: 48px; height: 48px; border-radius: 14px;
+        display: grid; place-items: center; font-size: 1.15rem;
+        background: #fff; color: var(--rk-navy); border: 1px solid var(--rk-line);
+    }
+    .rkf-drop-text { flex: 1 1 auto; min-width: 0; }
+    .rkf-drop-text strong { display: block; font-size: .92rem; color: var(--rk-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .rkf-drop-text small { display: block; margin-top: 2px; font-size: .8rem; color: var(--rk-muted); }
+    .rkf-drop img { flex: none; width: 64px; height: 44px; object-fit: cover; border-radius: 8px; border: 1px solid var(--rk-line); }
+    .rkf-current {
+        display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+        margin-bottom: 12px; padding: 12px 16px;
+        border: 1px solid var(--rk-line); border-radius: 14px; background: #fff; font-size: .88rem;
+    }
+    .rkf-current span { display: inline-flex; align-items: center; gap: 8px; color: var(--rk-steel); }
+    .rkf-current a {
+        padding: 6px 13px; border-radius: 10px; font-size: .82rem; font-weight: 600;
+        background: var(--rk-green-soft); color: #0b7a56; text-decoration: none; transition: background .2s, color .2s;
+    }
+    .rkf-current a:hover { background: #0e9f6e; color: #fff; }
+    .rkf-current .none { color: var(--rk-muted); font-weight: 500; }
+
+    /* ---------- Bar aksi ---------- */
+    .rkf-bar {
+        position: sticky; bottom: 14px; z-index: 5;
+        display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap;
+        padding: 12px; margin-top: 4px;
+        background: rgba(255, 255, 255, .92); backdrop-filter: blur(8px);
+        border: 1px solid var(--rk-line); border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(13, 27, 42, .12);
+    }
+    .rkf-btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+        height: 46px; padding: 0 24px; border-radius: 12px;
+        font-size: .92rem; font-weight: 600; text-decoration: none; cursor: pointer;
+        border: 1px solid transparent;
+        transition: transform .15s, box-shadow .2s, background .2s, color .2s;
+    }
+    .rkf-btn:active { transform: translateY(1px); }
+    .rkf-btn:focus-visible { outline: 3px solid rgba(27, 54, 93, .35); outline-offset: 2px; }
+    .rkf-btn-ghost { background: #fff; color: var(--rk-steel); border-color: var(--rk-line); }
+    .rkf-btn-ghost:hover { background: var(--rk-paper); color: var(--rk-ink); }
+    .rkf-btn-save { color: #fff; }
+    .rkf-btn-save.green { background: var(--rk-green); box-shadow: 0 6px 16px rgba(16, 185, 129, .3); }
+    .rkf-btn-save.green:hover { background: #0e9f6e; transform: translateY(-1px); color: #fff; }
+    .rkf-btn-save.navy { background: var(--rk-navy); box-shadow: 0 6px 16px rgba(27, 54, 93, .28); }
+    .rkf-btn-save.navy:hover { background: var(--rk-ink); transform: translateY(-1px); color: #fff; }
+    .rkf-btn-save[disabled] { opacity: .7; cursor: progress; transform: none; }
+
+    @media (max-width: 768px) {
+        .rkf-hero { padding: 22px 20px; border-radius: 18px; }
+        .rkf-sec { padding: 20px 18px 22px; border-radius: 18px; }
+        .rkf-bar { bottom: 8px; }
+        .rkf-bar .rkf-btn { flex: 1 1 100%; }
+        .rkf-bar .rkf-btn-save { order: -1; }
+        .rkf-drop { flex-wrap: wrap; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .rkf * { transition: none !important; }
+    }
 </style>
 @endpush
 
 @section('content')
-@section('content')
+@php
+    $kecamatanList  = ['Alam Barajo', 'Danau Sipin', 'Danau Teluk', 'Jambi Selatan', 'Jambi Timur', 'Jelutung', 'Kota Baru', 'Paal Merah', 'Pasar Jambi', 'Pelayangan', 'Telanaipura'];
+    $agamaList      = ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Konghucu'];
+    $statusList     = ['Belum Kawin', 'Kawin', 'Cerai Hidup', 'Cerai Mati'];
+    $pendidikanList = ['SD' => 'SD sederajat', 'SMP' => 'SMP sederajat', 'SMA' => 'SMA sederajat', 'D3' => 'Diploma 3 (D3)', 'S1' => 'Sarjana (S1)', 'S2' => 'Magister (S2)'];
+    $pekerjaanList  = ['ASN', 'TNI', 'POLRI', 'WIRASWASTA', 'KARYAWAN SWASTA', 'KARYAWAN BUMN/BUMD', 'PEKERJA HARIAN LEPAS', 'MAHASISWA/PELAJAR', 'PENGURUS RUMAH TANGGA'];
+    $darahList      = ['A', 'B', 'AB', 'O', 'Tidak Tahu'];
 
-        <div class="page-head">
-            <h1>Edit Data Relawan</h1>
-            <p>Perbarui seluruh informasi biodata, wilayah, dan status keanggotaan relawan REDKAR.</p>
+    $val          = fn ($k) => old($k, $relawan->$k);
+    $tersimpan    = strtoupper(trim((string) $relawan->pekerjaan));
+    $isLain       = $tersimpan !== '' && !in_array($tersimpan, $pekerjaanList);
+    $pekerjaanSel = old('pekerjaan', $isLain ? 'LAINNYA' : $tersimpan);
+    $lainnyaVal   = old('pekerjaan_lainnya', $isLain ? $relawan->pekerjaan : '');
+    $kelSel       = old('kelurahan', $relawan->kelurahan);
+    $tglLahir = $val('tanggal_lahir');
+    $tglLahir = $tglLahir ? \Carbon\Carbon::parse($tglLahir)->format('Y-m-d') : '';
+@endphp
+
+<div class="rkf">
+
+    {{-- ===== Header ===== --}}
+    <div class="rkf-hero">
+        <div>
+            <a href="/internal/pencegahan/kelola-redkar" class="rkf-back"><i class="fas fa-arrow-left"></i> Data relawan</a>
+            <h1>Edit data relawan REDKAR</h1>
+            <p>Perbarui biodata dan wilayah domisili pemohon atau anggota REDKAR.</p>
         </div>
+        <div class="rkf-id">Register ID<strong>{{ $relawan->id }}</strong></div>
+    </div>
 
-        @if($errors->any())
-            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-                <i class="fas fa-exclamation-triangle me-2"></i> Periksa kembali isian form Anda:
-                <ul class="mb-0 mt-2">
+    {{-- ===== Error validasi ===== --}}
+    @if($errors->any())
+        <div class="rkf-alert alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>
+                <strong>Ada isian yang perlu diperbaiki</strong>
+                <ul>
                     @foreach($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-        @endif
-
-        <div class="content-card">
-            <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
-                <div>
-                    <h4 class="fw-bold text-dark m-0"><i class="fas fa-user-edit me-2 text-primary"></i> Formulir Perubahan Data</h4>
-                    <small class="text-muted">Register ID: {{ $relawan->id }}</small>
-                </div>
-                <span class="badge bg-primary px-3 py-2 text-uppercase" style="font-size: 11px; letter-spacing: 0.5px;">Akun: {{ $relawan->username }}</span>
-            </div>
-
-            <form action="/internal/pencegahan/update-redkar/{{ $relawan->id }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-
-                <div class="row g-4">
-                    <!-- IDENTITAS UTAMA -->
-                    <div class="col-12"><div class="section-title mt-0">1. Identitas Pribadi</div></div>
-
-                    <div class="col-md-12">
-                        <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="nama_lengkap" value="{{ old('nama_lengkap', $relawan->nama_lengkap) }}" required>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">NIK (Nomor KTP - 16 Digit) <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="nik" value="{{ old('nik', $relawan->nik) }}" maxlength="16" required>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">No. Telepon / WhatsApp <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="nomor_telp" value="{{ old('nomor_telp', $relawan->nomor_telp) }}" required>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Tempat Lahir <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="tempat_lahir" value="{{ old('tempat_lahir', $relawan->tempat_lahir) }}" required>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label class="form-label">Tanggal Lahir <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" name="tanggal_lahir" value="{{ old('tanggal_lahir', $relawan->tanggal_lahir) }}" required>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="form-label">Jenis Kelamin <span class="text-danger">*</span></label>
-                        <select class="form-select" name="jenis_kelamin" required>
-                            <option value="Laki-Laki" {{ old('jenis_kelamin', $relawan->jenis_kelamin) == 'Laki-Laki' ? 'selected' : '' }}>Laki-Laki</option>
-                            <option value="Perempuan" {{ old('jenis_kelamin', $relawan->jenis_kelamin) == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
-                        </select>
-                    </div>
-                    
-                    <div class="col-md-4">
-                        <label class="form-label">Agama <span class="text-danger">*</span></label>
-                        <select class="form-select" name="agama" required>
-                            <option value="Islam" {{ old('agama', $relawan->agama) == 'Islam' ? 'selected' : '' }}>Islam</option>
-                            <option value="Kristen" {{ old('agama', $relawan->agama) == 'Kristen' ? 'selected' : '' }}>Kristen</option>
-                            <option value="Katolik" {{ old('agama', $relawan->agama) == 'Katolik' ? 'selected' : '' }}>Katolik</option>
-                            <option value="Hindu" {{ old('agama', $relawan->agama) == 'Hindu' ? 'selected' : '' }}>Hindu</option>
-                            <option value="Buddha" {{ old('agama', $relawan->agama) == 'Buddha' ? 'selected' : '' }}>Buddha</option>
-                            <option value="Konghucu" {{ old('agama', $relawan->agama) == 'Konghucu' ? 'selected' : '' }}>Konghucu</option>
-                        </select>
-                    </div>
-                    
-                    <div class="col-md-4">
-                        <label class="form-label">Status Perkawinan <span class="text-danger">*</span></label>
-                        <select class="form-select" name="status_perkawinan" required>
-                            <option value="Belum Kawin" {{ old('status_perkawinan', $relawan->status_perkawinan) == 'Belum Kawin' ? 'selected' : '' }}>Belum Kawin</option>
-                            <option value="Kawin" {{ old('status_perkawinan', $relawan->status_perkawinan) == 'Kawin' ? 'selected' : '' }}>Kawin</option>
-                            <option value="Cerai Hidup" {{ old('status_perkawinan', $relawan->status_perkawinan) == 'Cerai Hidup' ? 'selected' : '' }}>Cerai Hidup</option>
-                            <option value="Cerai Mati" {{ old('status_perkawinan', $relawan->status_perkawinan) == 'Cerai Mati' ? 'selected' : '' }}>Cerai Mati</option>
-                        </select>
-                    </div>
-
-                    <!-- ALAMAT & WILAYAH -->
-                    <div class="col-12"><div class="section-title">2. Alamat &amp; Wilayah Domisili</div></div>
-
-                    <div class="col-12">
-                        <label class="form-label">Alamat Lengkap <span class="text-danger">*</span></label>
-                        <textarea class="form-control" name="alamat" rows="2" required>{{ old('alamat', $relawan->alamat) }}</textarea>
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label class="form-label">RT / RW <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="rt_rw" value="{{ old('rt_rw', $relawan->rt_rw) }}" required>
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label class="form-label">Kode Pos <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="kode_pos" value="{{ old('kode_pos', $relawan->kode_pos) }}" required>
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label class="form-label">Kecamatan <span class="text-danger">*</span></label>
-                        <select class="form-select" name="kecamatan" id="kecamatan" required>
-                            <option value="" disabled>Pilih Kecamatan</option>
-                            <option value="Alam Barajo" {{ old('kecamatan', $relawan->kecamatan) == 'Alam Barajo' ? 'selected' : '' }}>Alam Barajo</option>
-                            <option value="Danau Sipin" {{ old('kecamatan', $relawan->kecamatan) == 'Danau Sipin' ? 'selected' : '' }}>Danau Sipin</option>
-                            <option value="Danau Teluk" {{ old('kecamatan', $relawan->kecamatan) == 'Danau Teluk' ? 'selected' : '' }}>Danau Teluk</option>
-                            <option value="Jambi Selatan" {{ old('kecamatan', $relawan->kecamatan) == 'Jambi Selatan' ? 'selected' : '' }}>Jambi Selatan</option>
-                            <option value="Jambi Timur" {{ old('kecamatan', $relawan->kecamatan) == 'Jambi Timur' ? 'selected' : '' }}>Jambi Timur</option>
-                            <option value="Jelutung" {{ old('kecamatan', $relawan->kecamatan) == 'Jelutung' ? 'selected' : '' }}>Jelutung</option>
-                            <option value="Kota Baru" {{ old('kecamatan', $relawan->kecamatan) == 'Kota Baru' ? 'selected' : '' }}>Kota Baru</option>
-                            <option value="Paal Merah" {{ old('kecamatan', $relawan->kecamatan) == 'Paal Merah' ? 'selected' : '' }}>Paal Merah</option>
-                            <option value="Pasar Jambi" {{ old('kecamatan', $relawan->kecamatan) == 'Pasar Jambi' ? 'selected' : '' }}>Pasar Jambi</option>
-                            <option value="Pelayangan" {{ old('kecamatan', $relawan->kecamatan) == 'Pelayangan' ? 'selected' : '' }}>Pelayangan</option>
-                            <option value="Telanaipura" {{ old('kecamatan', $relawan->kecamatan) == 'Telanaipura' ? 'selected' : '' }}>Telanaipura</option>
-                        </select>
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label class="form-label">Kelurahan <span class="text-danger">*</span></label>
-                        <select class="form-select" name="kelurahan" id="kelurahan" required>
-                            <option value="{{ $relawan->kelurahan }}" selected>{{ $relawan->kelurahan }} (Tersimpan)</option>
-                        </select>
-                    </div>
-
-                    <!-- PENDIDIKAN & PEKERJAAN -->
-                    <div class="col-12"><div class="section-title">3. Pendidikan &amp; Pekerjaan</div></div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Pendidikan Terakhir <span class="text-danger">*</span></label>
-                        <select class="form-select" name="pendidikan_terakhir" required>
-                            <option value="SD" {{ old('pendidikan_terakhir', $relawan->pendidikan_terakhir) == 'SD' ? 'selected' : '' }}>SD Sederajat</option>
-                            <option value="SMP" {{ old('pendidikan_terakhir', $relawan->pendidikan_terakhir) == 'SMP' ? 'selected' : '' }}>SMP Sederajat</option>
-                            <option value="SMA" {{ old('pendidikan_terakhir', $relawan->pendidikan_terakhir) == 'SMA' ? 'selected' : '' }}>SMA Sederajat</option>
-                            <option value="D3" {{ old('pendidikan_terakhir', $relawan->pendidikan_terakhir) == 'D3' ? 'selected' : '' }}>Diploma 3 (D3)</option>
-                            <option value="S1" {{ old('pendidikan_terakhir', $relawan->pendidikan_terakhir) == 'S1' ? 'selected' : '' }}>Sarjana (S1)</option>
-                            <option value="S2" {{ old('pendidikan_terakhir', $relawan->pendidikan_terakhir) == 'S2' ? 'selected' : '' }}>Magister (S2)</option>
-                        </select>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label class="form-label">Latar Belakang Pendidikan <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="latar_belakang_pendidikan" value="{{ old('latar_belakang_pendidikan', $relawan->latar_belakang_pendidikan) }}" placeholder="Contoh: Teknik Informatika" required>
-                    </div>
-
-                    @php
-                        $pekerjaanList = ['Pelajar / Mahasiswa', 'PNS / ASN', 'Karyawan Swasta', 'Wiraswasta / Pedagang', 'Buruh / Pekerja Lepas', 'TNI / POLRI', 'Petani / Nelayan'];
-                        $isPekerjaanLain = !in_array($relawan->pekerjaan, $pekerjaanList);
-                    @endphp
-
-                    <div class="col-md-6">
-                        <label class="form-label">Jenis Pekerjaan <span class="text-danger">*</span></label>
-                        <select class="form-select" name="jenis_pekerjaan" id="jenis_pekerjaan" required>
-                            <option value="" disabled>Pilih Pekerjaan</option>
-                            @foreach($pekerjaanList as $job)
-                                <option value="{{ $job }}" {{ (!old('jenis_pekerjaan') && $relawan->pekerjaan == $job) || old('jenis_pekerjaan') == $job ? 'selected' : '' }}>{{ $job }}</option>
-                            @endforeach
-                            <option value="Lainnya" {{ $isPekerjaanLain || old('jenis_pekerjaan') == 'Lainnya' ? 'selected' : '' }}>Lainnya (Sebutkan)</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6" id="wrapper_pekerjaan_lainnya" style="display: {{ $isPekerjaanLain ? 'block' : 'none' }};">
-                        <label class="form-label">Sebutkan Pekerjaan Lainnya <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="pekerjaan_lainnya" id="pekerjaan_lainnya" value="{{ old('pekerjaan_lainnya', $isPekerjaanLain ? $relawan->pekerjaan : '') }}" placeholder="Tuliskan pekerjaan...">
-                    </div>
-
-                    <!-- KESEHATAN & STATUS -->
-                    <div class="col-12"><div class="section-title">4. Kesehatan &amp; Status Keanggotaan</div></div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Sehat Jasmani <span class="text-danger">*</span></label>
-                        <select class="form-select" name="sehat_jasmani" required>
-                            <option value="Ya" {{ old('sehat_jasmani', $relawan->sehat_jasmani) == 'Ya' ? 'selected' : '' }}>Ya</option>
-                            <option value="Tidak" {{ old('sehat_jasmani', $relawan->sehat_jasmani) == 'Tidak' ? 'selected' : '' }}>Tidak</option>
-                        </select>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label class="form-label">Golongan Darah <span class="text-danger">*</span></label>
-                        <select class="form-select" name="golongan_darah" required>
-                            <option value="A" {{ old('golongan_darah', $relawan->golongan_darah) == 'A' ? 'selected' : '' }}>A</option>
-                            <option value="B" {{ old('golongan_darah', $relawan->golongan_darah) == 'B' ? 'selected' : '' }}>B</option>
-                            <option value="AB" {{ old('golongan_darah', $relawan->golongan_darah) == 'AB' ? 'selected' : '' }}>AB</option>
-                            <option value="O" {{ old('golongan_darah', $relawan->golongan_darah) == 'O' ? 'selected' : '' }}>O</option>
-                            <option value="Tidak Tahu" {{ old('golongan_darah', $relawan->golongan_darah) == 'Tidak Tahu' ? 'selected' : '' }}>Tidak Tahu</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6 mt-3">
-                        <label class="form-label" style="color: var(--navy);">1. Status Akun (Hak Akses Login) <span class="text-danger">*</span></label>
-                        <select class="form-select" name="status_akun" required>
-                            <option value="Aktif" {{ old('status_akun', $relawan->status_akun ?? 'Aktif') == 'Aktif' ? 'selected' : '' }}>Aktif (Diizinkan Login)</option>
-                            <option value="Nonaktif" {{ old('status_akun', $relawan->status_akun ?? '') == 'Nonaktif' ? 'selected' : '' }}>Nonaktif (Diblokir)</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6 mt-3">
-                        <label class="form-label" style="color: var(--success);">2. Status Pendaftaran (Seleksi Berkas) <span class="text-danger">*</span></label>
-                        <select class="form-select" name="status_pendaftaran" required>
-                            <option value="Pending" {{ old('status_pendaftaran', $relawan->status_pendaftaran) == 'Pending' ? 'selected' : '' }}>Pending (Menunggu)</option>
-                            <option value="Diterima" {{ old('status_pendaftaran', $relawan->status_pendaftaran) == 'Diterima' ? 'selected' : '' }}>Diterima</option>
-                            <option value="Ditolak" {{ old('status_pendaftaran', $relawan->status_pendaftaran) == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
-                        </select>
-                    </div>
-
-                    <!-- FOTO KTP -->
-                    <div class="col-12"><div class="section-title">5. Dokumen Pendukung</div></div>
-                    <div class="col-12">
-                        <label class="form-label">Update Foto / Scan KTP (Opsional)</label>
-                        <div class="d-flex align-items-center gap-3 p-3 border rounded bg-light" style="border-style: dashed !important; border-color: var(--line) !important;">
-                            <input type="file" class="form-control w-auto flex-grow-1" name="foto_ktp" accept=".jpg,.jpeg,.png">
-                            
-                            @if($relawan->file_ktp && $relawan->file_ktp !== 'offline_registered')
-                                <div class="d-flex flex-column align-items-center bg-white p-2 rounded border" style="min-width: 120px;">
-                                    <span style="font-size: 10px; font-weight: 700; color: var(--steel); margin-bottom: 4px;">KTP SAAT INI</span>
-                                    <a href="/storage/{{ $relawan->file_ktp }}" target="_blank" class="badge bg-info text-decoration-none px-3 py-2 w-100 text-center">
-                                        <i class="fas fa-eye me-1"></i> Lihat File
-                                    </a>
-                                </div>
-                            @else
-                                <div class="d-flex flex-column align-items-center bg-white p-2 rounded border" style="min-width: 120px;">
-                                    <span style="font-size: 10px; font-weight: 700; color: var(--steel); margin-bottom: 4px;">KTP SAAT INI</span>
-                                    <span class="badge bg-secondary px-3 py-2 w-100 text-center">Tidak Ada</span>
-                                </div>
-                            @endif
-                        </div>
-                        <small class="text-muted d-block mt-2"><i class="fas fa-info-circle me-1"></i> Format: JPG, JPEG, PNG (Maks. 2MB). <strong>Biarkan kosong jika tidak ingin mengubah KTP.</strong></small>
-                    </div>
-
-                    <!-- TOMBOL AKSI -->
-                    <div class="col-12 mt-4">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <button type="submit" class="btn-update"><i class="fas fa-save me-2"></i> Simpan Perubahan Data</button>
-                            </div>
-                            <div class="col-md-6">
-                                <a href="/internal/pencegahan/kelola-redkar" class="btn-back"><i class="fas fa-arrow-left me-2"></i> Batal / Kembali</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
         </div>
+    @endif
+
+    <form id="rkf-form" action="{{ url('/internal/pencegahan/update-redkar/' . $relawan->id) }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        @method('PUT')
+
+
+        {{-- ===== 1. Identitas ===== --}}
+        <section class="rkf-sec">
+            <div class="rkf-sec-head">
+                <div class="rkf-sec-num"><i class="fas fa-user"></i></div>
+                <div><h2>1. Identitas pribadi</h2><p>Sesuai dengan data pada KTP.</p></div>
+            </div>
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label" for="nama_lengkap">Nama lengkap <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" value="{{ $val('nama_lengkap') }}" placeholder="Masukkan nama lengkap sesuai KTP" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="nik">NIK (16 digit) <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="nik" name="nik" value="{{ $val('nik') }}" maxlength="16" inputmode="numeric" autocomplete="off" placeholder="16 digit angka NIK" required>
+                    <div class="rkf-hint" id="nik-count" aria-live="polite">0 dari 16 digit</div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="nomor_telp">No. telepon / WhatsApp <span class="text-danger">*</span></label>
+                    <input type="tel" class="form-control" id="nomor_telp" name="nomor_telp" value="{{ $val('nomor_telp') }}" inputmode="tel" placeholder="Contoh: 081234567890" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="tempat_lahir">Tempat lahir <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="tempat_lahir" name="tempat_lahir" value="{{ $val('tempat_lahir') }}" placeholder="Kota atau kabupaten tempat lahir" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="tanggal_lahir">Tanggal lahir <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" value="{{ $tglLahir }}" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="jenis_kelamin">Jenis kelamin <span class="text-danger">*</span></label>
+                    <select class="form-select" id="jenis_kelamin" name="jenis_kelamin" required>
+                        <option value="" disabled {{ $val('jenis_kelamin') ? '' : 'selected' }}>Pilih jenis kelamin</option>
+                        @foreach(['Laki-Laki', 'Perempuan'] as $jk)
+                            <option value="{{ $jk }}" {{ $val('jenis_kelamin') == $jk ? 'selected' : '' }}>{{ $jk }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="agama">Agama <span class="text-danger">*</span></label>
+                    <select class="form-select" id="agama" name="agama" required>
+                        <option value="" disabled {{ $val('agama') ? '' : 'selected' }}>Pilih agama</option>
+                        @foreach($agamaList as $a)
+                            <option value="{{ $a }}" {{ $val('agama') == $a ? 'selected' : '' }}>{{ $a }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="status_perkawinan">Status perkawinan <span class="text-danger">*</span></label>
+                    <select class="form-select" id="status_perkawinan" name="status_perkawinan" required>
+                        <option value="" disabled {{ $val('status_perkawinan') ? '' : 'selected' }}>Pilih status</option>
+                        @foreach($statusList as $s)
+                            <option value="{{ $s }}" {{ $val('status_perkawinan') == $s ? 'selected' : '' }}>{{ $s }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        {{-- ===== 2. Alamat ===== --}}
+        <section class="rkf-sec">
+            <div class="rkf-sec-head">
+                <div class="rkf-sec-num"><i class="fas fa-map-marker-alt"></i></div>
+                <div><h2>2. Alamat dan wilayah domisili</h2><p>Pilih kecamatan terlebih dahulu agar daftar kelurahan muncul.</p></div>
+            </div>
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label" for="alamat">Alamat lengkap <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="alamat" name="alamat" rows="2" placeholder="Nama jalan, gang, atau nomor rumah" required>{{ $val('alamat') }}</textarea>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="rt_rw">RT / RW <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="rt_rw" name="rt_rw" value="{{ $val('rt_rw') }}" placeholder="00/00" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="kecamatan">Kecamatan <span class="text-danger">*</span></label>
+                    <select class="form-select" id="kecamatan" name="kecamatan" required>
+                        <option value="" disabled {{ $val('kecamatan') ? '' : 'selected' }}>Pilih kecamatan</option>
+                        @foreach($kecamatanList as $kec)
+                            <option value="{{ $kec }}" {{ $val('kecamatan') == $kec ? 'selected' : '' }}>{{ $kec }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="kelurahan">Kelurahan <span class="text-danger">*</span></label>
+                    <select class="form-select" id="kelurahan" name="kelurahan" data-selected="{{ $kelSel }}" required>
+                        @if($kelSel)
+                            <option value="{{ $kelSel }}" selected>{{ $kelSel }}</option>
+                        @else
+                            <option value="" disabled selected>Pilih kecamatan dulu</option>
+                        @endif
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        {{-- ===== 3. Pendidikan & pekerjaan ===== --}}
+        <section class="rkf-sec">
+            <div class="rkf-sec-head">
+                <div class="rkf-sec-num"><i class="fas fa-graduation-cap"></i></div>
+                <div><h2>3. Pendidikan dan pekerjaan</h2><p>Pendidikan terakhir dan pekerjaan saat ini.</p></div>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label" for="pendidikan_terakhir">Pendidikan terakhir <span class="text-danger">*</span></label>
+                    <select class="form-select" id="pendidikan_terakhir" name="pendidikan_terakhir" required>
+                        <option value="" disabled {{ $val('pendidikan_terakhir') ? '' : 'selected' }}>Pilih pendidikan</option>
+                        @foreach($pendidikanList as $kode => $label)
+                            <option value="{{ $kode }}" {{ $val('pendidikan_terakhir') == $kode ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="latar_belakang_pendidikan">Latar belakang pendidikan / jurusan <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="latar_belakang_pendidikan" name="latar_belakang_pendidikan" value="{{ $val('latar_belakang_pendidikan') }}" placeholder="Contoh: Teknik Informatika, IPA, atau IPS" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="pekerjaan">Pekerjaan <span class="text-danger">*</span></label>
+                    <select class="form-select" id="pekerjaan" name="pekerjaan" required>
+                        <option value="" disabled {{ $pekerjaanSel ? '' : 'selected' }}>Pilih pekerjaan</option>
+                        @foreach($pekerjaanList as $job)
+                            <option value="{{ $job }}" {{ $pekerjaanSel == $job ? 'selected' : '' }}>{{ $job }}</option>
+                        @endforeach
+                        <option value="LAINNYA" {{ $pekerjaanSel == 'LAINNYA' ? 'selected' : '' }}>LAINNYA</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6" id="wrapper_pekerjaan_lainnya" style="display: none;">
+                    <label class="form-label" for="pekerjaan_lainnya">Sebutkan pekerjaan lainnya <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="pekerjaan_lainnya" name="pekerjaan_lainnya" value="{{ $lainnyaVal }}" placeholder="Tuliskan pekerjaan">
+                </div>
+            </div>
+        </section>
+
+        {{-- ===== 4. Kesehatan ===== --}}
+        <section class="rkf-sec">
+            <div class="rkf-sec-head">
+                <div class="rkf-sec-num"><i class="fas fa-heartbeat"></i></div>
+                <div><h2>4. Keterangan kesehatan</h2><p>Informasi ini membantu penugasan di lapangan.</p></div>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label" for="sehat_jasmani">Sehat jasmani dan rohani <span class="text-danger">*</span></label>
+                    <select class="form-select" id="sehat_jasmani" name="sehat_jasmani" required>
+                        @foreach(['Ya', 'Tidak'] as $sj)
+                            <option value="{{ $sj }}" {{ ($val('sehat_jasmani') ?: 'Ya') == $sj ? 'selected' : '' }}>{{ $sj }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="golongan_darah">Golongan darah <span class="text-danger">*</span></label>
+                    <select class="form-select" id="golongan_darah" name="golongan_darah" required>
+                        @foreach($darahList as $gd)
+                            <option value="{{ $gd }}" {{ ($val('golongan_darah') ?: 'Tidak Tahu') == $gd ? 'selected' : '' }}>{{ $gd }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        {{-- ===== 5. Dokumen ===== --}}
+        <section class="rkf-sec">
+            <div class="rkf-sec-head">
+                <div class="rkf-sec-num"><i class="fas fa-id-card"></i></div>
+                <div><h2>5. Dokumen pendukung</h2><p>Biarkan kosong jika tidak ingin mengubah KTP.</p></div>
+            </div>
+            <div class="rkf-current">
+                <span><i class="fas fa-id-card"></i> KTP saat ini</span>
+                @if($relawan->file_ktp && $relawan->file_ktp !== 'offline_registered')
+                    <a href="/storage/{{ $relawan->file_ktp }}" target="_blank" rel="noopener"><i class="fas fa-eye me-1"></i> Lihat file</a>
+                @else
+                    <span class="none">Belum ada berkas</span>
+                @endif
+            </div>
+            <label class="rkf-drop" id="rkf-drop" for="foto_ktp">
+                <input type="file" id="foto_ktp" name="foto_ktp" accept=".jpg,.jpeg,.png">
+                <span class="rkf-drop-ico"><i class="fas fa-cloud-upload-alt"></i></span>
+                <span class="rkf-drop-text">
+                    <strong id="rkf-file-name">Pilih file baru untuk mengganti KTP</strong>
+                    <small id="rkf-file-hint">JPG, JPEG, atau PNG, maksimal 2 MB.</small>
+                </span>
+                <img id="rkf-preview" alt="Pratinjau KTP" hidden>
+            </label>
+            <div id="rkf-file-error" class="rkf-field-error" role="alert" hidden></div>
+        </section>
+
+        {{-- ===== Aksi ===== --}}
+        <div class="rkf-bar">
+            <a href="/internal/pencegahan/kelola-redkar" class="rkf-btn rkf-btn-ghost">Batal</a>
+            <button type="submit" id="rkf-save" class="rkf-btn rkf-btn-save navy"><i class="fas fa-save"></i> Simpan perubahan</button>
+        </div>
+    </form>
+</div>
 @endsection
 
 @push('scripts')
@@ -411,7 +446,7 @@
 (function () {
     'use strict';
 
-    /* ---------- Dropdown Wilayah ---------- */
+    /* ---------- Dropdown kelurahan mengikuti kecamatan ---------- */
     const dataWilayah = {
         "Alam Barajo": ["Bagan Pete", "Beliung", "Kenali Besar", "Mayang Mangurai", "Pinang Merah", "Rawa Sari", "Simpang Rimbo"],
         "Danau Sipin": ["Legok", "Murni", "Selamat", "Solok Sipin", "Sungai Putri"],
@@ -428,47 +463,109 @@
 
     const kecamatanSelect = document.getElementById('kecamatan');
     const kelurahanSelect = document.getElementById('kelurahan');
-    const kelurahanTersimpan = "{{ old('kelurahan', $relawan->kelurahan) }}";
 
-    function updateKelurahan(kecamatan, selectedKelurahan = '') {
-        kelurahanSelect.innerHTML = '<option value="" disabled>Pilih Kelurahan</option>';
-        if (kecamatan && dataWilayah[kecamatan]) {
-            dataWilayah[kecamatan].forEach(function(kel) {
-                const option = document.createElement('option');
-                option.value = kel;
-                option.textContent = kel;
-                if (kel === selectedKelurahan) {
-                    option.selected = true;
-                }
-                kelurahanSelect.appendChild(option);
-            });
-        }
+    function updateKelurahan(kecamatan, selected) {
+        kelurahanSelect.innerHTML = '<option value="" disabled' + (selected ? '' : ' selected') + '>Pilih kelurahan</option>';
+        (dataWilayah[kecamatan] || []).forEach(function (kel) {
+            const option = document.createElement('option');
+            option.value = kel;
+            option.textContent = kel;
+            if (kel === selected) option.selected = true;
+            kelurahanSelect.appendChild(option);
+        });
     }
 
     if (kecamatanSelect.value) {
-        updateKelurahan(kecamatanSelect.value, kelurahanTersimpan);
+        updateKelurahan(kecamatanSelect.value, kelurahanSelect.dataset.selected || '');
     }
-
-    kecamatanSelect.addEventListener('change', function() {
-        updateKelurahan(this.value);
+    kecamatanSelect.addEventListener('change', function () {
+        updateKelurahan(this.value, '');
     });
 
-    /* ---------- Logika Pekerjaan Lainnya ---------- */
-    const selectPekerjaan = document.getElementById('jenis_pekerjaan');
+    /* ---------- Pekerjaan lainnya ---------- */
+    const selectPekerjaan = document.getElementById('pekerjaan');
     const wrapperLainnya = document.getElementById('wrapper_pekerjaan_lainnya');
     const inputLainnya = document.getElementById('pekerjaan_lainnya');
 
-    selectPekerjaan.addEventListener('change', function() {
-        if (this.value === 'Lainnya') {
-            wrapperLainnya.style.display = 'block';
+    function togglePekerjaan() {
+        const lain = selectPekerjaan.value === 'LAINNYA';
+        wrapperLainnya.style.display = lain ? 'block' : 'none';
+        if (lain) {
             inputLainnya.setAttribute('required', 'required');
         } else {
-            wrapperLainnya.style.display = 'none';
             inputLainnya.removeAttribute('required');
             inputLainnya.value = '';
         }
+    }
+    togglePekerjaan();
+    selectPekerjaan.addEventListener('change', togglePekerjaan);
+
+    /* ---------- NIK: hanya angka + penghitung ---------- */
+    const nik = document.getElementById('nik');
+    const nikCount = document.getElementById('nik-count');
+
+    function updateNik() {
+        nik.value = nik.value.replace(/\D/g, '').slice(0, 16);
+        const n = nik.value.length;
+        nikCount.textContent = n + ' dari 16 digit';
+        nikCount.classList.toggle('ok', n === 16);
+    }
+    updateNik();
+    nik.addEventListener('input', updateNik);
+
+    /* ---------- Upload KTP: nama file, pratinjau, batas 2 MB ---------- */
+    const fileInput = document.getElementById('foto_ktp');
+    const drop = document.getElementById('rkf-drop');
+    const fileName = document.getElementById('rkf-file-name');
+    const fileHint = document.getElementById('rkf-file-hint');
+    const preview = document.getElementById('rkf-preview');
+    const fileError = document.getElementById('rkf-file-error');
+    const defaultName = fileName.textContent;
+    const defaultHint = fileHint.textContent;
+
+    function resetFile() {
+        fileInput.value = '';
+        drop.classList.remove('has-file');
+        fileName.textContent = defaultName;
+        fileHint.textContent = defaultHint;
+        preview.hidden = true;
+        preview.removeAttribute('src');
+    }
+
+    fileInput.addEventListener('change', function () {
+        fileError.hidden = true;
+        const f = this.files && this.files[0];
+        if (!f) { resetFile(); return; }
+
+        if (f.size > 2 * 1024 * 1024) {
+            resetFile();
+            fileError.textContent = 'Ukuran file melebihi 2 MB. Pilih file yang lebih kecil.';
+            fileError.hidden = false;
+            return;
+        }
+        if (!/^image\/(jpe?g|png)$/i.test(f.type)) {
+            resetFile();
+            fileError.textContent = 'Format file harus JPG, JPEG, atau PNG.';
+            fileError.hidden = false;
+            return;
+        }
+
+        drop.classList.add('has-file');
+        fileName.textContent = f.name;
+        fileHint.textContent = (f.size / 1024 < 1024
+            ? Math.round(f.size / 1024) + ' KB'
+            : (f.size / 1048576).toFixed(1) + ' MB') + ' · klik untuk mengganti';
+        preview.src = URL.createObjectURL(f);
+        preview.hidden = false;
     });
 
+    /* ---------- Cegah kirim ganda ---------- */
+    const form = document.getElementById('rkf-form');
+    const saveBtn = document.getElementById('rkf-save');
+    form.addEventListener('submit', function () {
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span> Menyimpan…';
+    });
 })();
 </script>
 @endpush

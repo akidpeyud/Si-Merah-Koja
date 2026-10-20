@@ -441,7 +441,7 @@
                     </ul>
                 </li>
 
-                <li><a class="menu-link {{ request()->is('redkar*') ? 'is-active' : '' }}" href="/redkar">Redkar</a></li>
+ 
             </ul>
 
             <ul class="nav-actions">

@@ -721,7 +721,7 @@
                     </ul>
                 </li>
 
-                <li><a class="menu-link {{ request()->is('redkar*') ? 'is-active' : '' }}" href="/redkar">Redkar</a></li>
+ 
             </ul>
 
             <!-- ===== Tombol kanan: Lapor darurat + Masuk ===== -->
@@ -814,8 +814,6 @@
 
         <aside class="sos rise d3" id="lapor" aria-labelledby="judul-lapor">
             <div class="sos-head"><span class="beacon" aria-hidden="true"></span> Lapor darurat</div>
-            <h2 id="judul-lapor">Kebakaran atau butuh penyelamatan?</h2>
-
             <div class="sos-list">
                 <a class="sos-link primary" href="{{ $wa_link }}" target="_blank" rel="noopener">
                     <span class="sos-ico"><i class="fab fa-whatsapp"></i></span>

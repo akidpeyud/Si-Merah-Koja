@@ -4,282 +4,553 @@
 
 @push('styles')
 <style>
-    .topbar {
-        position: sticky; top: 0; z-index: 1020;
-        height: var(--topbar-h);
+    /* =========================================================
+       KELOLA REDKAR — gaya khusus halaman
+       Memakai variabel warna dari layouts.dashboard (dengan fallback)
+       ========================================================= */
+    .rk {
+        --rk-ink: var(--ink, #0d1b2a);
+        --rk-navy: var(--navy, #1b365d);
+        --rk-steel: var(--steel, #4a5a6e);
+        --rk-muted: var(--steel-soft, #7b8a9c);
+        --rk-line: var(--line, #e4e9f0);
+        --rk-paper: var(--paper, #f6f8fb);
+        --rk-red: var(--signal, #e5383b);
+        --rk-red-soft: var(--signal-soft, #fdeaea);
+        --rk-green: var(--success, #10b981);
+        --rk-green-soft: #e3f7ef;
+        --rk-amber: #b7791f;
+        --rk-amber-soft: #fdf3dc;
+        --rk-blue: var(--info, #2563eb);
+        --rk-blue-soft: var(--info-soft, #e6eefd);
+    }
+
+    /* ---------- Header halaman ---------- */
+    .rk-hero {
+        position: relative;
         display: flex; align-items: center; justify-content: space-between;
-        gap: 16px; padding: 0 28px;
-        background: var(--ink);
-        border-bottom: 1px solid rgba(255,255,255,.08);
-        box-shadow: 0 2px 12px rgba(13, 27, 42, .16);
+        gap: 20px; flex-wrap: wrap;
+        padding: 28px 32px;
+        margin-bottom: 20px;
+        border-radius: 20px;
+        color: #fff;
+        background:
+            radial-gradient(520px 220px at 100% 0%, rgba(229, 56, 59, .38), transparent 70%),
+            linear-gradient(120deg, var(--rk-ink) 0%, var(--rk-navy) 100%);
+        overflow: hidden;
     }
-    .user-avatar {
-        width: 36px; height: 36px; border-radius: 50%;
-        background: #fff; color: var(--ink);
+    .rk-hero::after {
+        content: ""; position: absolute; right: -40px; bottom: -70px;
+        width: 220px; height: 220px; border-radius: 50%;
+        border: 28px solid rgba(255, 255, 255, .05);
+        pointer-events: none;
+    }
+    .rk-hero-head {
+        display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+        margin-bottom: 6px;
+    }
+    .rk-hero h1 {
+        font-family: var(--font-display, inherit);
+        font-weight: 700; letter-spacing: -.02em; line-height: 1.2;
+        font-size: clamp(1.45rem, 2.6vw, 1.95rem);
+        margin: 0;
+    }
+    .rk-hero-badge {
+        display: inline-flex; align-items: center; gap: 7px;
+        padding: 5px 14px; border-radius: 999px;
+        background: rgba(255, 255, 255, .14);
+        border: 1px solid rgba(255, 255, 255, .24);
+        color: #fff; font-size: .82rem; font-weight: 600;
+        backdrop-filter: blur(4px);
+    }
+    .rk-hero-badge b { font-size: .92rem; font-weight: 800; color: #fff; }
+    .rk-hero p { margin: 0; color: rgba(255, 255, 255, .72); font-size: .94rem; max-width: 52ch; }
+    .rk-hero-actions { display: flex; gap: 10px; flex-wrap: wrap; position: relative; z-index: 1; }
+
+    .rk-btn {
+        display: inline-flex; align-items: center; gap: 9px;
+        height: 44px; padding: 0 20px; border-radius: 12px;
+        font-size: .9rem; font-weight: 600; text-decoration: none;
+        border: 1px solid transparent; cursor: pointer;
+        transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
+    }
+    .rk-btn:focus-visible { outline: 3px solid rgba(255, 255, 255, .6); outline-offset: 2px; }
+    .rk-btn:active { transform: translateY(1px); }
+    .rk-btn-primary { background: var(--rk-green); color: #fff; box-shadow: 0 6px 16px rgba(16, 185, 129, .3); }
+    .rk-btn-primary:hover { background: #0e9f6e; color: #fff; transform: translateY(-1px); }
+    .rk-btn-ghost { background: rgba(255, 255, 255, .1); color: #fff; border-color: rgba(255, 255, 255, .25); backdrop-filter: blur(4px); }
+    .rk-btn-ghost:hover { background: rgba(255, 255, 255, .2); color: #fff; }
+
+    /* ---------- Panel daftar ---------- */
+    .rk-panel { background: #fff; border: 1px solid var(--rk-line); border-radius: 20px; overflow: hidden; }
+    .rk-toolbar {
+        display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+        padding: 16px 20px; border-bottom: 1px solid var(--rk-line);
+    }
+    .rk-search { position: relative; flex: 1 1 260px; max-width: 420px; }
+    .rk-search i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--rk-muted); font-size: .85rem; pointer-events: none; }
+    .rk-input, .rk-select {
+        width: 100%; height: 42px; border-radius: 12px;
+        border: 1px solid var(--rk-line); background: var(--rk-paper);
+        font-size: .9rem; color: var(--rk-ink);
+        transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+    .rk-input { padding: 0 14px 0 38px; }
+    .rk-select { padding: 0 34px 0 14px; width: auto; min-width: 180px; cursor: pointer; }
+    .rk-input:focus, .rk-select:focus {
+        outline: none; background: #fff;
+        border-color: var(--rk-navy); box-shadow: 0 0 0 4px rgba(27, 54, 93, .12);
+    }
+    .rk-count { margin-left: auto; font-size: .85rem; color: var(--rk-muted); }
+    .rk-count b { color: var(--rk-ink); }
+
+    /* ---------- Tabel ---------- */
+    .rk-table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 0; }
+    .rk-table thead th {
+        position: sticky; top: 0;
+        padding: 12px 20px; background: var(--rk-paper);
+        font-size: .76rem; font-weight: 700; letter-spacing: .03em;
+        color: var(--rk-muted); border-bottom: 1px solid var(--rk-line);
+        white-space: nowrap;
+    }
+    .rk-table tbody td {
+        padding: 14px 20px; vertical-align: middle;
+        border-bottom: 1px solid var(--rk-line);
+        font-size: .9rem; color: var(--rk-ink);
+    }
+    .rk-table tbody tr { transition: background .15s ease; }
+    .rk-table tbody tr:hover { background: #f9fbfd; }
+    .rk-table tbody tr:last-child td { border-bottom: none; }
+
+    .rk-person { display: flex; align-items: center; gap: 12px; min-width: 220px; }
+    .rk-avatar {
+        flex: none; width: 42px; height: 42px; border-radius: 50%;
         display: grid; place-items: center;
-        font-family: var(--font-display); font-weight: 700; font-size: .9rem; flex: none;
+        font-weight: 700; font-size: .88rem; color: var(--rk-navy);
+        background: #e7edf6;
     }
-    .user-meta strong {
-        font-size: .84rem; font-weight: 700; max-width: 160px;
-        overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff;
+    .rk-person strong { display: block; font-weight: 600; line-height: 1.3; }
+    .rk-person small { display: block; color: var(--rk-muted); font-size: .78rem; }
+    .rk-nik { font-variant-numeric: tabular-nums; letter-spacing: .01em; color: var(--rk-steel); }
+
+    .rk-chip {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 4px 11px; border-radius: 999px;
+        background: var(--rk-blue-soft); color: var(--rk-navy);
+        font-size: .8rem; font-weight: 600; white-space: nowrap;
     }
-    .btn-logout {
-        display: inline-flex; align-items: center; justify-content: center;
-        gap: 8px; height: 40px; padding: 0 17px; border-radius: 999px;
-        background: #fff; color: var(--ink);
-        font-weight: 600; font-size: .84rem; border: none;
-        transition: background .2s, color .2s, transform .1s, box-shadow .2s;
+    .rk-chip i { font-size: .7rem; opacity: .7; }
+
+    .rk-wa {
+        display: inline-flex; align-items: center; gap: 7px;
+        padding: 6px 12px; border-radius: 10px;
+        background: var(--rk-green-soft); color: #0b7a56;
+        font-size: .84rem; font-weight: 600; text-decoration: none;
+        transition: background .2s, color .2s;
     }
-    .sidebar {
-        width: var(--sidebar-w); flex: none;
-        position: sticky; top: var(--topbar-h);
-        height: calc(100vh - var(--topbar-h));
-        overflow-y: auto; overflow-x: hidden;
-        background: #fff; border-right: 1px solid var(--line);
-        padding: 20px 14px 32px;
-        scrollbar-width: thin; scrollbar-color: #d8dee8 transparent;
+    .rk-wa:hover { background: #0e9f6e; color: #fff; }
+
+    .rk-badge { display: inline-flex; align-items: center; gap: 6px; font-size: .8rem; font-weight: 600; white-space: nowrap; }
+    .rk-badge.ok { color: #0b7a56; }
+    .rk-badge.none { color: var(--rk-muted); font-weight: 500; }
+    .rk-badge a { color: inherit; text-decoration: none; padding: 5px 11px; border-radius: 10px; background: var(--rk-green-soft); transition: background .2s, color .2s; }
+    .rk-badge a:hover { background: #0e9f6e; color: #fff; }
+
+    /* Tombol aksi: ikon bulat, label muncul lewat tooltip */
+    .rk-actions { display: flex; justify-content: flex-end; gap: 6px; }
+    .rk-icon-btn {
+        position: relative; width: 36px; height: 36px; border-radius: 10px;
+        display: grid; place-items: center; font-size: .85rem;
+        border: none; cursor: pointer; text-decoration: none;
+        transition: background .2s, color .2s, transform .15s;
     }
-    .side-link.active { background: var(--ink); color: #fff; box-shadow: 0 4px 10px rgba(13,27,42,.10); }
-    .side-link.active i { color: #fff; }
-    .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); margin-top: 3px; }
-    .side-group summary .grp-label {
-        flex: 1 1 auto; min-width: 0;
-        white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.4;
+    .rk-icon-btn:hover { transform: translateY(-2px); }
+    .rk-icon-btn:focus-visible { outline: 3px solid rgba(27, 54, 93, .35); outline-offset: 2px; }
+    .rk-icon-btn.edit  { background: var(--rk-amber-soft); color: var(--rk-amber); }
+    .rk-icon-btn.edit:hover  { background: var(--rk-amber); color: #fff; }
+    .rk-icon-btn.print { background: var(--rk-blue-soft); color: var(--rk-blue); }
+    .rk-icon-btn.print:hover { background: var(--rk-blue); color: #fff; }
+    .rk-icon-btn.del   { background: var(--rk-red-soft); color: var(--rk-red); }
+    .rk-icon-btn.del:hover   { background: var(--rk-red); color: #fff; }
+    .rk-icon-btn::after {
+        content: attr(data-tip);
+        position: absolute; bottom: calc(100% + 8px); left: 50%;
+        transform: translate(-50%, 4px);
+        padding: 4px 9px; border-radius: 8px;
+        background: var(--rk-ink); color: #fff;
+        font-size: .72rem; font-weight: 600; white-space: nowrap;
+        opacity: 0; pointer-events: none;
+        transition: opacity .15s, transform .15s;
     }
-    .side-group summary .chev { flex: none; font-size: .7rem; margin-top: 4px; transition: transform .25s ease; }
-    .page-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 26px; gap: 16px; flex-wrap: wrap; }
-    .page-head-title h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 5px; color: var(--ink); }
-    .page-head-title p { color: var(--steel); font-size: .95rem; margin-bottom: 0;}
-    .btn-add { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; background: var(--success); color: #fff; border-radius: 8px; font-size: .9rem; font-weight: 600; transition: all .2s; border: none; }
-    .btn-add:hover { background: #148f65; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(16, 185, 129, .25); color: #fff; }
-    .btn-print-rekap { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; background: var(--navy); color: #fff; border-radius: 8px; font-size: .9rem; font-weight: 600; transition: all .2s; border: none; }
-    .btn-print-rekap:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13, 27, 42, .15); }
-    .content-card { background: #ffffff; border: 1px solid var(--line); border-radius: var(--r-md); padding: 24px; box-shadow: var(--shadow-xs); overflow: hidden; transition: box-shadow .2s ease, border-color .2s ease;}
-    .content-card:hover { box-shadow: var(--shadow-sm); border-color: #d2dae5; }
-    .table > :not(caption) > * > * { padding: 14px 16px; border-bottom-color: var(--line); color: var(--ink); font-size: .92rem; vertical-align: middle; }
-    .table thead th { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--steel-soft); background: var(--paper); border-bottom: 2px solid var(--line-dark); }
-    .table tbody tr { transition: background .2s; }
-    .table tbody tr:hover { background: #f8fafc; }
-    .badge-status { display: inline-flex; align-items: center; padding: 5px 12px; border-radius: 6px; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; }
-    .badge-akun { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 6px; font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; margin-top: 4px;}
-    .status-pending { background: rgba(244, 183, 64, .15); color: #d97706; }
-    .status-memenuhi { background: rgba(25, 135, 84, .15); color: var(--success); }
-    .status-tidak { background: var(--signal-soft); color: var(--signal-dark); }
-    .btn-action-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
-    .btn-action { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 6px 12px; border-radius: 6px; font-size: .8rem; font-weight: 600; transition: all .2s; text-decoration: none; border: none; cursor: pointer; }
-    .btn-lihat { background: var(--info-soft); color: var(--info); }
-    .btn-lihat:hover { background: var(--info); color: #ffffff; }
-    .btn-update { background: var(--navy-soft); color: var(--navy); }
-    .btn-update:hover { background: var(--navy); color: #ffffff; }
-    .btn-warning-soft { background: rgba(244, 183, 64, .15); color: #d97706; }
-    .btn-warning-soft:hover { background: #d97706; color: #ffffff; }
-    .btn-danger-soft { background: var(--signal-soft); color: var(--signal-dark); }
-    .btn-danger-soft:hover { background: var(--signal-dark); color: #ffffff; }
-    @media (max-width: 700px) {
-        :root { --topbar-h: 64px; }
-        .topbar { height: var(--topbar-h); padding: 0 14px; gap: 10px; }
-        .brand { gap: 9px; }
-        .brand img { height: 30px; }
-        .brand span { font-size: .95rem; }
-        .topbar-right { gap: 7px; }
-        .user-chip { padding: 3px; border: none; background: transparent; }
-        .user-avatar { width: 34px; height: 34px; }
-        .btn-logout { width: 38px; height: 38px; padding: 0; border-radius: 10px; font-size: 0; }
-        .btn-logout i { font-size: .9rem; }
-        .content { padding: 26px 16px 50px; }
-        .page-head-title h1 { font-size: 1.55rem; }
-        .page-head-title p { font-size: .88rem; }
+    .rk-icon-btn:hover::after, .rk-icon-btn:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+    .rk-inline-form { display: inline; margin: 0; }
+
+    /* ---------- Kosong ---------- */
+    .rk-empty { text-align: center; padding: 56px 20px; color: var(--rk-muted); }
+    .rk-empty-ico {
+        width: 68px; height: 68px; margin: 0 auto 14px; border-radius: 50%;
+        display: grid; place-items: center; font-size: 1.5rem;
+        background: var(--rk-paper); color: var(--rk-muted);
     }
-    @media (max-width: 420px) {
-        .brand span { display: none; }
-        .content { padding-left: 13px; padding-right: 13px; }
+    .rk-empty h3 { font-size: 1.05rem; color: var(--rk-ink); margin-bottom: 4px; font-weight: 700; }
+    .rk-empty p { margin: 0 0 16px; font-size: .9rem; }
+    .rk-empty .rk-btn-primary { box-shadow: none; }
+    #rk-no-result { display: none; }
+
+    .rk-pagination { padding: 14px 20px; border-top: 1px solid var(--rk-line); }
+
+    /* ---------- Responsif ---------- */
+    @media (max-width: 900px) {
+        .rk-count { margin-left: 0; width: 100%; }
     }
-    @media print {
-        .topbar, .sidebar, .btn-print-rekap, .btn-add, .btn-logout, .no-print-col, .page-head-title p { display: none !important; }
-        .shell { display: block; }
-        .content { padding: 0 !important; margin: 0 !important; background: white; }
-        .content-card { padding: 0; border: none; box-shadow: none; }
-        body { background-color: white; margin: 0; padding: 0; }
-        .page-head-title h1 { font-size: 1.5rem; text-align: center; width: 100%; margin-bottom: 20px; }
-        .table thead th { background: transparent; color: #000; border-bottom: 2px solid #000; }
-        .table td, .table th { border-color: #ddd; color: #000; font-size: .8rem; }
-        .badge-status, .badge-akun { border: 1px solid #000; background: transparent !important; color: #000 !important; }
+    @media (max-width: 768px) {
+        .rk-hero { padding: 22px 20px; border-radius: 18px; }
+        .rk-hero-actions { width: 100%; }
+        .rk-hero-actions .rk-btn { flex: 1 1 auto; justify-content: center; }
+        .rk-search { max-width: none; }
+        .rk-select { width: 100%; }
+
+        /* tabel berubah jadi kartu */
+        .rk-table thead { display: none; }
+        .rk-table, .rk-table tbody, .rk-table tr, .rk-table td { display: block; width: 100%; }
+        .rk-table tbody tr { padding: 16px; border-bottom: 8px solid var(--rk-paper); }
+        .rk-table tbody tr:last-child { border-bottom: none; }
+        .rk-table tbody td { padding: 6px 0; border: none; }
+        .rk-table tbody td[data-label]::before {
+            content: attr(data-label);
+            display: block; margin-bottom: 2px;
+            font-size: .72rem; font-weight: 700; letter-spacing: .03em;
+            color: var(--rk-muted);
+        }
+        .rk-table tbody td.rk-cell-person::before,
+        .rk-table tbody td.rk-cell-actions::before { display: none; }
+        .rk-table tbody td.rk-cell-actions { padding-top: 12px; margin-top: 8px; border-top: 1px dashed var(--rk-line); }
+        .rk-actions { justify-content: flex-start; }
+        .rk-icon-btn { width: 42px; height: 42px; }
+        .rk-icon-btn::after { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .rk * { transition: none !important; }
     }
 </style>
 @endpush
 
 @section('content')
-@section('content')
+@php
+    $totalRelawan    = $relawan->count();
+    $daftarKecamatan = $relawan->pluck('kecamatan')->filter()->unique()->sort()->values();
+@endphp
 
-        <div class="page-head">
-            <div class="page-head-title">
-                <h1>Daftar Calon Relawan (REDKAR)</h1>
-                <p>Kelola data pendaftaran relawan masyarakat dan pendaftaran langsung kantor.</p>
-            </div>
-            <div class="d-flex gap-2 flex-wrap">
-                <!-- TOMBOL TAMBAH HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
-                @hasanyrole('Pencegahan|Super User')
-                <a href="/internal/pencegahan/tambah-redkar" class="btn-add"><i class="fas fa-user-plus"></i> Tambah Relawan</a>
-                @endhasanyrole
+<div class="rk">
 
-                <!-- TOMBOL CETAK REKAP TERBUKA UNTUK SEMUA ROLE -->
-                <button onclick="window.print()" class="btn-print-rekap"><i class="fas fa-print"></i> Cetak Rekap</button>
+    {{-- ===== Header (Perhitungan jumlah data dimasukkan di sini) ===== --}}
+    <div class="rk-hero">
+        <div>
+            <div class="rk-hero-head">
+                <h1>Data Relawan Pemadam Kebakaran</h1>
+                <span class="rk-hero-badge">
+                    <i class="fas fa-users"></i>
+                    <b>{{ $totalRelawan }}</b> Relawan Terdaftar
+                </span>
             </div>
         </div>
+        <div class="rk-hero-actions">
+            {{-- Tambah: hanya Pencegahan & Super User --}}
+            @hasanyrole('Pencegahan|Super User')
+            <a href="/internal/pencegahan/tambah-redkar" class="rk-btn rk-btn-primary">
+                <i class="fas fa-user-plus"></i> Tambah relawan
+            </a>
+            @endhasanyrole
 
-        <div class="content-card">
-            <div class="table-responsive">
-                <table class="table align-middle">
-                    <thead>
-                        <tr>
-                            <th>Tanggal Daftar</th>
-                            <th>NIK</th>
-                            <th>Nama Lengkap</th>
-                            <th>Kecamatan</th>
-                            <th>No. Telp (WA)</th>
-                            <th>Status Akun</th>
-                            <th class="no-print-col text-center">Berkas KTP</th>
-                            <th class="text-center no-print-col" width="300px">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($relawan as $r)
-                        <tr>
-                            <td>
-                                <strong>{{ $r->created_at->format('d M Y') }}</strong>
-                                <div style="font-size: .8rem; color: var(--steel-soft);">{{ $r->created_at->format('H:i') }} WIB</div>
-                            </td>
-                            <td class="fw-bold">{{ $r->nik }}</td>
-                            <td>
-                                <strong style="display: block; margin-bottom: 2px;">{{ $r->nama_lengkap }}</strong>
-                                
-                                @if($r->status_akun == 'Aktif')
-                                    <span class="badge-akun status-memenuhi"><i class="fas fa-user-check me-1"></i> Akun Aktif</span>
-                                @else
-                                    <span class="badge-akun status-tidak"><i class="fas fa-user-lock me-1"></i> Akun Nonaktif</span>
-                                @endif
-                            </td>
-                            <td>{{ $r->kecamatan }}</td>
-                            <td>
-                                <a href="https://wa.me/{{ preg_replace('/^0/', '62', $r->nomor_telp) }}" target="_blank" style="font-size: .85rem; color: var(--success); text-decoration: none;">
-                                    <i class="fab fa-whatsapp"></i> {{ $r->nomor_telp }}
-                                </a>
-                            </td>
-                            <td>
-                                @if($r->status_pendaftaran == 'Diterima')
-                                    <span class="badge-status status-memenuhi">Diterima</span>
-                                @elseif($r->status_pendaftaran == 'Ditolak')
-                                    <span class="badge-status status-tidak">Ditolak</span>
-                                @else
-                                    <span class="badge-status status-pending">Pending</span>
-                                @endif
-                            </td>
-                            <td class="no-print-col text-center">
-                                @if($r->file_ktp && $r->file_ktp !== 'offline_registered')
-                                    <a href="/storage/{{ $r->file_ktp }}" target="_blank" class="btn-action btn-lihat py-1" style="font-size: 0.75rem;">
-                                        <i class="fas fa-id-card me-1"></i> KTP
-                                    </a>
-                                @else
-                                    <span style="font-size: .75rem; color: var(--steel-soft);">- Offline -</span>
-                                @endif
-                            </td>
-                            <td class="text-center no-print-col">
-                                <div class="btn-action-group">
-                                    
-                                    <!-- TOMBOL STATUS HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
-                                    @hasanyrole('Pencegahan|Super User')
-                                    <button type="button" class="btn-action btn-update" data-bs-toggle="modal" data-bs-target="#modalStatusRedkar{{ $r->id }}" title="Verifikasi Pendaftaran">
-                                        <i class="fas fa-user-check"></i> Status
-                                    </button>
-                                    @endhasanyrole
+            {{-- Cetak Rekap Excel: semua role --}}
+            @if($totalRelawan > 0)
+            <button type="button" onclick="exportRekapExcel()" class="rk-btn rk-btn-ghost">
+                <i class="fas fa-file-excel"></i> Cetak Rekap Excel
+            </button>
+            @endif
+        </div>
+    </div>
 
-                                    <!-- TOMBOL EDIT HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
-                                    @hasanyrole('Pencegahan|Super User')
-                                    <a href="/internal/pencegahan/edit-redkar/{{ $r->id }}" class="btn-action btn-warning-soft" title="Edit Data">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>
-                                    @endhasanyrole
+    {{-- ===== Notifikasi setelah simpan / ubah / hapus ===== --}}
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2 mb-3" role="alert" style="border-radius: 14px;">
+            <i class="fas fa-check-circle"></i> <span>{{ session('success') }}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-2 mb-3" role="alert" style="border-radius: 14px;">
+            <i class="fas fa-exclamation-triangle"></i> <span>{{ session('error') }}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
+        </div>
+    @endif
 
-                                    <!-- TOMBOL CETAK PDF PER ORANG TERBUKA UNTUK SEMUA ROLE -->
-                                    <a href="/internal/pencegahan/cetak-redkar/{{ $r->id }}" target="_blank" class="btn-action btn-lihat" title="Cetak PDF">
-                                        <i class="fas fa-print"></i> Cetak
-                                    </a>
-                                    
-                                    <!-- TOMBOL HAPUS HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
-                                    @hasanyrole('Pencegahan|Super User')
-                                    <form action="/internal/pencegahan/hapus-redkar/{{ $r->id }}" method="POST" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus relawan ini?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn-action btn-danger-soft" title="Hapus Data">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                    @endhasanyrole
+    {{-- ===== Daftar ===== --}}
+    <div class="rk-panel">
 
-                                </div>
-                            </td>
-                        </tr>
+        @if($totalRelawan > 0)
+        <div class="rk-toolbar">
+            <label class="rk-search">
+                <i class="fas fa-search"></i>
+                <input type="search" id="rk-search" class="rk-input" placeholder="Cari nama, NIK, atau nomor telepon" autocomplete="off" aria-label="Cari relawan">
+            </label>
+            <select id="rk-kecamatan" class="rk-select" aria-label="Filter kecamatan">
+                <option value="">Semua kecamatan</option>
+                @foreach($daftarKecamatan as $kec)
+                    <option value="{{ strtolower($kec) }}">{{ $kec }}</option>
+                @endforeach
+            </select>
+            <div class="rk-count" aria-live="polite">Menampilkan <b id="rk-shown">{{ $totalRelawan }}</b> dari {{ $totalRelawan }} relawan</div>
+        </div>
+        @endif
 
-                        <!-- MODAL VERIFIKASI STATUS (DIBATASI HANYA UNTUK PENCEGAHAN DAN SUPER USER) -->
-                        @hasanyrole('Pencegahan|Super User')
-                        <div class="modal fade" id="modalStatusRedkar{{ $r->id }}" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content" style="border: none; border-radius: var(--r-md); box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-                                    <form action="/internal/pencegahan/update-status-redkar/{{ $r->id }}" method="POST">
-                                        @csrf
-                                        <div class="modal-header" style="background: var(--paper); border-bottom: 1px solid var(--line);">
-                                            <h5 class="modal-title" style="font-family: var(--font-display); font-weight: 700; color: var(--ink);">
-                                                <i class="fas fa-user-check text-primary me-2"></i> Verifikasi Akun
-                                            </h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body p-4 text-start">
-                                            <p class="text-muted mb-3" style="font-size: 0.9rem;">
-                                                Ubah status pendaftaran atas nama <strong class="text-dark">{{ $r->nama_lengkap }}</strong>.<br>
-                                                <em style="font-size: 0.8rem;">Relawan bisa login jika pendaftaran "Diterima" dan Akun "Aktif".</em>
-                                            </p>
-                                            
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold" style="font-size: 0.9rem; color: var(--ink);">Status Pendaftaran</label>
-                                                <select name="status_pendaftaran" class="form-select shadow-sm" required style="border-radius: 8px;">
-                                                    <option value="Pending" {{ $r->status_pendaftaran == 'Pending' ? 'selected' : '' }}>Pending (Menunggu)</option>
-                                                    <option value="Diterima" {{ $r->status_pendaftaran == 'Diterima' ? 'selected' : '' }}>Diterima</option>
-                                                    <option value="Ditolak" {{ $r->status_pendaftaran == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="mb-2">
-                                                <label class="form-label fw-bold" style="font-size: 0.9rem; color: var(--ink);">Status Akses Login</label>
-                                                <select name="status_akun" class="form-select shadow-sm" required style="border-radius: 8px;">
-                                                    <option value="Aktif" {{ $r->status_akun == 'Aktif' ? 'selected' : '' }}>Aktif (Bisa Login)</option>
-                                                    <option value="Nonaktif" {{ $r->status_akun == 'Nonaktif' ? 'selected' : '' }}>Nonaktif (Akses Ditutup)</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer" style="background: var(--paper); border-top: 1px solid var(--line);">
-                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" style="border-radius: 8px; font-weight: 600;">Batal</button>
-                                            <button type="submit" class="btn btn-primary" style="background: var(--navy); border-color: var(--navy); border-radius: 8px; font-weight: 600;">
-                                                <i class="fas fa-save me-1"></i> Simpan
-                                            </button>
-                                        </div>
-                                    </form>
+        <div class="table-responsive">
+            <table class="rk-table">
+                <thead>
+                    <tr>
+                        <th>Relawan</th>
+                        <th>NIK</th>
+                        <th>Kecamatan</th>
+                        <th>WhatsApp</th>
+                        <th class="no-print-col">Berkas KTP</th>
+                        <th class="no-print-col text-end">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="rk-body">
+                    @forelse($relawan as $r)
+                    @php
+                        $inisial = collect(preg_split('/\s+/', trim($r->nama_lengkap)))
+                            ->filter()->take(2)
+                            ->map(fn ($w) => mb_strtoupper(mb_substr($w, 0, 1)))
+                            ->implode('');
+                        $punyaKtp = $r->file_ktp && $r->file_ktp !== 'offline_registered';
+                    @endphp
+                    <tr class="rk-row"
+                        data-search="{{ strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp) }}"
+                        data-kecamatan="{{ strtolower($r->kecamatan) }}">
+                        <td class="rk-cell-person">
+                            <div class="rk-person">
+                                <div class="rk-avatar" aria-hidden="true">{{ $inisial }}</div>
+                                <div>
+                                    <strong>{{ $r->nama_lengkap }}</strong>
+                                    <small>Diinput {{ $r->created_at->format('d M Y') }}, {{ $r->created_at->format('H:i') }} WIB</small>
                                 </div>
                             </div>
-                        </div>
-                        @endhasanyrole
+                        </td>
+                        <td data-label="NIK"><span class="rk-nik">{{ $r->nik }}</span></td>
+                        <td data-label="Kecamatan">
+                            <span class="rk-chip"><i class="fas fa-map-marker-alt"></i>{{ $r->kecamatan }}</span>
+                        </td>
+                        <td data-label="WhatsApp">
+                            <a href="https://wa.me/{{ preg_replace('/^0/', '62', $r->nomor_telp) }}" target="_blank" rel="noopener" class="rk-wa">
+                                <i class="fab fa-whatsapp"></i> {{ $r->nomor_telp }}
+                            </a>
+                        </td>
+                        <td data-label="Berkas KTP" class="no-print-col">
+                            @if($punyaKtp)
+                                <span class="rk-badge ok">
+                                    <a href="/storage/{{ $r->file_ktp }}" target="_blank" rel="noopener">
+                                        <i class="fas fa-id-card me-1"></i> Lihat KTP
+                                    </a>
+                                </span>
+                            @else
+                                <span class="rk-badge none"><i class="fas fa-minus-circle"></i> Belum ada</span>
+                            @endif
+                        </td>
+                        <td class="rk-cell-actions no-print-col">
+                            <div class="rk-actions">
+                                {{-- Edit: hanya Pencegahan & Super User --}}
+                                @hasanyrole('Pencegahan|Super User')
+                                <a href="/internal/pencegahan/edit-redkar/{{ $r->id }}" class="rk-icon-btn edit" data-tip="Edit data" aria-label="Edit data {{ $r->nama_lengkap }}">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </a>
+                                @endhasanyrole
 
-                        @empty
-                        <tr>
-                            <td colspan="8" class="text-center py-5 text-muted" style="font-size: .95rem;">
-                                <i class="fas fa-folder-open mb-2" style="font-size: 2rem; color: var(--steel-soft);"></i><br>
-                                Belum ada data relawan REDKAR yang terdaftar.
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                                {{-- Cetak PDF per orang: semua role --}}
+                                <a href="/internal/pencegahan/cetak-redkar/{{ $r->id }}" target="_blank" rel="noopener" class="rk-icon-btn print" data-tip="Cetak PDF" aria-label="Cetak PDF {{ $r->nama_lengkap }}">
+                                    <i class="fas fa-print"></i>
+                                </a>
+
+                                {{-- Hapus: hanya Pencegahan & Super User --}}
+                                @hasanyrole('Pencegahan|Super User')
+                                <form action="/internal/pencegahan/hapus-redkar/{{ $r->id }}" method="POST" class="rk-inline-form" onsubmit="return confirm('Yakin ingin menghapus data relawan ini?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="rk-icon-btn del" data-tip="Hapus" aria-label="Hapus data {{ $r->nama_lengkap }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                                @endhasanyrole
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    @endforelse
+                </tbody>
+            </table>
         </div>
 
-<!-- Script Bootstrap -->
+        {{-- Kondisi: belum ada data sama sekali --}}
+        @if($totalRelawan === 0)
+        <div class="rk-empty">
+            <div class="rk-empty-ico"><i class="fas fa-folder-open"></i></div>
+            <h3>Belum ada relawan terdaftar</h3>
+            <p>Data relawan REDKAR akan muncul di sini setelah ditambahkan.</p>
+            @hasanyrole('Pencegahan|Super User')
+            <a href="/internal/pencegahan/tambah-redkar" class="rk-btn rk-btn-primary">
+                <i class="fas fa-user-plus"></i> Tambah relawan pertama
+            </a>
+            @endhasanyrole
+        </div>
+        @endif
+
+        {{-- Kondisi: pencarian tidak menemukan hasil --}}
+        <div class="rk-empty" id="rk-no-result">
+            <div class="rk-empty-ico"><i class="fas fa-search"></i></div>
+            <h3>Relawan tidak ditemukan</h3>
+            <p>Coba kata kunci lain atau pilih "Semua kecamatan".</p>
+        </div>
+
+        @if(method_exists($relawan, 'links'))
+        <div class="rk-pagination no-print-col">{{ $relawan->links() }}</div>
+        @endif
+    </div>
+
+    {{-- ===== Tabel Tersembunyi Khusus Export Excel ===== --}}
+    <table id="rk-excel-table" style="display: none;">
+        <thead>
+            <tr>
+                <th colspan="15" style="font-size: 14pt; font-weight: bold; text-align: center;">REKAPITULASI DATA RELAWAN PEMADAM KEBAKARAN (REDKAR) KOTA JAMBI</th>
+            </tr>
+            <tr>
+                <th colspan="15" style="text-align: center;">Total Terdaftar: {{ $totalRelawan }} Relawan | Dicetak pada: {{ now()->format('d/m/Y H:i') }} WIB</th>
+            </tr>
+            <tr></tr>
+            <tr style="background-color: #1b365d; color: #ffffff; font-weight: bold;">
+                <th>No</th>
+                <th>No. Register</th>
+                <th>Tanggal Input</th>
+                <th>NIK</th>
+                <th>Nama Lengkap</th>
+                <th>Jenis Kelamin</th>
+                <th>Tempat, Tanggal Lahir</th>
+                <th>Agama</th>
+                <th>Status Perkawinan</th>
+                <th>No. Telepon / WA</th>
+                <th>Alamat Lengkap</th>
+                <th>Kecamatan</th>
+                <th>Kelurahan</th>
+                <th>Pendidikan Terakhir</th>
+                <th>Pekerjaan</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($relawan as $index => $r)
+            <tr class="rk-excel-row"
+                data-search="{{ strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp) }}"
+                data-kecamatan="{{ strtolower($r->kecamatan) }}">
+                <td class="excel-no">{{ $index + 1 }}</td>
+                <td>{{ $r->id }}</td>
+                <td>{{ $r->created_at->format('d/m/Y H:i') }}</td>
+                <td style="mso-number-format:'\@';">{{ $r->nik }}</td>
+                <td>{{ $r->nama_lengkap }}</td>
+                <td>{{ $r->jenis_kelamin }}</td>
+                <td>{{ $r->tempat_lahir }}, {{ \Carbon\Carbon::parse($r->tanggal_lahir)->format('d/m/Y') }}</td>
+                <td>{{ $r->agama }}</td>
+                <td>{{ $r->status_perkawinan }}</td>
+                <td style="mso-number-format:'\@';">{{ $r->nomor_telp }}</td>
+                <td>{{ $r->alamat }}, RT/RW {{ $r->rt_rw }}</td>
+                <td>{{ $r->kecamatan }}</td>
+                <td>{{ $r->kelurahan }}</td>
+                <td>{{ $r->pendidikan_terakhir }} ({{ $r->latar_belakang_pendidikan }})</td>
+                <td>{{ $r->pekerjaan }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+</div>
 @endsection
+
+@push('scripts')
+<script>
+    (function () {
+        var search = document.getElementById('rk-search');
+        var select = document.getElementById('rk-kecamatan');
+        if (!search || !select) return;
+
+        var rows      = Array.prototype.slice.call(document.querySelectorAll('.rk-row'));
+        var excelRows = Array.prototype.slice.call(document.querySelectorAll('.rk-excel-row'));
+        var shown     = document.getElementById('rk-shown');
+        var empty     = document.getElementById('rk-no-result');
+
+        function apply() {
+            var q   = search.value.trim().toLowerCase();
+            var kec = select.value;
+            var n   = 0;
+
+            rows.forEach(function (row, idx) {
+                var ok = (!q || row.dataset.search.indexOf(q) > -1) &&
+                         (!kec || row.dataset.kecamatan === kec);
+                row.style.display = ok ? '' : 'none';
+                
+                if (excelRows[idx]) {
+                    excelRows[idx].setAttribute('data-export', ok ? '1' : '0');
+                }
+                if (ok) n++;
+            });
+
+            shown.textContent = n;
+            empty.style.display = n === 0 ? 'block' : 'none';
+        }
+
+        search.addEventListener('input', apply);
+        select.addEventListener('change', apply);
+    })();
+
+    /* ---------- Fungsi Export ke Excel (.xls) ---------- */
+    function exportRekapExcel() {
+        var sourceTable = document.getElementById('rk-excel-table');
+        if (!sourceTable) return;
+
+        var clone = sourceTable.cloneNode(true);
+        clone.style.display = 'table';
+
+        // Hanya mengikutsertakan baris yang sesuai filter pencarian/kecamatan aktif
+        var bodyRows = clone.querySelectorAll('tbody tr');
+        var no = 1;
+        bodyRows.forEach(function (tr) {
+            if (tr.getAttribute('data-export') === '0') {
+                tr.remove();
+            } else {
+                var noCell = tr.querySelector('.excel-no');
+                if (noCell) noCell.textContent = no++;
+            }
+        });
+
+        var html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" ' +
+                   'xmlns:x="urn:schemas-microsoft-com:office:excel" ' +
+                   'xmlns="http://www.w3.org/TR/REC-html40">' +
+                   '<head><meta charset="UTF-8">' +
+                   '<style>' +
+                   'table { border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10pt; }' +
+                   'th, td { border: 1px solid #000000; padding: 6px 10px; vertical-align: middle; }' +
+                   '</style></head><body>' +
+                   clone.outerHTML +
+                   '</body></html>';
+
+        var blob = new Blob(['\ufeff', html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+        var url  = URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        var tgl  = new Date().toISOString().slice(0, 10);
+
+        link.href = url;
+        link.download = 'Rekap_Data_Relawan_REDKAR_' + tgl + '.xls';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+</script>
+@endpush

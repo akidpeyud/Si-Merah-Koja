@@ -12,12 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('redkar_registrations', function (Blueprint $table) {
-            // ID diubah jadi string karena controller memakai format "RDK-..."
+            // ID diubah jadi string karena controller memakai format "RDK-..." berbasis NIK
             $table->string('id')->primary();
-            
-            // Autentikasi Relawan
-            $table->string('username')->unique();
-            $table->string('password');
             
             // Data Pribadi Dasar
             $table->string('nik', 16)->unique();
@@ -29,10 +25,10 @@ return new class extends Migration
             $table->string('agama');
             $table->string('nomor_telp', 20);
             
-            // Berkas KTP (Nama kolom disesuaikan dengan controller: 'file_ktp' atau 'foto_ktp' sesuai database Anda)
+            // Berkas KTP
             $table->string('file_ktp')->nullable();
             
-            // Domisili (Kolom kode pos telah dihapus)
+            // Domisili (Kolom kode pos sudah dihapus)
             $table->text('alamat');
             $table->string('rt_rw', 10);
             $table->string('provinsi')->default('JAMBI');
@@ -45,11 +41,10 @@ return new class extends Migration
             $table->string('latar_belakang_pendidikan', 255);
             $table->string('pekerjaan', 255);
             $table->string('sehat_jasmani');
-            $table->string('buta_warna')->nullable(); // Dibuat nullable karena tidak ada di form validasi controller
+            $table->string('buta_warna')->nullable();
             $table->string('golongan_darah');
             
-            // Status Sistem
-            $table->string('status_akun')->default('Nonaktif');
+            // Status Sistem (Hanya status pendaftaran untuk pencatatan internal)
             $table->string('status_pendaftaran')->default('Pending');
             
             $table->timestamps();

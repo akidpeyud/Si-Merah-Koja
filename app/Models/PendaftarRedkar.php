@@ -3,23 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 
-class PendaftarRedkar extends Authenticatable
+class PendaftarRedkar extends Model
 {
     use HasFactory;
 
     protected $table = 'redkar_registrations';
 
-    // Mencegah PHP/Laravel mengubah ID string menjadi angka 0
+    // Mencegah PHP/Laravel mengubah ID string ("RDK-...") menjadi angka 0
     protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = [
-        'id',                        
-        'username',                  
-        'password',                  
+        'id',
         'nik',
         'nama_lengkap',
         'jenis_kelamin',
@@ -31,38 +29,16 @@ class PendaftarRedkar extends Authenticatable
         'file_ktp',
         'alamat',
         'rt_rw',
-        'kode_pos',
         'provinsi',
         'kabupaten_kota',
         'kecamatan',
         'kelurahan',
         'pekerjaan',
         'pendidikan_terakhir',
-        'latar_belakang_pendidikan', 
+        'latar_belakang_pendidikan',
         'sehat_jasmani',
+        'buta_warna',
         'golongan_darah',
         'status_pendaftaran',
-        'status_akun',
     ];
-
-    protected $hidden = [
-        'password',
-    ];
-
-    // ========================================================
-    // PERBAIKAN: Menonaktifkan fitur remember_token bawaan
-    // karena tabel redkar_registrations tidak punya kolom tersebut.
-    // ========================================================
-    public function getRememberTokenName()
-    {
-        return null; // Mematikan remember token
-    }
-
-    public function setAttribute($key, $value)
-    {
-        $isRememberTokenAttribute = $key == $this->getRememberTokenName();
-        if (!$isRememberTokenAttribute) {
-            parent::setAttribute($key, $value);
-        }
-    }
 }

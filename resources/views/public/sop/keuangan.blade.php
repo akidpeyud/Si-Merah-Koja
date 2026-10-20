@@ -584,7 +584,7 @@
                     </ul>
                 </li>
 
-                <li><a class="menu-link {{ request()->is('redkar*') ? 'is-active' : '' }}" href="/redkar">Redkar</a></li>
+ 
             </ul>
 
             <!-- ===== Tombol kanan: Lapor darurat + Masuk ===== -->
