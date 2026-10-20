@@ -22,7 +22,6 @@ class PencegahanController extends Controller
     // ==========================================
     public function indexDiksar()
     {
-        // Pastikan nama tabel lu bener 'tbl_diksar'
         $data_diklat = DB::table('tbl_diksar')->orderBy('id', 'desc')->get();
         $judul_diklat = "DIKSAR";
         
@@ -114,8 +113,10 @@ class PencegahanController extends Controller
         elseif ($jenis == 'DIKLAT INSPEKTUR') { $tabel_tujuan = 'tbl_diklat_inspektur'; }
         elseif ($jenis == 'DIKLAT PPL') { $tabel_tujuan = 'tbl_diklat_ppl'; }
 
+        // Data yang akan di-insert, NIP DIPASTIKAN MASUK DI SINI
         $data = [
             'nama' => $request->nama,
+            'nip' => $request->nip,
             'nik' => $request->nik,
             'tempat_lahir' => $request->tempat_lahir,
             'tgl_lahir' => $request->tgl_lahir,
@@ -137,6 +138,7 @@ class PencegahanController extends Controller
         ];
 
         DB::table($tabel_tujuan)->insert($data);
+        
         return redirect('/internal/pencegahan/peningkatan-kapasitas')->with('success', 'Data Peningkatan Kapasitas berhasil ditambahkan!');
     }
 
@@ -168,7 +170,7 @@ class PencegahanController extends Controller
             "Expires"             => "0"
         ];
 
-        $columns = ['NO', 'NAMA', 'TEMPAT LAHIR', 'TGL LAHIR', 'NIK', 'JABATAN', 'INSTANSI', 'DITANDA TANGANI OLEH', 'TANGGAL'];
+        $columns = ['NO', 'NIP', 'NAMA', 'TEMPAT LAHIR', 'TGL LAHIR', 'NIK', 'JABATAN', 'INSTANSI', 'DITANDA TANGANI OLEH', 'TANGGAL'];
 
         $callback = function() use($data, $columns) {
             $file = fopen('php://output', 'w');
@@ -176,6 +178,7 @@ class PencegahanController extends Controller
             foreach ($data as $index => $row) {
                 fputcsv($file, [
                     $index + 1,
+                    $row->nip ?? '-',
                     $row->nama ?? '-',
                     $row->tempat_lahir ?? '-',
                     $row->tgl_lahir ?? '-',
@@ -218,15 +221,14 @@ class PencegahanController extends Controller
     // ==========================================
     public function index()
     {
-        // Ambil semua data untuk ditampilin di tabel
         $data_inspeksi = InspeksiBangunan::orderBy('tanggal_inspeksi', 'desc')->get();
         
-        // Hitung total data untuk kotak "Semua Data"
         $total_inspeksi = InspeksiBangunan::count();
         $total_fire_drill = FireDrill::count(); 
 
         return view('internal.pencegahan.inspeksi_bangunan', compact('data_inspeksi', 'total_inspeksi', 'total_fire_drill'));
     }
+    
     public function indexInspeksiBangunan()
     {
         $data_inspeksi = InspeksiBangunan::all();
@@ -245,7 +247,6 @@ class PencegahanController extends Controller
         $inspeksi->jenis_usaha = $request->jenis_usaha;
         $inspeksi->tanggal_inspeksi = $request->tanggal_inspeksi;
 
-        // 1. Upload Surat Perintah Tugas
         if ($request->hasFile('surat_perintah_tugas')) {
             $file = $request->file('surat_perintah_tugas');
             $nama_file = time() . '_spt.' . $file->getClientOriginalExtension();
@@ -253,7 +254,6 @@ class PencegahanController extends Controller
             $inspeksi->surat_perintah_tugas = $nama_file;
         }
 
-        // 2. Upload Berita Acara
         if ($request->hasFile('berita_acara')) {
             $file = $request->file('berita_acara');
             $nama_file = time() . '_ba.' . $file->getClientOriginalExtension();
@@ -261,7 +261,6 @@ class PencegahanController extends Controller
             $inspeksi->berita_acara = $nama_file;
         }
 
-        // 3. Upload Hasil Penilaian
         if ($request->hasFile('hasil_penilaian')) {
             $file = $request->file('hasil_penilaian');
             $nama_file = time() . '_nilai.' . $file->getClientOriginalExtension();
@@ -269,7 +268,6 @@ class PencegahanController extends Controller
             $inspeksi->hasil_penilaian = $nama_file;
         }
 
-        // 4. Upload Rekomendasi
         if ($request->hasFile('rekomendasi')) {
             $file = $request->file('rekomendasi');
             $nama_file = time() . '_rekom.' . $file->getClientOriginalExtension();
@@ -277,7 +275,6 @@ class PencegahanController extends Controller
             $inspeksi->rekomendasi = $nama_file;
         }
 
-        // 5. Upload SKK
         if ($request->hasFile('skk')) {
             $file = $request->file('skk');
             $nama_file = time() . '_skk.' . $file->getClientOriginalExtension();
@@ -298,14 +295,12 @@ class PencegahanController extends Controller
 
     public function updateInspeksiBangunan(Request $request, $id)
     {
-        // Cari data berdasarkan ID
         $inspeksi = InspeksiBangunan::find($id); 
         
         $inspeksi->nama_tempat = $request->nama_tempat;
         $inspeksi->jenis_usaha = $request->jenis_usaha;
         $inspeksi->tanggal_inspeksi = $request->tanggal_inspeksi;
 
-        // 1. Upload Surat Perintah Tugas
         if ($request->hasFile('surat_perintah_tugas')) {
             $file = $request->file('surat_perintah_tugas');
             $nama_file = time() . '_spt.' . $file->getClientOriginalExtension();
@@ -313,7 +308,6 @@ class PencegahanController extends Controller
             $inspeksi->surat_perintah_tugas = $nama_file;
         }
 
-        // 2. Upload Berita Acara
         if ($request->hasFile('berita_acara')) {
             $file = $request->file('berita_acara');
             $nama_file = time() . '_ba.' . $file->getClientOriginalExtension();
@@ -321,7 +315,6 @@ class PencegahanController extends Controller
             $inspeksi->berita_acara = $nama_file;
         }
 
-        // 3. Upload Hasil Penilaian
         if ($request->hasFile('hasil_penilaian')) {
             $file = $request->file('hasil_penilaian');
             $nama_file = time() . '_nilai.' . $file->getClientOriginalExtension();
@@ -329,7 +322,6 @@ class PencegahanController extends Controller
             $inspeksi->hasil_penilaian = $nama_file;
         }
 
-        // 4. Upload Rekomendasi
         if ($request->hasFile('rekomendasi')) {
             $file = $request->file('rekomendasi');
             $nama_file = time() . '_rekom.' . $file->getClientOriginalExtension();
@@ -337,7 +329,6 @@ class PencegahanController extends Controller
             $inspeksi->rekomendasi = $nama_file;
         }
 
-        // 5. Upload SKK
         if ($request->hasFile('skk')) {
             $file = $request->file('skk');
             $nama_file = time() . '_skk.' . $file->getClientOriginalExtension();
@@ -361,15 +352,10 @@ class PencegahanController extends Controller
     // ==========================================
     // BAGIAN FIRE DRILL
     // ==========================================
-   // ==========================================
-    // BAGIAN FIRE DRILL (REVISI DINAMIS & PESERTA)
-    // ==========================================
     public function indexFireDrill()
     {
-        // Urutkan dari tahun terbaru dan ID terbaru
         $data_fire_drill = FireDrill::orderBy('tahun', 'desc')->orderBy('id', 'desc')->get();
         
-        // Ambil daftar tahun & instansi unik untuk dropdown filter
         $daftar_tahun = $data_fire_drill->pluck('tahun')->unique()->sortDesc()->values();
         $daftar_instansi = $data_fire_drill->pluck('nama_instansi')->unique()->sort()->values();
 
@@ -383,15 +369,12 @@ class PencegahanController extends Controller
 
     public function storeFireDrill(Request $request)
     {
-        // Bersihkan daftar nama peserta per baris (jika diisi)
         $listLaki = $this->bersihkanDaftarNama($request->nama_peserta_laki_laki);
         $listPerempuan = $this->bersihkanDaftarNama($request->nama_peserta_perempuan);
 
-        // Jika daftar nama diisi, jumlah otomatis mengikuti banyaknya nama (atau pakai input angka jika kosong)
         $jmlLaki = count($listLaki) > 0 ? count($listLaki) : (int) ($request->peserta_laki_laki ?? 0);
         $jmlPerempuan = count($listPerempuan) > 0 ? count($listPerempuan) : (int) ($request->peserta_perempuan ?? 0);
         
-        // Jika hanya mengisi total_peserta (seperti data arsip 2023-2024)
         $total = ($jmlLaki + $jmlPerempuan) > 0 
             ? ($jmlLaki + $jmlPerempuan) 
             : (int) ($request->total_peserta ?? 0);
@@ -454,24 +437,20 @@ class PencegahanController extends Controller
         return redirect()->back()->with('success', 'Data Fire Drill berhasil dihapus!');
     }
 
-    /**
-     * Helper: Memecah teks textarea per baris dan menghapus penomoran awal (misal "1. Zaky" -> "Zaky")
-     */
     private function bersihkanDaftarNama($rawText)
     {
         if (empty($rawText)) return [];
         return collect(preg_split('/\r\n|\r|\n/', (string) $rawText))
             ->map(function ($line) {
-                // Hapus angka urutan di depan jika user mengetik "1. Zaky" agar tidak dobel saat ditampilkan
                 return trim(preg_replace('/^\d+[\.\)\-\s]+/', '', trim($line)));
             })
             ->filter()
             ->values()
             ->all();
     }
+
     // ==========================================
     // BAGIAN PELATIHAN KELUARGA (DAMKAR GOES TO RT)
-    // Dokumentasi berupa LINK (Google Drive dll), bukan upload file
     // ==========================================
     public function indexPelatihanKeluarga()
     {
@@ -552,10 +531,6 @@ class PencegahanController extends Controller
         return redirect()->back()->with('success', 'Data berhasil dihapus!');
     }
 
-    /**
-     * Pecah input link per baris.
-     * Return: string (dipisah baris baru), null kalau kosong, atau false kalau ada link tidak valid.
-     */
     private function parseLinkDokumentasi($raw)
     {
         $links = collect(preg_split('/\r\n|\r|\n/', (string) $raw))
@@ -615,18 +590,11 @@ class PencegahanController extends Controller
     // ==========================================
     // FUNGSI DOWNLOAD EXCEL & PDF (FIRE DRILL)
     // ==========================================
-   // ==========================================
-    // FUNGSI DOWNLOAD EXCEL & PDF (FIRE DRILL)
-    // ==========================================
-   // ==========================================
-    // FUNGSI DOWNLOAD EXCEL & PDF (FIRE DRILL)
-    // ==========================================
     public function cetakExcelFireDrill(Request $request)
     {
         $tahunDipilih = $request->query('tahun');
         $instansiDipilih = $request->query('instansi');
 
-        // Urutkan tahun dari terlama ke terbaru (2023, 2024, 2025, 2026) seperti Sheet1 Excel asli
         $query = FireDrill::orderBy('tahun', 'asc')->orderBy('id', 'asc');
 
         if (!empty($tahunDipilih)) {
@@ -672,11 +640,9 @@ class PencegahanController extends Controller
 
             $firstBlock = true;
             foreach ($groupedByYear as $tahun => $items) {
-                // Cek apakah di tahun ini ada rincian Laki-laki/Perempuan atau Daftar Nama Peserta
                 $adaGender = $items->contains(fn($i) => ($i->peserta_laki_laki > 0 || $i->peserta_perempuan > 0));
                 $adaNamaPeserta = $items->contains(fn($i) => (!empty(trim($i->nama_peserta_laki_laki ?? '')) || !empty(trim($i->nama_peserta_perempuan ?? ''))));
 
-                // Tentukan jumlah kolom tabel tahun ini (5 kolom untuk 2023-2024, 7 kolom untuk 2025+, 9 kolom jika ada daftar nama)
                 $jmlKolom = 5;
                 if ($adaGender) $jmlKolom = 7;
                 if ($adaNamaPeserta) $jmlKolom = 9;
@@ -686,7 +652,6 @@ class PencegahanController extends Controller
                     echo '<tr class="baris-kosong"><td colspan="' . $jmlKolom . '"></td></tr>';
                 }
 
-                // Judul Header seperti di Excel Disdamkartan
                 if ($firstBlock) {
                     echo '<tr><td colspan="' . $jmlKolom . '" class="judul-utama">INSTANSI PEMERINTAH / SWASTA</td></tr>';
                     echo '<tr><td colspan="' . $jmlKolom . '" class="judul-utama">YANG MELAKSANAKAN PELATIHAN PEMADAM KEBAKARAN</td></tr>';
@@ -694,9 +659,7 @@ class PencegahanController extends Controller
                 echo '<tr><td colspan="' . $jmlKolom . '" class="judul-utama">TAHUN ' . e($tahun) . '</td></tr>';
                 echo '<tr class="baris-kosong"><td colspan="' . $jmlKolom . '"></td></tr>';
 
-                // Header Kolom Tabel
                 if (!$adaGender && !$adaNamaPeserta) {
-                    // Format 5 Kolom (Persis Tahun 2023 & 2024 di Excel)
                     echo '<tr class="th-abu">
                             <th width="45">NO</th>
                             <th width="340">NAMA INSTANSI</th>
@@ -705,7 +668,6 @@ class PencegahanController extends Controller
                             <th width="140">JUMLAH PESERTA</th>
                           </tr>';
                 } elseif ($adaGender && !$adaNamaPeserta) {
-                    // Format 7 Kolom (Persis Tahun 2025 & 2026 di Excel tanpa daftar nama individu)
                     echo '<tr class="th-abu">
                             <th width="45">NO</th>
                             <th width="320">NAMA INSTANSI</th>
@@ -716,7 +678,6 @@ class PencegahanController extends Controller
                             <th width="140">JUMLAH PESERTA</th>
                           </tr>';
                 } else {
-                    // Format 9 Kolom (Jika ada input daftar nama peserta Laki-laki & Perempuan)
                     echo '<tr class="th-abu">
                             <th rowspan="2" width="45">NO</th>
                             <th rowspan="2" width="280">NAMA INSTANSI</th>
@@ -792,7 +753,6 @@ class PencegahanController extends Controller
                     }
                 }
 
-                // Baris JUMLAH TOTAL di bawah setiap tahun (Persis Excel Asli)
                 if (!$adaGender && !$adaNamaPeserta) {
                     echo '<tr class="tr-total">
                             <td colspan="4" class="td-center">JUMLAH TOTAL</td>
