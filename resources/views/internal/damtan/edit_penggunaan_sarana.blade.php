@@ -72,7 +72,15 @@
 @endpush
 
 @section('content')
-@section('content')
+
+@php
+    // Lampiran: kolom di tabel => label, ikon, format yang diterima (samakan dengan controller & blade formulir)
+    $lampiranEdit = [
+        'surat_permohonan'  => ['label' => 'Surat Permohonan',              'ikon' => 'fa-envelope-open-text', 'accept' => '.pdf,.jpg,.jpeg,.png,.zip,.rar', 'info' => 'PDF/JPG/PNG/ZIP/RAR, maks 5 MB'],
+        'fotokopi_ktp'      => ['label' => 'Fotokopi KTP Penanggung Jawab', 'ikon' => 'fa-id-card',            'accept' => '.pdf,.jpg,.jpeg,.png',          'info' => 'PDF/JPG/PNG, maks 5 MB'],
+        'sket_denah_lokasi' => ['label' => 'Sket Denah Lokasi Kegiatan',    'ikon' => 'fa-map-location-dot',   'accept' => '.pdf,.jpg,.jpeg,.png',          'info' => 'PDF/JPG/PNG, maks 5 MB'],
+    ];
+@endphp
 
 <div class="page-header">
     <div class="page-header-text">
@@ -157,7 +165,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Kegunaan Sarana</label>
-                    <textarea name="kegunaan" rows="3" class="form-control" required>{{ old('kegunaan', $row->kegunaan) }}</textarea>
+                    <textarea name="kegunaan" rows="3" maxlength="1000" class="form-control" required>{{ old('kegunaan', $row->kegunaan) }}</textarea>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Nama Kegiatan</label>
@@ -192,21 +200,27 @@
             </div>
         </div>
 
-        <!-- LAMPIRAN -->
+        <!-- LAMPIRAN: surat_permohonan, fotokopi_ktp, sket_denah_lokasi -->
         <div class="col-12">
             <div class="card-custom p-4">
-                <div class="form-section-title"><i class="fas fa-paperclip me-2"></i>Lampiran <small class="text-muted fw-normal">(kosongkan jika tidak ingin mengganti)</small></div>
+                <div class="form-section-title"><i class="fas fa-paperclip me-2"></i>Lampiran Persyaratan Administrasi <small class="text-muted fw-normal">(kosongkan jika tidak ingin mengganti)</small></div>
                 <div class="row g-4">
-                    <div class="col-md-6">
-                        <label class="form-label">Foto Lokasi Kegiatan (JPG/PNG, maks 5 MB)</label>
-                        <input type="file" name="foto_lokasi" class="form-control" accept=".jpg,.jpeg,.png">
-                        <small class="text-muted">File saat ini: <a href="{{ asset('storage/' . $row->foto_lokasi) }}" target="_blank">lihat foto</a></small>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Surat Permohonan (PDF/JPG/PNG, maks 5 MB)</label>
-                        <input type="file" name="surat_permohonan" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
-                        <small class="text-muted">File saat ini: <a href="{{ asset('storage/' . $row->surat_permohonan) }}" target="_blank">lihat surat</a></small>
-                    </div>
+                    @foreach($lampiranEdit as $kolom => $l)
+                        <div class="col-md-4">
+                            <label class="form-label" for="{{ $kolom }}"><i class="fas {{ $l['ikon'] }} me-1"></i> {{ $l['label'] }} <span class="text-muted fw-normal">({{ $l['info'] }})</span></label>
+                            <input type="file" id="{{ $kolom }}" name="{{ $kolom }}" class="form-control @error($kolom) is-invalid @enderror" accept="{{ $l['accept'] }}">
+                            @error($kolom)
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="text-muted d-block mt-1">
+                                @if($row->{$kolom})
+                                    File saat ini: <a href="{{ asset('storage/' . $row->{$kolom}) }}" target="_blank" rel="noopener">lihat berkas</a>
+                                @else
+                                    Belum ada berkas diunggah.
+                                @endif
+                            </small>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
