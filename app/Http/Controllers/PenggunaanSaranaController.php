@@ -15,6 +15,18 @@ class PenggunaanSaranaController extends Controller
     // Status permohonan (default saat pemohon submit: "Menunggu")
     private const DAFTAR_STATUS = ['Menunggu', 'Proses', 'Disetujui', 'Ditolak'];
 
+    // Format & batas ukuran berkas (samakan dengan data-ext / data-max di blade)
+    private const MIMES_SURAT = 'pdf,jpg,jpeg,png,zip,rar'; // surat_permohonan
+    private const MIMES_BERKAS = 'pdf,jpg,jpeg,png';        // fotokopi_ktp & sket_denah_lokasi
+    private const MAX_FILE_KB = 5120; // 5 MB
+
+    // Kolom berkas => folder penyimpanan di disk public
+    private const FOLDER_BERKAS = [
+        'surat_permohonan'  => 'penggunaan-sarana/surat',
+        'fotokopi_ktp'      => 'penggunaan-sarana/ktp',
+        'sket_denah_lokasi' => 'penggunaan-sarana/denah',
+    ];
+
     // =====================================================================
     // SISI PEMOHON
     // =====================================================================
@@ -33,28 +45,31 @@ class PenggunaanSaranaController extends Controller
             'kegunaan'              => 'required|string|max:1000',
             'nama_kegiatan'         => 'required|string|max:255',
             'lokasi_kegiatan'       => 'required|string|max:255',
-            'tgl_pelaksanaan'       => 'required|date|after_or_equal:today',
+            'tgl_pelaksanaan'       => 'required|date|after_or_equal:' . now()->addDays(7)->toDateString(),
             'waktu_mulai'           => 'required|date_format:H:i',
             'waktu_selesai'         => 'required|date_format:H:i|after:waktu_mulai',
-            'foto_lokasi'           => 'required|image|mimes:jpg,jpeg,png|max:5120',
-            'surat_permohonan'      => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'surat_permohonan'      => 'required|file|mimes:' . self::MIMES_SURAT . '|max:' . self::MAX_FILE_KB,
+            'fotokopi_ktp'          => 'required|file|mimes:' . self::MIMES_BERKAS . '|max:' . self::MAX_FILE_KB,
+            'sket_denah_lokasi'     => 'required|file|mimes:' . self::MIMES_BERKAS . '|max:' . self::MAX_FILE_KB,
         ], [
-            'required'     => ':attribute wajib diisi.',
-            'digits'       => ':attribute harus :digits digit.',
-            'max'          => ':attribute terlalu panjang atau ukurannya melebihi batas.',
-            'in'           => ':attribute tidak valid.',
-            'date'         => ':attribute bukan tanggal yang valid.',
-            'after_or_equal' => ':attribute tidak boleh sebelum hari ini.',
-            'after'        => ':attribute harus setelah waktu mulai.',
-            'date_format'  => 'Format :attribute tidak valid.',
-            'image'        => ':attribute harus berupa gambar.',
-            'mimes'        => ':attribute harus berformat :values.',
+            'required'       => ':attribute wajib diisi.',
+            'digits'         => ':attribute harus :digits digit.',
+            'max'            => ':attribute terlalu panjang atau ukurannya melebihi batas.',
+            'in'             => ':attribute tidak valid.',
+            'date'           => ':attribute bukan tanggal yang valid.',
+            'after_or_equal' => ':attribute harus diajukan selambat-lambatnya 7 hari sebelum kegiatan (H-7).',
+            'after'          => ':attribute harus setelah waktu mulai.',
+            'date_format'    => 'Format :attribute tidak valid.',
+            'file'           => ':attribute harus berupa berkas.',
+            'mimes'          => ':attribute harus berformat :values.',
         ], $this->attributeLabels());
 
-        $data['foto_lokasi']      = $request->file('foto_lokasi')->store('penggunaan-sarana/foto', 'public');
-        $data['surat_permohonan'] = $request->file('surat_permohonan')->store('penggunaan-sarana/surat', 'public');
-        $data['pemohon_id']       = session('pemohon_id');
-        $data['status']           = 'Menunggu';
+        foreach (self::FOLDER_BERKAS as $kolom => $folder) {
+            $data[$kolom] = $request->file($kolom)->store($folder, 'public');
+        }
+
+        $data['pemohon_id'] = session('pemohon_id');
+        $data['status']     = 'Menunggu';
 
         PenggunaanSarana::create($data);
 
@@ -110,14 +125,15 @@ class PenggunaanSaranaController extends Controller
             'kegunaan'              => 'required|string|max:1000',
             'nama_kegiatan'         => 'required|string|max:255',
             'lokasi_kegiatan'       => 'required|string|max:255',
-            // Admin boleh mengedit acara yang tanggalnya sudah lewat
+            // Admin boleh mengedit acara yang tanggalnya sudah lewat / kurang dari H-7
             'tgl_pelaksanaan'       => 'required|date',
             'waktu_mulai'           => 'required|date_format:H:i',
             'waktu_selesai'         => 'required|date_format:H:i|after:waktu_mulai',
             'status'                => ['required', Rule::in(self::DAFTAR_STATUS)],
             // File opsional saat edit: kosong = pakai file lama
-            'foto_lokasi'           => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
-            'surat_permohonan'      => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'surat_permohonan'      => 'nullable|file|mimes:' . self::MIMES_SURAT . '|max:' . self::MAX_FILE_KB,
+            'fotokopi_ktp'          => 'nullable|file|mimes:' . self::MIMES_BERKAS . '|max:' . self::MAX_FILE_KB,
+            'sket_denah_lokasi'     => 'nullable|file|mimes:' . self::MIMES_BERKAS . '|max:' . self::MAX_FILE_KB,
         ], [
             'required'    => ':attribute wajib diisi.',
             'digits'      => ':attribute harus :digits digit.',
@@ -126,22 +142,17 @@ class PenggunaanSaranaController extends Controller
             'date'        => ':attribute bukan tanggal yang valid.',
             'after'       => ':attribute harus setelah waktu mulai.',
             'date_format' => 'Format :attribute tidak valid.',
-            'image'       => ':attribute harus berupa gambar.',
+            'file'        => ':attribute harus berupa berkas.',
             'mimes'       => ':attribute harus berformat :values.',
         ], $this->attributeLabels() + ['status' => 'Status']);
 
-        if ($request->hasFile('foto_lokasi')) {
-            $this->hapusFile($row->foto_lokasi);
-            $data['foto_lokasi'] = $request->file('foto_lokasi')->store('penggunaan-sarana/foto', 'public');
-        } else {
-            unset($data['foto_lokasi']);
-        }
-
-        if ($request->hasFile('surat_permohonan')) {
-            $this->hapusFile($row->surat_permohonan);
-            $data['surat_permohonan'] = $request->file('surat_permohonan')->store('penggunaan-sarana/surat', 'public');
-        } else {
-            unset($data['surat_permohonan']);
+        foreach (self::FOLDER_BERKAS as $kolom => $folder) {
+            if ($request->hasFile($kolom)) {
+                $this->hapusFile($row->{$kolom});
+                $data[$kolom] = $request->file($kolom)->store($folder, 'public');
+            } else {
+                unset($data[$kolom]);
+            }
         }
 
         $row->update($data);
@@ -162,13 +173,14 @@ class PenggunaanSaranaController extends Controller
         return redirect()->back()->with('success', 'Status permohonan berhasil diperbarui.');
     }
 
-    // Hapus permohonan beserta file-nya (Damtan & Super User)
+    // Hapus permohonan beserta seluruh berkasnya (Damtan & Super User)
     public function destroyInternal($id)
     {
         $row = PenggunaanSarana::findOrFail($id);
 
-        $this->hapusFile($row->foto_lokasi);
-        $this->hapusFile($row->surat_permohonan);
+        foreach (PenggunaanSarana::KOLOM_BERKAS as $kolom) {
+            $this->hapusFile($row->{$kolom});
+        }
         $row->delete();
 
         return redirect()->route('internal.penggunaan-sarana.index')
@@ -255,8 +267,9 @@ class PenggunaanSaranaController extends Controller
             'tgl_pelaksanaan'       => 'Tanggal pelaksanaan',
             'waktu_mulai'           => 'Waktu mulai',
             'waktu_selesai'         => 'Waktu selesai',
-            'foto_lokasi'           => 'Foto lokasi kegiatan',
             'surat_permohonan'      => 'Surat permohonan',
+            'fotokopi_ktp'          => 'Fotokopi KTP penanggung jawab',
+            'sket_denah_lokasi'     => 'Sket denah lokasi kegiatan',
         ];
     }
 }

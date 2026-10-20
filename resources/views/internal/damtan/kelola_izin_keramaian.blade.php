@@ -52,10 +52,12 @@
     .action-btn { width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: none; font-size: 13px; transition: all 0.2s; text-decoration: none; }
     .action-btn.view { background-color: var(--info-soft); color: var(--info); }
     .action-btn.view:hover { background-color: #dbeafe; }
-    .action-btn.edit { background-color: rgba(255, 182, 39, 0.15); color: #d97706; margin: 0 5px; }
+    .action-btn.edit { background-color: rgba(255, 182, 39, 0.15); color: #d97706; }
     .action-btn.edit:hover { background-color: rgba(255, 182, 39, 0.25); }
-    .action-btn.delete { background-color: var(--signal-soft); color: var(--signal); margin-left: 5px; }
+    .action-btn.delete { background-color: var(--signal-soft); color: var(--signal); }
     .action-btn.delete:hover { background-color: #fecaca; }
+    .action-wrap { display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; }
+    .action-wrap form { margin: 0; display: inline-flex; }
     .badge-status { display: inline-block; padding: 6px 12px; font-weight: 600; font-size: 0.8rem; border-radius: 6px; }
     .badge-pending { background-color: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
     .badge-proses { background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
@@ -66,16 +68,29 @@
     .status-select.s-Proses    { background-color: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
     .status-select.s-Disetujui { background-color: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
     .status-select.s-Ditolak   { background-color: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+    /* Jenis event: hiburan | non_hiburan (sesuai pilihan di formulir) */
+    .badge-jenis { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; font-weight: 600; font-size: .78rem; border-radius: 999px; white-space: nowrap; }
+    .badge-jenis.hiburan     { background-color: #fdf2f8; color: #be185d; border: 1px solid #fbcfe8; }
+    .badge-jenis.non_hiburan { background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
 </style>
 @endpush
 
 @section('content')
-@section('content')
+
+@php
+    // Label jenis event (nilai di formulir: hiburan | non_hiburan)
+    $jenisEventLabel = [
+        'hiburan'     => 'Hiburan',
+        'non_hiburan' => 'Non-Hiburan',
+    ];
+    // Status permohonan yang tersedia di dropdown admin
+    $daftarStatus = ['Pending', 'Proses', 'Disetujui', 'Ditolak'];
+@endphp
 
         <div class="page-header">
             <div class="page-header-text">
                 <h1>Kelola Event Keramaian</h1>
-                <p>Daftar seluruh pengajuan rekomendasi izin keramaian masyarakat.</p>
+                <p>Daftar seluruh pengajuan rekomendasi pengamanan event pemerintah dan swasta.</p>
             </div>
         </div>
 
@@ -86,7 +101,7 @@
                     <div class="col-md-8">
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0"><i class="fas fa-search"></i></span>
-                            <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari nama pemohon, acara, lokasi...">
+                            <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari nama pemohon, usaha/instansi, acara, lokasi, jenis event...">
                         </div>
                     </div>
                     <div class="col-md-4 text-end ms-auto">
@@ -102,25 +117,40 @@
                         <thead>
                             <tr>
                                 <th class="text-center" width="5%">No</th>
-                                <th width="20%">Nama Pemohon</th>
-                                <th width="14%">Kontak</th>
-                                <th width="23%">Nama Acara</th>
-                                <th width="13%">Tgl Acara</th>
-                                <th width="14%">Status</th>
-                                <th class="text-center" width="11%">Aksi</th>
+                                <th width="17%">Nama Pemohon</th>
+                                <th width="12%">Kontak</th>
+                                <th width="20%">Nama Acara</th>
+                                <th width="10%">Jenis Event</th>
+                                <th width="12%">Tgl Acara</th>
+                                <th width="12%">Status</th>
+                                <th class="text-center" width="12%">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
-                            @forelse($permohonan as $index => $row)
-                            <tr data-search="{{ strtolower($row->nama . ' ' . $row->no_hp . ' ' . $row->nama_acara . ' ' . $row->lokasi_acara . ' ' . $row->status_permohonan) }}">
+                            @forelse($permohonan as $row)
+                            @php
+                                $jenisLabel = $jenisEventLabel[$row->jenis_event] ?? ucfirst(str_replace('_', ' ', (string) $row->jenis_event));
+                            @endphp
+                            <tr data-search="{{ strtolower($row->nama . ' ' . $row->no_hp . ' ' . $row->nama_usaha . ' ' . $row->nama_acara . ' ' . $row->lokasi_acara . ' ' . $jenisLabel . ' ' . $row->status_permohonan) }}">
                                 <td class="text-center text-muted">{{ $loop->iteration }}</td>
-                                <td><strong>{{ $row->nama }}</strong></td>
+                                <td>
+                                    <strong>{{ $row->nama }}</strong><br>
+                                    <small class="text-muted">{{ $row->nama_usaha }}</small>
+                                </td>
                                 <td>{{ $row->no_hp }}</td>
                                 <td class="text-capitalize">{{ $row->nama_acara }}<br><small class="text-muted">{{ $row->lokasi_acara }}</small></td>
+                                <td>
+                                    @if($row->jenis_event)
+                                        <span class="badge-jenis {{ $row->jenis_event }}">{{ $jenisLabel }}</span>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
                                 <td>
                                     <div class="text-dark fw-bold">
                                         {{ \Carbon\Carbon::parse($row->tgl_pelaksanaan)->translatedFormat('d M Y') }}
                                     </div>
+                                    <small class="text-muted">{{ substr($row->waktu_mulai, 0, 5) }} - {{ substr($row->waktu_selesai, 0, 5) }}</small>
                                 </td>
                                 <td>
                                     {{-- UBAH STATUS: HANYA DAMTAN DAN SUPER USER --}}
@@ -131,7 +161,7 @@
                                                     class="form-select status-select s-{{ $row->status_permohonan }}"
                                                     data-old="{{ $row->status_permohonan }}"
                                                     onchange="konfirmasiStatus(this)">
-                                                @foreach(['Pending', 'Proses', 'Disetujui', 'Ditolak'] as $st)
+                                                @foreach($daftarStatus as $st)
                                                     <option value="{{ $st }}" {{ $row->status_permohonan == $st ? 'selected' : '' }}>{{ $st }}</option>
                                                 @endforeach
                                             </select>
@@ -152,23 +182,25 @@
                                     @endhasanyrole
                                 </td>
                                 <td class="text-center">
-                                    <!-- Detail: semua role -->
-                                    <a href="{{ route('internal.izin-keramaian.show', $row->id) }}" class="action-btn view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
+                                    <div class="action-wrap">
+                                        <!-- Detail: semua role -->
+                                        <a href="{{ route('internal.izin-keramaian.show', $row->id) }}" class="action-btn view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
 
-                                    <!-- EDIT & HAPUS: HANYA DAMTAN DAN SUPER USER -->
-                                    @hasanyrole('Damtan|Super User')
-                                    <a href="{{ route('internal.izin-keramaian.edit', $row->id) }}" class="action-btn edit" title="Edit Data"><i class="fas fa-edit"></i></a>
-                                    <form action="{{ route('internal.izin-keramaian.destroy', $row->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus permohonan ini secara permanen?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="action-btn delete" title="Hapus"><i class="fas fa-trash"></i></button>
-                                    </form>
-                                    @endhasanyrole
+                                        <!-- EDIT & HAPUS: HANYA DAMTAN DAN SUPER USER -->
+                                        @hasanyrole('Damtan|Super User')
+                                        <a href="{{ route('internal.izin-keramaian.edit', $row->id) }}" class="action-btn edit" title="Edit Data"><i class="fas fa-edit"></i></a>
+                                        <form action="{{ route('internal.izin-keramaian.destroy', $row->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus permohonan ini secara permanen?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="action-btn delete" title="Hapus"><i class="fas fa-trash"></i></button>
+                                        </form>
+                                        @endhasanyrole
+                                    </div>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="7" class="text-center py-5 text-muted">
+                                <td colspan="8" class="text-center py-5 text-muted">
                                     <i class="fas fa-users-slash mb-3" style="font-size: 24px;"></i><br>
                                     Belum ada data pengajuan Izin Keramaian.
                                 </td>
@@ -216,7 +248,7 @@
     function konfirmasiStatus(select) {
         var lama = select.dataset.old;
         var baru = select.value;
-        if (confirm('Ubah status berkas dari "' + lama + '" menjadi "' + baru + '"?')) {
+        if (confirm('Ubah status permohonan dari "' + lama + '" menjadi "' + baru + '"?')) {
             select.form.submit();
         } else {
             select.value = lama;

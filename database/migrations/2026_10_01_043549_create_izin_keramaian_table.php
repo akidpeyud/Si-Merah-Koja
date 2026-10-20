@@ -27,19 +27,23 @@ return new class extends Migration
             
             // 3. Data Lokasi Acara
             $table->string('nama_acara');
+            $table->enum('jenis_event', ['hiburan', 'non_hiburan']); // TAMBAHAN BARU
             $table->string('lokasi_acara');
             $table->date('tgl_pelaksanaan');
             $table->time('waktu_mulai');
             $table->time('waktu_selesai');
             $table->integer('jumlah_penonton');
-            $table->string('foto_jalur_evakuasi'); // Path file
             
             // 4. Data Peralatan
             $table->integer('jumlah_apar')->default(8);
             $table->integer('jumlah_staff')->default(4);
             
-            // 5. Berkas Persyaratan
-            $table->string('surat_pernyataan'); // Path file
+            // 5. Berkas Persyaratan (Path file)
+            $table->string('surat_permohonan'); // TAMBAHAN BARU
+            $table->string('fotokopi_ktp'); // TAMBAHAN BARU
+            $table->string('foto_jalur_evakuasi'); 
+            $table->string('bukti_pajak_bpprd')->nullable(); // TAMBAHAN BARU (Nullable karena khusus hiburan)
+            $table->string('surat_pernyataan'); 
 
             // Status Permohonan (Pending, Proses, Disetujui, Ditolak)
             $table->string('status_permohonan')->default('Pending');

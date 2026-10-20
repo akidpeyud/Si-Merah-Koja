@@ -4,232 +4,262 @@
 
 @push('styles')
 <style>
+    /* Mengadopsi CSS Variables dan Styling dari Kode 1 */
     :root {
-                --ink: #0d1b2a; --ink-2: #132a43; --ink-3: #1d3856;
-                --navy: #163a63; --navy-dark: #0d2947; --navy-light: #eaf1f8; --navy-soft: rgba(22, 58, 99, .08);
-                --paper: #f5f7fa; --white: #ffffff;
-                --signal: #dc3545; --signal-dark: #b42332; --signal-soft: rgba(220, 53, 69, .09);
-                --amber: #f4b740; --success: #198754; --info: #2563eb; --info-soft: rgba(37, 99, 235, .09);
-                --steel: #64748b; --steel-soft: #94a3b8;
-                --line: #e2e8f0; --line-dark: #cbd5e1;
-                --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
-                --font-body: 'Instrument Sans', system-ui, sans-serif;
-                --r-lg: 18px; --r-md: 14px; --r-sm: 10px;
-                --sidebar-w: 272px; --topbar-h: 70px;
-                --shadow-xs: 0 1px 2px rgba(13, 27, 42, .04);
-                --shadow-sm: 0 4px 12px rgba(13, 27, 42, .06);
-                --shadow-md: 0 10px 25px rgba(13, 27, 42, .08);
-                --shadow-lg: 0 20px 45px rgba(13, 27, 42, .14);
-            }
-    #globalSuccessAlert, #globalErrorAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); color: white; padding: 16px 24px; border-radius: var(--r-md); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    #globalSuccessAlert { background-color: var(--success); box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); }
-    #globalErrorAlert { background-color: var(--signal); box-shadow: 0 10px 25px -5px rgba(229, 57, 45, 0.4); }
-    .alert-icon { font-size: 22px; }
-    .btn-close-alert { background: transparent; border: none; color: white; opacity: 0.7; font-size: 18px; cursor: pointer; padding: 0; margin-left: 10px; transition: opacity 0.2s; }
-    .btn-close-alert:hover { opacity: 1; }
-    @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
-    @keyframes fadeOutUpCenter { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -50px); opacity: 0; } }
-    .topbar { position: sticky; top: 0; z-index: 1020; height: var(--topbar-h); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 28px; background: var(--ink); border-bottom: 1px solid rgba(255,255,255,.08); box-shadow: 0 2px 12px rgba(13, 27, 42, .16); }
-    .sidebar { width: var(--sidebar-w); flex: none; position: sticky; top: var(--topbar-h); height: calc(100vh - var(--topbar-h)); overflow-y: auto; background: #ffffff; border-right: 1px solid var(--line); padding: 20px 14px 32px; scrollbar-width: thin; scrollbar-color: #d8dee8 transparent; }
-    .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); margin-top: 3px; }
-    .side-group summary .grp-label { flex: 1 1 auto; min-width: 0; white-space: normal; line-height: 1.4; }
-    .side-group summary .chev { flex: none; font-size: .7rem; margin-top: 4px; transition: transform .25s ease; }
-    .page-header { margin-bottom: 28px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
-    .page-header-text h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 5px; color: var(--ink); }
-    .page-header-text p { color: var(--steel); font-size: .95rem; margin-bottom: 0; }
-    .card-custom { background: #ffffff; border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--shadow-xs); overflow: hidden; }
-    .form-control, .form-select { font-family: var(--font-body); min-height: 42px; font-size: .9rem; color: var(--ink); background-color: var(--white); border: 1px solid var(--line-dark); border-radius: 8px; padding: 8px 14px; transition: all 0.2s ease; box-shadow: none; }
-    .form-control:focus, .form-select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
-    .form-control::placeholder { color: var(--steel-soft); }
-    .input-group-text { background-color: #f8fafc; border: 1px solid var(--line-dark); color: var(--steel); font-weight: 600; border-radius: 8px; font-size: 0.9rem; }
-    .input-group > .form-control { border-top-right-radius: 0; border-bottom-right-radius: 0; }
-    .input-group > .input-group-text { border-top-left-radius: 0; border-bottom-left-radius: 0; }
-    .btn-custom-light { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 24px; background: var(--white); color: var(--ink); border: 1px solid var(--line-dark); border-radius: 8px; font-size: .92rem; font-weight: 600; transition: all .2s ease; }
-    .btn-custom-light:hover { background: #f8fafc; border-color: var(--steel-soft); color: var(--ink); }
-    .form-label { font-size: .85rem; font-weight: 600; color: var(--ink-3); margin-bottom: 6px; }
-    .form-section-title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+        --ink: #0d1b2a; --ink-2: #132a43; --ink-3: #1d3856;
+        --paper: #f3f5f8; --white: #ffffff;
+        --signal: #e5392d; --signal-d: #c22b20;
+        --amber: #ffb627; --steel: #5b6c7f;
+        --line: #dbe2ea; --ok: #16a34a; --ok-bg: #dcfce7;
+        --warn: #d97706; --warn-bg: #fef3c7;
+        --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+        --font-body: 'Instrument Sans', system-ui, sans-serif;
+        --r-lg: 28px; --r-md: 18px; --r-sm: 10px;
+    }
+
+    body { font-family: var(--font-body); color: var(--ink); background: var(--paper); }
+    
+    /* Layout Khusus Dashboard yang dipertahankan */
+    .topbar { position: sticky; top: 0; z-index: 1020; height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 28px; background: var(--ink); border-bottom: 1px solid rgba(255,255,255,.08); }
+    .sidebar { width: 272px; flex: none; position: sticky; top: 70px; height: calc(100vh - 70px); overflow-y: auto; background: #ffffff; border-right: 1px solid var(--line); padding: 20px 14px 32px; }
+
+    /* Form Panel & Component */
+    .form-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; box-shadow: 0 10px 30px rgba(13, 27, 42, 0.03); margin-bottom: 32px; }
+    .form-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; padding: 18px clamp(18px, 3vw, 32px); border-bottom: 1px solid var(--line); }
+    .form-title { display: flex; align-items: center; gap: 14px; min-width: 0; }
+    .form-title > i { flex: none; width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: var(--ink); color: var(--amber); font-size: 1.05rem; }
+    .form-title h2 { font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; line-height: 1.2; letter-spacing: -0.015em; margin: 0; }
+    .form-title p { font-size: .85rem; color: var(--steel); line-height: 1.4; margin: 2px 0 0; }
+    
+    .form-body { padding: clamp(18px, 3vw, 32px); display: grid; gap: 36px; }
+    
+    .fs { border: 0; min-width: 0; margin: 0; padding: 0; }
+    .fs legend { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 0; width: 100%; font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; letter-spacing: -0.01em; color: var(--ink); }
+    .fs legend::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+    .fs legend i { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: #fdeceb; color: var(--signal-d); font-size: .85rem; }
+
+    .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 20px; }
+    .field { min-width: 0; display: flex; flex-direction: column; }
+    .field.full { grid-column: 1 / -1; }
+    @media (max-width: 768px) { .fields { grid-template-columns: minmax(0, 1fr); } }
+
+    .label { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: .9rem; font-weight: 600; color: var(--ink); }
+    .req { color: var(--signal-d); margin-left: 2px; }
+    
+    .input { display: block; width: 100%; height: 48px; padding: 0 16px; border: 1px solid var(--line); border-radius: 14px; background: #fff; font-family: var(--font-body); font-size: .95rem; color: var(--ink); transition: border-color .2s, box-shadow .2s; }
+    .input:hover:not(:disabled) { border-color: #b8c3d0; }
+    .input:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(255,182,39,.5); }
+    
+    .time-range { display: flex; align-items: center; gap: 10px; }
+    .time-range span { font-weight: 600; color: var(--steel); font-size: .9rem; }
+
+    .upload-card { padding: 16px 20px; border: 1px solid var(--line); border-radius: var(--r-md); background: #fff; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
+    .upload-card .current-file { font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--paper); border-radius: 8px; border: 1px solid var(--line); color: var(--steel); text-decoration: none; word-break: break-all;}
+    .upload-card .current-file:hover { color: var(--signal-d); border-color: var(--signal); }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 24px; border-radius: 999px; font-weight: 700; font-size: .95rem; transition: background .2s, transform .15s; cursor: pointer; border: none; text-decoration: none; }
+    .btn:active { transform: scale(.98); }
+    .btn-primary { background: var(--signal); color: #fff; box-shadow: 0 10px 25px -8px rgba(229,57,45,.6); }
+    .btn-primary:hover { background: var(--signal-d); color: #fff; }
+    .btn-dark { background: var(--ink); color: #fff; }
+    .btn-dark:hover { background: var(--ink-3); color: #fff; }
+    .btn-ghost { background: var(--paper); color: var(--ink); border: 1px solid var(--line); }
+    .btn-ghost:hover { background: var(--line); color: var(--ink); }
+
+    .alert { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 14px; font-size: .92rem; line-height: 1.5; margin-bottom: 24px; }
+    .alert.err { background: #fdeceb; color: #8f1d15; border: 1px solid #f5c3bf; }
+    .alert ul { margin: 4px 0 0; padding-left: 18px; }
 </style>
 @endpush
 
 @section('content')
-@section('content')
-
-<div class="page-header">
-    <div class="page-header-text">
-        <h1>Edit Data Event Keramaian</h1>
-        <p>Ubah data permohonan atas nama <strong>{{ $permohonan->nama }}</strong>.</p>
-    </div>
-    <a href="{{ route('internal.izin-keramaian.index') }}" class="btn-custom-light"><i class="fas fa-arrow-left"></i> Kembali</a>
-</div>
-
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <strong>Periksa kembali isian Anda:</strong>
-        <ul class="mb-0 mt-2 ps-3" style="list-style: disc;">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
-<form action="{{ route('internal.izin-keramaian.update', $permohonan->id) }}" method="POST" enctype="multipart/form-data">
-    @csrf
-    @method('PUT')
-
-    <div class="row g-4">
-        <!-- 1. DATA PEMOHON -->
-        <div class="col-lg-6">
-            <div class="card-custom p-4 h-100">
-                <div class="form-section-title"><i class="fas fa-user me-2"></i>Data Pemohon</div>
-
-                <div class="mb-3">
-                    <label class="form-label">Nama Pemohon</label>
-                    <input type="text" name="nama" class="form-control" value="{{ old('nama', $permohonan->nama) }}" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">NIK</label>
-                    <input type="text" name="nik" class="form-control" maxlength="16" value="{{ old('nik', $permohonan->nik) }}" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">No HP/WA</label>
-                    <input type="text" name="no_hp" class="form-control" value="{{ old('no_hp', $permohonan->no_hp) }}" required>
-                </div>
-                <div class="mb-0">
-                    <label class="form-label">Alamat Lengkap</label>
-                    <input type="text" name="alamat" class="form-control" value="{{ old('alamat', $permohonan->alamat) }}" required>
-                </div>
+<div class="form-panel">
+    <div class="form-bar">
+        <div class="form-title">
+            <i class="fas fa-file-pen"></i>
+            <div>
+                <h2>Edit Data Event Keramaian</h2>
+                <p>Ubah data permohonan atas nama <strong>{{ $permohonan->nama }}</strong>.</p>
             </div>
         </div>
+        <a href="{{ route('internal.izin-keramaian.index') }}" class="btn btn-ghost">
+            <i class="fas fa-arrow-left"></i> Kembali
+        </a>
+    </div>
+
+    <form class="form-body" action="{{ route('internal.izin-keramaian.update', $permohonan->id) }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        @method('PUT')
+
+        @if ($errors->any())
+            <div class="alert err" role="alert">
+                <i class="fas fa-triangle-exclamation" style="margin-top: 3px;"></i>
+                <div>
+                    <strong>Periksa kembali isian Anda:</strong>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
+
+        <!-- 1. DATA PEMOHON -->
+        <fieldset class="fs">
+            <legend><i class="fas fa-user"></i> 1. Data Pemohon</legend>
+            <div class="fields">
+                <div class="field full">
+                    <label class="label">Nama Pemohon <span class="req">*</span></label>
+                    <input class="input" type="text" name="nama" value="{{ old('nama', $permohonan->nama) }}" required>
+                </div>
+                <div class="field">
+                    <label class="label">NIK <span class="req">*</span></label>
+                    <input class="input" type="text" name="nik" maxlength="16" value="{{ old('nik', $permohonan->nik) }}" required>
+                </div>
+                <div class="field">
+                    <label class="label">No HP/WA <span class="req">*</span></label>
+                    <input class="input" type="text" name="no_hp" value="{{ old('no_hp', $permohonan->no_hp) }}" required>
+                </div>
+                <div class="field full">
+                    <label class="label">Alamat Lengkap <span class="req">*</span></label>
+                    <input class="input" type="text" name="alamat" value="{{ old('alamat', $permohonan->alamat) }}" required>
+                </div>
+            </div>
+        </fieldset>
 
         <!-- 2. DATA USAHA -->
-        <div class="col-lg-6">
-            <div class="card-custom p-4 h-100">
-                <div class="form-section-title"><i class="fas fa-building me-2"></i>Data Usaha</div>
-
-                <div class="mb-3">
-                    <label class="form-label">Nama Direktur</label>
-                    <input type="text" name="nama_direktur" class="form-control" value="{{ old('nama_direktur', $permohonan->nama_direktur) }}" required>
+        <fieldset class="fs">
+            <legend><i class="fas fa-briefcase"></i> 2. Data Usaha / Instansi</legend>
+            <div class="fields">
+                <div class="field full">
+                    <label class="label">Nama Penanggung Jawab / Direktur <span class="req">*</span></label>
+                    <input class="input" type="text" name="nama_direktur" value="{{ old('nama_direktur', $permohonan->nama_direktur) }}" required>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Nama Usaha</label>
-                    <input type="text" name="nama_usaha" class="form-control" value="{{ old('nama_usaha', $permohonan->nama_usaha) }}" required>
+                <div class="field">
+                    <label class="label">Nama Usaha / Instansi <span class="req">*</span></label>
+                    <input class="input" type="text" name="nama_usaha" value="{{ old('nama_usaha', $permohonan->nama_usaha) }}" required>
                 </div>
-                <div class="mb-0">
-                    <label class="form-label">No Izin Usaha</label>
-                    <input type="text" name="no_izin_usaha" class="form-control" value="{{ old('no_izin_usaha', $permohonan->no_izin_usaha) }}" required>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. DATA ACARA & PERALATAN -->
-        <div class="col-12">
-            <div class="card-custom p-4">
-                <div class="form-section-title"><i class="fas fa-users-rectangle me-2"></i>Data Acara & Peralatan</div>
-
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Nama Acara</label>
-                        <input type="text" name="nama_acara" class="form-control" value="{{ old('nama_acara', $permohonan->nama_acara) }}" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Lokasi Acara</label>
-                        <input type="text" name="lokasi_acara" class="form-control" value="{{ old('lokasi_acara', $permohonan->lokasi_acara) }}" required>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Tgl Pelaksanaan</label>
-                        <input type="date" name="tgl_pelaksanaan" class="form-control" value="{{ old('tgl_pelaksanaan', \Carbon\Carbon::parse($permohonan->tgl_pelaksanaan)->format('Y-m-d')) }}" required>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Waktu Mulai</label>
-                        <input type="time" name="waktu_mulai" class="form-control" value="{{ old('waktu_mulai', substr($permohonan->waktu_mulai, 0, 5)) }}" required>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Waktu Selesai</label>
-                        <input type="time" name="waktu_selesai" class="form-control" value="{{ old('waktu_selesai', substr($permohonan->waktu_selesai, 0, 5)) }}" required>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Jumlah Penonton</label>
-                        <input type="number" name="jumlah_penonton" class="form-control" value="{{ old('jumlah_penonton', $permohonan->jumlah_penonton) }}" required>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Jumlah APAR</label>
-                        <input type="number" name="jumlah_apar" class="form-control" value="{{ old('jumlah_apar', $permohonan->jumlah_apar) }}" min="8" required>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Jumlah Staff</label>
-                        <input type="number" name="jumlah_staff" class="form-control" value="{{ old('jumlah_staff', $permohonan->jumlah_staff) }}" min="4" required>
-                    </div>
+                <div class="field">
+                    <label class="label">No. Izin Usaha / Surat Tugas <span class="req">*</span></label>
+                    <input class="input" type="text" name="no_izin_usaha" value="{{ old('no_izin_usaha', $permohonan->no_izin_usaha) }}" required>
                 </div>
             </div>
-        </div>
+        </fieldset>
 
-        <!-- 4. LAMPIRAN -->
-        <div class="col-12">
-            <div class="card-custom p-4">
-                <div class="form-section-title"><i class="fas fa-paperclip me-2"></i>Lampiran <small class="text-muted fw-normal">(kosongkan jika tidak ingin mengganti)</small></div>
-                <div class="row g-4">
-                    <div class="col-md-6">
-                        <label class="form-label">Foto Lokasi Acara (JPG/PNG, maks 5 MB)</label>
-                        <input type="file" name="foto_lokasi" class="form-control" accept=".jpg,.jpeg,.png">
-                        @if(!empty($permohonan->foto_lokasi))
-                            <small class="text-muted">File saat ini: <a href="{{ asset('storage/' . $permohonan->foto_lokasi) }}" target="_blank">lihat foto</a></small>
-                        @else
-                            <small class="text-muted">Belum ada file yang diunggah.</small>
-                        @endif
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Surat Permohonan (PDF/JPG/PNG, maks 5 MB)</label>
-                        <input type="file" name="surat_permohonan" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
-                        @if(!empty($permohonan->surat_permohonan))
-                            <small class="text-muted">File saat ini: <a href="{{ asset('storage/' . $permohonan->surat_permohonan) }}" target="_blank">lihat surat</a></small>
-                        @else
-                            <small class="text-muted">Belum ada file yang diunggah.</small>
-                        @endif
+        <!-- 3. DATA LOKASI & WAKTU ACARA -->
+        <fieldset class="fs">
+            <legend><i class="fas fa-map-marker-alt"></i> 3. Data Lokasi & Peralatan Acara</legend>
+            <div class="fields">
+                <div class="field full">
+                    <label class="label">Nama Acara <span class="req">*</span></label>
+                    <input class="input" type="text" name="nama_acara" value="{{ old('nama_acara', $permohonan->nama_acara) }}" required>
+                </div>
+                <div class="field full">
+                    <label class="label">Jenis Event <span class="req">*</span></label>
+                    <select class="input" name="jenis_event" required>
+                        <option value="hiburan" {{ old('jenis_event', $permohonan->jenis_event) == 'hiburan' ? 'selected' : '' }}>Event Hiburan</option>
+                        <option value="non_hiburan" {{ old('jenis_event', $permohonan->jenis_event) == 'non_hiburan' ? 'selected' : '' }}>Non-Hiburan</option>
+                    </select>
+                </div>
+                <div class="field full">
+                    <label class="label">Lokasi Acara <span class="req">*</span></label>
+                    <input class="input" type="text" name="lokasi_acara" value="{{ old('lokasi_acara', $permohonan->lokasi_acara) }}" required>
+                </div>
+                <div class="field">
+                    <label class="label">Tgl. Pelaksanaan <span class="req">*</span></label>
+                    <input class="input" type="date" name="tgl_pelaksanaan" value="{{ old('tgl_pelaksanaan', \Carbon\Carbon::parse($permohonan->tgl_pelaksanaan)->format('Y-m-d')) }}" required>
+                </div>
+                <div class="field">
+                    <label class="label">Waktu Pelaksanaan <span class="req">*</span></label>
+                    <div class="time-range">
+                        <input class="input" type="time" name="waktu_mulai" value="{{ old('waktu_mulai', substr($permohonan->waktu_mulai, 0, 5)) }}" required style="flex:1;">
+                        <span>s/d</span>
+                        <input class="input" type="time" name="waktu_selesai" value="{{ old('waktu_selesai', substr($permohonan->waktu_selesai, 0, 5)) }}" required style="flex:1;">
                     </div>
                 </div>
+                <div class="field">
+                    <label class="label">Jumlah Estimasi Penonton <span class="req">*</span></label>
+                    <input class="input" type="number" name="jumlah_penonton" value="{{ old('jumlah_penonton', $permohonan->jumlah_penonton) }}" required>
+                </div>
+                <div class="field">
+                    <label class="label">Jumlah APAR <span class="req">*</span></label>
+                    <input class="input" type="number" name="jumlah_apar" value="{{ old('jumlah_apar', $permohonan->jumlah_apar) }}" min="8" required>
+                </div>
+                <div class="field">
+                    <label class="label">Jumlah Staff Terlatih <span class="req">*</span></label>
+                    <input class="input" type="number" name="jumlah_staff" value="{{ old('jumlah_staff', $permohonan->jumlah_staff) }}" min="4" required>
+                </div>
             </div>
-        </div>
-    </div>
+        </fieldset>
 
-    <div class="mt-4 d-flex gap-2">
-        <button type="submit" class="btn-custom-light" style="background: var(--ink); color: #fff; border-color: var(--ink);">
-            <i class="fas fa-save"></i> Simpan Perubahan Data
-        </button>
-        <a href="{{ route('internal.izin-keramaian.index') }}" class="btn-custom-light">Batal</a>
-    </div>
-</form>
+        <!-- 4. BERKAS PERSYARATAN -->
+        <fieldset class="fs">
+            <legend><i class="fas fa-file-signature"></i> 4. Lampiran <span style="font-size:.85rem; color:var(--steel); font-weight: normal; margin-left: auto;">(Biarkan kosong jika tidak ingin mengubah berkas)</span></legend>
+            <div class="fields">
+                
+                <!-- Berkas 1: Surat Permohonan -->
+                <div class="upload-card">
+                    <label class="label">Surat Permohonan <br><span style="font-size: 0.8rem; font-weight: normal; color: var(--steel);">(PDF/JPG/PNG, maks 5 MB)</span></label>
+                    <input type="file" name="surat_permohonan" class="input" accept=".pdf,.jpg,.jpeg,.png" style="padding-top: 10px;">
+                    @if(!empty($permohonan->surat_permohonan))
+                        <a href="{{ asset('storage/' . $permohonan->surat_permohonan) }}" target="_blank" class="current-file"><i class="fas fa-file-pdf"></i> Buka file saat ini</a>
+                    @else
+                        <span style="font-size: .85rem; color: var(--steel);">Belum ada file.</span>
+                    @endif
+                </div>
+
+                <!-- Berkas 2: Fotokopi KTP -->
+                <div class="upload-card">
+                    <label class="label">Fotokopi KTP <br><span style="font-size: 0.8rem; font-weight: normal; color: var(--steel);">(PDF/JPG/PNG, maks 5 MB)</span></label>
+                    <input type="file" name="fotokopi_ktp" class="input" accept=".pdf,.jpg,.jpeg,.png" style="padding-top: 10px;">
+                    @if(!empty($permohonan->fotokopi_ktp))
+                        <a href="{{ asset('storage/' . $permohonan->fotokopi_ktp) }}" target="_blank" class="current-file"><i class="fas fa-id-card"></i> Buka file saat ini</a>
+                    @else
+                        <span style="font-size: .85rem; color: var(--steel);">Belum ada file.</span>
+                    @endif
+                </div>
+
+                <!-- Berkas 3: Sket Denah Lokasi -->
+                <div class="upload-card">
+                    <label class="label">Sket Denah Lokasi (Genset) <br><span style="font-size: 0.8rem; font-weight: normal; color: var(--steel);">(PDF/JPG/PNG, maks 5 MB)</span></label>
+                    <input type="file" name="foto_jalur_evakuasi" class="input" accept=".pdf,.jpg,.jpeg,.png" style="padding-top: 10px;">
+                    @if(!empty($permohonan->foto_jalur_evakuasi))
+                        <a href="{{ asset('storage/' . $permohonan->foto_jalur_evakuasi) }}" target="_blank" class="current-file"><i class="fas fa-map-location-dot"></i> Buka file saat ini</a>
+                    @else
+                        <span style="font-size: .85rem; color: var(--steel);">Belum ada file.</span>
+                    @endif
+                </div>
+
+                <!-- Berkas 4: Bukti Pajak BPPRD -->
+                <div class="upload-card">
+                    <label class="label">Bukti Pajak BPPRD <br><span style="font-size: 0.8rem; font-weight: normal; color: var(--steel);">(Khusus Hiburan - PDF/JPG, maks 5 MB)</span></label>
+                    <input type="file" name="bukti_pajak_bpprd" class="input" accept=".pdf,.jpg,.jpeg,.png" style="padding-top: 10px;">
+                    @if(!empty($permohonan->bukti_pajak_bpprd))
+                        <a href="{{ asset('storage/' . $permohonan->bukti_pajak_bpprd) }}" target="_blank" class="current-file"><i class="fas fa-receipt"></i> Buka file saat ini</a>
+                    @else
+                        <span style="font-size: .85rem; color: var(--steel);">Belum ada file.</span>
+                    @endif
+                </div>
+
+                <!-- Berkas 5: Surat Pernyataan -->
+                <div class="upload-card">
+                    <label class="label">Surat Pernyataan Mutlak <br><span style="font-size: 0.8rem; font-weight: normal; color: var(--steel);">(PDF/JPG/PNG, maks 5 MB)</span></label>
+                    <input type="file" name="surat_pernyataan" class="input" accept=".pdf,.jpg,.jpeg,.png" style="padding-top: 10px;">
+                    @if(!empty($permohonan->surat_pernyataan))
+                        <a href="{{ asset('storage/' . $permohonan->surat_pernyataan) }}" target="_blank" class="current-file"><i class="fas fa-file-signature"></i> Buka file saat ini</a>
+                    @else
+                        <span style="font-size: .85rem; color: var(--steel);">Belum ada file.</span>
+                    @endif
+                </div>
+
+            </div>
+        </fieldset>
+
+        <div style="display: flex; gap: 14px; margin-top: 10px;">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan Perubahan</button>
+            <a href="{{ route('internal.izin-keramaian.index') }}" class="btn btn-dark">Batal</a>
+        </div>
+    </form>
+</div>
 @endsection
-
-@push('scripts')
-<script>
-    (function () {
-        'use strict';
-        /* Sidebar Toggle */
-        var toggle = document.getElementById('sideToggle');
-        var backdrop = document.getElementById('sideBackdrop');
-        function closeSide() {
-            document.body.classList.remove('side-open');
-            if (toggle) toggle.setAttribute('aria-expanded', 'false');
-        }
-        if (toggle) {
-            toggle.addEventListener('click', function () {
-                var open = document.body.classList.toggle('side-open');
-                toggle.setAttribute('aria-expanded', open);
-            });
-        }
-        if (backdrop) backdrop.addEventListener('click', closeSide);
-        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSide(); });
-
-        /* Accordion Sidebar */
-        var groups = document.querySelectorAll('.side-group');
-        groups.forEach(function (g) {
-            g.addEventListener('toggle', function () {
-                if (g.open) {
-                    groups.forEach(function (o) { if (o !== g) o.open = false; });
-                }
-            });
-        });
-    })();
-</script>
-@endpush

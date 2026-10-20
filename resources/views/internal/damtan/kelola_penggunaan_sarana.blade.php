@@ -72,7 +72,6 @@
 @endpush
 
 @section('content')
-@section('content')
 
         <div class="page-header">
             <div class="page-header-text">
