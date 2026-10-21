@@ -231,6 +231,10 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/internal/operator/infografis/hapus/{id}', [OperatorMedsosController::class, 'destroyInfografis']);
 
         // Berita Medsos
+        // Tarik Data (ambil judul, thumbnail, tanggal dari link YouTube/TikTok/Instagram/berita web)
+        Route::post('/internal/fetch-link-preview', [OperatorMedsosController::class, 'fetchLinkPreview'])
+            ->middleware('throttle:30,1')
+            ->name('medsos.fetch-preview');
         Route::post('/internal/operator/berita-medsos/store', [OperatorMedsosController::class, 'storeMedsos']);
         Route::put('/internal/operator/berita-medsos/update/{id}', [OperatorMedsosController::class, 'updateMedsos']);
         Route::delete('/internal/operator/berita-medsos/hapus/{id}', [OperatorMedsosController::class, 'destroyMedsos']);
@@ -855,6 +859,7 @@ Route::get('/dokumen/lppd', function () {
     $dokumens = DokumenPublik::where('kategori', 'LPPD')->latest()->get();
     return view('public.dokumen-publik.lppd', compact('dokumens'));
 });
+
 // --- RUTE DOKUMEN PUBLIK (DIPERBAIKI) ---
 Route::resource('dokumen-publik', DokumenPublikController::class);
 Route::get('/dokumen-publik/view/{id}', [DokumenPublikController::class, 'showFile']);
