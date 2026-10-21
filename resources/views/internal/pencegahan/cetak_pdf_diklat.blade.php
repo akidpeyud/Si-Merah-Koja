@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Data Rekap Peningkatan Kapasitas | SIMERAH KOJA</title>
     <style>
-        /* Kertas landscape, margin tipis & font kecil agar muat 21 kolom */
+        /* Kertas landscape, margin tipis & font kecil agar muat 22 kolom */
         @page { size: A4 landscape; margin: 10mm; }
 
         * { box-sizing: border-box; }
@@ -83,36 +83,38 @@
         <table class="table-data">
             <colgroup>
                 <col style="width:2.5%">  <!-- No -->
-                <col style="width:7%">    <!-- Nama -->
-                <col style="width:4.5%">  <!-- Tempat Lahir -->
-                <col style="width:4.5%">  <!-- Tgl Lahir -->
-                <col style="width:6.5%">  <!-- NIK -->
-                <col style="width:4.5%">  <!-- Jabatan -->
-                <col style="width:6%">    <!-- Instansi -->
-                <col style="width:5%">    <!-- Ditanda tangani -->
-                <col style="width:4.5%">  <!-- Tgl Pelaksanaan -->
-                <col style="width:3.5%">  <!-- Jam Pelajaran -->
-                <col style="width:5.5%">  <!-- Penyelenggara -->
-                <col style="width:4%">    <!-- Provinsi -->
-                <col style="width:4%">    <!-- Kota -->
-                <col style="width:6%">    <!-- No Sertifikat -->
-                <col style="width:4.5%">  <!-- Kode Verifikasi -->
-                <col style="width:3.5%">  <!-- Persentase -->
+                <col style="width:6%">    <!-- NIP -->
+                <col style="width:7.5%">  <!-- Nama -->
+                <col style="width:5%">    <!-- Tempat Lahir -->
+                <col style="width:4%">    <!-- Tgl Lahir -->
+                <col style="width:7%">    <!-- NIK -->
+                <col style="width:5%">    <!-- Jabatan -->
+                <col style="width:6.5%">  <!-- Instansi/Perangkat Daerah -->
+                <col style="width:4.5%">  <!-- Ditanda Tangani Oleh -->
+                <col style="width:4%">    <!-- Tanggal Pelaksanaan -->
+                <col style="width:3%">    <!-- Jumlah Jam Pelajaran -->
+                <col style="width:6%">    <!-- Instansi Penyelenggara -->
+                <col style="width:3.5%">  <!-- Provinsi -->
+                <col style="width:3.5%">  <!-- Kota -->
+                <col style="width:5.5%">  <!-- Nomor Sertifikat -->
+                <col style="width:4%">    <!-- Kode Verivikasi -->
+                <col style="width:3.5%">  <!-- Persentasi Penilaian -->
                 <col style="width:4%">    <!-- Jenis Diklat -->
-                <col style="width:4.5%">  <!-- Created at -->
-                <col style="width:4.5%">  <!-- Updated at -->
-                <col style="width:4%">    <!-- TTL -->
-                <col style="width:4%">    <!-- Ket -->
+                <col style="width:4%">    <!-- Created at -->
+                <col style="width:4%">    <!-- Updated at -->
+                <col style="width:3.5%">  <!-- TTL -->
+                <col style="width:3.5%">  <!-- Ket -->
             </colgroup>
             <thead>
                 <tr>
                     <th>No</th>
+                    <th>NIP</th>
                     <th>Nama</th>
                     <th>Tempat Lahir</th>
                     <th>Tgl Lahir</th>
                     <th>NIK</th>
                     <th>Jabatan</th>
-                    <th>Instansi / Perangkat Daerah</th>
+                    <th>Instansi/Perangkat Daerah</th>
                     <th>Ditanda Tangani Oleh</th>
                     <th>Tanggal Pelaksanaan</th>
                     <th>Jumlah Jam Pelajaran</th>
@@ -120,12 +122,12 @@
                     <th>Provinsi</th>
                     <th>Kota</th>
                     <th>Nomor Sertifikat</th>
-                    <th>Kode Verifikasi</th>
-                    <th>Persentase Penilaian</th>
+                    <th>Kode Verivikasi</th>
+                    <th>Persentasi Penilaian</th>
                     <th>Jenis Diklat</th>
                     <th>Created at</th>
                     <th>Updated at</th>
-                    <th>TTL</th>
+                    
                     <th>Ket</th>
                 </tr>
             </thead>
@@ -133,6 +135,7 @@
                 @forelse($bagian['data'] as $index => $item)
                 <tr>
                     <td class="text-center">{{ $index + 1 }}</td>
+                    <td>{{ $item->nip ?? '-' }}</td>
                     <td>{{ $item->nama ?? '-' }}</td>
                     <td>{{ $item->tempat_lahir ?? '-' }}</td>
                     <td>{{ $item->tgl_lahir ?? '-' }}</td>
@@ -151,12 +154,12 @@
                     <td>{{ $item->jenis_diklat ?? $bagian['judul'] }}</td>
                     <td>{{ !empty($item->created_at) ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
                     <td>{{ !empty($item->updated_at) ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
-                    <td>{{ $item->ttl ?? '-' }}</td>
+                    
                     <td>{{ $item->ket ?? '-' }}</td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="21" class="text-center">Belum ada data {{ $bagian['judul'] }}</td>
+                    <td colspan="22" class="text-center">Belum ada data {{ $bagian['judul'] }}</td>
                 </tr>
                 @endforelse
             </tbody>
