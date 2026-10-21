@@ -89,6 +89,64 @@ class PenggunaanSaranaController extends Controller
         return view('internal.damtan.kelola_penggunaan_sarana', compact('permohonan'));
     }
 
+    // Form input manual oleh petugas (Damtan & Super User)
+    public function createInternal()
+    {
+        $daftarSarana = self::DAFTAR_SARANA;
+        $daftarStatus = self::DAFTAR_STATUS;
+
+        return view('internal.damtan.input_penggunaan_sarana', compact('daftarSarana', 'daftarStatus'));
+    }
+
+    // Simpan input manual petugas (Damtan & Super User)
+    public function storeInternal(Request $request)
+    {
+        $data = $request->validate([
+            'nama'                  => 'required|string|max:255',
+            'nik'                   => 'required|digits:16',
+            'no_hp'                 => 'required|string|max:20',
+            'alamat'                => 'required|string|max:255',
+            'jenis_pemohon'         => ['required', Rule::in(['perorangan', 'fasum', 'instansi'])],
+            'nama_penanggung_jawab' => 'required|string|max:255',
+            'nama_instansi'         => 'required|string|max:255',
+            'alamat_instansi'       => 'required|string|max:255',
+            'sarana'                => ['required', Rule::in(self::DAFTAR_SARANA)],
+            'kegunaan'              => 'required|string|max:1000',
+            'nama_kegiatan'         => 'required|string|max:255',
+            'lokasi_kegiatan'       => 'required|string|max:255',
+            // Petugas boleh menginput acara yang kurang dari H-7 / sudah lewat
+            'tgl_pelaksanaan'       => 'required|date',
+            'waktu_mulai'           => 'required|date_format:H:i',
+            'waktu_selesai'         => 'required|date_format:H:i|after:waktu_mulai',
+            'status'                => ['nullable', Rule::in(self::DAFTAR_STATUS)],
+            'surat_permohonan'      => 'required|file|mimes:' . self::MIMES_SURAT . '|max:' . self::MAX_FILE_KB,
+            'fotokopi_ktp'          => 'required|file|mimes:' . self::MIMES_BERKAS . '|max:' . self::MAX_FILE_KB,
+            'sket_denah_lokasi'     => 'required|file|mimes:' . self::MIMES_BERKAS . '|max:' . self::MAX_FILE_KB,
+        ], [
+            'required'    => ':attribute wajib diisi.',
+            'digits'      => ':attribute harus :digits digit.',
+            'max'         => ':attribute terlalu panjang atau ukurannya melebihi batas.',
+            'in'          => ':attribute tidak valid.',
+            'date'        => ':attribute bukan tanggal yang valid.',
+            'after'       => ':attribute harus setelah waktu mulai.',
+            'date_format' => 'Format :attribute tidak valid.',
+            'file'        => ':attribute harus berupa berkas.',
+            'mimes'       => ':attribute harus berformat :values.',
+        ], $this->attributeLabels() + ['status' => 'Status']);
+
+        foreach (self::FOLDER_BERKAS as $kolom => $folder) {
+            $data[$kolom] = $request->file($kolom)->store($folder, 'public');
+        }
+
+        // Status awal: sama seperti pengajuan pemohon ("Menunggu") bila tidak dipilih
+        $data['status'] = $data['status'] ?? 'Menunggu';
+
+        PenggunaanSarana::create($data);
+
+        return redirect()->route('internal.penggunaan-sarana.index')
+            ->with('success', 'Data permohonan berhasil ditambahkan.');
+    }
+
     // Detail permohonan (semua role yang login)
     public function showInternal($id)
     {

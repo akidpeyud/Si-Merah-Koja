@@ -12,6 +12,7 @@ use App\Http\Controllers\SapraController;
 use App\Http\Controllers\OperatorMedsosController;
 use App\Http\Controllers\DukController;
 use App\Http\Controllers\DamtanController;
+use App\Http\Controllers\LaporanExcelController;
 use App\Http\Controllers\RedkarController;
 use App\Http\Controllers\SuratKorbanController;
 use App\Http\Controllers\PermohonanRpkbglController;
@@ -27,7 +28,9 @@ use App\Http\Controllers\PermohonanEdukasiController;
 use App\Http\Controllers\PetaController;
 use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\IzinKeramaianController;
+use App\Http\Controllers\IzinKeramaianExcelController;
 use App\Http\Controllers\PenggunaanSaranaController;
+use App\Http\Controllers\PenggunaanSaranaExcelController;
 use App\Http\Controllers\ProgramKerjaController;
 use App\Http\Controllers\InformasiLayananController;
 use App\Http\Controllers\DataAsnController;
@@ -262,6 +265,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/damtan/input-data', [DamtanController::class, 'createPenyelamatan'])->name('damtan.laporan.create');
     Route::post('/internal/damtan/input-data/store', [DamtanController::class, 'storePenyelamatan'])->name('damtan.laporan.store');
     Route::get('/internal/damtan/data-laporan', [DamtanController::class, 'indexPenyelamatan'])->name('damtan.laporan.index');
+
+    // Cetak Excel Laporan Kebakaran (semua role yang login boleh cetak; mendukung ?tahun=XXXX)
+    Route::get('/internal/damtan/export-excel', LaporanExcelController::class)->name('damtan.laporan.export-excel');
+
     Route::get('/internal/damtan/edit-data/{id}', [DamtanController::class, 'editPenyelamatan'])->name('damtan.laporan.edit');
     Route::put('/internal/damtan/update-data/{id}', [DamtanController::class, 'updatePenyelamatan'])->name('damtan.laporan.update');
     Route::delete('/internal/damtan/hapus-data/{id}', [DamtanController::class, 'destroyPenyelamatan']);
@@ -279,36 +286,59 @@ Route::middleware(['auth'])->group(function () {
     // KELOLA SURAT KERAMAIAN (ADMIN BAGIAN PEMADAMAN)
     Route::get('/internal/damtan/kelola-izin-keramaian', [IzinKeramaianController::class, 'indexInternal'])->name('internal.izin-keramaian.index');
 
+    // Cetak Excel Rekap Izin Keramaian (semua role yang login boleh cetak)
+    Route::get('/internal/damtan/kelola-izin-keramaian/export-excel', IzinKeramaianExcelController::class)->name('internal.izin-keramaian.export-excel');
+
     Route::middleware([RoleMiddleware::class . ':Damtan|Super User'])->group(function () {
+        // TAMBAHAN BARU: Buat Laporan Baru (create & store)
+        // PENTING: route "create" harus berada SEBELUM route show ({id}) di bawah
+        Route::get('/internal/damtan/kelola-izin-keramaian/create', [IzinKeramaianController::class, 'createInternal'])->name('internal.izin-keramaian.create');
+        Route::post('/internal/damtan/kelola-izin-keramaian', [IzinKeramaianController::class, 'storeInternal'])->name('internal.izin-keramaian.store');
+
         Route::get('/internal/damtan/kelola-izin-keramaian/edit/{id}', [IzinKeramaianController::class, 'editInternal'])->name('internal.izin-keramaian.edit');
         Route::put('/internal/damtan/kelola-izin-keramaian/update/{id}', [IzinKeramaianController::class, 'updateInternal'])->name('internal.izin-keramaian.update');
         Route::post('/internal/damtan/kelola-izin-keramaian/update-status/{id}', [IzinKeramaianController::class, 'updateStatusInternal'])->name('internal.izin-keramaian.update_status');
         Route::delete('/internal/damtan/kelola-izin-keramaian/hapus/{id}', [IzinKeramaianController::class, 'destroyInternal'])->name('internal.izin-keramaian.destroy');
     });
 
-    Route::get('/internal/damtan/kelola-izin-keramaian/{id}', [IzinKeramaianController::class, 'showInternal'])->name('internal.izin-keramaian.show');
+    Route::get('/internal/damtan/kelola-izin-keramaian/{id}', [IzinKeramaianController::class, 'showInternal'])->whereNumber('id')->name('internal.izin-keramaian.show');
 
     // KELOLA PENGGUNAAN SARANA (ADMIN BAGIAN PEMADAMAN)
     Route::get('/internal/damtan/kelola-penggunaan-sarana', [PenggunaanSaranaController::class, 'indexInternal'])->name('internal.penggunaan-sarana.index');
 
+    // Cetak Excel Rekap Penggunaan Sarana (semua role yang login boleh cetak)
+    Route::get('/internal/damtan/kelola-penggunaan-sarana/export-excel', PenggunaanSaranaExcelController::class)->name('internal.penggunaan-sarana.export-excel');
+
     Route::middleware([RoleMiddleware::class . ':Damtan|Super User'])->group(function () {
+        // TAMBAHAN BARU: Buat Laporan Baru (create & store)
+        // PENTING: route "create" harus berada SEBELUM route show ({id}) di bawah
+        Route::get('/internal/damtan/kelola-penggunaan-sarana/create', [PenggunaanSaranaController::class, 'createInternal'])->name('internal.penggunaan-sarana.create');
+        Route::post('/internal/damtan/kelola-penggunaan-sarana', [PenggunaanSaranaController::class, 'storeInternal'])->name('internal.penggunaan-sarana.store');
+
         Route::get('/internal/damtan/kelola-penggunaan-sarana/edit/{id}', [PenggunaanSaranaController::class, 'editInternal'])->name('internal.penggunaan-sarana.edit');
         Route::put('/internal/damtan/kelola-penggunaan-sarana/update/{id}', [PenggunaanSaranaController::class, 'updateInternal'])->name('internal.penggunaan-sarana.update');
         Route::post('/internal/damtan/kelola-penggunaan-sarana/update-status/{id}', [PenggunaanSaranaController::class, 'updateStatusInternal'])->name('internal.penggunaan-sarana.update_status');
         Route::delete('/internal/damtan/kelola-penggunaan-sarana/hapus/{id}', [PenggunaanSaranaController::class, 'destroyInternal'])->name('internal.penggunaan-sarana.destroy');
     });
 
-    Route::get('/internal/damtan/kelola-penggunaan-sarana/{id}', [PenggunaanSaranaController::class, 'showInternal'])->name('internal.penggunaan-sarana.show');
+    Route::get('/internal/damtan/kelola-penggunaan-sarana/{id}', [PenggunaanSaranaController::class, 'showInternal'])->whereNumber('id')->name('internal.penggunaan-sarana.show');
 
-    // REKAP LAYANAN PEMADAMAN
+    // REKAP LAYANAN PEMADAMAN & REKAP OBJEK KEBAKARAN
+    // Lihat = semua role yang login. Simpan/hapus = hanya Damtan & Super User.
     Route::get('/internal/damtan/rekap-layanan', [DamtanController::class, 'rekapLayanan'])->name('damtan.rekap_layanan');
-    Route::post('/internal/damtan/rekap-layanan', [DamtanController::class, 'storeRekapLayanan']);
-    Route::delete('/internal/damtan/rekap-layanan/{id}', [DamtanController::class, 'destroyRekapLayanan']);
-
-    // REKAP OBJEK KEBAKARAN
     Route::get('/internal/damtan/rekap-objek', [DamtanController::class, 'rekapObjek'])->name('damtan.rekap_objek');
-    Route::post('/internal/damtan/rekap-objek', [DamtanController::class, 'storeRekapObjek']);
-    Route::delete('/internal/damtan/rekap-objek/{id}', [DamtanController::class, 'destroyRekapLayanan']);
+
+    Route::middleware([RoleMiddleware::class . ':Damtan|Super User'])->group(function () {
+        // Rekap Layanan
+        Route::post('/internal/damtan/rekap-layanan', [DamtanController::class, 'storeRekapLayanan']);
+        Route::delete('/internal/damtan/rekap-layanan/{id}', [DamtanController::class, 'destroyRekapLayanan']);
+
+        // Rekap Objek
+        Route::post('/internal/damtan/rekap-objek', [DamtanController::class, 'storeRekapObjek']);
+        // CATATAN: method di bawah ini aslinya destroyRekapLayanan. Cek di DamtanController,
+        // kalau ada method khusus objek (mis. destroyRekapObjek) ganti di sini.
+        Route::delete('/internal/damtan/rekap-objek/{id}', [DamtanController::class, 'destroyRekapLayanan']);
+    });
 
     // --- D. SAPRA (SARANA PRASARANA) ---
     Route::get('/sapra/data-hidrant-kota', [SapraController::class, 'dataHidrantKota']);
@@ -631,7 +661,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/hapus/{id}', [PencegahanController::class, 'destroyPelatihanKeluarga'])->name('pelatihan_keluarga.destroy');
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak', [PemberdayaanController::class, 'cetakPelatihan']);
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak-excel', [PemberdayaanController::class, 'cetakExcelPelatihan']);
-// 11. Peningkatan Kapasitas Aparatur
+
+    // 11. Peningkatan Kapasitas Aparatur
     Route::get('/internal/pencegahan/peningkatan-kapasitas', function () {
         $dataDiksar = \Illuminate\Support\Facades\Schema::hasTable('tbl_diksar') ? DB::table('tbl_diksar')->orderBy('id', 'desc')->get() : [];
         $dataF1 = \Illuminate\Support\Facades\Schema::hasTable('tbl_diklat_f1') ? DB::table('tbl_diklat_f1')->orderBy('id', 'desc')->get() : [];
@@ -773,7 +804,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/internal/data-asn/{dataAsn}', [DataAsnController::class, 'update'])->name('data-asn.update');
     Route::delete('/internal/data-asn/{dataAsn}', [DataAsnController::class, 'destroy'])->name('data-asn.destroy');
 
- // --- G. PROGRAM KERJA ---
+    // --- G. PROGRAM KERJA ---
     Route::get('/internal/program-kerja', [ProgramKerjaController::class, 'index'])->name('program-kerja.index');
     Route::post('/internal/program-kerja/store', [ProgramKerjaController::class, 'store'])->name('program-kerja.store');
     
