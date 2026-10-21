@@ -260,6 +260,11 @@
                     <input type="tel" class="form-control" id="nomor_telp" name="nomor_telp" value="{{ $val('nomor_telp') }}" inputmode="tel" placeholder="Contoh: 081234567890" required>
                 </div>
 
+                <div class="col-md-4">
+                    <label class="form-label" for="kartu_anggota">No. Kartu Anggota</label>
+                    <input type="text" class="form-control" id="kartu_anggota" name="kartu_anggota" value="{{ $val('kartu_anggota') }}" placeholder="Contoh: 15.71.001">
+                </div>
+                
                 <div class="col-md-6">
                     <label class="form-label" for="tempat_lahir">Tempat lahir <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="tempat_lahir" name="tempat_lahir" value="{{ $val('tempat_lahir') }}" placeholder="Kota atau kabupaten tempat lahir" required>
