@@ -134,6 +134,24 @@
     .btn-cetak:hover { background: var(--steel-soft); color: #ffffff; border-color: var(--steel-soft); }
     .form-select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
     @media (max-width: 700px) { .tab-content { padding: 14px; } .nav-tabs { padding: 10px 10px 0; } .nav-tabs .nav-link { padding: 10px 14px; } }
+
+    /* ---------- Toolbar Pencarian & Filter (berlaku untuk kedua tab) ---------- */
+    .filter-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 18px 24px; border-bottom: 1px solid var(--line); background: #fff; }
+    .filter-search { position: relative; flex: 1 1 280px; min-width: 220px; }
+    .filter-search i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--steel-soft); font-size: .85rem; pointer-events: none; }
+    .filter-search .form-control { height: 42px; padding-left: 38px; border-radius: 8px; font-size: .9rem; border: 1.5px solid var(--line-dark); }
+    .filter-search .form-control:focus { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+    .filter-select { flex: 0 0 200px; }
+    .filter-select .form-select { height: 42px; border-radius: 8px; font-size: .9rem; border: 1.5px solid var(--line-dark); cursor: pointer; }
+    .btn-reset-filter { height: 42px; padding: 0 16px; border-radius: 8px; border: 1.5px solid var(--line-dark); background: #fff; color: var(--steel); font-size: .85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; transition: all .2s; }
+    .btn-reset-filter:hover { background: var(--paper); color: var(--ink); }
+    .filter-count { margin-left: auto; font-size: .82rem; color: var(--steel); white-space: nowrap; }
+    .filter-count strong { color: var(--ink); }
+    @media (max-width: 700px) {
+        .filter-bar { padding: 14px; }
+        .filter-select { flex: 1 1 100%; }
+        .filter-count { margin-left: 0; width: 100%; }
+    }
 </style>
 @endpush
 
@@ -171,6 +189,9 @@
     $sumAll  = [];
     foreach ($sumBaru as $k => $v) { $sumAll[$k] = $v + $sumPerp[$k]; }
 
+    // Daftar kecamatan unik (gabungan SKK Baru + Perpanjangan) untuk dropdown filter
+    $daftarKecamatan = $listBaru->concat($listPerp)->pluck('kecamatan')->filter()->unique()->sort()->values();
+
     /* ---------- Data untuk rekap Excel ---------- */
     $buatBaris = function ($list, $perpanjang) use ($statusLabel, $berkasAda) {
         return $list->values()->map(function ($p, $i) use ($statusLabel, $berkasAda, $perpanjang) {
@@ -202,6 +223,14 @@
             }
             $row['status']     = $statusLabel($p->status_permohonan);
             $row['jml_berkas'] = $jml;
+
+            // Kunci internal untuk pencarian/filter (tidak ditulis ke Excel)
+            $row['_search'] = mb_strtolower(
+                $p->nama_pemohon . ' ' . $p->nama_usaha . ' ' . $p->nik_pemilik_usaha . ' ' . $p->no_whatsapp . ' ' .
+                $p->nama_bangunan . ' ' . $p->kategori_bangunan . ' ' . $p->kecamatan . ' ' . $p->kelurahan . ' ' .
+                ($perpanjang ? $p->nomor_skk_lama : '')
+            );
+            $row['_kec'] = mb_strtolower((string) $p->kecamatan);
             return $row;
         })->all();
     };
@@ -210,7 +239,6 @@
     $rekapData = [
         'baru'       => $buatBaris($listBaru, false),
         'perpanjang' => $buatBaris($listPerp, true),
-        'sum'        => ['baru' => $sumBaru, 'perpanjang' => $sumPerp, 'semua' => $sumAll],
     ];
 
     $tabs = ['baru' => $listBaru, 'perpanjang' => $listPerp];
@@ -289,6 +317,47 @@
         </div>
 
         <div class="content-card has-tabs">
+            <!-- ==============================================
+                 PENCARIAN & FILTER (STATUS + KECAMATAN) — BERLAKU UNTUK KEDUA TAB
+                 ============================================== -->
+            @if($sumAll['total'] > 0)
+            <div class="filter-bar">
+                <div class="filter-search">
+                    <i class="fas fa-search"></i>
+                    <input type="search" id="searchSkk" class="form-control"
+                           placeholder="Cari pemohon, usaha, NIK, bangunan, lokasi, atau no. WhatsApp..."
+                           autocomplete="off">
+                </div>
+
+                <div class="filter-select">
+                    <select id="filterStatus" class="form-select" aria-label="Filter status">
+                        <option value="">Semua Status</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Diproses Tim">Diproses Tim</option>
+                        <option value="Memenuhi Syarat">Memenuhi Syarat</option>
+                        <option value="Tidak Memenuhi Syarat">Tidak Memenuhi Syarat</option>
+                    </select>
+                </div>
+
+                <div class="filter-select">
+                    <select id="filterKecamatan" class="form-select" aria-label="Filter kecamatan">
+                        <option value="">Semua Kecamatan</option>
+                        @foreach($daftarKecamatan as $kec)
+                            <option value="{{ mb_strtolower($kec) }}">{{ $kec }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <button type="button" id="btnResetFilter" class="btn-reset-filter">
+                    <i class="fas fa-rotate-left"></i> Reset
+                </button>
+
+                <div class="filter-count" id="filterCount">
+                    Menampilkan <strong>{{ $sumAll['total'] }}</strong> dari <strong>{{ $sumAll['total'] }}</strong> berkas
+                </div>
+            </div>
+            @endif
+
             <!-- NAV TABS -->
             <ul class="nav nav-tabs" id="skkTab" role="tablist">
                 <li class="nav-item" role="presentation">
@@ -321,7 +390,10 @@
                             </thead>
                             <tbody>
                                 @forelse($list as $p)
-                                <tr>
+                                <tr class="row-skk"
+                                    data-status="{{ $statusLabel($p->status_permohonan) }}"
+                                    data-kecamatan="{{ mb_strtolower((string) $p->kecamatan) }}"
+                                    data-search="{{ mb_strtolower($p->nama_pemohon . ' ' . $p->nama_usaha . ' ' . $p->nik_pemilik_usaha . ' ' . $p->no_whatsapp . ' ' . $p->nama_bangunan . ' ' . $p->kategori_bangunan . ' ' . $p->kecamatan . ' ' . $p->kelurahan . ' ' . ($perp ? $p->nomor_skk_lama : '')) }}">
                                     <td>
                                         <strong>{{ $p->created_at->format('d M Y') }}</strong>
                                         <div style="font-size: .8rem; color: var(--steel-soft);">{{ $p->created_at->format('H:i') }} WIB</div>
@@ -425,6 +497,14 @@
                                     </td>
                                 </tr>
                                 @endforelse
+
+                                <!-- Pesan jika hasil pencarian/filter kosong pada tab ini -->
+                                <tr class="row-noresult d-none">
+                                    <td colspan="{{ $perp ? 8 : 7 }}" class="text-center py-5 text-muted" style="font-size: .95rem;">
+                                        <i class="fas fa-search mb-2" style="font-size: 2rem; color: var(--steel-soft);"></i><br>
+                                        Tidak ada permohonan yang cocok dengan pencarian atau filter.
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -561,8 +641,87 @@
     });
 })();
 
+/* ---------- Pencarian & Filter (Status + Kecamatan, berlaku untuk kedua tab) ---------- */
+var elSearch = document.getElementById('searchSkk');
+var elStatus = document.getElementById('filterStatus');
+var elKec    = document.getElementById('filterKecamatan');
+
+function filterAktif() {
+    return {
+        q:   elSearch ? elSearch.value.trim().toLowerCase() : '',
+        st:  elStatus ? elStatus.value : '',
+        kec: elKec    ? elKec.value    : ''
+    };
+}
+
+function cocokFilter(search, status, kec, f) {
+    return (!f.q   || (search || '').indexOf(f.q) !== -1) &&
+           (!f.st  || status === f.st) &&
+           (!f.kec || kec === f.kec);
+}
+
+function terapkanFilter() {
+    var f = filterAktif();
+    var sedangFilter = !!(f.q || f.st || f.kec);
+    var totalShown = 0, totalAll = 0;
+
+    ['baru', 'perpanjang'].forEach(function (tipe) {
+        var pane = document.getElementById(tipe);
+        if (!pane) return;
+
+        var rows = pane.querySelectorAll('tr.row-skk');
+        var shown = 0;
+
+        rows.forEach(function (tr) {
+            var ok = cocokFilter(tr.dataset.search, tr.dataset.status, tr.dataset.kecamatan, f);
+            tr.classList.toggle('d-none', !ok);
+            if (ok) shown++;
+        });
+
+        totalShown += shown;
+        totalAll   += rows.length;
+
+        // Badge jumlah pada tab: "hasil/total" saat difilter
+        var badge = document.querySelector('#' + tipe + '-tab .tab-count');
+        if (badge) badge.textContent = (sedangFilter && shown !== rows.length) ? (shown + '/' + rows.length) : rows.length;
+
+        // Pesan "tidak ada hasil" per tab (hanya jika tab ini punya data tetapi semuanya tersaring)
+        var empty = pane.querySelector('tr.row-noresult');
+        if (empty) empty.classList.toggle('d-none', !(rows.length > 0 && shown === 0));
+    });
+
+    var cnt = document.getElementById('filterCount');
+    if (cnt) cnt.innerHTML = 'Menampilkan <strong>' + totalShown + '</strong> dari <strong>' + totalAll + '</strong> berkas';
+}
+
+if (elSearch && elStatus && elKec) {
+    elSearch.addEventListener('input', terapkanFilter);
+    elStatus.addEventListener('change', terapkanFilter);
+    elKec.addEventListener('change', terapkanFilter);
+
+    document.getElementById('btnResetFilter').addEventListener('click', function () {
+        elSearch.value = '';
+        elStatus.value = '';
+        elKec.value = '';
+        terapkanFilter();
+    });
+}
+
+// Hitung ulang ringkasan dari baris yang lolos filter (dipakai oleh Rekap Excel)
+function hitungSumRekap(rows) {
+    var s = { total: rows.length, diurus: 0, pending: 0, diproses: 0, memenuhi: 0, tidak: 0 };
+    rows.forEach(function (r) {
+        if (r.status === 'Pending') s.pending++;
+        else if (r.status === 'Diproses Tim') s.diproses++;
+        else if (r.status === 'Memenuhi Syarat') s.memenuhi++;
+        else s.tidak++;
+    });
+    s.diurus = s.pending + s.diproses;
+    return s;
+}
+
 /* ---------- Rekap Excel (.xlsx) ---------- */
-var REKAP = @json($rekapData);
+var REKAP_ALL = @json($rekapData);
 
 function rekapKolom(perpanjang) {
     var c = [
@@ -602,8 +761,31 @@ async function exportRekapExcel() {
         Swal.fire({ icon: 'error', title: 'Gagal', text: 'Library Excel belum termuat. Periksa koneksi internet lalu muat ulang halaman.', confirmButtonColor: '#163a63' });
         return;
     }
+
+    // Ikuti filter yang sedang aktif di layar (nomor urut & ringkasan dihitung ulang)
+    var f = filterAktif();
+    var ambil = function (list) {
+        return list.filter(function (r) {
+            return cocokFilter(r._search, r.status, r._kec, f);
+        }).map(function (r, i) {
+            return Object.assign({}, r, { no: i + 1 });
+        });
+    };
+    var fBaru = ambil(REKAP_ALL.baru);
+    var fPerp = ambil(REKAP_ALL.perpanjang);
+    var sBaru = hitungSumRekap(fBaru);
+    var sPerp = hitungSumRekap(fPerp);
+    var sSemua = {};
+    Object.keys(sBaru).forEach(function (k) { sSemua[k] = sBaru[k] + sPerp[k]; });
+
+    var REKAP = {
+        baru: fBaru,
+        perpanjang: fPerp,
+        sum: { baru: sBaru, perpanjang: sPerp, semua: sSemua }
+    };
+
     if (!REKAP.baru.length && !REKAP.perpanjang.length) {
-        Swal.fire({ icon: 'info', title: 'Tidak ada data', text: 'Belum ada data permohonan SKK untuk direkap.', confirmButtonColor: '#163a63' });
+        Swal.fire({ icon: 'info', title: 'Tidak ada data', text: 'Tidak ada data permohonan SKK yang sesuai untuk direkap.', confirmButtonColor: '#163a63' });
         return;
     }
 

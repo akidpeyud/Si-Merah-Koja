@@ -538,7 +538,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         <div class="page-head">
             <div class="page-head-title">
                 <h1>Daftar Permohonan RPKBGL</h1>
-                <p>Data pengajuan Rekomendasi Proteksi Kebakaran Bangunan Gedung & Lingkungan.</p>
+                <p>Data pengajuan Rekomendasi Penilaian Proteksi Kebakaran Bangunan Gedung dan Lingkungan.</p>
             </div>
             
             <div class="d-flex gap-2 flex-wrap">

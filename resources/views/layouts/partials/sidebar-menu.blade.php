@@ -11,7 +11,7 @@
                 ['Pemberdayaan Masyarakat & Dunia Usaha', '/internal/pencegahan/pemberdayaan-masyarakat', 'fa-handshake-angle'],
                 ['Kelola Edukasi', '/internal/pencegahan/kelola-edukasi', 'fa-bullhorn'],
                 ['Kelola Redkar', '/internal/pencegahan/kelola-redkar', 'fa-users-rectangle'],
-                ['Kelola RKBGL', '/internal/pencegahan/kelola-rpkbgl', 'fa-building-circle-check'],
+                ['Kelola RPPKBGL', '/internal/pencegahan/kelola-rpkbgl', 'fa-building-circle-check'],
                 ['Kelola SKK', '/internal/pencegahan/kelola-skk', 'fa-file-shield'],
             ],
         ],
@@ -59,7 +59,7 @@
                 ['Edu Damkar', '/internal/operator/edu-damkar', 'fa-graduation-cap'],
                 ['Kelola Pengumuman', '/internal/operator/pengumuman', 'fa-bullhorn'],
                 ['Kelola IKM', '/internal/operator/ikm', 'fa-face-smile'],
-                ['Titik Peta Sigap', '/internal/peta-sigap/data', 'fa-location-dot'],
+                ['Titik Peta Sigapkar', '/internal/peta-sigap/data', 'fa-location-dot'],
             ],
         ],
         [

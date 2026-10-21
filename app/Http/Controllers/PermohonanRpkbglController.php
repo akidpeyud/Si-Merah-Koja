@@ -211,7 +211,7 @@ class PermohonanRpkbglController extends Controller
 
             DB::table('permohonan_rpkbgl')->insert($data);
 
-            return redirect()->back()->with('success', 'Permohonan RKBGL Anda berhasil dikirim dan akan segera diproses dalam 14 hari kerja.');
+            return redirect()->back()->with('success', 'Permohonan RPPKBGL Anda berhasil dikirim dan akan segera diproses dalam 14 hari kerja.');
 
         } catch (\Exception $e) {
             // Bersihkan berkas yang sudah terlanjur dipindahkan agar tidak menjadi sampah

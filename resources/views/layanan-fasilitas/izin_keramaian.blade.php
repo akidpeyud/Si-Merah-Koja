@@ -1427,8 +1427,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <p class="hint">Ditandatangani di atas materai Rp 10.000. PDF, JPG, atau PNG (maks. 5 MB).</p>
-                                
                                 <p class="field-err dz-msg" role="alert"></p>
                                 {!! $fe('surat_pernyataan') !!}
                             </div>
