@@ -29,12 +29,23 @@ class KabarDamkarController extends Controller
         $query = BeritaMedsos::with('kategori')->orderByDesc('tanggal');
 
         if (!empty($kategoriId)) {
+            // Jika ada yang membuka kategori typo 'Lainya', alihkan ke 'Lainnya' yang valid
+            $katCek = $modelKategori->find($kategoriId);
+            if ($katCek && strcasecmp($katCek->nama_kategori, 'Lainya') === 0) {
+                $katLainnya = $modelKategori->newQuery()->where('nama_kategori', 'Lainnya')->first();
+                if ($katLainnya) {
+                    return redirect()->route('media.informasi', ['kategori' => $katLainnya->id]);
+                }
+            }
             $query->where($kolomKategori, $kategoriId);
         }
 
         $medsos = $query->paginate(12)->withQueryString();
 
-        $daftar_kategori = $modelKategori->newQuery()->orderBy('id')->get();
+        $daftar_kategori = $modelKategori->newQuery()
+            ->where('nama_kategori', '!=', 'Lainya')
+            ->orderBy('id')
+            ->get();
 
         return view('galery.berita.media_informasi', compact('medsos', 'daftar_kategori', 'kategoriId'));
     }

@@ -825,12 +825,36 @@
         <div class="nav-panel" id="navPanel">
             <!-- ===== Menu utama ===== -->
             <ul class="menu">
-                <li><a class="menu-link {{ request()->is('public-sigap*') ? 'is-active' : '' }}" href="/public-sigap">Sigapkar</a></li>
+                <li class="has-drop">
+                    <button class="menu-trigger" type="button" aria-expanded="false">Profil <i class="fas fa-chevron-down"></i></button>
+                    <ul class="dropdown">
+                        <li><a href="/profil/visi-misi">Visi Misi</a></li>
+                        <li><a href="/profil/sotk">SOTK</a></li>
+                        <li><a href="/profil/tupoksi">Tupoksi</a></li>
+                        <li><a href="/profil/kepegawaian">Kepegawaian</a></li>
+                        <li><a href="/profil/program-kegiatan">Program Kegiatan</a></li>
+                        <li><a href="/profil/cascading">Cascading</a></li>
+                    </ul>
+                </li>
 
                 <li class="has-drop current">
                     <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
                         @include('layouts.partials.layanan-dropdown')
+                    </ul>
+                </li>
+
+                <li><a class="menu-link {{ request()->is('public-sigap*') ? 'is-active' : '' }}" href="/public-sigap">Sigapkar</a></li>
+
+                <li class="has-drop">
+                    <button class="menu-trigger" type="button" aria-expanded="false">SOP <i class="fas fa-chevron-down"></i></button>
+                    <ul class="dropdown">
+                        <li><a href="/sop/pencegahan">Pencegahan</a></li>
+                        <li><a href="/sop/pemadaman">Pemadaman Kebakaran</a></li>
+                        <li><a href="/sop/penyelamatan">Penyelamatan dan Evakuasi</a></li>
+                        <li><a href="/sop/sarpras">Sarana dan Prasarana</a></li>
+                        <li><a href="/sop/kepegawaian">Kepegawaian</a></li>
+                        <li><a href="/sop/keuangan">Keuangan</a></li>
                     </ul>
                 </li>
 
@@ -846,37 +870,13 @@
                 </li>
 
                 <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Profil <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/profil/visi-misi">Visi Misi</a></li>
-                        <li><a href="/profil/sotk">SOTK</a></li>
-                        <li><a href="/profil/tupoksi">Tupoksi</a></li>
-                        <li><a href="/profil/kepegawaian">Kepegawaian</a></li>
-                        <li><a href="/profil/program-kegiatan">Program Kegiatan</a></li>
-                        <li><a href="/profil/cascading">Cascading</a></li>
-                    </ul>
-                </li>
-
-                <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">SOP <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/sop">Pencegahan</a></li>
-                        <li><a href="/sop">Pemadaman Kebakaran</a></li>
-                        <li><a href="/sop">Penyelamatan dan Evakuasi</a></li>
-                        <li><a href="/sop">Sarana dan Prasarana</a></li>
-                        <li><a href="/sop">Kepegawaian</a></li>
-                        <li><a href="/sop">Keuangan</a></li>
-                    </ul>
-                </li>
-
-                <li class="has-drop">
                     <button class="menu-trigger" type="button" aria-expanded="false">Dokumen <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
-                        <li><a href="/perencanaan">Renstra</a></li>
-                        <li><a href="/perencanaan">Renja</a></li>
-                        <li><a href="#">SPM</a></li>
-                        <li><a href="#">SAKIP</a></li>
-                        <li><a href="/pelaporan">LPPD</a></li>
+                        <li><a href="/dokumen/renstra">Renstra</a></li>
+                        <li><a href="/dokumen/renja">Renja</a></li>
+                        <li><a href="/dokumen/spm">SPM</a></li>
+                        <li><a href="/dokumen/sakip">SAKIP</a></li>
+                        <li><a href="/dokumen/lppd">LPPD</a></li>
                     </ul>
                 </li>
 
@@ -906,8 +906,6 @@
                         </li>
                     </ul>
                 </li>
-
-                <li><a class="menu-link {{ request()->is('redkar*') ? 'is-active' : '' }}" href="/redkar">Redkar</a></li>
             </ul>
 
             <!-- ===== Tombol kanan: Lapor darurat + Masuk ===== -->
