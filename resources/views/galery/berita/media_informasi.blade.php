@@ -511,15 +511,12 @@
         .empty-filter i{font-size:2.8rem;color:#c8d1db;margin-bottom:12px}
         .empty-filter h2{font-family:var(--display);color:var(--ink);margin-bottom:5px}
 
-        .pagination-container{display:flex;justify-content:center;padding-top:30px}
-        .pagination{display:flex;gap:5px;list-style:none}
-        .page-link{
-            display:block;color:var(--ink);border-radius:9px!important;
-            border:1px solid var(--line);font-weight:700;padding:8px 15px;
-            background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.02)
-        }
+        .pagination-container{display:flex;justify-content:center;padding-top:34px}
+        .pagination{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;list-style:none}
+        .page-link{display:grid;place-items:center;min-width:40px;height:40px;padding:0 12px;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:.88rem;font-weight:700;transition:.2s;box-shadow:0 2px 4px rgba(0,0,0,.02)}
+        a.page-link:hover{background:var(--soft);color:var(--signal);transform:translateY(-1px)}
         .page-item.active .page-link{background:var(--ink);border-color:var(--ink);color:#fff}
-        .page-link:hover{background:var(--soft);color:var(--signal)}
+        .page-item.disabled .page-link{opacity:.45;cursor:default}
 
 /* ==========================================================
            FOOTER
@@ -848,9 +845,23 @@
 
         <!-- Pagination -->
         @if(isset($medsos) && $medsos->hasPages())
-            <div class="pagination-container">
-                {{ $medsos->links('pagination::bootstrap-5') }}
-            </div>
+            <nav class="pagination-container" aria-label="Navigasi halaman">
+                <ul class="pagination">
+                    @foreach($medsos->withQueryString()->linkCollection() as $link)
+                        @php
+                            $label = $loop->first ? '<i class="fas fa-chevron-left" aria-label="Sebelumnya"></i>'
+                                   : ($loop->last ? '<i class="fas fa-chevron-right" aria-label="Berikutnya"></i>' : $link['label']);
+                        @endphp
+                        <li class="page-item {{ $link['active'] ? 'active' : '' }} {{ $link['url'] ? '' : 'disabled' }}">
+                            @if($link['url'])
+                                <a class="page-link" href="{{ $link['url'] }}" @if($link['active']) aria-current="page" @endif>{!! $label !!}</a>
+                            @else
+                                <span class="page-link">{!! $label !!}</span>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            </nav>
         @endif
     </div>
 </div>
