@@ -235,6 +235,7 @@
                 <thead>
                     <tr>
                         <th class="text-center" width="50px">No</th>
+                        <th>NIP</th> <!-- KOLOM NIP BARU DI SINI -->
                         <th>Nama</th>
                         <th>Tempat Lahir</th>
                         <th>Tgl Lahir</th>
@@ -253,7 +254,7 @@
                         <th>Jenis Diklat</th>
                         <th>Created at</th>
                         <th>Updated at</th>
-                        <th>TTL</th>
+                        
                         <th>Ket</th>
 
                         <!-- KOLOM AKSI (EDIT/HAPUS) HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
@@ -267,6 +268,7 @@
                     @forelse (($data_diklat ?? []) as $index => $item)
                     <tr>
                         <td class="text-center fw-bold">{{ $index + 1 }}</td>
+                        <td>{{ $item->nip ?? '-' }}</td> <!-- DATA NIP BARU DI SINI -->
                         <td><div class="fw-bold">{{ $item->nama }}</div></td>
                         <td>{{ $item->tempat_lahir }}</td>
                         <td>{{ $item->tgl_lahir }}</td>
@@ -285,7 +287,7 @@
                         <td><span class="badge-diklat">{{ $item->jenis_diklat ?? ($judul_diklat ?? 'DIKLAT F1') }}</span></td>
                         <td>{{ $item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
                         <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
-                        <td>{{ $item->ttl }}</td>
+                        
                         <td>{{ $item->ket }}</td>
 
                         <!-- TOMBOL EDIT & HAPUS HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
@@ -308,7 +310,8 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="{{ auth()->user()->hasAnyRole(['Pencegahan', 'Super User']) ? 22 : 21 }}" class="empty-state">
+                        <!-- Colspan dinaikkan dari 22/21 menjadi 23/22 menyesuaikan penambahan 1 kolom NIP -->
+                        <td colspan="{{ auth()->user()->hasAnyRole(['Pencegahan', 'Super User']) ? 23 : 22 }}" class="empty-state">
                             <i class="fas fa-folder-open"></i><br>
                             Belum ada data untuk {{ $judul_diklat ?? 'Diklat F1' }}.
                         </td>

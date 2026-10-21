@@ -104,80 +104,91 @@
                 <div class="table-responsive">
                     <table class="table table-hover table-custom">
                         <thead>
-                            <tr>
-                                <th class="text-center" width="50px">No</th>
-                                <th>NAMA</th>
-                                <th>Tempat Lahir</th>
-                                <th>Tgl Lahir</th>
-                                <th>NIK</th>
-                                <th>Jabatan</th>
-                                <th>Instansi/Perangkat Daerah</th>
-                                <th>Ditanda Tangani Oleh</th>
-                                <th>Tanggal Pelaksanaan</th>
-                                <th class="text-center">Jumlah Jam Pelajaran</th>
-                                <th>Instansi Penyelenggara</th>
-                                <th>Provinsi</th>
-                                <th>Kota</th>
-                                <th>Nomor Sertifikat</th>
-                                <th>Kode Verivikasi</th>
-                                <th>Persentasi Penilaian</th>
-                                <th>Jenis Diklat</th>
-                                <th>Created at</th>
-                                <th>Updated at</th>
-                                <th>TTL</th>
-                                <th>Ket</th>
-                                <th class="sticky-action text-center" width="100px">AKSI</th>
-                            </tr>
-                        </thead>
+                    <tr>
+                        <th class="text-center" width="50px">No</th>
+                        <th>NIP</th> <!-- KOLOM NIP BARU DI SINI -->
+                        <th>Nama</th>
+                        <th>Tempat Lahir</th>
+                        <th>Tgl Lahir</th>
+                        <th>NIK</th>
+                        <th>Jabatan</th>
+                        <th>Instansi/Perangkat Daerah</th>
+                        <th>Ditanda Tangani Oleh</th>
+                        <th>Tanggal Pelaksanaan</th>
+                        <th class="text-center">Jumlah Jam Pelajaran</th>
+                        <th>Instansi Penyelenggara</th>
+                        <th>Provinsi</th>
+                        <th>Kota</th>
+                        <th>Nomor Sertifikat</th>
+                        <th>Kode Verivikasi</th>
+                        <th>Persentasi Penilaian</th>
+                        <th>Jenis Diklat</th>
+                        <th>Created at</th>
+                        <th>Updated at</th>
+                        <th>TTL</th>
+                        <th>Ket</th>
+
+                        <!-- KOLOM AKSI (EDIT/HAPUS) HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
+                        @hasanyrole('Pencegahan|Super User')
+                        <th class="text-center" width="100px">Aksi</th>
+                        @endhasanyrole
+                    </tr>
+                </thead>
                         
                         <tbody>
-                            @foreach ($data_diklat as $index => $item)
-                            <tr>
-                                <td class="text-center fw-bold">{{ $index + 1 }}</td>
-                                <td>
-                                    <div class="fw-bold text-dark">{{ $item->nama }}</div>
-                                </td>
-                                <td>{{ $item->tempat_lahir }}</td>
-                                <td>{{ $item->tgl_lahir }}</td>
-                                <td>{{ $item->nik }}</td>
-                                <td>{{ $item->jabatan }}</td>
-                                <td>{{ $item->instansi }}</td>
-                                <td>{{ $item->ditandatangani_oleh }}</td>
-                                <td>{{ $item->tanggal_pelaksanaan }}</td>
-                                <td class="text-center">
-                                    <span class="badge-soft-blue">{{ $item->jumlah_jam_pelajaran }}</span>
-                                </td>
-                                <td>{{ $item->instansi_penyelenggara }}</td>
-                                <td>{{ $item->provinsi }}</td>
-                                <td>{{ $item->kota }}</td>
-                                <td>{{ $item->nomor_sertifikat }}</td>
-                                <td>{{ $item->kode_verifikasi }}</td>
-                                <td>{{ $item->persentasi_penilaian }}</td>
-                                <td>
-                                    <span class="badge bg-primary">{{ $item->jenis_diklat }}</span>
-                                </td>
-                                <td>{{ $item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
-                                <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
-                                <td>{{ $item->ttl }}</td>
-                                <td>{{ $item->ket }}</td>
-                                <td class="sticky-action text-center" style="white-space: nowrap;">
-                                    
-                                    <a href="/internal/pencegahan/peningkatan-kapasitas/edit/diklat-f2/{{ $item->id }}" class="btn-action btn-edit" title="Edit Data" style="position: relative; z-index: 10;">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    
-                                    <form action="/internal/pencegahan/peningkatan-kapasitas/hapus/diklat-f2/{{ $item->id }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                                        @csrf 
-                                        @method('DELETE')
-                                        <button type="submit" class="btn-action btn-delete" title="Hapus Data" style="position: relative; z-index: 10;">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                    
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
+                    @forelse (($data_diklat ?? []) as $index => $item)
+                    <tr>
+                        <td class="text-center fw-bold">{{ $index + 1 }}</td>
+                        <td>{{ $item->nip ?? '-' }}</td> <!-- DATA NIP BARU DI SINI -->
+                        <td><div class="fw-bold">{{ $item->nama }}</div></td>
+                        <td>{{ $item->tempat_lahir }}</td>
+                        <td>{{ $item->tgl_lahir }}</td>
+                        <td>{{ $item->nik }}</td>
+                        <td>{{ $item->jabatan }}</td>
+                        <td>{{ $item->instansi }}</td>
+                        <td>{{ $item->ditandatangani_oleh }}</td>
+                        <td>{{ $item->tanggal_pelaksanaan }}</td>
+                        <td class="text-center"><span class="badge-soft-blue">{{ $item->jumlah_jam_pelajaran }}</span></td>
+                        <td>{{ $item->instansi_penyelenggara }}</td>
+                        <td>{{ $item->provinsi }}</td>
+                        <td>{{ $item->kota }}</td>
+                        <td style="color: var(--ink); font-weight: 600;">{{ $item->nomor_sertifikat }}</td>
+                        <td>{{ $item->kode_verifikasi }}</td>
+                        <td>{{ $item->persentasi_penilaian }}</td>
+                        <td><span class="badge-diklat">{{ $item->jenis_diklat ?? ($judul_diklat ?? 'DIKLAT F1') }}</span></td>
+                        <td>{{ $item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
+                        <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
+                        <td>{{ $item->ttl }}</td>
+                        <td>{{ $item->ket }}</td>
+
+                        <!-- TOMBOL EDIT & HAPUS HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
+                        @hasanyrole('Pencegahan|Super User')
+                        <td>
+                            <div class="aksi-wrap">
+                                <a href="/internal/pencegahan/peningkatan-kapasitas/edit/{{ $jenis_url }}/{{ $item->id }}" class="btn-action btn-edit" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="/internal/pencegahan/peningkatan-kapasitas/hapus/{{ $jenis_url }}/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn-action btn-delete" title="Hapus">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                        @endhasanyrole
+                    </tr>
+                    @empty
+                    <tr>
+                        <!-- Colspan dinaikkan dari 22/21 menjadi 23/22 menyesuaikan penambahan 1 kolom NIP -->
+                        <td colspan="{{ auth()->user()->hasAnyRole(['Pencegahan', 'Super User']) ? 23 : 22 }}" class="empty-state">
+                            <i class="fas fa-folder-open"></i><br>
+                            Belum ada data untuk {{ $judul_diklat ?? 'Diklat F1' }}.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
                     </table>
                 </div>
             </div>

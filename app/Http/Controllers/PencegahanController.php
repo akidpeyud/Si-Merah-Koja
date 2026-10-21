@@ -113,8 +113,10 @@ class PencegahanController extends Controller
         elseif ($jenis == 'DIKLAT INSPEKTUR') { $tabel_tujuan = 'tbl_diklat_inspektur'; }
         elseif ($jenis == 'DIKLAT PPL') { $tabel_tujuan = 'tbl_diklat_ppl'; }
 
+        // Data yang akan di-insert, NIP DIPASTIKAN MASUK DI SINI
         $data = [
             'nama' => $request->nama,
+            'nip' => $request->nip,
             'nik' => $request->nik,
             'tempat_lahir' => $request->tempat_lahir,
             'tgl_lahir' => $request->tgl_lahir,
@@ -136,6 +138,7 @@ class PencegahanController extends Controller
         ];
 
         DB::table($tabel_tujuan)->insert($data);
+        
         return redirect('/internal/pencegahan/peningkatan-kapasitas')->with('success', 'Data Peningkatan Kapasitas berhasil ditambahkan!');
     }
 
@@ -387,10 +390,17 @@ class PencegahanController extends Controller
     // BAGIAN INSPEKSI BANGUNAN
     // ==========================================
     public function index()
-    {
-        $data_inspeksi = InspeksiBangunan::orderBy('tanggal_inspeksi', 'desc')->get();
-        return view('internal.pencegahan.inspeksi_bangunan', compact('data_inspeksi'));
-    }
+{
+    $data_inspeksi   = InspeksiBangunan::orderBy('tanggal_inspeksi', 'desc')->get();
+    $data_fire_drill = FireDrill::orderBy('tahun', 'asc')->orderBy('id', 'asc')->get();
+
+    $total_inspeksi   = $data_inspeksi->count();
+    $total_fire_drill = $data_fire_drill->count();
+
+    return view('internal.pencegahan.inspeksi_bangunan', compact(
+        'data_inspeksi', 'data_fire_drill', 'total_inspeksi', 'total_fire_drill'
+    ));
+}
 
     public function indexInspeksiBangunan()
     {

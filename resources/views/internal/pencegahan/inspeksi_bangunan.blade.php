@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Pencegahan Kebakaran &amp; Inspeksi')
+@section('title', 'Pencegahan Kebakaran & Inspeksi')
 
 @push('styles')
 <style>
@@ -68,7 +68,7 @@
     .search-box input { width: 100%; height: 40px; padding: 0 16px 0 38px; border-radius: 999px; border: 1px solid var(--line-dark); background: #fff; font-size: .86rem; color: var(--ink); transition: border-color .2s, box-shadow .2s; }
     .search-box input::placeholder { color: var(--steel-soft); }
     .search-box input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
-    .btn-solid { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border-radius: 999px; color: #fff; font-weight: 600; font-size: .84rem; border: none; transition: background .2s, transform .1s, box-shadow .2s; }
+    .btn-solid { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border-radius: 999px; color: #fff; font-weight: 600; font-size: .84rem; border: none; transition: background .2s, transform .1s, box-shadow .2s; text-decoration: none;}
     .btn-solid:hover { color: #fff; box-shadow: 0 4px 12px rgba(13,27,42,.18); }
     .btn-solid:active { transform: scale(.97); }
     .btn-solid.navy { background: var(--navy); }
@@ -82,7 +82,7 @@
     .custom-nav-tabs .nav-link:hover { color: var(--ink); background: #f3f6fa; }
     .custom-nav-tabs .nav-link.active { color: var(--navy); border-bottom-color: var(--navy); background: transparent; }
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 44px; }
-    .stat-card { display: flex; flex-direction: column; align-items: flex-start; padding: 22px; background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); box-shadow: var(--shadow-xs); transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease; position: relative; overflow: hidden; }
+    .stat-card { display: flex; flex-direction: column; align-items: flex-start; padding: 22px; background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); box-shadow: var(--shadow-xs); transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease; position: relative; overflow: hidden; text-decoration: none;}
     .stat-card:hover { box-shadow: var(--shadow-sm); border-color: #d2dae5; transform: translateY(-3px); }
     .stat-card::after { content: "\f061"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; top: 22px; right: 20px; color: var(--steel-soft); font-size: .8rem; opacity: 0; transform: translateX(-6px); transition: opacity .2s ease, transform .2s ease; }
     .stat-card:hover::after { opacity: 1; transform: translateX(0); }
@@ -93,7 +93,7 @@
     .stat-value { font-family: var(--font-display); font-weight: 700; font-size: 1.9rem; line-height: 1; color: var(--ink); letter-spacing: -.01em; }
     .section-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
     .section-heading-ico { flex: none; width: 32px; height: 32px; border-radius: 9px; background: var(--navy); color: #fff; display: grid; place-items: center; font-size: .78rem; box-shadow: 0 4px 8px rgba(22,58,99,.12); }
-    .section-heading h3 { flex: none; font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: var(--ink); letter-spacing: -.01em; }
+    .section-heading h3 { flex: none; font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: var(--ink); letter-spacing: -.01em; margin: 0; }
     .section-heading .line { flex: 1 1 auto; min-width: 24px; height: 1px; background: linear-gradient(to right, var(--line), transparent 90%); }
     .table-scroll-wrapper { width: 100%; overflow-x: auto; border-radius: var(--r-md); border: 1px solid var(--line); background: #fff; margin-bottom: 40px; box-shadow: var(--shadow-xs); scrollbar-width: thin; scrollbar-color: #d8dee8 transparent; }
     .table-detailed { width: 100%; border-collapse: collapse; min-width: 900px; margin-bottom: 0; }
@@ -106,10 +106,10 @@
     .table-detailed tbody tr:hover { background-color: #f8fafc; }
     .btn-action { width: 32px; height: 32px; display: inline-flex; justify-content: center; align-items: center; border-radius: 8px; font-size: .8rem; color: #fff; border: none; cursor: pointer; transition: transform .1s, box-shadow .2s; }
     .btn-action:hover { transform: scale(1.06); color: #fff; box-shadow: 0 3px 8px rgba(13,27,42,.18); }
-    .btn-edit { background-color: var(--amber); }
+    .btn-edit { background-color: var(--amber); color: var(--ink); }
     .btn-delete { background-color: var(--signal); }
     .action-cell { display: flex; justify-content: center; align-items: center; gap: 6px; }
-    .doc-badge { display: inline-block; padding: 4px 9px; font-size: .64rem; font-weight: 700; letter-spacing: .03em; border-radius: 6px; margin: 0 3px 3px 0; color: #fff !important; transition: opacity .2s; }
+    .doc-badge { display: inline-block; padding: 4px 9px; font-size: .64rem; font-weight: 700; letter-spacing: .03em; border-radius: 6px; margin: 0 3px 3px 0; color: #fff !important; transition: opacity .2s; text-decoration: none; }
     .doc-badge:hover { opacity: .8; }
     @media (max-width: 1100px) {
         .topbar { padding: 0 20px; }
@@ -157,8 +157,6 @@
 @endpush
 
 @section('content')
-@section('content')
-
         <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-2">
             <div class="page-head mb-0">
                 <h1>Pencegahan Kebakaran &amp; Inspeksi</h1>
@@ -168,10 +166,10 @@
             {{-- Toolbar disembunyikan di tab Semua Data --}}
             @unless(Request::is('internal/pencegahan/inspeksi-kebakaran'))
             <div class="toolbar">
-                <!-- PENCARIAN: TERBUKA UNTUK SEMUA ROLE -->
+                <!-- PENCARIAN DITAMBAHKAN ID "searchInput" -->
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Cari nama tempat...">
+                    <input type="text" id="searchInput" placeholder="Cari nama tempat...">
                 </div>
 
                 <!-- TOMBOL TAMBAH HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
@@ -252,9 +250,10 @@
                         @endhasanyrole
                     </tr>
                 </thead>
-                <tbody>
+                <!-- TBODY DITAMBAHKAN ID "tableBody" -->
+                <tbody id="tableBody">
                     @forelse($data_inspeksi as $index => $item)
-                    <tr>
+                    <tr class="data-row">
                         <td class="text-center fw-bold">{{ $index + 1 }}</td>
                         <td class="fw-bold">{{ $item->nama_tempat }}</td>
                         <td>{{ $item->tanggal_inspeksi }}</td>
@@ -301,8 +300,8 @@
                         @endhasanyrole
                     </tr>
                     @empty
-                    <tr>
-                        <td colspan="{{ auth()->user()->hasAnyRole(['Pencegahan', 'Super User']) ? 6 : 5 }}" class="text-center py-5 text-muted fw-bold">
+                    <tr class="empty-row">
+                        <td colspan="{{ auth()->user()->hasAnyRole(['Pencegahan', 'Super User']) ? 6 : 5 }}" class="text-center py-5 text-muted fw-bold empty-state">
                             <i class="fas fa-folder-open mb-2" style="font-size: 28px; color: var(--steel-soft);"></i><br>
                             Belum ada data inspeksi bangunan.
                         </td>
@@ -313,3 +312,33 @@
         </div>
         @endif
 @endsection
+
+<!-- SCRIPT PENCARIAN DITAMBAHKAN DI SINI -->
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const tableBody = document.getElementById('tableBody');
+
+        if (searchInput && tableBody) {
+            searchInput.addEventListener('input', function() {
+                const filter = this.value.toLowerCase();
+                const rows = tableBody.getElementsByTagName('tr');
+
+                for (let i = 0; i < rows.length; i++) {
+                    // Abaikan baris "Belum ada data" agar tidak ikut terfilter salah
+                    if (rows[i].classList.contains('empty-row')) continue;
+
+                    const text = rows[i].textContent || rows[i].innerText;
+                    
+                    if (text.toLowerCase().indexOf(filter) > -1) {
+                        rows[i].style.display = "";
+                    } else {
+                        rows[i].style.display = "none";
+                    }
+                }
+            });
+        }
+    });
+</script>
+@endpush

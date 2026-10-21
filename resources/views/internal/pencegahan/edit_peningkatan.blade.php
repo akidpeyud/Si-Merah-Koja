@@ -34,7 +34,6 @@
 @endpush
 
 @section('content')
-@section('content')
 
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
@@ -49,25 +48,29 @@
                 <!-- FORM ACTION MENGARAH KE RUTE EDIT -->
                 <form action="/internal/pencegahan/peningkatan-kapasitas/edit/{{ $jenis }}/{{ $data->id }}" method="POST">
                     @csrf
-                    
-                    <!-- SECTION 1: DATA PEGAWAI -->
+
+                    <!-- SECTION 1: DATA PEGAWAI (urutan sama dengan tabel) -->
                     <div class="form-section-title"><i class="fas fa-user me-2"></i> Data Pegawai / Aparatur</div>
                     <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">NIP</label>
+                            <input type="text" class="form-control" name="nip" value="{{ $data->nip ?? '' }}">
+                        </div>
                         <div class="col-md-6">
                             <label class="form-label">Nama Lengkap</label>
                             <input type="text" class="form-control" name="nama" value="{{ $data->nama ?? '' }}" required>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Nomor Induk Kependudukan (NIK)</label>
-                            <input type="text" class="form-control" name="nik" value="{{ $data->nik ?? '' }}">
-                        </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="form-label">Tempat Lahir</label>
                             <input type="text" class="form-control" name="tempat_lahir" value="{{ $data->tempat_lahir ?? '' }}">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="form-label">Tanggal Lahir</label>
                             <input type="date" class="form-control" name="tgl_lahir" value="{{ $data->tgl_lahir ?? '' }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Nomor Induk Kependudukan (NIK)</label>
+                            <input type="text" class="form-control" name="nik" value="{{ $data->nik ?? '' }}">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Jabatan</label>
@@ -84,9 +87,8 @@
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
                             <label class="form-label">Jenis Diklat</label>
-                            <!-- Dropdown ini diset nilainya sesuai data lama -->
+                            @php $jd = strtoupper($data->jenis_diklat ?? ''); @endphp
                             <select class="form-select" name="jenis_diklat" required>
-                                @php $jd = strtoupper($data->jenis_diklat ?? ''); @endphp
                                 <option value="DIKSAR" {{ $jd == 'DIKSAR' ? 'selected' : '' }}>DIKSAR</option>
                                 <option value="DIKLAT F1" {{ $jd == 'DIKLAT F1' ? 'selected' : '' }}>DIKLAT F1</option>
                                 <option value="DIKLAT F2" {{ $jd == 'DIKLAT F2' ? 'selected' : '' }}>DIKLAT F2</option>
@@ -134,7 +136,7 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Kode Verifikasi</label>
+                            <label class="form-label">Kode Verivikasi</label>
                             <input type="text" class="form-control" name="kode_verifikasi" value="{{ $data->kode_verifikasi ?? '' }}">
                         </div>
                         <div class="col-md-6">
@@ -147,7 +149,7 @@
                     <div class="form-section-title"><i class="fas fa-info-circle me-2" style="color: #64748b;"></i> Informasi Tambahan</div>
                     <div class="row g-3 mb-4">
                         <div class="col-12">
-                            <label class="form-label">Catatan Tambahan (Ket)</label>
+                            <label class="form-label">Keterangan (Ket)</label>
                             <textarea class="form-control" name="ket" rows="3">{{ $data->ket ?? '' }}</textarea>
                         </div>
                     </div>
