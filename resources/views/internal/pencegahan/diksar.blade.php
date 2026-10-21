@@ -250,7 +250,7 @@
                         <th>Jenis Diklat</th>
                         <th>Created at</th>
                         <th>Updated at</th>
-                        <th>TTL</th>
+                        
                         <th>Ket</th>
 
                         <!-- KOLOM AKSI (EDIT/HAPUS) HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
@@ -283,7 +283,7 @@
                         <td><span class="badge-diklat">{{ $item->jenis_diklat ?? 'DIKSAR' }}</span></td>
                         <td>{{ $item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
                         <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
-                        <td>{{ $item->ttl }}</td>
+                        
                         <td>{{ $item->ket }}</td>
 
                         <!-- TOMBOL EDIT & HAPUS HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
