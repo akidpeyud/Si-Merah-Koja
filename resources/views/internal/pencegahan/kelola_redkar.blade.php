@@ -99,8 +99,7 @@
     /* ---------- Badge & Tombol Aksi ---------- */
     .badge-status { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 6px; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; }
     .status-diproses { background: var(--info-soft); color: var(--info); }
-    .status-memenuhi { background: rgba(25, 135, 84, .15); color: var(--success); }
-    .status-pending  { background: rgba(244, 183, 64, .15); color: #d97706; }
+    .badge-anggota { display: inline-block; padding: 3px 8px; border-radius: 4px; background: rgba(13, 27, 42, .06); color: var(--ink); font-family: monospace; font-weight: 700; font-size: .82rem; }
 
     .btn-action-group { display: flex; flex-direction: column; gap: 6px; }
     .btn-action { display: inline-flex; align-items: center; justify-content: flex-start; gap: 6px; padding: 6px 12px; border-radius: 6px; font-size: .8rem; font-weight: 600; transition: all .2s; text-decoration: none; border: none; width: 100%; cursor: pointer; }
@@ -159,14 +158,15 @@
 
         return [
             'no'                => $i + 1,
+            'nomor_anggota'     => (string) ($r->nomor_anggota ?: '-'),
             'id_reg'            => (string) $r->id,
-            'tgl_input'         => $r->created_at ? $r->created_at->format('d/m/Y H:i') : '-',
             'nik'               => (string) $r->nik,
             'nama_lengkap'      => (string) $r->nama_lengkap,
-            'jenis_kelamin'     => (string) ($r->jenis_kelamin ?: '-'),
+            'jenis_kelamin'     => (string) ($r->jenis_kelamin === 'L' ? 'Laki-Laki' : ($r->jenis_kelamin === 'P' ? 'Perempuan' : ($r->jenis_kelamin ?: '-'))),
             'ttl'               => $ttl,
             'agama'             => (string) ($r->agama ?: '-'),
             'status_perkawinan' => (string) ($r->status_perkawinan ?: '-'),
+            'golongan_darah'    => (string) ($r->golongan_darah ?: '-'),
             'nomor_telp'        => (string) $r->nomor_telp,
             'alamat_lengkap'    => $alamat,
             'kecamatan'         => (string) ($r->kecamatan ?: '-'),
@@ -174,7 +174,7 @@
             'pendidikan'        => $pend,
             'pekerjaan'         => (string) ($r->pekerjaan ?: '-'),
             'status_ktp'        => $adaKtp ? 'Terlampir' : 'Belum Ada (Offline)',
-            '_search'           => strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp),
+            '_search'           => strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp . ' ' . $r->nomor_anggota),
             '_kec'              => strtolower((string) $r->kecamatan),
         ];
     })->all();
@@ -201,9 +201,6 @@
             </div>
 
             <div class="d-flex gap-2 flex-wrap">
-                <!-- ==============================================
-                     TOMBOL TAMBAH DIBUNGKUS HAK AKSES
-                     ============================================== -->
                 @hasanyrole('Pencegahan|Super User')
                 <a href="/internal/pencegahan/tambah-redkar" class="btn-add">
                     <i class="fas fa-plus"></i> Tambah Relawan
@@ -216,9 +213,6 @@
             </div>
         </div>
 
-        <!-- ==============================================
-             PENGHITUNG RELAWAN & KELENGKAPAN BERKAS
-             ============================================== -->
         <div class="rekap-grid">
             <div class="rekap-item rekap-total">
                 <div class="rekap-ico"><i class="fas fa-users"></i></div>
@@ -259,7 +253,7 @@
             <div class="filter-toolbar">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="search" id="rk-search" class="filter-input" placeholder="Cari nama, NIK, atau nomor telepon..." autocomplete="off">
+                    <input type="search" id="rk-search" class="filter-input" placeholder="Cari nama, NIK, No. Kartu Anggota..." autocomplete="off">
                 </div>
                 <select id="rk-kecamatan" class="filter-select">
                     <option value="">Semua Kecamatan</option>
@@ -277,22 +271,24 @@
                 <table class="table align-middle mb-0">
                     <thead>
                         <tr>
-                            <th>Tanggal Input</th>
+                            <th>No. Kartu Anggota</th>
                             <th>Relawan &amp; Kontak</th>
                             <th>Data Diri</th>
                             <th>Alamat &amp; Wilayah</th>
-                            <th>Berkas Lampiran</th>
+                            <th>Berkas &amp; Darah</th>
                             <th style="width: 130px;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="rk-body">
                         @forelse($relawan as $r)
                         <tr class="rk-row"
-                            data-search="{{ strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp) }}"
+                            data-search="{{ strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp . ' ' . $r->nomor_anggota) }}"
                             data-kecamatan="{{ strtolower($r->kecamatan) }}">
                             <td>
-                                <strong>{{ $r->created_at ? $r->created_at->format('d M Y') : '-' }}</strong>
-                                <div style="font-size: .8rem; color: var(--steel-soft);">{{ $r->created_at ? $r->created_at->format('H:i') . ' WIB' : '' }}</div>
+                                <span class="badge-anggota">{{ $r->nomor_anggota ?: '-' }}</span>
+                                <div style="font-size: .78rem; color: var(--steel-soft); margin-top: 4px;">
+                                    Input: {{ $r->created_at ? $r->created_at->format('d/m/Y') : '-' }}
+                                </div>
                             </td>
                             <td>
                                 <strong style="display: block; margin-bottom: 2px;">{{ $r->nama_lengkap }}</strong>
@@ -302,7 +298,7 @@
                                 <div style="font-size: .78rem; color: var(--steel); margin-top: 2px;">NIK: {{ $r->nik }}</div>
                             </td>
                             <td>
-                                <strong>{{ $r->jenis_kelamin ?: '-' }}</strong>
+                                <strong>{{ $r->jenis_kelamin === 'L' ? 'Laki-Laki' : ($r->jenis_kelamin === 'P' ? 'Perempuan' : ($r->jenis_kelamin ?: '-')) }}</strong>
                                 <div style="font-size: .8rem; color: var(--steel);">
                                     {{ $r->tempat_lahir ?: '-' }}{{ $r->tanggal_lahir ? ', ' . \Carbon\Carbon::parse($r->tanggal_lahir)->format('d M Y') : '' }}
                                 </div>
@@ -317,21 +313,20 @@
                                 <div style="font-size: .8rem; color: var(--steel);">Kel. {{ $r->kelurahan ?: '-' }}</div>
                                 <div style="font-size: .78rem; color: var(--steel-soft);">{{ $r->alamat }}{{ $r->rt_rw ? ' (RT/RW ' . $r->rt_rw . ')' : '' }}</div>
                             </td>
-
-                            <!-- Kolom Lampiran (dengan cek data offline seperti SKK) -->
                             <td>
+                                <div style="font-size: .82rem; margin-bottom: 4px;">
+                                    Darah: <strong class="text-danger">{{ $r->golongan_darah ?: '-' }}</strong> &bull; Agama: {{ $r->agama ?: '-' }}
+                                </div>
                                 @if($berkasAda($r->file_ktp))
-                                    <a href="{{ asset('storage/' . $r->file_ktp) }}" target="_blank" class="attachment-link d-block">
+                                    <a href="{{ asset('storage/' . $r->file_ktp) }}" target="_blank" class="attachment-link">
                                         <i class="fas fa-id-card"></i> File KTP
                                     </a>
                                 @else
-                                    <span class="attachment-link d-block text-secondary" title="Tidak dilampirkan (data offline)">
+                                    <span class="attachment-link text-secondary" title="Tidak dilampirkan (data offline)">
                                         <i class="fas fa-id-card"></i> KTP (Offline)
                                     </span>
                                 @endif
                             </td>
-
-                            <!-- Kolom Aksi (seragam dengan Kelola SKK) -->
                             <td>
                                 <div class="btn-action-group">
                                     @hasanyrole('Pencegahan|Super User')
@@ -382,7 +377,6 @@
 (function () {
     'use strict';
 
-    /* ---------- Filter Pencarian & Kecamatan ---------- */
     var search = document.getElementById('rk-search');
     var select = document.getElementById('rk-kecamatan');
     if (search && select) {
@@ -410,7 +404,6 @@
         select.addEventListener('change', applyFilter);
     }
 
-    /* ---------- SweetAlert Notifikasi Sukses & Error ---------- */
     @if(session('success'))
         Swal.fire({
             icon: 'success',
@@ -431,7 +424,6 @@
         });
     @endif
 
-    /* ---------- Konfirmasi Hapus dengan SweetAlert2 (Sama seperti SKK) ---------- */
     document.addEventListener('click', function (e) {
         var btn = e.target.closest('[data-delete-url]');
         if (!btn) return;
@@ -477,20 +469,20 @@
     });
 })();
 
-/* ---------- Rekap Excel (.xlsx menggunakan ExcelJS seperti Kelola SKK) ---------- */
 var REKAP = @json($rekapData);
 
 function rekapKolomRedkar() {
     return [
         { k: 'no',                t: 'No',                     w: 6,  a: 'center' },
+        { k: 'nomor_anggota',     t: 'No. Kartu Anggota',      w: 18, a: 'center', txt: true },
         { k: 'id_reg',            t: 'No. Register',           w: 14, a: 'center' },
-        { k: 'tgl_input',         t: 'Tgl. Input',             w: 17, a: 'center' },
         { k: 'nik',               t: 'NIK',                    w: 20, txt: true },
         { k: 'nama_lengkap',      t: 'Nama Lengkap',           w: 26 },
         { k: 'jenis_kelamin',     t: 'Jenis Kelamin',          w: 15, a: 'center' },
         { k: 'ttl',               t: 'Tempat, Tanggal Lahir',  w: 26 },
         { k: 'agama',             t: 'Agama',                  w: 14, a: 'center' },
         { k: 'status_perkawinan', t: 'Status Perkawinan',      w: 18, a: 'center' },
+        { k: 'golongan_darah',    t: 'Gol. Darah',             w: 12, a: 'center' },
         { k: 'nomor_telp',        t: 'No. Telepon / WA',       w: 18, txt: true },
         { k: 'alamat_lengkap',    t: 'Alamat Lengkap',         w: 36 },
         { k: 'kecamatan',         t: 'Kecamatan',              w: 20 },
@@ -509,7 +501,6 @@ async function exportRekapExcel() {
         return;
     }
 
-    // Ikuti filter pencarian/kecamatan yang sedang aktif di layar
     var searchEl = document.getElementById('rk-search');
     var selectEl = document.getElementById('rk-kecamatan');
     var q   = searchEl ? searchEl.value.trim().toLowerCase() : '';
@@ -549,7 +540,6 @@ async function exportRekapExcel() {
         wb.creator = 'Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi';
         wb.created = now;
 
-        /* ===== Sheet 1: Data Relawan REDKAR ===== */
         var HEAD  = 5;
         var FIRST = HEAD + 1;
         var cols  = rekapKolomRedkar();
@@ -601,7 +591,7 @@ async function exportRekapExcel() {
                 var c = cols[n - 1];
                 cell.border = border;
                 cell.alignment = { vertical: 'top', wrapText: true, horizontal: c.a || 'left' };
-                if (c.txt) cell.numFmt = '@'; // NIK & No. Telepon tetap teks
+                if (c.txt) cell.numFmt = '@';
             });
             var st = ktpStyle[r.status_ktp];
             if (st) {
@@ -613,7 +603,6 @@ async function exportRekapExcel() {
 
         ws.autoFilter = { from: { row: HEAD, column: 1 }, to: { row: LAST, column: NCOL } };
 
-        /* ===== Sheet 2: Ringkasan per Kecamatan ===== */
         var kecLetter = ws.getColumn(kecIdx).letter;
         var rngKec = "'Data Relawan REDKAR'!$" + kecLetter + '$' + FIRST + ':$' + kecLetter + '$' + LAST;
 
