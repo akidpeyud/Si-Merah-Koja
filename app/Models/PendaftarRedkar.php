@@ -20,6 +20,7 @@ class PendaftarRedkar extends Model
     protected $fillable = [
         'id',
         'nik',
+        'kartu_anggota',
         'nama_lengkap',
         'jenis_kelamin',
         'tempat_lahir',
@@ -44,13 +45,18 @@ class PendaftarRedkar extends Model
     ];
 
     /**
-     * Accessor untuk mengubah nilai L / P di database 
-     * menjadi Laki-Laki / Perempuan saat dipanggil.
+     * Accessor jenis kelamin.
+     * Menerima format lama (L / P) maupun format baru (Laki-Laki / Perempuan)
+     * dan selalu mengembalikan "Laki-Laki" atau "Perempuan".
      */
     protected function jenisKelamin(): Attribute
     {
         return Attribute::make(
-            get: fn (string $value) => $value === 'L' ? 'Laki-Laki' : 'Perempuan',
+            get: fn (?string $value) => match (strtoupper(trim((string) $value))) {
+                'L', 'LAKI-LAKI' => 'Laki-Laki',
+                'P', 'PEREMPUAN' => 'Perempuan',
+                default          => $value,
+            },
         );
     }
 }

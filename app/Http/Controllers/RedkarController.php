@@ -88,7 +88,7 @@ class RedkarController extends Controller
         return back()->with('success', 'Pendaftaran REDKAR berhasil dikirim! Silakan tunggu konfirmasi admin.');
     }
 
-   public function processLoginRedkar(Request $request)
+    public function processLoginRedkar(Request $request)
     {
         $request->validate([
             'username' => 'required',
@@ -159,6 +159,7 @@ class RedkarController extends Controller
         $validatedData = $request->validate([
             'nama_lengkap'              => 'required|string|max:150',
             'nik'                       => 'required|string|size:16',
+            'kartu_anggota'             => 'nullable|string|max:30',
             'nomor_telp'                => 'required|string|max:20',
             'tempat_lahir'              => 'required|string|max:100',
             'tanggal_lahir'             => 'required|date',
@@ -224,6 +225,7 @@ class RedkarController extends Controller
         $validatedData = $request->validate([
             'nama_lengkap'              => 'required|string|max:150',
             'nik'                       => 'required|string|size:16|unique:redkar_registrations,nik',
+            'kartu_anggota'             => 'nullable|string|max:30',
             'nomor_telp'                => 'required|string|max:20',
             'tempat_lahir'              => 'required|string|max:100',
             'tanggal_lahir'             => 'required|date',
