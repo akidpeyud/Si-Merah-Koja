@@ -110,6 +110,26 @@
     .attachment-link:hover { color: var(--navy-dark); text-decoration: underline; }
     .form-select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
 
+    /* ---------- Toolbar Pencarian & Filter ---------- */
+    .filter-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .filter-search { position: relative; flex: 1 1 280px; min-width: 220px; }
+    .filter-search > i.fa-search { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--steel-soft); font-size: .85rem; pointer-events: none; }
+    .filter-search .form-control { height: 42px; padding-left: 38px; padding-right: 36px; border-radius: 8px; font-size: .9rem; border: 1.5px solid var(--line-dark); }
+    .filter-search .form-control:focus { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+    .filter-clear { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; border: none; border-radius: 50%; background: transparent; color: var(--steel-soft); display: none; place-items: center; cursor: pointer; }
+    .filter-clear:hover { background: var(--paper); color: var(--ink); }
+    .filter-search.has-value .filter-clear { display: grid; }
+    .filter-status { flex: 0 0 200px; }
+    .filter-status .form-select { height: 42px; border-radius: 8px; font-size: .9rem; border: 1.5px solid var(--line-dark); cursor: pointer; }
+    .btn-reset-filter { height: 42px; padding: 0 16px; border-radius: 8px; border: 1.5px solid var(--line-dark); background: #fff; color: var(--steel); font-size: .85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; transition: all .2s; }
+    .btn-reset-filter:hover { background: var(--paper); color: var(--ink); }
+    .filter-count { margin-left: auto; font-size: .82rem; color: var(--steel); white-space: nowrap; }
+    .filter-count strong { color: var(--ink); }
+    @media (max-width: 700px) {
+        .filter-status { flex: 1 1 100%; }
+        .filter-count { margin-left: 0; width: 100%; }
+    }
+
     @media (max-width: 700px) {
         :root { --topbar-h: 64px; }
         .topbar { height: var(--topbar-h); padding: 0 14px; gap: 10px; }
@@ -266,6 +286,38 @@
         </div>
 
         <div class="content-card">
+            <!-- ==============================================
+                 PENCARIAN & FILTER STATUS
+                 ============================================== -->
+            <div class="filter-bar">
+                <div class="filter-search" id="filterSearchWrap">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchEdukasi" class="form-control"
+                           placeholder="Cari institusi, pemohon, kecamatan, atau no. kontak..."
+                           autocomplete="off">
+                    <button type="button" id="btnClearSearch" class="filter-clear" aria-label="Hapus pencarian">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="filter-status">
+                    <select id="filterStatus" class="form-select" aria-label="Filter status">
+                        <option value="">Semua Status</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Disetujui">Disetujui</option>
+                        <option value="Ditolak">Ditolak</option>
+                    </select>
+                </div>
+
+                <button type="button" id="btnResetFilter" class="btn-reset-filter">
+                    <i class="fas fa-rotate-left"></i> Reset
+                </button>
+
+                <div class="filter-count" id="filterCount">
+                    Menampilkan <strong>{{ $sum['total'] }}</strong> dari <strong>{{ $sum['total'] }}</strong> pengajuan
+                </div>
+            </div>
+
             <div class="table-responsive">
                 <table class="table align-middle mb-0">
                     <thead>
@@ -288,7 +340,9 @@
                             $suratList  = collect(\Illuminate\Support\Arr::wrap($p->surat_permohonan))->filter($berkasAda)->values();
                             $syaratList = collect(\Illuminate\Support\Arr::wrap($p->syarat_lainnya))->filter($berkasAda)->values();
                         @endphp
-                        <tr>
+                        <tr class="row-edukasi"
+                            data-status="{{ $statusLabel($p->status_permohonan) }}"
+                            data-search="{{ mb_strtolower($p->institusi . ' ' . $p->nama_pemohon . ' ' . ($p->kecamatan ?? '') . ' ' . ($p->kelurahan ?? '') . ' ' . $kontak) }}">
                             <td>
                                 <strong>{{ $p->created_at ? $p->created_at->format('d M Y') : '-' }}</strong>
                                 <div style="font-size: .8rem; color: var(--steel-soft);">{{ $p->created_at ? $p->created_at->format('H:i') . ' WIB' : '' }}</div>
@@ -376,6 +430,13 @@
                             </td>
                         </tr>
                         @endforelse
+
+                        <tr id="rowNoResult" class="d-none">
+                            <td colspan="7" class="text-center py-5 text-muted" style="font-size: .95rem;">
+                                <i class="fas fa-search mb-2" style="font-size: 2rem; color: var(--steel-soft);"></i><br>
+                                Tidak ada pengajuan yang cocok dengan pencarian atau filter.
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -445,6 +506,53 @@
             var status = button.getAttribute('data-status') || 'Pending';
             select.value = status;
             if (select.value !== status) select.value = 'Ditolak';
+        });
+    }
+
+    /* ---------- Pencarian & Filter Status ---------- */
+    var searchInput  = document.getElementById('searchEdukasi');
+    var statusSelect = document.getElementById('filterStatus');
+    var searchWrap   = document.getElementById('filterSearchWrap');
+    var btnClear     = document.getElementById('btnClearSearch');
+    var btnReset     = document.getElementById('btnResetFilter');
+    var countEl      = document.getElementById('filterCount');
+    var noResultRow  = document.getElementById('rowNoResult');
+    var dataRows     = Array.prototype.slice.call(document.querySelectorAll('tr.row-edukasi'));
+
+    function applyFilter() {
+        var q  = searchInput.value.trim().toLowerCase();
+        var st = statusSelect.value;
+        var shown = 0;
+
+        dataRows.forEach(function (tr) {
+            var okText   = !q  || (tr.getAttribute('data-search') || '').indexOf(q) !== -1;
+            var okStatus = !st || tr.getAttribute('data-status') === st;
+            var visible  = okText && okStatus;
+            tr.classList.toggle('d-none', !visible);
+            if (visible) shown++;
+        });
+
+        searchWrap.classList.toggle('has-value', q.length > 0);
+        countEl.innerHTML = 'Menampilkan <strong>' + shown + '</strong> dari <strong>' + dataRows.length + '</strong> pengajuan';
+
+        // Tampilkan pesan "tidak ada hasil" hanya jika ada data tetapi semuanya tersaring
+        if (noResultRow) noResultRow.classList.toggle('d-none', !(dataRows.length > 0 && shown === 0));
+    }
+
+    if (searchInput && statusSelect) {
+        searchInput.addEventListener('input', applyFilter);
+        statusSelect.addEventListener('change', applyFilter);
+
+        btnClear.addEventListener('click', function () {
+            searchInput.value = '';
+            searchInput.focus();
+            applyFilter();
+        });
+
+        btnReset.addEventListener('click', function () {
+            searchInput.value = '';
+            statusSelect.value = '';
+            applyFilter();
         });
     }
 

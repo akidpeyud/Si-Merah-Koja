@@ -783,8 +783,8 @@
                 <li><span aria-current="page"><?= $h($layanan[$tab_aktif]['label']) ?></span></li>
             </ol>
         </nav>
-        <h1 class="rise d1">Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</h1>
-        <p class="rise d2">Ajukan Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+        <h1 class="rise d1">Rekomendasi Penilaian Proteksi Kebakaran Bangunan Gedung dan Lingkungan</h1>
+        <p class="rise d2">Ajukan Rekomendasi Penilaian Proteksi Kebakaran Bangunan Gedung dan Lingkungan secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
 </section>
 
@@ -809,7 +809,7 @@
                 <span class="c-ico"><i class="fas fa-file-circle-check"></i></span>
                 <div>
                     <small>Produk layanan</small>
-                    <strong>Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</strong>
+                    <strong>Rekomendasi Penilaian Proteksi Kebakaran Bangunan Gedung dan Lingkungan</strong>
                 </div>
             </div>
             <div class="fact">
@@ -851,7 +851,7 @@
                         <li>
                             <span class="ck-ico"><i class="fas fa-folder-open"></i></span>
                             <div>
-                                Unggah detail persyaratan RKBGL lainnya (bisa dalam format ZIP)
+                                Unggah detail persyaratan RPPKBGL lainnya (bisa dalam format ZIP)
                                 <br><button type="button" class="tool" data-open-modal><i class="fas fa-list-ul"></i> Lihat detail</button>
                             </div>
                         </li>
@@ -877,13 +877,13 @@
                 </section>
             </aside>
 
-            <!-- Formulir RKBGL -->
+            <!-- Formulir RPPKBGL -->
             <section class="form-panel" id="formulir" aria-label="Formulir permohonan">
                 <div class="form-bar">
                     <div class="form-title">
                         <i class="fas fa-file-pen"></i>
                         <div>
-                            <h2>Formulir RKBGL</h2>
+                            <h2>Formulir RPPKBGL</h2>
                             <p>Rekomendasi Proteksi Kebakaran Bangunan Gedung &amp; Lingkungan</p>
                         </div>
                     </div>
@@ -1110,12 +1110,12 @@
 <!-- MODAL PERSYARATAN -->
 <dialog class="modal" id="modalPersyaratan" aria-labelledby="modalTitle">
     <div class="modal-head">
-        <h2 id="modalTitle">Detail persyaratan RKBGL lainnya</h2>
+        <h2 id="modalTitle">Detail persyaratan RPPKBGL lainnya</h2>
         <button type="button" class="modal-x" data-close aria-label="Tutup"><i class="fas fa-times"></i></button>
     </div>
     <div class="modal-body">
         <ol class="req-list">
-            <li>Menginput Formulir Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan (RKBGL) secara elektronik melalui simerah.jambikota.go.id</li>
+            <li>Menginput Formulir Rekomendasi Proteksi Kebakaran Bangunan Gedung dan Lingkungan (RPPKBGL) secara elektronik melalui simerah.jambikota.go.id</li>
             <li>
                 <b>Identitas pemohon/penanggung jawab</b>
                 <ul>
@@ -1737,7 +1737,7 @@
 
             var li  = el('li', 'cs-item');
             var top = el('div', 'cs-top');
-            top.appendChild(el('div', 'cs-kegiatan', it.nama_usaha || it.kegiatan || 'Permohonan RKBGL'));
+            top.appendChild(el('div', 'cs-kegiatan', it.nama_usaha || it.kegiatan || 'Permohonan RPPKBGL'));
             top.appendChild(el('span', 'cs-badge ' + st.cls, it.status));
             li.appendChild(top);
 

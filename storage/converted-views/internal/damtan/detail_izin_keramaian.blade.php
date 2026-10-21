@@ -102,7 +102,7 @@
                             <i class="fas fa-image me-2"></i> Buka Foto Jalur
                         </a>
 
-                        <p class="mb-2 text-muted fw-bold mt-4" style="font-size: 0.85rem;">SURAT PERNYATAAN (MATERAI)</p>
+                        <p class="mb-2 text-muted fw-bold mt-4" style="font-size: 0.85rem;">SURAT PERNYATAAN</p>
                         <a href="{{ asset('storage/' . $permohonan->surat_pernyataan) }}" target="_blank" class="btn-custom-outline danger">
                             <i class="fas fa-file-pdf me-2"></i> Buka Surat PDF
                         </a>

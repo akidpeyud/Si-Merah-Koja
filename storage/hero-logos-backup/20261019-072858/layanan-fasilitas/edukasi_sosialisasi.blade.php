@@ -743,7 +743,7 @@
                             <li>
                                 <span class="ck-ico"><i class="fas fa-file-signature"></i></span>
                                 <div>
-                                    Unggah <strong>Surat Permohonan Bermaterai</strong>.
+                                    Unggah <strong>Surat Permohonan</strong>.
                                     @if($url_surat_permohonan)
                                         <br><a href="{{ $url_surat_permohonan }}" class="inline" download><i class="fas fa-download"></i> Unduh surat permohonan</a>
                                     @else

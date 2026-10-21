@@ -176,7 +176,7 @@
                     <div class="section-header">Unggah Berkas (Biarkan kosong jika tidak diubah)</div>
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Surat Permohonan Bermaterai (PDF/JPG/PNG)</label>
+                            <label class="form-label">Surat Permohonan(PDF/JPG/PNG)</label>
                             @if($edukasi->surat_permohonan)
                                 <div class="mb-2">
                                     @if($edukasi->surat_permohonan == 'Tidak dilampirkan (Offline)')

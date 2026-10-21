@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Kelola Perizinan RPKBGL')
+@section('title', 'Kelola Perizinan RPPKBGL')
 
 @push('styles')
 <style>
@@ -103,6 +103,25 @@
     .attachment-link:hover { color: var(--navy-dark); text-decoration: underline; }
     .btn-edit { background: rgba(244, 183, 64, .15); color: #b45309; }
     .btn-edit:hover { background: #d97706; color: #ffffff; }
+
+    /* ---------- Toolbar Pencarian & Filter ---------- */
+    .filter-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 18px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+    .filter-search { position: relative; flex: 1 1 280px; min-width: 220px; }
+    .filter-search i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--steel-soft); font-size: .85rem; pointer-events: none; }
+    .filter-search .form-control { height: 42px; padding-left: 38px; border-radius: 8px; font-size: .9rem; border: 1.5px solid var(--line-dark); }
+    .filter-search .form-control:focus { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+    .filter-select { flex: 0 0 200px; }
+    .filter-select .form-select { height: 42px; border-radius: 8px; font-size: .9rem; border: 1.5px solid var(--line-dark); cursor: pointer; }
+    .filter-select .form-select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+    .btn-reset-filter { height: 42px; padding: 0 16px; border-radius: 8px; border: 1.5px solid var(--line-dark); background: #fff; color: var(--steel); font-size: .85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; transition: all .2s; }
+    .btn-reset-filter:hover { background: var(--paper); color: var(--ink); }
+    .filter-count { margin-left: auto; font-size: .82rem; color: var(--steel); white-space: nowrap; }
+    .filter-count strong { color: var(--ink); }
+    @media (max-width: 700px) {
+        .filter-select { flex: 1 1 100%; }
+        .filter-count { margin-left: 0; width: 100%; }
+    }
+
     @media (max-width: 700px) {
         :root { --topbar-h: 64px; }
         .topbar { height: var(--topbar-h); padding: 0 14px; gap: 10px; }
@@ -124,7 +143,7 @@
     }
     @media print {
         @page { size: A4 landscape; margin: 10mm; }
-        .topbar, .sidebar, .btn-print-rekap, .btn-add, .btn-excel, .no-print-col, .page-head-title p { display: none !important; }
+        .topbar, .sidebar, .btn-print-rekap, .btn-add, .btn-excel, .no-print-col, .page-head-title p, .filter-bar { display: none !important; }
         .shell { display: block; }
         .content { padding: 0 !important; margin: 0 !important; background: white; }
         .content-card { padding: 0; border: none; box-shadow: none; overflow: visible; }
@@ -190,15 +209,8 @@
     $totalBerkas  = $rows->count();
     $sedangDiurus = $cnt['Pending'] + $cnt['Diproses Tim'];   // belum ada keputusan akhir
 
-    // Disiapkan di sini karena direktif json di Blade memecah argumen berdasarkan koma
-    $rekapSum = [
-        'total'    => $totalBerkas,
-        'diurus'   => $sedangDiurus,
-        'pending'  => $cnt['Pending'],
-        'diproses' => $cnt['Diproses Tim'],
-        'memenuhi' => $cnt['Memenuhi Syarat'],
-        'tidak'    => $cnt['Tidak Memenuhi Syarat'],
-    ];
+    // Daftar kecamatan unik untuk dropdown filter
+    $daftarKecamatan = $rows->pluck('kecamatan')->filter()->unique()->sort()->values();
 
     /* ---------- Data untuk rekap Excel ---------- */
     $excelRows = $rows->values()->map(function ($p, $i) use ($statusLabel, $toList, $offline, $berkasTunggal, $berkasJamak) {
@@ -226,14 +238,17 @@
             'tgl_pemeriksaan'  => $p->tgl_pemeriksaan ? \Carbon\Carbon::parse($p->tgl_pemeriksaan)->format('d/m/Y') : 'Belum dijadwalkan',
             'status'           => $statusLabel($p->status_permohonan),
             'jml_berkas'       => $jmlBerkas,
+            // Kunci internal untuk pencarian/filter (tidak ditulis ke Excel)
+            '_search'          => mb_strtolower($p->nama_pemohon . ' ' . $p->nama_usaha . ' ' . $p->no_whatsapp . ' ' . $p->kategori_bangunan . ' ' . $p->kecamatan . ' ' . $p->kelurahan . ' ' . $p->alamat_bangunan),
+            '_kec'             => mb_strtolower((string) $p->kecamatan),
         ];
     })->all();
 @endphp
 
         <div class="page-head">
             <div class="page-head-title">
-                <h1>Daftar Permohonan RPKBGL</h1>
-                <p>Data pengajuan Rekomendasi Proteksi Kebakaran Bangunan Gedung & Lingkungan.</p>
+                <h1>Daftar Permohonan RPPKBGL</h1>
+                <p>Data pengajuan Rekomendasi Penilaian Proteksi Kebakaran Bangunan Gedung dan Lingkungan.</p>
             </div>
             
             <div class="d-flex gap-2 flex-wrap">
@@ -308,6 +323,47 @@
         </div>
 
         <div class="content-card">
+            <!-- ==============================================
+                 PENCARIAN & FILTER (STATUS + KECAMATAN)
+                 ============================================== -->
+            @if($totalBerkas > 0)
+            <div class="filter-bar">
+                <div class="filter-search">
+                    <i class="fas fa-search"></i>
+                    <input type="search" id="searchRpkbgl" class="form-control"
+                           placeholder="Cari pemohon, usaha, kategori, lokasi, atau no. WhatsApp..."
+                           autocomplete="off">
+                </div>
+
+                <div class="filter-select">
+                    <select id="filterStatus" class="form-select" aria-label="Filter status">
+                        <option value="">Semua Status</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Diproses Tim">Diproses Tim</option>
+                        <option value="Memenuhi Syarat">Memenuhi Syarat</option>
+                        <option value="Tidak Memenuhi Syarat">Tidak Memenuhi Syarat</option>
+                    </select>
+                </div>
+
+                <div class="filter-select">
+                    <select id="filterKecamatan" class="form-select" aria-label="Filter kecamatan">
+                        <option value="">Semua Kecamatan</option>
+                        @foreach($daftarKecamatan as $kec)
+                            <option value="{{ mb_strtolower($kec) }}">{{ $kec }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <button type="button" id="btnResetFilter" class="btn-reset-filter">
+                    <i class="fas fa-rotate-left"></i> Reset
+                </button>
+
+                <div class="filter-count" id="filterCount">
+                    Menampilkan <strong>{{ $totalBerkas }}</strong> dari <strong>{{ $totalBerkas }}</strong> berkas
+                </div>
+            </div>
+            @endif
+
             <div class="table-responsive">
                 <table class="table align-middle">
                     <thead>
@@ -325,7 +381,10 @@
                     </thead>
                     <tbody>
                         @forelse($permohonan as $p)
-                        <tr>
+                        <tr class="row-rpkbgl"
+                            data-status="{{ $statusLabel($p->status_permohonan) }}"
+                            data-kecamatan="{{ mb_strtolower((string) $p->kecamatan) }}"
+                            data-search="{{ mb_strtolower($p->nama_pemohon . ' ' . $p->nama_usaha . ' ' . $p->no_whatsapp . ' ' . $p->kategori_bangunan . ' ' . $p->kecamatan . ' ' . $p->kelurahan . ' ' . $p->alamat_bangunan) }}">
                             <td>
                                 <strong>{{ $p->created_at->format('d M Y') }}</strong>
                                 <div style="font-size: .8rem; color: var(--steel-soft);">{{ $p->created_at->format('H:i') }} WIB</div>
@@ -443,6 +502,14 @@
                             </td>
                         </tr>
                         @endforelse
+
+                        <!-- Pesan jika hasil pencarian/filter kosong -->
+                        <tr id="rowNoResult" class="d-none">
+                            <td colspan="9" class="text-center py-5 text-muted" style="font-size: .95rem;">
+                                <i class="fas fa-search mb-2" style="font-size: 2rem; color: var(--steel-soft);"></i><br>
+                                Tidak ada permohonan yang cocok dengan pencarian atau filter.
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -530,9 +597,72 @@
     @endif
 })();
 
+/* ---------- Pencarian & Filter (Status + Kecamatan) ---------- */
+var elSearch = document.getElementById('searchRpkbgl');
+var elStatus = document.getElementById('filterStatus');
+var elKec    = document.getElementById('filterKecamatan');
+
+function filterAktif() {
+    return {
+        q:   elSearch ? elSearch.value.trim().toLowerCase() : '',
+        st:  elStatus ? elStatus.value : '',
+        kec: elKec    ? elKec.value    : ''
+    };
+}
+
+function cocokFilter(search, status, kec, f) {
+    return (!f.q   || (search || '').indexOf(f.q) !== -1) &&
+           (!f.st  || status === f.st) &&
+           (!f.kec || kec === f.kec);
+}
+
+function terapkanFilter() {
+    var f = filterAktif();
+    var rows = document.querySelectorAll('tr.row-rpkbgl');
+    var shown = 0;
+
+    rows.forEach(function (tr) {
+        var ok = cocokFilter(tr.dataset.search, tr.dataset.status, tr.dataset.kecamatan, f);
+        tr.classList.toggle('d-none', !ok);
+        if (ok) shown++;
+    });
+
+    var cnt = document.getElementById('filterCount');
+    if (cnt) cnt.innerHTML = 'Menampilkan <strong>' + shown + '</strong> dari <strong>' + rows.length + '</strong> berkas';
+
+    // Pesan "tidak ada hasil" hanya muncul jika ada data tetapi semuanya tersaring
+    var empty = document.getElementById('rowNoResult');
+    if (empty) empty.classList.toggle('d-none', !(rows.length > 0 && shown === 0));
+}
+
+if (elSearch && elStatus && elKec) {
+    elSearch.addEventListener('input', terapkanFilter);
+    elStatus.addEventListener('change', terapkanFilter);
+    elKec.addEventListener('change', terapkanFilter);
+
+    document.getElementById('btnResetFilter').addEventListener('click', function () {
+        elSearch.value = '';
+        elStatus.value = '';
+        elKec.value = '';
+        terapkanFilter();
+    });
+}
+
+// Hitung ulang ringkasan dari baris yang lolos filter (dipakai oleh Rekap Excel)
+function hitungSumRekap(rows) {
+    var s = { total: rows.length, pending: 0, diproses: 0, memenuhi: 0, tidak: 0 };
+    rows.forEach(function (r) {
+        if (r.status === 'Pending') s.pending++;
+        else if (r.status === 'Diproses Tim') s.diproses++;
+        else if (r.status === 'Memenuhi Syarat') s.memenuhi++;
+        else s.tidak++;
+    });
+    s.diurus = s.pending + s.diproses;
+    return s;
+}
+
 /* ---------- Rekap Excel (.xlsx) ---------- */
-var REKAP_ROWS = @json($excelRows);
-var REKAP_SUM  = @json($rekapSum);
+var REKAP_ALL = @json($excelRows);
 
 async function exportRekapExcel() {
     var btn = document.getElementById('btnExportExcel');
@@ -541,8 +671,18 @@ async function exportRekapExcel() {
         Swal.fire({ icon: 'error', title: 'Gagal', text: 'Library Excel belum termuat. Periksa koneksi internet lalu muat ulang halaman.', confirmButtonColor: '#163a63' });
         return;
     }
+
+    // Ikuti filter yang sedang aktif di layar (nomor urut dihitung ulang)
+    var f = filterAktif();
+    var REKAP_ROWS = REKAP_ALL.filter(function (r) {
+        return cocokFilter(r._search, r.status, r._kec, f);
+    }).map(function (r, i) {
+        return Object.assign({}, r, { no: i + 1 });
+    });
+    var REKAP_SUM = hitungSumRekap(REKAP_ROWS);
+
     if (!REKAP_ROWS.length) {
-        Swal.fire({ icon: 'info', title: 'Tidak ada data', text: 'Belum ada data permohonan untuk direkap.', confirmButtonColor: '#163a63' });
+        Swal.fire({ icon: 'info', title: 'Tidak ada data', text: 'Tidak ada data permohonan yang sesuai untuk direkap.', confirmButtonColor: '#163a63' });
         return;
     }
 
