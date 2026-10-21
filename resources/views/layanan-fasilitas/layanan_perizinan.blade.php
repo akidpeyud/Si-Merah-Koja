@@ -879,8 +879,8 @@
                 <li><span aria-current="page"><?= $h($layanan[$tab_aktif]['label']) ?></span></li>
             </ol>
         </nav>
-        <h1 class="rise d1">Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan</h1>
-        <p class="rise d2">Ajukan Rekomendasi Kebakaran Bangunan Gedung dan Lingkungan secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+        <h1 class="rise d1">Rekomendasi Penilaian Proteksi Kebakaran Bangunan Gedung dan Lingkungan</h1>
+        <p class="rise d2">Ajukan Rekomendasi Penilaian Proteksi Kebakaran Bangunan Gedung dan Lingkungan secara daring ke Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
     </div>
     @include('layouts.partials.hero-logos', ['float' => true])
 </section>

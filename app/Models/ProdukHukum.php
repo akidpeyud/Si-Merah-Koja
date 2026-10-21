@@ -23,16 +23,17 @@ class ProdukHukum extends Model
     /**
      * Daftar kategori produk hukum yang valid beserta label tampilannya
      */
-    public static function daftarKategori(): array
-    {
-        return [
-            'undang-undang'           => 'Undang-Undang',
-            'peraturan-pemerintah'    => 'Peraturan Pemerintah',
-            'peraturan-menteri'       => 'Peraturan Menteri',
-            'peraturan-daerah'        => 'Peraturan Daerah',
-            'peraturan-kepala-daerah' => 'Peraturan Kepala Daerah',
-        ];
-    }
+public static function daftarKategori(): array
+{
+    return [
+        'undang-undang'           => 'Undang-Undang',
+        'peraturan-pemerintah'    => 'Peraturan Pemerintah',
+        'peraturan-presiden'      => 'Peraturan Presiden', // BARU
+        'peraturan-menteri'       => 'Peraturan Menteri',
+        'peraturan-daerah'        => 'Peraturan Daerah',
+        'peraturan-kepala-daerah' => 'Peraturan Kepala Daerah',
+    ];
+}
 
     /**
      * Helper untuk mengambil nama label dari slug kategori

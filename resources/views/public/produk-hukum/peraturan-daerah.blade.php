@@ -5,7 +5,8 @@
     $h = function ($v) { return htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8'); };
 
     /* ------------------------------------------------------------
-       PENGATURAN HALAMAN (5 TAB PRODUK HUKUM)
+       PENGATURAN HALAMAN (6 TAB PRODUK HUKUM)
+       Urutan mengikuti hierarki: UU > PP > Perpres > Permen > Perda > Perkada
        ------------------------------------------------------------ */
     $tabs = [
         'undang-undang'           => [
@@ -19,6 +20,12 @@
             'label' => 'Peraturan Pemerintah',
             'ico'   => 'fa-landmark',
             'judul' => 'Peraturan Pemerintah'
+        ],
+        'peraturan-presiden'      => [
+            'url'   => '/produk-hukum/peraturan-presiden',
+            'label' => 'Peraturan Presiden',
+            'ico'   => 'fa-user-tie',
+            'judul' => 'Peraturan Presiden'
         ],
         'peraturan-menteri'       => [
             'url'   => '/produk-hukum/peraturan-menteri',
@@ -39,7 +46,7 @@
             'judul' => 'Peraturan Kepala Daerah'
         ],
     ];
-    
+
     // Otomatis mendeteksi halaman aktif dari URL (misal: 'undang-undang')
     $segment = request()->segment(2);
     $tab_aktif = array_key_exists($segment, $tabs) ? $segment : 'undang-undang';
@@ -51,7 +58,6 @@
     $dokumenDB = collect();
 
     if (class_exists('\App\Models\ProdukHukum')) {
-        // Jika menggunakan Model ProdukHukum (mencocokkan slug 'undang-undang' atau label 'Undang-Undang')
         $dokumenDB = \App\Models\ProdukHukum::whereIn('kategori', [$tab_aktif, $label_aktif])
                         ->latest()
                         ->get();
@@ -61,7 +67,6 @@
                         ->orderBy('id', 'desc')
                         ->get();
     } elseif (class_exists('\App\Models\Dokumen')) {
-        // Fallback jika disimpan di tabel Dokumen seperti SOP
         $dokumenDB = \App\Models\Dokumen::where('kategori', 'Produk Hukum')
                         ->whereIn('sub_kategori', [$tab_aktif, $label_aktif])
                         ->latest()
@@ -70,27 +75,25 @@
 
     $dokumen_list = [];
     foreach ($dokumenDB as $doc) {
-        // Deteksi fleksibel nama kolom judul & file di database
         $judul_doc = $doc->judul_dokumen ?? $doc->judul ?? $doc->nama_dokumen ?? $doc->tentang ?? 'Dokumen Produk Hukum';
         $nama_file = $doc->nama_file ?? $doc->file ?? $doc->file_pdf ?? $doc->dokumen ?? '';
 
-        // Gunakan rute publik jika sudah ditambahkan di web.php, atau fallback ke rute internal
-        $url_view = Route::has('publik.produk-hukum.view') 
+        $url_view = Route::has('publik.produk-hukum.view')
                     ? route('publik.produk-hukum.view', ['kategori' => $tab_aktif, 'id' => $doc->id])
                     : url('/internal/produk-hukum/' . $tab_aktif . '/' . $doc->id . '/view');
 
-        $url_dl   = Route::has('publik.produk-hukum.download') 
+        $url_dl   = Route::has('publik.produk-hukum.download')
                     ? route('publik.produk-hukum.download', ['kategori' => $tab_aktif, 'id' => $doc->id])
                     : url('/internal/produk-hukum/' . $tab_aktif . '/' . $doc->id . '/download');
 
         $dokumen_list[] = [
             'judul'        => $judul_doc,
-            'url'          => $url_view, 
+            'url'          => $url_view,
             'url_download' => $url_dl,
             'ext'          => pathinfo($nama_file, PATHINFO_EXTENSION) ?: 'PDF'
         ];
     }
-    
+
     $jumlah = count($dokumen_list);
 
     // Konfigurasi Kontak Default
@@ -415,7 +418,8 @@
         .tab[aria-current="page"] { background: var(--ink); color: #fff; }
         .tab[aria-current="page"] i { color: var(--amber); }
 
-        @media (min-width: 1200px) {
+        /* 6 tab butuh ruang lebih: mode tengah tanpa scroll hanya di layar lebar */
+        @media (min-width: 1280px) {
             .tabs { justify-content: center; overflow: visible; }
             .tabs::after { display: none; }
         }
@@ -573,11 +577,9 @@
                 <li class="has-drop current">
                     <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
-                        <li><a href="/produk-hukum/undang-undang" <?= $tab_aktif === 'undang-undang' ? 'aria-current="page"' : '' ?>>Undang-Undang</a></li>
-                        <li><a href="/produk-hukum/peraturan-pemerintah" <?= $tab_aktif === 'peraturan-pemerintah' ? 'aria-current="page"' : '' ?>>Peraturan Pemerintah</a></li>
-                        <li><a href="/produk-hukum/peraturan-menteri" <?= $tab_aktif === 'peraturan-menteri' ? 'aria-current="page"' : '' ?>>Peraturan Menteri</a></li>
-                        <li><a href="/produk-hukum/peraturan-daerah" <?= $tab_aktif === 'peraturan-daerah' ? 'aria-current="page"' : '' ?>>Peraturan Daerah</a></li>
-                        <li><a href="/produk-hukum/peraturan-kepala-daerah" <?= $tab_aktif === 'peraturan-kepala-daerah' ? 'aria-current="page"' : '' ?>>Peraturan Kepala Daerah</a></li>
+                        <?php foreach ($tabs as $key => $tab): ?>
+                        <li><a href="<?= $h($tab['url']) ?>" <?= $tab_aktif === $key ? 'aria-current="page"' : '' ?>><?= $h($tab['label']) ?></a></li>
+                        <?php endforeach; ?>
                     </ul>
                 </li>
 
@@ -642,8 +644,6 @@
                         </li>
                     </ul>
                 </li>
-
- 
             </ul>
 
             <!-- ===== Tombol kanan: Lapor darurat + Masuk ===== -->
@@ -744,7 +744,7 @@
                         $url          = (string) ($d['url'] ?? '');
                         $url_download = (string) ($d['url_download'] ?? $url);
                         $ada          = $url !== '';
-                        
+
                         $ext          = $ada ? strtoupper($d['ext'] ?? 'PDF') : '';
                         $ext          = $ext ?: 'PDF';
                         $ico          = ['PDF' => 'fa-file-pdf', 'DOC' => 'fa-file-word', 'DOCX' => 'fa-file-word', 'XLS' => 'fa-file-excel', 'XLSX' => 'fa-file-excel'][$ext] ?? 'fa-file-lines';
@@ -763,7 +763,6 @@
                         </div>
                         <?php if ($ada): ?>
                         <div class="doc-actions">
-                            <a class="tool" href="<?= $h($url) ?>" target="_blank" rel="noopener" aria-label="Buka <?= $h($judul) ?>"><i class="fas fa-arrow-up-right-from-square"></i> Buka</a>
                             <a class="tool" href="<?= $h($url_download) ?>" aria-label="Unduh <?= $h($judul) ?>"><i class="fas fa-download"></i> Unduh</a>
                         </div>
                         <?php endif; ?>
@@ -944,7 +943,7 @@
             btn.setAttribute('aria-expanded', open);
             closeDrops(li);
         });
-        
+
         li.addEventListener('mouseleave', function () {
             if (!desktop.matches) return;
             li.classList.remove('open');
@@ -995,7 +994,7 @@
         fabBtn.setAttribute('aria-expanded', open);
     });
 
-    /* Pencarian Dokumen */
+    /* ---------- Pencarian Dokumen ---------- */
     var search = document.getElementById('docSearch');
     if (search) {
         var rows = document.querySelectorAll('.doc-row');
@@ -1014,6 +1013,7 @@
         });
     }
 
+    /* ---------- Scroll tab aktif ke tengah (mobile) ---------- */
     var tabsEl = document.querySelector('.tabs');
     var activeTab = document.querySelector('.tab[aria-current="page"]');
     if (tabsEl && activeTab && tabsEl.scrollWidth > tabsEl.clientWidth) {
