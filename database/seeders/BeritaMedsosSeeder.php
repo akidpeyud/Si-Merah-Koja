@@ -1027,7 +1027,7 @@ class BeritaMedsosSeeder extends Seeder
 
         // .../2026/05/...  (hanya bulan, mis. blogspot) -> tanggal 1
         if (preg_match('#/(20\d{2})/(0[1-9]|1[0-2])/#', $url, $m)) {
-            return "{$m[1]}-{$m[2]}-01 12:00:00x";
+            return "{$m[1]}-{$m[2]}-01 12:00:00";
         }
 
         return null;
