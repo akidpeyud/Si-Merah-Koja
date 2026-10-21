@@ -52,6 +52,10 @@
         --rekap-row-a: #eaf2fc;
         --rekap-row-b: #f8fbff;
         --rekap-line: #d3deee;
+
+        --excel: #107c41;
+        --excel-dark: #0b5f31;
+        --excel-soft: rgba(16, 124, 65, .09);
     }
 
     #globalSuccessAlert, #globalErrorAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); color: white; padding: 16px 24px; border-radius: var(--r-md); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -129,6 +133,97 @@
         transition: all .2s ease;
     }
     .btn-custom-light:hover { background: #f8fafc; border-color: var(--steel-soft); color: var(--ink); }
+
+    /* ==========================================================
+       EKSPOR EXCEL: pilih tahun + pilih jenis laporan
+       ========================================================== */
+    .export-group {
+        display: inline-flex; align-items: stretch;
+        height: 44px;
+        background: var(--white);
+        border: 1px solid var(--excel);
+        border-radius: 10px;
+        box-shadow: var(--shadow-xs);
+    }
+    .export-year {
+        position: relative;
+        display: flex; align-items: center; gap: 8px;
+        padding: 0 4px 0 14px;
+        background: var(--excel-soft);
+        border-radius: 9px 0 0 9px;
+        border-right: 1px solid rgba(16, 124, 65, .25);
+        transition: background .2s ease;
+    }
+    .export-year:hover, .export-year:focus-within { background: rgba(16, 124, 65, .16); }
+    .export-year > i { color: var(--excel); font-size: .9rem; pointer-events: none; }
+    .export-year .year-label {
+        font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+        color: var(--excel-dark); line-height: 1; pointer-events: none;
+    }
+    #exportTahun {
+        appearance: none; -webkit-appearance: none;
+        border: 0; outline: 0; background: transparent;
+        min-height: 0; height: 100%;
+        padding: 0 28px 0 2px;
+        font-family: var(--font-display); font-weight: 700; font-size: .98rem;
+        color: var(--excel-dark);
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%230b5f31' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+    }
+    #exportTahun:focus { box-shadow: none; }
+
+    .export-btn {
+        display: inline-flex; align-items: center; gap: 9px;
+        height: 100%;
+        padding: 0 18px 0 16px;
+        background: linear-gradient(180deg, #14934f 0%, var(--excel) 100%);
+        color: #fff;
+        border: 0;
+        border-radius: 0 9px 9px 0;
+        font-size: .92rem; font-weight: 600;
+        transition: all .2s ease;
+    }
+    .export-btn:hover, .export-btn.show { background: linear-gradient(180deg, var(--excel) 0%, var(--excel-dark) 100%); color: #fff; }
+    .export-btn .fa-file-excel { font-size: 1.05rem; }
+    .export-btn::after { display: none; }
+    .export-btn .caret { font-size: .7rem; opacity: .85; transition: transform .2s ease; }
+    .export-btn.show .caret { transform: rotate(180deg); }
+
+    .export-menu {
+        min-width: 300px;
+        margin-top: 8px !important;
+        padding: 8px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        box-shadow: var(--shadow-lg);
+    }
+    .export-menu .dropdown-header {
+        padding: 6px 10px 8px;
+        font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+        color: var(--steel);
+    }
+    .export-menu .dropdown-header b { color: var(--excel-dark); }
+    .export-item {
+        display: flex; align-items: center; gap: 12px;
+        padding: 10px;
+        border-radius: 8px;
+        white-space: normal;
+        transition: background .15s ease;
+    }
+    .export-item:hover, .export-item:focus { background: #f1f5f9; }
+    .export-item .ico {
+        flex: none; width: 38px; height: 38px;
+        display: inline-flex; align-items: center; justify-content: center;
+        border-radius: 10px; font-size: 1rem;
+    }
+    .export-item .ico.fire { background: var(--signal-soft); color: var(--signal); }
+    .export-item .ico.non  { background: var(--info-soft); color: var(--info); }
+    .export-item .txt { display: flex; flex-direction: column; line-height: 1.3; }
+    .export-item .txt strong { font-size: .88rem; color: var(--ink); }
+    .export-item .txt small { font-size: .76rem; color: var(--steel); }
+    .export-item .go { margin-left: auto; color: var(--steel-soft); font-size: .8rem; }
 
     /* ==========================================================
        TABEL REKAP (gaya header merah)
@@ -220,7 +315,7 @@
     @page { margin: 0; }
     @media print {
         .topbar, .sidebar, .sidebar-backdrop, .page-header, .card-header, .card-footer,
-        .btn, .dropdown, form, .modal, .action-btn, #globalSuccessAlert, #globalErrorAlert, .d-print-none { display: none !important; }
+        .btn, .dropdown, form, .modal, .action-btn, #globalSuccessAlert, #globalErrorAlert, .d-print-none, .export-group { display: none !important; }
         body { background-color: white !important; font-size: 12px; margin: 1.5cm !important; -webkit-print-color-adjust: exact; }
         .shell { display: block; }
         .content { padding: 0 !important; margin: 0 !important; }
@@ -257,11 +352,54 @@
             <h1>Data Laporan Penyelamatan</h1>
             <p>Daftar seluruh laporan kejadian yang telah diinput ke dalam sistem.</p>
         </div>
-        <div class="d-flex gap-2">
-            <!-- CETAK: SEMUA ROLE -->
+        <div class="d-flex gap-2 flex-wrap align-items-center">
+            <!-- CETAK PDF & EXCEL: SEMUA ROLE -->
             <button class="btn-custom-light shadow-sm" type="button" onclick="window.print()">
-                <i class="fas fa-download me-2"></i> Ekspor Semua
+                <i class="fas fa-print me-2"></i> Cetak PDF
             </button>
+
+            <!-- CETAK EXCEL: pilih tahun, lalu pilih jenis laporan (Kebakaran / Non-Kebakaran) -->
+            <div class="export-group">
+                <div class="export-year" title="Tahun laporan yang diekspor ke Excel">
+                    <i class="far fa-calendar-alt"></i>
+                    <select id="exportTahun" aria-label="Tahun laporan">
+                        @for($t = (int) date('Y'); $t >= (int) date('Y') - 5; $t--)
+                            <option value="{{ $t }}">{{ $t }}</option>
+                        @endfor
+                    </select>
+                </div>
+
+                <div class="dropdown d-flex">
+                    <button type="button" class="export-btn dropdown-toggle" id="btnExcel" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-file-excel"></i>
+                        <span>Cetak Excel</span>
+                        <i class="fas fa-chevron-down caret"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end export-menu" aria-labelledby="btnExcel">
+                        <li><h6 class="dropdown-header">Pilih jenis laporan &middot; Tahun <b id="exportTahunLabel">{{ date('Y') }}</b></h6></li>
+                        <li>
+                            <a class="dropdown-item export-item" href="#" data-kategori="kebakaran">
+                                <span class="ico fire"><i class="fas fa-fire"></i></span>
+                                <span class="txt">
+                                    <strong>Laporan Kebakaran</strong>
+                                    <small>Seluruh kejadian kebakaran</small>
+                                </span>
+                                <i class="fas fa-download go"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item export-item" href="#" data-kategori="non-kebakaran">
+                                <span class="ico non"><i class="fas fa-life-ring"></i></span>
+                                <span class="txt">
+                                    <strong>Laporan Non-Kebakaran</strong>
+                                    <small>Penyelamatan &amp; kejadian non-kebakaran</small>
+                                </span>
+                                <i class="fas fa-download go"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
             <!-- CREATE: HANYA DAMTAN DAN SUPER USER -->
             @hasanyrole('Damtan|Super User')
@@ -325,7 +463,7 @@
 
             <div class="rekap-scroll">
                 <div class="rekap-wrap">
-                    <table class="table-rekap">
+                    <table class="table-rekap" id="tableRekap">
                         <thead>
                             <tr>
                                 <th class="col-no">No</th>
@@ -534,6 +672,31 @@
         };
 
         filterTable(); // terapkan warna selang-seling saat halaman dimuat
+
+        /* ==========================================================
+           CETAK EXCEL
+           Pilih tahun di sebelah kiri, lalu pilih jenis laporan
+           (Kebakaran / Non-Kebakaran) dari dropdown. File dibuat di
+           server lewat: /internal/damtan/export-excel?tahun=YYYY&kategori=...
+           ========================================================== */
+        const exportTahun      = document.getElementById('exportTahun');
+        const exportTahunLabel = document.getElementById('exportTahunLabel');
+
+        if (exportTahun) {
+            exportTahun.addEventListener('change', function () {
+                if (exportTahunLabel) exportTahunLabel.textContent = exportTahun.value;
+            });
+
+            document.querySelectorAll('.export-item').forEach(function (item) {
+                item.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const url = '/internal/damtan/export-excel'
+                        + '?tahun=' + encodeURIComponent(exportTahun.value)
+                        + '&kategori=' + encodeURIComponent(item.dataset.kategori);
+                    window.location.href = url;
+                });
+            });
+        }
     });
 </script>
 @endpush

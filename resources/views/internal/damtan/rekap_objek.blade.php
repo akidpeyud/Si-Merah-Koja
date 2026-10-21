@@ -44,6 +44,9 @@
     .stat-card { display: flex; flex-direction: column; align-items: flex-start; padding: 18px; background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); box-shadow: var(--shadow-xs); text-align: left; width: 100%; transition: box-shadow .2s, border-color .2s, transform .2s; }
     .stat-card:hover { box-shadow: var(--shadow-sm); border-color: #d2dae5; transform: translateY(-3px); }
     .stat-card.picked { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+    /* Kartu read-only (role selain Damtan & Super User): tidak bisa diklik, tanpa efek hover */
+    .stat-card-readonly { cursor: default; }
+    .stat-card-readonly:hover { transform: none; box-shadow: var(--shadow-xs); border-color: var(--line); }
     .stat-ico { width: 40px; height: 40px; border-radius: var(--r-sm); display: grid; place-items: center; font-size: 1rem; margin-bottom: 14px; }
     .stat-title { font-size: .74rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--steel); margin-bottom: 6px; line-height: 1.4; }
     .stat-value { font-family: var(--font-display); font-weight: 700; font-size: 1.7rem; line-height: 1; letter-spacing: -.01em; }
@@ -118,10 +121,10 @@
 
 @section('content')
 @php
-    /* HAK AKSES INPUT/HAPUS REKAP: hanya Damtan & Super User. Role lain hanya boleh lihat & cetak. */
-    if (!Auth::user()->hasAnyRole(['Damtan', 'Super User'])) {
-        abort(403, 'Anda tidak memiliki hak akses untuk menginput atau menghapus rekap objek kebakaran. Role Anda hanya dapat melihat dan mencetak.');
-    }
+    /* HAK AKSES INPUT/HAPUS REKAP: hanya Damtan & Super User.
+       Role lain tetap bisa membuka halaman ini, tetapi HANYA melihat kartu "Total saat ini"
+       (tanpa form, tanpa riwayat, tanpa hapus, kartu tidak bisa diklik). */
+    $bisaInput = Auth::user()->hasAnyRole(['Damtan', 'Super User']);
 @endphp
 
         <div class="page-head">
@@ -137,14 +140,23 @@
         </div>
         <div class="stats-grid">
             @foreach($kategori as $key => [$nama, $ikon, $warna])
-                <button type="button" class="stat-card" data-pick="{{ $key }}" aria-label="Isi form untuk {{ $nama }}">
-                    <div class="stat-ico {{ $warna }}"><i class="fas {{ $ikon }}"></i></div>
-                    <div class="stat-title">{{ $nama }}</div>
-                    <div class="stat-value">{{ number_format($totals[$key] ?? 0, 0, ',', '.') }}</div>
-                </button>
+                @if($bisaInput)
+                    <button type="button" class="stat-card" data-pick="{{ $key }}" aria-label="Isi form untuk {{ $nama }}">
+                @else
+                    <div class="stat-card stat-card-readonly">
+                @endif
+                        <div class="stat-ico {{ $warna }}"><i class="fas {{ $ikon }}"></i></div>
+                        <div class="stat-title">{{ $nama }}</div>
+                        <div class="stat-value">{{ number_format($totals[$key] ?? 0, 0, ',', '.') }}</div>
+                @if($bisaInput)
+                    </button>
+                @else
+                    </div>
+                @endif
             @endforeach
         </div>
 
+@if($bisaInput)
         <!-- FORM INPUT -->
         <div class="section-heading">
             <span class="section-heading-ico"><i class="fas fa-pen-to-square"></i></span>
@@ -237,13 +249,10 @@
                                 <td>{{ $r->kecamatan ?: '-' }}</td>
                                 <td>{{ \Illuminate\Support\Str::limit($r->keterangan ?: '-', 60) }}</td>
                                 <td>
-                                    <!-- HAK AKSES DELETE HANYA UNTUK DAMTAN DAN SUPER USER -->
-                                    @hasanyrole('Damtan|Super User')
                                     <form action="/internal/damtan/rekap-objek/{{ $r->id }}" method="POST" onsubmit="return confirm('Hapus data rekap ini?')" style="margin:0;">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="btn-icon" aria-label="Hapus"><i class="fas fa-trash"></i></button>
                                     </form>
-                                    @endhasanyrole
                                 </td>
                             </tr>
                         @empty
@@ -255,6 +264,7 @@
                 </table>
             </div>
         </div>
+@endif
 @endsection
 
 @push('scripts')
@@ -281,14 +291,18 @@
         });
     });
 
-    /* Klik kartu total = pilih objek di form */
+    /* Form hanya ada untuk Damtan & Super User; role lain berhenti di sini */
     var select = document.getElementById('kategori');
+    var form = document.getElementById('rekapForm');
+    if (!select || !form) return;
+
+    /* Klik kartu total = pilih objek di form */
     var cards = document.querySelectorAll('[data-pick]');
     cards.forEach(function (c) {
         c.addEventListener('click', function () {
             select.value = c.dataset.pick;
             cards.forEach(function (o) { o.classList.toggle('picked', o === c); });
-            document.getElementById('rekapForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
             setTimeout(function () { document.getElementById('jumlah').focus(); }, 350);
         });
     });
@@ -297,7 +311,7 @@
     });
 
     /* Validasi ringan sebelum kirim */
-    document.getElementById('rekapForm').addEventListener('submit', function (e) {
+    form.addEventListener('submit', function (e) {
         if (!select.value) { e.preventDefault(); select.focus(); alert('Pilih objek terbakar dulu.'); }
     });
 })();

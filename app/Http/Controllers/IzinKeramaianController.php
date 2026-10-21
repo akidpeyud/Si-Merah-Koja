@@ -127,6 +127,68 @@ class IzinKeramaianController extends Controller
         return view('internal.damtan.kelola_izin_keramaian', compact('permohonan'));
     }
 
+    public function createInternal()
+    {
+        return view('internal.damtan.input_izin_keramaian');
+    }
+
+    public function storeInternal(Request $request)
+    {
+        $validatedData = $request->validate([
+            'nama' => 'required|string|max:255',
+            'nik' => 'required|numeric|digits:16',
+            'no_hp' => 'required|string|max:20',
+            'alamat' => 'required|string',
+
+            'nama_direktur' => 'required|string|max:255',
+            'nama_usaha' => 'required|string|max:255',
+            'no_izin_usaha' => 'required|string|max:255',
+
+            'nama_acara' => 'required|string|max:255',
+            'jenis_event' => 'required|in:hiburan,non_hiburan',
+            'lokasi_acara' => 'required|string|max:255',
+            'tgl_pelaksanaan' => 'required|date',
+            'waktu_mulai' => 'required',
+            'waktu_selesai' => 'required',
+            'jumlah_penonton' => 'required|integer|min:1',
+
+            'jumlah_apar' => 'required|integer|min:8',
+            'jumlah_staff' => 'required|integer|min:4',
+
+            'surat_permohonan' => 'required|mimes:pdf,jpeg,png,jpg|max:5120',
+            'fotokopi_ktp' => 'required|mimes:pdf,jpeg,png,jpg|max:5120',
+            'foto_jalur_evakuasi' => 'required|mimes:pdf,jpeg,png,jpg|max:5120',
+            'bukti_pajak_bpprd' => 'required_if:jenis_event,hiburan|nullable|mimes:pdf,jpeg,png,jpg|max:5120',
+            'surat_pernyataan' => 'required|mimes:pdf,jpeg,png,jpg|max:5120',
+        ], [
+            'jumlah_apar.min' => 'Jumlah APAR minimal harus 8 buah sesuai persyaratan.',
+            'jumlah_staff.min' => 'Jumlah staff terlatih minimal harus 4 orang.',
+            'nik.digits' => 'NIK harus berjumlah tepat 16 digit.',
+            'bukti_pajak_bpprd.required_if' => 'Bukti pembayaran pajak BPPRD wajib dilampirkan untuk event hiburan.'
+        ]);
+
+        $fileFields = [
+            'surat_permohonan',
+            'fotokopi_ktp',
+            'foto_jalur_evakuasi',
+            'bukti_pajak_bpprd',
+            'surat_pernyataan'
+        ];
+
+        foreach ($fileFields as $field) {
+            if ($request->hasFile($field)) {
+                $validatedData[$field] = $request->file($field)->store('uploads/izin_keramaian/' . $field, 'public');
+            }
+        }
+
+        // Input oleh petugas: status awal sama seperti pengajuan publik
+        $validatedData['status_permohonan'] = 'Pending';
+
+        IzinKeramaian::create($validatedData);
+
+        return redirect()->route('internal.izin-keramaian.index')->with('success', 'Data izin keramaian berhasil ditambahkan!');
+    }
+
     public function showInternal($id)
     {
         $permohonan = IzinKeramaian::findOrFail($id);

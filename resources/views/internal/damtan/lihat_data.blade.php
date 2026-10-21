@@ -174,6 +174,19 @@
 
     // Label instansi sesuai form (value "pmi" tampil sebagai BPBD)
     $map_instansi = ['pmi' => 'BPBD'];
+
+    // Label tampilan Jenis Evakuasi (value di form => teks yang tampil)
+    $map_jenis_evakuasi = [
+        'fire_rescue'        => 'Fire Rescue',
+        'water_rescue'       => 'Water Rescue',
+        'land_rescue'        => 'Land Rescue',
+        'evakuasi_liar'      => 'Evakuasi Hewan Liar',
+        'evakuasi_ternak'    => 'Evakuasi Ternak',
+        'evakuasi_piaraan'   => 'Evakuasi Hewan Peliharaan',
+        'evakuasi_cincin'    => 'Evakuasi Cincin / Anting',
+        'evakuasi_kendaraan' => 'Evakuasi Kendaraan Bermotor',
+        'lainnya'            => 'Lainnya',
+    ];
 @endphp
 
             <a href="/internal/damtan/data-laporan" class="back-link d-print-none"><i class="fas fa-arrow-left me-2"></i> Kembali ke Data Laporan</a>
@@ -273,12 +286,16 @@
                             <div class="data-icon"><i class="fas fa-life-ring"></i></div>
                             <div class="data-label">Jenis Evakuasi</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value text-capitalize">{{ str_replace('_', ' ', $laporan->kategori_non_kebakaran) }}</div>
+                            <div class="data-value">
+                                {{ $laporan->kategori_non_kebakaran === 'lainnya' && !empty($laporan->rincian_kategori_non_kebakaran)
+                                    ? $laporan->rincian_kategori_non_kebakaran
+                                    : ($map_jenis_evakuasi[$laporan->kategori_non_kebakaran] ?? ucwords(str_replace('_', ' ', $laporan->kategori_non_kebakaran))) }}
+                            </div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($laporan->rincian_kategori_non_kebakaran))
+                    @if(!empty($laporan->rincian_kategori_non_kebakaran) && $laporan->kategori_non_kebakaran !== 'lainnya')
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-info-circle"></i></div>

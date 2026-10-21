@@ -26,6 +26,9 @@
         --rekap-row-a: #eaf2fc;
         --rekap-row-b: #f8fbff;
         --rekap-line: #d3deee;
+
+        --excel: #107c41;
+        --excel-soft: rgba(16, 124, 65, .10);
     }
 
     #globalSuccessAlert, #globalErrorAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); color: white; padding: 16px 24px; border-radius: var(--r-md); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -57,6 +60,62 @@
     .input-group > .input-group-text { border-top-left-radius: 0; border-bottom-left-radius: 0; }
     .btn-custom-light { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 24px; background: var(--white); color: var(--ink); border: 1px solid var(--line-dark); border-radius: 8px; font-size: .92rem; font-weight: 600; transition: all .2s ease; }
     .btn-custom-light:hover { background: #f8fafc; border-color: var(--steel-soft); color: var(--ink); }
+
+    /* Tombol utama (Buat Laporan Baru) - biru */
+    .btn-custom-primary {
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        min-height: 44px; padding: 0 24px;
+        background: var(--navy); color: #fff;
+        border: none; border-radius: 8px;
+        font-size: .92rem; font-weight: 600;
+        transition: all .2s ease; text-decoration: none;
+    }
+    .btn-custom-primary:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13, 27, 42, .15); color: #fff; }
+
+    /* ==========================================================
+       MENU EKSPOR (Cetak PDF / Cetak Excel)
+       ========================================================== */
+    .btn-custom-light.show { background: #f8fafc; border-color: var(--steel-soft); color: var(--ink); }
+    .btn-custom-light.dropdown-toggle::after { margin-left: 2px; }
+    .export-menu {
+        min-width: 270px;
+        margin-top: 8px !important;
+        padding: 8px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        box-shadow: var(--shadow-lg);
+    }
+    .export-menu .dropdown-header {
+        padding: 6px 10px 8px;
+        font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+        color: var(--steel);
+    }
+    .export-item {
+        display: flex; align-items: center; gap: 12px;
+        width: 100%;
+        padding: 10px;
+        border: 0; background: transparent;
+        border-radius: 8px;
+        text-align: left;
+        white-space: normal;
+        transition: background .15s ease;
+    }
+    .export-item:hover, .export-item:focus { background: #f1f5f9; }
+    .export-item .ico {
+        flex: none; width: 38px; height: 38px;
+        display: inline-flex; align-items: center; justify-content: center;
+        border-radius: 10px; font-size: 1rem;
+    }
+    .export-item .ico.pdf   { background: var(--signal-soft); color: var(--signal); }
+    .export-item .ico.excel { background: var(--excel-soft); color: var(--excel); }
+    .export-item .txt { display: flex; flex-direction: column; line-height: 1.3; }
+    .export-item .txt strong { font-size: .88rem; color: var(--ink); }
+    .export-item .txt small { font-size: .76rem; color: var(--steel); }
+
+    /* Pilihan tahun di dalam menu ekspor */
+    .export-year { padding: 4px 10px 10px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+    .export-year label { display: block; margin-bottom: 6px; font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--steel); }
+    .export-year .form-select { min-height: 38px; font-size: .88rem; font-weight: 600; }
 
     /* ==========================================================
        TABEL REKAP (gaya header merah, sama dengan Data Laporan)
@@ -147,15 +206,110 @@
 
     .empty-state td { padding: 56px 10px !important; color: var(--steel); background: #fff !important; }
     .empty-state i { font-size: 26px; margin-bottom: 10px; color: var(--steel-soft); }
+
+    /* ==========================================================
+       CETAK / EKSPOR PDF (A4 Landscape)
+       ========================================================== */
+    @page { size: A4 landscape; margin: 0; }
+    @media print {
+        .topbar, .sidebar, .sidebar-backdrop, .page-header, .card-header, .card-footer,
+        .btn, .dropdown, .modal, .action-btn, #globalSuccessAlert, #globalErrorAlert, .d-print-none { display: none !important; }
+
+        body { background-color: white !important; font-size: 12px; margin: 1.5cm !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .shell { display: block; }
+        .content { padding: 0 !important; margin: 0 !important; }
+        .card-custom { box-shadow: none !important; border: none !important; border-radius: 0 !important; }
+        .card-body { padding: 0 !important; }
+
+        .rekap-scroll { padding: 0 !important; overflow: visible !important; }
+        .rekap-wrap { min-width: 0 !important; border: none !important; border-radius: 0 !important; box-shadow: none !important; }
+        .table-rekap { width: 100% !important; margin-bottom: 20px; }
+        .table-rekap thead th { background: #f2f2f2 !important; color: #000 !important; border: 1px solid #000 !important; font-size: 11px; padding: 6px !important; }
+        .table-rekap tbody td, .table-rekap tbody tr.alt td { background: #fff !important; color: #000 !important; border: 1px solid #000 !important; padding: 6px !important; font-size: 11px; }
+        .table-rekap tbody td.no-cell { background: #fff !important; color: #000 !important; font-size: 12px; }
+        .cell-sub { color: #000 !important; }
+
+        /* Dropdown status tampil sebagai teks biasa saat dicetak */
+        .status-select { appearance: none; -webkit-appearance: none; background-image: none !important; border: none !important; padding: 0 !important; min-height: 0; min-width: 0; text-align: center; color: #000 !important; background-color: transparent !important; }
+
+        /* Badge status tampil sederhana saat dicetak */
+        .badge-status { background: transparent !important; border: none !important; color: #000 !important; padding: 0 !important; }
+
+        /* Sembunyikan kolom Aksi */
+        th:last-child, td:last-child { display: none !important; }
+    }
 </style>
 @endpush
 
 @section('content')
 
+@php
+    // Daftar tahun untuk pilihan ekspor (diambil dari Tgl Kegiatan + tahun berjalan), terbaru di atas
+    // Mau menambah tahun tertentu? Tambahkan ->push(2027) atau ganti dengan ->merge(range(2022, (int) date('Y') + 1))
+    $daftarTahun = collect($permohonan)
+        ->map(function ($r) {
+            return $r->tgl_pelaksanaan ? \Carbon\Carbon::parse($r->tgl_pelaksanaan)->year : null;
+        })
+        ->filter()
+        ->push((int) date('Y'))
+        ->unique()
+        ->sortDesc()
+        ->values();
+@endphp
+
     <div class="page-header">
         <div class="page-header-text">
             <h1>Kelola Penggunaan Sarana</h1>
             <p>Daftar seluruh pengajuan permohonan penggunaan sarana pemadam kebakaran.</p>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <!-- EKSPOR (PDF & EXCEL): SEMUA ROLE -->
+            <div class="dropdown">
+                <button class="btn-custom-light shadow-sm dropdown-toggle" type="button" id="btnEkspor" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-download me-2"></i> Ekspor Semua
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end export-menu" aria-labelledby="btnEkspor">
+                    <li><h6 class="dropdown-header">Pilih format ekspor</h6></li>
+
+                    <!-- PILIH TAHUN: berlaku untuk Cetak PDF & Cetak Excel -->
+                    <li class="export-year" onclick="event.stopPropagation()">
+                        <label for="tahunEkspor">Tahun</label>
+                        <select id="tahunEkspor" class="form-select">
+                            <option value="">Semua Tahun</option>
+                            @foreach($daftarTahun as $thn)
+                                <option value="{{ $thn }}">{{ $thn }}</option>
+                            @endforeach
+                        </select>
+                    </li>
+
+                    <li>
+                        <button type="button" class="dropdown-item export-item" onclick="cetakPdf()">
+                            <span class="ico pdf"><i class="fas fa-file-pdf"></i></span>
+                            <span class="txt">
+                                <strong>Cetak PDF</strong>
+                                <small>Cetak tabel sesuai tahun yang dipilih</small>
+                            </span>
+                        </button>
+                    </li>
+                    <li>
+                        <a class="dropdown-item export-item" id="linkExcel" data-base="{{ route('internal.penggunaan-sarana.export-excel') }}" href="{{ route('internal.penggunaan-sarana.export-excel') }}">
+                            <span class="ico excel"><i class="fas fa-file-excel"></i></span>
+                            <span class="txt">
+                                <strong>Cetak Excel</strong>
+                                <small>Unduh rekap sesuai tahun yang dipilih (.xlsx)</small>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            {{-- TOMBOL BUAT LAPORAN BARU: HANYA DAMTAN DAN SUPER USER --}}
+            @hasanyrole('Damtan|Super User')
+            <a href="{{ route('internal.penggunaan-sarana.create') }}" class="btn-custom-primary shadow-sm">
+                <i class="fas fa-plus me-2"></i> Buat Laporan Baru
+            </a>
+            @endhasanyrole
         </div>
     </div>
 
@@ -179,6 +333,27 @@
 
         <!-- Table -->
         <div class="card-body p-0">
+
+            <!-- HEADER KHUSUS CETAK PDF -->
+            <div id="print-header" class="d-none d-print-block" style="width: 100%; margin-bottom: 20px;">
+                <div style="display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; margin-bottom: 15px;">
+                    <div style="width: 15% !important; text-align: left !important;">
+                        <img src="/images/jambi.png" style="width: 80px; height: auto;">
+                    </div>
+                    <div style="width: 70% !important; text-align: center !important;">
+                        <div style="font-size: 14pt; color: #000; margin-bottom: 2px; font-family: 'Times New Roman', Times, serif;">PEMERINTAH KOTA JAMBI</div>
+                        <div style="font-size: 16pt; font-weight: bold; color: #000; line-height: 1.1; margin-bottom: 5px; font-family: 'Times New Roman', Times, serif;">DINAS PEMADAM KEBAKARAN<br>DAN PENYELAMATAN</div>
+                        <div style="font-size: 10pt; color: #000; font-family: 'Times New Roman', Times, serif;">Jl. Hos. Cokroaminoto No. 113 Telp. 0741-41171<br>JAMBI</div>
+                    </div>
+                    <div style="width: 15% !important; text-align: right !important;">
+                        <img src="/images/logo.png" style="width: 100px; height: auto; margin-left: auto;">
+                    </div>
+                </div>
+                <div style="border-top: 3px solid black !important; border-bottom: 1px solid black !important; height: 2px !important; width: 100% !important; margin-bottom: 15px !important;"></div>
+                <h3 style="text-align: center !important; font-weight: bold; margin-bottom: 5px; font-size: 16px; color: black; font-family: 'Times New Roman', Times, serif;">REKAPITULASI PERMOHONAN PENGGUNAAN SARANA<span id="printTahun"></span></h3>
+                <p style="text-align: center !important; font-size: 12px; margin-bottom: 15px; color: black; font-family: 'Times New Roman', Times, serif;">Dicetak pada: {{ date('d F Y') }}</p>
+            </div>
+
             <div class="rekap-scroll">
                 <div class="rekap-wrap">
                     <table class="table-rekap">
@@ -196,7 +371,7 @@
                         </thead>
                         <tbody id="tableBody">
                             @forelse($permohonan as $row)
-                            <tr data-search="{{ strtolower($row->nama . ' ' . $row->no_hp . ' ' . $row->nama_instansi . ' ' . $row->nama_kegiatan . ' ' . $row->lokasi_kegiatan . ' ' . $row->sarana . ' ' . $row->status) }}">
+                            <tr data-tahun="{{ $row->tgl_pelaksanaan ? \Carbon\Carbon::parse($row->tgl_pelaksanaan)->year : '' }}" data-search="{{ strtolower($row->nama . ' ' . $row->no_hp . ' ' . $row->nama_instansi . ' ' . $row->nama_kegiatan . ' ' . $row->lokasi_kegiatan . ' ' . $row->sarana . ' ' . $row->status) }}">
                                 <td class="no-cell">{{ $loop->iteration }}</td>
 
                                 <td>
@@ -332,6 +507,70 @@
         }
     }
 
+    /* ==========================================================
+       EKSPOR PER TAHUN (Cetak PDF & Cetak Excel)
+       ========================================================== */
+    (function () {
+        'use strict';
+        var selTahun  = document.getElementById('tahunEkspor');
+        var linkExcel = document.getElementById('linkExcel');
+        var spanTahun = document.getElementById('printTahun');
+        var tersimpan = null;
+
+        // Link Excel ikut tahun yang dipilih (?tahun=XXXX)
+        function urlExcel() {
+            var base = linkExcel.dataset.base;
+            return selTahun.value ? base + '?tahun=' + encodeURIComponent(selTahun.value) : base;
+        }
+        if (selTahun && linkExcel) {
+            linkExcel.href = urlExcel();
+            selTahun.addEventListener('change', function () { linkExcel.href = urlExcel(); });
+        }
+
+        // Kembalikan tampilan tabel setelah cetak selesai
+        function pulihkan() {
+            if (!tersimpan) return;
+            tersimpan.forEach(function (s) {
+                s.row.style.display = s.display;
+                if (s.noCell) s.noCell.textContent = s.no;
+            });
+            tersimpan = null;
+            if (spanTahun) spanTahun.textContent = '';
+        }
+
+        // Cetak PDF: hanya baris pada tahun terpilih, nomor diurut ulang dari 1
+        window.cetakPdf = function () {
+            var tahun = selTahun ? selTahun.value : '';
+            var rows  = document.querySelectorAll('#tableBody tr[data-search]');
+            var nomor = 0;
+            tersimpan = [];
+
+            rows.forEach(function (row) {
+                var noCell = row.querySelector('.no-cell');
+                tersimpan.push({ row: row, display: row.style.display, noCell: noCell, no: noCell ? noCell.textContent : '' });
+
+                var tampil = row.style.display !== 'none' && (!tahun || row.dataset.tahun === tahun);
+                if (tampil) {
+                    nomor++;
+                    if (noCell) noCell.textContent = nomor;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            if (nomor === 0) {
+                pulihkan();
+                alert(tahun ? 'Tidak ada data pengajuan pada tahun ' + tahun + '.' : 'Tidak ada data untuk dicetak.');
+                return;
+            }
+
+            if (spanTahun) spanTahun.textContent = tahun ? ' TAHUN ' + tahun : '';
+            window.print();
+        };
+
+        window.addEventListener('afterprint', pulihkan);
+    })();
+
     /* Search (memakai data-search agar teks opsi dropdown tidak ikut terbaca) */
     document.addEventListener('DOMContentLoaded', function () {
         const searchInput = document.getElementById('searchInput');
@@ -368,4 +607,4 @@
         filterTable(); // terapkan warna selang-seling saat halaman dimuat
     });
 </script>
-@endpush    
+@endpush
