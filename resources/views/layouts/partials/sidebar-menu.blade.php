@@ -67,6 +67,7 @@
             'items' => [
                 ['Undang-Undang', '/internal/produk-hukum/undang-undang', 'fa-scale-balanced'],
                 ['Peraturan Pemerintah', '/internal/produk-hukum/peraturan-pemerintah', 'fa-landmark'],
+                ['Peraturan Presiden', '/internal/produk-hukum/peraturan-presiden', 'fa-book'],
                 ['Peraturan Menteri', '/internal/produk-hukum/peraturan-menteri', 'fa-book-bookmark'],
                 ['Peraturan Daerah', '/internal/produk-hukum/peraturan-daerah', 'fa-file-shield'],
                 ['Peraturan Kepala Daerah', '/internal/produk-hukum/peraturan-kepala-daerah', 'fa-file-signature'],

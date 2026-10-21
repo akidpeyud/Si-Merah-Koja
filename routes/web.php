@@ -899,11 +899,10 @@ Route::prefix('internal/produk-hukum')->name('internal.produk-hukum.')->middlewa
 // --- RUTE PUBLIK PRODUK HUKUM ---
 Route::get('/produk-hukum/undang-undang', function () { return view('public.produk-hukum.undang-undang'); });
 Route::get('/produk-hukum/peraturan-pemerintah', function () { return view('public.produk-hukum.peraturan-pemerintah'); });
+Route::get('/produk-hukum/peraturan-presiden', function () { return view('public.produk-hukum.peraturan-presiden'); }); // BARU
 Route::get('/produk-hukum/peraturan-menteri', function () { return view('public.produk-hukum.peraturan-menteri'); });
 Route::get('/produk-hukum/peraturan-daerah', function () { return view('public.produk-hukum.peraturan-daerah'); });
 Route::get('/produk-hukum/peraturan-kepala-daerah', function () { return view('public.produk-hukum.peraturan-kepala-daerah'); });
-Route::get('/produk-hukum/{kategori}/{id}/view', [ProdukHukumController::class, 'viewFile'])->name('publik.produk-hukum.view');
-Route::get('/produk-hukum/{kategori}/{id}/download', [ProdukHukumController::class, 'downloadFile'])->name('publik.produk-hukum.download');
 
 // --- RUTE INTERNAL PROFIL INSTANSI ---
 Route::prefix('internal/profil-instansi')->name('internal.profil-instansi.')->middleware(['auth'])->group(function () {
@@ -926,3 +925,16 @@ Route::get('/profil/program-kegiatan', function () { return view('public.profil.
 Route::get('/profil/cascading', function () { return view('public.profil.cascading'); });
 Route::get('/profil/{kategori}/{id}/view', [ProfilInstansiController::class, 'viewFile'])->name('publik.profil.view');
 Route::get('/profil/{kategori}/{id}/download', [ProfilInstansiController::class, 'downloadFile'])->name('publik.profil.download');
+
+Route::get('/produk-hukum/{kategori}', function ($kategori) {
+    abort_unless(in_array($kategori, [
+        'undang-undang',
+        'peraturan-pemerintah',
+        'peraturan-presiden',
+        'peraturan-menteri',
+        'peraturan-daerah',
+        'peraturan-kepala-daerah',
+    ]), 404);
+
+    return view('publik.produk-hukum'); // sesuaikan nama view-mu
+});
