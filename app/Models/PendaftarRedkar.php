@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class PendaftarRedkar extends Model
 {
@@ -41,4 +42,15 @@ class PendaftarRedkar extends Model
         'golongan_darah',
         'status_pendaftaran',
     ];
+
+    /**
+     * Accessor untuk mengubah nilai L / P di database 
+     * menjadi Laki-Laki / Perempuan saat dipanggil.
+     */
+    protected function jenisKelamin(): Attribute
+    {
+        return Attribute::make(
+            get: fn (string $value) => $value === 'L' ? 'Laki-Laki' : 'Perempuan',
+        );
+    }
 }

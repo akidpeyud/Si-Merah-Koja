@@ -1058,6 +1058,7 @@
                         <div class="alert" style="background: #fff8e6; color: #9c6500; border: 1px solid #ffe58f; margin-bottom: 24px;" role="alert">
                             <i class="fas fa-exclamation-triangle"></i>
                             <div>
+                                
                                 <strong>Perhatian:</strong> Surat pernyataan wajib diunduh, diisi lengkap, diberi materai Rp 10.000, dan ditandatangani sebelum diunggah kembali ke dalam form ini.
                                 <br>
                                 <a href="{{ $url_surat_permohonan }}" download style="margin-top: 8px; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: #b77900; text-decoration: underline;">
