@@ -498,7 +498,17 @@
         <div class="nav-panel" id="navPanel">
             <!-- ===== Menu utama ===== -->
             <ul class="menu">
-                <li><a class="menu-link {{ request()->is('public-sigap*') ? 'is-active' : '' }}" href="/public-sigap">Sigapkar</a></li>
+                <li class="has-drop {{ request()->is('profil*') ? 'current' : '' }}">
+                    <button class="menu-trigger" type="button" aria-expanded="false">Profil <i class="fas fa-chevron-down"></i></button>
+                    <ul class="dropdown">
+                        <li><a href="/profil/visi-misi" {!! request()->is('profil/visi-misi') ? 'aria-current="page"' : '' !!}>Visi Misi</a></li>
+                        <li><a href="/profil/sotk" {!! request()->is('profil/sotk') ? 'aria-current="page"' : '' !!}>SOTK</a></li>
+                        <li><a href="/profil/tupoksi" {!! request()->is('profil/tupoksi') ? 'aria-current="page"' : '' !!}>Tupoksi</a></li>
+                        <li><a href="/profil/kepegawaian" {!! request()->is('profil/kepegawaian') ? 'aria-current="page"' : '' !!}>Kepegawaian</a></li>
+                        <li><a href="/profil/program-kegiatan" {!! request()->is('profil/program-kegiatan') ? 'aria-current="page"' : '' !!}>Program Kegiatan</a></li>
+                        <li><a href="/profil/cascading" {!! request()->is('profil/cascading') ? 'aria-current="page"' : '' !!}>Cascading</a></li>
+                    </ul>
+                </li>
 
                 <li class="has-drop {{ request()->is('layanan-fasilitas*') ? 'current' : '' }}">
                     <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
@@ -511,28 +521,7 @@
                     </ul>
                 </li>
 
-                <li class="has-drop {{ request()->is('produkhukum*') ? 'current' : '' }}">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/produkhukum">Undang-Undang</a></li>
-                        <li><a href="/produkhukum">Peraturan Pemerintah</a></li>
-                        <li><a href="/produkhukum">Peraturan Menteri</a></li>
-                        <li><a href="/produkhukum">Peraturan Daerah</a></li>
-                        <li><a href="/produkhukum">Peraturan Kepala Daerah</a></li>
-                    </ul>
-                </li>
-
-                <li class="has-drop {{ request()->is('sotk') || request()->is('perencanaan') || request()->is('pelaporan') ? 'current' : '' }}">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Profil <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="#">Visi Misi</a></li>
-                        <li><a href="/sotk" {!! request()->is('sotk') ? 'aria-current="page"' : '' !!}>SOTK</a></li>
-                        <li><a href="#">Tupoksi</a></li>
-                        <li><a href="#">Kepegawaian</a></li>
-                        <li><a href="#">Program Kegiatan</a></li>
-                        <li><a href="#">Cascading</a></li>
-                    </ul>
-                </li>
+                <li><a class="menu-link {{ request()->is('public-sigap*') ? 'is-active' : '' }}" href="/public-sigap">Sigapkar</a></li>
 
                 <li class="has-drop {{ request()->is('sop*') ? 'current' : '' }}">
                     <button class="menu-trigger" type="button" aria-expanded="false">SOP <i class="fas fa-chevron-down"></i></button>
@@ -543,6 +532,17 @@
                         <li><a href="/sop/sarpras" {!! request()->is('sop/sarpras') ? 'aria-current="page"' : '' !!}>Sarana dan Prasarana</a></li>
                         <li><a href="/sop/kepegawaian" {!! request()->is('sop/kepegawaian') ? 'aria-current="page"' : '' !!}>Kepegawaian</a></li>
                         <li><a href="/sop/keuangan" {!! request()->is('sop/keuangan') ? 'aria-current="page"' : '' !!}>Keuangan</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-drop {{ request()->is('produk-hukum*') ? 'current' : '' }}">
+                    <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
+                    <ul class="dropdown">
+                        <li><a href="/produk-hukum/undang-undang">Undang-Undang</a></li>
+                        <li><a href="/produk-hukum/peraturan-pemerintah">Peraturan Pemerintah</a></li>
+                        <li><a href="/produk-hukum/peraturan-menteri">Peraturan Menteri</a></li>
+                        <li><a href="/produk-hukum/peraturan-daerah">Peraturan Daerah</a></li>
+                        <li><a href="/produk-hukum/peraturan-kepala-daerah">Peraturan Kepala Daerah</a></li>
                     </ul>
                 </li>
 

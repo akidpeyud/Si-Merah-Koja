@@ -617,30 +617,6 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
         <div class="nav-panel" id="navPanel">
             <!-- ===== Menu utama ===== -->
             <ul class="menu">
-                <li><a class="menu-link {{ request()->is('public-sigap*') ? 'is-active' : '' }}" href="/public-sigap">Sigapkar</a></li>
-
-                <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
-                        <li><a href="/layanan-fasilitas/izin-keramaian">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
-                        <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Penilaian Proteksi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
-                        <li><a href="/layanan-fasilitas/penggunaan-sarana">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
-                        <li><a href="/layanan-fasilitas/skk">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
-                    </ul>
-                </li>
-
-                <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/produk-hukum/undang-undang">Undang-Undang</a></li>
-                        <li><a href="/produk-hukum/peraturan-pemerintah">Peraturan Pemerintah</a></li>
-                        <li><a href="/produk-hukum/peraturan-menteri">Peraturan Menteri</a></li>
-                        <li><a href="/produk-hukum/peraturan-daerah">Peraturan Daerah</a></li>
-                        <li><a href="/produk-hukum/peraturan-kepala-daerah">Peraturan Kepala Daerah</a></li>
-                    </ul>
-                </li>
-
                 <li class="has-drop">
                     <button class="menu-trigger" type="button" aria-expanded="false">Profil <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
@@ -654,6 +630,19 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
                 </li>
 
                 <li class="has-drop">
+                    <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
+                    <ul class="dropdown">
+                        <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
+                        <li><a href="/layanan-fasilitas/izin-keramaian">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
+                        <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Penilaian Proteksi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
+                        <li><a href="/layanan-fasilitas/penggunaan-sarana">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
+                        <li><a href="/layanan-fasilitas/skk">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
+                    </ul>
+                </li>
+
+                <li><a class="menu-link {{ request()->is('public-sigap*') ? 'is-active' : '' }}" href="/public-sigap">Sigapkar</a></li>
+
+                <li class="has-drop">
                     <button class="menu-trigger" type="button" aria-expanded="false">SOP <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
                         <li><a href="/sop/pencegahan">Pencegahan</a></li>
@@ -662,6 +651,17 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
                         <li><a href="/sop/sarpras">Sarana dan Prasarana</a></li>
                         <li><a href="/sop/kepegawaian">Kepegawaian</a></li>
                         <li><a href="/sop/keuangan">Keuangan</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-drop">
+                    <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
+                    <ul class="dropdown">
+                        <li><a href="/produk-hukum/undang-undang">Undang-Undang</a></li>
+                        <li><a href="/produk-hukum/peraturan-pemerintah">Peraturan Pemerintah</a></li>
+                        <li><a href="/produk-hukum/peraturan-menteri">Peraturan Menteri</a></li>
+                        <li><a href="/produk-hukum/peraturan-daerah">Peraturan Daerah</a></li>
+                        <li><a href="/produk-hukum/peraturan-kepala-daerah">Peraturan Kepala Daerah</a></li>
                     </ul>
                 </li>
 
