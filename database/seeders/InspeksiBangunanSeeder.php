@@ -440,6 +440,11 @@ class InspeksiBangunanSeeder extends Seeder
             ]
         ];
 
-        DB::table('inspeksi_bangunans')->insert($data);
+        // Menyaring data yang tidak memiliki nama_tempat (karena di excel ada baris kosong)
+        $filteredData = array_filter($data, function($item) {
+            return !empty($item['nama_tempat']);
+        });
+
+        DB::table('inspeksi_bangunans')->insert($filteredData);
     }
 }
