@@ -5,48 +5,27 @@
 @push('styles')
 <style>
     :root {
-                --ink: #0d1b2a;
-                --ink-2: #132a43;
-                --ink-3: #1d3856;
-    
-                --navy: #163a63;
-                --navy-dark: #0d2947;
-                --navy-light: #eaf1f8;
-                --navy-soft: rgba(22, 58, 99, .08);
-    
-                --paper: #f5f7fa;
-                --white: #ffffff;
-    
-                --signal: #dc3545;
-                --signal-dark: #b42332;
-                --signal-soft: rgba(220, 53, 69, .09);
-    
-                --amber: #f4b740;
-                --success: #198754;
-                --info: #2563eb;
-                --info-soft: rgba(37, 99, 235, .09);
-    
-                --steel: #64748b;
-                --steel-soft: #94a3b8;
-    
-                --line: #e2e8f0;
-                --line-dark: #cbd5e1;
-    
-                --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
-                --font-body: 'Instrument Sans', system-ui, sans-serif;
-    
-                --r-lg: 18px;
-                --r-md: 14px;
-                --r-sm: 10px;
-    
-                --sidebar-w: 272px;
-                --topbar-h: 70px;
-    
-                --shadow-xs: 0 1px 2px rgba(13, 27, 42, .04);
-                --shadow-sm: 0 4px 12px rgba(13, 27, 42, .06);
-                --shadow-md: 0 10px 25px rgba(13, 27, 42, .08);
-                --shadow-lg: 0 20px 45px rgba(13, 27, 42, .14);
-            }
+        --ink: #0d1b2a; --ink-2: #132a43; --ink-3: #1d3856;
+        --navy: #163a63; --navy-dark: #0d2947; --navy-light: #eaf1f8; --navy-soft: rgba(22, 58, 99, .08);
+        --paper: #f5f7fa; --white: #ffffff;
+        --signal: #dc3545; --signal-dark: #b42332; --signal-soft: rgba(220, 53, 69, .09);
+        --amber: #f4b740; --success: #198754; --info: #2563eb; --info-soft: rgba(37, 99, 235, .09);
+        --steel: #64748b; --steel-soft: #94a3b8;
+        --line: #e2e8f0; --line-dark: #cbd5e1;
+        --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+        --font-body: 'Instrument Sans', system-ui, sans-serif;
+        --r-lg: 18px; --r-md: 14px; --r-sm: 10px;
+        --sidebar-w: 272px; --topbar-h: 70px;
+        --shadow-xs: 0 1px 2px rgba(13, 27, 42, .04);
+        --shadow-sm: 0 4px 12px rgba(13, 27, 42, .06);
+        --shadow-md: 0 10px 25px rgba(13, 27, 42, .08);
+        --shadow-lg: 0 20px 45px rgba(13, 27, 42, .14);
+
+        /* Warna tabel riwayat (sama dengan halaman Kelola lainnya) */
+        --rekap-row-a: #eaf2fc;
+        --rekap-row-b: #f8fbff;
+        --rekap-line: #d3deee;
+    }
     .toast-wrap { position: fixed; z-index: 9999; top: 20px; left: 50%; transform: translateX(-50%); display: grid; gap: 10px; width: max-content; max-width: calc(100vw - 24px); pointer-events: none; }
     .toast { display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px; border-radius: 999px; background: #ffffff; border: 1px solid var(--line); box-shadow: var(--shadow-lg); font-weight: 600; font-size: .92rem; animation: toastIn .45s cubic-bezier(.16,.84,.3,1) both; pointer-events: auto; }
     @keyframes toastIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: none; } }
@@ -56,17 +35,39 @@
     .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); margin-top: 3px; }
     .side-group summary .grp-label { flex: 1 1 auto; min-width: 0; white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.4; }
     .side-group summary .chev { flex: none; font-size: .7rem; margin-top: 4px; transition: transform .25s ease; }
-    .page-head { margin-bottom: 26px; }
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; margin-bottom: 38px; }
-    .stat-card { display: flex; flex-direction: column; padding: 18px; background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); text-align: left; transition: box-shadow .2s, border-color .2s, transform .2s; }
-    .stat-card:hover { border-color: var(--navy); transform: translateY(-3px); box-shadow: var(--shadow-sm); }
+
+    /* ==========================================================
+       JUDUL HALAMAN
+       ========================================================== */
+    .page-head { margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+    .page-head h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 6px; color: var(--ink); }
+    .page-head p { color: var(--steel); font-size: .95rem; margin-bottom: 0; max-width: 760px; }
+
+    /* ==========================================================
+       JUDUL SEKSI
+       ========================================================== */
+    .section-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .section-heading-ico { flex: none; width: 30px; height: 30px; border-radius: 8px; background: var(--navy); color: #fff; display: grid; place-items: center; font-size: .75rem; }
+    .section-heading h3 { flex: none; font-family: var(--font-display); font-weight: 700; font-size: .98rem; letter-spacing: -.005em; white-space: nowrap; margin: 0; color: var(--ink); }
+    .section-heading .line { flex: 1 1 auto; min-width: 24px; height: 1px; background: var(--line); }
+
+    /* ==========================================================
+       KARTU TOTAL
+       ========================================================== */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 40px; }
+    .stat-card { position: relative; display: flex; flex-direction: column; align-items: flex-start; padding: 20px; background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); box-shadow: var(--shadow-xs); text-align: left; width: 100%; overflow: hidden; transition: box-shadow .2s, border-color .2s, transform .2s; }
+    .stat-card::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--navy); opacity: 0; transition: opacity .2s; }
+    .stat-card:hover { box-shadow: var(--shadow-md); border-color: #c9d3e0; transform: translateY(-3px); }
+    .stat-card:hover::before { opacity: 1; }
     .stat-card.picked { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+    .stat-card.picked::before { opacity: 1; }
     /* Kartu read-only (role selain Damtan & Super User): tidak bisa diklik, tanpa efek hover */
     .stat-card-readonly { cursor: default; }
-    .stat-card-readonly:hover { transform: none; box-shadow: none; border-color: var(--line); }
-    .stat-ico { width: 40px; height: 40px; border-radius: var(--r-sm); display: grid; place-items: center; font-size: 1rem; margin-bottom: 14px; }
-    .stat-title { font-size: .74rem; font-weight: 700; text-transform: uppercase; color: var(--steel); margin-bottom: 6px; }
-    .stat-value { font-family: var(--font-display); font-weight: 700; font-size: 1.7rem; line-height: 1; }
+    .stat-card-readonly:hover { transform: none; box-shadow: var(--shadow-xs); border-color: var(--line); }
+    .stat-card-readonly:hover::before { opacity: 0; }
+    .stat-ico { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; font-size: 1rem; margin-bottom: 16px; }
+    .stat-title { font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--steel); margin-bottom: 8px; line-height: 1.4; }
+    .stat-value { font-family: var(--font-display); font-weight: 700; font-size: 1.9rem; line-height: 1; letter-spacing: -.02em; color: var(--ink); }
     .ic-red { background: var(--signal-soft); color: var(--signal-dark); }
     .ic-amber { background: rgba(244,183,64,.16); color: #a8700b; }
     .ic-blue { background: var(--info-soft); color: var(--info); }
@@ -74,54 +75,131 @@
     .ic-purple { background: rgba(124,58,237,.10); color: #7c3aed; }
     .ic-pink { background: rgba(219,39,119,.10); color: #db2777; }
     .ic-steel { background: #f1f5f9; color: var(--steel); }
-    .card-custom { background: #ffffff; border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--shadow-xs); transition: box-shadow .2s ease, border-color .2s ease; margin-bottom: 38px;}
-    .card-custom:hover { box-shadow: var(--shadow-sm); border-color: #d2dae5; }
-    .card-header-tabs { background-color: #f8fafc; border-bottom: 1px solid var(--line); padding: 16px 24px 0 24px; border-radius: var(--r-md) var(--r-md) 0 0; }
-    .nav-tabs-custom { border-bottom: none; display: flex; gap: 4px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
-    .nav-tabs-custom::-webkit-scrollbar { display: none; }
-    .nav-tabs-custom .nav-item { margin-bottom: -1px; }
-    .nav-tabs-custom .nav-link { font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; color: var(--steel); background: transparent; border: 1px solid transparent; border-radius: 8px 8px 0 0; padding: 12px 20px; transition: all 0.2s ease; }
-    .nav-tabs-custom .nav-link:hover { color: var(--navy); border-color: transparent transparent var(--line) transparent; }
-    .nav-tabs-custom .nav-link.active { color: var(--navy); background: #ffffff; border-color: var(--line) var(--line) #ffffff var(--line); }
-    .section-title-block { display: flex; align-items: center; gap: 12px; background: var(--navy-soft); padding: 14px 20px; border-radius: 8px; border-left: 4px solid var(--navy); font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--navy-dark); margin-bottom: 24px; }
-    .section-title-block i { font-size: 1.1rem; color: var(--navy); }
-    .field-label { font-size: .84rem; font-weight: 700; color: var(--ink-2); margin-bottom: 6px; display: inline-flex; align-items: center; }
-    .field-label i { margin-right: 8px; font-size: .85rem; color: var(--steel-soft); }
-    .form-control, .form-select { font-family: var(--font-body); min-height: 42px; font-size: .9rem; color: var(--ink); background-color: var(--white); border: 1px solid var(--line-dark); border-radius: 8px; padding: 8px 14px; transition: all 0.2s ease; box-shadow: none; }
-    .form-control:focus, .form-select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
-    .form-control:disabled, .form-select:disabled { background-color: #f1f5f9; cursor: not-allowed; opacity: 1; border-color: var(--line); color: var(--steel);}
-    .form-control::placeholder { color: var(--steel-soft); }
-    .input-group-text { background-color: #f8fafc; border: 1px solid var(--line-dark); color: var(--steel); font-weight: 600; border-radius: 8px; font-size: 0.9rem; }
-    .input-group > .form-control { border-top-right-radius: 0; border-bottom-right-radius: 0; }
-    .input-group > .input-group-text { border-top-left-radius: 0; border-bottom-left-radius: 0; }
-    .btn-custom-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 24px; background: var(--navy); color: #fff; border: none; border-radius: 8px; font-size: .92rem; font-weight: 600; transition: all .2s ease; }
-    .btn-custom-primary:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13, 27, 42, .15); color: #fff;}
-    .btn-custom-primary:active { transform: translateY(0); }
-    .btn-custom-light { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 24px; background: var(--white); color: var(--ink); border: 1px solid var(--line-dark); border-radius: 8px; font-size: .92rem; font-weight: 600; transition: all .2s ease; text-decoration: none; }
-    .btn-custom-light:hover { background: #f8fafc; border-color: var(--steel-soft); color: var(--ink); }
-    .highlight-area { background-color: #f8fafc; border: 1px solid var(--line); border-radius: 12px; padding: 24px 20px; margin-bottom: 24px; }
-    .tbl { width: 100%; border-collapse: collapse; font-size: .88rem; }
-    .tbl th { text-align: left; padding: 12px 18px; color: var(--steel); background: #fbfcfd; border-bottom: 1px solid var(--line); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; font-size: .72rem;}
-    .tbl td { padding: 14px 18px; border-bottom: 1px solid var(--line); }
-    .tag { display: inline-block; padding: 4px 11px; border-radius: 999px; font-size: .78rem; font-weight: 700; background: var(--navy-soft); color: var(--navy); }
-    .aksi { display: flex; align-items: center; gap: 6px; }
-    .btn-icon { width: 34px; height: 34px; border-radius: 8px; display: inline-grid; place-items: center; background: var(--signal-soft); color: var(--signal); border: 0; cursor: pointer; transition: background .2s; }
-    .btn-icon:hover { background: #fecaca; }
-    .btn-icon.edit { background: var(--info-soft); color: var(--info); }
-    .btn-icon.edit:hover { background: #bfdbfe; }
 
-    /* Modal edit */
-    .edit-modal { position: fixed; inset: 0; z-index: 3000; display: none; align-items: center; justify-content: center; padding: 18px; background: rgba(13,27,42,.55); }
+    /* ==========================================================
+       PANEL & FORMULIR
+       ========================================================== */
+    .panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--shadow-xs); overflow: hidden; margin-bottom: 40px; }
+    .panel-head { position: relative; padding: 20px 24px 20px 28px; border-bottom: 1px solid var(--line); background: #fff; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .panel-head::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--navy); }
+    .panel-head h4 { font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; display: flex; align-items: center; gap: 10px; margin: 0; color: var(--ink); }
+    .panel-head h4 i { color: var(--navy); }
+    .panel-sub { margin: 4px 0 0; font-size: .82rem; color: var(--steel); }
+    .panel-legend { font-size: .78rem; color: var(--steel); }
+    .panel-legend .req { color: var(--signal); font-weight: 700; }
+    .panel-body { padding: 26px 24px; }
+
+    .f-label { display: block; font-size: .8rem; font-weight: 700; margin-bottom: 7px; color: var(--ink-2); }
+    .f-label .req { color: var(--signal); }
+    .f-control { width: 100%; height: 44px; padding: 0 14px; border: 1px solid var(--line-dark); border-radius: 8px; background: #fff; font: inherit; font-size: .9rem; color: var(--ink); transition: border-color .2s, box-shadow .2s, background .2s; }
+    textarea.f-control { height: auto; padding: 12px 14px; resize: vertical; min-height: 96px; }
+    .f-control::placeholder { color: var(--steel-soft); }
+    .f-control:hover { border-color: var(--steel-soft); }
+    .f-control:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+    .f-hint { font-size: .76rem; color: var(--steel); margin-top: 5px; }
+    .f-error { font-size: .78rem; color: var(--signal-dark); margin-top: 5px; font-weight: 600; }
+    .f-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px 18px; }
+    .c-3 { grid-column: span 3; }
+    .c-4 { grid-column: span 4; }
+    .c-6 { grid-column: span 6; }
+    .c-8 { grid-column: span 8; }
+    .c-12 { grid-column: span 12; }
+    @media (max-width: 900px) {
+        .c-3, .c-4, .c-6, .c-8 { grid-column: span 12; }
+    }
+    .form-foot { display: flex; justify-content: flex-end; gap: 10px; padding: 16px 24px; border-top: 1px solid var(--line); background: #f8fafc; flex-wrap: wrap; }
+    .btn-main, .btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 24px; border-radius: 8px; font-weight: 600; font-size: .92rem; transition: all .2s ease; cursor: pointer; }
+    .btn-main { background: var(--navy); color: #fff; border: 0; box-shadow: 0 1px 2px rgba(13,27,42,.12); }
+    .btn-main:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13,27,42,.18); color: #fff; }
+    .btn-ghost { background: #fff; border: 1px solid var(--line-dark); color: var(--ink); }
+    .btn-ghost:hover { background: #f1f5f9; border-color: var(--steel-soft); }
+    .btn-main:active, .btn-ghost:active { transform: scale(.97); }
+
+    /* ==========================================================
+       TABEL RIWAYAT (gaya navy, sama dengan halaman Kelola)
+       ========================================================== */
+    .tbl-scroll { overflow-x: auto; padding: 20px; background: #fff; }
+    .tbl-frame { min-width: 820px; border: 2px solid var(--navy); border-radius: 16px; overflow: hidden; background: #fff; box-shadow: var(--shadow-sm); }
+    .tbl { width: 100%; border-collapse: collapse; margin: 0; }
+    .tbl thead th {
+        background: linear-gradient(180deg, var(--navy) 0%, var(--navy-dark) 100%);
+        color: #fff;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: .9rem;
+        text-align: center;
+        vertical-align: middle;
+        padding: 14px 10px;
+        border: 0;
+        border-right: 1px solid rgba(255,255,255,.22);
+        white-space: nowrap;
+    }
+    .tbl thead th:last-child { border-right: 0; }
+    .tbl tbody td {
+        background: var(--rekap-row-b);
+        text-align: center;
+        vertical-align: middle;
+        padding: 12px 10px;
+        font-size: .85rem;
+        line-height: 1.4;
+        color: var(--ink-2);
+        border-bottom: 1px solid var(--rekap-line);
+        border-right: 1px solid var(--rekap-line);
+    }
+    .tbl tbody td:last-child { border-right: 0; }
+    .tbl tbody tr:last-child td { border-bottom: 0; }
+    .tbl tbody tr:nth-child(even) td { background: var(--rekap-row-a); }
+    .tbl tbody tr:hover td { background: #dce9fa; }
+    .tbl tbody td.no-cell {
+        background: linear-gradient(180deg, var(--navy) 0%, var(--navy-dark) 100%) !important;
+        color: #fff;
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 1.2rem;
+        border-right: 1px solid rgba(255,255,255,.22);
+    }
+    .col-no { width: 64px; }
+    .col-aksi { width: 110px; }
+    .cell-strong { font-weight: 600; color: var(--ink); }
+    .cell-ket { max-width: 240px; }
+    .tag { display: inline-flex; align-items: center; gap: 7px; padding: 4px 12px; border-radius: 999px; font-size: .78rem; font-weight: 700; background: #fff; color: var(--navy); border: 1px solid #c3d3e6; }
+    .num { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--ink); }
+
+    .aksi { display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .aksi form { margin: 0; display: flex; }
+    .btn-icon { width: 30px; height: 30px; border-radius: 8px; display: inline-grid; place-items: center; font-size: 12px; background: var(--signal-soft); color: var(--signal); transition: background .2s; border: 0; cursor: pointer; flex: none; }
+    .btn-icon:hover { background: #fecaca; }
+    .btn-icon.edit { background: rgba(255,182,39,.18); color: #d97706; }
+    .btn-icon.edit:hover { background: rgba(255,182,39,.32); }
+
+    .tbl tbody tr.empty-row td { padding: 0; background: #fff !important; border-right: 0; }
+    .empty { padding: 52px 20px; text-align: center; color: var(--steel); }
+    .empty i { font-size: 1.7rem; color: var(--steel-soft); margin-bottom: 10px; display: block; }
+
+    /* ==========================================================
+       MODAL EDIT
+       ========================================================== */
+    .edit-modal { position: fixed; inset: 0; z-index: 3000; display: none; align-items: center; justify-content: center; padding: 18px; background: rgba(13,27,42,.55); backdrop-filter: blur(2px); }
     .edit-modal.open { display: flex; }
     .edit-modal-box { background: #fff; width: 100%; max-width: 640px; max-height: calc(100vh - 36px); overflow-y: auto; border-radius: var(--r-md); box-shadow: var(--shadow-lg); animation: editPop .25s ease; }
     @keyframes editPop { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
-    .edit-modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 22px; background: var(--navy-light); border-bottom: 1px solid var(--line); }
-    .edit-modal-head h4 { font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; display: flex; align-items: center; gap: 10px; margin: 0; }
+    .edit-modal-head { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 22px 18px 26px; background: #fff; border-bottom: 1px solid var(--line); }
+    .edit-modal-head::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--navy); }
+    .edit-modal-head h4 { font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; display: flex; align-items: center; gap: 10px; margin: 0; color: var(--ink); }
     .edit-modal-head h4 i { color: var(--navy); }
     .edit-modal-x { background: transparent; border: 0; font-size: 1.1rem; color: var(--steel); cursor: pointer; width: 34px; height: 34px; border-radius: 8px; }
     .edit-modal-x:hover { background: rgba(13,27,42,.06); color: var(--ink); }
-    .edit-modal-body { padding: 22px; }
-    .edit-modal-foot { display: flex; justify-content: flex-end; gap: 10px; padding: 16px 22px; border-top: 1px solid var(--line); background: #fbfcfd; flex-wrap: wrap; }
+    .edit-modal-body { padding: 24px 22px; }
+
+    @media (max-width: 700px) {
+        .stats-grid { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+        .panel-body { padding: 18px; }
+        .tbl-scroll { padding: 12px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
 </style>
 @endpush
 
@@ -137,11 +215,17 @@
             <h1>Input Rekap Layanan &amp; Penyelamatan</h1>
             <p>Data rekapitulasi penanganan kejadian kebakaran dan evakuasi/penyelamatan masyarakat.</p>
         </div>
-        
+
+        <!-- TOTAL PER KATEGORI -->
+        <div class="section-heading">
+            <span class="section-heading-ico"><i class="fas fa-chart-simple"></i></span>
+            <h3>Total saat ini</h3>
+            <span class="line"></span>
+        </div>
         <div class="stats-grid">
             @foreach($kategori as $key => [$nama, $ikon, $warna])
                 @if($bisaInput)
-                    <button type="button" class="stat-card" data-pick="{{ $key }}">
+                    <button type="button" class="stat-card" data-pick="{{ $key }}" aria-label="Isi form untuk {{ $nama }}">
                 @else
                     <div class="stat-card stat-card-readonly">
                 @endif
@@ -157,128 +241,129 @@
         </div>
 
 @if($bisaInput)
-        <div class="card-custom">
-            <!-- BOOTSTRAP TABS (Design Baru Terintegrasi ke Card Body) -->
-            <div class="card-header-tabs">
-                <ul class="nav nav-tabs-custom" id="formTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab">Tambah Data Layanan</button>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="card-body p-4 p-md-5 pt-4">
-                <form action="/internal/damtan/rekap-layanan" method="POST" id="rekapForm">
-                    @csrf
-                    <div class="tab-content" id="formTabsContent">
-                        
-                        <!-- TAB 1: INFORMASI DASAR -->
-                        <div class="tab-pane fade show active" id="info" role="tabpanel">
-                            
-                            <div class="section-title-block">
-                                <i class="fas fa-truck-medical"></i> Detail Layanan & Penyelamatan
-                            </div>
-
-                            <div class="highlight-area">
-                                <div class="row g-3">
-                                    <div class="col-md-4">
-                                        <label class="field-label"><i class="fas fa-calendar-alt"></i> Tanggal <span class="text-danger">*</span></label>
-                                        <input type="date" id="tanggal" name="tanggal" class="form-control" value="{{ old('tanggal', date('Y-m-d')) }}" max="{{ date('Y-m-d') }}" required>
-                                        @error('tanggal')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="field-label"><i class="fas fa-tags"></i> Jenis Layanan <span class="text-danger">*</span></label>
-                                        <select class="form-select" id="kategori" name="kategori" required>
-                                            <option value="">-- Pilih jenis layanan --</option>
-                                            @foreach($kategori as $key => [$nama])
-                                                <option value="{{ $key }}" {{ old('kategori') === $key ? 'selected' : '' }}>{{ $nama }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('kategori')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="field-label"><i class="fas fa-hashtag"></i> Jumlah Kejadian <span class="text-danger">*</span></label>
-                                        <input type="number" min="1" id="jumlah" name="jumlah" class="form-control" value="{{ old('jumlah', 1) }}" required>
-                                        @error('jumlah')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row g-3 mb-4">
-                                <div class="col-md-6">
-                                    <label class="field-label"><i class="fas fa-map"></i> Kecamatan</label>
-                                    <input type="text" id="kecamatan" name="kecamatan" class="form-control" placeholder="Cth: Kota Baru" value="{{ old('kecamatan') }}">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="field-label"><i class="fas fa-map-marker-alt"></i> Lokasi / Alamat</label>
-                                    <input type="text" id="lokasi" name="lokasi" class="form-control" placeholder="Cth: Jl. Sultan Thaha, RT 05" value="{{ old('lokasi') }}">
-                                </div>
-                                <div class="col-md-12 mt-3">
-                                    <label class="field-label"><i class="fas fa-align-left"></i> Keterangan Opsional</label>
-                                    <textarea class="form-control" id="keterangan" name="keterangan" rows="2" placeholder="Catatan singkat penanganan (opsional)">{{ old('keterangan') }}</textarea>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- SUBMIT BUTTON -->
-                    <div class="d-flex justify-content-end mt-4 pt-4 border-top">
-                        <button type="reset" class="btn-custom-light me-3">Kosongkan</button>
-                        <button type="submit" class="btn-custom-primary shadow-sm">
-                            <i class="fas fa-save me-2"></i> Simpan Rekap
-                        </button>
-                    </div>
-                </form>
-            </div>
+        <!-- FORM INPUT -->
+        <div class="section-heading">
+            <span class="section-heading-ico"><i class="fas fa-pen-to-square"></i></span>
+            <h3>Tambah data layanan</h3>
+            <span class="line"></span>
         </div>
-        
-        <div class="card-custom">
-            <!-- BOOTSTRAP TABS (Design Baru Terintegrasi ke Card Body) -->
-            <div class="card-header-tabs">
-                <ul class="nav nav-tabs-custom" id="historyTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab"><i class="fas fa-history me-1"></i> Riwayat Input Layanan</button>
-                    </li>
-                </ul>
-            </div>
 
-            <div class="card-body p-0">
-                <table class="tbl mb-0">
-                    <thead><tr><th>Tanggal</th><th>Jenis Layanan</th><th>Jumlah</th><th>Kecamatan</th><th>Keterangan</th><th>Aksi</th></tr></thead>
-                    <tbody>
-                        @forelse($riwayat as $r)
+        <form action="/internal/damtan/rekap-layanan" method="POST" class="panel" id="rekapForm">
+            @csrf
+            <div class="panel-head">
+                <div>
+                    <h4><i class="fas fa-truck-medical"></i> Detail Layanan &amp; Penyelamatan</h4>
+                    <p class="panel-sub">Isi data kejadian lalu simpan. Angka total di atas akan diperbarui otomatis.</p>
+                </div>
+                <span class="panel-legend"><span class="req">*</span> wajib diisi</span>
+            </div>
+            <div class="panel-body">
+                <div class="f-grid">
+                    <div class="c-4">
+                        <label class="f-label" for="tanggal">Tanggal <span class="req">*</span></label>
+                        <input type="date" id="tanggal" name="tanggal" class="f-control" value="{{ old('tanggal', date('Y-m-d')) }}" max="{{ date('Y-m-d') }}" required>
+                        @error('tanggal')<div class="f-error">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="c-4">
+                        <label class="f-label" for="kategori">Jenis Layanan <span class="req">*</span></label>
+                        <select id="kategori" name="kategori" class="f-control" required>
+                            <option value="">-- Pilih jenis layanan --</option>
+                            @foreach($kategori as $key => [$nama])
+                                <option value="{{ $key }}" {{ old('kategori') === $key ? 'selected' : '' }}>{{ $nama }}</option>
+                            @endforeach
+                        </select>
+                        @error('kategori')<div class="f-error">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="c-4">
+                        <label class="f-label" for="jumlah">Jumlah Kejadian <span class="req">*</span></label>
+                        <input type="number" min="1" id="jumlah" name="jumlah" class="f-control" value="{{ old('jumlah', 1) }}" required>
+                        <div class="f-hint">Jumlah kejadian pada tanggal ini.</div>
+                        @error('jumlah')<div class="f-error">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="c-6">
+                        <label class="f-label" for="kecamatan">Kecamatan</label>
+                        <input type="text" id="kecamatan" name="kecamatan" class="f-control" placeholder="Cth: Kota Baru" value="{{ old('kecamatan') }}">
+                    </div>
+
+                    <div class="c-6">
+                        <label class="f-label" for="lokasi">Lokasi / Alamat</label>
+                        <input type="text" id="lokasi" name="lokasi" class="f-control" placeholder="Cth: Jl. Sultan Thaha, RT 05" value="{{ old('lokasi') }}">
+                    </div>
+
+                    <div class="c-12">
+                        <label class="f-label" for="keterangan">Keterangan</label>
+                        <textarea id="keterangan" name="keterangan" class="f-control" rows="2" placeholder="Catatan singkat penanganan (opsional)">{{ old('keterangan') }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="form-foot">
+                <button type="reset" class="btn-ghost"><i class="fas fa-rotate-left"></i> Kosongkan</button>
+                <button type="submit" class="btn-main"><i class="fas fa-floppy-disk"></i> Simpan Rekap</button>
+            </div>
+        </form>
+
+        <!-- RIWAYAT -->
+        <div class="section-heading">
+            <span class="section-heading-ico"><i class="fas fa-clock-rotate-left"></i></span>
+            <h3>Riwayat input layanan terbaru</h3>
+            <span class="line"></span>
+        </div>
+
+        <div class="panel">
+            <div class="tbl-scroll">
+                <div class="tbl-frame">
+                    <table class="tbl">
+                        <thead>
                             <tr>
-                                <td>{{ \Carbon\Carbon::parse($r->tanggal)->format('d M Y') }}</td>
-                                <td><span class="tag">{{ $kategori[$r->kategori][0] ?? $r->kategori }}</span></td>
-                                <td><strong>{{ $r->jumlah }}</strong></td>
-                                <td>{{ $r->kecamatan ?: '-' }}</td>
-                                <td>{{ \Illuminate\Support\Str::limit($r->keterangan ?: '-', 60) }}</td>
-                                <td>
-                                    <div class="aksi">
-                                        <button type="button" class="btn-icon edit" aria-label="Edit" title="Edit"
-                                            data-edit
-                                            data-id="{{ $r->id }}"
-                                            data-tanggal="{{ \Carbon\Carbon::parse($r->tanggal)->format('Y-m-d') }}"
-                                            data-kategori="{{ $r->kategori }}"
-                                            data-jumlah="{{ $r->jumlah }}"
-                                            data-kecamatan="{{ $r->kecamatan }}"
-                                            data-lokasi="{{ $r->lokasi }}"
-                                            data-keterangan="{{ $r->keterangan }}">
-                                            <i class="fas fa-pen"></i>
-                                        </button>
-                                        <form action="/internal/damtan/rekap-layanan/{{ $r->id }}" method="POST" onsubmit="return confirm('Hapus data rekap ini?')" style="margin:0;">
-                                            @csrf @method('DELETE')
-                                            <button type="submit" class="btn-icon" aria-label="Hapus" title="Hapus"><i class="fas fa-trash"></i></button>
-                                        </form>
-                                    </div>
-                                </td>
+                                <th class="col-no">No</th>
+                                <th>Tanggal</th>
+                                <th>Jenis Layanan</th>
+                                <th>Jumlah</th>
+                                <th>Kecamatan</th>
+                                <th>Keterangan</th>
+                                <th class="col-aksi">Aksi</th>
                             </tr>
-                        @empty
-                            <tr><td colspan="6" class="text-center py-5 text-muted"><i class="fas fa-inbox d-block fs-3 mb-2"></i>Belum ada data input. Pilih jenis layanan di atas lalu simpan rekap pertama.</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @forelse($riwayat as $r)
+                                <tr>
+                                    <td class="no-cell">{{ $loop->iteration }}</td>
+                                    <td class="cell-strong">{{ \Carbon\Carbon::parse($r->tanggal)->translatedFormat('d M Y') }}</td>
+                                    <td><span class="tag">{{ $kategori[$r->kategori][0] ?? $r->kategori }}</span></td>
+                                    <td><span class="num">{{ $r->jumlah }}</span></td>
+                                    <td>{{ $r->kecamatan ?: '-' }}</td>
+                                    <td class="cell-ket">{{ \Illuminate\Support\Str::limit($r->keterangan ?: '-', 60) }}</td>
+                                    <td>
+                                        <div class="aksi">
+                                            <button type="button" class="btn-icon edit" aria-label="Edit" title="Edit"
+                                                data-edit
+                                                data-id="{{ $r->id }}"
+                                                data-tanggal="{{ \Carbon\Carbon::parse($r->tanggal)->format('Y-m-d') }}"
+                                                data-kategori="{{ $r->kategori }}"
+                                                data-jumlah="{{ $r->jumlah }}"
+                                                data-kecamatan="{{ $r->kecamatan }}"
+                                                data-lokasi="{{ $r->lokasi }}"
+                                                data-keterangan="{{ $r->keterangan }}">
+                                                <i class="fas fa-pen"></i>
+                                            </button>
+                                            <form action="/internal/damtan/rekap-layanan/{{ $r->id }}" method="POST" onsubmit="return confirm('Hapus data rekap ini?')">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="btn-icon" aria-label="Hapus" title="Hapus"><i class="fas fa-trash"></i></button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr class="empty-row"><td colspan="7">
+                                    <div class="empty"><i class="fas fa-inbox"></i>Belum ada data input. Pilih jenis layanan di atas lalu simpan rekap pertama.</div>
+                                </td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -293,41 +378,41 @@
                     @csrf
                     @method('PUT')
                     <div class="edit-modal-body">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="field-label" for="edit_tanggal"><i class="fas fa-calendar-alt"></i> Tanggal <span class="text-danger">*</span></label>
-                                <input type="date" id="edit_tanggal" name="tanggal" class="form-control" max="{{ date('Y-m-d') }}" required>
+                        <div class="f-grid">
+                            <div class="c-6">
+                                <label class="f-label" for="edit_tanggal">Tanggal <span class="req">*</span></label>
+                                <input type="date" id="edit_tanggal" name="tanggal" class="f-control" max="{{ date('Y-m-d') }}" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="field-label" for="edit_jumlah"><i class="fas fa-hashtag"></i> Jumlah Kejadian <span class="text-danger">*</span></label>
-                                <input type="number" min="1" id="edit_jumlah" name="jumlah" class="form-control" required>
+                            <div class="c-6">
+                                <label class="f-label" for="edit_jumlah">Jumlah Kejadian <span class="req">*</span></label>
+                                <input type="number" min="1" id="edit_jumlah" name="jumlah" class="f-control" required>
                             </div>
-                            <div class="col-md-12">
-                                <label class="field-label" for="edit_kategori"><i class="fas fa-tags"></i> Jenis Layanan <span class="text-danger">*</span></label>
-                                <select class="form-select" id="edit_kategori" name="kategori" required>
+                            <div class="c-12">
+                                <label class="f-label" for="edit_kategori">Jenis Layanan <span class="req">*</span></label>
+                                <select id="edit_kategori" name="kategori" class="f-control" required>
                                     <option value="">-- Pilih jenis layanan --</option>
                                     @foreach($kategori as $key => [$nama])
                                         <option value="{{ $key }}">{{ $nama }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="field-label" for="edit_kecamatan"><i class="fas fa-map"></i> Kecamatan</label>
-                                <input type="text" id="edit_kecamatan" name="kecamatan" class="form-control" placeholder="Cth: Kota Baru">
+                            <div class="c-6">
+                                <label class="f-label" for="edit_kecamatan">Kecamatan</label>
+                                <input type="text" id="edit_kecamatan" name="kecamatan" class="f-control" placeholder="Cth: Kota Baru">
                             </div>
-                            <div class="col-md-6">
-                                <label class="field-label" for="edit_lokasi"><i class="fas fa-map-marker-alt"></i> Lokasi / Alamat</label>
-                                <input type="text" id="edit_lokasi" name="lokasi" class="form-control" placeholder="Cth: Jl. Sultan Thaha, RT 05">
+                            <div class="c-6">
+                                <label class="f-label" for="edit_lokasi">Lokasi / Alamat</label>
+                                <input type="text" id="edit_lokasi" name="lokasi" class="f-control" placeholder="Cth: Jl. Sultan Thaha, RT 05">
                             </div>
-                            <div class="col-md-12">
-                                <label class="field-label" for="edit_keterangan"><i class="fas fa-align-left"></i> Keterangan Opsional</label>
-                                <textarea class="form-control" id="edit_keterangan" name="keterangan" rows="3" placeholder="Catatan singkat penanganan (opsional)"></textarea>
+                            <div class="c-12">
+                                <label class="f-label" for="edit_keterangan">Keterangan</label>
+                                <textarea id="edit_keterangan" name="keterangan" class="f-control" rows="3" placeholder="Catatan singkat penanganan (opsional)"></textarea>
                             </div>
                         </div>
                     </div>
-                    <div class="edit-modal-foot">
-                        <button type="button" class="btn-custom-light" id="editCancel">Batal</button>
-                        <button type="submit" class="btn-custom-primary"><i class="fas fa-save"></i> Simpan Perubahan</button>
+                    <div class="form-foot">
+                        <button type="button" class="btn-ghost" id="editCancel">Batal</button>
+                        <button type="submit" class="btn-main"><i class="fas fa-floppy-disk"></i> Simpan Perubahan</button>
                     </div>
                 </form>
             </div>
