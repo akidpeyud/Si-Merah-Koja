@@ -15,6 +15,7 @@ use App\Http\Controllers\DamtanController;
 use App\Http\Controllers\LaporanExcelController;
 use App\Http\Controllers\RedkarController;
 use App\Http\Controllers\SuratKorbanController;
+use App\Http\Controllers\SuratKorbanExcelController;
 use App\Http\Controllers\PermohonanRpkbglController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\KabarDamkarController;
@@ -126,13 +127,13 @@ Route::middleware([CekLoginPemohon::class])->group(function () {
     Route::get('/layanan-fasilitas/layanan_perizinan', function () {
         return view('layanan-fasilitas.layanan_perizinan');
     })->name('layanan-fasilitas.perizinan');
- 
+
     // Form & simpan permohonan (tetap di sini, sama seperti sebelumnya)
     Route::get('/internal/pencegahan/kelola-rpkbgl/create', [PermohonanRpkbglController::class, 'create'])
         ->name('permohonan.create');
     Route::post('/internal/pencegahan/kelola-rpkbgl', [PermohonanRpkbglController::class, 'store'])
         ->name('permohonan.store');
- 
+
     Route::post('/layanan-fasilitas/layanan_perizinan/cek-status', [PermohonanRpkbglController::class, 'cekStatus'])
         ->middleware('throttle:10,1')
         ->name('permohonan.cek-status');
@@ -276,6 +277,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Surat Korban
     Route::get('/internal/surat-korban/data', [DamtanController::class, 'indexSurat'])->name('surat-korban.data');
+
+    // Cetak Excel Rekap Surat Korban (semua role yang login boleh cetak; mendukung ?tahun=XXXX)
+    Route::get('/internal/surat-korban/export-excel', SuratKorbanExcelController::class)->name('surat-korban.export-excel');
     Route::get('/internal/surat-korban/create', [DamtanController::class, 'createSurat']);
     Route::post('/internal/surat-korban/store', [DamtanController::class, 'storeSurat']);
     Route::get('/internal/surat-korban/cetak/{id}', [DamtanController::class, 'cetakSurat']);
@@ -324,20 +328,24 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/damtan/kelola-penggunaan-sarana/{id}', [PenggunaanSaranaController::class, 'showInternal'])->whereNumber('id')->name('internal.penggunaan-sarana.show');
 
     // REKAP LAYANAN PEMADAMAN & REKAP OBJEK KEBAKARAN
-    // Lihat = semua role yang login. Simpan/hapus = hanya Damtan & Super User.
+    // Lihat = semua role yang login. Simpan/ubah/hapus = hanya Damtan & Super User.
     Route::get('/internal/damtan/rekap-layanan', [DamtanController::class, 'rekapLayanan'])->name('damtan.rekap_layanan');
     Route::get('/internal/damtan/rekap-objek', [DamtanController::class, 'rekapObjek'])->name('damtan.rekap_objek');
 
     Route::middleware([RoleMiddleware::class . ':Damtan|Super User'])->group(function () {
         // Rekap Layanan
         Route::post('/internal/damtan/rekap-layanan', [DamtanController::class, 'storeRekapLayanan']);
-        Route::delete('/internal/damtan/rekap-layanan/{id}', [DamtanController::class, 'destroyRekapLayanan']);
+        Route::put('/internal/damtan/rekap-layanan/{id}', [DamtanController::class, 'updateRekapLayanan'])
+            ->whereNumber('id')->name('damtan.rekap_layanan.update');
+        Route::delete('/internal/damtan/rekap-layanan/{id}', [DamtanController::class, 'destroyRekapLayanan'])
+            ->whereNumber('id')->name('damtan.rekap_layanan.destroy');
 
         // Rekap Objek
         Route::post('/internal/damtan/rekap-objek', [DamtanController::class, 'storeRekapObjek']);
-        // CATATAN: method di bawah ini aslinya destroyRekapLayanan. Cek di DamtanController,
-        // kalau ada method khusus objek (mis. destroyRekapObjek) ganti di sini.
-        Route::delete('/internal/damtan/rekap-objek/{id}', [DamtanController::class, 'destroyRekapLayanan']);
+        Route::put('/internal/damtan/rekap-objek/{id}', [DamtanController::class, 'updateRekapObjek'])
+            ->whereNumber('id')->name('damtan.rekap_objek.update');
+        Route::delete('/internal/damtan/rekap-objek/{id}', [DamtanController::class, 'destroyRekapObjek'])
+            ->whereNumber('id')->name('damtan.rekap_objek.destroy');
     });
 
     // --- D. SAPRA (SARANA PRASARANA) ---
@@ -412,18 +420,18 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/internal/pencegahan/simpan-redkar-offline', [RedkarController::class, 'storeRedkarOffline']);
 
     // 2. KELOLA RPKBGL (sisi admin/pegawai)
- 
+
     // Lihat daftar & detail: semua pegawai yang login
     Route::get('/internal/pencegahan/kelola-rpkbgl', [PermohonanRpkbglController::class, 'index'])
         ->name('permohonan.index');
- 
+
     // URL lama (/kelola-rpkbgl-admin) menampilkan halaman yang sama dengan index -> cukup dialihkan
     Route::redirect('/internal/pencegahan/kelola-rpkbgl-admin', '/internal/pencegahan/kelola-rpkbgl');
- 
+
     Route::get('/internal/pencegahan/kelola-rpkbgl/{id}', [PermohonanRpkbglController::class, 'show'])
         ->whereNumber('id')
         ->name('permohonan.show');
- 
+
     // Ubah / hapus data: hanya role Pencegahan & Super User
     // (sama dengan @hasanyrole('Pencegahan|Super User') yang dipakai tombolnya di Blade)
     Route::middleware([RoleMiddleware::class . ':Pencegahan|Super User'])->group(function () {
@@ -679,7 +687,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::get('/internal/pencegahan/peningkatan-kapasitas/tambah', function () { return view('internal.pencegahan.tambah_diklat'); });
-    
+
     Route::post('/internal/pencegahan/peningkatan-kapasitas/tambah', function (Illuminate\Http\Request $request) {
         $jenis = strtoupper($request->jenis_diklat);
         $tabel_tujuan = 'tbl_diklat_f1'; // Default
@@ -695,7 +703,7 @@ Route::middleware(['auth'])->group(function () {
 
         $data = [
             'nama' => $request->nama,
-            'nip' => $request->nip, // <--- INI DIA NIP-NYA UDAH DITAMBAHKAN UNTUK SIMPAN DATA
+            'nip' => $request->nip,
             'nik' => $request->nik,
             'tempat_lahir' => $request->tempat_lahir,
             'tgl_lahir' => $request->tgl_lahir,
@@ -743,7 +751,7 @@ Route::middleware(['auth'])->group(function () {
 
         $updateData = [
             'nama' => $request->nama,
-            'nip' => $request->nip, // <--- INI DIA NIP-NYA UDAH DITAMBAHKAN UNTUK UPDATE DATA
+            'nip' => $request->nip,
             'nik' => $request->nik,
             'tempat_lahir' => $request->tempat_lahir,
             'tgl_lahir' => $request->tgl_lahir,
@@ -807,10 +815,10 @@ Route::middleware(['auth'])->group(function () {
     // --- G. PROGRAM KERJA ---
     Route::get('/internal/program-kerja', [ProgramKerjaController::class, 'index'])->name('program-kerja.index');
     Route::post('/internal/program-kerja/store', [ProgramKerjaController::class, 'store'])->name('program-kerja.store');
-    
+
     // Tambahkan baris route update di bawah ini:
     Route::put('/internal/program-kerja/update/{id}', [ProgramKerjaController::class, 'update'])->name('program-kerja.update');
-    
+
     Route::delete('/internal/program-kerja/hapus/{id}', [ProgramKerjaController::class, 'destroy'])->name('program-kerja.destroy');
     // --- H. EXPORT PETA SIGAP ---
     Route::get('/internal/peta-sigap/export-pdf', [PetaController::class, 'exportPdf'])->name('peta.export.pdf');

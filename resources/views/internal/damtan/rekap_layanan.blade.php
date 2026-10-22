@@ -104,15 +104,32 @@
     .tbl th { text-align: left; padding: 12px 18px; color: var(--steel); background: #fbfcfd; border-bottom: 1px solid var(--line); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; font-size: .72rem;}
     .tbl td { padding: 14px 18px; border-bottom: 1px solid var(--line); }
     .tag { display: inline-block; padding: 4px 11px; border-radius: 999px; font-size: .78rem; font-weight: 700; background: var(--navy-soft); color: var(--navy); }
-    .btn-icon { color: var(--signal); }
+    .aksi { display: flex; align-items: center; gap: 6px; }
+    .btn-icon { width: 34px; height: 34px; border-radius: 8px; display: inline-grid; place-items: center; background: var(--signal-soft); color: var(--signal); border: 0; cursor: pointer; transition: background .2s; }
+    .btn-icon:hover { background: #fecaca; }
+    .btn-icon.edit { background: var(--info-soft); color: var(--info); }
+    .btn-icon.edit:hover { background: #bfdbfe; }
+
+    /* Modal edit */
+    .edit-modal { position: fixed; inset: 0; z-index: 3000; display: none; align-items: center; justify-content: center; padding: 18px; background: rgba(13,27,42,.55); }
+    .edit-modal.open { display: flex; }
+    .edit-modal-box { background: #fff; width: 100%; max-width: 640px; max-height: calc(100vh - 36px); overflow-y: auto; border-radius: var(--r-md); box-shadow: var(--shadow-lg); animation: editPop .25s ease; }
+    @keyframes editPop { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+    .edit-modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 22px; background: var(--navy-light); border-bottom: 1px solid var(--line); }
+    .edit-modal-head h4 { font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; display: flex; align-items: center; gap: 10px; margin: 0; }
+    .edit-modal-head h4 i { color: var(--navy); }
+    .edit-modal-x { background: transparent; border: 0; font-size: 1.1rem; color: var(--steel); cursor: pointer; width: 34px; height: 34px; border-radius: 8px; }
+    .edit-modal-x:hover { background: rgba(13,27,42,.06); color: var(--ink); }
+    .edit-modal-body { padding: 22px; }
+    .edit-modal-foot { display: flex; justify-content: flex-end; gap: 10px; padding: 16px 22px; border-top: 1px solid var(--line); background: #fbfcfd; flex-wrap: wrap; }
 </style>
 @endpush
 
 @section('content')
 @php
-    /* HAK AKSES INPUT/HAPUS REKAP: hanya Damtan & Super User.
+    /* HAK AKSES INPUT/EDIT/HAPUS REKAP: hanya Damtan & Super User.
        Role lain tetap bisa membuka halaman ini, tetapi HANYA melihat kartu total
-       (tanpa form, tanpa riwayat, tanpa hapus, kartu tidak bisa diklik). */
+       (tanpa form, tanpa riwayat, tanpa edit/hapus, kartu tidak bisa diklik). */
     $bisaInput = Auth::user()->hasAnyRole(['Damtan', 'Super User']);
 @endphp
 
@@ -228,7 +245,7 @@
 
             <div class="card-body p-0">
                 <table class="tbl mb-0">
-                    <thead><tr><th>Tanggal</th><th>Jenis Layanan</th><th>Jumlah</th><th>Kecamatan</th><th>Keterangan</th><th></th></tr></thead>
+                    <thead><tr><th>Tanggal</th><th>Jenis Layanan</th><th>Jumlah</th><th>Kecamatan</th><th>Keterangan</th><th>Aksi</th></tr></thead>
                     <tbody>
                         @forelse($riwayat as $r)
                             <tr>
@@ -238,10 +255,23 @@
                                 <td>{{ $r->kecamatan ?: '-' }}</td>
                                 <td>{{ \Illuminate\Support\Str::limit($r->keterangan ?: '-', 60) }}</td>
                                 <td>
-                                    <form action="/internal/damtan/rekap-layanan/{{ $r->id }}" method="POST" onsubmit="return confirm('Hapus data rekap ini?')" style="margin:0;">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="btn-icon" aria-label="Hapus" style="background: none; border: none;"><i class="fas fa-trash"></i></button>
-                                    </form>
+                                    <div class="aksi">
+                                        <button type="button" class="btn-icon edit" aria-label="Edit" title="Edit"
+                                            data-edit
+                                            data-id="{{ $r->id }}"
+                                            data-tanggal="{{ \Carbon\Carbon::parse($r->tanggal)->format('Y-m-d') }}"
+                                            data-kategori="{{ $r->kategori }}"
+                                            data-jumlah="{{ $r->jumlah }}"
+                                            data-kecamatan="{{ $r->kecamatan }}"
+                                            data-lokasi="{{ $r->lokasi }}"
+                                            data-keterangan="{{ $r->keterangan }}">
+                                            <i class="fas fa-pen"></i>
+                                        </button>
+                                        <form action="/internal/damtan/rekap-layanan/{{ $r->id }}" method="POST" onsubmit="return confirm('Hapus data rekap ini?')" style="margin:0;">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="btn-icon" aria-label="Hapus" title="Hapus"><i class="fas fa-trash"></i></button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @empty
@@ -249,6 +279,57 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- MODAL EDIT -->
+        <div class="edit-modal" id="editModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+            <div class="edit-modal-box">
+                <div class="edit-modal-head">
+                    <h4 id="editModalTitle"><i class="fas fa-pen-to-square"></i> Edit Data Layanan</h4>
+                    <button type="button" class="edit-modal-x" id="editClose" aria-label="Tutup"><i class="fas fa-xmark"></i></button>
+                </div>
+                <form method="POST" id="editForm" action="">
+                    @csrf
+                    @method('PUT')
+                    <div class="edit-modal-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="field-label" for="edit_tanggal"><i class="fas fa-calendar-alt"></i> Tanggal <span class="text-danger">*</span></label>
+                                <input type="date" id="edit_tanggal" name="tanggal" class="form-control" max="{{ date('Y-m-d') }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="field-label" for="edit_jumlah"><i class="fas fa-hashtag"></i> Jumlah Kejadian <span class="text-danger">*</span></label>
+                                <input type="number" min="1" id="edit_jumlah" name="jumlah" class="form-control" required>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="field-label" for="edit_kategori"><i class="fas fa-tags"></i> Jenis Layanan <span class="text-danger">*</span></label>
+                                <select class="form-select" id="edit_kategori" name="kategori" required>
+                                    <option value="">-- Pilih jenis layanan --</option>
+                                    @foreach($kategori as $key => [$nama])
+                                        <option value="{{ $key }}">{{ $nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="field-label" for="edit_kecamatan"><i class="fas fa-map"></i> Kecamatan</label>
+                                <input type="text" id="edit_kecamatan" name="kecamatan" class="form-control" placeholder="Cth: Kota Baru">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="field-label" for="edit_lokasi"><i class="fas fa-map-marker-alt"></i> Lokasi / Alamat</label>
+                                <input type="text" id="edit_lokasi" name="lokasi" class="form-control" placeholder="Cth: Jl. Sultan Thaha, RT 05">
+                            </div>
+                            <div class="col-md-12">
+                                <label class="field-label" for="edit_keterangan"><i class="fas fa-align-left"></i> Keterangan Opsional</label>
+                                <textarea class="form-control" id="edit_keterangan" name="keterangan" rows="3" placeholder="Catatan singkat penanganan (opsional)"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="edit-modal-foot">
+                        <button type="button" class="btn-custom-light" id="editCancel">Batal</button>
+                        <button type="submit" class="btn-custom-primary"><i class="fas fa-save"></i> Simpan Perubahan</button>
+                    </div>
+                </form>
             </div>
         </div>
 @endif
@@ -300,6 +381,41 @@
     /* Validasi ringan sebelum kirim */
     form.addEventListener('submit', function (e) {
         if (!select.value) { e.preventDefault(); select.focus(); alert('Pilih jenis layanan dulu.'); }
+    });
+
+    /* ===== Modal edit ===== */
+    var modal = document.getElementById('editModal');
+    var editForm = document.getElementById('editForm');
+    if (!modal || !editForm) return;
+
+    function openEdit(btn) {
+        var d = btn.dataset;
+        editForm.action = '/internal/damtan/rekap-layanan/' + d.id;
+        document.getElementById('edit_tanggal').value = d.tanggal || '';
+        document.getElementById('edit_kategori').value = d.kategori || '';
+        document.getElementById('edit_jumlah').value = d.jumlah || 1;
+        document.getElementById('edit_kecamatan').value = d.kecamatan || '';
+        document.getElementById('edit_lokasi').value = d.lokasi || '';
+        document.getElementById('edit_keterangan').value = d.keterangan || '';
+        modal.classList.add('open');
+        setTimeout(function () { document.getElementById('edit_jumlah').focus(); }, 100);
+    }
+    function closeEdit() { modal.classList.remove('open'); }
+
+    document.querySelectorAll('[data-edit]').forEach(function (b) {
+        b.addEventListener('click', function () { openEdit(b); });
+    });
+    document.getElementById('editClose').addEventListener('click', closeEdit);
+    document.getElementById('editCancel').addEventListener('click', closeEdit);
+    modal.addEventListener('click', function (e) { if (e.target === modal) closeEdit(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeEdit(); });
+
+    editForm.addEventListener('submit', function (e) {
+        if (!document.getElementById('edit_kategori').value) {
+            e.preventDefault();
+            document.getElementById('edit_kategori').focus();
+            alert('Pilih jenis layanan dulu.');
+        }
     });
 })();
 </script>

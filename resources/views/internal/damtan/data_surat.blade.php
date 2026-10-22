@@ -52,6 +52,9 @@
         --rekap-row-a: #eaf2fc;
         --rekap-row-b: #f8fbff;
         --rekap-line: #d3deee;
+
+        --excel: #107c41;
+        --excel-soft: rgba(16, 124, 65, .10);
     }
 
     #globalSuccessAlert, #globalErrorAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); color: white; padding: 16px 24px; border-radius: var(--r-md); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -129,6 +132,51 @@
         transition: all .2s ease;
     }
     .btn-custom-light:hover { background: #f8fafc; border-color: var(--steel-soft); color: var(--ink); }
+
+    /* ==========================================================
+       MENU EKSPOR (Cetak PDF / Cetak Excel)
+       ========================================================== */
+    .btn-custom-light.show { background: #f8fafc; border-color: var(--steel-soft); color: var(--ink); }
+    .btn-custom-light.dropdown-toggle::after { margin-left: 2px; }
+    .export-menu {
+        min-width: 270px;
+        margin-top: 8px !important;
+        padding: 8px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        box-shadow: var(--shadow-lg);
+    }
+    .export-menu .dropdown-header {
+        padding: 6px 10px 8px;
+        font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+        color: var(--steel);
+    }
+    .export-item {
+        display: flex; align-items: center; gap: 12px;
+        width: 100%;
+        padding: 10px;
+        border: 0; background: transparent;
+        border-radius: 8px;
+        text-align: left;
+        white-space: normal;
+        transition: background .15s ease;
+    }
+    .export-item:hover, .export-item:focus { background: #f1f5f9; }
+    .export-item .ico {
+        flex: none; width: 38px; height: 38px;
+        display: inline-flex; align-items: center; justify-content: center;
+        border-radius: 10px; font-size: 1rem;
+    }
+    .export-item .ico.pdf   { background: var(--signal-soft); color: var(--signal); }
+    .export-item .ico.excel { background: var(--excel-soft); color: var(--excel); }
+    .export-item .txt { display: flex; flex-direction: column; line-height: 1.3; }
+    .export-item .txt strong { font-size: .88rem; color: var(--ink); }
+    .export-item .txt small { font-size: .76rem; color: var(--steel); }
+
+    /* Pilihan tahun di dalam menu ekspor */
+    .export-year { padding: 4px 10px 10px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+    .export-year label { display: block; margin-bottom: 6px; font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--steel); }
+    .export-year .form-select { min-height: 38px; font-size: .88rem; font-weight: 600; }
 
     /* ==========================================================
        TABEL REKAP (gaya header merah, sama dengan Data Laporan)
@@ -229,16 +277,66 @@
 
 @section('content')
 
+@php
+    // Daftar tahun untuk pilihan ekspor (dari data halaman ini + rentang 2023 s/d tahun berjalan), terbaru di atas.
+    // Mau mengubah rentang? Ganti angka 2023 di bawah, atau tambahkan ->push(2027).
+    $daftarTahun = collect($surat->items())
+        ->map(function ($r) {
+            return $r->created_at ? \Carbon\Carbon::parse($r->created_at)->year : null;
+        })
+        ->filter()
+        ->merge(range(2023, (int) date('Y')))
+        ->push((int) date('Y'))
+        ->unique()
+        ->sortDesc()
+        ->values();
+@endphp
+
     <div class="page-header">
         <div class="page-header-text">
             <h1>Kelola Surat Korban</h1>
             <p>Daftar seluruh Surat Keterangan Kejadian yang telah diterbitkan.</p>
         </div>
-        <div class="d-flex gap-2">
-            <!-- CETAK: SEMUA ROLE -->
-            <button class="btn-custom-light shadow-sm" type="button" onclick="window.print()">
-                <i class="fas fa-download me-2"></i> Ekspor Semua
-            </button>
+        <div class="d-flex gap-2 flex-wrap">
+            <!-- EKSPOR (PDF & EXCEL): SEMUA ROLE -->
+            <div class="dropdown">
+                <button class="btn-custom-light shadow-sm dropdown-toggle" type="button" id="btnEkspor" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-download me-2"></i> Ekspor Semua
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end export-menu" aria-labelledby="btnEkspor">
+                    <li><h6 class="dropdown-header">Pilih format ekspor</h6></li>
+
+                    <!-- PILIH TAHUN: berlaku untuk Cetak PDF & Cetak Excel -->
+                    <li class="export-year" onclick="event.stopPropagation()">
+                        <label for="tahunEkspor">Tahun</label>
+                        <select id="tahunEkspor" class="form-select">
+                            <option value="">Semua Tahun</option>
+                            @foreach($daftarTahun as $thn)
+                                <option value="{{ $thn }}">{{ $thn }}</option>
+                            @endforeach
+                        </select>
+                    </li>
+
+                    <li>
+                        <button type="button" class="dropdown-item export-item" onclick="cetakPdf()">
+                            <span class="ico pdf"><i class="fas fa-file-pdf"></i></span>
+                            <span class="txt">
+                                <strong>Cetak PDF</strong>
+                                <small>Cetak tabel yang tampil di halaman ini</small>
+                            </span>
+                        </button>
+                    </li>
+                    <li>
+                        <a class="dropdown-item export-item" id="linkExcel" data-base="{{ route('surat-korban.export-excel') }}" href="{{ route('surat-korban.export-excel') }}">
+                            <span class="ico excel"><i class="fas fa-file-excel"></i></span>
+                            <span class="txt">
+                                <strong>Cetak Excel</strong>
+                                <small>Unduh rekap seluruh surat sesuai tahun (.xlsx)</small>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
 
             <!-- CREATE: HANYA DAMTAN DAN SUPER USER -->
             @hasanyrole('Damtan|Super User')
@@ -286,7 +384,7 @@
                     </div>
                 </div>
                 <div style="border-top: 3px solid black !important; border-bottom: 1px solid black !important; height: 2px !important; width: 100% !important; margin-bottom: 15px !important;"></div>
-                <h3 style="text-align: center !important; font-weight: bold; margin-bottom: 5px; font-size: 16px; color: black; font-family: 'Times New Roman', Times, serif;">REKAPITULASI SURAT KETERANGAN KEJADIAN</h3>
+                <h3 style="text-align: center !important; font-weight: bold; margin-bottom: 5px; font-size: 16px; color: black; font-family: 'Times New Roman', Times, serif;">REKAPITULASI SURAT KETERANGAN KEJADIAN<span id="printTahun"></span></h3>
                 <p style="text-align: center !important; font-size: 12px; margin-bottom: 15px; color: black; font-family: 'Times New Roman', Times, serif;">Dicetak pada: {{ date('d F Y') }}</p>
             </div>
 
@@ -304,7 +402,7 @@
                         </thead>
                         <tbody id="tableBody">
                             @forelse($surat as $index => $row)
-                            <tr data-row>
+                            <tr data-row data-tahun="{{ $row->created_at ? \Carbon\Carbon::parse($row->created_at)->year : '' }}">
                                 <td class="no-cell">{{ $surat->firstItem() + $index }}</td>
 
                                 <td class="cell-strong">{{ $row->nomor_surat }}</td>
@@ -368,6 +466,70 @@
 
 @push('scripts')
 <script>
+    /* ==========================================================
+       EKSPOR PER TAHUN (Cetak PDF & Cetak Excel)
+       ========================================================== */
+    (function () {
+        'use strict';
+        var selTahun  = document.getElementById('tahunEkspor');
+        var linkExcel = document.getElementById('linkExcel');
+        var spanTahun = document.getElementById('printTahun');
+        var tersimpan = null;
+
+        // Link Excel ikut tahun yang dipilih (?tahun=XXXX)
+        function urlExcel() {
+            var base = linkExcel.dataset.base;
+            return selTahun.value ? base + '?tahun=' + encodeURIComponent(selTahun.value) : base;
+        }
+        if (selTahun && linkExcel) {
+            linkExcel.href = urlExcel();
+            selTahun.addEventListener('change', function () { linkExcel.href = urlExcel(); });
+        }
+
+        // Kembalikan tampilan tabel setelah cetak selesai
+        function pulihkan() {
+            if (!tersimpan) return;
+            tersimpan.forEach(function (s) {
+                s.row.style.display = s.display;
+                if (s.noCell) s.noCell.textContent = s.no;
+            });
+            tersimpan = null;
+            if (spanTahun) spanTahun.textContent = '';
+        }
+
+        // Cetak PDF: baris yang tampil di halaman ini, dan hanya pada tahun terpilih
+        window.cetakPdf = function () {
+            var tahun = selTahun ? selTahun.value : '';
+            var rows  = document.querySelectorAll('#tableBody tr[data-row]');
+            var nomor = 0;
+            tersimpan = [];
+
+            rows.forEach(function (row) {
+                var noCell = row.querySelector('.no-cell');
+                tersimpan.push({ row: row, display: row.style.display, noCell: noCell, no: noCell ? noCell.textContent : '' });
+
+                var tampil = row.style.display !== 'none' && (!tahun || row.dataset.tahun === tahun);
+                if (tampil) {
+                    nomor++;
+                    if (noCell) noCell.textContent = nomor;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            if (nomor === 0) {
+                pulihkan();
+                alert(tahun ? 'Tidak ada surat pada tahun ' + tahun + ' di halaman ini.' : 'Tidak ada data untuk dicetak.');
+                return;
+            }
+
+            if (spanTahun) spanTahun.textContent = tahun ? ' TAHUN ' + tahun : '';
+            window.print();
+        };
+
+        window.addEventListener('afterprint', pulihkan);
+    })();
+
     document.addEventListener('DOMContentLoaded', function () {
         const searchInput = document.getElementById('searchInput');
         const rows        = document.querySelectorAll('#tableBody tr[data-row]');
