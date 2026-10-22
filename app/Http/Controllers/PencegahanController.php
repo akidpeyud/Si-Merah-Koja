@@ -14,6 +14,7 @@ use App\Models\DiklatPpl;
 use App\Models\InspeksiBangunan;
 use App\Models\FireDrill;
 use App\Models\PelatihanKeluarga;
+use App\Models\KunjunganSekolah; 
 
 class PencegahanController extends Controller
 {
@@ -113,7 +114,6 @@ class PencegahanController extends Controller
         elseif ($jenis == 'DIKLAT INSPEKTUR') { $tabel_tujuan = 'tbl_diklat_inspektur'; }
         elseif ($jenis == 'DIKLAT PPL') { $tabel_tujuan = 'tbl_diklat_ppl'; }
 
-        // Data yang akan di-insert, NIP DIPASTIKAN MASUK DI SINI
         $data = [
             'nama' => $request->nama,
             'nip' => $request->nip,
@@ -142,9 +142,6 @@ class PencegahanController extends Controller
         return redirect('/internal/pencegahan/peningkatan-kapasitas')->with('success', 'Data Peningkatan Kapasitas berhasil ditambahkan!');
     }
 
-    // ==========================================
-    // FUNGSI DOWNLOAD EXCEL & PDF (DIKLAT - MULTI SHEET 21 KOLOM)
-    // ==========================================
     public function cetakExcel($jenis = 'semua')
     {
         $map = [
@@ -160,7 +157,6 @@ class PencegahanController extends Controller
 
         $jenisKey = strtolower($jenis);
 
-        // Jika cetak 1 jenis diklat saja atau cetak "semua" (8 sheet sekaligus)
         $targetDiklat = ($jenisKey !== 'semua' && isset($map[$jenisKey]))
             ? [$jenisKey => $map[$jenisKey]]
             : $map;
@@ -197,7 +193,6 @@ class PencegahanController extends Controller
                     xmlns:x="urn:schemas-microsoft-com:office:excel"
                     xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">' . "\n";
 
-            // Definisi Style Excel
             echo '<Styles>
                     <Style ss:ID="Default" ss:Name="Normal">
                         <Alignment ss:Vertical="Center"/>
@@ -251,7 +246,6 @@ class PencegahanController extends Controller
                     </Style>
                   </Styles>' . "\n";
 
-            // 21 Kolom sesuai urutan tabel di halaman web & PDF
             $columns = [
                 ['label' => 'NO',                          'width' => 35],
                 ['label' => 'NAMA',                        'width' => 150],
@@ -284,20 +278,17 @@ class PencegahanController extends Controller
                     echo '<Column ss:Width="' . $col['width'] . '"/>' . "\n";
                 }
 
-                // Judul Atas di setiap Sheet
                 echo '<Row ss:Height="18"><Cell ss:MergeAcross="' . $mergeAcross . '" ss:StyleID="sTitle"><Data ss:Type="String">JUMLAH APARATUR DINAS PEMADAM KEBAKARAN DAN PENYELAMATAN KOTA JAMBI</Data></Cell></Row>' . "\n";
                 echo '<Row ss:Height="18"><Cell ss:MergeAcross="' . $mergeAcross . '" ss:StyleID="sTitle"><Data ss:Type="String">YANG MEMENUHI STANDAR KUALIFIKASI PEMADAM KEBAKARAN (DATA ' . $esc($sheetItem['judul']) . ')</Data></Cell></Row>' . "\n";
                 echo '<Row ss:Height="18"><Cell ss:MergeAcross="' . $mergeAcross . '" ss:StyleID="sTitle"><Data ss:Type="String">TAHUN ' . date('Y') . '</Data></Cell></Row>' . "\n";
                 echo '<Row ss:Height="10"></Row>' . "\n";
 
-                // Header Tabel 21 Kolom
                 echo '<Row ss:Height="28">' . "\n";
                 foreach ($columns as $col) {
                     echo '<Cell ss:StyleID="sHead"><Data ss:Type="String">' . $esc($col['label']) . '</Data></Cell>' . "\n";
                 }
                 echo '</Row>' . "\n";
 
-                // Baris Data
                 if ($sheetItem['data']->isEmpty()) {
                     echo '<Row ss:Height="24"><Cell ss:MergeAcross="' . $mergeAcross . '" ss:StyleID="sCenter"><Data ss:Type="String">Belum ada data untuk ' . $esc($sheetItem['judul']) . '</Data></Cell></Row>' . "\n";
                 } else {
@@ -332,7 +323,6 @@ class PencegahanController extends Controller
                     }
                 }
 
-                // Baris Total Data di Bawah Tabel
                 echo '<Row ss:Height="22">
                         <Cell ss:MergeAcross="' . $mergeAcross . '" ss:StyleID="sTotal"><Data ss:Type="String">TOTAL DATA ' . $esc($sheetItem['judul']) . ': ' . $sheetItem['data']->count() . ' ORANG</Data></Cell>
                       </Row>' . "\n";
@@ -361,7 +351,6 @@ class PencegahanController extends Controller
 
         $jenisKey = strtolower($jenis);
 
-        // Jika cetak Semua Diklat sekaligus ke PDF
         if ($jenisKey === 'semua' || !isset($map[$jenisKey])) {
             $semua_diklat = [];
             foreach ($map as $key => $info) {
@@ -376,7 +365,6 @@ class PencegahanController extends Controller
             return view('internal.pencegahan.cetak_pdf_diklat', compact('semua_diklat', 'judul'));
         }
 
-        // Jika cetak 1 jenis Diklat saja
         $tabel = $map[$jenisKey]['tabel'];
         $judul = $map[$jenisKey]['judul'];
         $data  = \Illuminate\Support\Facades\Schema::hasTable($tabel)
@@ -390,17 +378,17 @@ class PencegahanController extends Controller
     // BAGIAN INSPEKSI BANGUNAN
     // ==========================================
     public function index()
-{
-    $data_inspeksi   = InspeksiBangunan::orderBy('tanggal_inspeksi', 'desc')->get();
-    $data_fire_drill = FireDrill::orderBy('tahun', 'asc')->orderBy('id', 'asc')->get();
+    {
+        $data_inspeksi   = InspeksiBangunan::orderBy('tanggal_inspeksi', 'desc')->get();
+        $data_fire_drill = FireDrill::orderBy('tahun', 'asc')->orderBy('id', 'asc')->get();
 
-    $total_inspeksi   = $data_inspeksi->count();
-    $total_fire_drill = $data_fire_drill->count();
+        $total_inspeksi   = $data_inspeksi->count();
+        $total_fire_drill = $data_fire_drill->count();
 
-    return view('internal.pencegahan.inspeksi_bangunan', compact(
-        'data_inspeksi', 'data_fire_drill', 'total_inspeksi', 'total_fire_drill'
-    ));
-}
+        return view('internal.pencegahan.inspeksi_bangunan', compact(
+            'data_inspeksi', 'data_fire_drill', 'total_inspeksi', 'total_fire_drill'
+        ));
+    }
 
     public function indexInspeksiBangunan()
     {
@@ -408,7 +396,6 @@ class PencegahanController extends Controller
         return view('internal.pencegahan.inspeksi_bangunan', compact('data_inspeksi'));
     }
 
-    // Alias: route Inspeksi Bangunan memakai nama method generik
     public function create()
     {
         return $this->createInspeksiBangunan();
@@ -437,12 +424,46 @@ class PencegahanController extends Controller
     public function storeInspeksiBangunan(Request $request)
     {
         $validated = $request->validate([
-            'nama_tempat'      => 'required|string|max:255',
-            'tanggal_inspeksi' => 'required|date',
-            'jenis_usaha'      => 'nullable|string|max:255',
+            'nama_tempat'          => 'required|string|max:255',
+            'tanggal_inspeksi'     => 'required|date',
+            'jenis_usaha'          => 'nullable|string|max:255',
+            'surat_perintah_tugas' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'berita_acara'         => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'hasil_penilaian'      => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'rekomendasi'          => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'skk'                  => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
 
-        InspeksiBangunan::create($validated);
+        $data = [
+            'nama_tempat'      => $validated['nama_tempat'],
+            'tanggal_inspeksi' => $validated['tanggal_inspeksi'],
+            'jenis_usaha'      => $validated['jenis_usaha'] ?? null,
+        ];
+
+        $destinationPath = public_path('uploads/inspeksi');
+        
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
+
+        $fileInputs = [
+            'surat_perintah_tugas', 
+            'berita_acara', 
+            'hasil_penilaian', 
+            'rekomendasi', 
+            'skk'
+        ];
+
+        foreach ($fileInputs as $input) {
+            if ($request->hasFile($input)) {
+                $file = $request->file($input);
+                $filename = time() . '_' . $input . '.' . $file->getClientOriginalExtension();
+                $file->move($destinationPath, $filename);
+                $data[$input] = $filename;
+            }
+        }
+
+        InspeksiBangunan::create($data);
 
         return redirect('/internal/pencegahan/inspeksi-kebakaran')
             ->with('success', 'Data Inspeksi Bangunan berhasil ditambahkan!');
@@ -459,12 +480,50 @@ class PencegahanController extends Controller
         $item = InspeksiBangunan::findOrFail($id);
 
         $validated = $request->validate([
-            'nama_tempat'      => 'required|string|max:255',
-            'tanggal_inspeksi' => 'required|date',
-            'jenis_usaha'      => 'nullable|string|max:255',
+            'nama_tempat'          => 'required|string|max:255',
+            'tanggal_inspeksi'     => 'required|date',
+            'jenis_usaha'          => 'nullable|string|max:255',
+            'surat_perintah_tugas' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'berita_acara'         => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'hasil_penilaian'      => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'rekomendasi'          => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'skk'                  => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
 
-        $item->update($validated);
+        $data = [
+            'nama_tempat'      => $validated['nama_tempat'],
+            'tanggal_inspeksi' => $validated['tanggal_inspeksi'],
+            'jenis_usaha'      => $validated['jenis_usaha'] ?? null,
+        ];
+
+        $destinationPath = public_path('uploads/inspeksi');
+        
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
+
+        $fileInputs = [
+            'surat_perintah_tugas', 
+            'berita_acara', 
+            'hasil_penilaian', 
+            'rekomendasi', 
+            'skk'
+        ];
+
+        foreach ($fileInputs as $input) {
+            if ($request->hasFile($input)) {
+                if ($item->$input && file_exists($destinationPath . '/' . $item->$input)) {
+                    unlink($destinationPath . '/' . $item->$input);
+                }
+
+                $file = $request->file($input);
+                $filename = time() . '_' . $input . '.' . $file->getClientOriginalExtension();
+                $file->move($destinationPath, $filename);
+                $data[$input] = $filename;
+            }
+        }
+
+        $item->update($data);
 
         return redirect('/internal/pencegahan/inspeksi-kebakaran')
             ->with('success', 'Data Inspeksi Bangunan berhasil diperbarui!');
@@ -473,17 +532,32 @@ class PencegahanController extends Controller
     public function destroyInspeksiBangunan($id)
     {
         $item = InspeksiBangunan::findOrFail($id);
+        $destinationPath = public_path('uploads/inspeksi');
+        
+        $fileInputs = [
+            'surat_perintah_tugas', 
+            'berita_acara', 
+            'hasil_penilaian', 
+            'rekomendasi', 
+            'skk'
+        ];
+        
+        foreach ($fileInputs as $input) {
+            if ($item->$input && file_exists($destinationPath . '/' . $item->$input)) {
+                unlink($destinationPath . '/' . $item->$input);
+            }
+        }
+
         $item->delete();
 
         return redirect()->back()->with('success', 'Data berhasil dihapus!');
     }
 
     // ==========================================
-    // BAGIAN FIRE DRILL (REVISI DINAMIS & PESERTA)
+    // BAGIAN FIRE DRILL
     // ==========================================
     public function indexFireDrill()
     {
-        // Urut tahun naik: 2023, 2024, 2025, 2026, dst.
         $data_fire_drill = FireDrill::orderBy('tahun', 'asc')->orderBy('id', 'asc')->get();
         $daftar_tahun = $data_fire_drill->pluck('tahun')->unique()->sort()->values();
         $daftar_instansi = $data_fire_drill->pluck('nama_instansi')->unique()->sort()->values();
@@ -595,13 +669,15 @@ class PencegahanController extends Controller
     public function storePelatihanKeluarga(Request $request)
     {
         $validated = $request->validate([
-            'tanggal_pelaksanaan' => 'required|date',
-            'kecamatan'           => 'required|string|max:100',
-            'kelurahan'           => 'required|string|max:100',
-            'rt'                  => 'required|string|max:255',
-            'peserta_perempuan'   => 'required|integer|min:0',
-            'peserta_laki_laki'   => 'required|integer|min:0',
-            'link_dokumentasi'    => 'nullable|string|max:3000',
+            'tanggal_pelaksanaan'    => 'required|date',
+            'kecamatan'              => 'required|string|max:100',
+            'kelurahan'              => 'required|string|max:100',
+            'rt'                     => 'required|string|max:255',
+            'peserta_laki_laki'      => 'required|integer|min:0',
+            'peserta_perempuan'      => 'required|integer|min:0',
+            'nama_peserta_laki_laki' => 'nullable|string',
+            'nama_peserta_perempuan' => 'nullable|string',
+            'link_dokumentasi'       => 'nullable|string|max:3000',
         ]);
 
         $links = $this->parseLinkDokumentasi($request->input('link_dokumentasi'));
@@ -612,6 +688,12 @@ class PencegahanController extends Controller
         }
 
         $validated['link_dokumentasi'] = $links;
+
+        $listLaki = $this->bersihkanDaftarNama($request->nama_peserta_laki_laki);
+        $listPerempuan = $this->bersihkanDaftarNama($request->nama_peserta_perempuan);
+
+        $validated['nama_peserta_laki_laki'] = count($listLaki) > 0 ? implode("\n", $listLaki) : null;
+        $validated['nama_peserta_perempuan'] = count($listPerempuan) > 0 ? implode("\n", $listPerempuan) : null;
 
         PelatihanKeluarga::create($validated);
 
@@ -629,13 +711,15 @@ class PencegahanController extends Controller
         $item = PelatihanKeluarga::findOrFail($id);
 
         $validated = $request->validate([
-            'tanggal_pelaksanaan' => 'required|date',
-            'kecamatan'           => 'required|string|max:100',
-            'kelurahan'           => 'required|string|max:100',
-            'rt'                  => 'required|string|max:255',
-            'peserta_perempuan'   => 'required|integer|min:0',
-            'peserta_laki_laki'   => 'required|integer|min:0',
-            'link_dokumentasi'    => 'nullable|string|max:3000',
+            'tanggal_pelaksanaan'    => 'required|date',
+            'kecamatan'              => 'required|string|max:100',
+            'kelurahan'              => 'required|string|max:100',
+            'rt'                     => 'required|string|max:255',
+            'peserta_laki_laki'      => 'required|integer|min:0',
+            'peserta_perempuan'      => 'required|integer|min:0',
+            'nama_peserta_laki_laki' => 'nullable|string',
+            'nama_peserta_perempuan' => 'nullable|string',
+            'link_dokumentasi'       => 'nullable|string|max:3000',
         ]);
 
         $links = $this->parseLinkDokumentasi($request->input('link_dokumentasi'));
@@ -646,6 +730,12 @@ class PencegahanController extends Controller
         }
 
         $validated['link_dokumentasi'] = $links;
+
+        $listLaki = $this->bersihkanDaftarNama($request->nama_peserta_laki_laki);
+        $listPerempuan = $this->bersihkanDaftarNama($request->nama_peserta_perempuan);
+
+        $validated['nama_peserta_laki_laki'] = count($listLaki) > 0 ? implode("\n", $listLaki) : null;
+        $validated['nama_peserta_perempuan'] = count($listPerempuan) > 0 ? implode("\n", $listPerempuan) : null;
 
         $item->update($validated);
 
@@ -717,7 +807,7 @@ class PencegahanController extends Controller
     }
 
     // ==========================================
-    // FUNGSI DOWNLOAD EXCEL & PDF (FIRE DRILL - MULTI SHEET ASLI)
+    // FUNGSI DOWNLOAD EXCEL & PDF (FIRE DRILL)
     // ==========================================
     public function cetakExcelFireDrill(Request $request)
     {
@@ -734,7 +824,7 @@ class PencegahanController extends Controller
         }
 
         $data = $query->orderBy('tahun', 'asc')->orderBy('id', 'asc')->get();
-        $groupedByYear = $data->groupBy('tahun')->sortKeys(); // urut 2023, 2024, 2025, 2026, ...
+        $groupedByYear = $data->groupBy('tahun')->sortKeys();
 
         $labelFile = filled($tahunDipilih) ? "Tahun_{$tahunDipilih}" : "Semua_Data_dan_Per_Tahun";
         $filename = "Data_Fire_Drill_{$labelFile}_" . date('Ymd') . ".xls";
@@ -749,7 +839,6 @@ class PencegahanController extends Controller
 
         $esc = fn($v) => htmlspecialchars((string) $v, ENT_XML1 | ENT_QUOTES, 'UTF-8');
 
-        // Helper membuat baris XML SpreadsheetML untuk 1 blok tahun
         $buatBarisTahunXml = function ($tahun, $items, $pakaiHeaderAtas, $modeSheet1 = false) use ($esc) {
             $adaGender = !$modeSheet1 && $items->contains(fn($i) => ($i->peserta_laki_laki > 0 || $i->peserta_perempuan > 0));
             $adaNama   = !$modeSheet1 && $items->contains(fn($i) => (!empty(trim($i->nama_peserta_laki_laki ?? '')) || !empty(trim($i->nama_peserta_perempuan ?? ''))));
@@ -767,7 +856,6 @@ class PencegahanController extends Controller
             $xml .= '<Row ss:Height="18"><Cell ss:MergeAcross="' . $mergeTitle . '" ss:StyleID="sTitle"><Data ss:Type="String">TAHUN ' . $esc($tahun) . '</Data></Cell></Row>';
             $xml .= '<Row ss:Height="10"></Row>';
 
-            // Header Tabel
             if (!$adaGender && !$adaNama) {
                 $xml .= '<Row ss:Height="24">
                             <Cell ss:StyleID="sHead"><Data ss:Type="String">NO</Data></Cell>
@@ -862,7 +950,6 @@ class PencegahanController extends Controller
                 }
             }
 
-            // Baris JUMLAH TOTAL per tahun
             if (!$adaGender && !$adaNama) {
                 $xml .= '<Row ss:Height="22">
                             <Cell ss:MergeAcross="3" ss:StyleID="sTotalLabel"><Data ss:Type="String">JUMLAH TOTAL</Data></Cell>
@@ -903,7 +990,6 @@ class PencegahanController extends Controller
                     xmlns:x="urn:schemas-microsoft-com:office:excel"
                     xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">' . "\n";
 
-            // Definisi Styles Excel
             echo '<Styles>
                     <Style ss:ID="Default" ss:Name="Normal">
                         <Alignment ss:Vertical="Center"/>
@@ -989,7 +1075,6 @@ class PencegahanController extends Controller
                     </Style>
                   </Styles>' . "\n";
 
-            // 1. SHEET "Semua Data" (Jika Cetak Semua Tahun)
             if (!filled($tahunDipilih)) {
                 echo '<Worksheet ss:Name="Semua Data"><Table>' . "\n";
                 echo '<Column ss:Width="35"/>
@@ -1013,7 +1098,6 @@ class PencegahanController extends Controller
                     $first = false;
                 }
 
-                // Rekap Total Keseluruhan di bawah Sheet Semua Data
                 if ($groupedByYear->isNotEmpty()) {
                     echo '<Row ss:Height="16"></Row>';
                     echo '<Row ss:Height="24">
@@ -1025,7 +1109,6 @@ class PencegahanController extends Controller
                 echo '</Table></Worksheet>' . "\n";
             }
 
-            // 2. SHEET MASING-MASING TAHUN (2023, 2024, 2025, 2026, dst.)
             foreach ($groupedByYear as $thn => $items) {
                 $namaSheet = !filled($tahunDipilih) ? (string) $thn : 'Tahun ' . $thn;
                 $blok = $buatBarisTahunXml($thn, $items, true, false);
@@ -1046,7 +1129,6 @@ class PencegahanController extends Controller
                 echo '</Table></Worksheet>' . "\n";
             }
 
-            // Jika database masih kosong
             if ($groupedByYear->isEmpty()) {
                 echo '<Worksheet ss:Name="Data Kosong"><Table><Row><Cell><Data ss:Type="String">Belum ada data Fire Drill</Data></Cell></Row></Table></Worksheet>';
             }
@@ -1072,8 +1154,146 @@ class PencegahanController extends Controller
         }
 
         $data = $query->orderBy('tahun', 'asc')->orderBy('id', 'asc')->get();
-        $groupedByYear = $data->groupBy('tahun')->sortKeys(); // urut 2023, 2024, 2025, 2026, ...
+        $groupedByYear = $data->groupBy('tahun')->sortKeys();
 
         return view('internal.pencegahan.cetak_pdf_fire_drill', compact('data', 'groupedByYear', 'tahunDipilih', 'instansiDipilih'));
+    }
+
+   // ==========================================
+    // BAGIAN KUNJUNGAN SEKOLAH
+    // ==========================================
+    public function indexKunjungan()
+    {
+        $koleksiData = KunjunganSekolah::orderBy('created_at', 'desc')->get()->map(function($item) {
+            // Deteksi tahun dari string tanggal (contoh: "14 dan 15 Januari 2026")
+            preg_match('/\d{4}/', $item->tanggal_kunjungan, $matches);
+            $item->tahun_parsed = !empty($matches) ? $matches[0] : date('Y');
+            return $item;
+        });
+
+        $groupedByYear = $koleksiData->sortByDesc('tahun_parsed')->groupBy('tahun_parsed');
+        $daftar_tahun = $groupedByYear->keys()->sortDesc()->values();
+
+        return view('internal.pencegahan.kunjungan_sekolah', compact('koleksiData', 'groupedByYear', 'daftar_tahun'));
+    }
+
+    public function createKunjungan()
+    {
+        return view('internal.pencegahan.tambah_kunjungan_sekolah');
+    }
+
+    public function storeKunjungan(Request $request)
+    {
+        $validated = $request->validate([
+            'nama_sekolah'      => 'required|string|max:255',
+            'tanggal_kunjungan' => 'required|string|max:255',
+            'siswa_perempuan'   => 'required|integer|min:0',
+            'siswa_laki_laki'   => 'required|integer|min:0',
+            'guru'              => 'required|integer|min:0',
+            'orang_tua'         => 'required|integer|min:0',
+        ]);
+
+        $validated['total_kunjungan'] = $validated['siswa_perempuan'] + $validated['siswa_laki_laki'] + $validated['guru'] + $validated['orang_tua'];
+
+        KunjunganSekolah::create($validated);
+
+        return redirect()->route('kunjungan_sekolah.index')->with('success', 'Data Kunjungan Sekolah berhasil ditambahkan!');
+    }
+
+    public function editKunjungan($id)
+    {
+        $item = KunjunganSekolah::findOrFail($id);
+        return view('internal.pencegahan.edit_kunjungan_sekolah', compact('item'));
+    }
+
+    public function updateKunjungan(Request $request, $id)
+    {
+        $item = KunjunganSekolah::findOrFail($id);
+
+        $validated = $request->validate([
+            'nama_sekolah'      => 'required|string|max:255',
+            'tanggal_kunjungan' => 'required|string|max:255',
+            'siswa_perempuan'   => 'required|integer|min:0',
+            'siswa_laki_laki'   => 'required|integer|min:0',
+            'guru'              => 'required|integer|min:0',
+            'orang_tua'         => 'required|integer|min:0',
+        ]);
+
+        $validated['total_kunjungan'] = $validated['siswa_perempuan'] + $validated['siswa_laki_laki'] + $validated['guru'] + $validated['orang_tua'];
+
+        $item->update($validated);
+
+        return redirect()->route('kunjungan_sekolah.index')->with('success', 'Data Kunjungan Sekolah berhasil diperbarui!');
+    }
+
+    public function destroyKunjungan($id)
+    {
+        $item = KunjunganSekolah::findOrFail($id);
+        $item->delete();
+
+        return redirect()->back()->with('success', 'Data Kunjungan Sekolah berhasil dihapus!');
+    }
+
+    public function cetakKunjungan(Request $request)
+    {
+        $tahunDipilih = $request->query('tahun');
+        $query = KunjunganSekolah::query();
+
+        if (filled($tahunDipilih)) {
+            $query->where('tanggal_kunjungan', 'like', "%{$tahunDipilih}%");
+        }
+
+        $data = $query->orderBy('created_at', 'desc')->get();
+        return view('internal.pencegahan.cetak_pdf_kunjungan', compact('data', 'tahunDipilih'));
+    }
+
+    public function cetakExcelKunjungan(Request $request)
+    {
+        $tahunDipilih = $request->query('tahun');
+        $query = KunjunganSekolah::query();
+
+        if (filled($tahunDipilih)) {
+            $query->where('tanggal_kunjungan', 'like', "%{$tahunDipilih}%");
+        }
+
+        $data = $query->orderBy('created_at', 'desc')->get();
+        $filename = "Data_Kunjungan_Sekolah" . ($tahunDipilih ? "_Tahun_{$tahunDipilih}" : "") . "_" . date('Ymd') . ".xls";
+
+        $html = '<table border="1" cellpadding="5" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="background-color: #0f172a; color: white;">NO</th>
+                            <th rowspan="2" style="background-color: #0f172a; color: white;">NAMA SEKOLAH</th>
+                            <th rowspan="2" style="background-color: #0f172a; color: white;">TANGGAL</th>
+                            <th colspan="4" style="background-color: #0f172a; color: white;">BANYAK KUNJUNGAN</th>
+                            <th rowspan="2" style="background-color: #0f172a; color: white;">TOTAL</th>
+                        </tr>
+                        <tr>
+                            <th style="background-color: #0f172a; color: white;">SISWA PEREMPUAN</th>
+                            <th style="background-color: #0f172a; color: white;">SISWA LAKI-LAKI</th>
+                            <th style="background-color: #0f172a; color: white;">GURU</th>
+                            <th style="background-color: #0f172a; color: white;">ORANG TUA</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+
+        foreach ($data as $index => $row) {
+            $html .= '<tr>
+                        <td>' . ($index + 1) . '</td>
+                        <td>' . e($row->nama_sekolah) . '</td>
+                        <td>' . e($row->tanggal_kunjungan) . '</td>
+                        <td>' . $row->siswa_perempuan . '</td>
+                        <td>' . $row->siswa_laki_laki . '</td>
+                        <td>' . $row->guru . '</td>
+                        <td>' . $row->orang_tua . '</td>
+                        <td>' . $row->total_kunjungan . '</td>
+                      </tr>';
+        }
+
+        $html .= '</tbody></table>';
+
+        return response($html)
+            ->header('Content-Type', 'application/vnd.ms-excel')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
 }
