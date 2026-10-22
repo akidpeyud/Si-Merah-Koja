@@ -378,23 +378,23 @@ class PencegahanController extends Controller
     // BAGIAN INSPEKSI BANGUNAN
     // ==========================================
     public function index()
-    {
-        $data_inspeksi   = InspeksiBangunan::orderBy('tanggal_inspeksi', 'desc')->get();
-        $data_fire_drill = FireDrill::orderBy('tahun', 'asc')->orderBy('id', 'asc')->get();
+{
+    $data_inspeksi   = InspeksiBangunan::orderBy('id', 'asc')->get();
+    $data_fire_drill = FireDrill::orderBy('tahun', 'asc')->orderBy('id', 'asc')->get();
 
-        $total_inspeksi   = $data_inspeksi->count();
-        $total_fire_drill = $data_fire_drill->count();
+    $total_inspeksi   = $data_inspeksi->count();
+    $total_fire_drill = $data_fire_drill->count();
 
-        return view('internal.pencegahan.inspeksi_bangunan', compact(
-            'data_inspeksi', 'data_fire_drill', 'total_inspeksi', 'total_fire_drill'
-        ));
-    }
+    return view('internal.pencegahan.inspeksi_bangunan', compact(
+        'data_inspeksi', 'data_fire_drill', 'total_inspeksi', 'total_fire_drill'
+    ));
+}
 
     public function indexInspeksiBangunan()
-    {
-        $data_inspeksi = InspeksiBangunan::orderBy('tanggal_inspeksi', 'desc')->get();
-        return view('internal.pencegahan.inspeksi_bangunan', compact('data_inspeksi'));
-    }
+{
+    $data_inspeksi = InspeksiBangunan::orderBy('id', 'asc')->get();
+    return view('internal.pencegahan.inspeksi_bangunan', compact('data_inspeksi'));
+}
 
     public function create()
     {

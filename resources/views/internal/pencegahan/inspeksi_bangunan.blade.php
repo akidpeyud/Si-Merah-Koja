@@ -60,8 +60,12 @@
     .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); margin-top: 3px; }
     .side-group summary .grp-label { flex: 1 1 auto; min-width: 0; white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.4; }
     .side-group summary .chev { flex: none; font-size: .7rem; margin-top: 4px; transition: transform .25s ease; }
+
+    /* ===== HEADER HALAMAN ===== */
     .page-head { margin-bottom: 26px; }
-    .page-head p { color: var(--steel); font-size: .95rem; }
+    .page-head h1 { font-family: var(--font-display); font-weight: 800; font-size: 2rem; color: var(--ink); letter-spacing: -.02em; margin: 0 0 4px; }
+    .page-head p { color: var(--steel); font-size: .95rem; margin: 0; }
+
     .toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .search-box { position: relative; width: 260px; }
     .search-box i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--steel-soft); font-size: .85rem; pointer-events: none; }
@@ -77,10 +81,14 @@
     .btn-solid.green:hover { background: var(--success-dark); }
     .btn-solid.red { background: var(--signal); }
     .btn-solid.red:hover { background: var(--signal-dark); }
+
+    /* ===== TABS ===== */
     .custom-nav-tabs { display: flex; flex-wrap: nowrap; gap: 6px; overflow-x: auto; margin: 6px 0 30px; border-bottom: 1px solid var(--line); scrollbar-width: thin; }
     .custom-nav-tabs .nav-link { border: none; border-bottom: 3px solid transparent; border-radius: 0; color: var(--steel); font-weight: 700; font-size: .8rem; letter-spacing: .02em; padding: 12px 16px; background: transparent; white-space: nowrap; text-transform: uppercase; transition: color .2s, border-color .2s, background .2s; }
     .custom-nav-tabs .nav-link:hover { color: var(--ink); background: #f3f6fa; }
     .custom-nav-tabs .nav-link.active { color: var(--navy); border-bottom-color: var(--navy); background: transparent; }
+
+    /* ===== KARTU STATISTIK (TAB SEMUA DATA) ===== */
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 44px; }
     .stat-card { display: flex; flex-direction: column; align-items: flex-start; padding: 22px; background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); box-shadow: var(--shadow-xs); transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease; position: relative; overflow: hidden; text-decoration: none;}
     .stat-card:hover { box-shadow: var(--shadow-sm); border-color: #d2dae5; transform: translateY(-3px); }
@@ -91,26 +99,59 @@
     .ic-danger { background: var(--signal-soft); color: var(--signal-dark); }
     .stat-title { font-size: .74rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--steel); margin-bottom: 6px; line-height: 1.4; }
     .stat-value { font-family: var(--font-display); font-weight: 700; font-size: 1.9rem; line-height: 1; color: var(--ink); letter-spacing: -.01em; }
-    .section-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
-    .section-heading-ico { flex: none; width: 32px; height: 32px; border-radius: 9px; background: var(--navy); color: #fff; display: grid; place-items: center; font-size: .78rem; box-shadow: 0 4px 8px rgba(22,58,99,.12); }
-    .section-heading h3 { flex: none; font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: var(--ink); letter-spacing: -.01em; margin: 0; }
+
+    /* ===== BANNER REKAPITULASI ===== */
+    .recap-banner { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; padding: 18px 22px; border-radius: var(--r-md); background: linear-gradient(120deg, var(--ink) 0%, var(--navy-dark) 55%, var(--navy) 100%); box-shadow: var(--shadow-md); margin-bottom: 30px; position: relative; overflow: hidden; }
+    .recap-banner::after { content: ""; position: absolute; right: -40px; top: -60px; width: 220px; height: 220px; border-radius: 50%; background: rgba(255,255,255,.04); pointer-events: none; }
+    .recap-left { display: flex; align-items: center; gap: 16px; position: relative; z-index: 1; min-width: 0; }
+    .recap-ico { flex: none; width: 52px; height: 52px; border-radius: 14px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); display: grid; place-items: center; color: #5db4ff; font-size: 1.35rem; }
+    .recap-title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; letter-spacing: .01em; text-transform: uppercase; color: #fff; margin: 0 0 3px; }
+    .recap-sub { font-size: .8rem; color: rgba(255,255,255,.7); margin: 0; }
+    .recap-right { display: flex; gap: 12px; flex-wrap: wrap; position: relative; z-index: 1; }
+    .recap-box { min-width: 150px; padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); text-align: center; }
+    .recap-box .lbl { display: block; font-size: .64rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,.75); margin-bottom: 4px; }
+    .recap-box .val { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; line-height: 1.1; color: #fff; }
+    .recap-box.highlight { background: var(--amber); border-color: var(--amber); }
+    .recap-box.highlight .lbl { color: rgba(13,27,42,.75); }
+    .recap-box.highlight .val { color: var(--ink); }
+
+    /* ===== JUDUL SECTION ===== */
+    .section-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+    .section-heading-ico { flex: none; width: 36px; height: 36px; border-radius: 10px; background: var(--navy); color: #fff; display: grid; place-items: center; font-size: .85rem; box-shadow: 0 4px 8px rgba(22,58,99,.12); }
+    .section-heading h3 { flex: none; font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--ink); letter-spacing: -.01em; margin: 0; text-transform: uppercase; }
     .section-heading .line { flex: 1 1 auto; min-width: 24px; height: 1px; background: linear-gradient(to right, var(--line), transparent 90%); }
-    .table-scroll-wrapper { width: 100%; overflow-x: auto; border-radius: var(--r-md); border: 1px solid var(--line); background: #fff; margin-bottom: 40px; box-shadow: var(--shadow-xs); scrollbar-width: thin; scrollbar-color: #d8dee8 transparent; }
+    .count-pill { display: inline-flex; align-items: center; gap: 7px; padding: 6px 14px; border-radius: 999px; background: #fff; border: 1px solid var(--line); font-size: .76rem; font-weight: 700; color: var(--steel); }
+    .count-pill.blue { background: var(--info-soft); border-color: rgba(37,99,235,.2); color: var(--navy); }
+
+    /* ===== TABEL ===== */
+    .table-scroll-wrapper { width: 100%; overflow-x: auto; border-radius: var(--r-md); border: 1px solid var(--line); background: #fff; margin-bottom: 40px; box-shadow: var(--shadow-sm); scrollbar-width: thin; scrollbar-color: #d8dee8 transparent; }
     .table-detailed { width: 100%; border-collapse: collapse; min-width: 900px; margin-bottom: 0; }
     .table-detailed thead { background-color: var(--ink); color: #fff; }
-    .table-detailed th { font-size: .7rem; font-weight: 700; padding: 16px 15px; white-space: nowrap; text-transform: uppercase; border-right: 1px solid var(--ink-3); letter-spacing: .05em; vertical-align: middle; }
+    .table-detailed th { font-size: .7rem; font-weight: 700; padding: 18px 16px; white-space: nowrap; text-transform: uppercase; border-right: 1px solid var(--ink-3); letter-spacing: .05em; vertical-align: middle; }
     .table-detailed th:last-child { border-right: none; }
-    .table-detailed td { font-size: .84rem; padding: 14px 15px; vertical-align: middle; border-bottom: 1px solid var(--line); border-right: 1px solid var(--paper); }
-    .table-detailed td:last-child { border-right: none; }
+    .table-detailed td { font-size: .86rem; padding: 16px; vertical-align: middle; border-bottom: 1px solid var(--line); border-right: none; color: var(--ink); }
     .table-detailed tbody tr:last-child td { border-bottom: none; }
+    .table-detailed tbody tr { transition: background .15s; }
     .table-detailed tbody tr:hover { background-color: #f8fafc; }
-    .btn-action { width: 32px; height: 32px; display: inline-flex; justify-content: center; align-items: center; border-radius: 8px; font-size: .8rem; color: #fff; border: none; cursor: pointer; transition: transform .1s, box-shadow .2s; }
-    .btn-action:hover { transform: scale(1.06); color: #fff; box-shadow: 0 3px 8px rgba(13,27,42,.18); }
+
+    .no-badge { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--navy-soft); color: var(--navy); font-weight: 700; font-size: .8rem; }
+    .place-name { font-weight: 700; color: var(--ink); font-size: .92rem; line-height: 1.35; }
+    .date-pill { display: inline-flex; align-items: center; gap: 7px; padding: 5px 12px; border-radius: 8px; background: #f1f5f9; color: var(--ink-3); font-size: .8rem; font-weight: 600; white-space: nowrap; }
+    .date-pill i { color: var(--navy); font-size: .75rem; }
+    .type-pill { display: inline-block; padding: 5px 12px; border-radius: 8px; background: var(--navy-light); color: var(--navy); font-size: .78rem; font-weight: 600; line-height: 1.4; }
+
+    .btn-action { width: 34px; height: 34px; display: inline-flex; justify-content: center; align-items: center; border-radius: 9px; font-size: .8rem; color: #fff; border: none; cursor: pointer; transition: transform .1s, box-shadow .2s; }
+    .btn-action:hover { transform: scale(1.08); color: #fff; box-shadow: 0 3px 8px rgba(13,27,42,.18); }
     .btn-edit { background-color: var(--amber); color: var(--ink); }
+    .btn-edit:hover { color: var(--ink); }
     .btn-delete { background-color: var(--signal); }
     .action-cell { display: flex; justify-content: center; align-items: center; gap: 6px; }
-    .doc-badge { display: inline-block; padding: 4px 9px; font-size: .64rem; font-weight: 700; letter-spacing: .03em; border-radius: 6px; margin: 0 3px 3px 0; color: #fff !important; transition: opacity .2s; text-decoration: none; }
-    .doc-badge:hover { opacity: .8; }
+
+    .doc-badge { display: inline-block; padding: 5px 10px; font-size: .66rem; font-weight: 700; letter-spacing: .04em; border-radius: 7px; margin: 0 4px 4px 0; color: #fff !important; transition: opacity .2s, transform .1s; text-decoration: none; }
+    .doc-badge:hover { opacity: .85; transform: translateY(-1px); }
+
+    .empty-state { padding: 56px 16px !important; }
+
     @media (max-width: 1100px) {
         .topbar { padding: 0 20px; }
         .content { padding: 32px 26px 60px; }
@@ -136,6 +177,10 @@
         .stat-card { padding: 19px; }
         .stat-ico { width: 42px; height: 42px; margin-bottom: 14px; }
         .stat-value { font-size: 1.7rem; }
+        .recap-banner { padding: 16px; }
+        .recap-right { width: 100%; }
+        .recap-box { flex: 1; min-width: 0; }
+        .section-heading .line { display: none; }
     }
     @media (max-width: 420px) {
         .brand span { display: none; }
@@ -152,6 +197,8 @@
         .shell { display: block; }
         .content { padding: 20px; }
         .stat-card { box-shadow: none; break-inside: avoid; }
+        .recap-banner { background: #fff !important; border: 1px solid #ddd; box-shadow: none; }
+        .recap-title, .recap-sub, .recap-box .lbl, .recap-box .val { color: #000 !important; }
     }
 </style>
 @endpush
@@ -228,10 +275,30 @@
 
         <!-- ================= TAB "INSPEKSI BANGUNAN" ================= -->
         @if(Request::is('internal/pencegahan/inspeksi-kebakaran/bangunan*'))
+
+        <!-- BANNER REKAPITULASI -->
+        <div class="recap-banner">
+            <div class="recap-left">
+                <div class="recap-ico"><i class="fas fa-clipboard-check"></i></div>
+                <div>
+                    <h2 class="recap-title">Rekapitulasi Inspeksi Bangunan</h2>
+                    <p class="recap-sub">Akumulasi data inspeksi bangunan gedung dan lingkungan yang ditampilkan</p>
+                </div>
+            </div>
+            <div class="recap-right">
+                <div class="recap-box highlight">
+                    <span class="lbl">Total Inspeksi</span>
+                    <span class="val">{{ count($data_inspeksi) }} Tempat</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- JUDUL SECTION -->
         <div class="section-heading">
             <span class="section-heading-ico"><i class="fas fa-building-circle-check"></i></span>
             <h3>Data Inspeksi Bangunan &amp; Lingkungan</h3>
             <span class="line"></span>
+            <span class="count-pill blue"><i class="fas fa-building"></i> {{ count($data_inspeksi) }} Tempat</span>
         </div>
 
         <div class="table-scroll-wrapper">
@@ -254,10 +321,10 @@
                 <tbody id="tableBody">
                     @forelse($data_inspeksi as $index => $item)
                     <tr class="data-row">
-                        <td class="text-center fw-bold">{{ $index + 1 }}</td>
-                        <td class="fw-bold">{{ $item->nama_tempat }}</td>
-                        <td>{{ $item->tanggal_inspeksi }}</td>
-                        <td style="white-space: normal;">{{ $item->jenis_usaha }}</td>
+                        <td class="text-center"><span class="no-badge">{{ $index + 1 }}</span></td>
+                        <td><div class="place-name">{{ $item->nama_tempat }}</div></td>
+                        <td><span class="date-pill"><i class="fas fa-calendar-days"></i> {{ $item->tanggal_inspeksi }}</span></td>
+                        <td style="white-space: normal;"><span class="type-pill">{{ $item->jenis_usaha }}</span></td>
 
                         <td style="white-space: normal;">
                             @if($item->surat_perintah_tugas)
@@ -301,7 +368,7 @@
                     </tr>
                     @empty
                     <tr class="empty-row">
-                        <td colspan="{{ auth()->user()->hasAnyRole(['Pencegahan', 'Super User']) ? 6 : 5 }}" class="text-center py-5 text-muted fw-bold empty-state">
+                        <td colspan="{{ auth()->user()->hasAnyRole(['Pencegahan', 'Super User']) ? 6 : 5 }}" class="text-center text-muted fw-bold empty-state">
                             <i class="fas fa-folder-open mb-2" style="font-size: 28px; color: var(--steel-soft);"></i><br>
                             Belum ada data inspeksi bangunan.
                         </td>
