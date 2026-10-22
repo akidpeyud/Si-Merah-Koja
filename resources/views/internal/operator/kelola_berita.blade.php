@@ -164,7 +164,23 @@
 @endpush
 
 @section('content')
-@section('content')
+
+@php
+    /*
+     * Hak kelola (tambah / edit / hapus).
+     * Nama role dicocokkan tanpa peduli huruf besar-kecil, spasi, atau underscore,
+     * jadi "Super User", "super_user", "SUPER USER" semuanya dianggap sama.
+     * Kalau nama role di database-mu berbeda (mis. "Admin"), tambahkan ke daftar $roleBoleh.
+     */
+    $roleBoleh = ['operator', 'superuser'];
+    $normalisasi = fn ($nama) => str_replace([' ', '_', '-'], '', strtolower($nama));
+
+    $bolehKelola = auth()->check()
+        && auth()->user()->roles->pluck('name')
+            ->map($normalisasi)
+            ->intersect($roleBoleh)
+            ->isNotEmpty();
+@endphp
 
         <!-- Header Aksi -->
         <div class="page-head-bar">
@@ -173,12 +189,12 @@
                 <p>Manajemen data informasi kejadian, evakuasi, dan berita daerah.</p>
             </div>
             <div>
-                <!-- Tombol Tambah Hanya untuk Operator -->
-                @hasanyrole('Operator|Super User')
+                <!-- Tombol Tambah hanya untuk Operator & Super User -->
+                @if($bolehKelola)
                 <a href="/internal/operator/kelola-berita/tambah" class="btn-simerah-danger">
                     <i class="fas fa-plus"></i> Tambah Berita Baru
                 </a>
-                @endhasanyrole
+                @endif
             </div>
         </div>
 
@@ -215,13 +231,13 @@
                                 </span>
                             </td>
                             <td class="text-center">
-                                <!-- Tombol Lihat (View) bisa diakses semua user -->
+                                <!-- Tombol Lihat bisa diakses semua user -->
                                 <a href="/berita/{{ $b->id }}" target="_blank" class="action-btn btn-view" title="Lihat Publik">
                                     <i class="fas fa-arrow-up-right-from-square"></i>
                                 </a>
 
-                                <!-- Aksi Edit dan Hapus Hanya untuk Operator -->
-                                @hasanyrole('Operator|Super User')
+                                <!-- Edit & Hapus hanya untuk Operator & Super User -->
+                                @if($bolehKelola)
                                 <a href="/internal/operator/kelola-berita/edit/{{ $b->id }}" class="action-btn btn-edit mx-1" title="Edit">
                                     <i class="fas fa-pen-to-square"></i>
                                 </a>
@@ -232,8 +248,7 @@
                                         <i class="fas fa-trash-can"></i>
                                     </button>
                                 </form>
-                                @endhasanyrole
-
+                                @endif
                             </td>
                         </tr>
                         @empty

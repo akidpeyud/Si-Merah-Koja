@@ -612,9 +612,9 @@
             <a href="/" aria-label="SIMERAH KOJA, beranda">
                 <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
             </a>
-            <a href="/login" title="Login Internal Pegawai">
-                <img src="/images/logo.png" alt="Logo Damkar">
-            </a>
+            <a href="/" title="Beranda Damkar">
+    <img src="/images/logo.png" alt="Logo Damkar">
+</a>
             <a href="/redkar" aria-label="Redkar">
                 <img src="/images/logo-redkar.png" alt="Logo Redkar">
             </a>
@@ -703,12 +703,13 @@
                             <button class="sub-trigger" type="button" aria-expanded="false">
                                 Berita <i class="fas fa-chevron-right"></i>
                             </button>
-                            <ul class="dropdown-sub">
-                                <li><a href="/edu-damkar">Edu Damkar</a></li>
-                                <li><a href="{{ route('publik.infografis') }}">Infografis</a></li>
-                                <li><a href="/media-informasi">Media Informasi</a></li>
-                                <li><a href="/ujung-ujung-damkar" aria-current="page">Ujung-ujung Damkar</a></li>
-                            </ul>
+                       <ul class="dropdown-sub">
+    <li><a href="/edu-damkar" {!! request()->is('edu-damkar') ? 'aria-current="page"' : '' !!}>Edu Damkar</a></li>
+    <li><a href="{{ route('publik.infografis') }}" {!! request()->is('infografis') ? 'aria-current="page"' : '' !!}>Infografis</a></li>
+    <li><a href="/media-informasi" {!! request()->is('media-informasi') ? 'aria-current="page"' : '' !!}>Media Informasi</a></li>
+    <li><a href="/ujung-ujung-damkar" {!! request()->is('ujung-ujung-damkar') ? 'aria-current="page"' : '' !!}>Ujung-ujung Damkar</a></li>
+    <li><a href="{{ route('publik.kejadian') }}" {!! request()->is('pemadaman-penyelamatan-evakuasi') ? 'aria-current="page"' : '' !!}>Pemadaman, Penyelamatan dan Evakuasi</a></li>
+</ul>
                         </li>
                     </ul>
                 </li>
@@ -775,12 +776,24 @@
 </section>
 
 <!-- ==================== SUB NAVIGATION (PILL MENU) ==================== -->
+<!-- ==================== SUB NAVIGATION (PILL MENU) ==================== -->
 <div class="page-nav-wrap rise d3">
     <nav class="page-nav" aria-label="Sub menu Berita">
-        <a href="/edu-damkar"><i class="fas fa-video"></i> Edu Damkar</a>
-        <a href="/infografis"><i class="fas fa-image"></i> Infografis</a>
-        <a href="/media-informasi"><i class="fas fa-newspaper"></i> Media Informasi</a>
-        <a href="/ujung-ujung-damkar" class="active"><i class="fas fa-fire-extinguisher"></i> Ujung-ujung Damkar</a>
+        <a href="/edu-damkar" class="{{ request()->is('edu-damkar') ? 'active' : '' }}">
+            <i class="fas fa-video"></i> Edu Damkar
+        </a>
+        <a href="{{ route('publik.infografis') }}" class="{{ request()->is('infografis') ? 'active' : '' }}">
+            <i class="fas fa-image"></i> Infografis
+        </a>
+        <a href="/media-informasi" class="{{ request()->is('media-informasi') ? 'active' : '' }}">
+            <i class="fas fa-newspaper"></i> Media Informasi
+        </a>
+        <a href="/ujung-ujung-damkar" class="{{ request()->is('ujung-ujung-damkar') ? 'active' : '' }}">
+            <i class="fas fa-fire-extinguisher"></i> Ujung-ujung Damkar
+        </a>
+        <a href="{{ route('publik.kejadian') }}" class="{{ request()->is('pemadaman-penyelamatan-evakuasi') ? 'active' : '' }}">
+            <i class="fas fa-truck-medical"></i> Pemadaman &amp; Evakuasi
+        </a>
     </nav>
 </div>
 

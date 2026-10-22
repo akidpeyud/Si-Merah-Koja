@@ -9,10 +9,39 @@ use Illuminate\Support\Facades\Storage;
 
 class BeritaController extends Controller
 {
-    // Cek Hak Akses Operator (untuk tambah, edit, hapus)
-    private function cekAkses() {
-        if (!Auth::check() || strtolower(trim(Auth::user()->role)) !== 'operator') {
-            abort(403, 'Akses Ditolak! Hanya Operator yang boleh menambah, mengedit, atau menghapus berita.');
+    /** Role yang boleh tambah / edit / hapus (sudah dinormalisasi: huruf kecil, tanpa spasi/_/-). */
+    private const ROLE_BOLEH = ['operator', 'superuser'];
+
+    // Cek Hak Akses Operator & Super User (untuk tambah, edit, hapus)
+    private function cekAkses()
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            abort(403, 'Akses Ditolak! Anda belum login.');
+        }
+
+        $normalisasi = fn ($nama) => str_replace([' ', '_', '-'], '', strtolower(trim((string) $nama)));
+
+        // Role dari kolom `role` di tabel users
+        $namaRole = collect();
+        $kolomRole = $user->getAttribute('role');
+        if (is_string($kolomRole) && $kolomRole !== '') {
+            $namaRole->push($kolomRole);
+        }
+
+        // Role dari Spatie (kalau dipakai)
+        if (method_exists($user, 'getRoleNames')) {
+            $namaRole = $namaRole->merge($user->getRoleNames());
+        }
+
+        $boleh = $namaRole
+            ->map($normalisasi)
+            ->intersect(self::ROLE_BOLEH)
+            ->isNotEmpty();
+
+        if (!$boleh) {
+            abort(403, 'Akses Ditolak! Hanya Operator dan Super User yang boleh menambah, mengedit, atau menghapus berita.');
         }
     }
 
@@ -41,7 +70,7 @@ class BeritaController extends Controller
     public function store(Request $request)
     {
         $this->cekAkses();
-        
+
         $request->validate([
             'judul' => 'required|string|max:255',
             'lokasi' => 'required|string',
