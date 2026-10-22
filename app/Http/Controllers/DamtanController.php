@@ -685,6 +685,39 @@ class DamtanController extends Controller
         return redirect()->back()->with('success', 'Data rekap layanan berhasil disimpan!');
     }
 
+    // BARU: Update data rekap layanan (dipanggil oleh PUT /internal/damtan/rekap-layanan/{id})
+    public function updateRekapLayanan(Request $request, $id)
+    {
+        $request->validate([
+            'tanggal'  => 'required|date',
+            'kategori' => ['required', 'in:' . implode(',', array_keys($this->kategoriLayanan()))],
+            'jumlah'   => 'required|integer|min:1',
+        ]);
+
+        // Pastikan baris yang diedit memang data rekap layanan (bukan rekap objek)
+        $objekKeys = array_keys($this->kategoriObjek());
+        $ada = DB::table('rekap_layanan')
+            ->where('id', $id)
+            ->whereNotIn('kategori', $objekKeys)
+            ->exists();
+
+        if (!$ada) {
+            return redirect()->back()->with('error', 'Data rekap layanan tidak ditemukan.');
+        }
+
+        DB::table('rekap_layanan')->where('id', $id)->update([
+            'tanggal'    => $request->tanggal,
+            'kategori'   => $request->kategori,
+            'jumlah'     => $request->jumlah,
+            'kecamatan'  => $request->kecamatan,
+            'lokasi'     => $request->lokasi,
+            'keterangan' => $request->keterangan,
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Data rekap layanan berhasil diperbarui!');
+    }
+
     public function destroyRekapLayanan($id)
     {
         DB::table('rekap_layanan')->where('id', $id)->delete();
@@ -699,19 +732,19 @@ class DamtanController extends Controller
     private function kategoriObjek(): array
     {
         return [
-            'objek_rumah'     => ['Rumah / Hunian',       'fa-house',              'ic-red'],
-            'objek_kantor'    => ['Kantor',               'fa-building',           'ic-blue'],
-            'objek_ruko'      => ['Ruko',                 'fa-store',              'ic-amber'],
-            'objek_gudang'    => ['Gudang',               'fa-warehouse',          'ic-steel'],
-            'objek_bengkel'   => ['Bengkel',              'fa-screwdriver-wrench', 'ic-teal'],
-            'objek_mall'      => ['Mall / Pusat Belanja', 'fa-bag-shopping',       'ic-pink'],
-            'objek_restoran'  => ['Restoran / Warung',    'fa-utensils',           'ic-amber'],
-            'objek_toko'      => ['Toko',                 'fa-shop',               'ic-purple'],
-            'objek_kandang'   => ['Kandang',              'fa-paw',                'ic-teal'],
-            'objek_kendaraan' => ['Kendaraan',            'fa-car',                'ic-red'],
-            'objek_hotel'     => ['Hotel / Penginapan',   'fa-hotel',              'ic-blue'],
-            'objek_hiburan'   => ['Tempat Hiburan',       'fa-masks-theater',      'ic-purple'],
-            'objek_vital'     => ['Objek Vital',          'fa-shield-halved',      'ic-steel'],
+            'objek_rumah'            => ['Rumah',                    'fa-house',            'ic-red'],
+            'objek_gudang'           => ['Gudang',                   'fa-warehouse',        'ic-steel'],
+            'objek_ruko'             => ['Ruko',                     'fa-store',            'ic-amber'],
+            'objek_kantor'           => ['Kantor',                   'fa-building',         'ic-blue'],
+            'objek_sekolah'          => ['Sekolah',                  'fa-school',           'ic-teal'],
+            'objek_rumah_ibadah'     => ['Rumah Ibadah',             'fa-place-of-worship', 'ic-purple'],
+            'objek_pasar'            => ['Pasar / Tempat Usaha',     'fa-shop',             'ic-pink'],
+            'objek_kendaraan'        => ['Kendaraan Bermotor',       'fa-car',              'ic-red'],
+            'objek_vital'            => ['Objek Vital',              'fa-shield-halved',    'ic-steel'],
+            'objek_sarana_kesehatan' => ['Sarana Kesehatan',         'fa-hospital',         'ic-blue'],
+            'objek_lahan_pohon'      => ['Lahan, Pohon',             'fa-tree',             'ic-teal'],
+            'objek_gardu_listrik'    => ['Gardu Listrik',            'fa-bolt',             'ic-amber'],
+            'objek_tpa_sampah'       => ['Tempat Pembuangan Sampah', 'fa-trash',            'ic-purple'],
         ];
     }
 
@@ -755,6 +788,39 @@ class DamtanController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Data rekap objek kebakaran berhasil disimpan!');
+    }
+
+    // BARU: Update data rekap objek (dipanggil oleh PUT /internal/damtan/rekap-objek/{id})
+    public function updateRekapObjek(Request $request, $id)
+    {
+        $request->validate([
+            'tanggal'  => 'required|date',
+            'kategori' => ['required', 'in:' . implode(',', array_keys($this->kategoriObjek()))],
+            'jumlah'   => 'required|integer|min:1',
+        ]);
+
+        // Pastikan baris yang diedit memang data rekap objek
+        $objekKeys = array_keys($this->kategoriObjek());
+        $ada = DB::table('rekap_layanan')
+            ->where('id', $id)
+            ->whereIn('kategori', $objekKeys)
+            ->exists();
+
+        if (!$ada) {
+            return redirect()->back()->with('error', 'Data rekap objek tidak ditemukan.');
+        }
+
+        DB::table('rekap_layanan')->where('id', $id)->update([
+            'tanggal'    => $request->tanggal,
+            'kategori'   => $request->kategori,
+            'jumlah'     => $request->jumlah,
+            'kecamatan'  => $request->kecamatan,
+            'lokasi'     => $request->lokasi,
+            'keterangan' => $request->keterangan,
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Data rekap objek kebakaran berhasil diperbarui!');
     }
 
     public function destroyRekapObjek($id)
