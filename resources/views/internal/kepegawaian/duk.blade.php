@@ -80,12 +80,23 @@
     .card-container { background: #ffffff; border: 1px solid var(--line); border-radius: var(--r-md); padding: 24px; box-shadow: var(--shadow-xs); overflow: hidden; transition: box-shadow .2s ease, border-color .2s ease; }
     .card-container:hover { box-shadow: var(--shadow-sm); border-color: #d2dae5; }
     
-    .table > :not(caption) > * > * { padding: 14px 16px; border-bottom-color: var(--line); color: var(--ink); font-size: .92rem; vertical-align: middle; }
-    .table thead th { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--steel-soft); background: var(--paper); border-bottom: 2px solid var(--line-dark); }
+    .table > :not(caption) > * > * { padding: 9px 11px; border-color: var(--line); color: var(--ink); font-size: .84rem; vertical-align: middle; }
+    .table thead th { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; color: var(--navy); background: #f1f5f9; border: 1px solid #cbd5e1; vertical-align: middle; }
+    .table tbody td { border: 1px solid var(--line); vertical-align: top; }
+    .cell-multiline { white-space: nowrap; line-height: 1.6; vertical-align: top !important; }
     .table tbody tr { transition: background .2s; }
     .table tbody tr:hover { background: #f8fafc; }
+    .table-duk-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
-    .badge-status { display: inline-flex; align-items: center; padding: 5px 12px; border-radius: 6px; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; }
+    /* ---------- Pagination DUK ---------- */
+    .duk-pagination .pagination { margin-bottom: 0; gap: 4px; flex-wrap: wrap; }
+    .duk-pagination .page-link { color: var(--navy); border: 1px solid var(--line); border-radius: 6px !important; padding: 6px 12px; font-size: .84rem; font-weight: 600; background: #fff; }
+    .duk-pagination .page-item.active .page-link { background-color: var(--navy); border-color: var(--navy); color: #fff; }
+    .duk-pagination .page-item.disabled .page-link { color: var(--steel-soft); background-color: #f8fafc; border-color: var(--line); }
+    .duk-pagination .page-link:hover { background-color: #f1f5f9; color: var(--navy-dark); }
+    .duk-pagination .page-item.active .page-link:hover { background-color: var(--navy); color: #fff; }
+
+    .badge-status { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 6px; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; }
     .status-aktif   { background: rgba(25, 135, 84, .15); color: var(--success); }
     .status-cuti    { background: rgba(244, 183, 64, .15); color: #d97706; }
     .status-pensiun { background: var(--paper); color: var(--steel); }
@@ -114,26 +125,38 @@
 
 @section('content')
 @php
-    $listPegawai = collect($pegawais ?? []);
-    $totalPeg    = $listPegawai->count();
-    $jmlAktif    = $listPegawai->where('status_pegawai', 'Aktif')->count();
-    $jmlCuti     = $listPegawai->where('status_pegawai', 'Cuti')->count();
-    $jmlPensiun  = $listPegawai->where('status_pegawai', 'Pensiun')->count();
+    $listPegawai = collect($allPegawais ?? $pegawais ?? []);
+    $totalPeg    = $totalPeg ?? $listPegawai->count();
+    $jmlPns      = $jmlPns ?? $listPegawai->filter(fn($p) => str_contains($p->pangkat_gol_ruang ?? '', '/'))->count();
+    $jmlPppk     = $jmlPppk ?? ($totalPeg - $jmlPns);
+    $jmlAktif    = $jmlAktif ?? $listPegawai->where('status_pegawai', 'Aktif')->count();
+    $jmlCuti     = $jmlCuti ?? $listPegawai->where('status_pegawai', 'Cuti')->count();
+    $jmlPensiun  = $jmlPensiun ?? $listPegawai->where('status_pegawai', 'Pensiun')->count();
 
-    /* Data siap rekap Excel */
+    /* Data siap rekap Excel (seluruh pegawai) */
     $barisExcel = $listPegawai->values()->map(function ($p, $i) {
+        $isPns = str_contains($p->pangkat_gol_ruang ?? '', '/');
+        $formatMulti = fn($v) => str_replace("\n", "\r\n", (string)($v ?? '-'));
         return [
-            'no_urut'             => $p->no_urut ?? ($i + 1),
-            'nip'                 => (string) $p->nip,
-            'nama'                => (string) $p->nama,
-            'pangkat_gol_ruang'   => (string) $p->pangkat_gol_ruang,
-            'pangkat_tmt'         => (string) $p->pangkat_tmt,
-            'jabatan_nama'        => (string) $p->jabatan_nama,
-            'jabatan_tmt'         => (string) $p->jabatan_tmt,
-            'masa_kerja'          => ($p->masa_kerja_th ?? 0) . ' Thn, ' . ($p->masa_kerja_bln ?? 0) . ' Bln',
-            'pendidikan'          => ($p->pendidikan_tingkat_ijazah ?? '') . ' - ' . ($p->pendidikan_nama ?? ''),
-            'pendidikan_lulus'    => (string) $p->pendidikan_tahun_lulus,
-            'status_pegawai'      => (string) ($p->status_pegawai ?? 'Aktif'),
+            'no_urut'                     => $p->no_urut ?? ($i + 1),
+            'nama'                        => (string) $p->nama,
+            'nip'                         => (string) $p->nip,
+            'pangkat_gol_ruang'           => (string) ($p->pangkat_gol_ruang ?? '-'),
+            'pangkat_tmt'                 => $p->pangkat_tmt ? \Carbon\Carbon::parse($p->pangkat_tmt)->format('d-m-Y') : '-',
+            'jabatan_nama'                => (string) ($p->jabatan_nama ?? '-'),
+            'jabatan_tmt'                 => $p->jabatan_tmt ? \Carbon\Carbon::parse($p->jabatan_tmt)->format('d-m-Y') : '-',
+            'masa_kerja_th'               => (int) ($p->masa_kerja_th ?? 0),
+            'masa_kerja_bln'              => (int) ($p->masa_kerja_bln ?? 0),
+            'latihan_jabatan_nama'        => $formatMulti($p->latihan_jabatan_nama),
+            'latihan_jabatan_tahun_lulus' => $formatMulti($p->latihan_jabatan_tahun_lulus),
+            'latihan_jabatan_tempat'      => $formatMulti($p->latihan_jabatan_tempat),
+            'pendidikan_nama'             => $formatMulti($p->pendidikan_nama),
+            'pendidikan_tahun_lulus'      => $formatMulti($p->pendidikan_tahun_lulus),
+            'pendidikan_tingkat_ijazah'   => $formatMulti($p->pendidikan_tingkat_ijazah),
+            'tempat_tanggal_lahir'        => (string) ($p->tempat_tanggal_lahir ?? '-'),
+            'jenis_kelamin'               => (string) ($p->jenis_kelamin ?? '-'),
+            'catatan_mutasi_pegawai'      => (string) ($p->catatan_mutasi_pegawai ?? '-'),
+            'status_kepegawaian'          => $isPns ? 'PNS' : 'PPPK',
         ];
     })->all();
 
@@ -141,6 +164,8 @@
         'rows' => $barisExcel,
         'sum'  => [
             'total'   => $totalPeg,
+            'pns'     => $jmlPns,
+            'pppk'    => $jmlPppk,
             'aktif'   => $jmlAktif,
             'cuti'    => $jmlCuti,
             'pensiun' => $jmlPensiun,
@@ -163,7 +188,7 @@
         <div class="page-head">
             <div>
                 <h1>Daftar Urut Kepangkatan (DUK)</h1>
-                <p>Manajemen data pegawai, kepangkatan, jabatan, dan pendidikan.</p>
+                <p>Manajemen data pegawai, kepangkatan, jabatan, dan pendidikan lengkap.</p>
             </div>
             
             <div class="d-flex gap-2 flex-wrap">
@@ -190,6 +215,22 @@
                     <div class="rekap-sub">Terdaftar dalam DUK</div>
                 </div>
             </div>
+            <div class="rekap-item" style="border-left-color: #0d6efd;">
+                <div class="rekap-ico" style="background: rgba(13, 110, 253, .12); color: #0d6efd;"><i class="fas fa-id-badge"></i></div>
+                <div>
+                    <div class="rekap-num">{{ $jmlPns }}</div>
+                    <div class="rekap-label">PNS</div>
+                    <div class="rekap-sub">Pegawai Negeri Sipil</div>
+                </div>
+            </div>
+            <div class="rekap-item" style="border-left-color: #198754;">
+                <div class="rekap-ico" style="background: rgba(25, 135, 84, .12); color: #198754;"><i class="fas fa-user-check"></i></div>
+                <div>
+                    <div class="rekap-num">{{ $jmlPppk }}</div>
+                    <div class="rekap-label">PPPK</div>
+                    <div class="rekap-sub">Perjanjian Kerja</div>
+                </div>
+            </div>
             <div class="rekap-item rekap-ok">
                 <div class="rekap-ico"><i class="fas fa-check-circle"></i></div>
                 <div>
@@ -199,70 +240,148 @@
                 </div>
             </div>
             <div class="rekap-item rekap-pending">
-                <div class="rekap-ico"><i class="fas fa-clock"></i></div>
+                <div class="rekap-ico"><i class="fas fa-user-clock"></i></div>
                 <div>
-                    <div class="rekap-num">{{ $jmlCuti }}</div>
-                    <div class="rekap-label">Cuti</div>
-                    <div class="rekap-sub">Sedang cuti</div>
-                </div>
-            </div>
-            <div class="rekap-item rekap-no">
-                <div class="rekap-ico"><i class="fas fa-user-slash"></i></div>
-                <div>
-                    <div class="rekap-num">{{ $jmlPensiun }}</div>
-                    <div class="rekap-label">Pensiun</div>
-                    <div class="rekap-sub">Purna tugas</div>
+                    <div class="rekap-num">{{ $jmlCuti + $jmlPensiun }}</div>
+                    <div class="rekap-label">Cuti / Pensiun</div>
+                    <div class="rekap-sub">Non-aktif bertugas</div>
                 </div>
             </div>
         </div>
 
         <div class="card-container">
-            <!-- Tabel Responsif -->
-            <div class="table-responsive">
-                <table class="table align-middle border-0 mb-0">
+            <!-- Baris Pencarian & Info Total -->
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                <form action="{{ route('kepegawaian.duk.index') }}" method="GET" class="search-wrap d-flex gap-2">
+                    <div class="position-relative flex-grow-1">
+                        <i class="fas fa-magnifying-glass"></i>
+                        <input type="text" id="searchDukInput" name="search" class="form-control" placeholder="Cari nama pegawai atau NIP..." value="{{ request('search') }}" autocomplete="off">
+                    </div>
+                    <button type="submit" class="btn btn-outline-primary d-flex align-items-center gap-1" style="height: 40px; border-radius: 8px; font-size: .84rem; font-weight: 600; flex: none;">
+                        <i class="fas fa-search"></i> Cari
+                    </button>
+                    @if(request('search'))
+                    <a href="{{ route('kepegawaian.duk.index') }}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center" title="Reset Pencarian" style="height: 40px; width: 40px; border-radius: 8px; flex: none;">
+                        <i class="fas fa-times"></i>
+                    </a>
+                    @endif
+                </form>
+
+                <div class="text-muted small fw-medium">
+                    Total: <strong class="text-dark" id="countDukPegawai">{{ $totalPeg }}</strong> pegawai
+                    @if(request('search'))
+                        ditemukan
+                    @else
+                        terdaftar
+                    @endif
+                </div>
+            </div>
+
+            <!-- Tabel Responsif Mengikuti Struktur Excel DUK -->
+            <div class="table-responsive table-duk-scroll">
+                <table class="table align-middle border-0 mb-0" id="tableDuk">
                     <thead>
                         <tr>
-                            <th class="text-center" width="5%">No. Urut</th>
-                            <th>NIP</th>
-                            <th>Nama Lengkap</th>
-                            <th>Pangkat / Gol. Ruang</th>
-                            <th>Jabatan</th>
-                            <th>Masa Kerja</th>
-                            <th>Pendidikan Terakhir</th>
-                            <th>Status Pegawai</th>
+                            <th rowspan="2" class="text-center align-middle" style="width: 45px;">No.</th>
+                            <th rowspan="2" class="align-middle" style="min-width: 200px;">Nama Pegawai</th>
+                            <th rowspan="2" class="align-middle" style="min-width: 175px;">NIP</th>
+                            <th colspan="2" class="text-center">Pangkat</th>
+                            <th colspan="2" class="text-center">Jabatan</th>
+                            <th colspan="2" class="text-center">Masa Kerja</th>
+                            <th colspan="3" class="text-center">Latihan Jabatan (Diklat)</th>
+                            <th colspan="3" class="text-center">Pendidikan Formal</th>
+                            <th rowspan="2" class="align-middle" style="min-width: 180px;">Tempat, Tanggal Lahir</th>
+                            <th rowspan="2" class="text-center align-middle" style="width: 50px;">L/P</th>
+                            <th rowspan="2" class="align-middle" style="min-width: 160px;">Catatan Mutasi</th>
+                            <th rowspan="2" class="text-center align-middle" style="min-width: 90px;">Status</th>
                             @hasanyrole('Sekretariat|Super User')
-                            <th class="text-center" width="120px">Aksi</th>
+                            <th rowspan="2" class="text-center align-middle" style="width: 105px;">Aksi</th>
                             @endhasanyrole
+                        </tr>
+                        <tr>
+                            <th class="text-center" style="min-width: 85px;">Gol. Ruang</th>
+                            <th class="text-center" style="min-width: 95px;">TMT</th>
+                            <th style="min-width: 190px;">Nama</th>
+                            <th class="text-center" style="min-width: 95px;">TMT</th>
+                            <th class="text-center" style="width: 45px;">Th</th>
+                            <th class="text-center" style="width: 45px;">Bln</th>
+                            <th style="min-width: 170px;">Nama</th>
+                            <th class="text-center" style="min-width: 65px;">Tahun</th>
+                            <th style="min-width: 120px;">Tempat</th>
+                            <th style="min-width: 110px;">Nama</th>
+                            <th class="text-center" style="min-width: 65px;">Tahun</th>
+                            <th class="text-center" style="min-width: 80px;">Tingkat</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($listPegawai as $pegawai)
-                        <tr>
+                        @forelse($pegawais as $pegawai)
+                        @php
+                            $isPns = str_contains($pegawai->pangkat_gol_ruang ?? '', '/');
+                        @endphp
+                        <tr data-pegawai-row data-nama="{{ strtolower($pegawai->nama) }}" data-nip="{{ $pegawai->nip }}">
+                            {{-- 1. No --}}
                             <td class="text-center fw-bold text-secondary">{{ $pegawai->no_urut }}</td>
-                            <td class="fw-bold" style="font-variant-numeric: tabular-nums;">{{ $pegawai->nip }}</td>
-                            <td class="fw-semibold">{{ $pegawai->nama }}</td>
-                            <td>
-                                {{ $pegawai->pangkat_gol_ruang }}<br>
-                                <small class="text-muted">TMT: {{ $pegawai->pangkat_tmt }}</small>
+                            
+                            {{-- 2. Nama --}}
+                            <td class="fw-semibold text-dark" style="white-space: nowrap;">{{ $pegawai->nama }}</td>
+                            
+                            {{-- 3. NIP --}}
+                            <td class="fw-bold" style="font-variant-numeric: tabular-nums; white-space: nowrap;">{{ $pegawai->nip }}</td>
+                            
+                            {{-- 4-5. Pangkat Gol Ruang & TMT --}}
+                            <td class="text-center fw-bold text-primary">{{ $pegawai->pangkat_gol_ruang ?: '-' }}</td>
+                            <td class="text-center text-muted" style="white-space: nowrap; font-size: .8rem;">
+                                {{ $pegawai->pangkat_tmt ? \Carbon\Carbon::parse($pegawai->pangkat_tmt)->format('d-m-Y') : '-' }}
                             </td>
-                            <td>
-                                {{ $pegawai->jabatan_nama }}<br>
-                                <small class="text-muted">TMT: {{ $pegawai->jabatan_tmt }}</small>
+                            
+                            {{-- 6-7. Jabatan Nama & TMT --}}
+                            <td>{{ $pegawai->jabatan_nama ?: '-' }}</td>
+                            <td class="text-center text-muted" style="white-space: nowrap; font-size: .8rem;">
+                                {{ $pegawai->jabatan_tmt ? \Carbon\Carbon::parse($pegawai->jabatan_tmt)->format('d-m-Y') : '-' }}
                             </td>
-                            <td>{{ $pegawai->masa_kerja_th }} Thn, {{ $pegawai->masa_kerja_bln }} Bln</td>
-                            <td>
-                                {{ $pegawai->pendidikan_tingkat_ijazah }} - {{ $pegawai->pendidikan_nama }}<br>
-                                <small class="text-muted">Lulus: {{ $pegawai->pendidikan_tahun_lulus }}</small>
-                            </td>
-                            <td>
-                                @if($pegawai->status_pegawai == 'Aktif')
-                                    <span class="badge-status status-aktif">Aktif</span>
-                                @elseif($pegawai->status_pegawai == 'Cuti')
-                                    <span class="badge-status status-cuti">Cuti</span>
-                                @elseif($pegawai->status_pegawai == 'Pensiun')
-                                    <span class="badge-status status-pensiun">Pensiun</span>
+                            
+                            {{-- 8-9. Masa Kerja Th & Bln --}}
+                            <td class="text-center">{{ $pegawai->masa_kerja_th ?? 0 }}</td>
+                            <td class="text-center">{{ $pegawai->masa_kerja_bln ?? 0 }}</td>
+                            
+                            {{-- 10-12. Latihan Jabatan (Diklat) Nama, Tahun, Tempat --}}
+                            <td class="cell-multiline">{!! nl2br(e($pegawai->latihan_jabatan_nama ?: '-')) !!}</td>
+                            <td class="cell-multiline text-center text-muted" style="font-size: .8rem;">{!! nl2br(e($pegawai->latihan_jabatan_tahun_lulus ?: '-')) !!}</td>
+                            <td class="cell-multiline">{!! nl2br(e($pegawai->latihan_jabatan_tempat ?: '-')) !!}</td>
+                            
+                            {{-- 13-15. Pendidikan Nama, Tahun, Tingkat --}}
+                            <td class="cell-multiline">{!! nl2br(e($pegawai->pendidikan_nama ?: '-')) !!}</td>
+                            <td class="cell-multiline text-center text-muted" style="font-size: .8rem;">{!! nl2br(e($pegawai->pendidikan_tahun_lulus ?: '-')) !!}</td>
+                            <td class="cell-multiline text-center fw-semibold">{!! nl2br(e($pegawai->pendidikan_tingkat_ijazah ?: '-')) !!}</td>
+                            
+                            {{-- 16. Tempat Tanggal Lahir --}}
+                            <td style="white-space: nowrap;">{{ $pegawai->tempat_tanggal_lahir ?: '-' }}</td>
+                            
+                            {{-- 17. Jenis Kelamin (L/P) --}}
+                            <td class="text-center">
+                                @if($pegawai->jenis_kelamin == 'Perempuan')
+                                    <span class="badge" style="background: rgba(220,53,69,.12); color: #dc3545; font-size: .75rem;" title="Perempuan">P</span>
+                                @elseif($pegawai->jenis_kelamin == 'Laki-laki')
+                                    <span class="badge" style="background: rgba(13,110,253,.12); color: #0d6efd; font-size: .75rem;" title="Laki-laki">L</span>
                                 @else
-                                    <span class="badge-status" style="background: var(--info-soft); color: var(--info);">{{ $pegawai->status_pegawai }}</span>
+                                    -
+                                @endif
+                            </td>
+                            
+                            {{-- 18. Catatan Mutasi Pegawai --}}
+                            <td>{{ $pegawai->catatan_mutasi_pegawai ?: '-' }}</td>
+                            
+                            {{-- 19. Status CPNS/PNS/PPPK & Keaktifan --}}
+                            <td class="text-center" style="white-space: nowrap;">
+                                <span class="badge {{ $isPns ? 'bg-primary' : 'bg-success' }}" style="font-size: .72rem; padding: 3px 7px;">
+                                    {{ $isPns ? 'PNS' : 'PPPK' }}
+                                </span>
+                                @if($pegawai->status_pegawai && $pegawai->status_pegawai !== 'Aktif')
+                                    <div class="mt-1">
+                                        <span class="badge-status {{ $pegawai->status_pegawai == 'Cuti' ? 'status-cuti' : 'status-pensiun' }}" style="font-size: .65rem; padding: 2px 5px;">
+                                            {{ $pegawai->status_pegawai }}
+                                        </span>
+                                    </div>
                                 @endif
                             </td>
                             
@@ -286,16 +405,35 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="@hasanyrole('Sekretariat|Super User') 9 @else 8 @endhasanyrole" class="text-center py-5">
+                            <td colspan="@hasanyrole('Sekretariat|Super User') 20 @else 19 @endhasanyrole" class="text-center py-5">
                                 <div class="text-muted">
-                                    <i class="fas fa-folder-open mb-3" style="font-size: 2.5rem; color: var(--steel-soft); opacity: 0.7;"></i><br>
-                                    Belum ada data pegawai. Silakan tambah data baru.
+                                    <i class="fas fa-search mb-3" style="font-size: 2.5rem; color: var(--steel-soft); opacity: 0.7;"></i><br>
+                                    @if(request('search'))
+                                        Tidak ditemukan pegawai dengan kata kunci "<strong>{{ request('search') }}</strong>".
+                                        <div class="mt-2">
+                                            <a href="{{ route('kepegawaian.duk.index') }}" class="btn btn-sm btn-outline-secondary" style="border-radius: 6px;">Reset Pencarian</a>
+                                        </div>
+                                    @else
+                                        Belum ada data pegawai. Silakan tambah data baru.
+                                    @endif
                                 </div>
                             </td>
                         </tr>
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="text-muted small">
+                    Menampilkan <strong class="text-dark">{{ $pegawais->firstItem() ?? 0 }}</strong> sampai <strong class="text-dark">{{ $pegawais->lastItem() ?? 0 }}</strong> dari <strong class="text-dark">{{ $pegawais->total() }}</strong> pegawai
+                </div>
+                @if($pegawais->hasPages())
+                    <div class="duk-pagination">
+                        {{ $pegawais->links('pagination::bootstrap-5') }}
+                    </div>
+                @endif
             </div>
         </div>
 @endsection
@@ -307,17 +445,25 @@ var REKAP = @json($rekapData);
 
 function rekapKolomDUK() {
     return [
-        { k: 'no_urut',           t: 'No. Urut',           w: 10, a: 'center', int: true },
-        { k: 'nip',               t: 'NIP',                w: 22, txt: true },
-        { k: 'nama',              t: 'Nama Lengkap',       w: 28 },
-        { k: 'pangkat_gol_ruang', t: 'Pangkat / Gol. Ruang', w: 22 },
-        { k: 'pangkat_tmt',       t: 'TMT Pangkat',        w: 16, a: 'center' },
-        { k: 'jabatan_nama',      t: 'Jabatan',            w: 28 },
-        { k: 'jabatan_tmt',       t: 'TMT Jabatan',        w: 16, a: 'center' },
-        { k: 'masa_kerja',        t: 'Masa Kerja',         w: 18, a: 'center' },
-        { k: 'pendidikan',        t: 'Pendidikan Terakhir', w: 30 },
-        { k: 'pendidikan_lulus',  t: 'Tahun Lulus',        w: 14, a: 'center', int: true },
-        { k: 'status_pegawai',    t: 'Status Pegawai',     w: 16, a: 'center' }
+        { k: 'no_urut',                     t: 'NO',                     w: 8,  a: 'center', int: true },
+        { k: 'nama',                        t: 'NAMA',                   w: 28 },
+        { k: 'nip',                         t: 'NIP',                    w: 22, txt: true },
+        { k: 'pangkat_gol_ruang',           t: 'PANGKAT GOL RUANG',      w: 14, a: 'center' },
+        { k: 'pangkat_tmt',                 t: 'PANGKAT TMT',            w: 14, a: 'center' },
+        { k: 'jabatan_nama',                t: 'JABATAN NAMA',           w: 28 },
+        { k: 'jabatan_tmt',                 t: 'JABATAN TMT',            w: 14, a: 'center' },
+        { k: 'masa_kerja_th',               t: 'MASA KERJA TH',          w: 12, a: 'center', int: true },
+        { k: 'masa_kerja_bln',              t: 'MASA KERJA BLN',         w: 12, a: 'center', int: true },
+        { k: 'latihan_jabatan_nama',        t: 'LATIHAN JABATAN NAMA',   w: 24 },
+        { k: 'latihan_jabatan_tahun_lulus', t: 'TAHUN LULUS',            w: 14, a: 'center' },
+        { k: 'latihan_jabatan_tempat',      t: 'TEMPAT LATIHAN',         w: 18 },
+        { k: 'pendidikan_nama',             t: 'PENDIDIKAN NAMA',        w: 18 },
+        { k: 'pendidikan_tahun_lulus',      t: 'TAHUN LULUS',            w: 14, a: 'center' },
+        { k: 'pendidikan_tingkat_ijazah',   t: 'TINGKAT IJAZAH',         w: 14, a: 'center' },
+        { k: 'tempat_tanggal_lahir',        t: 'TEMPAT TANGGAL LAHIR',   w: 26 },
+        { k: 'jenis_kelamin',               t: 'JENIS KELAMIN',          w: 16, a: 'center' },
+        { k: 'catatan_mutasi_pegawai',      t: 'CATATAN MUTASI PEGAWAI', w: 24 },
+        { k: 'status_kepegawaian',          t: 'STATUS CPNS/PNS/PPPK',   w: 16, a: 'center' }
     ];
 }
 
@@ -342,9 +488,8 @@ async function exportRekapExcel() {
         var thin = { style: 'thin', color: { argb: 'FFBFC8D4' } };
         var border = { top: thin, left: thin, bottom: thin, right: thin };
         var statusStyle = {
-            'Aktif':   { bg: 'FFD1E7DD', fg: 'FF146C43' },
-            'Cuti':    { bg: 'FFFDF0D5', fg: 'FFB45309' },
-            'Pensiun': { bg: 'FFF8D7DA', fg: 'FFB42332' }
+            'PNS':  { bg: 'FFD1E7DD', fg: 'FF146C43' },
+            'PPPK': { bg: 'FFCFE2FF', fg: 'FF084298' }
         };
         var fillOf = function (argb) { return { type: 'pattern', pattern: 'solid', fgColor: { argb: argb } }; };
 
@@ -365,7 +510,7 @@ async function exportRekapExcel() {
         var cols  = rekapKolomDUK();
         var NCOL  = cols.length;
         var LAST  = HEAD + Math.max(rows.length, 1);
-        var stIdx = cols.map(function (c) { return c.k; }).indexOf('status_pegawai') + 1;
+        var stIdx = cols.map(function (c) { return c.k; }).indexOf('status_kepegawaian') + 1;
 
         var ws = wb.addWorksheet('Data DUK', {
             views: [{ state: 'frozen', ySplit: HEAD, xSplit: 3 }],
@@ -385,10 +530,10 @@ async function exportRekapExcel() {
 
         ws.mergeCells(3, 1, 3, NCOL);
         ws.getCell('A3').value = 'Dicetak: ' + tglCetak +
-            '   |   Total Pegawai: ' + sum.total +
-            '   |   Aktif: ' + sum.aktif +
-            '   |   Cuti: ' + sum.cuti +
-            '   |   Pensiun: ' + sum.pensiun;
+            '   |   Total: ' + sum.total +
+            '   |   PNS: ' + sum.pns +
+            '   |   PPPK: ' + sum.pppk +
+            '   |   Aktif: ' + sum.aktif;
         ws.getCell('A3').font = { size: 10, italic: true, color: { argb: 'FF64748B' } };
 
         var hr = ws.getRow(HEAD);
@@ -411,7 +556,7 @@ async function exportRekapExcel() {
                 if (c.int) cell.numFmt = '#,##0';
                 if (c.txt) cell.numFmt = '@'; // NIP aman sebagai teks
             });
-            var st = statusStyle[r.status_pegawai];
+            var st = statusStyle[r.status_kepegawaian];
             if (st) {
                 var sc = row.getCell(stIdx);
                 sc.fill = fillOf(st.bg);
@@ -436,7 +581,7 @@ async function exportRekapExcel() {
         sm.getCell('A2').font = { italic: true, color: { argb: 'FF64748B' } };
 
         var headRow = sm.getRow(4);
-        ['Status Pegawai', 'Jumlah Pegawai'].forEach(function (t, i) { headRow.getCell(i + 1).value = t; });
+        ['Status Kepegawaian', 'Jumlah Pegawai'].forEach(function (t, i) { headRow.getCell(i + 1).value = t; });
         headRow.eachCell(function (c) {
             c.font = { bold: true, color: { argb: 'FFFFFFFF' } };
             c.fill = fillOf(NAVY);
@@ -446,9 +591,8 @@ async function exportRekapExcel() {
         headRow.height = 26;
 
         var statusRows = [
-            ['Aktif',   'aktif'],
-            ['Cuti',    'cuti'],
-            ['Pensiun', 'pensiun']
+            ['PNS',   'pns'],
+            ['PPPK',  'pppk']
         ];
 
         statusRows.forEach(function (d, i) {
@@ -469,9 +613,9 @@ async function exportRekapExcel() {
             }
         });
 
-        var totalRow = sm.getRow(8);
+        var totalRow = sm.getRow(7);
         totalRow.getCell(1).value = 'TOTAL KESELURUHAN';
-        totalRow.getCell(2).value = { formula: 'SUM(B5:B7)', result: sum.total };
+        totalRow.getCell(2).value = { formula: 'SUM(B5:B6)', result: sum.total };
 
         for (var n = 1; n <= 2; n++) {
             var tc = totalRow.getCell(n);
@@ -500,5 +644,58 @@ async function exportRekapExcel() {
     }
 }
 document.getElementById('btnExportExcel').addEventListener('click', exportRekapExcel);
+
+/* ---------- Filter Pencarian Real-Time (Live Search) ---------- */
+(function () {
+    var searchInput = document.getElementById('searchDukInput');
+    var tableBody = document.querySelector('#tableDuk tbody');
+    var countDisplay = document.getElementById('countDukPegawai');
+
+    if (searchInput && tableBody) {
+        var rows = tableBody.querySelectorAll('tr[data-pegawai-row]');
+
+        searchInput.addEventListener('input', function () {
+            var query = this.value.toLowerCase().trim();
+            var cleanQueryNip = query.replace(/[^0-9]/g, '');
+            var visibleCount = 0;
+
+            rows.forEach(function (row) {
+                var nama = row.getAttribute('data-nama') || '';
+                var nip = row.getAttribute('data-nip') || '';
+
+                var matchNama = nama.indexOf(query) !== -1;
+                var matchNip = nip.indexOf(query) !== -1 || (cleanQueryNip.length > 0 && nip.indexOf(cleanQueryNip) !== -1);
+
+                if (!query || matchNama || matchNip) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            if (countDisplay) {
+                countDisplay.textContent = visibleCount;
+            }
+
+            var emptySearchRow = document.getElementById('emptySearchRow');
+            if (visibleCount === 0 && rows.length > 0) {
+                if (!emptySearchRow) {
+                    emptySearchRow = document.createElement('tr');
+                    emptySearchRow.id = 'emptySearchRow';
+                    emptySearchRow.innerHTML = '<td colspan="@hasanyrole("Sekretariat|Super User") 20 @else 19 @endhasanyrole" class="text-center py-4">' +
+                        '<div class="text-muted">' +
+                        '<i class="fas fa-search mb-2" style="font-size: 2rem; color: var(--steel-soft); opacity: 0.7;"></i><br>' +
+                        'Tidak ditemukan di halaman ini. Tekan <strong>Enter</strong> atau klik tombol <strong>Cari</strong> untuk mencari di seluruh data.' +
+                        '</div></td>';
+                    tableBody.appendChild(emptySearchRow);
+                }
+                emptySearchRow.style.display = '';
+            } else if (emptySearchRow) {
+                emptySearchRow.style.display = 'none';
+            }
+        });
+    }
+})();
 </script>
 @endpush

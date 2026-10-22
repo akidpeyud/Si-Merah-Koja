@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class TitikSigapSeeder extends Seeder
 {
@@ -16,10 +16,11 @@ class TitikSigapSeeder extends Seeder
         // SESUAIKAN nilai kategori di bawah dengan key pada
         // \App\Models\TitikSigap::KATEGORI
         // ------------------------------------------------------------------
-        $K_KOTA   = 'hydrant';
-        $K_PILAR  = 'hydrant_pilar';
-        $K_POS    = 'pos';
-        $K_AIR    = 'sumber_air';
+        $K_KOTA = 'hydrant';
+        $K_PILAR = 'hydrant_pilar';
+        $K_TRUCK = 'water_truck';
+        $K_POS = 'pos';
+        $K_AIR = 'sumber_air';
 
         // Format: [kategori, nama, lokasi, keterangan, latitude, longitude]
         $rows = [
@@ -91,7 +92,6 @@ class TitikSigapSeeder extends Seeder
             [$K_PILAR, 'Hidran Pilar - PDAM Pasir Panjang', 'CH9G+M64, Pasir Panjang, Kec. Danau Tlk., Kota Jambi, Jambi 36361', 'Hidran Pilar | Jumlah: 1 unit', -1.580628, 103.575496],
             [$K_PILAR, 'Hidran Pilar - PDAM AURDURI', 'CG2X+PWV, Penyengat Rendah, Kec. Telanaipura, Kota Jambi, Jambi 36361', 'Hidran Pilar | Jumlah: 1 unit', -1.597896, 103.549903],
 
-
             // ===== POS DAMKAR =====
             [$K_POS, 'MAKO', 'Jl. HOS. Cokroaminoto, Suka Karya, Kec. Kota Baru, Kota Jambi', 'Markas Komando Damkar Kota Jambi (Kode Map: 9JJ2+Q76)', -1.633063, 103.600688],
             [$K_POS, 'POS ALAM BARAJO', 'JL. Sailendra Rw. Sari, Kec. Kota Baru, Kota Jambi', 'Pos Damkar Alam Barajo (Kode Map: 9HGG+H2M)', -1.623563, 103.575063],
@@ -106,15 +106,26 @@ class TitikSigapSeeder extends Seeder
             [$K_AIR, 'Danau Teluk', 'Kecamatan Danau Teluk, perbatasan Kelurahan Pasir Panjang, Tanjung Pasir, dan Olak Kemang', 'Kategori: Danau | Luas: - | Kode Map: CHCW+QRM', -1.578063, 103.597063],
             [$K_AIR, 'PT. REMCO', 'PT. REMCO, Tanjung Johor, Pelayangan, Jambi City, Jambi 36382', 'Sumber air industri', -1.5599130192842543, 103.630807419327],
             [$K_AIR, 'UPTD SPAL-D Kota Jambi', 'UPTD SPAL-D Kota Jambi Kasang Jaya, Kec. Jambi Tim., Kota Jambi, Jambi 36265', 'Sumber air pengolahan limbah (SPAL-D)', -1.5824433474245898, 103.62934369233535],
+
+            // ===== WATER TRUCK =====
+            [$K_TRUCK, 'PDAM Tirta Mayang', 'CH2X+HJ8, Jl. Letkol Jl. Slamet Riyadi, Solok Sipin, Kec. Telanaipura, Kota Jambi, Jambi 36121', 'Telp: (0741) 7550126', -1.5982957094930919, 103.59909562851657],
+            [$K_TRUCK, 'RS BRATANATA / DKT', 'Jl. Raden Mattaher No.33, Sulanjana, Kec. Jambi Tim., Kota Jambi, Jambi 36144', 'Telp: 081267976023', -1.5929101317802739, 103.61837210970168],
+            [$K_TRUCK, 'POLDA JAMBI', 'Jl. Jend. Sudirman No.45, Tambak Sari, Kec. Jambi Sel., Kota Jambi, Jambi 36138', 'Telp: 074134382', -1.6102740287373838, 103.62348348368893],
+            [$K_TRUCK, 'KOREM 0415 GARUDA PUTIH', 'Jl. Jenderal Urip Sumoharjo No.3, Sungai Putri, Kec. Telanaipura, Kota Jambi, Jambi 36124', 'Telp: 074163053', -1.6101660555856856, 103.59203680970174],
+            [$K_TRUCK, 'KODIM 142 / KJ KASANG', 'CJ8M+FMH, Kasang Jaya, East Jambi, Jambi City, Jambi 36264', 'Telp: 082282448112', -1.5836151010481663, 103.63423855462474],
+            [$K_TRUCK, 'Pertamina Patra Niaga', 'CJ8F+27 Kasang, Jambi City, Jambi', 'Telp: 074123240', -1.5848183691610367, 103.6231715423203],
+            [$K_TRUCK, 'BANDARA SULTAN THAHA SAIFUDDIN', '9J7V+5PC, Jl. Jawa, Paal Merah, Kec. Jambi Sel., Kota Jambi, Jambi 36127', 'Telp: 0741572344', -1.6368461091928153, 103.64437821340158],
+            [$K_TRUCK, 'DLH', '9J94+HQ8, Paal Lima, Kota Baru, Jambi City, Jambi 36129', '-', -1.6309369199948167, 103.6069711833065],
+            [$K_TRUCK, 'DENPAL', 'Jl. Raya Palembang - Jambi No.RT.01, RT.Pall/RW.17/RW, Pd. Meja, Kec. Mestong, Kabupaten Muaro Jambi, Jambi 36364', '-', -1.720617771307402, 103.57326159182345],
         ];
 
         $data = array_map(fn ($r) => [
-            'kategori'   => $r[0],
-            'nama'       => $r[1],
-            'lokasi'     => $r[2],
+            'kategori' => $r[0],
+            'nama' => $r[1],
+            'lokasi' => $r[2],
             'keterangan' => $r[3],
-            'latitude'   => $r[4],
-            'longitude'  => $r[5],
+            'latitude' => $r[4],
+            'longitude' => $r[5],
             'created_at' => $now,
             'updated_at' => $now,
         ], $rows);
