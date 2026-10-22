@@ -2,23 +2,58 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Pegawai;
+use Illuminate\Http\Request;
 
 class DukController extends Controller
 {
     // Menampilkan halaman tabel DUK
-    public function index()
+    public function index(Request $request)
     {
-        // Menarik semua data pegawai, diurutkan berdasarkan no_urut
-        $pegawais = Pegawai::orderBy('no_urut', 'asc')->get();
-        return view('internal.kepegawaian.duk', compact('pegawais'));
+        $search = $request->query('search');
+
+        $query = Pegawai::orderBy('no_urut', 'asc');
+
+        if (! empty($search)) {
+            $cleanNipSearch = preg_replace('/[^\d]/', '', $search);
+            $query->where(function ($q) use ($search, $cleanNipSearch) {
+                $q->where('nama', 'like', "%{$search}%")
+                    ->orWhere('nip', 'like', "%{$search}%");
+
+                if (! empty($cleanNipSearch)) {
+                    $q->orWhere('nip', 'like', "%{$cleanNipSearch}%");
+                }
+            });
+        }
+
+        // Statistik keseluruhan (atau sesuai pencarian)
+        $allPegawais = (clone $query)->get();
+        $totalPeg = $allPegawais->count();
+        $jmlPns = $allPegawais->filter(fn ($p) => str_contains($p->pangkat_gol_ruang ?? '', '/'))->count();
+        $jmlPppk = $totalPeg - $jmlPns;
+        $jmlAktif = $allPegawais->where('status_pegawai', 'Aktif')->count();
+        $jmlCuti = $allPegawais->where('status_pegawai', 'Cuti')->count();
+        $jmlPensiun = $allPegawais->where('status_pegawai', 'Pensiun')->count();
+
+        // Data pegawai dengan pagination 15 per halaman
+        $pegawais = $query->paginate(15)->withQueryString();
+
+        return view('internal.kepegawaian.duk', compact(
+            'pegawais',
+            'allPegawais',
+            'totalPeg',
+            'jmlPns',
+            'jmlPppk',
+            'jmlAktif',
+            'jmlCuti',
+            'jmlPensiun'
+        ));
     }
 
     // Menampilkan halaman form tambah pegawai
     public function create()
     {
-        if (!auth()->user()->hasAnyRole(['Super User', 'Sekretariat'])) {
+        if (! auth()->user()->hasAnyRole(['Super User', 'Sekretariat'])) {
             abort(403, 'Anda tidak memiliki akses untuk menambah data.');
         }
 
@@ -28,7 +63,7 @@ class DukController extends Controller
     // Menyimpan data pegawai baru
     public function store(Request $request)
     {
-        if (!auth()->user()->hasAnyRole(['Super User', 'Sekretariat'])) {
+        if (! auth()->user()->hasAnyRole(['Super User', 'Sekretariat'])) {
             abort(403, 'Anda tidak memiliki akses untuk menyimpan data.');
         }
 
@@ -70,18 +105,19 @@ class DukController extends Controller
     // Menampilkan halaman form edit pegawai
     public function edit($id)
     {
-        if (!auth()->user()->hasAnyRole(['Super User', 'Sekretariat'])) {
+        if (! auth()->user()->hasAnyRole(['Super User', 'Sekretariat'])) {
             abort(403, 'Anda tidak memiliki akses untuk mengedit data.');
         }
 
         $pegawai = Pegawai::findOrFail($id);
-        return view('internal.kepegawaian.duk_edit', compact('pegawai')); 
+
+        return view('internal.kepegawaian.duk_edit', compact('pegawai'));
     }
 
     // Menyimpan perubahan data pegawai (Update)
     public function update(Request $request, $id)
     {
-        if (!auth()->user()->hasAnyRole(['Super User', 'Sekretariat'])) {
+        if (! auth()->user()->hasAnyRole(['Super User', 'Sekretariat'])) {
             abort(403, 'Anda tidak memiliki akses untuk mengubah data.');
         }
 
@@ -89,8 +125,8 @@ class DukController extends Controller
 
         $validatedData = $request->validate([
             // Pengecualian ID saat update agar tidak error "unique" pada no_urut miliknya sendiri
-            'no_urut' => 'required|integer|unique:pegawais,no_urut,' . $pegawai->id,
-            'nip' => 'required|string|max:20|unique:pegawais,nip,' . $pegawai->id,
+            'no_urut' => 'required|integer|unique:pegawais,no_urut,'.$pegawai->id,
+            'nip' => 'required|string|max:20|unique:pegawais,nip,'.$pegawai->id,
             'nama' => 'required|string|max:255',
             'tempat_lahir' => 'nullable|string|max:255',
             'tanggal_lahir' => 'nullable|date',
@@ -123,7 +159,7 @@ class DukController extends Controller
     // Menghapus data pegawai
     public function destroy($id)
     {
-        if (!auth()->user()->hasAnyRole(['Super User', 'Sekretariat'])) {
+        if (! auth()->user()->hasAnyRole(['Super User', 'Sekretariat'])) {
             abort(403, 'Anda tidak memiliki akses untuk menghapus data.');
         }
 
