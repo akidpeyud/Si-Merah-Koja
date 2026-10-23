@@ -61,7 +61,7 @@
             --r-lg: 28px;
             --r-md: 18px;
             --r-sm: 10px;
-            --wrap: 1300px; /* Sedikit dilebarkan untuk navbar padat */
+            --wrap: 1300px;
             --header-h: 64px;
         }
 
@@ -106,7 +106,6 @@
 
         /* ==========================================================
            HEADER & NAVBAR
-           Susunan: [Logo] ····· [Menu] ····· [Lapor darurat] [Masuk]
            ========================================================== */
         .site-header {
             position: sticky; top: 0; z-index: 60;
@@ -120,27 +119,19 @@
             padding: 0 clamp(16px, 3vw, 32px);
             display: flex; align-items: center; justify-content: space-between; gap: 24px;
         }
-
-        /* ---------- Logo ---------- */
         .brand { display: flex; align-items: center; flex: none; }
         .brand a { display: flex; align-items: center; }
         .brand a + a { margin-left: 14px; padding-left: 14px; border-left: 1px solid rgba(255,255,255,.16); }
         .brand img { height: 36px; width: auto; }
-
-        /* ---------- Panel (desktop: sebaris | mobile: laci) ---------- */
         .nav-panel { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-
-        /* ---------- Menu utama ---------- */
         .menu { display: flex; align-items: center; justify-content: center; gap: 2px; flex: 1; min-width: 0; }
         .menu > li { position: relative; }
-
         .menu-link, .menu-trigger {
             position: relative; display: inline-flex; align-items: center; gap: 6px;
             padding: 10px 11px; color: rgba(255,255,255,.78);
             font-size: .875rem; font-weight: 500; letter-spacing: .005em; white-space: nowrap;
             transition: color .2s;
         }
-        /* garis penanda: hover, dropdown terbuka, halaman aktif */
         .menu-link::after, .menu-trigger::after {
             content: ""; position: absolute; left: 11px; right: 11px; bottom: 2px; height: 2px;
             border-radius: 2px; background: var(--amber);
@@ -148,14 +139,10 @@
         }
         .menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger, .menu-link.is-active { color: #fff; }
         .menu-link:hover::after, .menu-trigger:hover::after, .has-drop.open > .menu-trigger::after, .menu-link.is-active::after { transform: scaleX(1); }
-
         .menu-trigger i { font-size: .6rem; opacity: .6; transition: transform .2s, opacity .2s; }
         .has-drop.open > .menu-trigger i { transform: rotate(180deg); opacity: 1; }
-
-        /* ---------- Tombol kanan (CTA) ---------- */
         .nav-actions { display: flex; align-items: center; gap: 10px; flex: none; }
         .nav-actions > li { position: relative; }
-
         .btn-nav {
             display: inline-flex; align-items: center; justify-content: center; gap: 8px;
             height: 40px; padding: 0 16px; border-radius: 999px;
@@ -165,16 +152,11 @@
         .btn-nav:active { transform: scale(.97); }
         .btn-nav i.fa-chevron-down { font-size: .6rem; opacity: .8; transition: transform .2s; }
         .has-drop.open > .btn-nav i.fa-chevron-down { transform: rotate(180deg); }
-
         .btn-nav--alert { background: var(--signal); color: #fff; }
         .btn-nav--alert:hover, .has-drop.open > .btn-nav--alert { background: var(--signal-d); }
         .btn-nav--alert .beacon { width: 8px; height: 8px; background: #fff; }
-        .btn-nav--alert .beacon::after { background: #fff; }
-
         .btn-nav--ghost { border: 1.5px solid rgba(255,255,255,.3); color: #fff; }
         .btn-nav--ghost:hover, .has-drop.open > .btn-nav--ghost { border-color: #fff; background: rgba(255,255,255,.08); }
-
-        /* ---------- Dropdown ---------- */
         .dropdown {
             position: absolute; top: calc(100% + 14px); left: 50%; min-width: 250px; width: max-content; max-width: 320px;
             background: var(--ink-2); border: 1px solid rgba(255,255,255,.1);
@@ -183,24 +165,19 @@
             transform: translate(-50%, 6px);
             transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s;
         }
-        /* dropdown tombol kanan rata ke tepi kanan */
         .nav-actions .dropdown { left: auto; right: 0; transform: translate(0, 6px); }
-        /* jembatan hover supaya dropdown tidak menutup saat kursor turun */
         .dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -14px; height: 14px; }
-        /* segitiga kecil penunjuk */
         .dropdown::after {
             content: ""; position: absolute; top: -6px; left: 50%; width: 10px; height: 10px; margin-left: -5px;
             background: var(--ink-2); border-top: 1px solid rgba(255,255,255,.1); border-left: 1px solid rgba(255,255,255,.1);
             transform: rotate(45deg);
         }
         .nav-actions .dropdown::after { left: auto; right: 24px; margin-left: 0; }
-
         .has-drop.open > .dropdown {
             visibility: visible; opacity: 1; pointer-events: auto;
             transform: translate(-50%, 0); transition-delay: 0s;
         }
         .nav-actions .has-drop.open > .dropdown { transform: translate(0, 0); }
-
         .dropdown a, .dropdown .btn-logout {
             display: flex; align-items: center; gap: 12px; width: 100%;
             padding: 10px 14px; border-radius: var(--r-sm);
@@ -214,8 +191,6 @@
         .dropdown a .fa-headset   { color: #f87171; }
         .dropdown .btn-logout { color: #ff8b8b; cursor: pointer; }
         .dropdown .btn-logout:hover { background: rgba(255,255,255,.08); color: #ffb8b8; }
-
-        /* ---------- Sub-menu (Galeri > Berita) ---------- */
         .has-sub { position: relative; }
         .has-sub > .sub-trigger {
             width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px;
@@ -224,19 +199,20 @@
         }
         .has-sub > .sub-trigger i { font-size: .65rem; opacity: .7; transition: transform .2s; }
         .has-sub > .sub-trigger:hover, .has-sub.open > .sub-trigger { background: rgba(255,255,255,.08); color: #fff; }
-
         .dropdown-sub {
-            display: none; position: absolute; top: -8px; left: 100%; min-width: 230px; margin-left: 6px; z-index: 10;
+            display: none; position: absolute; top: -8px; left: 100%; min-width: 260px; margin-left: 6px; z-index: 10;
             background: var(--ink-2); border: 1px solid rgba(255,255,255,.1);
             border-radius: 16px; padding: 8px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
         }
         .dropdown-sub::before { content: ""; position: absolute; top: 0; bottom: 0; left: -12px; width: 12px; }
         .has-sub.open > .dropdown-sub { display: block; }
-
         .nav-toggle { display: none; width: 44px; height: 44px; border-radius: 12px; color: #fff; font-size: 1.15rem; align-items: center; justify-content: center; }
         .nav-toggle:hover { background: rgba(255,255,255,.1); }
-
-        /* ---------- Desktop dengan mouse: buka saat hover ---------- */
+        .menu > li.current > .menu-trigger { color: #fff; }
+        .menu > li.current > .menu-trigger::after { transform: scaleX(1); }
+        .has-sub.current > .sub-trigger { background: rgba(255,255,255,.08); color: #fff; }
+        .dropdown-sub a[aria-current="page"] { background: rgba(255,255,255,.09); color: #fff; font-weight: 600; }
+        
         @media (hover: hover) and (min-width: 1201px) {
             .has-drop:hover > .dropdown { visibility: visible; opacity: 1; pointer-events: auto; transform: translate(-50%, 0); transition-delay: 0s; }
             .nav-actions .has-drop:hover > .dropdown { transform: translate(0, 0); }
@@ -244,18 +220,14 @@
             .has-drop:hover > .menu-trigger::after { transform: scaleX(1); }
             .has-sub:hover > .dropdown-sub { display: block; }
             .has-sub:hover > .sub-trigger { background: rgba(255,255,255,.08); color: #fff; }
-
-            /* Galeri ada di kanan, jadi sub-menu dibuka ke kiri */
             .dropdown-sub { left: auto; right: 100%; margin-left: 0; margin-right: 6px; }
             .dropdown-sub::before { left: auto; right: -12px; }
             .has-sub > .sub-trigger i { transform: rotate(180deg); }
         }
-
-        /* ---------- Tablet & HP: menu jadi laci ---------- */
+        
         @media (max-width: 1200px) {
             .nav { gap: 12px; }
             .nav-toggle { display: inline-flex; margin-left: auto; }
-
             .nav-panel {
                 display: none; position: absolute; top: 100%; left: 0; right: 0;
                 max-height: calc(100dvh - var(--header-h)); overflow-y: auto; overscroll-behavior: contain;
@@ -265,18 +237,15 @@
                 box-shadow: 0 30px 40px rgba(0,0,0,.35);
             }
             .nav-open .nav-panel { display: flex; }
-
             .menu { flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 0; flex: none; }
             .menu > li { border-bottom: 1px solid rgba(255,255,255,.08); }
             .menu-link, .menu-trigger { width: 100%; justify-content: space-between; padding: 16px 4px; font-size: 1rem; white-space: normal; color: rgba(255,255,255,.9); }
             .menu-link::after, .menu-trigger::after { display: none; }
             .menu-link.is-active { color: var(--amber); }
             .menu-trigger i { font-size: .7rem; }
-
             .nav-actions { flex-direction: column; align-items: stretch; gap: 10px; }
             .btn-nav { height: 48px; font-size: 1rem; }
             .nav-actions .has-drop > .btn-nav { width: 100%; }
-
             .dropdown, .nav-actions .dropdown {
                 display: none; position: static; min-width: 0; width: auto; max-width: none; margin: 0 0 12px 4px; padding: 0 0 0 12px;
                 background: transparent; border: 0; border-left: 2px solid rgba(255,255,255,.14); border-radius: 0; box-shadow: none;
@@ -285,18 +254,15 @@
             .dropdown::before, .dropdown::after { display: none; }
             .has-drop.open > .dropdown, .nav-actions .has-drop.open > .dropdown { display: block; transform: none; }
             .dropdown a, .dropdown .btn-logout { padding: 13px 12px; font-size: .95rem; }
-
             .has-sub > .sub-trigger { padding: 13px 12px; font-size: .95rem; }
             .has-sub.open > .sub-trigger i { transform: rotate(90deg); }
             .dropdown-sub { position: static; margin: 2px 0 6px 8px; padding: 0 0 0 10px; min-width: 0; background: transparent; border: 0; border-left: 2px solid rgba(255,255,255,.14); border-radius: 0; box-shadow: none; }
             .dropdown-sub::before { display: none; }
         }
-
         @media (max-width: 480px) {
             .brand img { height: 30px; }
             .brand a + a { margin-left: 10px; padding-left: 10px; }
         }
-
         body.nav-lock { overflow: hidden; }
 
         /* ==========================================================
@@ -321,8 +287,6 @@
             display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
             gap: clamp(32px, 5vw, 80px); align-items: center;
         }
-        /* Bilah logo: satu baris di tengah atas hero. Kapsul terang dipakai karena logo program
-           (Jambi Bahagia, Bangga Melayani Bangsa, BerAKHLAK) bertulisan gelap. */
         .hero-brandbar {
             width: 100%; max-width: var(--wrap); margin: 0 auto;
             padding: clamp(24px, 4vw, 44px) clamp(16px, 4vw, 32px) 0;
@@ -558,7 +522,6 @@
         .video-frame { aspect-ratio: 16 / 9; border-radius: var(--r-md); overflow: hidden; background: #000; }
         .video-frame iframe { width: 100%; height: 100%; border: 0; }
 
-
         /* ==========================================================
            INTERAKSI
            ========================================================== */
@@ -606,12 +569,10 @@
 <body>
 
 @php
-    // Auto-fetch daftar berita/kejadian jika belum dikirim dari route
-    $listBerita = isset($daftar_berita) && count($daftar_berita)
-        ? $daftar_berita
-        : (class_exists('\App\Models\Berita') && (\Illuminate\Support\Facades\Schema::hasTable('beritas') || \Illuminate\Support\Facades\Schema::hasTable('berita'))
-            ? \App\Models\Berita::latest()->take(4)->get()
-            : collect());
+    // Ticker mengambil data dari Kejadian yang baru (bukan Berita)
+    $listBerita = class_exists('\App\Models\Kejadian') && \Illuminate\Support\Facades\Schema::hasTable('kejadians')
+            ? \App\Models\Kejadian::orderBy('tanggal', 'desc')->take(4)->get()
+            : collect();
 @endphp
 
 <!-- ==================== HEADER ==================== -->
@@ -634,7 +595,6 @@
         </button>
 
         <div class="nav-panel" id="navPanel">
-            <!-- ===== Menu utama ===== -->
             <ul class="menu">
                 <li class="has-drop">
                     <button class="menu-trigger" type="button" aria-expanded="false">Profil <i class="fas fa-chevron-down"></i></button>
@@ -713,16 +673,15 @@
                                 Berita <i class="fas fa-chevron-right"></i>
                             </button>
                             <ul class="dropdown-sub">
-                                <li><a href="/edu-damkar">Edu Damkar</a></li>
-                                <li><a href="{{ route('publik.infografis') }}">Infografis</a></li>
-                                <li><a href="/media-informasi">Media Informasi</a></li>
-                                <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
+                                <li><a href="/edu-damkar" {!! request()->is('edu-damkar') ? 'aria-current="page"' : '' !!}>Edu Damkar</a></li>
+                                <li><a href="{{ route('publik.infografis') }}" {!! request()->is('infografis') ? 'aria-current="page"' : '' !!}>Infografis</a></li>
+                                <li><a href="/media-informasi" {!! request()->is('media-informasi') ? 'aria-current="page"' : '' !!}>Media Informasi</a></li>
+                                <li><a href="/ujung-ujung-damkar" {!! request()->is('ujung-ujung-damkar') ? 'aria-current="page"' : '' !!}>Ujung-ujung Damkar</a></li>
+                                <li><a href="{{ route('publik.kejadian') }}" {!! request()->is('pemadaman-penyelamatan-evakuasi') ? 'aria-current="page"' : '' !!}>Pemadaman, Penyelamatan dan Evakuasi</a></li>
                             </ul>
                         </li>
                     </ul>
                 </li>
-
- 
             </ul>
 
             <!-- ===== Tombol kanan: Lapor darurat + Masuk ===== -->
@@ -788,7 +747,6 @@
 
     <div class="hero-inner">
         <div>
-
             <div class="hero-title rise d1">
                 <img class="hero-mark" src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA">
                 <h1 id="judul-hero">
@@ -853,8 +811,11 @@
                 @foreach([false, true] as $duplikat)
                 <div class="ticker-group" @if($duplikat) aria-hidden="true" @endif>
                     @foreach($listBerita as $berita)
-                        <a class="tick" href="/berita/{{ $berita->id }}" @if($duplikat) tabindex="-1" @endif>
-                            <b>{{ \Carbon\Carbon::parse($berita->waktu_kejadian)->format('H:i') }}</b>
+                        @php
+                            $tglTicker = \Carbon\Carbon::parse($berita->tanggal)->locale('id');
+                        @endphp
+                        <a class="tick" href="{{ $berita->link ?? '#' }}" @if($duplikat) tabindex="-1" @endif>
+                            <b>{{ $tglTicker->format('H:i') }}</b>
                             {{ $berita->judul }}
                         </a>
                     @endforeach
@@ -902,32 +863,85 @@
             <img src="/images/mobil.png" alt="Mobil pemadam kebakaran" loading="lazy">
         </div>
 
-        <div class="kj-grid">
-            @forelse($listBerita as $berita)
+        @php
+            // Memanggil data langsung dari Model Kejadian yang baru
+            $listKejadianHome = class_exists('\App\Models\Kejadian') && \Illuminate\Support\Facades\Schema::hasTable('kejadians')
+                ? \App\Models\Kejadian::orderBy('tanggal', 'desc')->take(4)->get() 
+                : collect();
+        @endphp
+
+        <div class="media-grid" id="kejadianGrid">
+            @forelse($listKejadianHome as $kj)
                 @php
-                    $tgl  = \Carbon\Carbon::parse($berita->tanggal_kejadian)->locale('id');
-                    $baru = $tgl->diffInDays(now(), true) <= 3;
+                    $tgl   = \Carbon\Carbon::parse($kj->tanggal)->locale('id');
+                    $baru  = $tgl->diffInDays(now(), true) <= 3;
+                    $s     = strtolower($kj->sumber ?? '');
+                    $ikon  = 'fas fa-share-nodes';
+                    if (str_contains($s, 'instagram')) $ikon = 'fab fa-instagram';
+                    if (str_contains($s, 'youtube'))   $ikon = 'fab fa-youtube';
+                    if (str_contains($s, 'tiktok'))    $ikon = 'fab fa-tiktok';
+                    if (str_contains($s, 'facebook'))  $ikon = 'fab fa-facebook-f';
+                    if (str_contains($s, 'x (') || str_contains($s, 'twitter')) $ikon = 'fab fa-x-twitter';
+                    if (!empty($kj->youtube_id)) $ikon = 'fab fa-youtube';
+                    
+                    // Fallback jenis
+                    $labelJenis = (class_exists('\App\Models\Kejadian') && defined('\App\Models\Kejadian::JENIS') && isset(\App\Models\Kejadian::JENIS[$kj->jenis])) 
+                                  ? \App\Models\Kejadian::JENIS[$kj->jenis] 
+                                  : ucfirst($kj->jenis ?? 'Info');
+                    $gambar     = $kj->thumb ?? null;
                 @endphp
-                <a href="/berita/{{ $berita->id }}" class="kj-item">
-                    <div class="kj-thumb">
-                        <div class="kj-date {{ $baru ? 'baru' : '' }}">
-                            <b>{{ $tgl->format('d') }}</b>
-                            <span>{{ $tgl->translatedFormat('M') }}</span>
+
+                <article class="media-card" style="position: relative;">
+                    @if(!empty($kj->youtube_id))
+                        <button type="button" class="card-hit" data-yt="{{ $kj->youtube_id }}" data-title="{{ $kj->judul }}" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 5; background: transparent; border: none; cursor: pointer;"><span class="sr-only">Putar video</span></button>
+                    @elseif(!empty($kj->link))
+                        <a class="card-hit" href="{{ $kj->link }}" target="_blank" rel="noopener" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 5;"><span class="sr-only">Buka berita</span></a>
+                    @endif
+
+                    <div class="media-thumb" style="aspect-ratio: 16/10; position: relative; overflow: hidden;">
+                        <!-- Tag Jenis -->
+                        <span style="position: absolute; top: 12px; left: 12px; z-index: 2; padding: 4px 10px; background: rgba(255,255,255,0.95); color: #bd241c; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">{{ $labelJenis }}</span>
+                        
+                        <!-- Tanggal -->
+                        <div style="position: absolute; top: 10px; right: 10px; padding: 4px 10px; border-radius: 8px; text-align: center; color: #fff; background: {{ $baru ? 'rgba(229,57,45,.95)' : 'rgba(13,27,42,.85)' }}; z-index: 2; line-height: 1.1; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);">
+                            <b style="display: block; font-size: 1.1rem; font-family: var(--font-display); font-weight: 800;">{{ $tgl->format('d') }}</b>
+                            <span style="display: block; font-size: 0.65rem; text-transform: uppercase; font-weight: 600;">{{ $tgl->translatedFormat('M') }}</span>
                         </div>
 
-                        @if(!empty($berita->gambar))
-                            <img src="{{ asset('storage/' . $berita->gambar) }}" alt="{{ $berita->judul }}" loading="lazy">
+                        <!-- Gambar / Placeholder -->
+                        @if($gambar)
+                            <img src="{{ $gambar }}" alt="{{ $kj->judul }}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; transition: transform .5s;" onerror="this.src='/images/placeholder.jpg'">
                         @else
-                            <div class="kj-ph">
-                                <i class="fas fa-fire-extinguisher"></i>
-                                <span>Damkar Kota Jambi</span>
+                            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; background: repeating-linear-gradient(135deg, var(--ink-2) 0 16px, var(--ink-3) 16px 32px); color: rgba(255,255,255,0.75);">
+                                <i class="fas fa-fire-extinguisher" style="font-size: 1.8rem; color: #e5392d; margin-bottom: 8px;"></i>
+                                <span style="font-size: 0.85rem; font-weight: 600;">Damkar Kota Jambi</span>
                             </div>
                         @endif
+
+                        <!-- Ikon Play Video -->
+                        @if(!empty($kj->youtube_id))
+                            <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; background: rgba(229,57,45,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; z-index: 3; box-shadow: 0 8px 20px rgba(0,0,0,0.3);"><i class="fas fa-play" style="margin-left: 2px;"></i></span>
+                        @endif
                     </div>
-                    <h3>{{ $berita->judul }}</h3>
-                </a>
+
+                    <div style="padding: 16px; display: flex; flex-direction: column; flex: 1;">
+                        <h3 style="font-size: 0.95rem; font-weight: 700; line-height: 1.4; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-family: var(--font-display);">{{ $kj->judul }}</h3>
+                        
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px 12px; font-size: 0.75rem; color: var(--steel); font-weight: 600; margin-bottom: 16px;">
+                            <span style="display: flex; align-items: center; gap: 5px;"><i class="far fa-calendar-alt"></i> {{ $tgl->translatedFormat('H:i') }} WIB</span>
+                            @if($kj->lokasi)<span style="display: flex; align-items: center; gap: 5px;"><i class="fas fa-location-dot"></i> {{ \Illuminate\Support\Str::limit($kj->lokasi, 22) }}</span>@endif
+                        </div>
+                        
+                        <!-- Link Bawah -->
+                        @if(!empty($kj->youtube_id))
+                            <span style="margin-top: auto; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; font-weight: 800; border-top: 1px solid var(--line); padding-top: 12px; color: var(--signal-d);">Tonton video <i class="fas fa-play" style="background: var(--soft); color: var(--ink); width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 0.75rem;"></i></span>
+                        @elseif(!empty($kj->link))
+                            <span style="margin-top: auto; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; font-weight: 800; border-top: 1px solid var(--line); padding-top: 12px; color: var(--signal-d);">Selengkapnya <i class="fas fa-angle-right" style="background: var(--soft); color: var(--ink); width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 0.75rem;"></i></span>
+                        @endif
+                    </div>
+                </article>
             @empty
-                <div class="empty">
+                <div class="empty" style="grid-column: 1 / -1; text-align: center; background: rgba(255,255,255,.5);">
                     <i class="fas fa-folder-open"></i>
                     <h3>Belum ada informasi kejadian terbaru</h3>
                     <p>Laporan kejadian akan tampil di sini setelah petugas mengunggahnya.</p>
@@ -1286,7 +1300,6 @@
             btn.setAttribute('aria-expanded', open);
             closeDrops(li);
         });
-        // Desktop: dropdown tertutup rapi saat kursor meninggalkan menu
         li.addEventListener('mouseleave', function () {
             if (!desktop.matches) return;
             li.classList.remove('open');
@@ -1295,7 +1308,6 @@
         });
     });
 
-    // MULTILEVEL DROPDOWN (Galeri > Berita)
     subs.forEach(function (li) {
         var btn = li.querySelector('.sub-trigger');
         btn.addEventListener('click', function (e) {
@@ -1317,7 +1329,6 @@
         }
     });
 
-    // Kembali ke desktop: pastikan laci mobile tertutup
     window.matchMedia('(min-width: 1201px)').addEventListener('change', function (e) {
         if (e.matches) setMobileMenu(false);
     });
@@ -1341,7 +1352,7 @@
     document.addEventListener('click', function (e) { if (!e.target.closest('#sosFab')) closeFab(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeFab(); });
 
-    // ---------- Lightbox galeri: tombol, keyboard, geser ----------
+    // ---------- Lightbox galeri ----------
     var lightbox = document.getElementById('lightbox');
     var lbImg = lightbox.querySelector('img');
     var lbTxt = lightbox.querySelector('p');
@@ -1401,10 +1412,12 @@
         if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) lbShow(lbIndex + (dx < 0 ? 1 : -1));
     }, { passive: true });
 
+    // ---------- Dialog Video YouTube ----------
     var vDialog = document.getElementById('videoDialog');
     var vFrame = vDialog.querySelector('iframe');
 
-    document.querySelectorAll('.vid:not([disabled])').forEach(function (v) {
+    // Menerapkan event listener ke semua tombol play video (termasuk yang dari #kejadianGrid)
+    document.querySelectorAll('.vid:not([disabled]), #kejadianGrid .card-hit[data-yt]').forEach(function (v) {
         v.addEventListener('click', function () {
             var yt = v.getAttribute('data-yt');
             vDialog.setAttribute('aria-label', v.getAttribute('data-title') || 'Video');
@@ -1417,7 +1430,6 @@
         vFrame.src = '';
         vDialog.close();
     });
-    // Tombol Esc juga harus menghentikan video
     vDialog.addEventListener('close', function () { vFrame.src = ''; });
     vDialog.addEventListener('click', function (e) {
         if (e.target === vDialog) {

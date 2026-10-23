@@ -39,6 +39,7 @@ use App\Http\Controllers\DokumenPublikController;
 use App\Http\Controllers\SapraHomeController;
 use App\Http\Controllers\ProdukHukumController;
 use App\Http\Controllers\ProfilInstansiController;
+use App\Http\Controllers\KejadianController;
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
@@ -100,6 +101,9 @@ Route::get('/ujung-ujung-damkar', function () {
     $daftar_ujung_damkar = UjungDamkar::latest()->get();
     return view('galery.berita.ujung-damkar', compact('daftar_ujung_damkar'));
 })->name('publik.ujung-damkar');
+
+// Halaman Publik Pemadaman, Penyelamatan & Evakuasi (folder: resources/views/galery/berita)
+Route::get('/pemadaman-penyelamatan-evakuasi', [KejadianController::class, 'publik'])->name('publik.kejadian');
 
 // Halaman Publik Infografis (folder: resources/views/galery/berita)
 Route::get('/infografis', function () {
@@ -218,6 +222,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/operator/berita-medsos', [OperatorMedsosController::class, 'indexMedsos']);
     Route::get('/internal/operator/ujung-damkar', [OperatorMedsosController::class, 'indexUjungDamkar'])->name('ujung-damkar.index');
     Route::get('/internal/operator/edu-damkar', [OperatorMedsosController::class, 'indexEduDamkar'])->name('edu-damkar.index');
+    Route::get('/internal/operator/kejadian', [KejadianController::class, 'index'])->name('operator.kejadian.index');
     Route::get('/internal/operator/pengumuman', [PengumumanController::class, 'indexInternal'])->name('operator.pengumuman.index');
     Route::get('/internal/operator/ikm', [IkmController::class, 'indexInternal'])->name('operator.ikm.index');
 
@@ -252,6 +257,15 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/internal/operator/edu-damkar/store', [OperatorMedsosController::class, 'storeEduDamkar'])->name('edu-damkar.store');
         Route::put('/internal/operator/edu-damkar/update/{id}', [OperatorMedsosController::class, 'updateEduDamkar'])->name('edu-damkar.update');
         Route::delete('/internal/operator/edu-damkar/hapus/{id}', [OperatorMedsosController::class, 'destroyEduDamkar'])->name('edu-damkar.destroy');
+
+        // Kejadian (Pemadaman, Penyelamatan & Evakuasi)
+        // Tarik Data (ambil judul, gambar, tanggal dari link YouTube/TikTok/Instagram/X/Facebook/berita web)
+        Route::post('/internal/operator/kejadian/preview', [KejadianController::class, 'preview'])
+            ->middleware('throttle:30,1')
+            ->name('operator.kejadian.preview');
+        Route::post('/internal/operator/kejadian/store', [KejadianController::class, 'store'])->name('operator.kejadian.store');
+        Route::put('/internal/operator/kejadian/update/{id}', [KejadianController::class, 'update'])->name('operator.kejadian.update');
+        Route::delete('/internal/operator/kejadian/hapus/{id}', [KejadianController::class, 'destroy'])->name('operator.kejadian.destroy');
 
         // Pengumuman
         Route::post('/internal/operator/pengumuman/store', [PengumumanController::class, 'store'])->name('operator.pengumuman.store');

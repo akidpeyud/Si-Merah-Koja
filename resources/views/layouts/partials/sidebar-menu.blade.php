@@ -53,11 +53,12 @@
             'title' => 'Berita & Media', 'icon' => 'fa-newspaper', 'roles' => $ops,
             'items' => [
                 ['Berita', '/internal/operator/kelola-berita', 'fa-newspaper'],
-                ['Info Grafis', '/internal/operator/infografis', 'fa-image'],
-                ['Berita Medsos', '/internal/operator/berita-medsos', 'fa-brands fa-instagram'],
-                ['Ujung-Ujung Damkar', '/internal/operator/ujung-damkar', 'fa-brands fa-youtube'],
-                ['Edu Damkar', '/internal/operator/edu-damkar', 'fa-graduation-cap'],
-                ['Kelola Pengumuman', '/internal/operator/pengumuman', 'fa-bullhorn'],
+    ['Info Grafis', '/internal/operator/infografis', 'fa-image'],
+    ['Berita Medsos', '/internal/operator/berita-medsos', 'fa-brands fa-instagram'],
+    ['Ujung-Ujung Damkar', '/internal/operator/ujung-damkar', 'fa-brands fa-youtube'],
+    ['Edu Damkar', '/internal/operator/edu-damkar', 'fa-graduation-cap'],
+    ['Pemadaman, Penyelamatan & Evakuasi', '/internal/operator/kejadian', 'fa-fire-flame-curved'],   // <-- baris baru
+    ['Kelola Pengumuman', '/internal/operator/pengumuman', 'fa-bullhorn'],
                 ['Kelola IKM', '/internal/operator/ikm', 'fa-face-smile'],
                 ['Titik Peta Sigapkar', '/internal/peta-sigap/data', 'fa-location-dot'],
             ],
