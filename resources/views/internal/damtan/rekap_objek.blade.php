@@ -20,6 +20,11 @@
         --shadow-sm: 0 4px 12px rgba(13,27,42,.06);
         --shadow-md: 0 10px 25px rgba(13,27,42,.08);
         --shadow-lg: 0 20px 45px rgba(13,27,42,.14);
+
+        /* Warna tabel riwayat (sama dengan halaman Kelola lainnya) */
+        --rekap-row-a: #eaf2fc;
+        --rekap-row-b: #f8fbff;
+        --rekap-line: #d3deee;
     }
     #globalSuccessAlert, #globalErrorAlert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); color: white; padding: 16px 24px; border-radius: var(--r-md); z-index: 99999; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; animation: slideDownCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     #globalSuccessAlert { background-color: var(--success); box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); }
@@ -34,22 +39,39 @@
     .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); margin-top: 3px; }
     .side-group summary .grp-label { flex: 1 1 auto; min-width: 0; white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.4; }
     .side-group summary .chev { flex: none; font-size: .7rem; margin-top: 4px; transition: transform .25s ease; }
-    .page-head { margin-bottom: 26px; }
-    .page-head p { color: var(--steel); font-size: .95rem; }
-    .section-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
-    .section-heading-ico { flex: none; width: 32px; height: 32px; border-radius: 9px; background: var(--navy); color: #fff; display: grid; place-items: center; font-size: .78rem; box-shadow: 0 4px 8px rgba(22,58,99,.12); }
-    .section-heading h3 { flex: none; font-family: var(--font-display); font-weight: 700; font-size: 1rem; letter-spacing: -.01em; white-space: nowrap; }
-    .section-heading .line { flex: 1 1 auto; min-width: 24px; height: 1px; background: linear-gradient(to right, var(--line), transparent 90%); }
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 38px; }
-    .stat-card { display: flex; flex-direction: column; align-items: flex-start; padding: 18px; background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); box-shadow: var(--shadow-xs); text-align: left; width: 100%; transition: box-shadow .2s, border-color .2s, transform .2s; }
-    .stat-card:hover { box-shadow: var(--shadow-sm); border-color: #d2dae5; transform: translateY(-3px); }
+
+    /* ==========================================================
+       JUDUL HALAMAN
+       ========================================================== */
+    .page-head { margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+    .page-head h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 6px; color: var(--ink); }
+    .page-head p { color: var(--steel); font-size: .95rem; margin-bottom: 0; max-width: 760px; }
+
+    /* ==========================================================
+       JUDUL SEKSI
+       ========================================================== */
+    .section-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .section-heading-ico { flex: none; width: 30px; height: 30px; border-radius: 8px; background: var(--navy); color: #fff; display: grid; place-items: center; font-size: .75rem; }
+    .section-heading h3 { flex: none; font-family: var(--font-display); font-weight: 700; font-size: .98rem; letter-spacing: -.005em; white-space: nowrap; margin: 0; color: var(--ink); }
+    .section-heading .line { flex: 1 1 auto; min-width: 24px; height: 1px; background: var(--line); }
+
+    /* ==========================================================
+       KARTU TOTAL
+       ========================================================== */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 40px; }
+    .stat-card { position: relative; display: flex; flex-direction: column; align-items: flex-start; padding: 20px; background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); box-shadow: var(--shadow-xs); text-align: left; width: 100%; overflow: hidden; transition: box-shadow .2s, border-color .2s, transform .2s; }
+    .stat-card::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--navy); opacity: 0; transition: opacity .2s; }
+    .stat-card:hover { box-shadow: var(--shadow-md); border-color: #c9d3e0; transform: translateY(-3px); }
+    .stat-card:hover::before { opacity: 1; }
     .stat-card.picked { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+    .stat-card.picked::before { opacity: 1; }
     /* Kartu read-only (role selain Damtan & Super User): tidak bisa diklik, tanpa efek hover */
     .stat-card-readonly { cursor: default; }
     .stat-card-readonly:hover { transform: none; box-shadow: var(--shadow-xs); border-color: var(--line); }
-    .stat-ico { width: 40px; height: 40px; border-radius: var(--r-sm); display: grid; place-items: center; font-size: 1rem; margin-bottom: 14px; }
-    .stat-title { font-size: .74rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--steel); margin-bottom: 6px; line-height: 1.4; }
-    .stat-value { font-family: var(--font-display); font-weight: 700; font-size: 1.7rem; line-height: 1; letter-spacing: -.01em; }
+    .stat-card-readonly:hover::before { opacity: 0; }
+    .stat-ico { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; font-size: 1rem; margin-bottom: 16px; }
+    .stat-title { font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--steel); margin-bottom: 8px; line-height: 1.4; }
+    .stat-value { font-family: var(--font-display); font-weight: 700; font-size: 1.9rem; line-height: 1; letter-spacing: -.02em; color: var(--ink); }
     .ic-red { background: var(--signal-soft); color: var(--signal-dark); }
     .ic-amber { background: rgba(244,183,64,.16); color: #a8700b; }
     .ic-blue { background: var(--info-soft); color: var(--info); }
@@ -57,19 +79,30 @@
     .ic-purple { background: rgba(124,58,237,.10); color: #7c3aed; }
     .ic-pink { background: rgba(219,39,119,.10); color: #db2777; }
     .ic-steel { background: rgba(100,116,139,.10); color: #64748b; }
-    .panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--shadow-xs); overflow: hidden; margin-bottom: 38px; }
-    .panel-head { padding: 18px 24px; border-bottom: 1px solid var(--line); background: var(--navy-light); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-    .panel-head h4 { font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; display: flex; align-items: center; gap: 10px; }
+
+    /* ==========================================================
+       PANEL & FORMULIR
+       ========================================================== */
+    .panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--shadow-xs); overflow: hidden; margin-bottom: 40px; }
+    .panel-head { position: relative; padding: 20px 24px 20px 28px; border-bottom: 1px solid var(--line); background: #fff; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .panel-head::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--navy); }
+    .panel-head h4 { font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; display: flex; align-items: center; gap: 10px; margin: 0; color: var(--ink); }
     .panel-head h4 i { color: var(--navy); }
-    .panel-body { padding: 24px; }
-    .f-label { display: block; font-size: .8rem; font-weight: 700; margin-bottom: 6px; }
+    .panel-sub { margin: 4px 0 0; font-size: .82rem; color: var(--steel); }
+    .panel-legend { font-size: .78rem; color: var(--steel); }
+    .panel-legend .req { color: var(--signal); font-weight: 700; }
+    .panel-body { padding: 26px 24px; }
+
+    .f-label { display: block; font-size: .8rem; font-weight: 700; margin-bottom: 7px; color: var(--ink-2); }
     .f-label .req { color: var(--signal); }
-    .f-control { width: 100%; height: 46px; padding: 0 14px; border: 1px solid var(--line-dark); border-radius: 8px; background: #fff; font: inherit; font-size: .92rem; color: var(--ink); transition: border-color .2s, box-shadow .2s; }
-    textarea.f-control { height: auto; padding: 12px 14px; resize: vertical; min-height: 92px; }
+    .f-control { width: 100%; height: 44px; padding: 0 14px; border: 1px solid var(--line-dark); border-radius: 8px; background: #fff; font: inherit; font-size: .9rem; color: var(--ink); transition: border-color .2s, box-shadow .2s, background .2s; }
+    textarea.f-control { height: auto; padding: 12px 14px; resize: vertical; min-height: 96px; }
+    .f-control::placeholder { color: var(--steel-soft); }
+    .f-control:hover { border-color: var(--steel-soft); }
     .f-control:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
     .f-hint { font-size: .76rem; color: var(--steel); margin-top: 5px; }
     .f-error { font-size: .78rem; color: var(--signal-dark); margin-top: 5px; font-weight: 600; }
-    .f-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 18px; }
+    .f-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px 18px; }
     .c-3 { grid-column: span 3; }
     .c-4 { grid-column: span 4; }
     .c-6 { grid-column: span 6; }
@@ -78,40 +111,89 @@
     @media (max-width: 900px) {
         .c-3, .c-4, .c-6, .c-8 { grid-column: span 12; }
     }
-    .form-foot { display: flex; justify-content: flex-end; gap: 10px; padding: 18px 24px; border-top: 1px solid var(--line); background: #fbfcfd; flex-wrap: wrap; }
-    .btn-main, .btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 24px; border-radius: 8px; font-weight: 600; font-size: .92rem; transition: all .2s ease; }
-    .btn-main { background: var(--navy); color: #fff; }
-    .btn-main:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13,27,42,.15); }
+    .form-foot { display: flex; justify-content: flex-end; gap: 10px; padding: 16px 24px; border-top: 1px solid var(--line); background: #f8fafc; flex-wrap: wrap; }
+    .btn-main, .btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 24px; border-radius: 8px; font-weight: 600; font-size: .92rem; transition: all .2s ease; cursor: pointer; }
+    .btn-main { background: var(--navy); color: #fff; border: 0; box-shadow: 0 1px 2px rgba(13,27,42,.12); }
+    .btn-main:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13,27,42,.18); color: #fff; }
     .btn-ghost { background: #fff; border: 1px solid var(--line-dark); color: var(--ink); }
-    .btn-ghost:hover { background: #f8fafc; border-color: var(--steel-soft); }
+    .btn-ghost:hover { background: #f1f5f9; border-color: var(--steel-soft); }
     .btn-main:active, .btn-ghost:active { transform: scale(.97); }
-    .tbl-wrap { overflow-x: auto; }
-    .tbl { width: 100%; border-collapse: collapse; font-size: .88rem; min-width: 680px; }
-    .tbl th { text-align: left; padding: 16px; font-family: var(--font-display); font-size: 13px; font-weight: 700; letter-spacing: .02em; color: var(--ink-3); background: #f8fafc; border-bottom: 1px solid var(--line); white-space: nowrap; }
-    .tbl td { padding: 16px; border-bottom: 1px solid var(--line); vertical-align: middle; }
-    .tbl tr:last-child td { border-bottom: 0; }
-    .tbl tbody tr:hover { background: var(--paper); }
-    .tag { display: inline-flex; align-items: center; gap: 7px; padding: 4px 11px; border-radius: 999px; font-size: .78rem; font-weight: 700; background: var(--navy-soft); color: var(--navy); }
-    .num { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
-    .aksi { display: flex; align-items: center; gap: 6px; }
-    .btn-icon { width: 34px; height: 34px; border-radius: 8px; display: inline-grid; place-items: center; background: var(--signal-soft); color: var(--signal); transition: background .2s; border: 0; cursor: pointer; }
-    .btn-icon:hover { background: #fecaca; }
-    .btn-icon.edit { background: var(--info-soft); color: var(--info); }
-    .btn-icon.edit:hover { background: #bfdbfe; }
-    .empty { padding: 44px 20px; text-align: center; color: var(--steel); }
-    .empty i { font-size: 1.6rem; color: var(--steel-soft); margin-bottom: 10px; display: block; }
 
-    /* Modal edit */
-    .edit-modal { position: fixed; inset: 0; z-index: 3000; display: none; align-items: center; justify-content: center; padding: 18px; background: rgba(13,27,42,.55); }
+    /* ==========================================================
+       TABEL RIWAYAT (gaya navy, sama dengan halaman Kelola)
+       ========================================================== */
+    .tbl-scroll { overflow-x: auto; padding: 20px; background: #fff; }
+    .tbl-frame { min-width: 820px; border: 2px solid var(--navy); border-radius: 16px; overflow: hidden; background: #fff; box-shadow: var(--shadow-sm); }
+    .tbl { width: 100%; border-collapse: collapse; margin: 0; }
+    .tbl thead th {
+        background: linear-gradient(180deg, var(--navy) 0%, var(--navy-dark) 100%);
+        color: #fff;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: .9rem;
+        text-align: center;
+        vertical-align: middle;
+        padding: 14px 10px;
+        border: 0;
+        border-right: 1px solid rgba(255,255,255,.22);
+        white-space: nowrap;
+    }
+    .tbl thead th:last-child { border-right: 0; }
+    .tbl tbody td {
+        background: var(--rekap-row-b);
+        text-align: center;
+        vertical-align: middle;
+        padding: 12px 10px;
+        font-size: .85rem;
+        line-height: 1.4;
+        color: var(--ink-2);
+        border-bottom: 1px solid var(--rekap-line);
+        border-right: 1px solid var(--rekap-line);
+    }
+    .tbl tbody td:last-child { border-right: 0; }
+    .tbl tbody tr:last-child td { border-bottom: 0; }
+    .tbl tbody tr:nth-child(even) td { background: var(--rekap-row-a); }
+    .tbl tbody tr:hover td { background: #dce9fa; }
+    .tbl tbody td.no-cell {
+        background: linear-gradient(180deg, var(--navy) 0%, var(--navy-dark) 100%) !important;
+        color: #fff;
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 1.2rem;
+        border-right: 1px solid rgba(255,255,255,.22);
+    }
+    .col-no { width: 64px; }
+    .col-aksi { width: 110px; }
+    .cell-strong { font-weight: 600; color: var(--ink); }
+    .cell-ket { max-width: 240px; }
+    .tag { display: inline-flex; align-items: center; gap: 7px; padding: 4px 12px; border-radius: 999px; font-size: .78rem; font-weight: 700; background: #fff; color: var(--navy); border: 1px solid #c3d3e6; }
+    .num { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--ink); }
+
+    .aksi { display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .aksi form { margin: 0; display: flex; }
+    .btn-icon { width: 30px; height: 30px; border-radius: 8px; display: inline-grid; place-items: center; font-size: 12px; background: var(--signal-soft); color: var(--signal); transition: background .2s; border: 0; cursor: pointer; flex: none; }
+    .btn-icon:hover { background: #fecaca; }
+    .btn-icon.edit { background: rgba(255,182,39,.18); color: #d97706; }
+    .btn-icon.edit:hover { background: rgba(255,182,39,.32); }
+
+    .tbl tbody tr.empty-row td { padding: 0; background: #fff !important; border-right: 0; }
+    .empty { padding: 52px 20px; text-align: center; color: var(--steel); }
+    .empty i { font-size: 1.7rem; color: var(--steel-soft); margin-bottom: 10px; display: block; }
+
+    /* ==========================================================
+       MODAL EDIT
+       ========================================================== */
+    .edit-modal { position: fixed; inset: 0; z-index: 3000; display: none; align-items: center; justify-content: center; padding: 18px; background: rgba(13,27,42,.55); backdrop-filter: blur(2px); }
     .edit-modal.open { display: flex; }
     .edit-modal-box { background: #fff; width: 100%; max-width: 640px; max-height: calc(100vh - 36px); overflow-y: auto; border-radius: var(--r-md); box-shadow: var(--shadow-lg); animation: editPop .25s ease; }
     @keyframes editPop { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
-    .edit-modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 22px; background: var(--navy-light); border-bottom: 1px solid var(--line); }
-    .edit-modal-head h4 { font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; display: flex; align-items: center; gap: 10px; margin: 0; }
+    .edit-modal-head { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 22px 18px 26px; background: #fff; border-bottom: 1px solid var(--line); }
+    .edit-modal-head::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--navy); }
+    .edit-modal-head h4 { font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; display: flex; align-items: center; gap: 10px; margin: 0; color: var(--ink); }
     .edit-modal-head h4 i { color: var(--navy); }
     .edit-modal-x { background: transparent; border: 0; font-size: 1.1rem; color: var(--steel); cursor: pointer; width: 34px; height: 34px; border-radius: 8px; }
     .edit-modal-x:hover { background: rgba(13,27,42,.06); color: var(--ink); }
-    .edit-modal-body { padding: 22px; }
+    .edit-modal-body { padding: 24px 22px; }
 
     @media (max-width: 700px) {
         :root { --topbar-h: 64px; }
@@ -124,6 +206,7 @@
         .content { padding: 26px 14px 50px; }
         .stats-grid { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
         .panel-body { padding: 18px; }
+        .tbl-scroll { padding: 12px; }
     }
     @media (max-width: 420px) {
         .brand span { display: none; }
@@ -183,7 +266,11 @@
         <form action="/internal/damtan/rekap-objek" method="POST" class="panel" id="rekapForm" novalidate>
             @csrf
             <div class="panel-head">
-                <h4><i class="fas fa-house-chimney-crack"></i> Data Objek Terbakar</h4>
+                <div>
+                    <h4><i class="fas fa-house-chimney-crack"></i> Data Objek Terbakar</h4>
+                    <p class="panel-sub">Isi data kejadian lalu simpan. Angka total di atas akan diperbarui otomatis.</p>
+                </div>
+                <span class="panel-legend"><span class="req">*</span> wajib diisi</span>
             </div>
             <div class="panel-body">
                 <div class="f-grid">
@@ -244,53 +331,57 @@
         </div>
 
         <div class="panel">
-            <div class="tbl-wrap">
-                <table class="tbl">
-                    <thead>
-                        <tr>
-                            <th>Tanggal</th>
-                            <th>Objek Terbakar</th>
-                            <th>Jumlah</th>
-                            <th>Kecamatan</th>
-                            <th>Keterangan</th>
-                            <th style="width:96px;">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($riwayat as $r)
+            <div class="tbl-scroll">
+                <div class="tbl-frame">
+                    <table class="tbl">
+                        <thead>
                             <tr>
-                                <td>{{ \Carbon\Carbon::parse($r->tanggal)->translatedFormat('d M Y') }}</td>
-                                <td><span class="tag">{{ $kategori[$r->kategori][0] ?? $r->kategori }}</span></td>
-                                <td><span class="num">{{ $r->jumlah }}</span></td>
-                                <td>{{ $r->kecamatan ?: '-' }}</td>
-                                <td>{{ \Illuminate\Support\Str::limit($r->keterangan ?: '-', 60) }}</td>
-                                <td>
-                                    <div class="aksi">
-                                        <button type="button" class="btn-icon edit" aria-label="Edit" title="Edit"
-                                            data-edit
-                                            data-id="{{ $r->id }}"
-                                            data-tanggal="{{ \Carbon\Carbon::parse($r->tanggal)->format('Y-m-d') }}"
-                                            data-kategori="{{ $r->kategori }}"
-                                            data-jumlah="{{ $r->jumlah }}"
-                                            data-kecamatan="{{ $r->kecamatan }}"
-                                            data-lokasi="{{ $r->lokasi }}"
-                                            data-keterangan="{{ $r->keterangan }}">
-                                            <i class="fas fa-pen"></i>
-                                        </button>
-                                        <form action="/internal/damtan/rekap-objek/{{ $r->id }}" method="POST" onsubmit="return confirm('Hapus data rekap ini?')" style="margin:0;">
-                                            @csrf @method('DELETE')
-                                            <button type="submit" class="btn-icon" aria-label="Hapus" title="Hapus"><i class="fas fa-trash"></i></button>
-                                        </form>
-                                    </div>
-                                </td>
+                                <th class="col-no">No</th>
+                                <th>Tanggal</th>
+                                <th>Objek Terbakar</th>
+                                <th>Jumlah</th>
+                                <th>Kecamatan</th>
+                                <th>Keterangan</th>
+                                <th class="col-aksi">Aksi</th>
                             </tr>
-                        @empty
-                            <tr><td colspan="6">
-                                <div class="empty"><i class="fas fa-inbox"></i>Belum ada data. Pilih objek terbakar di atas lalu simpan rekap pertama.</div>
-                            </td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @forelse($riwayat as $r)
+                                <tr>
+                                    <td class="no-cell">{{ $loop->iteration }}</td>
+                                    <td class="cell-strong">{{ \Carbon\Carbon::parse($r->tanggal)->translatedFormat('d M Y') }}</td>
+                                    <td><span class="tag">{{ $kategori[$r->kategori][0] ?? $r->kategori }}</span></td>
+                                    <td><span class="num">{{ $r->jumlah }}</span></td>
+                                    <td>{{ $r->kecamatan ?: '-' }}</td>
+                                    <td class="cell-ket">{{ \Illuminate\Support\Str::limit($r->keterangan ?: '-', 60) }}</td>
+                                    <td>
+                                        <div class="aksi">
+                                            <button type="button" class="btn-icon edit" aria-label="Edit" title="Edit"
+                                                data-edit
+                                                data-id="{{ $r->id }}"
+                                                data-tanggal="{{ \Carbon\Carbon::parse($r->tanggal)->format('Y-m-d') }}"
+                                                data-kategori="{{ $r->kategori }}"
+                                                data-jumlah="{{ $r->jumlah }}"
+                                                data-kecamatan="{{ $r->kecamatan }}"
+                                                data-lokasi="{{ $r->lokasi }}"
+                                                data-keterangan="{{ $r->keterangan }}">
+                                                <i class="fas fa-pen"></i>
+                                            </button>
+                                            <form action="/internal/damtan/rekap-objek/{{ $r->id }}" method="POST" onsubmit="return confirm('Hapus data rekap ini?')">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="btn-icon" aria-label="Hapus" title="Hapus"><i class="fas fa-trash"></i></button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr class="empty-row"><td colspan="7">
+                                    <div class="empty"><i class="fas fa-inbox"></i>Belum ada data. Pilih objek terbakar di atas lalu simpan rekap pertama.</div>
+                                </td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 

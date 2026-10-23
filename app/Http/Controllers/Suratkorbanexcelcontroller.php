@@ -20,15 +20,16 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
  * Cetak Excel: Rekapitulasi Surat Keterangan Kejadian (Surat Korban).
  *
  * URL: /internal/surat-korban/export-excel
- *      /internal/surat-korban/export-excel?tahun=2026
+ *      /internal/surat-korban/export-excel?tahun=2027
  *
  * Kolom dibaca otomatis dari tabel, jadi tidak perlu menyesuaikan nama field.
- * Filter tahun mengikuti "Tanggal Diterbitkan" (created_at).
+ * Filter tahun mengikuti "Tanggal Diterbitkan" (kolom tanggal_surat,
+ * dan created_at untuk data lama yang tanggal_surat-nya kosong).
  */
 class SuratKorbanExcelController extends Controller
 {
     /** Kolom tabel yang tidak ikut dicetak */
-    private array $sembunyi = ['id', 'updated_at', 'deleted_at'];
+    private array $sembunyi = ['id', 'created_at', 'updated_at', 'deleted_at'];
 
     /** Kolom yang namanya mengandung kata ini dianggap berkas/foto dan tidak dicetak */
     private array $kataBerkas = [
@@ -37,16 +38,16 @@ class SuratKorbanExcelController extends Controller
 
     /** Judul kolom yang dibuat manual (sama dengan judul di tabel halaman) */
     private array $judulKolom = [
-        'nomor_surat' => 'Nomor Surat',
-        'nama_korban' => 'Nama Korban / Instansi',
-        'created_at'  => 'Tanggal Diterbitkan',
+        'nomor_surat'   => 'Nomor Surat',
+        'nama_korban'   => 'Nama Korban / Instansi',
+        'tanggal_surat' => 'Tanggal Diterbitkan',
     ];
 
     /** Lebar kolom khusus */
     private array $lebarKolom = [
-        'nomor_surat' => 34,
-        'nama_korban' => 30,
-        'created_at'  => 22,
+        'nomor_surat'   => 34,
+        'nama_korban'   => 30,
+        'tanggal_surat' => 22,
     ];
 
     /** True jika kolom berisi berkas/foto (dilihat dari nama kolom atau isi datanya) */
@@ -71,15 +72,23 @@ class SuratKorbanExcelController extends Controller
 
     public function __invoke(Request $request)
     {
-        // Tahun opsional (?tahun=2026). Nilai selain 4 digit angka diabaikan = semua tahun.
+        // Tahun opsional (?tahun=2027). Nilai selain 4 digit angka diabaikan = semua tahun.
         $tahun = $request->query('tahun');
         $tahun = (is_numeric($tahun) && strlen((string) $tahun) === 4) ? (int) $tahun : null;
 
         $model = new SuratKorban();
 
-        $query = SuratKorban::orderBy('created_at', 'desc');
+        $query = SuratKorban::orderByRaw('COALESCE(tanggal_surat, created_at) DESC')->orderByDesc('id');
         if ($tahun) {
-            $query->whereYear('created_at', $tahun);
+            $awal  = Carbon::create($tahun, 1, 1)->startOfDay();
+            $akhir = Carbon::create($tahun, 12, 31)->endOfDay();
+
+            $query->where(function ($q) use ($awal, $akhir) {
+                $q->whereBetween('tanggal_surat', [$awal, $akhir])
+                  ->orWhere(function ($q2) use ($awal, $akhir) {
+                      $q2->whereNull('tanggal_surat')->whereBetween('created_at', [$awal, $akhir]);
+                  });
+            });
         }
         $data = $query->get();
 
@@ -99,10 +108,10 @@ class SuratKorbanExcelController extends Controller
         }));
 
         // Urutan: nomor surat & nama korban di depan, tanggal diterbitkan di belakang
-        $depan  = array_values(array_intersect(['nomor_surat', 'nama_korban'], $kolomDb));
-        $akhir  = in_array('created_at', $kolomDb, true) ? ['created_at'] : [];
-        $tengah = array_values(array_diff($kolomDb, $depan, $akhir));
-        $kolomDb = array_merge($depan, $tengah, $akhir);
+        $depan   = array_values(array_intersect(['nomor_surat', 'nama_korban'], $kolomDb));
+        $akhirKol = in_array('tanggal_surat', $kolomDb, true) ? ['tanggal_surat'] : [];
+        $tengah  = array_values(array_diff($kolomDb, $depan, $akhirKol));
+        $kolomDb = array_merge($depan, $tengah, $akhirKol);
 
         /* ---------- Definisi kolom ---------- */
         $kolom = [['key' => 'no', 'head' => 'No', 'w' => 6]];

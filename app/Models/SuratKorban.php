@@ -31,4 +31,10 @@ class SuratKorban extends Model
         'tembusan_lurah',
         'tanggal_surat',
     ];
+
+    protected $casts = [
+    'tanggal_lahir'    => 'date',
+    'tanggal_kejadian' => 'date',
+    'tanggal_surat'    => 'datetime',
+    ];
 }

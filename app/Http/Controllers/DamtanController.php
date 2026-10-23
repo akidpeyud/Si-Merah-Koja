@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -15,7 +16,6 @@ class DamtanController extends Controller
 {
     // ==========================================
     // BATAS UKURAN FILE UPLOAD (dalam KB)
-    // Ubah angka di sini jika ingin mengganti batas.
     // 10240 KB = 10 MB, 20480 KB = 20 MB, dst.
     // CATATAN: upload_max_filesize & post_max_size di php.ini
     // harus >= angka ini, kalau tidak upload tetap gagal.
@@ -24,16 +24,19 @@ class DamtanController extends Controller
     private const MAX_VIDEO_KB = 10240; // 10 MB untuk video
 
     /**
-     * Validasi file foto & video (dipakai di store dan update).
+     * Validasi tanggal + file foto & video (dipakai di store dan update).
      * Return Validator agar pesan error bisa dikirim lewat session 'error'.
      */
     private function validasiFile(Request $request)
     {
         return Validator::make($request->all(), [
+            'tanggal_kejadian' => 'required|date',
             'foto'   => 'nullable|array',
             'foto.*' => 'file|mimes:jpg,jpeg,png|max:' . self::MAX_FOTO_KB,
             'video'  => 'nullable|file|mimes:mp4|max:' . self::MAX_VIDEO_KB,
         ], [
+            'tanggal_kejadian.required' => 'Tanggal kejadian wajib diisi.',
+            'tanggal_kejadian.date'     => 'Format tanggal kejadian tidak valid.',
             'foto.*.mimes'    => 'Format foto harus JPG atau PNG.',
             'foto.*.max'      => 'Ukuran setiap foto maksimal ' . (self::MAX_FOTO_KB / 1024) . ' MB.',
             'foto.*.uploaded' => 'Foto gagal diunggah. Ukuran file melebihi batas server (cek upload_max_filesize di php.ini).',
@@ -43,6 +46,41 @@ class DamtanController extends Controller
             'video.uploaded'  => 'Video gagal diunggah. Ukuran file melebihi batas server (cek upload_max_filesize di php.ini).',
             'video.file'      => 'Video yang diunggah tidak valid.',
         ]);
+    }
+
+    /**
+     * Hari/bulan/tahun dihitung dari tanggal kejadian yang diinput.
+     * Server adalah sumber kebenaran, bukan field readonly di browser.
+     */
+    private function turunanTanggal(Request $request): array
+    {
+        $t = Carbon::parse($request->tanggal_kejadian)->locale('id');
+
+        return [
+            'tanggal_kejadian' => $t->toDateString(),
+            'hari_kejadian'    => $t->translatedFormat('l'),
+            'bulan_kejadian'   => $t->translatedFormat('F'),
+            'tahun_kejadian'   => $t->year,
+        ];
+    }
+
+    /**
+     * Nomor laporan mengikuti tanggal kejadian, urut per tanggal.
+     * Harus dipanggil di dalam DB transaction (memakai lockForUpdate).
+     * Format: REG-YYYYMMDD-0001
+     */
+    private function buatNomorLaporan(Carbon $tanggal): string
+    {
+        $prefix = 'REG-' . $tanggal->format('Ymd') . '-';
+
+        $terakhir = LaporanPenyelamatan::where('nomor_laporan', 'like', $prefix . '%')
+            ->lockForUpdate()
+            ->orderByDesc('nomor_laporan')
+            ->value('nomor_laporan');
+
+        $urut = $terakhir ? ((int) substr($terakhir, -4)) + 1 : 1;
+
+        return $prefix . str_pad($urut, 4, '0', STR_PAD_LEFT);
     }
 
     // ==========================================
@@ -55,11 +93,16 @@ class DamtanController extends Controller
         return view('internal.damtan.input_data');
     }
 
-    // 2. Menampilkan tabel data laporan
-    public function indexPenyelamatan()
+    // 2. Menampilkan tabel data laporan (dengan tab Kebakaran / Non-Kebakaran)
+    public function indexPenyelamatan(Request $request)
     {
-        // Hapus with(['teknis', 'dokumentasi']) karena kita sudah menggunakan leftJoin
-        $data_laporan = LaporanPenyelamatan::leftJoin('lp_teknis_logistiks', 'laporan_penyelamatans.id', '=', 'lp_teknis_logistiks.laporan_id')
+        // Tab aktif dari URL (?tab=kebakaran atau ?tab=non-kebakaran), default kebakaran
+        $tab = $request->query('tab', 'kebakaran');
+        if (!in_array($tab, ['kebakaran', 'non-kebakaran'])) {
+            $tab = 'kebakaran';
+        }
+
+        $query = LaporanPenyelamatan::leftJoin('lp_teknis_logistiks', 'laporan_penyelamatans.id', '=', 'lp_teknis_logistiks.laporan_id')
             ->leftJoin('lp_dokumentasis', 'laporan_penyelamatans.id', '=', 'lp_dokumentasis.laporan_id')
             ->leftJoin('lp_kategori_khusus', 'laporan_penyelamatans.id', '=', 'lp_kategori_khusus.laporan_id')
             ->select(
@@ -92,20 +135,39 @@ class DamtanController extends Controller
                 'lp_kategori_khusus.jenis_objek_tumbang',
                 'lp_kategori_khusus.kondisi_perairan',
                 'lp_kategori_khusus.jenis_benda_bahaya'
-            )
-            ->orderBy('laporan_penyelamatans.created_at', 'desc')
-            ->paginate(10);
+            );
 
-        return view('internal.damtan.data_laporan', compact('data_laporan'));
+        // FILTER TAB (kolom diberi nama tabel agar tidak ambigu karena ada JOIN)
+        if ($tab === 'kebakaran') {
+            $query->whereRaw("LOWER(TRIM(laporan_penyelamatans.kategori_kejadian)) = 'kebakaran'");
+        } else {
+            $query->where(function ($w) {
+                $w->whereRaw("LOWER(TRIM(laporan_penyelamatans.kategori_kejadian)) != 'kebakaran'")
+                  ->orWhereNull('laporan_penyelamatans.kategori_kejadian');
+            });
+        }
+
+        $data_laporan = $query
+            // Urut berdasarkan tanggal kejadian (data lama tanpa tanggal jatuh ke created_at)
+            ->orderByRaw('COALESCE(laporan_penyelamatans.tanggal_kejadian, DATE(laporan_penyelamatans.created_at)) DESC')
+            ->orderBy('laporan_penyelamatans.id', 'desc')
+            ->paginate(10)
+            ->withQueryString(); // supaya ?tab= tetap terbawa saat pindah halaman
+
+        // Daftar tahun dinamis untuk filter di view (opsional dipakai)
+        $tahunList = LaporanPenyelamatan::whereNotNull('tahun_kejadian')
+            ->distinct()
+            ->orderByDesc('tahun_kejadian')
+            ->pluck('tahun_kejadian');
+
+        return view('internal.damtan.data_laporan', compact('data_laporan', 'tahunList', 'tab'));
     }
 
     // 3. Menampilkan detail data spesifik (Lihat Data)
     public function showPenyelamatan($id)
     {
-        // Tarik data laporan beserta relasinya dari 3 tabel lainnya
         $laporan = LaporanPenyelamatan::findOrFail($id);
 
-        // Menggunakan relasi Eloquent atau Query Builder
         $teknis = LpTeknisLogistik::where('laporan_id', $id)->first() ?? new LpTeknisLogistik();
         $dokumentasi = LpDokumentasi::where('laporan_id', $id)->first() ?? new LpDokumentasi();
         $khusus = LpKategoriKhusus::where('laporan_id', $id)->first() ?? new LpKategoriKhusus();
@@ -222,7 +284,7 @@ class DamtanController extends Controller
     // 4. Menyimpan data dari form (Create)
     public function storePenyelamatan(Request $request)
     {
-        // VALIDASI UKURAN & FORMAT FILE
+        // VALIDASI TANGGAL, UKURAN & FORMAT FILE
         $validator = $this->validasiFile($request);
         if ($validator->fails()) {
             return redirect()->back()
@@ -246,35 +308,41 @@ class DamtanController extends Controller
                 $videoPath = $request->file('video')->store('uploads/penyelamatan/video', 'public');
             }
 
+            // Tanggal kejadian = sumber untuk hari/bulan/tahun & nomor laporan
+            $tanggal = Carbon::parse($request->tanggal_kejadian);
+
             // TAB 1: INSERT TABEL UTAMA
-            $laporan = LaporanPenyelamatan::create([
-                'user_id' => auth()->id(),
-                'nomor_laporan' => 'REG-' . date('Ymd') . '-' . rand(1000, 9999),
-                'id_laporan' => Str::uuid(),
+            $laporan = LaporanPenyelamatan::create(array_merge(
+                $this->turunanTanggal($request),
+                [
+                    'user_id'       => auth()->id(),
+                    'nomor_laporan' => $this->buatNomorLaporan($tanggal),
+                    'id_laporan'    => Str::uuid(),
 
-                'nama_pelapor' => $request->nama_pelapor,
-                'telepon_pelapor' => $request->telepon_pelapor,
-                'media_pelaporan' => $request->media_pelaporan,
+                    'nama_pelapor' => $request->nama_pelapor,
+                    'telepon_pelapor' => $request->telepon_pelapor,
+                    'media_pelaporan' => $request->media_pelaporan,
 
-                // Mendukung input kategori_kebakaran maupun objek_kebakaran
-                'kategori_kebakaran' => $request->kategori_kebakaran ?? $request->objek_kebakaran,
-                'keterangan_objek_kebakaran' => $request->keterangan_objek_kebakaran,
-                'rincian_objek' => $this->rincianObjek($request),
+                    // Mendukung input kategori_kebakaran maupun objek_kebakaran
+                    'kategori_kebakaran' => $request->kategori_kebakaran ?? $request->objek_kebakaran,
+                    'keterangan_objek_kebakaran' => $request->keterangan_objek_kebakaran,
+                    'rincian_objek' => $this->rincianObjek($request),
 
-                'kategori_non_kebakaran' => $request->kategori_non_kebakaran,
-                'rincian_kategori_non_kebakaran' => $request->rincian_kategori_non_kebakaran,
-                'kategori_kejadian' => $request->kategori_kejadian,
-                'prioritas' => $request->prioritas ?? 'rendah',
-                'waktu_kejadian' => $request->waktu_kejadian,
-                'waktu_terima' => $request->waktu_terima,
-                'waktu_berangkat' => $request->waktu_berangkat,
-                'waktu_tiba' => $request->waktu_tiba,
-                'waktu_selesai' => $request->waktu_selesai,
-                'waktu_kembali' => $request->waktu_kembali,
-                'alamat' => $request->alamat,
-                'jarak_tempuh' => $request->jarak_tempuh,
-                'koordinat' => $request->koordinat,
-            ]);
+                    'kategori_non_kebakaran' => $request->kategori_non_kebakaran,
+                    'rincian_kategori_non_kebakaran' => $request->rincian_kategori_non_kebakaran,
+                    'kategori_kejadian' => $request->kategori_kejadian,
+                    'prioritas' => $request->prioritas ?? 'rendah',
+                    'waktu_kejadian' => $request->waktu_kejadian,
+                    'waktu_terima' => $request->waktu_terima,
+                    'waktu_berangkat' => $request->waktu_berangkat,
+                    'waktu_tiba' => $request->waktu_tiba,
+                    'waktu_selesai' => $request->waktu_selesai,
+                    'waktu_kembali' => $request->waktu_kembali,
+                    'alamat' => $request->alamat,
+                    'jarak_tempuh' => $request->jarak_tempuh,
+                    'koordinat' => $request->koordinat,
+                ]
+            ));
 
             // TAB 2: INSERT TABEL TEKNIS & LOGISTIK
             LpTeknisLogistik::create([
@@ -365,7 +433,7 @@ class DamtanController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->back()->with('error', 'Gagal menyimpan data: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Gagal menyimpan data: ' . $e->getMessage());
         }
     }
 
@@ -384,7 +452,7 @@ class DamtanController extends Controller
     // 6. Menyimpan perubahan data (Update)
     public function updatePenyelamatan(Request $request, $id)
     {
-        // VALIDASI UKURAN & FORMAT FILE
+        // VALIDASI TANGGAL, UKURAN & FORMAT FILE
         $validator = $this->validasiFile($request);
         if ($validator->fails()) {
             return redirect()->back()
@@ -396,30 +464,33 @@ class DamtanController extends Controller
         try {
             $laporan = LaporanPenyelamatan::findOrFail($id);
 
-            // Update TAB 1
-            $laporan->update([
-                'nama_pelapor' => $request->nama_pelapor,
-                'telepon_pelapor' => $request->telepon_pelapor,
-                'media_pelaporan' => $request->media_pelaporan,
+            // Update TAB 1 (nomor_laporan sengaja tidak diubah)
+            $laporan->update(array_merge(
+                $this->turunanTanggal($request),
+                [
+                    'nama_pelapor' => $request->nama_pelapor,
+                    'telepon_pelapor' => $request->telepon_pelapor,
+                    'media_pelaporan' => $request->media_pelaporan,
 
-                'kategori_kebakaran' => $request->kategori_kebakaran ?? $request->objek_kebakaran,
-                'keterangan_objek_kebakaran' => $request->keterangan_objek_kebakaran,
-                'rincian_objek' => $this->rincianObjek($request),
+                    'kategori_kebakaran' => $request->kategori_kebakaran ?? $request->objek_kebakaran,
+                    'keterangan_objek_kebakaran' => $request->keterangan_objek_kebakaran,
+                    'rincian_objek' => $this->rincianObjek($request),
 
-                'kategori_non_kebakaran' => $request->kategori_non_kebakaran,
-                'rincian_kategori_non_kebakaran' => $request->rincian_kategori_non_kebakaran,
-                'kategori_kejadian' => $request->kategori_kejadian,
-                'prioritas' => $request->prioritas ?? 'rendah',
-                'waktu_kejadian' => $request->waktu_kejadian,
-                'waktu_terima' => $request->waktu_terima,
-                'waktu_berangkat' => $request->waktu_berangkat,
-                'waktu_tiba' => $request->waktu_tiba,
-                'waktu_selesai' => $request->waktu_selesai,
-                'waktu_kembali' => $request->waktu_kembali,
-                'alamat' => $request->alamat,
-                'jarak_tempuh' => $request->jarak_tempuh,
-                'koordinat' => $request->koordinat,
-            ]);
+                    'kategori_non_kebakaran' => $request->kategori_non_kebakaran,
+                    'rincian_kategori_non_kebakaran' => $request->rincian_kategori_non_kebakaran,
+                    'kategori_kejadian' => $request->kategori_kejadian,
+                    'prioritas' => $request->prioritas ?? 'rendah',
+                    'waktu_kejadian' => $request->waktu_kejadian,
+                    'waktu_terima' => $request->waktu_terima,
+                    'waktu_berangkat' => $request->waktu_berangkat,
+                    'waktu_tiba' => $request->waktu_tiba,
+                    'waktu_selesai' => $request->waktu_selesai,
+                    'waktu_kembali' => $request->waktu_kembali,
+                    'alamat' => $request->alamat,
+                    'jarak_tempuh' => $request->jarak_tempuh,
+                    'koordinat' => $request->koordinat,
+                ]
+            ));
 
             // Update TAB 2
             LpTeknisLogistik::updateOrCreate(
@@ -517,7 +588,7 @@ class DamtanController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->back()->with('error', 'Gagal memperbarui data: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Gagal memperbarui data: ' . $e->getMessage());
         }
     }
 
@@ -536,6 +607,81 @@ class DamtanController extends Controller
     // KELOLA SURAT KORBAN
     // ==========================================
 
+    /** Validasi form surat korban (dipakai di store dan update). */
+    private function validasiSurat(Request $request)
+    {
+        return Validator::make($request->all(), [
+            'nama_korban'        => 'required|string|max:255',
+            'status_kepemilikan' => 'required|string|max:255',
+            'nik'                => ['required', 'regex:/^[0-9]{1,20}$/'],
+            'pekerjaan'          => 'required|string|max:255',
+            'tempat_lahir'       => 'required|string|max:255',
+            'tanggal_lahir'      => 'required|date',
+            'status_perkawinan'  => 'required|string|max:100',
+            'alamat'             => 'required|string',
+            'objek_terbakar'     => 'required|string|max:255',
+            'tanggal_kejadian'   => 'required|date',
+            'waktu_kejadian'     => 'required',
+            'tanggal_surat'      => 'nullable|date',
+            'tembusan_camat'     => 'nullable|string|max:255',
+            'tembusan_lurah'     => 'nullable|string|max:255',
+        ], [
+            'nama_korban.required'      => 'Nama korban wajib diisi.',
+            'nik.required'              => 'NIK wajib diisi.',
+            'nik.regex'                 => 'NIK hanya boleh berisi angka.',
+            'tanggal_lahir.date'        => 'Format tanggal lahir tidak valid.',
+            'tanggal_kejadian.required' => 'Tanggal kejadian wajib diisi.',
+            'tanggal_kejadian.date'     => 'Format tanggal kejadian tidak valid.',
+            'waktu_kejadian.required'   => 'Waktu kejadian wajib diisi.',
+            'tanggal_surat.date'        => 'Format tanggal surat tidak valid.',
+        ]);
+    }
+
+    /**
+     * Data surat yang disimpan. Hari kejadian dihitung dari tanggal kejadian
+     * di server, jadi tidak bisa tidak cocok dengan tanggalnya.
+     */
+    private function dataSurat(Request $request): array
+    {
+        $kejadian = Carbon::parse($request->tanggal_kejadian)->locale('id');
+
+        return [
+            'nama_korban'        => $request->nama_korban,
+            'status_kepemilikan' => $request->status_kepemilikan,
+            'nik'                => $request->nik,
+            'pekerjaan'          => $request->pekerjaan,
+            'tempat_lahir'       => $request->tempat_lahir,
+            'tanggal_lahir'      => $request->tanggal_lahir,
+            'status_perkawinan'  => $request->status_perkawinan,
+            'alamat'             => $request->alamat,
+            'objek_terbakar'     => $request->objek_terbakar,
+            'hari_kejadian'      => $kejadian->translatedFormat('l'),
+            'tanggal_kejadian'   => $kejadian->toDateString(),
+            'waktu_kejadian'     => $request->waktu_kejadian,
+            'tembusan_camat'     => $request->tembusan_camat,
+            'tembusan_lurah'     => $request->tembusan_lurah,
+        ];
+    }
+
+    /**
+     * Nomor surat mengikuti TANGGAL SURAT, urut per tanggal.
+     * Format: SKK-YYYYMMDD-0001. Panggil di dalam DB transaction.
+     */
+    private function buatNomorSurat(Carbon $tanggal): string
+    {
+        $prefix = 'SKK-' . $tanggal->format('Ymd') . '-';
+
+        $terakhir = DB::table('surat_korbans')
+            ->where('nomor_surat', 'like', $prefix . '%')
+            ->lockForUpdate()
+            ->orderByDesc('nomor_surat')
+            ->value('nomor_surat');
+
+        $urut = $terakhir ? ((int) substr($terakhir, -4)) + 1 : 1;
+
+        return $prefix . str_pad($urut, 4, '0', STR_PAD_LEFT);
+    }
+
     public function createSurat()
     {
         return view('internal.damtan.input_surat');
@@ -543,34 +689,47 @@ class DamtanController extends Controller
 
     public function storeSurat(Request $request)
     {
-        DB::table('surat_korbans')->insert([
-            'nomor_surat' => 'SKK-' . date('Ymd') . '-' . rand(1000, 9999),
-            'tanggal_surat' => now(),
-            'nama_korban' => $request->nama_korban,
-            'status_kepemilikan' => $request->status_kepemilikan,
-            'nik' => $request->nik,
-            'pekerjaan' => $request->pekerjaan,
-            'tempat_lahir' => $request->tempat_lahir,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'status_perkawinan' => $request->status_perkawinan,
-            'alamat' => $request->alamat,
-            'objek_terbakar' => $request->objek_terbakar,
-            'hari_kejadian' => $request->hari_kejadian,
-            'tanggal_kejadian' => $request->tanggal_kejadian,
-            'waktu_kejadian' => $request->waktu_kejadian,
-            'tembusan_camat' => $request->tembusan_camat,
-            'tembusan_lurah' => $request->tembusan_lurah,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $validator = $this->validasiSurat($request);
+        if ($validator->fails()) {
+            return redirect()->back()->withInput()->with('error', $validator->errors()->first());
+        }
+
+        try {
+            DB::transaction(function () use ($request) {
+                // Tanggal surat = tanggal diterbitkan (default hari ini, boleh diisi manual)
+                $tglSurat = $request->filled('tanggal_surat')
+                    ? Carbon::parse($request->tanggal_surat)->setTimeFrom(now())
+                    : now();
+
+                DB::table('surat_korbans')->insert(array_merge($this->dataSurat($request), [
+                    'nomor_surat'   => $this->buatNomorSurat($tglSurat),
+                    'tanggal_surat' => $tglSurat->toDateTimeString(),
+                    'created_at'    => now(),
+                    'updated_at'    => now(),
+                ]));
+            });
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal menyimpan surat: ' . $e->getMessage());
+        }
 
         return redirect('/internal/surat-korban/data')->with('success', 'Data Surat Keterangan Korban berhasil ditambahkan!');
     }
 
     public function indexSurat()
     {
-        $surat = DB::table('surat_korbans')->orderBy('created_at', 'desc')->paginate(10);
-        return view('internal.damtan.data_surat', compact('surat'));
+        $surat = DB::table('surat_korbans')
+            ->orderByRaw('COALESCE(tanggal_surat, created_at) DESC')
+            ->orderByDesc('id')
+            ->paginate(10);
+
+        // Daftar tahun dinamis untuk pilihan ekspor
+        $tahunList = DB::table('surat_korbans')
+            ->selectRaw('YEAR(COALESCE(tanggal_surat, created_at)) as tahun')
+            ->distinct()
+            ->orderByDesc('tahun')
+            ->pluck('tahun');
+
+        return view('internal.damtan.data_surat', compact('surat', 'tahunList'));
     }
 
     public function editSurat($id)
@@ -586,23 +745,30 @@ class DamtanController extends Controller
 
     public function updateSurat(Request $request, $id)
     {
-        DB::table('surat_korbans')->where('id', $id)->update([
-            'nama_korban' => $request->nama_korban,
-            'status_kepemilikan' => $request->status_kepemilikan,
-            'nik' => $request->nik,
-            'pekerjaan' => $request->pekerjaan,
-            'tempat_lahir' => $request->tempat_lahir,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'status_perkawinan' => $request->status_perkawinan,
-            'alamat' => $request->alamat,
-            'objek_terbakar' => $request->objek_terbakar,
-            'hari_kejadian' => $request->hari_kejadian,
-            'tanggal_kejadian' => $request->tanggal_kejadian,
-            'waktu_kejadian' => $request->waktu_kejadian,
-            'tembusan_camat' => $request->tembusan_camat,
-            'tembusan_lurah' => $request->tembusan_lurah,
-            'updated_at' => now(),
-        ]);
+        $validator = $this->validasiSurat($request);
+        if ($validator->fails()) {
+            return redirect()->back()->withInput()->with('error', $validator->errors()->first());
+        }
+
+        $lama = DB::table('surat_korbans')->where('id', $id)->first();
+        if (!$lama) {
+            return redirect('/internal/surat-korban/data')->with('error', 'Data surat tidak ditemukan.');
+        }
+
+        $data = $this->dataSurat($request);
+
+        // Tanggal surat hanya berubah jika tanggalnya memang diganti (jam lama dipertahankan)
+        if ($request->filled('tanggal_surat')) {
+            $baru = Carbon::parse($request->tanggal_surat);
+            $tglLama = $lama->tanggal_surat ? Carbon::parse($lama->tanggal_surat) : null;
+            if (!$tglLama || $tglLama->toDateString() !== $baru->toDateString()) {
+                $data['tanggal_surat'] = $baru->setTimeFrom(now())->toDateTimeString();
+            }
+        }
+
+        // nomor_surat sengaja tidak diubah: nomor yang sudah tercetak tidak boleh berganti
+        $data['updated_at'] = now();
+        DB::table('surat_korbans')->where('id', $id)->update($data);
 
         return redirect('/internal/surat-korban/data')->with('success', 'Data Surat Keterangan Korban berhasil diperbarui!');
     }
@@ -685,7 +851,7 @@ class DamtanController extends Controller
         return redirect()->back()->with('success', 'Data rekap layanan berhasil disimpan!');
     }
 
-    // BARU: Update data rekap layanan (dipanggil oleh PUT /internal/damtan/rekap-layanan/{id})
+    // Update data rekap layanan (PUT /internal/damtan/rekap-layanan/{id})
     public function updateRekapLayanan(Request $request, $id)
     {
         $request->validate([
@@ -790,7 +956,7 @@ class DamtanController extends Controller
         return redirect()->back()->with('success', 'Data rekap objek kebakaran berhasil disimpan!');
     }
 
-    // BARU: Update data rekap objek (dipanggil oleh PUT /internal/damtan/rekap-objek/{id})
+    // Update data rekap objek (PUT /internal/damtan/rekap-objek/{id})
     public function updateRekapObjek(Request $request, $id)
     {
         $request->validate([

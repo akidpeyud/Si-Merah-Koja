@@ -9,6 +9,13 @@
     .page-head h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 5px; color: var(--ink); }
     .page-head p { color: var(--steel); font-size: .95rem; margin-bottom: 0; }
 
+    /* ---------- Pill kategori (Kebakaran / Non-Kebakaran) ---------- */
+    .tab-kategori { display: inline-flex; align-items: center; gap: 4px; padding: 6px; margin-bottom: 20px; background: #fff; border: 1px solid var(--line); border-radius: 999px; box-shadow: var(--shadow-sm); max-width: 100%; overflow-x: auto; }
+    .tab-kategori button { padding: 10px 28px; border: 0; border-radius: 999px; background: transparent; font-size: .92rem; font-weight: 700; color: var(--steel); transition: all .2s ease; white-space: nowrap; cursor: pointer; }
+    .tab-kategori button:hover { color: var(--ink); }
+    .tab-kategori button.active { background: var(--navy); color: #fff; box-shadow: 0 4px 10px rgba(22, 58, 99, .25); }
+    .tab-kategori button:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+
     /* ---------- Kartu utama + Tabs ---------- */
     .tabs-card { background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--shadow-xs); }
     .card-header-tabs { background: #fff; border-bottom: 1px solid var(--line); padding: 14px 20px 0; border-radius: var(--r-md) var(--r-md) 0 0; }
@@ -81,18 +88,33 @@
 {{-- ==================== ISI HALAMAN ==================== --}}
 @section('content')
 
+@php
+    // Tab awal: dari ?kategori= (tombol "Buat Laporan Baru"), atau dari input lama jika validasi gagal
+    $tabAwal = request('kategori') === 'non-kebakaran' ? 'non-kebakaran' : 'kebakaran';
+    if (old('kategori_kejadian') !== null && old('kategori_kejadian') !== '') {
+        $tabAwal = old('kategori_kejadian') === 'kebakaran' ? 'kebakaran' : 'non-kebakaran';
+    }
+    $awalFire = $tabAwal === 'kebakaran';
+@endphp
+
 <div class="page-head d-flex flex-wrap justify-content-between align-items-start gap-3">
     <div>
         <h1>Form Penginputan Data Penyelamatan</h1>
         <p>Bagian Pemadaman & Penyelamatan - Disdamkartan Kota Jambi.</p>
     </div>
-    <a href="/internal/damtan/data-laporan" class="btn-custom-light">
+    <a href="/internal/damtan/data-laporan?tab={{ $tabAwal }}" class="btn-custom-light">
         <i class="fas fa-arrow-left"></i> Kembali
     </a>
 </div>
 
 <form action="{{ route('damtan.laporan.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
+
+    <!-- PILIH JENIS LAPORAN: Kebakaran / Non-Kebakaran -->
+    <div class="tab-kategori" id="pilihKategori" role="tablist" aria-label="Jenis laporan">
+        <button type="button" class="{{ $awalFire ? 'active' : '' }}" data-kategori="kebakaran" role="tab">Kebakaran</button>
+        <button type="button" class="{{ !$awalFire ? 'active' : '' }}" data-kategori="non-kebakaran" role="tab">Non-Kebakaran</button>
+    </div>
 
     <div class="tabs-card">
         <!-- BOOTSTRAP TABS -->
@@ -107,7 +129,8 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="dokumentasi-tab" data-bs-toggle="tab" data-bs-target="#dokumentasi" type="button" role="tab"><span class="no">3</span> Dokumentasi & Validasi</button>
                 </li>
-                <li class="nav-item" role="presentation">
+                {{-- Tab 4 hanya untuk Non-Kebakaran --}}
+                <li class="nav-item" role="presentation" id="navKhusus">
                     <button class="nav-link" id="khusus-tab" data-bs-toggle="tab" data-bs-target="#khusus" type="button" role="tab"><span class="no">4</span> Kategori Khusus</button>
                 </li>
             </ul>
@@ -212,16 +235,19 @@
                 <section class="form-section">
                     <header class="form-section__head">
                         <span class="ico"><i class="fas fa-layer-group"></i></span>
-                        <div><h3>Klasifikasi Kejadian</h3><p>Untuk kebakaran, pilih objek kebakaran beserta rinciannya.</p></div>
+                        <div><h3>Klasifikasi Kejadian</h3><p>Untuk kebakaran, pilih objek kebakaran beserta rinciannya. Untuk non-kebakaran, pilih jenis kegiatannya.</p></div>
                     </header>
                     <div class="form-section__body">
                         <div class="row g-3">
                             <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="field-label">Kategori Kejadian Umum</label>
-                                    <select class="form-select" name="kategori_kejadian" id="kategori_kejadian">
+                                {{-- Kategori kejadian: nilainya ditentukan oleh pill di atas halaman --}}
+                                <input type="hidden" name="kategori_kejadian" id="kategori_kejadian_fire" value="kebakaran">
+
+                                {{-- Hanya untuk Non-Kebakaran --}}
+                                <div class="mb-3" id="blokKategoriUmum" style="display:none;">
+                                    <label class="field-label">Kategori Kejadian Umum <span class="req">*</span></label>
+                                    <select class="form-select" name="kategori_kejadian" id="kategori_kejadian_non" disabled>
                                         <option value="">-- Pilih Kategori Kejadian --</option>
-                                        <option value="kebakaran" selected>Kebakaran</option>
                                         <option value="penyelamatan_hewan">Penyelamatan Hewan</option>
                                         <option value="bencana_alam">Bencana Alam</option>
                                         <option value="kecelakaan_lalu_lintas">Kecelakaan Lalu Lintas</option>
@@ -229,7 +255,7 @@
                                     </select>
                                 </div>
 
-                                {{-- Tingkat Prioritas (di bawah Kategori Kejadian Umum) --}}
+                                {{-- Tingkat Prioritas --}}
                                 <div>
                                     <label class="field-label">Tingkat Prioritas</label>
                                     <div class="choice-group">
@@ -241,7 +267,7 @@
                                 </div>
                             </div>
 
-                            {{-- Objek kebakaran (tampil jika kategori = Kebakaran) --}}
+                            {{-- Objek kebakaran (tampil jika tab = Kebakaran) --}}
                             <div class="col-md-8" id="blokKebakaran">
                                 <div class="row g-3">
                                     <div class="col-md-6">
@@ -264,7 +290,7 @@
                                         </select>
                                     </div>
 
-                                    {{-- KOLOM BARU: Keterangan di sebelah Objek Kebakaran --}}
+                                    {{-- Keterangan di sebelah Objek Kebakaran --}}
                                     <div class="col-md-6">
                                         <label class="field-label">Keterangan Objek</label>
                                         <input type="text" class="form-control" name="keterangan_objek_kebakaran" id="keterangan_objek_kebakaran"
@@ -336,9 +362,9 @@
                                 </div>
                             </div>
 
-                            {{-- Kategori non-kebakaran (tampil jika kategori bukan Kebakaran) --}}
+                            {{-- Kategori non-kebakaran (tampil jika tab = Non-Kebakaran) --}}
                             <div class="col-md-8" id="blokNonKebakaran" style="display:none;">
-                                <label class="field-label">Kategori Laporan (Non-Kebakaran)</label>
+                                <label class="field-label">Jenis Kegiatan (Non-Kebakaran)</label>
                                 <div class="pair">
                                     <select class="form-select" name="kategori_non_kebakaran" id="kategori_non_kebakaran" disabled>
                                         <option selected value="">-- Pilih Jenis Evakuasi --</option>
@@ -468,6 +494,43 @@
                                     <span class="input-group-text">Menit</span>
                                 </div>
                                 <small class="field-hint">Terisi otomatis dari Waktu Tiba sampai Waktu Operasi Selesai (bisa diubah manual).</small>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Kondisi lapangan (dipindah dari tab 4, berlaku untuk semua jenis laporan) -->
+                <section class="form-section">
+                    <header class="form-section__head">
+                        <span class="ico"><i class="fas fa-cloud-sun-rain"></i></span>
+                        <div><h3>Kondisi Lapangan</h3><p>Cuaca, medan, dan akses menuju lokasi saat operasi.</p></div>
+                    </header>
+                    <div class="form-section__body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="field-label">Cuaca Operasi</label>
+                                <select class="form-select" name="cuaca_operasi">
+                                    <option selected value="">-- Pilih --</option>
+                                    <option value="cerah">Cerah</option>
+                                    <option value="hujan_lebat">Hujan Lebat</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="field-label">Jenis Medan</label>
+                                <select class="form-select" name="jenis_medan">
+                                    <option selected value="">-- Pilih --</option>
+                                    <option value="pemukiman_padat">Pemukiman Padat</option>
+                                    <option value="perkebunan">Perkebunan</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="field-label">Akses Lokasi</label>
+                                <select class="form-select" name="akses_lokasi">
+                                    <option selected value="">-- Pilih --</option>
+                                    <option value="kendaraan_berat">Bisa dilalui Roda 4+</option>
+                                    <option value="roda_dua">Hanya Roda 2</option>
+                                    <option value="jalan_kaki">Hanya Jalan Kaki</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -663,11 +726,11 @@
                  ========================================================== --}}
             <div class="tab-pane fade" id="dokumentasi" role="tabpanel">
 
-                <!-- Analisis -->
-                <section class="form-section">
+                <!-- Analisis (hanya untuk Kebakaran) -->
+                <section class="form-section only-fire">
                     <header class="form-section__head">
                         <span class="ico"><i class="fas fa-magnifying-glass-chart"></i></span>
-                        <div><h3>Analisis Kejadian</h3><p>Dugaan penyebab, sumber api, dan luas area terdampak.</p></div>
+                        <div><h3>Analisis Kejadian</h3><p>Dugaan penyebab, sumber api, dan luas area terdampak (khusus kebakaran).</p></div>
                     </header>
                     <div class="form-section__body">
                         <div class="row g-3">
@@ -794,12 +857,13 @@
 
                 <div class="tab-nav">
                     <button type="button" class="btn-custom-light" data-go-tab="#teknis-tab"><i class="fas fa-arrow-left"></i> Sebelumnya</button>
-                    <button type="button" class="btn-custom-primary" data-go-tab="#khusus-tab">Selanjutnya <i class="fas fa-arrow-right"></i></button>
+                    {{-- Hanya muncul untuk Non-Kebakaran (tab 4 disembunyikan di Kebakaran) --}}
+                    <button type="button" class="btn-custom-primary" id="btnKeKhusus" data-go-tab="#khusus-tab">Selanjutnya <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
 
             {{-- ==========================================================
-                 TAB 4: KATEGORI KHUSUS
+                 TAB 4: KATEGORI KHUSUS (hanya Non-Kebakaran)
                  ========================================================== --}}
             <div class="tab-pane fade" id="khusus" role="tabpanel">
 
@@ -938,14 +1002,13 @@
                     </div>
                 </section>
 
-                <!-- Ring/Object Removal & Geografis -->
+                <!-- Ring/Object Removal -->
                 <section class="form-section">
                     <header class="form-section__head">
                         <span class="ico"><i class="fas fa-ring"></i></span>
-                        <div><h3>Ring/Object Removal & Geografis</h3><p>Pelepasan benda dan kondisi medan operasi.</p></div>
+                        <div><h3>Ring/Object Removal</h3><p>Pelepasan benda yang menjepit anggota tubuh.</p></div>
                     </header>
                     <div class="form-section__body">
-                        <div class="sub-title">Pelepasan Benda</div>
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <label class="field-label">Jenis Benda</label>
@@ -965,35 +1028,6 @@
                                     <option selected value="">-- Pilih --</option>
                                     <option value="gerinda_mini">Gerinda Mini</option>
                                     <option value="tang_baja">Tang Baja</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="sub-title">Kondisi Geografis</div>
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <label class="field-label">Cuaca Operasi</label>
-                                <select class="form-select" name="cuaca_operasi">
-                                    <option selected value="">-- Pilih --</option>
-                                    <option value="cerah">Cerah</option>
-                                    <option value="hujan_lebat">Hujan Lebat</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="field-label">Jenis Medan</label>
-                                <select class="form-select" name="jenis_medan">
-                                    <option selected value="">-- Pilih --</option>
-                                    <option value="pemukiman_padat">Pemukiman Padat</option>
-                                    <option value="perkebunan">Perkebunan</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="field-label">Akses Lokasi</label>
-                                <select class="form-select" name="akses_lokasi">
-                                    <option selected value="">-- Pilih --</option>
-                                    <option value="kendaraan_berat">Bisa dilalui Roda 4+</option>
-                                    <option value="roda_dua">Hanya Roda 2</option>
-                                    <option value="jalan_kaki">Hanya Jalan Kaki</option>
                                 </select>
                             </div>
                         </div>
@@ -1051,17 +1085,29 @@
     }
 
     /* ==========================================================
-       KATEGORI KEJADIAN -> OBJEK KEBAKARAN / NON-KEBAKARAN
+       PILL KATEGORI (Kebakaran / Non-Kebakaran)
+       Mengatur: kategori_kejadian, blok objek / jenis kegiatan,
+       section khusus kebakaran (.only-fire) dan tab 4 (khusus non-kebakaran)
        ========================================================== */
-    var kategori = document.getElementById('kategori_kejadian');
+    var pillWrap = document.getElementById('pilihKategori');
+    var kategoriFire = document.getElementById('kategori_kejadian_fire');   // hidden: "kebakaran"
+    var kategoriNon = document.getElementById('kategori_kejadian_non');     // select: kategori umum non-kebakaran
+    var blokKategoriUmum = document.getElementById('blokKategoriUmum');
     var objek = document.getElementById('objek_kebakaran');
     var ketObjek = document.getElementById('keterangan_objek_kebakaran');
     var blokKebakaran = document.getElementById('blokKebakaran');
     var blokNon = document.getElementById('blokNonKebakaran');
     var nonSelect = document.getElementById('kategori_non_kebakaran');
+    var dugaan = document.getElementById('dugaan_penyebab');
+    var tombolKembali = document.querySelector('.page-head a.btn-custom-light');
 
-    function tampilkanSubObjek() {
-        var isFire = kategori.value === 'kebakaran';
+    // Tab 4 (Kategori Khusus)
+    var navKhusus = document.getElementById('navKhusus');
+    var paneKhusus = document.getElementById('khusus');
+    var btnKeKhusus = document.getElementById('btnKeKhusus');
+    var jenisHewan = document.getElementById('jenis_hewan');
+
+    function tampilkanSubObjek(isFire) {
         document.querySelectorAll('.sub-objek').forEach(function (box) {
             var aktif = isFire && box.getAttribute('data-objek') === objek.value;
             box.classList.toggle('is-active', aktif);
@@ -1073,34 +1119,82 @@
         });
     }
 
-    function sinkronKategori() {
-        var isFire = kategori.value === 'kebakaran';
+    function aturKategori(isFire) {
+        // Pill aktif
+        pillWrap.querySelectorAll('button').forEach(function (b) {
+            b.classList.toggle('active', (b.getAttribute('data-kategori') === 'kebakaran') === isFire);
+        });
 
+        // Nilai kategori_kejadian yang dikirim (hanya salah satu yang aktif)
+        kategoriFire.disabled = !isFire;
+        blokKategoriUmum.style.display = isFire ? 'none' : '';
+        kategoriNon.disabled = isFire;
+        kategoriNon.required = !isFire;
+        if (isFire) kategoriNon.value = '';
+
+        // Blok objek kebakaran
         blokKebakaran.style.display = isFire ? '' : 'none';
         objek.disabled = !isFire;
         objek.required = isFire;
         if (!isFire) objek.value = '';
-
-        // Keterangan objek ikut nonaktif jika bukan kebakaran
         if (ketObjek) {
             ketObjek.disabled = !isFire;
             if (!isFire) ketObjek.value = '';
         }
 
+        // Blok jenis kegiatan non-kebakaran
         blokNon.style.display = isFire ? 'none' : '';
         nonSelect.disabled = isFire;
         if (isFire) {
             nonSelect.value = '';
             nonSelect.dispatchEvent(new Event('change')); // reset kolom "Lainnya"
         }
-        tampilkanSubObjek();
+
+        tampilkanSubObjek(isFire);
+
+        // Section khusus kebakaran (Analisis Kejadian): sembunyikan & jangan kirim jika non-kebakaran
+        document.querySelectorAll('.only-fire').forEach(function (sec) {
+            sec.style.display = isFire ? '' : 'none';
+            sec.querySelectorAll('input, select, textarea').forEach(function (el) {
+                el.disabled = !isFire;
+            });
+        });
+        if (isFire && dugaan) dugaan.dispatchEvent(new Event('change')); // atur ulang kolom "Lainnya"
+
+        // Tab 4 "Kategori Khusus": hanya untuk Non-Kebakaran
+        navKhusus.style.display = isFire ? 'none' : '';
+        if (btnKeKhusus) btnKeKhusus.style.display = isFire ? 'none' : '';
+        paneKhusus.querySelectorAll('input, select, textarea').forEach(function (el) {
+            el.disabled = isFire;
+        });
+        if (!isFire && jenisHewan) jenisHewan.dispatchEvent(new Event('change')); // atur ulang kolom "Lainnya"
+        if (isFire && paneKhusus.classList.contains('active')) {
+            // Sedang membuka tab 4 lalu pindah ke Kebakaran -> kembali ke tab 3
+            var tab3 = document.getElementById('dokumentasi-tab');
+            if (tab3 && window.bootstrap) bootstrap.Tab.getOrCreateInstance(tab3).show();
+        }
+
+        // Tombol "Kembali" ikut kembali ke tab yang sama
+        if (tombolKembali) {
+            tombolKembali.setAttribute('href', '/internal/damtan/data-laporan?tab=' + (isFire ? 'kebakaran' : 'non-kebakaran'));
+        }
     }
 
-    if (kategori && objek) {
-        kategori.addEventListener('change', sinkronKategori);
-        objek.addEventListener('change', tampilkanSubObjek);
-        sinkronKategori();
-    }
+    pillWrap.querySelectorAll('button').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            aturKategori(btn.getAttribute('data-kategori') === 'kebakaran');
+        });
+    });
+    objek.addEventListener('change', function () {
+        tampilkanSubObjek(!kategoriFire.disabled);
+    });
+
+    // Nilai awal dari server (?kategori= atau input lama)
+    var awalFire = {{ $awalFire ? 'true' : 'false' }};
+    @if (!$awalFire && old('kategori_kejadian') && old('kategori_kejadian') !== 'kebakaran')
+    kategoriNon.value = @json(old('kategori_kejadian'));
+    @endif
+    aturKategori(awalFire);
 
     /* ==========================================================
        RESPON TIME & LAMA OPERASI OTOMATIS (menit)
