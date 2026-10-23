@@ -857,7 +857,7 @@
     <div class="wrap">
         <div class="sec-head">
             <div>
-                <h2>Pemadaman, penyelamatan Dan evakuasi</h2>
+                <h2>Pemadaman, Penyelamatan dan Evakuasi</h2>
                 <p>Informasi terbaru tentang kejadian di Kota Jambi.</p>
             </div>
             <img src="/images/mobil.png" alt="Mobil pemadam kebakaran" loading="lazy">
