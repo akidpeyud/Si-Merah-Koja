@@ -570,8 +570,8 @@
 
 @php
     // Ticker mengambil data dari Kejadian yang baru (bukan Berita)
-    $listBerita = class_exists('\App\Models\Kejadian') && \Illuminate\Support\Facades\Schema::hasTable('kejadians')
-            ? \App\Models\Kejadian::orderBy('tanggal', 'desc')->take(4)->get()
+    $listBerita = class_exists('\App\Models\Kejadian') && \Illuminate\Support\Facades\Schema::hasTable('kejadian_damkar')
+            ? \App\Models\Kejadian::orderByDesc('tanggal')->orderByDesc('id')->take(4)->get()
             : collect();
 @endphp
 
@@ -857,7 +857,7 @@
     <div class="wrap">
         <div class="sec-head">
             <div>
-                <h2>Pemadaman, penyelamatan Dan evakuasi</h2>
+                <h2>Pemadaman, Penyelamatan dan Evakuasi</h2>
                 <p>Informasi terbaru tentang kejadian di Kota Jambi.</p>
             </div>
             <img src="/images/mobil.png" alt="Mobil pemadam kebakaran" loading="lazy">
@@ -865,8 +865,8 @@
 
         @php
             // Memanggil data langsung dari Model Kejadian yang baru
-            $listKejadianHome = class_exists('\App\Models\Kejadian') && \Illuminate\Support\Facades\Schema::hasTable('kejadians')
-                ? \App\Models\Kejadian::orderBy('tanggal', 'desc')->take(4)->get() 
+            $listKejadianHome = class_exists('\App\Models\Kejadian') && \Illuminate\Support\Facades\Schema::hasTable('kejadian_damkar')
+                ? \App\Models\Kejadian::orderByDesc('tanggal')->orderByDesc('id')->take(4)->get() 
                 : collect();
         @endphp
 
@@ -888,7 +888,7 @@
                     $labelJenis = (class_exists('\App\Models\Kejadian') && defined('\App\Models\Kejadian::JENIS') && isset(\App\Models\Kejadian::JENIS[$kj->jenis])) 
                                   ? \App\Models\Kejadian::JENIS[$kj->jenis] 
                                   : ucfirst($kj->jenis ?? 'Info');
-                    $gambar     = $kj->thumb ?? null;
+                    $gambar     = ($kj->thumb && $kj->thumb !== '/images/placeholder.jpg') ? $kj->thumb : null;
                 @endphp
 
                 <article class="media-card" style="position: relative;">
