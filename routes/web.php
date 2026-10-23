@@ -29,6 +29,7 @@ use App\Http\Controllers\ProfilInstansiController;
 use App\Http\Controllers\ProgramKerjaController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\RedkarController;
+use App\Http\Controllers\RekapExcelController;
 use App\Http\Controllers\SapraController;
 use App\Http\Controllers\SapraHomeController;
 use App\Http\Controllers\SkkAdminController;
@@ -393,6 +394,7 @@ Route::middleware(['auth'])->group(function () {
     // Lihat = semua role yang login. Simpan/ubah/hapus = hanya Damtan & Super User.
     Route::get('/internal/damtan/rekap-layanan', [DamtanController::class, 'rekapLayanan'])->name('damtan.rekap_layanan');
     Route::get('/internal/damtan/rekap-objek', [DamtanController::class, 'rekapObjek'])->name('damtan.rekap_objek');
+    Route::get('/internal/damtan/rekap/export-excel', [RekapExcelController::class, 'export'])->name('damtan.rekap.export-excel');
 
     Route::middleware([RoleMiddleware::class.':Damtan|Super User'])->group(function () {
         // Rekap Layanan
