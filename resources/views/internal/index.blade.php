@@ -103,8 +103,12 @@
                     'dash:' . $t . ':' . ($sumColumn ?? 'count'),
                     60,
                     function () use ($t, $sumColumn) {
-                        $q = \Illuminate\Support\Facades\DB::table($t);
-                        return $sumColumn ? (int) $q->sum($sumColumn) : (int) $q->count();
+                        try {
+                            $q = \Illuminate\Support\Facades\DB::table($t);
+                            return $sumColumn ? (int) $q->sum($sumColumn) : (int) $q->count();
+                        } catch (\Throwable $e) {
+                            return 0;
+                        }
                     }
                 );
             }
@@ -154,7 +158,7 @@
             'items' => [
                 ['Peningkatan Kapasitas Aparatur', 'kegiatan', 'fa-arrow-trend-up', '/internal/pencegahan/peningkatan-kapasitas', $count('peningkatan_kapasitas'), 'ic-primary'],
                 ['Pencegahan Kebakaran & Inspeksi', 'inspeksi', 'fa-magnifying-glass-chart', '/internal/pencegahan/inspeksi-kebakaran', $countAll(['inspeksi_bangunans', 'jadwal_inspeksis']), 'ic-danger'],
-                ['Pemberdayaan Masyarakat & Dunia Usaha', 'kegiatan', 'fa-handshake-angle', '/internal/pencegahan/pemberdayaan-masyarakat', $countAll(['sosialisasi', 'pembinaan', 'pelatihan', 'pelatihan_keluarga', 'fire_drills']), 'ic-info'],
+                ['Pemberdayaan Masyarakat & Dunia Usaha', 'kegiatan', 'fa-handshake-angle', '/internal/pencegahan/pemberdayaan-masyarakat', $countAll(['sosialisasi_edukasi', 'sosialisasi', 'pembinaan', 'pelatihan', 'pelatihan_keluarga', 'fire_drills']), 'ic-info'],
                 ['Kelola Edukasi', 'permohonan', 'fa-bullhorn', '/internal/pencegahan/kelola-edukasi', $count('permohonan_edukasi'), 'ic-primary'],
                 ['Kelola Redkar', 'data', 'fa-users-rectangle', '/internal/pencegahan/kelola-redkar', $count('redkar_registrations'), 'ic-info'],
                 ['Kelola RPKBGL', 'permohonan', 'fa-building-circle-check', '/internal/pencegahan/kelola-rpkbgl', $count('permohonan_rpkbgl'), 'ic-primary'],
