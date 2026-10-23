@@ -21,8 +21,8 @@
         --shadow-md: 0 10px 25px rgba(13, 27, 42, .08);
         --shadow-lg: 0 20px 45px rgba(13, 27, 42, .14);
 
-        --rekap-red: #b91c1c;
-        --rekap-red-light: #d32f2f;
+        --rekap-red: #163a63;        /* navy */
+        --rekap-red-light: #163a63;  /* navy */
         --rekap-row-a: #eaf2fc;
         --rekap-row-b: #f8fbff;
         --rekap-line: #d3deee;
@@ -118,7 +118,7 @@
     .export-year .form-select { min-height: 38px; font-size: .88rem; font-weight: 600; }
 
     /* ==========================================================
-       TABEL REKAP (gaya header merah, sama dengan Data Laporan)
+       TABEL REKAP (gaya header navy, sama dengan Data Laporan)
        ========================================================== */
     .rekap-scroll { overflow-x: auto; padding: 20px; background: #fff; }
     .rekap-wrap { min-width: 1120px; border: 2px solid var(--rekap-red); border-radius: 16px; overflow: hidden; background: #fff; box-shadow: var(--shadow-sm); }
@@ -126,7 +126,7 @@
     .table-rekap { width: 100%; border-collapse: collapse; margin: 0; }
 
     .table-rekap thead th {
-        background: linear-gradient(180deg, var(--rekap-red-light) 0%, #a51212 100%);
+        background: linear-gradient(180deg, var(--rekap-red-light) 0%, #0d2947 100%);
         color: #fff;
         font-family: var(--font-display);
         font-weight: 700;
@@ -158,7 +158,7 @@
     .table-rekap tbody tr:hover td { background: #dce9fa; }
 
     .table-rekap tbody td.no-cell {
-        background: linear-gradient(180deg, #c62828 0%, #a51212 100%) !important;
+        background: linear-gradient(180deg, #163a63 0%, #0d2947 100%) !important;
         color: #fff;
         font-family: var(--font-display);
         font-weight: 800;

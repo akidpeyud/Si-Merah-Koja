@@ -47,8 +47,8 @@
         --shadow-md: 0 10px 25px rgba(13, 27, 42, .08);
         --shadow-lg: 0 20px 45px rgba(13, 27, 42, .14);
 
-        --rekap-red: #b91c1c;
-        --rekap-red-light: #d32f2f;
+        --rekap-red: #163a63;        /* navy */
+        --rekap-red-light: #163a63;  /* navy */
         --rekap-row-a: #eaf2fc;
         --rekap-row-b: #f8fbff;
         --rekap-line: #d3deee;
@@ -134,6 +134,49 @@
     .btn-custom-light:hover { background: #f8fafc; border-color: var(--steel-soft); color: var(--ink); }
 
     /* ==========================================================
+       TAB KATEGORI (pill): Kebakaran / Non-Kebakaran
+       ========================================================== */
+    .tab-kategori {
+        display: inline-flex; align-items: center; gap: 4px;
+        padding: 6px; margin-bottom: 20px;
+        background: #fff; border: 1px solid var(--line);
+        border-radius: 999px; box-shadow: var(--shadow-sm);
+        max-width: 100%; overflow-x: auto;
+    }
+    .tab-kategori a {
+        padding: 10px 28px; border-radius: 999px;
+        font-size: .92rem; font-weight: 700;
+        color: var(--steel); text-decoration: none;
+        transition: all .2s ease; white-space: nowrap;
+    }
+    .tab-kategori a:hover { color: var(--ink); }
+    .tab-kategori a.active {
+        background: var(--navy); color: #fff;
+        box-shadow: 0 4px 10px rgba(22, 58, 99, .25);
+    }
+
+    /* ==========================================================
+       BAR FILTER (cari, tanggal, tahun, reset)
+       ========================================================== */
+    .filter-bar .form-select,
+    .filter-bar .form-control { height: 44px; }
+    .filter-bar .btn-reset {
+        width: 100%;
+        height: 44px;
+        min-height: 44px;
+        padding: 0 18px;
+        background: var(--white);
+        color: var(--ink);
+        border: 1px solid var(--line-dark);
+        border-radius: 8px;
+        font-size: .9rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    .filter-bar .btn-reset:hover { background: #f1f5f9; border-color: var(--steel-soft); color: var(--ink); }
+    .filter-bar .btn-reset:active { transform: scale(.98); }
+
+    /* ==========================================================
        MENU EKSPOR (Cetak PDF / Cetak Excel)
        ========================================================== */
     .btn-custom-light.show { background: #f8fafc; border-color: var(--steel-soft); color: var(--ink); }
@@ -180,15 +223,15 @@
     .export-year .form-select { min-height: 38px; font-size: .88rem; font-weight: 600; }
 
     /* ==========================================================
-       TABEL REKAP (gaya header merah)
+       TABEL REKAP (gaya header navy)
        ========================================================== */
     .rekap-scroll { overflow-x: auto; padding: 20px; background: #fff; }
-    .rekap-wrap { min-width: 1180px; border: 2px solid var(--rekap-red); border-radius: 16px; overflow: hidden; background: #fff; box-shadow: var(--shadow-sm); }
+    .rekap-wrap { border: 2px solid var(--rekap-red); border-radius: 16px; overflow: hidden; background: #fff; box-shadow: var(--shadow-sm); }
 
     .table-rekap { width: 100%; border-collapse: collapse; margin: 0; }
 
     .table-rekap thead th {
-        background: linear-gradient(180deg, var(--rekap-red-light) 0%, #a51212 100%);
+        background: linear-gradient(180deg, var(--rekap-red-light) 0%, #0d2947 100%);
         color: #fff;
         font-family: var(--font-display);
         font-weight: 700;
@@ -220,7 +263,7 @@
     .table-rekap tbody tr:hover td { background: #dce9fa; }
 
     .table-rekap tbody td.no-cell {
-        background: linear-gradient(180deg, #c62828 0%, #a51212 100%) !important;
+        background: linear-gradient(180deg, #163a63 0%, #0d2947 100%) !important;
         color: #fff;
         font-family: var(--font-display);
         font-weight: 800;
@@ -244,9 +287,6 @@
     .cell-muted  { color: var(--steel-soft); }
     .cell-strong { font-weight: 600; color: var(--ink); }
 
-    .tag-non { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: .72rem; font-weight: 700; background: var(--info-soft); color: var(--info); margin-bottom: 3px; }
-    .tag-sub { display: block; font-size: .78rem; color: var(--steel); text-transform: capitalize; }
-
     .action-btn { width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: none; font-size: 13px; transition: all 0.2s; text-decoration: none; }
     .action-btn.view { background-color: var(--info-soft); color: var(--info); }
     .action-btn.view:hover { background-color: #dbeafe; }
@@ -255,7 +295,7 @@
     .action-btn.delete { background-color: var(--signal-soft); color: var(--signal); }
     .action-btn.delete:hover { background-color: #fecaca; }
 
-    /* Tombol aksi sejajar satu baris, ukuran bingkai disesuaikan dengan lebar kolom Aksi */
+    /* Tombol aksi sejajar satu baris */
     .aksi-group { display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center; justify-content: center; gap: 5px; }
     .aksi-group form { margin: 0; display: flex; }
     .aksi-group .action-btn { width: 30px; height: 30px; font-size: 12px; flex: none; }
@@ -268,7 +308,7 @@
 
     @page { margin: 0; }
     @media print {
-        .topbar, .sidebar, .sidebar-backdrop, .page-header, .card-header, .card-footer,
+        .topbar, .sidebar, .sidebar-backdrop, .page-header, .card-header, .card-footer, .tab-kategori,
         .btn, .dropdown, form, .modal, .action-btn, #globalSuccessAlert, #globalErrorAlert, .d-print-none { display: none !important; }
         body { background-color: white !important; font-size: 12px; margin: 1.5cm !important; -webkit-print-color-adjust: exact; }
         .shell { display: block; }
@@ -292,6 +332,14 @@
 @php
     use Carbon\Carbon;
 
+    // Tab aktif (dikirim dari controller, default kebakaran)
+    $tab = $tab ?? request('tab', 'kebakaran');
+    if (!in_array($tab, ['kebakaran', 'non-kebakaran'])) {
+        $tab = 'kebakaran';
+    }
+    $isTabFire = $tab === 'kebakaran';
+    $jmlKolom  = $isTabFire ? 11 : 8;
+
     $mapPenyebab = [
         'arus_pendek'       => 'Arus pendek listrik',
         'kebocoran_gas'     => 'Kebocoran gas',
@@ -300,7 +348,7 @@
         'faktor_alam'       => 'Faktor alam',
     ];
 
-    // Daftar tahun untuk pilihan ekspor (dari data halaman ini + rentang 2023 s/d tahun berjalan), terbaru di atas.
+    // Daftar tahun untuk pilihan ekspor & filter (dari data halaman ini + rentang 2023 s/d tahun berjalan), terbaru di atas.
     // Mau mengubah rentang? Ganti angka 2023 di bawah.
     $daftarTahun = collect($data_laporan->items())
         ->map(function ($r) {
@@ -373,36 +421,45 @@
 
             <!-- CREATE: HANYA DAMTAN DAN SUPER USER -->
             @hasanyrole('Damtan|Super User')
-            <a href="/internal/damtan/input-data" class="btn-custom-primary shadow-sm">
+            <a href="/internal/damtan/input-data?kategori={{ $tab }}" class="btn-custom-primary shadow-sm">
                 <i class="fas fa-plus me-2"></i> Buat Laporan Baru
             </a>
             @endhasanyrole
         </div>
     </div>
 
+    <!-- TAB KATEGORI -->
+    <div class="tab-kategori d-print-none">
+        <a href="{{ request()->fullUrlWithQuery(['tab' => 'kebakaran', 'page' => null]) }}"
+           class="{{ $isTabFire ? 'active' : '' }}">Kebakaran</a>
+        <a href="{{ request()->fullUrlWithQuery(['tab' => 'non-kebakaran', 'page' => null]) }}"
+           class="{{ !$isTabFire ? 'active' : '' }}">Non-Kebakaran</a>
+    </div>
+
     <div class="card-custom">
         <!-- Filter & Search Bar -->
         <div class="card-header bg-white p-4 border-bottom border-light">
-            <div class="row g-3">
-                <div class="col-md-4">
+            <div class="row g-3 filter-bar align-items-center">
+                <div class="col-12 col-lg-4">
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0"><i class="fas fa-search"></i></span>
                         <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari nomor laporan, lokasi, penyebab, dsb...">
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <select id="filterKategori" class="form-select">
-                        <option value="">Semua Kategori</option>
-                        <option value="kebakaran">Kebakaran</option>
-                        <option value="non-kebakaran">Non-Kebakaran</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
+                <div class="col-6 col-md-4 col-lg-2">
                     <input type="date" id="filterTanggal" class="form-control" title="Filter tanggal kejadian">
                 </div>
-                <div class="col-md-2 text-end">
-                    <button type="button" class="btn-custom-light w-100 py-2 border-light fw-bold" onclick="resetFilter()">
-                        <i class="fas fa-sync-alt me-2"></i>Reset
+                <div class="col-6 col-md-4 col-lg-2">
+                    <select id="filterTahun" class="form-select" title="Filter tahun kejadian">
+                        <option value="">Semua Tahun</option>
+                        @foreach($daftarTahun as $thn)
+                            <option value="{{ $thn }}">{{ $thn }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3 col-xl-2 ms-lg-auto">
+                    <button type="button" class="btn-custom-light btn-reset" onclick="resetFilter()">
+                        <i class="fas fa-sync-alt"></i> Reset
                     </button>
                 </div>
             </div>
@@ -427,25 +484,33 @@
                     </div>
                 </div>
                 <div style="border-top: 3px solid black !important; border-bottom: 1px solid black !important; height: 2px !important; width: 100% !important; margin-bottom: 15px !important;"></div>
-                <h3 style="text-align: center !important; font-weight: bold; margin-bottom: 5px; font-size: 16px; color: black; font-family: 'Times New Roman', Times, serif;">REKAPITULASI DATA LAPORAN PENYELAMATAN<span id="printTahun"></span></h3>
+                <h3 style="text-align: center !important; font-weight: bold; margin-bottom: 5px; font-size: 16px; color: black; font-family: 'Times New Roman', Times, serif;">REKAPITULASI DATA LAPORAN {{ $isTabFire ? 'KEBAKARAN' : 'NON-KEBAKARAN' }}<span id="printTahun"></span></h3>
                 <p style="text-align: center !important; font-size: 12px; margin-bottom: 15px; color: black; font-family: 'Times New Roman', Times, serif;">Dicetak pada: {{ date('d F Y') }}</p>
             </div>
 
             <div class="rekap-scroll">
-                <div class="rekap-wrap">
+                <div class="rekap-wrap" style="min-width: {{ $isTabFire ? '1180px' : '900px' }};">
                     <table class="table-rekap" id="tableRekap">
                         <thead>
                             <tr>
                                 <th class="col-no">No</th>
                                 <th class="col-tgl">Tanggal Kejadian</th>
                                 <th class="col-jam">Jam</th>
-                                <th class="col-jenis">Jenis Yang Terbakar</th>
-                                <th class="col-sebab">Penyebab</th>
+                                @if($isTabFire)
+                                    <th class="col-jenis">Jenis Yang Terbakar</th>
+                                    <th class="col-sebab">Penyebab</th>
+                                @else
+                                    <th class="col-jenis">Jenis Kegiatan</th>
+                                @endif
                                 <th class="col-lokasi">Lokasi Kejadian</th>
                                 <th class="col-armada">Armada</th>
-                                <th class="col-air">Jumlah Air</th>
+                                @if($isTabFire)
+                                    <th class="col-air">Jumlah Air</th>
+                                @endif
                                 <th class="col-respon">Respon Time</th>
-                                <th class="col-luas">Luas Lahan</th>
+                                @if($isTabFire)
+                                    <th class="col-luas">Luas Lahan</th>
+                                @endif
                                 <th class="col-aksi">Aksi</th>
                             </tr>
                         </thead>
@@ -464,7 +529,7 @@
                                 $tglFilter = $tglRaw ? Carbon::parse($tglRaw)->format('Y-m-d') : '';
                                 $jamTampil = $jamRaw ? Carbon::parse($jamRaw)->format('H.i') : '-';
 
-                                // Jenis yang terbakar / kategori non-kebakaran
+                                // Jenis yang terbakar / jenis kegiatan non-kebakaran
                                 $jenisFire = !empty($a['kategori_kebakaran']) ? ucwords(str_replace('_', ' ', $a['kategori_kebakaran'])) : '-';
                                 $jenisNon  = !empty($a['kategori_non_kebakaran'])
                                     ? str_replace('_', ' ', $a['kategori_non_kebakaran'])
@@ -522,26 +587,26 @@
 
                                 <td>{{ $jamTampil }}</td>
 
-                                <td>
-                                    @if($isFire)
-                                        <span class="cell-strong">{{ $jenisFire }}</span>
-                                    @else
-                                        <span class="tag-non">Non-Kebakaran</span>
-                                        <span class="tag-sub">{{ $jenisNon }}</span>
-                                    @endif
-                                </td>
-
-                                <td>{{ $penyebab }}</td>
+                                @if($isTabFire)
+                                    <td><span class="cell-strong">{{ $jenisFire }}</span></td>
+                                    <td>{{ $penyebab }}</td>
+                                @else
+                                    <td><span class="cell-strong text-capitalize">{{ $jenisNon }}</span></td>
+                                @endif
 
                                 <td><div class="cell-lokasi" title="{{ $lokasi }}">{{ $lokasi }}</div></td>
 
                                 <td>{{ $armadaTxt }}</td>
 
-                                <td>{!! $airTxt === '-' ? '<span class="cell-muted">-</span>' : e($airTxt) !!}</td>
+                                @if($isTabFire)
+                                    <td>{!! $airTxt === '-' ? '<span class="cell-muted">-</span>' : e($airTxt) !!}</td>
+                                @endif
 
                                 <td>{!! $responTxt === '-' ? '<span class="cell-muted">-</span>' : e($responTxt) !!}</td>
 
-                                <td>{!! $luasTxt === '-' ? '<span class="cell-muted">-</span>' : e($luasTxt) !!}</td>
+                                @if($isTabFire)
+                                    <td>{!! $luasTxt === '-' ? '<span class="cell-muted">-</span>' : e($luasTxt) !!}</td>
+                                @endif
 
                                 <td>
                                     <div class="aksi-group">
@@ -562,16 +627,16 @@
                             </tr>
                             @empty
                             <tr class="empty-state">
-                                <td colspan="11">
+                                <td colspan="{{ $jmlKolom }}">
                                     <i class="fas fa-folder-open d-block"></i>
-                                    Belum ada data laporan yang diinput ke dalam sistem.
+                                    Belum ada data laporan {{ $isTabFire ? 'kebakaran' : 'non-kebakaran' }}.
                                 </td>
                             </tr>
                             @endforelse
 
                             {{-- Muncul otomatis jika pencarian/filter tidak menemukan hasil --}}
                             <tr class="empty-state" id="noResult" hidden>
-                                <td colspan="11">
+                                <td colspan="{{ $jmlKolom }}">
                                     <i class="fas fa-search d-block"></i>
                                     Tidak ada laporan yang cocok dengan pencarian atau filter.
                                 </td>
@@ -584,7 +649,7 @@
 
         <div class="card-footer bg-white p-4 d-flex justify-content-between align-items-center border-top">
             <span class="text-muted" style="font-size: 13px;" id="dataCount">
-                Menampilkan {{ $data_laporan->firstItem() ?? 0 }} - {{ $data_laporan->lastItem() ?? 0 }} dari total {{ $data_laporan->total() }} laporan
+                Menampilkan {{ $data_laporan->firstItem() ?? 0 }} - {{ $data_laporan->lastItem() ?? 0 }} dari total {{ $data_laporan->total() }} laporan {{ $isTabFire ? 'kebakaran' : 'non-kebakaran' }}
             </span>
             <div class="pagination-container mb-0">
                 {{ $data_laporan->links('pagination::bootstrap-5') }}
@@ -598,24 +663,24 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const searchInput    = document.getElementById('searchInput');
-        const filterKategori = document.getElementById('filterKategori');
         const filterTanggal  = document.getElementById('filterTanggal');
+        const filterTahun    = document.getElementById('filterTahun');
         const rows           = document.querySelectorAll('#tableBody tr[data-kategori]');
         const noResult       = document.getElementById('noResult');
 
         function filterTable() {
-            const searchTerm   = searchInput.value.toLowerCase().trim();
-            const categoryTerm = filterKategori.value.toLowerCase();
-            const dateTerm     = filterTanggal.value;
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const dateTerm   = filterTanggal.value;
+            const yearTerm   = filterTahun.value;
 
             let visible = 0;
 
             rows.forEach(function (row) {
-                const matchesSearch   = row.textContent.toLowerCase().includes(searchTerm);
-                const matchesCategory = categoryTerm === '' || row.dataset.kategori === categoryTerm;
-                const matchesDate     = dateTerm === '' || row.dataset.tanggal === dateTerm;
+                const matchesSearch = row.textContent.toLowerCase().includes(searchTerm);
+                const matchesDate   = dateTerm === '' || row.dataset.tanggal === dateTerm;
+                const matchesYear   = yearTerm === '' || row.dataset.tahun === yearTerm;
 
-                const show = matchesSearch && matchesCategory && matchesDate;
+                const show = matchesSearch && matchesDate && matchesYear;
                 row.style.display = show ? '' : 'none';
 
                 // Warna baris selang-seling hanya untuk baris yang tampil
@@ -630,14 +695,14 @@
         }
 
         searchInput.addEventListener('input', filterTable);
-        filterKategori.addEventListener('change', filterTable);
         filterTanggal.addEventListener('change', filterTable);
+        filterTahun.addEventListener('change', filterTable);
 
         // dibuat global agar bisa dipanggil dari onclick="resetFilter()"
         window.resetFilter = function () {
             searchInput.value = '';
-            filterKategori.value = '';
             filterTanggal.value = '';
+            filterTahun.value = '';
             filterTable();
         };
 
