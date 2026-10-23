@@ -129,7 +129,7 @@
         background: var(--white); color: var(--ink);
         border: 1px solid var(--line-dark); border-radius: 8px;
         font-size: .92rem; font-weight: 600;
-        transition: all .2s ease;
+        transition: all .2s ease; text-decoration: none;
     }
     .btn-custom-light:hover { background: #f8fafc; border-color: var(--steel-soft); color: var(--ink); }
 
@@ -348,20 +348,19 @@
         'faktor_alam'       => 'Faktor alam',
     ];
 
-    // Daftar tahun untuk pilihan ekspor & filter (dari data halaman ini + rentang 2023 s/d tahun berjalan), terbaru di atas.
-    // Mau mengubah rentang? Ganti angka 2023 di bawah.
-    $daftarTahun = collect($data_laporan->items())
-        ->map(function ($r) {
-            $a = $r->getAttributes();
-            $t = $a['tanggal_kejadian'] ?? $a['waktu_kejadian'] ?? null;
-            return $t ? Carbon::parse($t)->year : null;
-        })
+    // Daftar tahun dari SEMUA data (dikirim controller sebagai $tahunList),
+    // ditambah tahun berjalan dan tahun yang sedang difilter, terbaru di atas.
+    $daftarTahun = collect($tahunList ?? [])
         ->filter()
-        ->merge(range(2023, (int) date('Y')))
         ->push((int) date('Y'))
+        ->when(request('tahun'), fn ($c) => $c->push((int) request('tahun')))
+        ->map(fn ($t) => (int) $t)
         ->unique()
         ->sortDesc()
         ->values();
+
+    // Apakah ada filter yang sedang aktif?
+    $adaFilter = request()->filled('q') || request()->filled('tanggal') || request()->filled('tahun');
 @endphp
 
     <div class="page-header">
@@ -428,7 +427,7 @@
         </div>
     </div>
 
-    <!-- TAB KATEGORI -->
+    <!-- TAB KATEGORI (filter yang aktif ikut terbawa, halaman kembali ke 1) -->
     <div class="tab-kategori d-print-none">
         <a href="{{ request()->fullUrlWithQuery(['tab' => 'kebakaran', 'page' => null]) }}"
            class="{{ $isTabFire ? 'active' : '' }}">Kebakaran</a>
@@ -437,32 +436,37 @@
     </div>
 
     <div class="card-custom">
-        <!-- Filter & Search Bar -->
+        <!-- Filter & Search Bar: FORM GET, filter diproses di server -->
         <div class="card-header bg-white p-4 border-bottom border-light">
-            <div class="row g-3 filter-bar align-items-center">
+            <form method="GET" action="{{ url()->current() }}" id="formFilter" class="row g-3 filter-bar align-items-center">
+                <input type="hidden" name="tab" value="{{ $tab }}">
+
                 <div class="col-12 col-lg-4">
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0"><i class="fas fa-search"></i></span>
-                        <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari nomor laporan, lokasi, penyebab, dsb...">
+                        <input type="text" name="q" id="searchInput" value="{{ request('q') }}"
+                               class="form-control border-start-0 ps-0"
+                               placeholder="Cari nomor laporan, lokasi, penyebab, dsb...">
                     </div>
                 </div>
                 <div class="col-6 col-md-4 col-lg-2">
-                    <input type="date" id="filterTanggal" class="form-control" title="Filter tanggal kejadian">
+                    <input type="date" name="tanggal" id="filterTanggal" value="{{ request('tanggal') }}"
+                           class="form-control" title="Filter tanggal kejadian">
                 </div>
                 <div class="col-6 col-md-4 col-lg-2">
-                    <select id="filterTahun" class="form-select" title="Filter tahun kejadian">
+                    <select name="tahun" id="filterTahun" class="form-select" title="Filter tahun kejadian">
                         <option value="">Semua Tahun</option>
                         @foreach($daftarTahun as $thn)
-                            <option value="{{ $thn }}">{{ $thn }}</option>
+                            <option value="{{ $thn }}" {{ (string) request('tahun') === (string) $thn ? 'selected' : '' }}>{{ $thn }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col-6 col-md-4 col-lg-3 col-xl-2 ms-lg-auto">
-                    <button type="button" class="btn-custom-light btn-reset" onclick="resetFilter()">
+                    <a href="{{ url()->current() }}?tab={{ $tab }}" class="btn-custom-light btn-reset">
                         <i class="fas fa-sync-alt"></i> Reset
-                    </button>
+                    </a>
                 </div>
-            </div>
+            </form>
         </div>
 
         <!-- Table Content -->
@@ -523,7 +527,9 @@
                                 $isFire = strtolower($a['kategori_kejadian'] ?? '') === 'kebakaran';
 
                                 // Tanggal & jam
-                                $tglRaw = $a['tanggal_kejadian'] ?? $a['waktu_kejadian'] ?? null;
+                                // Fallback tanggal = created_at (BUKAN waktu_kejadian, karena isinya hanya jam
+                                // sehingga Carbon::parse akan menghasilkan tanggal hari ini).
+                                $tglRaw = $a['tanggal_kejadian'] ?? $a['created_at'] ?? null;
                                 $jamRaw = $a['waktu_kejadian'] ?? $a['waktu_terima'] ?? null;
                                 $tglTampil = $tglRaw ? Carbon::parse($tglRaw)->locale('id')->translatedFormat('d F Y') : '-';
                                 $tglFilter = $tglRaw ? Carbon::parse($tglRaw)->format('Y-m-d') : '';
@@ -580,7 +586,7 @@
 
                                 $lokasi = !empty($a['alamat']) ? $a['alamat'] : '-';
                             @endphp
-                            <tr data-kategori="{{ $isFire ? 'kebakaran' : 'non-kebakaran' }}" data-tanggal="{{ $tglFilter }}" data-tahun="{{ $tglRaw ? Carbon::parse($tglRaw)->year : '' }}">
+                            <tr class="{{ $loop->odd ? 'alt' : '' }}" data-kategori="{{ $isFire ? 'kebakaran' : 'non-kebakaran' }}" data-tanggal="{{ $tglFilter }}" data-tahun="{{ $tglRaw ? Carbon::parse($tglRaw)->year : '' }}">
                                 <td class="no-cell">{{ $data_laporan->firstItem() + $index }}</td>
 
                                 <td class="cell-strong">{{ $tglTampil }}</td>
@@ -628,19 +634,16 @@
                             @empty
                             <tr class="empty-state">
                                 <td colspan="{{ $jmlKolom }}">
-                                    <i class="fas fa-folder-open d-block"></i>
-                                    Belum ada data laporan {{ $isTabFire ? 'kebakaran' : 'non-kebakaran' }}.
+                                    @if($adaFilter)
+                                        <i class="fas fa-search d-block"></i>
+                                        Tidak ada laporan yang cocok dengan pencarian atau filter.
+                                    @else
+                                        <i class="fas fa-folder-open d-block"></i>
+                                        Belum ada data laporan {{ $isTabFire ? 'kebakaran' : 'non-kebakaran' }}.
+                                    @endif
                                 </td>
                             </tr>
                             @endforelse
-
-                            {{-- Muncul otomatis jika pencarian/filter tidak menemukan hasil --}}
-                            <tr class="empty-state" id="noResult" hidden>
-                                <td colspan="{{ $jmlKolom }}">
-                                    <i class="fas fa-search d-block"></i>
-                                    Tidak ada laporan yang cocok dengan pencarian atau filter.
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -662,51 +665,30 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const searchInput    = document.getElementById('searchInput');
-        const filterTanggal  = document.getElementById('filterTanggal');
-        const filterTahun    = document.getElementById('filterTahun');
-        const rows           = document.querySelectorAll('#tableBody tr[data-kategori]');
-        const noResult       = document.getElementById('noResult');
+        const rows        = document.querySelectorAll('#tableBody tr[data-kategori]');
+        const form        = document.getElementById('formFilter');
+        const searchInput = document.getElementById('searchInput');
 
-        function filterTable() {
-            const searchTerm = searchInput.value.toLowerCase().trim();
-            const dateTerm   = filterTanggal.value;
-            const yearTerm   = filterTahun.value;
+        /* ==========================================================
+           FILTER (dijalankan di SERVER lewat form GET)
+           ========================================================== */
+        // Tanggal & tahun: kirim otomatis saat berubah
+        document.getElementById('filterTanggal').addEventListener('change', function () { form.submit(); });
+        document.getElementById('filterTahun').addEventListener('change', function () { form.submit(); });
 
-            let visible = 0;
+        // Pencarian: kirim 500ms setelah berhenti mengetik
+        let timer;
+        searchInput.addEventListener('input', function () {
+            clearTimeout(timer);
+            timer = setTimeout(function () { form.submit(); }, 500);
+        });
 
-            rows.forEach(function (row) {
-                const matchesSearch = row.textContent.toLowerCase().includes(searchTerm);
-                const matchesDate   = dateTerm === '' || row.dataset.tanggal === dateTerm;
-                const matchesYear   = yearTerm === '' || row.dataset.tahun === yearTerm;
-
-                const show = matchesSearch && matchesDate && matchesYear;
-                row.style.display = show ? '' : 'none';
-
-                // Warna baris selang-seling hanya untuk baris yang tampil
-                row.classList.remove('alt');
-                if (show) {
-                    if (visible % 2 === 0) row.classList.add('alt');
-                    visible++;
-                }
-            });
-
-            if (noResult) noResult.hidden = !(rows.length > 0 && visible === 0);
+        // Kembalikan fokus ke kolom pencarian setelah halaman dimuat ulang
+        if (searchInput.value !== '') {
+            searchInput.focus();
+            const n = searchInput.value.length;
+            searchInput.setSelectionRange(n, n);
         }
-
-        searchInput.addEventListener('input', filterTable);
-        filterTanggal.addEventListener('change', filterTable);
-        filterTahun.addEventListener('change', filterTable);
-
-        // dibuat global agar bisa dipanggil dari onclick="resetFilter()"
-        window.resetFilter = function () {
-            searchInput.value = '';
-            filterTanggal.value = '';
-            filterTahun.value = '';
-            filterTable();
-        };
-
-        filterTable(); // terapkan warna selang-seling saat halaman dimuat
 
         /* ==========================================================
            EKSPOR (Cetak PDF & Cetak Excel) per tahun

@@ -23,5 +23,11 @@ class DatabaseSeeder extends Seeder
             PengadaanSarprasSeeder::class,
             DistribusiStaffSeeder::class,
         ]);
+        $this->call(RekapLayananTableSeeder::class);
+        $this->call(LaporanPenyelamatansTableSeeder::class);
+        $this->call(LpTeknisLogistiksTableSeeder::class);
+        $this->call(LpDokumentasisTableSeeder::class);
+        $this->call(LpKategoriKhususTableSeeder::class);
+        $this->call(RekapNonKebakaransTableSeeder::class);
     }
 }

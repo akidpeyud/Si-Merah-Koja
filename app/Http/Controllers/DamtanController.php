@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LaporanPenyelamatan;
+use App\Models\LpDokumentasi;
+use App\Models\LpKategoriKhusus;
+use App\Models\LpTeknisLogistik;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use App\Models\LaporanPenyelamatan;
-use App\Models\LpTeknisLogistik;
-use App\Models\LpDokumentasi;
-use App\Models\LpKategoriKhusus;
 
 class DamtanController extends Controller
 {
@@ -20,7 +20,8 @@ class DamtanController extends Controller
     // CATATAN: upload_max_filesize & post_max_size di php.ini
     // harus >= angka ini, kalau tidak upload tetap gagal.
     // ==========================================
-    private const MAX_FOTO_KB  = 10240; // 10 MB per foto
+    private const MAX_FOTO_KB = 10240; // 10 MB per foto
+
     private const MAX_VIDEO_KB = 10240; // 10 MB untuk video
 
     /**
@@ -31,20 +32,20 @@ class DamtanController extends Controller
     {
         return Validator::make($request->all(), [
             'tanggal_kejadian' => 'required|date',
-            'foto'   => 'nullable|array',
-            'foto.*' => 'file|mimes:jpg,jpeg,png|max:' . self::MAX_FOTO_KB,
-            'video'  => 'nullable|file|mimes:mp4|max:' . self::MAX_VIDEO_KB,
+            'foto' => 'nullable|array',
+            'foto.*' => 'file|mimes:jpg,jpeg,png|max:'.self::MAX_FOTO_KB,
+            'video' => 'nullable|file|mimes:mp4|max:'.self::MAX_VIDEO_KB,
         ], [
             'tanggal_kejadian.required' => 'Tanggal kejadian wajib diisi.',
-            'tanggal_kejadian.date'     => 'Format tanggal kejadian tidak valid.',
-            'foto.*.mimes'    => 'Format foto harus JPG atau PNG.',
-            'foto.*.max'      => 'Ukuran setiap foto maksimal ' . (self::MAX_FOTO_KB / 1024) . ' MB.',
+            'tanggal_kejadian.date' => 'Format tanggal kejadian tidak valid.',
+            'foto.*.mimes' => 'Format foto harus JPG atau PNG.',
+            'foto.*.max' => 'Ukuran setiap foto maksimal '.(self::MAX_FOTO_KB / 1024).' MB.',
             'foto.*.uploaded' => 'Foto gagal diunggah. Ukuran file melebihi batas server (cek upload_max_filesize di php.ini).',
-            'foto.*.file'     => 'Foto yang diunggah tidak valid.',
-            'video.mimes'     => 'Format video harus MP4.',
-            'video.max'       => 'Ukuran video maksimal ' . (self::MAX_VIDEO_KB / 1024) . ' MB.',
-            'video.uploaded'  => 'Video gagal diunggah. Ukuran file melebihi batas server (cek upload_max_filesize di php.ini).',
-            'video.file'      => 'Video yang diunggah tidak valid.',
+            'foto.*.file' => 'Foto yang diunggah tidak valid.',
+            'video.mimes' => 'Format video harus MP4.',
+            'video.max' => 'Ukuran video maksimal '.(self::MAX_VIDEO_KB / 1024).' MB.',
+            'video.uploaded' => 'Video gagal diunggah. Ukuran file melebihi batas server (cek upload_max_filesize di php.ini).',
+            'video.file' => 'Video yang diunggah tidak valid.',
         ]);
     }
 
@@ -58,9 +59,9 @@ class DamtanController extends Controller
 
         return [
             'tanggal_kejadian' => $t->toDateString(),
-            'hari_kejadian'    => $t->translatedFormat('l'),
-            'bulan_kejadian'   => $t->translatedFormat('F'),
-            'tahun_kejadian'   => $t->year,
+            'hari_kejadian' => $t->translatedFormat('l'),
+            'bulan_kejadian' => $t->translatedFormat('F'),
+            'tahun_kejadian' => $t->year,
         ];
     }
 
@@ -71,16 +72,16 @@ class DamtanController extends Controller
      */
     private function buatNomorLaporan(Carbon $tanggal): string
     {
-        $prefix = 'REG-' . $tanggal->format('Ymd') . '-';
+        $prefix = 'REG-'.$tanggal->format('Ymd').'-';
 
-        $terakhir = LaporanPenyelamatan::where('nomor_laporan', 'like', $prefix . '%')
+        $terakhir = LaporanPenyelamatan::where('nomor_laporan', 'like', $prefix.'%')
             ->lockForUpdate()
             ->orderByDesc('nomor_laporan')
             ->value('nomor_laporan');
 
         $urut = $terakhir ? ((int) substr($terakhir, -4)) + 1 : 1;
 
-        return $prefix . str_pad($urut, 4, '0', STR_PAD_LEFT);
+        return $prefix.str_pad($urut, 4, '0', STR_PAD_LEFT);
     }
 
     // ==========================================
@@ -94,11 +95,12 @@ class DamtanController extends Controller
     }
 
     // 2. Menampilkan tabel data laporan (dengan tab Kebakaran / Non-Kebakaran)
+    //    Filter tahun, tanggal & pencarian dijalankan di SERVER (query), bukan di JavaScript.
     public function indexPenyelamatan(Request $request)
     {
         // Tab aktif dari URL (?tab=kebakaran atau ?tab=non-kebakaran), default kebakaran
         $tab = $request->query('tab', 'kebakaran');
-        if (!in_array($tab, ['kebakaran', 'non-kebakaran'])) {
+        if (! in_array($tab, ['kebakaran', 'non-kebakaran'])) {
             $tab = 'kebakaran';
         }
 
@@ -143,22 +145,50 @@ class DamtanController extends Controller
         } else {
             $query->where(function ($w) {
                 $w->whereRaw("LOWER(TRIM(laporan_penyelamatans.kategori_kejadian)) != 'kebakaran'")
-                  ->orWhereNull('laporan_penyelamatans.kategori_kejadian');
+                    ->orWhereNull('laporan_penyelamatans.kategori_kejadian');
+            });
+        }
+
+        // Ekspresi tanggal efektif (sama dengan pola urutan): tanggal_kejadian, fallback created_at
+        $tglEfektif = 'COALESCE(laporan_penyelamatans.tanggal_kejadian, DATE(laporan_penyelamatans.created_at))';
+
+        // FILTER TAHUN
+        if ($request->filled('tahun')) {
+            $query->whereRaw("YEAR($tglEfektif) = ?", [(int) $request->tahun]);
+        }
+
+        // FILTER TANGGAL (format yyyy-mm-dd dari input type="date")
+        if ($request->filled('tanggal')) {
+            $query->whereRaw("DATE($tglEfektif) = ?", [$request->tanggal]);
+        }
+
+        // PENCARIAN
+        if ($request->filled('q')) {
+            $q = '%'.trim($request->q).'%';
+            $query->where(function ($w) use ($q) {
+                $w->where('laporan_penyelamatans.nomor_laporan', 'like', $q)
+                    ->orWhere('laporan_penyelamatans.alamat', 'like', $q)
+                    ->orWhere('laporan_penyelamatans.kategori_kebakaran', 'like', $q)
+                    ->orWhere('laporan_penyelamatans.kategori_non_kebakaran', 'like', $q)
+                    ->orWhere('laporan_penyelamatans.kategori_kejadian', 'like', $q)
+                    ->orWhere('lp_dokumentasis.dugaan_penyebab', 'like', $q)
+                    ->orWhere('lp_dokumentasis.dugaan_penyebab_lainnya', 'like', $q)
+                    ->orWhere('lp_teknis_logistiks.armada', 'like', $q);
             });
         }
 
         $data_laporan = $query
             // Urut berdasarkan tanggal kejadian (data lama tanpa tanggal jatuh ke created_at)
-            ->orderByRaw('COALESCE(laporan_penyelamatans.tanggal_kejadian, DATE(laporan_penyelamatans.created_at)) DESC')
+            ->orderByRaw("$tglEfektif DESC")
             ->orderBy('laporan_penyelamatans.id', 'desc')
-            ->paginate(10)
-            ->withQueryString(); // supaya ?tab= tetap terbawa saat pindah halaman
+            ->paginate(20)
+            ->withQueryString(); // supaya ?tab=, ?tahun=, ?q= tetap terbawa saat pindah halaman
 
-        // Daftar tahun dinamis untuk filter di view (opsional dipakai)
-        $tahunList = LaporanPenyelamatan::whereNotNull('tahun_kejadian')
+        // Daftar tahun untuk dropdown: diambil dari SEMUA data (bukan hanya halaman ini)
+        $tahunList = LaporanPenyelamatan::selectRaw('YEAR(COALESCE(tanggal_kejadian, created_at)) as tahun')
             ->distinct()
-            ->orderByDesc('tahun_kejadian')
-            ->pluck('tahun_kejadian');
+            ->orderByDesc('tahun')
+            ->pluck('tahun');
 
         return view('internal.damtan.data_laporan', compact('data_laporan', 'tahunList', 'tab'));
     }
@@ -168,26 +198,26 @@ class DamtanController extends Controller
     {
         $laporan = LaporanPenyelamatan::findOrFail($id);
 
-        $teknis = LpTeknisLogistik::where('laporan_id', $id)->first() ?? new LpTeknisLogistik();
-        $dokumentasi = LpDokumentasi::where('laporan_id', $id)->first() ?? new LpDokumentasi();
-        $khusus = LpKategoriKhusus::where('laporan_id', $id)->first() ?? new LpKategoriKhusus();
+        $teknis = LpTeknisLogistik::where('laporan_id', $id)->first() ?? new LpTeknisLogistik;
+        $dokumentasi = LpDokumentasi::where('laporan_id', $id)->first() ?? new LpDokumentasi;
+        $khusus = LpKategoriKhusus::where('laporan_id', $id)->first() ?? new LpKategoriKhusus;
 
         // ---- Data array (kolom JSON) ----
-        $arr_evakuasi     = $this->decodeList($teknis->metode_evakuasi);
+        $arr_evakuasi = $this->decodeList($teknis->metode_evakuasi);
         $arr_penyelamatan = $this->decodeList($teknis->metode_penyelamatan);
-        $arr_armada       = $this->decodeList($teknis->armada);
-        $arr_peralatan    = $this->decodeList($teknis->peralatan);
-        $arr_instansi     = $this->decodeList($dokumentasi->instansi_pendukung);
-        $arr_foto         = $this->decodeList($dokumentasi->foto);
+        $arr_armada = $this->decodeList($teknis->armada);
+        $arr_peralatan = $this->decodeList($teknis->peralatan);
+        $arr_instansi = $this->decodeList($dokumentasi->instansi_pendukung);
+        $arr_foto = $this->decodeList($dokumentasi->foto);
 
         // ---- Bagian II: Teknis & Logistik ----
         $has_teknis_dasar = $this->terisi($teknis, ['pimpinan_operasi', 'pendamping_operasi', 'satuan_tugas', 'tim_respontime', 'status_evakuasi', 'objek_terdampak', 'daftar_personel'])
             || $this->positif($teknis, ['jumlah_personel'])
-            || !empty($arr_evakuasi) || !empty($arr_penyelamatan);
+            || ! empty($arr_evakuasi) || ! empty($arr_penyelamatan);
         $has_detail_lapangan = $this->terisi($teknis, ['langkah_penanganan', 'hambatan_lapangan', 'hasil_tindakan']);
         $has_korban = $this->positif($teknis, ['korban_selamat', 'korban_ringan', 'korban_berat', 'korban_meninggal'])
             || $this->terisi($teknis, ['korban_hewan_aset']);
-        $has_logistik = !empty($arr_armada) || !empty($arr_peralatan)
+        $has_logistik = ! empty($arr_armada) || ! empty($arr_peralatan)
             || $this->terisi($teknis, ['peralatan_lain', 'konsumsi_alat'])
             || $this->positif($teknis, ['liter_air', 'liter_foam', 'liter_bbm']);
         $show_section_ii = $has_teknis_dasar || $has_detail_lapangan || $has_korban || $has_logistik;
@@ -195,9 +225,9 @@ class DamtanController extends Controller
         // ---- Bagian III: Analisis, Evaluasi & Dokumentasi ----
         $has_investigasi = $this->terisi($dokumentasi, ['dugaan_penyebab', 'dugaan_penyebab_lainnya', 'sumber_api'])
             || $this->positif($dokumentasi, ['luas_area']);
-        $has_lintas_sektoral = !empty($arr_instansi)
+        $has_lintas_sektoral = ! empty($arr_instansi)
             || $this->terisi($dokumentasi, ['tindakan_instansi', 'kontak_saksi', 'cara_bertindak']);
-        $has_evaluasi  = $this->terisi($dokumentasi, ['kebutuhan_tambahan', 'saran_mitigasi']);
+        $has_evaluasi = $this->terisi($dokumentasi, ['kebutuhan_tambahan', 'saran_mitigasi']);
         $has_kronologi = $this->terisi($dokumentasi, ['kronologi_lengkap']);
         $show_section_iii = $has_investigasi || $has_lintas_sektoral || $has_evaluasi || $has_kronologi;
 
@@ -228,9 +258,10 @@ class DamtanController extends Controller
         if (is_string($value)) {
             $value = json_decode($value, true);
         }
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             return [];
         }
+
         return array_values(array_filter($value, fn ($v) => $v !== null && $v !== ''));
     }
 
@@ -238,10 +269,11 @@ class DamtanController extends Controller
     private function terisi($model, array $fields): bool
     {
         foreach ($fields as $f) {
-            if (!empty($model->{$f})) {
+            if (! empty($model->{$f})) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -250,10 +282,11 @@ class DamtanController extends Controller
     {
         foreach ($fields as $f) {
             $v = $model->{$f};
-            if (!empty($v) && $v > 0) {
+            if (! empty($v) && $v > 0) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -278,7 +311,7 @@ class DamtanController extends Controller
             }
         }
 
-        return !empty($data) ? json_encode($data) : null;
+        return ! empty($data) ? json_encode($data) : null;
     }
 
     // 4. Menyimpan data dari form (Create)
@@ -315,9 +348,9 @@ class DamtanController extends Controller
             $laporan = LaporanPenyelamatan::create(array_merge(
                 $this->turunanTanggal($request),
                 [
-                    'user_id'       => auth()->id(),
+                    'user_id' => auth()->id(),
                     'nomor_laporan' => $this->buatNomorLaporan($tanggal),
-                    'id_laporan'    => Str::uuid(),
+                    'id_laporan' => Str::uuid(),
 
                     'nama_pelapor' => $request->nama_pelapor,
                     'telepon_pelapor' => $request->telepon_pelapor,
@@ -394,7 +427,7 @@ class DamtanController extends Controller
                 'cara_bertindak_lainnya' => $request->cara_bertindak_lainnya,
                 'kronologi_lengkap' => $request->kronologi_lengkap,
 
-                'foto' => !empty($fotoPaths) ? json_encode($fotoPaths) : null,
+                'foto' => ! empty($fotoPaths) ? json_encode($fotoPaths) : null,
                 'video' => $videoPath,
             ]);
 
@@ -433,7 +466,8 @@ class DamtanController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->back()->withInput()->with('error', 'Gagal menyimpan data: ' . $e->getMessage());
+
+            return redirect()->back()->withInput()->with('error', 'Gagal menyimpan data: '.$e->getMessage());
         }
     }
 
@@ -442,9 +476,9 @@ class DamtanController extends Controller
     {
         $laporan = LaporanPenyelamatan::findOrFail($id);
 
-        $teknis = LpTeknisLogistik::where('laporan_id', $id)->first() ?? new LpTeknisLogistik();
-        $dokumentasi = LpDokumentasi::where('laporan_id', $id)->first() ?? new LpDokumentasi();
-        $khusus = LpKategoriKhusus::where('laporan_id', $id)->first() ?? new LpKategoriKhusus();
+        $teknis = LpTeknisLogistik::where('laporan_id', $id)->first() ?? new LpTeknisLogistik;
+        $dokumentasi = LpDokumentasi::where('laporan_id', $id)->first() ?? new LpDokumentasi;
+        $khusus = LpKategoriKhusus::where('laporan_id', $id)->first() ?? new LpKategoriKhusus;
 
         return view('internal.damtan.edit_data', compact('laporan', 'teknis', 'dokumentasi', 'khusus'));
     }
@@ -588,7 +622,8 @@ class DamtanController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->back()->withInput()->with('error', 'Gagal memperbarui data: ' . $e->getMessage());
+
+            return redirect()->back()->withInput()->with('error', 'Gagal memperbarui data: '.$e->getMessage());
         }
     }
 
@@ -611,29 +646,29 @@ class DamtanController extends Controller
     private function validasiSurat(Request $request)
     {
         return Validator::make($request->all(), [
-            'nama_korban'        => 'required|string|max:255',
+            'nama_korban' => 'required|string|max:255',
             'status_kepemilikan' => 'required|string|max:255',
-            'nik'                => ['required', 'regex:/^[0-9]{1,20}$/'],
-            'pekerjaan'          => 'required|string|max:255',
-            'tempat_lahir'       => 'required|string|max:255',
-            'tanggal_lahir'      => 'required|date',
-            'status_perkawinan'  => 'required|string|max:100',
-            'alamat'             => 'required|string',
-            'objek_terbakar'     => 'required|string|max:255',
-            'tanggal_kejadian'   => 'required|date',
-            'waktu_kejadian'     => 'required',
-            'tanggal_surat'      => 'nullable|date',
-            'tembusan_camat'     => 'nullable|string|max:255',
-            'tembusan_lurah'     => 'nullable|string|max:255',
+            'nik' => ['required', 'regex:/^[0-9]{1,20}$/'],
+            'pekerjaan' => 'required|string|max:255',
+            'tempat_lahir' => 'required|string|max:255',
+            'tanggal_lahir' => 'required|date',
+            'status_perkawinan' => 'required|string|max:100',
+            'alamat' => 'required|string',
+            'objek_terbakar' => 'required|string|max:255',
+            'tanggal_kejadian' => 'required|date',
+            'waktu_kejadian' => 'required',
+            'tanggal_surat' => 'nullable|date',
+            'tembusan_camat' => 'nullable|string|max:255',
+            'tembusan_lurah' => 'nullable|string|max:255',
         ], [
-            'nama_korban.required'      => 'Nama korban wajib diisi.',
-            'nik.required'              => 'NIK wajib diisi.',
-            'nik.regex'                 => 'NIK hanya boleh berisi angka.',
-            'tanggal_lahir.date'        => 'Format tanggal lahir tidak valid.',
+            'nama_korban.required' => 'Nama korban wajib diisi.',
+            'nik.required' => 'NIK wajib diisi.',
+            'nik.regex' => 'NIK hanya boleh berisi angka.',
+            'tanggal_lahir.date' => 'Format tanggal lahir tidak valid.',
             'tanggal_kejadian.required' => 'Tanggal kejadian wajib diisi.',
-            'tanggal_kejadian.date'     => 'Format tanggal kejadian tidak valid.',
-            'waktu_kejadian.required'   => 'Waktu kejadian wajib diisi.',
-            'tanggal_surat.date'        => 'Format tanggal surat tidak valid.',
+            'tanggal_kejadian.date' => 'Format tanggal kejadian tidak valid.',
+            'waktu_kejadian.required' => 'Waktu kejadian wajib diisi.',
+            'tanggal_surat.date' => 'Format tanggal surat tidak valid.',
         ]);
     }
 
@@ -646,20 +681,20 @@ class DamtanController extends Controller
         $kejadian = Carbon::parse($request->tanggal_kejadian)->locale('id');
 
         return [
-            'nama_korban'        => $request->nama_korban,
+            'nama_korban' => $request->nama_korban,
             'status_kepemilikan' => $request->status_kepemilikan,
-            'nik'                => $request->nik,
-            'pekerjaan'          => $request->pekerjaan,
-            'tempat_lahir'       => $request->tempat_lahir,
-            'tanggal_lahir'      => $request->tanggal_lahir,
-            'status_perkawinan'  => $request->status_perkawinan,
-            'alamat'             => $request->alamat,
-            'objek_terbakar'     => $request->objek_terbakar,
-            'hari_kejadian'      => $kejadian->translatedFormat('l'),
-            'tanggal_kejadian'   => $kejadian->toDateString(),
-            'waktu_kejadian'     => $request->waktu_kejadian,
-            'tembusan_camat'     => $request->tembusan_camat,
-            'tembusan_lurah'     => $request->tembusan_lurah,
+            'nik' => $request->nik,
+            'pekerjaan' => $request->pekerjaan,
+            'tempat_lahir' => $request->tempat_lahir,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'status_perkawinan' => $request->status_perkawinan,
+            'alamat' => $request->alamat,
+            'objek_terbakar' => $request->objek_terbakar,
+            'hari_kejadian' => $kejadian->translatedFormat('l'),
+            'tanggal_kejadian' => $kejadian->toDateString(),
+            'waktu_kejadian' => $request->waktu_kejadian,
+            'tembusan_camat' => $request->tembusan_camat,
+            'tembusan_lurah' => $request->tembusan_lurah,
         ];
     }
 
@@ -669,17 +704,17 @@ class DamtanController extends Controller
      */
     private function buatNomorSurat(Carbon $tanggal): string
     {
-        $prefix = 'SKK-' . $tanggal->format('Ymd') . '-';
+        $prefix = 'SKK-'.$tanggal->format('Ymd').'-';
 
         $terakhir = DB::table('surat_korbans')
-            ->where('nomor_surat', 'like', $prefix . '%')
+            ->where('nomor_surat', 'like', $prefix.'%')
             ->lockForUpdate()
             ->orderByDesc('nomor_surat')
             ->value('nomor_surat');
 
         $urut = $terakhir ? ((int) substr($terakhir, -4)) + 1 : 1;
 
-        return $prefix . str_pad($urut, 4, '0', STR_PAD_LEFT);
+        return $prefix.str_pad($urut, 4, '0', STR_PAD_LEFT);
     }
 
     public function createSurat()
@@ -702,14 +737,14 @@ class DamtanController extends Controller
                     : now();
 
                 DB::table('surat_korbans')->insert(array_merge($this->dataSurat($request), [
-                    'nomor_surat'   => $this->buatNomorSurat($tglSurat),
+                    'nomor_surat' => $this->buatNomorSurat($tglSurat),
                     'tanggal_surat' => $tglSurat->toDateTimeString(),
-                    'created_at'    => now(),
-                    'updated_at'    => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]));
             });
         } catch (\Exception $e) {
-            return redirect()->back()->withInput()->with('error', 'Gagal menyimpan surat: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Gagal menyimpan surat: '.$e->getMessage());
         }
 
         return redirect('/internal/surat-korban/data')->with('success', 'Data Surat Keterangan Korban berhasil ditambahkan!');
@@ -736,7 +771,7 @@ class DamtanController extends Controller
     {
         $surat = DB::table('surat_korbans')->where('id', $id)->first();
 
-        if (!$surat) {
+        if (! $surat) {
             return redirect('/internal/surat-korban/data')->with('error', 'Data surat tidak ditemukan.');
         }
 
@@ -751,7 +786,7 @@ class DamtanController extends Controller
         }
 
         $lama = DB::table('surat_korbans')->where('id', $id)->first();
-        if (!$lama) {
+        if (! $lama) {
             return redirect('/internal/surat-korban/data')->with('error', 'Data surat tidak ditemukan.');
         }
 
@@ -761,7 +796,7 @@ class DamtanController extends Controller
         if ($request->filled('tanggal_surat')) {
             $baru = Carbon::parse($request->tanggal_surat);
             $tglLama = $lama->tanggal_surat ? Carbon::parse($lama->tanggal_surat) : null;
-            if (!$tglLama || $tglLama->toDateString() !== $baru->toDateString()) {
+            if (! $tglLama || $tglLama->toDateString() !== $baru->toDateString()) {
                 $data['tanggal_surat'] = $baru->setTimeFrom(now())->toDateTimeString();
             }
         }
@@ -776,6 +811,7 @@ class DamtanController extends Controller
     public function destroySurat($id)
     {
         DB::table('surat_korbans')->where('id', $id)->delete();
+
         return redirect('/internal/surat-korban/data')->with('success', 'Data surat berhasil dihapus secara permanen!');
     }
 
@@ -784,7 +820,7 @@ class DamtanController extends Controller
     {
         $surat = DB::table('surat_korbans')->where('id', $id)->first();
 
-        if (!$surat) {
+        if (! $surat) {
             return redirect('/internal/surat-korban/data')->with('error', 'Data surat tidak ditemukan untuk dicetak.');
         }
 
@@ -798,51 +834,73 @@ class DamtanController extends Controller
     private function kategoriLayanan(): array
     {
         return [
-            'kebakaran'       => ['Kebakaran',                 'fa-fire',          'ic-red'],
-            'evakuasi_hewan'  => ['Evakuasi Hewan',            'fa-paw',           'ic-teal'],
-            'sarang_tawon'    => ['Evakuasi Sarang Tawon',     'fa-bug',           'ic-amber'],
-            'evakuasi_manusia'=> ['Evakuasi / Pertolongan',    'fa-person-falling','ic-blue'],
-            'pohon_tumbang'   => ['Pohon Tumbang',             'fa-tree',          'ic-steel'],
-            'pencarian_air'   => ['Pencarian di Perairan',     'fa-life-ring',     'ic-purple'],
-            'pelepasan_cincin'=> ['Pelepasan Cincin',          'fa-ring',          'ic-pink'],
+            'kebakaran' => ['Kebakaran',                 'fa-fire',          'ic-red'],
+            'evakuasi_hewan' => ['Evakuasi Hewan',            'fa-paw',           'ic-teal'],
+            'sarang_tawon' => ['Evakuasi Sarang Tawon',     'fa-bug',           'ic-amber'],
+            'evakuasi_manusia' => ['Evakuasi / Pertolongan',    'fa-person-falling', 'ic-blue'],
+            'pohon_tumbang' => ['Pohon Tumbang',             'fa-tree',          'ic-steel'],
+            'pencarian_air' => ['Pencarian di Perairan',     'fa-life-ring',     'ic-purple'],
+            'pelepasan_cincin' => ['Pelepasan Cincin',          'fa-ring',          'ic-pink'],
             'layanan_lainnya' => ['Layanan Lainnya',           'fa-truck-medical', 'ic-steel'],
         ];
     }
 
-    public function rekapLayanan()
+    public function rekapLayanan(Request $request)
     {
         $kategori = $this->kategoriLayanan();
         $objekKeys = array_keys($this->kategoriObjek());
 
-        $riwayat = DB::table('rekap_layanan')
+        $tahunTerpilih = $request->filled('tahun') ? (int) $request->tahun : null;
+
+        // Ambil daftar tahun unik dari data rekap_layanan
+        $tahunList = DB::table('rekap_layanan')
             ->whereNotIn('kategori', $objekKeys)
+            ->selectRaw('YEAR(tanggal) as tahun')
+            ->distinct()
+            ->orderBy('tahun', 'desc')
+            ->pluck('tahun')
+            ->filter()
+            ->values();
+
+        $riwayatQuery = DB::table('rekap_layanan')
+            ->whereNotIn('kategori', $objekKeys);
+
+        $totalsQuery = DB::table('rekap_layanan')
+            ->whereNotIn('kategori', $objekKeys);
+
+        if ($tahunTerpilih) {
+            $riwayatQuery->whereYear('tanggal', $tahunTerpilih);
+            $totalsQuery->whereYear('tanggal', $tahunTerpilih);
+        }
+
+        $riwayat = $riwayatQuery
             ->orderBy('tanggal', 'desc')
             ->orderBy('id', 'desc')
-            ->get();
+            ->paginate(20)
+            ->withQueryString();
 
-        $totals = DB::table('rekap_layanan')
-            ->whereNotIn('kategori', $objekKeys)
+        $totals = $totalsQuery
             ->select('kategori', DB::raw('SUM(jumlah) as total'))
             ->groupBy('kategori')
             ->pluck('total', 'kategori');
 
-        return view('internal.damtan.rekap_layanan', compact('riwayat', 'totals', 'kategori'));
+        return view('internal.damtan.rekap_layanan', compact('riwayat', 'totals', 'kategori', 'tahunList', 'tahunTerpilih'));
     }
 
     public function storeRekapLayanan(Request $request)
     {
         $request->validate([
-            'tanggal'  => 'required|date',
-            'kategori' => ['required', 'in:' . implode(',', array_keys($this->kategoriLayanan()))],
-            'jumlah'   => 'required|integer|min:1'
+            'tanggal' => 'required|date',
+            'kategori' => ['required', 'in:'.implode(',', array_keys($this->kategoriLayanan()))],
+            'jumlah' => 'required|integer|min:1',
         ]);
 
         DB::table('rekap_layanan')->insert([
-            'tanggal'    => $request->tanggal,
-            'kategori'   => $request->kategori,
-            'jumlah'     => $request->jumlah,
-            'kecamatan'  => $request->kecamatan,
-            'lokasi'     => $request->lokasi,
+            'tanggal' => $request->tanggal,
+            'kategori' => $request->kategori,
+            'jumlah' => $request->jumlah,
+            'kecamatan' => $request->kecamatan,
+            'lokasi' => $request->lokasi,
             'keterangan' => $request->keterangan,
             'created_at' => now(),
             'updated_at' => now(),
@@ -855,9 +913,9 @@ class DamtanController extends Controller
     public function updateRekapLayanan(Request $request, $id)
     {
         $request->validate([
-            'tanggal'  => 'required|date',
-            'kategori' => ['required', 'in:' . implode(',', array_keys($this->kategoriLayanan()))],
-            'jumlah'   => 'required|integer|min:1',
+            'tanggal' => 'required|date',
+            'kategori' => ['required', 'in:'.implode(',', array_keys($this->kategoriLayanan()))],
+            'jumlah' => 'required|integer|min:1',
         ]);
 
         // Pastikan baris yang diedit memang data rekap layanan (bukan rekap objek)
@@ -867,16 +925,16 @@ class DamtanController extends Controller
             ->whereNotIn('kategori', $objekKeys)
             ->exists();
 
-        if (!$ada) {
+        if (! $ada) {
             return redirect()->back()->with('error', 'Data rekap layanan tidak ditemukan.');
         }
 
         DB::table('rekap_layanan')->where('id', $id)->update([
-            'tanggal'    => $request->tanggal,
-            'kategori'   => $request->kategori,
-            'jumlah'     => $request->jumlah,
-            'kecamatan'  => $request->kecamatan,
-            'lokasi'     => $request->lokasi,
+            'tanggal' => $request->tanggal,
+            'kategori' => $request->kategori,
+            'jumlah' => $request->jumlah,
+            'kecamatan' => $request->kecamatan,
+            'lokasi' => $request->lokasi,
             'keterangan' => $request->keterangan,
             'updated_at' => now(),
         ]);
@@ -898,56 +956,78 @@ class DamtanController extends Controller
     private function kategoriObjek(): array
     {
         return [
-            'objek_rumah'            => ['Rumah',                    'fa-house',            'ic-red'],
-            'objek_gudang'           => ['Gudang',                   'fa-warehouse',        'ic-steel'],
-            'objek_ruko'             => ['Ruko',                     'fa-store',            'ic-amber'],
-            'objek_kantor'           => ['Kantor',                   'fa-building',         'ic-blue'],
-            'objek_sekolah'          => ['Sekolah',                  'fa-school',           'ic-teal'],
-            'objek_rumah_ibadah'     => ['Rumah Ibadah',             'fa-place-of-worship', 'ic-purple'],
-            'objek_pasar'            => ['Pasar / Tempat Usaha',     'fa-shop',             'ic-pink'],
-            'objek_kendaraan'        => ['Kendaraan Bermotor',       'fa-car',              'ic-red'],
-            'objek_vital'            => ['Objek Vital',              'fa-shield-halved',    'ic-steel'],
+            'objek_rumah' => ['Rumah',                    'fa-house',            'ic-red'],
+            'objek_gudang' => ['Gudang',                   'fa-warehouse',        'ic-steel'],
+            'objek_ruko' => ['Ruko',                     'fa-store',            'ic-amber'],
+            'objek_kantor' => ['Kantor',                   'fa-building',         'ic-blue'],
+            'objek_sekolah' => ['Sekolah',                  'fa-school',           'ic-teal'],
+            'objek_rumah_ibadah' => ['Rumah Ibadah',             'fa-place-of-worship', 'ic-purple'],
+            'objek_pasar' => ['Pasar / Tempat Usaha',     'fa-shop',             'ic-pink'],
+            'objek_kendaraan' => ['Kendaraan Bermotor',       'fa-car',              'ic-red'],
+            'objek_vital' => ['Objek Vital',              'fa-shield-halved',    'ic-steel'],
             'objek_sarana_kesehatan' => ['Sarana Kesehatan',         'fa-hospital',         'ic-blue'],
-            'objek_lahan_pohon'      => ['Lahan, Pohon',             'fa-tree',             'ic-teal'],
-            'objek_gardu_listrik'    => ['Gardu Listrik',            'fa-bolt',             'ic-amber'],
-            'objek_tpa_sampah'       => ['Tempat Pembuangan Sampah', 'fa-trash',            'ic-purple'],
+            'objek_lahan_pohon' => ['Lahan, Pohon',             'fa-tree',             'ic-teal'],
+            'objek_gardu_listrik' => ['Gardu Listrik',            'fa-bolt',             'ic-amber'],
+            'objek_tpa_sampah' => ['Tempat Pembuangan Sampah', 'fa-trash',            'ic-purple'],
         ];
     }
 
-    public function rekapObjek()
+    public function rekapObjek(Request $request)
     {
         $kategori = $this->kategoriObjek();
         $keys = array_keys($kategori);
 
-        $riwayat = DB::table('rekap_layanan')
+        $tahunTerpilih = $request->filled('tahun') ? (int) $request->tahun : null;
+
+        // Ambil daftar tahun unik khusus rekap objek kebakaran
+        $tahunList = DB::table('rekap_layanan')
             ->whereIn('kategori', $keys)
+            ->selectRaw('YEAR(tanggal) as tahun')
+            ->distinct()
+            ->orderBy('tahun', 'desc')
+            ->pluck('tahun')
+            ->filter()
+            ->values();
+
+        $riwayatQuery = DB::table('rekap_layanan')
+            ->whereIn('kategori', $keys);
+
+        $totalsQuery = DB::table('rekap_layanan')
+            ->whereIn('kategori', $keys);
+
+        if ($tahunTerpilih) {
+            $riwayatQuery->whereYear('tanggal', $tahunTerpilih);
+            $totalsQuery->whereYear('tanggal', $tahunTerpilih);
+        }
+
+        $riwayat = $riwayatQuery
             ->orderBy('tanggal', 'desc')
             ->orderBy('id', 'desc')
-            ->get();
+            ->paginate(20)
+            ->withQueryString();
 
-        $totals = DB::table('rekap_layanan')
-            ->whereIn('kategori', $keys)
+        $totals = $totalsQuery
             ->select('kategori', DB::raw('SUM(jumlah) as total'))
             ->groupBy('kategori')
             ->pluck('total', 'kategori');
 
-        return view('internal.damtan.rekap_objek', compact('riwayat', 'totals', 'kategori'));
+        return view('internal.damtan.rekap_objek', compact('riwayat', 'totals', 'kategori', 'tahunList', 'tahunTerpilih'));
     }
 
     public function storeRekapObjek(Request $request)
     {
         $request->validate([
-            'tanggal'  => 'required|date',
-            'kategori' => ['required', 'in:' . implode(',', array_keys($this->kategoriObjek()))],
-            'jumlah'   => 'required|integer|min:1',
+            'tanggal' => 'required|date',
+            'kategori' => ['required', 'in:'.implode(',', array_keys($this->kategoriObjek()))],
+            'jumlah' => 'required|integer|min:1',
         ]);
 
         DB::table('rekap_layanan')->insert([
-            'tanggal'    => $request->tanggal,
-            'kategori'   => $request->kategori,
-            'jumlah'     => $request->jumlah,
-            'kecamatan'  => $request->kecamatan,
-            'lokasi'     => $request->lokasi,
+            'tanggal' => $request->tanggal,
+            'kategori' => $request->kategori,
+            'jumlah' => $request->jumlah,
+            'kecamatan' => $request->kecamatan,
+            'lokasi' => $request->lokasi,
             'keterangan' => $request->keterangan,
             'created_at' => now(),
             'updated_at' => now(),
@@ -960,9 +1040,9 @@ class DamtanController extends Controller
     public function updateRekapObjek(Request $request, $id)
     {
         $request->validate([
-            'tanggal'  => 'required|date',
-            'kategori' => ['required', 'in:' . implode(',', array_keys($this->kategoriObjek()))],
-            'jumlah'   => 'required|integer|min:1',
+            'tanggal' => 'required|date',
+            'kategori' => ['required', 'in:'.implode(',', array_keys($this->kategoriObjek()))],
+            'jumlah' => 'required|integer|min:1',
         ]);
 
         // Pastikan baris yang diedit memang data rekap objek
@@ -972,16 +1052,16 @@ class DamtanController extends Controller
             ->whereIn('kategori', $objekKeys)
             ->exists();
 
-        if (!$ada) {
+        if (! $ada) {
             return redirect()->back()->with('error', 'Data rekap objek tidak ditemukan.');
         }
 
         DB::table('rekap_layanan')->where('id', $id)->update([
-            'tanggal'    => $request->tanggal,
-            'kategori'   => $request->kategori,
-            'jumlah'     => $request->jumlah,
-            'kecamatan'  => $request->kecamatan,
-            'lokasi'     => $request->lokasi,
+            'tanggal' => $request->tanggal,
+            'kategori' => $request->kategori,
+            'jumlah' => $request->jumlah,
+            'kecamatan' => $request->kecamatan,
+            'lokasi' => $request->lokasi,
             'keterangan' => $request->keterangan,
             'updated_at' => now(),
         ]);
@@ -992,6 +1072,7 @@ class DamtanController extends Controller
     public function destroyRekapObjek($id)
     {
         DB::table('rekap_layanan')->where('id', $id)->delete();
+
         return redirect()->back()->with('success', 'Data rekap berhasil dihapus!');
     }
 }

@@ -41,11 +41,83 @@
     .side-group summary .chev { flex: none; font-size: .7rem; margin-top: 4px; transition: transform .25s ease; }
 
     /* ==========================================================
-       JUDUL HALAMAN
+       JUDUL HALAMAN & FILTER
        ========================================================== */
-    .page-head { margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
-    .page-head h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 6px; color: var(--ink); }
-    .page-head p { color: var(--steel); font-size: .95rem; margin-bottom: 0; max-width: 760px; }
+    .page-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+    .page-head-title h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 6px; color: var(--ink); }
+    .page-head-title p { color: var(--steel); font-size: .95rem; margin-bottom: 0; max-width: 650px; }
+
+    .filter-year-group {
+        display: inline-flex;
+        align-items: center;
+        background: var(--white);
+        padding: 5px 6px;
+        border: 1px solid var(--line);
+        border-radius: var(--r-md);
+        box-shadow: var(--shadow-xs);
+        gap: 8px;
+    }
+    .filter-year-group .label-wrap {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 0 8px 0 10px;
+        font-size: .8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+        color: var(--steel);
+        white-space: nowrap;
+    }
+    .filter-year-group .label-wrap i { color: var(--navy); }
+    .filter-year-select {
+        height: 38px;
+        padding: 0 32px 0 12px;
+        font-family: var(--font-body);
+        font-size: .88rem;
+        font-weight: 600;
+        color: var(--ink);
+        background-color: #f8fafc;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+    .filter-year-select:hover {
+        background-color: #f1f5f9;
+        border-color: #cbd5e1;
+    }
+    .filter-year-select:focus {
+        background-color: #fff;
+        border-color: var(--navy);
+        box-shadow: 0 0 0 3px rgba(22, 58, 99, .12);
+        outline: none;
+    }
+    .btn-filter-reset {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        height: 38px;
+        padding: 0 14px;
+        font-size: .84rem;
+        font-weight: 600;
+        color: var(--signal-dark);
+        background: #fff;
+        border: 1px solid #fecaca;
+        border-radius: 8px;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: all .2s ease;
+    }
+    .btn-filter-reset:hover {
+        background: #fee2e2;
+        border-color: #fca5a5;
+        color: #991b1b;
+    }
+    .btn-filter-reset:active {
+        transform: scale(.97);
+    }
 
     /* ==========================================================
        JUDUL SEKSI
@@ -120,20 +192,21 @@
     .btn-main:active, .btn-ghost:active { transform: scale(.97); }
 
     /* ==========================================================
-       TABEL RIWAYAT (gaya navy, sama dengan halaman Kelola)
+       TABEL RIWAYAT (gaya navy, sama persis dengan Kelola Data Laporan)
        ========================================================== */
     .tbl-scroll { overflow-x: auto; padding: 20px; background: #fff; }
-    .tbl-frame { min-width: 820px; border: 2px solid var(--navy); border-radius: 16px; overflow: hidden; background: #fff; box-shadow: var(--shadow-sm); }
+    .tbl-frame { min-width: 860px; border: 2px solid var(--navy); border-radius: 16px; overflow: hidden; background: #fff; box-shadow: var(--shadow-sm); }
     .tbl { width: 100%; border-collapse: collapse; margin: 0; }
     .tbl thead th {
         background: linear-gradient(180deg, var(--navy) 0%, var(--navy-dark) 100%);
         color: #fff;
         font-family: var(--font-display);
         font-weight: 700;
-        font-size: .9rem;
+        font-size: .88rem;
+        letter-spacing: .02em;
         text-align: center;
         vertical-align: middle;
-        padding: 14px 10px;
+        padding: 14px 12px;
         border: 0;
         border-right: 1px solid rgba(255,255,255,.22);
         white-space: nowrap;
@@ -159,7 +232,7 @@
         color: #fff;
         font-family: var(--font-display);
         font-weight: 800;
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         border-right: 1px solid rgba(255,255,255,.22);
     }
     .col-no { width: 64px; }
@@ -171,10 +244,11 @@
 
     .aksi { display: flex; align-items: center; justify-content: center; gap: 6px; }
     .aksi form { margin: 0; display: flex; }
-    .btn-icon { width: 30px; height: 30px; border-radius: 8px; display: inline-grid; place-items: center; font-size: 12px; background: var(--signal-soft); color: var(--signal); transition: background .2s; border: 0; cursor: pointer; flex: none; }
-    .btn-icon:hover { background: #fecaca; }
-    .btn-icon.edit { background: rgba(255,182,39,.18); color: #d97706; }
-    .btn-icon.edit:hover { background: rgba(255,182,39,.32); }
+    .action-btn { width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: none; font-size: 13px; transition: all 0.2s; text-decoration: none; cursor: pointer; }
+    .action-btn.edit { background-color: rgba(255, 182, 39, 0.18); color: #d97706; }
+    .action-btn.edit:hover { background-color: rgba(255, 182, 39, 0.3); }
+    .action-btn.delete { background-color: var(--signal-soft); color: var(--signal); }
+    .action-btn.delete:hover { background-color: #fecaca; }
 
     .tbl tbody tr.empty-row td { padding: 0; background: #fff !important; border-right: 0; }
     .empty { padding: 52px 20px; text-align: center; color: var(--steel); }
@@ -227,8 +301,41 @@
 @endphp
 
         <div class="page-head">
-            <h1>Input Rekap Objek Kebakaran</h1>
-            <p>Bagian Pemadaman &amp; Penyelamatan - Disdamkartan Kota Jambi. Data yang disimpan di sini tampil sebagai angka di halaman publik.</p>
+            <div class="page-head-title">
+                <h1>Input Rekap Objek Kebakaran</h1>
+                <p>Bagian Pemadaman &amp; Penyelamatan - Disdamkartan Kota Jambi. Data yang disimpan di sini tampil sebagai angka di halaman publik.</p>
+            </div>
+            <div>
+                <form method="GET" action="{{ url()->current() }}" id="filterTahunForm" class="filter-year-group m-0">
+                    <span class="label-wrap">
+                        <i class="fas fa-calendar-days"></i>
+                        <span>Tahun</span>
+                    </span>
+                    <select name="tahun" id="filterTahun" class="filter-year-select" onchange="this.form.submit()" aria-label="Filter berdasarkan tahun">
+                        <option value="">Semua Tahun</option>
+                        @php
+                            $opsiTahun = collect($tahunList ?? [])
+                                ->push((int) date('Y'))
+                                ->when($tahunTerpilih, fn($c) => $c->push($tahunTerpilih))
+                                ->map(fn($t) => (int)$t)
+                                ->unique()
+                                ->sortDesc()
+                                ->values();
+                        @endphp
+                        @foreach($opsiTahun as $thn)
+                            <option value="{{ $thn }}" {{ (string) request('tahun') === (string) $thn ? 'selected' : '' }}>
+                                {{ $thn }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @if(request('tahun'))
+                        <a href="{{ url()->current() }}" class="btn-filter-reset" title="Kembalikan ke semua tahun">
+                            <i class="fas fa-rotate-left"></i>
+                            <span>Reset</span>
+                        </a>
+                    @endif
+                </form>
+            </div>
         </div>
 
         <!-- TOTAL PER KATEGORI -->
@@ -348,7 +455,7 @@
                         <tbody>
                             @forelse($riwayat as $r)
                                 <tr>
-                                    <td class="no-cell">{{ $loop->iteration }}</td>
+                                    <td class="no-cell">{{ $riwayat->firstItem() + $loop->index }}</td>
                                     <td class="cell-strong">{{ \Carbon\Carbon::parse($r->tanggal)->translatedFormat('d M Y') }}</td>
                                     <td><span class="tag">{{ $kategori[$r->kategori][0] ?? $r->kategori }}</span></td>
                                     <td><span class="num">{{ $r->jumlah }}</span></td>
@@ -356,7 +463,7 @@
                                     <td class="cell-ket">{{ \Illuminate\Support\Str::limit($r->keterangan ?: '-', 60) }}</td>
                                     <td>
                                         <div class="aksi">
-                                            <button type="button" class="btn-icon edit" aria-label="Edit" title="Edit"
+                                            <button type="button" class="action-btn edit" aria-label="Edit" title="Edit Data"
                                                 data-edit
                                                 data-id="{{ $r->id }}"
                                                 data-tanggal="{{ \Carbon\Carbon::parse($r->tanggal)->format('Y-m-d') }}"
@@ -365,11 +472,11 @@
                                                 data-kecamatan="{{ $r->kecamatan }}"
                                                 data-lokasi="{{ $r->lokasi }}"
                                                 data-keterangan="{{ $r->keterangan }}">
-                                                <i class="fas fa-pen"></i>
+                                                <i class="fas fa-edit"></i>
                                             </button>
                                             <form action="/internal/damtan/rekap-objek/{{ $r->id }}" method="POST" onsubmit="return confirm('Hapus data rekap ini?')">
                                                 @csrf @method('DELETE')
-                                                <button type="submit" class="btn-icon" aria-label="Hapus" title="Hapus"><i class="fas fa-trash"></i></button>
+                                                <button type="submit" class="action-btn delete" aria-label="Hapus" title="Hapus"><i class="fas fa-trash"></i></button>
                                             </form>
                                         </div>
                                     </td>
@@ -381,6 +488,16 @@
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- FOOTER PAGINATION -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center p-3 border-top bg-white">
+                <span class="text-muted" style="font-size: 13px;">
+                    Menampilkan {{ $riwayat->firstItem() ?? 0 }} - {{ $riwayat->lastItem() ?? 0 }} dari total {{ $riwayat->total() }} data objek
+                </span>
+                <div class="pagination-container mb-0">
+                    {{ $riwayat->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </div>
