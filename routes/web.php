@@ -40,6 +40,7 @@ use App\Http\Controllers\SapraHomeController;
 use App\Http\Controllers\ProdukHukumController;
 use App\Http\Controllers\ProfilInstansiController;
 use App\Http\Controllers\KejadianController;
+use App\Http\Controllers\VisitController;
 use App\Models\Berita;
 use App\Models\Infografis;
 use App\Models\BeritaMedsos;
@@ -1008,3 +1009,16 @@ Route::get('/produk-hukum/{kategori}', function ($kategori) {
 
     return view('publik.produk-hukum'); // sesuaikan nama view-mu
 });
+
+// --- RUTE PENGHITUNG KUNJUNGAN HALAMAN (VISIT COUNTER) ---
+Route::post('/api/visits/{page}', [VisitController::class, 'store'])
+    ->middleware('throttle:visits')
+    ->name('visits.store');
+
+Route::get('/api/visits/{page}', [VisitController::class, 'show'])
+    ->middleware('throttle:visits')
+    ->name('visits.show');
+
+Route::get('/api/visits/{page}/history', [VisitController::class, 'history'])
+    ->middleware(['auth', 'throttle:visits'])
+    ->name('visits.history');
