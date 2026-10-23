@@ -11,6 +11,7 @@ use App\Http\Controllers\InformasiLayananController;
 use App\Http\Controllers\IzinKeramaianController;
 use App\Http\Controllers\IzinKeramaianExcelController;
 use App\Http\Controllers\KabarDamkarController;
+use App\Http\Controllers\KejadianController; // <-- INI BARIS YANG DITAMBAHKAN
 use App\Http\Controllers\LaporanExcelController;
 use App\Http\Controllers\OperatorMedsosController;
 use App\Http\Controllers\PemberdayaanController;

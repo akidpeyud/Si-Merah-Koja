@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
             PengadaanSarprasSeeder::class,
             DistribusiStaffSeeder::class,
         ]);
+        $this->call(KejadianDamkarTableSeeder::class);
     }
 }

@@ -26,9 +26,25 @@ class Kejadian extends Model
         return self::JENIS[$this->jenis] ?? ucfirst((string) $this->jenis);
     }
 
+    /**
+     * Kolom `gambar` bisa berisi:
+     *  - path storage ("kejadian/abc.jpg")  -> hasil upload / Tarik Data
+     *  - URL penuh ("https://images...")    -> data seeder
+     * URL penuh dipakai apa adanya, path storage diberi asset('storage/...').
+     */
     public function getGambarSrcAttribute()
     {
-        return $this->gambar ? asset('storage/' . $this->gambar) : null;
+        $g = trim((string) $this->gambar);
+
+        if ($g === '') {
+            return null;
+        }
+
+        if (preg_match('#^https?://#i', $g)) {
+            return $g;
+        }
+
+        return asset('storage/' . ltrim(preg_replace('#^/?(public/|storage/)#', '', $g), '/'));
     }
 
     public function getThumbAttribute()
