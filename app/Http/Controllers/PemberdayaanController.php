@@ -14,8 +14,12 @@ class PemberdayaanController extends Controller
     {
         $total_sosialisasi = DB::table('sosialisasi_edukasi')->count();
         $total_pelatihan   = DB::table('pelatihan_keluarga')->count();
+        
+        // TAMBAHKAN INI: Hitung total kunjungan sekolah
+        $total_kunjungan   = \App\Models\KunjunganSekolah::count();
 
-        return view('internal.pencegahan.pemberdayaan_masyarakat', compact('total_sosialisasi', 'total_pelatihan'));
+        // TAMBAHKAN $total_kunjungan ke dalam compact()
+        return view('internal.pencegahan.pemberdayaan_masyarakat', compact('total_sosialisasi', 'total_pelatihan', 'total_kunjungan'));
     }
 
     // 1.B TAMPILKAN TABEL -> UNTUK TAB "SOSIALISASI DAN EDUKASI"

@@ -15,6 +15,11 @@ class LaporanPenyelamatan extends Model
     // Mengizinkan semua kolom diisi (mass-assignment)
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'tanggal_kejadian' => 'date',
+        'tahun_kejadian'   => 'integer',
+    ];
+
     // Relasi One-to-One ke tabel Teknis & Logistik
     public function teknisLogistik()
     {
@@ -31,6 +36,16 @@ class LaporanPenyelamatan extends Model
     public function kategoriKhusus()
     {
         return $this->hasOne(LpKategoriKhusus::class, 'laporan_id');
+    }
+
+    /**
+     * Filter berdasarkan tahun kejadian.
+     * Pemakaian: LaporanPenyelamatan::tahun(2027)->get();
+     * Jika $tahun kosong, semua tahun diambil.
+     */
+    public function scopeTahun($query, $tahun)
+    {
+        return $tahun ? $query->where('tahun_kejadian', (int) $tahun) : $query;
     }
 
     /**

@@ -47,8 +47,8 @@
         --shadow-md: 0 10px 25px rgba(13, 27, 42, .08);
         --shadow-lg: 0 20px 45px rgba(13, 27, 42, .14);
 
-        --rekap-red: #b91c1c;
-        --rekap-red-light: #d32f2f;
+        --rekap-red: #163a63;        /* navy */
+        --rekap-red-light: #163a63;  /* navy */
         --rekap-row-a: #eaf2fc;
         --rekap-row-b: #f8fbff;
         --rekap-line: #d3deee;
@@ -134,6 +134,27 @@
     .btn-custom-light:hover { background: #f8fafc; border-color: var(--steel-soft); color: var(--ink); }
 
     /* ==========================================================
+       BAR FILTER (cari, tahun, reset)
+       ========================================================== */
+    .filter-bar .form-select,
+    .filter-bar .form-control { height: 44px; }
+    .filter-bar .btn-reset {
+        width: 100%;
+        height: 44px;
+        min-height: 44px;
+        padding: 0 18px;
+        background: var(--white);
+        color: var(--ink);
+        border: 1px solid var(--line-dark);
+        border-radius: 8px;
+        font-size: .9rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    .filter-bar .btn-reset:hover { background: #f1f5f9; border-color: var(--steel-soft); color: var(--ink); }
+    .filter-bar .btn-reset:active { transform: scale(.98); }
+
+    /* ==========================================================
        MENU EKSPOR (Cetak PDF / Cetak Excel)
        ========================================================== */
     .btn-custom-light.show { background: #f8fafc; border-color: var(--steel-soft); color: var(--ink); }
@@ -179,7 +200,7 @@
     .export-year .form-select { min-height: 38px; font-size: .88rem; font-weight: 600; }
 
     /* ==========================================================
-       TABEL REKAP (gaya header merah, sama dengan Data Laporan)
+       TABEL REKAP (gaya header navy, sama dengan Data Laporan)
        ========================================================== */
     .rekap-scroll { overflow-x: auto; padding: 20px; background: #fff; }
     .rekap-wrap { min-width: 760px; border: 2px solid var(--rekap-red); border-radius: 16px; overflow: hidden; background: #fff; box-shadow: var(--shadow-sm); }
@@ -187,7 +208,7 @@
     .table-rekap { width: 100%; border-collapse: collapse; margin: 0; }
 
     .table-rekap thead th {
-        background: linear-gradient(180deg, var(--rekap-red-light) 0%, #a51212 100%);
+        background: linear-gradient(180deg, var(--rekap-red-light) 0%, #0d2947 100%);
         color: #fff;
         font-family: var(--font-display);
         font-weight: 700;
@@ -219,7 +240,7 @@
     .table-rekap tbody tr:hover td { background: #dce9fa; }
 
     .table-rekap tbody td.no-cell {
-        background: linear-gradient(180deg, #c62828 0%, #a51212 100%) !important;
+        background: linear-gradient(180deg, #163a63 0%, #0d2947 100%) !important;
         color: #fff;
         font-family: var(--font-display);
         font-weight: 800;
@@ -278,7 +299,7 @@
 @section('content')
 
 @php
-    // Daftar tahun untuk pilihan ekspor (dari data halaman ini + rentang 2023 s/d tahun berjalan), terbaru di atas.
+    // Daftar tahun untuk pilihan ekspor & filter (dari data halaman ini + rentang 2023 s/d tahun berjalan), terbaru di atas.
     // Mau mengubah rentang? Ganti angka 2023 di bawah, atau tambahkan ->push(2027).
     $daftarTahun = collect($surat->items())
         ->map(function ($r) {
@@ -350,16 +371,24 @@
     <div class="card-custom">
         <!-- Filter & Search Bar -->
         <div class="card-header bg-white p-4 border-bottom border-light">
-            <div class="row g-3">
-                <div class="col-md-8">
+            <div class="row g-3 filter-bar align-items-center">
+                <div class="col-12 col-lg-6">
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0"><i class="fas fa-search"></i></span>
                         <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari nomor surat, nama korban...">
                     </div>
                 </div>
-                <div class="col-md-4 text-end ms-auto">
-                    <button type="button" class="btn-custom-light w-100 py-2 border-light fw-bold" onclick="resetFilter()">
-                        <i class="fas fa-sync-alt me-2"></i>Reset Filter
+                <div class="col-6 col-lg-3">
+                    <select id="filterTahun" class="form-select" title="Filter tahun diterbitkan">
+                        <option value="">Semua Tahun</option>
+                        @foreach($daftarTahun as $thn)
+                            <option value="{{ $thn }}">{{ $thn }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <button type="button" class="btn-custom-light btn-reset" onclick="resetFilter()">
+                        <i class="fas fa-sync-alt"></i> Reset
                     </button>
                 </div>
             </div>
@@ -439,11 +468,11 @@
                             </tr>
                             @endforelse
 
-                            {{-- Muncul otomatis jika pencarian tidak menemukan hasil --}}
+                            {{-- Muncul otomatis jika pencarian/filter tidak menemukan hasil --}}
                             <tr class="empty-state" id="noResult" hidden>
                                 <td colspan="5">
                                     <i class="fas fa-search d-block"></i>
-                                    Tidak ada surat yang cocok dengan pencarian.
+                                    Tidak ada surat yang cocok dengan pencarian atau filter.
                                 </td>
                             </tr>
                         </tbody>
@@ -532,15 +561,19 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         const searchInput = document.getElementById('searchInput');
+        const filterTahun = document.getElementById('filterTahun');
         const rows        = document.querySelectorAll('#tableBody tr[data-row]');
         const noResult    = document.getElementById('noResult');
 
         function filterTable() {
             const searchTerm = searchInput.value.toLowerCase().trim();
+            const yearTerm   = filterTahun.value;
             let visible = 0;
 
             rows.forEach(function (row) {
-                const show = row.textContent.toLowerCase().includes(searchTerm);
+                const matchesSearch = row.textContent.toLowerCase().includes(searchTerm);
+                const matchesYear   = yearTerm === '' || row.dataset.tahun === yearTerm;
+                const show = matchesSearch && matchesYear;
                 row.style.display = show ? '' : 'none';
 
                 // Warna baris selang-seling hanya untuk baris yang tampil
@@ -555,10 +588,12 @@
         }
 
         searchInput.addEventListener('input', filterTable);
+        filterTahun.addEventListener('change', filterTable);
 
         // dibuat global agar bisa dipanggil dari onclick="resetFilter()"
         window.resetFilter = function () {
             searchInput.value = '';
+            filterTahun.value = '';
             filterTable();
         };
 
