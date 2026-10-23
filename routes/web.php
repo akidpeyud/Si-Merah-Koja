@@ -683,6 +683,16 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/hapus/{id}', [PencegahanController::class, 'destroyPelatihanKeluarga'])->name('pelatihan_keluarga.destroy');
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak', [PemberdayaanController::class, 'cetakPelatihan']);
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak-excel', [PemberdayaanController::class, 'cetakExcelPelatihan']);
+    
+    // -- Kunjungan Sekolah
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/kunjungan-sekolah', [PencegahanController::class, 'indexKunjungan'])->name('kunjungan_sekolah.index');
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/kunjungan-sekolah/create', [PencegahanController::class, 'createKunjungan'])->name('kunjungan_sekolah.create');
+    Route::post('/internal/pencegahan/pemberdayaan-masyarakat/kunjungan-sekolah/store', [PencegahanController::class, 'storeKunjungan'])->name('kunjungan_sekolah.store');
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/kunjungan-sekolah/edit/{id}', [PencegahanController::class, 'editKunjungan'])->name('kunjungan_sekolah.edit');
+    Route::put('/internal/pencegahan/pemberdayaan-masyarakat/kunjungan-sekolah/update/{id}', [PencegahanController::class, 'updateKunjungan'])->name('kunjungan_sekolah.update');
+    Route::delete('/internal/pencegahan/pemberdayaan-masyarakat/kunjungan-sekolah/destroy/{id}', [PencegahanController::class, 'destroyKunjungan'])->name('kunjungan_sekolah.destroy');
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/kunjungan-sekolah/cetak', [PencegahanController::class, 'cetakKunjungan'])->name('kunjungan_sekolah.cetak');
+    Route::get('/internal/pencegahan/pemberdayaan-masyarakat/kunjungan-sekolah/cetak-excel', [PencegahanController::class, 'cetakExcelKunjungan'])->name('kunjungan_sekolah.excel');
 
     // 11. Peningkatan Kapasitas Aparatur
     Route::get('/internal/pencegahan/peningkatan-kapasitas', function () {
