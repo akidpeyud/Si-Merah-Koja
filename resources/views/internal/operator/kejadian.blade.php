@@ -65,7 +65,10 @@
     .modal-header { background: var(--ink); color: #fff; border-bottom: 1px solid rgba(255,255,255,.08); padding: 18px 24px; }
     .modal-title { font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; color: #fff; display: flex; align-items: center; gap: 10px; }
     .modal-header .btn-close { filter: invert(1) grayscale(100%) brightness(200%); opacity: .75; }
-    .modal-body { padding: 24px; }
+    
+    /* PERBAIKAN SCROLL: Paksa body modal memiliki tinggi maksimal dan scroll */
+    .modal-body { padding: 24px; max-height: 65vh; overflow-y: auto !important; }
+    
     .modal-footer { background: #f8fafc; border-top: 1px solid var(--line); padding: 14px 24px; }
     .form-label { font-size: .84rem; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
     .form-control, .form-select { border-radius: var(--r-sm); border: 1px solid var(--line-dark); padding: 10px 14px; font-size: .92rem; color: var(--ink); }
@@ -74,6 +77,9 @@
     .kj-preview-card { background: var(--paper); border: 1px dashed var(--line-dark); border-radius: var(--r-md); padding: 14px; text-align: center; }
     .kj-preview-card img { width: 100%; max-width: 280px; aspect-ratio: 16 / 10; object-fit: cover; border-radius: var(--r-sm); margin: 0 auto; border: 1px solid var(--line); }
     .kj-upload-box { padding: 14px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); transition: opacity .2s; }
+
+    /* PERBAIKAN SCROLL TAMBAHAN */
+    .modal { overflow-y: auto !important; }
 
     @media (max-width: 700px) {
         .btn-simerah-danger.w-mobile-100 { width: 100%; }

@@ -11,6 +11,7 @@ use App\Http\Controllers\InformasiLayananController;
 use App\Http\Controllers\IzinKeramaianController;
 use App\Http\Controllers\IzinKeramaianExcelController;
 use App\Http\Controllers\KabarDamkarController;
+use App\Http\Controllers\KejadianController;
 use App\Http\Controllers\LaporanExcelController;
 use App\Http\Controllers\OperatorMedsosController;
 use App\Http\Controllers\PemberdayaanController;
@@ -32,6 +33,7 @@ use App\Http\Controllers\SapraController;
 use App\Http\Controllers\SapraHomeController;
 use App\Http\Controllers\SkkAdminController;
 use App\Http\Controllers\SuratKorbanExcelController;
+use App\Http\Controllers\VisitController;
 use App\Http\Middleware\CekLoginPemohon;
 use App\Models\Berita;
 use App\Models\BeritaMedsos;
@@ -354,7 +356,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/damtan/kelola-izin-keramaian/export-excel', IzinKeramaianExcelController::class)->name('internal.izin-keramaian.export-excel');
 
     Route::middleware([RoleMiddleware::class.':Damtan|Super User'])->group(function () {
-        // TAMBAHAN BARU: Buat Laporan Baru (create & store)
+        // Buat Laporan Baru (create & store)
         // PENTING: route "create" harus berada SEBELUM route show ({id}) di bawah
         Route::get('/internal/damtan/kelola-izin-keramaian/create', [IzinKeramaianController::class, 'createInternal'])->name('internal.izin-keramaian.create');
         Route::post('/internal/damtan/kelola-izin-keramaian', [IzinKeramaianController::class, 'storeInternal'])->name('internal.izin-keramaian.store');
@@ -374,7 +376,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/damtan/kelola-penggunaan-sarana/export-excel', PenggunaanSaranaExcelController::class)->name('internal.penggunaan-sarana.export-excel');
 
     Route::middleware([RoleMiddleware::class.':Damtan|Super User'])->group(function () {
-        // TAMBAHAN BARU: Buat Laporan Baru (create & store)
+        // Buat Laporan Baru (create & store)
         // PENTING: route "create" harus berada SEBELUM route show ({id}) di bawah
         Route::get('/internal/damtan/kelola-penggunaan-sarana/create', [PenggunaanSaranaController::class, 'createInternal'])->name('internal.penggunaan-sarana.create');
         Route::post('/internal/damtan/kelola-penggunaan-sarana', [PenggunaanSaranaController::class, 'storeInternal'])->name('internal.penggunaan-sarana.store');
@@ -528,7 +530,7 @@ Route::middleware(['auth'])->group(function () {
     // 3. Kelola SKK
     Route::prefix('internal/pencegahan/kelola-skk')->name('skk.')->group(function () {
         Route::get('/', [SkkAdminController::class, 'index'])->name('index');
-        Route::get('/{id}', [SkkAdminController::class, 'show'])->name('show');
+        Route::get('/{id}', [SkkAdminController::class, 'show'])->whereNumber('id')->name('show');
 
         Route::middleware([RoleMiddleware::class.':Pencegahan|Super User'])->group(function () {
             Route::get('/tambah', [SkkAdminController::class, 'create'])->name('create');
@@ -545,7 +547,7 @@ Route::middleware(['auth'])->group(function () {
 
     // 4. Kelola Edukasi
     Route::get('/internal/pencegahan/kelola-edukasi', [PermohonanEdukasiController::class, 'index']);
-    Route::get('/internal/pencegahan/kelola-edukasi/{id}', [PermohonanEdukasiController::class, 'show']);
+    Route::get('/internal/pencegahan/kelola-edukasi/{id}', [PermohonanEdukasiController::class, 'show'])->whereNumber('id');
 
     Route::middleware([RoleMiddleware::class.':Pencegahan|Super User'])->group(function () {
         Route::get('/internal/pencegahan/kelola-edukasi/tambah', [PermohonanEdukasiController::class, 'createOffline'])->name('edukasi.offline.create');
@@ -794,7 +796,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga', [PencegahanController::class, 'indexPelatihanKeluarga'])->name('pelatihan_keluarga.index');
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak', [PemberdayaanController::class, 'cetakPelatihan']);
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/cetak-excel', [PemberdayaanController::class, 'cetakExcelPelatihan']);
-    
+
     // -- Kunjungan Sekolah
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/kunjungan-sekolah', [PencegahanController::class, 'indexKunjungan'])->name('kunjungan_sekolah.index');
     Route::get('/internal/pencegahan/pemberdayaan-masyarakat/kunjungan-sekolah/create', [PencegahanController::class, 'createKunjungan'])->name('kunjungan_sekolah.create');
@@ -967,13 +969,6 @@ Route::middleware(['auth'])->group(function () {
             return redirect()->back()->with('success', 'Data berhasil dihapus!');
         });
     });
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f1', [PencegahanController::class, 'indexDiklatF1']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-f2', [PencegahanController::class, 'indexDiklatF2']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-inspektur', [PencegahanController::class, 'indexDiklatInspektur']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-mfr', [PencegahanController::class, 'indexDiklatMfr']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-rescue', [PencegahanController::class, 'indexDiklatRescue']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-operator', [PencegahanController::class, 'indexDiklatOperator']);
-    Route::get('/internal/pencegahan/peningkatan-kapasitas/diklat-ppl', [PencegahanController::class, 'indexDiklatPpl']);
 
     // --- F. DUK KEPEGAWAIAN ---
     Route::prefix('internal/kepegawaian')->name('kepegawaian.')->group(function () {
@@ -996,11 +991,9 @@ Route::middleware(['auth'])->group(function () {
     // --- G. PROGRAM KERJA ---
     Route::get('/internal/program-kerja', [ProgramKerjaController::class, 'index'])->name('program-kerja.index');
     Route::post('/internal/program-kerja/store', [ProgramKerjaController::class, 'store'])->name('program-kerja.store');
-
-    // Tambahkan baris route update di bawah ini:
     Route::put('/internal/program-kerja/update/{id}', [ProgramKerjaController::class, 'update'])->name('program-kerja.update');
-
     Route::delete('/internal/program-kerja/hapus/{id}', [ProgramKerjaController::class, 'destroy'])->name('program-kerja.destroy');
+
     // --- H. EXPORT PETA SIGAP ---
     Route::get('/internal/peta-sigap/export-pdf', [PetaController::class, 'exportPdf'])->name('peta.export.pdf');
     Route::get('/internal/peta-sigap/export-excel', [PetaController::class, 'exportExcel'])->name('peta.export.excel');
@@ -1115,7 +1108,7 @@ Route::get('/produk-hukum/peraturan-pemerintah', function () {
 });
 Route::get('/produk-hukum/peraturan-presiden', function () {
     return view('public.produk-hukum.peraturan-presiden');
-}); // BARU
+});
 Route::get('/produk-hukum/peraturan-menteri', function () {
     return view('public.produk-hukum.peraturan-menteri');
 });
@@ -1172,3 +1165,19 @@ Route::get('/produk-hukum/{kategori}', function ($kategori) {
 
     return view('publik.produk-hukum'); // sesuaikan nama view-mu
 });
+
+// ==========================================
+// 9. RUTE PENGHITUNG KUNJUNGAN HALAMAN (VISIT COUNTER)
+// ==========================================
+// Catatan: butuh RateLimiter::for('visits', ...) di AppServiceProvider::boot()
+Route::post('/api/visits/{page}', [VisitController::class, 'store'])
+    ->middleware('throttle:visits')
+    ->name('visits.store');
+
+Route::get('/api/visits/{page}', [VisitController::class, 'show'])
+    ->middleware('throttle:visits')
+    ->name('visits.show');
+
+Route::get('/api/visits/{page}/history', [VisitController::class, 'history'])
+    ->middleware(['auth', 'throttle:visits'])
+    ->name('visits.history');

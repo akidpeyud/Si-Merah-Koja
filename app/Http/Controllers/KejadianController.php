@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kejadian;
+use Carbon\Carbon;
+use GuzzleHttp\TransferStats;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -10,38 +12,40 @@ use Illuminate\Support\Str;
 
 class KejadianController extends Controller
 {
-    private const UA_BROWSER  = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
+    private const UA_BROWSER = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
+
     private const UA_FACEBOOK = 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)';
-    private const UA_TWITTER  = 'Twitterbot/1.0';
+
+    private const UA_TWITTER = 'Twitterbot/1.0';
 
     /** Nama sumber yang rapi berdasarkan domain. Tambahkan domain baru di sini. */
     private const SITE_NAMES = [
         'instagram.com' => 'Instagram', 'tiktok.com' => 'TikTok',
-        'youtube.com'   => 'YouTube',   'youtu.be'   => 'YouTube',
-        'facebook.com'  => 'Facebook',  'fb.watch'   => 'Facebook',
-        'x.com'         => 'X (Twitter)', 'twitter.com' => 'X (Twitter)',
-        'jambione.com'           => 'Jambi One',
+        'youtube.com' => 'YouTube',   'youtu.be' => 'YouTube',
+        'facebook.com' => 'Facebook',  'fb.watch' => 'Facebook',
+        'x.com' => 'X (Twitter)', 'twitter.com' => 'X (Twitter)',
+        'jambione.com' => 'Jambi One',
         'jambiekspres.disway.id' => 'Jambi Ekspres',
-        'jambitv.disway.id'      => 'Jambi TV',
-        'jambi.tribunnews.com'   => 'Tribun Jambi',
-        'bicarajambi.com'        => 'Bicara Jambi',
-        'sepucukjambi.id'        => 'Sepucuk Jambi',
-        'mattanews.co'           => 'Matta News',
-        'infojambi.com'          => 'Info Jambi',
-        'siginjaione.com'        => 'Siginjai One',
-        'metrojambi.com'         => 'Metro Jambi',
-        'detik.com'              => 'Detik',
+        'jambitv.disway.id' => 'Jambi TV',
+        'jambi.tribunnews.com' => 'Tribun Jambi',
+        'bicarajambi.com' => 'Bicara Jambi',
+        'sepucukjambi.id' => 'Sepucuk Jambi',
+        'mattanews.co' => 'Matta News',
+        'infojambi.com' => 'Info Jambi',
+        'siginjaione.com' => 'Siginjai One',
+        'metrojambi.com' => 'Metro Jambi',
+        'detik.com' => 'Detik',
         'generasi-indonesia.com' => 'Generasi Indonesia',
         'reportasenusantara.com' => 'Reportase Nusantara',
-        'detail.id'              => 'Detail.id',
-        'okezone.com'            => 'Okezone',
-        'inews.id'               => 'iNews',
-        'jambilink.id'           => 'Jambilink',
-        'jambiseru.com'          => 'Jambi Seru',
-        'jambibro.com'           => 'Jambi Bro',
-        'sekato.id'              => 'Sekato',
-        'signalberita.com'       => 'Signal Berita',
-        'dradio.id'              => 'D Radio',
+        'detail.id' => 'Detail.id',
+        'okezone.com' => 'Okezone',
+        'inews.id' => 'iNews',
+        'jambilink.id' => 'Jambilink',
+        'jambiseru.com' => 'Jambi Seru',
+        'jambibro.com' => 'Jambi Bro',
+        'sekato.id' => 'Sekato',
+        'signalberita.com' => 'Signal Berita',
+        'dradio.id' => 'D Radio',
     ];
 
     // =====================================================================
@@ -50,7 +54,7 @@ class KejadianController extends Controller
     public function publik(Request $request)
     {
         $jenis = $request->query('jenis');
-        if (!array_key_exists((string) $jenis, Kejadian::JENIS)) {
+        if (! array_key_exists((string) $jenis, Kejadian::JENIS)) {
             $jenis = null;
         }
 
@@ -60,7 +64,7 @@ class KejadianController extends Controller
             ->limit(24)
             ->get();
 
-        return view('galery.berita.kejadian', compact('daftar_kejadian', 'jenis'));
+        return view('galery.berita.Kejadian', compact('daftar_kejadian', 'jenis'));
     }
 
     // =====================================================================
@@ -71,7 +75,7 @@ class KejadianController extends Controller
         $kejadian = Kejadian::orderByDesc('tanggal')->orderByDesc('id')->get();
 
         return view('internal.operator.kejadian', [
-            'kejadian'  => $kejadian,
+            'kejadian' => $kejadian,
             'jenisList' => Kejadian::JENIS,
         ]);
     }
@@ -79,14 +83,14 @@ class KejadianController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'judul'         => ['required', 'string', 'max:255'],
-            'jenis'         => ['required', 'in:pemadaman,penyelamatan,evakuasi'],
-            'tanggal'       => ['required', 'date'],
-            'lokasi'        => ['nullable', 'string', 'max:255'],
-            'deskripsi'     => ['nullable', 'string', 'max:3000'],
-            'link'          => ['nullable', 'url', 'max:2000'],
-            'sumber'        => ['nullable', 'string', 'max:255'],
-            'gambar_url'    => ['nullable', 'url', 'max:2000'],
+            'judul' => ['required', 'string', 'max:255'],
+            'jenis' => ['required', 'in:pemadaman,penyelamatan,evakuasi'],
+            'tanggal' => ['required', 'date'],
+            'lokasi' => ['nullable', 'string', 'max:255'],
+            'deskripsi' => ['nullable', 'string', 'max:3000'],
+            'link' => ['nullable', 'url', 'max:2000'],
+            'sumber' => ['nullable', 'string', 'max:255'],
+            'gambar_url' => ['nullable', 'url', 'max:2000'],
             'gambar_manual' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ], [
             'judul.required' => 'Judul kejadian wajib diisi.',
@@ -102,25 +106,25 @@ class KejadianController extends Controller
         } elseif ($request->filled('gambar_url')) {
             // Unduh gambar hasil Tarik Data supaya tidak bergantung pada CDN luar
             $path = $this->downloadRemoteImage($request->gambar_url, $request->link);
-        }
-
-        // Tanpa gambar masih boleh bila link-nya YouTube (thumbnail dari ID video)
-        if (!$path && !$youtubeId) {
-            return back()->withInput()
-                ->with('error', 'Gambar tidak berhasil diambil otomatis. Silakan upload foto secara manual.');
+        } elseif ($request->filled('link') && ! $youtubeId && $this->isSafeUrl($request->link)) {
+            // Coba ambil gambar otomatis dari link jika form disubmit tanpa klik Tarik Data
+            $og = $this->previewOpenGraph($this->resolveShortUrl($request->link));
+            if (! empty($og['image'])) {
+                $path = $this->downloadRemoteImage($og['image'], $request->link);
+            }
         }
 
         Kejadian::create([
-            'judul'      => $request->judul,
-            'jenis'      => $request->jenis,
-            'tanggal'    => $request->tanggal,
-            'lokasi'     => $request->lokasi,
-            'deskripsi'  => $request->deskripsi,
-            'link'       => $request->link,
-            'sumber'     => $request->filled('sumber')
+            'judul' => $request->judul,
+            'jenis' => $request->jenis,
+            'tanggal' => $request->tanggal,
+            'lokasi' => $request->lokasi,
+            'deskripsi' => $request->deskripsi,
+            'link' => $request->link,
+            'sumber' => $request->filled('sumber')
                                 ? $request->sumber
                                 : ($request->filled('link') ? $this->sumberDariLink($request->link) : 'Dokumentasi Damkar'),
-            'gambar'     => $path,
+            'gambar' => $path,
             'youtube_id' => $youtubeId,
         ]);
 
@@ -132,24 +136,24 @@ class KejadianController extends Controller
         $item = Kejadian::findOrFail($id);
 
         $request->validate([
-            'judul'     => ['required', 'string', 'max:255'],
-            'jenis'     => ['required', 'in:pemadaman,penyelamatan,evakuasi'],
-            'tanggal'   => ['required', 'date'],
-            'lokasi'    => ['nullable', 'string', 'max:255'],
+            'judul' => ['required', 'string', 'max:255'],
+            'jenis' => ['required', 'in:pemadaman,penyelamatan,evakuasi'],
+            'tanggal' => ['required', 'date'],
+            'lokasi' => ['nullable', 'string', 'max:255'],
             'deskripsi' => ['nullable', 'string', 'max:3000'],
-            'link'      => ['nullable', 'url', 'max:2000'],
-            'sumber'    => ['nullable', 'string', 'max:255'],
-            'gambar'    => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'link' => ['nullable', 'url', 'max:2000'],
+            'sumber' => ['nullable', 'string', 'max:255'],
+            'gambar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
 
         $item->fill([
-            'judul'      => $request->judul,
-            'jenis'      => $request->jenis,
-            'tanggal'    => $request->tanggal,
-            'lokasi'     => $request->lokasi,
-            'deskripsi'  => $request->deskripsi,
-            'link'       => $request->link,
-            'sumber'     => $request->sumber,
+            'judul' => $request->judul,
+            'jenis' => $request->jenis,
+            'tanggal' => $request->tanggal,
+            'lokasi' => $request->lokasi,
+            'deskripsi' => $request->deskripsi,
+            'link' => $request->link,
+            'sumber' => $request->sumber,
             'youtube_id' => $request->filled('link') ? $this->extractYoutubeId($request->link) : null,
         ]);
 
@@ -158,11 +162,6 @@ class KejadianController extends Controller
                 Storage::disk('public')->delete($item->gambar);
             }
             $item->gambar = $request->file('gambar')->store('kejadian', 'public');
-        }
-
-        if (!$item->gambar && !$item->youtube_id) {
-            return back()->withInput()
-                ->with('error', 'Data harus punya foto atau link YouTube. Silakan upload foto.');
         }
 
         $item->save();
@@ -193,14 +192,14 @@ class KejadianController extends Controller
 
         $url = trim($request->input('url'));
 
-        if (!$this->isSafeUrl($url)) {
+        if (! $this->isSafeUrl($url)) {
             return response()->json(['error' => 'Alamat URL tidak diizinkan atau tidak dapat dijangkau.'], 422);
         }
 
         // Link pendek (vm.tiktok.com, t.co, fb.watch, share.google, dll) diikuti dulu ke alamat aslinya
         $url = $this->resolveShortUrl($url);
 
-        $host   = $this->hostOf($url);
+        $host = $this->hostOf($url);
         $result = [];
 
         try {
@@ -217,13 +216,14 @@ class KejadianController extends Controller
             if (empty($result['title']) || empty($result['image'])) {
                 $og = $this->previewOpenGraph($url);
                 foreach ($og as $key => $value) {
-                    if (empty($result[$key]) && !empty($value)) {
+                    if (empty($result[$key]) && ! empty($value)) {
                         $result[$key] = $value;
                     }
                 }
             }
         } catch (\Throwable $e) {
             report($e);
+
             return response()->json(['error' => 'Terjadi kesalahan saat mengambil data tautan.'], 422);
         }
 
@@ -241,10 +241,10 @@ class KejadianController extends Controller
         }
 
         return response()->json([
-            'title'     => $result['title'] ?? null,
-            'image'     => $result['image'] ?? null,
+            'title' => $result['title'] ?? null,
+            'image' => $result['image'] ?? null,
             'site_name' => $result['site_name'] ?? $this->sumberDariLink($url),
-            'date'      => $result['date'] ?? null,
+            'date' => $result['date'] ?? null,
             'final_url' => $result['final_url'] ?? $url,
         ]);
     }
@@ -257,14 +257,14 @@ class KejadianController extends Controller
     private function previewYoutube(string $url): array
     {
         $id = $this->extractYoutubeId($url);
-        if (!$id) {
+        if (! $id) {
             return [];
         }
 
         $title = null;
         try {
-            $res = Http::timeout(8)->get('https://www.youtube.com/oembed', [
-                'url'    => 'https://www.youtube.com/watch?v=' . $id,
+            $res = Http::withoutVerifying()->timeout(8)->get('https://www.youtube.com/oembed', [
+                'url' => 'https://www.youtube.com/watch?v='.$id,
                 'format' => 'json',
             ]);
             if ($res->ok()) {
@@ -277,7 +277,7 @@ class KejadianController extends Controller
         // maxresdefault tidak selalu ada, jatuh ke hqdefault bila 404
         $image = "https://img.youtube.com/vi/{$id}/maxresdefault.jpg";
         try {
-            if (Http::timeout(8)->head($image)->status() !== 200) {
+            if (Http::withoutVerifying()->timeout(8)->head($image)->status() !== 200) {
                 $image = "https://img.youtube.com/vi/{$id}/hqdefault.jpg";
             }
         } catch (\Throwable $e) {
@@ -291,11 +291,11 @@ class KejadianController extends Controller
     private function previewTiktok(string $url): array
     {
         try {
-            $res = Http::timeout(10)->get('https://www.tiktok.com/oembed', ['url' => $url]);
+            $res = Http::withoutVerifying()->timeout(10)->get('https://www.tiktok.com/oembed', ['url' => $url]);
             if ($res->ok()) {
                 return [
-                    'title'     => $res->json('title'),
-                    'image'     => $res->json('thumbnail_url'),
+                    'title' => $res->json('title'),
+                    'image' => $res->json('thumbnail_url'),
                     'site_name' => 'TikTok',
                 ];
             }
@@ -309,35 +309,36 @@ class KejadianController extends Controller
     /** X / Twitter: teks + foto lewat fxtwitter (API publik pihak ketiga), fallback oEmbed resmi (teks saja). */
     private function previewTwitter(string $url): array
     {
-        if (!preg_match('~(?:x|twitter)\.com/([A-Za-z0-9_]+)/status(?:es)?/(\d+)~i', $url, $m)) {
+        if (! preg_match('~(?:x|twitter)\.com/([A-Za-z0-9_]+)/status(?:es)?/(\d+)~i', $url, $m)) {
             return [];
         }
         [, $user, $id] = $m;
 
         // 1) fxtwitter: teks, foto, thumbnail video, waktu posting
         try {
-            $res = Http::timeout(10)
+            $res = Http::withoutVerifying()
+                ->timeout(10)
                 ->withHeaders(['User-Agent' => self::UA_BROWSER])
                 ->get("https://api.fxtwitter.com/{$user}/status/{$id}");
 
             $tw = $res->ok() ? $res->json('tweet') : null;
             if ($tw) {
-                $text  = trim(preg_replace('/\s+/', ' ', $tw['text'] ?? ''));
+                $text = trim(preg_replace('/\s+/', ' ', $tw['text'] ?? ''));
                 $image = $tw['media']['photos'][0]['url']
                       ?? $tw['media']['videos'][0]['thumbnail_url']
                       ?? null;
 
                 $date = null;
-                if (!empty($tw['created_timestamp'])) {
-                    $date = \Carbon\Carbon::createFromTimestamp((int) $tw['created_timestamp'])
+                if (! empty($tw['created_timestamp'])) {
+                    $date = Carbon::createFromTimestamp((int) $tw['created_timestamp'])
                         ->timezone('Asia/Jakarta')->format('Y-m-d\TH:i');
                 }
 
                 return [
-                    'title'     => $text !== '' ? Str::limit($text, 200, '') : 'Postingan @' . $user,
-                    'image'     => $image,
+                    'title' => $text !== '' ? Str::limit($text, 200, '') : 'Postingan @'.$user,
+                    'image' => $image,
                     'site_name' => 'X (Twitter)',
-                    'date'      => $date,
+                    'date' => $date,
                 ];
             }
         } catch (\Throwable $e) {
@@ -346,8 +347,8 @@ class KejadianController extends Controller
 
         // 2) oEmbed resmi (tanpa gambar)
         try {
-            $res = Http::timeout(8)->get('https://publish.twitter.com/oembed', [
-                'url'         => "https://twitter.com/{$user}/status/{$id}",
+            $res = Http::withoutVerifying()->timeout(8)->get('https://publish.twitter.com/oembed', [
+                'url' => "https://twitter.com/{$user}/status/{$id}",
                 'omit_script' => 1,
             ]);
 
@@ -356,7 +357,7 @@ class KejadianController extends Controller
                 $text = trim(preg_replace('/\s+/', ' ', $text));
 
                 return [
-                    'title'     => $text !== '' ? Str::limit($text, 200, '') : null,
+                    'title' => $text !== '' ? Str::limit($text, 200, '') : null,
                     'site_name' => 'X (Twitter)',
                 ];
             }
@@ -379,20 +380,20 @@ class KejadianController extends Controller
 
         foreach ([self::UA_BROWSER, self::UA_FACEBOOK, self::UA_TWITTER] as $ua) {
             $fetched = $this->httpGet($url, $ua);
-            $res     = $fetched['res'];
+            $res = $fetched['res'];
 
-            if (!$res || !$res->ok()) {
+            if (! $res || ! $res->ok()) {
                 continue;
             }
 
             $parsed = $this->parseMeta($res->body(), $fetched['final']);
             $parsed['final_url'] = $fetched['final'];
 
-            if (empty($best) || (empty($best['image']) && !empty($parsed['image']))) {
+            if (empty($best) || (empty($best['image']) && ! empty($parsed['image']))) {
                 $best = $parsed;
             }
 
-            if (!empty($best['title']) && !empty($best['image'])) {
+            if (! empty($best['title']) && ! empty($best['image'])) {
                 break;
             }
         }
@@ -405,23 +406,23 @@ class KejadianController extends Controller
     {
         $html = substr($html, 0, 800000); // meta tag ada di bagian atas
 
-        $doc = new \DOMDocument();
+        $doc = new \DOMDocument;
         libxml_use_internal_errors(true);
-        $doc->loadHTML('<?xml encoding="utf-8" ?>' . $html);
+        $doc->loadHTML('<?xml encoding="utf-8" ?>'.$html);
         libxml_clear_errors();
 
         $meta = [];
         foreach ($doc->getElementsByTagName('meta') as $m) {
             $key = strtolower($m->getAttribute('property') ?: $m->getAttribute('name'));
             $val = trim($m->getAttribute('content'));
-            if ($key !== '' && $val !== '' && !isset($meta[$key])) {
+            if ($key !== '' && $val !== '' && ! isset($meta[$key])) {
                 $meta[$key] = $val;
             }
         }
 
         $title = $meta['og:title'] ?? $meta['twitter:title'] ?? null;
-        if (!$title) {
-            $t     = $doc->getElementsByTagName('title')->item(0);
+        if (! $title) {
+            $t = $doc->getElementsByTagName('title')->item(0);
             $title = $t ? trim($t->textContent) : null;
         }
 
@@ -444,17 +445,17 @@ class KejadianController extends Controller
         $date = null;
         if ($published) {
             try {
-                $date = \Carbon\Carbon::parse($published)->timezone('Asia/Jakarta')->format('Y-m-d\TH:i');
+                $date = Carbon::parse($published)->timezone('Asia/Jakarta')->format('Y-m-d\TH:i');
             } catch (\Throwable $e) {
                 $date = null;
             }
         }
 
         return [
-            'title'     => $title ? Str::limit(trim($title), 250, '') : null,
-            'image'     => $image ? $this->absoluteUrl($image, $baseUrl) : null,
+            'title' => $title ? Str::limit(trim($title), 250, '') : null,
+            'image' => $image ? $this->absoluteUrl($image, $baseUrl) : null,
             'site_name' => $meta['og:site_name'] ?? null,
-            'date'      => $date,
+            'date' => $date,
         ];
     }
 
@@ -465,21 +466,22 @@ class KejadianController extends Controller
             return $path;
         }
 
-        $p      = parse_url($baseUrl);
+        $p = parse_url($baseUrl);
         $scheme = $p['scheme'] ?? 'https';
 
         if (str_starts_with($path, '//')) {
-            return $scheme . ':' . $path;
+            return $scheme.':'.$path;
         }
 
-        $origin = $scheme . '://' . ($p['host'] ?? '') . (isset($p['port']) ? ':' . $p['port'] : '');
+        $origin = $scheme.'://'.($p['host'] ?? '').(isset($p['port']) ? ':'.$p['port'] : '');
 
         if (str_starts_with($path, '/')) {
-            return $origin . $path;
+            return $origin.$path;
         }
 
         $dir = rtrim(dirname($p['path'] ?? '/'), '/');
-        return $origin . $dir . '/' . $path;
+
+        return $origin.$dir.'/'.$path;
     }
 
     // =====================================================================
@@ -492,20 +494,21 @@ class KejadianController extends Controller
         $final = $url;
 
         try {
-            $res = Http::timeout(12)
+            $res = Http::withoutVerifying()
+                ->timeout(12)
                 ->connectTimeout(6)
                 ->withHeaders(array_filter([
-                    'User-Agent'      => $userAgent,
-                    'Accept'          => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    'User-Agent' => $userAgent,
+                    'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                     'Accept-Language' => 'id-ID,id;q=0.9,en;q=0.8',
-                    'Referer'         => $referer,
+                    'Referer' => $referer,
                 ]))
                 ->withOptions([
                     'allow_redirects' => [
-                        'max'         => 5,
+                        'max' => 5,
                         'on_redirect' => $this->redirectGuard(),
                     ],
-                    'on_stats' => function (\GuzzleHttp\TransferStats $stats) use (&$final) {
+                    'on_stats' => function (TransferStats $stats) use (&$final) {
                         $final = (string) $stats->getEffectiveUri();
                     },
                 ])
@@ -520,7 +523,7 @@ class KejadianController extends Controller
     private function redirectGuard(): \Closure
     {
         return function ($request, $response, $uri) {
-            if (!$this->isSafeUrl((string) $uri)) {
+            if (! $this->isSafeUrl((string) $uri)) {
                 throw new \RuntimeException('Redirect ke alamat yang tidak diizinkan.');
             }
         };
@@ -533,18 +536,18 @@ class KejadianController extends Controller
         $path = (string) parse_url($url, PHP_URL_PATH);
 
         $isShort = in_array($host, [
-                'vm.tiktok.com', 'vt.tiktok.com', 't.co', 'bit.ly', 'fb.watch',
-                'share.google', 'g.co', 'goo.gl', 'tinyurl.com', 's.id',
-            ], true)
+            'vm.tiktok.com', 'vt.tiktok.com', 't.co', 'bit.ly', 'fb.watch',
+            'share.google', 'g.co', 'goo.gl', 'tinyurl.com', 's.id',
+        ], true)
             || ($this->hostIs($host, ['tiktok.com']) && str_starts_with($path, '/t/'))
             || ($this->hostIs($host, ['facebook.com']) && str_starts_with($path, '/share/'));
 
-        if (!$isShort) {
+        if (! $isShort) {
             return $url;
         }
 
         $fetched = $this->httpGet($url, self::UA_BROWSER);
-        $final   = $fetched['final'] ?? $url;
+        $final = $fetched['final'] ?? $url;
 
         return ($final && $this->isSafeUrl($final)) ? $final : $url;
     }
@@ -577,12 +580,12 @@ class KejadianController extends Controller
             $ms = ($id >> 23) + 1314220021721;
         }
 
-        if (!$ms) {
+        if (! $ms) {
             return null;
         }
 
         try {
-            $dt = \Carbon\Carbon::createFromTimestamp((int) floor($ms / 1000))->timezone('Asia/Jakarta');
+            $dt = Carbon::createFromTimestamp((int) floor($ms / 1000))->timezone('Asia/Jakarta');
         } catch (\Throwable $e) {
             return null;
         }
@@ -605,27 +608,28 @@ class KejadianController extends Controller
      */
     private function downloadRemoteImage(string $imageUrl, ?string $referer = null): ?string
     {
-        if (!$this->isSafeUrl($imageUrl)) {
+        if (! $this->isSafeUrl($imageUrl)) {
             return null;
         }
 
         try {
-            $res = Http::timeout(15)
+            $res = Http::withoutVerifying()
+                ->timeout(15)
                 ->connectTimeout(6)
                 ->withHeaders(array_filter([
                     'User-Agent' => self::UA_BROWSER,
-                    'Accept'     => 'image/avif,image/webp,image/*,*/*;q=0.8',
-                    'Referer'    => $referer,
+                    'Accept' => 'image/webp,image/png,image/jpeg,image/*,*/*;q=0.8',
+                    'Referer' => $referer,
                 ]))
                 ->withOptions([
                     'allow_redirects' => [
-                        'max'         => 3,
+                        'max' => 3,
                         'on_redirect' => $this->redirectGuard(),
                     ],
                 ])
                 ->get($imageUrl);
 
-            if (!$res->ok()) {
+            if (! $res->ok()) {
                 return null;
             }
 
@@ -639,21 +643,24 @@ class KejadianController extends Controller
             $finfo = new \finfo(FILEINFO_MIME_TYPE);
             $ext = match ($finfo->buffer($body)) {
                 'image/jpeg' => 'jpg',
-                'image/png'  => 'png',
+                'image/png' => 'png',
                 'image/webp' => 'webp',
-                default      => null,
+                'image/gif' => 'gif',
+                'image/avif' => 'avif',
+                default => null,
             };
 
-            if (!$ext) {
+            if (! $ext) {
                 return null;
             }
 
-            $path = 'kejadian/' . Str::random(40) . '.' . $ext;
+            $path = 'kejadian/'.Str::random(40).'.'.$ext;
             Storage::disk('public')->put($path, $body);
 
             return $path;
         } catch (\Throwable $e) {
             report($e);
+
             return null;
         }
     }
@@ -667,20 +674,20 @@ class KejadianController extends Controller
     {
         $p = parse_url($url);
 
-        if (!$p || empty($p['host'])
-            || !in_array(strtolower($p['scheme'] ?? ''), ['http', 'https'], true)) {
+        if (! $p || empty($p['host'])
+            || ! in_array(strtolower($p['scheme'] ?? ''), ['http', 'https'], true)) {
             return false;
         }
 
         $host = $p['host'];
-        $ips  = filter_var($host, FILTER_VALIDATE_IP) ? [$host] : (gethostbynamel($host) ?: []);
+        $ips = filter_var($host, FILTER_VALIDATE_IP) ? [$host] : (gethostbynamel($host) ?: []);
 
         if (empty($ips)) {
             return false;
         }
 
         foreach ($ips as $ip) {
-            if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+            if (! filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
                 return false;
             }
         }
@@ -691,16 +698,18 @@ class KejadianController extends Controller
     private function hostOf(?string $url): string
     {
         $host = strtolower(parse_url($url ?? '', PHP_URL_HOST) ?? '');
+
         return preg_replace('/^www\./', '', $host);
     }
 
     private function hostIs(string $host, array $domains): bool
     {
         foreach ($domains as $d) {
-            if ($host === $d || str_ends_with($host, '.' . $d)) {
+            if ($host === $d || str_ends_with($host, '.'.$d)) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -710,7 +719,7 @@ class KejadianController extends Controller
         $host = $this->hostOf($url);
 
         foreach (self::SITE_NAMES as $domain => $name) {
-            if ($host === $domain || str_ends_with($host, '.' . $domain)) {
+            if ($host === $domain || str_ends_with($host, '.'.$domain)) {
                 return $name;
             }
         }

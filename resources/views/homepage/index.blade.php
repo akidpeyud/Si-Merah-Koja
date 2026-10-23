@@ -29,6 +29,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="theme-color" content="#0d1b2a">
     <meta name="description" content="SIMERAH KOJA, Sistem Informasi Penanggulangan Kebakaran dan Penyelamatan Daerah Kota Jambi. Lapor kebakaran, ajukan perizinan proteksi kebakaran, dan ikuti kejadian terbaru.">
     <title>SIMERAH KOJA - Damkar Kota Jambi</title>
@@ -283,7 +284,7 @@
 
         .hero-inner {
             flex: 1; width: 100%; max-width: var(--wrap); margin: 0 auto;
-            padding: clamp(28px, 5vw, 56px) clamp(16px, 4vw, 32px) clamp(40px, 6vw, 72px);
+            padding: clamp(28px, 5vw, 56px) clamp(16px, 4vw, 32px) clamp(76px, 8vw, 96px);
             display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
             gap: clamp(32px, 5vw, 80px); align-items: center;
         }
@@ -570,8 +571,8 @@
 
 @php
     // Ticker mengambil data dari Kejadian yang baru (bukan Berita)
-    $listBerita = class_exists('\App\Models\Kejadian') && \Illuminate\Support\Facades\Schema::hasTable('kejadians')
-            ? \App\Models\Kejadian::orderBy('tanggal', 'desc')->take(4)->get()
+    $listBerita = class_exists('\App\Models\Kejadian') && \Illuminate\Support\Facades\Schema::hasTable('kejadian_damkar')
+            ? \App\Models\Kejadian::orderByDesc('tanggal')->orderByDesc('id')->take(4)->get()
             : collect();
 @endphp
 
@@ -803,6 +804,8 @@
         </aside>
     </div>
 
+    <x-visit-counter page="simerahkoja" :track="true" />
+
     @if(count($listBerita))
     <div class="ticker">
         <div class="ticker-label"><span class="beacon" aria-hidden="true"></span> Kejadian terbaru</div>
@@ -857,7 +860,7 @@
     <div class="wrap">
         <div class="sec-head">
             <div>
-                <h2>Pemadaman, penyelamatan Dan evakuasi</h2>
+                <h2>Pemadaman, Penyelamatan dan Evakuasi</h2>
                 <p>Informasi terbaru tentang kejadian di Kota Jambi.</p>
             </div>
             <img src="/images/mobil.png" alt="Mobil pemadam kebakaran" loading="lazy">
@@ -865,8 +868,8 @@
 
         @php
             // Memanggil data langsung dari Model Kejadian yang baru
-            $listKejadianHome = class_exists('\App\Models\Kejadian') && \Illuminate\Support\Facades\Schema::hasTable('kejadians')
-                ? \App\Models\Kejadian::orderBy('tanggal', 'desc')->take(4)->get() 
+            $listKejadianHome = class_exists('\App\Models\Kejadian') && \Illuminate\Support\Facades\Schema::hasTable('kejadian_damkar')
+                ? \App\Models\Kejadian::orderByDesc('tanggal')->orderByDesc('id')->take(4)->get() 
                 : collect();
         @endphp
 
@@ -888,7 +891,7 @@
                     $labelJenis = (class_exists('\App\Models\Kejadian') && defined('\App\Models\Kejadian::JENIS') && isset(\App\Models\Kejadian::JENIS[$kj->jenis])) 
                                   ? \App\Models\Kejadian::JENIS[$kj->jenis] 
                                   : ucfirst($kj->jenis ?? 'Info');
-                    $gambar     = $kj->thumb ?? null;
+                    $gambar     = ($kj->thumb && $kj->thumb !== '/images/placeholder.jpg') ? $kj->thumb : null;
                 @endphp
 
                 <article class="media-card" style="position: relative;">
