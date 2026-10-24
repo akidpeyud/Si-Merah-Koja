@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -13,6 +14,73 @@ class DokumenSopSeeder extends Seeder
     public function run(): void
     {
         $dokumenSop = [
+            // ==========================================
+            // Kategori: Pemadaman Kebakaran
+            // ==========================================
+            [
+                'judul_dokumen' => 'Salinan Salinan SK KADIS-174-24 SOP PEMADAMAN',
+                'kategori' => 'SOP',
+                'sub_kategori' => 'Pemadaman Kebakaran',
+                'nama_file' => 'Salinan Salinan SK KADIS-174-24 SOP PEMADAMAN.pdf',
+                'file_path' => 'dokumen/Salinan Salinan SK KADIS-174-24 SOP PEMADAMAN.pdf',
+            ],
+            [
+                'judul_dokumen' => 'Salinan Salinan SK KADIS-173-24 SOP LAYANAN OBJEK VITAL',
+                'kategori' => 'SOP',
+                'sub_kategori' => 'Pemadaman Kebakaran',
+                'nama_file' => 'Salinan Salinan SK KADIS-173-24 SOP LAYANAN OBJEK VITAL.pdf',
+                'file_path' => 'dokumen/Salinan Salinan SK KADIS-173-24 SOP LAYANAN OBJEK VITAL.pdf',
+            ],
+            [
+                'judul_dokumen' => 'Salinan SOP 51 PENYELENGGARAAN DI GEDUNG DAN LAPANGAN',
+                'kategori' => 'SOP',
+                'sub_kategori' => 'Pemadaman Kebakaran',
+                'nama_file' => 'Salinan SOP 51 PENYELENGGARAAN DI GEDUNG DAN LAPANGAN.pdf',
+                'file_path' => 'dokumen/Salinan SOP 51 PENYELENGGARAAN DI GEDUNG DAN LAPANGAN.pdf',
+            ],
+            [
+                'judul_dokumen' => 'Salinan Salinan SK SOP Pengaman Bahaya Kebakaran pd Akai DemonstrasiUnjuk Rs di Koja',
+                'kategori' => 'SOP',
+                'sub_kategori' => 'Pemadaman Kebakaran',
+                'nama_file' => 'Salinan Salinan SK SOP Pengaman Bahaya Kebakaran pd Akai DemonstrasiUnjuk Rs di Koja.pdf',
+                'file_path' => 'dokumen/Salinan Salinan SK SOP Pengaman Bahaya Kebakaran pd Akai DemonstrasiUnjuk Rs di Koja.pdf',
+            ],
+
+            // ==========================================
+            // Kategori: Penyelamatan & Evakuasi
+            // ==========================================
+            [
+                'judul_dokumen' => 'Salinan SOP TAWON 174 (1)',
+                'kategori' => 'SOP',
+                'sub_kategori' => 'Penyelamatan dan Evakuasi',
+                'nama_file' => 'Salinan SOP TAWON 174 (1).pdf',
+                'file_path' => 'dokumen/Salinan SOP TAWON 174 (1).pdf',
+            ],
+            [
+                'judul_dokumen' => 'Salinan Salinan SK 226 TIM PENANGGUNGALANGN BENCANA',
+                'kategori' => 'SOP',
+                'sub_kategori' => 'Penyelamatan dan Evakuasi',
+                'nama_file' => 'Salinan Salinan SK 226 TIM PENANGGUNGALANGN BENCANA.pdf',
+                'file_path' => 'dokumen/Salinan Salinan SK 226 TIM PENANGGUNGALANGN BENCANA.pdf',
+            ],
+            [
+                'judul_dokumen' => 'Salinan Salinan SK KADIS-49-23 SOP INVES DAN VERIFIKASI',
+                'kategori' => 'SOP',
+                'sub_kategori' => 'Penyelamatan dan Evakuasi',
+                'nama_file' => 'Salinan Salinan SK KADIS-49-23 SOP INVES DAN VERIFIKASI.pdf',
+                'file_path' => 'dokumen/Salinan Salinan SK KADIS-49-23 SOP INVES DAN VERIFIKASI.pdf',
+            ],
+            [
+                'judul_dokumen' => 'Salinan Salinan SK 178 KADIS SOP ADM SLRN KBKRN',
+                'kategori' => 'SOP',
+                'sub_kategori' => 'Penyelamatan dan Evakuasi',
+                'nama_file' => 'Salinan Salinan SK 178 KADIS SOP ADM SLRN KBKRN.pdf',
+                'file_path' => 'dokumen/Salinan Salinan SK 178 KADIS SOP ADM SLRN KBKRN.pdf',
+            ],
+
+            // ==========================================
+            // Kategori: Sarana dan Prasarana
+            // ==========================================
             [
                 'id' => 1,
                 'judul_dokumen' => 'Sop sarana dan prasarana',
@@ -33,6 +101,10 @@ class DokumenSopSeeder extends Seeder
                 'created_at' => '2026-10-24 10:01:15',
                 'updated_at' => '2026-10-24 10:01:15',
             ],
+
+            // ==========================================
+            // Kategori: Kepegawaian
+            // ==========================================
             [
                 'id' => 3,
                 'judul_dokumen' => 'Sop Umpeg',
@@ -43,6 +115,10 @@ class DokumenSopSeeder extends Seeder
                 'created_at' => '2026-10-24 10:03:28',
                 'updated_at' => '2026-10-24 10:03:28',
             ],
+
+            // ==========================================
+            // Kategori: Keuangan
+            // ==========================================
             [
                 'id' => 4,
                 'judul_dokumen' => '1. SOP RKA',
@@ -123,6 +199,10 @@ class DokumenSopSeeder extends Seeder
                 'created_at' => '2026-10-24 10:08:52',
                 'updated_at' => '2026-10-24 10:08:52',
             ],
+
+            // ==========================================
+            // Kategori: Pencegahan
+            // ==========================================
             [
                 'id' => 12,
                 'judul_dokumen' => 'SOP Pemberdayaan masyarakat dan dunia usaha',
@@ -155,11 +235,22 @@ class DokumenSopSeeder extends Seeder
             ],
         ];
 
+        $now = Carbon::now();
+
         foreach ($dokumenSop as $item) {
-            DB::table('dokumen_sop')->updateOrInsert(
-                ['id' => $item['id']],
-                $item
-            );
+            // Jika data memiliki 'id', gunakan 'id' sebagai kunci pencarian updateOrInsert
+            // Jika tidak, gunakan 'nama_file'
+            $uniqueKey = isset($item['id']) ? ['id' => $item['id']] : ['nama_file' => $item['nama_file']];
+
+            // Tambahkan timestamp otomatis jika belum ada di dalam array item
+            if (!isset($item['created_at'])) {
+                $item['created_at'] = $now;
+            }
+            if (!isset($item['updated_at'])) {
+                $item['updated_at'] = $now;
+            }
+
+            DB::table('dokumen_sop')->updateOrInsert($uniqueKey, $item);
         }
     }
 }
