@@ -19,7 +19,8 @@ class ProgramKerjaController extends Controller
             $query->where('sub_kategori', $request->sub_kategori);
         }
 
-        $dokumen = $query->latest()->get(); 
+        $dokumen = $query->latest()->get();
+
         return view('internal.program-kerja.index', compact('dokumen'));
     }
 
@@ -28,9 +29,9 @@ class ProgramKerjaController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'judul_dokumen' => 'required|string|max:255',
-            'kategori'      => 'required|in:SOTK,SOP,Perencanaan,Pelaporan,Produk Hukum',
-            'sub_kategori'  => 'required|in:Pencegahan,Pemadaman Kebakaran,Penyelamatan dan Evakuasi,Sarana dan Prasarana,Kepegawaian,Keuangan',
-            'file_dokumen'  => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120', 
+            'kategori' => 'required|in:SOTK,SOP,Perencanaan,Pelaporan,Produk Hukum',
+            'sub_kategori' => 'required|in:Pencegahan,Pemadaman Kebakaran,Penyelamatan dan Evakuasi,Sarana dan Prasarana,Kepegawaian,Keuangan',
+            'file_dokumen' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
 
         if ($validator->fails()) {
@@ -42,31 +43,31 @@ class ProgramKerjaController extends Controller
 
         try {
             $file = $request->file('file_dokumen');
-            
+
             $namaFileAsli = str_replace([' ', '#', '%', '&'], '_', $file->getClientOriginalName());
-            $namaFile = time() . '_' . $namaFileAsli;
-            
+            $namaFile = time().'_'.$namaFileAsli;
+
             $tujuan_upload = storage_path('app/public/dokumen');
-            
-            if (!file_exists($tujuan_upload)) {
+
+            if (! file_exists($tujuan_upload)) {
                 mkdir($tujuan_upload, 0755, true);
             }
-            
+
             $file->move($tujuan_upload, $namaFile);
 
             Dokumen::create([
                 'judul_dokumen' => $request->judul_dokumen,
-                'kategori'      => $request->kategori,
-                'sub_kategori'  => $request->kategori === 'SOP' ? $request->sub_kategori : null,
-                'nama_file'     => $namaFile,
+                'kategori' => $request->kategori,
+                'sub_kategori' => $request->kategori === 'SOP' ? $request->sub_kategori : null,
+                'nama_file' => $namaFile,
             ]);
 
             return redirect()->back()->with('success', 'Dokumen SOP berhasil diunggah dan disimpan!');
-            
+
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Gagal sistem: ' . $e->getMessage());
+                ->with('error', 'Gagal sistem: '.$e->getMessage());
         }
     }
 
@@ -77,9 +78,9 @@ class ProgramKerjaController extends Controller
 
         $validator = Validator::make($request->all(), [
             'judul_dokumen' => 'required|string|max:255',
-            'kategori'      => 'required|in:SOTK,SOP,Perencanaan,Pelaporan,Produk Hukum',
-            'sub_kategori'  => 'required|in:Pencegahan,Pemadaman Kebakaran,Penyelamatan dan Evakuasi,Sarana dan Prasarana,Kepegawaian,Keuangan',
-            'file_dokumen'  => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120', 
+            'kategori' => 'required|in:SOTK,SOP,Perencanaan,Pelaporan,Produk Hukum',
+            'sub_kategori' => 'required|in:Pencegahan,Pemadaman Kebakaran,Penyelamatan dan Evakuasi,Sarana dan Prasarana,Kepegawaian,Keuangan',
+            'file_dokumen' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
 
         if ($validator->fails()) {
@@ -92,29 +93,29 @@ class ProgramKerjaController extends Controller
         try {
             $dataUpdate = [
                 'judul_dokumen' => $request->judul_dokumen,
-                'kategori'      => $request->kategori,
-                'sub_kategori'  => $request->kategori === 'SOP' ? $request->sub_kategori : null,
+                'kategori' => $request->kategori,
+                'sub_kategori' => $request->kategori === 'SOP' ? $request->sub_kategori : null,
             ];
 
             // Jika user mengunggah file baru
             if ($request->hasFile('file_dokumen')) {
                 $file = $request->file('file_dokumen');
-                
+
                 $namaFileAsli = str_replace([' ', '#', '%', '&'], '_', $file->getClientOriginalName());
-                $namaFile = time() . '_' . $namaFileAsli;
-                
+                $namaFile = time().'_'.$namaFileAsli;
+
                 $tujuan_upload = storage_path('app/public/dokumen');
-                
-                if (!file_exists($tujuan_upload)) {
+
+                if (! file_exists($tujuan_upload)) {
                     mkdir($tujuan_upload, 0755, true);
                 }
-                
+
                 // Pindahkan file baru
                 $file->move($tujuan_upload, $namaFile);
 
                 // Hapus file fisik lama jika ada
-                if ($dokumen->nama_file && Storage::disk('public')->exists('dokumen/' . $dokumen->nama_file)) {
-                    Storage::disk('public')->delete('dokumen/' . $dokumen->nama_file);
+                if ($dokumen->nama_file && Storage::disk('public')->exists('dokumen/'.$dokumen->nama_file)) {
+                    Storage::disk('public')->delete('dokumen/'.$dokumen->nama_file);
                 }
 
                 $dataUpdate['nama_file'] = $namaFile;
@@ -123,11 +124,11 @@ class ProgramKerjaController extends Controller
             $dokumen->update($dataUpdate);
 
             return redirect()->back()->with('success', 'Dokumen SOP berhasil diperbarui!');
-            
+
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Gagal memperbarui sistem: ' . $e->getMessage());
+                ->with('error', 'Gagal memperbarui sistem: '.$e->getMessage());
         }
     }
 
@@ -136,27 +137,52 @@ class ProgramKerjaController extends Controller
     {
         $dokumen = Dokumen::findOrFail($id);
 
-        if ($dokumen->nama_file && Storage::disk('public')->exists('dokumen/' . $dokumen->nama_file)) {
-            Storage::disk('public')->delete('dokumen/' . $dokumen->nama_file);
+        if ($dokumen->nama_file && Storage::disk('public')->exists('dokumen/'.$dokumen->nama_file)) {
+            Storage::disk('public')->delete('dokumen/'.$dokumen->nama_file);
         }
 
         $dokumen->delete();
+
         return redirect()->back()->with('success', 'Dokumen beserta filenya berhasil dihapus!');
     }
-    
+
+    private function resolveFilePath(?string $namaFile): ?string
+    {
+        if (! $namaFile) {
+            return null;
+        }
+
+        $candidates = [
+            storage_path('app/public/dokumen/'.$namaFile),
+            storage_path('app/public/sop/'.$namaFile),
+            public_path('storage/dokumen/'.$namaFile),
+            public_path('storage/sop/'.$namaFile),
+            public_path('dokumen/'.$namaFile),
+            public_path('sop/'.$namaFile),
+        ];
+
+        foreach ($candidates as $cand) {
+            if (file_exists($cand)) {
+                return $cand;
+            }
+        }
+
+        return null;
+    }
+
     // 5. Buka / Lihat File (Publik)
     public function viewFile($id)
     {
         $dokumen = Dokumen::find($id);
-        
-        if (!$dokumen) {
+
+        if (! $dokumen) {
             return response('MOHON MAAF: Data dokumen tidak ditemukan di Database!', 404);
         }
 
-        $path = storage_path('app/public/dokumen/' . $dokumen->nama_file);
-        
-        if (!file_exists($path)) {
-            return response('ERROR DETEKTOR: Data di database ada, TAPI file fisiknya HILANG di dalam folder. Sistem mencari di: ' . $path, 404);
+        $path = $this->resolveFilePath($dokumen->nama_file);
+
+        if (! $path) {
+            return response('ERROR DETEKTOR: Data di database ada, TAPI file fisiknya HILANG di dalam folder. Sistem mencari file: '.$dokumen->nama_file.' di folder storage/app/public/dokumen/ atau public/storage/sop/', 404);
         }
 
         return response()->file($path);
@@ -166,15 +192,15 @@ class ProgramKerjaController extends Controller
     public function download($id)
     {
         $dokumen = Dokumen::find($id);
-        
-        if (!$dokumen) {
+
+        if (! $dokumen) {
             return response('MOHON MAAF: Data dokumen tidak ditemukan di Database!', 404);
         }
 
-        $path = storage_path('app/public/dokumen/' . $dokumen->nama_file);
-        
-        if (!file_exists($path)) {
-            return response('ERROR DETEKTOR: Tidak bisa diunduh karena file fisiknya HILANG di dalam folder: ' . $path, 404);
+        $path = $this->resolveFilePath($dokumen->nama_file);
+
+        if (! $path) {
+            return response('ERROR DETEKTOR: Tidak bisa diunduh karena file fisiknya HILANG di dalam folder untuk file: '.$dokumen->nama_file, 404);
         }
 
         return response()->download($path);
