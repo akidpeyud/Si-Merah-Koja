@@ -889,6 +889,10 @@ class DamtanController extends Controller
 
     public function storeRekapLayanan(Request $request)
     {
+        if (! Auth::user()->hasAnyRole(['Damtan', 'Super User'])) {
+            abort(403, 'Anda tidak memiliki hak akses untuk menambah rekap layanan.');
+        }
+
         $request->validate([
             'tanggal' => 'required|date',
             'kategori' => ['required', 'in:'.implode(',', array_keys($this->kategoriLayanan()))],
@@ -902,6 +906,7 @@ class DamtanController extends Controller
             'kecamatan' => $request->kecamatan,
             'lokasi' => $request->lokasi,
             'keterangan' => $request->keterangan,
+            'dibuat_oleh' => Auth::id(),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -912,6 +917,10 @@ class DamtanController extends Controller
     // Update data rekap layanan (PUT /internal/damtan/rekap-layanan/{id})
     public function updateRekapLayanan(Request $request, $id)
     {
+        if (! Auth::user()->hasAnyRole(['Damtan', 'Super User'])) {
+            abort(403, 'Anda tidak memiliki hak akses untuk mengedit rekap layanan.');
+        }
+
         $request->validate([
             'tanggal' => 'required|date',
             'kategori' => ['required', 'in:'.implode(',', array_keys($this->kategoriLayanan()))],
@@ -944,6 +953,10 @@ class DamtanController extends Controller
 
     public function destroyRekapLayanan($id)
     {
+        if (! Auth::user()->hasAnyRole(['Damtan', 'Super User'])) {
+            abort(403, 'Anda tidak memiliki hak akses untuk menghapus rekap layanan.');
+        }
+
         DB::table('rekap_layanan')->where('id', $id)->delete();
 
         return redirect()->back()->with('success', 'Data rekap berhasil dihapus!');
@@ -1016,6 +1029,10 @@ class DamtanController extends Controller
 
     public function storeRekapObjek(Request $request)
     {
+        if (! Auth::user()->hasAnyRole(['Damtan', 'Super User'])) {
+            abort(403, 'Anda tidak memiliki hak akses untuk menambah rekap objek.');
+        }
+
         $request->validate([
             'tanggal' => 'required|date',
             'kategori' => ['required', 'in:'.implode(',', array_keys($this->kategoriObjek()))],
@@ -1029,6 +1046,7 @@ class DamtanController extends Controller
             'kecamatan' => $request->kecamatan,
             'lokasi' => $request->lokasi,
             'keterangan' => $request->keterangan,
+            'dibuat_oleh' => Auth::id(),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -1039,6 +1057,10 @@ class DamtanController extends Controller
     // Update data rekap objek (PUT /internal/damtan/rekap-objek/{id})
     public function updateRekapObjek(Request $request, $id)
     {
+        if (! Auth::user()->hasAnyRole(['Damtan', 'Super User'])) {
+            abort(403, 'Anda tidak memiliki hak akses untuk mengedit rekap objek.');
+        }
+
         $request->validate([
             'tanggal' => 'required|date',
             'kategori' => ['required', 'in:'.implode(',', array_keys($this->kategoriObjek()))],
@@ -1071,6 +1093,10 @@ class DamtanController extends Controller
 
     public function destroyRekapObjek($id)
     {
+        if (! Auth::user()->hasAnyRole(['Damtan', 'Super User'])) {
+            abort(403, 'Anda tidak memiliki hak akses untuk menghapus rekap objek.');
+        }
+
         DB::table('rekap_layanan')->where('id', $id)->delete();
 
         return redirect()->back()->with('success', 'Data rekap berhasil dihapus!');

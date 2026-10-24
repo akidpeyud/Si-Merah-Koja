@@ -245,10 +245,127 @@
     .aksi { display: flex; align-items: center; justify-content: center; gap: 6px; }
     .aksi form { margin: 0; display: flex; }
     .action-btn { width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: none; font-size: 13px; transition: all 0.2s; text-decoration: none; cursor: pointer; }
+    .action-btn.view { background-color: var(--info-soft); color: var(--info); }
+    .action-btn.view:hover { background-color: #dbeafe; }
     .action-btn.edit { background-color: rgba(255, 182, 39, 0.18); color: #d97706; }
     .action-btn.edit:hover { background-color: rgba(255, 182, 39, 0.3); }
     .action-btn.delete { background-color: var(--signal-soft); color: var(--signal); }
     .action-btn.delete:hover { background-color: #fecaca; }
+
+    /* ==========================================================
+       MENU EKSPOR (Dropdown Cetak PDF & Cetak Excel)
+       ========================================================== */
+    .btn-export-dropdown {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        height: 48px;
+        padding: 0 20px;
+        background: #fff;
+        color: var(--ink);
+        border: 1px solid var(--line-dark);
+        border-radius: var(--r-md);
+        font-family: var(--font-body);
+        font-size: .92rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        white-space: nowrap;
+        box-shadow: var(--shadow-xs);
+        transition: all .2s ease;
+    }
+    .btn-export-dropdown:hover, .btn-export-dropdown.show {
+        background: #f8fafc;
+        border-color: var(--steel-soft);
+        color: var(--ink);
+    }
+    .export-menu {
+        min-width: 290px;
+        margin-top: 8px !important;
+        padding: 8px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        box-shadow: var(--shadow-lg);
+    }
+    .export-menu .dropdown-header {
+        padding: 6px 10px 8px;
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        color: var(--steel);
+    }
+    .export-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        padding: 10px;
+        border: 0;
+        background: transparent;
+        border-radius: 8px;
+        text-align: left;
+        white-space: normal;
+        transition: background .15s ease;
+    }
+    .export-item:hover, .export-item:focus { background: #f1f5f9; }
+    .export-item .ico {
+        flex: none;
+        width: 38px;
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        font-size: 1rem;
+    }
+    .export-item .ico.pdf { background: var(--signal-soft); color: var(--signal); }
+    .export-item .ico.excel { background: rgba(16, 124, 65, .10); color: #107c41; }
+    .export-item .txt { display: flex; flex-direction: column; line-height: 1.3; }
+    .export-item .txt strong { font-size: .88rem; color: var(--ink); }
+    .export-item .txt small { font-size: .76rem; color: var(--steel); }
+
+    .export-year { padding: 4px 10px 10px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+    .export-year label { display: block; margin-bottom: 6px; font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--steel); }
+    .export-year .form-select { min-height: 38px; font-size: .88rem; font-weight: 600; }
+
+    .btn-create-top {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        height: 48px;
+        padding: 0 20px;
+        background: var(--navy);
+        color: #fff;
+        border: none;
+        border-radius: var(--r-md);
+        font-family: var(--font-body);
+        font-size: .92rem;
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none;
+        white-space: nowrap;
+        box-shadow: 0 4px 12px rgba(22, 58, 99, .22);
+        transition: all .2s ease;
+    }
+    .btn-create-top:hover {
+        background: var(--navy-dark);
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(22, 58, 99, .32);
+    }
+    .btn-create-top:active {
+        transform: scale(.98);
+    }
+
+    /* Modal Detail View */
+    .detail-list { display: grid; gap: 14px; }
+    .detail-item { display: flex; flex-direction: column; gap: 3px; border-bottom: 1px dashed var(--line); padding-bottom: 10px; }
+    .detail-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .detail-item .lbl { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--steel); }
+    .detail-item .val { font-size: .95rem; font-weight: 600; color: var(--ink); }
 
     .tbl tbody tr.empty-row td { padding: 0; background: #fff !important; border-right: 0; }
     .empty { padding: 52px 20px; text-align: center; color: var(--steel); }
@@ -305,7 +422,7 @@
                 <h1>Input Rekap Objek Kebakaran</h1>
                 <p>Bagian Pemadaman &amp; Penyelamatan - Disdamkartan Kota Jambi. Data yang disimpan di sini tampil sebagai angka di halaman publik.</p>
             </div>
-            <div>
+            <div class="d-flex align-items-center flex-wrap gap-3">
                 <form method="GET" action="{{ url()->current() }}" id="filterTahunForm" class="filter-year-group m-0">
                     <span class="label-wrap">
                         <i class="fas fa-calendar-days"></i>
@@ -335,6 +452,54 @@
                         </a>
                     @endif
                 </form>
+
+                <!-- DROPDOWN EKSPOR SEMUA (CETAK PDF & EXCEL) -->
+                <div class="dropdown">
+                    <button class="btn-export-dropdown dropdown-toggle" type="button" id="btnEkspor" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-download"></i>
+                        <span>Ekspor Semua</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end export-menu" aria-labelledby="btnEkspor">
+                        <li><h6 class="dropdown-header">Pilih format ekspor</h6></li>
+
+                        <!-- PILIH TAHUN UNTUK EKSPOR -->
+                        <li class="export-year" onclick="event.stopPropagation()">
+                            <label for="tahunEkspor">Tahun</label>
+                            <select id="tahunEkspor" class="form-select">
+                                <option value="">Semua Tahun</option>
+                                @foreach($opsiTahun as $thn)
+                                    <option value="{{ $thn }}" {{ (string) request('tahun') === (string) $thn ? 'selected' : '' }}>{{ $thn }}</option>
+                                @endforeach
+                            </select>
+                        </li>
+
+                        <li>
+                            <button type="button" class="dropdown-item export-item" onclick="cetakPdf()">
+                                <span class="ico pdf"><i class="fas fa-file-pdf"></i></span>
+                                <span class="txt">
+                                    <strong>Cetak PDF</strong>
+                                    <small>Cetak tabel yang tampil di halaman ini</small>
+                                </span>
+                            </button>
+                        </li>
+                        <li>
+                            <a class="dropdown-item export-item" href="#" id="btnExportExcel">
+                                <span class="ico excel"><i class="fas fa-file-excel"></i></span>
+                                <span class="txt">
+                                    <strong>Cetak Excel Objek</strong>
+                                    <small>Unduh rekap objek kebakaran (.xlsx)</small>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                @hasanyrole('Damtan|Super User')
+                <button type="button" class="btn-create-top" id="btnOpenCreate">
+                    <i class="fas fa-plus"></i>
+                    <span>Tambah Data</span>
+                </button>
+                @endhasanyrole
             </div>
         </div>
 
@@ -362,74 +527,6 @@
             @endforeach
         </div>
 
-@if($bisaInput)
-        <!-- FORM INPUT -->
-        <div class="section-heading">
-            <span class="section-heading-ico"><i class="fas fa-pen-to-square"></i></span>
-            <h3>Tambah data objek</h3>
-            <span class="line"></span>
-        </div>
-
-        <form action="/internal/damtan/rekap-objek" method="POST" class="panel" id="rekapForm" novalidate>
-            @csrf
-            <div class="panel-head">
-                <div>
-                    <h4><i class="fas fa-house-chimney-crack"></i> Data Objek Terbakar</h4>
-                    <p class="panel-sub">Isi data kejadian lalu simpan. Angka total di atas akan diperbarui otomatis.</p>
-                </div>
-                <span class="panel-legend"><span class="req">*</span> wajib diisi</span>
-            </div>
-            <div class="panel-body">
-                <div class="f-grid">
-                    <div class="c-4">
-                        <label class="f-label" for="tanggal">Tanggal <span class="req">*</span></label>
-                        <input type="date" id="tanggal" name="tanggal" class="f-control" value="{{ old('tanggal', date('Y-m-d')) }}" max="{{ date('Y-m-d') }}" required>
-                        @error('tanggal')<div class="f-error">{{ $message }}</div>@enderror
-                    </div>
-
-                    <div class="c-4">
-                        <label class="f-label" for="kategori">Objek Terbakar <span class="req">*</span></label>
-                        <select id="kategori" name="kategori" class="f-control" required>
-                            <option value="">-- Pilih objek terbakar --</option>
-                            @foreach($kategori as $key => [$nama])
-                                <option value="{{ $key }}" {{ old('kategori') === $key ? 'selected' : '' }}>{{ $nama }}</option>
-                            @endforeach
-                        </select>
-                        @error('kategori')<div class="f-error">{{ $message }}</div>@enderror
-                    </div>
-
-                    <div class="c-4">
-                        <label class="f-label" for="jumlah">Jumlah <span class="req">*</span></label>
-                        <input type="number" id="jumlah" name="jumlah" class="f-control" min="1" max="9999" value="{{ old('jumlah', 1) }}" required>
-                        <div class="f-hint">Jumlah kejadian pada tanggal ini.</div>
-                        @error('jumlah')<div class="f-error">{{ $message }}</div>@enderror
-                    </div>
-
-                    <div class="c-6">
-                        <label class="f-label" for="kecamatan">Kecamatan</label>
-                        <input type="text" id="kecamatan" name="kecamatan" class="f-control" placeholder="Cth: Kota Baru" value="{{ old('kecamatan') }}">
-                        @error('kecamatan')<div class="f-error">{{ $message }}</div>@enderror
-                    </div>
-
-                    <div class="c-6">
-                        <label class="f-label" for="lokasi">Lokasi / alamat</label>
-                        <input type="text" id="lokasi" name="lokasi" class="f-control" placeholder="Cth: Jl. Sultan Thaha, RT 05" value="{{ old('lokasi') }}">
-                        @error('lokasi')<div class="f-error">{{ $message }}</div>@enderror
-                    </div>
-
-                    <div class="c-12">
-                        <label class="f-label" for="keterangan">Keterangan</label>
-                        <textarea id="keterangan" name="keterangan" class="f-control" placeholder="Catatan singkat penanganan (opsional)">{{ old('keterangan') }}</textarea>
-                        @error('keterangan')<div class="f-error">{{ $message }}</div>@enderror
-                    </div>
-                </div>
-            </div>
-            <div class="form-foot">
-                <button type="reset" class="btn-ghost"><i class="fas fa-rotate-left"></i> Kosongkan</button>
-                <button type="submit" class="btn-main"><i class="fas fa-floppy-disk"></i> Simpan rekap</button>
-            </div>
-        </form>
-
         <!-- RIWAYAT -->
         <div class="section-heading">
             <span class="section-heading-ico"><i class="fas fa-clock-rotate-left"></i></span>
@@ -438,6 +535,26 @@
         </div>
 
         <div class="panel">
+            <!-- HEADER KHUSUS CETAK PDF -->
+            <div id="print-header" class="d-none d-print-block" style="width: 100%; margin-bottom: 20px; padding: 20px;">
+                <div style="display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; margin-bottom: 15px;">
+                    <div style="width: 15% !important; text-align: left !important;">
+                        <img src="/images/jambi.png" style="width: 80px; height: auto;">
+                    </div>
+                    <div style="width: 70% !important; text-align: center !important;">
+                        <div style="font-size: 14pt; color: #000; margin-bottom: 2px; font-family: 'Times New Roman', Times, serif;">PEMERINTAH KOTA JAMBI</div>
+                        <div style="font-size: 16pt; font-weight: bold; color: #000; line-height: 1.1; margin-bottom: 5px; font-family: 'Times New Roman', Times, serif;">DINAS PEMADAM KEBAKARAN<br>DAN PENYELAMATAN</div>
+                        <div style="font-size: 10pt; color: #000; font-family: 'Times New Roman', Times, serif;">Jl. Hos. Cokroaminoto No. 113 Telp. 0741-41171<br>JAMBI</div>
+                    </div>
+                    <div style="width: 15% !important; text-align: right !important;">
+                        <img src="/images/logo.png" style="width: 100px; height: auto; margin-left: auto;">
+                    </div>
+                </div>
+                <div style="border-top: 3px solid black !important; border-bottom: 1px solid black !important; height: 2px !important; width: 100% !important; margin-bottom: 15px !important;"></div>
+                <h3 style="text-align: center !important; font-weight: bold; margin-bottom: 5px; font-size: 16px; color: black; font-family: 'Times New Roman', Times, serif;">REKAPITULASI OBJEK KEBAKARAN<span id="printTahun"></span></h3>
+                <p style="text-align: center !important; font-size: 12px; margin-bottom: 15px; color: black; font-family: 'Times New Roman', Times, serif;">Dicetak pada: {{ date('d F Y') }}</p>
+            </div>
+
             <div class="tbl-scroll">
                 <div class="tbl-frame">
                     <table class="tbl">
@@ -463,6 +580,20 @@
                                     <td class="cell-ket">{{ \Illuminate\Support\Str::limit($r->keterangan ?: '-', 60) }}</td>
                                     <td>
                                         <div class="aksi">
+                                            <!-- LIHAT DETAIL: BISA DIAKSES SEMUA ROLE -->
+                                            <button type="button" class="action-btn view" aria-label="Lihat Detail" title="Lihat Detail"
+                                                data-detail
+                                                data-tanggal="{{ \Carbon\Carbon::parse($r->tanggal)->translatedFormat('d F Y') }}"
+                                                data-kategori="{{ $kategori[$r->kategori][0] ?? $r->kategori }}"
+                                                data-jumlah="{{ $r->jumlah }}"
+                                                data-kecamatan="{{ $r->kecamatan ?: '-' }}"
+                                                data-lokasi="{{ $r->lokasi ?: '-' }}"
+                                                data-keterangan="{{ $r->keterangan ?: '-' }}">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+
+                                            <!-- EDIT & DELETE: HANYA DAMTAN & SUPER USER -->
+                                            @hasanyrole('Damtan|Super User')
                                             <button type="button" class="action-btn edit" aria-label="Edit" title="Edit Data"
                                                 data-edit
                                                 data-id="{{ $r->id }}"
@@ -478,12 +609,13 @@
                                                 @csrf @method('DELETE')
                                                 <button type="submit" class="action-btn delete" aria-label="Hapus" title="Hapus"><i class="fas fa-trash"></i></button>
                                             </form>
+                                            @endhasanyrole
                                         </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr class="empty-row"><td colspan="7">
-                                    <div class="empty"><i class="fas fa-inbox"></i>Belum ada data. Pilih objek terbakar di atas lalu simpan rekap pertama.</div>
+                                    <div class="empty"><i class="fas fa-inbox"></i>Belum ada data. Klik tombol "+ Tambah Data" di atas untuk menambahkan data baru.</div>
                                 </td></tr>
                             @endforelse
                         </tbody>
@@ -499,6 +631,109 @@
                 <div class="pagination-container mb-0">
                     {{ $riwayat->links('pagination::bootstrap-5') }}
                 </div>
+            </div>
+        </div>
+
+        <!-- MODAL DETAIL (VIEW) UNTUK SEMUA ROLE -->
+        <div class="edit-modal" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="detailModalTitle">
+            <div class="edit-modal-box">
+                <div class="edit-modal-head">
+                    <h4 id="detailModalTitle"><i class="fas fa-circle-info"></i> Detail Data Rekap Objek Kebakaran</h4>
+                    <button type="button" class="edit-modal-x" id="detailClose" aria-label="Tutup"><i class="fas fa-xmark"></i></button>
+                </div>
+                <div class="edit-modal-body">
+                    <div class="detail-list">
+                        <div class="detail-item">
+                            <span class="lbl">Tanggal Kejadian</span>
+                            <span class="val" id="det_tanggal">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="lbl">Objek Terbakar</span>
+                            <span class="val" id="det_kategori">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="lbl">Jumlah Kejadian</span>
+                            <span class="val" id="det_jumlah">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="lbl">Kecamatan</span>
+                            <span class="val" id="det_kecamatan">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="lbl">Lokasi / Alamat</span>
+                            <span class="val" id="det_lokasi">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="lbl">Keterangan Penanganan</span>
+                            <span class="val" id="det_keterangan" style="white-space: pre-line; font-weight: 500;">-</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-foot">
+                    <button type="button" class="btn-ghost" id="detailTutup">Tutup</button>
+                </div>
+            </div>
+        </div>
+
+@if($bisaInput)
+        <!-- MODAL TAMBAH DATA (CREATE) -->
+        <div class="edit-modal" id="createModal" role="dialog" aria-modal="true" aria-labelledby="createModalTitle">
+            <div class="edit-modal-box">
+                <div class="edit-modal-head">
+                    <h4 id="createModalTitle"><i class="fas fa-plus-circle"></i> Tambah Data Rekap Objek</h4>
+                    <button type="button" class="edit-modal-x" id="createClose" aria-label="Tutup"><i class="fas fa-xmark"></i></button>
+                </div>
+                <form action="/internal/damtan/rekap-objek" method="POST" id="rekapForm">
+                    @csrf
+                    <div class="edit-modal-body">
+                        <div class="f-grid">
+                            <div class="c-6">
+                                <label class="f-label" for="tanggal">Tanggal <span class="req">*</span></label>
+                                <input type="date" id="tanggal" name="tanggal" class="f-control" value="{{ old('tanggal', date('Y-m-d')) }}" max="{{ date('Y-m-d') }}" required>
+                                @error('tanggal')<div class="f-error">{{ $message }}</div>@enderror
+                            </div>
+
+                            <div class="c-6">
+                                <label class="f-label" for="jumlah">Jumlah Kejadian <span class="req">*</span></label>
+                                <input type="number" id="jumlah" name="jumlah" class="f-control" min="1" max="9999" value="{{ old('jumlah', 1) }}" required>
+                                @error('jumlah')<div class="f-error">{{ $message }}</div>@enderror
+                            </div>
+
+                            <div class="c-12">
+                                <label class="f-label" for="kategori">Objek Terbakar <span class="req">*</span></label>
+                                <select id="kategori" name="kategori" class="f-control" required>
+                                    <option value="">-- Pilih objek terbakar --</option>
+                                    @foreach($kategori as $key => [$nama])
+                                        <option value="{{ $key }}" {{ old('kategori') === $key ? 'selected' : '' }}>{{ $nama }}</option>
+                                    @endforeach
+                                </select>
+                                @error('kategori')<div class="f-error">{{ $message }}</div>@enderror
+                            </div>
+
+                            <div class="c-6">
+                                <label class="f-label" for="kecamatan">Kecamatan</label>
+                                <input type="text" id="kecamatan" name="kecamatan" class="f-control" placeholder="Cth: Kota Baru" value="{{ old('kecamatan') }}">
+                                @error('kecamatan')<div class="f-error">{{ $message }}</div>@enderror
+                            </div>
+
+                            <div class="c-6">
+                                <label class="f-label" for="lokasi">Lokasi / Alamat</label>
+                                <input type="text" id="lokasi" name="lokasi" class="f-control" placeholder="Cth: Jl. Sultan Thaha, RT 05" value="{{ old('lokasi') }}">
+                                @error('lokasi')<div class="f-error">{{ $message }}</div>@enderror
+                            </div>
+
+                            <div class="c-12">
+                                <label class="f-label" for="keterangan">Keterangan</label>
+                                <textarea id="keterangan" name="keterangan" class="f-control" rows="3" placeholder="Catatan singkat penanganan (opsional)">{{ old('keterangan') }}</textarea>
+                                @error('keterangan')<div class="f-error">{{ $message }}</div>@enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-foot">
+                        <button type="button" class="btn-ghost" id="createCancel">Batal</button>
+                        <button type="submit" class="btn-main"><i class="fas fa-floppy-disk"></i> Simpan Rekap</button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -579,19 +814,90 @@
         });
     });
 
+    /* ===== Modal Detail (Lihat Hasil) - Semua Role ===== */
+    var detModal = document.getElementById('detailModal');
+    if (detModal) {
+        function openDetail(btn) {
+            var d = btn.dataset;
+            document.getElementById('det_tanggal').textContent = d.tanggal || '-';
+            document.getElementById('det_kategori').textContent = d.kategori || '-';
+            document.getElementById('det_jumlah').textContent = (d.jumlah || '0') + ' Kejadian';
+            document.getElementById('det_kecamatan').textContent = d.kecamatan || '-';
+            document.getElementById('det_lokasi').textContent = d.lokasi || '-';
+            document.getElementById('det_keterangan').textContent = d.keterangan || '-';
+            detModal.classList.add('open');
+        }
+        function closeDetail() { detModal.classList.remove('open'); }
+
+        document.querySelectorAll('[data-detail]').forEach(function (b) {
+            b.addEventListener('click', function () { openDetail(b); });
+        });
+        var detClose = document.getElementById('detailClose');
+        var detTutup = document.getElementById('detailTutup');
+        if (detClose) detClose.addEventListener('click', closeDetail);
+        if (detTutup) detTutup.addEventListener('click', closeDetail);
+        detModal.addEventListener('click', function (e) { if (e.target === detModal) closeDetail(); });
+    }
+
+    /* ===== Ekspor Excel & Cetak PDF (Dapat diakses semua pengguna) ===== */
+    var btnExcel = document.getElementById('btnExportExcel');
+    var selTahunEkspor = document.getElementById('tahunEkspor');
+    if (btnExcel) {
+        btnExcel.addEventListener('click', function (e) {
+            e.preventDefault();
+            var thn = selTahunEkspor ? selTahunEkspor.value : '';
+            var url = '{{ route('damtan.rekap.export-excel') }}?type=objek';
+            if (thn) url += '&tahun=' + encodeURIComponent(thn);
+            window.location.href = url;
+        });
+    }
+
+    window.cetakPdf = function () {
+        var thn = selTahunEkspor ? selTahunEkspor.value : '';
+        var spanThn = document.getElementById('printTahun');
+        if (spanThn) spanThn.textContent = thn ? ' TAHUN ' + thn : '';
+        window.print();
+    };
+
     /* Form hanya ada untuk Damtan & Super User; role lain berhenti di sini */
     var select = document.getElementById('kategori');
     var form = document.getElementById('rekapForm');
+    var createModal = document.getElementById('createModal');
+    var btnOpenCreate = document.getElementById('btnOpenCreate');
+
+    if (createModal) {
+        function openCreate() {
+            createModal.classList.add('open');
+            setTimeout(function () {
+                var kat = document.getElementById('kategori');
+                if (kat) kat.focus();
+            }, 100);
+        }
+        function closeCreate() { createModal.classList.remove('open'); }
+
+        if (btnOpenCreate) btnOpenCreate.addEventListener('click', openCreate);
+
+        var createClose = document.getElementById('createClose');
+        var createCancel = document.getElementById('createCancel');
+        if (createClose) createClose.addEventListener('click', closeCreate);
+        if (createCancel) createCancel.addEventListener('click', closeCreate);
+        createModal.addEventListener('click', function (e) { if (e.target === createModal) closeCreate(); });
+    }
+
     if (!select || !form) return;
 
-    /* Klik kartu total = pilih objek di form */
+    /* Klik kartu total = buka modal tambah data dengan kategori terpilih */
     var cards = document.querySelectorAll('[data-pick]');
     cards.forEach(function (c) {
         c.addEventListener('click', function () {
             select.value = c.dataset.pick;
-            cards.forEach(function (o) { o.classList.toggle('picked', o === c); });
-            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            setTimeout(function () { document.getElementById('jumlah').focus(); }, 350);
+            if (createModal) {
+                openCreate();
+                setTimeout(function () {
+                    var jml = document.getElementById('jumlah');
+                    if (jml) jml.focus();
+                }, 150);
+            }
         });
     });
     select.addEventListener('change', function () {
