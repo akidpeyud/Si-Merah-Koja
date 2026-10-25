@@ -559,11 +559,51 @@
         .lb-bar button:hover { background: var(--amber); color: var(--ink); }
         .lb-count { min-width: 64px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; color: rgba(255,255,255,.8); }
 
+        /* ==========================================================
+           ANIMASI HALAMAN (SCROLL REVEAL, FLOATING & MICRO-INTERACTIONS)
+           ========================================================== */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes driveFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(-1deg); }
+        }
+        @keyframes bgZoom {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.06); }
+        }
+        .hero-bg.b1 { animation: bgZoom 24s infinite ease-in-out; }
+        .hero-mark { animation: floatSlow 5s ease-in-out infinite; }
+        .about-art img { animation: floatSlow 6s ease-in-out infinite; }
+        #kejadian .sec-head img { animation: driveFloat 4.5s ease-in-out infinite; }
+        .giat-art img { animation: floatSlow 5.5s ease-in-out infinite; }
+
+        .btn i { transition: transform .25s cubic-bezier(.16,.84,.3,1); }
+        .btn:hover i { transform: translateX(4px); }
+        .media-card:hover img { transform: scale(1.06); }
+        .logo-strip li img { transition: transform .25s ease; }
+        .logo-strip li:hover img { transform: translateY(-3px) scale(1.06); }
+
+        .reveal-item {
+            opacity: 0;
+            transform: translateY(32px);
+            transition: opacity .7s cubic-bezier(.16, .84, .3, 1), transform .7s cubic-bezier(.16, .84, .3, 1);
+            transition-delay: var(--delay, 0s);
+            will-change: opacity, transform;
+        }
+        .reveal-item.is-visible {
+            opacity: 1;
+            transform: none;
+        }
+
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
             *, *::before, *::after { animation: none !important; transition: none !important; }
             .hero-bg.b2 { opacity: 0; }
             .ticker-track { overflow-x: auto; }
+            .reveal-item { opacity: 1 !important; transform: none !important; }
         }
     </style>
 </head>
@@ -864,6 +904,11 @@
                 <p>Informasi terbaru tentang kejadian di Kota Jambi.</p>
             </div>
             <img src="/images/mobil.png" alt="Mobil pemadam kebakaran" loading="lazy">
+        </div>
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+            <a href="{{ route('publik.kejadian') }}" class="btn btn-outline">
+                Lihat lainnya <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
 
         @php
@@ -1519,6 +1564,55 @@
             apply(null);
             mediaStatus.textContent = '';
         }
+    }
+
+    // ---------- Animasi Scroll Reveal ----------
+    var revealGroups = [
+        '.sec-head',
+        '.about-art',
+        '.about-copy',
+        '.quote',
+        '.giat-art',
+        '.footer-grid > div'
+    ];
+    var staggerContainers = [
+        '#kejadianGrid > *',
+        '#video .vid-grid > *',
+        '.grafis > *',
+        '#infografis .media-grid > *',
+        '.giat-vid-grid > *'
+    ];
+
+    revealGroups.forEach(function (sel) {
+        document.querySelectorAll(sel).forEach(function (el) {
+            el.classList.add('reveal-item');
+        });
+    });
+
+    staggerContainers.forEach(function (sel) {
+        document.querySelectorAll(sel).forEach(function (el, idx) {
+            el.classList.add('reveal-item');
+            el.style.setProperty('--delay', ((idx % 4) * 0.1) + 's');
+        });
+    });
+
+    if ('IntersectionObserver' in window) {
+        var revealObs = new IntersectionObserver(function (entries, obs) {
+            entries.forEach(function (en) {
+                if (en.isIntersecting) {
+                    en.target.classList.add('is-visible');
+                    obs.unobserve(en.target);
+                }
+            });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('.reveal-item').forEach(function (el) {
+            revealObs.observe(el);
+        });
+    } else {
+        document.querySelectorAll('.reveal-item').forEach(function (el) {
+            el.classList.add('is-visible');
+        });
     }
 })();
 </script>
