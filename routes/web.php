@@ -1044,15 +1044,18 @@ Route::get('/sarpras/sarana', [SapraHomeController::class, 'sarana'])->name('sar
 Route::get('/sarpras/prasarana', [SapraHomeController::class, 'prasarana'])->name('sarpras.prasarana');
 
 // --- RUTE INTERNAL DOKUMEN PUBLIK ---
-Route::middleware(['auth', RoleMiddleware::class.':Super User|Operator'])->group(function () {
-    Route::resource('dokumen-publik', DokumenPublikController::class)->only([
-        'index',
-        'create',
-        'store',
-        'edit',
-        'update',
-        'destroy',
-    ]);
+Route::middleware(['auth'])->group(function () {
+    Route::get('dokumen-publik', [DokumenPublikController::class, 'index'])->name('dokumen-publik.index');
+
+    Route::middleware([RoleMiddleware::class.':Super User|Sekretariat'])->group(function () {
+        Route::resource('dokumen-publik', DokumenPublikController::class)->only([
+            'create',
+            'store',
+            'edit',
+            'update',
+            'destroy',
+        ]);
+    });
 });
 
 // --- RUTE PUBLIK DOKUMEN (BACA & UNDUH) ---
