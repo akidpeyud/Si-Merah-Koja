@@ -201,6 +201,149 @@
             border-radius: 6px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
         }
+
+        /* ==========================================================
+           ANIMASI ALA LAYANAN FASILITAS (GLOBAL INTERNAL)
+           ========================================================== */
+        @keyframes animInUp {
+            from { opacity: 0; transform: translateY(32px) scale(0.985); }
+            to   { opacity: 1; transform: none; }
+        }
+        @keyframes animInLeft {
+            from { opacity: 0; transform: translateX(-28px); }
+            to   { opacity: 1; transform: none; }
+        }
+        @keyframes animSubIn {
+            from { opacity: 0; transform: translateX(-14px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /* Header Halaman & Judul Section (animInLeft) */
+        .content .page-head,
+        .content .page-header,
+        .content .section-heading,
+        .content .card-head,
+        .content .dt-card-head,
+        .content .form-section__head,
+        .content .form-section-title,
+        .content .detail-section-title {
+            animation: animInLeft .7s cubic-bezier(.16, 1, .3, 1) .05s both;
+        }
+
+        /* Kartu Ringkasan / Statistik / Rekap (Staggered animInUp + Hover Lift) */
+        .content .stat-card,
+        .content .rekap-item,
+        .content .ov-item {
+            animation: animInUp .75s cubic-bezier(.16, 1, .3, 1) both;
+            transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+        }
+        .content .stats-grid > *:nth-child(1),
+        .content .rekap-grid > *:nth-child(1),
+        .content .overview > *:nth-child(1) { animation-delay: .05s; }
+        .content .stats-grid > *:nth-child(2),
+        .content .rekap-grid > *:nth-child(2),
+        .content .overview > *:nth-child(2) { animation-delay: .13s; }
+        .content .stats-grid > *:nth-child(3),
+        .content .rekap-grid > *:nth-child(3),
+        .content .overview > *:nth-child(3) { animation-delay: .21s; }
+        .content .stats-grid > *:nth-child(4),
+        .content .rekap-grid > *:nth-child(4),
+        .content .overview > *:nth-child(4) { animation-delay: .29s; }
+        .content .stats-grid > *:nth-child(5),
+        .content .rekap-grid > *:nth-child(5),
+        .content .overview > *:nth-child(5) { animation-delay: .37s; }
+        .content .stats-grid > *:nth-child(6),
+        .content .rekap-grid > *:nth-child(6),
+        .content .overview > *:nth-child(6) { animation-delay: .45s; }
+        .content .stats-grid > *:nth-child(n+7),
+        .content .rekap-grid > *:nth-child(n+7),
+        .content .overview > *:nth-child(n+7) { animation-delay: .52s; }
+
+        .content .stat-card:hover,
+        .content .rekap-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -10px rgba(13, 27, 42, 0.12);
+        }
+
+        /* Container & Kartu Utama (animInUp) */
+        .content .card-container,
+        .content .base-card,
+        .content .card-custom,
+        .content .content-card,
+        .content .card-box,
+        .content .detail-card,
+        .content .dt-card,
+        .content .form-card,
+        .content .form-container,
+        .content .form-panel,
+        .content .form-wrapper,
+        .content .ik-card,
+        .content .welcome,
+        .content .dash-section {
+            animation: animInUp .75s cubic-bezier(.16, 1, .3, 1) .15s both;
+            transition: box-shadow .25s ease, border-color .25s ease;
+        }
+        .content .card-container:hover,
+        .content .base-card:hover,
+        .content .card-custom:hover,
+        .content .content-card:hover,
+        .content .card-box:hover,
+        .content .detail-card:hover,
+        .content .dt-card:hover,
+        .content .form-card:hover,
+        .content .ik-card:hover {
+            box-shadow: 0 14px 30px rgba(13, 27, 42, 0.06);
+            border-color: #cbd5e1;
+        }
+
+        /* Setiap Kolom Form / Field / Section di Dalam Container (Staggered animInUp) */
+        .content .form-section,
+        .content .detail-section,
+        .content form:not(.modal form) .row > [class*="col-"],
+        .content .file-box,
+        .content .attachment-box {
+            animation: animInUp .65s cubic-bezier(.16, 1, .3, 1) both;
+        }
+        .content .form-section:nth-child(1),
+        .content .detail-section:nth-child(1),
+        .content form:not(.modal form) .row > [class*="col-"]:nth-child(1) { animation-delay: .10s; }
+        .content .form-section:nth-child(2),
+        .content .detail-section:nth-child(2),
+        .content form:not(.modal form) .row > [class*="col-"]:nth-child(2) { animation-delay: .17s; }
+        .content .form-section:nth-child(3),
+        .content .detail-section:nth-child(3),
+        .content form:not(.modal form) .row > [class*="col-"]:nth-child(3) { animation-delay: .24s; }
+        .content .form-section:nth-child(4),
+        .content .detail-section:nth-child(4),
+        .content form:not(.modal form) .row > [class*="col-"]:nth-child(4) { animation-delay: .31s; }
+        .content .form-section:nth-child(5),
+        .content .detail-section:nth-child(5),
+        .content form:not(.modal form) .row > [class*="col-"]:nth-child(5) { animation-delay: .38s; }
+        .content .form-section:nth-child(n+6),
+        .content .detail-section:nth-child(n+6),
+        .content form:not(.modal form) .row > [class*="col-"]:nth-child(n+6) { animation-delay: .45s; }
+
+        /* Baris Tabel & Sub-item (Staggered animSubIn) */
+        .content .table tbody tr {
+            animation: animSubIn .55s cubic-bezier(.16, 1, .3, 1) both;
+            transition: background-color .2s ease;
+        }
+        .content .table tbody tr:nth-child(1) { animation-delay: .18s; }
+        .content .table tbody tr:nth-child(2) { animation-delay: .23s; }
+        .content .table tbody tr:nth-child(3) { animation-delay: .28s; }
+        .content .table tbody tr:nth-child(4) { animation-delay: .33s; }
+        .content .table tbody tr:nth-child(5) { animation-delay: .38s; }
+        .content .table tbody tr:nth-child(6) { animation-delay: .43s; }
+        .content .table tbody tr:nth-child(n+7) { animation-delay: .48s; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .content *,
+            .content *::before,
+            .content *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
     </style>
     @stack('styles')
 </head>
