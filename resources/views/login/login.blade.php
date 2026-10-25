@@ -296,6 +296,117 @@
             background-color: #ef4444;
             border-color: #ef4444;
         }
+
+        /* --- ANIMASI TAMBAHAN --- */
+        @keyframes cardEntrance {
+            0% { opacity: 0; transform: translateY(35px) scale(0.96); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-7px); }
+        }
+
+        @keyframes fadeSlideUp {
+            0% { opacity: 0; transform: translateY(18px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-card {
+            animation: cardEntrance 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+        }
+
+        .login-card:hover {
+            box-shadow: 0 22px 45px rgba(0, 0, 0, 0.32);
+        }
+
+        .login-header img {
+            animation: floatLogo 4.5s ease-in-out infinite;
+        }
+
+        .login-header p {
+            animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+        }
+
+        .login-title {
+            animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both;
+        }
+
+        .login-body form > div:nth-of-type(1) {
+            animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+        }
+
+        .login-body form > div:nth-of-type(2) {
+            animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.38s both;
+        }
+
+        .login-body form > div:nth-of-type(3) {
+            animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.46s both;
+        }
+
+        .btn-submit {
+            position: relative;
+            overflow: hidden;
+            animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.54s both;
+        }
+
+        .btn-submit::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            transform: skewX(-20deg);
+            transition: left 0.6s ease;
+        }
+
+        .btn-submit:hover::after {
+            left: 130%;
+        }
+
+        .btn-submit:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .back-to-home {
+            animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.62s both;
+        }
+
+        .back-to-home i {
+            display: inline-block;
+            transition: transform 0.25s ease;
+        }
+
+        .back-to-home:hover i {
+            transform: translateX(-4px);
+        }
+
+        .input-group {
+            transition: transform 0.25s ease;
+        }
+
+        .input-group:focus-within {
+            transform: translateY(-2px);
+        }
+
+        .input-group-text i {
+            transition: transform 0.25s ease;
+        }
+
+        .input-group:focus-within .input-group-text i {
+            transform: scale(1.15);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
     </style>
 </head>
 <body>
