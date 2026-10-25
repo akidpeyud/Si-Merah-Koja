@@ -1,4 +1,6 @@
 *
 !private/
 !public/
+!public/seed-files/
+!public/seed-files/**
 !.gitignore
