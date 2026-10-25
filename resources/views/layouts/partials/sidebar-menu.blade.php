@@ -52,7 +52,6 @@
         [
             'title' => 'Berita & Media', 'icon' => 'fa-newspaper', 'roles' => $ops,
             'items' => [
-                ['Berita', '/internal/operator/kelola-berita', 'fa-newspaper'],
     ['Info Grafis', '/internal/operator/infografis', 'fa-image'],
     ['Berita Medsos', '/internal/operator/berita-medsos', 'fa-brands fa-instagram'],
     ['Ujung-Ujung Damkar', '/internal/operator/ujung-damkar', 'fa-brands fa-youtube'],
