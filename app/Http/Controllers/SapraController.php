@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Exports\HidranExport;
 use App\Exports\HidranKotaExport;
-use App\Models\KebutuhanSarpras;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,16 +12,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class SapraController extends Controller
 {
-    // ==========================================
-    // === MENU LOGISTIK ===
-    // ==========================================
-    public function logistik()
-    {
-        $dataSarpras = KebutuhanSarpras::all();
-
-        return view('internal.sapra.logistik', compact('dataSarpras'));
-    }
-
     // ==========================================
     // === MENU DATA HIDRANT GEDUNG / PILAR ===
     // ==========================================
@@ -185,6 +174,23 @@ class SapraController extends Controller
 
     public function storeHidrantKota(Request $request)
     {
+        $request->validate([
+            'jalan' => 'required|string|max:255',
+            'kecamatan' => 'required|string|max:255',
+            'kelurahan' => 'required|string|max:255',
+            'rt' => 'nullable|string|max:50',
+            'lokasi_terdekat' => 'nullable|string|max:255',
+            'kode_map' => 'nullable|string|max:100',
+            'kondisi_hidran' => 'nullable|string|max:50',
+            'tekanan' => 'nullable|string|max:50',
+            'machino' => 'nullable|string|max:50',
+            'keterangan' => 'nullable|string',
+        ], [
+            'jalan.required' => 'Nama jalan wajib diisi.',
+            'kecamatan.required' => 'Kecamatan wajib diisi.',
+            'kelurahan.required' => 'Kelurahan wajib diisi.',
+        ]);
+
         DB::table('hidran_kota')->insert([
             'jalan' => $request->jalan,
             'kecamatan' => $request->kecamatan,
@@ -196,6 +202,8 @@ class SapraController extends Controller
             'tekanan' => $request->tekanan,
             'machino' => $request->machino,
             'keterangan' => $request->keterangan,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         return redirect()->back()->with('success', 'Data Hidrant Kota berhasil ditambahkan!');
@@ -203,6 +211,23 @@ class SapraController extends Controller
 
     public function updateHidrantKota(Request $request, $id)
     {
+        $request->validate([
+            'jalan' => 'required|string|max:255',
+            'kecamatan' => 'required|string|max:255',
+            'kelurahan' => 'required|string|max:255',
+            'rt' => 'nullable|string|max:50',
+            'lokasi_terdekat' => 'nullable|string|max:255',
+            'kode_map' => 'nullable|string|max:100',
+            'kondisi_hidran' => 'nullable|string|max:50',
+            'tekanan' => 'nullable|string|max:50',
+            'machino' => 'nullable|string|max:50',
+            'keterangan' => 'nullable|string',
+        ], [
+            'jalan.required' => 'Nama jalan wajib diisi.',
+            'kecamatan.required' => 'Kecamatan wajib diisi.',
+            'kelurahan.required' => 'Kelurahan wajib diisi.',
+        ]);
+
         DB::table('hidran_kota')->where('id', $id)->update([
             'jalan' => $request->jalan,
             'kecamatan' => $request->kecamatan,
@@ -214,6 +239,7 @@ class SapraController extends Controller
             'tekanan' => $request->tekanan,
             'machino' => $request->machino,
             'keterangan' => $request->keterangan,
+            'updated_at' => now(),
         ]);
 
         return redirect()->back()->with('success', 'Data Hidrant Kota berhasil diperbarui!');
@@ -241,7 +267,15 @@ class SapraController extends Controller
     public function storePrasaranaMako(Request $request)
     {
         $request->validate([
-            'gambar' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
+            'id_pos' => 'required|integer',
+            'jenis_prasarana' => 'required|string|max:255',
+            'luas_bangunan' => 'nullable|string|max:255',
+            'gambar' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+        ], [
+            'id_pos.required' => 'Pos pemadam wajib dipilih.',
+            'jenis_prasarana.required' => 'Jenis prasarana wajib diisi.',
+            'gambar.max' => 'Ukuran gambar maksimal adalah 2 MB.',
+            'gambar.mimes' => 'Format gambar harus berupa JPG, JPEG, atau PNG.',
         ]);
 
         $gambarPath = null;
@@ -268,10 +302,21 @@ class SapraController extends Controller
     public function updatePrasaranaMako(Request $request, $id)
     {
         $request->validate([
-            'gambar' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
+            'id_pos' => 'required|integer',
+            'jenis_prasarana' => 'required|string|max:255',
+            'luas_bangunan' => 'nullable|string|max:255',
+            'gambar' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+        ], [
+            'id_pos.required' => 'Pos pemadam wajib dipilih.',
+            'jenis_prasarana.required' => 'Jenis prasarana wajib diisi.',
+            'gambar.max' => 'Ukuran gambar maksimal adalah 2 MB.',
+            'gambar.mimes' => 'Format gambar harus berupa JPG, JPEG, atau PNG.',
         ]);
 
         $dataLama = DB::table('prasarana')->where('id_prasarana', $id)->first();
+        if (! $dataLama) {
+            return redirect()->back()->with('error', 'Data Prasarana tidak ditemukan!');
+        }
         $gambarPath = $dataLama->path_gambar;
 
         if ($request->hasFile('gambar')) {
@@ -300,11 +345,13 @@ class SapraController extends Controller
     public function destroyPrasaranaMako($id)
     {
         $data = DB::table('prasarana')->where('id_prasarana', $id)->first();
+        if (! $data) {
+            return redirect()->back()->with('error', 'Data Prasarana tidak ditemukan!');
+        }
 
-        // Simpan id_pos ke variabel sebelum data dihapus dari database
         $id_pos_terakhir = $data->id_pos;
 
-        if ($data && $data->path_gambar && file_exists(public_path($data->path_gambar))) {
+        if ($data->path_gambar && file_exists(public_path($data->path_gambar))) {
             unlink(public_path($data->path_gambar));
         }
 
@@ -318,6 +365,9 @@ class SapraController extends Controller
 
     public function cetakPdfMako()
     {
+        ini_set('memory_limit', '512M');
+        set_time_limit(300);
+
         $posPemadam = DB::table('pos_pemadam')->orderBy('id_pos', 'asc')->get();
         $dataPrasarana = DB::table('prasarana')->orderBy('id_prasarana', 'asc')->get();
 
@@ -342,7 +392,20 @@ class SapraController extends Controller
     public function storeSaranaMako(Request $request)
     {
         $request->validate([
-            'gambar' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
+            'id_pos' => 'required|integer',
+            'jenis_sarana' => 'required|string|max:255',
+            'jumlah' => 'required|integer|min:1',
+            'tahun' => 'nullable|string|max:50',
+            'plat_nomor' => 'nullable|string|max:50',
+            'no_stnk' => 'nullable|string|max:50',
+            'gambar' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+        ], [
+            'id_pos.required' => 'Pos pemadam wajib dipilih.',
+            'jenis_sarana.required' => 'Jenis sarana wajib diisi.',
+            'jumlah.required' => 'Jumlah unit wajib diisi.',
+            'jumlah.integer' => 'Jumlah harus berupa angka bulat.',
+            'gambar.max' => 'Ukuran gambar maksimal adalah 2 MB.',
+            'gambar.mimes' => 'Format gambar harus berupa JPG, JPEG, atau PNG.',
         ]);
 
         $gambarPath = null;
@@ -371,10 +434,26 @@ class SapraController extends Controller
     public function updateSaranaMako(Request $request, $id)
     {
         $request->validate([
-            'gambar' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
+            'id_pos' => 'required|integer',
+            'jenis_sarana' => 'required|string|max:255',
+            'jumlah' => 'required|integer|min:1',
+            'tahun' => 'nullable|string|max:50',
+            'plat_nomor' => 'nullable|string|max:50',
+            'no_stnk' => 'nullable|string|max:50',
+            'gambar' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+        ], [
+            'id_pos.required' => 'Pos pemadam wajib dipilih.',
+            'jenis_sarana.required' => 'Jenis sarana wajib diisi.',
+            'jumlah.required' => 'Jumlah unit wajib diisi.',
+            'jumlah.integer' => 'Jumlah harus berupa angka bulat.',
+            'gambar.max' => 'Ukuran gambar maksimal adalah 2 MB.',
+            'gambar.mimes' => 'Format gambar harus berupa JPG, JPEG, atau PNG.',
         ]);
 
         $dataLama = DB::table('sarana_kebakaran')->where('id_sarana', $id)->first();
+        if (! $dataLama) {
+            return redirect()->back()->with('error', 'Data Sarana tidak ditemukan!');
+        }
         $gambarPath = $dataLama->path_gambar;
 
         if ($request->hasFile('gambar')) {
@@ -405,9 +484,12 @@ class SapraController extends Controller
     public function destroySaranaMako($id)
     {
         $data = DB::table('sarana_kebakaran')->where('id_sarana', $id)->first();
+        if (! $data) {
+            return redirect()->back()->with('error', 'Data Sarana tidak ditemukan!');
+        }
         $id_pos_terakhir = $data->id_pos;
 
-        if ($data && $data->path_gambar && file_exists(public_path($data->path_gambar))) {
+        if ($data->path_gambar && file_exists(public_path($data->path_gambar))) {
             unlink(public_path($data->path_gambar));
         }
 
@@ -420,6 +502,9 @@ class SapraController extends Controller
 
     public function cetakPdfSaranaMako()
     {
+        ini_set('memory_limit', '512M');
+        set_time_limit(300);
+
         $posPemadam = DB::table('pos_pemadam')->orderBy('id_pos', 'asc')->get();
         $dataSarana = DB::table('sarana_kebakaran')->orderBy('id_sarana', 'asc')->get();
 
@@ -444,7 +529,17 @@ class SapraController extends Controller
     public function storeSaranaPenyelamatan(Request $request)
     {
         $request->validate([
-            'gambar' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
+            'id_pos' => 'required|integer',
+            'jenis_sarana' => 'required|string|max:255',
+            'jumlah' => 'required|integer|min:1',
+            'gambar' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+        ], [
+            'id_pos.required' => 'Pos pemadam wajib dipilih.',
+            'jenis_sarana.required' => 'Jenis sarana wajib diisi.',
+            'jumlah.required' => 'Jumlah unit wajib diisi.',
+            'jumlah.integer' => 'Jumlah harus berupa angka bulat.',
+            'gambar.max' => 'Ukuran gambar maksimal adalah 2 MB.',
+            'gambar.mimes' => 'Format gambar harus berupa JPG, JPEG, atau PNG.',
         ]);
 
         $gambarPath = null;
@@ -471,10 +566,23 @@ class SapraController extends Controller
     public function updateSaranaPenyelamatan(Request $request, $id)
     {
         $request->validate([
-            'gambar' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
+            'id_pos' => 'required|integer',
+            'jenis_sarana' => 'required|string|max:255',
+            'jumlah' => 'required|integer|min:1',
+            'gambar' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+        ], [
+            'id_pos.required' => 'Pos pemadam wajib dipilih.',
+            'jenis_sarana.required' => 'Jenis sarana wajib diisi.',
+            'jumlah.required' => 'Jumlah unit wajib diisi.',
+            'jumlah.integer' => 'Jumlah harus berupa angka bulat.',
+            'gambar.max' => 'Ukuran gambar maksimal adalah 2 MB.',
+            'gambar.mimes' => 'Format gambar harus berupa JPG, JPEG, atau PNG.',
         ]);
 
         $dataLama = DB::table('sarana_penyelamatan')->where('id_sarana_penyelamatan', $id)->first();
+        if (! $dataLama) {
+            return redirect()->back()->with('error', 'Data Sarana Penyelamatan tidak ditemukan!');
+        }
         $gambarPath = $dataLama->path_gambar;
 
         if ($request->hasFile('gambar')) {
@@ -503,10 +611,13 @@ class SapraController extends Controller
     public function destroySaranaPenyelamatan($id)
     {
         $data = DB::table('sarana_penyelamatan')->where('id_sarana_penyelamatan', $id)->first();
+        if (! $data) {
+            return redirect()->back()->with('error', 'Data Sarana Penyelamatan tidak ditemukan!');
+        }
         $id_pos_terakhir = $data->id_pos;
 
         // Hapus file gambar fisik dari folder
-        if ($data && $data->path_gambar && file_exists(public_path($data->path_gambar))) {
+        if ($data->path_gambar && file_exists(public_path($data->path_gambar))) {
             unlink(public_path($data->path_gambar));
         }
 
@@ -519,6 +630,9 @@ class SapraController extends Controller
 
     public function cetakPdfSaranaPenyelamatan()
     {
+        ini_set('memory_limit', '512M');
+        set_time_limit(300);
+
         $posPemadam = DB::table('pos_pemadam')->orderBy('id_pos', 'asc')->get();
         $dataPenyelamatan = DB::table('sarana_penyelamatan')->orderBy('id_sarana_penyelamatan', 'asc')->get();
 
@@ -541,6 +655,14 @@ class SapraController extends Controller
 
     public function storePos(Request $request)
     {
+        $request->validate([
+            'nama_pos' => 'required|string|max:50',
+            'alamat' => 'nullable|string',
+            'kode_map' => 'nullable|string|max:50',
+        ], [
+            'nama_pos.required' => 'Nama pos pemadam wajib diisi.',
+        ]);
+
         DB::table('pos_pemadam')->insert([
             'nama_pos' => strtoupper($request->nama_pos), // Otomatis huruf besar
             'alamat' => $request->alamat,
@@ -552,6 +674,14 @@ class SapraController extends Controller
 
     public function updatePos(Request $request, $id)
     {
+        $request->validate([
+            'nama_pos' => 'required|string|max:50',
+            'alamat' => 'nullable|string',
+            'kode_map' => 'nullable|string|max:50',
+        ], [
+            'nama_pos.required' => 'Nama pos pemadam wajib diisi.',
+        ]);
+
         DB::table('pos_pemadam')->where('id_pos', $id)->update([
             'nama_pos' => strtoupper($request->nama_pos),
             'alamat' => $request->alamat,
@@ -563,6 +693,16 @@ class SapraController extends Controller
 
     public function destroyPos($id)
     {
+        // Cegah hapus jika pos masih memiliki data sarana atau prasarana terkait
+        $hasPrasarana = DB::table('prasarana')->where('id_pos', $id)->exists();
+        $hasSarana = DB::table('sarana_kebakaran')->where('id_pos', $id)->exists();
+        $hasPenyelamatan = DB::table('sarana_penyelamatan')->where('id_pos', $id)->exists();
+        $hasPemeriksaan = DB::table('sarana_pemeriksaan')->where('id_pos', $id)->exists();
+
+        if ($hasPrasarana || $hasSarana || $hasPenyelamatan || $hasPemeriksaan) {
+            return redirect()->back()->with('error', 'Gagal menghapus: Pos ini masih memiliki data sarana atau prasarana terkait. Hapus atau pindahkan data sarana/prasarana terlebih dahulu!');
+        }
+
         DB::table('pos_pemadam')->where('id_pos', $id)->delete();
 
         return redirect()->back()->with('success', 'Pos Pemadam berhasil dihapus!');
@@ -622,6 +762,16 @@ class SapraController extends Controller
 
     public function storeKebutuhanSarpras(Request $request)
     {
+        $request->validate([
+            'uraian' => 'required|string|max:255',
+            'jumlah_dibutuhkan' => 'required|integer|min:0',
+        ], [
+            'uraian.required' => 'Nama barang/uraian kebutuhan wajib diisi.',
+            'jumlah_dibutuhkan.required' => 'Jumlah kebutuhan wajib diisi.',
+            'jumlah_dibutuhkan.integer' => 'Jumlah kebutuhan harus berupa angka.',
+            'jumlah_dibutuhkan.min' => 'Jumlah kebutuhan minimal 0.',
+        ]);
+
         DB::table('kebutuhan_sarpras')->insert([
             'uraian' => strtoupper($request->uraian),
             'jumlah_dibutuhkan' => $request->jumlah_dibutuhkan,
@@ -636,6 +786,16 @@ class SapraController extends Controller
 
     public function updateKebutuhanSarpras(Request $request, $id)
     {
+        $request->validate([
+            'uraian' => 'required|string|max:255',
+            'jumlah_dibutuhkan' => 'required|integer|min:0',
+        ], [
+            'uraian.required' => 'Nama barang/uraian kebutuhan wajib diisi.',
+            'jumlah_dibutuhkan.required' => 'Jumlah kebutuhan wajib diisi.',
+            'jumlah_dibutuhkan.integer' => 'Jumlah kebutuhan harus berupa angka.',
+            'jumlah_dibutuhkan.min' => 'Jumlah kebutuhan minimal 0.',
+        ]);
+
         DB::table('kebutuhan_sarpras')->where('id', $id)->update([
             'uraian' => strtoupper($request->uraian),
             'jumlah_dibutuhkan' => $request->jumlah_dibutuhkan,
@@ -660,6 +820,17 @@ class SapraController extends Controller
     // ==============================================
     public function storePengadaan(Request $request)
     {
+        $request->validate([
+            'kebutuhan_id' => 'required|integer',
+            'tahun' => 'required|integer|min:2000|max:2100',
+            'jumlah' => 'required|integer|min:1',
+        ], [
+            'kebutuhan_id.required' => 'Pilih barang yang diadakan.',
+            'tahun.required' => 'Tahun pengadaan wajib diisi.',
+            'jumlah.required' => 'Jumlah pengadaan wajib diisi.',
+            'jumlah.min' => 'Jumlah pengadaan minimal 1 unit.',
+        ]);
+
         DB::table('pengadaan_sarpras')->insert([
             'kebutuhan_id' => $request->kebutuhan_id,
             'tahun' => $request->tahun,
@@ -749,14 +920,40 @@ class SapraController extends Controller
 
     public function storeDistribusiStaff(Request $request)
     {
+        $request->validate([
+            'nama_penerima' => 'required|string|max:255',
+            'kebutuhan_id' => 'required|integer',
+            'jumlah' => 'required|integer|min:1',
+            'detail_barang' => 'nullable|string|max:255',
+            'waktu_terima' => 'required|date',
+            'keterangan' => 'nullable|string',
+        ], [
+            'nama_penerima.required' => 'Nama penerima wajib diisi.',
+            'kebutuhan_id.required' => 'Pilih barang yang didistribusikan.',
+            'jumlah.required' => 'Jumlah barang wajib diisi.',
+            'jumlah.min' => 'Jumlah minimal 1 unit.',
+            'waktu_terima.required' => 'Tanggal & waktu serah terima wajib diisi.',
+        ]);
+
         // Cari nama barang aslinya di mutu baku berdasarkan ID yang dipilih
         $barangMutuBaku = DB::table('kebutuhan_sarpras')->where('id', $request->kebutuhan_id)->first();
-        $namaBarangAsli = $barangMutuBaku ? $barangMutuBaku->uraian : 'BARANG TIDAK DIKETAHUI';
+        if (! $barangMutuBaku) {
+            return redirect()->back()->with('error', 'Barang Mutu Baku tidak ditemukan!');
+        }
+
+        // Cek ketersediaan sisa stok
+        $totalPengadaan = DB::table('pengadaan_sarpras')->where('kebutuhan_id', $request->kebutuhan_id)->sum('jumlah');
+        $totalDistribusi = DB::table('distribusi_barang_staff')->where('kebutuhan_id', $request->kebutuhan_id)->sum('jumlah');
+        $sisaStok = $totalPengadaan - $totalDistribusi;
+
+        if ($request->jumlah > $sisaStok) {
+            return redirect()->back()->with('error', 'Gagal: Jumlah distribusi (' . $request->jumlah . ') melebihi sisa stok yang tersedia (' . max(0, $sisaStok) . ' unit)!');
+        }
 
         DB::table('distribusi_barang_staff')->insert([
             'nama_penerima' => strtoupper($request->nama_penerima),
             'kebutuhan_id' => $request->kebutuhan_id,
-            'nama_barang' => strtoupper($namaBarangAsli),
+            'nama_barang' => strtoupper($barangMutuBaku->uraian),
             'jumlah' => $request->jumlah,
             'detail_barang' => $request->detail_barang,
             'waktu_terima' => $request->waktu_terima,
@@ -770,13 +967,42 @@ class SapraController extends Controller
 
     public function updateDistribusiStaff(Request $request, $id)
     {
+        $request->validate([
+            'nama_penerima' => 'required|string|max:255',
+            'kebutuhan_id' => 'required|integer',
+            'jumlah' => 'required|integer|min:1',
+            'detail_barang' => 'nullable|string|max:255',
+            'waktu_terima' => 'required|date',
+            'keterangan' => 'nullable|string',
+        ], [
+            'nama_penerima.required' => 'Nama penerima wajib diisi.',
+            'kebutuhan_id.required' => 'Pilih barang yang didistribusikan.',
+            'jumlah.required' => 'Jumlah barang wajib diisi.',
+            'jumlah.min' => 'Jumlah minimal 1 unit.',
+            'waktu_terima.required' => 'Tanggal & waktu serah terima wajib diisi.',
+        ]);
+
         $barangMutuBaku = DB::table('kebutuhan_sarpras')->where('id', $request->kebutuhan_id)->first();
-        $namaBarangAsli = $barangMutuBaku ? $barangMutuBaku->uraian : 'BARANG TIDAK DIKETAHUI';
+        if (! $barangMutuBaku) {
+            return redirect()->back()->with('error', 'Barang Mutu Baku tidak ditemukan!');
+        }
+
+        // Hitung sisa stok excluding record yang sedang di-update
+        $totalPengadaan = DB::table('pengadaan_sarpras')->where('kebutuhan_id', $request->kebutuhan_id)->sum('jumlah');
+        $totalDistribusi = DB::table('distribusi_barang_staff')
+            ->where('kebutuhan_id', $request->kebutuhan_id)
+            ->where('id', '!=', $id)
+            ->sum('jumlah');
+        $sisaStok = $totalPengadaan - $totalDistribusi;
+
+        if ($request->jumlah > $sisaStok) {
+            return redirect()->back()->with('error', 'Gagal: Jumlah distribusi (' . $request->jumlah . ') melebihi sisa stok yang tersedia (' . max(0, $sisaStok) . ' unit)!');
+        }
 
         DB::table('distribusi_barang_staff')->where('id', $id)->update([
             'nama_penerima' => strtoupper($request->nama_penerima),
             'kebutuhan_id' => $request->kebutuhan_id,
-            'nama_barang' => strtoupper($namaBarangAsli),
+            'nama_barang' => strtoupper($barangMutuBaku->uraian),
             'jumlah' => $request->jumlah,
             'detail_barang' => $request->detail_barang,
             'waktu_terima' => $request->waktu_terima,
@@ -823,7 +1049,17 @@ class SapraController extends Controller
     public function storeSaranaPemeriksaan(Request $request)
     {
         $request->validate([
-            'gambar' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
+            'id_pos' => 'required|integer',
+            'jenis_sarana' => 'required|string|max:255',
+            'jumlah' => 'required|integer|min:1',
+            'gambar' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+        ], [
+            'id_pos.required' => 'Pos pemadam wajib dipilih.',
+            'jenis_sarana.required' => 'Jenis sarana wajib diisi.',
+            'jumlah.required' => 'Jumlah unit wajib diisi.',
+            'jumlah.integer' => 'Jumlah harus berupa angka bulat.',
+            'gambar.max' => 'Ukuran gambar maksimal adalah 2 MB.',
+            'gambar.mimes' => 'Format gambar harus berupa JPG, JPEG, atau PNG.',
         ]);
 
         $gambarPath = null;
@@ -849,10 +1085,23 @@ class SapraController extends Controller
     public function updateSaranaPemeriksaan(Request $request, $id)
     {
         $request->validate([
-            'gambar' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
+            'id_pos' => 'required|integer',
+            'jenis_sarana' => 'required|string|max:255',
+            'jumlah' => 'required|integer|min:1',
+            'gambar' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+        ], [
+            'id_pos.required' => 'Pos pemadam wajib dipilih.',
+            'jenis_sarana.required' => 'Jenis sarana wajib diisi.',
+            'jumlah.required' => 'Jumlah unit wajib diisi.',
+            'jumlah.integer' => 'Jumlah harus berupa angka bulat.',
+            'gambar.max' => 'Ukuran gambar maksimal adalah 2 MB.',
+            'gambar.mimes' => 'Format gambar harus berupa JPG, JPEG, atau PNG.',
         ]);
 
         $dataLama = DB::table('sarana_pemeriksaan')->where('id_sarana_pemeriksaan', $id)->first();
+        if (! $dataLama) {
+            return redirect()->back()->with('error', 'Data Sarana Pemeriksaan tidak ditemukan!');
+        }
         $gambarPath = $dataLama->path_gambar;
 
         if ($request->hasFile('gambar')) {
@@ -880,9 +1129,12 @@ class SapraController extends Controller
     public function destroySaranaPemeriksaan($id)
     {
         $data = DB::table('sarana_pemeriksaan')->where('id_sarana_pemeriksaan', $id)->first();
+        if (! $data) {
+            return redirect()->back()->with('error', 'Data Sarana Pemeriksaan tidak ditemukan!');
+        }
         $id_pos_terakhir = $data->id_pos;
 
-        if ($data && $data->path_gambar && file_exists(public_path($data->path_gambar))) {
+        if ($data->path_gambar && file_exists(public_path($data->path_gambar))) {
             unlink(public_path($data->path_gambar));
         }
 
@@ -895,6 +1147,9 @@ class SapraController extends Controller
 
     public function cetakPdfSaranaPemeriksaan()
     {
+        ini_set('memory_limit', '512M');
+        set_time_limit(300);
+
         $posPemadam = DB::table('pos_pemadam')->orderBy('id_pos', 'asc')->get();
         $dataPemeriksaan = DB::table('sarana_pemeriksaan')->orderBy('id_sarana_pemeriksaan', 'asc')->get();
 

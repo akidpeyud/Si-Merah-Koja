@@ -367,8 +367,8 @@
                                             </div>
                                             <div>
                                                 <label class="f-label" for="gambar{{ $item->id_sarana }}">Ganti gambar <span class="f-optional">(opsional)</span></label>
-                                                <input class="f-input" type="file" id="gambar{{ $item->id_sarana }}" name="gambar" accept="image/*">
-                                                <p class="f-hint">Biarkan kosong jika tidak ingin mengganti gambar.</p>
+                                                <input class="f-input" type="file" id="gambar{{ $item->id_sarana }}" name="gambar" accept="image/jpeg,image/png,image/jpg">
+                                                <p class="f-hint">Biarkan kosong jika tidak ingin mengganti gambar. <br><i class="fas fa-info-circle"></i> Format: JPG, JPEG, PNG. Ukuran maksimal 2 MB.</p>
                                             </div>
                                         </div>
                                         <div class="sheet-foot">
@@ -435,7 +435,8 @@
             </div>
             <div>
                 <label class="f-label" for="tambahGambar">Upload gambar</label>
-                <input class="f-input" type="file" id="tambahGambar" name="gambar" accept="image/*" required>
+                <input class="f-input" type="file" id="tambahGambar" name="gambar" accept="image/jpeg,image/png,image/jpg" required>
+                <p class="f-hint"><i class="fas fa-info-circle"></i> Format: JPG, JPEG, PNG. Ukuran maksimal 2 MB.</p>
             </div>
         </div>
         <div class="sheet-foot">
@@ -499,6 +500,18 @@
             });
         });
     }
+    /* ---------- Validasi Ukuran File Gambar (Max 2MB) ---------- */
+    document.querySelectorAll('input[type="file"][name="gambar"]').forEach(function (input) {
+        input.addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                var maxSize = 2 * 1024 * 1024; // 2 MB
+                if (this.files[0].size > maxSize) {
+                    alert('Ukuran gambar melebihi batas maksimal 2 MB. Silakan pilih file lain atau kompres gambar terlebih dahulu.');
+                    this.value = '';
+                }
+            }
+        });
+    });
 })();
 </script>
 @endpush
