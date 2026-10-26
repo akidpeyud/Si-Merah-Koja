@@ -8,6 +8,7 @@ use App\Models\LpKategoriKhusus;
 use App\Models\LpTeknisLogistik;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -82,6 +83,27 @@ class DamtanController extends Controller
         $urut = $terakhir ? ((int) substr($terakhir, -4)) + 1 : 1;
 
         return $prefix.str_pad($urut, 4, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Konversi string waktu/datetime dari form (misal format HTML datetime-local atau HH:mm)
+     * menjadi datetime standar MySQL (Y-m-d H:i:s) atau null.
+     */
+    private function formatWaktu($waktu, $tanggal = null): ?string
+    {
+        if (empty($waktu)) {
+            return null;
+        }
+
+        try {
+            if (is_string($waktu) && ! str_contains($waktu, '-') && ! empty($tanggal)) {
+                return Carbon::parse($tanggal.' '.$waktu)->format('Y-m-d H:i:s');
+            }
+
+            return Carbon::parse($waktu)->format('Y-m-d H:i:s');
+        } catch (\Throwable $e) {
+            return null;
+        }
     }
 
     // ==========================================
@@ -365,12 +387,12 @@ class DamtanController extends Controller
                     'rincian_kategori_non_kebakaran' => $request->rincian_kategori_non_kebakaran,
                     'kategori_kejadian' => $request->kategori_kejadian,
                     'prioritas' => $request->prioritas ?? 'rendah',
-                    'waktu_kejadian' => $request->waktu_kejadian,
-                    'waktu_terima' => $request->waktu_terima,
-                    'waktu_berangkat' => $request->waktu_berangkat,
-                    'waktu_tiba' => $request->waktu_tiba,
-                    'waktu_selesai' => $request->waktu_selesai,
-                    'waktu_kembali' => $request->waktu_kembali,
+                    'waktu_kejadian' => $this->formatWaktu($request->waktu_kejadian, $request->tanggal_kejadian),
+                    'waktu_terima' => $this->formatWaktu($request->waktu_terima, $request->tanggal_kejadian),
+                    'waktu_berangkat' => $this->formatWaktu($request->waktu_berangkat, $request->tanggal_kejadian),
+                    'waktu_tiba' => $this->formatWaktu($request->waktu_tiba, $request->tanggal_kejadian),
+                    'waktu_selesai' => $this->formatWaktu($request->waktu_selesai, $request->tanggal_kejadian),
+                    'waktu_kembali' => $this->formatWaktu($request->waktu_kembali, $request->tanggal_kejadian),
                     'alamat' => $request->alamat,
                     'jarak_tempuh' => $request->jarak_tempuh,
                     'koordinat' => $request->koordinat,
@@ -514,12 +536,12 @@ class DamtanController extends Controller
                     'rincian_kategori_non_kebakaran' => $request->rincian_kategori_non_kebakaran,
                     'kategori_kejadian' => $request->kategori_kejadian,
                     'prioritas' => $request->prioritas ?? 'rendah',
-                    'waktu_kejadian' => $request->waktu_kejadian,
-                    'waktu_terima' => $request->waktu_terima,
-                    'waktu_berangkat' => $request->waktu_berangkat,
-                    'waktu_tiba' => $request->waktu_tiba,
-                    'waktu_selesai' => $request->waktu_selesai,
-                    'waktu_kembali' => $request->waktu_kembali,
+                    'waktu_kejadian' => $this->formatWaktu($request->waktu_kejadian, $request->tanggal_kejadian),
+                    'waktu_terima' => $this->formatWaktu($request->waktu_terima, $request->tanggal_kejadian),
+                    'waktu_berangkat' => $this->formatWaktu($request->waktu_berangkat, $request->tanggal_kejadian),
+                    'waktu_tiba' => $this->formatWaktu($request->waktu_tiba, $request->tanggal_kejadian),
+                    'waktu_selesai' => $this->formatWaktu($request->waktu_selesai, $request->tanggal_kejadian),
+                    'waktu_kembali' => $this->formatWaktu($request->waktu_kembali, $request->tanggal_kejadian),
                     'alamat' => $request->alamat,
                     'jarak_tempuh' => $request->jarak_tempuh,
                     'koordinat' => $request->koordinat,

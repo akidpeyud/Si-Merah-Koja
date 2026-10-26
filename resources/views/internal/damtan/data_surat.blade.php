@@ -72,7 +72,16 @@
     .side-group summary .grp-label { flex: 1 1 auto; min-width: 0; white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.4; }
     .side-group summary .chev { flex: none; font-size: .7rem; margin-top: 4px; transition: transform .25s ease; }
 
-    .page-header { margin-bottom: 28px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
+    .page-header {
+        position: relative;
+        z-index: 30;
+        margin-bottom: 28px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
     .page-header-text h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 5px; color: var(--ink); }
     .page-header-text p { color: var(--steel); font-size: .95rem; margin-bottom: 0; }
 
@@ -160,6 +169,8 @@
     .btn-custom-light.show { background: #f8fafc; border-color: var(--steel-soft); color: var(--ink); }
     .btn-custom-light.dropdown-toggle::after { margin-left: 2px; }
     .export-menu {
+        position: absolute;
+        z-index: 1050 !important;
         min-width: 270px;
         margin-top: 8px !important;
         padding: 8px;

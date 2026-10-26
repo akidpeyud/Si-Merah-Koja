@@ -9,13 +9,6 @@
     .page-head h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 5px; color: var(--ink); }
     .page-head p { color: var(--steel); font-size: .95rem; margin-bottom: 0; }
 
-    /* ---------- Pill kategori (Kebakaran / Non-Kebakaran) ---------- */
-    .tab-kategori { display: inline-flex; align-items: center; gap: 4px; padding: 6px; margin-bottom: 20px; background: #fff; border: 1px solid var(--line); border-radius: 999px; box-shadow: var(--shadow-sm); max-width: 100%; overflow-x: auto; }
-    .tab-kategori button { padding: 10px 28px; border: 0; border-radius: 999px; background: transparent; font-size: .92rem; font-weight: 700; color: var(--steel); transition: all .2s ease; white-space: nowrap; cursor: pointer; }
-    .tab-kategori button:hover { color: var(--ink); }
-    .tab-kategori button.active { background: var(--navy); color: #fff; box-shadow: 0 4px 10px rgba(22, 58, 99, .25); }
-    .tab-kategori button:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
-
     /* ---------- Kartu utama + Tabs ---------- */
     .tabs-card { background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--shadow-xs); }
     .card-header-tabs { background: #fff; border-bottom: 1px solid var(--line); padding: 14px 20px 0; border-radius: var(--r-md) var(--r-md) 0 0; }
@@ -89,32 +82,67 @@
 @section('content')
 
 @php
-    // Tab awal: dari ?kategori= (tombol "Buat Laporan Baru"), atau dari input lama jika validasi gagal
-    $tabAwal = request('kategori') === 'non-kebakaran' ? 'non-kebakaran' : 'kebakaran';
-    if (old('kategori_kejadian') !== null && old('kategori_kejadian') !== '') {
-        $tabAwal = old('kategori_kejadian') === 'kebakaran' ? 'kebakaran' : 'non-kebakaran';
+    /* HAK AKSES INPUT: hanya Damtan & Super User. Role lain hanya boleh lihat & cetak. */
+    if (!Auth::user()->hasAnyRole(['Damtan', 'Super User'])) {
+        abort(403, 'Anda tidak memiliki hak akses untuk menambah data laporan. Role Anda hanya dapat melihat dan mencetak.');
     }
-    $awalFire = $tabAwal === 'kebakaran';
+
+    /* Penanda "selected" untuk <option> */
+    $sel = fn ($a, $b) => (string) ($a ?? '') === (string) $b ? 'selected' : '';
+
+    $optMedia = [
+        'whatsapp' => 'Layanan WA Damkar', 'telepon' => 'Telepon Call Center',
+        'langsung' => 'Datang Langsung ke Mako/Pos', 'instansi_lain' => 'Laporan Instansi Lain',
+    ];
+    $optKategori = [
+        'kebakaran' => 'Kebakaran', 'penyelamatan_hewan' => 'Penyelamatan Hewan', 'bencana_alam' => 'Bencana Alam',
+        'kecelakaan_lalu_lintas' => 'Kecelakaan Lalu Lintas', 'evakuasi_medis' => 'Evakuasi Medis',
+    ];
+    $optObjek = [
+        'rumah' => 'Rumah', 'gudang' => 'Gudang', 'ruko' => 'Ruko', 'kantor' => 'Kantor', 'sekolah' => 'Sekolah',
+        'rumah_ibadah' => 'Rumah Ibadah', 'pasar_tempat_usaha' => 'Pasar / Tempat Usaha',
+        'kendaraan_bermotor' => 'Kendaraan Bermotor', 'objek_vital' => 'Objek Vital',
+        'sarana_kesehatan' => 'Sarana Kesehatan', 'lahan_pohon' => 'Lahan, Pohon',
+        'gardu_listrik' => 'Gardu Listrik', 'tempat_sampah' => 'Tempat Pembuangan Sampah',
+    ];
+    $optNonKebakaran = [
+        'fire_rescue' => 'Fire Rescue', 'water_rescue' => 'Water Rescue', 'land_rescue' => 'Land Rescue',
+        'evakuasi_liar' => 'Evakuasi Hewan Liar', 'evakuasi_ternak' => 'Evakuasi Ternak',
+        'evakuasi_piaraan' => 'Evakuasi Hewan Peliharaan', 'evakuasi_cincin' => 'Evakuasi Cincin / Anting',
+        'evakuasi_kendaraan' => 'Evakuasi Kendaraan Bermotor', 'lainnya' => 'Lainnya',
+    ];
+    $optPenyebab = [
+        'arus_pendek' => 'Arus pendek listrik', 'kebocoran_gas' => 'Kebocoran gas', 'sambaran_petir' => 'Sambaran petir',
+        'kelalaian_manusia' => 'Kelalaian manusia', 'faktor_alam' => 'Faktor alam', 'lainnya' => 'Lainnya',
+    ];
+
+    $kategoriDefault = old('kategori_kejadian', request('kategori') === 'non-kebakaran' ? 'penyelamatan_hewan' : 'kebakaran');
+    $prio = old('prioritas', 'rendah');
 @endphp
 
 <div class="page-head d-flex flex-wrap justify-content-between align-items-start gap-3">
     <div>
         <h1>Form Penginputan Data Penyelamatan</h1>
-        <p>Bagian Pemadaman & Penyelamatan - Disdamkartan Kota Jambi.</p>
+        <p>Bagian Pemadaman &amp; Penyelamatan - Disdamkartan Kota Jambi.</p>
     </div>
-    <a href="/internal/damtan/data-laporan?tab={{ $tabAwal }}" class="btn-custom-light">
+    <a href="/internal/damtan/data-laporan" class="btn-custom-light">
         <i class="fas fa-arrow-left"></i> Kembali
     </a>
 </div>
 
-<form action="{{ route('damtan.laporan.store') }}" method="POST" enctype="multipart/form-data">
-    @csrf
-
-    <!-- PILIH JENIS LAPORAN: Kebakaran / Non-Kebakaran -->
-    <div class="tab-kategori" id="pilihKategori" role="tablist" aria-label="Jenis laporan">
-        <button type="button" class="{{ $awalFire ? 'active' : '' }}" data-kategori="kebakaran" role="tab">Kebakaran</button>
-        <button type="button" class="{{ !$awalFire ? 'active' : '' }}" data-kategori="non-kebakaran" role="tab">Non-Kebakaran</button>
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <strong>Data gagal disimpan.</strong> Ada isian wajib yang terlewat atau tidak sesuai:
+        <ul class="mb-0 mt-2 ps-3" style="list-style: disc;">
+            @foreach ($errors->all() as $err)
+                <li>{{ $err }}</li>
+            @endforeach
+        </ul>
     </div>
+@endif
+
+<form id="formInputPenyelamatan" action="{{ route('damtan.laporan.store') }}" method="POST" enctype="multipart/form-data">
+    @csrf
 
     <div class="tabs-card">
         <!-- BOOTSTRAP TABS -->
@@ -129,8 +157,7 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="dokumentasi-tab" data-bs-toggle="tab" data-bs-target="#dokumentasi" type="button" role="tab"><span class="no">3</span> Dokumentasi & Validasi</button>
                 </li>
-                {{-- Tab 4 hanya untuk Non-Kebakaran --}}
-                <li class="nav-item" role="presentation" id="navKhusus">
+                <li class="nav-item" role="presentation">
                     <button class="nav-link" id="khusus-tab" data-bs-toggle="tab" data-bs-target="#khusus" type="button" role="tab"><span class="no">4</span> Kategori Khusus</button>
                 </li>
             </ul>
@@ -235,66 +262,50 @@
                 <section class="form-section">
                     <header class="form-section__head">
                         <span class="ico"><i class="fas fa-layer-group"></i></span>
-                        <div><h3>Klasifikasi Kejadian</h3><p>Untuk kebakaran, pilih objek kebakaran beserta rinciannya. Untuk non-kebakaran, pilih jenis kegiatannya.</p></div>
+                        <div><h3>Klasifikasi Kejadian</h3><p>Untuk kebakaran, pilih objek kebakaran beserta rinciannya.</p></div>
                     </header>
                     <div class="form-section__body">
                         <div class="row g-3">
                             <div class="col-md-4">
-                                {{-- Kategori kejadian: nilainya ditentukan oleh pill di atas halaman --}}
-                                <input type="hidden" name="kategori_kejadian" id="kategori_kejadian_fire" value="kebakaran">
-
-                                {{-- Hanya untuk Non-Kebakaran --}}
-                                <div class="mb-3" id="blokKategoriUmum" style="display:none;">
-                                    <label class="field-label">Kategori Kejadian Umum <span class="req">*</span></label>
-                                    <select class="form-select" name="kategori_kejadian" id="kategori_kejadian_non" disabled>
+                                <div class="mb-3">
+                                    <label class="field-label">Kategori Kejadian Umum</label>
+                                    <select class="form-select" name="kategori_kejadian" id="kategori_kejadian">
                                         <option value="">-- Pilih Kategori Kejadian --</option>
-                                        <option value="penyelamatan_hewan">Penyelamatan Hewan</option>
-                                        <option value="bencana_alam">Bencana Alam</option>
-                                        <option value="kecelakaan_lalu_lintas">Kecelakaan Lalu Lintas</option>
-                                        <option value="evakuasi_medis">Evakuasi Medis</option>
+                                        @foreach ($optKategori as $v => $l)
+                                            <option value="{{ $v }}" {{ $sel($kategoriDefault, $v) }}>{{ $l }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
 
-                                {{-- Tingkat Prioritas --}}
+                                {{-- Tingkat Prioritas (di bawah Kategori Kejadian Umum) --}}
                                 <div>
                                     <label class="field-label">Tingkat Prioritas</label>
                                     <div class="choice-group">
-                                        <label class="choice prio-rendah"><input type="radio" name="prioritas" id="prio1" value="rendah" checked> Rendah</label>
-                                        <label class="choice prio-sedang"><input type="radio" name="prioritas" id="prio2" value="sedang"> Sedang</label>
-                                        <label class="choice prio-tinggi"><input type="radio" name="prioritas" id="prio3" value="tinggi"> Tinggi</label>
-                                        <label class="choice prio-darurat"><input type="radio" name="prioritas" id="prio4" value="darurat"> Darurat</label>
+                                        <label class="choice prio-rendah"><input type="radio" name="prioritas" id="prio1" value="rendah" {{ $prio == 'rendah' ? 'checked' : '' }}> Rendah</label>
+                                        <label class="choice prio-sedang"><input type="radio" name="prioritas" id="prio2" value="sedang" {{ $prio == 'sedang' ? 'checked' : '' }}> Sedang</label>
+                                        <label class="choice prio-tinggi"><input type="radio" name="prioritas" id="prio3" value="tinggi" {{ $prio == 'tinggi' ? 'checked' : '' }}> Tinggi</label>
+                                        <label class="choice prio-darurat"><input type="radio" name="prioritas" id="prio4" value="darurat" {{ $prio == 'darurat' ? 'checked' : '' }}> Darurat</label>
                                     </div>
                                 </div>
                             </div>
 
-                            {{-- Objek kebakaran (tampil jika tab = Kebakaran) --}}
+                            {{-- Objek kebakaran (tampil jika kategori = Kebakaran) --}}
                             <div class="col-md-8" id="blokKebakaran">
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="field-label">Objek Kebakaran <span class="req">*</span></label>
                                         <select class="form-select" name="objek_kebakaran" id="objek_kebakaran" required>
-                                            <option selected value="">-- Pilih Objek --</option>
-                                            <option value="rumah">Rumah</option>
-                                            <option value="gudang">Gudang</option>
-                                            <option value="ruko">Ruko</option>
-                                            <option value="kantor">Kantor</option>
-                                            <option value="sekolah">Sekolah</option>
-                                            <option value="rumah_ibadah">Rumah Ibadah</option>
-                                            <option value="pasar_tempat_usaha">Pasar / Tempat Usaha</option>
-                                            <option value="kendaraan_bermotor">Kendaraan Bermotor</option>
-                                            <option value="objek_vital">Objek Vital</option>
-                                            <option value="sarana_kesehatan">Sarana Kesehatan</option>
-                                            <option value="lahan_pohon">Lahan, Pohon</option>
-                                            <option value="gardu_listrik">Gardu Listrik</option>
-                                            <option value="tempat_sampah">Tempat Pembuangan Sampah</option>
+                                            <option value="">-- Pilih Objek --</option>
+                                            @foreach ($optObjek as $v => $l)
+                                                <option value="{{ $v }}" {{ $sel(old('objek_kebakaran'), $v) }}>{{ $l }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
 
-                                    {{-- Keterangan di sebelah Objek Kebakaran --}}
                                     <div class="col-md-6">
                                         <label class="field-label">Keterangan Objek</label>
                                         <input type="text" class="form-control" name="keterangan_objek_kebakaran" id="keterangan_objek_kebakaran"
-                                               placeholder="Cth: Rumah milik Bpk. Iskandar, 2 lantai...">
+                                               value="{{ old('keterangan_objek_kebakaran') }}" placeholder="Cth: Rumah milik Bpk. Iskandar, 2 lantai...">
                                     </div>
 
                                     {{-- Rincian objek (muncul sesuai pilihan objek) --}}
@@ -304,15 +315,15 @@
                                             <label class="field-label">Rincian Rumah</label>
                                             <div class="pair">
                                                 <select class="form-select" name="tipe_bangunan_rumah" disabled>
-                                                    <option selected value="">-- Jenis Bangunan --</option>
-                                                    <option value="permanen">Permanen</option>
-                                                    <option value="semi_permanen">Semi Permanen</option>
-                                                    <option value="non_permanen">Non Permanen</option>
+                                                    <option value="">-- Jenis Bangunan --</option>
+                                                    <option value="permanen" {{ $sel(old('tipe_bangunan_rumah'), 'permanen') }}>Permanen</option>
+                                                    <option value="semi_permanen" {{ $sel(old('tipe_bangunan_rumah'), 'semi_permanen') }}>Semi Permanen</option>
+                                                    <option value="non_permanen" {{ $sel(old('tipe_bangunan_rumah'), 'non_permanen') }}>Non Permanen</option>
                                                 </select>
                                                 <select class="form-select" name="unit_rumah" disabled>
-                                                    <option selected value="">-- Unit --</option>
+                                                    <option value="">-- Unit --</option>
                                                     @for ($i = 1; $i <= 20; $i++)
-                                                        <option value="{{ $i }}">{{ $i }} Unit</option>
+                                                        <option value="{{ $i }}" {{ $sel(old('unit_rumah'), (string) $i) }}>{{ $i }} Unit</option>
                                                     @endfor
                                                 </select>
                                             </div>
@@ -320,31 +331,31 @@
 
                                         {{-- Gudang / Ruko / Kantor / Sekolah: unit --}}
                                         @foreach (['gudang' => 'Gudang', 'ruko' => 'Ruko', 'kantor' => 'Kantor', 'sekolah' => 'Sekolah'] as $key => $label)
-                                        <div class="sub-objek" data-objek="{{ $key }}">
-                                            <label class="field-label">Rincian {{ $label }}</label>
-                                            <select class="form-select" name="unit_{{ $key }}" disabled>
-                                                <option selected value="">-- Jumlah Unit --</option>
-                                                @for ($i = 1; $i <= 20; $i++)
-                                                    <option value="{{ $i }}">{{ $i }} Unit</option>
-                                                @endfor
-                                            </select>
-                                        </div>
+                                            <div class="sub-objek" data-objek="{{ $key }}">
+                                                <label class="field-label">Rincian {{ $label }}</label>
+                                                <select class="form-select" name="unit_{{ $key }}" disabled>
+                                                    <option value="">-- Jumlah Unit --</option>
+                                                    @for ($i = 1; $i <= 20; $i++)
+                                                        <option value="{{ $i }}" {{ $sel(old('unit_' . $key), (string) $i) }}>{{ $i }} Unit</option>
+                                                    @endfor
+                                                </select>
+                                            </div>
                                         @endforeach
 
                                         {{-- Pasar / tempat usaha: kolom input tambahan --}}
                                         <div class="sub-objek" data-objek="pasar_tempat_usaha">
                                             <label class="field-label">Rincian Pasar / Tempat Usaha</label>
-                                            <input type="text" class="form-control" name="nama_pasar_tempat_usaha" placeholder="Nama pasar / tempat usaha..." disabled>
+                                            <input type="text" class="form-control" name="nama_pasar_tempat_usaha" value="{{ old('nama_pasar_tempat_usaha') }}" placeholder="Nama pasar / tempat usaha..." disabled>
                                         </div>
 
                                         {{-- Kendaraan bermotor --}}
                                         <div class="sub-objek" data-objek="kendaraan_bermotor">
                                             <label class="field-label">Rincian Kendaraan Bermotor</label>
                                             <select class="form-select" name="jenis_kendaraan" disabled>
-                                                <option selected value="">-- Jenis Kendaraan --</option>
-                                                <option value="r2">Roda 2 (R2)</option>
-                                                <option value="r4">Roda 4 (R4)</option>
-                                                <option value="r6">Roda 6 (R6)</option>
+                                                <option value="">-- Jenis Kendaraan --</option>
+                                                <option value="r2" {{ $sel(old('jenis_kendaraan'), 'r2') }}>Roda 2 (R2)</option>
+                                                <option value="r4" {{ $sel(old('jenis_kendaraan'), 'r4') }}>Roda 4 (R4)</option>
+                                                <option value="r6" {{ $sel(old('jenis_kendaraan'), 'r6') }}>Roda 6 (R6)</option>
                                             </select>
                                         </div>
 
@@ -352,33 +363,27 @@
                                         <div class="sub-objek" data-objek="objek_vital">
                                             <label class="field-label">Rincian Objek Vital</label>
                                             <select class="form-select" name="jenis_objek_vital" disabled>
-                                                <option selected value="">-- Pilih Objek Vital --</option>
-                                                <option value="bandara">Bandara</option>
-                                                <option value="telkom">Telkom</option>
-                                                <option value="pertamina">Pertamina</option>
+                                                <option value="">-- Pilih Objek Vital --</option>
+                                                <option value="bandara" {{ $sel(old('jenis_objek_vital'), 'bandara') }}>Bandara</option>
+                                                <option value="telkom" {{ $sel(old('jenis_objek_vital'), 'telkom') }}>Telkom</option>
+                                                <option value="pertamina" {{ $sel(old('jenis_objek_vital'), 'pertamina') }}>Pertamina</option>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            {{-- Kategori non-kebakaran (tampil jika tab = Non-Kebakaran) --}}
+                            {{-- Kategori non-kebakaran (tampil jika kategori bukan Kebakaran) --}}
                             <div class="col-md-8" id="blokNonKebakaran" style="display:none;">
-                                <label class="field-label">Jenis Kegiatan (Non-Kebakaran)</label>
+                                <label class="field-label">Kategori Laporan (Non-Kebakaran)</label>
                                 <div class="pair">
                                     <select class="form-select" name="kategori_non_kebakaran" id="kategori_non_kebakaran" disabled>
-                                        <option selected value="">-- Pilih Jenis Evakuasi --</option>
-                                        <option value="fire_rescue">Fire Rescue</option>
-                                        <option value="water_rescue">Water Rescue</option>
-                                        <option value="land_rescue">Land Rescue</option>
-                                        <option value="evakuasi_liar">Evakuasi Hewan Liar</option>
-                                        <option value="evakuasi_ternak">Evakuasi Ternak</option>
-                                        <option value="evakuasi_piaraan">Evakuasi Hewan Peliharaan</option>
-                                        <option value="evakuasi_cincin">Evakuasi Cincin / Anting</option>
-                                        <option value="evakuasi_kendaraan">Evakuasi Kendaraan Bermotor</option>
-                                        <option value="lainnya">Lainnya</option>
+                                        <option value="">-- Pilih Jenis Evakuasi --</option>
+                                        @foreach ($optNonKebakaran as $v => $l)
+                                            <option value="{{ $v }}" {{ $sel(old('kategori_non_kebakaran'), $v) }}>{{ $l }}</option>
+                                        @endforeach
                                     </select>
-                                    <input type="text" class="form-control" name="rincian_kategori_non_kebakaran" id="rincian_kategori_non_kebakaran" placeholder="Ketik jika 'Lainnya'..." disabled>
+                                    <input type="text" class="form-control" name="rincian_kategori_non_kebakaran" id="rincian_kategori_non_kebakaran" value="{{ old('rincian_kategori_non_kebakaran') }}" placeholder="Ketik jika 'Lainnya'..." disabled>
                                 </div>
                             </div>
                         </div>
@@ -857,13 +862,12 @@
 
                 <div class="tab-nav">
                     <button type="button" class="btn-custom-light" data-go-tab="#teknis-tab"><i class="fas fa-arrow-left"></i> Sebelumnya</button>
-                    {{-- Hanya muncul untuk Non-Kebakaran (tab 4 disembunyikan di Kebakaran) --}}
-                    <button type="button" class="btn-custom-primary" id="btnKeKhusus" data-go-tab="#khusus-tab">Selanjutnya <i class="fas fa-arrow-right"></i></button>
+                    <button type="button" class="btn-custom-primary" data-go-tab="#khusus-tab">Selanjutnya <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
 
             {{-- ==========================================================
-                 TAB 4: KATEGORI KHUSUS (hanya Non-Kebakaran)
+                 TAB 4: KATEGORI KHUSUS
                  ========================================================== --}}
             <div class="tab-pane fade" id="khusus" role="tabpanel">
 
@@ -1047,7 +1051,7 @@
     <div class="action-bar">
         <small><span class="req">*</span> Kolom bertanda bintang wajib diisi.</small>
         <div class="d-flex gap-2">
-            <button type="reset" class="btn-custom-light">Batal</button>
+            <a href="/internal/damtan/data-laporan" class="btn-custom-light">Batal</a>
             <button type="submit" class="btn-custom-primary shadow-sm">
                 <i class="fas fa-save"></i> Simpan Data Penyelamatan
             </button>
@@ -1085,31 +1089,20 @@
     }
 
     /* ==========================================================
-       PILL KATEGORI (Kebakaran / Non-Kebakaran)
-       Mengatur: kategori_kejadian, blok objek / jenis kegiatan,
-       section khusus kebakaran (.only-fire) dan tab 4 (khusus non-kebakaran)
+       KATEGORI KEJADIAN -> OBJEK KEBAKARAN / NON-KEBAKARAN
        ========================================================== */
-    var pillWrap = document.getElementById('pilihKategori');
-    var kategoriFire = document.getElementById('kategori_kejadian_fire');   // hidden: "kebakaran"
-    var kategoriNon = document.getElementById('kategori_kejadian_non');     // select: kategori umum non-kebakaran
-    var blokKategoriUmum = document.getElementById('blokKategoriUmum');
+    var kategori = document.getElementById('kategori_kejadian');
     var objek = document.getElementById('objek_kebakaran');
     var ketObjek = document.getElementById('keterangan_objek_kebakaran');
     var blokKebakaran = document.getElementById('blokKebakaran');
     var blokNon = document.getElementById('blokNonKebakaran');
     var nonSelect = document.getElementById('kategori_non_kebakaran');
     var dugaan = document.getElementById('dugaan_penyebab');
-    var tombolKembali = document.querySelector('.page-head a.btn-custom-light');
 
-    // Tab 4 (Kategori Khusus)
-    var navKhusus = document.getElementById('navKhusus');
-    var paneKhusus = document.getElementById('khusus');
-    var btnKeKhusus = document.getElementById('btnKeKhusus');
-    var jenisHewan = document.getElementById('jenis_hewan');
-
-    function tampilkanSubObjek(isFire) {
+    function tampilkanSubObjek() {
+        var isFire = kategori ? (kategori.value === 'kebakaran') : true;
         document.querySelectorAll('.sub-objek').forEach(function (box) {
-            var aktif = isFire && box.getAttribute('data-objek') === objek.value;
+            var aktif = isFire && box.getAttribute('data-objek') === (objek ? objek.value : '');
             box.classList.toggle('is-active', aktif);
             // Field yang disembunyikan di-disable supaya tidak ikut terkirim
             box.querySelectorAll('input, select').forEach(function (el) {
@@ -1119,82 +1112,48 @@
         });
     }
 
-    function aturKategori(isFire) {
-        // Pill aktif
-        pillWrap.querySelectorAll('button').forEach(function (b) {
-            b.classList.toggle('active', (b.getAttribute('data-kategori') === 'kebakaran') === isFire);
-        });
+    function sinkronKategori() {
+        if (!kategori) return;
+        var isFire = kategori.value === 'kebakaran';
 
-        // Nilai kategori_kejadian yang dikirim (hanya salah satu yang aktif)
-        kategoriFire.disabled = !isFire;
-        blokKategoriUmum.style.display = isFire ? 'none' : '';
-        kategoriNon.disabled = isFire;
-        kategoriNon.required = !isFire;
-        if (isFire) kategoriNon.value = '';
+        if (blokKebakaran) blokKebakaran.style.display = isFire ? '' : 'none';
+        if (objek) {
+            objek.disabled = !isFire;
+            objek.required = isFire;
+            if (!isFire) objek.value = '';
+        }
 
-        // Blok objek kebakaran
-        blokKebakaran.style.display = isFire ? '' : 'none';
-        objek.disabled = !isFire;
-        objek.required = isFire;
-        if (!isFire) objek.value = '';
         if (ketObjek) {
             ketObjek.disabled = !isFire;
             if (!isFire) ketObjek.value = '';
         }
 
-        // Blok jenis kegiatan non-kebakaran
-        blokNon.style.display = isFire ? 'none' : '';
-        nonSelect.disabled = isFire;
-        if (isFire) {
-            nonSelect.value = '';
-            nonSelect.dispatchEvent(new Event('change')); // reset kolom "Lainnya"
+        if (blokNon) blokNon.style.display = isFire ? 'none' : '';
+        if (nonSelect) {
+            nonSelect.disabled = isFire;
+            if (isFire) {
+                nonSelect.value = '';
+                nonSelect.dispatchEvent(new Event('change')); // reset kolom "Lainnya"
+            }
         }
 
-        tampilkanSubObjek(isFire);
-
-        // Section khusus kebakaran (Analisis Kejadian): sembunyikan & jangan kirim jika non-kebakaran
+        // Section khusus kebakaran (Analisis Kejadian): sembunyikan jika non-kebakaran
         document.querySelectorAll('.only-fire').forEach(function (sec) {
             sec.style.display = isFire ? '' : 'none';
             sec.querySelectorAll('input, select, textarea').forEach(function (el) {
                 el.disabled = !isFire;
             });
         });
-        if (isFire && dugaan) dugaan.dispatchEvent(new Event('change')); // atur ulang kolom "Lainnya"
+        if (isFire && dugaan) dugaan.dispatchEvent(new Event('change'));
 
-        // Tab 4 "Kategori Khusus": hanya untuk Non-Kebakaran
-        navKhusus.style.display = isFire ? 'none' : '';
-        if (btnKeKhusus) btnKeKhusus.style.display = isFire ? 'none' : '';
-        paneKhusus.querySelectorAll('input, select, textarea').forEach(function (el) {
-            el.disabled = isFire;
-        });
-        if (!isFire && jenisHewan) jenisHewan.dispatchEvent(new Event('change')); // atur ulang kolom "Lainnya"
-        if (isFire && paneKhusus.classList.contains('active')) {
-            // Sedang membuka tab 4 lalu pindah ke Kebakaran -> kembali ke tab 3
-            var tab3 = document.getElementById('dokumentasi-tab');
-            if (tab3 && window.bootstrap) bootstrap.Tab.getOrCreateInstance(tab3).show();
-        }
-
-        // Tombol "Kembali" ikut kembali ke tab yang sama
-        if (tombolKembali) {
-            tombolKembali.setAttribute('href', '/internal/damtan/data-laporan?tab=' + (isFire ? 'kebakaran' : 'non-kebakaran'));
-        }
+        tampilkanSubObjek();
     }
 
-    pillWrap.querySelectorAll('button').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            aturKategori(btn.getAttribute('data-kategori') === 'kebakaran');
-        });
-    });
-    objek.addEventListener('change', function () {
-        tampilkanSubObjek(!kategoriFire.disabled);
-    });
-
-    // Nilai awal dari server (?kategori= atau input lama)
-    var awalFire = {{ $awalFire ? 'true' : 'false' }};
-    @if (!$awalFire && old('kategori_kejadian') && old('kategori_kejadian') !== 'kebakaran')
-    kategoriNon.value = @json(old('kategori_kejadian'));
-    @endif
-    aturKategori(awalFire);
+    if (kategori) {
+        kategori.addEventListener('change', sinkronKategori);
+        if (objek) objek.addEventListener('change', tampilkanSubObjek);
+        sinkronKategori();   // sesuaikan tampilan awal
+    }
 
     /* ==========================================================
        RESPON TIME & LAMA OPERASI OTOMATIS (menit)

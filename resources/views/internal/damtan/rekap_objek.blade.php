@@ -43,7 +43,18 @@
     /* ==========================================================
        JUDUL HALAMAN & FILTER
        ========================================================== */
-    .page-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+    .page-head {
+        position: relative;
+        z-index: 30;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 32px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--line);
+    }
     .page-head-title h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 6px; color: var(--ink); }
     .page-head-title p { color: var(--steel); font-size: .95rem; margin-bottom: 0; max-width: 650px; }
 
@@ -281,6 +292,8 @@
         color: var(--ink);
     }
     .export-menu {
+        position: absolute;
+        z-index: 1050 !important;
         min-width: 290px;
         margin-top: 8px !important;
         padding: 8px;
