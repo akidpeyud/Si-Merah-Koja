@@ -1,6 +1,4 @@
-@extends('layouts.dashboard')
-
-@section('content')
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -8,7 +6,7 @@
     <style>
         @page { size: A4 landscape; margin: 12mm; }
         * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        body { font-family: 'Times New Roman', Times, serif; font-size: 12px; color: #000; margin: 0; }
+        body { font-family: 'Times New Roman', Times, serif; font-size: 12px; color: #000; margin: 0; background: #fff; }
 
         /* KOP SURAT */
         .kop-surat { width: 100%; border-bottom: 4px double #000; padding-bottom: 8px; margin-bottom: 12px; border-collapse: collapse; }
@@ -30,7 +28,7 @@
         .table-data tr { page-break-inside: avoid; }
         .text-center { text-align: center; }
 
-        /* BADGE DOKUMEN (sama dengan web) */
+        /* BADGE DOKUMEN */
         .dok-badge { display: inline-block; padding: 3px 8px; margin: 0 3px 3px 0; border-radius: 4px; color: #fff; font-size: 9px; font-weight: bold; letter-spacing: .03em; text-transform: uppercase; }
         .dok-spt   { background: #3b82f6; }
         .dok-ba    { background: #10b981; }
@@ -41,7 +39,7 @@
         .ringkasan { margin-top: 10px; font-family: Arial, sans-serif; font-size: 11px; }
         .cetak-info { margin-top: 4px; font-family: Arial, sans-serif; font-size: 9px; color: #444; }
 
-        /* DOKUMEN DI DALAM KOLOM TABEL: 5 thumbnail sejajar */
+        /* DOKUMEN DI DALAM KOLOM TABEL */
         .td-dok { padding: 4px 5px !important; }
         .dok-row { display: flex; gap: 1.5mm; }
         .dok-slot { flex: 1 1 0; min-width: 0; text-align: center; }
@@ -53,7 +51,7 @@
         .dok-slot.kosong .dok-badge { opacity: .3; }
         .tidak-ada { color: #888; font-style: italic; text-align: center; font-size: 10px; }
 
-        /* LAMPIRAN: 1 BANGUNAN = 1 HALAMAN (grid 3 x 2, ukuran tetap) */
+        /* LAMPIRAN (Grid Gambar) */
         .lp-page { page-break-before: always; height: 182mm; overflow: hidden; font-family: Arial, sans-serif; }
         .lp-head { display: flex; justify-content: space-between; align-items: center; height: 11mm; border-bottom: 2px solid #000; margin-bottom: 3mm; }
         .lp-title { font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: .02em; }
@@ -75,6 +73,11 @@
         .lp-check div { display: flex; align-items: center; gap: 6px; margin-bottom: 1.2mm; }
         .lp-ok { color: #198754; font-weight: bold; }
         .lp-no { color: #b0b5bd; }
+        
+        /* HIDE ELEMENT KETIKA PRINT */
+        @media print {
+            body { background: #fff !important; }
+        }
     </style>
 </head>
 <body>
@@ -98,8 +101,7 @@
             return asset($v);
         };
 
-        // Cari semua dokumen milik satu baris data, apa pun nama kolomnya.
-        // File dikenali dari akhiran nama file: ..._spt.png, ..._ba.jpg, ..._nilai.jpeg, ..._rekom.png, ..._skk.png
+        // Cari semua dokumen milik satu baris data
         $cariDok = function ($item) use ($dokMeta, $urlDok) {
             $attrs = method_exists($item, 'getAttributes') ? $item->getAttributes() : (array) $item;
             $hasil = [];
@@ -122,7 +124,7 @@
                     if ($tipe && !isset($hasil[$tipe])) $hasil[$tipe] = $urlDok($v);
                 }
             }
-            return $hasil;   // contoh: ['spt' => url, 'nilai' => url]
+            return $hasil;
         };
 
         $dokData = collect($data)->map(fn ($it) => $cariDok($it));
@@ -206,7 +208,7 @@
     <div class="ringkasan"><strong>Total data:</strong> {{ count($data) }} bangunan</div>
     <div class="cetak-info">Dicetak pada {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('d F Y, H:i') }} WIB melalui SIMERAH KOJA</div>
 
-    <!-- ====== LAMPIRAN BESAR (opsional): tambahkan ?lampiran=1 pada URL cetak ====== -->
+    <!-- LAMPIRAN GAMBAR/DOKUMEN JIKA DIMINTA -->
     @if(request()->boolean('lampiran'))
     @php
         $punyaDok = $dokData->filter(fn ($d) => !empty($d))->keys()->values();
@@ -245,7 +247,6 @@
                     </div>
                 @endforeach
 
-                {{-- Kartu info bangunan (mengisi kotak ke-6) --}}
                 <div class="lp-box lp-info">
                     <h4>{{ $item->nama_tempat ?? '-' }}</h4>
                     <table>
