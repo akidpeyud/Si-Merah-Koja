@@ -785,10 +785,11 @@
                     $rows = collect($t['data']);
                     $kolom = [];
                     if ($rows->isNotEmpty()) {
-                        $kolom = array_values(array_filter(array_keys((array) $rows->first()), function ($c) {
+                        $kolom = array_values(array_filter(array_keys((array) $rows->first()), function ($c) use ($path_sarana) {
                             return !in_array($c, ['id', 'created_at', 'updated_at'])
                                 && !str_starts_with($c, 'id_')
-                                && !preg_match('/stnk|luas/i', $c); // STNK & luas bangunan tidak ditampilkan ke publik
+                                && !preg_match('/stnk|luas/i', $c) // STNK & luas bangunan tidak ditampilkan ke publik
+                                && !($path_sarana && preg_match('/^jumlah$/i', $c)); // Jumlah sarana hanya untuk internal
                         }));
                     }
 
