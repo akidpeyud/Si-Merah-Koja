@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class DokumenSopSeeder extends Seeder
 {
@@ -13,107 +14,214 @@ class DokumenSopSeeder extends Seeder
      */
     public function run(): void
     {
-        $now = Carbon::now()->format('Y-m-d H:i:s');
-
         $dokumenSop = [
-            // ==========================================================
-            // DATA DOKUMEN SOP EKSISTING (Sarpras, Kepegawaian, Keuangan, Pencegahan)
-            // ==========================================================
+            // ==========================================
+            // Kategori: Pemadaman Kebakaran
+            // ==========================================
+            [
+                'judul_dokumen' => 'Salinan Salinan SK KADIS-174-24 SOP PEMADAMAN',
+                'kategori' => 'SOP',
+                'sub_kategori' => 'Pemadaman Kebakaran',
+                'nama_file' => 'Salinan Salinan SK KADIS-174-24 SOP PEMADAMAN.pdf',
+                'file_path' => 'seed-files/sop/damtan/Salinan Salinan SK KADIS-174-24 SOP PEMADAMAN.pdf',
+                'source_file' => 'seed-files/sop/damtan/Salinan Salinan SK KADIS-174-24 SOP PEMADAMAN.pdf',
+            ],
+            [
+                'judul_dokumen' => 'Salinan Salinan SK KADIS-173-24 SOP LAYANAN OBJEK VITAL',
+                'kategori' => 'SOP',
+                'sub_kategori' => 'Pemadaman Kebakaran',
+                'nama_file' => 'Salinan Salinan SK KADIS-173-24 SOP LAYANAN OBJEK VITAL.pdf',
+                'file_path' => 'seed-files/sop/damtan/Salinan Salinan SK KADIS-173-24 SOP LAYANAN OBJEK VITAL.pdf',
+                'source_file' => 'seed-files/sop/damtan/Salinan Salinan SK KADIS-173-24 SOP LAYANAN OBJEK VITAL.pdf',
+            ],
+            [
+                'judul_dokumen' => 'Salinan SOP 51 PENYELENGGARAAN DI GEDUNG DAN LAPANGAN',
+                'kategori' => 'SOP',
+                'sub_kategori' => 'Pemadaman Kebakaran',
+                'nama_file' => 'Salinan SOP 51 PENYELENGGARAAN DI GEDUNG DAN LAPANGAN.pdf',
+                'file_path' => 'seed-files/sop/damtan/Salinan SOP 51 PENYELENGGARAAN DI GEDUNG DAN LAPANGAN.pdf',
+                'source_file' => 'seed-files/sop/damtan/Salinan SOP 51 PENYELENGGARAAN DI GEDUNG DAN LAPANGAN.pdf',
+            ],
+            [
+                'judul_dokumen' => 'Salinan Salinan SK SOP Pengaman Bahaya Kebakaran pd Akai DemonstrasiUnjuk Rs di Koja',
+                'kategori' => 'SOP',
+                'sub_kategori' => 'Pemadaman Kebakaran',
+                'nama_file' => 'Salinan Salinan SK SOP Pengaman Bahaya Kebakaran pd Akai DemonstrasiUnjuk Rs di Koja.pdf',
+                'file_path' => 'seed-files/sop/damtan/Salinan Salinan SK SOP Pengaman Bahaya Kebakaran pd Akai DemonstrasiUnjuk Rs di Koja.pdf',
+                'source_file' => 'seed-files/sop/damtan/Salinan Salinan SK SOP Pengaman Bahaya Kebakaran pd Akai DemonstrasiUnjuk Rs di Koja.pdf',
+            ],
+
+            // ==========================================
+            // Kategori: Penyelamatan & Evakuasi
+            // ==========================================
+            [
+                'judul_dokumen' => 'Salinan SOP TAWON 174 (1)',
+                'kategori' => 'SOP',
+                'sub_kategori' => 'Penyelamatan dan Evakuasi',
+                'nama_file' => 'Salinan SOP TAWON 174 (1).pdf',
+                'file_path' => 'seed-files/sop/damtan/Salinan SOP TAWON 174 (1).pdf',
+                'source_file' => 'seed-files/sop/damtan/Salinan SOP TAWON 174 (1).pdf',
+            ],
+            [
+                'judul_dokumen' => 'Salinan Salinan SK 226 TIM PENANGGUNGALANGN BENCANA',
+                'kategori' => 'SOP',
+                'sub_kategori' => 'Penyelamatan dan Evakuasi',
+                'nama_file' => 'Salinan Salinan SK 226 TIM PENANGGUNGALANGN BENCANA.pdf',
+                'file_path' => 'seed-files/sop/damtan/Salinan Salinan SK 226 TIM PENANGGUNGALANGN BENCANA.pdf',
+                'source_file' => 'seed-files/sop/damtan/Salinan Salinan SK 226 TIM PENANGGUNGALANGN BENCANA.pdf',
+            ],
+            [
+                'judul_dokumen' => 'Salinan Salinan SK KADIS-49-23 SOP INVES DAN VERIFIKASI',
+                'kategori' => 'SOP',
+                'sub_kategori' => 'Penyelamatan dan Evakuasi',
+                'nama_file' => 'Salinan Salinan SK KADIS-49-23 SOP INVES DAN VERIFIKASI.pdf',
+                'file_path' => 'seed-files/sop/damtan/Salinan Salinan SK KADIS-49-23 SOP INVES DAN VERIFIKASI.pdf',
+                'source_file' => 'seed-files/sop/damtan/Salinan Salinan SK KADIS-49-23 SOP INVES DAN VERIFIKASI.pdf',
+            ],
+            [
+                'judul_dokumen' => 'Salinan Salinan SK 178 KADIS SOP ADM SLRN KBKRN',
+                'kategori' => 'SOP',
+                'sub_kategori' => 'Penyelamatan dan Evakuasi',
+                'nama_file' => 'Salinan Salinan SK 178 KADIS SOP ADM SLRN KBKRN.pdf',
+                'file_path' => 'seed-files/sop/damtan/Salinan Salinan SK 178 KADIS SOP ADM SLRN KBKRN.pdf',
+                'source_file' => 'seed-files/sop/damtan/Salinan Salinan SK 178 KADIS SOP ADM SLRN KBKRN.pdf',
+            ],
+
+            // ==========================================
+            // Kategori: Sarana dan Prasarana
+            // ==========================================
             [
                 'judul_dokumen' => 'Sop sarana dan prasarana',
                 'nama_file' => '1792836055_SOP_SAPRA_1.pdf',
-                'file_path' => null,
+                'file_path' => 'seed-files/sop/sapras/SOP SAPRA 1.pdf',
+                'source_file' => 'seed-files/sop/sapras/SOP SAPRA 1.pdf',
                 'kategori' => 'SOP',
                 'sub_kategori' => 'Sarana dan Prasarana',
             ],
             [
                 'judul_dokumen' => 'Sop sarana dan prasarana 2',
                 'nama_file' => '1792836075_SOP_SAPRAS_2-compressed.pdf',
-                'file_path' => null,
+                'file_path' => 'seed-files/sop/sapras/SOP SAPRAS 2-compressed.pdf',
+                'source_file' => 'seed-files/sop/sapras/SOP SAPRAS 2-compressed.pdf',
                 'kategori' => 'SOP',
                 'sub_kategori' => 'Sarana dan Prasarana',
             ],
+
+            // ==========================================
+            // Kategori: Kepegawaian
+            // ==========================================
             [
                 'judul_dokumen' => 'Sop Umpeg',
                 'nama_file' => '1792836208_SOP_UMPEG_(1)_compressed.pdf',
-                'file_path' => null,
+                'file_path' => 'seed-files/sop/umpeg/SOP UMPEG (1).pdf',
+                'source_file' => 'seed-files/sop/umpeg/SOP UMPEG (1).pdf',
                 'kategori' => 'SOP',
                 'sub_kategori' => 'Kepegawaian',
             ],
+
+            // ==========================================
+            // Kategori: Keuangan
+            // ==========================================
             [
                 'judul_dokumen' => '1. SOP RKA',
                 'nama_file' => '1792836397_1._SOP_RKA_-_Copy.pdf',
-                'file_path' => null,
+                'file_path' => 'seed-files/sop/keuangan/1. SOP RKA - Copy.pdf',
+                'source_file' => 'seed-files/sop/keuangan/1. SOP RKA - Copy.pdf',
                 'kategori' => 'SOP',
                 'sub_kategori' => 'Keuangan',
             ],
             [
                 'judul_dokumen' => '2. SOP DPA',
                 'nama_file' => '1792836419_2._SOP_DPA_-_Copy.pdf',
-                'file_path' => null,
+                'file_path' => 'seed-files/sop/keuangan/2. SOP DPA - Copy.pdf',
+                'source_file' => 'seed-files/sop/keuangan/2. SOP DPA - Copy.pdf',
                 'kategori' => 'SOP',
                 'sub_kategori' => 'Keuangan',
             ],
             [
                 'judul_dokumen' => '3. SOP RENSTRA OK',
                 'nama_file' => '1792836446_3._SOP_RENSTRA_OK.pdf',
-                'file_path' => null,
+                'file_path' => 'seed-files/sop/keuangan/3. SOP RENSTRA OK.pdf',
+                'source_file' => 'seed-files/sop/keuangan/3. SOP RENSTRA OK.pdf',
                 'kategori' => 'SOP',
                 'sub_kategori' => 'Keuangan',
             ],
             [
                 'judul_dokumen' => '4. SOP RENJA',
                 'nama_file' => '1792836464_4._SOP_RENJA.pdf',
-                'file_path' => null,
+                'file_path' => 'seed-files/sop/keuangan/4. SOP RENJA.pdf',
+                'source_file' => 'seed-files/sop/keuangan/4. SOP RENJA.pdf',
                 'kategori' => 'SOP',
                 'sub_kategori' => 'Keuangan',
             ],
             [
                 'judul_dokumen' => '5. SOP LKjIP 2023',
                 'nama_file' => '1792836481_5._SOP_LKjIP_2023.pdf',
-                'file_path' => null,
+                'file_path' => 'seed-files/sop/keuangan/5. SOP LKjIP 2023.pdf',
+                'source_file' => 'seed-files/sop/keuangan/5. SOP LKjIP 2023.pdf',
                 'kategori' => 'SOP',
                 'sub_kategori' => 'Keuangan',
             ],
             [
                 'judul_dokumen' => '6. SOP Laporan Tahunan',
                 'nama_file' => '1792836495_6._SOP_Laporan_Tahunan.pdf',
-                'file_path' => null,
+                'file_path' => 'seed-files/sop/keuangan/6. SOP Laporan Tahunan.pdf',
+                'source_file' => 'seed-files/sop/keuangan/6. SOP Laporan Tahunan.pdf',
                 'kategori' => 'SOP',
                 'sub_kategori' => 'Keuangan',
             ],
             [
                 'judul_dokumen' => '6. SOP PEMBAYARAN GAJI',
                 'nama_file' => '1792836518_6._SOP_PEMBAYARAN_GAJI.pdf',
-                'file_path' => null,
+                'file_path' => 'seed-files/sop/keuangan/6. SOP PEMBAYARAN GAJI.pdf',
+                'source_file' => 'seed-files/sop/keuangan/6. SOP PEMBAYARAN GAJI.pdf',
                 'kategori' => 'SOP',
                 'sub_kategori' => 'Keuangan',
             ],
             [
                 'judul_dokumen' => '7. SOP PENGAJUAN DAN PEMBAYARAN TAMBAHAN PENGHASILAN',
                 'nama_file' => '1792836532_7._SOP_PENGAJUAN_DAN_PEMBAYARAN_TAMBAHAN_PENGHASILAN.pdf',
-                'file_path' => null,
+                'file_path' => 'seed-files/sop/keuangan/7. SOP PENGAJUAN DAN PEMBAYARAN TAMBAHAN PENGHASILAN.pdf',
+                'source_file' => 'seed-files/sop/keuangan/7. SOP PENGAJUAN DAN PEMBAYARAN TAMBAHAN PENGHASILAN.pdf',
                 'kategori' => 'SOP',
                 'sub_kategori' => 'Keuangan',
             ],
             [
+                'judul_dokumen' => '8. SOP SPP - SPM UPGU',
+                'nama_file' => '1792836545_8._SOP_SPP_-_SPM_UPGU.pdf',
+                'file_path' => 'seed-files/sop/keuangan/8. SOP SPP - SPM UPGU.pdf',
+                'source_file' => 'seed-files/sop/keuangan/8. SOP SPP - SPM UPGU.pdf',
+                'kategori' => 'SOP',
+                'sub_kategori' => 'Keuangan',
+                'created_at' => '2026-10-24 10:09:05',
+                'updated_at' => '2026-10-24 10:09:05',
+            ],
+
+            // ==========================================
+            // Kategori: Pencegahan
+            // ==========================================
+            [
+                'id' => 12,
                 'judul_dokumen' => 'SOP Pemberdayaan masyarakat dan dunia usaha',
                 'nama_file' => '1792836656_SOP_Pemberdayaan_masyarakat_dan_dunia_usaha_compressed.pdf',
-                'file_path' => null,
+                'file_path' => 'seed-files/sop/pencegahan/SOP Pemberdayaan masyarakat dan dunia usaha.pdf',
+                'source_file' => 'seed-files/sop/pencegahan/SOP Pemberdayaan masyarakat dan dunia usaha.pdf',
                 'kategori' => 'SOP',
                 'sub_kategori' => 'Pencegahan',
             ],
             [
                 'judul_dokumen' => 'SOP Kasi Peningkatan Kapasitas Aparatur',
                 'nama_file' => '1792836703_SOP_Kasi_Peningkatan_Kapasitas_Aparatur_compressed.pdf',
-                'file_path' => null,
+                'file_path' => 'seed-files/sop/pencegahan/SOP Kasi Peningkatan Kapasitas Aparatur.pdf',
+                'source_file' => 'seed-files/sop/pencegahan/SOP Kasi Peningkatan Kapasitas Aparatur.pdf',
                 'kategori' => 'SOP',
                 'sub_kategori' => 'Pencegahan',
             ],
             [
                 'judul_dokumen' => 'SOP Kasi pencegahan dan inspeksi',
                 'nama_file' => '1792836773_SOP_Kasi_pencegahan_dan_inspeksi_compressed.pdf',
-                'file_path' => null,
+                'file_path' => 'seed-files/sop/pencegahan/SOP Kasi pencegahan dan inspeksi.pdf',
+                'source_file' => 'seed-files/sop/pencegahan/SOP Kasi pencegahan dan inspeksi.pdf',
                 'kategori' => 'SOP',
                 'sub_kategori' => 'Pencegahan',
             ],
@@ -184,14 +292,39 @@ class DokumenSopSeeder extends Seeder
             ],
         ];
 
+        $now = Carbon::now();
+        $targetDir = storage_path('app/public/dokumen');
+
+        if (! File::exists($targetDir)) {
+            File::makeDirectory($targetDir, 0755, true);
+        }
+
         foreach ($dokumenSop as $item) {
-            DB::table('dokumen_sop')->updateOrInsert(
-                ['nama_file' => $item['nama_file']],
-                array_merge($item, [
-                    'updated_at' => $now,
-                    'created_at' => $now,
-                ])
-            );
+            $sourceRelative = $item['source_file'] ?? null;
+            unset($item['source_file']);
+
+            if ($sourceRelative) {
+                $sourcePath = storage_path('app/public/'.$sourceRelative);
+                $destinationPath = $targetDir.DIRECTORY_SEPARATOR.$item['nama_file'];
+
+                if (File::exists($sourcePath)) {
+                    File::copy($sourcePath, $destinationPath);
+                }
+            }
+
+            // Jika data memiliki 'id', gunakan 'id' sebagai kunci pencarian updateOrInsert
+            // Jika tidak, gunakan 'nama_file'
+            $uniqueKey = isset($item['id']) ? ['id' => $item['id']] : ['nama_file' => $item['nama_file']];
+
+            // Tambahkan timestamp otomatis jika belum ada di dalam array item
+            if (! isset($item['created_at'])) {
+                $item['created_at'] = $now;
+            }
+            if (! isset($item['updated_at'])) {
+                $item['updated_at'] = $now;
+            }
+
+            DB::table('dokumen_sop')->updateOrInsert($uniqueKey, $item);
         }
     }
 }

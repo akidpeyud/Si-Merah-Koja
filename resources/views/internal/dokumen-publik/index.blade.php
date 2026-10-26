@@ -189,7 +189,7 @@
             </div>
             
             <div class="d-flex gap-2 flex-wrap">
-                @hasanyrole('Super User|Sekretariat|Operator')
+                @hasanyrole('Super User|Sekretariat')
                 <button type="button" class="btn-add" data-bs-toggle="modal" data-bs-target="#modalTambah">
                     <i class="fas fa-plus"></i> Tambah Dokumen
                 </button>
@@ -273,7 +273,7 @@
                                 @endif
                             </td>
                             <td class="text-center">
-                                @hasanyrole('Super User|Sekretariat|Operator')
+                                @hasanyrole('Super User|Sekretariat')
                                 <div class="btn-action-group justify-content-center">
                                     <button type="button" class="btn-icon edit" title="Edit Data"
                                         data-bs-toggle="modal"
@@ -294,7 +294,7 @@
                         </tr>
 
                         <!-- MODAL EDIT DATA PER ITEM -->
-                        @hasanyrole('Super User|Sekretariat|Operator')
+                        @hasanyrole('Super User|Sekretariat')
                         <div class="modal fade" id="modalEdit{{ $itemId }}" tabindex="-1" aria-labelledby="modalEditLabel{{ $itemId }}" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
@@ -361,7 +361,7 @@
         </div>
 
 <!-- ==================== MODAL TAMBAH DATA ==================== -->
-@hasanyrole('Super User|Sekretariat|Operator')
+@hasanyrole('Super User|Sekretariat')
 <div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">

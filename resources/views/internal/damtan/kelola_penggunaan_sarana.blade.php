@@ -210,23 +210,31 @@
     /* ==========================================================
        CETAK / EKSPOR PDF (A4 Landscape)
        ========================================================== */
-    @page { size: A4 landscape; margin: 0; }
+    @page {
+        size: landscape;
+        margin: 0;
+    }
     @media print {
+        @page {
+            size: landscape;
+            margin: 0;
+        }
         .topbar, .sidebar, .sidebar-backdrop, .page-header, .card-header, .card-footer,
         .btn, .dropdown, .modal, .action-btn, #globalSuccessAlert, #globalErrorAlert, .d-print-none { display: none !important; }
 
-        body { background-color: white !important; font-size: 12px; margin: 1.5cm !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        html { background: #fff !important; margin: 0 !important; padding: 0 !important; }
+        body { background-color: white !important; font-size: 10pt !important; margin: 0 !important; padding: 1cm !important; box-sizing: border-box !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         .shell { display: block; }
-        .content { padding: 0 !important; margin: 0 !important; }
+        .content { padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
         .card-custom { box-shadow: none !important; border: none !important; border-radius: 0 !important; }
         .card-body { padding: 0 !important; }
 
         .rekap-scroll { padding: 0 !important; overflow: visible !important; }
         .rekap-wrap { min-width: 0 !important; border: none !important; border-radius: 0 !important; box-shadow: none !important; }
-        .table-rekap { width: 100% !important; margin-bottom: 20px; }
-        .table-rekap thead th { background: #f2f2f2 !important; color: #000 !important; border: 1px solid #000 !important; font-size: 11px; padding: 6px !important; }
-        .table-rekap tbody td, .table-rekap tbody tr.alt td { background: #fff !important; color: #000 !important; border: 1px solid #000 !important; padding: 6px !important; font-size: 11px; }
-        .table-rekap tbody td.no-cell { background: #fff !important; color: #000 !important; font-size: 12px; }
+        .table-rekap { width: 100% !important; margin-bottom: 20px; table-layout: auto !important; border-collapse: collapse !important; }
+        .table-rekap thead th { background: #f2f2f2 !important; color: #000 !important; border: 1px solid #000 !important; font-size: 10pt !important; padding: 6px !important; }
+        .table-rekap tbody td, .table-rekap tbody tr.alt td { background: #fff !important; color: #000 !important; border: 1px solid #000 !important; padding: 6px !important; font-size: 9.5pt !important; line-height: 1.35 !important; }
+        .table-rekap tbody td.no-cell { background: #fff !important; color: #000 !important; font-size: 10pt !important; font-weight: bold !important; border: 1px solid #000 !important; }
         .cell-sub { color: #000 !important; }
 
         /* Dropdown status tampil sebagai teks biasa saat dicetak */
