@@ -5,10 +5,16 @@
     $old = session()->getOldInput() ?: [];
     
     // Penanda kolom galat (Disesuaikan dengan standar REDKAR)
-    $inv = function ($n) use ($errors) { return (isset($errors) && $errors->has($n)) ? ' is-invalid' : ''; };
+    $inv = function ($n) use ($errors) {
+        return (isset($errors) && ($errors->has($n) || $errors->has($n . '.*'))) ? ' is-invalid' : '';
+    };
     $fe  = function ($n) use ($errors) {
-        return (isset($errors) && $errors->has($n))
-            ? '<p class="field-err"><i class="fas fa-circle-exclamation"></i> ' . e($errors->first($n)) . '</p>'
+        if (!isset($errors)) {
+            return '';
+        }
+        $msg = $errors->first($n) ?: $errors->first($n . '.*');
+        return $msg
+            ? '<p class="field-err"><i class="fas fa-circle-exclamation"></i> ' . e($msg) . '</p>'
             : '';
     };
 
@@ -1034,9 +1040,9 @@
                                 </div>
 
                                 <div class="field full upload-card">
-                                    <span class="label"><span>Persyaratan Lainnya &amp; Bahan Praktek Lapangan (APAR &amp; BBM) <span class="req">*</span></span></span>
+                                    <span class="label"><span>Persyaratan Lainnya &amp; Bahan Praktek Lapangan (APAR &amp; BBM)</span></span>
                                     <div class="dropzone{{ $inv('syarat_lainnya') }}" data-dropzone data-max="10" data-ext="pdf,jpg,jpeg,png,zip,rar">
-                                        <input type="file" id="syarat_lainnya" name="syarat_lainnya[]" accept=".pdf,.jpg,.jpeg,.png,.zip,.rar" multiple required aria-label="Unggah Persyaratan Lainnya dan Kesiapan APAR/BBM">
+                                        <input type="file" id="syarat_lainnya" name="syarat_lainnya[]" accept=".pdf,.jpg,.jpeg,.png,.zip,.rar" multiple aria-label="Unggah Persyaratan Lainnya dan Kesiapan APAR/BBM">
                                         
                                         <div class="dz-prompt">
                                             <span class="dz-ico" style="background:#eaf1f8; color:#2f6fed;"><i class="fas fa-folder-open"></i></span>

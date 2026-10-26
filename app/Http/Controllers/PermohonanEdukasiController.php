@@ -51,6 +51,8 @@ class PermohonanEdukasiController extends Controller
     {
         $kecamatanValid = array_keys($this->dataWilayah);
 
+        $minTanggal = now()->addDays(7)->toDateString();
+
         $validatedData = $request->validate([
             'institusi' => 'required|string|max:150',
             'alamat_institusi' => 'required|string',
@@ -64,8 +66,8 @@ class PermohonanEdukasiController extends Controller
             'nama_pemohon' => 'required|string|max:150',
             'jabatan_pemohon' => 'required|string|max:100',
             'nik' => 'required|string|size:16|regex:/^[0-9]+$/',
-            'no_kontak' => 'required|string|max:13|regex:/^[0-9]+$/',
-            'tgl_kegiatan' => 'required|date',
+            'no_kontak' => 'required|string|min:10|max:14|regex:/^[0-9]+$/',
+            'tgl_kegiatan' => 'required|date|after_or_equal:'.$minTanggal,
             'usia_3_6' => 'nullable|integer|min:0',
             'usia_7_12' => 'nullable|integer|min:0',
             'usia_13_18' => 'nullable|integer|min:0',
@@ -73,11 +75,29 @@ class PermohonanEdukasiController extends Controller
             'surat_permohonan' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
             'syarat_lainnya.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,zip,rar|max:10240',
         ], [
-            'no_kontak.max' => 'No Kontak / WhatsApp maksimal 13 digit.',
+            'no_kontak.min' => 'No Kontak / WhatsApp minimal 10 digit.',
+            'no_kontak.max' => 'No Kontak / WhatsApp maksimal 14 digit.',
             'no_kontak.regex' => 'No Kontak / WhatsApp hanya boleh berisi angka.',
             'nik.size' => 'NIK harus berjumlah 16 digit.',
             'nik.regex' => 'NIK hanya boleh berisi angka.',
+            'tgl_kegiatan.after_or_equal' => 'Permohonan wajib diajukan selambat-lambatnya 7 hari sebelum tanggal kunjungan (H-7).',
         ]);
+
+        $totalPeserta = ($request->usia_3_6 ?? 0) +
+                        ($request->usia_7_12 ?? 0) +
+                        ($request->usia_13_18 ?? 0) +
+                        ($request->usia_18_keatas ?? 0);
+
+        if ($totalPeserta <= 0) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['total_peserta' => 'Jumlah total perkiraan peserta tidak boleh kosong (0). Minimal harus ada 1 peserta dari salah satu kategori usia.']);
+        }
+
+        $validatedData['usia_3_6'] = $request->usia_3_6 ?? 0;
+        $validatedData['usia_7_12'] = $request->usia_7_12 ?? 0;
+        $validatedData['usia_13_18'] = $request->usia_13_18 ?? 0;
+        $validatedData['usia_18_keatas'] = $request->usia_18_keatas ?? 0;
 
         // Upload Surat Permohonan Wajib
         if ($request->hasFile('surat_permohonan')) {
