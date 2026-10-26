@@ -163,10 +163,8 @@ Route::middleware([CekLoginPemohon::class])->group(function () {
         return view('layanan-fasilitas.layanan_perizinan');
     })->name('layanan-fasilitas.perizinan');
 
-    // Form & simpan permohonan (tetap di sini, sama seperti sebelumnya)
-    Route::get('/internal/pencegahan/kelola-rpkbgl/create', [PermohonanRpkbglController::class, 'create'])
-        ->name('permohonan.create');
-    Route::post('/internal/pencegahan/kelola-rpkbgl', [PermohonanRpkbglController::class, 'store'])
+    // Simpan permohonan dari halaman publik pemohon
+    Route::post('/layanan-fasilitas/layanan_perizinan/store', [PermohonanRpkbglController::class, 'store'])
         ->middleware('throttle:10,1')
         ->name('permohonan.store');
 
@@ -515,6 +513,10 @@ Route::middleware(['auth'])->group(function () {
     // Ubah / hapus data: hanya role Pencegahan & Super User
     // (sama dengan @hasanyrole('Pencegahan|Super User') yang dipakai tombolnya di Blade)
     Route::middleware([RoleMiddleware::class.':Pencegahan|Super User'])->group(function () {
+        Route::get('/internal/pencegahan/kelola-rpkbgl/create', [PermohonanRpkbglController::class, 'create'])
+            ->name('permohonan.create');
+        Route::post('/internal/pencegahan/kelola-rpkbgl', [PermohonanRpkbglController::class, 'store'])
+            ->name('permohonan.internal.store');
         Route::get('/internal/pencegahan/kelola-rpkbgl/{id}/edit', [PermohonanRpkbglController::class, 'edit'])
             ->whereNumber('id')
             ->name('permohonan.edit');
@@ -554,14 +556,18 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware([RoleMiddleware::class.':Pencegahan|Super User'])->group(function () {
         Route::get('/internal/pencegahan/kelola-edukasi/tambah', [PermohonanEdukasiController::class, 'createOffline'])->name('edukasi.offline.create');
         Route::post('/internal/pencegahan/kelola-edukasi/simpan-offline', [PermohonanEdukasiController::class, 'storeOffline'])->name('edukasi.offline.store');
-        Route::get('/internal/pencegahan/kelola-edukasi/{id}/edit', [PermohonanEdukasiController::class, 'edit'])->name('edukasi.offline.edit');
-        Route::put('/internal/pencegahan/kelola-edukasi/{id}', [PermohonanEdukasiController::class, 'update'])->name('edukasi.offline.update');
+        Route::get('/internal/pencegahan/kelola-edukasi/{id}/edit', [PermohonanEdukasiController::class, 'edit'])->whereNumber('id')->name('edukasi.offline.edit');
+        Route::put('/internal/pencegahan/kelola-edukasi/{id}', [PermohonanEdukasiController::class, 'update'])->whereNumber('id')->name('edukasi.offline.update');
+        Route::delete('/internal/pencegahan/kelola-edukasi/{id}', [PermohonanEdukasiController::class, 'destroy'])->whereNumber('id')->name('edukasi.offline.destroy');
 
         Route::post('/internal/pencegahan/kelola-edukasi/update-status/{id}', function (Request $request, $id) {
+            $request->validate([
+                'status_permohonan' => 'required|in:Pending,Disetujui,Ditolak',
+            ]);
             PermohonanEdukasi::where('id', $id)->update(['status_permohonan' => $request->status_permohonan]);
 
             return redirect()->back()->with('success', 'Status Permohonan Edukasi berhasil diperbarui!');
-        });
+        })->whereNumber('id');
     });
 
     // 5. Inspeksi Kebakaran & Fire Drill

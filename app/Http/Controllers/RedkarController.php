@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\PendaftarRedkar;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
 
 class RedkarController extends Controller
 {
@@ -17,7 +17,7 @@ class RedkarController extends Controller
     // Menampilkan halaman form pendaftaran publik
     public function index()
     {
-        return view('redkar.form_redkar'); 
+        return view('redkar.form_redkar');
     }
 
     // Memproses data form pendaftaran (POST /redkar)
@@ -25,31 +25,31 @@ class RedkarController extends Controller
     {
         // 1. Validasi Input Publik
         $validatedData = $request->validate([
-            'username'                  => 'required|string|max:255|unique:redkar_registrations,username',
-            'password'                  => 'required|string|min:6|confirmed',
-            'nama_lengkap'              => 'required|string|max:150',
-            'nik'                       => 'required|string|size:16|unique:redkar_registrations,nik',
-            'nomor_telp'                => 'required|string|max:20',
-            'tempat_lahir'              => 'required|string|max:100',
-            'tanggal_lahir'             => 'required|date',
-            'jenis_kelamin'             => 'required|in:Laki-Laki,Perempuan',
-            'agama'                     => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghucu',
-            'status_perkawinan'         => 'required|in:Belum Kawin,Kawin,Cerai Hidup,Cerai Mati',
-            'alamat'                    => 'required|string',
-            'rt_rw'                     => 'required|string|max:10',
-            'kecamatan'                 => 'required|string|max:50',
-            'kelurahan'                 => 'required|string|max:50',
-            'pendidikan_terakhir'       => 'required|in:SD,SMP,SMA,D3,S1,S2',
+            'username' => 'required|string|max:255|unique:redkar_registrations,username',
+            'password' => 'required|string|min:6|confirmed',
+            'nama_lengkap' => 'required|string|max:150',
+            'nik' => 'required|string|size:16|unique:redkar_registrations,nik',
+            'nomor_telp' => 'required|string|max:20',
+            'tempat_lahir' => 'required|string|max:100',
+            'tanggal_lahir' => 'required|date',
+            'jenis_kelamin' => 'required|in:Laki-Laki,Perempuan',
+            'agama' => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghucu',
+            'status_perkawinan' => 'required|in:Belum Kawin,Kawin,Cerai Hidup,Cerai Mati',
+            'alamat' => 'required|string',
+            'rt_rw' => 'required|string|max:10',
+            'kecamatan' => 'required|string|max:50',
+            'kelurahan' => 'required|string|max:50',
+            'pendidikan_terakhir' => 'required|in:SD,SMP,SMA,D3,S1,S2',
             'latar_belakang_pendidikan' => 'required|string|max:255',
-            'pekerjaan'                 => 'required|string|max:100',
-            'pekerjaan_lainnya'         => 'nullable|string|max:255|required_if:pekerjaan,LAINNYA',
-            'sehat_jasmani'             => 'required|in:Ya,Tidak',
-            'golongan_darah'            => 'required|in:A,B,AB,O,Tidak Tahu',
-            'foto_ktp'                  => 'required|file|image|mimes:jpg,jpeg,png|max:2048', 
+            'pekerjaan' => 'required|string|max:100',
+            'pekerjaan_lainnya' => 'nullable|string|max:255|required_if:pekerjaan,LAINNYA',
+            'sehat_jasmani' => 'required|in:Ya,Tidak',
+            'golongan_darah' => 'required|in:A,B,AB,O,Tidak Tahu',
+            'foto_ktp' => 'required|file|image|mimes:jpg,jpeg,png|max:2048',
         ], [
             'foto_ktp.max' => 'Ukuran file KTP maksimal adalah 2MB.',
             'nik.size' => 'NIK harus berjumlah persis 16 digit.',
-            'password.confirmed' => 'Konfirmasi password tidak cocok.'
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
         ]);
 
         // 2. Hash Password
@@ -60,26 +60,26 @@ class RedkarController extends Controller
         if ($pekerjaanFinal === 'LAINNYA') {
             $pekerjaanFinal = $request->pekerjaan_lainnya;
         }
-        $validatedData['pekerjaan'] = $pekerjaanFinal; 
+        $validatedData['pekerjaan'] = $pekerjaanFinal;
         unset($validatedData['pekerjaan_lainnya']);
 
-        // 4. Upload file KTP 
+        // 4. Upload file KTP
         if ($request->hasFile('foto_ktp')) {
             $path = $request->file('foto_ktp')->store('ktp', 'public');
             $validatedData['file_ktp'] = $path;
         }
-        unset($validatedData['foto_ktp']); 
+        unset($validatedData['foto_ktp']);
 
         // 5. NILAI BAWAAN SISTEM & STATUS DEFAULT
         $validatedData['provinsi'] = 'JAMBI';
         $validatedData['kabupaten_kota'] = 'KOTA JAMBI';
-        
+
         // Set otomatis Nonaktif dan Pending saat pertama kali mendaftar
-        $validatedData['status_akun'] = 'Nonaktif'; 
+        $validatedData['status_akun'] = 'Nonaktif';
         $validatedData['status_pendaftaran'] = 'Pending';
 
         // 6. Buat ID kustom berbasis NIK
-        $validatedData['id'] = 'RDK-' . $validatedData['nik'];
+        $validatedData['id'] = 'RDK-'.$validatedData['nik'];
 
         // 7. Simpan data ke database
         PendaftarRedkar::create($validatedData);
@@ -92,16 +92,16 @@ class RedkarController extends Controller
     {
         $request->validate([
             'username' => 'required',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         $relawan = PendaftarRedkar::where('username', $request->username)->first();
 
-        if (!$relawan) {
+        if (! $relawan) {
             return back()->withInput()->with('error', 'Username tidak terdaftar di sistem.');
         }
 
-        if (!Hash::check($request->password, $relawan->password)) {
+        if (! Hash::check($request->password, $relawan->password)) {
             return back()->withInput()->with('error', 'Password yang Anda masukkan salah.');
         }
 
@@ -111,8 +111,8 @@ class RedkarController extends Controller
 
         Auth::guard('redkar')->login($relawan);
         $request->session()->regenerate();
-        
-        return redirect()->to('/redkar/dashboard')->with('success', 'Selamat datang kembali, ' . $relawan->nama_lengkap . '!');
+
+        return redirect()->to('/redkar/dashboard')->with('success', 'Selamat datang kembali, '.$relawan->nama_lengkap.'!');
     }
 
     public function logoutRedkar(Request $request)
@@ -127,6 +127,7 @@ class RedkarController extends Controller
     public function profilRedkar()
     {
         $user = Auth::guard('redkar')->user();
+
         return view('redkar.profil', compact('user'));
     }
 
@@ -137,74 +138,77 @@ class RedkarController extends Controller
     public function kelolaRedkarInternal()
     {
         $relawan = PendaftarRedkar::orderBy('created_at', 'desc')->get();
+
         return view('internal.pencegahan.kelola_redkar', compact('relawan'));
     }
 
     public function cetakRedkar($id)
     {
         $relawan = PendaftarRedkar::findOrFail($id);
+
         return view('internal.pencegahan.cetak_redkar', compact('relawan'));
     }
 
     public function editRedkar($id)
     {
         $relawan = PendaftarRedkar::findOrFail($id);
+
         return view('internal.pencegahan.edit_redkar', compact('relawan'));
     }
 
     public function updateRedkar(Request $request, $id)
     {
         $relawan = PendaftarRedkar::findOrFail($id);
-        
+
         $validatedData = $request->validate([
-            'nama_lengkap'              => 'required|string|max:150',
-            'nik'                       => 'required|string|size:16',
-            'kartu_anggota'             => 'nullable|string|max:30',
-            'nomor_telp'                => 'required|string|max:20',
-            'tempat_lahir'              => 'required|string|max:100',
-            'tanggal_lahir'             => 'required|date',
-            'jenis_kelamin'             => 'required|in:Laki-Laki,Perempuan',
-            'agama'                     => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghucu',
-            'status_perkawinan'         => 'required|in:Belum Kawin,Kawin,Cerai Hidup,Cerai Mati',
-            'alamat'                    => 'required|string',
-            'rt_rw'                     => 'required|string|max:10',
-            'kecamatan'                 => 'required|string|max:50',
-            'kelurahan'                 => 'required|string|max:50',
-            'pendidikan_terakhir'       => 'required|in:SD,SMP,SMA,D3,S1,S2',
+            'nama_lengkap' => 'required|string|max:150',
+            'nik' => 'required|string|size:16|unique:redkar_registrations,nik,'.$relawan->id.',id',
+            'kartu_anggota' => 'nullable|string|max:30',
+            'nomor_telp' => 'required|string|max:20',
+            'tempat_lahir' => 'required|string|max:100',
+            'tanggal_lahir' => 'required|date',
+            'jenis_kelamin' => 'required|in:Laki-Laki,Perempuan',
+            'agama' => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghucu',
+            'status_perkawinan' => 'required|in:Belum Kawin,Kawin,Cerai Hidup,Cerai Mati',
+            'alamat' => 'required|string',
+            'rt_rw' => 'required|string|max:10',
+            'kecamatan' => 'required|string|max:50',
+            'kelurahan' => 'required|string|max:50',
+            'pendidikan_terakhir' => 'required|in:SD,SMP,SMA,D3,S1,S2',
             'latar_belakang_pendidikan' => 'required|string|max:255',
-            'pekerjaan'                 => 'required|string|max:100',
-            'pekerjaan_lainnya'         => 'nullable|string|max:255|required_if:pekerjaan,LAINNYA',
-            'sehat_jasmani'             => 'required|in:Ya,Tidak',
-            'golongan_darah'            => 'required|in:A,B,AB,O,Tidak Tahu',
-            'foto_ktp'                  => 'nullable|file|image|mimes:jpg,jpeg,png|max:2048',
+            'pekerjaan' => 'required|string|max:100',
+            'pekerjaan_lainnya' => 'nullable|string|max:255|required_if:pekerjaan,LAINNYA',
+            'sehat_jasmani' => 'required|in:Ya,Tidak',
+            'golongan_darah' => 'required|in:A,B,AB,O,Tidak Tahu',
+            'foto_ktp' => 'nullable|file|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $pekerjaanFinal = $request->pekerjaan;
         if ($pekerjaanFinal === 'LAINNYA') {
             $pekerjaanFinal = $request->pekerjaan_lainnya;
         }
-        $validatedData['pekerjaan'] = $pekerjaanFinal; 
+        $validatedData['pekerjaan'] = $pekerjaanFinal;
         unset($validatedData['pekerjaan_lainnya']);
 
         if ($request->hasFile('foto_ktp')) {
             if ($relawan->file_ktp && $relawan->file_ktp !== 'offline_registered' && Storage::disk('public')->exists($relawan->file_ktp)) {
                 Storage::disk('public')->delete($relawan->file_ktp);
             }
-            
+
             $path = $request->file('foto_ktp')->store('ktp', 'public');
             $validatedData['file_ktp'] = $path;
         }
-        unset($validatedData['foto_ktp']); 
+        unset($validatedData['foto_ktp']);
 
         $relawan->update($validatedData);
 
-        return redirect('/internal/pencegahan/kelola-redkar')->with('success', 'Data relawan atas nama ' . $relawan->nama_lengkap . ' berhasil diperbarui!');
+        return redirect('/internal/pencegahan/kelola-redkar')->with('success', 'Data relawan atas nama '.$relawan->nama_lengkap.' berhasil diperbarui!');
     }
 
     public function hapusRedkar($id)
     {
         $relawan = PendaftarRedkar::findOrFail($id);
-        
+
         if ($relawan->file_ktp && $relawan->file_ktp !== 'offline_registered' && Storage::disk('public')->exists($relawan->file_ktp)) {
             Storage::disk('public')->delete($relawan->file_ktp);
         }
@@ -212,6 +216,20 @@ class RedkarController extends Controller
         $relawan->delete();
 
         return back()->with('success', 'Data relawan berhasil dihapus dari sistem.');
+    }
+
+    public function verifikasiRedkar(Request $request, $id)
+    {
+        $request->validate([
+            'status_pendaftaran' => 'required|in:Pending,Disetujui,Ditolak',
+        ]);
+
+        $relawan = PendaftarRedkar::findOrFail($id);
+        $relawan->update([
+            'status_pendaftaran' => $request->status_pendaftaran,
+        ]);
+
+        return back()->with('success', 'Status pendaftaran relawan berhasil diperbarui.');
     }
 
     public function createRedkar()
@@ -223,26 +241,26 @@ class RedkarController extends Controller
     {
         // Validasi disesuaikan: Akun, password, status akun, status pendaftaran, & kode pos dihapus.
         $validatedData = $request->validate([
-            'nama_lengkap'              => 'required|string|max:150',
-            'nik'                       => 'required|string|size:16|unique:redkar_registrations,nik',
-            'kartu_anggota'             => 'nullable|string|max:30',
-            'nomor_telp'                => 'required|string|max:20',
-            'tempat_lahir'              => 'required|string|max:100',
-            'tanggal_lahir'             => 'required|date',
-            'jenis_kelamin'             => 'required|in:Laki-Laki,Perempuan',
-            'agama'                     => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghucu',
-            'status_perkawinan'         => 'required|in:Belum Kawin,Kawin,Cerai Hidup,Cerai Mati',
-            'alamat'                    => 'required|string',
-            'rt_rw'                     => 'required|string|max:10',
-            'kecamatan'                 => 'required|string|max:50',
-            'kelurahan'                 => 'required|string|max:50',
-            'pendidikan_terakhir'       => 'required|in:SD,SMP,SMA,D3,S1,S2',
+            'nama_lengkap' => 'required|string|max:150',
+            'nik' => 'required|string|size:16|unique:redkar_registrations,nik',
+            'kartu_anggota' => 'nullable|string|max:30',
+            'nomor_telp' => 'required|string|max:20',
+            'tempat_lahir' => 'required|string|max:100',
+            'tanggal_lahir' => 'required|date',
+            'jenis_kelamin' => 'required|in:Laki-Laki,Perempuan',
+            'agama' => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghucu',
+            'status_perkawinan' => 'required|in:Belum Kawin,Kawin,Cerai Hidup,Cerai Mati',
+            'alamat' => 'required|string',
+            'rt_rw' => 'required|string|max:10',
+            'kecamatan' => 'required|string|max:50',
+            'kelurahan' => 'required|string|max:50',
+            'pendidikan_terakhir' => 'required|in:SD,SMP,SMA,D3,S1,S2',
             'latar_belakang_pendidikan' => 'required|string|max:255',
-            'pekerjaan'                 => 'required|string|max:100',
-            'pekerjaan_lainnya'         => 'nullable|string|max:255|required_if:pekerjaan,LAINNYA',
-            'sehat_jasmani'             => 'required|in:Ya,Tidak',
-            'golongan_darah'            => 'required|in:A,B,AB,O,Tidak Tahu',
-            'foto_ktp'                  => 'nullable|file|image|mimes:jpg,jpeg,png|max:2048',
+            'pekerjaan' => 'required|string|max:100',
+            'pekerjaan_lainnya' => 'nullable|string|max:255|required_if:pekerjaan,LAINNYA',
+            'sehat_jasmani' => 'required|in:Ya,Tidak',
+            'golongan_darah' => 'required|in:A,B,AB,O,Tidak Tahu',
+            'foto_ktp' => 'nullable|file|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         // Mapping pekerjaan lainnya jika dipilih LAINNYA
@@ -250,7 +268,7 @@ class RedkarController extends Controller
         if ($pekerjaanFinal === 'LAINNYA') {
             $pekerjaanFinal = $request->pekerjaan_lainnya;
         }
-        $validatedData['pekerjaan'] = $pekerjaanFinal; 
+        $validatedData['pekerjaan'] = $pekerjaanFinal;
         unset($validatedData['pekerjaan_lainnya']);
 
         // Penanganan file KTP
@@ -258,14 +276,14 @@ class RedkarController extends Controller
             $path = $request->file('foto_ktp')->store('ktp', 'public');
             $validatedData['file_ktp'] = $path;
         } else {
-            $validatedData['file_ktp'] = 'offline_registered'; 
+            $validatedData['file_ktp'] = 'offline_registered';
         }
         unset($validatedData['foto_ktp']);
 
         // Data default wilayah dan ID kustom
         $validatedData['provinsi'] = 'JAMBI';
         $validatedData['kabupaten_kota'] = 'KOTA JAMBI';
-        $validatedData['id'] = 'RDK-' . $validatedData['nik'];
+        $validatedData['id'] = 'RDK-'.$validatedData['nik'];
 
         PendaftarRedkar::create($validatedData);
 

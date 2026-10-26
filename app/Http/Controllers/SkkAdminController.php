@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\PermohonanSkk;
 use App\Models\PermohonanPerpanjangSkk;
+use App\Models\PermohonanSkk;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class SkkAdminController extends Controller
@@ -21,21 +21,21 @@ class SkkAdminController extends Controller
     private function aturanDasar(): array
     {
         return [
-            'nama_pemohon'           => 'required|string|max:150',
-            'email_pemohon'          => 'required|email|max:100',
-            'no_whatsapp'            => 'required|string|max:25',
-            'nama_usaha'             => 'required|string|max:150',
-            'nik_pemilik_usaha'      => 'required|string|max:30',
-            'alamat_pemilik_usaha'   => 'required|string',
-            'kategori_bangunan'      => 'required|string|max:100',
-            'alamat_bangunan'        => 'required|string',
-            'kecamatan'              => 'required|string|max:100',
-            'kelurahan'              => 'required|string|max:100',
-            'luas_lahan'             => 'required|numeric',
-            'luas_bangunan'          => 'required|numeric',
-            'tinggi_bangunan'        => 'required|numeric',
-            'status_permohonan'      => 'required|in:Pending,Diproses,Memenuhi Syarat,Tidak Memenuhi Syarat',
-            'file_surat_permohonan'  => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'nama_pemohon' => 'required|string|max:150',
+            'email_pemohon' => 'required|email|max:100',
+            'no_whatsapp' => 'required|string|max:25',
+            'nama_usaha' => 'required|string|max:150',
+            'nik_pemilik_usaha' => 'required|string|max:30',
+            'alamat_pemilik_usaha' => 'required|string',
+            'kategori_bangunan' => 'required|string|max:100',
+            'alamat_bangunan' => 'required|string',
+            'kecamatan' => 'required|string|max:100',
+            'kelurahan' => 'required|string|max:100',
+            'luas_lahan' => 'required|numeric',
+            'luas_bangunan' => 'required|numeric',
+            'tinggi_bangunan' => 'required|numeric',
+            'status_permohonan' => 'required|in:Pending,Diproses,Memenuhi Syarat,Tidak Memenuhi Syarat',
+            'file_surat_permohonan' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ];
     }
 
@@ -45,10 +45,10 @@ class SkkAdminController extends Controller
         $req = $wajib ? 'required' : 'nullable';
 
         return [
-            'nomor_skk_lama'          => $req . '|string|max:100',
-            'tanggal_terbit_skk_lama' => $req . '|date',
-            'masa_berlaku_skk_lama'   => $req . '|date',
-            'file_skk_lama'           => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'nomor_skk_lama' => $req.'|string|max:100',
+            'tanggal_terbit_skk_lama' => $req.'|date',
+            'masa_berlaku_skk_lama' => $req.'|date',
+            'file_skk_lama' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ];
     }
 
@@ -128,7 +128,7 @@ class SkkAdminController extends Controller
     // 5. Memproses Pembaruan (Update) Data SKK
     public function update(Request $request, $id)
     {
-        $tipe = $request->query('tipe', 'baru');
+        $tipe = $request->input('tipe', $request->query('tipe', 'baru'));
         $perpanjang = $tipe === 'perpanjang';
         $p = $this->cariData($tipe, $id);
 
@@ -151,7 +151,7 @@ class SkkAdminController extends Controller
             $data['file_skk_lama'] = $request->file('file_skk_lama')->store('skk_lama', 'public');
         }
 
-        if (!$perpanjang) {
+        if (! $perpanjang) {
             $data = array_diff_key($data, array_flip(self::FIELD_PERPANJANG));
         }
 
@@ -167,6 +167,7 @@ class SkkAdminController extends Controller
         $p = $this->cariData($tipe, $id);
 
         $this->hapusFile($p->file_surat_permohonan);
+        $this->hapusFile($p->file_persyaratan_lainnya);
         if ($tipe === 'perpanjang') {
             $this->hapusFile($p->file_skk_lama);
         }
@@ -189,14 +190,22 @@ class SkkAdminController extends Controller
     // 8. Update Status SKK Baru
     public function updateStatus(Request $request, $id)
     {
+        $request->validate([
+            'status_permohonan' => 'required|in:Pending,Diproses,Memenuhi Syarat,Tidak Memenuhi Syarat',
+        ]);
         PermohonanSkk::where('id', $id)->update(['status_permohonan' => $request->status_permohonan]);
+
         return redirect()->back()->with('success', 'Status Permohonan SKK Baru berhasil diperbarui!');
     }
 
     // 9. Update Status SKK Perpanjang
     public function updateStatusPerpanjang(Request $request, $id)
     {
+        $request->validate([
+            'status_permohonan' => 'required|in:Pending,Diproses,Memenuhi Syarat,Tidak Memenuhi Syarat',
+        ]);
         PermohonanPerpanjangSkk::where('id', $id)->update(['status_permohonan' => $request->status_permohonan]);
+
         return redirect()->back()->with('success', 'Status Permohonan Perpanjangan SKK berhasil diperbarui!');
     }
 }

@@ -160,7 +160,6 @@
 @endpush
 
 @section('content')
-@section('content')
 
         <a href="/internal/pencegahan/kelola-edukasi" class="btn-back">
             <i class="fas fa-arrow-left"></i> Kembali ke Kelola Edukasi
@@ -288,7 +287,13 @@
                     <i class="fas fa-folder-open" style="background: #eff6ff; color: #2563eb;"></i> Berkas Lampiran
                 </div>
                 <div class="d-flex flex-column gap-2">
-                    @if($edukasi->surat_permohonan)
+                    @php
+                        $offlineVals = ['offline_registered', 'Tidak dilampirkan (Offline)', '["Tidak dilampirkan (Offline)"]'];
+                        $berkasAda   = fn($v) => !empty($v) && !in_array($v, $offlineVals, true);
+                        $syaratList  = collect(is_array($edukasi->syarat_lainnya) ? $edukasi->syarat_lainnya : (json_decode($edukasi->syarat_lainnya ?? '[]', true) ?: \Illuminate\Support\Arr::wrap($edukasi->syarat_lainnya)))->filter($berkasAda)->values();
+                    @endphp
+
+                    @if($berkasAda($edukasi->surat_permohonan))
                         <a href="{{ asset('storage/' . $edukasi->surat_permohonan) }}" target="_blank" class="attachment-box">
                             <i class="fas fa-file-pdf"></i>
                             <div>
@@ -297,8 +302,20 @@
                             </div>
                         </a>
                     @else
-                        <span class="text-muted" style="font-size: 13px;">- Tidak ada berkas surat permohonan -</span>
+                        <span class="text-muted" style="font-size: 13px;">- Surat Permohonan: Tidak dilampirkan (Offline) -</span>
                     @endif
+
+                    @forelse($syaratList as $idx => $fileLain)
+                        <a href="{{ asset('storage/' . $fileLain) }}" target="_blank" class="attachment-box">
+                            <i class="fas fa-paperclip" style="color: #8b5cf6;"></i>
+                            <div>
+                                <div>Persyaratan Lainnya {{ $syaratList->count() > 1 ? $idx + 1 : '' }}</div>
+                                <small class="text-muted fw-normal" style="font-size: 11px;">Lampiran Tambahan</small>
+                            </div>
+                        </a>
+                    @empty
+                        <span class="text-muted" style="font-size: 13px;">- Persyaratan Lainnya: Tidak ada lampiran tambahan -</span>
+                    @endforelse
                 </div>
             </div>
 
@@ -335,6 +352,10 @@
             if (g.open) { groups.forEach(function (o) { if (o !== g) o.open = false; }); }
         });
     });
+
+    if (new URLSearchParams(window.location.search).has('auto_print')) {
+        setTimeout(function () { window.print(); }, 500);
+    }
 })();
 </script>
 @endpush
