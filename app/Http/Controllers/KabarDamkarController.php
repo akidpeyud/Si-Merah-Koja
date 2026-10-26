@@ -22,13 +22,13 @@ class KabarDamkarController extends Controller
 
         // Ambil model & kolom relasi kategori langsung dari relasi BeritaMedsos::kategori(),
         // jadi tidak perlu menebak nama model/kolom kategori.
-        $relasi         = (new BeritaMedsos)->kategori();
-        $modelKategori  = $relasi->getRelated();
-        $kolomKategori  = $relasi->getForeignKeyName();
+        $relasi = (new BeritaMedsos)->kategori();
+        $modelKategori = $relasi->getRelated();
+        $kolomKategori = $relasi->getForeignKeyName();
 
         $query = BeritaMedsos::with('kategori')->orderByDesc('tanggal');
 
-        if (!empty($kategoriId)) {
+        if (! empty($kategoriId)) {
             // Jika ada yang membuka kategori typo 'Lainya', alihkan ke 'Lainnya' yang valid
             $katCek = $modelKategori->find($kategoriId);
             if ($katCek && strcasecmp($katCek->nama_kategori, 'Lainya') === 0) {
@@ -41,6 +41,8 @@ class KabarDamkarController extends Controller
         }
 
         $medsos = $query->paginate(12)->withQueryString();
+
+        app(OperatorMedsosController::class)->syncMissingImages($medsos->getCollection());
 
         $daftar_kategori = $modelKategori->newQuery()
             ->where('nama_kategori', '!=', 'Lainya')

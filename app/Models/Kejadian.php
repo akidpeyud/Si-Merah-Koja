@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\KejadianController;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Kejadian extends Model
 {
@@ -16,9 +18,9 @@ class Kejadian extends Model
     protected $casts = ['tanggal' => 'datetime'];
 
     public const JENIS = [
-        'pemadaman'    => 'Pemadaman',
+        'pemadaman' => 'Pemadaman',
         'penyelamatan' => 'Penyelamatan',
-        'evakuasi'     => 'Evakuasi',
+        'evakuasi' => 'Evakuasi',
     ];
 
     public function getJenisLabelAttribute()
@@ -36,15 +38,34 @@ class Kejadian extends Model
     {
         $g = trim((string) $this->gambar);
 
-        if ($g === '') {
-            return null;
+        if ($g !== '') {
+            if (preg_match('#^https?://#i', $g)) {
+                return $g;
+            }
+
+            $clean = ltrim(preg_replace('#^/?(public/|storage/)#', '', $g), '/');
+            if (Storage::disk('public')->exists($clean)) {
+                return asset('storage/'.$clean);
+            }
         }
 
-        if (preg_match('#^https?://#i', $g)) {
-            return $g;
+        if (! empty($this->link)) {
+            app(KejadianController::class)->syncImageFromLink($this);
+
+            $g = trim((string) $this->gambar);
+            if ($g !== '') {
+                if (preg_match('#^https?://#i', $g)) {
+                    return $g;
+                }
+
+                $clean = ltrim(preg_replace('#^/?(public/|storage/)#', '', $g), '/');
+                if (Storage::disk('public')->exists($clean)) {
+                    return asset('storage/'.$clean);
+                }
+            }
         }
 
-        return asset('storage/' . ltrim(preg_replace('#^/?(public/|storage/)#', '', $g), '/'));
+        return null;
     }
 
     public function getThumbAttribute()
