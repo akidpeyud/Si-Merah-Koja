@@ -61,7 +61,6 @@
 @endpush
 
 @section('content')
-@section('content')
 
         <div class="mb-4">
             <a href="/internal/pencegahan/kelola-skk" class="btn-back" style="padding: 8px 18px; font-size: 0.88rem;">
@@ -88,9 +87,10 @@
 
             <!-- PEMBATASAN HAK AKSES UNTUK FORM EDIT -->
             @hasanyrole('Pencegahan|Super User')
-            <form action="{{ route('skk.update', $p->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('skk.update', $p->id) }}{{ ($tipe ?? 'baru') === 'perpanjang' ? '?tipe=perpanjang' : '' }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
+                <input type="hidden" name="tipe" value="{{ $tipe ?? 'baru' }}">
 
                 <!-- SECTION: DATA PEMOHON -->
                 <h4 class="form-section-title"><i class="fas fa-user-circle"></i> Data Pemohon</h4>
@@ -153,6 +153,35 @@
                         <textarea name="alamat_bangunan" class="form-control" rows="2" required>{{ old('alamat_bangunan', $p->alamat_bangunan) }}</textarea>
                     </div>
                 </div>
+
+                @if(($tipe ?? 'baru') === 'perpanjang')
+                <!-- SECTION: DATA SKK SEBELUMNYA (KHUSUS PERPANJANGAN) -->
+                <h4 class="form-section-title mt-4"><i class="fas fa-sync-alt"></i> Data SKK Sebelumnya</h4>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">Nomor SKK Lama</label>
+                        <input type="text" name="nomor_skk_lama" class="form-control" value="{{ old('nomor_skk_lama', $p->nomor_skk_lama) }}" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Tanggal Terbit</label>
+                        <input type="date" name="tanggal_terbit_skk_lama" class="form-control" value="{{ old('tanggal_terbit_skk_lama', $p->tanggal_terbit_skk_lama ? \Carbon\Carbon::parse($p->tanggal_terbit_skk_lama)->format('Y-m-d') : '') }}" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Masa Berlaku Sampai</label>
+                        <input type="date" name="masa_berlaku_skk_lama" class="form-control" value="{{ old('masa_berlaku_skk_lama', $p->masa_berlaku_skk_lama ? \Carbon\Carbon::parse($p->masa_berlaku_skk_lama)->format('Y-m-d') : '') }}" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Ganti Salinan SKK Lama (Opsional)</label>
+                        <input type="file" name="file_skk_lama" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                        <small class="text-muted d-block mt-1">Biarkan kosong jika tidak ingin mengubah salinan SKK lama. Maks 2MB.</small>
+                        @if($p->file_skk_lama && $p->file_skk_lama !== 'offline_registered' && $p->file_skk_lama !== 'Tidak dilampirkan (Offline)')
+                            <div class="mt-2">
+                                <a href="{{ asset('storage/' . $p->file_skk_lama) }}" target="_blank" class="badge bg-warning text-dark text-decoration-none px-2 py-1"><i class="fas fa-external-link-alt"></i> Lihat SKK Lama Saat Ini</a>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+                @endif
 
                 <!-- SECTION: STATUS & LAMPIRAN -->
                 <h4 class="form-section-title mt-4"><i class="fas fa-file-signature"></i> Status & Lampiran</h4>

@@ -197,7 +197,7 @@
             'institusi'     => (string) $p->institusi,
             'kecamatan'     => (string) ($p->kecamatan ?: '-'),
             'kelurahan'     => (string) ($p->kelurahan ?? '-'),
-            'alamat'        => (string) ($p->alamat_lengkap ?? $p->alamat ?? '-'),
+            'alamat'        => (string) ($p->alamat_institusi ?? $p->alamat_lengkap ?? $p->alamat ?? '-'),
             'nama_pemohon'  => (string) $p->nama_pemohon,
             'no_kontak'     => (string) $kontak,
             'tgl_kegiatan'  => $p->tgl_kegiatan ? \Carbon\Carbon::parse($p->tgl_kegiatan)->format('d/m/Y') : '-',
@@ -414,6 +414,12 @@
                                         data-status="{{ $p->status_permohonan }}">
                                         <i class="fas fa-edit" style="width: 14px;"></i> Status
                                     </button>
+
+                                    <button type="button" class="btn-action btn-delete"
+                                        data-delete-url="{{ route('edukasi.offline.destroy', $p->id) }}"
+                                        data-nama="{{ $p->institusi }}">
+                                        <i class="fas fa-trash" style="width: 14px;"></i> Hapus
+                                    </button>
                                     @endhasanyrole
 
                                     <a href="/internal/pencegahan/kelola-edukasi/{{ $p->id }}?auto_print=true" target="_blank" class="btn-action btn-cetak">
@@ -576,6 +582,51 @@
             confirmButtonText: 'Tutup'
         });
     @endif
+
+    /* ---------- Konfirmasi Hapus dengan SweetAlert2 ---------- */
+    document.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-delete-url]');
+        if (!btn) return;
+
+        var url  = btn.getAttribute('data-delete-url');
+        var nama = btn.getAttribute('data-nama') || '';
+
+        var info = document.createElement('div');
+        var strong = document.createElement('strong');
+        strong.textContent = nama;
+        info.appendChild(document.createTextNode('Anda yakin ingin menghapus data kunjungan edukasi '));
+        info.appendChild(strong);
+        info.appendChild(document.createTextNode('? Data tidak dapat dikembalikan.'));
+
+        Swal.fire({
+            title: 'Hapus Data?',
+            html: info,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '<i class="fas fa-trash"></i> Ya, Hapus',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then(function (result) {
+            if (!result.isConfirmed) return;
+
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = url;
+
+            var csrf = document.createElement('input');
+            csrf.type = 'hidden'; csrf.name = '_token'; csrf.value = '{{ csrf_token() }}';
+
+            var method = document.createElement('input');
+            method.type = 'hidden'; method.name = '_method'; method.value = 'DELETE';
+
+            form.appendChild(csrf);
+            form.appendChild(method);
+            document.body.appendChild(form);
+            form.submit();
+        });
+    });
 })();
 
 /* ---------- Rekap Excel (.xlsx menggunakan ExcelJS seperti Kelola SKK) ---------- */

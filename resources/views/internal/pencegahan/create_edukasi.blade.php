@@ -59,7 +59,6 @@
 @endpush
 
 @section('content')
-@section('content')
 
         <div class="page-head">
             <div class="page-head-title">
@@ -75,6 +74,17 @@
                     <i class="fas fa-exclamation-triangle me-2"></i> {{ session('error') }}
                 </div>
             @endif
+
+            @if($errors->any())
+                <div class="alert alert-danger" style="border-radius: 8px; font-size: 0.9rem;">
+                    <strong><i class="fas fa-exclamation-triangle me-2"></i> Terdapat kesalahan pada isian:</strong>
+                    <ul class="mb-0 mt-1 ps-3">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             
             <form action="{{ route('edukasi.offline.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -82,7 +92,7 @@
                 <div class="section-header mt-0">Data Institusi</div>
                 <div class="row g-3">
                     <div class="col-md-12">
-                        <label class="form-label">Institusi (Sekolah/Kampus/Instansi) <span class="text-danger">*</span></label>
+                        <label class="form-label">Institusi (Sekolah/Lembaga/Instansi) <span class="text-danger">*</span></label>
                         <input type="text" name="institusi" class="form-control" placeholder="Contoh: TK Dharma Wanita" value="{{ old('institusi') }}" required>
                     </div>
                     <div class="col-md-12">

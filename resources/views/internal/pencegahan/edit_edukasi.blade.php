@@ -59,7 +59,6 @@
 @endpush
 
 @section('content')
-@section('content')
 
         <!-- Kontainer pembungkus utama agar semuanya sejajar dan rapi -->
         <div class="mx-auto" style="max-width: 900px;">
@@ -83,6 +82,17 @@
                 @if(session('error'))
                     <div class="alert alert-danger" style="border-radius: 8px; font-size: 0.9rem;">
                         <i class="fas fa-exclamation-triangle me-2"></i> {{ session('error') }}
+                    </div>
+                @endif
+
+                @if($errors->any())
+                    <div class="alert alert-danger" style="border-radius: 8px; font-size: 0.9rem;">
+                        <strong><i class="fas fa-exclamation-triangle me-2"></i> Terdapat kesalahan pada isian:</strong>
+                        <ul class="mb-0 mt-1 ps-3">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
                 @endif
                 

@@ -158,7 +158,7 @@
 
         return [
             'no'                => $i + 1,
-            'nomor_anggota'     => (string) ($r->nomor_anggota ?: '-'),
+            'nomor_anggota'     => (string) ($r->kartu_anggota ?: ($r->nomor_anggota ?: '-')),
             'id_reg'            => (string) $r->id,
             'nik'               => (string) $r->nik,
             'nama_lengkap'      => (string) $r->nama_lengkap,
@@ -174,7 +174,7 @@
             'pendidikan'        => $pend,
             'pekerjaan'         => (string) ($r->pekerjaan ?: '-'),
             'status_ktp'        => $adaKtp ? 'Terlampir' : 'Belum Ada (Offline)',
-            '_search'           => strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp . ' ' . $r->nomor_anggota),
+            '_search'           => strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp . ' ' . ($r->kartu_anggota ?: $r->nomor_anggota)),
             '_kec'              => strtolower((string) $r->kecamatan),
         ];
     })->all();
@@ -282,10 +282,10 @@
                     <tbody id="rk-body">
                         @forelse($relawan as $r)
                         <tr class="rk-row"
-                            data-search="{{ strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp . ' ' . $r->nomor_anggota) }}"
+                            data-search="{{ strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp . ' ' . ($r->kartu_anggota ?: $r->nomor_anggota)) }}"
                             data-kecamatan="{{ strtolower($r->kecamatan) }}">
                             <td>
-                                <span class="badge-anggota">{{ $r->nomor_anggota ?: '-' }}</span>
+                                <span class="badge-anggota">{{ $r->kartu_anggota ?: ($r->nomor_anggota ?: '-') }}</span>
                                 <div style="font-size: .78rem; color: var(--steel-soft); margin-top: 4px;">
                                     Input: {{ $r->created_at ? $r->created_at->format('d/m/Y') : '-' }}
                                 </div>
