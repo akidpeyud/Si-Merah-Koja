@@ -1,6 +1,4 @@
-@extends('layouts.dashboard')
-
-@section('content')
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -202,12 +200,6 @@
         <div class="clear"></div>
     </div>
 
-    <!-- Script otomatis buka jendela Print -->
-    <script>
-        window.onload = function() {
-            window.print();
-        }
-    </script>
     @endif
 
 </body>
