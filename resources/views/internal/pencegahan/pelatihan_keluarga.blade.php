@@ -435,8 +435,6 @@
             <a class="nav-link {{ Request::is('internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga*') ? 'active' : '' }}" href="/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga">PELATIHAN KELUARGA TANGGAP KEBAKARAN</a>
         </li>
         <li class="nav-item">
-                <a class="nav-link {{ Request::is('internal/pencegahan/pemberdayaan-masyarakat/kunjungan-sekolah*') ? 'active' : '' }}" href="/internal/pencegahan/pemberdayaan-masyarakat/kunjungan-sekolah">KUNJUNGAN SEKOLAH</a>
-            </li>
     </ul>
 
     <!-- FILTER BAR -->

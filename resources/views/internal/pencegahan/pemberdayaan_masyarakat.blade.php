@@ -99,23 +99,36 @@
     }
     .btn-reset-filter:hover { background: #f1f5f9; color: #0f172a; border-color: #94a3b8; }
 
+    /* Sub Tab Switcher (Luar / Dalam) */
+    .sub-tab-container { display: flex; gap: 12px; margin-bottom: 24px; }
+    .sub-tab-btn {
+        flex: 1; text-align: center; padding: 14px; border-radius: 12px;
+        background: #f1f5f9; border: 1px solid #cbd5e1; color: #475569;
+        font-size: .9rem; font-weight: 700; cursor: pointer; transition: all .2s ease;
+    }
+    .sub-tab-btn i { font-size: 1.1rem; margin-right: 6px; }
+    .sub-tab-btn:hover { background: #e2e8f0; color: #1e293b; }
+    .sub-tab-btn.active { background: #0f172a; color: #fff; border-color: #0f172a; box-shadow: 0 6px 16px rgba(15,23,42,.15); }
+
     /* Summary Strip */
     .summary-strip {
         display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between;
         background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: #fff;
         padding: 16px 22px; border-radius: 14px; margin-bottom: 24px; box-shadow: 0 8px 20px rgba(15, 23, 42, .12);
     }
+    .summary-strip.mako-mode { background: linear-gradient(135deg, #164e63 0%, #0369a1 100%); }
     .summary-strip-title { display: flex; align-items: center; gap: 12px; }
     .summary-strip-title i {
         width: 42px; height: 42px; border-radius: 10px; background: rgba(255,255,255,.12); color: #38bdf8;
         display: grid; place-items: center; font-size: 1.1rem;
     }
+    .summary-strip.mako-mode .summary-strip-title i { color: #38bdf8; }
     .summary-strip-title h4 { margin: 0; font-size: .96rem; font-weight: 800; letter-spacing: .01em; }
     .summary-strip-title p { margin: 2px 0 0; font-size: .78rem; color: rgba(255,255,255,.75); }
-    .summary-metrics { display: flex; flex-wrap: wrap; gap: 12px; }
-    .summary-metric-box { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15); padding: 8px 16px; border-radius: 10px; text-align: center; min-width: 120px; }
-    .summary-metric-box span { display: block; font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; color: rgba(255,255,255,.75); font-weight: 600; }
-    .summary-metric-box strong { font-size: 1.1rem; font-weight: 800; color: #fff; }
+    .summary-metrics { display: flex; flex-wrap: wrap; gap: 8px; }
+    .summary-metric-box { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15); padding: 8px 14px; border-radius: 10px; text-align: center; }
+    .summary-metric-box span { display: block; font-size: .65rem; text-transform: uppercase; letter-spacing: .05em; color: rgba(255,255,255,.75); font-weight: 600; }
+    .summary-metric-box strong { font-size: 1.05rem; font-weight: 800; color: #fff; }
     .summary-metric-box.highlight { background: #f59e0b; border-color: #fbbf24; }
     .summary-metric-box.highlight span { color: #451a03; font-weight: 700; }
     .summary-metric-box.highlight strong { color: #0f172a; }
@@ -124,16 +137,24 @@
     .year-block { margin-bottom: 34px; }
     .year-block-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; padding: 0 4px; }
     .year-block-title { display: flex; align-items: center; gap: 10px; }
-    .year-badge-icon { width: 34px; height: 34px; border-radius: 9px; background: #163a63; color: #fff; display: grid; place-items: center; font-size: .85rem; box-shadow: 0 4px 10px rgba(22, 58, 99, .18); }
+    .year-badge-icon { width: 34px; height: 34px; border-radius: 9px; background: #0f172a; color: #fff; display: grid; place-items: center; font-size: .85rem; box-shadow: 0 4px 10px rgba(15, 23, 42, .18); }
+    .mako-mode .year-badge-icon { background: #164e63; }
     .year-block-title h3 { margin: 0; font-size: 1.08rem; font-weight: 800; color: #0f172a; letter-spacing: -.01em; }
     .year-block-pills { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
     .year-stat-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; font-size: .78rem; font-weight: 700; background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
     .year-stat-pill.total { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
 
     .table-scroll-wrapper { width: 100%; overflow-x: auto; background: #fff; border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 4px 16px rgba(15, 23, 42, .04); }
-    .table-detailed { width: 100%; border-collapse: collapse; min-width: 1100px; margin-bottom: 0; }
+    .table-scroll-wrapper::-webkit-scrollbar { height: 8px; }
+    .table-scroll-wrapper::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    .table-detailed { width: 100%; border-collapse: collapse; min-width: 1250px; margin-bottom: 0; }
     .table-detailed thead { background: #0f172a; color: #fff; }
-    .table-detailed th { font-size: .72rem; font-weight: 700; padding: 15px 16px; white-space: nowrap; text-transform: uppercase; letter-spacing: .06em; vertical-align: middle; border-right: 1px solid rgba(255, 255, 255, .08); }
+    .mako-mode .table-detailed thead { background: #164e63; }
+    .table-detailed th {
+        font-size: .72rem; font-weight: 700; padding: 15px 16px; white-space: nowrap;
+        text-transform: uppercase; letter-spacing: .06em; vertical-align: middle;
+        border-right: 1px solid rgba(255, 255, 255, .08);
+    }
     .table-detailed th:last-child { border-right: none; }
     .table-detailed th.th-group { border-bottom: 1px solid rgba(255, 255, 255, .12); }
     .table-detailed th.th-sub { background: rgba(255, 255, 255, .06); }
@@ -142,12 +163,13 @@
     .table-detailed tfoot tr.row-jumlah-total td { background: #f1f5f9; border-top: 2px solid #cbd5e1; border-bottom: none; padding: 14px 16px; font-weight: 800; font-size: .88rem; color: #0f172a; }
     .total-label-cell { text-align: right; letter-spacing: .05em; text-transform: uppercase; color: #0f172a; padding-right: 20px !important; }
     .total-val-badge { display: inline-block; padding: 5px 14px; border-radius: 8px; background: #0f172a; color: #ffffff; font-weight: 800; font-size: .88rem; }
+    .mako-mode .total-val-badge { background: #164e63; }
 
     /* Komponen Data */
     .cell-title { font-weight: 700; color: #0f172a; font-size: .92rem; display: block; }
     .cell-subtitle { color: #64748b; font-size: .78rem; display: block; margin-top: 2px; }
     .badge-tahun { display: inline-flex; align-items: center; gap: 5px; margin-top: 6px; padding: 3px 10px; border-radius: 6px; background: #eff6ff; color: #1d4ed8; font-weight: 700; font-size: .7rem; border: 1px solid #dbeafe; }
-    .chip-peserta { display: inline-block; padding: 4px 10px; border-radius: 8px; font-weight: 600; font-size: .8rem; background: #f1f5f9; color: #334155; white-space: nowrap; }
+    .chip-peserta { display: inline-block; padding: 4px 10px; border-radius: 8px; font-weight: 600; font-size: .8rem; background: #f1f5f9; color: #334155; white-space: nowrap; border: 1px solid #e2e8f0; }
     .total-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
     .total-number { font-weight: 800; font-size: .92rem; color: #0f172a; white-space: nowrap; }
     .btn-peserta { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 5px 12px; border-radius: 20px; font-size: .74rem; font-weight: 700; border: 1px solid #bfdbfe; background: #eff6ff; color: #1e40af; cursor: pointer; transition: all .2s ease; white-space: nowrap; }
@@ -155,12 +177,13 @@
     .media-links { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
     .btn-media { display: inline-flex; align-items: center; gap: 6px; color: var(--info, #0ea5e9); font-weight: 600; font-size: .78rem; padding: 5px 10px; border-radius: 8px; background: #f0f9ff; border: 1px solid #bae6fd; transition: all .2s; text-decoration: none; }
     .btn-media:hover { background: #0ea5e9; color: #fff; border-color: #0ea5e9; }
-    .aksi-wrap { display: flex; justify-content: center; align-items: center; gap: 8px; }
-    .aksi-wrap form { margin: 0; display: inline-flex; }
+    
+    .aksi-wrap { display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap; }
     .btn-action { width: 34px; height: 34px; display: inline-flex; justify-content: center; align-items: center; border-radius: 9px; font-size: .82rem; color: #fff; border: none; cursor: pointer; transition: transform .15s ease, filter .2s ease; text-decoration: none; }
     .btn-action:hover { transform: translateY(-1px); filter: brightness(1.06); box-shadow: 0 3px 8px rgba(0,0,0,.12); }
     .btn-edit { background: #f59e0b; color: #0f172a; }
     .btn-delete { background: #ef4444; color: #fff; }
+    
     .empty-state { text-align: center; padding: 54px 16px !important; color: #64748b; font-weight: 600; background: #fff; border-radius: 14px; border: 1px solid #e2e8f0; }
 
     /* Modal Peserta */
@@ -190,6 +213,7 @@
     .stat-value { font-family: var(--font-display); font-weight: 700; font-size: 1.9rem; color: var(--ink); }
 
     @media (max-width: 700px) {
+        .sub-tab-container { flex-direction: column; }
         .modal-peserta-body { grid-template-columns: 1fr; }
         .stats-grid { grid-template-columns: 1fr; }
     }
@@ -200,19 +224,13 @@
     @php
         // Cek tab aktif
         $aktif = Request::is('internal/pencegahan/pemberdayaan-masyarakat') ? 'semua' : 'sosialisasi';
-
-        // Hak akses CRUD
         $canCrud = auth()->user()->hasAnyRole(['Pencegahan', 'Super User']);
         
-        // Mapping dan parsing data jika di halaman Sosialisasi
+        // Data Sosialisasi
         if ($aktif !== 'semua') {
             $koleksiData = collect($data_sosialisasi ?? [])->map(function($item) {
                 $tgl = $item->tanggal_pelaksanaan ?? null;
                 $item->tahun_parsed = $tgl ? \Carbon\Carbon::parse($tgl)->format('Y') : ($item->tahun ?? date('Y'));
-                
-                // Parsing daftar nama peserta
-                $rawNamaL = $item->nama_peserta_laki_laki ?? $item->daftar_peserta_laki_laki ?? $item->peserta_laki_nama ?? $item->nama_laki_laki ?? '';
-                $rawNamaP = $item->nama_peserta_perempuan ?? $item->daftar_peserta_perempuan ?? $item->peserta_perempuan_nama ?? $item->nama_perempuan ?? '';
                 
                 $parseNama = function ($raw) {
                     if (is_array($raw)) return collect($raw)->map(fn($n) => trim((string) $n))->filter()->values();
@@ -223,45 +241,44 @@
                     return collect(preg_split('/[\r\n,;]+/', (string) $raw))->map(fn($n) => trim($n))->filter()->values();
                 };
 
-                $item->listNamaL = $parseNama($rawNamaL);
-                $item->listNamaP = $parseNama($rawNamaP);
+                $item->listNamaL = $parseNama($item->nama_peserta_laki_laki ?? $item->daftar_peserta_laki_laki ?? $item->peserta_laki_nama ?? $item->nama_laki_laki ?? '');
+                $item->listNamaP = $parseNama($item->nama_peserta_perempuan ?? $item->daftar_peserta_perempuan ?? $item->peserta_perempuan_nama ?? $item->nama_perempuan ?? '');
+                
                 $item->jml_l = (int) ($item->peserta_laki_laki ?? $item->listNamaL->count());
                 $item->jml_p = (int) ($item->peserta_perempuan ?? $item->listNamaP->count());
-                $item->jml_total = $item->jml_l + $item->jml_p;
+                $item->jml_g = (int) ($item->guru ?? 0);
+                $item->jml_o = (int) ($item->orang_tua ?? 0);
+                $item->jml_total = $item->jml_l + $item->jml_p + $item->jml_g + $item->jml_o;
 
-                // Parsing link dokumentasi
                 $item->links_parsed = collect(preg_split('/[\r\n,\s]+/', (string) ($item->link_dokumentasi ?? '')))
                     ->map(fn ($u) => trim($u))->filter(fn ($u) => preg_match('#^https?://#i', $u))->values();
 
                 return $item;
             });
 
-            // Grouping
-            $groupedByYear = $koleksiData->sortByDesc('tanggal_pelaksanaan')->groupBy('tahun_parsed');
-            $listTahunCetak = $groupedByYear->keys()->sortDesc()->values();
-            $daftar_kecamatan = $koleksiData->pluck('kecamatan')->filter()->unique()->sort()->values();
+            // PISAHKAN DATA LUAR DAN DALAM
+            $koleksiLuar = $koleksiData->filter(fn($i) => strtolower(trim($i->kecamatan)) !== 'mako damkar');
+            $koleksiDalam = $koleksiData->filter(fn($i) => strtolower(trim($i->kecamatan)) === 'mako damkar');
 
-            // Hitung Grand Total
-            $grandTotalKegiatan  = $koleksiData->count();
-            $grandTotalLaki      = $koleksiData->sum('jml_l');
-            $grandTotalPerempuan = $koleksiData->sum('jml_p');
-            $grandTotalPeserta   = $koleksiData->sum('jml_total');
+            $groupedLuar = $koleksiLuar->sortByDesc('tanggal_pelaksanaan')->groupBy('tahun_parsed');
+            $groupedDalam = $koleksiDalam->sortByDesc('tanggal_pelaksanaan')->groupBy('tahun_parsed');
+            
+            // Daftar kecamatan unik untuk filter (hanya dari koleksi luar)
+            $daftar_kecamatan = $koleksiLuar->pluck('kecamatan')->filter()->unique()->sort()->values();
+            $listTahunCetak = $koleksiData->pluck('tahun_parsed')->unique()->sortDesc()->values();
         }
     @endphp
 
-    <!-- HEADER KONTEN & TOMBOL AKSI -->
+    <!-- HEADER & TOOLBAR -->
     <div class="page-toolbar">
         <div class="page-head">
             <h1>Pemberdayaan Masyarakat</h1>
             <p>Kelola data sosialisasi, edukasi, dan pelatihan tanggap kebakaran.</p>
         </div>
-
         @if($aktif !== 'semua')
         <div class="toolbar-actions">
             @hasanyrole('Pencegahan|Super User')
-            <a href="/internal/pencegahan/pemberdayaan-masyarakat/create" class="btn-tool navy">
-                <i class="fas fa-plus"></i> Tambah Data
-            </a>
+            <a href="/internal/pencegahan/pemberdayaan-masyarakat/create" class="btn-tool navy"><i class="fas fa-plus"></i> Tambah Data</a>
             @endhasanyrole
 
             <div class="export-dropdown">
@@ -270,17 +287,11 @@
                 </button>
                 <div class="export-menu">
                     <div class="export-menu-label">Pilih Format Excel</div>
-                    <a href="/internal/pencegahan/pemberdayaan-masyarakat/cetak-excel" class="export-item">
-                        <span>Semua Data (Rekap)</span>
-                        <i class="fas fa-layer-group text-muted" style="font-size:.75rem;"></i>
-                    </a>
+                    <a href="/internal/pencegahan/pemberdayaan-masyarakat/cetak-excel" class="export-item"><span>Semua Data (Rekap)</span></a>
                     <div class="export-divider"></div>
                     <div class="export-menu-label">Cetak Per Tahun</div>
                     @foreach($listTahunCetak as $thn)
-                        <a href="/internal/pencegahan/pemberdayaan-masyarakat/cetak-excel?tahun={{ $thn }}" class="export-item">
-                            <span>Tahun {{ $thn }}</span>
-                            <i class="fas fa-download text-muted" style="font-size:.72rem;"></i>
-                        </a>
+                        <a href="/internal/pencegahan/pemberdayaan-masyarakat/cetak-excel?tahun={{ $thn }}" class="export-item"><span>Tahun {{ $thn }}</span></a>
                     @endforeach
                 </div>
             </div>
@@ -291,38 +302,29 @@
                 </button>
                 <div class="export-menu">
                     <div class="export-menu-label">Pilih Format PDF</div>
-                    <a href="/internal/pencegahan/pemberdayaan-masyarakat/cetak" target="_blank" class="export-item">
-                        <span>Semua Data (Rekap)</span>
-                        <i class="fas fa-layer-group text-muted" style="font-size:.75rem;"></i>
-                    </a>
+                    <a href="/internal/pencegahan/pemberdayaan-masyarakat/cetak" target="_blank" class="export-item"><span>Semua Data (Rekap)</span></a>
                     <div class="export-divider"></div>
                     <div class="export-menu-label">Cetak Per Tahun</div>
                     @foreach($listTahunCetak as $thn)
-                        <a href="/internal/pencegahan/pemberdayaan-masyarakat/cetak?tahun={{ $thn }}" target="_blank" class="export-item">
-                            <span>Tahun {{ $thn }}</span>
-                            <i class="fas fa-print text-muted" style="font-size:.72rem;"></i>
-                        </a>
+                        <a href="/internal/pencegahan/pemberdayaan-masyarakat/cetak?tahun={{ $thn }}" target="_blank" class="export-item"><span>Tahun {{ $thn }}</span></a>
                     @endforeach
                 </div>
             </div>
         </div>
         @endif
     </div>
-
-    <!-- TABS -->
+<!-- TABS -->
     <ul class="nav custom-nav-tabs">
         <li class="nav-item">
-            <a class="nav-link {{ $aktif === 'semua' ? 'active' : '' }}" href="/internal/pencegahan/pemberdayaan-masyarakat">Semua Data</a>
+            <a class="nav-link {{ Request::is('internal/pencegahan/pemberdayaan-masyarakat') ? 'active' : '' }}" href="/internal/pencegahan/pemberdayaan-masyarakat">Semua Data</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ $aktif === 'sosialisasi' ? 'active' : '' }}" href="/internal/pencegahan/pemberdayaan-masyarakat/sosialisasi">SOSIALISASI DAN EDUKASI</a>
+            <a class="nav-link {{ Request::is('internal/pencegahan/pemberdayaan-masyarakat/sosialisasi*') ? 'active' : '' }}" href="/internal/pencegahan/pemberdayaan-masyarakat/sosialisasi">SOSIALISASI DAN EDUKASI</a>
         </li>
         <li class="nav-item">
             <a class="nav-link {{ Request::is('internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga*') ? 'active' : '' }}" href="/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga">PELATIHAN KELUARGA TANGGAP KEBAKARAN</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ Request::is('internal/pencegahan/pemberdayaan-masyarakat/kunjungan-sekolah*') ? 'active' : '' }}" href="/internal/pencegahan/pemberdayaan-masyarakat/kunjungan-sekolah">KUNJUNGAN SEKOLAH</a>
-        </li>
     </ul>
 
     @if($aktif === 'semua')
@@ -331,253 +333,339 @@
             <h3>Ringkasan Pemberdayaan</h3>
             <span class="line"></span>
         </div>
-
         <div class="stats-grid">
             <a href="/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga" class="stat-card">
                 <div class="stat-ico"><i class="fas fa-house-chimney"></i></div>
-                <div>
-                    <div class="stat-title">Pelatihan Keluarga</div>
-                    <div class="stat-value">{{ $total_pelatihan ?? count($data_pelatihan ?? []) }}</div>
-                </div>
+                <div><div class="stat-title">Pelatihan Keluarga</div><div class="stat-value">{{ $total_pelatihan ?? count($data_pelatihan ?? []) }}</div></div>
             </a>
             <a href="/internal/pencegahan/pemberdayaan-masyarakat/sosialisasi" class="stat-card">
                 <div class="stat-ico"><i class="fas fa-users"></i></div>
-                <div>
-                    <div class="stat-title">Sosialisasi &amp; Edukasi</div>
-                    <div class="stat-value">{{ $total_sosialisasi ?? count($data_sosialisasi ?? []) }}</div>
-                </div>
+                <div><div class="stat-title">Sosialisasi &amp; Edukasi</div><div class="stat-value">{{ $total_sosialisasi ?? count($data_sosialisasi ?? []) }}</div></div>
             </a>
             <a href="/internal/pencegahan/pemberdayaan-masyarakat/kunjungan-sekolah" class="stat-card">
                 <div class="stat-ico"><i class="fas fa-school"></i></div>
-                <div>
-                    <div class="stat-title">Kunjungan Sekolah</div>
-                    <div class="stat-value">{{ $total_kunjungan ?? count($data_kunjungan ?? []) }}</div>
-                </div>
+                <div><div class="stat-title">Kunjungan Sekolah</div><div class="stat-value">{{ $total_kunjungan ?? count($data_kunjungan ?? []) }}</div></div>
             </a>
         </div>
-
     @else
+
+        <!-- SUB TABS: KUNJUNGAN LUAR VS DALAM -->
+        <div class="sub-tab-container">
+            <div class="sub-tab-btn active" id="btnTabLuar" onclick="switchTab('luar')">
+                <i class="fas fa-truck-fast"></i> Kunjungan ke Luar (Penyuluhan ke Lokasi)
+            </div>
+            <div class="sub-tab-btn" id="btnTabDalam" onclick="switchTab('dalam')">
+                <i class="fas fa-building"></i> Wisata Edukasi (Mako Damkar)
+            </div>
+        </div>
+
         <!-- FILTER BAR -->
         <div class="filter-bar">
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchSosialisasi" placeholder="Cari kelurahan, lokasi, kecamatan, atau peserta..." aria-label="Cari data sosialisasi">
+                <input type="text" id="searchSosialisasi" placeholder="Cari kelurahan, instansi, lokasi..." autocomplete="off">
             </div>
-
-            <select id="filterKecamatan" class="filter-select" aria-label="Filter Kecamatan">
+            <select id="filterKecamatan" class="filter-select">
                 <option value="">Semua Kecamatan</option>
                 @foreach($daftar_kecamatan as $kecamatan)
                     <option value="{{ strtolower($kecamatan) }}">{{ $kecamatan }}</option>
                 @endforeach
             </select>
-
-            <select id="filterTahun" class="filter-select" aria-label="Filter Tahun">
+            <select id="filterTahun" class="filter-select">
                 <option value="">Semua Tahun</option>
                 @foreach($listTahunCetak as $thn)
                     <option value="{{ $thn }}">Tahun {{ $thn }}</option>
                 @endforeach
             </select>
-
-            <button type="button" id="btnResetFilter" class="btn-reset-filter">
+            <button type="button" id="btnResetFilter" class="btn-reset-filter" onclick="resetFilter()">
                 <i class="fas fa-rotate-left"></i> Reset
             </button>
         </div>
 
-        <!-- BANNER RINGKASAN GRAND TOTAL -->
-        @if($koleksiData->isNotEmpty())
-        <div class="summary-strip" id="summaryStrip">
-            <div class="summary-strip-title">
-                <i class="fas fa-users"></i>
-                <div>
-                    <h4 id="judulSummary">REKAPITULASI SOSIALISASI & EDUKASI (SEMUA TAHUN)</h4>
-                    <p id="subJudulSummary">Akumulasi jumlah kegiatan dan peserta yang ditampilkan</p>
+        <!-- ============================================== -->
+        <!-- WRAPPER 1: KUNJUNGAN LUAR -->
+        <!-- ============================================== -->
+        <div id="wrapperLuar">
+            @if($koleksiLuar->isNotEmpty())
+            <div class="summary-strip">
+                <div class="summary-strip-title">
+                    <i class="fas fa-truck-fast"></i>
+                    <div>
+                        <h4 id="judulSummaryLuar">REKAP KUNJUNGAN KE LUAR (SEMUA TAHUN)</h4>
+                        <p>Akumulasi jumlah kegiatan dan peserta yang ditampilkan</p>
+                    </div>
+                </div>
+                <div class="summary-metrics">
+                    <div class="summary-metric-box"><span>Kegiatan</span><strong class="sum-kegiatan">0</strong></div>
+                    <div class="summary-metric-box"><span>Laki-laki</span><strong class="sum-laki">0</strong></div>
+                    <div class="summary-metric-box"><span>Perempuan</span><strong class="sum-pr">0</strong></div>
+                    <div class="summary-metric-box"><span>Guru</span><strong class="sum-guru">0</strong></div>
+                    <div class="summary-metric-box"><span>Ortu</span><strong class="sum-ortu">0</strong></div>
+                    <div class="summary-metric-box highlight"><span>Total Peserta</span><strong class="sum-total">0 Orang</strong></div>
                 </div>
             </div>
-            <div class="summary-metrics">
-                <div class="summary-metric-box">
-                    <span>Total Kegiatan</span>
-                    <strong id="grandKegiatan">{{ number_format($grandTotalKegiatan, 0, ',', '.') }}</strong>
-                </div>
-                <div class="summary-metric-box">
-                    <span>Peserta Laki-laki</span>
-                    <strong id="grandLaki">{{ number_format($grandTotalLaki, 0, ',', '.') }}</strong>
-                </div>
-                <div class="summary-metric-box">
-                    <span>Peserta Perempuan</span>
-                    <strong id="grandPerempuan">{{ number_format($grandTotalPerempuan, 0, ',', '.') }}</strong>
-                </div>
-                <div class="summary-metric-box highlight">
-                    <span>Jumlah Total Peserta</span>
-                    <strong id="grandTotal">{{ number_format($grandTotalPeserta, 0, ',', '.') }} Orang</strong>
-                </div>
+            @endif
+
+            <div class="wadah-tahun">
+                @forelse($groupedLuar as $tahun => $items)
+                    <div class="year-block" data-year-block="{{ $tahun }}">
+                        <div class="year-block-header">
+                            <div class="year-block-title">
+                                <span class="year-badge-icon"><i class="fas fa-calendar-alt"></i></span>
+                                <h3>DATA PENYULUHAN TAHUN {{ $tahun }}</h3>
+                            </div>
+                            <div class="year-block-pills">
+                                <span class="year-stat-pill"><i class="fas fa-map-location-dot text-secondary"></i><span class="pill-jml-kegiatan">0</span> Lokasi</span>
+                                <span class="year-stat-pill total"><i class="fas fa-users"></i> Total Peserta: <strong class="pill-total-tahun">0 Orang</strong></span>
+                            </div>
+                        </div>
+
+                        <div class="table-scroll-wrapper">
+                            <table class="table-detailed">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2" class="text-center" width="5%">NO</th>
+                                        <th rowspan="2" width="22%">LOKASI KELURAHAN / RT</th>
+                                        <th rowspan="2" width="16%">KECAMATAN</th>
+                                        <th rowspan="2" width="16%">POSYANDU / SEKOLAH</th>
+                                        <th rowspan="2" width="15%">TANGGAL PELAKSANAAN</th>
+                                        <th colspan="5" class="text-center th-group">JUMLAH &amp; DAFTAR PESERTA</th>
+                                        <th rowspan="2" class="text-center" width="10%">DOKUMENTASI</th>
+                                        @hasanyrole('Pencegahan|Super User')
+                                        <th rowspan="2" class="text-center" width="8%">AKSI</th>
+                                        @endhasanyrole
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center th-sub" width="9%">LAKI-LAKI</th>
+                                        <th class="text-center th-sub" width="9%">PEREMPUAN</th>
+                                        <th class="text-center th-sub" width="9%">GURU</th>
+                                        <th class="text-center th-sub" width="9%">ORTU</th>
+                                        <th class="text-center th-sub" width="11%">TOTAL</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($items->values() as $index => $item)
+                                    @php
+                                        $gabunganPencarian = strtolower(($item->kelurahan ?? '') . ' ' . ($item->kecamatan ?? '') . ' rt ' . ($item->rt ?? '') . ' ' . ($item->posyandu_sekolah ?? '') . ' ' . $item->listNamaL->join(' ') . ' ' . $item->listNamaP->join(' '));
+                                        $judulModal = ($item->posyandu_sekolah ?? $item->kelurahan ?? "Daftar Peserta") . " - Tahun {$tahun}";
+                                    @endphp
+                                    <tr class="baris-data" data-tahun="{{ $tahun }}" data-kecamatan="{{ strtolower($item->kecamatan ?? '') }}" data-laki="{{ $item->jml_l }}" data-perempuan="{{ $item->jml_p }}" data-guru="{{ $item->jml_g }}" data-ortu="{{ $item->jml_o }}" data-total="{{ $item->jml_total }}" data-pencarian="{{ $gabunganPencarian }}">
+                                        <td class="text-center fw-bold nomor-urut">{{ $index + 1 }}</td>
+                                        <td>
+                                            <span class="cell-title">{{ $item->kelurahan ? 'Kelurahan ' . $item->kelurahan : '-' }}</span>
+                                            <span class="cell-subtitle"><i class="fas fa-map-pin me-1"></i> {{ $item->rt && $item->rt !== '-' ? 'RT ' . $item->rt : 'RT Tidak diisi' }}</span>
+                                            <span class="badge-tahun"><i class="far fa-calendar-alt"></i> Tahun {{ $tahun }}</span>
+                                        </td>
+                                        <td><span class="fw-bold">{{ $item->kecamatan ?? '-' }}</span></td>
+                                        <td><span class="fw-bold text-dark">{{ $item->posyandu_sekolah ?? '-' }}</span></td>
+                                        <td>
+                                            @if($item->tanggal_pelaksanaan)
+                                                <span class="cell-title">{{ \Carbon\Carbon::parse($item->tanggal_pelaksanaan)->locale('id')->translatedFormat('d F Y') }}</span>
+                                                <span class="cell-subtitle">{{ \Carbon\Carbon::parse($item->tanggal_pelaksanaan)->locale('id')->translatedFormat('l') }}</span>
+                                            @else
+                                                <span class="fw-bold">{{ $item->hari_tgl ?? '-' }}</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center"><span class="chip-peserta">{{ $item->jml_l }} Orang</span></td>
+                                        <td class="text-center"><span class="chip-peserta">{{ $item->jml_p }} Orang</span></td>
+                                        <td class="text-center"><span class="chip-peserta">{{ $item->jml_g }} Orang</span></td>
+                                        <td class="text-center"><span class="chip-peserta">{{ $item->jml_o }} Orang</span></td>
+                                        <td class="text-center">
+                                            <div class="total-wrap">
+                                                <span class="total-number">{{ number_format($item->jml_total, 0, ',', '.') }} Orang</span>
+                                                @if($item->listNamaL->isNotEmpty() || $item->listNamaP->isNotEmpty())
+                                                    <button type="button" class="btn-peserta" onclick='bukaModalPeserta(@json($judulModal), @json($item->listNamaL), @json($item->listNamaP))'>
+                                                        <i class="fas fa-users"></i> Lihat Peserta
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            @if($item->links_parsed->isNotEmpty())
+                                                <div class="media-links">
+                                                    @foreach($item->links_parsed as $i => $u)
+                                                        <a href="{{ $u }}" target="_blank" rel="noopener noreferrer" class="btn-media" title="Buka Link Dokumentasi"><i class="fas fa-link"></i> {{ $item->links_parsed->count() > 1 ? 'Link ' . ($i + 1) : 'Lihat' }}</a>
+                                                    @endforeach
+                                                </div>
+                                            @else
+                                                <span class="media-empty">-</span>
+                                            @endif
+                                        </td>
+                                        @hasanyrole('Pencegahan|Super User')
+                                        <td class="text-center">
+                                            <div class="aksi-wrap">
+                                                <a href="/internal/pencegahan/pemberdayaan-masyarakat/edit/{{ $item->id }}" class="btn-action btn-edit" title="Edit Data"><i class="fas fa-edit"></i></a>
+                                                <form action="/internal/pencegahan/pemberdayaan-masyarakat/hapus/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                                                    @csrf @method('DELETE')
+                                                    <button type="submit" class="btn-action btn-delete" title="Hapus Data"><i class="fas fa-trash"></i></button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                        @endhasanyrole
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                                <tfoot>
+                                    <tr class="row-jumlah-total">
+                                        <td colspan="5" class="total-label-cell">JUMLAH TOTAL TAHUN {{ $tahun }}</td>
+                                        <td class="text-center foot-total-laki">0 Orang</td>
+                                        <td class="text-center foot-total-perempuan">0 Orang</td>
+                                        <td class="text-center foot-total-guru">0 Orang</td>
+                                        <td class="text-center foot-total-ortu">0 Orang</td>
+                                        <td class="text-center"><span class="total-val-badge foot-total-peserta">0 Orang</span></td>
+                                        <td colspan="{{ $canCrud ? 2 : 1 }}"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                @empty
+                    <div class="empty-state"><i class="fas fa-folder-open mb-2" style="font-size: 28px; color: #cbd5e1;"></i><br>Belum ada data kunjungan ke luar lokasi.</div>
+                @endforelse
             </div>
         </div>
-        @endif
 
-        <!-- DAFTAR TABEL YANG DIPISAHKAN PER TAHUN -->
-        <div id="wadahSemuaTahun">
-            @forelse($groupedByYear as $tahun => $items)
-                @php
-                    $adaDetailGenderTahun = $items->contains(fn($i) => ($i->jml_l > 0 || $i->jml_p > 0));
-                    $sumLakiTahun      = $items->sum('jml_l');
-                    $sumPerempuanTahun = $items->sum('jml_p');
-                    $sumTotalTahun     = $items->sum('jml_total');
-                @endphp
-
-                <div class="year-block" data-year-block="{{ $tahun }}" data-has-gender="{{ $adaDetailGenderTahun ? '1' : '0' }}">
-                    <div class="year-block-header">
-                        <div class="year-block-title">
-                            <span class="year-badge-icon"><i class="fas fa-calendar-alt"></i></span>
-                            <h3>DATA SOSIALISASI TAHUN {{ $tahun }}</h3>
-                        </div>
-                        <div class="year-block-pills">
-                            <span class="year-stat-pill">
-                                <i class="fas fa-map-location-dot text-secondary"></i>
-                                <span class="pill-jml-kegiatan">{{ $items->count() }}</span> Kegiatan Lokasi
-                            </span>
-                            <span class="year-stat-pill total">
-                                <i class="fas fa-users"></i>
-                                Jumlah Total Tahun {{ $tahun }}: <strong class="pill-total-tahun">{{ number_format($sumTotalTahun, 0, ',', '.') }} Orang</strong>
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="table-scroll-wrapper">
-                        <table class="table-detailed">
-                            <thead>
-                                <tr>
-                                    <th rowspan="2" class="text-center" width="60px">No</th>
-                                    <th rowspan="2" width="22%">Lokasi Kelurahan / RT</th>
-                                    <th rowspan="2" width="16%">Kecamatan</th>
-                                    <th rowspan="2" width="16%">Posyandu / Sekolah</th>
-                                    <th rowspan="2" width="16%">Tanggal Pelaksanaan</th>
-                                    <th colspan="3" class="text-center th-group">Jumlah &amp; Daftar Peserta</th>
-                                    <th rowspan="2" class="text-center" width="12%">Dokumentasi</th>
-                                    @hasanyrole('Pencegahan|Super User')
-                                    <th rowspan="2" class="text-center" width="105px">Aksi</th>
-                                    @endhasanyrole
-                                </tr>
-                                <tr>
-                                    <th class="text-center" width="110px">Laki-laki</th>
-                                    <th class="text-center" width="110px">Perempuan</th>
-                                    <th class="text-center th-sub" width="145px">Jumlah Peserta</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($items->values() as $index => $item)
-                                @php
-                                    $gabunganPencarian = strtolower(($item->kelurahan ?? '') . ' ' . ($item->kecamatan ?? '') . ' rt ' . ($item->rt ?? '') . ' ' . ($item->posyandu_sekolah ?? '') . ' ' . $item->listNamaL->join(' ') . ' ' . $item->listNamaP->join(' '));
-                                    $judulModal = ($item->posyandu_sekolah ?? $item->kelurahan ?? "Daftar Peserta") . " - Tahun {$tahun}";
-                                @endphp
-                                <tr class="baris-data"
-                                    data-tahun="{{ $tahun }}"
-                                    data-kecamatan="{{ strtolower($item->kecamatan ?? '') }}"
-                                    data-laki="{{ $item->jml_l }}"
-                                    data-perempuan="{{ $item->jml_p }}"
-                                    data-total="{{ $item->jml_total }}"
-                                    data-pencarian="{{ $gabunganPencarian }}">
-                                    
-                                    <td class="text-center fw-bold nomor-urut">{{ $index + 1 }}</td>
-                                    <td>
-                                        <span class="cell-title">{{ $item->kelurahan ? 'Kelurahan ' . $item->kelurahan : '-' }}</span>
-                                        <span class="cell-subtitle"><i class="fas fa-map-pin me-1"></i> {{ $item->rt ? 'RT ' . $item->rt : 'RT Tidak diisi' }}</span>
-                                        <span class="badge-tahun"><i class="far fa-calendar-alt"></i> Tahun {{ $tahun }}</span>
-                                    </td>
-                                    <td><span class="fw-bold">{{ $item->kecamatan ?? '-' }}</span></td>
-                                    <td><span class="fw-bold text-dark">{{ $item->posyandu_sekolah ?? '-' }}</span></td>
-                                    <td>
-                                        @if($item->tanggal_pelaksanaan)
-                                            <span class="cell-title">{{ \Carbon\Carbon::parse($item->tanggal_pelaksanaan)->locale('id')->translatedFormat('d F Y') }}</span>
-                                            <span class="cell-subtitle">{{ \Carbon\Carbon::parse($item->tanggal_pelaksanaan)->locale('id')->translatedFormat('l') }}</span>
-                                        @else
-                                            <span class="fw-bold">{{ $item->hari_tgl ?? '-' }}</span>
-                                        @endif
-                                    </td>
-
-                                    <td class="text-center">
-                                        <span class="chip-peserta">{{ $item->jml_l }} Orang</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="chip-peserta">{{ $item->jml_p }} Orang</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="total-wrap">
-                                            <span class="total-number">{{ number_format($item->jml_total, 0, ',', '.') }} Orang</span>
-                                            @if($item->listNamaL->isNotEmpty() || $item->listNamaP->isNotEmpty())
-                                                <button type="button" class="btn-peserta"
-                                                    onclick='bukaModalPeserta(@json($judulModal), @json($item->listNamaL), @json($item->listNamaP))'>
-                                                    <i class="fas fa-users"></i> Lihat Peserta
-                                                </button>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        @if($item->links_parsed->isNotEmpty())
-                                            <div class="media-links">
-                                                @foreach($item->links_parsed as $i => $u)
-                                                    <a href="{{ $u }}" target="_blank" rel="noopener noreferrer" class="btn-media" title="Buka Link Dokumentasi">
-                                                        <i class="fas fa-link"></i> {{ $item->links_parsed->count() > 1 ? 'Link ' . ($i + 1) : 'Lihat' }}
-                                                    </a>
-                                                @endforeach
-                                            </div>
-                                        @else
-                                            <span class="media-empty">-</span>
-                                        @endif
-                                    </td>
-
-                                    @hasanyrole('Pencegahan|Super User')
-                                    <td>
-                                        <div class="aksi-wrap">
-                                            <a href="/internal/pencegahan/pemberdayaan-masyarakat/edit/{{ $item->id }}" class="btn-action btn-edit" title="Edit Data">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <form action="/internal/pencegahan/pemberdayaan-masyarakat/hapus/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn-action btn-delete" title="Hapus Data">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                    @endhasanyrole
-                                </tr>
-                                @endforeach
-                            </tbody>
-
-                            <!-- BARIS JUMLAH TOTAL PER TAHUN -->
-                            <tfoot>
-                                <tr class="row-jumlah-total">
-                                    <td colspan="5" class="total-label-cell">
-                                        JUMLAH TOTAL TAHUN {{ $tahun }}
-                                    </td>
-                                    <td class="text-center foot-total-laki">
-                                        {{ $adaDetailGenderTahun ? number_format($sumLakiTahun, 0, ',', '.') . ' Orang' : '-' }}
-                                    </td>
-                                    <td class="text-center foot-total-perempuan">
-                                        {{ $adaDetailGenderTahun ? number_format($sumPerempuanTahun, 0, ',', '.') . ' Orang' : '-' }}
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="total-val-badge foot-total-peserta">{{ number_format($sumTotalTahun, 0, ',', '.') }} Orang</span>
-                                    </td>
-                                    <td colspan="{{ $canCrud ? 2 : 1 }}"></td>
-                                </tr>
-                            </tfoot>
-                        </table>
+        <!-- ============================================== -->
+        <!-- WRAPPER 2: KUNJUNGAN DALAM (MAKO) -->
+        <!-- ============================================== -->
+        <div id="wrapperDalam" style="display:none;">
+            @if($koleksiDalam->isNotEmpty())
+            <div class="summary-strip mako-mode">
+                <div class="summary-strip-title">
+                    <i class="fas fa-building"></i>
+                    <div>
+                        <h4 id="judulSummaryDalam">REKAP WISATA EDUKASI (SEMUA TAHUN)</h4>
+                        <p>Akumulasi rombongan yang berkunjung ke Mako Damkar</p>
                     </div>
                 </div>
-            @empty
-                <div class="empty-state">
-                    <i class="fas fa-folder-open" style="font-size: 28px; color: #cbd5e1; margin-bottom: 8px;"></i><br>
-                    Belum ada data Sosialisasi & Edukasi.
+                <div class="summary-metrics">
+                    <div class="summary-metric-box"><span>Rombongan</span><strong class="sum-kegiatan">0</strong></div>
+                    <div class="summary-metric-box"><span>Laki-laki</span><strong class="sum-laki">0</strong></div>
+                    <div class="summary-metric-box"><span>Perempuan</span><strong class="sum-pr">0</strong></div>
+                    <div class="summary-metric-box"><span>Guru</span><strong class="sum-guru">0</strong></div>
+                    <div class="summary-metric-box"><span>Ortu</span><strong class="sum-ortu">0</strong></div>
+                    <div class="summary-metric-box highlight"><span>Total Peserta</span><strong class="sum-total">0 Orang</strong></div>
                 </div>
-            @endforelse
-
-            <!-- Pesan jika hasil filter tidak ditemukan -->
-            <div id="emptyFilterState" class="empty-state" style="display: none;">
-                <i class="fas fa-magnifying-glass" style="font-size: 28px; color: #cbd5e1; margin-bottom: 8px;"></i><br>
-                Data Sosialisasi & Edukasi yang Anda cari tidak ditemukan.
             </div>
+            @endif
+
+            <div class="wadah-tahun">
+                @forelse($groupedDalam as $tahun => $items)
+                    <div class="year-block mako-mode" data-year-block="{{ $tahun }}">
+                        <div class="year-block-header">
+                            <div class="year-block-title">
+                                <span class="year-badge-icon"><i class="fas fa-calendar-alt"></i></span>
+                                <h3>DATA WISATA EDUKASI TAHUN {{ $tahun }}</h3>
+                            </div>
+                            <div class="year-block-pills">
+                                <span class="year-stat-pill"><i class="fas fa-building text-secondary"></i><span class="pill-jml-kegiatan">0</span> Rombongan</span>
+                                <span class="year-stat-pill total"><i class="fas fa-users"></i> Total Peserta: <strong class="pill-total-tahun">0 Orang</strong></span>
+                            </div>
+                        </div>
+
+                        <div class="table-scroll-wrapper mako-mode">
+                            <table class="table-detailed">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2" class="text-center" width="5%">NO</th>
+                                        <th rowspan="2" width="25%">NAMA ROMBONGAN / INSTANSI</th>
+                                        <th rowspan="2" width="15%">TANGGAL KUNJUNGAN</th>
+                                        <th colspan="5" class="text-center th-group">JUMLAH &amp; DAFTAR PESERTA</th>
+                                        <th rowspan="2" class="text-center" width="10%">DOKUMENTASI</th>
+                                        @hasanyrole('Pencegahan|Super User')
+                                        <th rowspan="2" class="text-center" width="8%">AKSI</th>
+                                        @endhasanyrole
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center th-sub" width="9%">LAKI-LAKI</th>
+                                        <th class="text-center th-sub" width="9%">PEREMPUAN</th>
+                                        <th class="text-center th-sub" width="9%">GURU</th>
+                                        <th class="text-center th-sub" width="9%">ORTU</th>
+                                        <th class="text-center th-sub" width="11%">TOTAL</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($items->values() as $index => $item)
+                                    @php
+                                        $gabunganPencarian = strtolower(($item->posyandu_sekolah ?? '') . ' ' . $item->listNamaL->join(' ') . ' ' . $item->listNamaP->join(' '));
+                                        $judulModal = ($item->posyandu_sekolah ?? "Daftar Peserta") . " - Tahun {$tahun}";
+                                    @endphp
+                                    <tr class="baris-data" data-tahun="{{ $tahun }}" data-kecamatan="" data-laki="{{ $item->jml_l }}" data-perempuan="{{ $item->jml_p }}" data-guru="{{ $item->jml_g }}" data-ortu="{{ $item->jml_o }}" data-total="{{ $item->jml_total }}" data-pencarian="{{ $gabunganPencarian }}">
+                                        <td class="text-center fw-bold nomor-urut">{{ $index + 1 }}</td>
+                                        <td>
+                                            <span class="cell-title" style="font-size: 1rem;">{{ $item->posyandu_sekolah ?? '-' }}</span>
+                                            <span class="badge-tahun mt-2"><i class="far fa-calendar-alt"></i> Tahun {{ $tahun }}</span>
+                                        </td>
+                                        <td>
+                                            @if($item->tanggal_pelaksanaan)
+                                                <span class="cell-title">{{ \Carbon\Carbon::parse($item->tanggal_pelaksanaan)->locale('id')->translatedFormat('d F Y') }}</span>
+                                                <span class="cell-subtitle">{{ \Carbon\Carbon::parse($item->tanggal_pelaksanaan)->locale('id')->translatedFormat('l') }}</span>
+                                            @else
+                                                <span class="fw-bold">{{ $item->hari_tgl ?? '-' }}</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center"><span class="chip-peserta">{{ $item->jml_l }} Orang</span></td>
+                                        <td class="text-center"><span class="chip-peserta">{{ $item->jml_p }} Orang</span></td>
+                                        <td class="text-center"><span class="chip-peserta">{{ $item->jml_g }} Orang</span></td>
+                                        <td class="text-center"><span class="chip-peserta">{{ $item->jml_o }} Orang</span></td>
+                                        <td class="text-center">
+                                            <div class="total-wrap">
+                                                <span class="total-number">{{ number_format($item->jml_total, 0, ',', '.') }} Orang</span>
+                                                @if($item->listNamaL->isNotEmpty() || $item->listNamaP->isNotEmpty())
+                                                    <button type="button" class="btn-peserta" onclick='bukaModalPeserta(@json($judulModal), @json($item->listNamaL), @json($item->listNamaP))'>
+                                                        <i class="fas fa-users"></i> Lihat Peserta
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            @if($item->links_parsed->isNotEmpty())
+                                                <div class="media-links">
+                                                    @foreach($item->links_parsed as $i => $u)
+                                                        <a href="{{ $u }}" target="_blank" rel="noopener noreferrer" class="btn-media" title="Buka Link Dokumentasi"><i class="fas fa-link"></i> {{ $item->links_parsed->count() > 1 ? 'Link ' . ($i + 1) : 'Lihat' }}</a>
+                                                    @endforeach
+                                                </div>
+                                            @else
+                                                <span class="media-empty">-</span>
+                                            @endif
+                                        </td>
+                                        @hasanyrole('Pencegahan|Super User')
+                                        <td class="text-center">
+                                            <div class="aksi-wrap">
+                                                <a href="/internal/pencegahan/pemberdayaan-masyarakat/edit/{{ $item->id }}" class="btn-action btn-edit" title="Edit Data"><i class="fas fa-edit"></i></a>
+                                                <form action="/internal/pencegahan/pemberdayaan-masyarakat/hapus/{{ $item->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                                                    @csrf @method('DELETE')
+                                                    <button type="submit" class="btn-action btn-delete" title="Hapus Data"><i class="fas fa-trash"></i></button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                        @endhasanyrole
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                                <tfoot>
+                                    <tr class="row-jumlah-total">
+                                        <td colspan="3" class="total-label-cell">JUMLAH TOTAL TAHUN {{ $tahun }}</td>
+                                        <td class="text-center foot-total-laki">0 Orang</td>
+                                        <td class="text-center foot-total-perempuan">0 Orang</td>
+                                        <td class="text-center foot-total-guru">0 Orang</td>
+                                        <td class="text-center foot-total-ortu">0 Orang</td>
+                                        <td class="text-center"><span class="total-val-badge foot-total-peserta">0 Orang</span></td>
+                                        <td colspan="{{ $canCrud ? 2 : 1 }}"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                @empty
+                    <div class="empty-state"><i class="fas fa-folder-open mb-2" style="font-size: 28px; color: #cbd5e1;"></i><br>Belum ada data wisata edukasi (rombongan ke Mako).</div>
+                @endforelse
+            </div>
+        </div>
+
+        <div id="emptyFilterState" class="empty-state" style="display: none;">
+            <i class="fas fa-magnifying-glass" style="font-size: 28px; color: #cbd5e1; margin-bottom: 8px;"></i><br>
+            Data yang Anda cari tidak ditemukan.
         </div>
 
         <!-- MODAL POP-UP DAFTAR PESERTA -->
@@ -589,17 +677,11 @@
                 </div>
                 <div class="modal-peserta-body">
                     <div class="peserta-col">
-                        <h5>
-                            <span><i class="fas fa-mars text-primary me-1"></i> Peserta Laki-laki</span>
-                            <span id="jmlModalLaki" class="badge-tahun" style="margin-top:0;">0 Orang</span>
-                        </h5>
+                        <h5><span><i class="fas fa-mars text-primary me-1"></i> Laki-laki</span><span id="jmlModalLaki" class="badge-tahun" style="margin-top:0;">0 Orang</span></h5>
                         <ol class="peserta-list" id="listModalLaki"></ol>
                     </div>
                     <div class="peserta-col">
-                        <h5>
-                            <span><i class="fas fa-venus text-danger me-1"></i> Peserta Perempuan</span>
-                            <span id="jmlModalPerempuan" class="badge-tahun" style="margin-top:0;">0 Orang</span>
-                        </h5>
+                        <h5><span><i class="fas fa-venus text-danger me-1"></i> Perempuan</span><span id="jmlModalPerempuan" class="badge-tahun" style="margin-top:0;">0 Orang</span></h5>
                         <ol class="peserta-list" id="listModalPerempuan"></ol>
                     </div>
                 </div>
@@ -611,21 +693,32 @@
 @push('scripts')
 @if($aktif !== 'semua')
 <script>
+    // Tab Switcher Logika
+    var currentTab = 'luar';
+    function switchTab(tab) {
+        currentTab = tab;
+        document.getElementById('btnTabLuar').classList.toggle('active', tab === 'luar');
+        document.getElementById('btnTabDalam').classList.toggle('active', tab === 'dalam');
+        document.getElementById('wrapperLuar').style.display = tab === 'luar' ? 'block' : 'none';
+        document.getElementById('wrapperDalam').style.display = tab === 'dalam' ? 'block' : 'none';
+        
+        // Sembunyikan filter kecamatan saat di tab Mako (karena Mako ngga butuh filter ini)
+        document.getElementById('filterKecamatan').style.display = tab === 'luar' ? 'inline-block' : 'none';
+        if(tab === 'dalam') document.getElementById('filterKecamatan').value = ''; 
+        
+        filterData(); // Jalankan filter ulang buat ngitung total di tab yang aktif
+    }
+
     // Toggle Dropdown Export
     function toggleExportMenu(btn, event) {
         event.stopPropagation();
         var parent = btn.closest('.export-dropdown');
         var isOpen = parent.classList.contains('open');
-        document.querySelectorAll('.export-dropdown.open').forEach(function(el) {
-            el.classList.remove('open');
-        });
+        document.querySelectorAll('.export-dropdown.open').forEach(function(el) { el.classList.remove('open'); });
         if (!isOpen) parent.classList.add('open');
     }
-
     document.addEventListener('click', function() {
-        document.querySelectorAll('.export-dropdown.open').forEach(function(el) {
-            el.classList.remove('open');
-        });
+        document.querySelectorAll('.export-dropdown.open').forEach(function(el) { el.classList.remove('open'); });
     });
 
     // Fungsi Modal Daftar Peserta
@@ -636,157 +729,129 @@
 
         var ulLaki = document.getElementById('listModalLaki');
         var ulPerempuan = document.getElementById('listModalPerempuan');
-        ulLaki.innerHTML = '';
-        ulPerempuan.innerHTML = '';
+        ulLaki.innerHTML = ''; ulPerempuan.innerHTML = '';
 
-        if (listLaki.length === 0) {
-            ulLaki.innerHTML = '<li style="list-style:none;color:#94a3b8;margin-left:-20px;">Tidak ada daftar nama peserta.</li>';
-        } else {
-            listLaki.forEach(function(nama) {
-                var li = document.createElement('li');
-                li.textContent = nama;
-                ulLaki.appendChild(li);
-            });
-        }
+        if (listLaki.length === 0) ulLaki.innerHTML = '<li style="list-style:none;color:#94a3b8;margin-left:-20px;">Tidak ada daftar.</li>';
+        else listLaki.forEach(function(nama) { var li = document.createElement('li'); li.textContent = nama; ulLaki.appendChild(li); });
 
-        if (listPerempuan.length === 0) {
-            ulPerempuan.innerHTML = '<li style="list-style:none;color:#94a3b8;margin-left:-20px;">Tidak ada daftar nama peserta.</li>';
-        } else {
-            listPerempuan.forEach(function(nama) {
-                var li = document.createElement('li');
-                li.textContent = nama;
-                ulPerempuan.appendChild(li);
-            });
-        }
+        if (listPerempuan.length === 0) ulPerempuan.innerHTML = '<li style="list-style:none;color:#94a3b8;margin-left:-20px;">Tidak ada daftar.</li>';
+        else listPerempuan.forEach(function(nama) { var li = document.createElement('li'); li.textContent = nama; ulPerempuan.appendChild(li); });
 
         document.getElementById('modalPeserta').classList.add('show');
     }
-
-    function tutupModalPeserta() {
-        document.getElementById('modalPeserta').classList.remove('show');
-    }
+    function tutupModalPeserta() { document.getElementById('modalPeserta').classList.remove('show'); }
 
     // Fungsi Filter Data
-    (function () {
-        'use strict';
-        var searchInput   = document.getElementById('searchSosialisasi');
-        var filterKec     = document.getElementById('filterKecamatan');
-        var filterTahun   = document.getElementById('filterTahun');
-        var btnReset      = document.getElementById('btnResetFilter');
-        var yearBlocks    = document.querySelectorAll('.year-block');
-        var emptyState    = document.getElementById('emptyFilterState');
+    function formatRibuan(angka) { return (Number(angka) || 0).toLocaleString('id-ID'); }
 
-        var elJudulSummary   = document.getElementById('judulSummary');
-        var elGrandKegiatan  = document.getElementById('grandKegiatan');
-        var elGrandLaki      = document.getElementById('grandLaki');
-        var elGrandPerempuan = document.getElementById('grandPerempuan');
-        var elGrandTotal     = document.getElementById('grandTotal');
+    function filterData() {
+        var searchInput = document.getElementById('searchSosialisasi');
+        var filterKec   = document.getElementById('filterKecamatan');
+        var filterTahun = document.getElementById('filterTahun');
+        
+        var q   = (searchInput ? searchInput.value.trim().toLowerCase() : '');
+        var kec = (filterKec ? filterKec.value : '');
+        var thn = (filterTahun ? filterTahun.value : '');
 
-        function formatRibuan(angka) {
-            return (Number(angka) || 0).toLocaleString('id-ID');
-        }
+        var activeWrapper = document.getElementById(currentTab === 'luar' ? 'wrapperLuar' : 'wrapperDalam');
+        var yearBlocks = activeWrapper.querySelectorAll('.year-block');
 
-        function jalankanFilter() {
-            var q    = (searchInput ? searchInput.value.trim().toLowerCase() : '');
-            var kec  = (filterKec ? filterKec.value : '');
-            var thn  = (filterTahun ? filterTahun.value : '');
+        var grandKeg = 0, grandLaki = 0, grandPr = 0, grandGuru = 0, grandOrtu = 0, grandTotal = 0;
+        var adaBlokTampil = false;
 
-            var grandKegiatan  = 0;
-            var grandLaki      = 0;
-            var grandPerempuan = 0;
-            var grandTotal     = 0;
-            var adaBlokTampil  = false;
+        yearBlocks.forEach(function (block) {
+            var tahunBlok = block.getAttribute('data-year-block');
+            if (thn && tahunBlok !== thn) { block.style.display = 'none'; return; }
 
-            yearBlocks.forEach(function (block) {
-                var tahunBlok = block.getAttribute('data-year-block');
-                var hasGender = block.getAttribute('data-has-gender') === '1';
+            var rows = block.querySelectorAll('tbody tr.baris-data');
+            var nomor = 1, subLaki = 0, subPr = 0, subGuru = 0, subOrtu = 0, subTotal = 0, jmlBaris = 0;
 
-                if (thn && tahunBlok !== thn) {
-                    block.style.display = 'none';
-                    return;
-                }
+            rows.forEach(function (tr) {
+                var textSearch = tr.getAttribute('data-pencarian') || '';
+                var cocokCari = !q || textSearch.indexOf(q) > -1;
+                var cocokKec  = !kec || tr.getAttribute('data-kecamatan') === kec;
 
-                var rows = block.querySelectorAll('tbody tr.baris-data');
-                var nomor = 1;
-                var subLaki = 0;
-                var subPerempuan = 0;
-                var subTotal = 0;
-                var jmlBarisCocok = 0;
+                if (cocokCari && cocokKec) {
+                    tr.style.display = '';
+                    var selNomor = tr.querySelector('.nomor-urut');
+                    if (selNomor) selNomor.textContent = nomor++;
 
-                rows.forEach(function (tr) {
-                    var cocokCari = !q || tr.getAttribute('data-pencarian').indexOf(q) > -1;
-                    var cocokKec  = !kec || tr.getAttribute('data-kecamatan') === kec;
+                    var l = parseInt(tr.getAttribute('data-laki'), 10) || 0;
+                    var p = parseInt(tr.getAttribute('data-perempuan'), 10) || 0;
+                    var g = parseInt(tr.getAttribute('data-guru'), 10) || 0;
+                    var o = parseInt(tr.getAttribute('data-ortu'), 10) || 0;
+                    var t = parseInt(tr.getAttribute('data-total'), 10) || 0;
 
-                    if (cocokCari && cocokKec) {
-                        tr.style.display = '';
-                        var selNomor = tr.querySelector('.nomor-urut');
-                        if (selNomor) selNomor.textContent = nomor++;
-
-                        var l = parseInt(tr.getAttribute('data-laki'), 10) || 0;
-                        var p = parseInt(tr.getAttribute('data-perempuan'), 10) || 0;
-                        var t = parseInt(tr.getAttribute('data-total'), 10) || 0;
-
-                        subLaki += l;
-                        subPerempuan += p;
-                        subTotal += t;
-                        jmlBarisCocok++;
-                    } else {
-                        tr.style.display = 'none';
-                    }
-                });
-
-                if (jmlBarisCocok > 0) {
-                    block.style.display = '';
-                    adaBlokTampil = true;
-
-                    var footLaki      = block.querySelector('.foot-total-laki');
-                    var footPerempuan = block.querySelector('.foot-total-perempuan');
-                    var footTotal     = block.querySelector('.foot-total-peserta');
-                    var pillKegiatan  = block.querySelector('.pill-jml-kegiatan');
-                    var pillTotal     = block.querySelector('.pill-total-tahun');
-
-                    if (footLaki) footLaki.textContent = hasGender ? formatRibuan(subLaki) + ' Orang' : '-';
-                    if (footPerempuan) footPerempuan.textContent = hasGender ? formatRibuan(subPerempuan) + ' Orang' : '-';
-                    if (footTotal) footTotal.textContent = formatRibuan(subTotal) + ' Orang';
-                    if (pillKegiatan) pillKegiatan.textContent = formatRibuan(jmlBarisCocok);
-                    if (pillTotal) pillTotal.textContent = formatRibuan(subTotal) + ' Orang';
-
-                    grandKegiatan  += jmlBarisCocok;
-                    grandLaki      += subLaki;
-                    grandPerempuan += subPerempuan;
-                    grandTotal     += subTotal;
+                    subLaki += l; subPr += p; subGuru += g; subOrtu += o; subTotal += t;
+                    jmlBaris++;
                 } else {
-                    block.style.display = 'none';
+                    tr.style.display = 'none';
                 }
             });
 
-            if (elJudulSummary) {
-                elJudulSummary.textContent = thn
-                    ? 'REKAPITULASI SOSIALISASI & EDUKASI (TAHUN ' + thn + ')'
-                    : 'REKAPITULASI SOSIALISASI & EDUKASI (SEMUA TAHUN)';
-            }
-            if (elGrandKegiatan)  elGrandKegiatan.textContent  = formatRibuan(grandKegiatan);
-            if (elGrandLaki)      elGrandLaki.textContent      = formatRibuan(grandLaki);
-            if (elGrandPerempuan) elGrandPerempuan.textContent = formatRibuan(grandPerempuan);
-            if (elGrandTotal)     elGrandTotal.textContent     = formatRibuan(grandTotal) + ' Orang';
+            if (jmlBaris > 0) {
+                block.style.display = '';
+                adaBlokTampil = true;
 
-            if (emptyState) {
-                emptyState.style.display = adaBlokTampil ? 'none' : 'block';
+                var fLaki = block.querySelector('.foot-total-laki'), fPr = block.querySelector('.foot-total-perempuan');
+                var fGuru = block.querySelector('.foot-total-guru'), fOrtu = block.querySelector('.foot-total-ortu');
+                var fTot = block.querySelector('.foot-total-peserta');
+                var pKeg = block.querySelector('.pill-jml-kegiatan'), pTot = block.querySelector('.pill-total-tahun');
+
+                if (fLaki) fLaki.textContent = formatRibuan(subLaki) + ' Orang';
+                if (fPr) fPr.textContent = formatRibuan(subPr) + ' Orang';
+                if (fGuru) fGuru.textContent = formatRibuan(subGuru) + ' Orang';
+                if (fOrtu) fOrtu.textContent = formatRibuan(subOrtu) + ' Orang';
+                if (fTot) fTot.textContent = formatRibuan(subTotal) + ' Orang';
+                if (pKeg) pKeg.textContent = formatRibuan(jmlBaris);
+                if (pTot) pTot.textContent = formatRibuan(subTotal) + ' Orang';
+
+                grandKeg += jmlBaris; grandLaki += subLaki; grandPr += subPr; 
+                grandGuru += subGuru; grandOrtu += subOrtu; grandTotal += subTotal;
+            } else {
+                block.style.display = 'none';
+            }
+        });
+
+        // Update Summary Strip yg aktif
+        var sumStrip = activeWrapper.querySelector('.summary-strip');
+        if(sumStrip) {
+            sumStrip.querySelector('.sum-kegiatan').textContent = formatRibuan(grandKeg);
+            sumStrip.querySelector('.sum-laki').textContent = formatRibuan(grandLaki);
+            sumStrip.querySelector('.sum-pr').textContent = formatRibuan(grandPr);
+            sumStrip.querySelector('.sum-guru').textContent = formatRibuan(grandGuru);
+            sumStrip.querySelector('.sum-ortu').textContent = formatRibuan(grandOrtu);
+            sumStrip.querySelector('.sum-total').textContent = formatRibuan(grandTotal) + ' Orang';
+            
+            var judul = sumStrip.querySelector('h4');
+            if(judul) {
+                var baseTeks = currentTab === 'luar' ? 'REKAP KUNJUNGAN KE LUAR' : 'REKAP WISATA EDUKASI MAKO';
+                judul.textContent = thn ? baseTeks + ' (TAHUN ' + thn + ')' : baseTeks + ' (SEMUA TAHUN)';
             }
         }
 
-        if (searchInput) searchInput.addEventListener('input', jalankanFilter);
-        if (filterKec) filterKec.addEventListener('change', jalankanFilter);
-        if (filterTahun) filterTahun.addEventListener('change', jalankanFilter);
-        if (btnReset) {
-            btnReset.addEventListener('click', function () {
-                if (searchInput) searchInput.value = '';
-                if (filterKec) filterKec.value = '';
-                if (filterTahun) filterTahun.value = '';
-                jalankanFilter();
-            });
-        }
-    })();
+        var emptyState = document.getElementById('emptyFilterState');
+        if (emptyState) emptyState.style.display = adaBlokTampil ? 'none' : 'block';
+    }
+
+    function resetFilter() {
+        if(document.getElementById('searchSosialisasi')) document.getElementById('searchSosialisasi').value = '';
+        if(document.getElementById('filterKecamatan')) document.getElementById('filterKecamatan').value = '';
+        if(document.getElementById('filterTahun')) document.getElementById('filterTahun').value = '';
+        filterData();
+    }
+
+    var si = document.getElementById('searchSosialisasi');
+    if (si) si.addEventListener('input', filterData);
+    
+    var fk = document.getElementById('filterKecamatan');
+    if (fk) fk.addEventListener('change', filterData);
+    
+    var ft = document.getElementById('filterTahun');
+    if (ft) ft.addEventListener('change', filterData);
+
+    // Initial load
+    switchTab('luar');
 </script>
 @endif
 @endpush
