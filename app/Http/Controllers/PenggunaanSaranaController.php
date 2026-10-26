@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PenggunaanSarana;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -17,13 +18,15 @@ class PenggunaanSaranaController extends Controller
 
     // Format & batas ukuran berkas (samakan dengan data-ext / data-max di blade)
     private const MIMES_SURAT = 'pdf,jpg,jpeg,png,zip,rar'; // surat_permohonan
+
     private const MIMES_BERKAS = 'pdf,jpg,jpeg,png';        // fotokopi_ktp & sket_denah_lokasi
+
     private const MAX_FILE_KB = 5120; // 5 MB
 
     // Kolom berkas => folder penyimpanan di disk public
     private const FOLDER_BERKAS = [
-        'surat_permohonan'  => 'penggunaan-sarana/surat',
-        'fotokopi_ktp'      => 'penggunaan-sarana/ktp',
+        'surat_permohonan' => 'penggunaan-sarana/surat',
+        'fotokopi_ktp' => 'penggunaan-sarana/ktp',
         'sket_denah_lokasi' => 'penggunaan-sarana/denah',
     ];
 
@@ -33,35 +36,37 @@ class PenggunaanSaranaController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'nama'                  => 'required|string|max:255',
-            'nik'                   => 'required|digits:16',
-            'no_hp'                 => 'required|string|max:20',
-            'alamat'                => 'required|string|max:255',
-            'jenis_pemohon'         => ['required', Rule::in(['perorangan', 'fasum', 'instansi'])],
+            'nama' => 'required|string|max:255',
+            'nik' => 'required|digits:16',
+            'no_hp' => 'required|string|min:10|max:14|regex:/^[0-9]+$/',
+            'alamat' => 'required|string|max:255',
+            'jenis_pemohon' => ['required', Rule::in(['perorangan', 'fasum', 'instansi'])],
             'nama_penanggung_jawab' => 'required|string|max:255',
-            'nama_instansi'         => 'required|string|max:255',
-            'alamat_instansi'       => 'required|string|max:255',
-            'sarana'                => ['required', Rule::in(self::DAFTAR_SARANA)],
-            'kegunaan'              => 'required|string|max:1000',
-            'nama_kegiatan'         => 'required|string|max:255',
-            'lokasi_kegiatan'       => 'required|string|max:255',
-            'tgl_pelaksanaan'       => 'required|date|after_or_equal:' . now()->addDays(7)->toDateString(),
-            'waktu_mulai'           => 'required|date_format:H:i',
-            'waktu_selesai'         => 'required|date_format:H:i|after:waktu_mulai',
-            'surat_permohonan'      => 'required|file|mimes:' . self::MIMES_SURAT . '|max:' . self::MAX_FILE_KB,
-            'fotokopi_ktp'          => 'required|file|mimes:' . self::MIMES_BERKAS . '|max:' . self::MAX_FILE_KB,
-            'sket_denah_lokasi'     => 'required|file|mimes:' . self::MIMES_BERKAS . '|max:' . self::MAX_FILE_KB,
+            'nama_instansi' => 'required|string|max:255',
+            'alamat_instansi' => 'required|string|max:255',
+            'sarana' => ['required', Rule::in(self::DAFTAR_SARANA)],
+            'kegunaan' => 'required|string|max:1000',
+            'nama_kegiatan' => 'required|string|max:255',
+            'lokasi_kegiatan' => 'required|string|max:255',
+            'tgl_pelaksanaan' => 'required|date|after_or_equal:'.now()->addDays(7)->toDateString(),
+            'waktu_mulai' => 'required|date_format:H:i',
+            'waktu_selesai' => 'required|date_format:H:i|after:waktu_mulai',
+            'surat_permohonan' => 'required|file|mimes:'.self::MIMES_SURAT.'|max:'.self::MAX_FILE_KB,
+            'fotokopi_ktp' => 'required|file|mimes:'.self::MIMES_BERKAS.'|max:'.self::MAX_FILE_KB,
+            'sket_denah_lokasi' => 'required|file|mimes:'.self::MIMES_BERKAS.'|max:'.self::MAX_FILE_KB,
         ], [
-            'required'       => ':attribute wajib diisi.',
-            'digits'         => ':attribute harus :digits digit.',
-            'max'            => ':attribute terlalu panjang atau ukurannya melebihi batas.',
-            'in'             => ':attribute tidak valid.',
-            'date'           => ':attribute bukan tanggal yang valid.',
+            'required' => ':attribute wajib diisi.',
+            'digits' => ':attribute harus :digits digit.',
+            'min' => ':attribute minimal :min karakter.',
+            'max' => ':attribute terlalu panjang atau ukurannya melebihi batas.',
+            'regex' => ':attribute hanya boleh berisi angka.',
+            'in' => ':attribute tidak valid.',
+            'date' => ':attribute bukan tanggal yang valid.',
             'after_or_equal' => ':attribute harus diajukan selambat-lambatnya 7 hari sebelum kegiatan (H-7).',
-            'after'          => ':attribute harus setelah waktu mulai.',
-            'date_format'    => 'Format :attribute tidak valid.',
-            'file'           => ':attribute harus berupa berkas.',
-            'mimes'          => ':attribute harus berformat :values.',
+            'after' => ':attribute harus setelah waktu mulai.',
+            'date_format' => 'Format :attribute tidak valid.',
+            'file' => ':attribute harus berupa berkas.',
+            'mimes' => ':attribute harus berformat :values.',
         ], $this->attributeLabels());
 
         foreach (self::FOLDER_BERKAS as $kolom => $folder) {
@@ -69,7 +74,7 @@ class PenggunaanSaranaController extends Controller
         }
 
         $data['pemohon_id'] = session('pemohon_id');
-        $data['status']     = 'Menunggu';
+        $data['status'] = 'Menunggu';
 
         PenggunaanSarana::create($data);
 
@@ -102,36 +107,36 @@ class PenggunaanSaranaController extends Controller
     public function storeInternal(Request $request)
     {
         $data = $request->validate([
-            'nama'                  => 'required|string|max:255',
-            'nik'                   => 'required|digits:16',
-            'no_hp'                 => 'required|string|max:20',
-            'alamat'                => 'required|string|max:255',
-            'jenis_pemohon'         => ['required', Rule::in(['perorangan', 'fasum', 'instansi'])],
+            'nama' => 'required|string|max:255',
+            'nik' => 'required|digits:16',
+            'no_hp' => 'required|string|min:10|max:14|regex:/^[0-9]+$/',
+            'alamat' => 'required|string|max:255',
+            'jenis_pemohon' => ['required', Rule::in(['perorangan', 'fasum', 'instansi'])],
             'nama_penanggung_jawab' => 'required|string|max:255',
-            'nama_instansi'         => 'required|string|max:255',
-            'alamat_instansi'       => 'required|string|max:255',
-            'sarana'                => ['required', Rule::in(self::DAFTAR_SARANA)],
-            'kegunaan'              => 'required|string|max:1000',
-            'nama_kegiatan'         => 'required|string|max:255',
-            'lokasi_kegiatan'       => 'required|string|max:255',
+            'nama_instansi' => 'required|string|max:255',
+            'alamat_instansi' => 'required|string|max:255',
+            'sarana' => ['required', Rule::in(self::DAFTAR_SARANA)],
+            'kegunaan' => 'required|string|max:1000',
+            'nama_kegiatan' => 'required|string|max:255',
+            'lokasi_kegiatan' => 'required|string|max:255',
             // Petugas boleh menginput acara yang kurang dari H-7 / sudah lewat
-            'tgl_pelaksanaan'       => 'required|date',
-            'waktu_mulai'           => 'required|date_format:H:i',
-            'waktu_selesai'         => 'required|date_format:H:i|after:waktu_mulai',
-            'status'                => ['nullable', Rule::in(self::DAFTAR_STATUS)],
-            'surat_permohonan'      => 'required|file|mimes:' . self::MIMES_SURAT . '|max:' . self::MAX_FILE_KB,
-            'fotokopi_ktp'          => 'required|file|mimes:' . self::MIMES_BERKAS . '|max:' . self::MAX_FILE_KB,
-            'sket_denah_lokasi'     => 'required|file|mimes:' . self::MIMES_BERKAS . '|max:' . self::MAX_FILE_KB,
+            'tgl_pelaksanaan' => 'required|date',
+            'waktu_mulai' => 'required|date_format:H:i',
+            'waktu_selesai' => 'required|date_format:H:i|after:waktu_mulai',
+            'status' => ['nullable', Rule::in(self::DAFTAR_STATUS)],
+            'surat_permohonan' => 'required|file|mimes:'.self::MIMES_SURAT.'|max:'.self::MAX_FILE_KB,
+            'fotokopi_ktp' => 'required|file|mimes:'.self::MIMES_BERKAS.'|max:'.self::MAX_FILE_KB,
+            'sket_denah_lokasi' => 'required|file|mimes:'.self::MIMES_BERKAS.'|max:'.self::MAX_FILE_KB,
         ], [
-            'required'    => ':attribute wajib diisi.',
-            'digits'      => ':attribute harus :digits digit.',
-            'max'         => ':attribute terlalu panjang atau ukurannya melebihi batas.',
-            'in'          => ':attribute tidak valid.',
-            'date'        => ':attribute bukan tanggal yang valid.',
-            'after'       => ':attribute harus setelah waktu mulai.',
+            'required' => ':attribute wajib diisi.',
+            'digits' => ':attribute harus :digits digit.',
+            'max' => ':attribute terlalu panjang atau ukurannya melebihi batas.',
+            'in' => ':attribute tidak valid.',
+            'date' => ':attribute bukan tanggal yang valid.',
+            'after' => ':attribute harus setelah waktu mulai.',
             'date_format' => 'Format :attribute tidak valid.',
-            'file'        => ':attribute harus berupa berkas.',
-            'mimes'       => ':attribute harus berformat :values.',
+            'file' => ':attribute harus berupa berkas.',
+            'mimes' => ':attribute harus berformat :values.',
         ], $this->attributeLabels() + ['status' => 'Status']);
 
         foreach (self::FOLDER_BERKAS as $kolom => $folder) {
@@ -158,7 +163,7 @@ class PenggunaanSaranaController extends Controller
     // Form edit (Damtan & Super User)
     public function editInternal($id)
     {
-        $row          = PenggunaanSarana::findOrFail($id);
+        $row = PenggunaanSarana::findOrFail($id);
         $daftarSarana = self::DAFTAR_SARANA;
         $daftarStatus = self::DAFTAR_STATUS;
 
@@ -171,37 +176,37 @@ class PenggunaanSaranaController extends Controller
         $row = PenggunaanSarana::findOrFail($id);
 
         $data = $request->validate([
-            'nama'                  => 'required|string|max:255',
-            'nik'                   => 'required|digits:16',
-            'no_hp'                 => 'required|string|max:20',
-            'alamat'                => 'required|string|max:255',
-            'jenis_pemohon'         => ['required', Rule::in(['perorangan', 'fasum', 'instansi'])],
+            'nama' => 'required|string|max:255',
+            'nik' => 'required|digits:16',
+            'no_hp' => 'required|string|min:10|max:14|regex:/^[0-9]+$/',
+            'alamat' => 'required|string|max:255',
+            'jenis_pemohon' => ['required', Rule::in(['perorangan', 'fasum', 'instansi'])],
             'nama_penanggung_jawab' => 'required|string|max:255',
-            'nama_instansi'         => 'required|string|max:255',
-            'alamat_instansi'       => 'required|string|max:255',
-            'sarana'                => ['required', Rule::in(self::DAFTAR_SARANA)],
-            'kegunaan'              => 'required|string|max:1000',
-            'nama_kegiatan'         => 'required|string|max:255',
-            'lokasi_kegiatan'       => 'required|string|max:255',
+            'nama_instansi' => 'required|string|max:255',
+            'alamat_instansi' => 'required|string|max:255',
+            'sarana' => ['required', Rule::in(self::DAFTAR_SARANA)],
+            'kegunaan' => 'required|string|max:1000',
+            'nama_kegiatan' => 'required|string|max:255',
+            'lokasi_kegiatan' => 'required|string|max:255',
             // Admin boleh mengedit acara yang tanggalnya sudah lewat / kurang dari H-7
-            'tgl_pelaksanaan'       => 'required|date',
-            'waktu_mulai'           => 'required|date_format:H:i',
-            'waktu_selesai'         => 'required|date_format:H:i|after:waktu_mulai',
-            'status'                => ['required', Rule::in(self::DAFTAR_STATUS)],
+            'tgl_pelaksanaan' => 'required|date',
+            'waktu_mulai' => 'required|date_format:H:i',
+            'waktu_selesai' => 'required|date_format:H:i|after:waktu_mulai',
+            'status' => ['required', Rule::in(self::DAFTAR_STATUS)],
             // File opsional saat edit: kosong = pakai file lama
-            'surat_permohonan'      => 'nullable|file|mimes:' . self::MIMES_SURAT . '|max:' . self::MAX_FILE_KB,
-            'fotokopi_ktp'          => 'nullable|file|mimes:' . self::MIMES_BERKAS . '|max:' . self::MAX_FILE_KB,
-            'sket_denah_lokasi'     => 'nullable|file|mimes:' . self::MIMES_BERKAS . '|max:' . self::MAX_FILE_KB,
+            'surat_permohonan' => 'nullable|file|mimes:'.self::MIMES_SURAT.'|max:'.self::MAX_FILE_KB,
+            'fotokopi_ktp' => 'nullable|file|mimes:'.self::MIMES_BERKAS.'|max:'.self::MAX_FILE_KB,
+            'sket_denah_lokasi' => 'nullable|file|mimes:'.self::MIMES_BERKAS.'|max:'.self::MAX_FILE_KB,
         ], [
-            'required'    => ':attribute wajib diisi.',
-            'digits'      => ':attribute harus :digits digit.',
-            'max'         => ':attribute terlalu panjang atau ukurannya melebihi batas.',
-            'in'          => ':attribute tidak valid.',
-            'date'        => ':attribute bukan tanggal yang valid.',
-            'after'       => ':attribute harus setelah waktu mulai.',
+            'required' => ':attribute wajib diisi.',
+            'digits' => ':attribute harus :digits digit.',
+            'max' => ':attribute terlalu panjang atau ukurannya melebihi batas.',
+            'in' => ':attribute tidak valid.',
+            'date' => ':attribute bukan tanggal yang valid.',
+            'after' => ':attribute harus setelah waktu mulai.',
             'date_format' => 'Format :attribute tidak valid.',
-            'file'        => ':attribute harus berupa berkas.',
-            'mimes'       => ':attribute harus berformat :values.',
+            'file' => ':attribute harus berupa berkas.',
+            'mimes' => ':attribute harus berformat :values.',
         ], $this->attributeLabels() + ['status' => 'Status']);
 
         foreach (self::FOLDER_BERKAS as $kolom => $folder) {
@@ -254,7 +259,7 @@ class PenggunaanSaranaController extends Controller
             'kontak' => 'required|string|max:20',
         ], [
             'kontak.required' => 'Masukkan NIK atau nomor HP/WA.',
-            'kontak.max'      => 'NIK atau nomor HP/WA terlalu panjang.',
+            'kontak.max' => 'NIK atau nomor HP/WA terlalu panjang.',
         ]);
 
         $kontak = preg_replace('/\D/', '', $request->kontak);
@@ -266,26 +271,26 @@ class PenggunaanSaranaController extends Controller
         // Variasi penulisan nomor HP: 08xx / 628xx
         $varian = [$kontak];
         if (str_starts_with($kontak, '62')) {
-            $varian[] = '0' . substr($kontak, 2);
+            $varian[] = '0'.substr($kontak, 2);
         } elseif (str_starts_with($kontak, '0')) {
-            $varian[] = '62' . substr($kontak, 1);
+            $varian[] = '62'.substr($kontak, 1);
         }
 
         $hasil = PenggunaanSarana::where(function ($q) use ($kontak, $varian) {
-                $q->where('nik', $kontak)->orWhereIn('no_hp', $varian);
-            })
+            $q->where('nik', $kontak)->orWhereIn('no_hp', $varian);
+        })
             ->latest()
             ->limit(10)
             ->get()
             ->map(fn ($r) => [
-                // Data pribadi disamarkan: hanya info yang perlu untuk mengenali permohonan
-                'nama'     => $this->maskNama($r->nama),
-                'kegiatan' => $r->nama_kegiatan,
-                'sarana'   => $r->sarana,
-                'tanggal'  => \Carbon\Carbon::parse($r->tgl_pelaksanaan)->translatedFormat('d F Y'),
-                'diajukan' => optional($r->created_at)->translatedFormat('d M Y'),
-                'status'   => $r->status,
-            ]);
+            // Data pribadi disamarkan: hanya info yang perlu untuk mengenali permohonan
+            'nama' => $this->maskNama($r->nama),
+            'kegiatan' => $r->nama_kegiatan,
+            'sarana' => $r->sarana,
+            'tanggal' => Carbon::parse($r->tgl_pelaksanaan)->translatedFormat('d F Y'),
+            'diajukan' => optional($r->created_at)->translatedFormat('d M Y'),
+            'status' => $r->status,
+        ]);
 
         return response()->json(['data' => $hasil]);
     }
@@ -293,7 +298,7 @@ class PenggunaanSaranaController extends Controller
     private function maskNama(string $nama): string
     {
         return collect(preg_split('/\s+/', trim($nama)))
-            ->map(fn ($kata) => mb_substr($kata, 0, 2) . str_repeat('*', max(mb_strlen($kata) - 2, 0)))
+            ->map(fn ($kata) => mb_substr($kata, 0, 2).str_repeat('*', max(mb_strlen($kata) - 2, 0)))
             ->implode(' ');
     }
 
@@ -310,24 +315,24 @@ class PenggunaanSaranaController extends Controller
     private function attributeLabels(): array
     {
         return [
-            'nama'                  => 'Nama',
-            'nik'                   => 'NIK',
-            'no_hp'                 => 'No HP/WA',
-            'alamat'                => 'Alamat',
-            'jenis_pemohon'         => 'Jenis pemohon',
+            'nama' => 'Nama',
+            'nik' => 'NIK',
+            'no_hp' => 'No HP/WA',
+            'alamat' => 'Alamat',
+            'jenis_pemohon' => 'Jenis pemohon',
             'nama_penanggung_jawab' => 'Nama penanggung jawab',
-            'nama_instansi'         => 'Nama instansi/fasilitas umum/perorangan',
-            'alamat_instansi'       => 'Alamat instansi',
-            'sarana'                => 'Sarana',
-            'kegunaan'              => 'Kegunaan sarana',
-            'nama_kegiatan'         => 'Nama kegiatan',
-            'lokasi_kegiatan'       => 'Lokasi kegiatan',
-            'tgl_pelaksanaan'       => 'Tanggal pelaksanaan',
-            'waktu_mulai'           => 'Waktu mulai',
-            'waktu_selesai'         => 'Waktu selesai',
-            'surat_permohonan'      => 'Surat permohonan',
-            'fotokopi_ktp'          => 'Fotokopi KTP penanggung jawab',
-            'sket_denah_lokasi'     => 'Sket denah lokasi kegiatan',
+            'nama_instansi' => 'Nama instansi/fasilitas umum/perorangan',
+            'alamat_instansi' => 'Alamat instansi',
+            'sarana' => 'Sarana',
+            'kegunaan' => 'Kegunaan sarana',
+            'nama_kegiatan' => 'Nama kegiatan',
+            'lokasi_kegiatan' => 'Lokasi kegiatan',
+            'tgl_pelaksanaan' => 'Tanggal pelaksanaan',
+            'waktu_mulai' => 'Waktu mulai',
+            'waktu_selesai' => 'Waktu selesai',
+            'surat_permohonan' => 'Surat permohonan',
+            'fotokopi_ktp' => 'Fotokopi KTP penanggung jawab',
+            'sket_denah_lokasi' => 'Sket denah lokasi kegiatan',
         ];
     }
 }

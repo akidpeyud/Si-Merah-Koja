@@ -1231,7 +1231,7 @@
                                     <span>Nomor WhatsApp <span class="req" aria-hidden="true">*</span></span>
                                     <span class="pw-badge" id="wa_badge"></span>
                                 </label>
-                                <input class="input{{ $inv('no_whatsapp') }}" type="tel" id="no_whatsapp" name="no_whatsapp" value="{{ old('no_whatsapp') }}" inputmode="tel" maxlength="13" autocomplete="tel" placeholder="Contoh: 08123456789 (Maks 13 digit)" required aria-describedby="wa_msg">
+                                <input class="input{{ $inv('no_whatsapp') }}" type="tel" id="no_whatsapp" name="no_whatsapp" value="{{ old('no_whatsapp') }}" inputmode="tel" maxlength="14" autocomplete="tel" placeholder="Contoh: 081234567890 (10-14 digit)" required aria-describedby="wa_msg">
                                 <p class="pw-status" id="wa_msg" aria-live="polite"></p>
                                 {!! $fe('no_whatsapp') !!}
                             </div>
@@ -1367,7 +1367,24 @@
                         <div class="fields">
 
                             <!-- Kolom Dinamis: Khusus SKK Perpanjangan -->
-                            <div class="field full" id="field_skk_lama" style="display: none;">
+                            <div class="field full" id="field_skk_lama" style="display: none; gap: 14px;">
+                                <div class="fields">
+                                    <div class="field full">
+                                        <label class="label" for="nomor_skk_lama"><span>Nomor SKK Lama <span class="req" aria-hidden="true">*</span></span></label>
+                                        <input class="input{{ $inv('nomor_skk_lama') }}" type="text" id="nomor_skk_lama" name="nomor_skk_lama" value="{{ old('nomor_skk_lama') }}" placeholder="Masukkan Nomor SKK Tahun Lalu">
+                                        {!! $fe('nomor_skk_lama') !!}
+                                    </div>
+                                    <div class="field">
+                                        <label class="label" for="tanggal_terbit_skk_lama"><span>Tanggal Terbit SKK Lama <span class="req" aria-hidden="true">*</span></span></label>
+                                        <input class="input{{ $inv('tanggal_terbit_skk_lama') }}" type="date" id="tanggal_terbit_skk_lama" name="tanggal_terbit_skk_lama" value="{{ old('tanggal_terbit_skk_lama') }}">
+                                        {!! $fe('tanggal_terbit_skk_lama') !!}
+                                    </div>
+                                    <div class="field">
+                                        <label class="label" for="masa_berlaku_skk_lama"><span>Masa Berlaku SKK Lama <span class="req" aria-hidden="true">*</span></span></label>
+                                        <input class="input{{ $inv('masa_berlaku_skk_lama') }}" type="date" id="masa_berlaku_skk_lama" name="masa_berlaku_skk_lama" value="{{ old('masa_berlaku_skk_lama') }}">
+                                        {!! $fe('masa_berlaku_skk_lama') !!}
+                                    </div>
+                                </div>
                                 <span class="label" id="lbl-skklama"><span>Sertifikat Keselamatan Kebakaran (SKK) Tahun Lalu <span class="req" aria-hidden="true">*</span></span></span>
                                 <div class="dropzone{{ $inv('file_skk_lama') }}" data-dropzone data-max="5" data-ext="pdf,jpg,jpeg,png">
                                     <input type="file" id="file_skk_lama" name="file_skk_lama" accept=".pdf,.jpg,.jpeg,.png" aria-labelledby="lbl-skklama">
@@ -1419,8 +1436,8 @@
                             
                             <div class="field full">
                                 <span class="label" id="lbl-lain"><span>Persyaratan lainnya</span></span>
-                                <div class="dropzone{{ $inv('file_persyaratan_lainnya') }}" data-dropzone data-max="10" data-ext="pdf,zip,rar">
-                                    <input type="file" id="file_lain" name="file_persyaratan_lainnya" accept=".pdf,.zip,.rar" aria-labelledby="lbl-lain" aria-describedby="hint-lain">
+                                <div class="dropzone{{ $inv('file_persyaratan_lainnya') }}" data-dropzone data-max="10" data-ext="pdf,jpg,jpeg,png,zip,rar">
+                                    <input type="file" id="file_lain" name="file_persyaratan_lainnya" accept=".pdf,.jpg,.jpeg,.png,.zip,.rar" aria-labelledby="lbl-lain" aria-describedby="hint-lain">
 
                                     <div class="dz-prompt">
                                         <span class="dz-ico"><i class="fas fa-cloud-arrow-up"></i></span>
@@ -1437,7 +1454,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <p class="hint" id="hint-lain">Format PDF, ZIP, atau RAR. Maksimal 10 MB. Daftar berkas yang diminta ada di <button type="button" class="text-link" data-open-modal>detail persyaratan</button>.</p>
+                                <p class="hint" id="hint-lain">Format PDF, JPG, PNG, ZIP, atau RAR. Maksimal 10 MB. Daftar berkas yang diminta ada di <button type="button" class="text-link" data-open-modal>detail persyaratan</button>.</p>
                                 <p class="field-err dz-msg" role="alert"></p>
                                 {!! $fe('file_persyaratan_lainnya') !!}
                             </div>
@@ -1837,7 +1854,7 @@
         } else if (val.indexOf('8') === 0) {
             val = '08' + val.slice(1);
         }
-        val = val.slice(0, 13);
+        val = val.slice(0, 14);
         if (waInput.value !== val) waInput.value = val;
 
         if (!val) {
@@ -2085,14 +2102,23 @@
 
         var wrap = document.getElementById('field_skk_lama');
         var input = document.getElementById('file_skk_lama');
+        var noSkkLama = document.getElementById('nomor_skk_lama');
+        var tglTerbitLama = document.getElementById('tanggal_terbit_skk_lama');
+        var masaBerlakuLama = document.getElementById('masa_berlaku_skk_lama');
         var dzLama = wrap.querySelector('.dropzone');
 
         if (isPerpanjang) {
             wrap.style.display = 'flex';
             input.setAttribute('required', 'required');
+            if (noSkkLama) noSkkLama.setAttribute('required', 'required');
+            if (tglTerbitLama) tglTerbitLama.setAttribute('required', 'required');
+            if (masaBerlakuLama) masaBerlakuLama.setAttribute('required', 'required');
         } else {
             wrap.style.display = 'none';
             input.removeAttribute('required');
+            if (noSkkLama) { noSkkLama.removeAttribute('required'); noSkkLama.value = ''; }
+            if (tglTerbitLama) { tglTerbitLama.removeAttribute('required'); tglTerbitLama.value = ''; }
+            if (masaBerlakuLama) { masaBerlakuLama.removeAttribute('required'); masaBerlakuLama.value = ''; }
             if (dzLama && dzLama._reset) dzLama._reset();
         }
     };
@@ -2221,10 +2247,10 @@
 
         var val = input.value.trim();
         var isNik = val.length === 16;
-        var isWa  = val.indexOf('08') === 0 && val.length >= 10 && val.length <= 13;
+        var isWa  = val.indexOf('08') === 0 && val.length >= 10 && val.length <= 14;
 
         if (!isNik && !isWa) {
-            err.innerHTML = '<i class="fas fa-circle-exclamation"></i> Masukkan 16 digit NIK atau Nomor WhatsApp (diawali 08, 10-13 digit) yang valid.';
+            err.innerHTML = '<i class="fas fa-circle-exclamation"></i> Masukkan 16 digit NIK atau Nomor WhatsApp (diawali 08, 10-14 digit) yang valid.';
             input.focus();
             return;
         }

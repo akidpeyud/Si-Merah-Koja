@@ -81,7 +81,7 @@ class PermohonanRpkbglController extends Controller
             // Data pemohon & usaha
             'nama_pemohon' => 'required|string|max:150',
             'email_pemohon' => 'required|email|max:100',
-            'no_wa' => 'required|string|max:13|regex:/^[0-9]+$/',
+            'no_wa' => 'required|string|min:10|max:14|regex:/^[0-9]+$/',
             'nama_usaha' => 'required|string|max:150',
             'nik' => 'required|string|size:16|regex:/^[0-9]+$/',
             'alamat_pemilik' => 'required|string',
@@ -133,7 +133,8 @@ class PermohonanRpkbglController extends Controller
             'uploaded' => 'Berkas :attribute gagal diunggah. Ukuran berkas kemungkinan melebihi batas server ('
                              .ini_get('upload_max_filesize').' per berkas). Perkecil ukuran berkas atau hubungi admin.',
 
-            'no_wa.max' => 'Nomor WhatsApp maksimal 13 digit.',
+            'no_wa.min' => 'Nomor WhatsApp minimal 10 digit.',
+            'no_wa.max' => 'Nomor WhatsApp maksimal 14 digit.',
             'no_wa.regex' => 'Nomor WhatsApp hanya boleh berisi angka.',
             'nik.size' => 'NIK harus berjumlah 16 digit.',
             'nik.regex' => 'NIK hanya boleh berisi angka.',
@@ -169,6 +170,13 @@ class PermohonanRpkbglController extends Controller
         $adaLift = $request->ada_lift === 'ya';
         $tersimpan = []; // path berkas yang sudah dipindahkan (dibersihkan jika proses gagal)
 
+        $kategoriMap = [
+            '1' => 'Rumah tinggal',
+            '2' => 'Komersial',
+            '3' => 'Industri',
+        ];
+        $kategoriBangunan = $kategoriMap[$request->kategori] ?? $request->kategori;
+
         try {
             $data = [
                 'nama_pemohon' => $request->nama_pemohon,
@@ -177,7 +185,7 @@ class PermohonanRpkbglController extends Controller
                 'nama_usaha' => $request->nama_usaha,
                 'nik_pemilik_usaha' => $request->nik,
                 'alamat_pemilik_usaha' => $request->alamat_pemilik,
-                'kategori_bangunan' => $request->kategori,
+                'kategori_bangunan' => $kategoriBangunan,
                 'alamat_bangunan' => $request->alamat_bangunan,
                 'kecamatan' => $request->kecamatan,
                 'kelurahan' => $request->kelurahan,
@@ -259,7 +267,7 @@ class PermohonanRpkbglController extends Controller
         $rules = [
             'nama_pemohon' => 'required|string|max:150',
             'email_pemohon' => 'required|email|max:100',
-            'no_whatsapp' => 'required|string|max:13|regex:/^[0-9]+$/',
+            'no_whatsapp' => 'required|string|min:10|max:14|regex:/^[0-9]+$/',
             'nama_usaha' => 'required|string|max:150',
             'nik_pemilik_usaha' => 'required|string|size:16|regex:/^[0-9]+$/',
             'alamat_pemilik_usaha' => 'required|string',
@@ -294,7 +302,8 @@ class PermohonanRpkbglController extends Controller
             'max.file' => 'Ukuran berkas :attribute melebihi batas maksimal (:max KB).',
             'uploaded' => 'Berkas :attribute gagal diunggah. Ukuran berkas kemungkinan melebihi batas server ('
                             .ini_get('upload_max_filesize').' per berkas).',
-            'no_whatsapp.max' => 'Nomor WhatsApp maksimal 13 digit.',
+            'no_whatsapp.min' => 'Nomor WhatsApp minimal 10 digit.',
+            'no_whatsapp.max' => 'Nomor WhatsApp maksimal 14 digit.',
             'no_whatsapp.regex' => 'Nomor WhatsApp hanya boleh berisi angka.',
             'nik_pemilik_usaha.size' => 'NIK harus berjumlah 16 digit.',
             'nik_pemilik_usaha.regex' => 'NIK hanya boleh berisi angka.',

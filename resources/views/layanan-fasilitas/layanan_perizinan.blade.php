@@ -14,10 +14,16 @@
     $galat        = (isset($errors) && is_object($errors)) ? $errors->all() : [];
 
     // Penanda kolom galat (Sesuai standar REDKAR)
-    $inv = function ($n) use ($errors) { return (isset($errors) && is_object($errors) && $errors->has($n)) ? ' is-invalid' : ''; };
+    $inv = function ($n) use ($errors) {
+        return (isset($errors) && is_object($errors) && ($errors->has($n) || $errors->has($n . '.*'))) ? ' is-invalid' : '';
+    };
     $fe  = function ($n) use ($errors) {
-        return (isset($errors) && is_object($errors) && $errors->has($n))
-            ? '<p class="field-err"><i class="fas fa-circle-exclamation"></i> ' . e($errors->first($n)) . '</p>'
+        if (!isset($errors) || !is_object($errors)) {
+            return '';
+        }
+        $msg = $errors->first($n) ?: $errors->first($n . '.*');
+        return $msg
+            ? '<p class="field-err"><i class="fas fa-circle-exclamation"></i> ' . e($msg) . '</p>'
             : '';
     };
     
@@ -45,7 +51,7 @@
     $oldKec = $old['kecamatan'] ?? '';
     $oldKel = $old['kelurahan'] ?? '';
 
-    $kategori_list = ['1' => 'Rumah tinggal', '2' => 'Komersial', '3' => 'Industri'];
+    $kategori_list = ['Rumah tinggal' => 'Rumah tinggal', 'Komersial' => 'Komersial', 'Industri' => 'Industri'];
 
     $no_whatsapp    = "628117113113";
     $no_telepon     = "074141171";

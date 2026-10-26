@@ -9,7 +9,7 @@
     $url_surat_permohonan = asset('dokumen/FORMULIR-4.pdf');
 
     // Endpoint cek status permohonan (sesuaikan dengan route di controller Anda)
-    $url_cek_status = url('/izin-keramaian/cek-status');
+    $url_cek_status = route('izin-keramaian.cek-status');
 
     $inv = function ($n) use ($errors) { return (isset($errors) && $errors->has($n)) ? ' is-invalid' : ''; };
     $fe  = function ($n) use ($errors) {
@@ -2101,7 +2101,20 @@
         var CEK_URL = @json($url_cek_status);
         var CSRF = '{{ csrf_token() }}';
 
-        csInput.addEventListener('input', function () { csInput.value = csInput.value.replace(/\D/g, '').slice(0, 16); });
+        csInput.addEventListener('input', function () {
+            var val = csInput.value.replace(/\D/g, '');
+            if (val.startsWith('628')) {
+                val = '08' + val.slice(3);
+            }
+            csInput.value = val.slice(0, 16);
+        });
+
+        var STATUS_INFO = {
+            'Menunggu':  { cls: 'cs-menunggu',  txt: 'Permohonan diterima dan menunggu verifikasi petugas.' },
+            'Proses':    { cls: 'cs-proses',    txt: 'Permohonan sedang diproses oleh petugas.' },
+            'Disetujui': { cls: 'cs-disetujui', txt: 'Permohonan disetujui. Silakan hubungi petugas untuk tindak lanjut.' },
+            'Ditolak':   { cls: 'cs-ditolak',   txt: 'Permohonan ditolak. Hubungi petugas untuk informasi lebih lanjut.' }
+        };
 
         function statusClass(st) {
             st = String(st || '').toLowerCase();
@@ -2124,8 +2137,12 @@
             csErr.innerHTML = '';
             csList.innerHTML = '';
 
-            if (v.length < 10) {
-                csErr.innerHTML = '<i class="fas fa-circle-exclamation"></i> Masukkan NIK (16 digit) atau No HP/WA (min. 10 digit).';
+            var isNik = v.length === 16;
+            var isWa  = v.startsWith('08') && v.length >= 10 && v.length <= 14;
+
+            if (!isNik && !isWa) {
+                csErr.innerHTML = '<i class="fas fa-circle-exclamation"></i> Masukkan 16 digit NIK atau Nomor WhatsApp (diawali 08, 10-14 digit) yang valid.';
+                csInput.focus();
                 return;
             }
 
@@ -2137,28 +2154,53 @@
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': CSRF, 'X-Requested-With': 'XMLHttpRequest' },
                 body: JSON.stringify({ kontak: v })
             })
-            .then(function (r) { if (!r.ok) throw new Error('http'); return r.json(); })
+            .then(function (r) {
+                return r.json().catch(function () { return {}; }).then(function (body) {
+                    return { status: r.status, ok: r.ok, body: body };
+                });
+            })
             .then(function (res) {
-                var rows = Array.isArray(res) ? res : (res.data || res.permohonan || []);
+                if (!res.ok) {
+                    if (res.status === 429) { csErr.innerHTML = '<i class="fas fa-circle-exclamation"></i> Terlalu banyak percobaan. Coba lagi sebentar lagi.'; return; }
+                    if (res.status === 419) { csErr.innerHTML = '<i class="fas fa-circle-exclamation"></i> Sesi berakhir. Muat ulang halaman lalu coba lagi.'; return; }
+                    csErr.innerHTML = '<i class="fas fa-circle-exclamation"></i> ' + ((res.body && res.body.message) || 'Gagal memeriksa status. Silakan coba lagi.');
+                    return;
+                }
+                var rows = Array.isArray(res.body) ? res.body : (res.body.data || res.body.permohonan || []);
                 if (!rows.length) {
                     csList.appendChild(el('li', 'cs-empty', 'Belum ada permohonan dengan data tersebut.'));
-                    csList.style.display = 'grid';
                     return;
                 }
                 rows.forEach(function (it, i) {
+                    var stLabel = it.status_label || it.status || 'Menunggu';
+                    var stInfo = STATUS_INFO[stLabel] || { cls: statusClass(stLabel), txt: '' };
                     var li = el('li', 'cs-item');
                     li.style.setProperty('--i', i);
                     var top = el('div', 'cs-top');
                     top.appendChild(el('span', 'cs-kegiatan', it.nama_acara || it.kegiatan || 'Permohonan'));
-                    top.appendChild(el('span', 'cs-badge ' + statusClass(it.status), it.status_label || it.status || 'Menunggu'));
+                    top.appendChild(el('span', 'cs-badge ' + stInfo.cls, stLabel));
                     li.appendChild(top);
 
-                    var meta = [];
-                    if (it.tgl_pelaksanaan) meta.push('Pelaksanaan: ' + it.tgl_pelaksanaan);
-                    if (it.lokasi_acara) meta.push('Lokasi: ' + it.lokasi_acara);
-                    if (it.created_at) meta.push('Diajukan: ' + it.created_at);
-                    if (meta.length) li.appendChild(el('div', 'cs-meta', meta.join('\n')));
-                    if (it.catatan) li.appendChild(el('div', 'cs-note cs-menunggu', it.catatan));
+                    var meta = el('div', 'cs-meta');
+                    meta.appendChild(document.createTextNode('Pemohon: ' + (it.nama || '-')));
+                    if (it.lokasi_acara || it.lokasi) {
+                        meta.appendChild(document.createElement('br'));
+                        meta.appendChild(document.createTextNode('Lokasi: ' + (it.lokasi_acara || it.lokasi)));
+                    }
+                    if (it.tgl_pelaksanaan || it.tanggal) {
+                        meta.appendChild(document.createElement('br'));
+                        meta.appendChild(document.createTextNode('Pelaksanaan: ' + (it.tgl_pelaksanaan || it.tanggal)));
+                    }
+                    if (it.created_at || it.diajukan) {
+                        meta.appendChild(document.createElement('br'));
+                        meta.appendChild(document.createTextNode('Diajukan: ' + (it.created_at || it.diajukan)));
+                    }
+                    li.appendChild(meta);
+
+                    var noteTxt = it.catatan || stInfo.txt;
+                    if (noteTxt) {
+                        li.appendChild(el('div', 'cs-note ' + stInfo.cls, noteTxt));
+                    }
                     csList.appendChild(li);
                 });
             })
