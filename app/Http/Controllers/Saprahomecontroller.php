@@ -98,6 +98,15 @@ class SapraHomeController extends Controller
             ],
         ];
 
+        // Buang kolom 'jumlah' untuk tampilan publik pada semua sarana (cukup internal saja)
+        foreach ($tabs as $key => $tab) {
+            $tabs[$key]['data'] = $tab['data']->map(function ($r) {
+                unset($r->jumlah);
+
+                return $r;
+            });
+        }
+
         $infoPos = $this->infoPos();
 
         return view('sapra_home.sarana', compact('tabs', 'infoPos'));
