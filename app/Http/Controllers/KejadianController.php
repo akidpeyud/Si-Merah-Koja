@@ -64,6 +64,8 @@ class KejadianController extends Controller
             ->limit(24)
             ->get();
 
+        $this->syncMissingImages($daftar_kejadian);
+
         return view('galery.berita.Kejadian', compact('daftar_kejadian', 'jenis'));
     }
 
@@ -73,6 +75,8 @@ class KejadianController extends Controller
     public function index()
     {
         $kejadian = Kejadian::orderByDesc('tanggal')->orderByDesc('id')->get();
+
+        $this->syncMissingImages($kejadian);
 
         return view('internal.operator.kejadian', [
             'kejadian' => $kejadian,
@@ -166,7 +170,108 @@ class KejadianController extends Controller
 
         $item->save();
 
+        if (! $request->hasFile('gambar') && ! empty($item->link)) {
+            $this->syncImageFromLink($item);
+        }
+
         return back()->with('success', 'Data kejadian berhasil diperbarui!');
+    }
+
+    /**
+     * Sinkronisasi foto otomatis dari link untuk daftar Kejadian yang file gambarnya belum ada di storage.
+     */
+    public function syncMissingImages(iterable $items): void
+    {
+        @set_time_limit(120);
+
+        foreach ($items as $item) {
+            if ($item instanceof Kejadian) {
+                $this->syncImageFromLink($item);
+            }
+        }
+    }
+
+    /**
+     * Ambil dan simpan foto dari link apabila file gambar lokal belum tersedia.
+     */
+    public function syncImageFromLink(Kejadian $item): bool
+    {
+        $g = trim((string) $item->gambar);
+        if ($g !== '') {
+            if (preg_match('#^https?://#i', $g)) {
+                return true;
+            }
+            $clean = ltrim(preg_replace('#^/?(public/|storage/)#', '', $g), '/');
+            if (Storage::disk('public')->exists($clean)) {
+                return true;
+            }
+        }
+
+        if (empty($item->link)) {
+            return false;
+        }
+
+        $cacheKey = 'kejadian_img_sync_fail_'.($item->id ?: md5($item->link));
+        if (cache()->has($cacheKey)) {
+            return false;
+        }
+
+        $url = trim($item->link);
+        if (! $this->isSafeUrl($url)) {
+            cache()->put($cacheKey, true, now()->addHours(6));
+
+            return false;
+        }
+
+        $youtubeId = $item->youtube_id ?: $this->extractYoutubeId($url);
+        $imageUrl = null;
+
+        try {
+            $resolvedUrl = $this->resolveShortUrl($url);
+            $host = $this->hostOf($resolvedUrl);
+
+            if ($youtubeId || $this->hostIs($host, ['youtube.com', 'youtu.be'])) {
+                $yt = $this->previewYoutube($resolvedUrl);
+                $imageUrl = $yt['image'] ?? null;
+            } elseif ($this->hostIs($host, ['tiktok.com'])) {
+                $tt = $this->previewTiktok($resolvedUrl);
+                $imageUrl = $tt['image'] ?? null;
+            } elseif ($this->hostIs($host, ['x.com', 'twitter.com'])) {
+                $tw = $this->previewTwitter($resolvedUrl);
+                $imageUrl = $tw['image'] ?? null;
+            }
+
+            if (! $imageUrl) {
+                $og = $this->previewOpenGraph($resolvedUrl);
+                $imageUrl = $og['image'] ?? null;
+            }
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
+        $path = $imageUrl ? $this->downloadRemoteImage($imageUrl, $url) : null;
+
+        if (! $path && ! $youtubeId) {
+            cache()->put($cacheKey, true, now()->addHours(2));
+
+            return false;
+        }
+
+        $updates = [];
+        if ($path) {
+            $updates['gambar'] = $path;
+            $item->gambar = $path;
+        }
+        if ($youtubeId && empty($item->youtube_id)) {
+            $updates['youtube_id'] = $youtubeId;
+            $item->youtube_id = $youtubeId;
+        }
+
+        if (! empty($updates) && $item->exists) {
+            Kejadian::whereKey($item->getKey())->update($updates);
+        }
+
+        return true;
     }
 
     public function destroy($id)
@@ -377,8 +482,12 @@ class KejadianController extends Controller
     private function previewOpenGraph(string $url): array
     {
         $best = [];
+        $host = $this->hostOf($url);
+        $userAgents = $this->hostIs($host, ['instagram.com', 'facebook.com', 'fb.watch'])
+            ? [self::UA_FACEBOOK, self::UA_TWITTER, self::UA_BROWSER]
+            : [self::UA_BROWSER, self::UA_FACEBOOK, self::UA_TWITTER];
 
-        foreach ([self::UA_BROWSER, self::UA_FACEBOOK, self::UA_TWITTER] as $ua) {
+        foreach ($userAgents as $ua) {
             $fetched = $this->httpGet($url, $ua);
             $res = $fetched['res'];
 
