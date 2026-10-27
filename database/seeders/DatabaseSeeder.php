@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             RekapNonKebakaransTableSeeder::class,
             KejadianDamkarTableSeeder::class,
             DokumenSopSeeder::class,
+            DokumenPublikSeeder::class,
         ]);
     }
 }
