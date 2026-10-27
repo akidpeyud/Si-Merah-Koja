@@ -161,7 +161,7 @@
                 ['Pemberdayaan Masyarakat & Dunia Usaha', 'kegiatan', 'fa-handshake-angle', '/internal/pencegahan/pemberdayaan-masyarakat', $countAll(['sosialisasi_edukasi', 'sosialisasi', 'pembinaan', 'pelatihan', 'pelatihan_keluarga', 'fire_drills']), 'ic-info'],
                 ['Kelola Edukasi', 'permohonan', 'fa-bullhorn', '/internal/pencegahan/kelola-edukasi', $count('permohonan_edukasi'), 'ic-primary'],
                 ['Kelola Redkar', 'data', 'fa-users-rectangle', '/internal/pencegahan/kelola-redkar', $count('redkar_registrations'), 'ic-info'],
-                ['Kelola RPKBGL', 'permohonan', 'fa-building-circle-check', '/internal/pencegahan/kelola-rpkbgl', $count('permohonan_rpkbgl'), 'ic-primary'],
+                ['Kelola RPPKBGL', 'permohonan', 'fa-building-circle-check', '/internal/pencegahan/kelola-rpkbgl', $count('permohonan_rpkbgl'), 'ic-primary'],
                 ['Kelola SKK', 'permohonan (baru + perpanjangan)', 'fa-file-shield', '/internal/pencegahan/kelola-skk', ($count('permohonan_skk') ?? 0) + ($count('permohonan_perpanjang_skk') ?? 0), 'ic-danger'],
             ],
         ],
@@ -215,7 +215,7 @@
         [
             'id' => 'informasi', 'title' => 'Manajemen Informasi', 'icon' => 'fa-newspaper', 'tone' => 'violet', 'desc' => 'Berita, produk hukum, dan profil instansi', 'roles' => $ops,
             'items' => [
-                ['Berita', 'berita', 'fa-newspaper', '/internal/operator/kelola-berita', $count('berita'), 'ic-primary'],
+                ['Pemadaman, Penyelamatan & Evakuasi', 'kejadian', 'fa-fire-flame-curved', '/internal/operator/kejadian', $count('kejadian_damkar'), 'ic-danger'],
                 ['Info Grafis', 'info grafis', 'fa-image', '/internal/operator/infografis', $count('infografis'), 'ic-info'],
                 ['Berita Medsos', 'unggahan', 'fa-brands fa-instagram', '/internal/operator/berita-medsos', $count('berita_medsos'), 'ic-danger'],
                 ['Ujung-Ujung Damkar', 'video', 'fa-brands fa-youtube', '/internal/operator/ujung-damkar', $count('ujung_damkar'), 'ic-danger'],
