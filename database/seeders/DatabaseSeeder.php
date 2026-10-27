@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             LpTeknisLogistiksTableSeeder::class,
             LpDokumentasisTableSeeder::class,
             LpKategoriKhususTableSeeder::class,
+            LaporanEvakuasiSeeder::class,
             RekapNonKebakaransTableSeeder::class,
             KejadianDamkarTableSeeder::class,
             DokumenSopSeeder::class,
