@@ -342,10 +342,7 @@
                 <div class="stat-ico"><i class="fas fa-users"></i></div>
                 <div><div class="stat-title">Sosialisasi &amp; Edukasi</div><div class="stat-value">{{ $total_sosialisasi ?? count($data_sosialisasi ?? []) }}</div></div>
             </a>
-            <a href="/internal/pencegahan/pemberdayaan-masyarakat/kunjungan-sekolah" class="stat-card">
-                <div class="stat-ico"><i class="fas fa-school"></i></div>
-                <div><div class="stat-title">Kunjungan Sekolah</div><div class="stat-value">{{ $total_kunjungan ?? count($data_kunjungan ?? []) }}</div></div>
-            </a>
+            
         </div>
     @else
 
