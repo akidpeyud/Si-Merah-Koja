@@ -197,7 +197,18 @@ class LaporanEvakuasiSeeder extends Seeder
     protected function parseJamKejadian(string $jamRaw): string
     {
         if (preg_match('/(\d{1,2})[\s.:]+(\d{2})/i', $jamRaw, $m)) {
-            return sprintf('%02d:%02d:00', $m[1], $m[2]);
+            $jam = (int) $m[1];
+            $menit = (int) $m[2];
+            if ($menit >= 60) {
+                $jam += intdiv($menit, 60);
+                $menit = $menit % 60;
+            }
+            if ($jam >= 24) {
+                $jam = 23;
+                $menit = 59;
+            }
+
+            return sprintf('%02d:%02d:00', $jam, $menit);
         }
 
         return '08:00:00';
