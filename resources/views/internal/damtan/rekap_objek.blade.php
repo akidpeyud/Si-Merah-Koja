@@ -43,7 +43,18 @@
     /* ==========================================================
        JUDUL HALAMAN & FILTER
        ========================================================== */
-    .page-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+    .page-head {
+        position: relative;
+        z-index: 30;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 32px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--line);
+    }
     .page-head-title h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 6px; color: var(--ink); }
     .page-head-title p { color: var(--steel); font-size: .95rem; margin-bottom: 0; max-width: 650px; }
 
@@ -281,6 +292,8 @@
         color: var(--ink);
     }
     .export-menu {
+        position: absolute;
+        z-index: 1050 !important;
         min-width: 290px;
         margin-top: 8px !important;
         padding: 8px;
@@ -405,6 +418,152 @@
     @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
         *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+
+    .pagination-container nav p { display: none !important; }
+    .pagination-container nav ul.pagination { margin-bottom: 0 !important; }
+
+    /* ==========================================================
+       PENGATURAN CETAK PDF (@media print)
+       Menyesuaikan persis seperti modul Kelola Data Laporan
+       ========================================================== */
+    @page {
+        size: landscape;
+        margin: 0;
+    }
+    @media print {
+        @page {
+            size: landscape;
+            margin: 0;
+        }
+        /* Sembunyikan semua elemen UI selain kop dan tabel riwayat */
+        .topbar, .sidebar, .sidebar-backdrop,
+        .page-head, .section-heading, .stats-grid,
+        .filter-year-group, .btn-export-dropdown, .dropdown, .export-menu,
+        .btn-create-top, .panel-foot, .col-aksi, .aksi,
+        .modal, .edit-modal, .detail-modal,
+        #createModal, #editModal, #detailModal,
+        .pagination-container, .pagination,
+        form, .alert, .d-print-none {
+            display: none !important;
+        }
+
+        html {
+            background: #fff !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        body {
+            background: #fff !important;
+            color: #000 !important;
+            font-size: 10pt !important;
+            margin: 0 !important;
+            padding: 1cm !important;
+            box-sizing: border-box !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .shell {
+            display: block !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        .content {
+            padding: 0 !important;
+            margin: 0 !important;
+            max-width: 100% !important;
+        }
+        .panel {
+            box-shadow: none !important;
+            border: none !important;
+            border-radius: 0 !important;
+            background: transparent !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .tbl-scroll {
+            padding: 0 !important;
+            overflow: visible !important;
+        }
+        .tbl-frame {
+            border: none !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            overflow: visible !important;
+        }
+
+        /* Kop Surat Resmi */
+        #print-header {
+            display: block !important;
+            width: 100% !important;
+            margin: 0 0 15px 0 !important;
+            padding: 0 !important;
+        }
+
+        /* Tabel Cetak */
+        .tbl {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            margin: 0 0 20px 0 !important;
+            table-layout: auto !important;
+        }
+        .tbl thead th {
+            background: #f2f2f2 !important;
+            color: #000 !important;
+            border: 1px solid #000 !important;
+            font-size: 10pt !important;
+            font-weight: bold !important;
+            padding: 6px 8px !important;
+            text-align: center !important;
+            vertical-align: middle !important;
+        }
+        .tbl tbody td {
+            background: #fff !important;
+            color: #000 !important;
+            border: 1px solid #000 !important;
+            padding: 6px 8px !important;
+            font-size: 9.5pt !important;
+            vertical-align: middle !important;
+            line-height: 1.35 !important;
+        }
+        .tbl tbody td.no-cell {
+            background: #fff !important;
+            color: #000 !important;
+            font-size: 10pt !important;
+            font-weight: bold !important;
+            text-align: center !important;
+            border: 1px solid #000 !important;
+        }
+        .tbl .cell-strong {
+            font-weight: 600 !important;
+            color: #000 !important;
+        }
+        .tbl .tag {
+            background: transparent !important;
+            color: #000 !important;
+            border: none !important;
+            padding: 0 !important;
+            font-size: 9.5pt !important;
+            font-weight: 500 !important;
+        }
+        .tbl .num {
+            font-weight: bold !important;
+            color: #000 !important;
+            text-align: center !important;
+        }
+        .tbl .cell-ket {
+            max-width: none !important;
+            white-space: normal !important;
+            word-break: break-word !important;
+            text-align: left !important;
+        }
+
+        /* Sembunyikan kolom aksi */
+        th.col-aksi, td.col-aksi, th:last-child, td:last-child {
+            display: none !important;
+        }
     }
 </style>
 @endpush
@@ -560,18 +719,18 @@
                     <table class="tbl">
                         <thead>
                             <tr>
-                                <th class="col-no">No</th>
-                                <th>Tanggal</th>
-                                <th>Objek Terbakar</th>
-                                <th>Jumlah</th>
-                                <th>Kecamatan</th>
-                                <th>Keterangan</th>
+                                <th class="col-no" style="width: 5%;">No</th>
+                                <th style="width: 15%;">Tanggal</th>
+                                <th style="width: 22%;">Objek Terbakar</th>
+                                <th style="width: 10%;">Jumlah</th>
+                                <th style="width: 18%;">Kecamatan</th>
+                                <th style="width: 30%;">Keterangan</th>
                                 <th class="col-aksi">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($riwayat as $r)
-                                <tr>
+                                <tr data-tahun="{{ \Carbon\Carbon::parse($r->tanggal)->year }}">
                                     <td class="no-cell">{{ $riwayat->firstItem() + $loop->index }}</td>
                                     <td class="cell-strong">{{ \Carbon\Carbon::parse($r->tanggal)->translatedFormat('d M Y') }}</td>
                                     <td><span class="tag">{{ $kategori[$r->kategori][0] ?? $r->kategori }}</span></td>
@@ -624,7 +783,7 @@
             </div>
 
             <!-- FOOTER PAGINATION -->
-            <div class="d-flex flex-wrap justify-content-between align-items-center p-3 border-top bg-white">
+            <div class="d-flex flex-wrap justify-content-between align-items-center p-3 border-top bg-white d-print-none">
                 <span class="text-muted" style="font-size: 13px;">
                     Menampilkan {{ $riwayat->firstItem() ?? 0 }} - {{ $riwayat->lastItem() ?? 0 }} dari total {{ $riwayat->total() }} data objek
                 </span>
@@ -852,12 +1011,55 @@
         });
     }
 
+    var spanThn = document.getElementById('printTahun');
+    var tersimpanRekap = null;
+
+    function pulihkanRekap() {
+        if (!tersimpanRekap) return;
+        tersimpanRekap.forEach(function (s) {
+            s.row.style.display = s.display;
+            if (s.noCell) s.noCell.textContent = s.no;
+        });
+        tersimpanRekap = null;
+        if (spanThn) spanThn.textContent = '';
+    }
+
     window.cetakPdf = function () {
         var thn = selTahunEkspor ? selTahunEkspor.value : '';
-        var spanThn = document.getElementById('printTahun');
+        var rows = document.querySelectorAll('.tbl tbody tr:not(.empty-row)');
+        var nomor = 0;
+        tersimpanRekap = [];
+
+        rows.forEach(function (row) {
+            var noCell = row.querySelector('.no-cell');
+            tersimpanRekap.push({
+                row: row,
+                display: row.style.display,
+                noCell: noCell,
+                no: noCell ? noCell.textContent : ''
+            });
+
+            var tampil = (!thn || row.dataset.tahun === thn);
+            if (tampil) {
+                nomor++;
+                row.style.display = '';
+                if (noCell) noCell.textContent = nomor;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        if (nomor === 0) {
+            pulihkanRekap();
+            alert(thn ? 'Tidak ada data objek kebakaran pada tahun ' + thn + ' di halaman ini.' : 'Tidak ada data untuk dicetak.');
+            return;
+        }
+
         if (spanThn) spanThn.textContent = thn ? ' TAHUN ' + thn : '';
         window.print();
     };
+
+    window.addEventListener('afterprint', pulihkanRekap);
 
     /* Form hanya ada untuk Damtan & Super User; role lain berhenti di sini */
     var select = document.getElementById('kategori');

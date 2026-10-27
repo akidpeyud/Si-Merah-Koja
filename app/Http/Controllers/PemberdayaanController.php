@@ -15,10 +15,9 @@ class PemberdayaanController extends Controller
         $total_sosialisasi = DB::table('sosialisasi_edukasi')->count();
         $total_pelatihan   = DB::table('pelatihan_keluarga')->count();
         
-        // TAMBAHKAN INI: Hitung total kunjungan sekolah
+        // Hitung total kunjungan sekolah
         $total_kunjungan   = \App\Models\KunjunganSekolah::count();
 
-        // TAMBAHKAN $total_kunjungan ke dalam compact()
         return view('internal.pencegahan.pemberdayaan_masyarakat', compact('total_sosialisasi', 'total_pelatihan', 'total_kunjungan'));
     }
 
@@ -58,15 +57,18 @@ class PemberdayaanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'jenis_kegiatan'         => 'required|in:Luar,Dalam',
             'tanggal_pelaksanaan'    => 'required|date',
-            'kecamatan'              => 'required|string|max:100',
-            'kelurahan'              => 'required|string|max:100',
-            'rt'                     => 'required|string|max:255',
+            'kecamatan'              => 'nullable|string|max:100', // Nullable karena kalau ke Mako tidak diisi
+            'kelurahan'              => 'nullable|string|max:100',
+            'rt'                     => 'nullable|string|max:255',
             'posyandu_sekolah'       => 'required|string|max:150',
             'peserta_perempuan'      => 'required|integer|min:0',
             'nama_peserta_perempuan' => 'nullable|string',
             'peserta_laki_laki'      => 'required|integer|min:0',
             'nama_peserta_laki_laki' => 'nullable|string',
+            'guru'                   => 'required|integer|min:0',
+            'orang_tua'              => 'required|integer|min:0',
             'link_dokumentasi'       => 'nullable|string|max:3000',
         ]);
 
@@ -80,16 +82,24 @@ class PemberdayaanController extends Controller
         [$jmlLaki, $namaLaki]           = $this->prosesPeserta($request->input('peserta_laki_laki'), $request->input('nama_peserta_laki_laki'));
         [$jmlPerempuan, $namaPerempuan] = $this->prosesPeserta($request->input('peserta_perempuan'), $request->input('nama_peserta_perempuan'));
 
+        // LOGIKA PINTAR: Kalau Kunjungan Dalam, otomatis set lokasi ke Mako Damkar
+        $jenis     = $request->jenis_kegiatan;
+        $kecamatan = $jenis === 'Dalam' ? 'Mako Damkar' : $request->kecamatan;
+        $kelurahan = $jenis === 'Dalam' ? 'Mako Damkar' : $request->kelurahan;
+        $rt        = $jenis === 'Dalam' ? '-' : $request->rt;
+
         DB::table('sosialisasi_edukasi')->insert([
             'tanggal_pelaksanaan'    => $request->tanggal_pelaksanaan,
-            'kecamatan'              => $request->kecamatan,
-            'kelurahan'              => $request->kelurahan,
-            'rt'                     => $request->rt,
+            'kecamatan'              => $kecamatan,
+            'kelurahan'              => $kelurahan,
+            'rt'                     => $rt,
             'posyandu_sekolah'       => $request->posyandu_sekolah,
             'peserta_perempuan'      => $jmlPerempuan,
             'nama_peserta_perempuan' => $namaPerempuan,
             'peserta_laki_laki'      => $jmlLaki,
             'nama_peserta_laki_laki' => $namaLaki,
+            'guru'                   => $request->guru,
+            'orang_tua'              => $request->orang_tua,
             'link_dokumentasi'       => $links,
             'created_at'             => now(),
             'updated_at'             => now(),
@@ -115,15 +125,18 @@ class PemberdayaanController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
+            'jenis_kegiatan'         => 'required|in:Luar,Dalam',
             'tanggal_pelaksanaan'    => 'required|date',
-            'kecamatan'              => 'required|string|max:100',
-            'kelurahan'              => 'required|string|max:100',
-            'rt'                     => 'required|string|max:255',
+            'kecamatan'              => 'nullable|string|max:100',
+            'kelurahan'              => 'nullable|string|max:100',
+            'rt'                     => 'nullable|string|max:255',
             'posyandu_sekolah'       => 'required|string|max:150',
             'peserta_perempuan'      => 'required|integer|min:0',
             'nama_peserta_perempuan' => 'nullable|string',
             'peserta_laki_laki'      => 'required|integer|min:0',
             'nama_peserta_laki_laki' => 'nullable|string',
+            'guru'                   => 'required|integer|min:0',
+            'orang_tua'              => 'required|integer|min:0',
             'link_dokumentasi'       => 'nullable|string|max:3000',
         ]);
 
@@ -137,16 +150,24 @@ class PemberdayaanController extends Controller
         [$jmlLaki, $namaLaki]           = $this->prosesPeserta($request->input('peserta_laki_laki'), $request->input('nama_peserta_laki_laki'));
         [$jmlPerempuan, $namaPerempuan] = $this->prosesPeserta($request->input('peserta_perempuan'), $request->input('nama_peserta_perempuan'));
 
+        // LOGIKA PINTAR: Kalau Kunjungan Dalam, otomatis set lokasi ke Mako Damkar
+        $jenis     = $request->jenis_kegiatan;
+        $kecamatan = $jenis === 'Dalam' ? 'Mako Damkar' : $request->kecamatan;
+        $kelurahan = $jenis === 'Dalam' ? 'Mako Damkar' : $request->kelurahan;
+        $rt        = $jenis === 'Dalam' ? '-' : $request->rt;
+
         DB::table('sosialisasi_edukasi')->where('id', $id)->update([
             'tanggal_pelaksanaan'    => $request->tanggal_pelaksanaan,
-            'kecamatan'              => $request->kecamatan,
-            'kelurahan'              => $request->kelurahan,
-            'rt'                     => $request->rt,
+            'kecamatan'              => $kecamatan,
+            'kelurahan'              => $kelurahan,
+            'rt'                     => $rt,
             'posyandu_sekolah'       => $request->posyandu_sekolah,
             'peserta_perempuan'      => $jmlPerempuan,
             'nama_peserta_perempuan' => $namaPerempuan,
             'peserta_laki_laki'      => $jmlLaki,
             'nama_peserta_laki_laki' => $namaLaki,
+            'guru'                   => $request->guru,
+            'orang_tua'              => $request->orang_tua,
             'link_dokumentasi'       => $links,
             'updated_at'             => now(),
         ]);
@@ -200,7 +221,6 @@ class PemberdayaanController extends Controller
         [$jmlLaki, $namaLaki]           = $this->prosesPeserta($request->input('peserta_laki_laki'), $request->input('nama_peserta_laki_laki'));
         [$jmlPerempuan, $namaPerempuan] = $this->prosesPeserta($request->input('peserta_perempuan'), $request->input('nama_peserta_perempuan'));
 
-        // DIPERBAIKI: Menyertakan nama_peserta_perempuan & nama_peserta_laki_laki
         DB::table('pelatihan_keluarga')->insert([
             'tanggal_pelaksanaan'    => $request->tanggal_pelaksanaan,
             'kecamatan'              => $request->kecamatan,
@@ -259,7 +279,6 @@ class PemberdayaanController extends Controller
         [$jmlLaki, $namaLaki]           = $this->prosesPeserta($request->input('peserta_laki_laki'), $request->input('nama_peserta_laki_laki'));
         [$jmlPerempuan, $namaPerempuan] = $this->prosesPeserta($request->input('peserta_perempuan'), $request->input('nama_peserta_perempuan'));
 
-        // DIPERBAIKI: Menyertakan nama_peserta_perempuan & nama_peserta_laki_laki
         DB::table('pelatihan_keluarga')->where('id', $id)->update([
             'tanggal_pelaksanaan'    => $request->tanggal_pelaksanaan,
             'kecamatan'              => $request->kecamatan,
@@ -375,12 +394,14 @@ class PemberdayaanController extends Controller
         $html .= '<th rowspan="2" style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">KELURAHAN</th>';
         $html .= '<th rowspan="2" style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">KECAMATAN</th>';
         $html .= '<th rowspan="2" style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">POSYANDU / NAMA SEKOLAH</th>';
-        $html .= '<th colspan="3" style="background-color: #0f172a; color: white; text-align: center;">JUMLAH &amp; DAFTAR PESERTA</th>';
+        $html .= '<th colspan="5" style="background-color: #0f172a; color: white; text-align: center;">JUMLAH &amp; DAFTAR PESERTA</th>';
         $html .= '<th rowspan="2" style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">LINK DOKUMENTASI</th>';
         $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<th style="background-color: #0f172a; color: white; text-align: center;">LAKI-LAKI</th>';
         $html .= '<th style="background-color: #0f172a; color: white; text-align: center;">PEREMPUAN</th>';
+        $html .= '<th style="background-color: #0f172a; color: white; text-align: center;">GURU</th>';
+        $html .= '<th style="background-color: #0f172a; color: white; text-align: center;">ORTU</th>';
         $html .= '<th style="background-color: #0f172a; color: white; text-align: center;">TOTAL PESERTA</th>';
         $html .= '</tr>';
         $html .= '</thead>';
@@ -388,16 +409,22 @@ class PemberdayaanController extends Controller
 
         $total_semua_lakilaki  = 0;
         $total_semua_perempuan = 0;
+        $total_semua_guru      = 0;
+        $total_semua_ortu      = 0;
         $total_semua_peserta   = 0;
 
         foreach ($data as $index => $row) {
             $tanggal       = $row->tanggal_pelaksanaan ? Carbon::parse($row->tanggal_pelaksanaan)->locale('id')->translatedFormat('d F Y') : '-';
             $lakilaki      = (int) ($row->peserta_laki_laki ?? 0);
             $perempuan     = (int) ($row->peserta_perempuan ?? 0);
-            $total_peserta = $lakilaki + $perempuan;
+            $guru          = (int) ($row->guru ?? 0);
+            $ortu          = (int) ($row->orang_tua ?? 0);
+            $total_peserta = $lakilaki + $perempuan + $guru + $ortu;
 
             $total_semua_lakilaki  += $lakilaki;
             $total_semua_perempuan += $perempuan;
+            $total_semua_guru      += $guru;
+            $total_semua_ortu      += $ortu;
             $total_semua_peserta   += $total_peserta;
 
             $html .= '<tr>';
@@ -409,6 +436,8 @@ class PemberdayaanController extends Controller
             $html .= '<td style="vertical-align: top;">' . e($row->posyandu_sekolah ?? '-') . '</td>';
             $html .= '<td style="vertical-align: top;">' . $this->namaUntukExcel($row->nama_peserta_laki_laki ?? '', $lakilaki) . '</td>';
             $html .= '<td style="vertical-align: top;">' . $this->namaUntukExcel($row->nama_peserta_perempuan ?? '', $perempuan) . '</td>';
+            $html .= '<td style="text-align: center; vertical-align: top;">' . $guru . '</td>';
+            $html .= '<td style="text-align: center; vertical-align: top;">' . $ortu . '</td>';
             $html .= '<td style="text-align: center; vertical-align: top;"><b>' . $total_peserta . ' Orang</b></td>';
             $html .= '<td style="vertical-align: top;">' . $this->linkUntukExcel($row->link_dokumentasi ?? '') . '</td>';
             $html .= '</tr>';
@@ -418,6 +447,8 @@ class PemberdayaanController extends Controller
         $html .= '<td colspan="6" style="text-align: center; font-weight: bold; background-color: #f3f4f6;">TOTAL SELURUH PESERTA</td>';
         $html .= '<td style="text-align: center; font-weight: bold; background-color: #f3f4f6;">' . $total_semua_lakilaki . ' Orang</td>';
         $html .= '<td style="text-align: center; font-weight: bold; background-color: #f3f4f6;">' . $total_semua_perempuan . ' Orang</td>';
+        $html .= '<td style="text-align: center; font-weight: bold; background-color: #f3f4f6;">' . $total_semua_guru . ' Orang</td>';
+        $html .= '<td style="text-align: center; font-weight: bold; background-color: #f3f4f6;">' . $total_semua_ortu . ' Orang</td>';
         $html .= '<td style="text-align: center; font-weight: bold; background-color: #f3f4f6;">' . $total_semua_peserta . ' Orang</td>';
         $html .= '<td style="background-color: #f3f4f6;"></td>';
         $html .= '</tr>';
