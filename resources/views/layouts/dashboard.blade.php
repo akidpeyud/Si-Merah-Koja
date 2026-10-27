@@ -346,6 +346,9 @@
         }
     </style>
     @stack('styles')
+    @if(Request::is('sapra*'))
+        @include('layouts.partials.sapra-responsive')
+    @endif
 </head>
 <body>
 
