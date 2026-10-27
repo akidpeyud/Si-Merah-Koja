@@ -356,6 +356,27 @@ class LaporanEvakuasiImport implements ToCollection, WithCalculatedFormulas, Wit
     }
 
     /**
+     * Normalisasi jam dan menit menjadi datetime MySQL yang valid (Y-m-d H:i:s).
+     * Menangani typo seperti menit 60 (20.60 -> 21.00) atau jam 24.
+     */
+    protected function normalisasiWaktu(string $tanggalKejadian, int $jam, int $menit): ?string
+    {
+        if ($menit >= 60) {
+            $jam += intdiv($menit, 60);
+            $menit = $menit % 60;
+        }
+
+        try {
+            $base = Carbon::parse($tanggalKejadian.' 00:00:00');
+            $dt = $base->addHours($jam)->addMinutes($menit);
+
+            return $dt->format('Y-m-d H:i:s');
+        } catch (\Throwable) {
+            return null;
+        }
+    }
+
+    /**
      * Parsing teks jam evakuasi (Terima, Berangkat, Tiba, Selesai)
      */
     protected function parseWaktu(string $rawJam, string $tanggalKejadian, string $rawDurasi = ''): array
@@ -370,26 +391,37 @@ class LaporanEvakuasiImport implements ToCollection, WithCalculatedFormulas, Wit
 
         $raw = trim($rawJam);
 
-        // Pola: Terima: HH.MM / HH:MM
+        // Pola: Terima: HH.MM / HH:MM atau HHMM (misal 1131)
         if (preg_match('/Terima\s*:\s*(\d{1,2})[\s.:]+(\d{2})/i', $raw, $mT)) {
-            $res['waktu_terima'] = $tanggalKejadian.' '.sprintf('%02d:%02d:00', $mT[1], $mT[2]);
+            $res['waktu_terima'] = $this->normalisasiWaktu($tanggalKejadian, (int) $mT[1], (int) $mT[2]);
+            $res['waktu_kejadian'] = $res['waktu_terima'];
+        } elseif (preg_match('/Terima\s*:\s*(\d{2})(\d{2})/i', $raw, $mT)) {
+            $res['waktu_terima'] = $this->normalisasiWaktu($tanggalKejadian, (int) $mT[1], (int) $mT[2]);
             $res['waktu_kejadian'] = $res['waktu_terima'];
         }
 
-        // Pola: Berangkat: HH.MM / HH:MM
+        // Pola: Berangkat: HH.MM / HH:MM atau HHMM
         if (preg_match('/Berangkat\s*:\s*(\d{1,2})[\s.:]+(\d{2})/i', $raw, $mB)) {
-            $res['waktu_berangkat'] = $tanggalKejadian.' '.sprintf('%02d:%02d:00', $mB[1], $mB[2]);
+            $res['waktu_berangkat'] = $this->normalisasiWaktu($tanggalKejadian, (int) $mB[1], (int) $mB[2]);
+        } elseif (preg_match('/Berangkat\s*:\s*(\d{2})(\d{2})/i', $raw, $mB)) {
+            $res['waktu_berangkat'] = $this->normalisasiWaktu($tanggalKejadian, (int) $mB[1], (int) $mB[2]);
         }
 
-        // Pola: Tiba: HH.MM / HH:MM
+        // Pola: Tiba: HH.MM / HH:MM atau HHMM (contoh Tiba:20.60 atau Tiba:1131)
         if (preg_match('/Tiba\s*:\s*(\d{1,2})[\s.:]+(\d{2})/i', $raw, $mTi)) {
-            $res['waktu_tiba'] = $tanggalKejadian.' '.sprintf('%02d:%02d:00', $mTi[1], $mTi[2]);
+            $res['waktu_tiba'] = $this->normalisasiWaktu($tanggalKejadian, (int) $mTi[1], (int) $mTi[2]);
+        } elseif (preg_match('/Tiba\s*:\s*(\d{2})(\d{2})/i', $raw, $mTi)) {
+            $res['waktu_tiba'] = $this->normalisasiWaktu($tanggalKejadian, (int) $mTi[1], (int) $mTi[2]);
         }
 
         // Jika format jam tunggal, misal "07.50 WIB" atau "08.18"
         if (! $res['waktu_terima']) {
             if (preg_match('/(\d{1,2})[\s.:]+(\d{2})/i', $raw, $mS)) {
-                $jamFormat = $tanggalKejadian.' '.sprintf('%02d:%02d:00', $mS[1], $mS[2]);
+                $jamFormat = $this->normalisasiWaktu($tanggalKejadian, (int) $mS[1], (int) $mS[2]);
+                $res['waktu_terima'] = $jamFormat;
+                $res['waktu_kejadian'] = $jamFormat;
+            } elseif (preg_match('/\b(\d{2})(\d{2})\b/', $raw, $mS)) {
+                $jamFormat = $this->normalisasiWaktu($tanggalKejadian, (int) $mS[1], (int) $mS[2]);
                 $res['waktu_terima'] = $jamFormat;
                 $res['waktu_kejadian'] = $jamFormat;
             } else {
