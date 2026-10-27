@@ -4,50 +4,6 @@
 
 @push('styles')
 <style>
-    .topbar {
-        position: sticky; top: 0; z-index: 1020;
-        height: var(--topbar-h);
-        display: flex; align-items: center; justify-content: space-between;
-        gap: 16px; padding: 0 28px;
-        background: var(--ink);
-        border-bottom: 1px solid rgba(255,255,255,.08);
-        box-shadow: 0 2px 12px rgba(13, 27, 42, .16);
-    }
-    .user-avatar {
-        width: 36px; height: 36px; border-radius: 50%;
-        background: #fff; color: var(--ink);
-        display: grid; place-items: center;
-        font-family: var(--font-display); font-weight: 700; font-size: .9rem; flex: none;
-    }
-    .user-meta strong {
-        font-size: .84rem; font-weight: 700; max-width: 160px;
-        overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff;
-    }
-    .btn-logout {
-        display: inline-flex; align-items: center; justify-content: center;
-        gap: 8px; height: 40px; padding: 0 17px; border-radius: 999px;
-        background: #fff; color: var(--ink);
-        font-weight: 600; font-size: .84rem; border: none;
-        transition: background .2s, color .2s, transform .1s, box-shadow .2s;
-    }
-    .sidebar {
-        width: var(--sidebar-w); flex: none;
-        position: sticky; top: var(--topbar-h);
-        height: calc(100vh - var(--topbar-h));
-        overflow-y: auto; overflow-x: hidden;
-        background: #fff; border-right: 1px solid var(--line);
-        padding: 20px 14px 32px;
-        scrollbar-width: thin; scrollbar-color: #d8dee8 transparent;
-    }
-    .side-link.active { background: var(--ink); color: #fff; box-shadow: 0 4px 10px rgba(13,27,42,.10); }
-    .side-link.active i { color: #fff; }
-    .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); margin-top: 3px; }
-    .side-group summary .grp-label {
-        flex: 1 1 auto; min-width: 0;
-        white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.4;
-    }
-    .side-group summary .chev { flex: none; font-size: .7rem; margin-top: 4px; transition: transform .25s ease; }
-
     /* ---------- Header Halaman ---------- */
     .page-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 26px; gap: 16px; flex-wrap: wrap; }
     .page-head-title h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 5px; color: var(--ink); }
@@ -93,8 +49,8 @@
     .status-memenuhi { background: rgba(25, 135, 84, .15); color: var(--success); }
     .status-tidak    { background: var(--signal-soft); color: var(--signal-dark); }
 
-    .btn-action-group { display: flex; flex-direction: column; gap: 6px; }
-    .btn-action { display: inline-flex; align-items: center; justify-content: flex-start; gap: 6px; padding: 6px 12px; border-radius: 6px; font-size: .8rem; font-weight: 600; transition: all .2s; text-decoration: none; border: none; width: 100%; cursor: pointer; }
+    .btn-action-group { display: inline-flex; flex-direction: row; align-items: center; gap: 6px; flex-wrap: nowrap; white-space: nowrap; }
+    .btn-action { display: inline-flex; align-items: center; justify-content: center; gap: 5px; height: 32px; padding: 0 10px; border-radius: 6px; font-size: .78rem; font-weight: 600; transition: all .2s; text-decoration: none; border: none; width: auto; cursor: pointer; white-space: nowrap; }
     .btn-lihat { background: var(--info-soft); color: var(--info); }
     .btn-lihat:hover { background: var(--info); color: #ffffff; }
     .btn-edit { background: rgba(244, 183, 64, .15); color: #b45309; }
@@ -145,6 +101,14 @@
         .page-head-title h1 { font-size: 1.55rem; }
         .page-head-title p { font-size: .88rem; }
         .content-card { padding: 14px; }
+    }
+    @media (max-width: 576px) {
+        .rekap-grid { grid-template-columns: 1fr; gap: 10px; margin-bottom: 18px; }
+        .rekap-item { padding: 14px 16px; gap: 14px; }
+        .rekap-ico { width: 42px; height: 42px; border-radius: 10px; font-size: 1.05rem; }
+        .rekap-num { font-size: 1.55rem; }
+        .rekap-label { font-size: .74rem; }
+        .rekap-sub { font-size: .72rem; }
     }
     @media (max-width: 420px) {
         .brand span { display: none; }
@@ -328,7 +292,7 @@
                             <th>Jadwal Kegiatan</th>
                             <th>Status</th>
                             <th>Berkas Lampiran</th>
-                            <th style="width: 130px;">Aksi</th>
+                            <th class="no-print-col text-center" style="min-width: 380px;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -395,14 +359,14 @@
                             </td>
 
                             <!-- Kolom Aksi (seragam dengan Kelola SKK) -->
-                            <td>
-                                <div class="btn-action-group">
-                                    <a href="/internal/pencegahan/kelola-edukasi/{{ $p->id }}" class="btn-action btn-lihat">
+                            <td class="no-print-col text-center">
+                                <div class="btn-action-group justify-content-center">
+                                    <a href="/internal/pencegahan/kelola-edukasi/{{ $p->id }}" class="btn-action btn-lihat" title="Detail">
                                         <i class="fas fa-search" style="width: 14px;"></i> Detail
                                     </a>
 
                                     @hasanyrole('Pencegahan|Super User')
-                                    <a href="{{ route('edukasi.offline.edit', $p->id) }}" class="btn-action btn-edit">
+                                    <a href="{{ route('edukasi.offline.edit', $p->id) }}" class="btn-action btn-edit" title="Edit Data">
                                         <i class="fas fa-pen" style="width: 14px;"></i> Edit
                                     </a>
 
@@ -411,18 +375,20 @@
                                         data-bs-target="#modalUpdateStatus"
                                         data-action="/internal/pencegahan/kelola-edukasi/update-status/{{ $p->id }}"
                                         data-nama="{{ $p->institusi }}"
-                                        data-status="{{ $p->status_permohonan }}">
+                                        data-status="{{ $p->status_permohonan }}"
+                                        title="Update Status">
                                         <i class="fas fa-edit" style="width: 14px;"></i> Status
                                     </button>
 
                                     <button type="button" class="btn-action btn-delete"
                                         data-delete-url="{{ route('edukasi.offline.destroy', $p->id) }}"
-                                        data-nama="{{ $p->institusi }}">
+                                        data-nama="{{ $p->institusi }}"
+                                        title="Hapus Data">
                                         <i class="fas fa-trash" style="width: 14px;"></i> Hapus
                                     </button>
                                     @endhasanyrole
 
-                                    <a href="/internal/pencegahan/kelola-edukasi/{{ $p->id }}?auto_print=true" target="_blank" class="btn-action btn-cetak">
+                                    <a href="/internal/pencegahan/kelola-edukasi/{{ $p->id }}?auto_print=true" target="_blank" class="btn-action btn-cetak" title="Cetak Surat">
                                         <i class="fas fa-print" style="width: 14px;"></i> Cetak
                                     </a>
                                 </div>
