@@ -743,11 +743,8 @@
             <a href="/" aria-label="SIMERAH KOJA, beranda">
                 <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
             </a>
-           <a href="/" title="Beranda Damkar">
-    <img src="/images/logo.png" alt="Logo Damkar">
-</a>
-            <a href="/redkar" aria-label="Redkar">
-                <img src="/images/logo-redkar.png" alt="Logo Redkar">
+            <a href="/" title="Beranda Damkar">
+                <img src="/images/logo.png" alt="Logo Damkar">
             </a>
         </div>
 
@@ -839,6 +836,7 @@
                                 <li><a href="{{ route('publik.infografis') }}">Infografis</a></li>
                                 <li><a href="/media-informasi">Media Informasi</a></li>
                                 <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
+                                <li><a href="{{ route('publik.kejadian') }}">Pemadaman, Penyelamatan dan Evakuasi</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -1248,7 +1246,8 @@
     function closeSubs() {
         subs.forEach(function (s) {
             s.classList.remove('open');
-            s.querySelector('.sub-trigger').setAttribute('aria-expanded', 'false');
+            var st = s.querySelector('.sub-trigger');
+            if (st) st.setAttribute('aria-expanded', 'false');
         });
     }
 
@@ -1256,7 +1255,8 @@
         drops.forEach(function (li) {
             if (li !== except) {
                 li.classList.remove('open');
-                triggerOf(li).setAttribute('aria-expanded', 'false');
+                var tr = triggerOf(li);
+                if (tr) tr.setAttribute('aria-expanded', 'false');
             }
         });
         if (!except) closeSubs();
@@ -1265,30 +1265,37 @@
     function setMobileMenu(open) {
         header.classList.toggle('nav-open', open);
         document.body.classList.toggle('nav-lock', open);
-        toggle.setAttribute('aria-expanded', open);
-        toggle.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
-        toggle.querySelector('i').className = open ? 'fas fa-times' : 'fas fa-bars';
+        if (toggle) {
+            toggle.setAttribute('aria-expanded', open);
+            toggle.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
+            var icon = toggle.querySelector('i');
+            if (icon) icon.className = open ? 'fas fa-times' : 'fas fa-bars';
+        }
         if (!open) closeDrops(null);
     }
 
-    toggle.addEventListener('click', function () {
-        setMobileMenu(!header.classList.contains('nav-open'));
-    });
+    if (toggle) {
+        toggle.addEventListener('click', function () {
+            setMobileMenu(!header.classList.contains('nav-open'));
+        });
+    }
 
     drops.forEach(function (li) {
         var btn = triggerOf(li);
-        btn.addEventListener('click', function () {
-            var open = li.classList.toggle('open');
-            btn.setAttribute('aria-expanded', open);
-            closeDrops(li);
-        });
-        // Desktop: dropdown tertutup rapi saat kursor meninggalkan menu
-        li.addEventListener('mouseleave', function () {
-            if (!desktop.matches) return;
-            li.classList.remove('open');
-            btn.setAttribute('aria-expanded', 'false');
-            closeSubs();
-        });
+        if (btn) {
+            btn.addEventListener('click', function () {
+                var open = li.classList.toggle('open');
+                btn.setAttribute('aria-expanded', open);
+                closeDrops(li);
+            });
+            // Desktop: dropdown tertutup rapi saat kursor meninggalkan menu
+            li.addEventListener('mouseleave', function () {
+                if (!desktop.matches) return;
+                li.classList.remove('open');
+                btn.setAttribute('aria-expanded', 'false');
+                closeSubs();
+            });
+        }
     });
 
     // MULTILEVEL DROPDOWN (Galeri > Berita)

@@ -620,153 +620,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 </head>
 <body>
 
-<!-- ==================== HEADER ==================== -->
-<header class="site-header" id="siteHeader">
-    <nav class="nav" aria-label="Navigasi utama">
-        <div class="brand">
-            <a href="/" aria-label="SIMERAH KOJA, beranda">
-                <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
-            </a>
-            <a href="/" title="Beranda">
-                <img src="/images/logo.png" alt="Logo Damkar">
-            </a>
-            <a href="/redkar" aria-label="Redkar">
-                <img src="/images/logo-redkar.png" alt="Logo Redkar">
-            </a>
-        </div>
-
-        <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="navPanel">
-            <i class="fas fa-bars"></i>
-        </button>
-
-        <div class="nav-panel" id="navPanel">
-            <!-- ===== Menu utama ===== -->
-            <ul class="menu">
-                <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Profil <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/profil/visi-misi">Visi Misi</a></li>
-                        <li><a href="/profil/sotk">SOTK</a></li>
-                        <li><a href="/profil/tupoksi">Tupoksi</a></li>
-                        <li><a href="/profil/kepegawaian">Kepegawaian</a></li>
-                        <li><a href="/profil/program-kegiatan">Program Kegiatan</a></li>
-                        <li><a href="/profil/cascading">Cascading</a></li>
-                    </ul>
-                </li>
-
-                <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
-                        <li><a href="/layanan-fasilitas/izin-keramaian">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
-                        <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Penilaian Proteksi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
-                        <li><a href="/layanan-fasilitas/penggunaan-sarana">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
-                        <li><a href="/layanan-fasilitas/skk">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
-                    </ul>
-                </li>
-
-                <li><a class="menu-link {{ request()->is('public-sigap*') ? 'is-active' : '' }}" href="/public-sigap">Sigapkar</a></li>
-
-                <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">SOP <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/sop/pencegahan">Pencegahan</a></li>
-                        <li><a href="/sop/pemadaman">Pemadaman Kebakaran</a></li>
-                        <li><a href="/sop/penyelamatan">Penyelamatan dan Evakuasi</a></li>
-                        <li><a href="/sop/sarpras">Sarana dan Prasarana</a></li>
-                        <li><a href="/sop/kepegawaian">Kepegawaian</a></li>
-                        <li><a href="/sop/keuangan">Keuangan</a></li>
-                    </ul>
-                </li>
-
-                <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/produk-hukum/undang-undang">Undang-Undang</a></li>
-                        <li><a href="/produk-hukum/peraturan-pemerintah">Peraturan Pemerintah</a></li>
-                        <li><a href="/produk-hukum/peraturan-menteri">Peraturan Menteri</a></li>
-                        <li><a href="/produk-hukum/peraturan-daerah">Peraturan Daerah</a></li>
-                        <li><a href="/produk-hukum/peraturan-kepala-daerah">Peraturan Kepala Daerah</a></li>
-                    </ul>
-                </li>
-
-                <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Dokumen <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/dokumen/renstra">Renstra</a></li>
-                        <li><a href="/dokumen/renja">Renja</a></li>
-                        <li><a href="/dokumen/spm">SPM</a></li>
-                        <li><a href="/dokumen/sakip">SAKIP</a></li>
-                        <li><a href="/dokumen/lppd">LPPD</a></li>
-                    </ul>
-                </li>
-
-                <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Sarpras <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="{{ route('sarpras.sarana') }}">Sarana</a></li>
-                        <li><a href="{{ route('sarpras.prasarana') }}">Prasarana</a></li>
-                    </ul>
-                </li>
-
-                <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Galeri <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/ikm">IKM (Indeks Kepuasan Masyarakat)</a></li>
-                        <li><a href="/pengumuman">Pengumuman</a></li>
-                        <li class="has-sub">
-                            <button class="sub-trigger" type="button" aria-expanded="false">
-                                Berita <i class="fas fa-chevron-right"></i>
-                            </button>
-                            <ul class="dropdown-sub">
-                                <li><a href="/edu-damkar">Edu Damkar</a></li>
-                                <li><a href="{{ route('publik.infografis') }}">Infografis</a></li>
-                                <li><a href="/media-informasi">Media Informasi</a></li>
-                                <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
- 
-            </ul>
-
-            <!-- ===== Tombol kanan: Lapor darurat + Masuk ===== -->
-            <ul class="nav-actions">
-                <li class="has-drop">
-                    <button class="btn-nav btn-nav--alert menu-trigger-cta" type="button" aria-expanded="false">
-                        <span class="beacon" aria-hidden="true"></span> Lapor darurat <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <ul class="dropdown">
-                        <li><a href="tel:112"><i class="fas fa-headset"></i> Call Center 112</a></li>
-                        <li><a href="tel:{{ $no_telepon }}"><i class="fas fa-phone-alt"></i> Telepon {{ $telepon_tampil }}</a></li>
-                        <li><a href="{{ $wa_link }}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
-                    </ul>
-                </li>
-
-                @if(session()->has('pemohon_id'))
-                    <li class="has-drop">
-                        <button class="btn-nav btn-nav--ghost menu-trigger-cta" type="button" aria-expanded="false">
-                            <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
-                        </button>
-                        <ul class="dropdown">
-                            <li>
-                                <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
-                                    @csrf
-                                    <button type="submit" class="btn-logout">
-                                        <i class="fas fa-sign-out-alt"></i> Keluar
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                @else
-                    <li><a class="btn-nav btn-nav--ghost" href="{{ route('pemohon.login') }}">Masuk</a></li>
-                @endif
-            </ul>
-        </div>
-    </nav>
-</header>
+@include('layouts.partials.public-header')
 
 <main>
     <!-- ==================== HERO ==================== -->
@@ -900,174 +754,18 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
     </div>
 </main>
 
-<!-- ==================== FOOTER ==================== -->
-<footer class="footer">
-    <div class="wrap">
-        <div class="footer-grid">
-            <div class="footer-about">
-                <img src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA" loading="lazy">
-                <h3>Tentang kami</h3>
-                <p>SIMERAH KOJA merupakan sistem informasi pemerintahan berbasis elektronik yang terintegrasi pada dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
-            </div>
-            <div>
-                <div class="map">
-                    <iframe title="Lokasi Dinas Pemadam Kebakaran Kota Jambi" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.202353147814!2d103.600648!3d-1.618096!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e22c8c6a234f6b1%3A0x4d537f0a82384f88!2sDinas%20Pemadam%20Kebakaran%20Kota%20Jambi!5e1!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid" tabindex="-1" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    <a class="map-link" href="{{ $maps_link }}" target="_blank" rel="noopener" aria-label="Buka lokasi di Google Maps">
-                        <span><i class="fas fa-location-arrow"></i> Buka di Google Maps</span>
-                    </a>
-                </div>
-                <a class="find" href="{{ $maps_link }}" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Temukan kami di peta</a>
-                @if ($play_store_url)
-                <div class="app-dl">
-                    <p style="margin-top: 15px; font-size: 0.85rem;">Unduh aplikasi SIMERAH KOJA</p>
-                    <a href="{{ $play_store_url }}" target="_blank" rel="noopener">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Dapatkan di Google Play" style="height: 40px; margin-top: 8px;">
-                    </a>
-                </div>
-                @endif
-            </div>
-            <div class="footer-links">
-                <h3>Link terkait</h3>
-                <ul>
-                    <li><a href="https://damkar.jambikota.go.id/" target="_blank" rel="noopener"><i class="fas fa-chevron-right"></i> Official Damkar</a></li>
-                    <li><a href="https://jambikota.go.id/" target="_blank" rel="noopener"><i class="fas fa-chevron-right"></i> Website Jambikota</a></li>
-                    <li><a href="https://sikoja.jambikota.go.id/" target="_blank" rel="noopener"><i class="fas fa-chevron-right"></i> SIKOJA</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bar">
-            <div>SIMERAH KOJA &copy; {{ date('Y') }}. Hak cipta dilindungi.</div>
-            <div class="social">
-                <a href="mailto:damkar.jbi@gmail.com" title="Email" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                <a href="https://twitter.com/damkarkotajambi" target="_blank" rel="noopener" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                <a href="https://www.facebook.com/DamkarKotaJambi" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://www.youtube.com/@damkarkotajambi" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                <a href="https://www.tiktok.com/@damkar.kota.jambi" target="_blank" rel="noopener" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-                <a href="https://www.instagram.com/damkar.kotajambi/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            </div>
-        </div>
-    </div>
-</footer>
-
-<!-- ==================== TOMBOL LAPOR MENGAMBANG ==================== -->
-<div class="sos-fab" id="sosFab">
-    <div class="sos-sheet" id="sosSheet">
-        <a class="wa" href="{{ $wa_link }}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Lapor lewat WhatsApp</a>
-        <a class="tel" href="tel:{{ $no_telepon }}"><i class="fas fa-phone-alt"></i> Telepon {{ $telepon_tampil }}</a>
-        <a class="n112" href="tel:112"><i class="fas fa-headset"></i> Call Center 112</a>
-    </div>
-    <button class="sos-fab-btn" type="button" aria-expanded="false" aria-controls="sosSheet">
-        <span class="beacon" aria-hidden="true"></span> Lapor Darurat
-    </button>
-</div>
+@include('layouts.partials.public-footer')
 
 <!-- ==================== SCRIPTS ==================== -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+@include('layouts.partials.public-scripts')
 <script>
 (function () {
     'use strict';
 
     const $ = id => document.getElementById(id);
     const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-
-    /* =========================================================
-       1. NAVIGASI MENU MULTI-DROPDOWN
-       ========================================================= */
-    var header = document.getElementById('siteHeader');
-    var toggle = header.querySelector('.nav-toggle');
-    var drops = header.querySelectorAll('.has-drop');
-    var subs = header.querySelectorAll('.has-sub');
-    var desktop = window.matchMedia('(hover: hover) and (min-width: 1201px)');
-
-    function triggerOf(li) {
-        return li.querySelector(':scope > .menu-trigger, :scope > .menu-trigger-cta');
-    }
-
-    function closeSubs() {
-        subs.forEach(function (s) {
-            s.classList.remove('open');
-            s.querySelector('.sub-trigger').setAttribute('aria-expanded', 'false');
-        });
-    }
-
-    function closeDrops(except) {
-        drops.forEach(function (li) {
-            if (li !== except) {
-                li.classList.remove('open');
-                var t = triggerOf(li);
-                if (t) t.setAttribute('aria-expanded', 'false');
-            }
-        });
-        if (!except) closeSubs();
-    }
-
-    function setMobileMenu(open) {
-        header.classList.toggle('nav-open', open);
-        document.body.classList.toggle('nav-lock', open);
-        toggle.setAttribute('aria-expanded', open);
-        toggle.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
-        toggle.querySelector('i').className = open ? 'fas fa-times' : 'fas fa-bars';
-        if (!open) closeDrops(null);
-    }
-
-    toggle.addEventListener('click', function () {
-        setMobileMenu(!header.classList.contains('nav-open'));
-    });
-
-    drops.forEach(function (li) {
-        var btn = triggerOf(li);
-        if (!btn) return;
-        btn.addEventListener('click', function () {
-            var open = li.classList.toggle('open');
-            btn.setAttribute('aria-expanded', open);
-            closeDrops(li);
-        });
-
-        li.addEventListener('mouseleave', function () {
-            if (!desktop.matches) return;
-            li.classList.remove('open');
-            btn.setAttribute('aria-expanded', 'false');
-            closeSubs();
-        });
-    });
-
-    subs.forEach(function (li) {
-        var btn = li.querySelector('.sub-trigger');
-        btn.addEventListener('click', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var open = li.classList.toggle('open');
-            btn.setAttribute('aria-expanded', open);
-        });
-    });
-
-    document.addEventListener('click', function (e) {
-        if (!e.target.closest('.has-drop')) closeDrops(null);
-    });
-
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-            closeDrops(null);
-            if (header.classList.contains('nav-open')) setMobileMenu(false);
-        }
-    });
-
-    window.matchMedia('(min-width: 1201px)').addEventListener('change', function (e) {
-        if (e.matches) setMobileMenu(false);
-    });
-
-    /* Tombol Lapor Darurat (SOS FAB) */
-    const fab = $('sosFab'), fabBtn = fab.querySelector('.sos-fab-btn');
-    const setFab = open => { fab.classList.toggle('open', open); fabBtn.setAttribute('aria-expanded', open); };
-    fabBtn.addEventListener('click', () => setFab(!fab.classList.contains('open')));
-    const updateFab = () => {
-        const show = window.scrollY > 300;
-        fab.classList.toggle('show', show);
-        if (!show) setFab(false);
-    };
-    window.addEventListener('scroll', updateFab, { passive: true });
-    updateFab();
 
     /* =========================================================
        2. KONFIGURASI & STATE PETA
@@ -1123,7 +821,23 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
     /* =========================================================
        3. PETA DASAR
        ========================================================= */
-    const map = L.map('map').setView([-1.6101, 103.6131], 12);
+    const isMobile = L.Browser.mobile || window.innerWidth < 768;
+    const map = L.map('map', {
+        scrollWheelZoom: false,
+        dragging: !isMobile,
+        tap: !isMobile
+    }).setView([-1.6101, 103.6131], 12);
+
+    if (isMobile) {
+        map.on('click', () => {
+            map.dragging.enable();
+        });
+        document.addEventListener('touchstart', (e) => {
+            if (!e.target.closest('#map')) {
+                map.dragging.disable();
+            }
+        }, { passive: true });
+    }
     const jalan = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(map);
     const citra = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Esri' });
     L.control.layers({ 'Peta Jalan': jalan, 'Citra Satelit': citra }).addTo(map);

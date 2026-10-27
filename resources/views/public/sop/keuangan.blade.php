@@ -22,6 +22,7 @@
     // ============================================================
     // PERBAIKAN 2: AMBIL DATA DARI DATABASE KHUSUS SOP KEUANGAN
     // ============================================================
+    if (!isset($dokumen_list)) {
     $dokumenDB = Dokumen::where('kategori', 'SOP')
                         ->where('sub_kategori', 'Keuangan')
                         ->latest()
@@ -36,8 +37,8 @@
             'ext'          => pathinfo($doc->nama_file, PATHINFO_EXTENSION) 
         ];
     }
-    
-    $jumlah = count($dokumen_list);
+    }
+$jumlah = count($dokumen_list);
 
     // Konfigurasi Kontak Default
     $no_whatsapp    = "628117113113";
@@ -479,150 +480,27 @@
             html { scroll-behavior: auto; }
             *, *::before, *::after { animation: none !important; transition: none !important; }
         }
+
+        /* ==========================================================
+           ANIMASI HOVER KARTU / KONTAINER
+           ========================================================== */
+        .doc-panel, .side-card { transition: transform .35s cubic-bezier(.16,.84,.3,1), box-shadow .35s ease, border-color .35s ease; }
+        .doc-row { transition: background .25s ease, box-shadow .25s ease; }
+        .doc-ico, .c-ico, .doc-title i { transition: transform .3s cubic-bezier(.34,1.56,.64,1), background .25s, color .25s; }
+        .tool { transition: background .2s, color .2s, transform .2s; }
+        @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+            .doc-panel:hover, .side-card:hover { transform: translateY(-4px); border-color: #c9d3de; box-shadow: 0 22px 44px -24px rgba(13,27,42,.35); }
+            .doc-row:not(.is-empty):hover { box-shadow: inset 4px 0 0 var(--signal); }
+            .doc-row:not(.is-empty):hover .doc-ico { transform: scale(1.08) rotate(-4deg); background: var(--signal); color: #fff; }
+            .doc-panel:hover .doc-title i { transform: rotate(-8deg) scale(1.06); }
+            .contact-list li:hover .c-ico { transform: translateY(-3px); background: var(--signal); color: #fff; }
+            .tool:hover { transform: translateY(-2px); }
+        }
     </style>
 </head>
 <body>
 
-<header class="site-header" id="siteHeader">
-    <nav class="nav" aria-label="Navigasi utama">
-        <a href="/" class="brand" aria-label="SIMERAH KOJA, beranda">
-            <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
-            <img src="/images/logo.png" alt="Logo Damkar">
-            <img src="/images/logo-redkar.png" alt="Logo Redkar">
-        </a>
-
-        <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="navPanel">
-            <i class="fas fa-bars"></i>
-        </button>
-
-        <div class="nav-panel" id="navPanel">
-            <!-- ===== Menu utama ===== -->
-            <ul class="menu">
-                <li class="has-drop {{ request()->is('profil*') ? 'current' : '' }}">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Profil <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/profil/visi-misi" {!! request()->is('profil/visi-misi') ? 'aria-current="page"' : '' !!}>Visi Misi</a></li>
-                        <li><a href="/profil/sotk" {!! request()->is('profil/sotk') ? 'aria-current="page"' : '' !!}>SOTK</a></li>
-                        <li><a href="/profil/tupoksi" {!! request()->is('profil/tupoksi') ? 'aria-current="page"' : '' !!}>Tupoksi</a></li>
-                        <li><a href="/profil/kepegawaian" {!! request()->is('profil/kepegawaian') ? 'aria-current="page"' : '' !!}>Kepegawaian</a></li>
-                        <li><a href="/profil/program-kegiatan" {!! request()->is('profil/program-kegiatan') ? 'aria-current="page"' : '' !!}>Program Kegiatan</a></li>
-                        <li><a href="/profil/cascading" {!! request()->is('profil/cascading') ? 'aria-current="page"' : '' !!}>Cascading</a></li>
-                    </ul>
-                </li>
-
-                <li class="has-drop {{ request()->is('layanan-fasilitas*') ? 'current' : '' }}">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
-                        <li><a href="/layanan-fasilitas/izin-keramaian">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
-                        <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Penilaian Proteksi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
-                        <li><a href="/layanan-fasilitas/penggunaan-sarana">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
-                        <li><a href="/layanan-fasilitas/skk">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
-                    </ul>
-                </li>
-
-                <li><a class="menu-link {{ request()->is('public-sigap*') ? 'is-active' : '' }}" href="/public-sigap">Sigapkar</a></li>
-
-                <li class="has-drop {{ request()->is('sop*') ? 'current' : '' }}">
-                    <button class="menu-trigger" type="button" aria-expanded="false">SOP <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/sop/pencegahan" {!! request()->is('sop/pencegahan') ? 'aria-current="page"' : '' !!}>Pencegahan</a></li>
-                        <li><a href="/sop/pemadaman" {!! request()->is('sop/pemadaman') ? 'aria-current="page"' : '' !!}>Pemadaman Kebakaran</a></li>
-                        <li><a href="/sop/penyelamatan" {!! request()->is('sop/penyelamatan') ? 'aria-current="page"' : '' !!}>Penyelamatan dan Evakuasi</a></li>
-                        <li><a href="/sop/sarpras" {!! request()->is('sop/sarpras') ? 'aria-current="page"' : '' !!}>Sarana dan Prasarana</a></li>
-                        <li><a href="/sop/kepegawaian" {!! request()->is('sop/kepegawaian') ? 'aria-current="page"' : '' !!}>Kepegawaian</a></li>
-                        <li><a href="/sop/keuangan" {!! request()->is('sop/keuangan') ? 'aria-current="page"' : '' !!}>Keuangan</a></li>
-                    </ul>
-                </li>
-
-                <li class="has-drop {{ request()->is('produk-hukum*') ? 'current' : '' }}">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/produk-hukum/undang-undang">Undang-Undang</a></li>
-                        <li><a href="/produk-hukum/peraturan-pemerintah">Peraturan Pemerintah</a></li>
-                        <li><a href="/produk-hukum/peraturan-menteri">Peraturan Menteri</a></li>
-                        <li><a href="/produk-hukum/peraturan-daerah">Peraturan Daerah</a></li>
-                        <li><a href="/produk-hukum/peraturan-kepala-daerah">Peraturan Kepala Daerah</a></li>
-                    </ul>
-                </li>
-
-                <li class="has-drop {{ request()->is('dokumen*') ? 'current' : '' }}">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Dokumen <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/dokumen/renstra" {!! request()->is('dokumen/renstra') ? 'aria-current="page"' : '' !!}>Renstra</a></li>
-                        <li><a href="/dokumen/renja" {!! request()->is('dokumen/renja') ? 'aria-current="page"' : '' !!}>Renja</a></li>
-                        <li><a href="/dokumen/spm" {!! request()->is('dokumen/spm') ? 'aria-current="page"' : '' !!}>SPM</a></li>
-                        <li><a href="/dokumen/sakip" {!! request()->is('dokumen/sakip') ? 'aria-current="page"' : '' !!}>SAKIP</a></li>
-                        <li><a href="/dokumen/lppd" {!! request()->is('dokumen/lppd') ? 'aria-current="page"' : '' !!}>LPPD</a></li>
-                    </ul>
-                </li>
-
-                <li class="has-drop {{ request()->is('sarpras*') ? 'current' : '' }}">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Sarpras <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="{{ route('sarpras.sarana') }}" {!! request()->routeIs('sarpras.sarana') ? 'aria-current="page"' : '' !!}>Sarana</a></li>
-                        <li><a href="{{ route('sarpras.prasarana') }}" {!! request()->routeIs('sarpras.prasarana') ? 'aria-current="page"' : '' !!}>Prasarana</a></li>
-                    </ul>
-                </li>
-
-                <li class="has-drop {{ request()->is('ikm*') || request()->is('pengumuman*') || request()->is('edu-damkar*') || request()->is('infografis*') || request()->is('media-informasi*') || request()->is('ujung-ujung-damkar*') ? 'current' : '' }}">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Galeri <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/ikm" {!! request()->is('ikm') ? 'aria-current="page"' : '' !!}>IKM (Indeks Kepuasan Masyarakat)</a></li>
-                        <li><a href="/pengumuman" {!! request()->is('pengumuman') ? 'aria-current="page"' : '' !!}>Pengumuman</a></li>
-                        <li class="has-sub {{ request()->is('edu-damkar*') || request()->is('infografis*') || request()->is('media-informasi*') || request()->is('ujung-ujung-damkar*') ? 'open' : '' }}">
-                            <button class="sub-trigger" type="button" aria-expanded="{{ request()->is('edu-damkar*') || request()->is('infografis*') || request()->is('media-informasi*') || request()->is('ujung-ujung-damkar*') ? 'true' : 'false' }}">
-                                Berita <i class="fas fa-chevron-right"></i>
-                            </button>
-                            <ul class="dropdown-sub">
-                                <li><a href="/edu-damkar" {!! request()->is('edu-damkar') ? 'aria-current="page"' : '' !!}>Edu Damkar</a></li>
-                                <li><a href="{{ route('publik.infografis') }}" {!! request()->routeIs('publik.infografis') ? 'aria-current="page"' : '' !!}>Infografis</a></li>
-                                <li><a href="/media-informasi" {!! request()->is('media-informasi') ? 'aria-current="page"' : '' !!}>Media Informasi</a></li>
-                                <li><a href="/ujung-ujung-damkar" {!! request()->is('ujung-ujung-damkar') ? 'aria-current="page"' : '' !!}>Ujung-ujung Damkar</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
- 
-            </ul>
-
-            <!-- ===== Tombol kanan: Lapor darurat + Masuk ===== -->
-            <ul class="nav-actions">
-                <li class="has-drop">
-                    <button class="btn-nav btn-nav--alert menu-trigger-cta" type="button" aria-expanded="false">
-                        <span class="beacon" aria-hidden="true"></span> Lapor darurat <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <ul class="dropdown">
-                        <li><a href="tel:112"><i class="fas fa-headset"></i> Call Center 112</a></li>
-                        <li><a href="tel:{{ $no_telepon }}"><i class="fas fa-phone-alt"></i> Telepon {{ $telepon_tampil }}</a></li>
-                        <li><a href="{{ $wa_link }}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
-                    </ul>
-                </li>
-
-                @if(session()->has('pemohon_id'))
-                    <li class="has-drop">
-                        <button class="btn-nav btn-nav--ghost menu-trigger-cta" type="button" aria-expanded="false">
-                            <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
-                        </button>
-                        <ul class="dropdown">
-                            <li>
-                                <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
-                                    @csrf
-                                    <button type="submit" class="btn-logout">
-                                        <i class="fas fa-sign-out-alt"></i> Keluar
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                @else
-                    <li><a class="btn-nav btn-nav--ghost" href="{{ route('pemohon.login') }}">Masuk</a></li>
-                @endif
-            </ul>
-        </div>
-    </nav>
-</header>
+@include('layouts.partials.public-header')
 
 <main>
 

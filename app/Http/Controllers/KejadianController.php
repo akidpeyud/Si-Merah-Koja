@@ -66,7 +66,7 @@ class KejadianController extends Controller
 
         $this->syncMissingImages($daftar_kejadian);
 
-        return view('galery.berita.Kejadian', compact('daftar_kejadian', 'jenis'));
+        return view('galery.berita.kejadian', compact('daftar_kejadian', 'jenis'));
     }
 
     // =====================================================================

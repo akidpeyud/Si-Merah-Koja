@@ -6,7 +6,7 @@
     <title>Login - SIMERAH KOJA</title>
 <link rel="icon" href="/images/simerahkoja.png" type="image/png">
     <!-- Google Fonts: Plus Jakarta Sans -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -22,7 +22,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #0b0f19; /* Latar belakang gelap */
+    background-color: #0d1b2a; /* Latar belakang gelap */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -42,7 +42,7 @@
     filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.4));
 }
 
-.splash-title {
+.splash-title { font-family: 'Bricolage Grotesque', system-ui, sans-serif; 
     color: #ffffff;
     font-weight: 800;
     font-size: 20px;
@@ -55,7 +55,7 @@
     width: 45px;
     height: 45px;
     border: 4px solid rgba(255, 255, 255, 0.1);
-    border-top: 4px solid #ef4444; /* Warna merah loading */
+    border-top: 4px solid #e5392d; /* Warna merah loading */
     border-radius: 50%;
     animation: spinLoader 0.8s linear infinite;
 }
@@ -78,7 +78,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Instrument Sans', system-ui, sans-serif;
         }
 
         body {
@@ -87,7 +87,7 @@
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
-            color: #1f2937;
+            color: #0d1b2a;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -106,15 +106,15 @@
             width: 100%;
             max-width: 420px;
             background: #ffffff;
-            border-radius: 12px;
+            border-radius: 18px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.2); 
             overflow: hidden;
             border: 1px solid #e5e7eb;
         }
 
         .login-header {
-            background-color: #111827; 
-            border-bottom: 4px solid #ef4444; 
+            background-color: #0d1b2a; 
+            border-bottom: 4px solid #e5392d; 
             padding: 40px 30px 30px;
             text-align: center;
         }
@@ -136,10 +136,10 @@
             padding: 40px 30px;
         }
 
-        .login-title {
+        .login-title { font-family: 'Bricolage Grotesque', system-ui, sans-serif; 
             font-size: 20px;
             font-weight: 800;
-            color: #111827;
+            color: #0d1b2a;
             text-align: center;
             margin-bottom: 25px;
             text-transform: uppercase;
@@ -177,7 +177,7 @@
             border: 1px solid #fecaca;
             color: #991b1b;
         }
-        .custom-alert-error i.alert-icon { color: #ef4444; }
+        .custom-alert-error i.alert-icon { color: #e5392d; }
 
         /* Alert Success (Berhasil/Logout) */
         .custom-alert-success {
@@ -224,18 +224,18 @@
         }
 
         .form-control:focus {
-            border-color: #ef4444;
+            border-color: #e5392d;
             box-shadow: 0 0 0 0.25rem rgba(239, 68, 68, 0.1);
         }
 
         .input-group:focus-within .input-group-text {
-            border-color: #ef4444;
-            color: #ef4444;
+            border-color: #e5392d;
+            color: #e5392d;
         }
 
         /* --- BUTTON & LINKS --- */
         .btn-submit {
-            background-color: #ef4444;
+            background-color: #e5392d;
             color: white;
             font-weight: 700;
             font-size: 14px;
@@ -250,21 +250,21 @@
         }
 
         .btn-submit:hover {
-            background-color: #dc2626;
+            background-color: #c22b20;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
         }
 
         .forgot-password {
             font-size: 12px;
-            color: #ef4444;
+            color: #e5392d;
             text-decoration: none;
             font-weight: 600;
             transition: color 0.3s;
         }
 
         .forgot-password:hover {
-            color: #dc2626;
+            color: #c22b20;
             text-decoration: underline;
         }
 
@@ -284,7 +284,7 @@
         }
 
         .back-to-home:hover {
-            color: #111827;
+            color: #0d1b2a;
         }
 
         .form-check-label {
@@ -293,8 +293,8 @@
             cursor: pointer;
         }
         .form-check-input:checked {
-            background-color: #ef4444;
-            border-color: #ef4444;
+            background-color: #e5392d;
+            border-color: #e5392d;
         }
 
         /* --- ANIMASI TAMBAHAN --- */
@@ -330,7 +330,7 @@
             animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
         }
 
-        .login-title {
+        .login-title { font-family: 'Bricolage Grotesque', system-ui, sans-serif; 
             animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both;
         }
 
@@ -463,16 +463,16 @@
                     
                     <!-- Input Email -->
                     <div class="mb-3">
-                        <label class="form-label">Email Address</label>
+                        <label class="form-label" for="email">Email Address</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                            <input type="email" class="form-control" name="email" value="{{ old('email') }}" placeholder="Masukkan email Anda" required autofocus>
+                            <input type="email" class="form-control" name="email" id="email" value="{{ old('email') }}" placeholder="Masukkan email Anda" required autofocus>
                         </div>
                     </div>
 
 <!-- Input Password dengan Tombol Mata -->
                     <div class="mb-3">
-                        <label class="form-label">Password</label>
+                        <label class="form-label" for="passwordInput">Password</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-lock"></i></span>
                             <input type="password" class="form-control" name="password" id="passwordInput" placeholder="Masukkan password Anda" required>

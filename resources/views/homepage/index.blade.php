@@ -304,8 +304,8 @@
         .logo-strip a { display: flex; align-items: center; }
         .logo-strip img { height: clamp(32px, 4.4vw, 48px); width: auto; max-width: 100%; object-fit: contain; }
         @media (max-width: 600px) {
-            .logo-strip { border-radius: 26px; padding: 12px 18px; }
-            .logo-strip img { height: 34px; }
+            .logo-strip { border-radius: 18px; padding: 10px 14px; gap: 10px 16px; }
+            .logo-strip img { height: 30px; }
         }
 
         .hero-title { display: flex; flex-wrap: wrap; align-items: center; gap: clamp(16px, 3vw, 28px); margin-bottom: 8px; }
@@ -626,7 +626,7 @@
             <a href="/login" title="Login Internal Pegawai">
                 <img src="/images/logo.png" alt="Logo Damkar">
             </a>
-            <a href="/redkar" aria-label="Redkar">
+            <a href="javascript:void(0)" aria-label="Logo Redkar" style="pointer-events: none; cursor: default;">
                 <img src="/images/logo-redkar.png" alt="Logo Redkar">
             </a>
         </div>
@@ -808,7 +808,7 @@
             <p class="hero-lead rise d2">Lapor kebakaran dan penyelamatan langsung ke petugas, atau urus perizinan proteksi kebakaran secara digital.</p>
             <div class="hero-cta rise d3">
                 <a class="btn btn-light" href="#kejadian">Lihat kejadian <i class="fas fa-arrow-down"></i></a>
-                <a class="btn btn-ghost" href="#kejadian">Kejadian terbaru</a>
+                <a class="btn btn-ghost" href="#lapor">Lapor darurat <i class="fas fa-phone-alt"></i></a>
             </div>
         </div>
 
@@ -936,7 +936,11 @@
                     $labelJenis = (class_exists('\App\Models\Kejadian') && defined('\App\Models\Kejadian::JENIS') && isset(\App\Models\Kejadian::JENIS[$kj->jenis])) 
                                   ? \App\Models\Kejadian::JENIS[$kj->jenis] 
                                   : ucfirst($kj->jenis ?? 'Info');
-                    $gambar     = ($kj->thumb && $kj->thumb !== '/images/placeholder.jpg') ? $kj->thumb : null;
+                    $rawThumb   = $kj->thumb;
+                    $gambar     = null;
+                    if ($rawThumb && $rawThumb !== '/images/placeholder.jpg') {
+                        $gambar = str_starts_with($rawThumb, 'http') ? $rawThumb : (str_starts_with($rawThumb, '/') ? $rawThumb : asset('storage/' . ltrim($rawThumb, '/')));
+                    }
                 @endphp
 
                 <article class="media-card" style="position: relative;">
@@ -958,7 +962,11 @@
 
                         <!-- Gambar / Placeholder -->
                         @if($gambar)
-                            <img src="{{ $gambar }}" alt="{{ $kj->judul }}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; transition: transform .5s;" onerror="this.src='/images/placeholder.jpg'">
+                            <img src="{{ $gambar }}" alt="{{ $kj->judul }}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; transition: transform .5s;" onerror="this.onerror=null; this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+                            <div style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; flex-direction: column; background: repeating-linear-gradient(135deg, var(--ink-2) 0 16px, var(--ink-3) 16px 32px); color: rgba(255,255,255,0.75);">
+                                <i class="fas fa-fire-extinguisher" style="font-size: 1.8rem; color: #e5392d; margin-bottom: 8px;"></i>
+                                <span style="font-size: 0.85rem; font-weight: 600;">Damkar Kota Jambi</span>
+                            </div>
                         @else
                             <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; background: repeating-linear-gradient(135deg, var(--ink-2) 0 16px, var(--ink-3) 16px 32px); color: rgba(255,255,255,0.75);">
                                 <i class="fas fa-fire-extinguisher" style="font-size: 1.8rem; color: #e5392d; margin-bottom: 8px;"></i>
@@ -1314,7 +1322,8 @@
     function closeSubs() {
         subs.forEach(function (s) {
             s.classList.remove('open');
-            s.querySelector('.sub-trigger').setAttribute('aria-expanded', 'false');
+            var st = s.querySelector('.sub-trigger');
+            if (st) st.setAttribute('aria-expanded', 'false');
         });
     }
 
@@ -1322,7 +1331,8 @@
         drops.forEach(function (li) {
             if (li !== except) {
                 li.classList.remove('open');
-                triggerOf(li).setAttribute('aria-expanded', 'false');
+                var tr = triggerOf(li);
+                if (tr) tr.setAttribute('aria-expanded', 'false');
             }
         });
         if (!except) closeSubs();
@@ -1331,29 +1341,36 @@
     function setMobileMenu(open) {
         header.classList.toggle('nav-open', open);
         document.body.classList.toggle('nav-lock', open);
-        toggle.setAttribute('aria-expanded', open);
-        toggle.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
-        toggle.querySelector('i').className = open ? 'fas fa-times' : 'fas fa-bars';
+        if (toggle) {
+            toggle.setAttribute('aria-expanded', open);
+            toggle.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
+            var icon = toggle.querySelector('i');
+            if (icon) icon.className = open ? 'fas fa-times' : 'fas fa-bars';
+        }
         if (!open) closeDrops(null);
     }
 
-    toggle.addEventListener('click', function () {
-        setMobileMenu(!header.classList.contains('nav-open'));
-    });
+    if (toggle) {
+        toggle.addEventListener('click', function () {
+            setMobileMenu(!header.classList.contains('nav-open'));
+        });
+    }
 
     drops.forEach(function (li) {
         var btn = triggerOf(li);
-        btn.addEventListener('click', function () {
-            var open = li.classList.toggle('open');
-            btn.setAttribute('aria-expanded', open);
-            closeDrops(li);
-        });
-        li.addEventListener('mouseleave', function () {
-            if (!desktop.matches) return;
-            li.classList.remove('open');
-            btn.setAttribute('aria-expanded', 'false');
-            closeSubs();
-        });
+        if (btn) {
+            btn.addEventListener('click', function () {
+                var open = li.classList.toggle('open');
+                btn.setAttribute('aria-expanded', open);
+                closeDrops(li);
+            });
+            li.addEventListener('mouseleave', function () {
+                if (!desktop.matches) return;
+                li.classList.remove('open');
+                btn.setAttribute('aria-expanded', 'false');
+                closeSubs();
+            });
+        }
     });
 
     subs.forEach(function (li) {

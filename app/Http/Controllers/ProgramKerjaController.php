@@ -205,4 +205,38 @@ class ProgramKerjaController extends Controller
 
         return response()->download($path);
     }
+
+    // 7. Tampilan Publik untuk 6 Bagian SOP
+    public function publicSop(string $subKategori)
+    {
+        $map = [
+            'pencegahan' => ['view' => 'public.sop.pencegahan',   'sub' => 'Pencegahan'],
+            'pemadaman' => ['view' => 'public.sop.pemadaman',    'sub' => 'Pemadaman Kebakaran'],
+            'penyelamatan' => ['view' => 'public.sop.penyelamatan', 'sub' => 'Penyelamatan dan Evakuasi'],
+            'sarpras' => ['view' => 'public.sop.sarpras',      'sub' => 'Sarana dan Prasarana'],
+            'kepegawaian' => ['view' => 'public.sop.kepegawaian',  'sub' => 'Kepegawaian'],
+            'keuangan' => ['view' => 'public.sop.keuangan',     'sub' => 'Keuangan'],
+        ];
+
+        if (! isset($map[$subKategori])) {
+            abort(404);
+        }
+
+        $info = $map[$subKategori];
+        $dokumenDB = Dokumen::where('kategori', 'SOP')
+            ->where('sub_kategori', $info['sub'])
+            ->get();
+
+        $dokumen_list = [];
+        foreach ($dokumenDB as $doc) {
+            $dokumen_list[] = [
+                'judul' => $doc->judul_dokumen,
+                'url' => url('/dokumen/view/'.$doc->id),
+                'url_download' => url('/dokumen/download/'.$doc->id),
+                'ext' => pathinfo($doc->nama_file, PATHINFO_EXTENSION) ?: 'PDF',
+            ];
+        }
+
+        return view($info['view'], compact('dokumen_list'));
+    }
 }

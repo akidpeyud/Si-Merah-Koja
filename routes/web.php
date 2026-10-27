@@ -38,6 +38,7 @@ use App\Http\Controllers\VisitController;
 use App\Http\Middleware\CekLoginPemohon;
 use App\Models\Berita;
 use App\Models\BeritaMedsos;
+use App\Models\DataAsn;
 use App\Models\DokumenPublik;
 use App\Models\EduDamkar;
 use App\Models\Infografis;
@@ -79,24 +80,8 @@ Route::get('/sop', function () {
 });
 
 // Rute 6 Bagian SOP Baru
-Route::get('/sop/pencegahan', function () {
-    return view('public.sop.pencegahan');
-});
-Route::get('/sop/pemadaman', function () {
-    return view('public.sop.pemadaman');
-});
-Route::get('/sop/penyelamatan', function () {
-    return view('public.sop.penyelamatan');
-});
-Route::get('/sop/sarpras', function () {
-    return view('public.sop.sarpras');
-});
-Route::get('/sop/kepegawaian', function () {
-    return view('public.sop.kepegawaian');
-});
-Route::get('/sop/keuangan', function () {
-    return view('public.sop.keuangan');
-});
+Route::get('/sop/{kategori}', [ProgramKerjaController::class, 'publicSop'])
+    ->whereIn('kategori', ['pencegahan', 'pemadaman', 'penyelamatan', 'sarpras', 'kepegawaian', 'keuangan']);
 
 // Informasi Layanan (Publik)
 Route::get('/informasi-layanan', [InformasiLayananController::class, 'index'])->name('informasi-layanan.index');
@@ -213,26 +198,6 @@ Route::middleware([CekLoginPemohon::class])->group(function () {
     Route::post('/layanan-fasilitas/edukasi_sosialisasi/cek-status', [PermohonanEdukasiController::class, 'cekStatus'])
         ->middleware('throttle:10,1')
         ->name('permohonan.edukasi.cek-status');
-
-    // --- 6. Redkar (Publik) ---
-    Route::get('/redkar', [RedkarController::class, 'index'])->name('redkar.register');
-    Route::post('/redkar', [RedkarController::class, 'store'])->middleware('throttle:10,1');
-});
-
-// ==========================================
-// 4. RUTE LOGIN & DASHBOARD REDKAR
-// ==========================================
-Route::get('/login-redkar', function () {
-    return view('redkar.login_redkar');
-})->name('login.redkar');
-Route::post('/login-redkar', [RedkarController::class, 'processLoginRedkar'])->middleware('throttle:5,1');
-Route::post('/logout-redkar', [RedkarController::class, 'logoutRedkar'])->name('logout.redkar');
-
-Route::middleware(['auth:redkar'])->group(function () {
-    Route::get('/redkar/dashboard', function () {
-        return view('redkar.halaman_utama');
-    })->name('redkar.dashboard');
-    Route::get('/redkar/profil', [RedkarController::class, 'profilRedkar'])->name('redkar.profil');
 });
 
 // ==========================================
@@ -1153,7 +1118,9 @@ Route::get('/profil/tupoksi', function () {
     return view('public.profil.tupoksi');
 });
 Route::get('/profil/kepegawaian', function () {
-    return view('public.profil.kepegawaian');
+    $rekap_asn = DataAsn::orderBy('id', 'asc')->get();
+
+    return view('public.profil.kepegawaian', compact('rekap_asn'));
 });
 Route::get('/profil/program-kegiatan', function () {
     return view('public.profil.program-kegiatan');
@@ -1174,7 +1141,7 @@ Route::get('/produk-hukum/{kategori}', function ($kategori) {
         'peraturan-kepala-daerah',
     ]), 404);
 
-    return view('publik.produk-hukum'); // sesuaikan nama view-mu
+    return view('public.produk-hukum.'.$kategori);
 });
 
 // ==========================================

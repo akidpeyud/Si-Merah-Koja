@@ -24,106 +24,12 @@
     // ============================================================
     // PENGAMBILAN DATA
     // ============================================================
-    $rekap_asn    = collect();
-    $rekap_info   = ['sumber' => null, 'dicek' => []];
-    $dokumen_list = [];
+    $rekap_asn    = $rekap_asn ?? (class_exists('\App\Models\DataAsn') ? \App\Models\DataAsn::orderBy('id', 'asc')->get() : collect());
+    $rekap_info   = ['sumber' => 'App\\Models\\DataAsn', 'dicek' => []];
+    $dokumen_list = $dokumen_list ?? [];
 
     if ($tab_aktif === 'kepegawaian') {
-        /* Isi manual HANYA jika nama tabel di dashboard internal sudah pasti.
-           Contoh: $rekap_tabel_manual = 'rekap_asn';
-           Jika dikosongkan, sistem mencari sendiri tabel yang punya kolom pns & pppk. */
-        $rekap_tabel_manual   = 'data_asns';
-        $rekap_koneksi_manual = null; // isi nama koneksi (config/database.php) jika dashboard memakai DB lain
-
-        $punyaKolomAsn = function ($tabel) {
-            try { $kolom = array_map('strtolower', Schema::getColumnListing($tabel)); }
-            catch (\Throwable $e) { return false; }
-            $pns = $pppk = false;
-            foreach ($kolom as $k) {
-                if (strpos($k, 'pppk') !== false) { $pppk = true; }
-                elseif (strpos($k, 'pns') !== false) { $pns = true; }
-            }
-            return $pns && $pppk;
-        };
-
-        $daftarTabel = function () {
-            try { return collect(Schema::getTables())->pluck('name')->all(); } catch (\Throwable $e) {}
-            try {
-                return collect(DB::select('SHOW TABLES'))->map(function ($r) { return array_values((array) $r)[0]; })->all();
-            } catch (\Throwable $e) {}
-            return [];
-        };
-
-        $query = null;
-
-        // (a) tabel manual
-        if ($rekap_tabel_manual) {
-            try {
-                if (Schema::connection($rekap_koneksi_manual)->hasTable($rekap_tabel_manual)) {
-                    $query = DB::connection($rekap_koneksi_manual)->table($rekap_tabel_manual);
-                    $tabel_dipakai = $rekap_tabel_manual;
-                    $rekap_info['sumber'] = 'tabel ' . $rekap_tabel_manual . ($rekap_koneksi_manual ? ' (koneksi ' . $rekap_koneksi_manual . ')' : '');
-                } else {
-                    $rekap_info['dicek'][] = $rekap_tabel_manual . ' (TIDAK ADA di koneksi ini)';
-                }
-            } catch (\Throwable $e) { $rekap_info['error'] = $e->getMessage(); }
-        }
-
-        // (b) model Eloquent yang umum dipakai
-        if (!$query) {
-            $kandidatModel = [
-                '\\App\\Models\\RekapDataAsn', '\\App\\Models\\RekapAsn', '\\App\\Models\\DataAsn',
-                '\\App\\Models\\RekapPegawai', '\\App\\Models\\Kepegawaian', '\\App\\Models\\Asn',
-                '\\App\\Models\\DataKepegawaian', '\\App\\Models\\RekapKepegawaian',
-            ];
-            foreach ($kandidatModel as $cls) {
-                if (!class_exists($cls)) { continue; }
-                try { $tbl = (new $cls)->getTable(); } catch (\Throwable $e) { continue; }
-                $rekap_info['dicek'][] = $cls . ' → ' . $tbl;
-                if (Schema::hasTable($tbl) && $punyaKolomAsn($tbl)) {
-                    $query = $cls::query();
-                    $rekap_info['sumber'] = 'model ' . $cls;
-                    $tabel_dipakai = $tbl;
-                    break;
-                }
-            }
-        }
-
-        // (c) cari otomatis: tabel mana pun yang punya kolom pns & pppk
-        if (!$query) {
-            $semua = $daftarTabel();
-            usort($semua, function ($a, $b) {
-                $skor = function ($n) { return (int) (strpos($n, 'asn') !== false) * 2 + (int) (strpos($n, 'rekap') !== false) + (int) (strpos($n, 'pegawai') !== false); };
-                return $skor($b) <=> $skor($a);
-            });
-            foreach ($semua as $tbl) {
-                if (in_array($tbl, ['migrations', 'failed_jobs', 'jobs', 'sessions', 'cache', 'password_reset_tokens'], true)) { continue; }
-                $rekap_info['dicek'][] = $tbl;
-                if ($punyaKolomAsn($tbl)) {
-                    $query = DB::table($tbl);
-                    $rekap_info['sumber'] = 'tabel ' . $tbl . ' (otomatis)';
-                    $tabel_dipakai = $tbl;
-                    break;
-                }
-            }
-        }
-
-        if ($query) {
-            $tbl = $tabel_dipakai ?? $rekap_tabel_manual;
-            try {
-                $kolom = $tbl ? Schema::connection($rekap_tabel_manual && $tbl === $rekap_tabel_manual ? $rekap_koneksi_manual : null)->getColumnListing($tbl) : [];
-                // hormati soft delete jika memakai query builder biasa
-                if ($tbl && in_array('deleted_at', $kolom, true) && $query instanceof \Illuminate\Database\Query\Builder) {
-                    $query->whereNull('deleted_at');
-                }
-                foreach (['urutan', 'no', 'nomor', 'id'] as $ord) {
-                    if (in_array($ord, $kolom, true)) { $query->orderBy($ord, 'asc'); break; }
-                }
-                $rekap_asn = $query->get();
-            } catch (\Throwable $e) {
-                $rekap_info['error'] = $e->getMessage();
-            }
-        }
+        // Data rekap ASN sudah dimuat langsung via model DataAsn
     } else {
         $dokumenDB = collect();
         $kandidat  = array_unique([$tab_aktif, $label_aktif, $judul_aktif]);
@@ -177,7 +83,7 @@
 
     if ($tab_aktif === 'kepegawaian') {
         foreach ($rekap_asn as $idx => $row) {
-            $r = (array) $row;
+            $r = is_object($row) && method_exists($row, 'toArray') ? $row->toArray() : (array) $row;
             $nama  = $ambilKolom($r, ['nama_jabatan', 'jabatan', 'nama'], 'jabatan') ?? 'Jabatan ' . ($idx + 1);
             $pns   = (int) $ambilKolom($r, ['pns', 'jumlah_pns'], 'pns', ['pppk', 'seluruh', 'total']);
             $pppk  = (int) $ambilKolom($r, ['pppk', 'jumlah_pppk'], 'pppk', ['seluruh', 'total']);
