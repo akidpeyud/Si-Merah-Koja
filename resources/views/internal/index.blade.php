@@ -171,7 +171,8 @@
                 ['Kelola Rekap Objek Kebakaran', 'kejadian kebakaran', 'fa-house-chimney-crack', '/internal/damtan/rekap-objek', $countKejadianKebakaran, 'ic-danger', 'skip' => true],
                 ['Kelola Data Laporan', 'laporan', 'fa-clipboard-list', '/internal/damtan/data-laporan', $count('laporan_penyelamatans'), 'ic-danger'],
                 ['Kelola Surat Korban', 'surat terbit', 'fa-folder-open', '/internal/surat-korban/data', $count('surat_korbans'), 'ic-primary'],
-                ['Kelola Surat Keramaian', 'surat izin', 'fa-users-rectangle', route('internal.izin-keramaian.index'), $count('izin_keramaian'), 'ic-info'],
+                ['Kelola Pengamanan Event Keramaian', 'surat izin', 'fa-users-rectangle', route('internal.izin-keramaian.index'), $count('izin_keramaian'), 'ic-info'],
+                ['Kelola Penggunaan Sarana', 'permohonan', 'fa-truck-droplet', url('/internal/damtan/kelola-penggunaan-sarana'), $count('penggunaan_sarana'), 'ic-primary'],
             ],
         ],
         [
@@ -224,6 +225,7 @@
 
                 ['Undang-Undang', 'dokumen hukum', 'fa-scale-balanced', '/internal/produk-hukum/undang-undang', $countKategoriHukum('undang-undang'), 'ic-primary'],
                 ['Peraturan Pemerintah', 'dokumen hukum', 'fa-landmark', '/internal/produk-hukum/peraturan-pemerintah', $countKategoriHukum('peraturan-pemerintah'), 'ic-info'],
+                ['Peraturan Presiden', 'dokumen hukum', 'fa-book', '/internal/produk-hukum/peraturan-presiden', $countKategoriHukum('peraturan-presiden'), 'ic-info'],
                 ['Peraturan Menteri', 'dokumen hukum', 'fa-book-bookmark', '/internal/produk-hukum/peraturan-menteri', $countKategoriHukum('peraturan-menteri'), 'ic-primary'],
                 ['Peraturan Daerah', 'dokumen hukum', 'fa-file-shield', '/internal/produk-hukum/peraturan-daerah', $countKategoriHukum('peraturan-daerah'), 'ic-danger'],
                 ['Peraturan Kepala Daerah', 'dokumen hukum', 'fa-file-signature', '/internal/produk-hukum/peraturan-kepala-daerah', $countKategoriHukum('peraturan-kepala-daerah'), 'ic-info'],
