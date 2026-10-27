@@ -223,10 +223,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/internal/kelola-user', [AuthController::class, 'kelolaUser']);
     Route::post('/internal/kelola-user/tambah', [AuthController::class, 'storeUser']);
     Route::put('/internal/kelola-user/update/{id}', [AuthController::class, 'updateUser']);
+    Route::delete('/internal/kelola-user/hapus/{id}', [AuthController::class, 'destroyUser']);
 
-    Route::get('/internal/kelola-pemohon', function () {
-        return view('pemohon.kelola_pemohon');
-    })->name('internal.pemohon');
+    Route::get('/internal/kelola-pemohon', [AuthController::class, 'kelolaPemohon'])->name('internal.pemohon');
+    Route::post('/internal/kelola-pemohon/tambah', [AuthController::class, 'storePemohon']);
+    Route::put('/internal/kelola-pemohon/update/{id}', [AuthController::class, 'updatePemohon']);
+    Route::delete('/internal/kelola-pemohon/hapus/{id}', [AuthController::class, 'destroyPemohon']);
 
     // --- B. MANAJEMEN INFORMASI ---
     Route::get('/internal/operator/kelola-berita', [BeritaController::class, 'indexInternal']);
