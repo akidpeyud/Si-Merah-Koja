@@ -580,7 +580,7 @@
         <div class="brand">
             <a href="/" aria-label="SIMERAH KOJA, beranda"><img src="/images/jambi.png" alt="Logo Pemkot Jambi"></a>
             <a href="/login" title="Login Internal Pegawai"><img src="/images/logo.png" alt="Logo Damkar"></a>
-            <a href="/redkar" aria-label="Redkar"><img src="/images/logo-redkar.png" alt="Logo Redkar"></a>
+            <a href="javascript:void(0)" aria-label="Logo Redkar" style="pointer-events: none; cursor: default;"><img src="/images/logo-redkar.png" alt="Logo Redkar"></a>
         </div>
 
         <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="navPanel">

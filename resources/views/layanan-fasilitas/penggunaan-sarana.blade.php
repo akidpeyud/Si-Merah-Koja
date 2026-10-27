@@ -848,7 +848,7 @@
             <a href="/" title="Beranda">
                 <img src="/images/logo.png" alt="Logo Damkar">
             </a>
-            <a href="/redkar" aria-label="Redkar">
+            <a href="javascript:void(0)" aria-label="Logo Redkar" style="pointer-events: none; cursor: default;">
                 <img src="/images/logo-redkar.png" alt="Logo Redkar">
             </a>
         </div>

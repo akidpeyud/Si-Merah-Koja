@@ -428,157 +428,71 @@
             .doc-search, .doc-search input { width: 100%; }
             .doc-filter { width: 100%; }
         }
+
+        /* ==========================================================
+           ANIMASI HOVER KARTU / KONTAINER
+           ========================================================== */
+        .doc-panel, .side-card { transition: transform .35s cubic-bezier(.16,.84,.3,1), box-shadow .35s ease, border-color .35s ease; }
+        .doc-row { transition: background .25s ease, box-shadow .25s ease; }
+        .doc-ico, .c-ico, .doc-title i { transition: transform .3s cubic-bezier(.34,1.56,.64,1), background .25s, color .25s; }
+        .tool { transition: background .2s, color .2s, transform .2s; }
+        @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+            .doc-panel:hover, .side-card:hover { transform: translateY(-4px); border-color: #c9d3de; box-shadow: 0 22px 44px -24px rgba(13,27,42,.35); }
+            .doc-row:not(.is-empty):hover { box-shadow: inset 4px 0 0 var(--signal); }
+            .doc-row:not(.is-empty):hover .doc-ico { transform: scale(1.08) rotate(-4deg); background: var(--signal); color: #fff; }
+            .doc-panel:hover .doc-title i { transform: rotate(-8deg) scale(1.06); }
+            .contact-list li:hover .c-ico { transform: translateY(-3px); background: var(--signal); color: #fff; }
+            .tool:hover { transform: translateY(-2px); }
+        }
+
+        /* ==========================================================
+           FOOTER
+           ========================================================== */
+        .footer { background: var(--ink); color: rgba(255,255,255,.7); padding: clamp(56px, 8vw, 96px) 0 32px; }
+        .footer-grid { display: grid; grid-template-columns: 1.1fr 1.2fr .8fr; gap: clamp(32px, 5vw, 64px); }
+        .footer h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: #fff; margin-bottom: 16px; }
+        .footer-about img { height: 96px; width: auto; margin-bottom: 20px; }
+        .footer-about p { max-width: 42ch; font-size: .95rem; }
+        .map { position: relative; height: 190px; border-radius: var(--r-md); overflow: hidden; background: var(--ink-2); }
+        .map iframe { width: 100%; height: 100%; border: 0; pointer-events: none; filter: grayscale(.3) contrast(1.05); transition: filter .3s; }
+        .map-link { position: absolute; inset: 0; z-index: 2; display: flex; align-items: flex-end; justify-content: flex-end; padding: 12px; border-radius: var(--r-md); }
+        .map-link span { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: var(--signal); color: #fff; font-size: .85rem; font-weight: 700; box-shadow: 0 8px 20px rgba(0,0,0,.35); transition: background .2s, transform .2s; }
+        .map-link:hover span, .map-link:focus-visible span { background: var(--signal-d); transform: translateY(-2px); }
+        .map:hover iframe { filter: none; }
+        .find { margin-top: 14px; display: inline-flex; align-items: center; gap: 10px; font-weight: 600; color: #fff; transition: color .2s, gap .2s; }
+        .find i { color: var(--signal); }
+        .find:hover { color: var(--amber); gap: 14px; }
+        .app-dl { margin-top: 22px; }
+        .app-dl p { font-size: .88rem; margin-bottom: 10px; }
+        .app-dl img { height: 44px; width: auto; }
+        .footer-links li + li { margin-top: 8px; }
+        .footer-links a { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: .95rem; transition: color .2s, gap .2s; }
+        .footer-links a i { font-size: .7rem; color: var(--signal); }
+        .footer-links a:hover { color: #fff; gap: 14px; }
+        .footer-bar { margin-top: clamp(40px, 6vw, 72px); padding-top: 28px; border-top: 1px solid rgba(255,255,255,.1); display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; align-items: center; font-size: .88rem; }
+        .footer .social a { background: rgba(255,255,255,.08); color: #fff; }
+        .footer .social a:hover { background: var(--signal); }
+        @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr; } }
+
+        .beacon { position: relative; width: 12px; height: 12px; border-radius: 50%; background: #fff; flex: none; }
+        .beacon::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #fff; animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
+        @keyframes ping { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(3.2); opacity: 0; } }
+        .sos-fab { position: fixed; right: clamp(14px, 3vw, 28px); bottom: clamp(14px, 3vw, 28px); z-index: 70; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; opacity: 0; visibility: hidden; transform: translateY(16px); transition: opacity .3s, transform .3s, visibility .3s; }
+        .sos-fab.show { opacity: 1; visibility: visible; transform: none; }
+        .sos-fab-btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; background: var(--signal); color: #fff; font-weight: 700; box-shadow: 0 14px 30px -6px rgba(229,57,45,.6); }
+        .sos-fab-btn:hover { background: var(--signal-d); }
+        .sos-sheet { display: none; width: min(320px, calc(100vw - 28px)); padding: 8px; border-radius: 20px; background: var(--ink); border: 1px solid rgba(255,255,255,.12); box-shadow: 0 24px 48px rgba(0,0,0,.45); }
+        .sos-fab.open .sos-sheet { display: grid; gap: 6px; }
+        .sos-sheet a { display: flex; align-items: center; gap: 14px; padding: 13px 14px; border-radius: 14px; color: #fff; font-weight: 600; }
+        .sos-sheet a:hover { background: rgba(255,255,255,.1); }
+        .sos-sheet a i { width: 22px; text-align: center; font-size: 1.15rem; }
+        .sos-sheet .wa i { color: #25d366; } .sos-sheet .tel i { color: #38bdf8; } .sos-sheet .n112 i { color: #f87171; }
     </style>
 </head>
 <body>
 
 <!-- ==================== HEADER DARI INDEX ==================== -->
-<header class="site-header" id="siteHeader">
-    <nav class="nav" aria-label="Navigasi utama">
-        <div class="brand">
-            <a href="/" aria-label="SIMERAH KOJA, beranda">
-                <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
-            </a>
-            <a href="/" title="Beranda">
-                <img src="/images/logo.png" alt="Logo Damkar">
-            </a>
-            <a href="/redkar" aria-label="Redkar">
-                <img src="/images/logo-redkar.png" alt="Logo Redkar">
-            </a>
-        </div>
-
-        <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="navPanel">
-            <i class="fas fa-bars"></i>
-        </button>
-
-        <div class="nav-panel" id="navPanel">
-            <!-- ===== Menu utama ===== -->
-            <ul class="menu">
-                <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Profil <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/profil/visi-misi">Visi Misi</a></li>
-                        <li><a href="/profil/sotk">SOTK</a></li>
-                        <li><a href="/profil/tupoksi">Tupoksi</a></li>
-                        <li><a href="/profil/kepegawaian">Kepegawaian</a></li>
-                        <li><a href="/profil/program-kegiatan">Program Kegiatan</a></li>
-                        <li><a href="/profil/cascading">Cascading</a></li>
-                    </ul>
-                </li>
-
-                <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Layanan <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Kunjungan, Edukasi dan Sosialisasi</a></li>
-                        <li><a href="/layanan-fasilitas/izin-keramaian">Rekomendasi Izin Pengamanan Event Keramaian</a></li>
-                        <li><a href="/layanan-fasilitas/layanan_perizinan">Rekomendasi Penilaian Proteksi Kebakaran Bangunan Gedung dan Lingkungan</a></li>
-                        <li><a href="/layanan-fasilitas/penggunaan-sarana">Permohonan Penggunaan Sarana Pemadam Kebakaran</a></li>
-                        <li><a href="/layanan-fasilitas/skk">Permohonan Sertifikat Keselamatan Kebakaran</a></li>
-                    </ul>
-                </li>
-
-                <li><a class="menu-link {{ request()->is('public-sigap*') ? 'is-active' : '' }}" href="/public-sigap">Sigapkar</a></li>
-
-                <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">SOP <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/sop/pencegahan">Pencegahan</a></li>
-                        <li><a href="/sop/pemadaman">Pemadaman Kebakaran</a></li>
-                        <li><a href="/sop/penyelamatan">Penyelamatan dan Evakuasi</a></li>
-                        <li><a href="/sop/sarpras">Sarana dan Prasarana</a></li>
-                        <li><a href="/sop/kepegawaian">Kepegawaian</a></li>
-                        <li><a href="/sop/keuangan">Keuangan</a></li>
-                    </ul>
-                </li>
-
-                <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Produk Hukum <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/produk-hukum/undang-undang">Undang-Undang</a></li>
-                        <li><a href="/produk-hukum/peraturan-pemerintah">Peraturan Pemerintah</a></li>
-                        <li><a href="/produk-hukum/peraturan-menteri">Peraturan Menteri</a></li>
-                        <li><a href="/produk-hukum/peraturan-daerah">Peraturan Daerah</a></li>
-                        <li><a href="/produk-hukum/peraturan-kepala-daerah">Peraturan Kepala Daerah</a></li>
-                    </ul>
-                </li>
-
-                <li class="has-drop">
-                    <button class="menu-trigger is-active" type="button" aria-expanded="false">Dokumen <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/dokumen/renstra">Renstra</a></li>
-                        <li><a href="/dokumen/renja">Renja</a></li>
-                        <li><a href="/dokumen/spm">SPM</a></li>
-                        <li><a href="/dokumen/sakip">SAKIP</a></li>
-                        <li><a href="/dokumen/lppd">LPPD</a></li>
-                    </ul>
-                </li>
-
-                <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Sarpras <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="{{ route('sarpras.sarana') }}">Sarana</a></li>
-                        <li><a href="{{ route('sarpras.prasarana') }}">Prasarana</a></li>
-                    </ul>
-                </li>
-
-                <li class="has-drop">
-                    <button class="menu-trigger" type="button" aria-expanded="false">Galeri <i class="fas fa-chevron-down"></i></button>
-                    <ul class="dropdown">
-                        <li><a href="/ikm">IKM (Indeks Kepuasan Masyarakat)</a></li>
-                        <li><a href="/pengumuman">Pengumuman</a></li>
-                        <li class="has-sub">
-                            <button class="sub-trigger" type="button" aria-expanded="false">
-                                Berita <i class="fas fa-chevron-right"></i>
-                            </button>
-                            <ul class="dropdown-sub">
-                                <li><a href="/edu-damkar">Edu Damkar</a></li>
-                                <li><a href="{{ route('publik.infografis') }}">Infografis</a></li>
-                                <li><a href="/media-informasi">Media Informasi</a></li>
-                                <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
- 
-            </ul>
-
-            <!-- ===== Tombol kanan: Lapor darurat + Masuk ===== -->
-            <ul class="nav-actions">
-                <li class="has-drop">
-                    <button class="btn-nav btn-nav--alert menu-trigger-cta" type="button" aria-expanded="false">
-                        <span class="beacon" aria-hidden="true"></span> Lapor darurat <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <ul class="dropdown">
-                        <li><a href="tel:112"><i class="fas fa-headset"></i> Call Center 112</a></li>
-                        <li><a href="tel:<?= $h($no_telepon) ?>"><i class="fas fa-phone-alt"></i> Telepon <?= $h($telepon_tampil) ?></a></li>
-                        <li><a href="<?= $h($wa_link) ?>" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
-                    </ul>
-                </li>
-
-                @if(session()->has('pemohon_id'))
-                    <li class="has-drop">
-                        <button class="btn-nav btn-nav--ghost menu-trigger-cta" type="button" aria-expanded="false">
-                            <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
-                        </button>
-                        <ul class="dropdown">
-                            <li>
-                                <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
-                                    @csrf
-                                    <button type="submit" class="btn-logout">
-                                        <i class="fas fa-sign-out-alt"></i> Keluar
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                @else
-                    <li><a class="btn-nav btn-nav--ghost" href="{{ route('pemohon.login') }}">Masuk</a></li>
-                @endif
-            </ul>
-        </div>
-    </nav>
-</header>
+@include('layouts.partials.public-header')
 
 <main>
 
@@ -717,6 +631,10 @@
 </div>
 
 </main>
+
+@include('layouts.partials.public-footer')
+
+@include('layouts.partials.public-sos')
 
 <script>
 (function () {

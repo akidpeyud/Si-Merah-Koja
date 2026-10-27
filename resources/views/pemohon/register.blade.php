@@ -19,7 +19,7 @@
     <title>Daftar Akun - SIMERAH KOJA</title>
     <link rel="icon" href="/images/simerahkoja.png" type="image/png">
     <!-- Google Fonts: Plus Jakarta Sans -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -35,7 +35,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: #0b0f19;
+            background-color: #0d1b2a;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -55,7 +55,7 @@
             filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.4));
         }
 
-        .splash-title {
+        .splash-title { font-family: 'Bricolage Grotesque', system-ui, sans-serif; 
             color: #ffffff;
             font-weight: 800;
             font-size: 18px;
@@ -68,7 +68,7 @@
             width: 40px;
             height: 40px;
             border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top: 4px solid #ef4444;
+            border-top: 4px solid #e5392d;
             border-radius: 50%;
             animation: spinLoader 0.8s linear infinite;
         }
@@ -92,7 +92,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Instrument Sans', system-ui, sans-serif;
         }
 
         body {
@@ -101,7 +101,7 @@
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
-            color: #1f2937;
+            color: #0d1b2a;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -121,15 +121,15 @@
             width: 100%;
             max-width: 450px;
             background: #ffffff;
-            border-radius: 12px;
+            border-radius: 18px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.2); 
             overflow: hidden;
             border: 1px solid #e5e7eb;
         }
 
         .login-header {
-            background-color: #111827; 
-            border-bottom: 4px solid #ef4444; 
+            background-color: #0d1b2a; 
+            border-bottom: 4px solid #e5392d; 
             padding: 25px 20px 15px;
             text-align: center;
         }
@@ -159,10 +159,10 @@
             padding: 25px 25px;
         }
 
-        .login-title {
+        .login-title { font-family: 'Bricolage Grotesque', system-ui, sans-serif; 
             font-size: 18px;
             font-weight: 800;
-            color: #111827;
+            color: #0d1b2a;
             text-align: center;
             margin-bottom: 15px;
             text-transform: uppercase;
@@ -199,7 +199,7 @@
             border: 1px solid #fecaca;
             color: #991b1b;
         }
-        .custom-alert-error i.alert-icon { color: #ef4444; }
+        .custom-alert-error i.alert-icon { color: #e5392d; }
         
         .custom-alert-error ul { margin-left: 18px; margin-top: 4px; margin-bottom: 0; padding-left: 0; }
 
@@ -225,7 +225,7 @@
             margin-bottom: 4px;
         }
         
-        .req { color: #ef4444; }
+        .req { color: #e5392d; }
 
         .input-group-text {
             background-color: #f8fafc;
@@ -242,18 +242,18 @@
         }
 
         .form-control:focus {
-            border-color: #ef4444;
+            border-color: #e5392d;
             box-shadow: 0 0 0 0.25rem rgba(239, 68, 68, 0.1);
         }
 
         .input-group:focus-within .input-group-text {
-            border-color: #ef4444;
-            color: #ef4444;
+            border-color: #e5392d;
+            color: #e5392d;
         }
 
         /* --- BUTTON & LINKS --- */
         .btn-submit {
-            background-color: #ef4444;
+            background-color: #e5392d;
             color: white;
             font-weight: 700;
             font-size: 13px;
@@ -268,7 +268,7 @@
         }
 
         .btn-submit:hover {
-            background-color: #dc2626;
+            background-color: #c22b20;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
         }
@@ -285,7 +285,7 @@
         }
 
         .back-to-home i { margin-right: 5px; }
-        .back-to-home:hover { color: #111827; }
+        .back-to-home:hover { color: #0d1b2a; }
 
         .register-link {
             text-align: center;
@@ -295,13 +295,124 @@
             color: #4b5563;
         }
         .register-link a {
-            color: #ef4444;
+            color: #e5392d;
             text-decoration: none;
             transition: 0.3s;
         }
         .register-link a:hover {
-            color: #dc2626;
+            color: #c22b20;
             text-decoration: underline;
+        }
+
+        /* --- ANIMASI TAMBAHAN --- */
+        @keyframes cardEntrance {
+            0% { opacity: 0; transform: translateY(35px) scale(0.96); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-7px); }
+        }
+
+        @keyframes fadeSlideUp {
+            0% { opacity: 0; transform: translateY(18px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-card {
+            animation: cardEntrance 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+        }
+
+        .login-card:hover {
+            box-shadow: 0 22px 45px rgba(0, 0, 0, 0.32);
+        }
+
+        .login-header img {
+            animation: floatLogo 4.5s ease-in-out infinite;
+        }
+
+        .login-header strong,
+        .login-header p {
+            animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+        }
+
+        .login-title {
+            animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both;
+        }
+
+        .login-body form > div:nth-of-type(1) { animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both; }
+        .login-body form > div:nth-of-type(2) { animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.34s both; }
+        .login-body form > div:nth-of-type(3) { animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.40s both; }
+        .login-body form > div:nth-of-type(4) { animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.46s both; }
+        .login-body form > div:nth-of-type(5) { animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.52s both; }
+        .login-body form > div:nth-of-type(6) { animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.58s both; }
+
+        .btn-submit {
+            position: relative;
+            overflow: hidden;
+            animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.64s both;
+        }
+
+        .btn-submit::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            transform: skewX(-20deg);
+            transition: left 0.6s ease;
+        }
+
+        .btn-submit:hover::after {
+            left: 130%;
+        }
+
+        .btn-submit:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .register-link {
+            animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.70s both;
+        }
+
+        .back-to-home {
+            animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.76s both;
+        }
+
+        .back-to-home i {
+            display: inline-block;
+            transition: transform 0.25s ease;
+        }
+
+        .back-to-home:hover i {
+            transform: translateX(-4px);
+        }
+
+        .input-group {
+            transition: transform 0.25s ease;
+        }
+
+        .input-group:focus-within {
+            transform: translateY(-2px);
+        }
+
+        .input-group-text i {
+            transition: transform 0.25s ease;
+        }
+
+        .input-group:focus-within .input-group-text i {
+            transform: scale(1.15);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
         }
     </style>
 </head>
