@@ -202,6 +202,13 @@
         dialog::backdrop{background:rgba(7,14,24,.86);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
         .dlg-close{position:absolute;top:-52px;right:0;width:42px;height:42px;border-radius:50%;background:#fff;color:var(--ink);font-size:1.05rem;display:grid;place-items:center;box-shadow:0 8px 22px rgba(0,0,0,.3);transition:.2s}
         .dlg-close:hover{background:var(--signal);color:#fff;transform:scale(1.06)}
+        @media (max-width: 640px) {
+            .dlg-close {
+                top: 10px; right: 10px; width: 38px; height: 38px; font-size: 1rem;
+                background: rgba(13, 27, 42, .88); color: #fff; border: 1px solid rgba(255,255,255,.2);
+                box-shadow: 0 4px 14px rgba(0,0,0,.4); z-index: 20;
+            }
+        }
         .video-frame{aspect-ratio:16/9;border-radius:20px;overflow:hidden;background:#000;box-shadow:0 25px 60px rgba(0,0,0,.5)}
         .video-frame iframe{width:100%;height:100%;border:0}
 
