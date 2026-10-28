@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\PermohonanEdukasi;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
@@ -352,6 +354,27 @@ class PermohonanEdukasiController extends Controller
             'kontak.required' => 'Masukkan NIK atau No Kontak / WhatsApp.',
             'kontak.min' => 'Masukkan minimal 9 digit angka.',
         ]);
+
+        if (! Auth::check() && session()->has('pemohon_id')) {
+            $pemohon = DB::table('pemohons')->where('id', session('pemohon_id'))->first();
+            if ($pemohon) {
+                $pemohonNik = preg_replace('/\D/', '', (string) $pemohon->nik);
+                $pemohonWa = preg_replace('/\D/', '', (string) $pemohon->no_whatsapp);
+                $inputDigits = preg_replace('/\D/', '', (string) $request->kontak);
+
+                $pemohonWaLocal = str_starts_with($pemohonWa, '62') ? '0'.substr($pemohonWa, 2) : $pemohonWa;
+                $inputWaLocal = str_starts_with($inputDigits, '62') ? '0'.substr($inputDigits, 2) : $inputDigits;
+
+                $isMatch = ($inputDigits !== '' && $inputDigits === $pemohonNik)
+                    || ($inputWaLocal !== '' && $inputWaLocal === $pemohonWaLocal);
+
+                if (! $isMatch) {
+                    return response()->json([
+                        'message' => 'Anda hanya dapat mengecek permohonan milik akun Anda sendiri. NIK atau No. WhatsApp tidak cocok dengan akun yang sedang masuk.',
+                    ], 403);
+                }
+            }
+        }
 
         $kontak = trim($request->kontak);
 

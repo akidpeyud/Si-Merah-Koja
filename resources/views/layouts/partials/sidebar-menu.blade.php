@@ -89,7 +89,7 @@
                 // Item ke-4 (opsional) = batasan role khusus item
                 ['Profil Saya', url('/internal/profil'), 'fa-user-pen'],
                 ['Kelola Pengguna', url('/internal/kelola-user'), 'fa-users-gear', 'Super User'],
-                ['Kelola Akun Pemohon', url('/internal/kelola-pemohon'), 'fa-address-book', 'Super User'],
+                ['Kelola Akun Pemohon', url('/internal/kelola-pemohon'), 'fa-address-book', 'Super User|Operator'],
             ],
         ],
     ];

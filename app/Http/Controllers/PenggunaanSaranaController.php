@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\PenggunaanSarana;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
@@ -268,6 +270,26 @@ class PenggunaanSaranaController extends Controller
             return response()->json(['message' => 'NIK (16 digit) atau nomor HP/WA tidak valid.'], 422);
         }
 
+        if (! Auth::check() && session()->has('pemohon_id')) {
+            $pemohon = DB::table('pemohons')->where('id', session('pemohon_id'))->first();
+            if ($pemohon) {
+                $pemohonNik = preg_replace('/\D/', '', (string) $pemohon->nik);
+                $pemohonWa = preg_replace('/\D/', '', (string) $pemohon->no_whatsapp);
+
+                $pemohonWaLocal = str_starts_with($pemohonWa, '62') ? '0'.substr($pemohonWa, 2) : $pemohonWa;
+                $inputWaLocal = str_starts_with($kontak, '62') ? '0'.substr($kontak, 2) : $kontak;
+
+                $isMatch = ($kontak !== '' && $kontak === $pemohonNik)
+                    || ($inputWaLocal !== '' && $inputWaLocal === $pemohonWaLocal);
+
+                if (! $isMatch) {
+                    return response()->json([
+                        'message' => 'Anda hanya dapat mengecek permohonan milik akun Anda sendiri. NIK atau No. WhatsApp tidak cocok dengan akun yang sedang masuk.',
+                    ], 403);
+                }
+            }
+        }
+
         // Variasi penulisan nomor HP: 08xx / 628xx
         $varian = [$kontak];
         if (str_starts_with($kontak, '62')) {
@@ -283,14 +305,14 @@ class PenggunaanSaranaController extends Controller
             ->limit(10)
             ->get()
             ->map(fn ($r) => [
-            // Data pribadi disamarkan: hanya info yang perlu untuk mengenali permohonan
-            'nama' => $this->maskNama($r->nama),
-            'kegiatan' => $r->nama_kegiatan,
-            'sarana' => $r->sarana,
-            'tanggal' => Carbon::parse($r->tgl_pelaksanaan)->translatedFormat('d F Y'),
-            'diajukan' => optional($r->created_at)->translatedFormat('d M Y'),
-            'status' => $r->status,
-        ]);
+                // Data pribadi disamarkan: hanya info yang perlu untuk mengenali permohonan
+                'nama' => $this->maskNama($r->nama),
+                'kegiatan' => $r->nama_kegiatan,
+                'sarana' => $r->sarana,
+                'tanggal' => Carbon::parse($r->tgl_pelaksanaan)->translatedFormat('d F Y'),
+                'diajukan' => optional($r->created_at)->translatedFormat('d M Y'),
+                'status' => $r->status,
+            ]);
 
         return response()->json(['data' => $hasil]);
     }

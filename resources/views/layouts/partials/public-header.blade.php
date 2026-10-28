@@ -134,6 +134,8 @@
                             <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
                         </button>
                         <ul class="dropdown">
+                            <li><a href="{{ route('pemohon.dashboard') }}"><i class="fas fa-id-card" style="color: var(--amber);"></i> Dashboard Profil</a></li>
+                            <li><a href="{{ route('pemohon.dashboard') }}"><i class="fas fa-list-check"></i> Monitoring Berkas</a></li>
                             <li>
                                 <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
                                     @csrf

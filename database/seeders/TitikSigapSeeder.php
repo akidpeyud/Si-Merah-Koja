@@ -21,6 +21,7 @@ class TitikSigapSeeder extends Seeder
         $K_TRUCK = 'water_truck';
         $K_POS = 'pos';
         $K_AIR = 'sumber_air';
+        $K_ZONA = 'zona_rawan';
 
         // Format: [kategori, nama, lokasi, keterangan, latitude, longitude]
         $rows = [
@@ -117,6 +118,30 @@ class TitikSigapSeeder extends Seeder
             [$K_TRUCK, 'BANDARA SULTAN THAHA SAIFUDDIN', '9J7V+5PC, Jl. Jawa, Paal Merah, Kec. Jambi Sel., Kota Jambi, Jambi 36127', 'Telp: 0741572344', -1.6368461091928153, 103.64437821340158],
             [$K_TRUCK, 'DLH', '9J94+HQ8, Paal Lima, Kota Baru, Jambi City, Jambi 36129', '-', -1.6309369199948167, 103.6069711833065],
             [$K_TRUCK, 'DENPAL', 'Jl. Raya Palembang - Jambi No.RT.01, RT.Pall/RW.17/RW, Pd. Meja, Kec. Mestong, Kabupaten Muaro Jambi, Jambi 36364', '-', -1.720617771307402, 103.57326159182345],
+
+            // ===== ZONA RAWAN KEBAKARAN (sumber: Peta Risiko Karhutla & RTRW Kota Jambi) =====
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Tanjung Johor', 'Kel. Tanjung Johor, Kec. Pelayangan, Kota Jambi', 'Tingkat Risiko: Tinggi | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.5644, 103.6289],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Sijenjang', 'Kel. Sijenjang, Kec. Jambi Timur, Kota Jambi', 'Tingkat Risiko: Tinggi | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.5780, 103.6500],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Tahtul Yaman', 'Kel. Tahtul Yaman, Kec. Pelayangan, Kota Jambi', 'Tingkat Risiko: Tinggi | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.5753, 103.6212],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Ulu Gedong', 'Kel. Ulu Gedong, Kec. Danau Teluk, Kota Jambi', 'Tingkat Risiko: Tinggi | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.5715, 103.6068],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Jelmu', 'Kel. Jelmu, Kec. Pelayangan, Kota Jambi', 'Tingkat Risiko: Tinggi | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.5772, 103.6148],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Olak Kemang', 'Kel. Olak Kemang, Kec. Danau Teluk, Kota Jambi', 'Tingkat Risiko: Tinggi | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.5786, 103.6015],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Pasir Panjang', 'Kel. Pasir Panjang, Kec. Danau Teluk, Kota Jambi', 'Tingkat Risiko: Tinggi | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.5812, 103.5873],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Arab Melayu', 'Kel. Arab Melayu, Kec. Pelayangan, Kota Jambi', 'Tingkat Risiko: Tinggi | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.5851, 103.6142],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Tanjung Raden', 'Kel. Tanjung Raden, Kec. Danau Teluk, Kota Jambi', 'Tingkat Risiko: Tinggi | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.5819, 103.5936],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Kasang', 'Kel. Kasang, Kec. Jambi Timur, Kota Jambi', 'Tingkat Risiko: Sedang | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.5878, 103.6264],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Talang Bakung', 'Kel. Talang Bakung, Kec. Paal Merah, Kota Jambi', 'Tingkat Risiko: Tinggi | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.6385, 103.6512],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Kenali Asam', 'Kel. Kenali Asam, Kec. Kota Baru, Kota Jambi', 'Tingkat Risiko: Tinggi | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.6578, 103.6083],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Bagan Pete', 'Kel. Bagan Pete, Kec. Alam Barajo, Kota Jambi', 'Tingkat Risiko: Tinggi | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.6624, 103.5645],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Kenali Besar', 'Kel. Kenali Besar, Kec. Alam Barajo, Kota Jambi', 'Tingkat Risiko: Tinggi | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.6321, 103.5532],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Mayang Mangurai', 'Kel. Mayang Mangurai, Kec. Alam Barajo, Kota Jambi', 'Tingkat Risiko: Sedang | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.6428, 103.5786],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Pinang Merah', 'Kel. Pinang Merah, Kec. Alam Barajo, Kota Jambi', 'Tingkat Risiko: Tinggi | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.6515, 103.5467],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Talang Gulo', 'Kel. Talang Gulo, Kec. Kota Baru, Kota Jambi', 'Tingkat Risiko: Tinggi | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.6885, 103.6142],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Legok', 'Kel. Legok, Kec. Danau Sipin, Kota Jambi', 'Tingkat Risiko: Sedang | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.5915, 103.5962],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Buluran Kenali', 'Kel. Buluran Kenali, Kec. Telanaipura, Kota Jambi', 'Tingkat Risiko: Tinggi | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.5925, 103.5781],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Pematang Sulur', 'Kel. Pematang Sulur, Kec. Telanaipura, Kota Jambi', 'Tingkat Risiko: Sedang | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.6095, 103.5772],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Penyengat Rendah', 'Kel. Penyengat Rendah, Kec. Telanaipura, Kota Jambi', 'Tingkat Risiko: Tinggi | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.5750, 103.5620],
+            [$K_ZONA, 'Zona Rawan Kebakaran Kel. Aur Kenali', 'Kel. Aur Kenali, Kec. Telanaipura, Kota Jambi', 'Tingkat Risiko: Sedang | Klasifikasi: Kawasan Rawan Bencana Kebakaran | Sumber: Peta Risiko Karhutla & RTRW Kota Jambi', -1.5842, 103.5678],
         ];
 
         $data = array_map(fn ($r) => [

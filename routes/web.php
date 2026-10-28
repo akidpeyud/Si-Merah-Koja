@@ -16,6 +16,7 @@ use App\Http\Controllers\LaporanExcelController;
 use App\Http\Controllers\OperatorMedsosController;
 use App\Http\Controllers\PemberdayaanController;
 use App\Http\Controllers\PemohonAuthController;
+use App\Http\Controllers\PemohonDashboardController;
 use App\Http\Controllers\PencegahanController;
 use App\Http\Controllers\PenggunaanSaranaController;
 use App\Http\Controllers\PenggunaanSaranaExcelController;
@@ -142,6 +143,11 @@ Route::post('/pemohon/logout', [PemohonAuthController::class, 'logout'])->name('
 // 3. RUTE WAJIB LOGIN PEMOHON (LAYANAN)
 // ==========================================
 Route::middleware([CekLoginPemohon::class])->group(function () {
+
+    // --- 0. Dashboard Terpadu & Monitoring Berkas Pemohon ---
+    Route::get('/pemohon/dashboard', [PemohonDashboardController::class, 'index'])->name('pemohon.dashboard');
+    Route::put('/pemohon/profil', [PemohonDashboardController::class, 'updateProfil'])->name('pemohon.profil.update');
+    Route::put('/pemohon/password', [PemohonDashboardController::class, 'updatePassword'])->name('pemohon.password.update');
 
     // --- 1. RPKBGL ---
     Route::get('/layanan-fasilitas/layanan_perizinan', function () {

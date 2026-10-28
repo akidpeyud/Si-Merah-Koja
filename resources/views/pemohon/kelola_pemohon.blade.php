@@ -19,40 +19,6 @@
     .toast-custom.leaving { animation: toastOut .3s ease forwards; }
     .toast-custom.ok .toast-ico { background: var(--success); }
     .toast-custom.err .toast-ico { background: var(--signal); }
-    .topbar {
-        position: sticky; top: 0; z-index: 1020; height: var(--topbar-h);
-        display: flex; align-items: center; justify-content: space-between; gap: 16px;
-        padding: 0 28px; background: var(--ink); border-bottom: 1px solid rgba(255,255,255,.08);
-        box-shadow: 0 2px 12px rgba(13, 27, 42, .16);
-    }
-    .sidebar {
-        width: var(--sidebar-w); flex: none; position: sticky; top: var(--topbar-h);
-        height: calc(100vh - var(--topbar-h)); overflow-y: auto; background: #ffffff;
-        border-right: 1px solid var(--line); padding: 20px 14px 32px;
-        scrollbar-width: thin; scrollbar-color: #d8dee8 transparent;
-    }
-    .side-link {
-        display: flex; align-items: center; gap: 14px; padding: 11px 14px;
-        border-radius: var(--r-sm); font-size: .89rem; font-weight: 600;
-        color: var(--ink); transition: background .2s, color .2s, transform .2s; margin-bottom: 4px;
-    }
-    .side-link i { width: 20px; text-align: center; font-size: 1rem; color: var(--steel); transition: color .2s; }
-    .side-group summary {
-        list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px;
-        padding: 11px 14px; border-radius: var(--r-sm); font-size: .78rem; font-weight: 700;
-        letter-spacing: .04em; text-transform: uppercase; color: var(--navy);
-        transition: background .2s, color .2s; user-select: none;
-    }
-    .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); }
-    .side-group summary .grp-label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .side-group summary .chev { flex: none; font-size: .7rem; transition: transform .25s ease; }
-    .side-sub { display: grid; gap: 3px; padding: 6px 4px 10px 12px; border-left: 2px solid var(--line); margin: 2px 0 8px 22px; }
-    .side-sub a {
-        display: flex; align-items: center; gap: 12px; padding: 9px 12px;
-        border-radius: var(--r-sm); font-size: .84rem; font-weight: 500;
-        line-height: 1.4; color: var(--steel); transition: background .2s, color .2s, transform .2s;
-    }
-    .side-sub a i { width: 18px; text-align: center; font-size: .88rem; opacity: .75; }
     .page-head { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-bottom: 26px; }
     .page-head h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.5rem, 2.5vw, 1.8rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 5px; color: var(--ink); }
     .page-head p { color: var(--steel); font-size: .95rem; margin: 0; }
@@ -258,69 +224,6 @@
                                     </div>
                                 </td>
                             </tr>
-
-                            <!-- MODAL EDIT PEMOHON (DALAM LOOP) -->
-                            <div class="modal fade" id="editPemohonModal{{ $pemohon->id ?? $index }}" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-lg modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">
-                                                <i class="fas fa-user-edit me-2"></i> Edit Akun Pemohon
-                                            </h5>
-                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-
-                                        <form action="/internal/kelola-pemohon/update/{{ $pemohon->id ?? '' }}" method="POST">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-body">
-                                                <div class="card-inner">
-                                                    
-                                                    <div class="section-title"><i class="fas fa-id-card"></i> Identitas Pemohon</div>
-                                                    <div class="row g-3 mb-4">
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">NIK (16 Digit) <span class="text-danger">*</span></label>
-                                                            <input type="text" name="nik" class="form-control" value="{{ $pemohon->nik }}" required maxlength="16">
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Nama Lengkap Pemohon <span class="text-danger">*</span></label>
-                                                            <input type="text" name="nama_lengkap" class="form-control" value="{{ $pemohon->nama_lengkap }}" required>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="section-title"><i class="fas fa-address-book"></i> Informasi Kontak & Akses</div>
-                                                    <div class="row g-3">
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Email Aktif <span class="text-danger">*</span></label>
-                                                            <input type="email" name="email" class="form-control" value="{{ $pemohon->email }}" required>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">No. WhatsApp <span class="text-danger">*</span></label>
-                                                            <input type="text" name="no_whatsapp" class="form-control" value="{{ $pemohon->no_whatsapp }}" required>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Role Akun</label>
-                                                            <select name="role" class="form-select">
-                                                                <option value="pemohon" selected>Pemohon</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Password Akses Baru</label>
-                                                            <input type="password" name="password" class="form-control" placeholder="Kosongkan jika tidak ingin diubah">
-                                                            <div class="form-text">Minimal 8 karakter.</div>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Simpan Perubahan</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
                         @empty
                             <tr>
                                 <td colspan="7" class="text-center py-4 text-muted">
@@ -333,6 +236,71 @@
                 </table>
             </div>
         </div>
+
+        <!-- ==================== MODAL EDIT PEMOHON (DILUAR TABEL) ==================== -->
+        @foreach($pemohons as $index => $pemohon)
+            <div class="modal fade" id="editPemohonModal{{ $pemohon->id ?? $index }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="fas fa-user-edit me-2"></i> Edit Akun Pemohon
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <form action="/internal/kelola-pemohon/update/{{ $pemohon->id ?? '' }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="modal-body">
+                                <div class="card-inner">
+                                    
+                                    <div class="section-title"><i class="fas fa-id-card"></i> Identitas Pemohon</div>
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-md-6">
+                                            <label class="form-label">NIK (16 Digit) <span class="text-danger">*</span></label>
+                                            <input type="text" name="nik" class="form-control" value="{{ $pemohon->nik }}" required maxlength="16">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Nama Lengkap Pemohon <span class="text-danger">*</span></label>
+                                            <input type="text" name="nama_lengkap" class="form-control" value="{{ $pemohon->nama_lengkap }}" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="section-title"><i class="fas fa-address-book"></i> Informasi Kontak & Akses</div>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Email Aktif <span class="text-danger">*</span></label>
+                                            <input type="email" name="email" class="form-control" value="{{ $pemohon->email }}" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">No. WhatsApp <span class="text-danger">*</span></label>
+                                            <input type="text" name="no_whatsapp" class="form-control" value="{{ $pemohon->no_whatsapp }}" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Role Akun</label>
+                                            <select name="role" class="form-select">
+                                                <option value="pemohon" selected>Pemohon</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Password Akses Baru</label>
+                                            <input type="password" name="password" class="form-control" placeholder="Kosongkan jika tidak ingin diubah">
+                                            <div class="form-text">Minimal 8 karakter.</div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Simpan Perubahan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @endforeach
 
 <!-- ==================== MODAL TAMBAH PEMOHON (DILUAR LOOP) ==================== -->
 <div class="modal fade" id="addPemohonModal" tabindex="-1" aria-hidden="true">

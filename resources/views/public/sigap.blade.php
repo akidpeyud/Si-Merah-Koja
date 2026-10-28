@@ -557,6 +557,362 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 .sos-sheet a i{width:24px;text-align:center;font-size:1.1rem}
 .sos-sheet .wa i{color:#22c55e}.sos-sheet .tel i{color:#38bdf8}.sos-sheet .n112 i{color:#ef4444}
 
+/* ===== KARTU BUFFER TITIK RAWAN DI DALAM SIDEBAR (MAP-LIST) ===== */
+.sidebar-buffer-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s ease;
+}
+.sidebar-buffer-card:hover {
+    border-color: #cbd5e1;
+}
+.sbc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e2e8f0;
+}
+.sidebar-buffer-card.is-collapsed .sbc-header {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+.sbc-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+}
+.badge-rtrw {
+    font-size: 0.65rem;
+    font-weight: 700;
+    background: #fee2e2;
+    color: #dc2626;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+.sbc-collapse-btn {
+    background: none;
+    border: none;
+    padding: 2px 4px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    cursor: pointer;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.sbc-collapse-btn:hover {
+    color: var(--ink);
+}
+.sbc-icon-chevron {
+    transition: transform 0.25s ease;
+}
+.sidebar-buffer-card.is-collapsed .sbc-icon-chevron {
+    transform: rotate(180deg);
+}
+.sbc-body {
+    padding-top: 8px;
+    display: block;
+}
+.sidebar-buffer-card.is-collapsed .sbc-body {
+    display: none;
+}
+.sbc-legend-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+.sbc-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    transition: background 0.15s, opacity 0.15s;
+}
+.sbc-item.is-dimmed {
+    opacity: 0.38;
+}
+.sbc-item.is-highlighted {
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.sbc-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 3px;
+}
+.sbc-indicator.bg-danger { background-color: #ef4444; }
+.sbc-indicator.bg-warning { background-color: #f59e0b; }
+.sbc-item-info strong {
+    display: block;
+    font-size: 0.76rem;
+    color: var(--ink);
+    line-height: 1.25;
+}
+.sbc-item-info small {
+    display: block;
+    font-size: 0.68rem;
+    color: var(--muted);
+    line-height: 1.25;
+    margin-top: 1px;
+}
+.sbc-slider-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 6px 8px;
+    margin-bottom: 8px;
+}
+.sbc-slider-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--ink-2);
+    margin-bottom: 2px;
+}
+.sbc-slider {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    accent-color: #ef4444;
+}
+.sbc-check-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--ink-2);
+    margin-bottom: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+.sbc-check-label input {
+    cursor: pointer;
+    accent-color: #ef4444;
+}
+.btn-sbc-modal {
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 8px;
+    background: var(--ink);
+    color: #fff;
+    font-size: 0.73rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 2px 4px rgba(15, 23, 42, 0.12);
+}
+.btn-sbc-modal:hover {
+    background: #1e293b;
+    transform: translateY(-1px);
+}
+
+/* Styling Khusus Layer Zonasi Risiko Vektor & Popup */
+.popup-risiko {
+    min-width: 260px;
+    max-width: 310px;
+}
+.popup-risiko-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e2e8f0;
+}
+.popup-risiko-header h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--ink);
+}
+.badge-status-risiko {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+}
+.badge-kel-rawan {
+    display: inline-block;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 6px;
+    margin: 1px;
+}
+.kel-chips-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    max-height: 80px;
+    overflow-y: auto;
+    margin-top: 2px;
+}
+.toggle-pin-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.73rem;
+    font-weight: 600;
+    color: var(--ink-2);
+    margin: 8px 0;
+    cursor: pointer;
+}
+.toggle-pin-label input {
+    cursor: pointer;
+    accent-color: var(--red);
+}
+
+/* Modal Dokumen Peta Asli */
+.custom-modal-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(13, 27, 42, 0.75);
+    backdrop-filter: blur(6px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+.custom-modal-dialog {
+    background: #fff;
+    border-radius: 18px;
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+.custom-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 22px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+.custom-modal-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--ink);
+    font-weight: 700;
+}
+.btn-external-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    color: var(--ink-2);
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+.btn-external-link:hover {
+    background: var(--blue-soft);
+    color: var(--blue);
+    border-color: var(--blue);
+}
+.btn-close-modal {
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--muted);
+    cursor: pointer;
+}
+.btn-close-modal:hover { color: var(--ink); }
+.custom-modal-body {
+    padding: 18px 22px;
+    overflow-y: auto;
+}
+.modal-zoom-toolbar {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 3px 6px;
+}
+.btn-zoom-action {
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.btn-zoom-action:hover {
+    background: var(--blue-soft);
+    color: var(--blue);
+    border-color: var(--blue);
+}
+.zoom-level-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--ink-2);
+    min-width: 40px;
+    text-align: center;
+}
+.img-preview-scroll {
+    text-align: center;
+    background: #f1f5f9;
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid #e2e8f0;
+    overflow: auto;
+    max-height: calc(85vh - 140px);
+}
+#modal-zoomable-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+    transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+    display: inline-block;
+}
+
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
@@ -690,6 +1046,59 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
                             <input id="toggle-kec" type="checkbox" role="switch" checked>
                             <span class="kec-switch" aria-hidden="true"></span>
                         </label>
+
+                        <!-- KARTU BUFFER TITIK RAWAN (FOTO 1 DIMASUKKAN KE DALAM KONTAINER SIDEBAR) -->
+                        <div id="legend-risiko-box" class="sidebar-buffer-card" style="display: none;">
+                            <div class="sbc-header" id="btn-toggle-buffer-card" role="button" tabindex="0" title="Klik untuk melipat / membuka rincian">
+                                <div class="sbc-title">
+                                    <i class="fas fa-bullseye text-danger me-1"></i>
+                                    <span>Buffer Titik Rawan</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-1">
+                                    <span class="badge-rtrw">RTRW & BPBD</span>
+                                    <button type="button" class="sbc-collapse-btn" aria-label="Lipat / Buka">
+                                        <i class="fas fa-chevron-up sbc-icon-chevron"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="sbc-body" id="sbc-content-body">
+                                <div class="sbc-legend-list">
+                                    <div class="sbc-item" id="sbc-item-tinggi">
+                                        <span class="sbc-indicator bg-danger"></span>
+                                        <div class="sbc-item-info">
+                                            <strong>Buffer Risiko Tinggi (1.2 km)</strong>
+                                            <small>Pelayangan, Danau Teluk, Alam Barajo, Kota Baru, Paal Merah</small>
+                                        </div>
+                                    </div>
+                                    <div class="sbc-item" id="sbc-item-sedang">
+                                        <span class="sbc-indicator bg-warning"></span>
+                                        <div class="sbc-item-info">
+                                            <strong>Buffer Risiko Sedang (800 m)</strong>
+                                            <small>Kasang & Sijenjang (Jambi Timur), Telanaipura, Danau Sipin</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="sbc-slider-box">
+                                    <div class="sbc-slider-label">
+                                        <span>Transparansi Buffer</span>
+                                        <b id="val-opacity-risiko">50%</b>
+                                    </div>
+                                    <input type="range" id="slider-opacity-risiko" min="10" max="90" value="50" class="sbc-slider" aria-label="Transparansi Buffer">
+                                </div>
+
+                                <label class="sbc-check-label" for="chk-toggle-pin">
+                                    <input type="checkbox" id="chk-toggle-pin" checked>
+                                    <span>Tampilkan Pin Titik Kelurahan</span>
+                                </label>
+
+                                <button type="button" id="btn-lihat-peta-asli" class="btn-sbc-modal">
+                                    <i class="fas fa-file-image"></i>
+                                    <span>Buka Dokumen Peta Asli (Gambar 3.22)</span>
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="list-heading">
                             <span>Daftar Kecamatan</span>
                             <span id="list-count" class="count-badge"></span>
@@ -752,6 +1161,39 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 
         </div>
     </div>
+
+    <!-- Modal Pratinjau Dokumen Peta Asli (Opsi B) -->
+    <div id="modalPetaAsli" class="custom-modal-backdrop" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="modalPetaTitle">
+        <div class="custom-modal-dialog">
+            <div class="custom-modal-header">
+                <h4 id="modalPetaTitle"><i class="fas fa-map-marked-alt text-danger me-2"></i> Peta Risiko Bencana Kebakaran Hutan & Lahan Kota Jambi (Gambar 3.22)</h4>
+                <div class="d-flex align-items-center gap-2">
+                    <a href="/images/peta_risiko_kebakaran_full.png" target="_blank" class="btn-external-link" title="Buka Gambar Penuh di Tab Baru">
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                    <button type="button" class="btn-close-modal" id="btn-close-peta-asli" aria-label="Tutup Modal">&times;</button>
+                </div>
+            </div>
+            <div class="custom-modal-body">
+                <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <span style="font-size:0.75rem;font-weight:700;padding:4px 8px;border-radius:6px;background:#fee2e2;color:#dc2626;"><i class="fas fa-shield-alt me-1"></i> Dokumen Resmi BPBD & Damkar</span>
+                        <span style="font-size:0.75rem;font-weight:600;padding:4px 8px;border-radius:6px;background:#f1f5f9;color:#475569;">RTRW Kota Jambi 2024–2044 (Lampiran VI.3)</span>
+                    </div>
+                    <!-- Toolbar Zoom Gambar Modal -->
+                    <div class="modal-zoom-toolbar">
+                        <button type="button" id="btn-zoom-in" class="btn-zoom-action" title="Perbesar"><i class="fas fa-magnifying-glass-plus"></i></button>
+                        <button type="button" id="btn-zoom-out" class="btn-zoom-action" title="Perkecil"><i class="fas fa-magnifying-glass-minus"></i></button>
+                        <button type="button" id="btn-zoom-reset" class="btn-zoom-action" title="Reset Ukuran"><i class="fas fa-rotate-left"></i></button>
+                        <span id="zoom-level-text" class="zoom-level-badge">100%</span>
+                    </div>
+                </div>
+                <div class="img-preview-scroll" id="modal-img-container">
+                    <img id="modal-zoomable-img" src="/images/peta_risiko_kebakaran_full.png" alt="Peta Risiko Bencana Kebakaran Hutan dan Lahan Kota Jambi">
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 
 @include('layouts.partials.public-footer')
@@ -800,7 +1242,108 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
         return p.kategori;
     }
 
-    const state = { kategori: null, kecamatan: '', qKec: '', qTitik: '', filterKec: true };
+    // Data Klasifikasi Risiko Bencana Karhutla (Gambar 3.22 BPBD/Damkar & Dokumen RTRW 2024-2044)
+    const DATA_RISIKO_KECAMATAN = {
+        'Pelayangan': {
+            tingkat: 'Tinggi',
+            indeks: '> 0.66',
+            warna: '#ef4444',
+            stroke: '#b91c1c',
+            faktor: 'Kawasan lahan terbuka, vegetasi semak, dan hembusan angin terbuka di utara Sungai Batanghari.',
+            kelurahan: ['Tahtul Yaman', 'Tanjung Johor', 'Tanjung Pasir', 'Tanjung Raden', 'Mudung Laut', 'Arab Melayu']
+        },
+        'Danau Teluk': {
+            tingkat: 'Tinggi',
+            indeks: '> 0.66',
+            warna: '#ef4444',
+            stroke: '#b91c1c',
+            faktor: 'Permukiman panggung kayu padat dan kawasan rawa gambut pesisir utara.',
+            kelurahan: ['Pasir Panjang', 'Olak Kemang', 'Ulu Gedong']
+        },
+        'Alam Barajo': {
+            tingkat: 'Tinggi',
+            indeks: '> 0.66',
+            warna: '#ef4444',
+            stroke: '#b91c1c',
+            faktor: 'Kawasan ekspansi permukiman baru berbatasan dengan semak belukar dan lahan gambut.',
+            kelurahan: ['Bagan Pete', 'Kenali Besar', 'Mayang Mangurai', 'Beliung', 'Rawasari']
+        },
+        'Kota Baru': {
+            tingkat: 'Tinggi',
+            indeks: '> 0.66',
+            warna: '#ef4444',
+            stroke: '#b91c1c',
+            faktor: 'Topografi perbukitan landai dengan vegetasi semak dan riwayat pembersihan lahan.',
+            kelurahan: ['Kenali Asam Bawah', 'Kenali Asam Atas', 'Paal Lima', 'Simpang Tiga Sipin', 'Sukakarya']
+        },
+        'Paal Merah': {
+            tingkat: 'Tinggi',
+            indeks: '> 0.66',
+            warna: '#ef4444',
+            stroke: '#b91c1c',
+            faktor: 'Kawasan pergudangan/industri, kantong-kantong lahan gambut dan semak belukar luas.',
+            kelurahan: ['Paal Merah', 'Talang Bakung', 'Lingkar Selatan', 'Payo Selincah', 'Eka Jaya']
+        },
+        'Telanaipura': {
+            tingkat: 'Sedang',
+            indeks: '0.33 - 0.66',
+            warna: '#f59e0b',
+            stroke: '#d97706',
+            faktor: 'Kawasan perkantoran dan bantaran sungai Batanghari dengan vegetasi riparian.',
+            kelurahan: ['Teluk Kenali', 'Pematang Sulur', 'Buluran Kenali', 'Penyengat Rendah', 'Aur Kenali']
+        },
+        'Danau Sipin': {
+            tingkat: 'Sedang',
+            indeks: '0.33 - 0.66',
+            warna: '#f59e0b',
+            stroke: '#d97706',
+            faktor: 'Kawasan permukiman padat tepi danau dengan akses lorong sempit.',
+            kelurahan: ['Legok']
+        },
+        'Jambi Timur': {
+            tingkat: 'Sedang',
+            indeks: '0.33 - 0.66',
+            warna: '#f59e0b',
+            stroke: '#d97706',
+            faktor: 'Kawasan industri, pelabuhan sungai, dan pergudangan Kasang.',
+            kelurahan: ['Kasang']
+        },
+        'Pasar Jambi': {
+            tingkat: 'Rendah',
+            indeks: '< 0.33',
+            warna: '#10b981',
+            stroke: '#059669',
+            faktor: 'Pusat kawasan komersial/pertokoan dengan instalasi hidran kota aktif.',
+            kelurahan: []
+        },
+        'Jelutung': {
+            tingkat: 'Rendah',
+            indeks: '< 0.33',
+            warna: '#10b981',
+            stroke: '#059669',
+            faktor: 'Kawasan permukiman perkotaan padat dengan aksesibilitas pos damkar dekat.',
+            kelurahan: []
+        },
+        'Jambi Selatan': {
+            tingkat: 'Rendah',
+            indeks: '< 0.33',
+            warna: '#10b981',
+            stroke: '#059669',
+            faktor: 'Kawasan permukiman teratur dan area sekitar bandara Sultan Thaha.',
+            kelurahan: []
+        }
+    };
+
+    const state = {
+        kategori: null,
+        kecamatan: '',
+        qKec: '',
+        qTitik: '',
+        filterKec: true,
+        tampilkanPinRisiko: true,
+        tampilkanZonasiRisiko: false,
+        opasitasRisiko: 50
+    };
 
     const data = { fitur: [], kecamatan: [], titik: [] };
     const layersKec = {};   // nama kecamatan -> [layer poligon]
@@ -823,24 +1366,82 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
        ========================================================= */
     const isMobile = L.Browser.mobile || window.innerWidth < 768;
     const map = L.map('map', {
-        scrollWheelZoom: false,
-        dragging: !isMobile,
-        tap: !isMobile
+        scrollWheelZoom: true,
+        touchZoom: true,
+        doubleClickZoom: true,
+        boxZoom: true,
+        dragging: true,
+        tap: !isMobile,
+        minZoom: 10,
+        maxZoom: 19
     }).setView([-1.6101, 103.6131], 12);
-
-    if (isMobile) {
-        map.on('click', () => {
-            map.dragging.enable();
-        });
-        document.addEventListener('touchstart', (e) => {
-            if (!e.target.closest('#map')) {
-                map.dragging.disable();
-            }
-        }, { passive: true });
-    }
     const jalan = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(map);
     const citra = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Esri' });
-    L.control.layers({ 'Peta Jalan': jalan, 'Citra Satelit': citra }).addTo(map);
+
+    function getZonaRisikoTitik(p) {
+        const kec = p.kecamatan || cariKecamatan(p.lat, p.lng);
+        const info = DATA_RISIKO_KECAMATAN[kec];
+        if (info && info.tingkat === 'Tinggi') {
+            return {
+                tingkat: 'Tinggi',
+                indeks: '> 0.66',
+                radius: 1200, // 1.2 km radius buffer bahaya karhutla
+                warna: '#ef4444',
+                stroke: '#dc2626'
+            };
+        }
+        return {
+            tingkat: 'Sedang',
+            indeks: '0.33 - 0.66',
+            radius: 800, // 800 m radius buffer bahaya karhutla
+            warna: '#f59e0b',
+            stroke: '#d97706'
+        };
+    }
+
+    function getStyleKecamatan(f) {
+        const nama = getNama(f.properties);
+        const isRisikoMode = state.kategori === 'zona_rawan' || state.tampilkanZonasiRisiko;
+
+        if (isRisikoMode) {
+            // Garis batas kecamatan dibuat bersih dan halus agar fokus pada buffer titik kerawanan
+            return {
+                color: '#64748b',
+                weight: 1.5,
+                dashArray: '4, 4',
+                fillColor: '#94a3b8',
+                fillOpacity: 0.04
+            };
+        }
+
+        return {
+            color: '#ffffff',
+            weight: 1.5,
+            fillColor: warnaKec[nama] || '#2563eb',
+            fillOpacity: 0.4
+        };
+    }
+
+    // Layer Vektor Buffer Titik Rawan Karhutla (Gambar 3.22)
+    const layerZonasiRisiko = L.layerGroup();
+
+    const layerControl = L.control.layers(
+        { 'Peta Jalan': jalan, 'Citra Satelit': citra },
+        { 'Layer Buffer Titik Rawan (Gambar 3.22)': layerZonasiRisiko }
+    ).addTo(map);
+
+    // Deteksi pergantian base layer untuk menyesuaikan blending mode
+    map.on('baselayerchange', (e) => {
+        const mapEl = $('map');
+        if (mapEl) {
+            if (e.name === 'Citra Satelit') {
+                mapEl.classList.add('map-dark-base');
+            } else {
+                mapEl.classList.remove('map-dark-base');
+            }
+        }
+    });
+
     const grupTitik = L.layerGroup().addTo(map);
 
     // Pastikan peta menyesuaikan ukuran saat layar diputar / diubah
@@ -965,11 +1566,50 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
         });
     }
 
+    const bufferCircles = [];
     function renderMarker() {
         grupTitik.clearLayers();
+        bufferCircles.forEach(item => map.removeLayer(item.circle));
+        bufferCircles.length = 0;
+
+        const isZonaRawan = state.kategori === 'zona_rawan';
+        const tampilkanPin = state.tampilkanPinRisiko;
+
         titikTampil().forEach(p => {
             if (!markers.has(p)) markers.set(p, buatMarker(p));
-            grupTitik.addLayer(markers.get(p));
+
+            if (!isZonaRawan || (isZonaRawan && tampilkanPin !== false)) {
+                grupTitik.addLayer(markers.get(p));
+            }
+
+            if (isZonaRawan) {
+                const zona = getZonaRisikoTitik(p);
+                const op = ((state.opasitasRisiko || 50) / 100) * 0.35;
+                const circle = L.circle([p.lat, p.lng], {
+                    radius: zona.radius,
+                    color: zona.stroke,
+                    fillColor: zona.warna,
+                    fillOpacity: op,
+                    weight: 2,
+                    dashArray: '5, 5'
+                });
+
+                circle.bindTooltip(`
+                    <div style="font-size:0.8rem;line-height:1.35">
+                        <strong>${esc(p.nama)}</strong><br>
+                        <span style="color:${zona.warna};font-weight:700">● Buffer Risiko ${zona.tingkat} (Radius ${(zona.radius/1000).toFixed(1)} km)</span><br>
+                        <small class="text-muted">Kecamatan ${esc(p.kecamatan)}</small>
+                    </div>
+                `, { sticky: true });
+
+                circle.on('click', () => {
+                    map.setView([p.lat, p.lng], 15);
+                    markers.get(p)?.openPopup();
+                });
+
+                circle.addTo(map);
+                bufferCircles.push({ circle, zona });
+            }
         });
     }
 
@@ -1264,6 +1904,55 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
         }
     }
 
+    function updateSbcHighlight() {
+        const itemTinggi = $('sbc-item-tinggi');
+        const itemSedang = $('sbc-item-sedang');
+        if (!itemTinggi || !itemSedang) return;
+
+        if (!state.kecamatan) {
+            itemTinggi.classList.remove('is-dimmed', 'is-highlighted');
+            itemSedang.classList.remove('is-dimmed', 'is-highlighted');
+            return;
+        }
+
+        const info = DATA_RISIKO_KECAMATAN[state.kecamatan];
+        if (info && info.tingkat === 'Tinggi') {
+            itemTinggi.classList.add('is-highlighted');
+            itemTinggi.classList.remove('is-dimmed');
+            itemSedang.classList.add('is-dimmed');
+            itemSedang.classList.remove('is-highlighted');
+        } else if (info && info.tingkat === 'Sedang') {
+            itemSedang.classList.add('is-highlighted');
+            itemSedang.classList.remove('is-dimmed');
+            itemTinggi.classList.add('is-dimmed');
+            itemTinggi.classList.remove('is-highlighted');
+        } else {
+            itemTinggi.classList.add('is-dimmed');
+            itemSedang.classList.add('is-dimmed');
+        }
+    }
+
+    function renderRisikoOverlay() {
+        const isZonaRawan = state.kategori === 'zona_rawan';
+        const box = $('legend-risiko-box');
+        if (isZonaRawan) {
+            state.tampilkanZonasiRisiko = true;
+            if (!map.hasLayer(layerZonasiRisiko)) map.addLayer(layerZonasiRisiko);
+            if (geojson) geojson.setStyle(getStyleKecamatan);
+            if (box) box.style.display = 'block';
+        } else {
+            if (state.kategori !== null && map.hasLayer(layerZonasiRisiko)) {
+                state.tampilkanZonasiRisiko = false;
+                map.removeLayer(layerZonasiRisiko);
+            }
+            if (geojson) geojson.setStyle(getStyleKecamatan);
+            if (!map.hasLayer(layerZonasiRisiko) && box) {
+                box.style.display = 'none';
+            }
+        }
+        updateSbcHighlight();
+    }
+
     function render() {
         renderToggle();
         renderChips();
@@ -1271,6 +1960,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
         renderDaftarKecamatan();
         renderDaftarTitik();
         renderMarker();
+        renderRisikoOverlay();
         try { renderGrafik(); } catch (e) { console.error('Grafik gagal dimuat:', e); }
     }
 
@@ -1281,7 +1971,10 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
         state.kategori = state.kategori === k ? null : k;
         state.kecamatan = '';
         state.qTitik = '';
-        if (geojson) map.fitBounds(geojson.getBounds());
+        if (geojson) {
+            geojson.setStyle(getStyleKecamatan);
+            map.fitBounds(geojson.getBounds());
+        }
         map.closePopup();
         render();
     }
@@ -1300,9 +1993,13 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
     }
 
     function sorot(nama, aktif) {
-        (layersKec[nama] || []).forEach(l => aktif
-            ? l.setStyle({ weight: 3, color: '#0f172a', fillOpacity: 0.7 })
-            : geojson.resetStyle(l));
+        (layersKec[nama] || []).forEach(l => {
+            if (aktif) {
+                l.setStyle({ weight: 3, color: '#0f172a', fillOpacity: 0.25 });
+            } else {
+                l.setStyle(getStyleKecamatan(l.feature));
+            }
+        });
     }
 
     /* =========================================================
@@ -1321,27 +2018,56 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 
     function buatMarker(p) {
         const v = KATEGORI[p.kategori];
+        const isRawan = p.kategori === 'zona_rawan';
+        const zona = isRawan ? getZonaRisikoTitik(p) : null;
         const icon = L.divIcon({
             className: '', iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -18],
-            html: `<div class="pin" style="background:${v.warna}">${ikon(v)}</div>`
+            html: isRawan
+                ? `<div class="pin" style="background:${zona.warna};box-shadow:0 0 0 3px ${zona.warna}4d,0 6px 14px rgba(0,0,0,0.35)"><i class="fas fa-fire-flame-curved"></i></div>`
+                : `<div class="pin" style="background:${v.warna}">${ikon(v)}</div>`
         });
-        // Urutan baris: Kategori, Kecamatan, Lokasi, Keterangan
+        // Urutan baris: Kategori, Zona Kerawanan, Kecamatan, Lokasi, Keterangan
         const baris = [
             ['Kategori', v.label],
+            isRawan && zona ? ['Zona Kerawanan', `Risiko ${zona.tingkat} (Radius ${(zona.radius/1000).toFixed(1)} km)`] : null,
             ['Kecamatan', p.kecamatan],
             ['Lokasi', p.lokasi],
             ['Keterangan', p.keterangan]
-        ].filter(([, x]) => x).map(([a, b]) => `<tr><td>${esc(a)}</td><td>${esc(b)}</td></tr>`).join('');
+        ].filter(Boolean).map(([a, b]) => `<tr><td>${esc(a)}</td><td>${esc(b)}</td></tr>`).join('');
         const popup = `<div class="popup"><h3>${esc(p.nama)}</h3><table>${baris}</table>
             <a href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}" target="_blank" rel="noopener"><i class="fas fa-directions"></i> Rute ke lokasi</a></div>`;
         return L.marker([p.lat, p.lng], { icon, title: p.nama, alt: p.nama }).bindPopup(popup, { maxWidth: 320, autoPanPadding: [20, 20] });
     }
 
-    const popupWilayah = (props, nama) =>
-        `<div class="popup"><h3>${esc(nama)}</h3><table>${
+    const popupWilayah = (props, nama) => {
+        const isRisikoMode = state.kategori === 'zona_rawan' || state.tampilkanZonasiRisiko;
+        const info = DATA_RISIKO_KECAMATAN[nama];
+
+        if (isRisikoMode && info) {
+            const badgeColor = info.tingkat === 'Tinggi' ? '#ef4444' : info.tingkat === 'Sedang' ? '#f59e0b' : '#10b981';
+            const kelList = info.kelurahan && info.kelurahan.length
+                ? info.kelurahan.map(k => `<span class="badge-kel-rawan">${esc(k)}</span>`).join(' ')
+                : '<span class="text-muted fst-italic">Kawasan pusat kota terbangun</span>';
+
+            return `<div class="popup popup-risiko">
+                <div class="popup-risiko-header">
+                    <h3>Kecamatan ${esc(nama)}</h3>
+                    <span class="badge-status-risiko" style="background:${badgeColor}">Risiko ${esc(info.tingkat)}</span>
+                </div>
+                <table class="w-100">
+                    <tr><td>Indeks Risiko</td><td><strong>${esc(info.indeks)}</strong></td></tr>
+                    <tr><td>Faktor Karhutla</td><td>${esc(info.faktor)}</td></tr>
+                    <tr><td>Kelurahan Rawan</td><td><div class="kel-chips-wrap">${kelList}</div></td></tr>
+                    <tr><td>Sumber Data</td><td><small class="text-muted">Gambar 3.22 BPBD & RTRW Kota Jambi</small></td></tr>
+                </table>
+            </div>`;
+        }
+
+        return `<div class="popup"><h3>${esc(nama)}</h3><table>${
             Object.entries(props).filter(([, v]) => v !== null && v !== '')
                 .map(([k, v]) => `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')
         }</table></div>`;
+    };
 
     /* =========================================================
        9. EVENT FILTER
@@ -1383,12 +2109,19 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
         data.kecamatan.forEach((n, i) => { warnaKec[n] = PALET[i % PALET.length]; });
 
         geojson = L.geoJSON(wilayah, {
-            style: f => ({ color: '#fff', weight: 1.5, fillColor: warnaKec[getNama(f.properties)], fillOpacity: 0.4 }),
+            style: getStyleKecamatan,
             onEachFeature: (f, layer) => {
                 const n = getNama(f.properties);
                 (layersKec[n] ||= []).push(layer);
-                layer.bindTooltip(n, { sticky: true });
-                layer.bindPopup(popupWilayah(f.properties, n));
+                layer.bindTooltip(() => {
+                    const isRisikoMode = state.kategori === 'zona_rawan' || state.tampilkanZonasiRisiko;
+                    const info = DATA_RISIKO_KECAMATAN[n];
+                    if (isRisikoMode && info) {
+                        return `<strong>${esc(n)}</strong><br><span style="color:${info.warna}">● Risiko ${esc(info.tingkat)} (Indeks ${esc(info.indeks)})</span>`;
+                    }
+                    return esc(n);
+                }, { sticky: true });
+                layer.bindPopup(() => popupWilayah(f.properties, n));
                 layer.on({ mouseover: () => sorot(n, true), mouseout: () => sorot(n, false), click: () => fokusKecamatan(n) });
             }
         }).addTo(map);
@@ -1410,6 +2143,103 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
     }).catch(() => {
         el.ringkas.textContent = 'Data wilayah belum tersedia';
         el.daftarKec.innerHTML = '<li class="kosong">File GeoJSON tidak ditemukan.</li>';
+    });
+
+    /* =========================================================
+       10. EVENT HANDLER OVERLAY & MODAL PETA ASLI (OPSI B)
+       ========================================================= */
+    map.on('overlayadd', (e) => {
+        if (e.layer === layerZonasiRisiko) {
+            state.tampilkanZonasiRisiko = true;
+            if (geojson) geojson.setStyle(getStyleKecamatan);
+            const box = $('legend-risiko-box');
+            if (box) box.style.display = 'block';
+            renderMarker();
+        }
+    });
+
+    map.on('overlayremove', (e) => {
+        if (e.layer === layerZonasiRisiko) {
+            state.tampilkanZonasiRisiko = false;
+            if (geojson) geojson.setStyle(getStyleKecamatan);
+            if (state.kategori !== 'zona_rawan') {
+                const box = $('legend-risiko-box');
+                if (box) box.style.display = 'none';
+            }
+            renderMarker();
+        }
+    });
+
+    document.addEventListener('input', (e) => {
+        if (e.target && e.target.id === 'slider-opacity-risiko') {
+            const val = parseInt(e.target.value, 10);
+            state.opasitasRisiko = val;
+            const lbl = $('val-opacity-risiko');
+            if (lbl) lbl.textContent = `${val}%`;
+            bufferCircles.forEach(item => {
+                item.circle.setStyle({ fillOpacity: (val / 100) * 0.35 });
+            });
+        }
+    });
+
+    document.addEventListener('change', (e) => {
+        if (e.target && e.target.id === 'chk-toggle-pin') {
+            state.tampilkanPinRisiko = e.target.checked;
+            renderMarker();
+        }
+    });
+
+    // Kontrol Zoom Gambar Dokumen Modal
+    let modalZoom = 1;
+    function setModalZoom(z) {
+        modalZoom = Math.min(Math.max(0.6, z), 3.5);
+        const img = $('modal-zoomable-img');
+        const txt = $('zoom-level-text');
+        if (img) {
+            img.style.transform = `scale(${modalZoom})`;
+            img.style.transformOrigin = 'top center';
+        }
+        if (txt) txt.textContent = `${Math.round(modalZoom * 100)}%`;
+    }
+
+    document.addEventListener('click', (e) => {
+        const btnToggleCard = e.target.closest('#btn-toggle-buffer-card');
+        if (btnToggleCard) {
+            const card = $('legend-risiko-box');
+            if (card) card.classList.toggle('is-collapsed');
+            return;
+        }
+
+        if (e.target.closest('#btn-zoom-in')) {
+            setModalZoom(modalZoom + 0.25);
+            return;
+        }
+        if (e.target.closest('#btn-zoom-out')) {
+            setModalZoom(modalZoom - 0.25);
+            return;
+        }
+        if (e.target.closest('#btn-zoom-reset')) {
+            setModalZoom(1);
+            return;
+        }
+
+        const btnOpen = e.target.closest('#btn-lihat-peta-asli');
+        if (btnOpen) {
+            const m = $('modalPetaAsli');
+            if (m) m.style.display = 'flex';
+            setModalZoom(1);
+            document.body.classList.add('nav-lock');
+        }
+        const btnClose = e.target.closest('#btn-close-peta-asli');
+        if (btnClose) {
+            const m = $('modalPetaAsli');
+            if (m) m.style.display = 'none';
+            document.body.classList.remove('nav-lock');
+        }
+        if (e.target && e.target.id === 'modalPetaAsli') {
+            e.target.style.display = 'none';
+            document.body.classList.remove('nav-lock');
+        }
     });
 })();
 </script>
