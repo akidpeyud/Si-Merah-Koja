@@ -745,6 +745,11 @@
                         </button>
                         <ul class="dropdown">
                             <li>
+                                <a href="{{ route('pemohon.dashboard') }}">
+                                    <i class="fas fa-id-card" style="color: var(--amber);"></i> Dashboard Profil
+                                </a>
+                            </li>
+                            <li>
                                 <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
                                     @csrf
                                     <button type="submit" class="btn-logout">

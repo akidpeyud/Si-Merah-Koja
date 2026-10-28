@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 
 class PemohonAuthController extends Controller
 {
@@ -54,10 +53,10 @@ class PemohonAuthController extends Controller
 
         // Cek apakah data ada dan passwordnya cocok
         if ($pemohon && Hash::check($request->password, $pemohon->password)) {
-            
+
             // Regenerate session ID untuk keamanan (mencegah session fixation)
             $request->session()->regenerate();
-            
+
             // Buat session login manual untuk pemohon
             session([
                 'pemohon_id' => $pemohon->id,
@@ -66,8 +65,8 @@ class PemohonAuthController extends Controller
                 'pemohon_role' => $pemohon->role,
             ]);
 
-            // Arahkan kembali ke halaman yang tadinya ingin dia tuju
-            return redirect()->intended('/layanan-fasilitas/layanan_perizinan')->with('success', 'Berhasil login!');
+            // Arahkan kembali ke halaman yang tadinya ingin dia tuju atau ke dashboard pemohon
+            return redirect()->intended(route('pemohon.dashboard'))->with('success', 'Berhasil login! Selamat datang di Dasbor Pemohon.');
         }
 
         return back()->withErrors([

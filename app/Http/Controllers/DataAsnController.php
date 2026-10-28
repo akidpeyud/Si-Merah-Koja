@@ -6,7 +6,7 @@ use App\Models\DataAsn;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
-use Spatie\Permission\Middleware\PermissionMiddleware; 
+use Spatie\Permission\Middleware\PermissionMiddleware;
 
 class DataAsnController extends Controller implements HasMiddleware
 {
@@ -16,10 +16,10 @@ class DataAsnController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware(PermissionMiddleware::class . ':asn-list|asn-create|asn-edit|asn-delete', only: ['index','show']),
-            new Middleware(PermissionMiddleware::class . ':asn-create', only: ['create','store']),
-            new Middleware(PermissionMiddleware::class . ':asn-edit', only: ['edit','update']),
-            new Middleware(PermissionMiddleware::class . ':asn-delete', only: ['destroy']),
+            new Middleware(PermissionMiddleware::class.':asn-list|asn-create|asn-edit|asn-delete', only: ['index', 'show']),
+            new Middleware(PermissionMiddleware::class.':asn-create', only: ['create', 'store']),
+            new Middleware(PermissionMiddleware::class.':asn-edit', only: ['edit', 'update']),
+            new Middleware(PermissionMiddleware::class.':asn-delete', only: ['destroy']),
         ];
     }
 
@@ -41,16 +41,16 @@ class DataAsnController extends Controller implements HasMiddleware
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nama_jabatan' => 'required|string|max:255',
             'pns' => 'required|integer|min:0',
             'pppk' => 'required|integer|min:0',
         ]);
 
-        DataAsn::create($request->all());
+        DataAsn::create($validated);
 
         return redirect()->route('data-asn.index')
-                        ->with('success', 'Data ASN berhasil ditambahkan.');
+            ->with('success', 'Data ASN berhasil ditambahkan.');
     }
 
     // FUNGSI EDIT CUKUP SATU KALI SAJA
@@ -61,16 +61,16 @@ class DataAsnController extends Controller implements HasMiddleware
 
     public function update(Request $request, DataAsn $dataAsn)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nama_jabatan' => 'required|string|max:255',
             'pns' => 'required|integer|min:0',
             'pppk' => 'required|integer|min:0',
         ]);
 
-        $dataAsn->update($request->all());
+        $dataAsn->update($validated);
 
         return redirect()->route('data-asn.index')
-                        ->with('success', 'Data ASN berhasil diperbarui.');
+            ->with('success', 'Data ASN berhasil diperbarui.');
     }
 
     public function destroy(DataAsn $dataAsn)
@@ -78,6 +78,6 @@ class DataAsnController extends Controller implements HasMiddleware
         $dataAsn->delete();
 
         return redirect()->route('data-asn.index')
-                        ->with('success', 'Data ASN berhasil dihapus.');
+            ->with('success', 'Data ASN berhasil dihapus.');
     }
 }

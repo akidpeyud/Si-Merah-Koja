@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
@@ -218,11 +219,11 @@ class AuthController extends Controller
         return back()->with('success', 'Pengguna '.$nama.' berhasil dihapus!');
     }
 
-    // Menampilkan halaman Kelola Akun Pemohon (Khusus Super User)
+    // Menampilkan halaman Kelola Akun Pemohon (Khusus Super User & Operator)
     public function kelolaPemohon()
     {
-        if (! Auth::user()->hasRole('Super User')) {
-            return redirect('/internal/index')->with('error', 'Akses Ditolak! Hanya Super User yang dapat mengelola akun pemohon.');
+        if (! Auth::user()->hasAnyRole(['Super User', 'Operator'])) {
+            return redirect('/internal/index')->with('error', 'Akses Ditolak! Hanya Super User dan Operator yang dapat mengelola akun pemohon.');
         }
 
         $pemohons = DB::table('pemohons')->orderBy('created_at', 'desc')->get();
@@ -230,10 +231,10 @@ class AuthController extends Controller
         return view('pemohon.kelola_pemohon', compact('pemohons'));
     }
 
-    // Menambah akun pemohon secara manual (Khusus Super User)
+    // Menambah akun pemohon secara manual (Khusus Super User & Operator)
     public function storePemohon(Request $request)
     {
-        if (! Auth::user()->hasRole('Super User')) {
+        if (! Auth::user()->hasAnyRole(['Super User', 'Operator'])) {
             return redirect('/internal/index')->with('error', 'Akses Ditolak!');
         }
 
@@ -260,17 +261,17 @@ class AuthController extends Controller
         return back()->with('success', 'Akun pemohon baru berhasil ditambahkan!');
     }
 
-    // Mengupdate data akun pemohon (Khusus Super User)
+    // Mengupdate data akun pemohon (Khusus Super User & Operator)
     public function updatePemohon(Request $request, $id)
     {
-        if (! Auth::user()->hasRole('Super User')) {
+        if (! Auth::user()->hasAnyRole(['Super User', 'Operator'])) {
             return redirect('/internal/index')->with('error', 'Akses Ditolak!');
         }
 
         $request->validate([
-            'nik' => ['required', 'string', 'size:16', 'unique:pemohons,nik,'.$id],
+            'nik' => ['required', 'string', 'size:16', Rule::unique('pemohons', 'nik')->ignore($id)],
             'nama_lengkap' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:pemohons,email,'.$id],
+            'email' => ['required', 'email', Rule::unique('pemohons', 'email')->ignore($id)],
             'no_whatsapp' => ['required', 'string', 'max:30'],
             'password' => ['nullable', 'string', 'min:8'],
             'role' => ['nullable', 'string', 'max:50'],
@@ -294,10 +295,10 @@ class AuthController extends Controller
         return back()->with('success', 'Data akun pemohon berhasil diperbarui!');
     }
 
-    // Menghapus akun pemohon (Khusus Super User)
+    // Menghapus akun pemohon (Khusus Super User & Operator)
     public function destroyPemohon($id)
     {
-        if (! Auth::user()->hasRole('Super User')) {
+        if (! Auth::user()->hasAnyRole(['Super User', 'Operator'])) {
             return redirect('/internal/index')->with('error', 'Akses Ditolak!');
         }
 
