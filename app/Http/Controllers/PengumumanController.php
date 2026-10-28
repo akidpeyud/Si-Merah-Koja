@@ -14,7 +14,7 @@ class PengumumanController extends Controller
 
     public function index(Request $request)
     {
-        $q        = trim((string) $request->query('q', ''));
+        $q = trim((string) $request->query('q', ''));
         $kategori = $request->query('kategori');
 
         $query = Pengumuman::terbit();
@@ -22,11 +22,11 @@ class PengumumanController extends Controller
         if ($q !== '') {
             $query->where(function ($w) use ($q) {
                 $w->where('judul', 'like', "%{$q}%")
-                  ->orWhere('isi', 'like', "%{$q}%");
+                    ->orWhere('isi', 'like', "%{$q}%");
             });
         }
 
-        if (!empty($kategori) && in_array($kategori, Pengumuman::KATEGORI, true)) {
+        if (! empty($kategori) && in_array($kategori, Pengumuman::KATEGORI, true)) {
             $query->where('kategori', $kategori);
         }
 
@@ -39,9 +39,9 @@ class PengumumanController extends Controller
 
         return view('galery.pengumuman.index', [
             'daftar_pengumuman' => $daftar_pengumuman,
-            'daftar_kategori'   => Pengumuman::KATEGORI,
-            'q'                 => $q,
-            'kategori'          => $kategori,
+            'daftar_kategori' => Pengumuman::KATEGORI,
+            'q' => $q,
+            'kategori' => $kategori,
         ]);
     }
 
@@ -57,7 +57,6 @@ class PengumumanController extends Controller
         return view('galery.pengumuman.show', compact('pengumuman', 'lainnya'));
     }
 
-
     // =========================================================================
     // 2. BAGIAN INTERNAL (Untuk Dashboard Operator / Admin)
     // =========================================================================
@@ -65,6 +64,7 @@ class PengumumanController extends Controller
     public function indexInternal()
     {
         $pengumuman = Pengumuman::orderByDesc('tanggal')->orderByDesc('id')->get();
+
         return view('internal.operator.opratorpengumuman', compact('pengumuman'));
     }
 

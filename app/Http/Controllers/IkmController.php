@@ -51,13 +51,13 @@ class IkmController extends Controller
         [$tahun, $daftar_tahun, $jumlah, $nrr, $ikm] = $this->hitungStatistik($request);
 
         return view('galery.ikm.index', [
-            'tahun'        => $tahun,
+            'tahun' => $tahun,
             'daftar_tahun' => $daftar_tahun,
-            'unsur'        => self::UNSUR,
-            'jumlah'       => $jumlah,
-            'nrr'          => $nrr,
-            'ikm'          => $ikm,
-            'mutu'         => $this->mutu($ikm),
+            'unsur' => self::UNSUR,
+            'jumlah' => $jumlah,
+            'nrr' => $nrr,
+            'ikm' => $ikm,
+            'mutu' => $this->mutu($ikm),
         ]);
     }
 
@@ -70,19 +70,19 @@ class IkmController extends Controller
         }
 
         $rules = [
-            'tanggal_layanan'    => ['required', 'date', 'before_or_equal:today'],
-            'pendidikan'         => ['required', Rule::in(IkmResponse::PENDIDIKAN)],
-            'usia'               => ['required', 'integer', 'between:18,100'],
-            'pekerjaan'          => ['required', Rule::in(IkmResponse::PEKERJAAN)],
-            'disabilitas'        => ['nullable', 'boolean'],
-            'kritik_saran'       => ['required', 'string', 'max:1000'],
-            'kepercayaan_pusat'  => ['required', 'integer', 'between:1,10'],
+            'tanggal_layanan' => ['required', 'date', 'before_or_equal:today'],
+            'pendidikan' => ['required', Rule::in(IkmResponse::PENDIDIKAN)],
+            'usia' => ['required', 'integer', 'between:18,100'],
+            'pekerjaan' => ['required', Rule::in(IkmResponse::PEKERJAAN)],
+            'disabilitas' => ['nullable', 'boolean'],
+            'kritik_saran' => ['required', 'string', 'max:1000'],
+            'kepercayaan_pusat' => ['required', 'integer', 'between:1,10'],
             'kepercayaan_daerah' => ['required', 'integer', 'between:1,10'],
         ];
 
         $messages = [
             'usia.between' => 'Usia responden minimal 18 tahun (antara 18 hingga 100 tahun).',
-            'usia.min'     => 'Usia responden minimal 18 tahun.',
+            'usia.min' => 'Usia responden minimal 18 tahun.',
         ];
 
         foreach (IkmResponse::kolomPenilaian() as $field) {
@@ -100,7 +100,7 @@ class IkmController extends Controller
 
         $data = $validator->validated();
         $data['disabilitas'] = $request->boolean('disabilitas');
-        $data['ip_address']  = $request->ip();
+        $data['ip_address'] = $request->ip();
 
         IkmResponse::create($data);
 
@@ -108,7 +108,6 @@ class IkmController extends Controller
             ->withFragment('survei')
             ->with('ikm_sukses', 'Terima kasih, survei Anda berhasil dikirim.');
     }
-
 
     // =========================================================================
     // 2. BAGIAN INTERNAL (Untuk Dashboard Operator / Admin)
@@ -118,7 +117,7 @@ class IkmController extends Controller
     {
         [$tahun, $daftar_tahun, $jumlah, $nrr, $ikm] = $this->hitungStatistik($request);
 
-        $cari      = trim((string) $request->query('q', ''));
+        $cari = trim((string) $request->query('q', ''));
         $pekerjaan = $request->query('pekerjaan', '');
 
         $responden = IkmResponse::query()
@@ -137,16 +136,16 @@ class IkmController extends Controller
             ->withQueryString();
 
         return view('internal.operator.kelola_ikm', [
-            'tahun'        => $tahun,
+            'tahun' => $tahun,
             'daftar_tahun' => $daftar_tahun,
-            'unsur'        => self::UNSUR,
-            'jumlah'       => $jumlah,
-            'nrr'          => $nrr,
-            'ikm'          => $ikm,
-            'mutu'         => $this->mutu($ikm),
-            'responden'    => $responden,
-            'cari'         => $cari,
-            'pekerjaan'    => $pekerjaan,
+            'unsur' => self::UNSUR,
+            'jumlah' => $jumlah,
+            'nrr' => $nrr,
+            'ikm' => $ikm,
+            'mutu' => $this->mutu($ikm),
+            'responden' => $responden,
+            'cari' => $cari,
+            'pekerjaan' => $pekerjaan,
         ]);
     }
 
@@ -157,7 +156,6 @@ class IkmController extends Controller
 
         return redirect()->back()->with('success', 'Data survei dan saran responden berhasil dihapus!');
     }
-
 
     // =========================================================================
     // 3. HELPER PERHITUNGAN IKM
@@ -182,7 +180,7 @@ class IkmController extends Controller
         }
 
         $kolom = collect(self::UNSUR_KOLOM)
-            ->map(fn ($cols, $i) => 'AVG((' . implode(' + ', $cols) . ') / ' . count($cols) . ") AS n{$i}")
+            ->map(fn ($cols, $i) => 'AVG(('.implode(' + ', $cols).') / '.count($cols).") AS n{$i}")
             ->implode(', ');
 
         $hasil = IkmResponse::query()
@@ -214,7 +212,7 @@ class IkmController extends Controller
             $ikm >= 88.31 => ['kode' => 'A', 'nama' => 'Sangat baik'],
             $ikm >= 76.61 => ['kode' => 'B', 'nama' => 'Baik'],
             $ikm >= 65.00 => ['kode' => 'C', 'nama' => 'Kurang baik'],
-            default       => ['kode' => 'D', 'nama' => 'Tidak baik'],
+            default => ['kode' => 'D', 'nama' => 'Tidak baik'],
         };
     }
 }

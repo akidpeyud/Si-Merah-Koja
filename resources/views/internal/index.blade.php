@@ -161,7 +161,7 @@
                 ['Pemberdayaan Masyarakat & Dunia Usaha', 'kegiatan', 'fa-handshake-angle', '/internal/pencegahan/pemberdayaan-masyarakat', $countAll(['sosialisasi_edukasi', 'sosialisasi', 'pembinaan', 'pelatihan', 'pelatihan_keluarga', 'fire_drills']), 'ic-info'],
                 ['Kelola Edukasi', 'permohonan', 'fa-bullhorn', '/internal/pencegahan/kelola-edukasi', $count('permohonan_edukasi'), 'ic-primary'],
                 ['Kelola Redkar', 'data', 'fa-users-rectangle', '/internal/pencegahan/kelola-redkar', $count('redkar_registrations'), 'ic-info'],
-                ['Kelola RPKBGL', 'permohonan', 'fa-building-circle-check', '/internal/pencegahan/kelola-rpkbgl', $count('permohonan_rpkbgl'), 'ic-primary'],
+                ['Kelola RPPKBGL', 'permohonan', 'fa-building-circle-check', '/internal/pencegahan/kelola-rpkbgl', $count('permohonan_rpkbgl'), 'ic-primary'],
                 ['Kelola SKK', 'permohonan (baru + perpanjangan)', 'fa-file-shield', '/internal/pencegahan/kelola-skk', ($count('permohonan_skk') ?? 0) + ($count('permohonan_perpanjang_skk') ?? 0), 'ic-danger'],
             ],
         ],
@@ -171,7 +171,8 @@
                 ['Kelola Rekap Objek Kebakaran', 'kejadian kebakaran', 'fa-house-chimney-crack', '/internal/damtan/rekap-objek', $countKejadianKebakaran, 'ic-danger', 'skip' => true],
                 ['Kelola Data Laporan', 'laporan', 'fa-clipboard-list', '/internal/damtan/data-laporan', $count('laporan_penyelamatans'), 'ic-danger'],
                 ['Kelola Surat Korban', 'surat terbit', 'fa-folder-open', '/internal/surat-korban/data', $count('surat_korbans'), 'ic-primary'],
-                ['Kelola Surat Keramaian', 'surat izin', 'fa-users-rectangle', route('internal.izin-keramaian.index'), $count('izin_keramaian'), 'ic-info'],
+                ['Kelola Pengamanan Event Keramaian', 'surat izin', 'fa-users-rectangle', route('internal.izin-keramaian.index'), $count('izin_keramaian'), 'ic-info'],
+                ['Kelola Penggunaan Sarana', 'permohonan', 'fa-truck-droplet', url('/internal/damtan/kelola-penggunaan-sarana'), $count('penggunaan_sarana'), 'ic-primary'],
             ],
         ],
         [
@@ -214,7 +215,7 @@
         [
             'id' => 'informasi', 'title' => 'Manajemen Informasi', 'icon' => 'fa-newspaper', 'tone' => 'violet', 'desc' => 'Berita, produk hukum, dan profil instansi', 'roles' => $ops,
             'items' => [
-                ['Berita', 'berita', 'fa-newspaper', '/internal/operator/kelola-berita', $count('berita'), 'ic-primary'],
+                ['Pemadaman, Penyelamatan & Evakuasi', 'kejadian', 'fa-fire-flame-curved', '/internal/operator/kejadian', $count('kejadian_damkar'), 'ic-danger'],
                 ['Info Grafis', 'info grafis', 'fa-image', '/internal/operator/infografis', $count('infografis'), 'ic-info'],
                 ['Berita Medsos', 'unggahan', 'fa-brands fa-instagram', '/internal/operator/berita-medsos', $count('berita_medsos'), 'ic-danger'],
                 ['Ujung-Ujung Damkar', 'video', 'fa-brands fa-youtube', '/internal/operator/ujung-damkar', $count('ujung_damkar'), 'ic-danger'],
@@ -224,6 +225,7 @@
 
                 ['Undang-Undang', 'dokumen hukum', 'fa-scale-balanced', '/internal/produk-hukum/undang-undang', $countKategoriHukum('undang-undang'), 'ic-primary'],
                 ['Peraturan Pemerintah', 'dokumen hukum', 'fa-landmark', '/internal/produk-hukum/peraturan-pemerintah', $countKategoriHukum('peraturan-pemerintah'), 'ic-info'],
+                ['Peraturan Presiden', 'dokumen hukum', 'fa-book', '/internal/produk-hukum/peraturan-presiden', $countKategoriHukum('peraturan-presiden'), 'ic-info'],
                 ['Peraturan Menteri', 'dokumen hukum', 'fa-book-bookmark', '/internal/produk-hukum/peraturan-menteri', $countKategoriHukum('peraturan-menteri'), 'ic-primary'],
                 ['Peraturan Daerah', 'dokumen hukum', 'fa-file-shield', '/internal/produk-hukum/peraturan-daerah', $countKategoriHukum('peraturan-daerah'), 'ic-danger'],
                 ['Peraturan Kepala Daerah', 'dokumen hukum', 'fa-file-signature', '/internal/produk-hukum/peraturan-kepala-daerah', $countKategoriHukum('peraturan-kepala-daerah'), 'ic-info'],

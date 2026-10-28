@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\RedkarRegistration;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
-use App\Models\User;
-use App\Models\RedkarRegistration;
 
 class AuthController extends Controller
 {
@@ -30,6 +30,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
+
             return redirect()->intended('/internal/index')->with('success', 'Login berhasil, selamat datang di SIMERAH KOJA!');
         }
 
@@ -52,33 +53,33 @@ class AuthController extends Controller
             'nomor_pegawai' => ['required'],
         ], [
             'email.required' => 'Email wajib diisi.',
-            'nomor_pegawai.required' => 'Nomor kepegawaian wajib diisi.'
+            'nomor_pegawai.required' => 'Nomor kepegawaian wajib diisi.',
         ]);
 
         $user = User::where('email', $request->email)
-                    ->where('nomor_pegawai', $request->nomor_pegawai)
-                    ->first();
+            ->where('nomor_pegawai', $request->nomor_pegawai)
+            ->first();
 
-        if (!$user) {
+        if (! $user) {
             return back()->withErrors([
                 'email' => 'Kombinasi Email dan Nomor Kepegawaian tidak ditemukan di sistem.',
             ])->onlyInput('email', 'nomor_pegawai');
         }
 
-        $passwordBaru = 'Damkar' . rand(1000, 9999);
+        $passwordBaru = 'Damkar'.rand(1000, 9999);
         $user->password = Hash::make($passwordBaru);
         $user->save();
 
-        $pesanEmail = "Halo " . $user->nama_lengkap . ",\n\n"
-                    . "Permintaan reset password untuk akun SIMERAH KOJA Anda berhasil diverifikasi.\n"
-                    . "Berikut adalah password sementara Anda:\n\n"
-                    . "Password Baru: " . $passwordBaru . "\n\n"
-                    . "Silakan login menggunakan password ini dan segera ubah password Anda di menu Pengaturan Akun demi keamanan.\n\n"
-                    . "Salam,\nTim Administrator SIMERAH KOJA";
+        $pesanEmail = 'Halo '.$user->nama_lengkap.",\n\n"
+                    ."Permintaan reset password untuk akun SIMERAH KOJA Anda berhasil diverifikasi.\n"
+                    ."Berikut adalah password sementara Anda:\n\n"
+                    .'Password Baru: '.$passwordBaru."\n\n"
+                    ."Silakan login menggunakan password ini dan segera ubah password Anda di menu Pengaturan Akun demi keamanan.\n\n"
+                    ."Salam,\nTim Administrator SIMERAH KOJA";
 
         Mail::raw($pesanEmail, function ($message) use ($user) {
             $message->to($user->email)
-                    ->subject('Reset Password Akun SIMERAH KOJA');
+                ->subject('Reset Password Akun SIMERAH KOJA');
         });
 
         return redirect('/login')->with('success', 'Password baru telah dikirim ke email Anda. Silakan cek kotak masuk.');
@@ -90,7 +91,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        
+
         return redirect('/login')->with('success', 'Anda telah berhasil keluar dari sistem.');
     }
 
@@ -110,12 +111,12 @@ class AuthController extends Controller
             'password_lama.required' => 'Password lama wajib diisi.',
             'password_baru.required' => 'Password baru wajib diisi.',
             'password_baru.min' => 'Password baru minimal 6 karakter.',
-            'password_baru.confirmed' => 'Konfirmasi password baru tidak cocok.'
+            'password_baru.confirmed' => 'Konfirmasi password baru tidak cocok.',
         ]);
 
         $user = Auth::user();
 
-        if (!Hash::check($request->password_lama, $user->password)) {
+        if (! Hash::check($request->password_lama, $user->password)) {
             return back()->withErrors(['password_lama' => 'Password lama yang Anda masukkan salah.']);
         }
 
@@ -129,19 +130,19 @@ class AuthController extends Controller
     public function kelolaUser()
     {
         // Menggunakan method bawaan Spatie
-        if (!Auth::user()->hasRole('Super User')) {
+        if (! Auth::user()->hasRole('Super User')) {
             return redirect('/internal/index')->with('error', 'Akses Ditolak! Hanya Super User yang dapat mengelola pengguna.');
         }
 
         $users = User::orderBy('created_at', 'desc')->get();
-        
+
         return view('internal.kelola_user', compact('users'));
     }
 
     // Memproses penambahan user baru
     public function storeUser(Request $request)
     {
-        if (!Auth::user()->hasRole('Super User')) {
+        if (! Auth::user()->hasRole('Super User')) {
             return redirect('/internal/index')->with('error', 'Akses Ditolak!');
         }
 
@@ -149,14 +150,14 @@ class AuthController extends Controller
             'nama_lengkap' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
             'nomor_pegawai' => ['required', 'unique:users,nomor_pegawai'],
-            'role' => ['required']
+            'role' => ['required'],
         ]);
 
-        $user = new User();
+        $user = new User;
         $user->nama_lengkap = $request->nama_lengkap;
         $user->email = $request->email;
         $user->nomor_pegawai = $request->nomor_pegawai;
-        $user->password = Hash::make('Damkar123'); 
+        $user->password = Hash::make('Damkar123');
         $user->role = $request->role; // Tetap simpan di kolom lama untuk berjaga-jaga
         $user->save();
 
@@ -169,7 +170,7 @@ class AuthController extends Controller
     // Memproses update data user
     public function updateUser(Request $request, $id)
     {
-        if (!Auth::user()->hasRole('Super User')) {
+        if (! Auth::user()->hasRole('Super User')) {
             return redirect('/internal/index')->with('error', 'Akses Ditolak!');
         }
 
@@ -177,9 +178,9 @@ class AuthController extends Controller
 
         $request->validate([
             'nama_lengkap' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email,' . $id],
-            'nomor_pegawai' => ['required', 'unique:users,nomor_pegawai,' . $id],
-            'role' => ['required']
+            'email' => ['required', 'email', 'unique:users,email,'.$id],
+            'nomor_pegawai' => ['required', 'unique:users,nomor_pegawai,'.$id],
+            'role' => ['required'],
         ]);
 
         $user->nama_lengkap = $request->nama_lengkap;
@@ -197,6 +198,117 @@ class AuthController extends Controller
         $user->syncRoles([$request->role]);
 
         return back()->with('success', 'Data pengguna berhasil diperbarui!');
+    }
+
+    // Menghapus data pengguna internal (Khusus Super User)
+    public function destroyUser($id)
+    {
+        if (! Auth::user()->hasRole('Super User')) {
+            return redirect('/internal/index')->with('error', 'Akses Ditolak! Hanya Super User yang dapat menghapus pengguna.');
+        }
+
+        if (Auth::id() == $id) {
+            return back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri yang sedang aktif digunakan.');
+        }
+
+        $user = User::findOrFail($id);
+        $nama = $user->nama_lengkap;
+        $user->delete();
+
+        return back()->with('success', 'Pengguna '.$nama.' berhasil dihapus!');
+    }
+
+    // Menampilkan halaman Kelola Akun Pemohon (Khusus Super User)
+    public function kelolaPemohon()
+    {
+        if (! Auth::user()->hasRole('Super User')) {
+            return redirect('/internal/index')->with('error', 'Akses Ditolak! Hanya Super User yang dapat mengelola akun pemohon.');
+        }
+
+        $pemohons = DB::table('pemohons')->orderBy('created_at', 'desc')->get();
+
+        return view('pemohon.kelola_pemohon', compact('pemohons'));
+    }
+
+    // Menambah akun pemohon secara manual (Khusus Super User)
+    public function storePemohon(Request $request)
+    {
+        if (! Auth::user()->hasRole('Super User')) {
+            return redirect('/internal/index')->with('error', 'Akses Ditolak!');
+        }
+
+        $request->validate([
+            'nik' => ['required', 'string', 'size:16', 'unique:pemohons,nik'],
+            'nama_lengkap' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'unique:pemohons,email'],
+            'no_whatsapp' => ['required', 'string', 'max:30'],
+            'password' => ['required', 'string', 'min:8'],
+            'role' => ['nullable', 'string', 'max:50'],
+        ]);
+
+        DB::table('pemohons')->insert([
+            'nik' => $request->nik,
+            'nama_lengkap' => $request->nama_lengkap,
+            'email' => $request->email,
+            'no_whatsapp' => $request->no_whatsapp,
+            'password' => Hash::make($request->password),
+            'role' => $request->role ?? 'pemohon',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return back()->with('success', 'Akun pemohon baru berhasil ditambahkan!');
+    }
+
+    // Mengupdate data akun pemohon (Khusus Super User)
+    public function updatePemohon(Request $request, $id)
+    {
+        if (! Auth::user()->hasRole('Super User')) {
+            return redirect('/internal/index')->with('error', 'Akses Ditolak!');
+        }
+
+        $request->validate([
+            'nik' => ['required', 'string', 'size:16', 'unique:pemohons,nik,'.$id],
+            'nama_lengkap' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'unique:pemohons,email,'.$id],
+            'no_whatsapp' => ['required', 'string', 'max:30'],
+            'password' => ['nullable', 'string', 'min:8'],
+            'role' => ['nullable', 'string', 'max:50'],
+        ]);
+
+        $updateData = [
+            'nik' => $request->nik,
+            'nama_lengkap' => $request->nama_lengkap,
+            'email' => $request->email,
+            'no_whatsapp' => $request->no_whatsapp,
+            'role' => $request->role ?? 'pemohon',
+            'updated_at' => now(),
+        ];
+
+        if ($request->filled('password')) {
+            $updateData['password'] = Hash::make($request->password);
+        }
+
+        DB::table('pemohons')->where('id', $id)->update($updateData);
+
+        return back()->with('success', 'Data akun pemohon berhasil diperbarui!');
+    }
+
+    // Menghapus akun pemohon (Khusus Super User)
+    public function destroyPemohon($id)
+    {
+        if (! Auth::user()->hasRole('Super User')) {
+            return redirect('/internal/index')->with('error', 'Akses Ditolak!');
+        }
+
+        $pemohon = DB::table('pemohons')->where('id', $id)->first();
+        if ($pemohon) {
+            DB::table('pemohons')->where('id', $id)->delete();
+
+            return back()->with('success', 'Akun pemohon '.$pemohon->nama_lengkap.' berhasil dihapus!');
+        }
+
+        return back()->with('error', 'Data akun pemohon tidak ditemukan.');
     }
 
     // Memproses pendaftaran relawan Redkar dari halaman publik
@@ -260,7 +372,7 @@ class AuthController extends Controller
     {
         // Dibiarkan terbuka tanpa batasan agar semua role yang login bisa Read-Only data Redkar
         $relawan = RedkarRegistration::orderBy('created_at', 'desc')->get();
-        
+
         return view('internal.pencegahan.kelola_redkar', compact('relawan'));
     }
 
@@ -268,8 +380,8 @@ class AuthController extends Controller
     public function cetakRedkar($id)
     {
         // Dibiarkan terbuka tanpa batasan agar semua role bisa mencetak PDF
-        $relawan = RedkarRegistration::findOrFail($id); 
-        
+        $relawan = RedkarRegistration::findOrFail($id);
+
         return view('internal.pencegahan.cetak_redkar', compact('relawan'));
     }
 }

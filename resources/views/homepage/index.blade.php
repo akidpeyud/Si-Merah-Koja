@@ -819,7 +819,6 @@
             <p class="hero-lead rise d2">Lapor kebakaran dan penyelamatan langsung ke petugas, atau urus perizinan proteksi kebakaran secara digital.</p>
             <div class="hero-cta rise d3">
                 <a class="btn btn-light" href="#kejadian">Lihat kejadian <i class="fas fa-arrow-down"></i></a>
-                <a class="btn btn-ghost" href="#lapor">Lapor darurat <i class="fas fa-phone-alt"></i></a>
             </div>
         </div>
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pegawai;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class DukController extends Controller
@@ -84,9 +85,9 @@ class DukController extends Controller
             'masa_kerja_bln' => 'nullable|integer',
             'pendidikan_tingkat_ijazah' => 'nullable|string|max:255',
             'pendidikan_nama' => 'nullable|string|max:255',
-            'pendidikan_tahun_lulus' => 'nullable|string|max:4',
+            'pendidikan_tahun_lulus' => 'nullable|string|max:255',
             'latihan_jabatan_nama' => 'nullable|string|max:255',
-            'latihan_jabatan_tahun_lulus' => 'nullable|string|max:4',
+            'latihan_jabatan_tahun_lulus' => 'nullable|string|max:255',
             'latihan_jabatan_tempat' => 'nullable|string|max:255',
             'catatan_mutasi_pegawai' => 'nullable|string',
         ], [
@@ -95,6 +96,24 @@ class DukController extends Controller
             'no_urut.required' => 'Nomor urut wajib diisi.',
             'nip.unique' => 'NIP ini sudah terdaftar di sistem.',
         ]);
+
+        if (! empty($validatedData['tempat_lahir']) || ! empty($validatedData['tanggal_lahir'])) {
+            $tempat = trim($validatedData['tempat_lahir'] ?? '');
+            $tanggal = $validatedData['tanggal_lahir'] ?? null;
+            $tanggalFormatted = $tanggal ? Carbon::parse($tanggal)->format('d-m-Y') : '';
+
+            if ($tempat && $tanggalFormatted) {
+                $validatedData['tempat_tanggal_lahir'] = "{$tempat}, {$tanggalFormatted}";
+            } elseif ($tempat) {
+                $validatedData['tempat_tanggal_lahir'] = $tempat;
+            } elseif ($tanggalFormatted) {
+                $validatedData['tempat_tanggal_lahir'] = $tanggalFormatted;
+            }
+        } else {
+            $validatedData['tempat_tanggal_lahir'] = null;
+        }
+
+        unset($validatedData['tempat_lahir'], $validatedData['tanggal_lahir']);
 
         Pegawai::create($validatedData);
 
@@ -140,9 +159,9 @@ class DukController extends Controller
             'masa_kerja_bln' => 'nullable|integer',
             'pendidikan_tingkat_ijazah' => 'nullable|string|max:255',
             'pendidikan_nama' => 'nullable|string|max:255',
-            'pendidikan_tahun_lulus' => 'nullable|string|max:4',
+            'pendidikan_tahun_lulus' => 'nullable|string|max:255',
             'latihan_jabatan_nama' => 'nullable|string|max:255',
-            'latihan_jabatan_tahun_lulus' => 'nullable|string|max:4',
+            'latihan_jabatan_tahun_lulus' => 'nullable|string|max:255',
             'latihan_jabatan_tempat' => 'nullable|string|max:255',
             'catatan_mutasi_pegawai' => 'nullable|string',
         ], [
@@ -150,6 +169,24 @@ class DukController extends Controller
             'no_urut.required' => 'Nomor urut wajib diisi.',
             'nip.unique' => 'NIP ini sudah terdaftar di sistem.',
         ]);
+
+        if (! empty($validatedData['tempat_lahir']) || ! empty($validatedData['tanggal_lahir'])) {
+            $tempat = trim($validatedData['tempat_lahir'] ?? '');
+            $tanggal = $validatedData['tanggal_lahir'] ?? null;
+            $tanggalFormatted = $tanggal ? Carbon::parse($tanggal)->format('d-m-Y') : '';
+
+            if ($tempat && $tanggalFormatted) {
+                $validatedData['tempat_tanggal_lahir'] = "{$tempat}, {$tanggalFormatted}";
+            } elseif ($tempat) {
+                $validatedData['tempat_tanggal_lahir'] = $tempat;
+            } elseif ($tanggalFormatted) {
+                $validatedData['tempat_tanggal_lahir'] = $tanggalFormatted;
+            }
+        } else {
+            $validatedData['tempat_tanggal_lahir'] = null;
+        }
+
+        unset($validatedData['tempat_lahir'], $validatedData['tanggal_lahir']);
 
         $pegawai->update($validatedData);
 

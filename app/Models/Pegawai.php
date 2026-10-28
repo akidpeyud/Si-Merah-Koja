@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,7 +11,7 @@ class Pegawai extends Model
     use HasFactory;
 
     // Menentukan nama tabel secara eksplisit (opsional jika mengikuti standar jamak bahasa Inggris, tapi disarankan)
-    protected $table = 'pegawais'; 
+    protected $table = 'pegawais';
 
     // Mendaftarkan kolom-kolom yang diizinkan untuk diisi secara massal (Mass Assignment)
     protected $fillable = [
@@ -34,4 +35,43 @@ class Pegawai extends Model
         'latihan_jabatan_tempat',
         'catatan_mutasi_pegawai',
     ];
+
+    /**
+     * Accessor untuk memisahkan tempat lahir dari kolom tempat_tanggal_lahir.
+     */
+    public function getTempatLahirAttribute(): ?string
+    {
+        if (empty($this->tempat_tanggal_lahir)) {
+            return null;
+        }
+
+        $parts = explode(',', $this->tempat_tanggal_lahir, 2);
+
+        return trim($parts[0] ?? '');
+    }
+
+    /**
+     * Accessor untuk memisahkan tanggal lahir (format Y-m-d) dari kolom tempat_tanggal_lahir.
+     */
+    public function getTanggalLahirAttribute(): ?string
+    {
+        if (empty($this->tempat_tanggal_lahir)) {
+            return null;
+        }
+
+        $parts = explode(',', $this->tempat_tanggal_lahir, 2);
+        if (! isset($parts[1])) {
+            return null;
+        }
+
+        $rawDate = trim($parts[1]);
+        $cleaned = preg_replace('/\s+/', '', $rawDate);
+        $cleaned = str_replace('/', '-', $cleaned);
+
+        try {
+            return Carbon::parse($cleaned)->format('Y-m-d');
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
 }
