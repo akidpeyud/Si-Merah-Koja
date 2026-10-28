@@ -66,7 +66,7 @@ class PenggunaanSaranaExcelController extends Controller
         $tahun = $request->query('tahun');
         $tahun = (is_numeric($tahun) && strlen((string) $tahun) === 4) ? (int) $tahun : null;
 
-        $model = new PenggunaanSarana();
+        $model = new PenggunaanSarana;
 
         $query = PenggunaanSarana::orderBy('created_at', 'desc');
         if ($tahun) {
@@ -81,21 +81,21 @@ class PenggunaanSaranaExcelController extends Controller
 
         // Buang kolom berkas/foto (surat pemohon, fotocopy KTP, sketsa denah lokasi, dsb.)
         $kolomDb = array_values(array_filter($kolomDb, function ($nama) use ($data) {
-            return !$this->kolomBerkas($nama, $data);
+            return ! $this->kolomBerkas($nama, $data);
         }));
 
         // Buang kolom ID (mis. pemohon_id, id_pemohon, user_id)
         $kolomDb = array_values(array_filter($kolomDb, function ($nama) {
-            return !preg_match('/(^id_|_id$)/i', $nama);
+            return ! preg_match('/(^id_|_id$)/i', $nama);
         }));
 
         /* ---------- Definisi kolom ---------- */
         $kolom = [['key' => 'no', 'head' => 'No', 'w' => 6]];
         foreach ($kolomDb as $nama) {
             $kolom[] = [
-                'key'  => $nama,
+                'key' => $nama,
                 'head' => Str::headline($nama),
-                'w'    => 24,
+                'w' => 24,
             ];
         }
 
@@ -106,7 +106,7 @@ class PenggunaanSaranaExcelController extends Controller
         $kolTerakhir = Coordinate::stringFromColumnIndex(count($kolom));
 
         /* ---------- Workbook ---------- */
-        $ss = new Spreadsheet();
+        $ss = new Spreadsheet;
         $ss->getDefaultStyle()->getFont()->setName('Arial')->setSize(11);
         $ws = $ss->getActiveSheet();
         $ws->setTitle('PENGGUNAAN SARANA');
@@ -117,29 +117,29 @@ class PenggunaanSaranaExcelController extends Controller
 
         // Judul
         $ws->mergeCells("A1:{$kolTerakhir}2");
-        $ws->setCellValue('A1', 'REKAPITULASI PERMOHONAN PENGGUNAAN SARANA' . ($tahun ? ' TAHUN ' . $tahun : ''));
+        $ws->setCellValue('A1', 'REKAPITULASI PERMOHONAN PENGGUNAAN SARANA'.($tahun ? ' TAHUN '.$tahun : ''));
         $ws->mergeCells("A3:{$kolTerakhir}3");
-        $ws->setCellValue('A3', 'Dicetak pada: ' . Carbon::now()->locale('id')->translatedFormat('d F Y'));
+        $ws->setCellValue('A3', 'Dicetak pada: '.Carbon::now()->locale('id')->translatedFormat('d F Y'));
         $ws->getStyle("A1:{$kolTerakhir}3")->applyFromArray([
-            'font'      => ['name' => 'Arial', 'bold' => true, 'size' => 16],
+            'font' => ['name' => 'Arial', 'bold' => true, 'size' => 16],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical'   => Alignment::VERTICAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
             ],
         ]);
         $ws->getStyle('A3')->getFont()->setSize(11)->setBold(false);
 
         // Header tabel (baris 5)
         foreach ($kolom as $k) {
-            $ws->setCellValue($k['huruf'] . '5', $k['head']);
+            $ws->setCellValue($k['huruf'].'5', $k['head']);
         }
         $ws->getStyle("A5:{$kolTerakhir}5")->applyFromArray([
-            'font'      => ['name' => 'Arial', 'bold' => true, 'size' => 12, 'color' => ['argb' => 'FFFFFFFF']],
-            'fill'      => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => 'FFB91C1C']],
+            'font' => ['name' => 'Arial', 'bold' => true, 'size' => 12, 'color' => ['argb' => 'FFFFFFFF']],
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => 'FFB91C1C']],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical'   => Alignment::VERTICAL_CENTER,
-                'wrapText'   => true,
+                'vertical' => Alignment::VERTICAL_CENTER,
+                'wrapText' => true,
             ],
         ]);
         $ws->getRowDimension(5)->setRowHeight(32);
@@ -148,10 +148,11 @@ class PenggunaanSaranaExcelController extends Controller
         $r = 6;
         foreach ($data as $i => $row) {
             foreach ($kolom as $k) {
-                $sel = $k['huruf'] . $r;
+                $sel = $k['huruf'].$r;
 
                 if ($k['key'] === 'no') {
                     $ws->setCellValue($sel, $i + 1);
+
                     continue;
                 }
 
@@ -184,7 +185,7 @@ class PenggunaanSaranaExcelController extends Controller
         if ($data->isEmpty()) {
             $ws->mergeCells("A6:{$kolTerakhir}6");
             $ws->setCellValue('A6', $tahun
-                ? 'Belum ada data pengajuan Penggunaan Sarana pada tahun ' . $tahun . '.'
+                ? 'Belum ada data pengajuan Penggunaan Sarana pada tahun '.$tahun.'.'
                 : 'Belum ada data pengajuan Penggunaan Sarana.');
         }
 
@@ -193,11 +194,11 @@ class PenggunaanSaranaExcelController extends Controller
             ->setBorderStyle(Border::BORDER_THIN);
 
         $ws->getStyle("A6:{$kolTerakhir}{$terakhir}")->applyFromArray([
-            'font'      => ['name' => 'Arial', 'size' => 11],
+            'font' => ['name' => 'Arial', 'size' => 11],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_LEFT,
-                'vertical'   => Alignment::VERTICAL_CENTER,
-                'wrapText'   => true,
+                'vertical' => Alignment::VERTICAL_CENTER,
+                'wrapText' => true,
             ],
         ]);
 
@@ -221,7 +222,7 @@ class PenggunaanSaranaExcelController extends Controller
         $ws->getPageMargins()->setLeft(0.25)->setRight(0.25)->setTop(0.5)->setBottom(0.5);
 
         /* ---------- Download ---------- */
-        $namaFile = 'Rekap_Penggunaan_Sarana_' . ($tahun ? $tahun . '_' : '') . date('Ymd') . '.xlsx';
+        $namaFile = 'Rekap_Penggunaan_Sarana_'.($tahun ? $tahun.'_' : '').date('Ymd').'.xlsx';
 
         return response()->streamDownload(function () use ($ss) {
             (new Xlsx($ss))->save('php://output');
