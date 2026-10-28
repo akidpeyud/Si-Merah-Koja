@@ -349,6 +349,9 @@
     @if(Request::is('sapra*'))
         @include('layouts.partials.sapra-responsive')
     @endif
+    @if(Request::is('internal/damtan*') || Request::is('internal/surat-korban*'))
+        @include('layouts.partials.damtan-responsive')
+    @endif
 </head>
 <body>
 

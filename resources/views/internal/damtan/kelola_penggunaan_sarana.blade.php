@@ -40,17 +40,11 @@
     @keyframes slideDownCenter { from { transform: translate(-50%, -50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
     @keyframes fadeOutUpCenter { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -50px); opacity: 0; } }
 
+    .topbar { position: sticky; top: 0; z-index: 1020; height: var(--topbar-h); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 28px; background: var(--ink); border-bottom: 1px solid rgba(255,255,255,.08); box-shadow: 0 2px 12px rgba(13, 27, 42, .16); }
+    .sidebar { width: var(--sidebar-w); flex: none; position: sticky; top: var(--topbar-h); height: calc(100vh - var(--topbar-h)); overflow-y: auto; background: #ffffff; border-right: 1px solid var(--line); padding: 20px 14px 32px; scrollbar-width: thin; scrollbar-color: #d8dee8 transparent; }
     .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); margin-top: 3px; }
     .side-group summary .grp-label { flex: 1 1 auto; min-width: 0; white-space: normal; line-height: 1.4; }
     .side-group summary .chev { flex: none; font-size: .7rem; margin-top: 4px; transition: transform .25s ease; }
-
-    @media (max-width: 900px) {
-        .topbar { padding: 0 16px; }
-        .sidebar { position: fixed; z-index: 1010; top: var(--topbar-h); left: 0; height: calc(100dvh - var(--topbar-h)); transform: translateX(-100%); transition: transform .3s ease; box-shadow: var(--shadow-lg); }
-        body.side-open .sidebar { transform: none; }
-        .sidebar-backdrop { display: block; position: fixed; inset: var(--topbar-h) 0 0 0; z-index: 1000; background: rgba(13,27,42,.45); opacity: 0; pointer-events: none; transition: opacity .3s; }
-        body.side-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
-    }
 
     .page-header {
         position: relative;
@@ -223,39 +217,6 @@
 
     .empty-state td { padding: 56px 10px !important; color: var(--steel); background: #fff !important; }
     .empty-state i { font-size: 26px; margin-bottom: 10px; color: var(--steel-soft); }
-
-    @media (max-width: 768px) {
-        .content { padding: 20px 14px 60px; }
-        .page-header {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 14px;
-            margin-bottom: 20px;
-        }
-        .page-header-text h1 {
-            font-size: 1.5rem;
-        }
-        .page-header .d-flex {
-            width: 100%;
-            flex-direction: column;
-            gap: 10px !important;
-        }
-        .page-header .dropdown,
-        .page-header .dropdown button,
-        .page-header .btn-custom-primary {
-            width: 100%;
-            justify-content: center;
-        }
-        .filter-bar .btn-reset {
-            width: 100%;
-        }
-        .rekap-scroll {
-            padding: 12px 10px;
-        }
-        .rekap-wrap {
-            border-radius: 12px;
-        }
-    }
 
     /* ==========================================================
        CETAK / EKSPOR PDF (A4 Landscape)
