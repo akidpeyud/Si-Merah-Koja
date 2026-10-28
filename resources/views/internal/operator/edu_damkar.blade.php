@@ -30,15 +30,6 @@
         font-weight: 600; font-size: .84rem; border: none;
         transition: background .2s, color .2s, transform .1s, box-shadow .2s;
     }
-    .sidebar {
-        width: var(--sidebar-w); flex: none;
-        position: sticky; top: var(--topbar-h);
-        height: calc(100vh - var(--topbar-h));
-        overflow-y: auto; overflow-x: hidden;
-        background: #fff; border-right: 1px solid var(--line);
-        padding: 20px 14px 32px;
-        scrollbar-width: thin; scrollbar-color: #d8dee8 transparent;
-    }
     .side-link.active { background: var(--ink); color: #fff; box-shadow: 0 4px 10px rgba(13,27,42,.10); }
     .side-link.active i { color: #fff; }
     .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); margin-top: 3px; }
@@ -339,35 +330,6 @@
         var x = t.querySelector('[data-toast-close]');
         if (x) x.addEventListener('click', hide);
         setTimeout(hide, 4500);
-    });
-
-    var toggle = document.getElementById('sideToggle');
-    var backdrop = document.getElementById('sideBackdrop');
-
-    function closeSide() {
-        document.body.classList.remove('side-open');
-        if (toggle) toggle.setAttribute('aria-expanded', 'false');
-    }
-    if (toggle) {
-        toggle.addEventListener('click', function () {
-            var open = document.body.classList.toggle('side-open');
-            toggle.setAttribute('aria-expanded', open);
-        });
-    }
-    if (backdrop) backdrop.addEventListener('click', closeSide);
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') closeSide();
-    });
-
-    var groups = document.querySelectorAll('.side-group');
-    groups.forEach(function (g) {
-        g.addEventListener('toggle', function () {
-            if (g.open) {
-                groups.forEach(function (o) {
-                    if (o !== g) o.open = false;
-                });
-            }
-        });
     });
 
     var ytInput      = document.getElementById('ytLinkInput');
