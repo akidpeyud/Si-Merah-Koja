@@ -523,6 +523,13 @@
             box-shadow: 0 8px 24px rgba(0,0,0,.3); transition: .3s cubic-bezier(.2,.8,.2,1);
         }
         .dlg-close:hover { background: var(--signal); color: #fff; transform: scale(1.08) rotate(90deg); }
+        @media (max-width: 640px) {
+            .dlg-close {
+                top: 10px; right: 10px; width: 38px; height: 38px; font-size: 1rem;
+                background: rgba(13, 27, 42, .88); color: #fff; border: 1px solid rgba(255,255,255,.2);
+                box-shadow: 0 4px 14px rgba(0,0,0,.4); z-index: 20;
+            }
+        }
         .video-frame {
             aspect-ratio: 16/9; border-radius: 20px;
             overflow: hidden; background: #000;
