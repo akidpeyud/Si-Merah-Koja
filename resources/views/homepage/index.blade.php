@@ -263,6 +263,8 @@
         @media (max-width: 480px) {
             .brand img { height: 30px; }
             .brand a + a { margin-left: 10px; padding-left: 10px; }
+            .hero h1 { font-size: clamp(2.4rem, 11vw, 3.4rem); }
+            .ticker-label { padding: 10px 14px; font-size: .8rem; }
         }
         body.nav-lock { overflow: hidden; }
 
@@ -516,6 +518,15 @@
         dialog::backdrop { background: rgba(7,14,24,.86); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
         .dlg-close { position: absolute; top: -52px; right: 0; width: 44px; height: 44px; border-radius: 50%; background: #fff; color: var(--ink); font-size: 1.1rem; display: grid; place-items: center; }
         .dlg-close:hover { background: var(--amber); }
+        @media (max-width: 640px) {
+            dialog { max-width: 96vw; max-height: 90dvh; }
+            .dlg-close {
+                top: 10px; right: 10px; width: 40px; height: 40px; font-size: 1rem;
+                background: rgba(13, 27, 42, .88); color: #fff; border: 1px solid rgba(255,255,255,.2);
+                box-shadow: 0 4px 14px rgba(0,0,0,.4); z-index: 20;
+            }
+            .dlg-close:hover { background: var(--signal); color: #fff; }
+        }
         #lightbox img { max-height: calc(94dvh - 170px); max-width: 100%; width: auto; margin: 0 auto; border-radius: var(--r-md); box-shadow: 0 30px 60px rgba(0,0,0,.5); transition: opacity .2s; }
         #lightbox img.is-loading { opacity: .35; }
         #lightbox p { margin-top: 14px; text-align: center; font-weight: 600; }
@@ -808,7 +819,6 @@
             <p class="hero-lead rise d2">Lapor kebakaran dan penyelamatan langsung ke petugas, atau urus perizinan proteksi kebakaran secara digital.</p>
             <div class="hero-cta rise d3">
                 <a class="btn btn-light" href="#kejadian">Lihat kejadian <i class="fas fa-arrow-down"></i></a>
-                <a class="btn btn-ghost" href="#lapor">Lapor darurat <i class="fas fa-phone-alt"></i></a>
             </div>
         </div>
 

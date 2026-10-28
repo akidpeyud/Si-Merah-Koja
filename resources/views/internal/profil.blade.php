@@ -54,6 +54,10 @@
     }
     .badge-role.super_user { background: var(--ink); color: #fff; }
     .badge-role.operator { background: var(--info-soft); color: var(--info); }
+    .badge-role.damtan { background: rgba(220, 53, 69, .15); color: #b42332; }
+    .badge-role.sapra { background: rgba(25, 135, 84, .15); color: #198754; }
+    .badge-role.pencegahan { background: rgba(244, 183, 64, .15); color: #d97706; }
+    .badge-role.sekretariat { background: var(--navy-soft); color: var(--navy); }
     .badge-role.user { background: var(--navy-soft); color: var(--navy); }
     .form-label { font-size: .88rem; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
     .input-group-text { background: var(--paper); border-color: var(--line-dark); color: var(--steel); border-radius: 8px 0 0 8px; }
@@ -99,7 +103,6 @@
 @endpush
 
 @section('content')
-@section('content')
 
         <div class="page-head">
             <h1>Profil Pengguna</h1>
@@ -136,10 +139,14 @@
                     <div class="info-group">
                         <div class="info-label">Hak Akses Sistem</div>
                         <div class="info-value">
-                            <span class="badge-role {{ Auth::user()->role }}">
-                                {{ Auth::user()->role === 'user' 
+                            @php
+                                $roleName = Auth::user()->role ?? (Auth::user()->getRoleNames()->first() ?? 'user');
+                                $roleClass = strtolower(str_replace(' ', '_', $roleName));
+                            @endphp
+                            <span class="badge-role {{ $roleClass }}">
+                                {{ $roleName === 'user' 
                                     ? 'Pegawai Internal' 
-                                    : ucwords(str_replace('_', ' ', Auth::user()->role)) 
+                                    : ucwords(str_replace('_', ' ', $roleName)) 
                                 }}
                             </span>
                         </div>

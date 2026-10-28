@@ -39,7 +39,6 @@
 @endpush
 
 @section('content')
-@section('content')
 
         <a href="{{ route('kepegawaian.duk.index') }}" class="btn btn-sm btn-outline-secondary mb-3 px-3" style="border-radius: 8px; font-weight: 600;">
             <i class="fas fa-arrow-left me-1"></i> Kembali ke DUK
@@ -81,13 +80,13 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">NIP <span class="text-danger">*</span></label>
-                        <input type="text" name="nip" class="form-control @error('nip') is-invalid @enderror" value="{{ old('nip') }}" required maxlength="18" pattern="[0-9]{18}" title="NIP harus 18 digit angka" placeholder="18 Digit NIP">
+                        <input type="text" name="nip" class="form-control @error('nip') is-invalid @enderror" value="{{ old('nip') }}" required maxlength="20" placeholder="18-20 Digit NIP">
                         @error('nip')
                             <div class="invalid-feedback fw-bold">
                                 {{ $message }}
                             </div>
                         @enderror
-                        <small class="text-muted" style="font-size: .75rem;">Maksimal & wajib 18 digit angka.</small>
+                        <small class="text-muted" style="font-size: .75rem;">Maksimal 20 digit angka.</small>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Nama Lengkap (Beserta Gelar) <span class="text-danger">*</span></label>
@@ -187,7 +186,7 @@
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">Tahun Lulus</label>
-                        <input type="text" name="pendidikan_tahun_lulus" class="form-control" maxlength="4" value="{{ old('pendidikan_tahun_lulus') }}" placeholder="Cth: 2012">
+                        <input type="text" name="pendidikan_tahun_lulus" class="form-control" value="{{ old('pendidikan_tahun_lulus') }}" placeholder="Cth: 2012">
                     </div>
                 </div>
 
@@ -202,7 +201,7 @@
                     </div>
                     <div class="col-md-2">
                         <label class="form-label">Tahun Lulus</label>
-                        <input type="text" name="latihan_jabatan_tahun_lulus" class="form-control" maxlength="4" value="{{ old('latihan_jabatan_tahun_lulus') }}" placeholder="Cth: 2015">
+                        <input type="text" name="latihan_jabatan_tahun_lulus" class="form-control" value="{{ old('latihan_jabatan_tahun_lulus') }}" placeholder="Cth: 2015">
                     </div>
                     <div class="col-md-5">
                         <label class="form-label">Tempat Latihan</label>

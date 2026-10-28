@@ -38,15 +38,15 @@ class SuratKorbanExcelController extends Controller
 
     /** Judul kolom yang dibuat manual (sama dengan judul di tabel halaman) */
     private array $judulKolom = [
-        'nomor_surat'   => 'Nomor Surat',
-        'nama_korban'   => 'Nama Korban / Instansi',
+        'nomor_surat' => 'Nomor Surat',
+        'nama_korban' => 'Nama Korban / Instansi',
         'tanggal_surat' => 'Tanggal Diterbitkan',
     ];
 
     /** Lebar kolom khusus */
     private array $lebarKolom = [
-        'nomor_surat'   => 34,
-        'nama_korban'   => 30,
+        'nomor_surat' => 34,
+        'nama_korban' => 30,
         'tanggal_surat' => 22,
     ];
 
@@ -76,18 +76,18 @@ class SuratKorbanExcelController extends Controller
         $tahun = $request->query('tahun');
         $tahun = (is_numeric($tahun) && strlen((string) $tahun) === 4) ? (int) $tahun : null;
 
-        $model = new SuratKorban();
+        $model = new SuratKorban;
 
         $query = SuratKorban::orderByRaw('COALESCE(tanggal_surat, created_at) DESC')->orderByDesc('id');
         if ($tahun) {
-            $awal  = Carbon::create($tahun, 1, 1)->startOfDay();
+            $awal = Carbon::create($tahun, 1, 1)->startOfDay();
             $akhir = Carbon::create($tahun, 12, 31)->endOfDay();
 
             $query->where(function ($q) use ($awal, $akhir) {
                 $q->whereBetween('tanggal_surat', [$awal, $akhir])
-                  ->orWhere(function ($q2) use ($awal, $akhir) {
-                      $q2->whereNull('tanggal_surat')->whereBetween('created_at', [$awal, $akhir]);
-                  });
+                    ->orWhere(function ($q2) use ($awal, $akhir) {
+                        $q2->whereNull('tanggal_surat')->whereBetween('created_at', [$awal, $akhir]);
+                    });
             });
         }
         $data = $query->get();
@@ -99,27 +99,27 @@ class SuratKorbanExcelController extends Controller
 
         // Buang kolom berkas/foto
         $kolomDb = array_values(array_filter($kolomDb, function ($nama) use ($data) {
-            return !$this->kolomBerkas($nama, $data);
+            return ! $this->kolomBerkas($nama, $data);
         }));
 
         // Buang kolom ID (mis. user_id, id_korban)
         $kolomDb = array_values(array_filter($kolomDb, function ($nama) {
-            return !preg_match('/(^id_|_id$)/i', $nama);
+            return ! preg_match('/(^id_|_id$)/i', $nama);
         }));
 
         // Urutan: nomor surat & nama korban di depan, tanggal diterbitkan di belakang
-        $depan   = array_values(array_intersect(['nomor_surat', 'nama_korban'], $kolomDb));
+        $depan = array_values(array_intersect(['nomor_surat', 'nama_korban'], $kolomDb));
         $akhirKol = in_array('tanggal_surat', $kolomDb, true) ? ['tanggal_surat'] : [];
-        $tengah  = array_values(array_diff($kolomDb, $depan, $akhirKol));
+        $tengah = array_values(array_diff($kolomDb, $depan, $akhirKol));
         $kolomDb = array_merge($depan, $tengah, $akhirKol);
 
         /* ---------- Definisi kolom ---------- */
         $kolom = [['key' => 'no', 'head' => 'No', 'w' => 6]];
         foreach ($kolomDb as $nama) {
             $kolom[] = [
-                'key'  => $nama,
+                'key' => $nama,
                 'head' => $this->judulKolom[$nama] ?? Str::headline($nama),
-                'w'    => $this->lebarKolom[$nama] ?? 24,
+                'w' => $this->lebarKolom[$nama] ?? 24,
             ];
         }
 
@@ -130,7 +130,7 @@ class SuratKorbanExcelController extends Controller
         $kolTerakhir = Coordinate::stringFromColumnIndex(count($kolom));
 
         /* ---------- Workbook ---------- */
-        $ss = new Spreadsheet();
+        $ss = new Spreadsheet;
         $ss->getDefaultStyle()->getFont()->setName('Arial')->setSize(11);
         $ws = $ss->getActiveSheet();
         $ws->setTitle('SURAT KORBAN');
@@ -141,29 +141,29 @@ class SuratKorbanExcelController extends Controller
 
         // Judul
         $ws->mergeCells("A1:{$kolTerakhir}2");
-        $ws->setCellValue('A1', 'REKAPITULASI SURAT KETERANGAN KEJADIAN' . ($tahun ? ' TAHUN ' . $tahun : ''));
+        $ws->setCellValue('A1', 'REKAPITULASI SURAT KETERANGAN KEJADIAN'.($tahun ? ' TAHUN '.$tahun : ''));
         $ws->mergeCells("A3:{$kolTerakhir}3");
-        $ws->setCellValue('A3', 'Dicetak pada: ' . Carbon::now()->locale('id')->translatedFormat('d F Y'));
+        $ws->setCellValue('A3', 'Dicetak pada: '.Carbon::now()->locale('id')->translatedFormat('d F Y'));
         $ws->getStyle("A1:{$kolTerakhir}3")->applyFromArray([
-            'font'      => ['name' => 'Arial', 'bold' => true, 'size' => 16],
+            'font' => ['name' => 'Arial', 'bold' => true, 'size' => 16],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical'   => Alignment::VERTICAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
             ],
         ]);
         $ws->getStyle('A3')->getFont()->setSize(11)->setBold(false);
 
         // Header tabel (baris 5)
         foreach ($kolom as $k) {
-            $ws->setCellValue($k['huruf'] . '5', $k['head']);
+            $ws->setCellValue($k['huruf'].'5', $k['head']);
         }
         $ws->getStyle("A5:{$kolTerakhir}5")->applyFromArray([
-            'font'      => ['name' => 'Arial', 'bold' => true, 'size' => 12, 'color' => ['argb' => 'FFFFFFFF']],
-            'fill'      => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => 'FFB91C1C']],
+            'font' => ['name' => 'Arial', 'bold' => true, 'size' => 12, 'color' => ['argb' => 'FFFFFFFF']],
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => 'FFB91C1C']],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical'   => Alignment::VERTICAL_CENTER,
-                'wrapText'   => true,
+                'vertical' => Alignment::VERTICAL_CENTER,
+                'wrapText' => true,
             ],
         ]);
         $ws->getRowDimension(5)->setRowHeight(32);
@@ -172,10 +172,11 @@ class SuratKorbanExcelController extends Controller
         $r = 6;
         foreach ($data as $i => $row) {
             foreach ($kolom as $k) {
-                $sel = $k['huruf'] . $r;
+                $sel = $k['huruf'].$r;
 
                 if ($k['key'] === 'no') {
                     $ws->setCellValue($sel, $i + 1);
+
                     continue;
                 }
 
@@ -202,7 +203,7 @@ class SuratKorbanExcelController extends Controller
         if ($data->isEmpty()) {
             $ws->mergeCells("A6:{$kolTerakhir}6");
             $ws->setCellValue('A6', $tahun
-                ? 'Belum ada surat keterangan korban pada tahun ' . $tahun . '.'
+                ? 'Belum ada surat keterangan korban pada tahun '.$tahun.'.'
                 : 'Belum ada surat keterangan korban yang diterbitkan.');
         }
 
@@ -211,11 +212,11 @@ class SuratKorbanExcelController extends Controller
             ->setBorderStyle(Border::BORDER_THIN);
 
         $ws->getStyle("A6:{$kolTerakhir}{$terakhir}")->applyFromArray([
-            'font'      => ['name' => 'Arial', 'size' => 11],
+            'font' => ['name' => 'Arial', 'size' => 11],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_LEFT,
-                'vertical'   => Alignment::VERTICAL_CENTER,
-                'wrapText'   => true,
+                'vertical' => Alignment::VERTICAL_CENTER,
+                'wrapText' => true,
             ],
         ]);
 
@@ -239,7 +240,7 @@ class SuratKorbanExcelController extends Controller
         $ws->getPageMargins()->setLeft(0.25)->setRight(0.25)->setTop(0.5)->setBottom(0.5);
 
         /* ---------- Download ---------- */
-        $namaFile = 'Rekap_Surat_Korban_' . ($tahun ? $tahun . '_' : '') . date('Ymd') . '.xlsx';
+        $namaFile = 'Rekap_Surat_Korban_'.($tahun ? $tahun.'_' : '').date('Ymd').'.xlsx';
 
         return response()->streamDownload(function () use ($ss) {
             (new Xlsx($ss))->save('php://output');

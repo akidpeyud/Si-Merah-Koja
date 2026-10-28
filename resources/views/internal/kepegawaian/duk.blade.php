@@ -392,7 +392,7 @@
                                         <i class="fas fa-pen" style="width: 14px;"></i> Edit
                                     </a>
                                     
-                                    <form action="{{ route('kepegawaian.duk.destroy', $pegawai->id ?? 1) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus pegawai ini?');">
+                                    <form action="{{ route('kepegawaian.duk.destroy', $pegawai->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus pegawai ini?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn-action btn-delete w-100">

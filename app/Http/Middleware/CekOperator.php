@@ -10,7 +10,7 @@ class CekOperator
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::check() || strtolower(trim(Auth::user()->role)) !== 'operator') {
+        if (! Auth::check() || strtolower(trim(Auth::user()->role)) !== 'operator') {
             abort(403, 'Akses Ditolak! Hanya Operator yang boleh menambah, mengedit, atau menghapus data.');
         }
 

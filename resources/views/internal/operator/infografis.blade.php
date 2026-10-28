@@ -30,15 +30,6 @@
         font-weight: 600; font-size: .84rem; border: none;
         transition: background .2s, color .2s, transform .1s, box-shadow .2s;
     }
-    .sidebar {
-        width: var(--sidebar-w); flex: none;
-        position: sticky; top: var(--topbar-h);
-        height: calc(100vh - var(--topbar-h));
-        overflow-y: auto; overflow-x: hidden;
-        background: #fff; border-right: 1px solid var(--line);
-        padding: 20px 14px 32px;
-        scrollbar-width: thin; scrollbar-color: #d8dee8 transparent;
-    }
     .side-link.active { background: var(--ink); color: #fff; box-shadow: 0 4px 10px rgba(13,27,42,.10); }
     .side-link.active i { color: #fff; }
     .side-group summary .grp-ico { flex: none; width: 20px; text-align: center; font-size: .95rem; color: var(--navy); margin-top: 3px; }
@@ -156,7 +147,6 @@
 @endpush
 
 @section('content')
-@section('content')
 
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
             <div class="page-head m-0">
@@ -166,7 +156,7 @@
             
             <!-- Tombol Tambah Hanya untuk Operator & Super User -->
             @hasanyrole('Operator|Super User')
-            <button class="btn-simerah-danger" data-bs-toggle="modal" data-bs-target="#modalTambah">
+            <button class="btn-simerah-danger w-mobile-100" data-bs-toggle="modal" data-bs-target="#modalTambah">
                 <i class="fas fa-plus"></i> Tambah Infografis
             </button>
             @endhasanyrole

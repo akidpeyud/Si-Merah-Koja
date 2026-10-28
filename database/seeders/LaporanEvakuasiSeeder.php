@@ -24,6 +24,10 @@ class LaporanEvakuasiSeeder extends Seeder
     public function run(): void
     {
         $user = User::whereHas('roles', fn ($q) => $q->whereIn('name', ['Damtan', 'Super User']))->first() ?? User::first();
+        if (! $user) {
+            $this->call(UsersTableSeeder::class);
+            $user = User::whereHas('roles', fn ($q) => $q->whereIn('name', ['Damtan', 'Super User']))->first() ?? User::first();
+        }
         $userId = $user ? $user->id : 1;
 
         // 1. Cek apakah ada file Excel di sistem
