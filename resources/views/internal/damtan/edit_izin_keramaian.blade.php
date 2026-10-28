@@ -19,9 +19,13 @@
 
     body { font-family: var(--font-body); color: var(--ink); background: var(--paper); }
     
-    /* Layout Khusus Dashboard yang dipertahankan */
-    .topbar { position: sticky; top: 0; z-index: 1020; height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 28px; background: var(--ink); border-bottom: 1px solid rgba(255,255,255,.08); }
-    .sidebar { width: 272px; flex: none; position: sticky; top: 70px; height: calc(100vh - 70px); overflow-y: auto; background: #ffffff; border-right: 1px solid var(--line); padding: 20px 14px 32px; }
+    @media (max-width: 900px) {
+        .topbar { padding: 0 16px; }
+        .sidebar { position: fixed; z-index: 1010; top: 70px; left: 0; height: calc(100dvh - 70px); transform: translateX(-100%); transition: transform .3s ease; box-shadow: 0 20px 45px rgba(13,27,42,.14); }
+        body.side-open .sidebar { transform: none; }
+        .sidebar-backdrop { display: block; position: fixed; inset: 70px 0 0 0; z-index: 1000; background: rgba(13,27,42,.45); opacity: 0; pointer-events: none; transition: opacity .3s; }
+        body.side-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
+    }
 
     /* Form Panel & Component */
     .form-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; box-shadow: 0 10px 30px rgba(13, 27, 42, 0.03); margin-bottom: 32px; }
