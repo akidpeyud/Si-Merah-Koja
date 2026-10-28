@@ -349,6 +349,124 @@
     @if(Request::is('sapra*'))
         @include('layouts.partials.sapra-responsive')
     @endif
+    <style>
+        /* ==========================================================
+           GLOBAL INTERNAL & OPERATOR MOBILE RESPONSIVE FIX
+           ========================================================== */
+        @media (max-width: 900px) {
+            .topbar {
+                padding: 0 14px !important;
+                gap: 10px !important;
+            }
+            .topbar-left {
+                gap: 10px !important;
+                min-width: 0 !important;
+            }
+            .brand {
+                gap: 8px !important;
+                min-width: 0 !important;
+            }
+            .brand img {
+                height: 30px !important;
+            }
+            .brand span {
+                font-size: .92rem !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+            .topbar-right {
+                gap: 8px !important;
+                flex: none !important;
+            }
+            .user-chip {
+                padding: 0 !important;
+                background: transparent !important;
+                border: none !important;
+            }
+            .user-avatar {
+                width: 34px !important;
+                height: 34px !important;
+                font-size: .85rem !important;
+            }
+            .user-meta {
+                display: none !important;
+            }
+            .btn-logout {
+                height: 36px !important;
+                padding: 0 12px !important;
+                font-size: .8rem !important;
+                gap: 6px !important;
+            }
+
+            .side-toggle {
+                display: inline-flex !important;
+                width: 36px !important;
+                height: 36px !important;
+                flex: none !important;
+            }
+            .shell {
+                display: block !important;
+                position: relative !important;
+                min-height: calc(100vh - var(--topbar-h)) !important;
+            }
+            .sidebar {
+                position: fixed !important;
+                z-index: 1050 !important;
+                top: var(--topbar-h) !important;
+                left: 0 !important;
+                bottom: 0 !important;
+                width: min(85vw, 300px) !important;
+                height: calc(100dvh - var(--topbar-h)) !important;
+                transform: translateX(-100%) !important;
+                transition: transform .3s cubic-bezier(.4, 0, .2, 1) !important;
+                box-shadow: var(--shadow-lg) !important;
+                background: #ffffff !important;
+                overflow-y: auto !important;
+            }
+            body.side-open .sidebar {
+                transform: translateX(0) !important;
+            }
+            .sidebar-backdrop {
+                display: block !important;
+                position: fixed !important;
+                inset: var(--topbar-h) 0 0 0 !important;
+                z-index: 1040 !important;
+                background: rgba(13, 27, 42, .55) !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+                transition: opacity .3s ease !important;
+            }
+            body.side-open .sidebar-backdrop {
+                opacity: 1 !important;
+                pointer-events: auto !important;
+            }
+
+            .content {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 20px 14px 60px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .topbar {
+                padding: 0 10px !important;
+                gap: 6px !important;
+            }
+            .brand span {
+                font-size: .82rem !important;
+            }
+            .btn-logout {
+                padding: 0 10px !important;
+                font-size: .75rem !important;
+            }
+            .card-container, .card-box {
+                padding: 16px 12px !important;
+                border-radius: var(--r-sm) !important;
+            }
+        }
+    </style>
 </head>
 <body>
 
