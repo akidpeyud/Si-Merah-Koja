@@ -482,7 +482,8 @@
             .panel-card { border-radius: 18px; }
             .panel-head { padding: 20px 18px; align-items: flex-start; }
             .panel-head h2 { font-size: 1.28rem; }
-            .chips { padding-left: 18px; padding-right: 18px; }
+            .chips { padding-left: 18px; padding-right: 18px; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; }
+            .chip { scroll-snap-align: start; }
             .pos-info, .gen-bar { margin-left: 18px; margin-right: 18px; }
             .search { max-width: 100%; }
             .seg { width: 100%; }
@@ -492,15 +493,15 @@
             .tbl-wrap.mode-gallery td.c-img { height: 210px; }
             .tbl-wrap.mode-table thead { display: none; }
             .tbl-wrap.mode-table table, .tbl-wrap.mode-table tbody { display: block; }
-            .tbl-wrap.mode-table tbody tr { display: grid; grid-template-columns: 110px 1fr auto; gap: 6px 14px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); }
+            .tbl-wrap.mode-table tbody tr { display: grid; grid-template-columns: 100px 1fr; gap: 6px 14px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); }
             .tbl-wrap.mode-table tbody tr:last-child { border-bottom: 0; }
             .tbl-wrap.mode-table td { display: block; border: 0; padding: 0; }
             .tbl-wrap.mode-table td.c-no { display: none; }
             .tbl-wrap.mode-table td.c-img { grid-column: 1; grid-row: 1 / span 3; width: auto; }
             .tbl-wrap.mode-table td.c-nama { grid-column: 2; min-width: 0; }
-            .tbl-wrap.mode-table td.c-jml { grid-column: 3; grid-row: 1; width: auto; }
-            .tbl-wrap.mode-table td.c-etc { grid-column: 2 / -1; font-size: .85rem; color: var(--steel); }
-            .tbl-wrap.mode-table td img, .tbl-wrap.mode-table td .noimg { width: 110px; height: 80px; }
+            .tbl-wrap.mode-table td.c-jml { grid-column: 2; width: max-content; }
+            .tbl-wrap.mode-table td.c-etc { grid-column: 2; font-size: .85rem; color: var(--steel); }
+            .tbl-wrap.mode-table td img, .tbl-wrap.mode-table td .noimg { width: 100px; height: 75px; object-fit: cover; border-radius: 8px; }
             .pi-map { height: 220px; }
         }
 
