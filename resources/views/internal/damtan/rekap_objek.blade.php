@@ -142,16 +142,17 @@
        KARTU TOTAL
        ========================================================== */
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 40px; }
-    .stat-card { position: relative; display: flex; flex-direction: column; align-items: flex-start; padding: 20px; background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); box-shadow: var(--shadow-xs); text-align: left; width: 100%; overflow: hidden; transition: box-shadow .2s, border-color .2s, transform .2s; }
+    .stat-card { position: relative; display: flex; flex-direction: column; align-items: flex-start; padding: 20px; background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); box-shadow: var(--shadow-xs); text-align: left; width: 100%; overflow: hidden; transition: box-shadow .2s, border-color .2s, transform .2s, background .2s; text-decoration: none !important; color: inherit; }
     .stat-card::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--navy); opacity: 0; transition: opacity .2s; }
     .stat-card:hover { box-shadow: var(--shadow-md); border-color: #c9d3e0; transform: translateY(-3px); }
     .stat-card:hover::before { opacity: 1; }
-    .stat-card.picked { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
-    .stat-card.picked::before { opacity: 1; }
-    /* Kartu read-only (role selain Damtan & Super User): tidak bisa diklik, tanpa efek hover */
-    .stat-card-readonly { cursor: default; }
-    .stat-card-readonly:hover { transform: none; box-shadow: var(--shadow-xs); border-color: var(--line); }
-    .stat-card-readonly:hover::before { opacity: 0; }
+    .stat-card.active, .stat-card.picked { border-color: var(--navy); background: #f0f4f9; box-shadow: 0 0 0 3px var(--navy-soft), var(--shadow-sm); transform: translateY(-2px); }
+    .stat-card.active::before, .stat-card.picked::before { opacity: 1; height: 4px; }
+    .active-pill { display: inline-flex; align-items: center; gap: 4px; margin-top: 10px; font-size: .68rem; font-weight: 700; color: #fff; background: var(--navy); padding: 3px 8px; border-radius: 999px; letter-spacing: .02em; }
+    .filter-status-banner { margin-bottom: 16px; padding: 12px 16px; background: #f0f4f9; border: 1px solid #d0deee; border-left: 4px solid var(--navy); border-radius: 8px; }
+    .badge-filter-info { font-size: .88rem; color: var(--navy-dark); }
+    .btn-clear-category { display: inline-flex; align-items: center; gap: 6px; font-size: .78rem; font-weight: 700; color: #dc3545; background: #fff; border: 1px solid #f1b0b7; padding: 4px 10px; border-radius: 999px; text-decoration: none; transition: all .15s; }
+    .btn-clear-category:hover { background: #dc3545; color: #fff; border-color: #dc3545; }
     .stat-ico { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; font-size: 1rem; margin-bottom: 16px; }
     .stat-title { font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--steel); margin-bottom: 8px; line-height: 1.4; }
     .stat-value { font-family: var(--font-display); font-weight: 700; font-size: 1.9rem; line-height: 1; letter-spacing: -.02em; color: var(--ink); }
@@ -583,6 +584,9 @@
             </div>
             <div class="d-flex align-items-center flex-wrap gap-3">
                 <form method="GET" action="{{ url()->current() }}" id="filterTahunForm" class="filter-year-group m-0">
+                    @if(!empty($filterObjekTerpilih))
+                        <input type="hidden" name="filter_objek" value="{{ $filterObjekTerpilih }}">
+                    @endif
                     <span class="label-wrap">
                         <i class="fas fa-calendar-days"></i>
                         <span>Tahun</span>
@@ -605,7 +609,7 @@
                         @endforeach
                     </select>
                     @if(request('tahun'))
-                        <a href="{{ url()->current() }}" class="btn-filter-reset" title="Kembalikan ke semua tahun">
+                        <a href="{{ request()->fullUrlWithQuery(['tahun' => null, 'page' => null]) }}" class="btn-filter-reset" title="Kembalikan ke semua tahun">
                             <i class="fas fa-rotate-left"></i>
                             <span>Reset</span>
                         </a>
@@ -670,19 +674,24 @@
         </div>
         <div class="stats-grid">
             @foreach($kategori as $key => [$nama, $ikon, $warna])
-                @if($bisaInput)
-                    <button type="button" class="stat-card" data-pick="{{ $key }}" aria-label="Isi form untuk {{ $nama }}">
-                @else
-                    <div class="stat-card stat-card-readonly">
-                @endif
-                        <div class="stat-ico {{ $warna }}"><i class="fas {{ $ikon }}"></i></div>
-                        <div class="stat-title">{{ $nama }}</div>
-                        <div class="stat-value">{{ number_format($totals[$key] ?? 0, 0, ',', '.') }}</div>
-                @if($bisaInput)
-                    </button>
-                @else
-                    </div>
-                @endif
+                @php
+                    $isActive = ($filterObjekTerpilih === $key);
+                    $targetUrl = request()->fullUrlWithQuery([
+                        'filter_objek' => $isActive ? null : $key,
+                        'page' => null,
+                    ]);
+                @endphp
+                <a href="{{ $targetUrl }}"
+                   class="stat-card {{ $isActive ? 'active picked' : '' }} text-decoration-none cursor-pointer hover:shadow-lg transform hover:-translate-y-1 transition-all"
+                   aria-label="Filter kategori {{ $nama }}{{ $isActive ? ' (Sedang Aktif - Klik untuk batalkan)' : '' }}"
+                   title="{{ $isActive ? 'Klik untuk membatalkan filter' : 'Klik untuk filter riwayat kategori ' . $nama }}">
+                    <div class="stat-ico {{ $warna }}"><i class="fas {{ $ikon }}"></i></div>
+                    <div class="stat-title">{{ $nama }}</div>
+                    <div class="stat-value">{{ number_format($totals[$key] ?? 0, 0, ',', '.') }}</div>
+                    @if($isActive)
+                        <span class="active-pill"><i class="fas fa-check"></i> Filter Aktif</span>
+                    @endif
+                </a>
             @endforeach
         </div>
 
@@ -692,6 +701,19 @@
             <h3>Riwayat input objek terbaru</h3>
             <span class="line"></span>
         </div>
+
+        @if(!empty($filterObjekTerpilih))
+            <div class="filter-status-banner d-print-none">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <span class="badge-filter-info">
+                        <i class="fas fa-filter text-primary me-1"></i> Menampilkan riwayat kategori: <strong>{{ $kategori[$filterObjekTerpilih][0] ?? $filterObjekTerpilih }}</strong>
+                    </span>
+                    <a href="{{ request()->fullUrlWithQuery(['filter_objek' => null, 'page' => null]) }}" class="btn-clear-category" title="Batalkan filter kategori">
+                        <i class="fas fa-xmark"></i> Hapus Filter Kategori
+                    </a>
+                </div>
+            </div>
+        @endif
 
         <div class="panel">
             <!-- HEADER KHUSUS CETAK PDF -->
@@ -720,7 +742,7 @@
                         <thead>
                             <tr>
                                 <th class="col-no" style="width: 5%;">No</th>
-                                <th style="width: 15%;">Tanggal</th>
+                                <th style="width: 15%;">Bulan</th>
                                 <th style="width: 22%;">Objek Terbakar</th>
                                 <th style="width: 10%;">Jumlah</th>
                                 <th style="width: 18%;">Kecamatan</th>
@@ -732,7 +754,7 @@
                             @forelse($riwayat as $r)
                                 <tr data-tahun="{{ \Carbon\Carbon::parse($r->tanggal)->year }}">
                                     <td class="no-cell">{{ $riwayat->firstItem() + $loop->index }}</td>
-                                    <td class="cell-strong">{{ \Carbon\Carbon::parse($r->tanggal)->translatedFormat('d M Y') }}</td>
+                                    <td class="cell-strong">{{ \Carbon\Carbon::parse($r->tanggal)->translatedFormat('F Y') }}</td>
                                     <td><span class="tag">{{ $kategori[$r->kategori][0] ?? $r->kategori }}</span></td>
                                     <td><span class="num">{{ $r->jumlah }}</span></td>
                                     <td>{{ $r->kecamatan ?: '-' }}</td>
@@ -1088,23 +1110,11 @@
 
     if (!select || !form) return;
 
-    /* Klik kartu total = buka modal tambah data dengan kategori terpilih */
-    var cards = document.querySelectorAll('[data-pick]');
-    cards.forEach(function (c) {
-        c.addEventListener('click', function () {
-            select.value = c.dataset.pick;
-            if (createModal) {
-                openCreate();
-                setTimeout(function () {
-                    var jml = document.getElementById('jumlah');
-                    if (jml) jml.focus();
-                }, 150);
-            }
-        });
-    });
-    select.addEventListener('change', function () {
-        cards.forEach(function (o) { o.classList.toggle('picked', o.dataset.pick === select.value); });
-    });
+    @if(!empty($filterObjekTerpilih))
+    if (select) {
+        select.value = '{{ $filterObjekTerpilih }}';
+    }
+    @endif
 
     /* Validasi ringan sebelum kirim */
     form.addEventListener('submit', function (e) {
