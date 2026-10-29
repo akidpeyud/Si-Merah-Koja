@@ -742,7 +742,7 @@
                         <thead>
                             <tr>
                                 <th class="col-no" style="width: 5%;">No</th>
-                                <th style="width: 15%;">Tanggal</th>
+                                <th style="width: 15%;">Bulan</th>
                                 <th style="width: 22%;">Objek Terbakar</th>
                                 <th style="width: 10%;">Jumlah</th>
                                 <th style="width: 18%;">Kecamatan</th>
@@ -754,7 +754,7 @@
                             @forelse($riwayat as $r)
                                 <tr data-tahun="{{ \Carbon\Carbon::parse($r->tanggal)->year }}">
                                     <td class="no-cell">{{ $riwayat->firstItem() + $loop->index }}</td>
-                                    <td class="cell-strong">{{ \Carbon\Carbon::parse($r->tanggal)->translatedFormat('d M Y') }}</td>
+                                    <td class="cell-strong">{{ \Carbon\Carbon::parse($r->tanggal)->translatedFormat('F Y') }}</td>
                                     <td><span class="tag">{{ $kategori[$r->kategori][0] ?? $r->kategori }}</span></td>
                                     <td><span class="num">{{ $r->jumlah }}</span></td>
                                     <td>{{ $r->kecamatan ?: '-' }}</td>
