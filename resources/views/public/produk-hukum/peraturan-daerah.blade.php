@@ -638,6 +638,7 @@
                         </div>
                         <?php if ($ada): ?>
                         <div class="doc-actions">
+                            <a class="tool" href="<?= $h($url) ?>" target="_blank" rel="noopener" aria-label="Buka <?= $h($judul) ?>"><i class="fas fa-arrow-up-right-from-square"></i> Buka</a>
                             <a class="tool" href="<?= $h($url_download) ?>" aria-label="Unduh <?= $h($judul) ?>"><i class="fas fa-download"></i> Unduh</a>
                         </div>
                         <?php endif; ?>

@@ -1139,6 +1139,9 @@ Route::get('/profil/cascading', function () {
 Route::get('/profil/{kategori}/{id}/view', [ProfilInstansiController::class, 'viewFile'])->name('publik.profil.view');
 Route::get('/profil/{kategori}/{id}/download', [ProfilInstansiController::class, 'downloadFile'])->name('publik.profil.download');
 
+Route::get('/produk-hukum/{kategori}/{id}/view', [ProdukHukumController::class, 'viewFile'])->name('publik.produk-hukum.view');
+Route::get('/produk-hukum/{kategori}/{id}/download', [ProdukHukumController::class, 'downloadFile'])->name('publik.produk-hukum.download');
+
 Route::get('/produk-hukum/{kategori}', function ($kategori) {
     abort_unless(in_array($kategori, [
         'undang-undang',
