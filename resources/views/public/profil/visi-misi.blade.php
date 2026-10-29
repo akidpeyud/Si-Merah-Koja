@@ -312,14 +312,10 @@
         .vm-card { border-radius: var(--r-md); padding: clamp(24px, 3.5vw, 36px); display: flex; flex-direction: column; transition: transform .35s cubic-bezier(.16,.84,.3,1), box-shadow .35s ease, border-color .35s ease; }
         .vm-card--visi { background: linear-gradient(145deg, #f0f4f9 0%, #e2ebf5 100%); border: 1.5px solid #cbd8e6; box-shadow: 0 10px 25px -10px rgba(13,27,42,.08); }
         .vm-card--misi { background: #ffffff; border: 1.5px solid var(--line); box-shadow: 0 10px 25px -10px rgba(13,27,42,.05); }
-        .vm-header { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; padding-bottom: 14px; border-bottom: 1.5px dashed rgba(13,27,42,.12); }
+        .vm-header { margin-bottom: 22px; padding-bottom: 14px; border-bottom: 1.5px dashed rgba(13,27,42,.12); }
         .vm-card--misi .vm-header { border-bottom-color: var(--line); }
-        .vm-icon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-size: 1.2rem; flex: none; }
-        .vm-card--visi .vm-icon { background: var(--ink); color: var(--amber); }
-        .vm-card--misi .vm-icon { background: rgba(229,57,45,.1); color: var(--signal-d); }
         .vm-title { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; color: var(--ink); letter-spacing: -0.01em; }
         .vm-visi-body { flex: 1; display: flex; flex-direction: column; justify-content: center; position: relative; padding: 12px 6px; }
-        .vm-quote-icon { font-size: 2.2rem; line-height: 1; color: rgba(13,27,42,.15); margin-bottom: 12px; }
         .vm-visi-text { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.2rem, 1.8vw, 1.45rem); line-height: 1.55; color: var(--ink); font-style: italic; }
         .vm-misi-list { display: flex; flex-direction: column; gap: 14px; margin: 0; padding: 0; list-style: none; }
         .vm-misi-item { display: flex; align-items: flex-start; gap: 14px; }
@@ -472,11 +468,9 @@
                     <!-- Kartu Visi -->
                     <div class="vm-card vm-card--visi">
                         <div class="vm-header">
-                            <span class="vm-icon"><i class="fas fa-bullseye"></i></span>
                             <h2 class="vm-title">Visi</h2>
                         </div>
                         <div class="vm-visi-body">
-                            <span class="vm-quote-icon"><i class="fas fa-quote-left"></i></span>
                             <blockquote class="vm-visi-text">
                                 &ldquo; <?= $h($visi_teks) ?> &bdquo;
                             </blockquote>
@@ -486,7 +480,6 @@
                     <!-- Kartu Misi -->
                     <div class="vm-card vm-card--misi">
                         <div class="vm-header">
-                            <span class="vm-icon"><i class="fas fa-list-ol"></i></span>
                             <h2 class="vm-title">Misi</h2>
                         </div>
                         <ol class="vm-misi-list">
