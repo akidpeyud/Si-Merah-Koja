@@ -230,7 +230,6 @@
                 ['Peraturan Daerah', 'dokumen hukum', 'fa-file-shield', '/internal/produk-hukum/peraturan-daerah', $countKategoriHukum('peraturan-daerah'), 'ic-danger'],
                 ['Peraturan Kepala Daerah', 'dokumen hukum', 'fa-file-signature', '/internal/produk-hukum/peraturan-kepala-daerah', $countKategoriHukum('peraturan-kepala-daerah'), 'ic-info'],
 
-                ['Visi Misi', 'dokumen profil', 'fa-bullseye', '/internal/profil-instansi/visi-misi', $countKategoriProfil('visi-misi'), 'ic-primary'],
                 ['SOTK', 'struktur organisasi', 'fa-sitemap', '/internal/profil-instansi/sotk', $countKategoriProfil('sotk'), 'ic-info'],
                 ['Tupoksi', 'tugas & fungsi', 'fa-list-check', '/internal/profil-instansi/tupoksi', $countKategoriProfil('tupoksi'), 'ic-primary'],
                 ['Program Kegiatan', 'program', 'fa-calendar-check', '/internal/profil-instansi/program-kegiatan', $countKategoriProfil('program-kegiatan'), 'ic-danger'],
