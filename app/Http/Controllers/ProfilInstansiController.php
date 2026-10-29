@@ -15,9 +15,10 @@ class ProfilInstansiController extends Controller
     private function cekKategori(string $kategori): string
     {
         $daftar = ProfilInstansi::daftarKategori();
-        if (!array_key_exists($kategori, $daftar)) {
+        if (! array_key_exists($kategori, $daftar)) {
             abort(404, 'Kategori Profil tidak ditemukan.');
         }
+
         return $daftar[$kategori];
     }
 
@@ -27,7 +28,7 @@ class ProfilInstansiController extends Controller
     private function pastikanAksesCrud(): void
     {
         $user = auth()->user();
-        if (!$user || !method_exists($user, 'hasAnyRole') || !$user->hasAnyRole(['Super User', 'Operator'])) {
+        if (! $user || ! method_exists($user, 'hasAnyRole') || ! $user->hasAnyRole(['Super User', 'Operator'])) {
             abort(403, 'Akses ditolak. Anda hanya memiliki izin baca (Read-Only).');
         }
     }
@@ -45,8 +46,8 @@ class ProfilInstansiController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('judul', 'like', "%{$search}%")
-                  ->orWhere('keterangan', 'like', "%{$search}%")
-                  ->orWhere('tahun', 'like', "%{$search}%");
+                    ->orWhere('keterangan', 'like', "%{$search}%")
+                    ->orWhere('tahun', 'like', "%{$search}%");
             });
         }
 
@@ -75,24 +76,24 @@ class ProfilInstansiController extends Controller
         $judulKategori = $this->cekKategori($kategori);
 
         $request->validate([
-            'judul'        => 'required|string|max:255',
-            'tahun'        => 'nullable|digits:4',
-            'keterangan'   => 'nullable|string',
+            'judul' => 'required|string|max:255',
+            'tahun' => 'nullable|digits:4',
+            'keterangan' => 'nullable|string',
             'file_dokumen' => 'required|file|mimes:pdf|max:10240', // Wajib PDF, Maks 10MB
         ], [
-            'judul.required'        => 'Judul wajib diisi.',
+            'judul.required' => 'Judul wajib diisi.',
             'file_dokumen.required' => 'File dokumen PDF wajib diunggah.',
-            'file_dokumen.mimes'    => 'File dokumen wajib berformat PDF (.pdf).',
-            'file_dokumen.max'      => 'Ukuran file PDF maksimal 10MB.',
+            'file_dokumen.mimes' => 'File dokumen wajib berformat PDF (.pdf).',
+            'file_dokumen.max' => 'Ukuran file PDF maksimal 10MB.',
         ]);
 
         $path = $request->file('file_dokumen')->store("profil-instansi/{$kategori}", 'public');
 
         ProfilInstansi::create([
-            'kategori'     => $kategori,
-            'judul'        => $request->judul,
-            'tahun'        => $request->tahun,
-            'keterangan'   => $request->keterangan,
+            'kategori' => $kategori,
+            'judul' => $request->judul,
+            'tahun' => $request->tahun,
+            'keterangan' => $request->keterangan,
             'file_dokumen' => $path,
         ]);
 
@@ -122,19 +123,19 @@ class ProfilInstansiController extends Controller
         $item = ProfilInstansi::where('kategori', $kategori)->findOrFail($id);
 
         $request->validate([
-            'judul'        => 'required|string|max:255',
-            'tahun'        => 'nullable|digits:4',
-            'keterangan'   => 'nullable|string',
+            'judul' => 'required|string|max:255',
+            'tahun' => 'nullable|digits:4',
+            'keterangan' => 'nullable|string',
             'file_dokumen' => 'nullable|file|mimes:pdf|max:10240',
         ], [
-            'judul.required'     => 'Judul wajib diisi.',
+            'judul.required' => 'Judul wajib diisi.',
             'file_dokumen.mimes' => 'File dokumen pengganti wajib berformat PDF (.pdf).',
-            'file_dokumen.max'   => 'Ukuran file PDF maksimal 10MB.',
+            'file_dokumen.max' => 'Ukuran file PDF maksimal 10MB.',
         ]);
 
         $dataUpdate = [
-            'judul'      => $request->judul,
-            'tahun'      => $request->tahun,
+            'judul' => $request->judul,
+            'tahun' => $request->tahun,
             'keterangan' => $request->keterangan,
         ];
 
@@ -177,7 +178,7 @@ class ProfilInstansiController extends Controller
         $this->cekKategori($kategori);
         $item = ProfilInstansi::where('kategori', $kategori)->findOrFail($id);
 
-        if (!$item->file_dokumen || !Storage::disk('public')->exists($item->file_dokumen)) {
+        if (! $item->file_dokumen || ! Storage::disk('public')->exists($item->file_dokumen)) {
             abort(404, 'File dokumen tidak ditemukan.');
         }
 
@@ -185,18 +186,14 @@ class ProfilInstansiController extends Controller
 
         if ($request->boolean('raw')) {
             $base64 = base64_encode(file_get_contents($path));
+
             return response()->json([
-                'judul'  => $item->judul,
+                'judul' => $item->judul,
                 'base64' => $base64,
             ]);
         }
 
-        $filename = Str::slug($item->judul) . '.pdf';
-
-        return response()->file($path, [
-            'Content-Type'        => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' . $filename . '"',
-        ]);
+        return response()->file($path);
     }
 
     /**
@@ -207,11 +204,11 @@ class ProfilInstansiController extends Controller
         $this->cekKategori($kategori);
         $item = ProfilInstansi::where('kategori', $kategori)->findOrFail($id);
 
-        if (!$item->file_dokumen || !Storage::disk('public')->exists($item->file_dokumen)) {
+        if (! $item->file_dokumen || ! Storage::disk('public')->exists($item->file_dokumen)) {
             abort(404, 'File dokumen tidak ditemukan.');
         }
 
-        $filename = Str::slug($item->judul) . '.pdf';
+        $filename = Str::slug($item->judul).'.pdf';
 
         return Storage::disk('public')->download($item->file_dokumen, $filename, [
             'Content-Type' => 'application/pdf',
