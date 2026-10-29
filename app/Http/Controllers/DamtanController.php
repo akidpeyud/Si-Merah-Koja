@@ -895,6 +895,25 @@ class DamtanController extends Controller
             $totalsQuery->whereYear('tanggal', $tahunTerpilih);
         }
 
+        $filterLayananRaw = $request->input('filter_layanan');
+        $filterLayananTerpilih = null;
+        if (! empty($filterLayananRaw)) {
+            if (array_key_exists($filterLayananRaw, $kategori)) {
+                $filterLayananTerpilih = $filterLayananRaw;
+            } else {
+                foreach ($kategori as $k => $meta) {
+                    if (strcasecmp($meta[0], $filterLayananRaw) === 0) {
+                        $filterLayananTerpilih = $k;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if ($filterLayananTerpilih) {
+            $riwayatQuery->where('kategori', $filterLayananTerpilih);
+        }
+
         $riwayat = $riwayatQuery
             ->orderBy('tanggal', 'desc')
             ->orderBy('id', 'desc')
@@ -906,7 +925,7 @@ class DamtanController extends Controller
             ->groupBy('kategori')
             ->pluck('total', 'kategori');
 
-        return view('internal.damtan.rekap_layanan', compact('riwayat', 'totals', 'kategori', 'tahunList', 'tahunTerpilih'));
+        return view('internal.damtan.rekap_layanan', compact('riwayat', 'totals', 'kategori', 'tahunList', 'tahunTerpilih', 'filterLayananTerpilih'));
     }
 
     public function storeRekapLayanan(Request $request)
@@ -1035,6 +1054,25 @@ class DamtanController extends Controller
             $totalsQuery->whereYear('tanggal', $tahunTerpilih);
         }
 
+        $filterObjekRaw = $request->input('filter_objek');
+        $filterObjekTerpilih = null;
+        if (! empty($filterObjekRaw)) {
+            if (array_key_exists($filterObjekRaw, $kategori)) {
+                $filterObjekTerpilih = $filterObjekRaw;
+            } else {
+                foreach ($kategori as $k => $meta) {
+                    if (strcasecmp($meta[0], $filterObjekRaw) === 0) {
+                        $filterObjekTerpilih = $k;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if ($filterObjekTerpilih) {
+            $riwayatQuery->where('kategori', $filterObjekTerpilih);
+        }
+
         $riwayat = $riwayatQuery
             ->orderBy('tanggal', 'desc')
             ->orderBy('id', 'desc')
@@ -1046,7 +1084,7 @@ class DamtanController extends Controller
             ->groupBy('kategori')
             ->pluck('total', 'kategori');
 
-        return view('internal.damtan.rekap_objek', compact('riwayat', 'totals', 'kategori', 'tahunList', 'tahunTerpilih'));
+        return view('internal.damtan.rekap_objek', compact('riwayat', 'totals', 'kategori', 'tahunList', 'tahunTerpilih', 'filterObjekTerpilih'));
     }
 
     public function storeRekapObjek(Request $request)
