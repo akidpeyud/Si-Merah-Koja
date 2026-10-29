@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
             DokumenSopSeeder::class,
             DokumenPublikSeeder::class,
             SotkSeeder::class,
+            ProdukHukumSeeder::class,
         ]);
     }
 }
