@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             KejadianDamkarTableSeeder::class,
             DokumenSopSeeder::class,
             DokumenPublikSeeder::class,
+            SotkSeeder::class,
         ]);
     }
 }
