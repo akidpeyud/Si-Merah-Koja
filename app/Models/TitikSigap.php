@@ -17,12 +17,17 @@ class TitikSigap extends Model
      * (lalu sesuaikan juga KATEGORI di halaman peta publik).
      */
     public const KATEGORI = [
-        'sumber_air'    => 'Sumber Air',
-        'hydrant'       => 'Hydrant Kota',
+        'sumber_air' => 'Sumber Air',
+        'hydrant' => 'Hydrant Kota',
         'hydrant_pilar' => 'Hydrant Pilar',
-        'water_truck'   => 'Water Truck',
-        'pos'           => 'Pos Damkar',
-        'zona_rawan'    => 'Zona Rawan Kebakaran',
+        'water_truck' => 'Water Truck',
+        'pos' => 'Pos Damkar',
+        'zona_rawan' => 'Zona Rawan Kebakaran',
+    ];
+
+    public const TINGKAT_RISIKO = [
+        'Tinggi' => 'Risiko Tinggi (Buffer 1.2 km)',
+        'Sedang' => 'Risiko Sedang (Buffer 800 m)',
     ];
 
     protected $fillable = [
@@ -31,7 +36,7 @@ class TitikSigap extends Model
         'lokasi',
         'keterangan',
         'latitude',
-        'longitude'
+        'longitude',
     ];
 
     /**
@@ -42,6 +47,30 @@ class TitikSigap extends Model
     public function getKategoriLabelAttribute(): string
     {
         return self::KATEGORI[$this->kategori]
-            ?? ucfirst(str_replace('_', ' ', (string) $this->kategori)) . ' (lama)';
+            ?? ucfirst(str_replace('_', ' ', (string) $this->kategori)).' (lama)';
+    }
+
+    /**
+     * Mengambil tingkat risiko (Tinggi / Sedang) untuk titik zona rawan.
+     */
+    public function getTingkatRisikoAttribute(): ?string
+    {
+        if ($this->kategori !== 'zona_rawan') {
+            return null;
+        }
+
+        if (preg_match('/Tingkat\s*Risiko\s*:\s*(Tinggi|Sedang)/i', (string) $this->keterangan, $m)) {
+            return ucfirst(strtolower($m[1]));
+        }
+
+        if (stripos((string) $this->keterangan, 'tinggi') !== false) {
+            return 'Tinggi';
+        }
+
+        if (stripos((string) $this->keterangan, 'sedang') !== false) {
+            return 'Sedang';
+        }
+
+        return 'Tinggi';
     }
 }

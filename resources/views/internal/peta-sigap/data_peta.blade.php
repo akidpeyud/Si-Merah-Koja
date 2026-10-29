@@ -87,6 +87,10 @@
     .rekap-water_truck   .rekap-ico { background: rgba(234, 179, 8, 0.18); color: #ca8a04; }
     .rekap-pos           { border-left-color: #64748b; }
     .rekap-pos           .rekap-ico { background: rgba(100, 116, 139, 0.12); color: #64748b; }
+    .rekap-zona_rawan_tinggi { border-left-color: #dc2626; }
+    .rekap-zona_rawan_tinggi .rekap-ico { background: rgba(220, 38, 38, 0.12); color: #dc2626; }
+    .rekap-zona_rawan_sedang { border-left-color: #f59e0b; }
+    .rekap-zona_rawan_sedang .rekap-ico { background: rgba(245, 158, 11, 0.15); color: #d97706; }
     .rekap-zona_rawan    { border-left-color: #f97316; }
     .rekap-zona_rawan    .rekap-ico { background: rgba(249, 115, 22, 0.12); color: #f97316; }
 
@@ -113,6 +117,8 @@
     .bg-hydrant_pilar { background-color: rgba(37, 99, 235, 0.1); color: #2563eb; }
     .bg-water_truck { background-color: rgba(234, 179, 8, 0.18); color: #a16207; }
     .bg-pos { background-color: rgba(100, 116, 139, 0.1); color: #475569; }
+    .bg-zona_rawan_tinggi { background-color: rgba(220, 38, 38, 0.12); color: #dc2626; }
+    .bg-zona_rawan_sedang { background-color: rgba(245, 158, 11, 0.18); color: #b45309; }
     .bg-zona_rawan { background-color: rgba(249, 115, 22, 0.12); color: #c2410c; }
 
     .btn-action-group { display: flex; align-items: center; justify-content: center; gap: 6px; }
@@ -207,7 +213,7 @@
         'hydrant_pilar' => ['ikon' => 'fa-faucet-drip',          'sub' => 'Hydrant pilar'],
         'water_truck'   => ['ikon' => 'fa-truck-droplet',        'sub' => 'Suplai mobil tangki'],
         'pos'           => ['ikon' => 'fa-building-shield',      'sub' => 'Kantor & Sektor'],
-        'zona_rawan'    => ['ikon' => 'fa-triangle-exclamation', 'sub' => 'Area rawan kebakaran'],
+        'zona_rawan'    => ['ikon' => 'fa-fire-flame-curved',    'sub' => 'Buffer 1.2 km / 800 m'],
     ];
     $listTitik  = collect($titikSigaps ?? []);
     $jumlah     = $listTitik->countBy('kategori');
@@ -296,9 +302,16 @@
                         @foreach ($titikSigaps as $index => $titik)
                             <tr>
                                 <td class="text-center fw-bold text-secondary">{{ $index + 1 }}</td>
-                                <td data-search="{{ $titik->kategori }}">
+                                <td data-search="{{ $titik->kategori }} {{ $titik->tingkat_risiko }}">
                                     @if (isset($kategoriMeta[$titik->kategori]))
                                         <span class="badge-custom bg-{{ $titik->kategori }}"><i class="fas {{ $kategoriMeta[$titik->kategori]['ikon'] }} me-1"></i> {{ $titik->kategori_label }}</span>
+                                        @if ($titik->kategori === 'zona_rawan' && $titik->tingkat_risiko)
+                                            <div class="mt-1">
+                                                <span class="badge-custom {{ $titik->tingkat_risiko === 'Tinggi' ? 'bg-danger text-white' : 'bg-warning text-dark' }}" style="font-size: 0.68rem; padding: 2px 7px;">
+                                                    Risiko {{ $titik->tingkat_risiko }}
+                                                </span>
+                                            </div>
+                                        @endif
                                     @else
                                         <span class="badge-custom" style="background: #e2e8f0; color: #475569;" title="Kategori lama, tidak tampil di peta publik">{{ $titik->kategori_label }}</span>
                                     @endif
