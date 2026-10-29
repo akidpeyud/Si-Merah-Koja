@@ -119,6 +119,43 @@
 
     $jumlah = count($dokumen_list);
 
+    // Ambil data konten Visi Misi jika pada tab visi-misi
+    $visi_teks = 'Mewujudkan Kota Perdagangan dan Jasa yang Bersih, Aman, Harmonis, Agamis, Inovatif dan Sejahtera';
+    $misi_list = [
+        'Penguatan Kualitas Sumberdaya Manusia;',
+        'Penguatan Kapasitas Ekonomi Perkotaan;',
+        'Penguatan Tata Kelola Pemerintah Yang Baik;',
+        'Penguatan Ketertiban dan Ketentraman Lingkungan serta Partisipasi Masyarakat dalam Pembangunan; dan',
+        'Penguatan Pengelolaan Infrastruktur dan Lingkungan Hidup yang Merata, Berkualitas dan Berkelanjutan.',
+    ];
+    $visi_judul = 'Visi & Misi Kota Jambi';
+
+    if ($tab_aktif === 'visi-misi') {
+        $vmRecord = null;
+        if (class_exists('\App\Models\ProfilInstansi')) {
+            $vmRecord = \App\Models\ProfilInstansi::where('kategori', 'visi-misi')->first();
+        } elseif (Schema::hasTable('profil_instansis')) {
+            $vmRecord = DB::table('profil_instansis')->where('kategori', 'visi-misi')->first();
+        }
+
+        if ($vmRecord) {
+            if (!empty($vmRecord->judul)) {
+                $visi_judul = $vmRecord->judul;
+            }
+            $ket = json_decode($vmRecord->keterangan ?? '', true);
+            if (is_array($ket)) {
+                if (!empty($ket['visi'])) {
+                    $visi_teks = $ket['visi'];
+                }
+                if (!empty($ket['misi']) && is_array($ket['misi'])) {
+                    $misi_list = $ket['misi'];
+                }
+            } elseif (!empty($vmRecord->keterangan)) {
+                $visi_teks = $vmRecord->keterangan;
+            }
+        }
+    }
+
     // Helper untuk merapikan tampilan tabel dinamis (menyembunyikan id & timestamp)
     $filterKolom = function ($row) {
         $arr = (array) $row;
@@ -270,6 +307,33 @@
         .doc-search i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--steel); font-size: .85rem; pointer-events: none; }
         .doc-search input { width: min(260px, 100%); height: 40px; padding: 0 16px 0 40px; border: 1px solid var(--line); border-radius: 999px; background: #fff; font: inherit; font-size: .9rem; }
 
+        /* VISI & MISI KOTA JAMBI CARDS */
+        .vm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: stretch; }
+        .vm-card { border-radius: var(--r-md); padding: clamp(24px, 3.5vw, 36px); display: flex; flex-direction: column; transition: transform .35s cubic-bezier(.16,.84,.3,1), box-shadow .35s ease, border-color .35s ease; }
+        .vm-card--visi { background: linear-gradient(145deg, #f0f4f9 0%, #e2ebf5 100%); border: 1.5px solid #cbd8e6; box-shadow: 0 10px 25px -10px rgba(13,27,42,.08); }
+        .vm-card--misi { background: #ffffff; border: 1.5px solid var(--line); box-shadow: 0 10px 25px -10px rgba(13,27,42,.05); }
+        .vm-header { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; padding-bottom: 14px; border-bottom: 1.5px dashed rgba(13,27,42,.12); }
+        .vm-card--misi .vm-header { border-bottom-color: var(--line); }
+        .vm-icon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-size: 1.2rem; flex: none; }
+        .vm-card--visi .vm-icon { background: var(--ink); color: var(--amber); }
+        .vm-card--misi .vm-icon { background: rgba(229,57,45,.1); color: var(--signal-d); }
+        .vm-title { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; color: var(--ink); letter-spacing: -0.01em; }
+        .vm-visi-body { flex: 1; display: flex; flex-direction: column; justify-content: center; position: relative; padding: 12px 6px; }
+        .vm-quote-icon { font-size: 2.2rem; line-height: 1; color: rgba(13,27,42,.15); margin-bottom: 12px; }
+        .vm-visi-text { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.2rem, 1.8vw, 1.45rem); line-height: 1.55; color: var(--ink); font-style: italic; }
+        .vm-misi-list { display: flex; flex-direction: column; gap: 14px; margin: 0; padding: 0; list-style: none; }
+        .vm-misi-item { display: flex; align-items: flex-start; gap: 14px; }
+        .vm-misi-badge { flex: none; width: 30px; height: 30px; border-radius: 8px; background: var(--paper); border: 1px solid var(--line); color: var(--ink); font-weight: 700; font-size: .88rem; display: grid; place-items: center; margin-top: 2px; }
+        .vm-misi-item:hover .vm-misi-badge { background: var(--signal); border-color: var(--signal); color: #fff; }
+        .vm-misi-text { font-size: 1rem; line-height: 1.55; color: var(--ink); font-weight: 500; }
+
+        @media (max-width: 900px) {
+            .vm-grid { grid-template-columns: 1fr; gap: 20px; }
+        }
+        @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+            .vm-card:hover { transform: translateY(-4px); box-shadow: 0 20px 38px -18px rgba(13,27,42,.18); }
+        }
+
         /* TABEL DATA DUK & REKAP ASN */
         .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
         .data-table { width: 100%; border-collapse: collapse; font-size: .92rem; text-align: left; }
@@ -377,11 +441,11 @@
             <ol class="crumbs">
                 <li><a href="/">Beranda</a></li>
                 <li><a href="/profil/visi-misi">Profil</a></li>
-                <li><span aria-current="page"><?= $h($tabs[$tab_aktif]['label']) ?></span></li>
+                <li><span aria-current="page"><?= $h($tab_aktif === 'visi-misi' ? $visi_judul : $tabs[$tab_aktif]['label']) ?></span></li>
             </ol>
         </nav>
-        <h1><?= $h($tabs[$tab_aktif]['label']) ?></h1>
-        <p><?= $h($tabs[$tab_aktif]['judul']) ?> Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+        <h1><?= $h($tab_aktif === 'visi-misi' ? $visi_judul : $tabs[$tab_aktif]['label']) ?></h1>
+        <p><?= $h($tab_aktif === 'visi-misi' ? 'Visi dan Misi Pembangunan Kota Jambi Dinas Pemadam Kebakaran dan Penyelamatan.' : ($tabs[$tab_aktif]['judul'] . ' Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.')) ?></p>
     </div>
     @include('layouts.partials.hero-logos', ['float' => true])
 </section>
@@ -400,7 +464,43 @@
     <div class="wrap">
         <div class="doc-layout">
 
-            <?php if ($tab_aktif === 'kepegawaian'): ?>
+            <?php if ($tab_aktif === 'visi-misi'): ?>
+                <!-- ==============================================
+                     KARTU TAMPILAN VISI & MISI KOTA JAMBI
+                     ============================================== -->
+                <div class="vm-grid" aria-label="Visi dan Misi Kota Jambi">
+                    <!-- Kartu Visi -->
+                    <div class="vm-card vm-card--visi">
+                        <div class="vm-header">
+                            <span class="vm-icon"><i class="fas fa-bullseye"></i></span>
+                            <h2 class="vm-title">Visi</h2>
+                        </div>
+                        <div class="vm-visi-body">
+                            <span class="vm-quote-icon"><i class="fas fa-quote-left"></i></span>
+                            <blockquote class="vm-visi-text">
+                                &ldquo; <?= $h($visi_teks) ?> &bdquo;
+                            </blockquote>
+                        </div>
+                    </div>
+
+                    <!-- Kartu Misi -->
+                    <div class="vm-card vm-card--misi">
+                        <div class="vm-header">
+                            <span class="vm-icon"><i class="fas fa-list-ol"></i></span>
+                            <h2 class="vm-title">Misi</h2>
+                        </div>
+                        <ol class="vm-misi-list">
+                            <?php foreach ($misi_list as $idx => $misi_item): ?>
+                            <li class="vm-misi-item">
+                                <span class="vm-misi-badge"><?= $idx + 1 ?></span>
+                                <span class="vm-misi-text"><?= $h($misi_item) ?></span>
+                            </li>
+                            <?php endforeach; ?>
+                        </ol>
+                    </div>
+                </div>
+
+            <?php elseif ($tab_aktif === 'kepegawaian'): ?>
                 <!-- ==============================================
                      PANEL 1: DATA URUT KEPEGAWAIAN (DUK)
                      ============================================== -->
@@ -512,6 +612,7 @@
                 </section>
             <?php endif; ?>
 
+            <?php if ($tab_aktif !== 'visi-misi'): ?>
             <!-- ==============================================
                  PANEL DOKUMEN (DOKUMEN PUBLIK / DOKUMEN PROFIL)
                  ============================================== -->
@@ -574,6 +675,7 @@
                 </div>
                 <?php endif; ?>
             </section>
+            <?php endif; ?>
 
             <!-- Kontak Dinas -->
             <aside aria-label="Kontak dinas">

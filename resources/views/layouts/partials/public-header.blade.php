@@ -69,6 +69,7 @@
                     <ul class="dropdown">
                         <li><a href="/produk-hukum/undang-undang" {!! request()->is('produk-hukum/undang-undang') ? 'aria-current="page"' : '' !!}>Undang-Undang</a></li>
                         <li><a href="/produk-hukum/peraturan-pemerintah" {!! request()->is('produk-hukum/peraturan-pemerintah') ? 'aria-current="page"' : '' !!}>Peraturan Pemerintah</a></li>
+                        <li><a href="/produk-hukum/peraturan-presiden" {!! request()->is('produk-hukum/peraturan-presiden') ? 'aria-current="page"' : '' !!}>Peraturan Presiden</a></li>
                         <li><a href="/produk-hukum/peraturan-menteri" {!! request()->is('produk-hukum/peraturan-menteri') ? 'aria-current="page"' : '' !!}>Peraturan Menteri</a></li>
                         <li><a href="/produk-hukum/peraturan-daerah" {!! request()->is('produk-hukum/peraturan-daerah') ? 'aria-current="page"' : '' !!}>Peraturan Daerah</a></li>
                         <li><a href="/produk-hukum/peraturan-kepala-daerah" {!! request()->is('produk-hukum/peraturan-kepala-daerah') ? 'aria-current="page"' : '' !!}>Peraturan Kepala Daerah</a></li>

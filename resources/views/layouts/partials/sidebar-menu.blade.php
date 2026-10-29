@@ -76,7 +76,6 @@
         [
             'title' => 'Profil Instansi', 'icon' => 'fa-sitemap', 'roles' => $ops,
             'items' => [
-                ['Visi Misi', '/internal/profil-instansi/visi-misi', 'fa-bullseye'],
                 ['SOTK', '/internal/profil-instansi/sotk', 'fa-sitemap'],
                 ['Tupoksi', '/internal/profil-instansi/tupoksi', 'fa-list-check'],
                 ['Program Kegiatan', '/internal/profil-instansi/program-kegiatan', 'fa-calendar-check'],
