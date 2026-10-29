@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TitikSigapExport;
+use App\Models\TitikSigap;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use App\Models\TitikSigap;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PetaController extends Controller
 {
@@ -15,12 +17,12 @@ class PetaController extends Controller
     private function rules(): array
     {
         return [
-            'kategori'   => ['required', Rule::in(array_keys(TitikSigap::KATEGORI))],
-            'nama'       => 'required|string|max:255',
-            'lokasi'     => 'required|string',
+            'kategori' => ['required', Rule::in(array_keys(TitikSigap::KATEGORI))],
+            'nama' => 'required|string|max:255',
+            'lokasi' => 'required|string',
             'keterangan' => 'nullable|string',
-            'latitude'   => 'required|numeric',
-            'longitude'  => 'required|numeric',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
         ];
     }
 
@@ -43,6 +45,7 @@ class PetaController extends Controller
     public function data()
     {
         $titikSigaps = TitikSigap::orderBy('created_at', 'desc')->get();
+
         return view('internal.peta-sigap.data_peta', compact('titikSigaps'));
     }
 
@@ -54,7 +57,21 @@ class PetaController extends Controller
         // Opsional: jika input dan tabel digabung dalam 1 halaman
         $titikSigaps = TitikSigap::orderBy('created_at', 'desc')->get();
 
-        return view('internal.peta-sigap.inputdata_peta', compact('titikSigaps')); 
+        return view('internal.peta-sigap.inputdata_peta', compact('titikSigaps'));
+    }
+
+    private function formatKeterangan(Request $request): ?string
+    {
+        $keterangan = $request->keterangan;
+
+        if ($request->kategori === 'zona_rawan' && $request->filled('tingkat_risiko')) {
+            $tingkat = in_array($request->tingkat_risiko, ['Tinggi', 'Sedang'], true) ? $request->tingkat_risiko : 'Tinggi';
+            $bersih = preg_replace('/Tingkat\s*Risiko\s*:\s*(Tinggi|Sedang)\s*\|?\s*/i', '', (string) $keterangan);
+            $bersih = trim($bersih);
+            $keterangan = "Tingkat Risiko: {$tingkat}".($bersih !== '' ? " | {$bersih}" : '');
+        }
+
+        return $keterangan;
     }
 
     /**
@@ -66,12 +83,12 @@ class PetaController extends Controller
         $request->validate($this->rules());
 
         TitikSigap::create([
-            'kategori'   => $request->kategori,
-            'nama'       => $request->nama,
-            'lokasi'     => $request->lokasi,
-            'keterangan' => $request->keterangan, // Masukkan keterangan
-            'latitude'   => $request->latitude,
-            'longitude'  => $request->longitude,
+            'kategori' => $request->kategori,
+            'nama' => $request->nama,
+            'lokasi' => $request->lokasi,
+            'keterangan' => $this->formatKeterangan($request),
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
         ]);
 
         return redirect()->back()->with('success', 'Titik SIGAP berhasil ditambahkan!');
@@ -83,6 +100,7 @@ class PetaController extends Controller
     public function edit($id)
     {
         $titik = TitikSigap::findOrFail($id);
+
         return view('internal.peta-sigap.edit_peta', compact('titik'));
     }
 
@@ -96,12 +114,12 @@ class PetaController extends Controller
         $titik = TitikSigap::findOrFail($id);
 
         $titik->update([
-            'kategori'   => $request->kategori,
-            'nama'       => $request->nama,
-            'lokasi'     => $request->lokasi,
-            'keterangan' => $request->keterangan, // Update keterangan
-            'latitude'   => $request->latitude,
-            'longitude'  => $request->longitude,
+            'kategori' => $request->kategori,
+            'nama' => $request->nama,
+            'lokasi' => $request->lokasi,
+            'keterangan' => $this->formatKeterangan($request),
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
         ]);
 
         // Arahkan kembali ke halaman data setelah berhasil edit
@@ -146,26 +164,28 @@ class PetaController extends Controller
         // Hanya kategori aktif; data lama (kebakaran, penyelamatan) tidak dikirim ke peta publik
         $titiks = TitikSigap::whereIn('kategori', array_keys(TitikSigap::KATEGORI))->get();
 
-        $formattedTitik = $titiks->map(function($titik) {
+        $formattedTitik = $titiks->map(function ($titik) {
             return [
-                'id'         => $titik->id,
-                'kategori'   => $titik->kategori,
-                'nama'       => $titik->nama,
-                'lokasi'     => $titik->lokasi,
+                'id' => $titik->id,
+                'kategori' => $titik->kategori,
+                'tingkat_risiko' => $titik->tingkat_risiko,
+                'nama' => $titik->nama,
+                'lokasi' => $titik->lokasi,
                 'keterangan' => $titik->keterangan, // Tambahkan keterangan agar bisa dibaca di popup Maps Publik
-                'lat'        => (float) $titik->latitude,
-                'lng'        => (float) $titik->longitude,
+                'lat' => (float) $titik->latitude,
+                'lng' => (float) $titik->longitude,
             ];
         });
 
         return response()->json($formattedTitik);
     }
+
     /**
      * EXPORT: Download Data as Excel
      */
     public function exportExcel()
     {
         // Pastikan Anda mengimport class TitikSigapExport di bagian atas controller jika tidak pakai namespace penuh
-        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\TitikSigapExport, 'Data_Titik_SIGAP.xlsx');
+        return Excel::download(new TitikSigapExport, 'Data_Titik_SIGAP.xlsx');
     }
 }

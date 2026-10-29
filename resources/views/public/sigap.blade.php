@@ -1219,6 +1219,8 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
     // Font Awesome gratis tidak punya ikon hydrant, jadi dibuat sendiri (SVG)
     const SVG_HYDRANT = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 3h6v2h1.5v2h-9V5H9V3zm-1 5h8v2h2v2h-2v6h2v2H6v-2h2v-6H6v-2h2V8zM4 11h2v4H4v-4zm16 0h-2v4h2v-4z"/></svg>';
 
+    const isZonaRawanKat = k => k === 'zona_rawan' || k === 'zona_rawan_tinggi' || k === 'zona_rawan_sedang';
+
     const KATEGORI = {
         sumber_air:    { label: 'Sumber Air',    warna: '#0891b2', ikon: 'fa-droplet' },
         hydrant:       { label: 'Hydrant Kota',  warna: '#dc2626', svg: SVG_HYDRANT },
@@ -1231,6 +1233,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 
     // Deteksi otomatis sub-kategori dari nama / keterangan
     function klasifikasiKategori(p) {
+        if (p.kategori === 'zona_rawan_tinggi' || p.kategori === 'zona_rawan_sedang') return 'zona_rawan';
         if (p.kategori === 'water_truck') return 'water_truck';
         if (p.kategori === 'hydrant') {
             const teks = `${p.nama || ''} ${p.keterangan || ''}`.toLowerCase();
@@ -1379,6 +1382,26 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
     const citra = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Esri' });
 
     function getZonaRisikoTitik(p) {
+        const teks = `${p.tingkat_risiko || ''} ${p.nama || ''} ${p.keterangan || ''} ${p.kategori || ''}`.toLowerCase();
+        if (teks.includes('tinggi') || p.kategori === 'zona_rawan_tinggi') {
+            return {
+                tingkat: 'Tinggi',
+                indeks: '> 0.66',
+                radius: 1200, // 1.2 km radius buffer bahaya karhutla
+                warna: '#ef4444',
+                stroke: '#dc2626'
+            };
+        }
+        if (teks.includes('sedang') || p.kategori === 'zona_rawan_sedang') {
+            return {
+                tingkat: 'Sedang',
+                indeks: '0.33 - 0.66',
+                radius: 800, // 800 m radius buffer bahaya karhutla
+                warna: '#f59e0b',
+                stroke: '#d97706'
+            };
+        }
+
         const kec = p.kecamatan || cariKecamatan(p.lat, p.lng);
         const info = DATA_RISIKO_KECAMATAN[kec];
         if (info && info.tingkat === 'Tinggi') {
@@ -1401,7 +1424,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 
     function getStyleKecamatan(f) {
         const nama = getNama(f.properties);
-        const isRisikoMode = state.kategori === 'zona_rawan' || state.tampilkanZonasiRisiko;
+        const isRisikoMode = isZonaRawanKat(state.kategori) || state.tampilkanZonasiRisiko;
 
         if (isRisikoMode) {
             // Garis batas kecamatan dibuat bersih dan halus agar fokus pada buffer titik kerawanan
@@ -1572,7 +1595,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
         bufferCircles.forEach(item => map.removeLayer(item.circle));
         bufferCircles.length = 0;
 
-        const isZonaRawan = state.kategori === 'zona_rawan';
+        const isZonaRawan = isZonaRawanKat(state.kategori);
         const tampilkanPin = state.tampilkanPinRisiko;
 
         titikTampil().forEach(p => {
@@ -1933,7 +1956,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
     }
 
     function renderRisikoOverlay() {
-        const isZonaRawan = state.kategori === 'zona_rawan';
+        const isZonaRawan = isZonaRawanKat(state.kategori);
         const box = $('legend-risiko-box');
         if (isZonaRawan) {
             state.tampilkanZonasiRisiko = true;
@@ -2018,7 +2041,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
 
     function buatMarker(p) {
         const v = KATEGORI[p.kategori];
-        const isRawan = p.kategori === 'zona_rawan';
+        const isRawan = isZonaRawanKat(p.kategori);
         const zona = isRawan ? getZonaRisikoTitik(p) : null;
         const icon = L.divIcon({
             className: '', iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -18],
@@ -2040,7 +2063,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
     }
 
     const popupWilayah = (props, nama) => {
-        const isRisikoMode = state.kategori === 'zona_rawan' || state.tampilkanZonasiRisiko;
+        const isRisikoMode = isZonaRawanKat(state.kategori) || state.tampilkanZonasiRisiko;
         const info = DATA_RISIKO_KECAMATAN[nama];
 
         if (isRisikoMode && info) {
@@ -2114,7 +2137,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
                 const n = getNama(f.properties);
                 (layersKec[n] ||= []).push(layer);
                 layer.bindTooltip(() => {
-                    const isRisikoMode = state.kategori === 'zona_rawan' || state.tampilkanZonasiRisiko;
+                    const isRisikoMode = isZonaRawanKat(state.kategori) || state.tampilkanZonasiRisiko;
                     const info = DATA_RISIKO_KECAMATAN[n];
                     if (isRisikoMode && info) {
                         return `<strong>${esc(n)}</strong><br><span style="color:${info.warna}">● Risiko ${esc(info.tingkat)} (Indeks ${esc(info.indeks)})</span>`;
@@ -2162,7 +2185,7 @@ button { color: inherit; background: none; border: 0; cursor: pointer; }
         if (e.layer === layerZonasiRisiko) {
             state.tampilkanZonasiRisiko = false;
             if (geojson) geojson.setStyle(getStyleKecamatan);
-            if (state.kategori !== 'zona_rawan') {
+            if (!isZonaRawanKat(state.kategori)) {
                 const box = $('legend-risiko-box');
                 if (box) box.style.display = 'none';
             }

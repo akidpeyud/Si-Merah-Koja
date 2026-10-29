@@ -118,7 +118,7 @@
                             <label class="form-label">Kategori Peta</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-tag"></i></span>
-                                <select name="kategori" class="form-select" required>
+                                <select name="kategori" id="kategoriSelect" class="form-select" required>
                                     @php $kategoriAktif = old('kategori') ?? $titik->kategori; @endphp
                                     <option value="" disabled {{ array_key_exists($kategoriAktif, \App\Models\TitikSigap::KATEGORI) ? '' : 'selected' }}>Pilih Kategori...</option>
                                     @foreach (\App\Models\TitikSigap::KATEGORI as $nilai => $label)
@@ -129,6 +129,22 @@
                             @unless (array_key_exists($titik->kategori, \App\Models\TitikSigap::KATEGORI))
                                 <small class="text-danger d-block mt-1"><i class="fas fa-exclamation-circle"></i> Kategori lama "{{ $titik->kategori }}" sudah tidak dipakai. Pilih kategori baru agar titik tampil di peta publik.</small>
                             @endunless
+                        </div>
+
+                        <!-- Dropdown Tambahan: Tingkat Risiko (Muncul khusus jika pilih Zona Rawan Kebakaran) -->
+                        @php $tingkatAktif = old('tingkat_risiko', $titik->tingkat_risiko ?? 'Tinggi'); @endphp
+                        <div class="mb-3 {{ ($kategoriAktif === 'zona_rawan') ? '' : 'd-none' }}" id="containerTingkatRisiko">
+                            <label class="form-label text-danger fw-bold">
+                                <i class="fas fa-fire me-1"></i> Tingkat Risiko
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-danger bg-opacity-10 text-danger"><i class="fas fa-triangle-exclamation"></i></span>
+                                <select name="tingkat_risiko" id="tingkatRisikoSelect" class="form-select border-danger">
+                                    <option value="Tinggi" {{ $tingkatAktif === 'Tinggi' ? 'selected' : '' }}>Risiko Tinggi (Buffer 1.200 m / 1,2 km)</option>
+                                    <option value="Sedang" {{ $tingkatAktif === 'Sedang' ? 'selected' : '' }}>Risiko Sedang (Buffer 800 m)</option>
+                                </select>
+                            </div>
+                            <small id="bufferBadgeInfo" class="form-text mt-1 d-block text-danger"></small>
                         </div>
 
                         <!-- Nama/Judul Lokasi -->
@@ -263,6 +279,90 @@
             draggable: true
         }).addTo(map);
 
+        var kategoriSelect = document.getElementById('kategoriSelect');
+        var containerTingkatRisiko = document.getElementById('containerTingkatRisiko');
+        var tingkatRisikoSelect = document.getElementById('tingkatRisikoSelect');
+        var bufferBadgeInfo = document.getElementById('bufferBadgeInfo');
+        var bufferCircle = null;
+
+        var BUFFER_CONFIG = {
+            'Tinggi': {
+                radius: 1200, // 1.2 km
+                color: '#dc2626',
+                fillColor: '#ef4444',
+                fillOpacity: 0.20,
+                weight: 2,
+                dashArray: '6, 6',
+                label: '<i class="fas fa-bullseye text-danger me-1"></i> <strong>Buffer Risiko Tinggi aktif:</strong> Radius 1.200 m (1,2 km) ditampilkan di peta.',
+                className: 'text-danger'
+            },
+            'Sedang': {
+                radius: 800, // 800 m
+                color: '#d97706',
+                fillColor: '#f59e0b',
+                fillOpacity: 0.20,
+                weight: 2,
+                dashArray: '6, 6',
+                label: '<i class="fas fa-bullseye text-warning me-1"></i> <strong>Buffer Risiko Sedang aktif:</strong> Radius 800 m ditampilkan di peta.',
+                className: 'text-warning'
+            }
+        };
+
+        function updateBuffer() {
+            var kat = kategoriSelect ? kategoriSelect.value : '';
+            var isZonaRawan = (kat === 'zona_rawan');
+
+            if (containerTingkatRisiko) {
+                if (isZonaRawan) {
+                    containerTingkatRisiko.classList.remove('d-none');
+                } else {
+                    containerTingkatRisiko.classList.add('d-none');
+                }
+            }
+
+            var latLng = marker.getLatLng();
+
+            if (isZonaRawan && latLng) {
+                var tingkat = tingkatRisikoSelect ? tingkatRisikoSelect.value : 'Tinggi';
+                var cfg = BUFFER_CONFIG[tingkat] || BUFFER_CONFIG['Tinggi'];
+
+                if (!bufferCircle) {
+                    bufferCircle = L.circle(latLng, {
+                        radius: cfg.radius,
+                        color: cfg.color,
+                        fillColor: cfg.fillColor,
+                        fillOpacity: cfg.fillOpacity,
+                        weight: cfg.weight,
+                        dashArray: cfg.dashArray
+                    }).addTo(map);
+                } else {
+                    bufferCircle.setLatLng(latLng);
+                    bufferCircle.setRadius(cfg.radius);
+                    bufferCircle.setStyle({
+                        color: cfg.color,
+                        fillColor: cfg.fillColor,
+                        fillOpacity: cfg.fillOpacity,
+                        weight: cfg.weight,
+                        dashArray: cfg.dashArray
+                    });
+                }
+
+                if (bufferBadgeInfo) {
+                    bufferBadgeInfo.innerHTML = cfg.label;
+                    bufferBadgeInfo.className = 'form-text mt-1 d-block ' + cfg.className;
+                }
+            } else {
+                if (bufferCircle) {
+                    map.removeLayer(bufferCircle);
+                    bufferCircle = null;
+                }
+                if (bufferBadgeInfo) {
+                    bufferBadgeInfo.innerHTML = '';
+                    bufferBadgeInfo.className = 'form-text mt-1 d-none';
+                }
+            }
+        }
+
         // Fungsi update peta dari input manual
         function updateMapFromInputs() {
             var lat = parseFloat(latInput.value);
@@ -272,6 +372,7 @@
                 var newLatLng = new L.LatLng(lat, lng);
                 marker.setLatLng(newLatLng);
                 map.setView(newLatLng, 15);
+                updateBuffer();
             }
         }
 
@@ -302,10 +403,15 @@
         lngInput.addEventListener('paste', handlePaste);
 
         // Event ketika marker digeser
+        marker.on('drag', function () {
+            updateBuffer();
+        });
+
         marker.on('dragend', function (e) {
             var position = marker.getLatLng();
             latInput.value = position.lat.toFixed(6);
             lngInput.value = position.lng.toFixed(6);
+            updateBuffer();
         });
 
         // Event ketika peta di-klik
@@ -315,12 +421,22 @@
             marker.setLatLng([lat, lng]);
             latInput.value = lat.toFixed(6);
             lngInput.value = lng.toFixed(6);
+            updateBuffer();
         });
 
-        // Cek jika ada old input error
+        if (kategoriSelect) {
+            kategoriSelect.addEventListener('change', updateBuffer);
+        }
+
+        if (tingkatRisikoSelect) {
+            tingkatRisikoSelect.addEventListener('change', updateBuffer);
+        }
+
+        // Inisialisasi awal
         if (latInput.value && lngInput.value) {
             updateMapFromInputs();
         }
+        updateBuffer();
     }
 
 })();
