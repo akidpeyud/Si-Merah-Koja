@@ -140,7 +140,7 @@
 
         if ($vmRecord) {
             if (!empty($vmRecord->judul)) {
-                $visi_judul = $vmRecord->judul;
+                $visi_judul = preg_replace('/\s*kota\s+jambi/i', '', $vmRecord->judul);
             }
             $ket = json_decode($vmRecord->keterangan ?? '', true);
             if (is_array($ket)) {
