@@ -84,8 +84,10 @@
         ],
         [
             'title' => 'Riwayat Aktivitas', 'icon' => 'fa-clock-rotate-left', 'roles' => $ops,
-            'standalone' => true,
-            'url' => route('internal.riwayat-aktivitas'),
+            'items' => [
+                ['Aktivitas Internal', route('internal.riwayat-aktivitas'), 'fa-user-tie'],
+                ['Permohonan Pemohon', route('internal.riwayat-aktivitas-pemohon'), 'fa-file-signature'],
+            ],
         ],
         [
             'title' => 'Pengaturan Akun', 'icon' => 'fa-user-gear', 'roles' => $ops, 'kicker' => 'Akun',
