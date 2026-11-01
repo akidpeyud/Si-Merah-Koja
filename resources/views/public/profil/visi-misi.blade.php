@@ -24,9 +24,9 @@
     // ============================================================
     // 1. KHUSUS TAB KEPEGAWAIAN: AMBIL DUK, REKAP ASN & DOKUMEN PUBLIK
     // ============================================================
-    $duk_list      = collect();
-    $rekap_asn     = collect();
-    $dokumen_list  = [];
+    $duk_list     = collect();
+    $rekap_asn    = collect();
+    $dokumen_list = [];
 
     if ($tab_aktif === 'kepegawaian') {
         // A. Ambil Data Urut Kepangkatan (DUK)
@@ -312,10 +312,14 @@
         .vm-card { border-radius: var(--r-md); padding: clamp(24px, 3.5vw, 36px); display: flex; flex-direction: column; transition: transform .35s cubic-bezier(.16,.84,.3,1), box-shadow .35s ease, border-color .35s ease; }
         .vm-card--visi { background: linear-gradient(145deg, #f0f4f9 0%, #e2ebf5 100%); border: 1.5px solid #cbd8e6; box-shadow: 0 10px 25px -10px rgba(13,27,42,.08); }
         .vm-card--misi { background: #ffffff; border: 1.5px solid var(--line); box-shadow: 0 10px 25px -10px rgba(13,27,42,.05); }
-        .vm-header { margin-bottom: 22px; padding-bottom: 14px; border-bottom: 1.5px dashed rgba(13,27,42,.12); }
+        .vm-header { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; padding-bottom: 14px; border-bottom: 1.5px dashed rgba(13,27,42,.12); }
         .vm-card--misi .vm-header { border-bottom-color: var(--line); }
+        .vm-icon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-size: 1.2rem; flex: none; }
+        .vm-card--visi .vm-icon { background: var(--ink); color: var(--amber); }
+        .vm-card--misi .vm-icon { background: rgba(229,57,45,.1); color: var(--signal-d); }
         .vm-title { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; color: var(--ink); letter-spacing: -0.01em; }
         .vm-visi-body { flex: 1; display: flex; flex-direction: column; justify-content: center; position: relative; padding: 12px 6px; }
+        .vm-quote-icon { font-size: 2.2rem; line-height: 1; color: rgba(13,27,42,.15); margin-bottom: 12px; }
         .vm-visi-text { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.2rem, 1.8vw, 1.45rem); line-height: 1.55; color: var(--ink); font-style: italic; }
         .vm-misi-list { display: flex; flex-direction: column; gap: 14px; margin: 0; padding: 0; list-style: none; }
         .vm-misi-item { display: flex; align-items: flex-start; gap: 14px; }
@@ -468,9 +472,11 @@
                     <!-- Kartu Visi -->
                     <div class="vm-card vm-card--visi">
                         <div class="vm-header">
+                            <span class="vm-icon"><i class="fas fa-bullseye"></i></span>
                             <h2 class="vm-title">Visi</h2>
                         </div>
                         <div class="vm-visi-body">
+                            <span class="vm-quote-icon"><i class="fas fa-quote-left"></i></span>
                             <blockquote class="vm-visi-text">
                                 &ldquo; <?= $h($visi_teks) ?> &bdquo;
                             </blockquote>
@@ -480,6 +486,7 @@
                     <!-- Kartu Misi -->
                     <div class="vm-card vm-card--misi">
                         <div class="vm-header">
+                            <span class="vm-icon"><i class="fas fa-list-ol"></i></span>
                             <h2 class="vm-title">Misi</h2>
                         </div>
                         <ol class="vm-misi-list">
@@ -763,33 +770,39 @@
 (function () {
     'use strict';
     var header = document.getElementById('siteHeader');
-    var toggle = header.querySelector('.nav-toggle');
-    var drops = header.querySelectorAll('.has-drop');
-    var subs = header.querySelectorAll('.has-sub');
-    var desktop = window.matchMedia('(hover: hover) and (min-width: 1201px)');
+    if (header) {
+        var toggle = header.querySelector('.nav-toggle');
+        var drops = header.querySelectorAll('.has-drop');
+        var subs = header.querySelectorAll('.has-sub');
+        var desktop = window.matchMedia('(hover: hover) and (min-width: 1201px)');
 
-    function triggerOf(li) { return li.querySelector(':scope > .menu-trigger, :scope > .menu-trigger-cta'); }
-    function closeSubs() { subs.forEach(function (s) { s.classList.remove('open'); s.querySelector('.sub-trigger').setAttribute('aria-expanded', 'false'); }); }
-    function closeDrops(except) {
-        drops.forEach(function (li) { if (li !== except) { li.classList.remove('open'); triggerOf(li).setAttribute('aria-expanded', 'false'); } });
-        if (!except) closeSubs();
+        function triggerOf(li) { return li.querySelector(':scope > .menu-trigger, :scope > .menu-trigger-cta'); }
+        function closeSubs() { subs.forEach(function (s) { s.classList.remove('open'); s.querySelector('.sub-trigger').setAttribute('aria-expanded', 'false'); }); }
+        function closeDrops(except) {
+            drops.forEach(function (li) { if (li !== except) { li.classList.remove('open'); triggerOf(li).setAttribute('aria-expanded', 'false'); } });
+            if (!except) closeSubs();
+        }
+        if (toggle) {
+            toggle.addEventListener('click', function () {
+                var open = header.classList.toggle('nav-open');
+                toggle.setAttribute('aria-expanded', open);
+                toggle.querySelector('i').className = open ? 'fas fa-times' : 'fas fa-bars';
+                if (!open) closeDrops(null);
+            });
+        }
+        drops.forEach(function (li) {
+            var btn = triggerOf(li);
+            if (!btn) return;
+            btn.addEventListener('click', function () { var open = li.classList.toggle('open'); btn.setAttribute('aria-expanded', open); closeDrops(li); });
+            li.addEventListener('mouseleave', function () { if (desktop.matches) { li.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); closeSubs(); } });
+        });
+        subs.forEach(function (li) {
+            var btn = li.querySelector('.sub-trigger');
+            if (!btn) return;
+            btn.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); var open = li.classList.toggle('open'); btn.setAttribute('aria-expanded', open); });
+        });
+        document.addEventListener('click', function (e) { if (!e.target.closest('.has-drop')) closeDrops(null); });
     }
-    toggle.addEventListener('click', function () {
-        var open = header.classList.toggle('nav-open');
-        toggle.setAttribute('aria-expanded', open);
-        toggle.querySelector('i').className = open ? 'fas fa-times' : 'fas fa-bars';
-        if (!open) closeDrops(null);
-    });
-    drops.forEach(function (li) {
-        var btn = triggerOf(li);
-        btn.addEventListener('click', function () { var open = li.classList.toggle('open'); btn.setAttribute('aria-expanded', open); closeDrops(li); });
-        li.addEventListener('mouseleave', function () { if (desktop.matches) { li.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); closeSubs(); } });
-    });
-    subs.forEach(function (li) {
-        var btn = li.querySelector('.sub-trigger');
-        btn.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); var open = li.classList.toggle('open'); btn.setAttribute('aria-expanded', open); });
-    });
-    document.addEventListener('click', function (e) { if (!e.target.closest('.has-drop')) closeDrops(null); });
 
     /* Pencarian Dokumen */
     var docSearch = document.getElementById('docSearch');
