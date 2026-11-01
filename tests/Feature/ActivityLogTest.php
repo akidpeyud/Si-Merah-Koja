@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Middleware\LogInternalActivity;
+use App\Http\Middleware\LogPemohonActivity;
 use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Database\Schema\Blueprint;
@@ -94,14 +95,18 @@ class ActivityLogTest extends TestCase
     }
 
     /**
-     * User internal yang telah login dapat mengakses halaman riwayat aktivitas
+     * User internal yang telah login dapat mengakses halaman riwayat aktivitas internal dan permohonan pemohon
      */
     public function test_authenticated_internal_user_can_access_riwayat_aktivitas(): void
     {
         $response = $this->actingAs($this->user)->get('/internal/riwayat-aktivitas');
 
         $response->assertStatus(200);
-        $response->assertSee('Riwayat Aktivitas');
+        $response->assertSee('Riwayat Aktivitas Internal');
+
+        $responsePemohon = $this->actingAs($this->user)->get('/internal/riwayat-aktivitas-pemohon');
+        $responsePemohon->assertStatus(200);
+        $responsePemohon->assertSee('Riwayat Permohonan Pemohon');
     }
 
     /**
@@ -151,5 +156,46 @@ class ActivityLogTest extends TestCase
             'module' => 'Pengumuman',
             'user_name' => 'Petugas Internal',
         ]);
+    }
+
+    /**
+     * Penginputan permohonan surat oleh pemohon otomatis tercatat ke activity_logs oleh LogPemohonActivity
+     */
+    public function test_pemohon_submission_is_automatically_logged_by_middleware(): void
+    {
+        $middleware = new LogPemohonActivity;
+        $request = Request::create('/permohonan-skk', 'POST', [
+            'nama_pemohon' => 'Budi Santoso',
+            'nama_usaha' => 'PT Maju Terus Bersama',
+            'jenis_permohonan' => 'Baru',
+        ]);
+
+        session([
+            'pemohon_id' => 99,
+            'pemohon_nama' => 'Budi Santoso',
+        ]);
+
+        $response = $middleware->handle($request, function () {
+            return new Response('ok', 200);
+        });
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertDatabaseHas('activity_logs', [
+            'action' => 'Tambah',
+            'module' => 'Permohonan SKK',
+            'user_role' => 'Pemohon',
+            'user_name' => 'Budi Santoso',
+        ]);
+
+        // Cek halaman khusus permohonan pemohon menampilkan data yang diinput pemohon
+        $pemohonPageResponse = $this->actingAs($this->user)->get('/internal/riwayat-aktivitas-pemohon');
+        $pemohonPageResponse->assertStatus(200);
+        $pemohonPageResponse->assertSee('Budi Santoso');
+        $pemohonPageResponse->assertSee('Permohonan SKK');
+
+        // Pastikan di halaman aktivitas internal data pemohon tidak tercampur
+        $internalPageResponse = $this->actingAs($this->user)->get('/internal/riwayat-aktivitas');
+        $internalPageResponse->assertStatus(200);
+        $internalPageResponse->assertDontSee('Budi Santoso');
     }
 }

@@ -49,23 +49,41 @@ class ActivityLog extends Model
         string $module,
         ?string $description = null,
         ?array $properties = null,
-        ?User $user = null
+        ?User $user = null,
+        ?string $actorName = null,
+        ?string $actorRole = null
     ): self {
         $actor = $user ?? Auth::user();
 
-        $roleName = null;
+        $roleName = $actorRole;
+        $userName = $actorName;
+        $userId = $actor?->id;
+
         if ($actor) {
-            if (method_exists($actor, 'getRoleNames')) {
-                $roles = $actor->getRoleNames();
-                $roleName = $roles->first() ?? $actor->role ?? null;
-            } else {
-                $roleName = $actor->role ?? null;
+            if (! $roleName) {
+                if (method_exists($actor, 'getRoleNames')) {
+                    $roles = $actor->getRoleNames();
+                    $roleName = $roles->first() ?? $actor->role ?? null;
+                } else {
+                    $roleName = $actor->role ?? null;
+                }
+            }
+            if (! $userName) {
+                $userName = $actor->nama_lengkap ?? $actor->name ?? null;
+            }
+        } elseif (session()->has('pemohon_id')) {
+            $roleName = $roleName ?: 'Pemohon';
+            $userName = $userName ?: (session('pemohon_nama') ?: 'Pemohon');
+            if ($properties === null) {
+                $properties = ['pemohon_id' => session('pemohon_id')];
+            } elseif (! isset($properties['pemohon_id'])) {
+                $properties['pemohon_id'] = session('pemohon_id');
             }
         }
 
         return self::create([
-            'user_id' => $actor?->id,
-            'user_name' => $actor?->nama_lengkap ?? $actor?->name ?? 'Sistem/Tamu',
+            'user_id' => $userId,
+            'user_name' => $userName ?? 'Sistem/Tamu',
             'user_role' => $roleName,
             'action' => $action,
             'module' => $module,

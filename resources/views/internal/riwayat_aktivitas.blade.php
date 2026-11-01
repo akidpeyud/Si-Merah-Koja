@@ -153,9 +153,19 @@
 @endpush
 
 @section('content')
-<div class="page-head">
-    <h1>Riwayat Aktivitas</h1>
-    <p>Catatan rekam jejak aktivitas operasional internal (tambah, ubah, dan hapus data) oleh seluruh pengguna sistem.</p>
+<div class="page-head d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div>
+        <h1>Riwayat Aktivitas Internal</h1>
+        <p>Catatan rekam jejak aktivitas operasional (tambah, ubah, dan hapus data) oleh pegawai internal sistem.</p>
+    </div>
+    <div class="btn-group p-1 bg-white border rounded-3 shadow-xs">
+        <a href="{{ route('internal.riwayat-aktivitas') }}" class="btn btn-sm btn-primary fw-bold px-3 py-2" style="background: var(--navy); border-color: var(--navy);">
+            <i class="fa-solid fa-user-tie me-1"></i> Aktivitas Internal
+        </a>
+        <a href="{{ route('internal.riwayat-aktivitas-pemohon') }}" class="btn btn-sm btn-light text-secondary fw-semibold px-3 py-2">
+            <i class="fa-solid fa-file-signature me-1"></i> Permohonan Pemohon
+        </a>
+    </div>
 </div>
 
 <!-- Ringkasan Statistik -->
@@ -271,7 +281,7 @@
                 <tr>
                     <th style="width: 50px;" class="text-center">No</th>
                     <th style="width: 170px;">Waktu</th>
-                    <th style="width: 200px;">Pengguna</th>
+                    <th style="width: 200px;">Petugas Internal</th>
                     <th style="width: 110px;" class="text-center">Aksi</th>
                     <th style="width: 180px;">Modul</th>
                     <th>Deskripsi Aktivitas</th>
@@ -288,7 +298,11 @@
                         </td>
                         <td>
                             <div class="fw-bold">{{ $log->user_name ?: ($log->user?->nama_lengkap ?? 'Anonim') }}</div>
-                            @if($log->user_role)
+                            @if($log->user_role === 'Pemohon')
+                                <span class="badge-role-pill mt-1" style="background: rgba(13, 148, 136, .12); color: #0f766e; border: 1px solid rgba(13, 148, 136, .25);">
+                                    <i class="fa-solid fa-user-check me-1"></i> Pemohon Surat
+                                </span>
+                            @elseif($log->user_role)
                                 <span class="badge-role-pill mt-1">{{ $log->user_role }}</span>
                             @endif
                         </td>
