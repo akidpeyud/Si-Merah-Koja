@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\DukImport;
 use App\Models\Pegawai;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DukController extends Controller
 {
@@ -204,5 +206,36 @@ class DukController extends Controller
         $pegawai->delete();
 
         return redirect()->route('kepegawaian.duk.index')->with('success', 'Data pegawai berhasil dihapus!');
+    }
+
+    // Mengimpor data DUK dari file Excel/CSV
+    public function import(Request $request)
+    {
+        if (! auth()->user()->hasAnyRole(['Super User', 'Sekretariat'])) {
+            abort(403, 'Anda tidak memiliki akses untuk mengimpor data.');
+        }
+
+        $request->validate([
+            'file_excel' => 'required|file|mimes:xlsx,xls,csv,txt|max:10240',
+        ], [
+            'file_excel.required' => 'Pilih file Excel (.xlsx / .xls / .csv) terlebih dahulu.',
+            'file_excel.mimes' => 'Format file harus berupa Excel (.xlsx / .xls) atau CSV (.csv).',
+            'file_excel.max' => 'Ukuran file maksimal adalah 10MB.',
+        ]);
+
+        try {
+            $importer = new DukImport(truncateFirst: true);
+            Excel::import($importer, $request->file('file_excel'));
+
+            $count = $importer->getImportedCount();
+
+            return redirect()->route('kepegawaian.duk.index')
+                ->with('success', "Berhasil mengimpor {$count} data pegawai dari file Excel!");
+        } catch (\Throwable $e) {
+            report($e);
+
+            return redirect()->route('kepegawaian.duk.index')
+                ->with('error', 'Gagal mengimpor file Excel: '.$e->getMessage());
+        }
     }
 }

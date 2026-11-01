@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\DamtanController;
@@ -37,6 +38,7 @@ use App\Http\Controllers\SkkAdminController;
 use App\Http\Controllers\SuratKorbanExcelController;
 use App\Http\Controllers\VisitController;
 use App\Http\Middleware\CekLoginPemohon;
+use App\Http\Middleware\LogInternalActivity;
 use App\Models\Berita;
 use App\Models\BeritaMedsos;
 use App\Models\DataAsn;
@@ -218,12 +220,13 @@ Route::post('/logout', [AuthController::class, 'logout']);
 // ==========================================
 // 6. RUTE INTERNAL PEGAWAI (DILINDUNGI)
 // ==========================================
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', LogInternalActivity::class])->group(function () {
 
     // --- A. DASBOR & KELOLA USER ---
     Route::get('/internal/index', function () {
         return view('internal.index');
     });
+    Route::get('/internal/riwayat-aktivitas', [ActivityLogController::class, 'index'])->name('internal.riwayat-aktivitas');
     Route::get('/internal/profil', [AuthController::class, 'showProfile']);
     Route::post('/internal/profil/update-password', [AuthController::class, 'updatePassword']);
     Route::get('/internal/kelola-user', [AuthController::class, 'kelolaUser']);
@@ -956,6 +959,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/duk', [DukController::class, 'index'])->name('duk.index');
         Route::get('/duk/tambah', [DukController::class, 'create'])->name('duk.create');
         Route::post('/duk', [DukController::class, 'store'])->name('duk.store');
+        Route::post('/duk/import', [DukController::class, 'import'])->name('duk.import');
         Route::get('/duk/{id}/edit', [DukController::class, 'edit'])->name('duk.edit');
         Route::put('/duk/{id}', [DukController::class, 'update'])->name('duk.update');
         Route::delete('/duk/{id}', [DukController::class, 'destroy'])->name('duk.destroy');

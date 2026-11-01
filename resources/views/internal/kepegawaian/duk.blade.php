@@ -197,6 +197,9 @@
                 <a href="{{ route('kepegawaian.duk.create') }}" class="btn-tambah text-decoration-none">
                     <i class="fas fa-plus me-1"></i> Tambah Data Pegawai
                 </a>
+                <button type="button" class="btn btn-outline-success d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalImportExcel" style="height: 44px; padding: 0 18px; border-radius: 8px; font-weight: 600;">
+                    <i class="fas fa-file-arrow-up"></i> Impor Excel
+                </button>
                 @endhasanyrole
 
                 <button type="button" id="btnExportExcel" class="btn-excel">
@@ -436,6 +439,47 @@
                 @endif
             </div>
         </div>
+
+@hasanyrole('Super User|Sekretariat')
+<!-- MODAL IMPOR EXCEL DUK -->
+<div class="modal fade" id="modalImportExcel" tabindex="-1" aria-labelledby="modalImportExcelLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line);">
+            <form action="{{ route('kepegawaian.duk.import') }}" method="POST" enctype="multipart/form-data" id="formImportExcel">
+                @csrf
+                <div class="modal-header" style="background: var(--ink); color: #fff; padding: 18px 24px;">
+                    <h5 class="modal-title fs-6 fw-bold mb-0" id="modalImportExcelLabel">
+                        <i class="fas fa-file-excel text-success me-2"></i> Impor Data DUK dari Excel
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="text-muted small mb-3">
+                        Unggah file dokumen Excel (<code>.xlsx</code>, <code>.xls</code>, atau <code>.csv</code>) sesuai dengan format resmi DUK Damkar.
+                    </p>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small">Pilih File Excel / CSV <span class="text-danger">*</span></label>
+                        <input type="file" name="file_excel" class="form-control" accept=".xlsx,.xls,.csv" required>
+                        <div class="form-text small text-muted">Format yang didukung: .xlsx, .xls, .csv (Maks. 10MB)</div>
+                    </div>
+
+                    <div class="alert alert-info border-0 small py-2 px-3 mb-0" style="background: var(--navy-soft); color: var(--navy);">
+                        <i class="fas fa-info-circle me-1"></i> <strong>Sistem Otomatis:</strong>
+                        Baris nomor kolom, baris tanda tangan, dan multi-baris Diklat/Pendidikan akan dikenali dan dirapikan secara otomatis.
+                    </div>
+                </div>
+                <div class="modal-footer bg-light px-4 py-3">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-sm btn-success px-4" id="btnSubmitImport">
+                        <i class="fas fa-upload me-1"></i> Mulai Impor
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endhasanyrole
 @endsection
 
 @push('scripts')

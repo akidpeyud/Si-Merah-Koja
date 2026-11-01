@@ -128,7 +128,7 @@
         'Penguatan Ketertiban dan Ketentraman Lingkungan serta Partisipasi Masyarakat dalam Pembangunan; dan',
         'Penguatan Pengelolaan Infrastruktur dan Lingkungan Hidup yang Merata, Berkualitas dan Berkelanjutan.',
     ];
-    $visi_judul = 'Visi & Misi Kota Jambi';
+    $visi_judul = 'Visi & Misi';
 
     if ($tab_aktif === 'visi-misi') {
         $vmRecord = null;
@@ -468,7 +468,7 @@
                 <!-- ==============================================
                      KARTU TAMPILAN VISI & MISI KOTA JAMBI
                      ============================================== -->
-                <div class="vm-grid" aria-label="Visi dan Misi Kota Jambi">
+                <div class="vm-grid" aria-label="Visi dan Misi">
                     <!-- Kartu Visi -->
                     <div class="vm-card vm-card--visi">
                         <div class="vm-header">
