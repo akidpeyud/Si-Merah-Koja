@@ -50,19 +50,6 @@
             ],
         ],
         [
-            'title' => 'Berita & Media', 'icon' => 'fa-newspaper', 'roles' => $ops,
-            'items' => [
-    ['Info Grafis', '/internal/operator/infografis', 'fa-image'],
-    ['Berita Medsos', '/internal/operator/berita-medsos', 'fa-brands fa-instagram'],
-    ['Ujung-Ujung Damkar', '/internal/operator/ujung-damkar', 'fa-brands fa-youtube'],
-    ['Edu Damkar', '/internal/operator/edu-damkar', 'fa-graduation-cap'],
-    ['Pemadaman, Penyelamatan & Evakuasi', '/internal/operator/kejadian', 'fa-fire-flame-curved'],   // <-- baris baru
-    ['Kelola Pengumuman', '/internal/operator/pengumuman', 'fa-bullhorn'],
-                ['Kelola IKM', '/internal/operator/ikm', 'fa-face-smile'],
-                ['Titik Peta Sigapkar', '/internal/peta-sigap/data', 'fa-location-dot'],
-            ],
-        ],
-        [
             'title' => 'Produk Hukum', 'icon' => 'fa-scale-balanced', 'roles' => $ops,
             'items' => [
                 ['Undang-Undang', '/internal/produk-hukum/undang-undang', 'fa-scale-balanced'],
@@ -71,6 +58,19 @@
                 ['Peraturan Menteri', '/internal/produk-hukum/peraturan-menteri', 'fa-book-bookmark'],
                 ['Peraturan Daerah', '/internal/produk-hukum/peraturan-daerah', 'fa-file-shield'],
                 ['Peraturan Kepala Daerah', '/internal/produk-hukum/peraturan-kepala-daerah', 'fa-file-signature'],
+            ],
+        ],
+        [
+            'title' => 'Berita & Media', 'icon' => 'fa-newspaper', 'roles' => $ops,
+            'items' => [
+                ['Info Grafis', '/internal/operator/infografis', 'fa-image'],
+                ['Berita Medsos', '/internal/operator/berita-medsos', 'fa-brands fa-instagram'],
+                ['Ujung-Ujung Damkar', '/internal/operator/ujung-damkar', 'fa-brands fa-youtube'],
+                ['Edu Damkar', '/internal/operator/edu-damkar', 'fa-graduation-cap'],
+                ['Pemadaman, Penyelamatan & Evakuasi', '/internal/operator/kejadian', 'fa-fire-flame-curved'],
+                ['Kelola Pengumuman', '/internal/operator/pengumuman', 'fa-bullhorn'],
+                ['Kelola IKM', '/internal/operator/ikm', 'fa-face-smile'],
+                ['Titik Peta Sigapkar', '/internal/peta-sigap/data', 'fa-location-dot'],
             ],
         ],
         [
