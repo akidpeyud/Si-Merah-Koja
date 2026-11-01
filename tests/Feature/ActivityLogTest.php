@@ -95,7 +95,7 @@ class ActivityLogTest extends TestCase
     }
 
     /**
-     * User internal yang telah login dapat mengakses halaman riwayat aktivitas internal dan permohonan pemohon
+     * User internal yang telah login dapat mengakses halaman riwayat aktivitas internal dan permohonan surat
      */
     public function test_authenticated_internal_user_can_access_riwayat_aktivitas(): void
     {
@@ -106,7 +106,7 @@ class ActivityLogTest extends TestCase
 
         $responsePemohon = $this->actingAs($this->user)->get('/internal/riwayat-aktivitas-pemohon');
         $responsePemohon->assertStatus(200);
-        $responsePemohon->assertSee('Riwayat Permohonan Pemohon');
+        $responsePemohon->assertSee('Riwayat Permohonan Surat');
     }
 
     /**
