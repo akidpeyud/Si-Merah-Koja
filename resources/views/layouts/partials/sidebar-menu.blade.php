@@ -86,7 +86,7 @@
             'title' => 'Riwayat Aktivitas', 'icon' => 'fa-clock-rotate-left', 'roles' => $ops,
             'items' => [
                 ['Aktivitas Internal', route('internal.riwayat-aktivitas'), 'fa-user-tie'],
-                ['Permohonan Pemohon', route('internal.riwayat-aktivitas-pemohon'), 'fa-file-signature'],
+                ['Permohonan Surat', route('internal.riwayat-aktivitas-pemohon'), 'fa-file-signature'],
             ],
         ],
         [

@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Riwayat Permohonan Pemohon')
+@section('title', 'Riwayat Permohonan Surat')
 
 @push('styles')
 <style>
@@ -151,7 +151,7 @@
 @section('content')
 <div class="page-head d-flex justify-content-between align-items-center flex-wrap gap-3">
     <div>
-        <h1>Riwayat Permohonan Pemohon</h1>
+        <h1>Riwayat Permohonan Surat</h1>
         <p>Catatan rekam jejak aktivitas penginputan permohonan surat layanan publik oleh masyarakat/pemohon.</p>
     </div>
     <div class="btn-group p-1 bg-white border rounded-3 shadow-xs">
@@ -159,7 +159,7 @@
             <i class="fa-solid fa-user-tie me-1"></i> Aktivitas Internal
         </a>
         <a href="{{ route('internal.riwayat-aktivitas-pemohon') }}" class="btn btn-sm btn-primary fw-bold px-3 py-2" style="background: var(--navy); border-color: var(--navy);">
-            <i class="fa-solid fa-file-signature me-1"></i> Permohonan Pemohon
+            <i class="fa-solid fa-file-signature me-1"></i> Permohonan Surat
         </a>
     </div>
 </div>

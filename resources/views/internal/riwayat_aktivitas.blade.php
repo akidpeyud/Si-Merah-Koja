@@ -163,7 +163,7 @@
             <i class="fa-solid fa-user-tie me-1"></i> Aktivitas Internal
         </a>
         <a href="{{ route('internal.riwayat-aktivitas-pemohon') }}" class="btn btn-sm btn-light text-secondary fw-semibold px-3 py-2">
-            <i class="fa-solid fa-file-signature me-1"></i> Permohonan Pemohon
+            <i class="fa-solid fa-file-signature me-1"></i> Permohonan Surat
         </a>
     </div>
 </div>
