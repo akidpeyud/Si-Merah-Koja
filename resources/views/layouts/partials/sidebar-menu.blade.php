@@ -83,6 +83,11 @@
             ],
         ],
         [
+            'title' => 'Riwayat Aktivitas', 'icon' => 'fa-clock-rotate-left', 'roles' => $ops,
+            'standalone' => true,
+            'url' => route('internal.riwayat-aktivitas'),
+        ],
+        [
             'title' => 'Pengaturan Akun', 'icon' => 'fa-user-gear', 'roles' => $ops, 'kicker' => 'Akun',
             'items' => [
                 // Item ke-4 (opsional) = batasan role khusus item
@@ -107,22 +112,29 @@
             <div class="side-kicker">{{ $g['kicker'] }}</div>
         @endif
 
-        @php $open = collect($g['items'])->contains(fn ($it) => $isActive($it[1])); @endphp
-        <details class="side-group" @if($open) open @endif>
-            <summary>
+        @if(!empty($g['standalone']))
+            <a href="{{ $g['url'] }}" class="side-link {{ $isActive($g['url']) ? 'active' : '' }}" style="margin-top: 6px;">
                 <i class="fas {{ $g['icon'] }}"></i>
                 <span class="lbl">{{ $g['title'] }}</span>
-                <i class="fas fa-chevron-down chev"></i>
-            </summary>
-            <div class="side-sub">
-                @foreach($g['items'] as $it)
-                    @continue(!empty($it[3]) && !Auth::user()->hasAnyRole(explode('|', $it[3])))
-                    <a href="{{ $it[1] }}" class="{{ $isActive($it[1]) ? 'active' : '' }}">
-                        <i class="{{ $iconClass($it[2]) }}" style="width:18px;text-align:center;margin-top:3px;"></i>
-                        <span class="lbl">{{ $it[0] }}</span>
-                    </a>
-                @endforeach
-            </div>
-        </details>
+            </a>
+        @else
+            @php $open = collect($g['items'])->contains(fn ($it) => $isActive($it[1])); @endphp
+            <details class="side-group" @if($open) open @endif>
+                <summary>
+                    <i class="fas {{ $g['icon'] }}"></i>
+                    <span class="lbl">{{ $g['title'] }}</span>
+                    <i class="fas fa-chevron-down chev"></i>
+                </summary>
+                <div class="side-sub">
+                    @foreach($g['items'] as $it)
+                        @continue(!empty($it[3]) && !Auth::user()->hasAnyRole(explode('|', $it[3])))
+                        <a href="{{ $it[1] }}" class="{{ $isActive($it[1]) ? 'active' : '' }}">
+                            <i class="{{ $iconClass($it[2]) }}" style="width:18px;text-align:center;margin-top:3px;"></i>
+                            <span class="lbl">{{ $it[0] }}</span>
+                        </a>
+                    @endforeach
+                </div>
+            </details>
+        @endif
     @endif
 @endforeach
