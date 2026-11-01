@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\DamtanController;
@@ -37,6 +38,8 @@ use App\Http\Controllers\SkkAdminController;
 use App\Http\Controllers\SuratKorbanExcelController;
 use App\Http\Controllers\VisitController;
 use App\Http\Middleware\CekLoginPemohon;
+use App\Http\Middleware\LogInternalActivity;
+use App\Http\Middleware\LogPemohonActivity;
 use App\Models\Berita;
 use App\Models\BeritaMedsos;
 use App\Models\DataAsn;
@@ -156,7 +159,7 @@ Route::middleware([CekLoginPemohon::class])->group(function () {
 
     // Simpan permohonan dari halaman publik pemohon
     Route::post('/layanan-fasilitas/layanan_perizinan/store', [PermohonanRpkbglController::class, 'store'])
-        ->middleware('throttle:10,1')
+        ->middleware(['throttle:10,1', LogPemohonActivity::class])
         ->name('permohonan.store');
 
     Route::post('/layanan-fasilitas/layanan_perizinan/cek-status', [PermohonanRpkbglController::class, 'cekStatus'])
@@ -168,7 +171,7 @@ Route::middleware([CekLoginPemohon::class])->group(function () {
         return view('layanan-fasilitas.skk');
     });
     Route::post('/permohonan-skk', [PermohonanSkkController::class, 'store'])
-        ->middleware('throttle:10,1')
+        ->middleware(['throttle:10,1', LogPemohonActivity::class])
         ->name('permohonan.skk.store');
     Route::post('/layanan-fasilitas/skk/cek-status', [PermohonanSkkController::class, 'cekStatus'])
         ->middleware('throttle:10,1')
@@ -177,7 +180,7 @@ Route::middleware([CekLoginPemohon::class])->group(function () {
     // --- 3. Izin Keramaian ---
     Route::get('/layanan-fasilitas/izin-keramaian', [IzinKeramaianController::class, 'index'])->name('izin-keramaian.index');
     Route::post('/layanan-fasilitas/izin-keramaian', [IzinKeramaianController::class, 'store'])
-        ->middleware('throttle:10,1')
+        ->middleware(['throttle:10,1', LogPemohonActivity::class])
         ->name('izin-keramaian.store');
     Route::post('/layanan-fasilitas/izin-keramaian/cek-status', [IzinKeramaianController::class, 'cekStatus'])
         ->middleware('throttle:10,1')
@@ -188,7 +191,7 @@ Route::middleware([CekLoginPemohon::class])->group(function () {
         return view('layanan-fasilitas.penggunaan-sarana');
     })->name('penggunaan-sarana');
     Route::post('/layanan-fasilitas/penggunaan-sarana', [PenggunaanSaranaController::class, 'store'])
-        ->middleware('throttle:10,1')
+        ->middleware(['throttle:10,1', LogPemohonActivity::class])
         ->name('penggunaan-sarana.store');
     Route::post('/layanan-fasilitas/penggunaan-sarana/cek-status', [PenggunaanSaranaController::class, 'cekStatus'])
         ->middleware('throttle:10,1')
@@ -199,7 +202,7 @@ Route::middleware([CekLoginPemohon::class])->group(function () {
         return view('layanan-fasilitas.edukasi_sosialisasi');
     });
     Route::post('/layanan-fasilitas/edukasi_sosialisasi/store', [PermohonanEdukasiController::class, 'store'])
-        ->middleware('throttle:10,1')
+        ->middleware(['throttle:10,1', LogPemohonActivity::class])
         ->name('permohonan.edukasi.store');
     Route::post('/layanan-fasilitas/edukasi_sosialisasi/cek-status', [PermohonanEdukasiController::class, 'cekStatus'])
         ->middleware('throttle:10,1')
@@ -218,12 +221,14 @@ Route::post('/logout', [AuthController::class, 'logout']);
 // ==========================================
 // 6. RUTE INTERNAL PEGAWAI (DILINDUNGI)
 // ==========================================
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', LogInternalActivity::class])->group(function () {
 
     // --- A. DASBOR & KELOLA USER ---
     Route::get('/internal/index', function () {
         return view('internal.index');
     });
+    Route::get('/internal/riwayat-aktivitas', [ActivityLogController::class, 'index'])->name('internal.riwayat-aktivitas');
+    Route::get('/internal/riwayat-aktivitas-pemohon', [ActivityLogController::class, 'pemohon'])->name('internal.riwayat-aktivitas-pemohon');
     Route::get('/internal/profil', [AuthController::class, 'showProfile']);
     Route::post('/internal/profil/update-password', [AuthController::class, 'updatePassword']);
     Route::get('/internal/kelola-user', [AuthController::class, 'kelolaUser']);
@@ -956,6 +961,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/duk', [DukController::class, 'index'])->name('duk.index');
         Route::get('/duk/tambah', [DukController::class, 'create'])->name('duk.create');
         Route::post('/duk', [DukController::class, 'store'])->name('duk.store');
+        Route::post('/duk/import', [DukController::class, 'import'])->name('duk.import');
         Route::get('/duk/{id}/edit', [DukController::class, 'edit'])->name('duk.edit');
         Route::put('/duk/{id}', [DukController::class, 'update'])->name('duk.update');
         Route::delete('/duk/{id}', [DukController::class, 'destroy'])->name('duk.destroy');

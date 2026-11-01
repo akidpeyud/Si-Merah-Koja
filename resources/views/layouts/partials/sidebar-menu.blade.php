@@ -50,19 +50,6 @@
             ],
         ],
         [
-            'title' => 'Berita & Media', 'icon' => 'fa-newspaper', 'roles' => $ops,
-            'items' => [
-    ['Info Grafis', '/internal/operator/infografis', 'fa-image'],
-    ['Berita Medsos', '/internal/operator/berita-medsos', 'fa-brands fa-instagram'],
-    ['Ujung-Ujung Damkar', '/internal/operator/ujung-damkar', 'fa-brands fa-youtube'],
-    ['Edu Damkar', '/internal/operator/edu-damkar', 'fa-graduation-cap'],
-    ['Pemadaman, Penyelamatan & Evakuasi', '/internal/operator/kejadian', 'fa-fire-flame-curved'],   // <-- baris baru
-    ['Kelola Pengumuman', '/internal/operator/pengumuman', 'fa-bullhorn'],
-                ['Kelola IKM', '/internal/operator/ikm', 'fa-face-smile'],
-                ['Titik Peta Sigapkar', '/internal/peta-sigap/data', 'fa-location-dot'],
-            ],
-        ],
-        [
             'title' => 'Produk Hukum', 'icon' => 'fa-scale-balanced', 'roles' => $ops,
             'items' => [
                 ['Undang-Undang', '/internal/produk-hukum/undang-undang', 'fa-scale-balanced'],
@@ -74,12 +61,32 @@
             ],
         ],
         [
+            'title' => 'Berita & Media', 'icon' => 'fa-newspaper', 'roles' => $ops,
+            'items' => [
+                ['Info Grafis', '/internal/operator/infografis', 'fa-image'],
+                ['Berita Medsos', '/internal/operator/berita-medsos', 'fa-brands fa-instagram'],
+                ['Ujung-Ujung Damkar', '/internal/operator/ujung-damkar', 'fa-brands fa-youtube'],
+                ['Edu Damkar', '/internal/operator/edu-damkar', 'fa-graduation-cap'],
+                ['Pemadaman, Penyelamatan & Evakuasi', '/internal/operator/kejadian', 'fa-fire-flame-curved'],
+                ['Kelola Pengumuman', '/internal/operator/pengumuman', 'fa-bullhorn'],
+                ['Kelola IKM', '/internal/operator/ikm', 'fa-face-smile'],
+                ['Titik Peta Sigapkar', '/internal/peta-sigap/data', 'fa-location-dot'],
+            ],
+        ],
+        [
             'title' => 'Profil Instansi', 'icon' => 'fa-sitemap', 'roles' => $ops,
             'items' => [
                 ['SOTK', '/internal/profil-instansi/sotk', 'fa-sitemap'],
                 ['Tupoksi', '/internal/profil-instansi/tupoksi', 'fa-list-check'],
                 ['Program Kegiatan', '/internal/profil-instansi/program-kegiatan', 'fa-calendar-check'],
                 ['Cascading', '/internal/profil-instansi/cascading', 'fa-diagram-project'],
+            ],
+        ],
+        [
+            'title' => 'Riwayat Aktivitas', 'icon' => 'fa-clock-rotate-left', 'roles' => $ops,
+            'items' => [
+                ['Aktivitas Internal', route('internal.riwayat-aktivitas'), 'fa-user-tie'],
+                ['Permohonan Surat', route('internal.riwayat-aktivitas-pemohon'), 'fa-file-signature'],
             ],
         ],
         [
@@ -107,22 +114,29 @@
             <div class="side-kicker">{{ $g['kicker'] }}</div>
         @endif
 
-        @php $open = collect($g['items'])->contains(fn ($it) => $isActive($it[1])); @endphp
-        <details class="side-group" @if($open) open @endif>
-            <summary>
+        @if(!empty($g['standalone']))
+            <a href="{{ $g['url'] }}" class="side-link {{ $isActive($g['url']) ? 'active' : '' }}" style="margin-top: 6px;">
                 <i class="fas {{ $g['icon'] }}"></i>
                 <span class="lbl">{{ $g['title'] }}</span>
-                <i class="fas fa-chevron-down chev"></i>
-            </summary>
-            <div class="side-sub">
-                @foreach($g['items'] as $it)
-                    @continue(!empty($it[3]) && !Auth::user()->hasAnyRole(explode('|', $it[3])))
-                    <a href="{{ $it[1] }}" class="{{ $isActive($it[1]) ? 'active' : '' }}">
-                        <i class="{{ $iconClass($it[2]) }}" style="width:18px;text-align:center;margin-top:3px;"></i>
-                        <span class="lbl">{{ $it[0] }}</span>
-                    </a>
-                @endforeach
-            </div>
-        </details>
+            </a>
+        @else
+            @php $open = collect($g['items'])->contains(fn ($it) => $isActive($it[1])); @endphp
+            <details class="side-group" @if($open) open @endif>
+                <summary>
+                    <i class="fas {{ $g['icon'] }}"></i>
+                    <span class="lbl">{{ $g['title'] }}</span>
+                    <i class="fas fa-chevron-down chev"></i>
+                </summary>
+                <div class="side-sub">
+                    @foreach($g['items'] as $it)
+                        @continue(!empty($it[3]) && !Auth::user()->hasAnyRole(explode('|', $it[3])))
+                        <a href="{{ $it[1] }}" class="{{ $isActive($it[1]) ? 'active' : '' }}">
+                            <i class="{{ $iconClass($it[2]) }}" style="width:18px;text-align:center;margin-top:3px;"></i>
+                            <span class="lbl">{{ $it[0] }}</span>
+                        </a>
+                    @endforeach
+                </div>
+            </details>
+        @endif
     @endif
 @endforeach
