@@ -42,6 +42,10 @@
                     <li><a href="https://sikoja.jambikota.go.id/" target="_blank" rel="noopener"><i class="fas fa-angle-right"></i> SIKOJA</a></li>
                 </ul>
             </div>
+
+            <div>
+                <x-visit-counter page="simerahkoja" :track="false" />
+            </div>
         </div>
 
         <div class="footer-bar">

@@ -382,4 +382,18 @@ class VisitCounterTest extends TestCase
             ->withHeaders(['User-Agent' => self::BROWSER_UA])
             ->postJson('/api/visits/simerahkoja');
     }
+
+    public function test_stats_query_parameter_returns_today_week_month_and_all_time(): void
+    {
+        $response = $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.60'])
+            ->withHeaders(['User-Agent' => self::BROWSER_UA])
+            ->postJson('/api/visits/simerahkoja?stats=1');
+
+        $response->assertOk()
+            ->assertJsonPath('total', 1)
+            ->assertJsonPath('stats.today', 1)
+            ->assertJsonPath('stats.this_week', 1)
+            ->assertJsonPath('stats.this_month', 1)
+            ->assertJsonPath('stats.all_time', 1);
+    }
 }

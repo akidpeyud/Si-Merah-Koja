@@ -1,107 +1,103 @@
 @props([
     'page' => 'simerahkoja',
     'track' => true,
+    'title' => 'Statistik Pengunjung',
 ])
+
+@inject('visitService', 'App\Services\VisitCounter')
+
+@php
+    try {
+        $stats = $visitService->getStats($page);
+    } catch (\Throwable $e) {
+        $stats = [
+            'today' => 0,
+            'this_week' => 0,
+            'this_month' => 0,
+            'all_time' => 0,
+        ];
+    }
+@endphp
 
 @once
 <style>
-    .visit-counter {
-        position: absolute;
-        left: max(clamp(16px, 4vw, 32px), calc((100% - var(--wrap, 1300px)) / 2 + clamp(16px, 4vw, 32px)));
-        bottom: 28px;
-        z-index: 4;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 16px;
-        border-radius: 9999px;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+    .visit-stats-widget {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .visit-stats-title {
+        font-family: var(--font-display, 'Bricolage Grotesque', system-ui, sans-serif);
+        font-weight: 700;
+        font-size: 1.15rem;
         color: #ffffff;
+        margin-bottom: 16px;
+    }
+
+    .visit-stats-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .visit-stats-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
         font-family: var(--font-body, 'Instrument Sans', system-ui, sans-serif);
-        font-size: 13.5px;
-        line-height: 1.2;
-        letter-spacing: 0.01em;
-        box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.35);
-        user-select: none;
-        pointer-events: auto;
-        transition: opacity 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.85);
     }
 
-    .hero:has(.ticker) .visit-counter {
-        bottom: 72px;
-    }
-
-    .visit-counter:hover {
-        border-color: rgba(255, 255, 255, 0.28);
-    }
-
-    .visit-counter__icon {
-        width: 15px;
-        height: 15px;
-        flex: none;
-        color: var(--amber, #ffb627);
-        opacity: 0.95;
-    }
-
-    .visit-counter__text {
-        display: inline-flex;
-        align-items: baseline;
-        gap: 5px;
-        color: rgba(255, 255, 255, 0.88);
+    .visit-stats-label {
+        font-weight: 500;
         white-space: nowrap;
     }
 
-    .visit-counter__value {
+    .visit-stats-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 68px;
+        padding: 4px 14px;
+        border-radius: 9999px;
+        background: #e2e8f0;
+        color: #0f172a;
+        font-family: var(--font-body, 'Instrument Sans', system-ui, sans-serif);
+        font-size: 0.88rem;
         font-weight: 700;
-        color: #ffffff;
+        line-height: 1.25;
         font-variant-numeric: tabular-nums;
-        display: inline-block;
-        transition: opacity 0.25s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s ease, opacity 0.25s ease;
+    }
+
+    .visit-stats-badge:hover {
+        transform: translateY(-1px);
     }
 
     @media (max-width: 640px) {
-        .visit-counter {
-            bottom: 24px;
-            padding: 6px 13px;
-            font-size: 12.5px;
-            gap: 6px;
+        .visit-stats-list {
+            gap: 10px;
         }
 
-        .hero:has(.ticker) .visit-counter {
-            bottom: 64px;
+        .visit-stats-item {
+            font-size: 0.9rem;
         }
 
-        .visit-counter__icon {
-            width: 14px;
-            height: 14px;
-        }
-    }
-
-    @media (max-width: 380px) {
-        .visit-counter {
-            padding: 6px 11px;
-            font-size: 12px;
-        }
-
-        .visit-counter__label {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
+        .visit-stats-badge {
+            min-width: 60px;
+            padding: 3px 12px;
+            font-size: 0.82rem;
         }
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .visit-counter,
-        .visit-counter__value {
+        .visit-stats-badge {
             transition: none !important;
         }
     }
@@ -109,21 +105,35 @@
 @endonce
 
 <div
-    {{ $attributes->merge(['class' => 'visit-counter']) }}
+    {{ $attributes->merge(['class' => 'visit-stats-widget']) }}
     data-visit-counter
     data-page="{{ $page }}"
     data-track="{{ $track ? 'true' : 'false' }}"
-    role="status"
-    aria-label="Total kunjungan halaman bulan ini"
+    role="region"
+    aria-label="Statistik Pengunjung"
 >
-    <svg class="visit-counter__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/>
-        <circle cx="12" cy="12" r="3"/>
-    </svg>
-    <span class="visit-counter__text">
-        <span class="visit-counter__label">Kunjungan bulan ini:</span>
-        <b class="visit-counter__value" data-visit-value aria-live="polite">...</b>
-    </span>
+    @if ($title)
+        <h3 class="visit-stats-title">{{ $title }}</h3>
+    @endif
+
+    <ul class="visit-stats-list">
+        <li class="visit-stats-item">
+            <span class="visit-stats-label">Hari ini</span>
+            <span class="visit-stats-badge" data-visit-today>{{ number_format($stats['today'], 0, ',', '.') }}</span>
+        </li>
+        <li class="visit-stats-item">
+            <span class="visit-stats-label">Minggu ini</span>
+            <span class="visit-stats-badge" data-visit-week>{{ number_format($stats['this_week'], 0, ',', '.') }}</span>
+        </li>
+        <li class="visit-stats-item">
+            <span class="visit-stats-label">Bulan ini</span>
+            <span class="visit-stats-badge" data-visit-month>{{ number_format($stats['this_month'], 0, ',', '.') }}</span>
+        </li>
+        <li class="visit-stats-item">
+            <span class="visit-stats-label">Semua</span>
+            <span class="visit-stats-badge" data-visit-all>{{ number_format($stats['all_time'], 0, ',', '.') }}</span>
+        </li>
+    </ul>
 </div>
 
 @once
@@ -138,6 +148,11 @@
         var csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
 
         function animateValue(el, target) {
+            if (!el) return;
+            var currentText = (el.textContent || '').replace(/[^\d]/g, '');
+            var startValue = parseInt(currentText, 10);
+            if (isNaN(startValue)) startValue = 0;
+
             if (reducedMotion || target <= 0 || typeof window.requestAnimationFrame !== 'function') {
                 el.textContent = target.toLocaleString('id-ID');
                 return;
@@ -150,7 +165,7 @@
                 if (!startTime) startTime = timestamp;
                 var progress = Math.min((timestamp - startTime) / duration, 1);
                 var eased = 1 - Math.pow(1 - progress, 3);
-                var current = Math.round(eased * target);
+                var current = Math.round(startValue + (target - startValue) * eased);
                 el.textContent = current.toLocaleString('id-ID');
 
                 if (progress < 1) {
@@ -169,10 +184,13 @@
 
             var page = container.getAttribute('data-page') || 'simerahkoja';
             var shouldTrack = container.getAttribute('data-track') !== 'false';
-            var valueEl = container.querySelector('[data-visit-value]');
-            if (!valueEl) return;
 
-            var endpoint = '/api/visits/' + encodeURIComponent(page);
+            var todayEl = container.querySelector('[data-visit-today]');
+            var weekEl = container.querySelector('[data-visit-week]');
+            var monthEl = container.querySelector('[data-visit-month]');
+            var allEl = container.querySelector('[data-visit-all]');
+
+            var endpoint = '/api/visits/' + encodeURIComponent(page) + '?stats=1';
             var options = {
                 method: shouldTrack ? 'POST' : 'GET',
                 headers: {
@@ -193,14 +211,27 @@
                     return res.json();
                 })
                 .then(function (data) {
-                    if (data && typeof data.total === 'number' && isFinite(data.total)) {
-                        animateValue(valueEl, data.total);
-                    } else {
-                        valueEl.textContent = '-';
+                    if (!data) return;
+
+                    if (data.stats) {
+                        if (typeof data.stats.today === 'number') {
+                            animateValue(todayEl, data.stats.today);
+                        }
+                        if (typeof data.stats.this_week === 'number') {
+                            animateValue(weekEl, data.stats.this_week);
+                        }
+                        if (typeof data.stats.this_month === 'number') {
+                            animateValue(monthEl, data.stats.this_month);
+                        }
+                        if (typeof data.stats.all_time === 'number') {
+                            animateValue(allEl, data.stats.all_time);
+                        }
+                    } else if (typeof data.total === 'number') {
+                        animateValue(monthEl, data.total);
                     }
                 })
                 .catch(function () {
-                    valueEl.textContent = '-';
+                    // Biarkan nilai server-rendered tetap tampil jika request gagal
                 });
         });
     }

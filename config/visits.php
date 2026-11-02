@@ -30,7 +30,7 @@ return [
     |
     */
 
-    'ip_salt' => env('VISIT_IP_SALT'),
+    'ip_salt' => env('VISIT_IP_SALT', 'simerahkoja-salt-random-secret-key-damkar-jambi'),
 
     /*
     |--------------------------------------------------------------------------

@@ -20,30 +20,42 @@ class VisitController extends Controller
         $total = $this->visitCounter->recordVisit($request, $page);
         $period = $this->visitCounter->currentPeriod();
 
-        return $this->noStoreJson([
+        $data = [
             'page' => $page,
             'year' => $period['year'],
             'month' => $period['month'],
             'total' => $total,
-        ]);
+        ];
+
+        if ($request->boolean('stats') || $request->has('stats') || $request->header('X-Detailed-Stats')) {
+            $data['stats'] = $this->visitCounter->getStats($page);
+        }
+
+        return $this->noStoreJson($data);
     }
 
     /**
      * Baca total kunjungan bulan berjalan tanpa menambah hitungan.
      */
-    public function show(string $page): JsonResponse
+    public function show(Request $request, string $page): JsonResponse
     {
         abort_unless($this->visitCounter->isAllowedPage($page), 404);
 
         $total = $this->visitCounter->getMonthlyTotal($page);
         $period = $this->visitCounter->currentPeriod();
 
-        return $this->noStoreJson([
+        $data = [
             'page' => $page,
             'year' => $period['year'],
             'month' => $period['month'],
             'total' => $total,
-        ]);
+        ];
+
+        if ($request->boolean('stats') || $request->has('stats') || $request->header('X-Detailed-Stats')) {
+            $data['stats'] = $this->visitCounter->getStats($page);
+        }
+
+        return $this->noStoreJson($data);
     }
 
     /**
