@@ -30,7 +30,103 @@ class LaporanEvakuasiSeeder extends Seeder
         }
         $userId = $user ? $user->id : 1;
 
-        // 1. Cek apakah ada file Excel di sistem
+        // 1. Prioritas Utama: Dataset Mandiri Lengkap 2024 & 2025 (JSON)
+        // Memastikan rekan kerja / server lain yang tidak memiliki file Excel tetap mendapatkan data lengkap
+        $jsonDatasetPath = database_path('seeders/data/laporan_evakuasi_2024_2025.json');
+        if (File::exists($jsonDatasetPath)) {
+            $this->command->info('Memuat dataset seeder non-kebakaran tahun 2024 & 2025 dari file JSON...');
+            $content = File::get($jsonDatasetPath);
+            $dataset = json_decode($content, true);
+
+            if (is_array($dataset) && ! empty($dataset)) {
+                $totalRecords = count($dataset);
+                $this->command->info("Ditemukan {$totalRecords} data laporan non-kebakaran (2024 & 2025). Memulai proses seeding...");
+
+                $inserted = 0;
+                $skipped = 0;
+
+                // Proses dalam chunk transaksi untuk performa dan keamanan data
+                $chunks = array_chunk($dataset, 50);
+                foreach ($chunks as $chunk) {
+                    DB::transaction(function () use ($chunk, $userId, &$inserted, &$skipped) {
+                        foreach ($chunk as $item) {
+                            $nomor = $item['nomor_laporan'] ?? null;
+                            $tgl = $item['tanggal_kejadian'] ?? null;
+                            $pelapor = $item['nama_pelapor'] ?? null;
+
+                            // Cek duplikasi agar seeder aman dijalankan berulang kali
+                            $exists = LaporanPenyelamatan::where('nomor_laporan', $nomor)
+                                ->orWhere(function ($q) use ($tgl, $pelapor) {
+                                    $q->where('tanggal_kejadian', $tgl)
+                                        ->where('nama_pelapor', $pelapor);
+                                })
+                                ->exists();
+
+                            if ($exists) {
+                                $skipped++;
+                                continue;
+                            }
+
+                            $laporan = LaporanPenyelamatan::create([
+                                'nomor_laporan' => $nomor ?? $this->buatNomorLaporan(Carbon::parse($tgl)),
+                                'id_laporan' => $item['id_laporan'] ?? Str::uuid()->toString(),
+                                'user_id' => $userId,
+                                'tanggal_kejadian' => $tgl,
+                                'hari_kejadian' => $item['hari_kejadian'] ?? Carbon::parse($tgl)->locale('id')->translatedFormat('l'),
+                                'bulan_kejadian' => $item['bulan_kejadian'] ?? Carbon::parse($tgl)->locale('id')->translatedFormat('F'),
+                                'tahun_kejadian' => (int) ($item['tahun_kejadian'] ?? Carbon::parse($tgl)->year),
+                                'nama_pelapor' => $pelapor,
+                                'telepon_pelapor' => $item['telepon_pelapor'] ?? '-',
+                                'media_pelaporan' => $item['media_pelaporan'] ?? 'WhatsApp / Telepon',
+                                'kategori_kejadian' => $item['kategori_kejadian'] ?? 'penyelamatan_hewan',
+                                'kategori_non_kebakaran' => $item['kategori_non_kebakaran'] ?? 'evakuasi_liar',
+                                'rincian_kategori_non_kebakaran' => $item['rincian_kategori_non_kebakaran'] ?? 'Evakuasi',
+                                'prioritas' => $item['prioritas'] ?? 'rendah',
+                                'waktu_kejadian' => $item['waktu_kejadian'] ?? ($tgl.' 08:00:00'),
+                                'waktu_terima' => $item['waktu_terima'] ?? $item['waktu_kejadian'] ?? ($tgl.' 08:00:00'),
+                                'waktu_berangkat' => $item['waktu_berangkat'] ?? null,
+                                'waktu_tiba' => $item['waktu_tiba'] ?? null,
+                                'waktu_selesai' => $item['waktu_selesai'] ?? null,
+                                'waktu_kembali' => null,
+                                'alamat' => $item['alamat'] ?? '-',
+                            ]);
+
+                            LpTeknisLogistik::create([
+                                'laporan_id' => $laporan->id,
+                                'pimpinan_operasi' => $item['pimpinan_operasi'] ?? null,
+                                'pendamping_operasi' => $item['pendamping_operasi'] ?? null,
+                                'satuan_tugas' => $item['satuan_tugas'] ?? null,
+                                'langkah_penanganan' => $item['langkah_penanganan'] ?? null,
+                                'hasil_tindakan' => $item['hasil_tindakan'] ?? 'Selesai ditangani dengan aman.',
+                                'status_evakuasi' => $item['status_evakuasi'] ?? 'Selesai',
+                                'objek_terdampak' => $item['objek_terdampak'] ?? $item['rincian_kategori_non_kebakaran'] ?? null,
+                            ]);
+
+                            LpDokumentasi::create([
+                                'laporan_id' => $laporan->id,
+                                'kronologi_lengkap' => $item['kronologi_lengkap'] ?? null,
+                            ]);
+
+                            LpKategoriKhusus::create([
+                                'laporan_id' => $laporan->id,
+                                'jenis_hewan' => $item['jenis_hewan'] ?? null,
+                                'spesies_hewan' => $item['spesies_hewan'] ?? null,
+                                'jenis_benda_bahaya' => $item['jenis_benda_bahaya'] ?? null,
+                                'jenis_objek_tumbang' => $item['jenis_objek_tumbang'] ?? null,
+                            ]);
+
+                            $inserted++;
+                        }
+                    });
+                }
+
+                $this->command->info("Seeding data laporan non-kebakaran 2024 & 2025 selesai! Berhasil disimpan: {$inserted}, Duplikat dilewati: {$skipped}.");
+
+                return;
+            }
+        }
+
+        // 2. Fallback: Cek apakah ada file Excel di sistem
         $candidatePaths = [
             base_path('laporan evakuasi 2025.xlsx'),
             base_path('Laporan Evakuasi 2025.xlsx'),
