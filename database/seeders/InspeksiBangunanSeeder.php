@@ -14,8 +14,9 @@ class InspeksiBangunanSeeder extends Seeder
      */
     public function run()
     {
-        // Menghapus data lama agar tidak duplikat saat dijalankan ulang
-        DB::table('inspeksi_bangunans')->truncate();
+        if (DB::table('inspeksi_bangunans')->exists()) {
+            return;
+        }
 
         $data = [
             [

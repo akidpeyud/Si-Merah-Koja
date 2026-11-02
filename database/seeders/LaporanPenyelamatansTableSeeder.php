@@ -14,6 +14,10 @@ class LaporanPenyelamatansTableSeeder extends Seeder
      */
     public function run()
     {
+        if (\DB::table('laporan_penyelamatans')->exists()) {
+            return;
+        }
+
         if (\DB::table('users')->where('id', 1)->doesntExist()) {
             $this->call(UsersTableSeeder::class);
         }

@@ -13,10 +13,9 @@ class DataAsnSeeder extends Seeder
      */
     public function run(): void
     {
-        // Bersihkan tabel terlebih dahulu agar tidak ada data ganda jika dijalankan ulang
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DataAsn::truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        if (DataAsn::exists()) {
+            return;
+        }
 
         $data = [
             ['nama_jabatan' => 'STRUKTURAL', 'pns' => 11, 'pppk' => 0],

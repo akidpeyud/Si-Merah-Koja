@@ -14,8 +14,9 @@ class FireDrillSeeder extends Seeder
      */
     public function run()
     {
-        // Menghapus data lama agar tidak duplikat saat di-seed ulang
-        DB::table('fire_drills')->truncate();
+        if (DB::table('fire_drills')->exists()) {
+            return;
+        }
 
         $data = [
             [

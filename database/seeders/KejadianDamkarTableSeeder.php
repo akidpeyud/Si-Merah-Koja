@@ -14,9 +14,9 @@ class KejadianDamkarTableSeeder extends Seeder
      */
     public function run()
     {
-        
-
-        \DB::table('kejadian_damkar')->delete();
+        if (\DB::table('kejadian_damkar')->exists()) {
+            return;
+        }
         
         \DB::table('kejadian_damkar')->insert(array (
             0 => 
