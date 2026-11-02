@@ -31,7 +31,10 @@ class RekapLayananTableSeeder extends Seeder
         }
 
         $totalRecords = count($dataset);
-        $this->command?->info("Memuat dataset rekap_layanan ({$totalRecords} data dari tahun 2020 - 2026)...");
+        $this->command?->info("Memuat dataset rekap_layanan ({$totalRecords} data dari tahun 2025 - 2026)...");
+
+        // Bersihkan data lama sebelum tahun 2025 pada tabel ini saja agar data teman ikut sinkron
+        DB::table('rekap_layanan')->whereYear('tanggal', '<', 2025)->delete();
 
         $inserted = 0;
         $updated = 0;
