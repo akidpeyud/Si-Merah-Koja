@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Data Urut Kepegawaian (DUK)')
+@section('title', 'Data Urut Kepangkatan (DUK)')
 
 @push('styles')
 <style>

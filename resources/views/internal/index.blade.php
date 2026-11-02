@@ -206,7 +206,7 @@
         [
             'id' => 'kepegawaian', 'title' => 'Kepegawaian', 'icon' => 'fa-user-tie', 'tone' => 'green', 'desc' => 'Data pegawai, ASN, dan dokumen SOP', 'roles' => $ops,
             'items' => [
-                ['Data Urut Kepegawaian', 'pegawai', 'fa-user-tie', '/internal/kepegawaian/duk', $count('pegawais'), 'ic-primary'],
+                ['Data Urut Kepangkatan', 'pegawai', 'fa-user-tie', '/internal/kepegawaian/duk', $count('pegawais'), 'ic-primary'],
                 ['Rekap Data ASN', 'data', 'fa-users', '/internal/data-asn', (($count('data_asns', 'pns') ?? 0) + ($count('data_asns', 'pppk') ?? 0)), 'ic-danger'],
                 ['SOP & Dokumen', 'program', 'fa-file-contract', '/internal/program-kerja', $count('dokumen_sop'), 'ic-info'],
                 ['Dokumen Publik', 'dokumen', 'fa-file-lines', route('dokumen-publik.index'), $count('dokumen_publik'), 'ic-primary'],
