@@ -30,17 +30,21 @@ class LaporanEvakuasiSeeder extends Seeder
         }
         $userId = $user ? $user->id : 1;
 
-        // 1. Prioritas Utama: Dataset Mandiri Lengkap 2024 & 2025 (JSON)
-        // Memastikan rekan kerja / server lain yang tidak memiliki file Excel tetap mendapatkan data lengkap
-        $jsonDatasetPath = database_path('seeders/data/laporan_evakuasi_2024_2025.json');
+        // 1. Prioritas Utama: Dataset Mandiri Lengkap 2025 (JSON)
+        // Memastikan rekan kerja / server lain yang tidak memiliki file Excel tetap mendapatkan data lengkap (1.019 data non-kebakaran 2025)
+        $jsonDatasetPath = database_path('seeders/data/laporan_evakuasi_2025.json');
+        if (! File::exists($jsonDatasetPath)) {
+            $jsonDatasetPath = database_path('seeders/data/laporan_evakuasi_2024_2025.json');
+        }
+
         if (File::exists($jsonDatasetPath)) {
-            $this->command->info('Memuat dataset seeder non-kebakaran tahun 2024 & 2025 dari file JSON...');
+            $this->command->info('Memuat dataset seeder non-kebakaran tahun 2025 dari file JSON...');
             $content = File::get($jsonDatasetPath);
             $dataset = json_decode($content, true);
 
             if (is_array($dataset) && ! empty($dataset)) {
                 $totalRecords = count($dataset);
-                $this->command->info("Ditemukan {$totalRecords} data laporan non-kebakaran (2024 & 2025). Memulai proses seeding...");
+                $this->command->info("Ditemukan {$totalRecords} data laporan non-kebakaran (2025). Memulai proses seeding...");
 
                 $inserted = 0;
                 $skipped = 0;
@@ -120,7 +124,7 @@ class LaporanEvakuasiSeeder extends Seeder
                     });
                 }
 
-                $this->command->info("Seeding data laporan non-kebakaran 2024 & 2025 selesai! Berhasil disimpan: {$inserted}, Duplikat dilewati: {$skipped}.");
+                $this->command->info("Seeding data laporan non-kebakaran 2025 selesai! Berhasil disimpan: {$inserted}, Duplikat dilewati: {$skipped}.");
 
                 return;
             }
