@@ -43,7 +43,7 @@
         [
             'title' => 'Kepegawaian', 'icon' => 'fa-user-tie', 'roles' => $ops,
             'items' => [
-                ['Data Urut Kepegawaian', '/internal/kepegawaian/duk', 'fa-user-tie'],
+                ['Data Urut Kepangkatan', '/internal/kepegawaian/duk', 'fa-user-tie'],
                 ['Rekap Data ASN', '/internal/data-asn', 'fa-users'],
                 ['SOP & Dokumen', '/internal/program-kerja', 'fa-file-contract'],
                 ['Dokumen Publik', route('dokumen-publik.index'), 'fa-file-lines'],
