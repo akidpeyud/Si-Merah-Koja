@@ -63,7 +63,7 @@
         [
             'title' => 'Berita & Media', 'icon' => 'fa-newspaper', 'roles' => $ops,
             'items' => [
-                ['Info Grafis', '/internal/operator/infografis', 'fa-image'],
+                ['Infografis', '/internal/operator/infografis', 'fa-image'],
                 ['Berita Medsos', '/internal/operator/berita-medsos', 'fa-brands fa-instagram'],
                 ['Ujung-Ujung Damkar', '/internal/operator/ujung-damkar', 'fa-brands fa-youtube'],
                 ['Edu Damkar', '/internal/operator/edu-damkar', 'fa-graduation-cap'],
