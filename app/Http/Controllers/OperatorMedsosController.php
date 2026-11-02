@@ -75,8 +75,10 @@ class OperatorMedsosController extends Controller
 
         $path = $request->file('gambar')->store('infografis', 'public');
 
+        $judul = filled($request->judul) ? trim((string) $request->judul) : null;
+
         Infografis::create([
-            'judul' => $request->judul,
+            'judul' => $judul,
             'gambar' => $path,
         ]);
 
