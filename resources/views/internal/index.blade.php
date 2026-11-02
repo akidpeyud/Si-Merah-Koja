@@ -193,11 +193,11 @@
             'id' => 'sapra', 'title' => 'Bagian Sapra', 'icon' => 'fa-warehouse', 'tone' => 'amber', 'desc' => 'Sarana, prasarana, dan sumber air', 'roles' => $ops,
             'items' => [
                 ['Sarana Pemadam Kebakaran', 'unit', 'fa-fire-extinguisher', '/sapra/sarana-mako', $countAll(['sarana_kebakaran', 'sarana_pos']), 'ic-danger'],
-                ['Prasarana Pemadam Kebakaran', 'data', 'fa-building', '/sapra/prasarana-mako', $countAll(['prasarana', 'prasarana_pos', 'prasaranas']), 'ic-primary'],
+                ['Prasarana Pemadam Kebakaran', 'data', 'fa-building', '/sapra/prasarana-mako', $countAll(['prasarana', 'prasarana_pos']), 'ic-primary'],
                 ['Sarana Penyelamatan & Evakuasi', 'unit', 'fa-life-ring', '/sapra/sarana-penyelamatan', $countAll(['sarana_penyelamatan', 'sarana_penyelamatan_pos', 'sarana_penyelamatans']), 'ic-info'],
                 ['Sarana Pemeriksaan Proteksi Kebakaran', 'unit', 'fa-search-location', '/sapra/sarana-pemeriksaan', $count('sarana_pemeriksaan'), 'ic-primary'],
                 ['Kelola Data Pos', 'pos', 'fa-warehouse', '/sapra/kelola-pos', $countAll(['pos_pemadam', 'lokasi_pos']), 'ic-info'],
-                ['Sumber Air', 'titik', 'fa-droplet', '/sapra/data_hidrant_gedung', $count(['data_hidrant_gedung', 'hidran_gedung', 'hidrant_gedung', 'sumber_air']), 'ic-info'],
+                ['Sumber Air', 'titik', 'fa-droplet', '/sapra/data_hidrant_gedung', $count(['prasaranas', 'data_hidrant_gedung', 'hidran_gedung', 'hidrant_gedung', 'sumber_air']), 'ic-info'],
                 ['Data Hidrant Kota Jambi', 'hidrant', 'fa-map-location-dot', '/sapra/data-hidrant-kota', $count('hidran_kota'), 'ic-primary'],
                 ['Mutu Baku Kebutuhan', 'data', 'fa-boxes-stacked', '/sapra/kebutuhan-sarpras', $count('kebutuhan_sarpras'), 'ic-primary'],
                 ['Serah Terima Barang', 'transaksi', 'fa-people-carry-box', '/sapra/distribusi-staff', $count('distribusi_barang_staff'), 'ic-info'],
