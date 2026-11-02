@@ -156,7 +156,7 @@
         [
             'id' => 'pencegahan', 'title' => 'Bagian Pencegahan', 'icon' => 'fa-shield-halved', 'tone' => 'blue', 'desc' => 'Inspeksi, edukasi, dan perizinan keselamatan', 'roles' => $ops,
             'items' => [
-                ['Peningkatan Kapasitas Aparatur', 'kegiatan', 'fa-arrow-trend-up', '/internal/pencegahan/peningkatan-kapasitas', $count('peningkatan_kapasitas'), 'ic-primary'],
+                ['Peningkatan Kapasitas Aparatur', 'kegiatan', 'fa-arrow-trend-up', '/internal/pencegahan/peningkatan-kapasitas', $countAll(['tbl_diksar', 'tbl_diklat_f1', 'tbl_diklat_f2', 'tbl_diklat_rescue', 'tbl_diklat_mfr', 'tbl_diklat_operator', 'tbl_diklat_inspektur', 'tbl_diklat_ppl']), 'ic-primary'],
                 ['Pencegahan Kebakaran & Inspeksi', 'inspeksi', 'fa-magnifying-glass-chart', '/internal/pencegahan/inspeksi-kebakaran', $countAll(['inspeksi_bangunans', 'jadwal_inspeksis']), 'ic-danger'],
                 ['Pemberdayaan Masyarakat & Dunia Usaha', 'kegiatan', 'fa-handshake-angle', '/internal/pencegahan/pemberdayaan-masyarakat', $countAll(['sosialisasi_edukasi', 'sosialisasi', 'pembinaan', 'pelatihan', 'pelatihan_keluarga', 'fire_drills']), 'ic-info'],
                 ['Kelola Edukasi', 'permohonan', 'fa-bullhorn', '/internal/pencegahan/kelola-edukasi', $count('permohonan_edukasi'), 'ic-primary'],

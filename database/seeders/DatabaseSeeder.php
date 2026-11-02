@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
             SotkSeeder::class,
             CascadeTupoksiSeeder::class,
             ProdukHukumSeeder::class,
+            Diklat2023Seeder::class,
         ]);
     }
 }
