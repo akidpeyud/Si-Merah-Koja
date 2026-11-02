@@ -12,7 +12,7 @@ class Diklat2023Seeder extends Seeder
      */
     public function run(): void
     {
-        $now = now()->toDateTimeString();
+        $now = '2023-12-31';
         $instansiDefault = 'Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi';
 
         // =====================================================================

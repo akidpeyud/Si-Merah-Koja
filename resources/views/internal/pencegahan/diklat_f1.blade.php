@@ -230,8 +230,13 @@
             $daftar_instansi     = $koleksiData->pluck('instansi')->filter()->unique()->sort()->values();
             $daftar_penyelenggara = $koleksiData->pluck('instansi_penyelenggara')->filter()->unique()->sort()->values();
 
-            // Tahun diambil dari 4 digit pertama yang ditemukan di "Tanggal Pelaksanaan"
+            // Tahun diambil dari tahun rekap (created_at seeder) atau dari 4 digit di "Tanggal Pelaksanaan"
             $ambilTahun = function ($item) {
+                if (!empty($item->created_at) && preg_match('/^(19|20)\d{2}/', (string) $item->created_at, $mCreated)) {
+                    if ((int) $mCreated[0] <= 2025) {
+                        return $mCreated[0];
+                    }
+                }
                 if (preg_match('/(19|20)\d{2}/', (string) ($item->tanggal_pelaksanaan ?? ''), $m)) return $m[0];
                 return null;
             };
