@@ -15,7 +15,7 @@ class IkmResponse extends Model
 
     protected $fillable = [
         // Identitas responden
-        'tanggal_layanan', 'pendidikan', 'usia', 'pekerjaan', 'disabilitas',
+        'tanggal_layanan', 'tanggal_lahir', 'pendidikan', 'usia', 'pekerjaan', 'disabilitas',
 
         // 9 unsur pelayanan (11 pernyataan)
         'u1_a', 'u1_b', 'u2_a', 'u2_b', 'u3', 'u4', 'u5', 'u6', 'u7', 'u8', 'u9',
@@ -31,7 +31,8 @@ class IkmResponse extends Model
 
     protected $casts = [
         'tanggal_layanan' => 'date',
-        'disabilitas'     => 'boolean',
+        'tanggal_lahir' => 'date',
+        'disabilitas' => 'boolean',
     ];
 
     /** Pilihan jawaban untuk semua pernyataan unsur & integritas. */
@@ -67,7 +68,7 @@ class IkmResponse extends Model
 
     /** Pertanyaan skala 1-10 (kolom => teks). */
     public const KEPERCAYAAN = [
-        'kepercayaan_pusat'  => 'Pada skala 1 sampai 10, di mana 1 berarti tidak percaya sama sekali dan 10 berarti sangat percaya, seberapa besar tingkat kepercayaan Anda terhadap pemerintah pusat?',
+        'kepercayaan_pusat' => 'Pada skala 1 sampai 10, di mana 1 berarti tidak percaya sama sekali dan 10 berarti sangat percaya, seberapa besar tingkat kepercayaan Anda terhadap pemerintah pusat?',
         'kepercayaan_daerah' => 'Pada skala 1 sampai 10, di mana 1 berarti tidak percaya sama sekali dan 10 berarti sangat percaya, seberapa besar tingkat kepercayaan Anda terhadap pemerintah daerah?',
     ];
 

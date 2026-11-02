@@ -104,7 +104,7 @@
 
         foreach ($dokumenDB as $doc) {
             $judul_doc = $doc->judul_dokumen ?? $doc->judul ?? $doc->nama_dokumen ?? $doc->nama ?? 'Dokumen ' . $label_aktif;
-            $nama_file = $doc->nama_file ?? $doc->file ?? $doc->file_pdf ?? $doc->dokumen ?? '';
+            $nama_file = $doc->file_dokumen ?? $doc->nama_file ?? $doc->file ?? $doc->file_pdf ?? $doc->dokumen ?? '';
             $url_view  = Route::has('publik.profil.view') ? route('publik.profil.view', ['kategori' => $tab_aktif, 'id' => $doc->id]) : url('/internal/profil-instansi/' . $tab_aktif . '/' . $doc->id . '/view');
             $url_dl    = Route::has('publik.profil.download') ? route('publik.profil.download', ['kategori' => $tab_aktif, 'id' => $doc->id]) : url('/internal/profil-instansi/' . $tab_aktif . '/' . $doc->id . '/download');
 
@@ -564,6 +564,15 @@
                         </div>
                         <?php endif; ?>
                     </li>
+                    <?php if ($ada && $ext === 'PDF'): ?>
+                    <li class="doc-preview-item" style="padding: 18px clamp(16px, 2.5vw, 26px); border-bottom: 1px solid var(--line); background: #f8fafc;">
+                        <div style="width: 100%; height: clamp(520px, 80vh, 900px); border-radius: 12px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 4px 16px rgba(13,27,42,.08); background: #525659;">
+                            <iframe src="<?= $h($url) ?>#toolbar=1&navpanes=0" style="width: 100%; height: 100%; border: none; display: block;" title="<?= $h($judul) ?>">
+                                <p style="padding: 20px; color: #fff;">Browser Anda tidak mendukung pratinjau dokumen langsung. Silakan <a href="<?= $h($url_download) ?>" style="color: #60a5fa; text-decoration: underline;">unduh file PDF di sini</a>.</p>
+                            </iframe>
+                        </div>
+                    </li>
+                    <?php endif; ?>
                     <?php endforeach; ?>
                 </ul>
                 <?php else: ?>

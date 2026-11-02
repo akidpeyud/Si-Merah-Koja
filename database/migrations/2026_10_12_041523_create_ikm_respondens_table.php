@@ -13,6 +13,7 @@ return new class extends Migration
 
             // Identitas responden
             $t->date('tanggal_layanan')->index();
+            $t->date('tanggal_lahir')->nullable();
             $t->string('pendidikan', 30);
             $t->unsignedTinyInteger('usia');
             $t->string('pekerjaan', 40);

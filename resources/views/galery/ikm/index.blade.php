@@ -1034,9 +1034,15 @@
                     <small class="err">{{ $errors->first('pendidikan') ?: 'Pilih pendidikan Anda.' }}</small>
                 </div>
 
+                <div class="q {{ $errors->has('tanggal_lahir') ? 'q-err' : '' }}">
+                    <label class="lbl" for="f-tanggal-lahir">Tanggal lahir (verifikasi usia) <span class="req">*</span></label>
+                    <input class="field" type="date" id="f-tanggal-lahir" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}" max="{{ now()->subYears(18)->format('Y-m-d') }}" required>
+                    <small class="err">{{ $errors->first('tanggal_lahir') ?: 'Usia responden minimal 18 tahun.' }}</small>
+                </div>
+
                 <div class="q {{ $errors->has('usia') ? 'q-err' : '' }}">
                     <label class="lbl" for="f-usia">Usia (minimal 18 tahun) <span class="req">*</span></label>
-                    <input class="field" type="number" id="f-usia" name="usia" value="{{ old('usia') }}" min="18" max="100" inputmode="numeric" placeholder="Minimal 18 tahun" required>
+                    <input class="field" type="number" id="f-usia" name="usia" value="{{ old('usia') }}" min="18" max="100" inputmode="numeric" placeholder="Otomatis terisi dari tanggal lahir" readonly required>
                     <small class="err">{{ $errors->first('usia') ?: 'Usia responden minimal 18 tahun (antara 18 dan 100 tahun).' }}</small>
                 </div>
 
@@ -1446,6 +1452,50 @@
             }
         }
     });
+
+    /* Hitung usia otomatis dari tanggal lahir */
+    var elTglLahir = document.getElementById('f-tanggal-lahir');
+    var elUsia     = document.getElementById('f-usia');
+
+    function hitungUsiaDariTglLahir() {
+        if (!elTglLahir || !elUsia) return;
+        var val = elTglLahir.value;
+        if (!val) {
+            elUsia.value = '';
+            return;
+        }
+        var dob = new Date(val);
+        if (isNaN(dob.getTime())) {
+            elUsia.value = '';
+            return;
+        }
+        var today = new Date();
+        var age = today.getFullYear() - dob.getFullYear();
+        var m = today.getMonth() - dob.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+            age--;
+        }
+        if (age >= 0) {
+            elUsia.value = age;
+            var qTgl = elTglLahir.closest('.q');
+            var qUsia = elUsia.closest('.q');
+            if (age < 18 || age > 100) {
+                if (qTgl) qTgl.classList.add('q-err');
+                if (qUsia) qUsia.classList.add('q-err');
+            } else {
+                if (qTgl) qTgl.classList.remove('q-err');
+                if (qUsia) qUsia.classList.remove('q-err');
+            }
+        }
+    }
+
+    if (elTglLahir) {
+        elTglLahir.addEventListener('input', hitungUsiaDariTglLahir);
+        elTglLahir.addEventListener('change', hitungUsiaDariTglLahir);
+        if (elTglLahir.value) {
+            hitungUsiaDariTglLahir();
+        }
+    }
 
     /* Kalau server menolak (validasi), buka bagian pertama yang bermasalah */
     var first = 0;

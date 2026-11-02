@@ -113,6 +113,8 @@
     .btn-icon.edit:hover { background: var(--info); color: #fff; }
     .btn-icon.delete { background: var(--signal-soft); color: var(--signal-dark); }
     .btn-icon.delete:hover { background: var(--signal); color: #fff; }
+    .btn-primary-custom { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 24px; background: var(--navy); color: #fff; border: none; border-radius: 8px; font-size: .9rem; font-weight: 600; transition: all .2s ease; cursor: pointer; text-decoration: none; }
+    .btn-primary-custom:hover { background: var(--navy-dark); transform: translateY(-1px); color: #fff; }
     
     .modal-content { border: none; border-radius: var(--r-md); box-shadow: var(--shadow-lg); }
     .modal-header { border-bottom: 1px solid var(--line); padding: 20px 24px; }
@@ -293,53 +295,6 @@
                             </td>
                         </tr>
 
-                        <!-- MODAL EDIT DATA PER ITEM -->
-                        @hasanyrole('Super User|Sekretariat')
-                        <div class="modal fade" id="modalEdit{{ $itemId }}" tabindex="-1" aria-labelledby="modalEditLabel{{ $itemId }}" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="modalEditLabel{{ $itemId }}">Edit Dokumen Publik</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <form action="{{ route('dokumen-publik.update', $itemId) }}" method="POST" enctype="multipart/form-data">
-                                        @csrf
-                                        @method('PUT')
-                                        <div class="modal-body text-start">
-                                            
-                                            <div class="mb-3">
-                                                <label class="form-label">Judul Dokumen</label>
-                                                <input type="text" name="judul_dokumen" class="form-control" value="{{ $judul }}" required>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Kategori</label>
-                                                <select name="kategori" class="form-select" required>
-                                                    @foreach($daftarKategori as $key => $info)
-                                                        <option value="{{ $key }}" {{ $kategori == $key ? 'selected' : '' }}>{{ $key }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-
-                                            <div class="mb-2">
-                                                <label class="form-label">Ganti File (Opsional)</label>
-                                                <input type="file" name="nama_file" class="form-control" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                                                <small class="text-muted mt-1 d-block">Format: PDF, DOC, DOCX, Gambar. Maksimal 10MB.</small>
-                                            </div>
-
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-light border" data-bs-dismiss="modal" style="min-height: 44px; border-radius: 8px;">Batal</button>
-                                            <button type="submit" class="btn-primary-custom">
-                                                <i class="fas fa-save"></i> Perbarui Dokumen
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        @endhasanyrole
-
                         @empty
                         <tr>
                             <td colspan="5" class="text-center py-5 text-muted">
@@ -405,6 +360,58 @@
         </div>
     </div>
 </div>
+
+<!-- ==================== MODAL EDIT DATA ==================== -->
+@foreach ($listDokumen as $item)
+@php
+    $itemId   = data_get($item, 'id');
+    $judul    = data_get($item, 'judul_dokumen', '');
+    $kategori = data_get($item, 'kategori', '');
+@endphp
+<div class="modal fade" id="modalEdit{{ $itemId }}" tabindex="-1" aria-labelledby="modalEditLabel{{ $itemId }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditLabel{{ $itemId }}">Edit Dokumen Publik</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('dokumen-publik.update', $itemId) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="modal-body text-start">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Judul Dokumen</label>
+                        <input type="text" name="judul_dokumen" class="form-control" value="{{ $judul }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Kategori</label>
+                        <select name="kategori" class="form-select" required>
+                            @foreach($daftarKategori as $key => $info)
+                                <option value="{{ $key }}" {{ $kategori == $key ? 'selected' : '' }}>{{ $key }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">Ganti File (Opsional)</label>
+                        <input type="file" name="nama_file" class="form-control" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                        <small class="text-muted mt-1 d-block">Format: PDF, DOC, DOCX, Gambar. Maksimal 10MB.</small>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light border" data-bs-dismiss="modal" style="min-height: 44px; border-radius: 8px;">Batal</button>
+                    <button type="submit" class="btn-primary-custom">
+                        <i class="fas fa-save"></i> Perbarui Dokumen
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endforeach
 @endhasanyrole
 @endsection
 

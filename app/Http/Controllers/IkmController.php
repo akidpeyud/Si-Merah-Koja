@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\IkmResponse;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -69,8 +70,11 @@ class IkmController extends Controller
                 ->with('ikm_sukses', 'Terima kasih, survei Anda telah terkirim.');
         }
 
+        $minAgeDate = now()->subYears(18)->format('Y-m-d');
+
         $rules = [
             'tanggal_layanan' => ['required', 'date', 'before_or_equal:today'],
+            'tanggal_lahir' => ['required', 'date', 'before_or_equal:'.$minAgeDate],
             'pendidikan' => ['required', Rule::in(IkmResponse::PENDIDIKAN)],
             'usia' => ['required', 'integer', 'between:18,100'],
             'pekerjaan' => ['required', Rule::in(IkmResponse::PEKERJAAN)],
@@ -81,6 +85,8 @@ class IkmController extends Controller
         ];
 
         $messages = [
+            'tanggal_lahir.required' => 'Tanggal lahir wajib diisi untuk verifikasi usia.',
+            'tanggal_lahir.before_or_equal' => 'Usia responden minimal 18 tahun.',
             'usia.between' => 'Usia responden minimal 18 tahun (antara 18 hingga 100 tahun).',
             'usia.min' => 'Usia responden minimal 18 tahun.',
         ];
@@ -99,6 +105,7 @@ class IkmController extends Controller
         }
 
         $data = $validator->validated();
+        $data['usia'] = Carbon::parse($data['tanggal_lahir'])->age;
         $data['disabilitas'] = $request->boolean('disabilitas');
         $data['ip_address'] = $request->ip();
 

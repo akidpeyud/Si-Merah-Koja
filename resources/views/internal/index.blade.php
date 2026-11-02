@@ -177,16 +177,23 @@
         ],
         [
             'id' => 'rekap', 'title' => 'Rekap Layanan & Penyelamatan', 'icon' => 'fa-truck-medical', 'tone' => 'orange', 'roles' => $ops, 'chip' => false,
-            'total' => $count('rekap_layanan', 'jumlah'),
+            'total' => (int) (($rekapTotals['kebakaran'] ?? 0)
+                + ($rekapTotals['evakuasi_hewan'] ?? 0)
+                + ($rekapTotals['pelepasan_cincin'] ?? ($rekapTotals['evakuasi_cincin'] ?? 0))
+                + ($rekapTotals['sarang_tawon'] ?? ($rekapTotals['evakuasi_tawon'] ?? 0))
+                + ($rekapTotals['layanan_lainnya'] ?? 0)
+                + ($rekapTotals['pohon_tumbang'] ?? 0)
+                + ($rekapTotals['evakuasi_manusia'] ?? 0)
+                + ($rekapTotals['pencarian_air'] ?? 0)),
             'items' => [
-                ['Kebakaran', 'layanan', 'fa-fire-flame-curved', '/internal/damtan/rekap-layanan', $rekapTotals['kebakaran'] ?? 0, 'ic-danger'],
-                ['Evakuasi Ular', 'layanan', 'fa-staff-snake', '/internal/damtan/rekap-layanan', $rekapTotals['evakuasi_ular'] ?? 0, 'ic-primary'],
-                ['Rescue Darat & Air', 'layanan', 'fa-life-ring', '/internal/damtan/rekap-layanan', $rekapTotals['rescue_darat_air'] ?? 0, 'ic-info'],
-                ['Evakuasi Tawon/Lebah', 'layanan', 'fa-bug', '/internal/damtan/rekap-layanan', $rekapTotals['evakuasi_tawon'] ?? 0, 'ic-primary'],
-                ['Edukasi & Kunjungan', 'layanan', 'fa-users', '/internal/damtan/rekap-layanan', $rekapTotals['edukasi_kunjungan'] ?? 0, 'ic-info'],
-                ['Evakuasi Hewan Lainnya', 'layanan', 'fa-cat', '/internal/damtan/rekap-layanan', $rekapTotals['evakuasi_hewan'] ?? 0, 'ic-primary'],
-                ['Pemeriksaan Gedung', 'layanan', 'fa-building-circle-check', '/internal/damtan/rekap-layanan', $rekapTotals['pemeriksaan_gedung'] ?? 0, 'ic-danger'],
-                ['Evakuasi Cincin/Anting', 'layanan', 'fa-ring', '/internal/damtan/rekap-layanan', $rekapTotals['evakuasi_cincin'] ?? 0, 'ic-primary'],
+                ['Kebakaran', 'layanan', 'fa-fire-flame-curved', '/internal/damtan/rekap-layanan?filter_layanan=kebakaran', $rekapTotals['kebakaran'] ?? 0, 'ic-danger'],
+                ['Evakuasi Hewan', 'layanan', 'fa-paw', '/internal/damtan/rekap-layanan?filter_layanan=evakuasi_hewan', $rekapTotals['evakuasi_hewan'] ?? 0, 'ic-teal'],
+                ['Pelepasan Cincin', 'layanan', 'fa-ring', '/internal/damtan/rekap-layanan?filter_layanan=pelepasan_cincin', $rekapTotals['pelepasan_cincin'] ?? ($rekapTotals['evakuasi_cincin'] ?? 0), 'ic-pink'],
+                ['Evakuasi Sarang Tawon', 'layanan', 'fa-bug', '/internal/damtan/rekap-layanan?filter_layanan=sarang_tawon', $rekapTotals['sarang_tawon'] ?? ($rekapTotals['evakuasi_tawon'] ?? 0), 'ic-amber'],
+                ['Layanan Lainnya', 'layanan', 'fa-truck-medical', '/internal/damtan/rekap-layanan?filter_layanan=layanan_lainnya', $rekapTotals['layanan_lainnya'] ?? 0, 'ic-steel'],
+                ['Pohon Tumbang', 'layanan', 'fa-tree', '/internal/damtan/rekap-layanan?filter_layanan=pohon_tumbang', $rekapTotals['pohon_tumbang'] ?? 0, 'ic-steel'],
+                ['Evakuasi / Pertolongan', 'layanan', 'fa-person-falling', '/internal/damtan/rekap-layanan?filter_layanan=evakuasi_manusia', $rekapTotals['evakuasi_manusia'] ?? 0, 'ic-primary'],
+                ['Pencarian di Perairan', 'layanan', 'fa-life-ring', '/internal/damtan/rekap-layanan?filter_layanan=pencarian_air', $rekapTotals['pencarian_air'] ?? 0, 'ic-info'],
             ],
         ],
         [
@@ -206,7 +213,7 @@
         [
             'id' => 'kepegawaian', 'title' => 'Kepegawaian', 'icon' => 'fa-user-tie', 'tone' => 'green', 'desc' => 'Data pegawai, ASN, dan dokumen SOP', 'roles' => $ops,
             'items' => [
-                ['Data Urut Kepegawaian', 'pegawai', 'fa-user-tie', '/internal/kepegawaian/duk', $count('pegawais'), 'ic-primary'],
+                ['Data Urut Kepangkatan', 'pegawai', 'fa-user-tie', '/internal/kepegawaian/duk', $count('pegawais'), 'ic-primary'],
                 ['Rekap Data ASN', 'data', 'fa-users', '/internal/data-asn', (($count('data_asns', 'pns') ?? 0) + ($count('data_asns', 'pppk') ?? 0)), 'ic-danger'],
                 ['SOP & Dokumen', 'program', 'fa-file-contract', '/internal/program-kerja', $count('dokumen_sop'), 'ic-info'],
                 ['Dokumen Publik', 'dokumen', 'fa-file-lines', route('dokumen-publik.index'), $count('dokumen_publik'), 'ic-primary'],
