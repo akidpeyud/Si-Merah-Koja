@@ -156,7 +156,7 @@
         [
             'id' => 'pencegahan', 'title' => 'Bagian Pencegahan', 'icon' => 'fa-shield-halved', 'tone' => 'blue', 'desc' => 'Inspeksi, edukasi, dan perizinan keselamatan', 'roles' => $ops,
             'items' => [
-                ['Peningkatan Kapasitas Aparatur', 'kegiatan', 'fa-arrow-trend-up', '/internal/pencegahan/peningkatan-kapasitas', $count('peningkatan_kapasitas'), 'ic-primary'],
+                ['Peningkatan Kapasitas Aparatur', 'kegiatan', 'fa-arrow-trend-up', '/internal/pencegahan/peningkatan-kapasitas', $countAll(['tbl_diksar', 'tbl_diklat_f1', 'tbl_diklat_f2', 'tbl_diklat_rescue', 'tbl_diklat_mfr', 'tbl_diklat_operator', 'tbl_diklat_inspektur', 'tbl_diklat_ppl']), 'ic-primary'],
                 ['Pencegahan Kebakaran & Inspeksi', 'inspeksi', 'fa-magnifying-glass-chart', '/internal/pencegahan/inspeksi-kebakaran', $countAll(['inspeksi_bangunans', 'jadwal_inspeksis']), 'ic-danger'],
                 ['Pemberdayaan Masyarakat & Dunia Usaha', 'kegiatan', 'fa-handshake-angle', '/internal/pencegahan/pemberdayaan-masyarakat', $countAll(['sosialisasi_edukasi', 'sosialisasi', 'pembinaan', 'pelatihan', 'pelatihan_keluarga', 'fire_drills']), 'ic-info'],
                 ['Kelola Edukasi', 'permohonan', 'fa-bullhorn', '/internal/pencegahan/kelola-edukasi', $count('permohonan_edukasi'), 'ic-primary'],
@@ -200,11 +200,11 @@
             'id' => 'sapra', 'title' => 'Bagian Sapra', 'icon' => 'fa-warehouse', 'tone' => 'amber', 'desc' => 'Sarana, prasarana, dan sumber air', 'roles' => $ops,
             'items' => [
                 ['Sarana Pemadam Kebakaran', 'unit', 'fa-fire-extinguisher', '/sapra/sarana-mako', $countAll(['sarana_kebakaran', 'sarana_pos']), 'ic-danger'],
-                ['Prasarana Pemadam Kebakaran', 'data', 'fa-building', '/sapra/prasarana-mako', $countAll(['prasarana', 'prasarana_pos', 'prasaranas']), 'ic-primary'],
+                ['Prasarana Pemadam Kebakaran', 'data', 'fa-building', '/sapra/prasarana-mako', $countAll(['prasarana', 'prasarana_pos']), 'ic-primary'],
                 ['Sarana Penyelamatan & Evakuasi', 'unit', 'fa-life-ring', '/sapra/sarana-penyelamatan', $countAll(['sarana_penyelamatan', 'sarana_penyelamatan_pos', 'sarana_penyelamatans']), 'ic-info'],
                 ['Sarana Pemeriksaan Proteksi Kebakaran', 'unit', 'fa-search-location', '/sapra/sarana-pemeriksaan', $count('sarana_pemeriksaan'), 'ic-primary'],
                 ['Kelola Data Pos', 'pos', 'fa-warehouse', '/sapra/kelola-pos', $countAll(['pos_pemadam', 'lokasi_pos']), 'ic-info'],
-                ['Sumber Air', 'titik', 'fa-droplet', '/sapra/data_hidrant_gedung', $count(['data_hidrant_gedung', 'hidran_gedung', 'hidrant_gedung', 'sumber_air']), 'ic-info'],
+                ['Sumber Air', 'titik', 'fa-droplet', '/sapra/data_hidrant_gedung', $count(['prasaranas', 'data_hidrant_gedung', 'hidran_gedung', 'hidrant_gedung', 'sumber_air']), 'ic-info'],
                 ['Data Hidrant Kota Jambi', 'hidrant', 'fa-map-location-dot', '/sapra/data-hidrant-kota', $count('hidran_kota'), 'ic-primary'],
                 ['Mutu Baku Kebutuhan', 'data', 'fa-boxes-stacked', '/sapra/kebutuhan-sarpras', $count('kebutuhan_sarpras'), 'ic-primary'],
                 ['Serah Terima Barang', 'transaksi', 'fa-people-carry-box', '/sapra/distribusi-staff', $count('distribusi_barang_staff'), 'ic-info'],

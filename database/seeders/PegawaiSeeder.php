@@ -13,10 +13,9 @@ class PegawaiSeeder extends Seeder
      */
     public function run(): void
     {
-        // Bersihkan tabel terlebih dahulu agar tidak ada duplikasi data
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        Pegawai::truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        if (Pegawai::exists()) {
+            return;
+        }
 
         $data = [
             [

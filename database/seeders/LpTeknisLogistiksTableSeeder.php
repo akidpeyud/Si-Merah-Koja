@@ -13,6 +13,10 @@ class LpTeknisLogistiksTableSeeder extends Seeder
      */
     public function run()
     {
+        if (\DB::table('lp_teknis_logistiks')->exists()) {
+            return;
+        }
+
         if (\DB::table('laporan_penyelamatans')->where('id', 553)->doesntExist()) {
             $this->call(LaporanPenyelamatansTableSeeder::class);
         }

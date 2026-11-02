@@ -10,6 +10,10 @@ class TitikSigapSeeder extends Seeder
 {
     public function run(): void
     {
+        if (DB::table('titik_sigaps')->exists()) {
+            return;
+        }
+
         $now = Carbon::now();
 
         // ------------------------------------------------------------------
@@ -154,9 +158,6 @@ class TitikSigapSeeder extends Seeder
             'created_at' => $now,
             'updated_at' => $now,
         ], $rows);
-
-        // Kosongkan tabel agar tidak duplikat saat seed ulang
-        DB::table('titik_sigaps')->truncate();
 
         foreach (array_chunk($data, 50) as $chunk) {
             DB::table('titik_sigaps')->insert($chunk);

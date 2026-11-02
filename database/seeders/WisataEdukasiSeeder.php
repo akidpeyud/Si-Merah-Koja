@@ -13,6 +13,10 @@ class WisataEdukasiSeeder extends Seeder
      */
     public function run(): void
     {
+        if (DB::table('sosialisasi_edukasi')->exists()) {
+            return;
+        }
+
         $now = Carbon::now();
         $insertData = [];
 
