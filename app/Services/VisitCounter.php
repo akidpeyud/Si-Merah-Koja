@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use RuntimeException;
 
 class VisitCounter
 {
@@ -40,7 +39,7 @@ class VisitCounter
         $ipHash = $this->hashIp($ip, $salt);
         $lockKey = "visit_lock:{$page}:{$ipHash}";
 
-        return (int) Cache::lock($lockKey, 5)->block(3, function () use ($page, $ipHash, $userAgent): int {
+        $execute = function () use ($page, $ipHash, $userAgent): int {
             $now = Carbon::now($this->timezone());
             $cooldownHours = max(1, (int) config('visits.cooldown_hours', 6));
             $cutoff = $now->copy()->subHours($cooldownHours);
@@ -81,7 +80,13 @@ class VisitCounter
             }
 
             return $this->getMonthlyTotal($page);
-        });
+        };
+
+        try {
+            return (int) Cache::lock($lockKey, 5)->block(3, $execute);
+        } catch (\Throwable) {
+            return (int) $execute();
+        }
     }
 
     /**
@@ -98,6 +103,43 @@ class VisitCounter
             ->value('total');
 
         return (int) ($total ?? 0);
+    }
+
+    /**
+     * Ambil ringkasan statistik kunjungan: hari ini, minggu ini, bulan ini, dan semua waktu.
+     *
+     * @return array{today: int, this_week: int, this_month: int, all_time: int}
+     */
+    public function getStats(string $page): array
+    {
+        $now = Carbon::now($this->timezone());
+
+        $today = PageVisit::query()
+            ->where('page', $page)
+            ->where('visited_at', '>=', $now->copy()->startOfDay())
+            ->count();
+
+        $thisWeek = PageVisit::query()
+            ->where('page', $page)
+            ->where('visited_at', '>=', $now->copy()->startOfWeek())
+            ->count();
+
+        $thisMonth = $this->getMonthlyTotal($page);
+
+        $allTime = (int) MonthlyVisitStat::query()
+            ->where('page', $page)
+            ->sum('total');
+
+        if ($allTime < $thisMonth) {
+            $allTime = $thisMonth;
+        }
+
+        return [
+            'today' => $today,
+            'this_week' => $thisWeek,
+            'this_month' => $thisMonth,
+            'all_time' => $allTime,
+        ];
     }
 
     /**
@@ -169,7 +211,7 @@ class VisitCounter
         $salt = trim((string) config('visits.ip_salt', ''));
 
         if ($salt === '') {
-            throw new RuntimeException('VISIT_IP_SALT belum dikonfigurasi pada environment.');
+            throw new \RuntimeException('VISIT_IP_SALT belum dikonfigurasi pada environment.');
         }
 
         return $salt;

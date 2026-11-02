@@ -219,7 +219,7 @@ body.nav-lock { overflow: hidden; }
    FOOTER
    ========================================================== */
 .footer { background: var(--ink); color: rgba(255,255,255,.7); padding: clamp(56px, 8vw, 96px) 0 32px; }
-.footer-grid { display: grid; grid-template-columns: 1.1fr 1.2fr .8fr; gap: clamp(32px, 5vw, 64px); }
+.footer-grid { display: grid; grid-template-columns: 1.15fr 1.1fr 0.85fr 1.1fr; gap: clamp(24px, 4vw, 48px); }
 .footer h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: #fff; margin-bottom: 16px; }
 .footer-about img { height: 96px; width: auto; margin-bottom: 20px; }
 .footer-about p { max-width: 42ch; font-size: .95rem; }
@@ -245,7 +245,8 @@ body.nav-lock { overflow: hidden; }
 .social { display: flex; flex-wrap: wrap; gap: 8px; }
 .social a { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: rgba(255,255,255,.08); color: #fff; transition: background .2s, color .2s, transform .2s; }
 .social a:hover { background: var(--signal); transform: translateY(-3px); }
-@media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr; } }
+@media (max-width: 1024px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; } }
+@media (max-width: 640px) { .footer-grid { grid-template-columns: 1fr; gap: 28px; } }
 
 /* ==========================================================
    SOS FAB & BEACON
