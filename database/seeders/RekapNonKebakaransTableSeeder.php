@@ -14,9 +14,9 @@ class RekapNonKebakaransTableSeeder extends Seeder
      */
     public function run()
     {
-        
-
-        \DB::table('rekap_non_kebakarans')->delete();
+        if (\DB::table('rekap_non_kebakarans')->exists()) {
+            return;
+        }
         
         \DB::table('rekap_non_kebakarans')->insert(array (
             0 => 

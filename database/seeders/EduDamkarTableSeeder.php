@@ -14,9 +14,9 @@ class EduDamkarTableSeeder extends Seeder
      */
     public function run()
     {
-        
-
-        \DB::table('edu_damkar')->delete();
+        if (\DB::table('edu_damkar')->exists()) {
+            return;
+        }
         
         \DB::table('edu_damkar')->insert(array (
             0 => 

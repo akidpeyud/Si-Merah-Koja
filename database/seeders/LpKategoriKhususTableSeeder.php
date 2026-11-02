@@ -14,9 +14,9 @@ class LpKategoriKhususTableSeeder extends Seeder
      */
     public function run()
     {
-        
-
-        \DB::table('lp_kategori_khusus')->delete();
+        if (\DB::table('lp_kategori_khusus')->exists()) {
+            return;
+        }
         
         
         

@@ -14,8 +14,9 @@ class PelatihanKeluargaSeeder extends Seeder
      */
     public function run()
     {
-        // Hapus data lama agar tidak dobel saat dijalankan ulang
-        DB::table('pelatihan_keluarga')->truncate();
+        if (DB::table('pelatihan_keluarga')->exists()) {
+            return;
+        }
 
         $data = [
             [
