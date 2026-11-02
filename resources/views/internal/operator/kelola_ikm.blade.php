@@ -290,6 +290,7 @@
             <div class="modal-body text-start">
                 <dl class="detail-grid">
                     <div><dt>Tanggal Layanan</dt><dd>{{ \Carbon\Carbon::parse($r->tanggal_layanan)->format('d M Y') }}</dd></div>
+                    <div><dt>Tanggal Lahir</dt><dd>{{ $r->tanggal_lahir ? \Carbon\Carbon::parse($r->tanggal_lahir)->translatedFormat('d M Y') : '-' }}</dd></div>
                     <div><dt>Pendidikan</dt><dd>{{ $r->pendidikan }}</dd></div>
                     <div><dt>Usia</dt><dd>{{ $r->usia }} tahun</dd></div>
                     <div><dt>Pekerjaan</dt><dd>{{ $r->pekerjaan }}</dd></div>
