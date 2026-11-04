@@ -14,13 +14,15 @@ class SosialisasiEdukasi extends Model
 
     // Kolom-kolom yang diizinkan untuk diisi secara massal (Mass Assignment)
     protected $fillable = [
+        'jenis_kegiatan',
+        'no_tanggal_surat_permohonan',
+        'nama_instansi',
+        'tempat_pelaksanaan',
+        'alamat',
         'tanggal_pelaksanaan',
-        'kecamatan',
-        'kelurahan',
-        'rt',
-        'posyandu',
-        'peserta_perempuan',
-        'peserta_laki_laki',
-        'foto_video',
+        'jumlah_peserta',
+        'nama_penanggung_jawab',
+        'no_telepon',
+        'surat_perintah_tugas',
     ];
 }

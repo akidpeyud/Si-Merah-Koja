@@ -71,20 +71,27 @@
 
     /* ===== TABEL ===== */
     .table-scroll-wrapper { width: 100%; overflow-x: auto; border-radius: var(--r-md); border: 1px solid var(--line); background: #fff; margin-bottom: 40px; box-shadow: var(--shadow-sm); scrollbar-width: thin; scrollbar-color: #d8dee8 transparent; -webkit-overflow-scrolling: touch; }
-    .table-detailed { width: 100%; border-collapse: collapse; min-width: 900px; margin-bottom: 0; }
+    .table-detailed { width: 100%; border-collapse: collapse; min-width: 1550px; margin-bottom: 0; }
     .table-detailed thead { background-color: var(--ink); color: #fff; }
-    .table-detailed th { font-size: .7rem; font-weight: 700; padding: 18px 16px; white-space: nowrap; text-transform: uppercase; border-right: 1px solid var(--ink-3); letter-spacing: .05em; vertical-align: middle; }
+    .table-detailed th { font-size: .7rem; font-weight: 700; padding: 16px 14px; white-space: nowrap; text-transform: uppercase; border-right: 1px solid var(--ink-3); letter-spacing: .05em; vertical-align: middle; }
     .table-detailed th:last-child { border-right: none; }
-    .table-detailed td { font-size: .86rem; padding: 16px; vertical-align: middle; border-bottom: 1px solid var(--line); border-right: none; color: var(--ink); }
+    .table-detailed td { font-size: .85rem; padding: 14px; vertical-align: middle; border-bottom: 1px solid var(--line); border-right: none; color: var(--ink); }
     .table-detailed tbody tr:last-child td { border-bottom: none; }
     .table-detailed tbody tr { transition: background .15s; }
     .table-detailed tbody tr:hover { background-color: #f8fafc; }
 
     .no-badge { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--navy-soft); color: var(--navy); font-weight: 700; font-size: .8rem; }
-    .place-name { font-weight: 700; color: var(--ink); font-size: .92rem; line-height: 1.35; }
+    .place-name { font-weight: 700; color: var(--ink); font-size: .9rem; line-height: 1.35; }
     .date-pill { display: inline-flex; align-items: center; gap: 7px; padding: 5px 12px; border-radius: 8px; background: #f1f5f9; color: var(--ink-3); font-size: .8rem; font-weight: 600; white-space: nowrap; }
     .date-pill i { color: var(--navy); font-size: .75rem; }
     .type-pill { display: inline-block; padding: 5px 12px; border-radius: 8px; background: var(--navy-light); color: var(--navy); font-size: .78rem; font-weight: 600; line-height: 1.4; }
+    .level-pill { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: .74rem; font-weight: 700; white-space: nowrap; }
+    .level-rendah { background: #dcfce7; color: #166534; }
+    .level-sedang { background: #fef3c7; color: #92400e; }
+    .level-tinggi { background: #fee2e2; color: #991b1b; }
+    .proteksi-ok { background: #dcfce7; color: #166534; }
+    .proteksi-catatan { background: #fef3c7; color: #92400e; }
+    .proteksi-tidak { background: #fee2e2; color: #991b1b; }
 
     .btn-action { width: 34px; height: 34px; display: inline-flex; justify-content: center; align-items: center; border-radius: 9px; font-size: .8rem; color: #fff; border: none; cursor: pointer; transition: transform .1s, box-shadow .2s; }
     .btn-action:hover { transform: scale(1.08); color: #fff; box-shadow: 0 3px 8px rgba(13,27,42,.18); }
@@ -137,7 +144,7 @@
                 <!-- PENCARIAN DITAMBAHKAN ID "searchInput" -->
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Cari nama tempat...">
+                    <input type="text" id="searchInput" placeholder="Cari bangunan, alamat, PIC...">
                 </div>
 
                 <!-- TOMBOL TAMBAH HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
@@ -226,46 +233,106 @@
             <table class="table-detailed table-hover">
                 <thead>
                     <tr>
-                        <th class="text-center" width="5%">No</th>
-                        <th width="20%">Nama Tempat</th>
-                        <th width="15%">Bulan / Tanggal Inspeksi</th>
-                        <th width="25%">Jenis Usaha</th>
-                        <th width="20%">Dokumen Terlampir</th>
+                        <th class="text-center">No</th>
+                        <th>Nama Bangunan</th>
+                        <th>Jenis Bangunan</th>
+                        <th class="text-center">Kualifikasi Bangunan</th>
+                        <th class="text-center">Resiko Kebakaran</th>
+                        <th class="text-center">Luas Bangunan</th>
+                        <th>Alamat</th>
+                        <th>Nama Penanggung Jawab</th>
+                        <th class="text-center">No Telfon</th>
+                        <th class="text-center">Sistem Proteksi Kebakaran</th>
+                        <th class="text-center">Tanggal Pemeriksaan</th>
+                        <th class="text-center">Upload SPT</th>
+                        <th class="text-center">Upload Rekomendasi</th>
 
                         <!-- KOLOM AKSI (EDIT/HAPUS) HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
                         @hasanyrole('Pencegahan|Super User')
-                        <th class="text-center" width="15%">Aksi</th>
+                        <th class="text-center">Aksi</th>
                         @endhasanyrole
                     </tr>
                 </thead>
                 <!-- TBODY DITAMBAHKAN ID "tableBody" -->
                 <tbody id="tableBody">
                     @forelse($data_inspeksi as $index => $item)
+                    @php
+                        $kualifikasi = $item->kualifikasi_bangunan ?? '-';
+                        $kelasKualifikasi = match ($kualifikasi) {
+                            'Rendah' => 'level-rendah',
+                            'Sedang' => 'level-sedang',
+                            'Tinggi' => 'level-tinggi',
+                            default => '',
+                        };
+
+                        $resiko = $item->resiko_kebakaran ?? '-';
+                        $kelasResiko = match ($resiko) {
+                            'Rendah' => 'level-rendah',
+                            'Sedang' => 'level-sedang',
+                            'Tinggi' => 'level-tinggi',
+                            default => '',
+                        };
+
+                        $proteksi = $item->sistem_proteksi_kebakaran ?? '-';
+                        $kelasProteksi = match ($proteksi) {
+                            'Memenuhi Syarat' => 'proteksi-ok',
+                            'Memenuhi Syarat dengan Catatan' => 'proteksi-catatan',
+                            'Tidak Memenuhi Syarat' => 'proteksi-tidak',
+                            default => '',
+                        };
+
+                        $tglPemeriksaan = !empty($item->tanggal_inspeksi)
+                            ? \Carbon\Carbon::parse($item->tanggal_inspeksi)->format('d-m-Y')
+                            : '-';
+                    @endphp
                     <tr class="data-row">
                         <td class="text-center"><span class="no-badge">{{ $index + 1 }}</span></td>
-                        <td><div class="place-name">{{ $item->nama_tempat }}</div></td>
-                        <td><span class="date-pill"><i class="fas fa-calendar-days"></i> {{ $item->tanggal_inspeksi }}</span></td>
-                        <td style="white-space: normal;"><span class="type-pill">{{ $item->jenis_usaha }}</span></td>
-
-                        <td style="white-space: normal;">
-                            @if($item->surat_perintah_tugas)
-                                <a href="/uploads/inspeksi/{{ $item->surat_perintah_tugas }}" class="doc-badge" style="background-color: #3b82f6;" target="_blank" title="Surat Perintah Tugas">SPT</a>
+                        <td><div class="place-name">{{ $item->nama_tempat ?? '-' }}</div></td>
+                        <td style="white-space: normal;"><span class="type-pill">{{ $item->jenis_usaha ?? '-' }}</span></td>
+                        <td class="text-center">
+                            @if($kelasKualifikasi)
+                                <span class="level-pill {{ $kelasKualifikasi }}">{{ $kualifikasi }}</span>
+                            @else
+                                {{ $kualifikasi }}
                             @endif
-                            @if($item->berita_acara)
-                                <a href="/uploads/inspeksi/{{ $item->berita_acara }}" class="doc-badge" style="background-color: #10b981;" target="_blank" title="Berita Acara">BA</a>
+                        </td>
+                        <td class="text-center">
+                            @if($kelasResiko)
+                                <span class="level-pill {{ $kelasResiko }}">{{ $resiko }}</span>
+                            @else
+                                {{ $resiko }}
                             @endif
-                            @if($item->hasil_penilaian)
-                                <a href="/uploads/inspeksi/{{ $item->hasil_penilaian }}" class="doc-badge" style="background-color: #06b6d4;" target="_blank" title="Hasil Penilaian">NILAI</a>
+                        </td>
+                        <td class="text-center" style="white-space: nowrap;">{{ $item->luas_bangunan ?? '-' }}</td>
+                        <td style="white-space: normal; min-width: 160px;">{{ $item->alamat ?? '-' }}</td>
+                        <td>{{ $item->nama_penanggung_jawab ?? '-' }}</td>
+                        <td class="text-center" style="white-space: nowrap;">{{ $item->no_telepon ?? '-' }}</td>
+                        <td class="text-center">
+                            @if($kelasProteksi)
+                                <span class="level-pill {{ $kelasProteksi }}">{{ $proteksi }}</span>
+                            @else
+                                {{ $proteksi }}
                             @endif
-                            @if($item->rekomendasi)
-                                <a href="/uploads/inspeksi/{{ $item->rekomendasi }}" class="doc-badge" style="background-color: #8b5cf6;" target="_blank" title="Rekomendasi">REKOM</a>
+                        </td>
+                        <td class="text-center">
+                            <span class="date-pill"><i class="fas fa-calendar-days"></i> {{ $tglPemeriksaan }}</span>
+                        </td>
+                        <td class="text-center">
+                            @if(!empty($item->surat_perintah_tugas))
+                                <a href="/uploads/inspeksi/{{ $item->surat_perintah_tugas }}" class="doc-badge" style="background-color: #3b82f6; margin: 0;" target="_blank" title="Lihat Surat Perintah Tugas">
+                                    <i class="fas fa-file-lines me-1"></i> SPT
+                                </a>
+                            @else
+                                <span class="text-muted">-</span>
                             @endif
-                            @if($item->skk)
-                                <a href="/uploads/inspeksi/{{ $item->skk }}" class="doc-badge" style="background-color: #ef4444;" target="_blank" title="Sertifikat Keselamatan">SKK</a>
-                            @endif
-
-                            @if(!$item->surat_perintah_tugas && !$item->berita_acara && !$item->hasil_penilaian && !$item->rekomendasi && !$item->skk)
-                                <span class="text-muted" style="font-size: .72rem; font-style: italic;">Tidak ada dokumen</span>
+                        </td>
+                        <td class="text-center">
+                            @if(!empty($item->rekomendasi))
+                                <a href="/uploads/inspeksi/{{ $item->rekomendasi }}" class="doc-badge" style="background-color: #8b5cf6; margin: 0;" target="_blank" title="Lihat Rekomendasi">
+                                    <i class="fas fa-file-circle-check me-1"></i> Rekomendasi
+                                </a>
+                            @else
+                                <span class="text-muted">-</span>
                             @endif
                         </td>
 
@@ -289,7 +356,7 @@
                     </tr>
                     @empty
                     <tr class="empty-row">
-                        <td colspan="{{ auth()->user()->hasAnyRole(['Pencegahan', 'Super User']) ? 6 : 5 }}" class="text-center text-muted fw-bold empty-state">
+                        <td colspan="{{ auth()->user()->hasAnyRole(['Pencegahan', 'Super User']) ? 14 : 13 }}" class="text-center text-muted fw-bold empty-state">
                             <i class="fas fa-folder-open mb-2" style="font-size: 28px; color: var(--steel-soft);"></i><br>
                             Belum ada data inspeksi bangunan.
                         </td>

@@ -82,10 +82,20 @@
     </div>
 
     <div class="form-wrapper">
-        <form action="/internal/pencegahan/peningkatan-kapasitas/tambah" method="POST">
+        <form action="/internal/pencegahan/peningkatan-kapasitas/tambah" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="form-body">
+
+                @if ($errors->any())
+                    <div class="alert alert-danger mt-4 mb-0">
+                        <ul class="mb-0 ps-3">
+                            @foreach ($errors->all() as $pesanError)
+                                <li>{{ $pesanError }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
                 <!-- SECTION 1: DATA PEGAWAI -->
                 <div class="form-section" style="margin-top: 20px;">
@@ -95,115 +105,103 @@
                     </div>
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Nama Lengkap</label>
-                            <input type="text" class="form-control" name="nama" placeholder="Contoh: Budi Santoso" required>
+                            <label class="form-label">Nama</label>
+                            <input type="text" class="form-control" name="nama" value="{{ old('nama') }}" placeholder="Contoh: Budi Santoso" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">NIP (Opsional)</label>
-                            <input type="text" class="form-control" name="nip" placeholder="Masukkan NIP">
+                            <label class="form-label">NIP</label>
+                            <input type="text" class="form-control" name="nip" value="{{ old('nip') }}" placeholder="Masukkan NIP">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Tempat Lahir</label>
-                            <input type="text" class="form-control" name="tempat_lahir" placeholder="Contoh: Jambi">
+                            <input type="text" class="form-control" name="tempat_lahir" value="{{ old('tempat_lahir') }}" placeholder="Contoh: Jambi">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Tanggal Lahir</label>
-                            <input type="date" class="form-control" name="tgl_lahir">
+                            <input type="date" class="form-control" name="tgl_lahir" value="{{ old('tgl_lahir') }}">
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Jabatan</label>
-                            <input type="text" class="form-control" name="jabatan" placeholder="Contoh: Danru / Anggota">
+                            <label class="form-label">Pangkat / Golongan Ruang</label>
+                            <input type="text" class="form-control" name="pangkat_golongan" value="{{ old('pangkat_golongan') }}" placeholder="Contoh: Pengatur / II.c">
                         </div>
-                        <div class="col-md-12">
-                            <label class="form-label">Instansi / Perangkat Daerah</label>
-                            <input type="text" class="form-control" name="instansi_daerah" placeholder="Contoh: Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi">
+                        <div class="col-md-6">
+                            <label class="form-label">Jabatan</label>
+                            <input type="text" class="form-control" name="jabatan" value="{{ old('jabatan') }}" placeholder="Contoh: Pemadam Kebakaran Terampil">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Kualifikasi</label>
+                            <input type="text" class="form-control" name="kualifikasi" value="{{ old('kualifikasi') }}" placeholder="Contoh: Pemadam Kebakaran Tingkat I">
                         </div>
                     </div>
                 </div>
 
-                <!-- SECTION 2: DETAIL DIKLAT -->
+                <!-- SECTION 2: PELAKSANAAN DIKLAT -->
                 <div class="form-section">
                     <div class="section-title text-success">
-                        <span class="icon-box"><i class="fas fa-certificate"></i></span>
-                        <span class="label-text">Detail Diklat & Penyelenggara</span>
+                        <span class="icon-box"><i class="fas fa-calendar-check"></i></span>
+                        <span class="label-text">Pelaksanaan Diklat</span>
                     </div>
                     <div class="row g-3">
+                        @php $jenisTerpilih = old('jenis_diklat', $jenis ?? ''); @endphp
                         <div class="col-md-4">
                             <label class="form-label">Jenis Diklat</label>
                             <select class="form-select" name="jenis_diklat" required>
-                                <option value="" selected disabled>Pilih Jenis...</option>
-                                <option value="DIKSAR">DIKSAR</option>
-                                <option value="DIKLAT F1">DIKLAT F1</option>
-                                <option value="DIKLAT F2">DIKLAT F2</option>
-                                <option value="DIKLAT RESCUE">DIKLAT RESCUE</option>
-                                <option value="DIKLAT MFR">DIKLAT MFR</option>
-                                <option value="DIKLAT OPERATOR">DIKLAT OPERATOR</option>
-                                <option value="DIKLAT INSPEKTUR">DIKLAT INSPEKTUR</option>
-                                <option value="DIKLAT PPL">DIKLAT PPL</option>
+                                <option value="" disabled {{ $jenisTerpilih === '' ? 'selected' : '' }}>Pilih Jenis...</option>
+                                <option value="diksar" {{ $jenisTerpilih === 'diksar' ? 'selected' : '' }}>DIKSAR</option>
+                                <option value="diklat-f1" {{ $jenisTerpilih === 'diklat-f1' ? 'selected' : '' }}>DIKLAT F1</option>
+                                <option value="diklat-f2" {{ $jenisTerpilih === 'diklat-f2' ? 'selected' : '' }}>DIKLAT F2</option>
+                                <option value="diklat-rescue" {{ $jenisTerpilih === 'diklat-rescue' ? 'selected' : '' }}>DIKLAT RESCUE</option>
+                                <option value="diklat-mfr" {{ $jenisTerpilih === 'diklat-mfr' ? 'selected' : '' }}>DIKLAT MFR</option>
+                                <option value="diklat-operator" {{ $jenisTerpilih === 'diklat-operator' ? 'selected' : '' }}>DIKLAT OPERATOR</option>
+                                <option value="diklat-inspektur" {{ $jenisTerpilih === 'diklat-inspektur' ? 'selected' : '' }}>DIKLAT INSPEKTUR</option>
+                                <option value="diklat-ppl" {{ $jenisTerpilih === 'diklat-ppl' ? 'selected' : '' }}>DIKLAT PPL</option>
                             </select>
                         </div>
                         <div class="col-md-8">
-                            <label class="form-label">Instansi Penyelenggara</label>
-                            <input type="text" class="form-control" name="penyelenggara" placeholder="Contoh: PUSDIKLAT DKI Jakarta">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Provinsi</label>
-                            <input type="text" class="form-control" name="provinsi" placeholder="Contoh: DKI Jakarta">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Kota / Kabupaten</label>
-                            <input type="text" class="form-control" name="kota" placeholder="Contoh: Jakarta Timur">
+                            <label class="form-label">Tempat Pelaksanaan</label>
+                            <input type="text" class="form-control" name="tempat_pelaksanaan" value="{{ old('tempat_pelaksanaan') }}" placeholder="Contoh: PUSDIKLAT DKI Jakarta">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Tanggal Pelaksanaan</label>
-                            <input type="text" class="form-control" name="tgl_pelaksanaan" placeholder="Contoh: 12 s/d 28 Agustus 2026">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SECTION 3: SERTIFIKASI & PENILAIAN -->
-                <div class="form-section">
-                    <div class="section-title text-warning">
-                        <span class="icon-box"><i class="fas fa-award"></i></span>
-                        <span class="label-text">Sertifikasi & Penilaian</span>
-                    </div>
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <label class="form-label">Nomor Sertifikat</label>
-                            <input type="text" class="form-control" name="nomor_sertifikat" placeholder="No. 112/DIKLAT-F1/2026">
+                            <input type="date" class="form-control" name="tanggal_pelaksanaan" value="{{ old('tanggal_pelaksanaan') }}">
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Ditanda Tangani Oleh</label>
-                            <input type="text" class="form-control" name="ditanda_tangani" placeholder="Contoh: Kepala Dinas / Gubernur">
+                            <label class="form-label">Tanggal Selesai Pelaksanaan</label>
+                            <input type="date" class="form-control" name="tanggal_selesai_pelaksanaan" value="{{ old('tanggal_selesai_pelaksanaan') }}">
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Jumlah Jam Pelajaran (JP)</label>
+                            <label class="form-label">Jumlah Jam Pelajaran</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" name="jumlah_jp" placeholder="0">
+                                <input type="number" min="0" class="form-control" name="jumlah_jam_pelajaran" value="{{ old('jumlah_jam_pelajaran') }}" placeholder="0">
                                 <span class="input-group-text bg-light">JP</span>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Kode Verifikasi</label>
-                            <input type="text" class="form-control" name="kode_verifikasi" placeholder="-">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Persentase Penilaian</label>
-                            <input type="text" class="form-control" name="persentase_penilaian" placeholder="-">
-                        </div>
                     </div>
                 </div>
 
-                <!-- SECTION 4: KETERANGAN TAMBAHAN -->
+                <!-- SECTION 3: STTP & SERTIFIKAT -->
                 <div class="form-section">
-                    <div class="section-title text-secondary">
-                        <span class="icon-box"><i class="fas fa-list-alt"></i></span>
-                        <span class="label-text">Informasi Tambahan</span>
+                    <div class="section-title text-warning">
+                        <span class="icon-box"><i class="fas fa-award"></i></span>
+                        <span class="label-text">STTP &amp; Sertifikat</span>
                     </div>
                     <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">No STTP</label>
+                            <input type="text" class="form-control" name="no_sttp" value="{{ old('no_sttp') }}" placeholder="Contoh: 112/STTP/2026">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Tanggal STTP</label>
+                            <input type="date" class="form-control" name="tanggal_sttp" value="{{ old('tanggal_sttp') }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Pejabat yang Menandatangani</label>
+                            <input type="text" class="form-control" name="ditandatangani_oleh" value="{{ old('ditandatangani_oleh') }}" placeholder="Contoh: Kepala Dinas">
+                        </div>
                         <div class="col-md-12">
-                            <label class="form-label">Catatan Tambahan (Ket)</label>
-                            <textarea class="form-control" name="keterangan" rows="3" placeholder="Masukkan catatan tambahan jika ada..."></textarea>
+                            <label class="form-label">Upload Sertifikat</label>
+                            <input type="file" class="form-control" name="file_sertifikat" accept=".pdf,.jpg,.jpeg,.png">
+                            <small class="text-muted">Format PDF, JPG, atau PNG. Maksimal 5 MB. Boleh dikosongkan.</small>
                         </div>
                     </div>
                 </div>
