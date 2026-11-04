@@ -204,7 +204,7 @@
                         @empty
                         <tr>
                             <!-- Dinamis colspan berdasarkan Role -->
-                            <td colspan="@hasanyrole('Operator|Super User') 4 @else 3 @endhasanyrole" class="text-center text-muted py-4">Belum ada data info grafis yang diunggah.</td>
+                            <td colspan="@hasanyrole('Operator|Super User') 4 @else 3 @endhasanyrole" class="text-center text-muted py-4">Belum ada data infografis yang diunggah.</td>
                         </tr>
                         @endforelse
                     </tbody>

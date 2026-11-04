@@ -19,14 +19,30 @@ class SotkSeeder extends Seeder
             File::makeDirectory($targetDir, 0755, true);
         }
 
+        // Cari file sumber di folder seed-files/sotk
+        $sourceDir = storage_path('app/public/seed-files/sotk');
+        if (! File::exists($sourceDir)) {
+            $sourceDir = public_path('storage/seed-files/sotk');
+        }
+
+        $detectedName = 'Struktur_Organisasi_DAMKAR_Jambi_2026_tanpa_NIP.pdf';
+        if (File::exists($sourceDir.'/'.$detectedName)) {
+            $fileName = $detectedName;
+        } elseif (File::exists($sourceDir.'/Struktur_Organisasi_DAMKAR_Jambi_2026_dengan_Staf_kecil.pdf')) {
+            $fileName = 'Struktur_Organisasi_DAMKAR_Jambi_2026_dengan_Staf_kecil.pdf';
+        } else {
+            $allPdfs = File::glob($sourceDir.'/*.pdf');
+            $fileName = ! empty($allPdfs) ? basename($allPdfs[0]) : $detectedName;
+        }
+
         $sotkList = [
             [
                 'judul' => 'Struktur Organisasi dan Tata Kerja (SOTK) Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi Tahun 2026',
                 'kategori' => 'sotk',
                 'tahun' => 2026,
                 'keterangan' => 'Dokumen Struktur Organisasi dan Tata Kerja (SOTK) Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi Tahun 2026.',
-                'file_dokumen' => 'profil-instansi/sotk/Struktur_Organisasi_DAMKAR_Jambi_2026_dengan_Staf_kecil.pdf',
-                'source_file' => 'seed-files/sotk/Struktur_Organisasi_DAMKAR_Jambi_2026_dengan_Staf_kecil.pdf',
+                'file_dokumen' => 'profil-instansi/sotk/'.$fileName,
+                'source_file' => 'seed-files/sotk/'.$fileName,
             ],
         ];
 

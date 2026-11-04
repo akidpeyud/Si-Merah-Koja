@@ -644,6 +644,28 @@
                 @if($has_korban)
                 <div class="sub-header">Data Korban & Aset</div>
                 <div class="pdf-grid">
+                    @if(!empty($teknis->nama_korban))
+                    <div class="pdf-item-full">
+                        <div class="data-row">
+                            <div class="data-icon"><i class="fas fa-id-card"></i></div>
+                            <div class="data-label">Nama Korban</div>
+                            <div class="data-colon">:</div>
+                            <div class="data-value">{{ $teknis->nama_korban }}</div>
+                        </div>
+                    </div>
+                    @endif
+
+                    @if(!empty($teknis->jumlah_jiwa) && $teknis->jumlah_jiwa > 0)
+                    <div class="pdf-item">
+                        <div class="data-row">
+                            <div class="data-icon"><i class="fas fa-users"></i></div>
+                            <div class="data-label">Jumlah Jiwa</div>
+                            <div class="data-colon">:</div>
+                            <div class="data-value">{{ $teknis->jumlah_jiwa }} Jiwa</div>
+                        </div>
+                    </div>
+                    @endif
+
                     @if(!empty($teknis->korban_selamat) && $teknis->korban_selamat > 0)
                     <div class="pdf-item">
                         <div class="data-row">
@@ -688,13 +710,16 @@
                     </div>
                     @endif
 
-                    @if(!empty($teknis->jiwa_terdampak) && $teknis->jiwa_terdampak > 0)
+                    @php
+                        $wargaTerdampak = $teknis->warga_terdampak ?? ($teknis->jiwa_terdampak ?? 0);
+                    @endphp
+                    @if(!empty($wargaTerdampak) && $wargaTerdampak > 0)
                     <div class="pdf-item">
                         <div class="data-row">
-                            <div class="data-icon"><i class="fas fa-users"></i></div>
-                            <div class="data-label">Jiwa Terdampak</div>
+                            <div class="data-icon"><i class="fas fa-users-slash"></i></div>
+                            <div class="data-label">Warga Terdampak</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->jiwa_terdampak }} Jiwa</div>
+                            <div class="data-value">{{ $wargaTerdampak }} Jiwa</div>
                         </div>
                     </div>
                     @endif

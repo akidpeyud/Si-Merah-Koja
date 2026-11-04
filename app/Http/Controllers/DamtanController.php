@@ -237,8 +237,8 @@ class DamtanController extends Controller
             || $this->positif($teknis, ['jumlah_personel'])
             || ! empty($arr_evakuasi) || ! empty($arr_penyelamatan);
         $has_detail_lapangan = $this->terisi($teknis, ['langkah_penanganan', 'hambatan_lapangan', 'hasil_tindakan']);
-        $has_korban = $this->positif($teknis, ['korban_selamat', 'korban_ringan', 'korban_berat', 'korban_meninggal'])
-            || $this->terisi($teknis, ['korban_hewan_aset']);
+        $has_korban = $this->positif($teknis, ['korban_selamat', 'korban_ringan', 'korban_berat', 'korban_meninggal', 'jumlah_jiwa', 'warga_terdampak'])
+            || $this->terisi($teknis, ['nama_korban', 'korban_hewan_aset']);
         $has_logistik = ! empty($arr_armada) || ! empty($arr_peralatan)
             || $this->terisi($teknis, ['peralatan_lain', 'konsumsi_alat'])
             || $this->positif($teknis, ['liter_air', 'liter_foam', 'liter_bbm']);
@@ -396,6 +396,9 @@ class DamtanController extends Controller
                     'alamat' => $request->alamat,
                     'jarak_tempuh' => $request->jarak_tempuh,
                     'koordinat' => $request->koordinat,
+                    'nama_korban' => $request->nama_korban,
+                    'jumlah_jiwa' => $request->jumlah_jiwa ?? 0,
+                    'warga_terdampak' => $request->warga_terdampak ?? $request->jiwa_terdampak ?? 0,
                 ]
             ));
 
@@ -409,6 +412,10 @@ class DamtanController extends Controller
                 'langkah_penanganan' => $request->langkah_penanganan,
                 'hambatan_lapangan' => $request->hambatan_lapangan,
                 'hasil_tindakan' => $request->hasil_tindakan,
+
+                'nama_korban' => $request->nama_korban,
+                'jumlah_jiwa' => $request->jumlah_jiwa ?? 0,
+                'warga_terdampak' => $request->warga_terdampak ?? $request->jiwa_terdampak ?? 0,
 
                 'korban_selamat' => $request->korban_selamat ?? 0,
                 'korban_ringan' => $request->korban_ringan ?? 0,
@@ -545,6 +552,9 @@ class DamtanController extends Controller
                     'alamat' => $request->alamat,
                     'jarak_tempuh' => $request->jarak_tempuh,
                     'koordinat' => $request->koordinat,
+                    'nama_korban' => $request->nama_korban,
+                    'jumlah_jiwa' => $request->jumlah_jiwa ?? 0,
+                    'warga_terdampak' => $request->warga_terdampak ?? $request->jiwa_terdampak ?? 0,
                 ]
             ));
 
@@ -559,6 +569,9 @@ class DamtanController extends Controller
                     'langkah_penanganan' => $request->langkah_penanganan,
                     'hambatan_lapangan' => $request->hambatan_lapangan,
                     'hasil_tindakan' => $request->hasil_tindakan,
+                    'nama_korban' => $request->nama_korban,
+                    'jumlah_jiwa' => $request->jumlah_jiwa ?? 0,
+                    'warga_terdampak' => $request->warga_terdampak ?? $request->jiwa_terdampak ?? 0,
                     'korban_selamat' => $request->korban_selamat ?? 0,
                     'korban_ringan' => $request->korban_ringan ?? 0,
                     'korban_berat' => $request->korban_berat ?? 0,

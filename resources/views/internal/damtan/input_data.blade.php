@@ -70,6 +70,10 @@
     .btn-outline-primary { color: var(--navy); border-color: var(--navy); font-weight: 600; border-radius: 8px; background: transparent; min-height: 42px; font-size: .9rem; }
     .btn-outline-primary:hover { background-color: var(--navy); color: #fff; border-color: var(--navy); }
 
+    /* ---------- Badge Penomoran Form ---------- */
+    .num-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 4px; border-radius: 4px; background: #ffffff; color: #000000; border: 1.5px solid #000000; font-size: .78rem; font-weight: 700; margin-right: 6px; vertical-align: middle; line-height: 1; }
+    .op-timeline-box { background: #f8fafc; border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; margin-top: 6px; }
+
     .tab-nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 20px; }
     .tab-nav .spacer { flex: 1; }
 
@@ -179,11 +183,11 @@
                     <div class="form-section__body">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="field-label">Nomor Laporan (Otomatis)</label>
+                                <label class="field-label"><span class="num-badge">1</span> No. / Nomor Laporan (Otomatis)</label>
                                 <input type="text" class="form-control" name="nomor_laporan" value="REG-{{ date('Ymd') }}-XXXX" readonly>
                             </div>
                             <div class="col-md-6">
-                                <label class="field-label">ID Laporan (Otomatis)</label>
+                                <label class="field-label">ID Laporan (Sistem UUID)</label>
                                 <input type="text" class="form-control" name="id_laporan" value="UUID-XXXXXX" readonly>
                             </div>
                         </div>
@@ -199,11 +203,11 @@
                     <div class="form-section__body">
                         <div class="row g-3">
                             <div class="col-md-3">
-                                <label class="field-label">Tanggal Kejadian <span class="req">*</span></label>
+                                <label class="field-label"><span class="num-badge">2</span> Hari &amp; Tanggal Kejadian <span class="req">*</span></label>
                                 <input type="date" name="tanggal_kejadian" id="tanggal_kejadian" class="form-control" required>
                             </div>
                             <div class="col-md-3">
-                                <label class="field-label">Hari</label>
+                                <label class="field-label">Hari (Otomatis)</label>
                                 <input type="text" name="hari_kejadian" id="hari_kejadian" class="form-control" readonly placeholder="Otomatis">
                             </div>
                             <div class="col-md-3">
@@ -218,57 +222,115 @@
                     </div>
                 </section>
 
-                <!-- Pelapor -->
+                <!-- Waktu Penanganan, Jalur Laporan & Respon Time (Foto No. 3, 4, 5, 6, 7) -->
                 <section class="form-section">
                     <header class="form-section__head">
-                        <span class="ico"><i class="fas fa-user"></i></span>
-                        <div><h3>Data Pelapor</h3><p>Siapa yang melapor dan melalui layanan apa.</p></div>
+                        <span class="ico"><i class="fas fa-clock"></i></span>
+                        <div><h3>Waktu Penanganan & Jalur Laporan</h3><p>Waktu terima laporan, media pelaporan, kedatangan armada, jarak tempuh, dan respon time.</p></div>
                     </header>
                     <div class="form-section__body">
                         <div class="row g-3">
                             <div class="col-md-4">
-                                <label class="field-label">Nama Pelapor <span class="req">*</span></label>
-                                <input type="text" class="form-control" name="nama_pelapor" placeholder="Cth: Bapak Iskandar" required>
+                                <label class="field-label"><span class="num-badge">3</span> Waktu Laporan Diterima <span class="req">*</span></label>
+                                <input type="datetime-local" name="waktu_terima" id="waktu_terima" class="form-control" required>
                             </div>
                             <div class="col-md-4">
-                                <label class="field-label">Nomor Telepon / WA Pelapor</label>
-                                <input type="text" name="telepon_pelapor" id="telepon_pelapor" class="form-control"
-                                       placeholder="08xxxxxxxxxx" inputmode="numeric" pattern="[0-9]*" maxlength="15"
-                                       title="Hanya boleh angka" autocomplete="off">
-                                <small class="field-hint">Hanya angka.</small>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="field-label">Layanan Pelaporan</label>
-                                <select class="form-select" name="media_pelaporan">
+                                <label class="field-label"><span class="num-badge">4</span> Laporan Diterima Melalui <span class="req">*</span></label>
+                                <select class="form-select" name="media_pelaporan" required>
                                     <option selected value="">-- Pilih Layanan --</option>
+                                    <option value="call_center_112">Call Center 112</option>
+                                    <option value="operator_layanan">Operator Layanan Damkar</option>
+                                    <option value="telepon">Telfon Damkar</option>
+                                    <option value="dijemput">Dijemput</option>
                                     <option value="whatsapp">Layanan WA Damkar</option>
-                                    <option value="telepon">Telepon Call Center</option>
                                     <option value="langsung">Datang Langsung ke Mako/Pos</option>
                                     <option value="instansi_lain">Laporan Instansi Lain</option>
                                 </select>
                             </div>
+                            <div class="w-100 d-none d-md-block"></div>
                             <div class="col-md-4">
-                                <label class="field-label">Jarak Tempuh</label>
+                                <label class="field-label"><span class="num-badge">5</span> Waktu Tiba di Lokasi <span class="req">*</span></label>
+                                <input type="datetime-local" name="waktu_tiba" id="waktu_tiba" class="form-control" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="field-label"><span class="num-badge">6</span> Jarak Tempuh (dari Mako/Pos)</label>
                                 <div class="input-group">
                                     <input type="number" step="0.1" min="0" name="jarak_tempuh" class="form-control" placeholder="Cth: 4.1">
                                     <span class="input-group-text">Km</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="field-label"><span class="num-badge">7</span> Respon Time (Terima → Tiba)</label>
+                                <div class="input-group">
+                                    <input type="text" name="respon_time" id="respon_time" class="form-control" readonly placeholder="Otomatis">
+                                    <span class="input-group-text">Menit</span>
+                                </div>
+                            </div>
+
+                            {{-- Waktu Operasional Armada & Kejadian (Pendukung) --}}
+                            <div class="col-12">
+                                <div class="op-timeline-box">
+                                    <div class="d-flex align-items-center gap-2 mb-2 text-secondary small fw-bold">
+                                        <i class="fas fa-history text-primary"></i> Waktu Operasional Tambahan (Armada & Kejadian)
+                                    </div>
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <label class="field-label">Waktu Kejadian (Awal)</label>
+                                            <input type="datetime-local" name="waktu_kejadian" class="form-control">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="field-label">Waktu Berangkat Unit</label>
+                                            <input type="datetime-local" name="waktu_berangkat" class="form-control">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="field-label">Waktu Operasi Selesai</label>
+                                            <input type="datetime-local" name="waktu_selesai" id="waktu_selesai" class="form-control">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="field-label">Waktu Kembali ke Mako</label>
+                                            <input type="datetime-local" name="waktu_kembali" class="form-control">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- Klasifikasi -->
+                <!-- Data Pelapor (Foto No. 8, 9) -->
+                <section class="form-section">
+                    <header class="form-section__head">
+                        <span class="ico"><i class="fas fa-user"></i></span>
+                        <div><h3>Data Pelapor</h3><p>Siapa yang melapor dan kontak yang bisa dihubungi.</p></div>
+                    </header>
+                    <div class="form-section__body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="field-label"><span class="num-badge">8</span> Nama Pelapor <span class="req">*</span></label>
+                                <input type="text" class="form-control" name="nama_pelapor" placeholder="Cth: Bapak Iskandar" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="field-label"><span class="num-badge">9</span> No. Telfon Pelapor</label>
+                                <input type="text" name="telepon_pelapor" id="telepon_pelapor" class="form-control"
+                                       placeholder="08xxxxxxxxxx" inputmode="numeric" pattern="[0-9]*" maxlength="15"
+                                       title="Hanya boleh angka" autocomplete="off">
+                                <small class="field-hint">Hanya angka.</small>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Klasifikasi & Objek Kejadian (Foto No. 10) -->
                 <section class="form-section">
                     <header class="form-section__head">
                         <span class="ico"><i class="fas fa-layer-group"></i></span>
-                        <div><h3>Klasifikasi Kejadian</h3><p>Untuk kebakaran, pilih objek kebakaran beserta rinciannya.</p></div>
+                        <div><h3>10. Objek Kejadian / Klasifikasi</h3><p>Untuk kebakaran, pilih objek kebakaran beserta rinciannya.</p></div>
                     </header>
                     <div class="form-section__body">
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label class="field-label">Kategori Kejadian Umum</label>
+                                    <label class="field-label"><span class="num-badge">10</span> Kategori Kejadian Umum</label>
                                     <select class="form-select" name="kategori_kejadian" id="kategori_kejadian">
                                         <option value="">-- Pilih Kategori Kejadian --</option>
                                         @foreach ($optKategori as $v => $l)
@@ -293,7 +355,7 @@
                             <div class="col-md-8" id="blokKebakaran">
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label class="field-label">Objek Kebakaran <span class="req">*</span></label>
+                                        <label class="field-label"><span class="num-badge">10</span> Objek Kebakaran <span class="req">*</span></label>
                                         <select class="form-select" name="objek_kebakaran" id="objek_kebakaran" required>
                                             <option value="">-- Pilih Objek --</option>
                                             @foreach ($optObjek as $v => $l)
@@ -375,7 +437,7 @@
 
                             {{-- Kategori non-kebakaran (tampil jika kategori bukan Kebakaran) --}}
                             <div class="col-md-8" id="blokNonKebakaran" style="display:none;">
-                                <label class="field-label">Kategori Laporan (Non-Kebakaran)</label>
+                                <label class="field-label"><span class="num-badge">10</span> Objek Penyelamatan / Evakuasi (Non-Kebakaran)</label>
                                 <div class="pair">
                                     <select class="form-select" name="kategori_non_kebakaran" id="kategori_non_kebakaran" disabled>
                                         <option value="">-- Pilih Jenis Evakuasi --</option>
@@ -390,59 +452,16 @@
                     </div>
                 </section>
 
-                <!-- Waktu penanganan -->
-                <section class="form-section">
-                    <header class="form-section__head">
-                        <span class="ico"><i class="fas fa-clock"></i></span>
-                        <div><h3>Waktu Penanganan</h3><p>Diurutkan dari kejadian sampai unit kembali ke Mako. Respon time dihitung otomatis.</p></div>
-                    </header>
-                    <div class="form-section__body">
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <label class="field-label">1. Waktu Kejadian</label>
-                                <input type="datetime-local" name="waktu_kejadian" class="form-control">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="field-label">2. Waktu Terima Laporan <span class="req">*</span></label>
-                                <input type="datetime-local" name="waktu_terima" id="waktu_terima" class="form-control" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="field-label">3. Waktu Berangkat Unit</label>
-                                <input type="datetime-local" name="waktu_berangkat" class="form-control">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="field-label">4. Waktu Tiba di Lokasi <span class="req">*</span></label>
-                                <input type="datetime-local" name="waktu_tiba" id="waktu_tiba" class="form-control" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="field-label">5. Waktu Operasi Selesai</label>
-                                <input type="datetime-local" name="waktu_selesai" id="waktu_selesai" class="form-control">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="field-label">6. Waktu Kembali ke Mako</label>
-                                <input type="datetime-local" name="waktu_kembali" class="form-control">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="field-label">Respon Time (Terima → Tiba)</label>
-                                <div class="input-group">
-                                    <input type="text" name="respon_time" id="respon_time" class="form-control" readonly placeholder="Otomatis">
-                                    <span class="input-group-text">Menit</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Lokasi -->
+                <!-- Lokasi (Foto No. 11) -->
                 <section class="form-section">
                     <header class="form-section__head">
                         <span class="ico"><i class="fas fa-map-marker-alt"></i></span>
-                        <div><h3>Lokasi Kejadian</h3><p>Alamat lengkap dan titik koordinat dari Google Maps.</p></div>
+                        <div><h3>11. Lokasi Kejadian</h3><p>Alamat lengkap dan titik koordinat dari Google Maps.</p></div>
                     </header>
                     <div class="form-section__body">
                         <div class="row g-3">
                             <div class="col-md-8">
-                                <label class="field-label">Lokasi Kejadian / Alamat Lengkap</label>
+                                <label class="field-label"><span class="num-badge">11</span> Lokasi Kejadian (Alamat Lengkap)</label>
                                 <textarea class="form-control" name="alamat" rows="4" placeholder="Nama jalan, RT/RW, Kelurahan, Kecamatan..."></textarea>
                             </div>
                             <div class="col-md-4">
@@ -468,50 +487,268 @@
                  ========================================================== --}}
             <div class="tab-pane fade" id="teknis" role="tabpanel">
 
-                <!-- Tim operasi -->
-                <section class="form-section">
+                <!-- Korban & Jiwa Terdampak (Foto No. 12, 13, 14, 15) -->
+                <section class="form-section is-danger">
                     <header class="form-section__head">
-                        <span class="ico"><i class="fas fa-user-shield"></i></span>
-                        <div><h3>Tim Operasi</h3><p>Pimpinan, pendamping, satgas, dan tim quick respon di lapangan.</p></div>
+                        <span class="ico"><i class="fas fa-heart-pulse"></i></span>
+                        <div><h3>Data Korban & Jiwa Terdampak</h3><p>Nama korban, jumlah jiwa, rincian korban meninggal/cidera, serta warga terdampak.</p></div>
                     </header>
                     <div class="form-section__body">
                         <div class="row g-3">
-                            <div class="col-md-4">
-                                <label class="field-label">Pimpinan Operasi</label>
-                                <input type="text" name="pimpinan_operasi" class="form-control" placeholder="Cth: Danru 4 Mako">
+                            <div class="col-md-8">
+                                <label class="field-label"><span class="num-badge">12</span> Nama Korban</label>
+                                <input type="text" name="nama_korban" class="form-control" placeholder="Cth: Bpk. Ahmad, Ibu Siti (Kosongkan jika nihil)">
+                                <small class="field-hint">Tulis nama lengkap korban jika ada, pisahkan dengan koma.</small>
                             </div>
                             <div class="col-md-4">
-                                <label class="field-label">Pendamping Operasi</label>
-                                <input type="text" name="pendamping_operasi" class="form-control" placeholder="Opsional...">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="field-label">Satgas Operasi</label>
-                                <input type="text" name="satgas_operasi" class="form-control" placeholder="Cth: Pleton 1 Mako">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="field-label">Tim Quick Respon Damkar</label>
-                                <input type="text" name="tim_quick_respon" class="form-control" placeholder="Cth: Tim QR 1">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="field-label">Lama Operasi</label>
+                                <label class="field-label"><span class="num-badge">13</span> Jumlah Jiwa</label>
                                 <div class="input-group">
-                                    <input type="number" min="0" name="lama_operasi" id="lama_operasi" class="form-control" placeholder="0">
-                                    <span class="input-group-text">Menit</span>
+                                    <input type="number" min="0" name="jumlah_jiwa" class="form-control" value="0">
+                                    <span class="input-group-text">Jiwa</span>
                                 </div>
-                                <small class="field-hint">Terisi otomatis dari Waktu Tiba sampai Waktu Operasi Selesai (bisa diubah manual).</small>
+                            </div>
+                            <div class="col-12">
+                                <label class="field-label"><span class="num-badge">14</span> Jumlah Korban (Meninggal dan Cidera)</label>
+                                <div class="row g-2">
+                                    <div class="col-6 col-md-3">
+                                        <label class="field-label text-muted" style="font-size:0.8rem;">Selamat</label>
+                                        <input type="number" min="0" name="korban_selamat" class="form-control" value="0">
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <label class="field-label text-muted" style="font-size:0.8rem;">Cidera / Luka Ringan</label>
+                                        <input type="number" min="0" name="korban_ringan" class="form-control" value="0">
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <label class="field-label text-muted" style="font-size:0.8rem;">Cidera / Luka Berat</label>
+                                        <input type="number" min="0" name="korban_berat" class="form-control" value="0">
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <label class="field-label text-muted" style="font-size:0.8rem;">Meninggal Dunia</label>
+                                        <input type="number" min="0" name="korban_meninggal" class="form-control" value="0">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="field-label"><span class="num-badge">15</span> Jumlah Warga yang Terdampak</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" name="warga_terdampak" class="form-control" value="0">
+                                    <span class="input-group-text">Jiwa / KK</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="field-label">Status Evakuasi</label>
+                                <select class="form-select" name="status_evakuasi">
+                                    <option selected value="">-- Pilih Status --</option>
+                                    <option value="selesai">Selesai</option>
+                                    <option value="dalam_proses">Dalam Proses</option>
+                                    <option value="dirujuk_ke_rs">Dirujuk ke RS</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="field-label">Objek Terdampak</label>
+                                <input type="text" name="objek_terdampak" class="form-control" placeholder="Contoh: Atap rumah warga, sumur tua, dsb.">
+                            </div>
+                            <div class="col-md-12">
+                                <label class="field-label">Hewan / Aset (Jika relevan)</label>
+                                <input type="text" name="korban_hewan_aset" class="form-control" placeholder="Contoh: 1 ekor ular piton dievakuasi, 2 unit motor terbakar...">
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- Kondisi lapangan (dipindah dari tab 4, berlaku untuk semua jenis laporan) -->
+                <!-- Tim Operasi (Foto No. 16, 17, 18, 19) -->
                 <section class="form-section">
                     <header class="form-section__head">
-                        <span class="ico"><i class="fas fa-cloud-sun-rain"></i></span>
-                        <div><h3>Kondisi Lapangan</h3><p>Cuaca, medan, dan akses menuju lokasi saat operasi.</p></div>
+                        <span class="ico"><i class="fas fa-user-shield"></i></span>
+                        <div><h3>Tim & Personel Operasi</h3><p>Pimpinan, satuan tugas, personel, dan lama operasi.</p></div>
                     </header>
                     <div class="form-section__body">
                         <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="field-label"><span class="num-badge">16</span> Pimpinan Operasi</label>
+                                <input type="text" name="pimpinan_operasi" class="form-control" placeholder="Cth: Danru 4 Mako">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="field-label">Pendamping Operasi</label>
+                                <input type="text" name="pendamping_operasi" class="form-control" placeholder="Opsional...">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="field-label"><span class="num-badge">17</span> Satuan Tugas</label>
+                                <input type="text" name="satgas_operasi" class="form-control" placeholder="Cth: Pleton 1 Mako">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="field-label"><span class="num-badge">18</span> Jumlah Personil</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" name="jumlah_personel" class="form-control" placeholder="0">
+                                    <span class="input-group-text">Orang</span>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="field-label">Daftar Personel yang Terlibat</label>
+                                <textarea class="form-control" name="daftar_personel" rows="2" placeholder="Contoh: Budi, Andi, Joko..."></textarea>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="field-label"><span class="num-badge">19</span> Lama Operasi</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" name="lama_operasi" id="lama_operasi" class="form-control" placeholder="0">
+                                    <span class="input-group-text">Menit</span>
+                                </div>
+                                <small class="field-hint">Terisi otomatis dari Waktu Tiba s/d Selesai.</small>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Kronologi, Penyebab & Penanganan (Foto No. 20, 21, 22) -->
+                <section class="form-section">
+                    <header class="form-section__head">
+                        <span class="ico"><i class="fas fa-file-alt"></i></span>
+                        <div><h3>Kronologi, Penyebab & Penanganan</h3><p>Uraian kronologi kejadian, dugaan penyebab, hambatan serta langkah tindakan.</p></div>
+                    </header>
+                    <div class="form-section__body">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="field-label"><span class="num-badge">20</span> Kronologi Penyelamatan / Kebakaran</label>
+                                <textarea class="form-control" name="kronologi_lengkap" rows="4" placeholder="Uraian kronologi kejadian dan tindakan di lapangan..."></textarea>
+                            </div>
+
+                            {{-- Penyebab Kebakaran (Foto No. 21 khusus kebakaran) --}}
+                            <div class="col-12 only-fire">
+                                <div class="p-3 rounded border bg-light">
+                                    <div class="row g-3">
+                                        <div class="col-md-5">
+                                            <label class="field-label"><span class="num-badge">21</span> Penyebab Kebakaran (Diduga)</label>
+                                            <div class="pair">
+                                                <select class="form-select" name="dugaan_penyebab" id="dugaan_penyebab">
+                                                    <option selected value="">-- Pilih Penyebab --</option>
+                                                    <option value="arus_pendek">Arus pendek listrik</option>
+                                                    <option value="kebocoran_gas">Kebocoran gas</option>
+                                                    <option value="sambaran_petir">Sambaran petir</option>
+                                                    <option value="kelalaian_manusia">Kelalaian manusia</option>
+                                                    <option value="faktor_alam">Faktor alam</option>
+                                                    <option value="lainnya">Lainnya</option>
+                                                </select>
+                                                <input type="text" class="form-control" name="dugaan_penyebab_lainnya" id="dugaan_penyebab_lainnya" placeholder="Ketik jika 'Lainnya'..." disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="field-label">Sumber Api / Titik Awal</label>
+                                            <input type="text" name="sumber_api" class="form-control" placeholder="Contoh: Dapur, Panel Listrik utama...">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="field-label">Luas Area Terdampak</label>
+                                            <div class="input-group">
+                                                <input type="number" min="0" step="0.1" name="luas_area" class="form-control" placeholder="0">
+                                                <span class="input-group-text">m²</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="field-label"><span class="num-badge">22</span> Hambatan Lapangan</label>
+                                <textarea class="form-control" name="hambatan_lapangan" rows="3" placeholder="Tuliskan hambatan spesifik saat operasi di lapangan (jika ada)..."></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="field-label">Langkah Penanganan</label>
+                                <textarea class="form-control" name="langkah_penanganan" rows="3" placeholder="Cth: Ular Sanca Berhasil Di Evakuasi Dengan Menggunakan Stik Hook..."></textarea>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="field-label">Hasil Tindakan</label>
+                                <input type="text" name="hasil_tindakan" class="form-control" placeholder="Cth: Evakuasi berhasil dengan aman dan lancar">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="field-label">Metode Evakuasi</label>
+                                <div class="choice-group">
+                                    <label class="choice"><input type="checkbox" id="me_vr" name="metode_evakuasi[]" value="vertical_rescue"> Vertical Rescue</label>
+                                    <label class="choice"><input type="checkbox" id="me_wr" name="metode_evakuasi[]" value="water_rescue"> Water Rescue</label>
+                                    <label class="choice"><input type="checkbox" id="me_td" name="metode_evakuasi[]" value="tangga_darurat"> Penggunaan Tangga Darurat</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="field-label">Metode Penyelamatan</label>
+                                <div class="choice-group">
+                                    <label class="choice"><input type="checkbox" id="mp_vr" name="metode_penyelamatan[]" value="vertical_rescue"> Vertical Rescue</label>
+                                    <label class="choice"><input type="checkbox" id="mp_wr" name="metode_penyelamatan[]" value="water_rescue"> Water Rescue</label>
+                                    <label class="choice"><input type="checkbox" id="mp_ps" name="metode_penyelamatan[]" value="pemadaman_statis"> Pemadam Statis</label>
+                                    <label class="choice"><input type="checkbox" id="mp_pd" name="metode_penyelamatan[]" value="pemadaman_dinamis"> Pemadam Dinamis</label>
+                                    <label class="choice"><input type="checkbox" id="mp_emd" name="metode_penyelamatan[]" value="evakuasi_medis_dasar"> Evakuasi Medis Dasar</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Sarana yang Digunakan & Tim Quick Respon (Foto No. 23, 24) -->
+                <section class="form-section">
+                    <header class="form-section__head">
+                        <span class="ico"><i class="fas fa-toolbox"></i></span>
+                        <div><h3>Sarana yang Digunakan & Tim Quick Respon</h3><p>Air, armada, liquid foam, BBM, peralatan dan Tim Quick Respon.</p></div>
+                    </header>
+                    <div class="form-section__body">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="field-label fw-bold"><span class="num-badge">23</span> Sarana yang Digunakan</label>
+                                <div class="row g-3 p-3 bg-light rounded border mb-3">
+                                    <div class="col-md-4">
+                                        <label class="field-label">Air (Liter)</label>
+                                        <div class="input-group">
+                                            <input type="number" min="0" name="jumlah_air" class="form-control" placeholder="0">
+                                            <span class="input-group-text">Liter</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="field-label">Armada (Unit)</label>
+                                        <div class="input-group">
+                                            <input type="number" min="0" name="jumlah_armada" class="form-control" placeholder="0">
+                                            <span class="input-group-text">Unit</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="field-label">Liquid Foam (Liter)</label>
+                                        <div class="input-group">
+                                            <input type="number" min="0" name="liter_foam" class="form-control" placeholder="0">
+                                            <span class="input-group-text">Liter</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="field-label">BBM Unit (Liter)</label>
+                                        <div class="input-group">
+                                            <input type="number" min="0" name="liter_bbm" class="form-control" placeholder="0">
+                                            <span class="input-group-text">Liter</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <label class="field-label">Jenis Unit Armada Terlibat</label>
+                                        <div class="choice-group">
+                                            <label class="choice"><input type="checkbox" id="arm_pompa" name="armada[]" value="pompa"> Unit Pompa</label>
+                                            <label class="choice"><input type="checkbox" id="arm_rescue" name="armada[]" value="rescue"> Unit Rescue</label>
+                                            <label class="choice"><input type="checkbox" id="arm_tangki" name="armada[]" value="tangki"> Unit Tangki</label>
+                                            <label class="choice"><input type="checkbox" id="arm_ambulans" name="armada[]" value="ambulans"> Ambulans</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="field-label">Peralatan Khusus yang Digunakan</label>
+                                <div class="choice-group mb-2">
+                                    <label class="choice"><input type="checkbox" id="alat_scba" name="peralatan[]" value="SCBA"> SCBA</label>
+                                    <label class="choice"><input type="checkbox" id="alat_thermal" name="peralatan[]" value="Thermal Camera"> Thermal Camera</label>
+                                    <label class="choice"><input type="checkbox" id="alat_chainsaw" name="peralatan[]" value="Chainsaw"> Chainsaw</label>
+                                    <label class="choice"><input type="checkbox" id="alat_selam" name="peralatan[]" value="Alat Selam"> Alat Selam</label>
+                                </div>
+                                <input type="text" name="peralatan_lain" class="form-control" placeholder="Alat khusus lainnya (pisahkan dengan koma)...">
+                            </div>
+
+                            <div class="col-12">
+                                <label class="field-label">Konsumsi Alat Umum</label>
+                                <input type="text" name="konsumsi_alat" class="form-control" placeholder="Contoh: penggunaan foam, combi tool...">
+                            </div>
+
+                            {{-- Kondisi Lapangan --}}
                             <div class="col-md-4">
                                 <label class="field-label">Cuaca Operasi</label>
                                 <select class="form-select" name="cuaca_operasi">
@@ -537,184 +774,14 @@
                                     <option value="jalan_kaki">Hanya Jalan Kaki</option>
                                 </select>
                             </div>
-                        </div>
-                    </div>
-                </section>
 
-                <!-- Korban & dampak -->
-                <section class="form-section is-danger">
-                    <header class="form-section__head">
-                        <span class="ico"><i class="fas fa-heart-pulse"></i></span>
-                        <div><h3>Korban & Dampak</h3><p>Status korban manusia, jiwa terdampak, hewan, dan aset yang terdampak.</p></div>
-                    </header>
-                    <div class="form-section__body">
-                        <div class="row g-3">
-                            <div class="col-6 col-md-3">
-                                <label class="field-label">Selamat</label>
-                                <input type="number" min="0" name="korban_selamat" class="form-control" value="0">
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <label class="field-label">Luka Ringan</label>
-                                <input type="number" min="0" name="korban_ringan" class="form-control" value="0">
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <label class="field-label">Luka Berat</label>
-                                <input type="number" min="0" name="korban_berat" class="form-control" value="0">
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <label class="field-label">Korban Jiwa (Meninggal Dunia)</label>
-                                <input type="number" min="0" name="korban_meninggal" class="form-control" value="0">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="field-label">Jumlah Jiwa yang Terdampak</label>
-                                <div class="input-group">
-                                    <input type="number" min="0" name="jiwa_terdampak" class="form-control" value="0">
-                                    <span class="input-group-text">Jiwa</span>
+                            {{-- Tim Quick Respon Damkar (Foto No. 22 di Penyelamatan / No. 24 di Kebakaran) --}}
+                            <div class="col-12 mt-2">
+                                <div class="p-3 rounded border bg-light">
+                                    <label class="field-label fw-bold"><span class="num-badge">24</span> Tim Quick Respon Damkar</label>
+                                    <input type="text" name="tim_quick_respon" class="form-control" placeholder="Cth: Tim Quick Respon 1 Mako">
+                                    <small class="field-hint">Nama atau regu Quick Respon Damkar yang bertugas menangani laporan (No. 22 di Form Penyelamatan / No. 24 di Form Kebakaran).</small>
                                 </div>
-                            </div>
-                            <div class="col-md-8">
-                                <label class="field-label">Hewan / Aset (Jika relevan)</label>
-                                <input type="text" name="korban_hewan_aset" class="form-control" placeholder="Contoh: 1 ekor ular piton dievakuasi, 2 unit motor terbakar...">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="field-label">Status Evakuasi</label>
-                                <select class="form-select" name="status_evakuasi">
-                                    <option selected value="">-- Pilih Status --</option>
-                                    <option value="selesai">Selesai</option>
-                                    <option value="dalam_proses">Dalam Proses</option>
-                                    <option value="dirujuk_ke_rs">Dirujuk ke RS</option>
-                                </select>
-                            </div>
-                            <div class="col-md-8">
-                                <label class="field-label">Objek Terdampak</label>
-                                <input type="text" name="objek_terdampak" class="form-control" placeholder="Contoh: Atap rumah warga, sumur tua, dsb.">
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Metode & penanganan -->
-                <section class="form-section">
-                    <header class="form-section__head">
-                        <span class="ico"><i class="fas fa-hands-helping"></i></span>
-                        <div><h3>Metode & Penanganan</h3><p>Cara evakuasi, penyelamatan, hambatan, dan hasilnya.</p></div>
-                    </header>
-                    <div class="form-section__body">
-                        <div class="mb-4">
-                            <label class="field-label">Metode Evakuasi</label>
-                            <div class="choice-group">
-                                <label class="choice"><input type="checkbox" id="me_vr" name="metode_evakuasi[]" value="vertical_rescue"> Vertical Rescue</label>
-                                <label class="choice"><input type="checkbox" id="me_wr" name="metode_evakuasi[]" value="water_rescue"> Water Rescue</label>
-                                <label class="choice"><input type="checkbox" id="me_td" name="metode_evakuasi[]" value="tangga_darurat"> Penggunaan Tangga Darurat</label>
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <label class="field-label">Metode Penyelamatan</label>
-                            <div class="choice-group">
-                                <label class="choice"><input type="checkbox" id="mp_vr" name="metode_penyelamatan[]" value="vertical_rescue"> Vertical Rescue</label>
-                                <label class="choice"><input type="checkbox" id="mp_wr" name="metode_penyelamatan[]" value="water_rescue"> Water Rescue</label>
-                                <label class="choice"><input type="checkbox" id="mp_ps" name="metode_penyelamatan[]" value="pemadaman_statis"> Pemadam Statis</label>
-                                <label class="choice"><input type="checkbox" id="mp_pd" name="metode_penyelamatan[]" value="pemadaman_dinamis"> Pemadam Dinamis</label>
-                                <label class="choice"><input type="checkbox" id="mp_emd" name="metode_penyelamatan[]" value="evakuasi_medis_dasar"> Evakuasi Medis Dasar</label>
-                            </div>
-                        </div>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="field-label">Hambatan Lapangan</label>
-                                <textarea class="form-control" name="hambatan_lapangan" rows="3" placeholder="Tuliskan hambatan spesifik saat operasi di lapangan..."></textarea>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="field-label">Langkah Penanganan</label>
-                                <textarea class="form-control" name="langkah_penanganan" rows="3" placeholder="Cth: Ular Sanca Berhasil Di Evakuasi Dengan Menggunakan Stik Hook..."></textarea>
-                            </div>
-                            <div class="col-md-12">
-                                <label class="field-label">Hasil Tindakan</label>
-                                <input type="text" name="hasil_tindakan" class="form-control" placeholder="Cth: Evakuasi berhasil dengan aman dan lancar">
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Alat & logistik -->
-                <section class="form-section">
-                    <header class="form-section__head">
-                        <span class="ico"><i class="fas fa-toolbox"></i></span>
-                        <div><h3>Peralatan & Logistik</h3><p>Alat khusus dan konsumsi bahan selama operasi.</p></div>
-                    </header>
-                    <div class="form-section__body">
-                        <div class="mb-3">
-                            <label class="field-label">Peralatan Khusus yang Digunakan</label>
-                            <div class="choice-group mb-2">
-                                <label class="choice"><input type="checkbox" id="alat_scba" name="peralatan[]" value="SCBA"> SCBA</label>
-                                <label class="choice"><input type="checkbox" id="alat_thermal" name="peralatan[]" value="Thermal Camera"> Thermal Camera</label>
-                                <label class="choice"><input type="checkbox" id="alat_chainsaw" name="peralatan[]" value="Chainsaw"> Chainsaw</label>
-                                <label class="choice"><input type="checkbox" id="alat_selam" name="peralatan[]" value="Alat Selam"> Alat Selam</label>
-                            </div>
-                            <input type="text" name="peralatan_lain" class="form-control" placeholder="Alat khusus lainnya (pisahkan dengan koma)...">
-                        </div>
-
-                        <div class="sub-title">Konsumsi</div>
-                        <div class="row g-3">
-                            <div class="col-md-12">
-                                <label class="field-label">Konsumsi Alat Umum</label>
-                                <input type="text" name="konsumsi_alat" class="form-control" placeholder="Contoh: penggunaan foam, combi tool...">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="field-label">Jumlah Air yang Digunakan</label>
-                                <div class="input-group">
-                                    <input type="number" min="0" name="jumlah_air" class="form-control" placeholder="0">
-                                    <span class="input-group-text">Liter</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="field-label">Liter Foam</label>
-                                <div class="input-group">
-                                    <input type="number" min="0" name="liter_foam" class="form-control" placeholder="0">
-                                    <span class="input-group-text">L</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="field-label">Liter BBM Unit</label>
-                                <div class="input-group">
-                                    <input type="number" min="0" name="liter_bbm" class="form-control" placeholder="0">
-                                    <span class="input-group-text">L</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Armada & personel -->
-                <section class="form-section">
-                    <header class="form-section__head">
-                        <span class="ico"><i class="fas fa-truck"></i></span>
-                        <div><h3>Armada & Personel</h3><p>Unit yang diterjunkan dan personel yang terlibat.</p></div>
-                    </header>
-                    <div class="form-section__body">
-                        <div class="row g-3">
-                            <div class="col-md-8">
-                                <label class="field-label">Unit Armada Terlibat</label>
-                                <div class="choice-group">
-                                    <label class="choice"><input type="checkbox" id="arm_pompa" name="armada[]" value="pompa"> Unit Pompa</label>
-                                    <label class="choice"><input type="checkbox" id="arm_rescue" name="armada[]" value="rescue"> Unit Rescue</label>
-                                    <label class="choice"><input type="checkbox" id="arm_tangki" name="armada[]" value="tangki"> Unit Tangki</label>
-                                    <label class="choice"><input type="checkbox" id="arm_ambulans" name="armada[]" value="ambulans"> Ambulans</label>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="field-label">Jumlah Armada yang Digunakan</label>
-                                <div class="input-group">
-                                    <input type="number" min="0" name="jumlah_armada" class="form-control" placeholder="0">
-                                    <span class="input-group-text">Unit</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="field-label">Jumlah Personel</label>
-                                <input type="number" min="0" name="jumlah_personel" class="form-control" placeholder="0">
-                            </div>
-                            <div class="col-md-8">
-                                <label class="field-label">Personel yang Terlibat</label>
-                                <textarea class="form-control" name="daftar_personel" rows="2" placeholder="Contoh: Budi, Andi, Joko..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -730,44 +797,6 @@
                  TAB 3: DOKUMENTASI, EVALUASI & VALIDASI
                  ========================================================== --}}
             <div class="tab-pane fade" id="dokumentasi" role="tabpanel">
-
-                <!-- Analisis (hanya untuk Kebakaran) -->
-                <section class="form-section only-fire">
-                    <header class="form-section__head">
-                        <span class="ico"><i class="fas fa-magnifying-glass-chart"></i></span>
-                        <div><h3>Analisis Kejadian</h3><p>Dugaan penyebab, sumber api, dan luas area terdampak (khusus kebakaran).</p></div>
-                    </header>
-                    <div class="form-section__body">
-                        <div class="row g-3">
-                            <div class="col-md-5">
-                                <label class="field-label">Penyebab Kebakaran (Diduga)</label>
-                                <div class="pair">
-                                    <select class="form-select" name="dugaan_penyebab" id="dugaan_penyebab">
-                                        <option selected value="">-- Pilih Penyebab --</option>
-                                        <option value="arus_pendek">Arus pendek listrik</option>
-                                        <option value="kebocoran_gas">Kebocoran gas</option>
-                                        <option value="sambaran_petir">Sambaran petir</option>
-                                        <option value="kelalaian_manusia">Kelalaian manusia</option>
-                                        <option value="faktor_alam">Faktor alam</option>
-                                        <option value="lainnya">Lainnya</option>
-                                    </select>
-                                    <input type="text" class="form-control" name="dugaan_penyebab_lainnya" id="dugaan_penyebab_lainnya" placeholder="Ketik jika 'Lainnya'..." disabled>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="field-label">Sumber Api / Titik Awal</label>
-                                <input type="text" name="sumber_api" class="form-control" placeholder="Contoh: Dapur, Panel Listrik utama...">
-                            </div>
-                            <div class="col-md-3">
-                                <label class="field-label">Luas Area Terdampak</label>
-                                <div class="input-group">
-                                    <input type="number" min="0" step="0.1" name="luas_area" class="form-control" placeholder="0">
-                                    <span class="input-group-text">m²</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
 
                 <!-- Lintas sektoral -->
                 <section class="form-section">
@@ -832,29 +861,23 @@
                     </div>
                 </section>
 
-                <!-- Dokumentasi -->
+                <!-- Dokumentasi Media -->
                 <section class="form-section">
                     <header class="form-section__head">
                         <span class="ico"><i class="fas fa-camera"></i></span>
-                        <div><h3>Dokumentasi Akhir</h3><p>Kronologi dan lampiran foto atau video.</p></div>
+                        <div><h3>Dokumentasi Media</h3><p>Lampiran foto dan video dokumentasi kejadian.</p></div>
                     </header>
                     <div class="form-section__body">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="field-label">Kronologi Terperinci</label>
-                                <textarea class="form-control" name="kronologi_lengkap" rows="6" placeholder="Uraian singkat operasi..."></textarea>
+                                <label class="field-label">Upload Foto (.jpg/.png)</label>
+                                <input class="form-control" type="file" name="foto[]" id="input_foto" multiple accept="image/png, image/jpeg" data-max-mb="10">
+                                <small class="field-hint"><i class="fas fa-info-circle me-1"></i>Format JPG/PNG. Maksimal <strong>10 MB per foto</strong>. Boleh memilih lebih dari satu foto.</small>
                             </div>
                             <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="field-label">Upload Foto (.jpg/.png)</label>
-                                    <input class="form-control" type="file" name="foto[]" id="input_foto" multiple accept="image/png, image/jpeg" data-max-mb="10">
-                                    <small class="field-hint"><i class="fas fa-info-circle me-1"></i>Format JPG/PNG. Maksimal <strong>10 MB per foto</strong>. Boleh memilih lebih dari satu foto.</small>
-                                </div>
-                                <div>
-                                    <label class="field-label">Upload Video (.mp4)</label>
-                                    <input class="form-control" type="file" name="video" id="input_video" accept="video/mp4" data-max-mb="10">
-                                    <small class="field-hint"><i class="fas fa-info-circle me-1"></i>Format MP4. Maksimal <strong>10 MB</strong>.</small>
-                                </div>
+                                <label class="field-label">Upload Video (.mp4)</label>
+                                <input class="form-control" type="file" name="video" id="input_video" accept="video/mp4" data-max-mb="10">
+                                <small class="field-hint"><i class="fas fa-info-circle me-1"></i>Format MP4. Maksimal <strong>10 MB</strong>.</small>
                             </div>
                         </div>
                     </div>

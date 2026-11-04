@@ -26,25 +26,31 @@ class LaporanKebakaran2026Seeder extends Seeder
         }
         $userId = $user ? $user->id : 1;
 
-        $jsonDatasetPath = database_path('seeders/data/laporan_kebakaran_2026.json');
+        $jsonDatasetPath = database_path('seeders/data/laporan_kebakaran_2025_2026.json');
+        if (! File::exists($jsonDatasetPath)) {
+            $jsonDatasetPath = database_path('seeders/data/laporan_kebakaran_2026.json');
+        }
         if (! File::exists($jsonDatasetPath)) {
             $this->command->error("File dataset seeder tidak ditemukan di: {$jsonDatasetPath}");
 
             return;
         }
 
-        $this->command->info('Memuat dataset seeder laporan kebakaran tahun 2026 dari file JSON...');
+        $this->command->info('Memuat dataset seeder laporan kebakaran tahun 2025-2026 dari file JSON...');
         $content = File::get($jsonDatasetPath);
         $dataset = json_decode($content, true);
 
         if (! is_array($dataset) || empty($dataset)) {
-            $this->command->warn('Dataset laporan kebakaran 2026 kosong atau format tidak valid.');
+            $this->command->warn('Dataset laporan kebakaran kosong atau format tidak valid.');
 
             return;
         }
 
         $totalRecords = count($dataset);
-        $this->command->info("Ditemukan {$totalRecords} data laporan kebakaran tahun 2026. Memulai proses seeding...");
+        $this->command->info("Ditemukan {$totalRecords} data laporan kebakaran (2025 - 2026). Memulai proses seeding...");
+
+        // Bersihkan data laporan lama sebelum 2025 pada tabel ini saja agar data teman ikut sinkron
+        DB::table('laporan_penyelamatans')->where('tahun_kejadian', '<', 2025)->delete();
 
         $inserted = 0;
         $skipped = 0;
