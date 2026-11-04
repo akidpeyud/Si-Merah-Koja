@@ -46,111 +46,113 @@
 
             <div class="form-card">
                 <!-- FORM ACTION MENGARAH KE RUTE EDIT -->
-                <form action="/internal/pencegahan/peningkatan-kapasitas/edit/{{ $jenis }}/{{ $data->id }}" method="POST">
+                @php
+                    // <input type="date"> hanya menerima YYYY-MM-DD; teks bebas (data lama) ditampilkan sebagai petunjuk
+                    $tglInput = fn ($nilai) => preg_match('/^\d{4}-\d{2}-\d{2}/', (string) $nilai) ? substr((string) $nilai, 0, 10) : '';
+                    $tglLama = fn ($nilai) => (trim((string) $nilai) !== '' && $tglInput($nilai) === '') ? trim((string) $nilai) : null;
+                @endphp
+                <form action="/internal/pencegahan/peningkatan-kapasitas/edit/{{ $jenis }}/{{ $data->id }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
-                    <!-- SECTION 1: DATA PEGAWAI (urutan sama dengan tabel) -->
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0 ps-3">
+                                @foreach ($errors->all() as $pesanError)
+                                    <li>{{ $pesanError }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <!-- SECTION 1: DATA PEGAWAI -->
                     <div class="form-section-title"><i class="fas fa-user me-2"></i> Data Pegawai / Aparatur</div>
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
-                            <label class="form-label">NIP</label>
-                            <input type="text" class="form-control" name="nip" value="{{ $data->nip ?? '' }}">
+                            <label class="form-label">Nama</label>
+                            <input type="text" class="form-control" name="nama" value="{{ old('nama', $data->nama ?? '') }}" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Nama Lengkap</label>
-                            <input type="text" class="form-control" name="nama" value="{{ $data->nama ?? '' }}" required>
+                            <label class="form-label">NIP</label>
+                            <input type="text" class="form-control" name="nip" value="{{ old('nip', $data->nip ?? '') }}">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Tempat Lahir</label>
-                            <input type="text" class="form-control" name="tempat_lahir" value="{{ $data->tempat_lahir ?? '' }}">
+                            <input type="text" class="form-control" name="tempat_lahir" value="{{ old('tempat_lahir', $data->tempat_lahir ?? '') }}">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Tanggal Lahir</label>
-                            <input type="date" class="form-control" name="tgl_lahir" value="{{ $data->tgl_lahir ?? '' }}">
+                            <input type="date" class="form-control" name="tgl_lahir" value="{{ old('tgl_lahir', $tglInput($data->tgl_lahir ?? '')) }}">
+                            @if ($tglLama($data->tgl_lahir ?? ''))
+                                <small class="text-muted">Data lama: {{ $tglLama($data->tgl_lahir) }}</small>
+                            @endif
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Nomor Induk Kependudukan (NIK)</label>
-                            <input type="text" class="form-control" name="nik" value="{{ $data->nik ?? '' }}">
+                            <label class="form-label">Pangkat / Golongan Ruang</label>
+                            <input type="text" class="form-control" name="pangkat_golongan" value="{{ old('pangkat_golongan', $data->pangkat_golongan ?? '') }}">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Jabatan</label>
-                            <input type="text" class="form-control" name="jabatan" value="{{ $data->jabatan ?? '' }}">
+                            <input type="text" class="form-control" name="jabatan" value="{{ old('jabatan', $data->jabatan ?? '') }}">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Instansi / Perangkat Daerah</label>
-                            <input type="text" class="form-control" name="instansi" value="{{ $data->instansi ?? '' }}">
+                            <label class="form-label">Kualifikasi</label>
+                            <input type="text" class="form-control" name="kualifikasi" value="{{ old('kualifikasi', $data->kualifikasi ?? '') }}">
                         </div>
                     </div>
 
-                    <!-- SECTION 2: DETAIL DIKLAT -->
-                    <div class="form-section-title"><i class="fas fa-certificate me-2"></i> Detail Diklat & Penyelenggara</div>
+                    <!-- SECTION 2: PELAKSANAAN DIKLAT -->
+                    <div class="form-section-title"><i class="fas fa-calendar-check me-2"></i> Pelaksanaan Diklat ({{ strtoupper(str_replace('-', ' ', $jenis)) }})</div>
                     <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label">Jenis Diklat</label>
-                            @php $jd = strtoupper($data->jenis_diklat ?? ''); @endphp
-                            <select class="form-select" name="jenis_diklat" required>
-                                <option value="DIKSAR" {{ $jd == 'DIKSAR' ? 'selected' : '' }}>DIKSAR</option>
-                                <option value="DIKLAT F1" {{ $jd == 'DIKLAT F1' ? 'selected' : '' }}>DIKLAT F1</option>
-                                <option value="DIKLAT F2" {{ $jd == 'DIKLAT F2' ? 'selected' : '' }}>DIKLAT F2</option>
-                                <option value="DIKLAT RESCUE" {{ $jd == 'DIKLAT RESCUE' ? 'selected' : '' }}>DIKLAT RESCUE</option>
-                                <option value="DIKLAT MFR" {{ $jd == 'DIKLAT MFR' ? 'selected' : '' }}>DIKLAT MFR</option>
-                                <option value="DIKLAT OPERATOR" {{ $jd == 'DIKLAT OPERATOR' ? 'selected' : '' }}>DIKLAT OPERATOR</option>
-                                <option value="DIKLAT INSPEKTUR" {{ $jd == 'DIKLAT INSPEKTUR' ? 'selected' : '' }}>DIKLAT INSPEKTUR</option>
-                                <option value="DIKLAT PPL" {{ $jd == 'DIKLAT PPL' ? 'selected' : '' }}>DIKLAT PPL</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Instansi Penyelenggara</label>
-                            <input type="text" class="form-control" name="instansi_penyelenggara" value="{{ $data->instansi_penyelenggara ?? '' }}">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Provinsi</label>
-                            <input type="text" class="form-control" name="provinsi" value="{{ $data->provinsi ?? '' }}">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Kota / Kabupaten</label>
-                            <input type="text" class="form-control" name="kota" value="{{ $data->kota ?? '' }}">
+                        <div class="col-md-12">
+                            <label class="form-label">Tempat Pelaksanaan</label>
+                            <input type="text" class="form-control" name="tempat_pelaksanaan" value="{{ old('tempat_pelaksanaan', $data->tempat_pelaksanaan ?? '') }}">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Tanggal Pelaksanaan</label>
-                            <input type="date" class="form-control" name="tanggal_pelaksanaan" value="{{ $data->tanggal_pelaksanaan ?? '' }}">
-                        </div>
-                    </div>
-
-                    <!-- SECTION 3: SERTIFIKASI & PENILAIAN -->
-                    <div class="form-section-title"><i class="fas fa-award me-2" style="color: #f59e0b;"></i> Sertifikasi & Penilaian</div>
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-4">
-                            <label class="form-label">Nomor Sertifikat</label>
-                            <input type="text" class="form-control" name="nomor_sertifikat" value="{{ $data->nomor_sertifikat ?? '' }}">
+                            <input type="date" class="form-control" name="tanggal_pelaksanaan" value="{{ old('tanggal_pelaksanaan', $tglInput($data->tanggal_pelaksanaan ?? '')) }}">
+                            @if ($tglLama($data->tanggal_pelaksanaan ?? ''))
+                                <small class="text-muted">Data lama: {{ $tglLama($data->tanggal_pelaksanaan) }}</small>
+                            @endif
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Ditanda Tangani Oleh</label>
-                            <input type="text" class="form-control" name="ditandatangani_oleh" value="{{ $data->ditandatangani_oleh ?? '' }}">
+                            <label class="form-label">Tanggal Selesai Pelaksanaan</label>
+                            <input type="date" class="form-control" name="tanggal_selesai_pelaksanaan" value="{{ old('tanggal_selesai_pelaksanaan', $tglInput($data->tanggal_selesai_pelaksanaan ?? '')) }}">
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Jumlah Jam Pelajaran (JP)</label>
+                            <label class="form-label">Jumlah Jam Pelajaran</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" name="jumlah_jam_pelajaran" value="{{ $data->jumlah_jam_pelajaran ?? '' }}">
+                                <input type="number" min="0" class="form-control" name="jumlah_jam_pelajaran" value="{{ old('jumlah_jam_pelajaran', $data->jumlah_jam_pelajaran ?? '') }}">
                                 <span class="input-group-text bg-white">JP</span>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Kode Verivikasi</label>
-                            <input type="text" class="form-control" name="kode_verifikasi" value="{{ $data->kode_verifikasi ?? '' }}">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Persentasi Penilaian</label>
-                            <input type="text" class="form-control" name="persentasi_penilaian" value="{{ $data->persentasi_penilaian ?? '' }}">
-                        </div>
                     </div>
 
-                    <!-- SECTION 4: INFORMASI TAMBAHAN -->
-                    <div class="form-section-title"><i class="fas fa-info-circle me-2" style="color: #64748b;"></i> Informasi Tambahan</div>
+                    <!-- SECTION 3: STTP & SERTIFIKAT -->
+                    <div class="form-section-title"><i class="fas fa-award me-2" style="color: #f59e0b;"></i> STTP &amp; Sertifikat</div>
                     <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label">No STTP</label>
+                            <input type="text" class="form-control" name="no_sttp" value="{{ old('no_sttp', $data->no_sttp ?? '') }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Tanggal STTP</label>
+                            <input type="date" class="form-control" name="tanggal_sttp" value="{{ old('tanggal_sttp', $tglInput($data->tanggal_sttp ?? '')) }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Pejabat yang Menandatangani</label>
+                            <input type="text" class="form-control" name="ditandatangani_oleh" value="{{ old('ditandatangani_oleh', $data->ditandatangani_oleh ?? '') }}">
+                        </div>
                         <div class="col-12">
-                            <label class="form-label">Keterangan (Ket)</label>
-                            <textarea class="form-control" name="ket" rows="3">{{ $data->ket ?? '' }}</textarea>
+                            <label class="form-label">Upload Sertifikat</label>
+                            @if (! empty($data->file_sertifikat))
+                                <div class="mb-2">
+                                    <a href="{{ asset('storage/' . $data->file_sertifikat) }}" target="_blank" rel="noopener" class="text-decoration-none">
+                                        <i class="fas fa-file-alt me-1"></i> Lihat sertifikat saat ini
+                                    </a>
+                                </div>
+                            @endif
+                            <input type="file" class="form-control" name="file_sertifikat" accept=".pdf,.jpg,.jpeg,.png">
+                            <small class="text-muted">Format PDF, JPG, atau PNG. Maksimal 5 MB. Kosongkan jika tidak ingin mengganti berkas.</small>
                         </div>
                     </div>
 

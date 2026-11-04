@@ -227,8 +227,20 @@
             $koleksiData = collect($data_diklat ?? []);
 
             // Opsi filter diambil dari data yang ada
-            $daftar_instansi     = $koleksiData->pluck('instansi')->filter()->unique()->sort()->values();
-            $daftar_penyelenggara = $koleksiData->pluck('instansi_penyelenggara')->filter()->unique()->sort()->values();
+            $daftar_kualifikasi = $koleksiData->pluck('kualifikasi')->filter()->unique()->sort()->values();
+            $daftar_tempat      = $koleksiData->pluck('tempat_pelaksanaan')->filter()->unique()->sort()->values();
+
+            // Tanggal berformat YYYY-MM-DD ditampilkan d-m-Y, teks bebas (data lama) apa adanya
+            $tampilTanggal = function ($nilai) {
+                $nilai = trim((string) $nilai);
+                if ($nilai === '') {
+                    return '-';
+                }
+
+                return preg_match('/^\d{4}-\d{2}-\d{2}/', $nilai)
+                    ? \Carbon\Carbon::parse($nilai)->format('d-m-Y')
+                    : $nilai;
+            };
 
             // Tahun diambil dari tahun rekap (created_at seeder) atau dari 4 digit di "Tanggal Pelaksanaan"
             $ambilTahun = function ($item) {
@@ -244,9 +256,8 @@
 
             // Ringkasan awal
             $totalPeserta       = $koleksiData->count();
-            $totalPenyelenggara = $daftar_penyelenggara->count();
-            $totalInstansi      = $daftar_instansi->count();
-            $totalJP            = $koleksiData->sum(fn($i) => (int) ($i->jumlah_jam_pelajaran ?? 0));
+            $totalTempat        = $daftar_tempat->count();
+            $totalKualifikasi   = $daftar_kualifikasi->count();
         @endphp
 
         <!-- HEADER KONTEN & TOMBOL AKSI -->
@@ -309,20 +320,20 @@
         <div class="filter-bar">
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchDiklat" placeholder="Cari nama, NIP, jabatan, instansi, atau nomor sertifikat..." aria-label="Cari data diklat">
+                <input type="text" id="searchDiklat" placeholder="Cari nama, NIP, jabatan, kualifikasi, tempat pelaksanaan, atau no STTP..." aria-label="Cari data diklat">
             </div>
 
-            <select id="filterInstansi" class="filter-select" aria-label="Filter Instansi">
-                <option value="">Semua Instansi</option>
-                @foreach($daftar_instansi as $ins)
-                    <option value="{{ strtolower($ins) }}">{{ $ins }}</option>
+            <select id="filterKualifikasi" class="filter-select" aria-label="Filter Kualifikasi">
+                <option value="">Semua Kualifikasi</option>
+                @foreach($daftar_kualifikasi as $kual)
+                    <option value="{{ strtolower($kual) }}">{{ $kual }}</option>
                 @endforeach
             </select>
 
-            <select id="filterPenyelenggara" class="filter-select" aria-label="Filter Penyelenggara">
-                <option value="">Semua Penyelenggara</option>
-                @foreach($daftar_penyelenggara as $pen)
-                    <option value="{{ strtolower($pen) }}">{{ $pen }}</option>
+            <select id="filterTempat" class="filter-select" aria-label="Filter Tempat Pelaksanaan">
+                <option value="">Semua Tempat Pelaksanaan</option>
+                @foreach($daftar_tempat as $tmp)
+                    <option value="{{ strtolower($tmp) }}">{{ $tmp }}</option>
                 @endforeach
             </select>
 
@@ -345,21 +356,17 @@
                 <i class="fas fa-user-graduate"></i>
                 <div>
                     <h4 id="judulSummary">REKAPITULASI {{ $judul_diklat ?? 'DIKLAT' }} (SEMUA DATA)</h4>
-                    <p>Akumulasi jumlah peserta dan jam pelajaran diklat yang ditampilkan</p>
+                    <p>Akumulasi jumlah peserta diklat yang ditampilkan</p>
                 </div>
             </div>
             <div class="summary-metrics">
                 <div class="summary-metric-box">
-                    <span>Instansi Penyelenggara</span>
-                    <strong id="grandPenyelenggara">{{ number_format($totalPenyelenggara, 0, ',', '.') }}</strong>
+                    <span>Tempat Pelaksanaan</span>
+                    <strong id="grandTempat">{{ number_format($totalTempat, 0, ',', '.') }}</strong>
                 </div>
                 <div class="summary-metric-box">
-                    <span>Instansi / Perangkat Daerah</span>
-                    <strong id="grandInstansi">{{ number_format($totalInstansi, 0, ',', '.') }}</strong>
-                </div>
-                <div class="summary-metric-box">
-                    <span>Total Jam Pelajaran</span>
-                    <strong id="grandJP">{{ number_format($totalJP, 0, ',', '.') }} JP</strong>
+                    <span>Kualifikasi</span>
+                    <strong id="grandKualifikasi">{{ number_format($totalKualifikasi, 0, ',', '.') }}</strong>
                 </div>
                 <div class="summary-metric-box highlight">
                     <span>Jumlah Total Peserta</span>
@@ -380,10 +387,6 @@
                     <i class="fas fa-user-group text-secondary"></i>
                     <span id="pillJmlPeserta">{{ $totalPeserta }}</span> Peserta
                 </span>
-                <span class="year-stat-pill total">
-                    <i class="fas fa-clock"></i>
-                    Total Jam Pelajaran: <strong id="pillTotalJP">{{ number_format($totalJP, 0, ',', '.') }} JP</strong>
-                </span>
             </div>
         </div>
 
@@ -391,26 +394,22 @@
             <table class="table-detailed table-hover">
                 <thead>
                     <tr>
-                        <th class="text-center" width="50px">No</th>
-                        <th>NIP</th>
+                        <th class="text-center" width="50px">Nomor</th>
                         <th>Nama</th>
+                        <th>NIP</th>
                         <th>Tempat Lahir</th>
-                        <th>Tgl Lahir</th>
+                        <th>Tanggal Lahir</th>
+                        <th>Pangkat/Golongan Ruang</th>
                         <th>Jabatan</th>
-                        <th>Instansi/Perangkat Daerah</th>
-                        <th>Ditanda Tangani Oleh</th>
+                        <th>Kualifikasi</th>
+                        <th>Tempat Pelaksanaan</th>
                         <th>Tanggal Pelaksanaan</th>
+                        <th>Tanggal Selesai Pelaksanaan</th>
                         <th class="text-center">Jumlah Jam Pelajaran</th>
-                        <th>Instansi Penyelenggara</th>
-                        <th>Provinsi</th>
-                        <th>Kota</th>
-                        <th>Nomor Sertifikat</th>
-                        <th>Kode Verivikasi</th>
-                        <th>Persentasi Penilaian</th>
-                        <th>Jenis Diklat</th>
-                        <th>Created at</th>
-                        <th>Updated at</th>
-                        <th>Ket</th>
+                        <th>No STTP</th>
+                        <th>Tanggal STTP</th>
+                        <th>Pejabat yang Menandatangani</th>
+                        <th class="text-center">Sertifikat</th>
 
                         <!-- KOLOM AKSI (EDIT/HAPUS) HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
                         @hasanyrole('Pencegahan|Super User')
@@ -422,33 +421,35 @@
                 <tbody id="tableBody">
                     @forelse (($data_diklat ?? []) as $index => $item)
                     <tr class="baris-data"
-                        data-instansi="{{ strtolower($item->instansi ?? '') }}"
-                        data-penyelenggara="{{ strtolower($item->instansi_penyelenggara ?? '') }}"
+                        data-kualifikasi="{{ strtolower($item->kualifikasi ?? '') }}"
+                        data-tempat="{{ strtolower($item->tempat_pelaksanaan ?? '') }}"
                         data-tahun="{{ $ambilTahun($item) }}"
                         data-jp="{{ (int) ($item->jumlah_jam_pelajaran ?? 0) }}"
-                        data-pencarian="{{ strtolower(($item->nama ?? '') . ' ' . ($item->nip ?? '') . ' ' . ($item->jabatan ?? '') . ' ' . ($item->instansi ?? '') . ' ' . ($item->instansi_penyelenggara ?? '') . ' ' . ($item->kota ?? '') . ' ' . ($item->provinsi ?? '') . ' ' . ($item->nomor_sertifikat ?? '') . ' ' . ($item->kode_verifikasi ?? '')) }}">
+                        data-pencarian="{{ strtolower(($item->nama ?? '') . ' ' . ($item->nip ?? '') . ' ' . ($item->jabatan ?? '') . ' ' . ($item->pangkat_golongan ?? '') . ' ' . ($item->kualifikasi ?? '') . ' ' . ($item->tempat_pelaksanaan ?? '') . ' ' . ($item->no_sttp ?? '') . ' ' . ($item->ditandatangani_oleh ?? '')) }}">
                         <td class="text-center fw-bold nomor-urut">{{ $index + 1 }}</td>
+                        <td><div class="cell-nama">{{ $item->nama ?? '-' }}</div></td>
                         <td>{{ $item->nip ?? '-' }}</td>
-                        <td><div class="cell-nama">{{ $item->nama }}</div></td>
-                        <td>{{ $item->tempat_lahir }}</td>
-                        <td>{{ $item->tgl_lahir }}</td>
-
-                        <td>{{ $item->jabatan }}</td>
-                        <td>{{ $item->instansi }}</td>
-                        <td>{{ $item->ditandatangani_oleh }}</td>
-                        <td>{{ $item->tanggal_pelaksanaan }}</td>
-                        <td class="text-center"><span class="badge-soft-blue">{{ $item->jumlah_jam_pelajaran }}</span></td>
-                        <td>{{ $item->instansi_penyelenggara }}</td>
-                        <td>{{ $item->provinsi }}</td>
-                        <td>{{ $item->kota }}</td>
-                        <td style="color: var(--ink); font-weight: 600;">{{ $item->nomor_sertifikat }}</td>
-                        <td>{{ $item->kode_verifikasi }}</td>
-                        <td>{{ $item->persentasi_penilaian }}</td>
-                        <td><span class="badge-diklat">{{ $item->jenis_diklat ?? ($judul_diklat ?? 'DIKLAT F1') }}</span></td>
-                        <td>{{ $item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
-                        <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
-
-                        <td>{{ $item->ket }}</td>
+                        <td>{{ $item->tempat_lahir ?? '-' }}</td>
+                        <td>{{ $tampilTanggal($item->tgl_lahir ?? null) }}</td>
+                        <td>{{ $item->pangkat_golongan ?? '-' }}</td>
+                        <td>{{ $item->jabatan ?? '-' }}</td>
+                        <td>{{ $item->kualifikasi ?? '-' }}</td>
+                        <td>{{ $item->tempat_pelaksanaan ?? '-' }}</td>
+                        <td>{{ $tampilTanggal($item->tanggal_pelaksanaan ?? null) }}</td>
+                        <td>{{ $tampilTanggal($item->tanggal_selesai_pelaksanaan ?? null) }}</td>
+                        <td class="text-center"><span class="badge-soft-blue">{{ $item->jumlah_jam_pelajaran ?? '-' }}</span></td>
+                        <td style="color: var(--ink); font-weight: 600;">{{ $item->no_sttp ?? '-' }}</td>
+                        <td>{{ $tampilTanggal($item->tanggal_sttp ?? null) }}</td>
+                        <td>{{ $item->ditandatangani_oleh ?? '-' }}</td>
+                        <td class="text-center">
+                            @if (! empty($item->file_sertifikat))
+                                <a href="{{ asset('storage/' . $item->file_sertifikat) }}" target="_blank" rel="noopener" class="btn-action btn-edit" title="Lihat sertifikat">
+                                    <i class="fas fa-file-alt"></i>
+                                </a>
+                            @else
+                                -
+                            @endif
+                        </td>
 
                         <!-- TOMBOL EDIT & HAPUS HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
                         @hasanyrole('Pencegahan|Super User')
@@ -470,7 +471,7 @@
                     </tr>
                     @empty
                     <tr class="empty-row">
-                        <td colspan="{{ $canCrud ? 21 : 20 }}" class="empty-state">
+                        <td colspan="{{ $canCrud ? 17 : 16 }}" class="empty-state">
                             <i class="fas fa-folder-open"></i><br>
                             Belum ada data untuk {{ $judul_diklat ?? 'Diklat F1' }}.
                         </td>
@@ -479,7 +480,7 @@
 
                     <!-- Pesan jika hasil filter tidak ditemukan -->
                     <tr id="emptyFilterState" style="display: none;">
-                        <td colspan="{{ $canCrud ? 21 : 20 }}" class="empty-state">
+                        <td colspan="{{ $canCrud ? 17 : 16 }}" class="empty-state">
                             <i class="fas fa-magnifying-glass"></i><br>
                             Data yang Anda cari tidak ditemukan.
                         </td>
@@ -495,19 +496,17 @@
         'use strict';
 
         var searchInput        = document.getElementById('searchDiklat');
-        var filterInstansi     = document.getElementById('filterInstansi');
-        var filterPenyelenggara = document.getElementById('filterPenyelenggara');
+        var filterKualifikasi     = document.getElementById('filterKualifikasi');
+        var filterTempat = document.getElementById('filterTempat');
         var filterTahun        = document.getElementById('filterTahun');
         var btnReset           = document.getElementById('btnResetFilter');
         var rows               = document.querySelectorAll('#tableBody tr.baris-data');
         var emptyState         = document.getElementById('emptyFilterState');
 
-        var elPenyelenggara = document.getElementById('grandPenyelenggara');
-        var elInstansi      = document.getElementById('grandInstansi');
-        var elJP            = document.getElementById('grandJP');
+        var elTempat = document.getElementById('grandTempat');
+        var elKualifikasi      = document.getElementById('grandKualifikasi');
         var elPeserta       = document.getElementById('grandPeserta');
         var pillPeserta     = document.getElementById('pillJmlPeserta');
-        var pillJP          = document.getElementById('pillTotalJP');
 
         function formatRibuan(angka) {
             return (Number(angka) || 0).toLocaleString('id-ID');
@@ -515,18 +514,18 @@
 
         function jalankanFilter() {
             var q    = searchInput ? searchInput.value.trim().toLowerCase() : '';
-            var ins  = filterInstansi ? filterInstansi.value : '';
-            var pen  = filterPenyelenggara ? filterPenyelenggara.value : '';
+            var ins  = filterKualifikasi ? filterKualifikasi.value : '';
+            var pen  = filterTempat ? filterTempat.value : '';
             var thn  = filterTahun ? filterTahun.value : '';
 
-            var nomor = 1, totalPeserta = 0, totalJP = 0;
-            var setInstansi = {}, setPenyelenggara = {};
+            var nomor = 1, totalPeserta = 0;
+            var setKualifikasi = {}, setTempat = {};
 
             rows.forEach(function (tr) {
                 var cocok =
                     (!q   || tr.getAttribute('data-pencarian').indexOf(q) > -1) &&
-                    (!ins || tr.getAttribute('data-instansi') === ins) &&
-                    (!pen || tr.getAttribute('data-penyelenggara') === pen) &&
+                    (!ins || tr.getAttribute('data-kualifikasi') === ins) &&
+                    (!pen || tr.getAttribute('data-tempat') === pen) &&
                     (!thn || tr.getAttribute('data-tahun') === thn);
 
                 if (cocok) {
@@ -535,20 +534,17 @@
                     if (sel) sel.textContent = nomor++;
 
                     totalPeserta++;
-                    totalJP += parseInt(tr.getAttribute('data-jp'), 10) || 0;
-                    if (tr.getAttribute('data-instansi')) setInstansi[tr.getAttribute('data-instansi')] = true;
-                    if (tr.getAttribute('data-penyelenggara')) setPenyelenggara[tr.getAttribute('data-penyelenggara')] = true;
+                    if (tr.getAttribute('data-kualifikasi')) setKualifikasi[tr.getAttribute('data-kualifikasi')] = true;
+                    if (tr.getAttribute('data-tempat')) setTempat[tr.getAttribute('data-tempat')] = true;
                 } else {
                     tr.style.display = 'none';
                 }
             });
 
-            if (elPenyelenggara) elPenyelenggara.textContent = formatRibuan(Object.keys(setPenyelenggara).length);
-            if (elInstansi)      elInstansi.textContent      = formatRibuan(Object.keys(setInstansi).length);
-            if (elJP)            elJP.textContent            = formatRibuan(totalJP) + ' JP';
+            if (elTempat) elTempat.textContent = formatRibuan(Object.keys(setTempat).length);
+            if (elKualifikasi)      elKualifikasi.textContent      = formatRibuan(Object.keys(setKualifikasi).length);
             if (elPeserta)       elPeserta.textContent       = formatRibuan(totalPeserta) + ' Orang';
             if (pillPeserta)     pillPeserta.textContent     = formatRibuan(totalPeserta);
-            if (pillJP)          pillJP.textContent          = formatRibuan(totalJP) + ' JP';
 
             if (emptyState && rows.length > 0) {
                 emptyState.style.display = totalPeserta === 0 ? '' : 'none';
@@ -556,14 +552,14 @@
         }
 
         if (searchInput)         searchInput.addEventListener('input', jalankanFilter);
-        if (filterInstansi)      filterInstansi.addEventListener('change', jalankanFilter);
-        if (filterPenyelenggara) filterPenyelenggara.addEventListener('change', jalankanFilter);
+        if (filterKualifikasi)      filterKualifikasi.addEventListener('change', jalankanFilter);
+        if (filterTempat) filterTempat.addEventListener('change', jalankanFilter);
         if (filterTahun)         filterTahun.addEventListener('change', jalankanFilter);
         if (btnReset) {
             btnReset.addEventListener('click', function () {
                 if (searchInput) searchInput.value = '';
-                if (filterInstansi) filterInstansi.value = '';
-                if (filterPenyelenggara) filterPenyelenggara.value = '';
+                if (filterKualifikasi) filterKualifikasi.value = '';
+                if (filterTempat) filterTempat.value = '';
                 if (filterTahun) filterTahun.value = '';
                 jalankanFilter();
             });

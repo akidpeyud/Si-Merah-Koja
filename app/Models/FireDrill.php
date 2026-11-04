@@ -16,10 +16,9 @@ class FireDrill extends Model
         'tahun',
         'tanggal_pelaksanaan',
         'tempat_pelaksanaan',
-        'peserta_laki_laki',
-        'peserta_perempuan',
-        'nama_peserta_laki_laki',
-        'nama_peserta_perempuan',
         'total_peserta',
+        'nama_penanggung_jawab',
+        'no_telepon',
+        'surat_perintah_tugas',
     ];
 }

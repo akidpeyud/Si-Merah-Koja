@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('activity_logs');
+
         Schema::create('activity_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->string('user_name')->nullable();
             $table->string('user_role')->nullable();
             $table->string('action', 50); // Tambah, Ubah, Hapus

@@ -2,47 +2,39 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Cetak PDF - Data Pelaksanaan Fire Drill</title>
+    <title>Cetak PDF - Data Pelaksanaan Fire Drill | SIMERAH KOJA</title>
     <style>
-        @page { size: landscape; margin: 12mm 15mm; }
-        body { font-family: Arial, sans-serif; font-size: 11px; color: #000; margin: 0; padding: 0; }
+        @page { size: A4 landscape; margin: 12mm; }
+        * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        body { font-family: Arial, sans-serif; font-size: 10px; color: #000; margin: 0; padding: 0; background: #fff; }
 
-        .kop-surat { width: 100%; border-bottom: 4px double #000; padding-bottom: 10px; margin-bottom: 16px; border-collapse: collapse; }
+        .kop-surat { width: 100%; border-bottom: 4px double #000; padding-bottom: 8px; margin-bottom: 14px; border-collapse: collapse; }
         .kop-surat td { border: none !important; padding: 0; vertical-align: middle; }
         .logo-kiri { text-align: left; width: 12%; }
         .logo-kanan { text-align: right; width: 12%; }
         .teks-tengah { text-align: center; width: 76%; line-height: 1.3; }
-        .teks-tengah .pemerintah { font-size: 16px; font-weight: bold; }
+        .teks-tengah .pemerintah { font-size: 15px; font-weight: bold; }
         .teks-tengah .dinas { font-size: 21px; font-weight: bold; }
         .teks-tengah .alamat { font-size: 12px; }
 
-        .judul-utama { text-align: center; font-weight: bold; font-size: 13px; line-height: 1.45; margin-bottom: 10px; text-transform: uppercase; }
-        .sub-tahun { text-align: center; font-weight: bold; font-size: 13px; margin: 22px 0 8px; text-transform: uppercase; }
+        .judul-utama { text-align: center; font-weight: bold; font-size: 12px; line-height: 1.45; margin-bottom: 14px; text-transform: uppercase; }
 
-        .table-data { width: 100%; border-collapse: collapse; margin-bottom: 18px; font-size: 11px; }
-        .table-data th, .table-data td { border: 1px solid #000; padding: 6px 8px; vertical-align: middle; }
+        .table-data { width: 100%; border-collapse: collapse; table-layout: fixed; margin-bottom: 12px; font-size: 9.5px; }
+        .table-data th, .table-data td { border: 1px solid #000; padding: 5px 6px; vertical-align: middle; word-wrap: break-word; overflow-wrap: anywhere; }
         .table-data th {
-            background-color: #d9d9d9 !important;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+            background-color: #e9ecef !important;
             text-align: center;
             font-weight: bold;
+            text-transform: uppercase;
+            font-size: 9px;
         }
+        .table-data thead { display: table-header-group; }
         .tr-total td {
             background-color: #f2f2f2 !important;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
             font-weight: bold;
-        }
-        .tr-grand-total td {
-            background-color: #ffe699 !important;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            font-weight: bold;
-            font-size: 11.5px;
         }
         .text-center { text-align: center; }
-        .ol-peserta { margin: 0; padding-left: 16px; line-height: 1.45; text-align: left; }
+        .cetak-info { margin-top: 6px; font-size: 9px; color: #444; }
 
         .no-print { margin-bottom: 14px; display: flex; justify-content: flex-end; gap: 8px; }
         .btn-cetak { padding: 8px 16px; background: #163a63; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; }
@@ -54,7 +46,7 @@
 </head>
 <body>
     <div class="no-print">
-        <button class="btn-cetak" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+        <button class="btn-cetak" onclick="window.print()">Cetak / Simpan PDF</button>
     </div>
 
     <!-- KOP SURAT -->
@@ -75,10 +67,11 @@
     </table>
 
     <div class="judul-utama">
-        INSTANSI PEMERINTAH / SWASTA<br>
-        YANG MELAKSANAKAN PELATIHAN PEMADAM KEBAKARAN
+        DATA INSTANSI / LEMBAGA YANG MELAKSANAKAN PELATIHAN PEMADAM KEBAKARAN (FIRE DRILL)<br>
         @if(!empty($tahunDipilih))
-            <br>TAHUN {{ $tahunDipilih }}
+            TAHUN {{ $tahunDipilih }}
+        @else
+            TAHUN {{ date('Y') }}
         @endif
         @if(!empty($instansiDipilih))
             <br><span style="font-size: 11px; font-weight: normal;">Filter Instansi: {{ strtoupper($instansiDipilih) }}</span>
@@ -86,194 +79,67 @@
     </div>
 
     @php
-        $groups = isset($groupedByYear) ? $groupedByYear : collect($data)->groupBy('tahun');
-
-        // Pengaman: kalau ada tahun dipilih, hanya tahun itu yang tampil
-        if (!empty($tahunDipilih)) {
-            $groups = $groups->filter(fn($items, $thn) => (string) $thn === (string) $tahunDipilih);
-        }
-
-        // Selalu urut 2023, 2024, 2025, 2026, ...
-        $groups = $groups->sortKeys();
-
-        $grandInstansi = 0;
-        $grandLaki = 0;
-        $grandPerempuan = 0;
-        $grandPeserta = 0;
+        $koleksi = collect($data ?? []);
+        $totalPeserta = 0;
     @endphp
 
-    @forelse($groups as $tahun => $items)
-        @php
-            $adaGender = $items->contains(fn($i) => ($i->peserta_laki_laki > 0 || $i->peserta_perempuan > 0));
-            $adaNamaPeserta = $items->contains(fn($i) => (!empty(trim($i->nama_peserta_laki_laki ?? '')) || !empty(trim($i->nama_peserta_perempuan ?? ''))));
-            $totalLaki = 0;
-            $totalPerempuan = 0;
-            $totalPeserta = 0;
-        @endphp
-
-        @if(empty($tahunDipilih))
-            <div class="sub-tahun">TAHUN {{ $tahun }}</div>
-        @endif
-
-        <table class="table-data">
-            <thead>
-                @if(!$adaGender && !$adaNamaPeserta)
-                    <tr>
-                        <th width="5%">NO</th>
-                        <th width="33%">NAMA INSTANSI</th>
-                        <th width="20%">TANGGAL PELAKSANAAN</th>
-                        <th width="30%">TEMPAT PELAKSANAAN</th>
-                        <th width="12%">JUMLAH PESERTA</th>
-                    </tr>
-                @elseif($adaGender && !$adaNamaPeserta)
-                    <tr>
-                        <th width="5%">NO</th>
-                        <th width="29%">NAMA INSTANSI</th>
-                        <th width="18%">TANGGAL PELAKSANAAN</th>
-                        <th width="24%">TEMPAT PELAKSANAAN</th>
-                        <th width="8%">Laki-laki</th>
-                        <th width="8%">Perempuan</th>
-                        <th width="8%">JUMLAH PESERTA</th>
-                    </tr>
-                @else
-                    <tr>
-                        <th rowspan="2" width="4%">NO</th>
-                        <th rowspan="2" width="20%">NAMA INSTANSI</th>
-                        <th rowspan="2" width="13%">TANGGAL PELAKSANAAN</th>
-                        <th rowspan="2" width="17%">TEMPAT PELAKSANAAN</th>
-                        <th colspan="3" width="18%">JUMLAH PESERTA</th>
-                        <th colspan="2" width="28%">DAFTAR NAMA PESERTA</th>
-                    </tr>
-                    <tr>
-                        <th width="6%">Laki-laki</th>
-                        <th width="6%">Perempuan</th>
-                        <th width="6%">TOTAL</th>
-                        <th width="14%">LAKI-LAKI</th>
-                        <th width="14%">PEREMPUAN</th>
-                    </tr>
-                @endif
-            </thead>
-            <tbody>
-                @foreach($items->values() as $idx => $item)
-                    @php
-                        $totalLaki += (int) ($item->peserta_laki_laki ?? 0);
-                        $totalPerempuan += (int) ($item->peserta_perempuan ?? 0);
-                        $totalPeserta += (int) ($item->total_peserta ?? 0);
-                        $listLaki = !empty($item->nama_peserta_laki_laki) ? array_values(array_filter(preg_split('/\r\n|\r|\n/', trim($item->nama_peserta_laki_laki)))) : [];
-                        $listPerempuan = !empty($item->nama_peserta_perempuan) ? array_values(array_filter(preg_split('/\r\n|\r|\n/', trim($item->nama_peserta_perempuan)))) : [];
-                        $punyaLP = ($item->peserta_laki_laki > 0 || $item->peserta_perempuan > 0 || count($listLaki) > 0 || count($listPerempuan) > 0);
-                    @endphp
-                    <tr>
-                        <td class="text-center">{{ $idx + 1 }}</td>
-                        <td>{{ $item->nama_instansi ?? '-' }}</td>
-                        <td>{{ $item->tanggal_pelaksanaan ?? '-' }}</td>
-                        <td>{{ $item->tempat_pelaksanaan ?? '-' }}</td>
-
-                        @if(!$adaGender && !$adaNamaPeserta)
-                            <td class="text-center">{{ $item->total_peserta ?: 0 }}</td>
-                        @elseif($adaGender && !$adaNamaPeserta)
-                            <td class="text-center">{{ $punyaLP ? ($item->peserta_laki_laki ?? 0) : '-' }}</td>
-                            <td class="text-center">{{ $punyaLP ? ($item->peserta_perempuan ?? 0) : '-' }}</td>
-                            <td class="text-center">{{ $item->total_peserta ?: 0 }}</td>
-                        @else
-                            <td class="text-center">{{ $punyaLP ? ($item->peserta_laki_laki ?? 0) : '-' }}</td>
-                            <td class="text-center">{{ $punyaLP ? ($item->peserta_perempuan ?? 0) : '-' }}</td>
-                            <td class="text-center" style="font-weight:bold;">{{ $item->total_peserta ?: 0 }}</td>
-                            <td style="vertical-align: top;">
-                                @if(count($listLaki) > 0)
-                                    <ol class="ol-peserta">
-                                        @foreach($listLaki as $nL) <li>{{ $nL }}</li> @endforeach
-                                    </ol>
-                                @else
-                                    <div class="text-center">-</div>
-                                @endif
-                            </td>
-                            <td style="vertical-align: top;">
-                                @if(count($listPerempuan) > 0)
-                                    <ol class="ol-peserta">
-                                        @foreach($listPerempuan as $nP) <li>{{ $nP }}</li> @endforeach
-                                    </ol>
-                                @else
-                                    <div class="text-center">-</div>
-                                @endif
-                            </td>
-                        @endif
-                    </tr>
-                @endforeach
-
-                <tr class="tr-total">
-                    <td colspan="4" class="text-center">JUMLAH TOTAL TAHUN {{ $tahun }}</td>
-                    @if(!$adaGender && !$adaNamaPeserta)
-                        <td class="text-center">{{ number_format($totalPeserta, 0, ',', '.') }}</td>
-                    @elseif($adaGender && !$adaNamaPeserta)
-                        <td class="text-center">{{ number_format($totalLaki, 0, ',', '.') }}</td>
-                        <td class="text-center">{{ number_format($totalPerempuan, 0, ',', '.') }}</td>
-                        <td class="text-center">{{ number_format($totalPeserta, 0, ',', '.') }}</td>
-                    @else
-                        <td class="text-center">{{ number_format($totalLaki, 0, ',', '.') }}</td>
-                        <td class="text-center">{{ number_format($totalPerempuan, 0, ',', '.') }}</td>
-                        <td class="text-center">{{ number_format($totalPeserta, 0, ',', '.') }}</td>
-                        <td colspan="2"></td>
-                    @endif
-                </tr>
-            </tbody>
-        </table>
-
-        @php
-            $grandInstansi += $items->count();
-            $grandLaki += $totalLaki;
-            $grandPerempuan += $totalPerempuan;
-            $grandPeserta += $totalPeserta;
-        @endphp
-    @empty
-        <table class="table-data">
-            <tr><td class="text-center">Belum ada data Fire Drill.</td></tr>
-        </table>
-    @endforelse
-
-    @if(empty($tahunDipilih) && $groups->count() > 1)
-        <div class="sub-tahun" style="margin-top: 28px;">REKAPITULASI TOTAL PESERTA PER TAHUN &amp; KESELURUHAN</div>
-        <table class="table-data">
-            <thead>
+    <table class="table-data">
+        <colgroup>
+            <col style="width:4%">   <!-- No -->
+            <col style="width:19%">  <!-- Nama Instansi/Lembaga -->
+            <col style="width:14%">  <!-- Tanggal Pelaksanaan -->
+            <col style="width:18%">  <!-- Tempat Pelaksanaan -->
+            <col style="width:10%">  <!-- Jumlah Peserta -->
+            <col style="width:14%">  <!-- Nama Penanggung Jawab -->
+            <col style="width:13%">  <!-- No Telfon/WA Penanggung Jawab -->
+            <col style="width:8%">   <!-- Upload SPT -->
+        </colgroup>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama Instansi/Lembaga</th>
+                <th>Tanggal Pelaksanaan</th>
+                <th>Tempat Pelaksanaan</th>
+                <th>Jumlah Peserta</th>
+                <th>Nama Penanggung Jawab</th>
+                <th>No Telfon/WA Penanggung Jawab</th>
+                <th>Upload SPT</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($koleksi as $idx => $item)
+                @php
+                    $jml = (int) ($item->total_peserta ?? 0);
+                    $totalPeserta += $jml;
+                @endphp
                 <tr>
-                    <th width="6%">NO</th>
-                    <th width="24%">TAHUN PELAKSANAAN</th>
-                    <th width="22%">JUMLAH INSTANSI</th>
-                    <th width="24%">RINCIAN LAKI-LAKI &amp; PEREMPUAN</th>
-                    <th width="24%">JUMLAH TOTAL PESERTA</th>
+                    <td class="text-center">{{ $loop->iteration }}</td>
+                    <td>{{ $item->nama_instansi ?? '-' }}</td>
+                    <td class="text-center">{{ $item->tanggal_pelaksanaan ?? '-' }}</td>
+                    <td>{{ $item->tempat_pelaksanaan ?? '-' }}</td>
+                    <td class="text-center">{{ number_format($jml, 0, ',', '.') }} Orang</td>
+                    <td>{{ $item->nama_penanggung_jawab ?? '-' }}</td>
+                    <td class="text-center">{{ $item->no_telepon ?? '-' }}</td>
+                    <td class="text-center">{{ !empty($item->surat_perintah_tugas) ? 'Ada' : '-' }}</td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach($groups as $thn => $items)
-                    @php
-                        $lThn = $items->sum(fn($i) => (int) ($i->peserta_laki_laki ?? 0));
-                        $pThn = $items->sum(fn($i) => (int) ($i->peserta_perempuan ?? 0));
-                        $tThn = $items->sum(fn($i) => (int) ($i->total_peserta ?? 0));
-                    @endphp
-                    <tr>
-                        <td class="text-center">{{ $loop->iteration }}</td>
-                        <td class="text-center" style="font-weight:bold;">Tahun {{ $thn }}</td>
-                        <td class="text-center">{{ $items->count() }} Instansi</td>
-                        <td class="text-center">
-                            {{ ($lThn > 0 || $pThn > 0) ? "Laki-laki: {$lThn} | Perempuan: {$pThn}" : '-' }}
-                        </td>
-                        <td class="text-center" style="font-weight:bold;">{{ number_format($tThn, 0, ',', '.') }} Orang</td>
-                    </tr>
-                @endforeach
-                <tr class="tr-grand-total">
-                    <td colspan="2" class="text-center">JUMLAH TOTAL KESELURUHAN (SEMUA TAHUN)</td>
-                    <td class="text-center">{{ number_format($grandInstansi, 0, ',', '.') }} Instansi</td>
-                    <td class="text-center">Laki-laki: {{ number_format($grandLaki, 0, ',', '.') }} | Perempuan: {{ number_format($grandPerempuan, 0, ',', '.') }}</td>
-                    <td class="text-center">{{ number_format($grandPeserta, 0, ',', '.') }} Orang</td>
+            @empty
+                <tr>
+                    <td colspan="8" class="text-center">Belum ada data Fire Drill.</td>
                 </tr>
-            </tbody>
-        </table>
-    @endif
+            @endforelse
 
-    <script>
-        window.onload = function() {
-            window.print();
-        };
-    </script>
+            @if($koleksi->isNotEmpty())
+                <tr class="tr-total">
+                    <td colspan="4" class="text-center">JUMLAH TOTAL ({{ $koleksi->count() }} INSTANSI/LEMBAGA)</td>
+                    <td class="text-center">{{ number_format($totalPeserta, 0, ',', '.') }} Orang</td>
+                    <td colspan="3"></td>
+                </tr>
+            @endif
+        </tbody>
+    </table>
+
+    <div class="cetak-info">Dicetak pada {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('d F Y, H:i') }} WIB melalui SIMERAH KOJA</div>
+
+    <script>window.onload = function () { window.print(); };</script>
 </body>
 </html>

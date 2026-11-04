@@ -3,10 +3,6 @@
 @section('title', 'Edit Inspeksi Bangunan - SIMERAH KOJA')
 
 @push('styles')
-<!-- Select2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
-
 <style>
     * { font-family: 'Plus Jakarta Sans', sans-serif; }
 
@@ -34,13 +30,6 @@
     .form-control:focus, .form-select:focus { border-color: #0284c7; box-shadow: 0 0 0 4px rgba(2,132,199,0.12); outline: none; }
     .form-control[type="file"] { padding: 9px 14px; background: #fff; }
 
-    /* Select2 */
-    .select2-container--bootstrap-5 .select2-selection { font-size: 14px; padding: 6px 14px; min-height: 46px; border: 1px solid #cbd5e1; border-radius: 10px; }
-    .select2-container--bootstrap-5.select2-container--focus .select2-selection,
-    .select2-container--bootstrap-5.select2-container--open .select2-selection { border-color: #0284c7; box-shadow: 0 0 0 4px rgba(2,132,199,0.12); }
-    .select2-results__group { font-weight: 800; color: #0f172a; background-color: #f1f5f9; padding: 8px 12px; font-size: 13px; }
-    .select2-results__option { font-size: 14px; font-weight: 500; }
-
     /* Info box */
     .info-box { display: flex; align-items: flex-start; gap: 12px; background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 12px 16px; border-radius: 10px; font-size: 13px; margin-bottom: 18px; }
     .info-box i { margin-top: 2px; }
@@ -50,7 +39,8 @@
     .upload-card:hover { border-color: #0284c7; background: #f0f9ff; }
     .upload-card .form-label { display: flex; align-items: center; gap: 8px; }
     .upload-num { width: 24px; height: 24px; border-radius: 50%; background: #0f172a; color: #fff; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .file-saved { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; padding: 4px 10px; background: #dcfce7; color: #15803d; border-radius: 20px; font-size: 12px; font-weight: 600; word-break: break-all; }
+    .file-saved { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; padding: 4px 10px; background: #dcfce7; color: #15803d; border-radius: 20px; font-size: 12px; font-weight: 600; word-break: break-all; text-decoration: none; }
+    .file-saved:hover { color: #166534; text-decoration: underline; }
 
     /* Footer tombol */
     .form-footer { display: flex; justify-content: flex-end; gap: 10px; padding: 18px 32px; background: #f8fafc; border-top: 1px solid #e2e8f0; }
@@ -69,14 +59,25 @@
 @section('content')
 <div class="page-wrap">
 
-    <a href="javascript:history.back()" class="back-link">
+    <a href="/internal/pencegahan/inspeksi-kebakaran/bangunan" class="back-link">
         <i class="fas fa-arrow-left"></i> Kembali ke Data Inspeksi Bangunan
     </a>
 
     <div class="page-head">
         <h1 class="page-title">Form Edit Inspeksi Bangunan</h1>
-        <p class="page-sub">Perbarui informasi bangunan dan dokumen inspeksi di bawah ini.</p>
+        <p class="page-sub">Perbarui informasi pemeriksaan bangunan dan dokumen inspeksi di bawah ini.</p>
     </div>
+
+    @if ($errors->any())
+        <div class="alert alert-danger rounded-3 mb-3">
+            <strong>Periksa kembali isian form:</strong>
+            <ul class="mb-0 mt-1 ps-3">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
     <div class="form-wrapper">
         <form action="{{ route('inspeksi.update', $item->id) }}" method="POST" enctype="multipart/form-data">
@@ -85,56 +86,83 @@
 
             <div class="form-body">
 
-                <!-- SECTION 1: DATA BANGUNAN -->
+                <!-- SECTION 1: DATA BANGUNAN & PEMERIKSAAN -->
                 <div class="form-section" style="margin-top: 20px;">
                     <div class="section-title">
                         <span class="icon-box icon-primary"><i class="fas fa-building"></i></span>
-                        <span>Informasi Bangunan & Usaha</span>
+                        <span>Informasi Bangunan &amp; Pemeriksaan</span>
                     </div>
+
+                    @php
+                        $valKualifikasi = old('kualifikasi_bangunan', $item->kualifikasi_bangunan ?? '');
+                        $valResiko = old('resiko_kebakaran', $item->resiko_kebakaran ?? '');
+                        $valProteksi = old('sistem_proteksi_kebakaran', $item->sistem_proteksi_kebakaran ?? '');
+                    @endphp
+
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Nama Tempat / Bangunan <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="nama_tempat" value="{{ $item->nama_tempat ?? '' }}" required>
+                            <label class="form-label">Nama Bangunan <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="nama_tempat" value="{{ old('nama_tempat', $item->nama_tempat ?? '') }}" placeholder="Contoh: Mall WTC" required>
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label">Jenis Bangunan / Usaha <span class="text-danger">*</span></label>
-                            <select name="jenis_usaha" class="form-select select2-searchable" required>
-                                <option value="" disabled>-- Pilih Jenis Bangunan / Usaha --</option>
+                            <label class="form-label">Jenis Bangunan <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="jenis_usaha" value="{{ old('jenis_usaha', $item->jenis_usaha ?? '') }}" placeholder="Contoh: Mall" required>
+                        </div>
 
-                                <optgroup label="Sebagai Tempat Tinggal">
-                                    <option value="Rumah Tinggal Deret" {{ ($item->jenis_usaha ?? '') == 'Rumah Tinggal Deret' ? 'selected' : '' }}>Rumah Tinggal Deret</option>
-                                    <option value="Rumah Tinggal Deret (MBR)" {{ ($item->jenis_usaha ?? '') == 'Rumah Tinggal Deret (MBR)' ? 'selected' : '' }}>Rumah Tinggal Deret (MBR)</option>
-                                    <option value="Rumah Tinggal Tunggal" {{ ($item->jenis_usaha ?? '') == 'Rumah Tinggal Tunggal' ? 'selected' : '' }}>Rumah Tinggal Tunggal</option>
-                                    <option value="Rumah Tinggal Tunggal (MBR)" {{ ($item->jenis_usaha ?? '') == 'Rumah Tinggal Tunggal (MBR)' ? 'selected' : '' }}>Rumah Tinggal Tunggal (MBR)</option>
-                                    <option value="Rumah Susun" {{ ($item->jenis_usaha ?? '') == 'Rumah Susun' ? 'selected' : '' }}>Rumah Susun</option>
-                                    <option value="Rumah Susun (MBR)" {{ ($item->jenis_usaha ?? '') == 'Rumah Susun (MBR)' ? 'selected' : '' }}>Rumah Susun (MBR)</option>
-                                </optgroup>
+                        <div class="col-md-4">
+                            <label class="form-label">Kualifikasi Bangunan <span class="text-danger">*</span></label>
+                            <select name="kualifikasi_bangunan" class="form-select" required>
+                                <option value="" disabled {{ $valKualifikasi ? '' : 'selected' }}>-- Pilih Kualifikasi --</option>
+                                <option value="Rendah" {{ $valKualifikasi === 'Rendah' ? 'selected' : '' }}>Rendah</option>
+                                <option value="Sedang" {{ $valKualifikasi === 'Sedang' ? 'selected' : '' }}>Sedang</option>
+                                <option value="Tinggi" {{ $valKualifikasi === 'Tinggi' ? 'selected' : '' }}>Tinggi</option>
+                            </select>
+                        </div>
 
-                                <optgroup label="Sebagai Tempat Pendidikan, Kebudayaan, dan Kesehatan">
-                                    <option value="Bangunan Gedung Pendidikan" {{ ($item->jenis_usaha ?? '') == 'Bangunan Gedung Pendidikan' ? 'selected' : '' }}>Bangunan Gedung Pendidikan (SD, SMP, SMA, PT, Terpadu)</option>
-                                    <option value="Bangunan Gedung Kebudayaan" {{ ($item->jenis_usaha ?? '') == 'Bangunan Gedung Kebudayaan' ? 'selected' : '' }}>Bangunan Gedung Kebudayaan (Museum, Pameran, Kesenian)</option>
-                                    <option value="Bangunan Gedung Kesehatan" {{ ($item->jenis_usaha ?? '') == 'Bangunan Gedung Kesehatan' ? 'selected' : '' }}>Bangunan Gedung Kesehatan (Puskesmas, Klinik, RS, Lab)</option>
-                                    <option value="Bangunan Gedung Pelayanan Umum Lainnya" {{ ($item->jenis_usaha ?? '') == 'Bangunan Gedung Pelayanan Umum Lainnya' ? 'selected' : '' }}>Bangunan Gedung Pelayanan Umum Lainnya</option>
-                                </optgroup>
+                        <div class="col-md-4">
+                            <label class="form-label">Resiko Kebakaran <span class="text-danger">*</span></label>
+                            <select name="resiko_kebakaran" class="form-select" required>
+                                <option value="" disabled {{ $valResiko ? '' : 'selected' }}>-- Pilih Resiko --</option>
+                                <option value="Rendah" {{ $valResiko === 'Rendah' ? 'selected' : '' }}>Rendah</option>
+                                <option value="Sedang" {{ $valResiko === 'Sedang' ? 'selected' : '' }}>Sedang</option>
+                                <option value="Tinggi" {{ $valResiko === 'Tinggi' ? 'selected' : '' }}>Tinggi</option>
+                            </select>
+                        </div>
 
-                                <optgroup label="Sebagai Tempat Usaha">
-                                    <option value="Bangunan Gedung Perkantoran" {{ ($item->jenis_usaha ?? '') == 'Bangunan Gedung Perkantoran' ? 'selected' : '' }}>Bangunan Gedung Perkantoran</option>
-                                    <option value="Bangunan Gedung Perdagangan" {{ ($item->jenis_usaha ?? '') == 'Bangunan Gedung Perdagangan' ? 'selected' : '' }}>Bangunan Gedung Perdagangan</option>
-                                    <option value="Bangunan Gedung Perindustrian" {{ ($item->jenis_usaha ?? '') == 'Bangunan Gedung Perindustrian' ? 'selected' : '' }}>Bangunan Gedung Perindustrian</option>
-                                    <option value="Bangunan Gedung Perhotelan" {{ ($item->jenis_usaha ?? '') == 'Bangunan Gedung Perhotelan' ? 'selected' : '' }}>Bangunan Gedung Perhotelan</option>
-                                    <option value="Bangunan Wisata dan Rekreasi" {{ ($item->jenis_usaha ?? '') == 'Bangunan Wisata dan Rekreasi' ? 'selected' : '' }}>Bangunan Wisata dan Rekreasi</option>
-                                    <option value="Bangunan Gedung Terminal" {{ ($item->jenis_usaha ?? '') == 'Bangunan Gedung Terminal' ? 'selected' : '' }}>Bangunan Gedung Terminal</option>
-                                    <option value="Bangunan Gedung Tempat Penyimpanan" {{ ($item->jenis_usaha ?? '') == 'Bangunan Gedung Tempat Penyimpanan' ? 'selected' : '' }}>Bangunan Gedung Tempat Penyimpanan</option>
-                                    <option value="Bangunan Gedung Peternakan" {{ ($item->jenis_usaha ?? '') == 'Bangunan Gedung Peternakan' ? 'selected' : '' }}>Bangunan Gedung Peternakan</option>
-                                    <option value="Bangunan Gedung Laboratorium" {{ ($item->jenis_usaha ?? '') == 'Bangunan Gedung Laboratorium' ? 'selected' : '' }}>Bangunan Gedung Laboratorium (Bukan Faskes/Pendidikan)</option>
-                                </optgroup>
+                        <div class="col-md-4">
+                            <label class="form-label">Luas Bangunan <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="luas_bangunan" value="{{ old('luas_bangunan', $item->luas_bangunan ?? '') }}" placeholder="Contoh: 1.700 m2" required>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label">Alamat <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="alamat" value="{{ old('alamat', $item->alamat ?? '') }}" placeholder="Contoh: Kec Pasar" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Nama Penanggung Jawab <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="nama_penanggung_jawab" value="{{ old('nama_penanggung_jawab', $item->nama_penanggung_jawab ?? '') }}" placeholder="Contoh: Dian" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">No Telfon <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="no_telepon" value="{{ old('no_telepon', $item->no_telepon ?? '') }}" placeholder="Contoh: 08xxxxxxxxxx" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Sistem Proteksi Kebakaran <span class="text-danger">*</span></label>
+                            <select name="sistem_proteksi_kebakaran" class="form-select" required>
+                                <option value="" disabled {{ $valProteksi ? '' : 'selected' }}>-- Pilih Status Sistem Proteksi --</option>
+                                <option value="Memenuhi Syarat" {{ $valProteksi === 'Memenuhi Syarat' ? 'selected' : '' }}>Memenuhi Syarat</option>
+                                <option value="Memenuhi Syarat dengan Catatan" {{ $valProteksi === 'Memenuhi Syarat dengan Catatan' ? 'selected' : '' }}>Memenuhi Syarat dengan Catatan</option>
+                                <option value="Tidak Memenuhi Syarat" {{ $valProteksi === 'Tidak Memenuhi Syarat' ? 'selected' : '' }}>Tidak Memenuhi Syarat</option>
                             </select>
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label">Tanggal Inspeksi <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" name="tanggal_inspeksi" value="{{ $item->tanggal_inspeksi ?? '' }}" required>
+                            <label class="form-label">Tanggal Pemeriksaan <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" name="tanggal_inspeksi" value="{{ old('tanggal_inspeksi', $item->tanggal_inspeksi ?? '') }}" required>
                         </div>
                     </div>
                 </div>
@@ -154,50 +182,26 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <div class="upload-card">
-                                <label class="form-label"><span class="upload-num">1</span> Surat Perintah Tugas</label>
+                                <label class="form-label"><span class="upload-num">1</span> Upload SPT (Surat Perintah Tugas)</label>
                                 <input class="form-control" type="file" name="surat_perintah_tugas" accept=".pdf,.jpg,.jpeg,.png">
+                                <small class="text-muted d-block mt-1" style="font-size: 12px;">Format: PDF / JPG / PNG (Maks. 5 MB)</small>
                                 @if(!empty($item->surat_perintah_tugas))
-                                    <span class="file-saved"><i class="fas fa-check-circle"></i> File tersimpan: {{ $item->surat_perintah_tugas }}</span>
+                                    <a href="/uploads/inspeksi/{{ $item->surat_perintah_tugas }}" target="_blank" class="file-saved">
+                                        <i class="fas fa-check-circle"></i> File tersimpan: {{ $item->surat_perintah_tugas }}
+                                    </a>
                                 @endif
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="upload-card">
-                                <label class="form-label"><span class="upload-num">2</span> Berita Acara</label>
-                                <input class="form-control" type="file" name="berita_acara" accept=".pdf,.jpg,.jpeg,.png">
-                                @if(!empty($item->berita_acara))
-                                    <span class="file-saved"><i class="fas fa-check-circle"></i> File tersimpan: {{ $item->berita_acara }}</span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="upload-card">
-                                <label class="form-label"><span class="upload-num">3</span> Hasil Penilaian</label>
-                                <input class="form-control" type="file" name="hasil_penilaian" accept=".pdf,.jpg,.jpeg,.png">
-                                @if(!empty($item->hasil_penilaian))
-                                    <span class="file-saved"><i class="fas fa-check-circle"></i> File tersimpan: {{ $item->hasil_penilaian }}</span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="upload-card">
-                                <label class="form-label"><span class="upload-num">4</span> Rekomendasi</label>
+                                <label class="form-label"><span class="upload-num">2</span> Upload Rekomendasi</label>
                                 <input class="form-control" type="file" name="rekomendasi" accept=".pdf,.jpg,.jpeg,.png">
+                                <small class="text-muted d-block mt-1" style="font-size: 12px;">Format: PDF / JPG / PNG (Maks. 5 MB)</small>
                                 @if(!empty($item->rekomendasi))
-                                    <span class="file-saved"><i class="fas fa-check-circle"></i> File tersimpan: {{ $item->rekomendasi }}</span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="col-md-12">
-                            <div class="upload-card">
-                                <label class="form-label"><span class="upload-num">5</span> SKK (Sertifikat Keselamatan Kebakaran)</label>
-                                <input class="form-control" type="file" name="skk" accept=".pdf,.jpg,.jpeg,.png">
-                                @if(!empty($item->skk))
-                                    <span class="file-saved"><i class="fas fa-check-circle"></i> File tersimpan: {{ $item->skk }}</span>
+                                    <a href="/uploads/inspeksi/{{ $item->rekomendasi }}" target="_blank" class="file-saved">
+                                        <i class="fas fa-check-circle"></i> File tersimpan: {{ $item->rekomendasi }}
+                                    </a>
                                 @endif
                             </div>
                         </div>
@@ -208,7 +212,7 @@
 
             <!-- TOMBOL UPDATE -->
             <div class="form-footer">
-                <a href="javascript:history.back()" class="btn btn-cancel">Batal</a>
+                <a href="/internal/pencegahan/inspeksi-kebakaran/bangunan" class="btn btn-cancel">Batal</a>
                 <button type="submit" class="btn btn-save"><i class="fas fa-save me-2"></i> Update Perubahan</button>
             </div>
 
@@ -216,19 +220,4 @@
     </div>
 
 </div>
-
-<!-- JQUERY & SELECT2 JS -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('.select2-searchable').select2({
-            theme: 'bootstrap-5',
-            placeholder: "-- Pilih Jenis Bangunan / Usaha --",
-            allowClear: true,
-            width: '100%',
-            dropdownPosition: 'below'
-        });
-    });
-</script>
 @endsection

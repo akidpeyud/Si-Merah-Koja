@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Data Rekap Peningkatan Kapasitas | SIMERAH KOJA</title>
     <style>
-        /* Kertas landscape, margin tipis & font kecil agar muat 22 kolom */
+        /* Kertas landscape, margin tipis & font kecil agar muat 16 kolom */
         @page { size: A4 landscape; margin: 10mm; }
 
         * { box-sizing: border-box; }
@@ -48,6 +48,18 @@
         $daftarBagian = isset($semua_diklat)
             ? $semua_diklat
             : [['judul' => $judul ?? 'DIKLAT', 'data' => $data ?? collect([])]];
+
+        // Tanggal berformat YYYY-MM-DD ditampilkan d-m-Y, teks bebas (data lama) apa adanya
+        $tampilTanggal = function ($nilai) {
+            $nilai = trim((string) $nilai);
+            if ($nilai === '') {
+                return '-';
+            }
+
+            return preg_match('/^\d{4}-\d{2}-\d{2}/', $nilai)
+                ? \Carbon\Carbon::parse($nilai)->format('d-m-Y')
+                : $nilai;
+        };
     @endphp
 
     <!-- KOP SURAT (HANYA MUNCUL SEKALI DI AWAL HALAMAN) -->
@@ -82,84 +94,66 @@
 
         <table class="table-data">
             <colgroup>
-                <col style="width:2.5%">  <!-- No -->
-                <col style="width:6%">    <!-- NIP -->
-                <col style="width:7.5%">  <!-- Nama -->
-                <col style="width:5%">    <!-- Tempat Lahir -->
-                <col style="width:4%">    <!-- Tgl Lahir -->
-                <col style="width:7%">    <!-- NIK -->
-                <col style="width:5%">    <!-- Jabatan -->
-                <col style="width:6.5%">  <!-- Instansi/Perangkat Daerah -->
-                <col style="width:4.5%">  <!-- Ditanda Tangani Oleh -->
-                <col style="width:4%">    <!-- Tanggal Pelaksanaan -->
-                <col style="width:3%">    <!-- Jumlah Jam Pelajaran -->
-                <col style="width:6%">    <!-- Instansi Penyelenggara -->
-                <col style="width:3.5%">  <!-- Provinsi -->
-                <col style="width:3.5%">  <!-- Kota -->
-                <col style="width:5.5%">  <!-- Nomor Sertifikat -->
-                <col style="width:4%">    <!-- Kode Verivikasi -->
-                <col style="width:3.5%">  <!-- Persentasi Penilaian -->
-                <col style="width:4%">    <!-- Jenis Diklat -->
-                <col style="width:4%">    <!-- Created at -->
-                <col style="width:4%">    <!-- Updated at -->
-                <col style="width:3.5%">  <!-- TTL -->
-                <col style="width:3.5%">  <!-- Ket -->
+                <col style="width:3%">    <!-- Nomor -->
+                <col style="width:9%">    <!-- Nama -->
+                <col style="width:7%">    <!-- NIP -->
+                <col style="width:5.5%">  <!-- Tempat Lahir -->
+                <col style="width:5%">    <!-- Tanggal Lahir -->
+                <col style="width:6.5%">  <!-- Pangkat/Golongan Ruang -->
+                <col style="width:7%">    <!-- Jabatan -->
+                <col style="width:7%">    <!-- Kualifikasi -->
+                <col style="width:8%">    <!-- Tempat Pelaksanaan -->
+                <col style="width:5.5%">  <!-- Tanggal Pelaksanaan -->
+                <col style="width:5.5%">  <!-- Tanggal Selesai Pelaksanaan -->
+                <col style="width:4%">    <!-- Jumlah Jam Pelajaran -->
+                <col style="width:7%">    <!-- No STTP -->
+                <col style="width:5.5%">  <!-- Tanggal STTP -->
+                <col style="width:8%">    <!-- Pejabat yang Menandatangani -->
+                <col style="width:6.5%">  <!-- Upload Sertifikat -->
             </colgroup>
             <thead>
                 <tr>
-                    <th>No</th>
-                    <th>NIP</th>
+                    <th>Nomor</th>
                     <th>Nama</th>
+                    <th>NIP</th>
                     <th>Tempat Lahir</th>
-                    <th>Tgl Lahir</th>
-                    <th>NIK</th>
+                    <th>Tanggal Lahir</th>
+                    <th>Pangkat/Golongan Ruang</th>
                     <th>Jabatan</th>
-                    <th>Instansi/Perangkat Daerah</th>
-                    <th>Ditanda Tangani Oleh</th>
+                    <th>Kualifikasi</th>
+                    <th>Tempat Pelaksanaan</th>
                     <th>Tanggal Pelaksanaan</th>
+                    <th>Tanggal Selesai Pelaksanaan</th>
                     <th>Jumlah Jam Pelajaran</th>
-                    <th>Instansi Penyelenggara</th>
-                    <th>Provinsi</th>
-                    <th>Kota</th>
-                    <th>Nomor Sertifikat</th>
-                    <th>Kode Verivikasi</th>
-                    <th>Persentasi Penilaian</th>
-                    <th>Jenis Diklat</th>
-                    <th>Created at</th>
-                    <th>Updated at</th>
-                    
-                    <th>Ket</th>
+                    <th>No STTP</th>
+                    <th>Tanggal STTP</th>
+                    <th>Pejabat yang Menandatangani</th>
+                    <th>Upload Sertifikat</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($bagian['data'] as $index => $item)
                 <tr>
                     <td class="text-center">{{ $index + 1 }}</td>
-                    <td>{{ $item->nip ?? '-' }}</td>
                     <td>{{ $item->nama ?? '-' }}</td>
+                    <td>{{ $item->nip ?? '-' }}</td>
                     <td>{{ $item->tempat_lahir ?? '-' }}</td>
-                    <td>{{ $item->tgl_lahir ?? '-' }}</td>
-                    <td>{{ $item->nik ?? '-' }}</td>
+                    <td>{{ $tampilTanggal($item->tgl_lahir ?? null) }}</td>
+                    <td>{{ $item->pangkat_golongan ?? '-' }}</td>
                     <td>{{ $item->jabatan ?? '-' }}</td>
-                    <td>{{ $item->instansi ?? '-' }}</td>
-                    <td>{{ $item->ditandatangani_oleh ?? '-' }}</td>
-                    <td>{{ $item->tanggal_pelaksanaan ?? '-' }}</td>
+                    <td>{{ $item->kualifikasi ?? '-' }}</td>
+                    <td>{{ $item->tempat_pelaksanaan ?? '-' }}</td>
+                    <td>{{ $tampilTanggal($item->tanggal_pelaksanaan ?? null) }}</td>
+                    <td>{{ $tampilTanggal($item->tanggal_selesai_pelaksanaan ?? null) }}</td>
                     <td class="text-center">{{ $item->jumlah_jam_pelajaran ?? '-' }}</td>
-                    <td>{{ $item->instansi_penyelenggara ?? '-' }}</td>
-                    <td>{{ $item->provinsi ?? '-' }}</td>
-                    <td>{{ $item->kota ?? '-' }}</td>
-                    <td>{{ $item->nomor_sertifikat ?? '-' }}</td>
-                    <td>{{ $item->kode_verifikasi ?? '-' }}</td>
-                    <td class="text-center">{{ $item->persentasi_penilaian ?? $item->persentase_penilaian ?? '-' }}</td>
-                    <td>{{ $item->jenis_diklat ?? $bagian['judul'] }}</td>
-                    <td>{{ !empty($item->created_at) ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') : '-' }}</td>
-                    <td>{{ !empty($item->updated_at) ? \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') : '-' }}</td>
-                    
-                    <td>{{ $item->ket ?? '-' }}</td>
+                    <td>{{ $item->no_sttp ?? '-' }}</td>
+                    <td>{{ $tampilTanggal($item->tanggal_sttp ?? null) }}</td>
+                    <td>{{ $item->ditandatangani_oleh ?? '-' }}</td>
+                    <td class="text-center">{{ ! empty($item->file_sertifikat) ? 'Ada' : '-' }}</td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="22" class="text-center">Belum ada data {{ $bagian['judul'] }}</td>
+                    <td colspan="16" class="text-center">Belum ada data {{ $bagian['judul'] }}</td>
                 </tr>
                 @endforelse
             </tbody>
