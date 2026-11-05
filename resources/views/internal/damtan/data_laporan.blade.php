@@ -90,7 +90,6 @@
         border: 1px solid var(--line);
         border-radius: var(--r-md);
         box-shadow: var(--shadow-xs);
-        overflow: hidden;
     }
 
     .form-control, .form-select {
@@ -236,36 +235,86 @@
     /* ==========================================================
        TABEL REKAP (gaya header navy)
        ========================================================== */
-    .rekap-scroll { overflow-x: auto; padding: 20px; background: #fff; }
-    .rekap-wrap { border: 2px solid var(--rekap-red); border-radius: 16px; overflow: hidden; background: #fff; box-shadow: var(--shadow-sm); }
+    .rekap-scroll {
+        overflow-x: auto;
+        padding: 16px;
+        background: #fff;
+        scrollbar-width: auto;
+    }
+    .rekap-wrap {
+        border: 2px solid var(--rekap-red);
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: var(--shadow-sm);
+        display: inline-block;
+        min-width: 100%;
+    }
 
-    .table-rekap { width: 100%; border-collapse: collapse; margin: 0; }
+    .table-rekap {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+    }
 
     .table-rekap thead th {
         background: linear-gradient(180deg, var(--rekap-red-light) 0%, #0d2947 100%);
         color: #fff;
         font-family: var(--font-display);
         font-weight: 700;
-        font-size: .92rem;
+        font-size: .88rem;
         text-align: center;
         vertical-align: middle;
-        padding: 14px 10px;
+        padding: 14px 16px;
         border: 0;
         border-right: 1px solid rgba(255,255,255,.25);
         white-space: nowrap;
+        letter-spacing: .01em;
     }
     .table-rekap thead th:last-child { border-right: 0; }
+
+    .table-scroll-nav {
+        background: #f8fafc;
+        border-bottom: 1px solid var(--line);
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .table-scroll-nav .nav-hint {
+        font-size: 0.82rem;
+        color: var(--steel);
+        font-weight: 500;
+    }
+    .table-scroll-nav .btn-nav-scroll {
+        font-size: 0.78rem;
+        font-weight: 600;
+        padding: 5px 12px;
+        border: 1px solid var(--line-dark);
+        border-radius: 6px;
+        background: #fff;
+        color: var(--ink);
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+    .table-scroll-nav .btn-nav-scroll:hover {
+        background: var(--navy-light);
+        border-color: var(--navy);
+        color: var(--navy);
+    }
 
     .table-rekap tbody td {
         background: var(--rekap-row-b);
         text-align: center;
         vertical-align: middle;
-        padding: 12px 10px;
+        padding: 12px 14px;
         font-size: .85rem;
-        line-height: 1.4;
+        line-height: 1.45;
         color: var(--ink-2);
         border-bottom: 1px solid var(--rekap-line);
         border-right: 1px solid var(--rekap-line);
+        white-space: nowrap;
     }
     .table-rekap tbody td:last-child { border-right: 0; }
     .table-rekap tbody tr:last-child td { border-bottom: 0; }
@@ -278,23 +327,20 @@
         color: #fff;
         font-family: var(--font-display);
         font-weight: 800;
-        font-size: 1.35rem;
+        font-size: 1.25rem;
         border-right: 1px solid rgba(255,255,255,.25);
+        padding: 12px 16px;
     }
 
-    .col-no     { width: 64px; }
-    .col-tgl    { width: 150px; }
-    .col-jam    { width: 80px; }
-    .col-jenis  { width: 150px; }
-    .col-sebab  { width: 150px; }
-    .col-lokasi { width: 240px; }
-    .col-armada { width: 170px; }
-    .col-air    { width: 120px; }
-    .col-respon { width: 100px; }
-    .col-luas   { width: 110px; }
-    .col-aksi   { width: 130px; }
-
-    .cell-lokasi { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-align: center; }
+    .cell-text-full {
+        text-align: left;
+        font-size: 0.85rem;
+        line-height: 1.45;
+        word-break: break-word;
+        white-space: normal;
+        min-width: 220px;
+        max-width: 320px;
+    }
     .cell-muted  { color: var(--steel-soft); }
     .cell-strong { font-weight: 600; color: var(--ink); }
 
@@ -357,7 +403,7 @@
         $tab = 'kebakaran';
     }
     $isTabFire = $tab === 'kebakaran';
-    $jmlKolom  = $isTabFire ? 11 : 8;
+    $jmlKolom  = $isTabFire ? 25 : 23;
 
     $mapPenyebab = [
         'arus_pendek'       => 'Arus pendek listrik',
@@ -511,72 +557,203 @@
                 <p style="text-align: center !important; font-size: 12px; margin-bottom: 15px; color: black; font-family: 'Times New Roman', Times, serif;">Dicetak pada: {{ date('d F Y') }}</p>
             </div>
 
+            <!-- Kontrol Navigasi Geser Kolom Lengkap -->
+            <div class="table-scroll-nav d-print-none">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-primary px-2 py-1"><i class="fas fa-arrows-alt-h me-1"></i> Format Lengkap</span>
+                    <span class="nav-hint">Menampilkan seluruh <strong>{{ $isTabFire ? '24' : '22' }} kolom</strong> sesuai formulir resmi. Kolom <strong>No</strong> &amp; <strong>Hari/Tanggal</strong> terkunci di kiri:</span>
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                    <button type="button" class="btn-nav-scroll" id="btnScrollStart" title="Kembali ke Kolom Awal (No. 1)"><i class="fas fa-backward me-1"></i> Kolom Awal</button>
+                    <button type="button" class="btn-nav-scroll" id="btnScrollLeft" title="Geser ke Kiri"><i class="fas fa-chevron-left me-1"></i> Geser Kiri</button>
+                    <button type="button" class="btn-nav-scroll" id="btnScrollRight" title="Geser ke Kanan">Geser Kanan <i class="fas fa-chevron-right ms-1"></i></button>
+                    <button type="button" class="btn-nav-scroll" id="btnScrollEnd" title="Geser ke Kolom Akhir">Kolom Akhir <i class="fas fa-forward ms-1"></i></button>
+                </div>
+            </div>
+
             <div class="rekap-scroll">
-                <div class="rekap-wrap" style="min-width: {{ $isTabFire ? '1180px' : '900px' }};">
+                <div class="rekap-wrap">
                     <table class="table-rekap" id="tableRekap">
                         <thead>
                             <tr>
-                                <th class="col-no">No</th>
-                                <th class="col-tgl">Tanggal Kejadian</th>
-                                <th class="col-jam">Jam</th>
+                                <th>No</th>
+                                <th>Hari dan Tanggal</th>
+                                <th>Waktu Laporan Diterima</th>
+                                <th>Laporan Diterima Melalui</th>
+                                <th>Waktu Tiba di Lokasi</th>
+                                <th>Jarak Tempuh</th>
+                                <th>Respon Time</th>
+                                <th>Nama Pelapor</th>
+                                <th>No. Telfon Pelapor</th>
                                 @if($isTabFire)
-                                    <th class="col-jenis">Jenis Yang Terbakar</th>
-                                    <th class="col-sebab">Penyebab</th>
+                                    <th>Objek Kebakaran</th>
+                                    <th>Lokasi Kebakaran</th>
+                                    <th>Nama Korban</th>
+                                    <th>Jumlah Jiwa</th>
+                                    <th>Jumlah Korban (Meninggal &amp; Cidera)</th>
+                                    <th>Jumlah Warga yang Terdampak</th>
+                                    <th>Pimpinan Operasi</th>
+                                    <th>Satuan Tugas</th>
+                                    <th>Jumlah Personil</th>
+                                    <th>Lama Operasi</th>
+                                    <th>Kronologi Kebakaran</th>
+                                    <th>Penyebab Kebakaran</th>
+                                    <th>Hambatan</th>
+                                    <th>Sarana yang Digunakan</th>
+                                    <th>Tim Quick Respon</th>
                                 @else
-                                    <th class="col-jenis">Jenis Kegiatan</th>
+                                    <th>Objek Penyelamatan / Evakuasi</th>
+                                    <th>Lokasi Penyelamatan / Evakuasi</th>
+                                    <th>Nama Korban</th>
+                                    <th>Jumlah Jiwa</th>
+                                    <th>Jumlah Korban (Meninggal &amp; Cidera)</th>
+                                    <th>Pimpinan Operasi</th>
+                                    <th>Satuan Tugas</th>
+                                    <th>Jumlah Personil</th>
+                                    <th>Lama Operasi</th>
+                                    <th>Kronologi Penyelamatan / Evakuasi</th>
+                                    <th>Hambatan</th>
+                                    <th>Sarana yang Digunakan</th>
+                                    <th>Tim Quick Respon</th>
                                 @endif
-                                <th class="col-lokasi">Lokasi Kejadian</th>
-                                <th class="col-armada">Armada</th>
-                                @if($isTabFire)
-                                    <th class="col-air">Jumlah Air</th>
-                                @endif
-                                <th class="col-respon">Respon Time</th>
-                                @if($isTabFire)
-                                    <th class="col-luas">Luas Lahan</th>
-                                @endif
-                                <th class="col-aksi">Aksi</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
                             @forelse($data_laporan as $index => $row)
                             @php
-                                // Ambil atribut mentah agar aman walau ada kolom yang belum dibuat
                                 $a = $row->getAttributes();
-
                                 $isFire = strtolower($a['kategori_kejadian'] ?? '') === 'kebakaran';
 
-                                // Tanggal & jam
-                                // Fallback tanggal = created_at (BUKAN waktu_kejadian, karena isinya hanya jam
-                                // sehingga Carbon::parse akan menghasilkan tanggal hari ini).
+                                // 2. Hari dan Tanggal
                                 $tglRaw = $a['tanggal_kejadian'] ?? $a['created_at'] ?? null;
-                                $jamRaw = $a['waktu_kejadian'] ?? $a['waktu_terima'] ?? null;
-                                $tglTampil = $tglRaw ? Carbon::parse($tglRaw)->locale('id')->translatedFormat('d F Y') : '-';
+                                $hariTxt = !empty($a['hari_kejadian']) ? ucfirst($a['hari_kejadian']) : ($tglRaw ? Carbon::parse($tglRaw)->locale('id')->isoFormat('dddd') : '-');
+                                $tglTxt = $tglRaw ? Carbon::parse($tglRaw)->locale('id')->translatedFormat('d F Y') : '-';
+                                $hariTanggalTampil = ($hariTxt !== '-' && $tglTxt !== '-') ? $hariTxt . ', ' . $tglTxt : ($tglTxt !== '-' ? $tglTxt : '-');
                                 $tglFilter = $tglRaw ? Carbon::parse($tglRaw)->format('Y-m-d') : '';
-                                $jamTampil = $jamRaw ? Carbon::parse($jamRaw)->format('H.i') : '-';
 
-                                // Jenis yang terbakar / jenis kegiatan non-kebakaran
-                                $jenisFire = !empty($a['kategori_kebakaran']) ? ucwords(str_replace('_', ' ', $a['kategori_kebakaran'])) : '-';
-                                $jenisNon  = !empty($a['kategori_non_kebakaran'])
-                                    ? str_replace('_', ' ', $a['kategori_non_kebakaran'])
-                                    : str_replace('_', ' ', $a['kategori_kejadian'] ?? '-');
+                                // 3. Waktu Laporan Diterima
+                                $waktuTerimaRaw = $a['waktu_terima'] ?? $a['waktu_kejadian'] ?? null;
+                                $waktuTerimaTampil = $waktuTerimaRaw ? Carbon::parse($waktuTerimaRaw)->format('H.i') . ' WIB' : '-';
 
-                                // Penyebab
-                                $p = $a['dugaan_penyebab'] ?? null;
-                                if ($p === 'lainnya') {
-                                    $penyebab = $a['dugaan_penyebab_lainnya'] ?? '-';
-                                } elseif ($p) {
-                                    $penyebab = $mapPenyebab[$p] ?? ucwords(str_replace('_', ' ', $p));
+                                // 4. Laporan Diterima Melalui
+                                $mapMedia = [
+                                    'call_center_112'  => 'Call Center 112',
+                                    'operator_layanan' => 'Operator Layanan Damkar',
+                                    'telepon'          => 'Telfon Damkar',
+                                    'dijemput'         => 'Dijemput',
+                                    'whatsapp'         => 'WhatsApp Damkar',
+                                    'langsung'         => 'Datang Langsung',
+                                    'instansi_lain'    => 'Instansi Lain',
+                                ];
+                                $mediaRaw = $a['media_pelaporan'] ?? '';
+                                $mediaPelaporanTampil = $mapMedia[$mediaRaw] ?? ($mediaRaw ? ucwords(str_replace('_', ' ', $mediaRaw)) : '-');
+
+                                // 5. Waktu Tiba di Lokasi
+                                $waktuTibaRaw = $a['waktu_tiba'] ?? null;
+                                $waktuTibaTampil = $waktuTibaRaw ? Carbon::parse($waktuTibaRaw)->format('H.i') . ' WIB' : '-';
+
+                                // 6. Jarak Tempuh
+                                $jarakRaw = $a['jarak_tempuh'] ?? null;
+                                $jarakTampil = ($jarakRaw !== null && $jarakRaw !== '')
+                                    ? (is_numeric($jarakRaw) ? $jarakRaw . ' Km' : (preg_match('/km/i', $jarakRaw) ? $jarakRaw : $jarakRaw . ' Km'))
+                                    : '-';
+
+                                // 7. Respon Time
+                                $rt = $row->respon_time;
+                                $responTampil = (!is_null($rt) && $rt >= 0) ? $rt . ' Menit' : '-';
+
+                                // 8. Nama Pelapor
+                                $pelaporTampil = !empty($a['nama_pelapor']) ? $a['nama_pelapor'] : '-';
+
+                                // 9. No Telfon Pelapor
+                                $teleponPelaporTampil = !empty($a['telepon_pelapor']) ? $a['telepon_pelapor'] : '-';
+
+                                // 10. Objek Kebakaran / Objek Penyelamatan
+                                $objekKebakaranTampil = !empty($a['kategori_kebakaran']) ? ucwords(str_replace('_', ' ', $a['kategori_kebakaran'])) : '-';
+                                $ketObjek = !empty($a['keterangan_objek_kebakaran']) ? $a['keterangan_objek_kebakaran'] : '';
+
+                                $objekPenyelamatanTampil = !empty($a['kategori_non_kebakaran'])
+                                    ? ucwords(str_replace('_', ' ', $a['kategori_non_kebakaran']))
+                                    : (!empty($a['kategori_kejadian']) ? ucwords(str_replace('_', ' ', $a['kategori_kejadian'])) : '-');
+                                $rincianNonKebakaran = !empty($a['rincian_kategori_non_kebakaran']) ? $a['rincian_kategori_non_kebakaran'] : (!empty($a['jenis_hewan']) ? $a['jenis_hewan'] : '');
+
+                                // 11. Lokasi
+                                $lokasiTampil = !empty($a['alamat']) ? $a['alamat'] : '-';
+
+                                // 12. Nama Korban
+                                $korbanRaw = trim((string) ($a['nama_korban'] ?? ''));
+                                $namaKorbanTampil = ($korbanRaw !== '' && strtolower($korbanRaw) !== 'nihil') ? $korbanRaw : 'Nihil';
+
+                                // 13. Jumlah Jiwa
+                                $jiwaCount = (int) ($a['jumlah_jiwa'] ?? 0);
+                                $jiwaTampil = $jiwaCount > 0 ? $jiwaCount . ' Jiwa' : '0';
+
+                                // 14. Jumlah Korban (Meninggal dan Cidera)
+                                $meninggal = (int) ($a['korban_meninggal'] ?? 0);
+                                $cidera = (int) (($a['korban_berat'] ?? 0) + ($a['korban_ringan'] ?? 0));
+                                if ($meninggal === 0 && $cidera === 0) {
+                                    $korbanStatusTampil = 'Nihil';
                                 } else {
-                                    $penyebab = '-';
+                                    $kList = [];
+                                    if ($meninggal > 0) $kList[] = "Meninggal: {$meninggal}";
+                                    if ($cidera > 0) $kList[] = "Cidera: {$cidera}";
+                                    $korbanStatusTampil = implode(', ', $kList);
                                 }
 
-                                // Armada
-                                // Kolom bisa tersimpan sebagai JSON biasa atau ter-encode dua kali,
-                                // jadi di-decode berulang (maks. 2x) sampai menjadi array.
+                                // 15. Jumlah Warga yang Terdampak (khusus Kebakaran)
+                                $wargaCount = (int) ($a['warga_terdampak'] ?? 0);
+                                $wargaTerdampakTampil = $wargaCount > 0 ? $wargaCount . ' Jiwa / KK' : '0';
+
+                                // Pimpinan Operasi
+                                $pimpinanTampil = !empty($a['pimpinan_operasi']) ? $a['pimpinan_operasi'] : '-';
+
+                                // Satuan Tugas
+                                $satgasTampil = !empty($a['satuan_tugas']) ? $a['satuan_tugas'] : '-';
+
+                                // Jumlah Personil
+                                $jmlPersonel = (int) ($a['jumlah_personel'] ?? 0);
+                                $personilTampil = $jmlPersonel > 0 ? $jmlPersonel . ' Orang' : '-';
+
+                                // Lama Operasi
+                                $lamaOperasiTampil = '-';
+                                if (!empty($a['waktu_tiba']) && !empty($a['waktu_selesai'])) {
+                                    $wt = Carbon::parse($a['waktu_tiba']);
+                                    $ws = Carbon::parse($a['waktu_selesai']);
+                                    $diffMnt = $wt->diffInMinutes($ws);
+                                    if ($diffMnt >= 60) {
+                                        $j = floor($diffMnt / 60);
+                                        $s = $diffMnt % 60;
+                                        $lamaOperasiTampil = $j . ' Jam' . ($s > 0 ? ' ' . $s . ' Menit' : '');
+                                    } else {
+                                        $lamaOperasiTampil = $diffMnt . ' Menit';
+                                    }
+                                }
+
+                                // Kronologi
+                                $kronologiTampil = !empty($a['kronologi_lengkap']) ? $a['kronologi_lengkap'] : '-';
+
+                                // Penyebab Kebakaran (khusus Kebakaran)
+                                $p = $a['dugaan_penyebab'] ?? null;
+                                if ($p === 'lainnya') {
+                                    $penyebabTampil = $a['dugaan_penyebab_lainnya'] ?? '-';
+                                } elseif ($p) {
+                                    $penyebabTampil = $mapPenyebab[$p] ?? ucwords(str_replace('_', ' ', $p));
+                                } else {
+                                    $penyebabTampil = '-';
+                                }
+
+                                // Hambatan
+                                $hambatanRaw = trim((string) ($a['hambatan_lapangan'] ?? ''));
+                                $hambatanTampil = ($hambatanRaw !== '' && strtolower($hambatanRaw) !== 'nihil') ? $hambatanRaw : 'Nihil';
+
+                                // Sarana yang Digunakan: Armada, Air, Liquid Foam
+                                $air = (int) ($a['liter_air'] ?? 0);
+                                $foam = (int) ($a['liter_foam'] ?? 0);
                                 $jmlArmada = $a['jumlah_armada'] ?? null;
                                 $armadaTxt = '-';
                                 if ($jmlArmada !== null && $jmlArmada !== '') {
-                                    $armadaTxt = $jmlArmada . ' Unit Armada';
+                                    $armadaTxt = $jmlArmada . ' Unit';
                                 } elseif (!empty($a['armada'])) {
                                     $arm = $a['armada'];
                                     for ($i = 0; $i < 2 && is_string($arm); $i++) {
@@ -584,53 +761,90 @@
                                         if ($d === null) break;
                                         $arm = $d;
                                     }
-                                    $armadaTxt = is_array($arm)
-                                        ? (count($arm) ? implode(', ', array_map('ucfirst', $arm)) : '-')
-                                        : $arm;
+                                    $armadaTxt = is_array($arm) ? (count($arm) ? implode(', ', array_map('ucfirst', $arm)) : '-') : $arm;
                                 }
 
-                                // Jumlah air
-                                $air = $a['liter_air'] ?? null;
-                                $airTxt = (is_numeric($air) && $air > 0) ? number_format($air, 0, ',', '.') . ' Liter' : '-';
+                                $peralatanTxt = '';
+                                if (!empty($a['peralatan'])) {
+                                    $per = $a['peralatan'];
+                                    for ($i = 0; $i < 2 && is_string($per); $i++) {
+                                        $d = json_decode($per, true);
+                                        if ($d === null) break;
+                                        $per = $d;
+                                    }
+                                    $peralatanTxt = is_array($per) ? implode(', ', $per) : $per;
+                                }
+                                if (!empty($a['peralatan_lain'])) {
+                                    $peralatanTxt .= ($peralatanTxt ? ', ' : '') . $a['peralatan_lain'];
+                                }
 
-                                // Respon time: dihitung otomatis (Waktu Terima -> Waktu Tiba), lihat accessor di model
-                                $rt = $row->respon_time;
-                                $responTxt = (!is_null($rt) && $rt >= 0) ? $rt . ' mnt' : '-';
-
-                                // Luas
-                                $luas = $a['luas_area'] ?? null;
-                                $luasTxt = (is_numeric($luas) && $luas > 0)
-                                    ? number_format((float) $luas, fmod((float) $luas, 1) == 0 ? 0 : 1, ',', '.') . ' m²'
-                                    : '-';
-
-                                $lokasi = !empty($a['alamat']) ? $a['alamat'] : '-';
+                                // Tim Quick Respon
+                                $timQuickTampil = !empty($a['tim_respontime']) ? $a['tim_respontime'] : '-';
                             @endphp
                             <tr class="{{ $loop->odd ? 'alt' : '' }}" data-kategori="{{ $isFire ? 'kebakaran' : 'non-kebakaran' }}" data-tanggal="{{ $tglFilter }}" data-tahun="{{ $tglRaw ? Carbon::parse($tglRaw)->year : '' }}">
                                 <td class="no-cell">{{ $data_laporan->firstItem() + $index }}</td>
-
-                                <td class="cell-strong">{{ $tglTampil }}</td>
-
-                                <td>{{ $jamTampil }}</td>
+                                <td class="cell-strong text-nowrap">{{ $hariTanggalTampil }}</td>
+                                <td class="text-nowrap">{{ $waktuTerimaTampil }}</td>
+                                <td>{{ $mediaPelaporanTampil }}</td>
+                                <td class="text-nowrap">{{ $waktuTibaTampil }}</td>
+                                <td class="text-nowrap">{{ $jarakTampil }}</td>
+                                <td class="text-nowrap">{{ $responTampil }}</td>
+                                <td>{{ $pelaporTampil }}</td>
+                                <td class="text-nowrap">{{ $teleponPelaporTampil }}</td>
 
                                 @if($isTabFire)
-                                    <td><span class="cell-strong">{{ $jenisFire }}</span></td>
-                                    <td>{{ $penyebab }}</td>
+                                    <td>
+                                        <span class="cell-strong">{{ $objekKebakaranTampil }}</span>
+                                        @if($ketObjek)
+                                            <div class="small text-muted">{{ $ketObjek }}</div>
+                                        @endif
+                                    </td>
+                                    <td><div class="cell-text-full">{{ $lokasiTampil }}</div></td>
+                                    <td>{{ $namaKorbanTampil }}</td>
+                                    <td class="text-nowrap">{{ $jiwaTampil }}</td>
+                                    <td>{{ $korbanStatusTampil }}</td>
+                                    <td class="text-nowrap">{{ $wargaTerdampakTampil }}</td>
+                                    <td>{{ $pimpinanTampil }}</td>
+                                    <td>{{ $satgasTampil }}</td>
+                                    <td class="text-nowrap">{{ $personilTampil }}</td>
+                                    <td class="text-nowrap">{{ $lamaOperasiTampil }}</td>
+                                    <td><div class="cell-text-full">{{ $kronologiTampil }}</div></td>
+                                    <td>{{ $penyebabTampil }}</td>
+                                    <td><div class="cell-text-full">{{ $hambatanTampil }}</div></td>
+                                    <td>
+                                        <div class="text-start" style="font-size: 0.82rem; line-height: 1.4;">
+                                            <div><strong>Air:</strong> {{ $air > 0 ? number_format($air, 0, ',', '.') . ' L' : '-' }}</div>
+                                            <div><strong>Armada:</strong> {{ $armadaTxt }}</div>
+                                            <div><strong>Foam:</strong> {{ $foam > 0 ? number_format($foam, 0, ',', '.') . ' L' : '-' }}</div>
+                                        </div>
+                                    </td>
+                                    <td>{{ $timQuickTampil }}</td>
                                 @else
-                                    <td><span class="cell-strong text-capitalize">{{ $jenisNon }}</span></td>
-                                @endif
-
-                                <td><div class="cell-lokasi" title="{{ $lokasi }}">{{ $lokasi }}</div></td>
-
-                                <td>{{ $armadaTxt }}</td>
-
-                                @if($isTabFire)
-                                    <td>{!! $airTxt === '-' ? '<span class="cell-muted">-</span>' : e($airTxt) !!}</td>
-                                @endif
-
-                                <td>{!! $responTxt === '-' ? '<span class="cell-muted">-</span>' : e($responTxt) !!}</td>
-
-                                @if($isTabFire)
-                                    <td>{!! $luasTxt === '-' ? '<span class="cell-muted">-</span>' : e($luasTxt) !!}</td>
+                                    <td>
+                                        <span class="cell-strong">{{ $objekPenyelamatanTampil }}</span>
+                                        @if($rincianNonKebakaran)
+                                            <div class="small text-muted">{{ $rincianNonKebakaran }}</div>
+                                        @endif
+                                    </td>
+                                    <td><div class="cell-text-full">{{ $lokasiTampil }}</div></td>
+                                    <td>{{ $namaKorbanTampil }}</td>
+                                    <td class="text-nowrap">{{ $jiwaTampil }}</td>
+                                    <td>{{ $korbanStatusTampil }}</td>
+                                    <td>{{ $pimpinanTampil }}</td>
+                                    <td>{{ $satgasTampil }}</td>
+                                    <td class="text-nowrap">{{ $personilTampil }}</td>
+                                    <td class="text-nowrap">{{ $lamaOperasiTampil }}</td>
+                                    <td><div class="cell-text-full">{{ $kronologiTampil }}</div></td>
+                                    <td><div class="cell-text-full">{{ $hambatanTampil }}</div></td>
+                                    <td>
+                                        <div class="text-start" style="font-size: 0.82rem; line-height: 1.4;">
+                                            <div><strong>Armada:</strong> {{ $armadaTxt }}</div>
+                                            @if($peralatanTxt)
+                                                <div><strong>Alat:</strong> {{ $peralatanTxt }}</div>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td>{{ $timQuickTampil }}</td>
                                 @endif
 
                                 <td>
@@ -687,6 +901,25 @@
         const rows        = document.querySelectorAll('#tableBody tr[data-kategori]');
         const form        = document.getElementById('formFilter');
         const searchInput = document.getElementById('searchInput');
+
+        /* ==========================================================
+           NAVIGASI GESER TABEL (Horizontal Scroll)
+           ========================================================== */
+        const scrollContainer = document.querySelector('.rekap-scroll');
+        if (scrollContainer) {
+            // Pastikan selalu mulai dari kolom No 1 saat halaman dimuat
+            scrollContainer.scrollLeft = 0;
+
+            const btnStart = document.getElementById('btnScrollStart');
+            const btnLeft  = document.getElementById('btnScrollLeft');
+            const btnRight = document.getElementById('btnScrollRight');
+            const btnEnd   = document.getElementById('btnScrollEnd');
+
+            if (btnStart) btnStart.addEventListener('click', function () { scrollContainer.scrollTo({ left: 0, behavior: 'smooth' }); });
+            if (btnLeft)  btnLeft.addEventListener('click',  function () { scrollContainer.scrollBy({ left: -480, behavior: 'smooth' }); });
+            if (btnRight) btnRight.addEventListener('click', function () { scrollContainer.scrollBy({ left: 480, behavior: 'smooth' }); });
+            if (btnEnd)   btnEnd.addEventListener('click',   function () { scrollContainer.scrollTo({ left: scrollContainer.scrollWidth, behavior: 'smooth' }); });
+        }
 
         /* ==========================================================
            FILTER (dijalankan di SERVER lewat form GET)

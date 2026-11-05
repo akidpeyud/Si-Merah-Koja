@@ -213,10 +213,30 @@
     /* ==========================================================
        TABEL REKAP (gaya header navy, sama dengan Data Laporan)
        ========================================================== */
-    .rekap-scroll { overflow-x: auto; padding: 20px; background: #fff; }
-    .rekap-wrap { min-width: 760px; border: 2px solid var(--rekap-red); border-radius: 16px; overflow: hidden; background: #fff; box-shadow: var(--shadow-sm); }
+    .rekap-scroll {
+        overflow-x: auto;
+        padding: 20px;
+        background: #fff;
+        scrollbar-width: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .rekap-wrap {
+        display: inline-block;
+        min-width: 100%;
+        border: 2px solid var(--rekap-red);
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: var(--shadow-sm);
+        vertical-align: top;
+    }
 
-    .table-rekap { width: 100%; border-collapse: collapse; margin: 0; }
+    .table-rekap {
+        width: max-content;
+        min-width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 0;
+    }
 
     .table-rekap thead th {
         background: linear-gradient(180deg, var(--rekap-red-light) 0%, #0d2947 100%);
@@ -226,26 +246,30 @@
         font-size: .92rem;
         text-align: center;
         vertical-align: middle;
-        padding: 14px 10px;
+        padding: 14px 18px;
         border: 0;
         border-right: 1px solid rgba(255,255,255,.25);
         white-space: nowrap;
     }
-    .table-rekap thead th:last-child { border-right: 0; }
+    .table-rekap thead th:first-child { border-top-left-radius: 14px; }
+    .table-rekap thead th:last-child  { border-top-right-radius: 14px; border-right: 0; }
 
     .table-rekap tbody td {
         background: var(--rekap-row-b);
         text-align: center;
         vertical-align: middle;
-        padding: 12px 10px;
+        padding: 12px 16px;
         font-size: .85rem;
         line-height: 1.4;
         color: var(--ink-2);
         border-bottom: 1px solid var(--rekap-line);
         border-right: 1px solid var(--rekap-line);
+        white-space: nowrap;
     }
     .table-rekap tbody td:last-child { border-right: 0; }
     .table-rekap tbody tr:last-child td { border-bottom: 0; }
+    .table-rekap tbody tr:last-child td:first-child { border-bottom-left-radius: 14px; }
+    .table-rekap tbody tr:last-child td:last-child  { border-bottom-right-radius: 14px; }
 
     .table-rekap tbody tr.alt td { background: var(--rekap-row-a); }
     .table-rekap tbody tr:hover td { background: #dce9fa; }
@@ -259,10 +283,29 @@
         border-right: 1px solid rgba(255,255,255,.25);
     }
 
-    .col-no    { width: 64px; }
-    .col-nomor { width: 280px; }
-    .col-tgl   { width: 190px; }
-    .col-aksi  { width: 130px; }
+    .col-no    { width: 64px; min-width: 64px; }
+    .col-aksi  { width: 140px; min-width: 140px; }
+
+    .table-scroll-nav {
+        background: #f8fafc;
+        border-bottom: 1px solid var(--line);
+        padding: 8px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .table-scroll-nav .nav-hint {
+        font-size: 0.82rem;
+        color: var(--steel);
+        font-weight: 500;
+    }
+    .table-scroll-nav .btn {
+        font-size: 0.78rem;
+        padding: 4px 12px;
+        border-radius: 6px;
+    }
 
     .cell-strong { font-weight: 600; color: var(--ink); }
     .cell-nama   { text-transform: capitalize; }
@@ -436,15 +479,33 @@
                 <p style="text-align: center !important; font-size: 12px; margin-bottom: 15px; color: black; font-family: 'Times New Roman', Times, serif;">Dicetak pada: {{ date('d F Y') }}</p>
             </div>
 
+            <!-- NAVIGASI SCROLL TABEL -->
+            <div class="table-scroll-nav d-print-none">
+                <span class="nav-hint"><i class="fas fa-arrows-alt-h me-1 text-primary"></i> Geser tabel ke kanan/kiri untuk melihat seluruh 14 kolom data</span>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-secondary" onclick="scrollTable(-350)" title="Geser ke kiri"><i class="fas fa-chevron-left me-1"></i> Geser Kiri</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="scrollTable(350)" title="Geser ke kanan">Geser Kanan <i class="fas fa-chevron-right ms-1"></i></button>
+                </div>
+            </div>
+
             <div class="rekap-scroll">
                 <div class="rekap-wrap">
                     <table class="table-rekap">
                         <thead>
                             <tr>
-                                <th class="col-no">No</th>
-                                <th class="col-nomor">Nomor Surat</th>
-                                <th class="col-nama">Nama Korban / Instansi</th>
-                                <th class="col-tgl">Tanggal Diterbitkan</th>
+                                <th class="col-no">NO</th>
+                                <th style="min-width: 170px;">No Surat</th>
+                                <th style="min-width: 150px;">TGL. SURAT</th>
+                                <th style="min-width: 160px;">Nama</th>
+                                <th style="min-width: 200px;">Tempat Tgl Lahir</th>
+                                <th style="min-width: 160px;">NIK</th>
+                                <th style="min-width: 250px;">ALAMAT</th>
+                                <th style="min-width: 180px;">STATUS KEPEMILIKAN</th>
+                                <th style="min-width: 140px;">Status</th>
+                                <th style="min-width: 150px;">Pekerjaan</th>
+                                <th style="min-width: 200px;">Tgl Kejadian</th>
+                                <th style="min-width: 220px;">Lokasi Kejadian</th>
+                                <th style="min-width: 200px;">Satuan Tugas Operasi</th>
                                 <th class="col-aksi">Aksi</th>
                             </tr>
                         </thead>
@@ -453,15 +514,37 @@
                             <tr data-row data-tahun="{{ $row->created_at ? \Carbon\Carbon::parse($row->created_at)->year : '' }}">
                                 <td class="no-cell">{{ $surat->firstItem() + $index }}</td>
 
-                                <td class="cell-strong">{{ $row->nomor_surat }}</td>
-
-                                <td class="cell-nama">{{ $row->nama_korban }}</td>
-
-                                <td class="cell-strong">
-                                    {{ $row->created_at ? \Carbon\Carbon::parse($row->created_at)->locale('id')->translatedFormat('d F Y') : '-' }}
-                                </td>
+                                <td class="cell-strong">{{ $row->nomor_surat ?? '-' }}</td>
 
                                 <td>
+                                    {{ !empty($row->tanggal_surat) ? \Carbon\Carbon::parse($row->tanggal_surat)->locale('id')->translatedFormat('d F Y') : (!empty($row->created_at) ? \Carbon\Carbon::parse($row->created_at)->locale('id')->translatedFormat('d F Y') : '-') }}
+                                </td>
+
+                                <td class="cell-strong cell-nama">{{ $row->nama_korban ?? '-' }}</td>
+
+                                <td>
+                                    {{ trim(($row->tempat_lahir ?? '') . (!empty($row->tanggal_lahir) ? ', ' . \Carbon\Carbon::parse($row->tanggal_lahir)->locale('id')->translatedFormat('d F Y') : '')) ?: '-' }}
+                                </td>
+
+                                <td>{{ $row->nik ?? '-' }}</td>
+
+                                <td style="text-align: left; min-width: 250px; max-width: 320px; white-space: normal;">{{ $row->alamat ?? '-' }}</td>
+
+                                <td>{{ ucwords(strtolower($row->status_kepemilikan ?? '-')) }}</td>
+
+                                <td>{{ ucwords(strtolower($row->status_perkawinan ?? '-')) }}</td>
+
+                                <td>{{ ucwords(strtolower($row->pekerjaan ?? '-')) }}</td>
+
+                                <td>
+                                    {{ trim((!empty($row->hari_kejadian) ? $row->hari_kejadian . ', ' : '') . (!empty($row->tanggal_kejadian) ? \Carbon\Carbon::parse($row->tanggal_kejadian)->locale('id')->translatedFormat('d F Y') : '')) ?: '-' }}
+                                </td>
+
+                                <td style="text-align: left; min-width: 220px; max-width: 280px; white-space: normal;">{{ $row->alamat ?? ($row->objek_terbakar ?? '-') }}</td>
+
+                                <td style="min-width: 200px;">{{ $row->satuan_tugas_operasi ?? ($row->satuan_tugas ?? '-') }}</td>
+
+                                <td class="col-aksi">
                                     <div class="aksi-group">
                                         <!-- CETAK SURAT: SEMUA ROLE -->
                                         <a href="/internal/surat-korban/cetak/{{ $row->id }}" class="action-btn view" target="_blank" title="Cetak Surat"><i class="fas fa-print"></i></a>
@@ -480,7 +563,7 @@
                             </tr>
                             @empty
                             <tr class="empty-state">
-                                <td colspan="5">
+                                <td colspan="14">
                                     <i class="fas fa-envelope-open-text d-block"></i>
                                     Belum ada surat keterangan korban yang diterbitkan.
                                 </td>
@@ -489,7 +572,7 @@
 
                             {{-- Muncul otomatis jika pencarian/filter tidak menemukan hasil --}}
                             <tr class="empty-state" id="noResult" hidden>
-                                <td colspan="5">
+                                <td colspan="14">
                                     <i class="fas fa-search d-block"></i>
                                     Tidak ada surat yang cocok dengan pencarian atau filter.
                                 </td>
@@ -614,6 +697,13 @@
             searchInput.value = '';
             filterTahun.value = '';
             filterTable();
+        };
+
+        window.scrollTable = function (distance) {
+            const el = document.querySelector('.rekap-scroll');
+            if (el) {
+                el.scrollBy({ left: distance, behavior: 'smooth' });
+            }
         };
 
         filterTable(); // terapkan warna selang-seling saat halaman dimuat

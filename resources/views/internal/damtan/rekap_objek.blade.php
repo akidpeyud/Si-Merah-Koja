@@ -697,8 +697,8 @@
 
         <!-- RIWAYAT -->
         <div class="section-heading">
-            <span class="section-heading-ico"><i class="fas fa-clock-rotate-left"></i></span>
-            <h3>Riwayat input objek terbaru</h3>
+            <span class="section-heading-ico"><i class="fas {{ !empty($filterObjekTerpilih) ? 'fa-table-list' : 'fa-clock-rotate-left' }}"></i></span>
+            <h3>{{ !empty($filterObjekTerpilih) ? 'Laporan Rekapitulasi: ' . ($kategori[$filterObjekTerpilih][0] ?? $filterObjekTerpilih) : 'Riwayat input objek terbaru' }}</h3>
             <span class="line"></span>
         </div>
 
@@ -706,7 +706,7 @@
             <div class="filter-status-banner d-print-none">
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                     <span class="badge-filter-info">
-                        <i class="fas fa-filter text-primary me-1"></i> Menampilkan riwayat kategori: <strong>{{ $kategori[$filterObjekTerpilih][0] ?? $filterObjekTerpilih }}</strong>
+                        <i class="fas fa-filter text-primary me-1"></i> Format Laporan Rekapitulasi Komprehensif: <strong>{{ $kategori[$filterObjekTerpilih][0] ?? $filterObjekTerpilih }}</strong>
                     </span>
                     <a href="{{ request()->fullUrlWithQuery(['filter_objek' => null, 'page' => null]) }}" class="btn-clear-category" title="Batalkan filter kategori">
                         <i class="fas fa-xmark"></i> Hapus Filter Kategori
@@ -732,7 +732,7 @@
                     </div>
                 </div>
                 <div style="border-top: 3px solid black !important; border-bottom: 1px solid black !important; height: 2px !important; width: 100% !important; margin-bottom: 15px !important;"></div>
-                <h3 style="text-align: center !important; font-weight: bold; margin-bottom: 5px; font-size: 16px; color: black; font-family: 'Times New Roman', Times, serif;">REKAPITULASI OBJEK KEBAKARAN<span id="printTahun"></span></h3>
+                <h3 style="text-align: center !important; font-weight: bold; margin-bottom: 5px; font-size: 16px; color: black; font-family: 'Times New Roman', Times, serif;">REKAPITULASI OBJEK KEBAKARAN @if(!empty($filterObjekTerpilih)) - KATEGORI {{ strtoupper($kategori[$filterObjekTerpilih][0] ?? $filterObjekTerpilih) }} @endif<span id="printTahun"></span></h3>
                 <p style="text-align: center !important; font-size: 12px; margin-bottom: 15px; color: black; font-family: 'Times New Roman', Times, serif;">Dicetak pada: {{ date('d F Y') }}</p>
             </div>
 
@@ -740,65 +740,147 @@
                 <div class="tbl-frame">
                     <table class="tbl">
                         <thead>
-                            <tr>
-                                <th class="col-no" style="width: 5%;">No</th>
-                                <th style="width: 15%;">Bulan</th>
-                                <th style="width: 22%;">Objek Terbakar</th>
-                                <th style="width: 10%;">Jumlah</th>
-                                <th style="width: 18%;">Kecamatan</th>
-                                <th style="width: 30%;">Keterangan</th>
-                                <th class="col-aksi">Aksi</th>
-                            </tr>
+                            @if(!empty($filterObjekTerpilih))
+                                <tr>
+                                    <th class="col-no" style="width: 5%;">No</th>
+                                    <th style="width: 13%;">Bulan</th>
+                                    <th style="width: 11%;">Jumlah Kejadian</th>
+                                    <th style="width: 16%;">Jenis Bangunan</th>
+                                    <th style="width: 25%;">Lokasi Kejadian</th>
+                                    <th style="width: 15%;">Penyebab Kebakaran</th>
+                                    <th style="width: 15%;">Korban (Jiwa / Kendaraan)</th>
+                                </tr>
+                            @else
+                                <tr>
+                                    <th class="col-no" style="width: 5%;">No</th>
+                                    <th style="width: 15%;">Bulan</th>
+                                    <th style="width: 22%;">Objek Terbakar</th>
+                                    <th style="width: 10%;">Jumlah</th>
+                                    <th style="width: 18%;">Kecamatan</th>
+                                    <th style="width: 30%;">Keterangan</th>
+                                    <th class="col-aksi">Aksi</th>
+                                </tr>
+                            @endif
                         </thead>
                         <tbody>
-                            @forelse($riwayat as $r)
-                                <tr data-tahun="{{ \Carbon\Carbon::parse($r->tanggal)->year }}">
-                                    <td class="no-cell">{{ $riwayat->firstItem() + $loop->index }}</td>
-                                    <td class="cell-strong">{{ \Carbon\Carbon::parse($r->tanggal)->translatedFormat('F Y') }}</td>
-                                    <td><span class="tag">{{ $kategori[$r->kategori][0] ?? $r->kategori }}</span></td>
-                                    <td><span class="num">{{ $r->jumlah }}</span></td>
-                                    <td>{{ $r->kecamatan ?: '-' }}</td>
-                                    <td class="cell-ket">{{ \Illuminate\Support\Str::limit($r->keterangan ?: '-', 60) }}</td>
-                                    <td>
-                                        <div class="aksi">
-                                            <!-- LIHAT DETAIL: BISA DIAKSES SEMUA ROLE -->
-                                            <button type="button" class="action-btn view" aria-label="Lihat Detail" title="Lihat Detail"
-                                                data-detail
-                                                data-tanggal="{{ \Carbon\Carbon::parse($r->tanggal)->translatedFormat('d F Y') }}"
-                                                data-kategori="{{ $kategori[$r->kategori][0] ?? $r->kategori }}"
-                                                data-jumlah="{{ $r->jumlah }}"
-                                                data-kecamatan="{{ $r->kecamatan ?: '-' }}"
-                                                data-lokasi="{{ $r->lokasi ?: '-' }}"
-                                                data-keterangan="{{ $r->keterangan ?: '-' }}">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
+                            @if(!empty($filterObjekTerpilih))
+                                @php
+                                    $mapPenyebab = [
+                                        'arus_pendek'       => 'Arus pendek listrik',
+                                        'kebocoran_gas'     => 'Kebocoran gas',
+                                        'sambaran_petir'    => 'Sambaran petir',
+                                        'kelalaian_manusia' => 'Kelalaian manusia',
+                                        'faktor_alam'       => 'Faktor alam',
+                                        'lainnya'           => 'Lainnya',
+                                    ];
+                                @endphp
+                                @forelse($riwayat as $r)
+                                    @php
+                                        $tgl = !empty($r->tanggal) ? \Carbon\Carbon::parse($r->tanggal) : null;
+                                        $bulanStr = $tgl ? $tgl->locale('id')->translatedFormat('F Y') : '-';
+                                        $tahunRow = $tgl ? $tgl->year : date('Y');
 
-                                            <!-- EDIT & DELETE: HANYA DAMTAN & SUPER USER -->
-                                            @hasanyrole('Damtan|Super User')
-                                            <button type="button" class="action-btn edit" aria-label="Edit" title="Edit Data"
-                                                data-edit
-                                                data-id="{{ $r->id }}"
-                                                data-tanggal="{{ \Carbon\Carbon::parse($r->tanggal)->format('Y-m-d') }}"
-                                                data-kategori="{{ $r->kategori }}"
-                                                data-jumlah="{{ $r->jumlah }}"
-                                                data-kecamatan="{{ $r->kecamatan }}"
-                                                data-lokasi="{{ $r->lokasi }}"
-                                                data-keterangan="{{ $r->keterangan }}">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <form action="/internal/damtan/rekap-objek/{{ $r->id }}" method="POST" onsubmit="return confirm('Hapus data rekap ini?')">
-                                                @csrf @method('DELETE')
-                                                <button type="submit" class="action-btn delete" aria-label="Hapus" title="Hapus"><i class="fas fa-trash"></i></button>
-                                            </form>
-                                            @endhasanyrole
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr class="empty-row"><td colspan="7">
-                                    <div class="empty"><i class="fas fa-inbox"></i>Belum ada data. Klik tombol "+ Tambah Data" di atas untuk menambahkan data baru.</div>
-                                </td></tr>
-                            @endforelse
+                                        $jenisBangunan = $r->keterangan_objek_kebakaran ?: ($kategori[$filterObjekTerpilih][0] ?? ucwords(str_replace(['_', 'objek_'], ' ', $r->kategori_kebakaran ?? $filterObjekTerpilih)));
+                                        $lokasiKejadian = $r->alamat ?: ($r->lokasi ?? ($r->kecamatan ? 'Kec. ' . $r->kecamatan : '-'));
+
+                                        $pRaw = $r->dugaan_penyebab ?? null;
+                                        if ($pRaw === 'lainnya') {
+                                            $penyebabStr = $r->dugaan_penyebab_lainnya ?: 'Lainnya';
+                                        } elseif ($pRaw) {
+                                            $penyebabStr = $mapPenyebab[$pRaw] ?? ucwords(str_replace('_', ' ', $pRaw));
+                                        } else {
+                                            $penyebabStr = '-';
+                                        }
+
+                                        $jmlMeninggal = (int) ($r->korban_meninggal_fix ?? 0);
+                                        $jmlBerat = (int) ($r->korban_berat_fix ?? 0);
+                                        $jmlRingan = (int) ($r->korban_ringan_fix ?? 0);
+                                        $namaKorban = trim($r->nama_korban ?? '');
+                                        $korbanAset = trim($r->korban_hewan_aset_fix ?? '');
+
+                                        $jiwaParts = [];
+                                        if ($jmlMeninggal > 0) {
+                                            $jiwaParts[] = $jmlMeninggal . ' MD';
+                                        }
+                                        if ($jmlBerat > 0 || $jmlRingan > 0) {
+                                            $jiwaParts[] = ($jmlBerat + $jmlRingan) . ' Luka';
+                                        }
+                                        if (empty($jiwaParts) && !empty($namaKorban) && $namaKorban !== '-' && strtolower($namaKorban) !== 'nihil') {
+                                            $jiwaParts[] = $namaKorban;
+                                        }
+                                        $jiwaText = !empty($jiwaParts) ? implode(', ', $jiwaParts) : 'Nihil';
+                                        $kendaraanText = (!empty($korbanAset) && $korbanAset !== '-' && strtolower($korbanAset) !== 'nihil') ? $korbanAset : '-';
+                                        $isNihil = ($jiwaText === 'Nihil' && $kendaraanText === '-');
+                                    @endphp
+                                    <tr data-tahun="{{ $tahunRow }}">
+                                        <td class="no-cell">{{ $riwayat->firstItem() + $loop->index }}</td>
+                                        <td class="cell-strong">{{ $bulanStr }}</td>
+                                        <td><span class="num">{{ $r->jumlah ?? 1 }}</span> Kejadian</td>
+                                        <td class="fw-semibold text-dark">{{ $jenisBangunan }}</td>
+                                        <td>{{ $lokasiKejadian }}</td>
+                                        <td>
+                                            @if($penyebabStr !== '-')
+                                                <span class="badge bg-light text-dark border"><i class="fas fa-fire-flame-curved text-danger me-1"></i>{{ $penyebabStr }}</span>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($isNihil)
+                                                <span class="badge bg-light text-secondary border">Nihil</span>
+                                            @else
+                                                <div class="d-flex flex-column gap-1" style="font-size: 12.5px; line-height: 1.25;">
+                                                    <div><span class="text-muted">Jiwa:</span> <span class="{{ $jiwaText !== 'Nihil' ? 'text-danger fw-semibold' : 'text-dark' }}">{{ $jiwaText }}</span></div>
+                                                    <div><span class="text-muted">Kendaraan:</span> <span class="{{ $kendaraanText !== '-' ? 'text-primary fw-semibold' : 'text-dark' }}">{{ $kendaraanText }}</span></div>
+                                                </div>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr class="empty-row"><td colspan="7">
+                                        <div class="empty"><i class="fas fa-inbox"></i>Belum ada data laporan kebakaran untuk kategori {{ $kategori[$filterObjekTerpilih][0] ?? $filterObjekTerpilih }}.</div>
+                                    </td></tr>
+                                @endforelse
+                            @else
+                                @forelse($riwayat as $r)
+                                    <tr data-tahun="{{ \Carbon\Carbon::parse($r->tanggal)->year }}">
+                                        <td class="no-cell">{{ $riwayat->firstItem() + $loop->index }}</td>
+                                        <td class="cell-strong">{{ \Carbon\Carbon::parse($r->tanggal)->translatedFormat('F Y') }}</td>
+                                        <td><span class="tag">{{ $kategori[$r->kategori][0] ?? $r->kategori }}</span></td>
+                                        <td><span class="num">{{ $r->jumlah }}</span></td>
+                                        <td>{{ $r->kecamatan ?: '-' }}</td>
+                                        <td class="cell-ket">{{ \Illuminate\Support\Str::limit($r->keterangan ?: '-', 60) }}</td>
+                                        <td>
+                                            <div class="aksi">
+                                                <!-- EDIT & DELETE: HANYA DAMTAN & SUPER USER -->
+                                                @hasanyrole('Damtan|Super User')
+                                                <button type="button" class="action-btn edit" aria-label="Edit" title="Edit Data"
+                                                    data-edit
+                                                    data-id="{{ $r->id }}"
+                                                    data-tanggal="{{ \Carbon\Carbon::parse($r->tanggal)->format('Y-m') }}"
+                                                    data-kategori="{{ $r->kategori }}"
+                                                    data-jumlah="{{ $r->jumlah }}"
+                                                    data-kecamatan="{{ $r->kecamatan }}"
+                                                    data-lokasi="{{ $r->lokasi }}"
+                                                    data-keterangan="{{ $r->keterangan }}">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <form action="/internal/damtan/rekap-objek/{{ $r->id }}" method="POST" onsubmit="return confirm('Hapus data rekap ini?')">
+                                                    @csrf @method('DELETE')
+                                                    <button type="submit" class="action-btn delete" aria-label="Hapus" title="Hapus"><i class="fas fa-trash"></i></button>
+                                                </form>
+                                                @else
+                                                <span class="text-muted">-</span>
+                                                @endhasanyrole
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr class="empty-row"><td colspan="7">
+                                        <div class="empty"><i class="fas fa-inbox"></i>Belum ada data. Klik tombol "+ Tambah Data" di atas untuk menambahkan data baru.</div>
+                                    </td></tr>
+                                @endforelse
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -807,11 +889,213 @@
             <!-- FOOTER PAGINATION -->
             <div class="d-flex flex-wrap justify-content-between align-items-center p-3 border-top bg-white d-print-none">
                 <span class="text-muted" style="font-size: 13px;">
-                    Menampilkan {{ $riwayat->firstItem() ?? 0 }} - {{ $riwayat->lastItem() ?? 0 }} dari total {{ $riwayat->total() }} data objek
+                    Menampilkan {{ $riwayat->firstItem() ?? 0 }} - {{ $riwayat->lastItem() ?? 0 }} dari total {{ $riwayat->total() }} data {{ !empty($filterObjekTerpilih) ? 'laporan' : 'objek' }}
                 </span>
                 <div class="pagination-container mb-0">
                     {{ $riwayat->links('pagination::bootstrap-5') }}
                 </div>
+            </div>
+        </div>
+
+        {{-- =========================================================================
+             TABEL REKAPITULASI DATA KEJADIAN KEBAKARAN KOMPREHENSIF (FORMAT EXCEL RESMI)
+             ========================================================================= --}}
+        <div class="section-heading mt-5">
+            <span class="section-heading-ico"><i class="fas fa-file-excel text-emerald-600"></i></span>
+            <h3>Rekapitulasi Data Kejadian Kebakaran Komprehensif (Bulanan)</h3>
+            <span class="line"></span>
+        </div>
+
+        <div class="panel p-4 bg-white rounded-xl shadow-sm border border-slate-200 mb-5">
+            <div class="text-center mb-4">
+                <h2 class="text-base md:text-lg font-black tracking-wider text-slate-900 uppercase">
+                    DATA KEJADIAN KEBAKARAN KOTA JAMBI
+                </h2>
+                <p class="text-xs md:text-sm font-bold text-slate-700 tracking-wide mt-1">
+                    Januari - Desember {{ $tahunRekap ?? date('Y') }}
+                </p>
+            </div>
+
+            <div class="overflow-x-auto rounded border border-slate-300">
+                <table class="w-full border-collapse text-center text-xs" style="min-width: 1950px; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+                    <thead>
+                        {{-- HEADER BARIS 1: KELOMPOK UTAMA --}}
+                        <tr class="font-bold text-slate-900 text-xs">
+                            <th rowspan="3" class="border border-slate-400 p-2 align-middle" style="background-color: #bce2f5; min-width: 40px;">NO</th>
+                            <th rowspan="3" class="border border-slate-400 p-2 align-middle" style="background-color: #bce2f5; min-width: 105px;">BULAN</th>
+                            <th rowspan="3" class="border border-slate-400 p-2 align-middle" style="background-color: #bce2f5; min-width: 75px; line-height: 1.2;">JUMLAH<br>KEJADIAN</th>
+
+                            <th colspan="{{ count($kategori) }}" class="border border-slate-400 py-2.5 px-3 text-center tracking-wide" style="background-color: #fffc00; color: #1e293b;">JENIS BANGUNAN YANG TERBAKAR</th>
+                            <th colspan="12" class="border border-slate-400 py-2.5 px-3 text-center tracking-wide" style="background-color: #c6e0b4; color: #1e293b;">LOKASI KEJADIAN</th>
+                            <th colspan="6" class="border border-slate-400 py-2.5 px-3 text-center tracking-wide" style="background-color: #00b0f0; color: #0f172a;">PENYEBAB KEBAKARAN</th>
+                            <th colspan="5" class="border border-slate-400 py-2.5 px-3 text-center tracking-wide" style="background-color: #bce2f5; color: #0f172a;">KORBAN</th>
+                        </tr>
+
+                        {{-- HEADER BARIS 2: SUB-KOLOM & KELOMPOK KORBAN --}}
+                        <tr class="font-bold text-[11px] text-slate-800">
+                            {{-- JENIS BANGUNAN (Colspan {{ count($kategori) }}) --}}
+                            @php
+                                $formattedKategori = [
+                                    'objek_rumah'            => 'RUMAH',
+                                    'objek_gudang'           => 'GUDANG',
+                                    'objek_ruko'             => 'RUKO',
+                                    'objek_kantor'           => 'KANTOR',
+                                    'objek_sekolah'          => 'SEKOLAH',
+                                    'objek_rumah_ibadah'     => 'RUMAH<br>IBADAH',
+                                    'objek_pasar'            => 'PASAR /<br>TEMPAT USAHA',
+                                    'objek_kendaraan'        => 'KENDARAAN<br>BERMOTOR',
+                                    'objek_vital'            => 'OBJEK<br>VITAL',
+                                    'objek_sarana_kesehatan' => 'SARANA<br>KESEHATAN',
+                                    'objek_lahan_pohon'      => 'LAHAN,<br>POHON',
+                                    'objek_gardu_listrik'    => 'GARDU<br>LISTRIK',
+                                    'objek_tpa_sampah'       => 'TEMPAT PEMBUANGAN<br>SAMPAH',
+                                ];
+                            @endphp
+                            @foreach($kategori as $kKey => $kData)
+                                <th rowspan="2" class="border border-slate-400 p-1.5 align-middle uppercase text-[10px]" style="background-color: #fffc00; min-width: 75px; line-height: 1.2;">
+                                    {!! $formattedKategori[$kKey] ?? e(strtoupper($kData[0])) !!}
+                                </th>
+                            @endforeach
+
+                            {{-- LOKASI KEJADIAN (Colspan 12) --}}
+                            <th rowspan="2" class="border border-slate-400 p-1.5 align-middle" style="background-color: #c6e0b4; min-width: 75px; line-height: 1.2;">ALAM<br>BARAJO</th>
+                            <th rowspan="2" class="border border-slate-400 p-1.5 align-middle" style="background-color: #c6e0b4; min-width: 75px; line-height: 1.2;">Jambi<br>Selatan</th>
+                            <th rowspan="2" class="border border-slate-400 p-1.5 align-middle" style="background-color: #c6e0b4; min-width: 75px; line-height: 1.2;">PASAR<br>JAMBI</th>
+                            <th rowspan="2" class="border border-slate-400 p-1.5 align-middle" style="background-color: #c6e0b4; min-width: 75px; line-height: 1.2;">JAMBI<br>TIMUR</th>
+                            <th rowspan="2" class="border border-slate-400 p-1.5 align-middle" style="background-color: #c6e0b4; min-width: 75px; line-height: 1.2;">TELANAI<br>PURA</th>
+                            <th rowspan="2" class="border border-slate-400 p-1.5 align-middle" style="background-color: #c6e0b4; min-width: 75px; line-height: 1.2;">PAAL<br>MERAH</th>
+                            <th rowspan="2" class="border border-slate-400 p-1.5 align-middle" style="background-color: #c6e0b4; min-width: 75px; line-height: 1.2;">KOTA<br>BARU</th>
+                            <th rowspan="2" class="border border-slate-400 p-1.5 align-middle" style="background-color: #c6e0b4; min-width: 75px;">PELAYANGAN</th>
+                            <th rowspan="2" class="border border-slate-400 p-1.5 align-middle" style="background-color: #c6e0b4; min-width: 75px; line-height: 1.2;">DANAU<br>TELUK</th>
+                            <th rowspan="2" class="border border-slate-400 p-1.5 align-middle" style="background-color: #c6e0b4; min-width: 75px; line-height: 1.2;">DANAU<br>SIPIN</th>
+                            <th rowspan="2" class="border border-slate-400 p-1.5 align-middle" style="background-color: #c6e0b4; min-width: 75px;">JELUTUNG</th>
+                            <th rowspan="2" class="border border-slate-400 p-1.5 align-middle" style="background-color: #c6e0b4; min-width: 95px; line-height: 1.2;">PERBATASAN<br><span class="text-[10px] font-normal">(Muaro jambi)</span></th>
+
+                            {{-- PENYEBAB KEBAKARAN (Colspan 6) --}}
+                            <th rowspan="2" class="border border-slate-400 p-1.5 align-middle" style="background-color: #00b0f0; color: #0f172a; min-width: 65px;">LISTRIK</th>
+                            <th rowspan="2" class="border border-slate-400 p-1.5 align-middle" style="background-color: #00b0f0; color: #0f172a; min-width: 60px;">Minyak</th>
+                            <th rowspan="2" class="border border-slate-400 p-1.5 align-middle" style="background-color: #00b0f0; color: #0f172a; min-width: 65px;">KOMPOR</th>
+                            <th rowspan="2" class="border border-slate-400 p-1.5 align-middle" style="background-color: #00b0f0; color: #0f172a; min-width: 65px;">ROKOK</th>
+                            <th rowspan="2" class="border border-slate-400 p-1.5 align-middle" style="background-color: #00b0f0; color: #0f172a; min-width: 105px; line-height: 1.2;">Tabung gas/LILIN/<br>OBAT NYAMUK</th>
+                            <th rowspan="2" class="border border-slate-400 p-1.5 align-middle" style="background-color: #00b0f0; color: #0f172a; min-width: 65px;">LAINNYA</th>
+
+                            {{-- KORBAN SUBHEADER --}}
+                            <th colspan="3" class="border border-slate-400 p-1 text-center" style="background-color: #bce2f5;">JIWA</th>
+                            <th colspan="2" class="border border-slate-400 p-1 text-center" style="background-color: #bce2f5;">KENDARAAN</th>
+                        </tr>
+
+                        {{-- HEADER BARIS 3: RINCIAN KORBAN --}}
+                        <tr class="font-bold text-[10.5px] text-slate-800">
+                            <th class="border border-slate-400 p-1 align-middle" style="background-color: #bce2f5; min-width: 75px;">KECELAKAAN</th>
+                            <th class="border border-slate-400 p-1 align-middle" style="background-color: #bce2f5; min-width: 70px;">LUKA BAKAR</th>
+                            <th class="border border-slate-400 p-1 align-middle" style="background-color: #bce2f5; min-width: 70px;">MENINGGAL</th>
+                            <th class="border border-slate-400 p-1 align-middle" style="background-color: #bce2f5; min-width: 65px;">RODA DUA</th>
+                            <th class="border border-slate-400 p-1 align-middle" style="background-color: #bce2f5; min-width: 70px;">RODA EMPAT</th>
+                        </tr>
+
+                        {{-- HEADER BARIS 4: NOMOR KOLOM (RED BAR) --}}
+                        <tr class="bg-red-600 text-white font-bold text-center text-[11px]">
+                            @for($colNum = 1; $colNum <= (3 + count($kategori) + 12 + 6 + 5); $colNum++)
+                                <th class="border border-red-700 py-0.5 px-1">{{ $colNum }}</th>
+                            @endfor
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                            $bData = $rekapitulasiKomprehensif['bulanan'] ?? [];
+                        @endphp
+                        @foreach($bData as $m)
+                            <tr class="hover:bg-slate-50 transition-colors {{ $loop->even ? 'bg-slate-50/50' : 'bg-white' }}">
+                                <td class="border border-slate-300 py-1.5 px-2 font-bold text-slate-700">{{ $m['no'] }}</td>
+                                <td class="border border-slate-300 py-1.5 px-2 font-bold text-slate-800 text-left">{{ $m['bulan'] }}</td>
+                                <td class="border border-slate-300 py-1.5 px-2 font-bold {{ $m['jumlah_kejadian'] > 0 ? 'text-slate-900 bg-sky-50/60' : 'text-slate-400' }}">
+                                    {{ $m['jumlah_kejadian'] > 0 ? $m['jumlah_kejadian'] : '-' }}
+                                </td>
+
+                                {{-- Jenis Bangunan (Yellow Tint) --}}
+                                @foreach($kategori as $kKey => $kData)
+                                    <td class="border border-slate-300 py-1.5 px-1 {{ ($m[$kKey] ?? 0) > 0 ? 'font-semibold text-slate-900 bg-yellow-50/60' : 'text-slate-400' }}">
+                                        {{ ($m[$kKey] ?? 0) > 0 ? $m[$kKey] : '-' }}
+                                    </td>
+                                @endforeach
+
+                                {{-- Lokasi Kejadian (Green Tint) --}}
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['alam_barajo'] > 0 ? 'font-semibold text-slate-900 bg-emerald-50/50' : 'text-slate-400' }}">{{ $m['alam_barajo'] ?: '-' }}</td>
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['jambi_selatan'] > 0 ? 'font-semibold text-slate-900 bg-emerald-50/50' : 'text-slate-400' }}">{{ $m['jambi_selatan'] ?: '-' }}</td>
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['pasar_jambi'] > 0 ? 'font-semibold text-slate-900 bg-emerald-50/50' : 'text-slate-400' }}">{{ $m['pasar_jambi'] ?: '-' }}</td>
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['jambi_timur'] > 0 ? 'font-semibold text-slate-900 bg-emerald-50/50' : 'text-slate-400' }}">{{ $m['jambi_timur'] ?: '-' }}</td>
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['telanai_pura'] > 0 ? 'font-semibold text-slate-900 bg-emerald-50/50' : 'text-slate-400' }}">{{ $m['telanai_pura'] ?: '-' }}</td>
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['paal_merah'] > 0 ? 'font-semibold text-slate-900 bg-emerald-50/50' : 'text-slate-400' }}">{{ $m['paal_merah'] ?: '-' }}</td>
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['kota_baru'] > 0 ? 'font-semibold text-slate-900 bg-emerald-50/50' : 'text-slate-400' }}">{{ $m['kota_baru'] ?: '-' }}</td>
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['pelayangan'] > 0 ? 'font-semibold text-slate-900 bg-emerald-50/50' : 'text-slate-400' }}">{{ $m['pelayangan'] ?: '-' }}</td>
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['danau_teluk'] > 0 ? 'font-semibold text-slate-900 bg-emerald-50/50' : 'text-slate-400' }}">{{ $m['danau_teluk'] ?: '-' }}</td>
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['danau_sipin'] > 0 ? 'font-semibold text-slate-900 bg-emerald-50/50' : 'text-slate-400' }}">{{ $m['danau_sipin'] ?: '-' }}</td>
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['jelutung'] > 0 ? 'font-semibold text-slate-900 bg-emerald-50/50' : 'text-slate-400' }}">{{ $m['jelutung'] ?: '-' }}</td>
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['perbatasan'] > 0 ? 'font-semibold text-slate-900 bg-emerald-50/50' : 'text-slate-400' }}">{{ $m['perbatasan'] ?: '-' }}</td>
+
+                                {{-- Penyebab Kebakaran (Cyan Tint) --}}
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['listrik'] > 0 ? 'font-semibold text-slate-900 bg-sky-50/70' : 'text-slate-400' }}">{{ $m['listrik'] ?: '-' }}</td>
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['minyak'] > 0 ? 'font-semibold text-slate-900 bg-sky-50/70' : 'text-slate-400' }}">{{ $m['minyak'] ?: '-' }}</td>
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['kompor'] > 0 ? 'font-semibold text-slate-900 bg-sky-50/70' : 'text-slate-400' }}">{{ $m['kompor'] ?: '-' }}</td>
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['rokok'] > 0 ? 'font-semibold text-slate-900 bg-sky-50/70' : 'text-slate-400' }}">{{ $m['rokok'] ?: '-' }}</td>
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['gas_lilin_nyamuk'] > 0 ? 'font-semibold text-slate-900 bg-sky-50/70' : 'text-slate-400' }}">{{ $m['gas_lilin_nyamuk'] ?: '-' }}</td>
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['lainnya_penyebab'] > 0 ? 'font-semibold text-slate-900 bg-sky-50/70' : 'text-slate-400' }}">{{ $m['lainnya_penyebab'] ?: '-' }}</td>
+
+                                {{-- Korban Jiwa & Kendaraan --}}
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['kecelakaan'] > 0 ? 'font-semibold text-amber-700 bg-amber-50/40' : 'text-slate-400' }}">{{ $m['kecelakaan'] ?: '-' }}</td>
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['luka_bakar'] > 0 ? 'font-semibold text-amber-800 bg-amber-50/40' : 'text-slate-400' }}">{{ $m['luka_bakar'] ?: '-' }}</td>
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['meninggal'] > 0 ? 'font-bold text-red-600 bg-red-50/50' : 'text-slate-400' }}">{{ $m['meninggal'] ?: '-' }}</td>
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['roda_dua'] > 0 ? 'font-semibold text-blue-700 bg-blue-50/40' : 'text-slate-400' }}">{{ $m['roda_dua'] ?: '-' }}</td>
+                                <td class="border border-slate-300 py-1.5 px-1 {{ $m['roda_empat'] > 0 ? 'font-semibold text-blue-800 bg-blue-50/40' : 'text-slate-400' }}">{{ $m['roda_empat'] ?: '-' }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                    <tfoot>
+                        @php
+                            $tot = $rekapitulasiKomprehensif['total'] ?? [];
+                        @endphp
+                        <tr class="font-extrabold text-slate-900 border-t-2 border-slate-400 text-xs">
+                            <td colspan="2" class="border border-slate-400 py-2.5 px-3 text-center tracking-wider bg-slate-200">TOTAL</td>
+                            <td class="border border-slate-400 py-2.5 px-1 bg-sky-100 text-sky-950 font-black">{{ $tot['jumlah_kejadian'] ?: '-' }}</td>
+
+                            {{-- Total Jenis Bangunan (Yellow) --}}
+                            @foreach($kategori as $kKey => $kData)
+                                <td class="border border-slate-400 py-2.5 px-1 font-bold" style="background-color: #fef08a;">
+                                    {{ ($tot[$kKey] ?? 0) > 0 ? $tot[$kKey] : '-' }}
+                                </td>
+                            @endforeach
+
+                            {{-- Total Lokasi (Green) --}}
+                            <td class="border border-slate-400 py-2.5 px-1" style="background-color: #dcfce7;">{{ $tot['alam_barajo'] ?: '-' }}</td>
+                            <td class="border border-slate-400 py-2.5 px-1" style="background-color: #dcfce7;">{{ $tot['jambi_selatan'] ?: '-' }}</td>
+                            <td class="border border-slate-400 py-2.5 px-1" style="background-color: #dcfce7;">{{ $tot['pasar_jambi'] ?: '-' }}</td>
+                            <td class="border border-slate-400 py-2.5 px-1" style="background-color: #dcfce7;">{{ $tot['jambi_timur'] ?: '-' }}</td>
+                            <td class="border border-slate-400 py-2.5 px-1" style="background-color: #dcfce7;">{{ $tot['telanai_pura'] ?: '-' }}</td>
+                            <td class="border border-slate-400 py-2.5 px-1" style="background-color: #dcfce7;">{{ $tot['paal_merah'] ?: '-' }}</td>
+                            <td class="border border-slate-400 py-2.5 px-1" style="background-color: #dcfce7;">{{ $tot['kota_baru'] ?: '-' }}</td>
+                            <td class="border border-slate-400 py-2.5 px-1" style="background-color: #dcfce7;">{{ $tot['pelayangan'] ?: '-' }}</td>
+                            <td class="border border-slate-400 py-2.5 px-1" style="background-color: #dcfce7;">{{ $tot['danau_teluk'] ?: '-' }}</td>
+                            <td class="border border-slate-400 py-2.5 px-1" style="background-color: #dcfce7;">{{ $tot['danau_sipin'] ?: '-' }}</td>
+                            <td class="border border-slate-400 py-2.5 px-1" style="background-color: #dcfce7;">{{ $tot['jelutung'] ?: '-' }}</td>
+                            <td class="border border-slate-400 py-2.5 px-1" style="background-color: #dcfce7;">{{ $tot['perbatasan'] ?: '-' }}</td>
+
+                            {{-- Total Penyebab (Cyan) --}}
+                            <td class="border border-slate-400 py-2.5 px-1" style="background-color: #bae6fd;">{{ $tot['listrik'] ?: '-' }}</td>
+                            <td class="border border-slate-400 py-2.5 px-1" style="background-color: #bae6fd;">{{ $tot['minyak'] ?: '-' }}</td>
+                            <td class="border border-slate-400 py-2.5 px-1" style="background-color: #bae6fd;">{{ $tot['kompor'] ?: '-' }}</td>
+                            <td class="border border-slate-400 py-2.5 px-1" style="background-color: #bae6fd;">{{ $tot['rokok'] ?: '-' }}</td>
+                            <td class="border border-slate-400 py-2.5 px-1" style="background-color: #bae6fd;">{{ $tot['gas_lilin_nyamuk'] ?: '-' }}</td>
+                            <td class="border border-slate-400 py-2.5 px-1" style="background-color: #bae6fd;">{{ $tot['lainnya_penyebab'] ?: '-' }}</td>
+
+                            {{-- Total Korban --}}
+                            <td class="border border-slate-400 py-2.5 px-1 bg-amber-100 text-amber-900">{{ $tot['kecelakaan'] ?: '-' }}</td>
+                            <td class="border border-slate-400 py-2.5 px-1 bg-amber-100 text-amber-900">{{ $tot['luka_bakar'] ?: '-' }}</td>
+                            <td class="border border-slate-400 py-2.5 px-1 bg-red-100 text-red-800 font-bold">{{ $tot['meninggal'] ?: '-' }}</td>
+                            <td class="border border-slate-400 py-2.5 px-1 bg-blue-100 text-blue-900">{{ $tot['roda_dua'] ?: '-' }}</td>
+                            <td class="border border-slate-400 py-2.5 px-1 bg-blue-100 text-blue-900">{{ $tot['roda_empat'] ?: '-' }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
         </div>
 
@@ -825,7 +1109,7 @@
                 <div class="edit-modal-body">
                     <div class="detail-list">
                         <div class="detail-item">
-                            <span class="lbl">Tanggal Kejadian</span>
+                            <span class="lbl">Bulan &amp; Tahun</span>
                             <span class="val" id="det_tanggal">-</span>
                         </div>
                         <div class="detail-item">
@@ -869,8 +1153,8 @@
                     <div class="edit-modal-body">
                         <div class="f-grid">
                             <div class="c-6">
-                                <label class="f-label" for="tanggal">Tanggal <span class="req">*</span></label>
-                                <input type="date" id="tanggal" name="tanggal" class="f-control" value="{{ old('tanggal', date('Y-m-d')) }}" max="{{ date('Y-m-d') }}" required>
+                                <label class="f-label" for="tanggal">Bulan &amp; Tahun <span class="req">*</span></label>
+                                <input type="month" id="tanggal" name="tanggal" class="f-control" value="{{ old('tanggal', date('Y-m')) }}" min="2015-01" max="2099-12" required>
                                 @error('tanggal')<div class="f-error">{{ $message }}</div>@enderror
                             </div>
 
@@ -931,8 +1215,8 @@
                     <div class="edit-modal-body">
                         <div class="f-grid">
                             <div class="c-6">
-                                <label class="f-label" for="edit_tanggal">Tanggal <span class="req">*</span></label>
-                                <input type="date" id="edit_tanggal" name="tanggal" class="f-control" max="{{ date('Y-m-d') }}" required>
+                                <label class="f-label" for="edit_tanggal">Bulan &amp; Tahun <span class="req">*</span></label>
+                                <input type="month" id="edit_tanggal" name="tanggal" class="f-control" min="2015-01" max="2099-12" required>
                             </div>
                             <div class="c-6">
                                 <label class="f-label" for="edit_jumlah">Jumlah <span class="req">*</span></label>
