@@ -4,36 +4,36 @@
 
     $menu = [
         [
-            'title' => 'Bagian Pencegahan', 'icon' => 'fa-shield-halved', 'roles' => $ops,
+            'title' => 'Bidang Pencegahan', 'icon' => 'fa-shield-halved', 'roles' => $ops,
             'items' => [
                 ['Peningkatan Kapasitas Aparatur', '/internal/pencegahan/peningkatan-kapasitas', 'fa-arrow-trend-up'],
                 ['Pencegahan Kebakaran & Inspeksi', '/internal/pencegahan/inspeksi-kebakaran', 'fa-magnifying-glass-chart'],
                 ['Pemberdayaan Masyarakat & Dunia Usaha', '/internal/pencegahan/pemberdayaan-masyarakat', 'fa-handshake-angle'],
-                ['Kelola Edukasi', '/internal/pencegahan/kelola-edukasi', 'fa-bullhorn'],
-                ['Kelola Redkar', '/internal/pencegahan/kelola-redkar', 'fa-users-rectangle'],
-                ['Kelola RPPKBGL', '/internal/pencegahan/kelola-rpkbgl', 'fa-building-circle-check'],
-                ['Kelola SKK', '/internal/pencegahan/kelola-skk', 'fa-file-shield'],
+                ['Data Edukasi', '/internal/pencegahan/kelola-edukasi', 'fa-bullhorn'],
+                ['Data Redkar', '/internal/pencegahan/kelola-redkar', 'fa-users-rectangle'],
+                ['Data RPPKBGL', '/internal/pencegahan/kelola-rpkbgl', 'fa-building-circle-check'],
+                ['Data SKK', '/internal/pencegahan/kelola-skk', 'fa-file-shield'],
             ],
         ],
         [
-            'title' => 'Bagian Pemadaman', 'icon' => 'fa-fire-extinguisher', 'roles' => $ops,
+            'title' => 'Bidang Pemadaman', 'icon' => 'fa-fire-extinguisher', 'roles' => $ops,
             'items' => [
-                ['Kelola Rekap Objek Kebakaran', '/internal/damtan/rekap-objek', 'fa-house-chimney-crack'],
-                ['Kelola Data Laporan', '/internal/damtan/data-laporan', 'fa-clipboard-list'],
-                ['Kelola Surat Korban', '/internal/surat-korban/data', 'fa-folder-open'],
-                ['Kelola Pengamanan Event Keramaian', route('internal.izin-keramaian.index'), 'fa-users-rectangle'],
-                ['Kelola Penggunaan Sarana', url('/internal/damtan/kelola-penggunaan-sarana'), 'fa-truck-droplet'],
+                ['Data Rekap Objek Kebakaran', '/internal/damtan/rekap-objek', 'fa-house-chimney-crack'],
+                ['Data Laporan', '/internal/damtan/data-laporan', 'fa-clipboard-list'],
+                ['Data Surat Korban', '/internal/surat-korban/data', 'fa-folder-open'],
+                ['Data Pengamanan Event Keramaian', route('internal.izin-keramaian.index'), 'fa-users-rectangle'],
+                ['Data Penggunaan Sarana', url('/internal/damtan/kelola-penggunaan-sarana'), 'fa-truck-droplet'],
                 ['Rekap Layanan & Penyelamatan', '/internal/damtan/rekap-layanan', 'fa-truck-medical'],
             ],
         ],
         [
-            'title' => 'Bagian Sapra', 'icon' => 'fa-warehouse', 'roles' => $ops,
+            'title' => 'Bidang Sapra', 'icon' => 'fa-warehouse', 'roles' => $ops,
             'items' => [
                 ['Sarana Pemadam Kebakaran', '/sapra/sarana-mako', 'fa-fire-extinguisher'],
                 ['Prasarana Pemadam Kebakaran', '/sapra/prasarana-mako', 'fa-building'],
                 ['Sarana Penyelamatan & Evakuasi', '/sapra/sarana-penyelamatan', 'fa-life-ring'],
                 ['Sarana Pemeriksaan Proteksi', '/sapra/sarana-pemeriksaan', 'fa-search-location'],
-                ['Kelola Data Pos', '/sapra/kelola-pos', 'fa-warehouse'],
+                ['Data Pos', '/sapra/kelola-pos', 'fa-warehouse'],
                 ['Sumber Air', '/sapra/data_hidrant_gedung', 'fa-droplet'],
                 ['Data Hidrant Kota Jambi', '/sapra/data-hidrant-kota', 'fa-map-location-dot'],
                 ['Mutu Baku Kebutuhan', '/sapra/kebutuhan-sarpras', 'fa-boxes-stacked'],
@@ -68,8 +68,8 @@
                 ['Ujung-Ujung Damkar', '/internal/operator/ujung-damkar', 'fa-brands fa-youtube'],
                 ['Edu Damkar', '/internal/operator/edu-damkar', 'fa-graduation-cap'],
                 ['Pemadaman, Penyelamatan & Evakuasi', '/internal/operator/kejadian', 'fa-fire-flame-curved'],
-                ['Kelola Pengumuman', '/internal/operator/pengumuman', 'fa-bullhorn'],
-                ['Kelola IKM', '/internal/operator/ikm', 'fa-face-smile'],
+                ['Data Pengumuman', '/internal/operator/pengumuman', 'fa-bullhorn'],
+                ['Data IKM', '/internal/operator/ikm', 'fa-face-smile'],
                 ['Titik Peta Sigapkar', '/internal/peta-sigap/data', 'fa-location-dot'],
             ],
         ],
@@ -94,8 +94,8 @@
             'items' => [
                 // Item ke-4 (opsional) = batasan role khusus item
                 ['Profil Saya', url('/internal/profil'), 'fa-user-pen'],
-                ['Kelola Pengguna', url('/internal/kelola-user'), 'fa-users-gear', 'Super User'],
-                ['Kelola Akun Pemohon', url('/internal/kelola-pemohon'), 'fa-address-book', 'Super User|Operator'],
+                ['Data Pengguna', url('/internal/kelola-user'), 'fa-users-gear', 'Super User'],
+                ['Data Akun Pemohon', url('/internal/kelola-pemohon'), 'fa-address-book', 'Super User|Operator'],
             ],
         ],
     ];

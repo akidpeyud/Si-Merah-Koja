@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class PendaftarRedkar extends Model
 {
@@ -12,15 +12,8 @@ class PendaftarRedkar extends Model
 
     protected $table = 'redkar_registrations';
 
-    // Mencegah PHP/Laravel mengubah ID string ("RDK-...") menjadi angka 0
-    protected $primaryKey = 'id';
-    public $incrementing = false;
-    protected $keyType = 'string';
-
     protected $fillable = [
-        'id',
         'nik',
-        'kartu_anggota',
         'nama_lengkap',
         'jenis_kelamin',
         'tempat_lahir',
@@ -28,6 +21,8 @@ class PendaftarRedkar extends Model
         'status_perkawinan',
         'agama',
         'nomor_telp',
+        'tanggal_pembentukan',
+        'tanggal_pengukuhan',
         'file_ktp',
         'alamat',
         'rt_rw',
@@ -44,6 +39,12 @@ class PendaftarRedkar extends Model
         'status_pendaftaran',
     ];
 
+    protected $casts = [
+        'tanggal_lahir' => 'date',
+        'tanggal_pembentukan' => 'date',
+        'tanggal_pengukuhan' => 'date',
+    ];
+
     /**
      * Accessor jenis kelamin.
      * Menerima format lama (L / P) maupun format baru (Laki-Laki / Perempuan)
@@ -55,7 +56,37 @@ class PendaftarRedkar extends Model
             get: fn (?string $value) => match (strtoupper(trim((string) $value))) {
                 'L', 'LAKI-LAKI' => 'Laki-Laki',
                 'P', 'PEREMPUAN' => 'Perempuan',
-                default          => $value,
+                default => $value,
+            },
+        );
+    }
+
+    /**
+     * Accessor sehat jasmani dan rohani.
+     * Mengembalikan "Sehat" atau "Tidak".
+     */
+    protected function sehatJasmani(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?string $value) => match (strtoupper(trim((string) $value))) {
+                'YA', 'SEHAT' => 'Sehat',
+                'TIDAK' => 'Tidak',
+                default => $value ?? 'Sehat',
+            },
+        );
+    }
+
+    /**
+     * Accessor buta warna.
+     * Mengembalikan "Iya" atau "Tidak".
+     */
+    protected function butaWarna(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?string $value) => match (strtoupper(trim((string) $value))) {
+                'IYA', 'YA' => 'Iya',
+                'TIDAK' => 'Tidak',
+                default => $value ?? 'Tidak',
             },
         );
     }

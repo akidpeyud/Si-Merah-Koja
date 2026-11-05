@@ -464,7 +464,6 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
 
     // 1. KELOLA REDKAR
     Route::get('/internal/pencegahan/kelola-redkar', [RedkarController::class, 'kelolaRedkarInternal']);
-    Route::get('/internal/pencegahan/cetak-redkar/{id}', [RedkarController::class, 'cetakRedkar']);
 
     Route::middleware([RoleMiddleware::class.':Pencegahan|Super User'])->group(function () {
         Route::post('/internal/pencegahan/update-status-redkar/{id}', [RedkarController::class, 'verifikasiRedkar']);

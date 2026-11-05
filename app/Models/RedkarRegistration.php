@@ -11,15 +11,7 @@ class RedkarRegistration extends Authenticatable
 
     protected $table = 'redkar_registrations';
 
-    // ========================================================
-    // KODE WAJIB UNTUK PRIMARY KEY STRING (CUSTOM ID)
-    // ========================================================
-    public $incrementing = false; // Matikan auto-increment (1, 2, 3...)
-    protected $keyType = 'string'; // Beritahu Laravel bahwa ID berbentuk huruf/string
-    // ========================================================
-
     protected $fillable = [
-        'id', // Wajib dimasukkan ke fillable agar bisa diisi manual (RDK-...)
         'username',
         'password',
         'nik',
@@ -30,6 +22,8 @@ class RedkarRegistration extends Authenticatable
         'status_perkawinan',
         'agama',
         'nomor_telp',
+        'tanggal_pembentukan',
+        'tanggal_pengukuhan',
         'file_ktp',
         'alamat',
         'rt_rw',
@@ -48,7 +42,9 @@ class RedkarRegistration extends Authenticatable
         'status_pendaftaran',
     ];
 
-    protected $hidden = [
-        'password',
+    protected $casts = [
+        'tanggal_lahir' => 'date',
+        'tanggal_pembentukan' => 'date',
+        'tanggal_pengukuhan' => 'date',
     ];
 }

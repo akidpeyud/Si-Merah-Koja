@@ -98,23 +98,28 @@
         border: 1px solid var(--rk-line); background-color: var(--rk-paper); color: var(--rk-ink);
         transition: border-color .2s, box-shadow .2s, background-color .2s;
     }
-    .rkf .form-select { padding-right: 38px; }
-    .rkf .form-control::placeholder { color: #9aa7b6; }
-    .rkf .form-control:hover, .rkf .form-select:hover { border-color: #cdd6e2; }
     .rkf .form-control:focus, .rkf .form-select:focus {
         background-color: #fff; border-color: var(--rk-navy);
-        box-shadow: 0 0 0 4px rgba(27, 54, 93, .12);
+        box-shadow: 0 0 0 4px rgba(27, 54, 93, .12); outline: none;
     }
-    .rkf-hint { margin-top: 6px; font-size: .78rem; color: var(--rk-muted); }
-    .rkf-hint.ok { color: #0b7a56; font-weight: 600; }
-    .rkf-field-error { margin-top: 8px; font-size: .82rem; font-weight: 600; color: var(--rk-red); }
+    .rkf-hint { font-size: .78rem; color: var(--rk-muted); margin-top: 4px; }
+    .rkf-hint.ok { color: var(--rk-green); font-weight: 600; }
 
-    /* ---------- Upload KTP ---------- */
+    /* ---------- File saat ini & dropzone ---------- */
+    .rkf-current {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 12px 16px; border-radius: 12px; background: var(--rk-paper);
+        border: 1px solid var(--rk-line); margin-bottom: 12px; font-size: .88rem;
+    }
+    .rkf-current a { color: var(--rk-navy); font-weight: 600; text-decoration: none; }
+    .rkf-current a:hover { text-decoration: underline; }
+    .rkf-current .none { color: var(--rk-muted); font-style: italic; }
+
     .rkf-drop {
-        position: relative; display: flex; align-items: center; gap: 16px;
-        padding: 18px 20px; cursor: pointer;
-        border: 2px dashed #cdd6e2; border-radius: 16px; background: var(--rk-paper);
-        transition: border-color .2s, background .2s;
+        position: relative; border: 2px dashed var(--rk-line);
+        border-radius: 14px; padding: 18px 20px;
+        display: flex; align-items: center; gap: 16px; cursor: pointer;
+        background: var(--rk-paper); transition: border-color .2s, background .2s;
     }
     .rkf-drop:hover, .rkf-drop.has-file { border-color: var(--rk-navy); background: #f1f5fb; }
     .rkf-drop:focus-within { border-color: var(--rk-navy); box-shadow: 0 0 0 4px rgba(27, 54, 93, .12); }
@@ -128,24 +133,12 @@
     .rkf-drop-text strong { display: block; font-size: .92rem; color: var(--rk-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .rkf-drop-text small { display: block; margin-top: 2px; font-size: .8rem; color: var(--rk-muted); }
     .rkf-drop img { flex: none; width: 64px; height: 44px; object-fit: cover; border-radius: 8px; border: 1px solid var(--rk-line); }
-    .rkf-current {
-        display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-        margin-bottom: 12px; padding: 12px 16px;
-        border: 1px solid var(--rk-line); border-radius: 14px; background: #fff; font-size: .88rem;
-    }
-    .rkf-current span { display: inline-flex; align-items: center; gap: 8px; color: var(--rk-steel); }
-    .rkf-current a {
-        padding: 6px 13px; border-radius: 10px; font-size: .82rem; font-weight: 600;
-        background: var(--rk-green-soft); color: #0b7a56; text-decoration: none; transition: background .2s, color .2s;
-    }
-    .rkf-current a:hover { background: #0e9f6e; color: #fff; }
-    .rkf-current .none { color: var(--rk-muted); font-weight: 500; }
 
-    /* ---------- Bar aksi ---------- */
+    /* ---------- Tombol aksi ---------- */
     .rkf-bar {
         position: sticky; bottom: 14px; z-index: 5;
         display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap;
-        padding: 12px; margin-top: 4px;
+        padding: 12px; margin-top: 8px;
         background: rgba(255, 255, 255, .92); backdrop-filter: blur(8px);
         border: 1px solid var(--rk-line); border-radius: 18px;
         box-shadow: 0 10px 30px rgba(13, 27, 42, .12);
@@ -162,10 +155,8 @@
     .rkf-btn-ghost { background: #fff; color: var(--rk-steel); border-color: var(--rk-line); }
     .rkf-btn-ghost:hover { background: var(--rk-paper); color: var(--rk-ink); }
     .rkf-btn-save { color: #fff; }
-    .rkf-btn-save.green { background: var(--rk-green); box-shadow: 0 6px 16px rgba(16, 185, 129, .3); }
-    .rkf-btn-save.green:hover { background: #0e9f6e; transform: translateY(-1px); color: #fff; }
-    .rkf-btn-save.navy { background: var(--rk-navy); box-shadow: 0 6px 16px rgba(27, 54, 93, .28); }
-    .rkf-btn-save.navy:hover { background: var(--rk-ink); transform: translateY(-1px); color: #fff; }
+    .rkf-btn-save.navy { background: var(--rk-navy); box-shadow: 0 6px 16px rgba(27, 54, 93, .25); }
+    .rkf-btn-save.navy:hover { background: #132742; transform: translateY(-1px); color: #fff; }
     .rkf-btn-save[disabled] { opacity: .7; cursor: progress; transform: none; }
 
     @media (max-width: 768px) {
@@ -175,9 +166,6 @@
         .rkf-bar .rkf-btn { flex: 1 1 100%; }
         .rkf-bar .rkf-btn-save { order: -1; }
         .rkf-drop { flex-wrap: wrap; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-        .rkf * { transition: none !important; }
     }
 </style>
 @endpush
@@ -191,14 +179,18 @@
     $pekerjaanList  = ['ASN', 'TNI', 'POLRI', 'WIRASWASTA', 'KARYAWAN SWASTA', 'KARYAWAN BUMN/BUMD', 'PEKERJA HARIAN LEPAS', 'MAHASISWA/PELAJAR', 'PENGURUS RUMAH TANGGA'];
     $darahList      = ['A', 'B', 'AB', 'O', 'Tidak Tahu'];
 
-    $val          = fn ($k) => old($k, $relawan->$k);
-    $tersimpan    = strtoupper(trim((string) $relawan->pekerjaan));
-    $isLain       = $tersimpan !== '' && !in_array($tersimpan, $pekerjaanList);
-    $pekerjaanSel = old('pekerjaan', $isLain ? 'LAINNYA' : $tersimpan);
-    $lainnyaVal   = old('pekerjaan_lainnya', $isLain ? $relawan->pekerjaan : '');
+    $val = fn ($k) => old($k, $relawan->$k);
+
+    $curPekerjaan = $val('pekerjaan');
+    $isLainnya    = !in_array($curPekerjaan, $pekerjaanList) && $curPekerjaan !== null;
+    $pekerjaanSel = $isLainnya ? 'LAINNYA' : $curPekerjaan;
+    $lainnyaVal   = $isLainnya ? $curPekerjaan : old('pekerjaan_lainnya');
     $kelSel       = old('kelurahan', $relawan->kelurahan);
-    $tglLahir = $val('tanggal_lahir');
-    $tglLahir = $tglLahir ? \Carbon\Carbon::parse($tglLahir)->format('Y-m-d') : '';
+    $tglLahir     = $val('tanggal_lahir') ? \Carbon\Carbon::parse($val('tanggal_lahir'))->format('Y-m-d') : '';
+    $tglBentuk    = old('tanggal_pembentukan', $relawan->tanggal_pembentukan ? \Carbon\Carbon::parse($relawan->tanggal_pembentukan)->format('Y-m-d') : '');
+    $tglKukuh     = old('tanggal_pengukuhan', $relawan->tanggal_pengukuhan ? \Carbon\Carbon::parse($relawan->tanggal_pengukuhan)->format('Y-m-d') : '');
+    $bwVal        = old('buta_warna', $relawan->buta_warna ?: 'Tidak');
+    $sjVal        = old('sehat_jasmani', $relawan->sehat_jasmani ?: 'Sehat');
 @endphp
 
 <div class="rkf">
@@ -207,10 +199,13 @@
     <div class="rkf-hero">
         <div>
             <a href="/internal/pencegahan/kelola-redkar" class="rkf-back"><i class="fas fa-arrow-left"></i> Data relawan</a>
-            <h1>Edit data relawan REDKAR</h1>
-            <p>Perbarui biodata dan wilayah domisili pemohon atau anggota REDKAR.</p>
+            <h1>Ubah data relawan REDKAR</h1>
+            <p>Perbarui informasi anggota Relawan Pemadam Kebakaran Kota Jambi.</p>
         </div>
-        <div class="rkf-id">Register ID<strong>{{ $relawan->id }}</strong></div>
+        <div class="rkf-id">
+            No. Register
+            <strong>#{{ $relawan->id }}</strong>
+        </div>
     </div>
 
     {{-- ===== Error validasi ===== --}}
@@ -233,19 +228,13 @@
         @csrf
         @method('PUT')
 
-
-        {{-- ===== 1. Identitas ===== --}}
+        {{-- ===== 1. Data Isian KTP ===== --}}
         <section class="rkf-sec">
             <div class="rkf-sec-head">
-                <div class="rkf-sec-num"><i class="fas fa-user"></i></div>
-                <div><h2>1. Identitas pribadi</h2><p>Sesuai dengan data pada KTP.</p></div>
+                <div class="rkf-sec-num"><i class="fas fa-id-card"></i></div>
+                <div><h2>1. Data Isian KTP</h2><p>Data pribadi sesuai dengan dokumen Kartu Tanda Penduduk (KTP).</p></div>
             </div>
             <div class="row g-3">
-                <div class="col-12">
-                    <label class="form-label" for="nama_lengkap">Nama lengkap <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" value="{{ $val('nama_lengkap') }}" placeholder="Masukkan nama lengkap sesuai KTP" required>
-                </div>
-
                 <div class="col-md-6">
                     <label class="form-label" for="nik">NIK (16 digit) <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="nik" name="nik" value="{{ $val('nik') }}" maxlength="16" inputmode="numeric" autocomplete="off" placeholder="16 digit angka NIK" required>
@@ -253,13 +242,8 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label" for="nomor_telp">No. telepon / WhatsApp <span class="text-danger">*</span></label>
-                    <input type="tel" class="form-control" id="nomor_telp" name="nomor_telp" value="{{ $val('nomor_telp') }}" inputmode="tel" placeholder="Contoh: 081234567890" required>
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label" for="kartu_anggota">No. Kartu Anggota</label>
-                    <input type="text" class="form-control" id="kartu_anggota" name="kartu_anggota" value="{{ old('kartu_anggota', $relawan->kartu_anggota ?: $relawan->nomor_anggota) }}" maxlength="30" placeholder="Contoh: 15.71.001">
+                    <label class="form-label" for="nama_lengkap">Nama lengkap <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" value="{{ $val('nama_lengkap') }}" placeholder="Masukkan nama lengkap sesuai KTP" required>
                 </div>
 
                 <div class="col-md-6">
@@ -272,7 +256,7 @@
                     <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" value="{{ $tglLahir }}" required>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label class="form-label" for="jenis_kelamin">Jenis kelamin <span class="text-danger">*</span></label>
                     <select class="form-select" id="jenis_kelamin" name="jenis_kelamin" required>
                         <option value="" disabled {{ $val('jenis_kelamin') ? '' : 'selected' }}>Pilih jenis kelamin</option>
@@ -282,7 +266,16 @@
                     </select>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-6">
+                    <label class="form-label" for="golongan_darah">Golongan darah <span class="text-danger">*</span></label>
+                    <select class="form-select" id="golongan_darah" name="golongan_darah" required>
+                        @foreach($darahList as $gd)
+                            <option value="{{ $gd }}" {{ ($val('golongan_darah') ?: 'Tidak Tahu') == $gd ? 'selected' : '' }}>{{ $gd }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-6">
                     <label class="form-label" for="agama">Agama <span class="text-danger">*</span></label>
                     <select class="form-select" id="agama" name="agama" required>
                         <option value="" disabled {{ $val('agama') ? '' : 'selected' }}>Pilih agama</option>
@@ -292,7 +285,7 @@
                     </select>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label class="form-label" for="status_perkawinan">Status perkawinan <span class="text-danger">*</span></label>
                     <select class="form-select" id="status_perkawinan" name="status_perkawinan" required>
                         <option value="" disabled {{ $val('status_perkawinan') ? '' : 'selected' }}>Pilih status</option>
@@ -304,11 +297,11 @@
             </div>
         </section>
 
-        {{-- ===== 2. Alamat ===== --}}
+        {{-- ===== 2. Alamat Domisili KTP ===== --}}
         <section class="rkf-sec">
             <div class="rkf-sec-head">
                 <div class="rkf-sec-num"><i class="fas fa-map-marker-alt"></i></div>
-                <div><h2>2. Alamat dan wilayah domisili</h2><p>Pilih kecamatan terlebih dahulu agar daftar kelurahan muncul.</p></div>
+                <div><h2>2. Alamat Domisili (Sesuai KTP)</h2><p>Pilih kecamatan terlebih dahulu agar daftar kelurahan muncul.</p></div>
             </div>
             <div class="row g-3">
                 <div class="col-12">
@@ -332,7 +325,7 @@
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label" for="kelurahan">Kelurahan <span class="text-danger">*</span></label>
+                    <label class="form-label" for="kelurahan">Kel/Desa <span class="text-danger">*</span></label>
                     <select class="form-select" id="kelurahan" name="kelurahan" data-selected="{{ $kelSel }}" required>
                         @if($kelSel)
                             <option value="{{ $kelSel }}" selected>{{ $kelSel }}</option>
@@ -344,28 +337,13 @@
             </div>
         </section>
 
-        {{-- ===== 3. Pendidikan & pekerjaan ===== --}}
+        {{-- ===== 3. Pekerjaan & Pendidikan ===== --}}
         <section class="rkf-sec">
             <div class="rkf-sec-head">
-                <div class="rkf-sec-num"><i class="fas fa-graduation-cap"></i></div>
-                <div><h2>3. Pendidikan dan pekerjaan</h2><p>Pendidikan terakhir dan pekerjaan saat ini.</p></div>
+                <div class="rkf-sec-num"><i class="fas fa-briefcase"></i></div>
+                <div><h2>3. Pekerjaan dan Pendidikan</h2><p>Pekerjaan sesuai KTP dan pendidikan terakhir.</p></div>
             </div>
             <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label" for="pendidikan_terakhir">Pendidikan terakhir <span class="text-danger">*</span></label>
-                    <select class="form-select" id="pendidikan_terakhir" name="pendidikan_terakhir" required>
-                        <option value="" disabled {{ $val('pendidikan_terakhir') ? '' : 'selected' }}>Pilih pendidikan</option>
-                        @foreach($pendidikanList as $kode => $label)
-                            <option value="{{ $kode }}" {{ $val('pendidikan_terakhir') == $kode ? 'selected' : '' }}>{{ $label }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label" for="latar_belakang_pendidikan">Latar belakang pendidikan / jurusan <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="latar_belakang_pendidikan" name="latar_belakang_pendidikan" value="{{ $val('latar_belakang_pendidikan') }}" placeholder="Contoh: Teknik Informatika, IPA, atau IPS" required>
-                </div>
-
                 <div class="col-md-6">
                     <label class="form-label" for="pekerjaan">Pekerjaan <span class="text-danger">*</span></label>
                     <select class="form-select" id="pekerjaan" name="pekerjaan" required>
@@ -381,41 +359,80 @@
                     <label class="form-label" for="pekerjaan_lainnya">Sebutkan pekerjaan lainnya <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="pekerjaan_lainnya" name="pekerjaan_lainnya" value="{{ $lainnyaVal }}" placeholder="Tuliskan pekerjaan">
                 </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="pendidikan_terakhir">Pendidikan terakhir <span class="text-danger">*</span></label>
+                    <select class="form-select" id="pendidikan_terakhir" name="pendidikan_terakhir" required>
+                        <option value="" disabled {{ $val('pendidikan_terakhir') ? '' : 'selected' }}>Pilih pendidikan</option>
+                        @foreach($pendidikanList as $kode => $label)
+                            <option value="{{ $kode }}" {{ $val('pendidikan_terakhir') == $kode ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="latar_belakang_pendidikan">Latar belakang pendidikan / jurusan <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="latar_belakang_pendidikan" name="latar_belakang_pendidikan" value="{{ $val('latar_belakang_pendidikan') }}" placeholder="Contoh: Teknik Informatika, IPA, atau IPS" required>
+                </div>
             </div>
         </section>
 
-        {{-- ===== 4. Kesehatan ===== --}}
+        {{-- ===== 4. Keterangan Fisik & Kesehatan ===== --}}
         <section class="rkf-sec">
             <div class="rkf-sec-head">
                 <div class="rkf-sec-num"><i class="fas fa-heartbeat"></i></div>
-                <div><h2>4. Keterangan kesehatan</h2><p>Informasi ini membantu penugasan di lapangan.</p></div>
+                <div><h2>4. Keterangan Fisik &amp; Kesehatan</h2><p>Informasi kondisi kesehatan relawan.</p></div>
             </div>
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label class="form-label" for="sehat_jasmani">Sehat jasmani dan rohani <span class="text-danger">*</span></label>
-                    <select class="form-select" id="sehat_jasmani" name="sehat_jasmani" required>
-                        @foreach(['Ya', 'Tidak'] as $sj)
-                            <option value="{{ $sj }}" {{ ($val('sehat_jasmani') ?: 'Ya') == $sj ? 'selected' : '' }}>{{ $sj }}</option>
+                    <label class="form-label" for="buta_warna">Buta Warna <span class="text-danger">*</span></label>
+                    <select class="form-select" id="buta_warna" name="buta_warna" required>
+                        @foreach(['Tidak', 'Iya'] as $bw)
+                            <option value="{{ $bw }}" {{ $bwVal == $bw ? 'selected' : '' }}>{{ $bw }}</option>
                         @endforeach
                     </select>
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label" for="golongan_darah">Golongan darah <span class="text-danger">*</span></label>
-                    <select class="form-select" id="golongan_darah" name="golongan_darah" required>
-                        @foreach($darahList as $gd)
-                            <option value="{{ $gd }}" {{ ($val('golongan_darah') ?: 'Tidak Tahu') == $gd ? 'selected' : '' }}>{{ $gd }}</option>
+                    <label class="form-label" for="sehat_jasmani">Sehat Jasmani dan Rohani <span class="text-danger">*</span></label>
+                    <select class="form-select" id="sehat_jasmani" name="sehat_jasmani" required>
+                        @foreach(['Sehat', 'Tidak'] as $sj)
+                            <option value="{{ $sj }}" {{ $sjVal == $sj ? 'selected' : '' }}>{{ $sj }}</option>
                         @endforeach
                     </select>
                 </div>
             </div>
         </section>
 
-        {{-- ===== 5. Dokumen ===== --}}
+        {{-- ===== 5. Kontak & Keanggotaan REDKAR ===== --}}
         <section class="rkf-sec">
             <div class="rkf-sec-head">
-                <div class="rkf-sec-num"><i class="fas fa-id-card"></i></div>
-                <div><h2>5. Dokumen pendukung</h2><p>Biarkan kosong jika tidak ingin mengubah KTP.</p></div>
+                <div class="rkf-sec-num"><i class="fas fa-user-shield"></i></div>
+                <div><h2>5. Kontak &amp; Keanggotaan REDKAR</h2><p>Kontak aktif serta tanggal pembentukan dan pengukuhan REDKAR.</p></div>
+            </div>
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label" for="nomor_telp">No. Telepon / WhatsApp <span class="text-danger">*</span></label>
+                    <input type="tel" class="form-control" id="nomor_telp" name="nomor_telp" value="{{ $val('nomor_telp') }}" inputmode="tel" placeholder="Contoh: 081234567890" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="tanggal_pembentukan">Tanggal Pembentukan REDKAR</label>
+                    <input type="date" class="form-control" id="tanggal_pembentukan" name="tanggal_pembentukan" value="{{ $tglBentuk }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="tanggal_pengukuhan">Tanggal Pengukuhan REDKAR</label>
+                    <input type="date" class="form-control" id="tanggal_pengukuhan" name="tanggal_pengukuhan" value="{{ $tglKukuh }}">
+                </div>
+            </div>
+        </section>
+
+        {{-- ===== 6. Dokumen ===== --}}
+        <section class="rkf-sec">
+            <div class="rkf-sec-head">
+                <div class="rkf-sec-num"><i class="fas fa-file-upload"></i></div>
+                <div><h2>6. Dokumen Pendukung</h2><p>Biarkan kosong jika tidak ingin mengubah KTP.</p></div>
             </div>
             <div class="rkf-current">
                 <span><i class="fas fa-id-card"></i> KTP saat ini</span>
@@ -505,7 +522,7 @@
     togglePekerjaan();
     selectPekerjaan.addEventListener('change', togglePekerjaan);
 
-    /* ---------- NIK: hanya angka + penghitung ---------- */
+    /* ---------- NIK: hanya angka + counter ---------- */
     const nik = document.getElementById('nik');
     const nikCount = document.getElementById('nik-count');
 
@@ -518,7 +535,7 @@
     updateNik();
     nik.addEventListener('input', updateNik);
 
-    /* ---------- Upload KTP: nama file, pratinjau, batas 2 MB ---------- */
+    /* ---------- Upload KTP: preview & validasi ukuran ---------- */
     const fileInput = document.getElementById('foto_ktp');
     const drop = document.getElementById('rkf-drop');
     const fileName = document.getElementById('rkf-file-name');
@@ -564,7 +581,7 @@
         preview.hidden = false;
     });
 
-    /* ---------- Cegah kirim ganda ---------- */
+    /* ---------- Cegah submit ganda ---------- */
     const form = document.getElementById('rkf-form');
     const saveBtn = document.getElementById('rkf-save');
     form.addEventListener('submit', function () {

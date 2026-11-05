@@ -47,12 +47,12 @@
         border-radius: 20px; padding: 24px 26px 26px; margin-bottom: 16px;
     }
 
-    /* Efek jeda (stagger) agar seksi form muncul berurutan dari atas ke bawah secara elegan */
     .rkf-sec:nth-of-type(1) { animation-delay: .1s; }
     .rkf-sec:nth-of-type(2) { animation-delay: .15s; }
     .rkf-sec:nth-of-type(3) { animation-delay: .2s; }
     .rkf-sec:nth-of-type(4) { animation-delay: .25s; }
     .rkf-sec:nth-of-type(5) { animation-delay: .3s; }
+    .rkf-sec:nth-of-type(6) { animation-delay: .35s; }
 
     .rkf-bar {
         animation: rkfSlideUp .6s cubic-bezier(.16, 1, .3, 1) .35s both;
@@ -109,7 +109,7 @@
     .rkf-alert ul { margin: 0; padding-left: 18px; font-size: .9rem; }
     .rkf-alert .btn-close { margin-left: auto; }
 
-    /* ---------- Seksi Head ---------- */
+    /* ---------- Seksi form ---------- */
     .rkf-sec-head { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
     .rkf-sec-num {
         flex: none; width: 40px; height: 40px; border-radius: 12px;
@@ -129,23 +129,19 @@
         border: 1px solid var(--rk-line); background-color: var(--rk-paper); color: var(--rk-ink);
         transition: border-color .2s, box-shadow .2s, background-color .2s;
     }
-    .rkf .form-select { padding-right: 38px; }
-    .rkf .form-control::placeholder { color: #9aa7b6; }
-    .rkf .form-control:hover, .rkf .form-select:hover { border-color: #cdd6e2; }
     .rkf .form-control:focus, .rkf .form-select:focus {
         background-color: #fff; border-color: var(--rk-navy);
-        box-shadow: 0 0 0 4px rgba(27, 54, 93, .12);
+        box-shadow: 0 0 0 4px rgba(27, 54, 93, .12); outline: none;
     }
-    .rkf-hint { margin-top: 6px; font-size: .78rem; color: var(--rk-muted); }
-    .rkf-hint.ok { color: #0b7a56; font-weight: 600; }
-    .rkf-field-error { margin-top: 8px; font-size: .82rem; font-weight: 600; color: var(--rk-red); }
+    .rkf-hint { font-size: .78rem; color: var(--rk-muted); margin-top: 4px; }
+    .rkf-hint.ok { color: var(--rk-green); font-weight: 600; }
 
-    /* ---------- Upload KTP ---------- */
+    /* ---------- Dropzone KTP ---------- */
     .rkf-drop {
-        position: relative; display: flex; align-items: center; gap: 16px;
-        padding: 18px 20px; cursor: pointer;
-        border: 2px dashed #cdd6e2; border-radius: 16px; background: var(--rk-paper);
-        transition: border-color .2s, background .2s;
+        position: relative; border: 2px dashed var(--rk-line);
+        border-radius: 14px; padding: 18px 20px;
+        display: flex; align-items: center; gap: 16px; cursor: pointer;
+        background: var(--rk-paper); transition: border-color .2s, background .2s;
     }
     .rkf-drop:hover, .rkf-drop.has-file { border-color: var(--rk-navy); background: #f1f5fb; }
     .rkf-drop:focus-within { border-color: var(--rk-navy); box-shadow: 0 0 0 4px rgba(27, 54, 93, .12); }
@@ -204,8 +200,9 @@
     $pekerjaanSel = old('pekerjaan');
     $lainnyaVal   = old('pekerjaan_lainnya');
     $kelSel       = old('kelurahan');
-    $tglLahir = $val('tanggal_lahir');
-    $tglLahir = $tglLahir ? \Carbon\Carbon::parse($tglLahir)->format('Y-m-d') : '';
+    $tglLahir     = $val('tanggal_lahir') ? \Carbon\Carbon::parse($val('tanggal_lahir'))->format('Y-m-d') : '';
+    $tglBentuk    = $val('tanggal_pembentukan') ? \Carbon\Carbon::parse($val('tanggal_pembentukan'))->format('Y-m-d') : '';
+    $tglKukuh     = $val('tanggal_pengukuhan') ? \Carbon\Carbon::parse($val('tanggal_pengukuhan'))->format('Y-m-d') : '';
 @endphp
 
 <div class="rkf">
@@ -215,6 +212,7 @@
         <div>
             <a href="/internal/pencegahan/kelola-redkar" class="rkf-back"><i class="fas fa-arrow-left"></i> Data relawan</a>
             <h1>Tambah data relawan REDKAR</h1>
+            <p>Lengkapi formulir pendaftaran anggota Relawan Pemadam Kebakaran sesuai data KTP.</p>
         </div>
     </div>
 
@@ -237,18 +235,13 @@
     <form id="rkf-form" action="{{ url('/internal/pencegahan/simpan-redkar-offline') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
-        {{-- ===== 1. Identitas ===== --}}
+        {{-- ===== 1. Data Isian KTP ===== --}}
         <section class="rkf-sec">
             <div class="rkf-sec-head">
-                <div class="rkf-sec-num"><i class="fas fa-user"></i></div>
-                <div><h2>1. Identitas pribadi</h2><p>Sesuai dengan data pada KTP.</p></div>
+                <div class="rkf-sec-num"><i class="fas fa-id-card"></i></div>
+                <div><h2>1. Data Isian KTP</h2><p>Data pribadi sesuai dengan dokumen Kartu Tanda Penduduk (KTP).</p></div>
             </div>
             <div class="row g-3">
-                <div class="col-12">
-                    <label class="form-label" for="nama_lengkap">Nama lengkap <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" value="{{ $val('nama_lengkap') }}" placeholder="Masukkan nama lengkap sesuai KTP" required>
-                </div>
-
                 <div class="col-md-6">
                     <label class="form-label" for="nik">NIK (16 digit) <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="nik" name="nik" value="{{ $val('nik') }}" maxlength="16" inputmode="numeric" autocomplete="off" placeholder="16 digit angka NIK" required>
@@ -256,15 +249,10 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label" for="nomor_telp">No. telepon / WhatsApp <span class="text-danger">*</span></label>
-                    <input type="tel" class="form-control" id="nomor_telp" name="nomor_telp" value="{{ $val('nomor_telp') }}" inputmode="tel" placeholder="Contoh: 081234567890" required>
+                    <label class="form-label" for="nama_lengkap">Nama lengkap <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" value="{{ $val('nama_lengkap') }}" placeholder="Masukkan nama lengkap sesuai KTP" required>
                 </div>
 
-                <div class="col-md-4">
-                    <label class="form-label" for="kartu_anggota">No. Kartu Anggota</label>
-                    <input type="text" class="form-control" id="kartu_anggota" name="kartu_anggota" value="{{ $val('kartu_anggota') }}" placeholder="Contoh: 15.71.001">
-                </div>
-                
                 <div class="col-md-6">
                     <label class="form-label" for="tempat_lahir">Tempat lahir <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="tempat_lahir" name="tempat_lahir" value="{{ $val('tempat_lahir') }}" placeholder="Kota atau kabupaten tempat lahir" required>
@@ -275,7 +263,7 @@
                     <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" value="{{ $tglLahir }}" required>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label class="form-label" for="jenis_kelamin">Jenis kelamin <span class="text-danger">*</span></label>
                     <select class="form-select" id="jenis_kelamin" name="jenis_kelamin" required>
                         <option value="" disabled {{ $val('jenis_kelamin') ? '' : 'selected' }}>Pilih jenis kelamin</option>
@@ -285,7 +273,16 @@
                     </select>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-6">
+                    <label class="form-label" for="golongan_darah">Golongan darah <span class="text-danger">*</span></label>
+                    <select class="form-select" id="golongan_darah" name="golongan_darah" required>
+                        @foreach($darahList as $gd)
+                            <option value="{{ $gd }}" {{ ($val('golongan_darah') ?: 'Tidak Tahu') == $gd ? 'selected' : '' }}>{{ $gd }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-6">
                     <label class="form-label" for="agama">Agama <span class="text-danger">*</span></label>
                     <select class="form-select" id="agama" name="agama" required>
                         <option value="" disabled {{ $val('agama') ? '' : 'selected' }}>Pilih agama</option>
@@ -295,7 +292,7 @@
                     </select>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label class="form-label" for="status_perkawinan">Status perkawinan <span class="text-danger">*</span></label>
                     <select class="form-select" id="status_perkawinan" name="status_perkawinan" required>
                         <option value="" disabled {{ $val('status_perkawinan') ? '' : 'selected' }}>Pilih status</option>
@@ -307,11 +304,11 @@
             </div>
         </section>
 
-        {{-- ===== 2. Alamat ===== --}}
+        {{-- ===== 2. Alamat Domisili KTP ===== --}}
         <section class="rkf-sec">
             <div class="rkf-sec-head">
                 <div class="rkf-sec-num"><i class="fas fa-map-marker-alt"></i></div>
-                <div><h2>2. Alamat dan wilayah domisili</h2><p>Pilih kecamatan terlebih dahulu agar daftar kelurahan muncul.</p></div>
+                <div><h2>2. Alamat Domisili (Sesuai KTP)</h2><p>Pilih kecamatan terlebih dahulu agar daftar kelurahan muncul.</p></div>
             </div>
             <div class="row g-3">
                 <div class="col-12">
@@ -335,7 +332,7 @@
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label" for="kelurahan">Kelurahan <span class="text-danger">*</span></label>
+                    <label class="form-label" for="kelurahan">Kel/Desa <span class="text-danger">*</span></label>
                     <select class="form-select" id="kelurahan" name="kelurahan" data-selected="{{ $kelSel }}" required>
                         @if($kelSel)
                             <option value="{{ $kelSel }}" selected>{{ $kelSel }}</option>
@@ -347,28 +344,13 @@
             </div>
         </section>
 
-        {{-- ===== 3. Pendidikan & pekerjaan ===== --}}
+        {{-- ===== 3. Pendidikan & Pekerjaan ===== --}}
         <section class="rkf-sec">
             <div class="rkf-sec-head">
-                <div class="rkf-sec-num"><i class="fas fa-graduation-cap"></i></div>
-                <div><h2>3. Pendidikan dan pekerjaan</h2><p>Pendidikan terakhir dan pekerjaan saat ini.</p></div>
+                <div class="rkf-sec-num"><i class="fas fa-briefcase"></i></div>
+                <div><h2>3. Pekerjaan dan Pendidikan</h2><p>Pekerjaan sesuai KTP dan pendidikan terakhir.</p></div>
             </div>
             <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label" for="pendidikan_terakhir">Pendidikan terakhir <span class="text-danger">*</span></label>
-                    <select class="form-select" id="pendidikan_terakhir" name="pendidikan_terakhir" required>
-                        <option value="" disabled {{ $val('pendidikan_terakhir') ? '' : 'selected' }}>Pilih pendidikan</option>
-                        @foreach($pendidikanList as $kode => $label)
-                            <option value="{{ $kode }}" {{ $val('pendidikan_terakhir') == $kode ? 'selected' : '' }}>{{ $label }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label" for="latar_belakang_pendidikan">Latar belakang pendidikan / jurusan <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="latar_belakang_pendidikan" name="latar_belakang_pendidikan" value="{{ $val('latar_belakang_pendidikan') }}" placeholder="Contoh: Teknik Informatika, IPA, atau IPS" required>
-                </div>
-
                 <div class="col-md-6">
                     <label class="form-label" for="pekerjaan">Pekerjaan <span class="text-danger">*</span></label>
                     <select class="form-select" id="pekerjaan" name="pekerjaan" required>
@@ -384,41 +366,80 @@
                     <label class="form-label" for="pekerjaan_lainnya">Sebutkan pekerjaan lainnya <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="pekerjaan_lainnya" name="pekerjaan_lainnya" value="{{ $lainnyaVal }}" placeholder="Tuliskan pekerjaan">
                 </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="pendidikan_terakhir">Pendidikan terakhir <span class="text-danger">*</span></label>
+                    <select class="form-select" id="pendidikan_terakhir" name="pendidikan_terakhir" required>
+                        <option value="" disabled {{ $val('pendidikan_terakhir') ? '' : 'selected' }}>Pilih pendidikan</option>
+                        @foreach($pendidikanList as $kode => $label)
+                            <option value="{{ $kode }}" {{ $val('pendidikan_terakhir') == $kode ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="latar_belakang_pendidikan">Latar belakang pendidikan / jurusan <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="latar_belakang_pendidikan" name="latar_belakang_pendidikan" value="{{ $val('latar_belakang_pendidikan') }}" placeholder="Contoh: Teknik Informatika, IPA, atau IPS" required>
+                </div>
             </div>
         </section>
 
-        {{-- ===== 4. Kesehatan ===== --}}
+        {{-- ===== 4. Keterangan Kesehatan ===== --}}
         <section class="rkf-sec">
             <div class="rkf-sec-head">
                 <div class="rkf-sec-num"><i class="fas fa-heartbeat"></i></div>
-                <div><h2>4. Keterangan kesehatan</h2><p>Informasi ini membantu penugasan di lapangan.</p></div>
+                <div><h2>4. Keterangan Fisik &amp; Kesehatan</h2><p>Informasi kondisi kesehatan relawan.</p></div>
             </div>
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label class="form-label" for="sehat_jasmani">Sehat jasmani dan rohani <span class="text-danger">*</span></label>
-                    <select class="form-select" id="sehat_jasmani" name="sehat_jasmani" required>
-                        @foreach(['Ya', 'Tidak'] as $sj)
-                            <option value="{{ $sj }}" {{ ($val('sehat_jasmani') ?: 'Ya') == $sj ? 'selected' : '' }}>{{ $sj }}</option>
+                    <label class="form-label" for="buta_warna">Buta Warna <span class="text-danger">*</span></label>
+                    <select class="form-select" id="buta_warna" name="buta_warna" required>
+                        @foreach(['Tidak', 'Iya'] as $bw)
+                            <option value="{{ $bw }}" {{ ($val('buta_warna') ?: 'Tidak') == $bw ? 'selected' : '' }}>{{ $bw }}</option>
                         @endforeach
                     </select>
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label" for="golongan_darah">Golongan darah <span class="text-danger">*</span></label>
-                    <select class="form-select" id="golongan_darah" name="golongan_darah" required>
-                        @foreach($darahList as $gd)
-                            <option value="{{ $gd }}" {{ ($val('golongan_darah') ?: 'Tidak Tahu') == $gd ? 'selected' : '' }}>{{ $gd }}</option>
+                    <label class="form-label" for="sehat_jasmani">Sehat Jasmani dan Rohani <span class="text-danger">*</span></label>
+                    <select class="form-select" id="sehat_jasmani" name="sehat_jasmani" required>
+                        @foreach(['Sehat', 'Tidak'] as $sj)
+                            <option value="{{ $sj }}" {{ ($val('sehat_jasmani') ?: 'Sehat') == $sj ? 'selected' : '' }}>{{ $sj }}</option>
                         @endforeach
                     </select>
                 </div>
             </div>
         </section>
 
-        {{-- ===== 5. Dokumen ===== --}}
+        {{-- ===== 5. Kontak & Informasi Keanggotaan REDKAR ===== --}}
         <section class="rkf-sec">
             <div class="rkf-sec-head">
-                <div class="rkf-sec-num"><i class="fas fa-id-card"></i></div>
-                <div><h2>5. Dokumen pendukung</h2><p>Opsional. Unggah foto atau hasil scan KTP.</p></div>
+                <div class="rkf-sec-num"><i class="fas fa-user-shield"></i></div>
+                <div><h2>5. Kontak &amp; Keanggotaan REDKAR</h2><p>Kontak aktif serta tanggal pembentukan dan pengukuhan REDKAR.</p></div>
+            </div>
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label" for="nomor_telp">No. Telepon / WhatsApp <span class="text-danger">*</span></label>
+                    <input type="tel" class="form-control" id="nomor_telp" name="nomor_telp" value="{{ $val('nomor_telp') }}" inputmode="tel" placeholder="Contoh: 081234567890" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="tanggal_pembentukan">Tanggal Pembentukan REDKAR</label>
+                    <input type="date" class="form-control" id="tanggal_pembentukan" name="tanggal_pembentukan" value="{{ $tglBentuk }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="tanggal_pengukuhan">Tanggal Pengukuhan REDKAR</label>
+                    <input type="date" class="form-control" id="tanggal_pengukuhan" name="tanggal_pengukuhan" value="{{ $tglKukuh }}">
+                </div>
+            </div>
+        </section>
+
+        {{-- ===== 6. Dokumen ===== --}}
+        <section class="rkf-sec">
+            <div class="rkf-sec-head">
+                <div class="rkf-sec-num"><i class="fas fa-file-upload"></i></div>
+                <div><h2>6. Dokumen Pendukung</h2><p>Opsional. Unggah foto atau hasil scan KTP.</p></div>
             </div>
 
             <label class="rkf-drop" id="rkf-drop" for="foto_ktp">
