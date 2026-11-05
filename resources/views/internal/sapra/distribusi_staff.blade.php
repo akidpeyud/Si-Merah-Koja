@@ -97,6 +97,20 @@
     .search i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--steel); font-size: .85rem; pointer-events: none; }
     .search input { width: 100%; height: 44px; padding: 0 16px 0 42px; border-radius: 999px; border: 1px solid var(--line-dark); background: #fff; font: inherit; font-size: .9rem; color: var(--ink); transition: border-color .2s, box-shadow .2s; }
     .search input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+    .year-filter { position: relative; }
+    .year-filter-btn { display: inline-flex; align-items: center; gap: 10px; height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--line-dark); background: #fff; color: var(--ink); font-weight: 600; font-size: .88rem; cursor: pointer; transition: border-color .2s, box-shadow .2s, background .2s; white-space: nowrap; }
+    .year-filter-btn:hover { border-color: var(--navy); background: var(--paper); }
+    .year-filter.open .year-filter-btn { border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
+    .year-filter-btn .ico-cal { color: var(--navy); font-size: .88rem; }
+    .year-filter-btn .chev { font-size: .7rem; color: var(--steel); transition: transform .2s; }
+    .year-filter.open .year-filter-btn .chev { transform: rotate(180deg); }
+    .year-filter-menu { display: none; position: absolute; top: calc(100% + 8px); right: 0; min-width: 210px; background: #fff; border: 1px solid var(--line-dark); border-radius: 12px; box-shadow: var(--shadow-md); padding: 6px; z-index: 50; }
+    .year-filter.open .year-filter-menu { display: block; animation: pop .18s cubic-bezier(.16,.84,.3,1); }
+    .yf-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; font-size: .88rem; font-weight: 600; color: var(--ink); cursor: pointer; user-select: none; transition: background .15s, color .15s; }
+    .yf-item:hover { background: var(--paper); color: var(--navy); }
+    .yf-item input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--navy); cursor: pointer; margin: 0; }
+    .yf-divider { height: 1px; background: var(--line); margin: 4px 6px; }
+    .yf-hint { padding: 4px 12px 6px; font-size: .72rem; color: var(--steel); font-weight: 500; }
     .btn { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; border-radius: 8px; font-weight: 600; font-size: .88rem; transition: background .2s, transform .1s, box-shadow .2s; white-space: nowrap; border: none; }
     .btn:active { transform: translateY(0); }
     .btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
@@ -213,6 +227,12 @@
     $bisaCrud = $user->hasRole('Sapra') || $user->hasRole('Super User');
     $isSuper    = $user->hasRole('Super User');
     $bisaKonten = $user->hasAnyRole(['Operator', 'Super User']);
+
+    $daftarTahun = $dataDistribusi->flatten(1)
+        ->map(fn ($item) => \Carbon\Carbon::parse($item->waktu_terima)->format('Y'))
+        ->unique()
+        ->sortDesc()
+        ->values();
 @endphp
 
 @section('content')
@@ -231,6 +251,27 @@
                     <i class="fas fa-search"></i>
                     <input type="text" id="searchInput" placeholder="Cari nama staff atau barang..." autocomplete="off">
                 </label>
+                <div class="year-filter" id="yearFilterWrap">
+                    <button type="button" class="year-filter-btn" id="yearFilterBtn" aria-expanded="false">
+                        <i class="far fa-calendar-alt ico-cal"></i>
+                        <span id="yearFilterLabel">Semua Tahun</span>
+                        <i class="fas fa-chevron-down chev"></i>
+                    </button>
+                    <div class="year-filter-menu" id="yearFilterMenu">
+                        <label class="yf-item">
+                            <input type="checkbox" id="yfAll" checked>
+                            <span>Semua Tahun</span>
+                        </label>
+                        <div class="yf-divider"></div>
+                        <div class="yf-hint">Bisa pilih 1 atau beberapa tahun:</div>
+                        @foreach($daftarTahun as $thn)
+                            <label class="yf-item">
+                                <input type="checkbox" class="yf-year" value="{{ $thn }}">
+                                <span>Tahun {{ $thn }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
                 <button type="button" class="btn btn-outline" onclick="window.print()"><i class="fas fa-print"></i> Cetak</button>
                 <a href="/sapra/distribusi-staff/cetak" target="_blank" class="btn btn-outline red"><i class="fas fa-file-pdf"></i> PDF</a>
                 @if($bisaCrud)
@@ -278,7 +319,7 @@
 
                             <!-- LIST BARANG (TREE VIEW) -->
                             @foreach($items as $item)
-                                <tr class="data-row">
+                                <tr class="data-row" data-year="{{ \Carbon\Carbon::parse($item->waktu_terima)->format('Y') }}">
                                     <!-- Kolom NO kosong (Garis Tree) -->
                                     <td class="tree-line"></td>
 
@@ -383,6 +424,14 @@
                             </tr>
                         </tbody>
                     @endforelse
+                    <tbody id="filterEmptyRow" style="display: none;">
+                        <tr>
+                            <td colspan="{{ $bisaCrud ? 6 : 5 }}" class="cell-empty">
+                                <div style="font-size: 2.5rem; color: #cbd5e1; margin-bottom: 10px;"><i class="fas fa-search"></i></div>
+                                <div style="font-size: 1.05rem; color: var(--ink);">Tidak ada data distribusi pada filter tahun / pencarian ini.</div>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -490,43 +539,128 @@
         });
     });
 
-    /* ---------- Live Search Canggih ---------- */
+    /* ---------- Live Search & Filter Tahun ---------- */
     var searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.addEventListener('keyup', function () {
-            var filter = this.value.toLowerCase();
-            var staffGroups = document.querySelectorAll('.staff-group');
+    var yearFilterWrap = document.getElementById('yearFilterWrap');
+    var yearFilterBtn = document.getElementById('yearFilterBtn');
+    var yearFilterLabel = document.getElementById('yearFilterLabel');
+    var yfAll = document.getElementById('yfAll');
+    var yfYears = Array.prototype.slice.call(document.querySelectorAll('.yf-year'));
+    var filterEmptyRow = document.getElementById('filterEmptyRow');
 
-            staffGroups.forEach(function (group) {
-                var matchInGroup = false;
+    function getSelectedYears() {
+        if (!yfAll || yfAll.checked) return [];
+        return yfYears.filter(function (cb) { return cb.checked; }).map(function (cb) { return cb.value; });
+    }
 
-                // Cek nama header staf-nya
-                var headerText = group.querySelector('.staff-name-search').textContent.toLowerCase();
-                if (headerText.indexOf(filter) !== -1) matchInGroup = true;
+    function updateYearLabel() {
+        if (!yearFilterLabel) return;
+        var selected = getSelectedYears();
+        if (selected.length === 0) {
+            yearFilterLabel.textContent = 'Semua Tahun';
+        } else if (selected.length === 1) {
+            yearFilterLabel.textContent = 'Tahun ' + selected[0];
+        } else if (selected.length <= 2) {
+            yearFilterLabel.textContent = selected.join(', ');
+        } else {
+            yearFilterLabel.textContent = selected.length + ' Tahun (' + selected.slice(0, 2).join(', ') + '…)';
+        }
+    }
 
-                // Cek isi barangnya
-                var rows = group.querySelectorAll('.data-row');
-                rows.forEach(function (row) {
-                    var textBarang = row.querySelector('.data-barang').textContent.toLowerCase();
-                    // Munculin baris kalau nama barangnya cocok, ATAU kalau nama staf-nya yang dicari
-                    if (textBarang.indexOf(filter) !== -1 || headerText.indexOf(filter) !== -1) {
-                        row.style.display = '';
-                        matchInGroup = true;
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
+    function applyFilter() {
+        var filter = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        var selectedYears = getSelectedYears();
+        var staffGroups = document.querySelectorAll('.staff-group');
+        var visibleGroupIndex = 0;
 
-                // Kalau ada yang cocok di grup ini, tampilkan grupnya (termasuk headernya)
-                if (matchInGroup) {
-                    group.style.display = '';
-                    group.querySelector('.staff-header').style.display = '';
+        staffGroups.forEach(function (group) {
+            var staffNameEl = group.querySelector('.staff-name');
+            var headerNameText = staffNameEl ? staffNameEl.textContent.toLowerCase() : '';
+            var nameMatches = filter !== '' && headerNameText.indexOf(filter) !== -1;
+
+            var rows = group.querySelectorAll('.data-row');
+            var visibleRowCount = 0;
+
+            rows.forEach(function (row) {
+                var rowYear = row.getAttribute('data-year') || '';
+                var yearMatch = selectedYears.length === 0 || selectedYears.indexOf(rowYear) !== -1;
+
+                var textBarang = row.querySelector('.data-barang') ? row.querySelector('.data-barang').textContent.toLowerCase() : '';
+                var textKet = row.querySelector('.ket-txt') ? row.querySelector('.ket-txt').textContent.toLowerCase() : '';
+                var searchMatch = filter === '' || nameMatches || textBarang.indexOf(filter) !== -1 || textKet.indexOf(filter) !== -1;
+
+                if (yearMatch && searchMatch) {
+                    row.style.display = '';
+                    visibleRowCount++;
                 } else {
-                    group.style.display = 'none';
+                    row.style.display = 'none';
                 }
             });
+
+            if (visibleRowCount > 0) {
+                visibleGroupIndex++;
+                group.style.display = '';
+                group.querySelector('.staff-header').style.display = '';
+
+                var numCell = group.querySelector('.staff-num');
+                if (numCell) numCell.textContent = visibleGroupIndex;
+
+                var countBadge = group.querySelector('.staff-count');
+                if (countBadge) {
+                    countBadge.innerHTML = '<i class="fas fa-box-open"></i> ' + visibleRowCount + ' Total Barang';
+                }
+            } else {
+                group.style.display = 'none';
+            }
+        });
+
+        if (filterEmptyRow) {
+            filterEmptyRow.style.display = (staffGroups.length > 0 && visibleGroupIndex === 0) ? '' : 'none';
+        }
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', applyFilter);
+    }
+
+    if (yearFilterBtn && yearFilterWrap) {
+        yearFilterBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var isOpen = yearFilterWrap.classList.toggle('open');
+            yearFilterBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!yearFilterWrap.contains(e.target)) {
+                yearFilterWrap.classList.remove('open');
+                yearFilterBtn.setAttribute('aria-expanded', 'false');
+            }
         });
     }
+
+    if (yfAll) {
+        yfAll.addEventListener('change', function () {
+            if (this.checked) {
+                yfYears.forEach(function (cb) { cb.checked = false; });
+            } else {
+                var anyChecked = yfYears.some(function (cb) { return cb.checked; });
+                if (!anyChecked) this.checked = true;
+            }
+            updateYearLabel();
+            applyFilter();
+        });
+    }
+
+    yfYears.forEach(function (cb) {
+        cb.addEventListener('change', function () {
+            var anyChecked = yfYears.some(function (item) { return item.checked; });
+            if (yfAll) {
+                yfAll.checked = !anyChecked;
+            }
+            updateYearLabel();
+            applyFilter();
+        });
+    });
 
     /* ---------- Searchable Select (realtime) untuk Jenis Barang (hanya Sapra) ---------- */
     function makeSearchable(select) {
