@@ -131,10 +131,30 @@
     /* ==========================================================
        TABEL REKAP (gaya header navy, sama dengan Data Laporan)
        ========================================================== */
-    .rekap-scroll { overflow-x: auto; padding: 20px; background: #fff; }
-    .rekap-wrap { min-width: 1120px; border: 2px solid var(--rekap-red); border-radius: 16px; overflow: hidden; background: #fff; box-shadow: var(--shadow-sm); }
+    .rekap-scroll {
+        overflow-x: auto;
+        padding: 20px;
+        background: #fff;
+        scrollbar-width: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .rekap-wrap {
+        display: inline-block;
+        min-width: 100%;
+        border: 2px solid var(--rekap-red);
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: var(--shadow-sm);
+        vertical-align: top;
+    }
 
-    .table-rekap { width: 100%; border-collapse: collapse; margin: 0; }
+    .table-rekap {
+        width: max-content;
+        min-width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 0;
+    }
 
     .table-rekap thead th {
         background: linear-gradient(180deg, var(--rekap-red-light) 0%, #0d2947 100%);
@@ -144,26 +164,30 @@
         font-size: .92rem;
         text-align: center;
         vertical-align: middle;
-        padding: 14px 10px;
+        padding: 14px 18px;
         border: 0;
         border-right: 1px solid rgba(255,255,255,.25);
         white-space: nowrap;
     }
-    .table-rekap thead th:last-child { border-right: 0; }
+    .table-rekap thead th:first-child { border-top-left-radius: 14px; }
+    .table-rekap thead th:last-child  { border-top-right-radius: 14px; border-right: 0; }
 
     .table-rekap tbody td {
         background: var(--rekap-row-b);
         text-align: center;
         vertical-align: middle;
-        padding: 12px 10px;
+        padding: 12px 16px;
         font-size: .85rem;
         line-height: 1.4;
         color: var(--ink-2);
         border-bottom: 1px solid var(--rekap-line);
         border-right: 1px solid var(--rekap-line);
+        white-space: nowrap;
     }
     .table-rekap tbody td:last-child { border-right: 0; }
     .table-rekap tbody tr:last-child td { border-bottom: 0; }
+    .table-rekap tbody tr:last-child td:first-child { border-bottom-left-radius: 14px; }
+    .table-rekap tbody tr:last-child td:last-child  { border-bottom-right-radius: 14px; }
 
     .table-rekap tbody tr.alt td { background: var(--rekap-row-a); }
     .table-rekap tbody tr:hover td { background: #dce9fa; }
@@ -177,12 +201,29 @@
         border-right: 1px solid rgba(255,255,255,.25);
     }
 
-    .col-no      { width: 64px; }
-    .col-pemohon { width: 200px; }
-    .col-kontak  { width: 130px; }
-    .col-giat    { width: 220px; }
-    .col-sarana  { width: 130px; }
-    .col-tgl     { width: 130px; }
+    .col-no      { width: 64px; min-width: 64px; }
+    .col-aksi    { width: 140px; min-width: 140px; }
+
+    .table-scroll-nav {
+        background: #f8fafc;
+        border-bottom: 1px solid var(--line);
+        padding: 8px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .table-scroll-nav .nav-hint {
+        font-size: 0.82rem;
+        color: var(--steel);
+        font-weight: 500;
+    }
+    .table-scroll-nav .btn {
+        font-size: 0.78rem;
+        padding: 4px 12px;
+        border-radius: 6px;
+    }
     .col-status  { width: 150px; }
     .col-aksi    { width: 130px; }
 
@@ -373,43 +414,79 @@
                 <p style="text-align: center !important; font-size: 12px; margin-bottom: 15px; color: black; font-family: 'Times New Roman', Times, serif;">Dicetak pada: {{ date('d F Y') }}</p>
             </div>
 
+            <!-- NAVIGASI SCROLL TABEL -->
+            <div class="table-scroll-nav d-print-none">
+                <span class="nav-hint"><i class="fas fa-arrows-alt-h me-1 text-primary"></i> Geser tabel ke kanan/kiri untuk melihat seluruh 17 kolom data</span>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-secondary" onclick="scrollTable(-350)" title="Geser ke kiri"><i class="fas fa-chevron-left me-1"></i> Geser Kiri</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="scrollTable(350)" title="Geser ke kanan">Geser Kanan <i class="fas fa-chevron-right ms-1"></i></button>
+                </div>
+            </div>
+
             <div class="rekap-scroll">
                 <div class="rekap-wrap">
                     <table class="table-rekap">
                         <thead>
                             <tr>
-                                <th class="col-no">No</th>
-                                <th class="col-pemohon">Nama Pemohon</th>
-                                <th class="col-kontak">Kontak</th>
-                                <th class="col-giat">Kegiatan</th>
-                                <th class="col-sarana">Sarana</th>
-                                <th class="col-tgl">Tgl Kegiatan</th>
-                                <th class="col-status">Status</th>
+                                <th class="col-no">NO</th>
+                                <th style="min-width: 170px;">Nama Pemohon</th>
+                                <th style="min-width: 160px;">NIK</th>
+                                <th style="min-width: 140px;">No HP/WA</th>
+                                <th style="min-width: 250px;">Alamat</th>
+                                <th style="min-width: 150px;">Jenis Pemohon</th>
+                                <th style="min-width: 200px;">Nama Penanggung Jawab</th>
+                                <th style="min-width: 220px;">Nama Instansi / Fasum / Perorangan</th>
+                                <th style="min-width: 250px;">Alamat Instansi</th>
+                                <th style="min-width: 180px;">Sarana yang Diajukan</th>
+                                <th style="min-width: 250px;">Kegunaan Sarana</th>
+                                <th style="min-width: 180px;">Nama Kegiatan</th>
+                                <th style="min-width: 220px;">Lokasi Kegiatan</th>
+                                <th style="min-width: 160px;">Tanggal Pelaksanaan</th>
+                                <th style="min-width: 160px;">Waktu Pelaksanaan</th>
+                                <th style="min-width: 150px;">Status</th>
                                 <th class="col-aksi">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
                             @forelse($permohonan as $row)
-                            <tr data-tahun="{{ $row->tgl_pelaksanaan ? \Carbon\Carbon::parse($row->tgl_pelaksanaan)->year : '' }}" data-search="{{ strtolower($row->nama . ' ' . $row->no_hp . ' ' . $row->nama_instansi . ' ' . $row->nama_kegiatan . ' ' . $row->lokasi_kegiatan . ' ' . $row->sarana . ' ' . $row->status) }}">
+                            <tr data-tahun="{{ $row->tgl_pelaksanaan ? \Carbon\Carbon::parse($row->tgl_pelaksanaan)->year : '' }}"
+                                data-search="{{ strtolower($row->nama . ' ' . $row->nik . ' ' . $row->no_hp . ' ' . $row->alamat . ' ' . $row->jenis_pemohon . ' ' . $row->nama_penanggung_jawab . ' ' . $row->nama_instansi . ' ' . $row->alamat_instansi . ' ' . $row->sarana . ' ' . $row->kegunaan . ' ' . $row->nama_kegiatan . ' ' . $row->lokasi_kegiatan . ' ' . $row->status) }}">
                                 <td class="no-cell">{{ $loop->iteration }}</td>
 
+                                <td class="cell-strong">{{ $row->nama ?? '-' }}</td>
+
+                                <td>{{ $row->nik ?? '-' }}</td>
+
+                                <td>{{ $row->no_hp ?? '-' }}</td>
+
+                                <td style="text-align: left; min-width: 250px; max-width: 320px; white-space: normal;">{{ $row->alamat ?? '-' }}</td>
+
+                                <td class="cell-cap">{{ ucfirst($row->jenis_pemohon ?? '-') }}</td>
+
+                                <td>{{ $row->nama_penanggung_jawab ?? '-' }}</td>
+
+                                <td class="cell-strong">{{ $row->nama_instansi ?? '-' }}</td>
+
+                                <td style="text-align: left; min-width: 250px; max-width: 320px; white-space: normal;">{{ $row->alamat_instansi ?? '-' }}</td>
+
+                                <td class="cell-strong">{{ $row->sarana ?? '-' }}</td>
+
+                                <td style="text-align: left; min-width: 250px; max-width: 350px; white-space: normal;">{{ $row->kegunaan ?? '-' }}</td>
+
+                                <td class="cell-strong cell-cap">{{ $row->nama_kegiatan ?? '-' }}</td>
+
+                                <td style="text-align: left; min-width: 220px; max-width: 280px; white-space: normal;">{{ $row->lokasi_kegiatan ?? '-' }}</td>
+
                                 <td>
-                                    <span class="cell-strong">{{ $row->nama }}</span>
-                                    <span class="cell-sub cell-cap">{{ $row->jenis_pemohon }} &middot; {{ $row->nama_instansi }}</span>
+                                    {{ $row->tgl_pelaksanaan ? \Carbon\Carbon::parse($row->tgl_pelaksanaan)->locale('id')->translatedFormat('d F Y') : '-' }}
                                 </td>
 
-                                <td>{{ $row->no_hp }}</td>
-
-                                <td class="cell-cap">
-                                    <span class="cell-strong">{{ $row->nama_kegiatan }}</span>
-                                    <span class="cell-sub">{{ $row->lokasi_kegiatan }}</span>
-                                </td>
-
-                                <td>{{ $row->sarana }}</td>
-
                                 <td>
-                                    <span class="cell-strong">{{ \Carbon\Carbon::parse($row->tgl_pelaksanaan)->translatedFormat('d M Y') }}</span>
-                                    <span class="cell-sub">{{ substr($row->waktu_mulai, 0, 5) }} - {{ substr($row->waktu_selesai, 0, 5) }}</span>
+                                    @if(!empty($row->waktu_mulai))
+                                        {{ substr($row->waktu_mulai, 0, 5) }} - {{ substr($row->waktu_selesai ?? '', 0, 5) }} WIB
+                                    @else
+                                        -
+                                    @endif
                                 </td>
 
                                 <td>
@@ -442,7 +519,7 @@
                                     @endhasanyrole
                                 </td>
 
-                                <td>
+                                <td class="col-aksi">
                                     <div class="aksi-group">
                                         <!-- DETAIL: SEMUA ROLE -->
                                         <a href="{{ route('internal.penggunaan-sarana.show', $row->id) }}" class="action-btn view" title="Lihat Detail"><i class="fas fa-eye"></i></a>
@@ -461,7 +538,7 @@
                             </tr>
                             @empty
                             <tr class="empty-state">
-                                <td colspan="8">
+                                <td colspan="17">
                                     <i class="fas fa-truck-droplet d-block"></i>
                                     Belum ada data pengajuan Penggunaan Sarana.
                                 </td>
@@ -470,7 +547,7 @@
 
                             {{-- Muncul otomatis jika pencarian tidak menemukan hasil --}}
                             <tr class="empty-state" id="noResult" hidden>
-                                <td colspan="8">
+                                <td colspan="17">
                                     <i class="fas fa-search d-block"></i>
                                     Tidak ada pengajuan yang cocok dengan pencarian.
                                 </td>
@@ -621,6 +698,13 @@
         window.resetFilter = function () {
             searchInput.value = '';
             filterTable();
+        };
+
+        window.scrollTable = function (distance) {
+            const el = document.querySelector('.rekap-scroll');
+            if (el) {
+                el.scrollBy({ left: distance, behavior: 'smooth' });
+            }
         };
 
         filterTable(); // terapkan warna selang-seling saat halaman dimuat

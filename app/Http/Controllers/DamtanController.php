@@ -131,29 +131,36 @@ class DamtanController extends Controller
             ->leftJoin('lp_kategori_khusus', 'laporan_penyelamatans.id', '=', 'lp_kategori_khusus.laporan_id')
             ->select(
                 'laporan_penyelamatans.*',
+                DB::raw('COALESCE(lp_teknis_logistiks.nama_korban, laporan_penyelamatans.nama_korban) as nama_korban'),
+                DB::raw('COALESCE(lp_teknis_logistiks.jumlah_jiwa, laporan_penyelamatans.jumlah_jiwa, 0) as jumlah_jiwa'),
+                DB::raw('COALESCE(lp_teknis_logistiks.warga_terdampak, laporan_penyelamatans.warga_terdampak, 0) as warga_terdampak'),
+                DB::raw('COALESCE(lp_teknis_logistiks.korban_meninggal, laporan_penyelamatans.korban_meninggal, 0) as korban_meninggal'),
+                DB::raw('COALESCE(lp_teknis_logistiks.korban_berat, laporan_penyelamatans.korban_berat, 0) as korban_berat'),
+                DB::raw('COALESCE(lp_teknis_logistiks.korban_ringan, laporan_penyelamatans.korban_ringan, 0) as korban_ringan'),
+                DB::raw('COALESCE(lp_teknis_logistiks.hambatan_lapangan, laporan_penyelamatans.hambatan_lapangan) as hambatan_lapangan'),
+                DB::raw('COALESCE(lp_teknis_logistiks.armada, laporan_penyelamatans.armada) as armada'),
+                DB::raw('COALESCE(lp_teknis_logistiks.liter_air, laporan_penyelamatans.liter_air, 0) as liter_air'),
+                DB::raw('COALESCE(lp_teknis_logistiks.liter_foam, laporan_penyelamatans.liter_foam, 0) as liter_foam'),
+                DB::raw('COALESCE(lp_teknis_logistiks.jumlah_personel, laporan_penyelamatans.jumlah_personel, 0) as jumlah_personel'),
+                DB::raw('COALESCE(lp_dokumentasis.dugaan_penyebab, laporan_penyelamatans.dugaan_penyebab) as dugaan_penyebab'),
+                DB::raw('COALESCE(lp_dokumentasis.dugaan_penyebab_lainnya, laporan_penyelamatans.dugaan_penyebab_lainnya) as dugaan_penyebab_lainnya'),
+                DB::raw('COALESCE(lp_dokumentasis.kronologi_lengkap, laporan_penyelamatans.kronologi_lengkap) as kronologi_lengkap'),
                 'lp_teknis_logistiks.pimpinan_operasi',
                 'lp_teknis_logistiks.pendamping_operasi',
                 'lp_teknis_logistiks.satuan_tugas',
                 'lp_teknis_logistiks.tim_respontime',
                 'lp_teknis_logistiks.objek_terdampak',
-                'lp_teknis_logistiks.armada',
                 'lp_teknis_logistiks.peralatan',
                 'lp_teknis_logistiks.peralatan_lain',
                 'lp_teknis_logistiks.konsumsi_alat',
-                'lp_teknis_logistiks.liter_air',
-                'lp_teknis_logistiks.liter_foam',
                 'lp_teknis_logistiks.liter_bbm',
-                'lp_teknis_logistiks.jumlah_personel',
                 'lp_teknis_logistiks.daftar_personel',
-                'lp_dokumentasis.dugaan_penyebab',
-                'lp_dokumentasis.dugaan_penyebab_lainnya',
                 'lp_dokumentasis.sumber_api',
                 'lp_dokumentasis.luas_area',
                 'lp_dokumentasis.instansi_pendukung',
                 'lp_dokumentasis.tindakan_instansi',
                 'lp_dokumentasis.kontak_saksi',
                 'lp_dokumentasis.cara_bertindak',
-                'lp_dokumentasis.kronologi_lengkap',
                 'lp_kategori_khusus.jenis_hewan',
                 'lp_kategori_khusus.spesies_hewan',
                 'lp_kategori_khusus.jenis_objek_tumbang',
@@ -887,14 +894,28 @@ class DamtanController extends Controller
 
         $tahunTerpilih = $request->filled('tahun') ? (int) $request->tahun : null;
 
-        // Ambil daftar tahun unik dari data rekap_layanan
-        $tahunList = DB::table('rekap_layanan')
+        // Ambil daftar tahun unik dari data rekap_layanan & laporan_penyelamatans
+        $tahunListRekap = DB::table('rekap_layanan')
             ->whereNotIn('kategori', $objekKeys)
             ->selectRaw('YEAR(tanggal) as tahun')
             ->distinct()
-            ->orderBy('tahun', 'desc')
             ->pluck('tahun')
-            ->filter()
+            ->filter();
+
+        $tahunListLp = DB::table('laporan_penyelamatans')
+            ->selectRaw('YEAR(COALESCE(tanggal_kejadian, created_at)) as tahun')
+            ->distinct()
+            ->pluck('tahun')
+            ->filter();
+
+        $tahunSekarang = (int) date('Y');
+        $tahunList = $tahunListRekap
+            ->concat($tahunListLp)
+            ->push($tahunSekarang)
+            ->when($tahunTerpilih, fn ($c) => $c->push($tahunTerpilih))
+            ->map(fn ($t) => (int) $t)
+            ->unique()
+            ->sortDesc()
             ->values();
 
         $riwayatQuery = DB::table('rekap_layanan')
@@ -938,13 +959,36 @@ class DamtanController extends Controller
             ->groupBy('kategori')
             ->pluck('total', 'kategori');
 
-        return view('internal.damtan.rekap_layanan', compact('riwayat', 'totals', 'kategori', 'tahunList', 'tahunTerpilih', 'filterLayananTerpilih'));
+        // Rekapitulasi bulanan komprehensif (12 bulan) untuk tabel format Excel di bawah
+        $tahunRekap = $tahunTerpilih ?: ($tahunList->first() ?: (int) date('Y'));
+        $rekapitulasiKomprehensif = $this->hitungRekapLayananBulananKomprehensif($tahunRekap);
+
+        return view('internal.damtan.rekap_layanan', compact(
+            'riwayat',
+            'totals',
+            'kategori',
+            'tahunList',
+            'tahunTerpilih',
+            'filterLayananTerpilih',
+            'rekapitulasiKomprehensif',
+            'tahunRekap'
+        ));
     }
 
     public function storeRekapLayanan(Request $request)
     {
         if (! Auth::user()->hasAnyRole(['Damtan', 'Super User'])) {
             abort(403, 'Anda tidak memiliki hak akses untuk menambah rekap layanan.');
+        }
+
+        $tanggalInput = $request->input('tanggal', $request->input('bulan_tahun'));
+        if (! empty($tanggalInput)) {
+            if (preg_match('/^\d{4}-\d{2}$/', $tanggalInput)) {
+                $tanggalFix = $tanggalInput . '-01';
+            } else {
+                $tanggalFix = date('Y-m-01', strtotime($tanggalInput));
+            }
+            $request->merge(['tanggal' => $tanggalFix]);
         }
 
         $request->validate([
@@ -973,6 +1017,16 @@ class DamtanController extends Controller
     {
         if (! Auth::user()->hasAnyRole(['Damtan', 'Super User'])) {
             abort(403, 'Anda tidak memiliki hak akses untuk mengedit rekap layanan.');
+        }
+
+        $tanggalInput = $request->input('tanggal', $request->input('bulan_tahun'));
+        if (! empty($tanggalInput)) {
+            if (preg_match('/^\d{4}-\d{2}$/', $tanggalInput)) {
+                $tanggalFix = $tanggalInput . '-01';
+            } else {
+                $tanggalFix = date('Y-m-01', strtotime($tanggalInput));
+            }
+            $request->merge(['tanggal' => $tanggalFix]);
         }
 
         $request->validate([
@@ -1046,24 +1100,35 @@ class DamtanController extends Controller
 
         $tahunTerpilih = $request->filled('tahun') ? (int) $request->tahun : null;
 
-        // Ambil daftar tahun unik khusus rekap objek kebakaran
-        $tahunList = DB::table('rekap_layanan')
+        // Ambil daftar tahun unik khusus rekap objek kebakaran (rekap_layanan & laporan_penyelamatans)
+        $tahunListRekap = DB::table('rekap_layanan')
             ->whereIn('kategori', $keys)
             ->selectRaw('YEAR(tanggal) as tahun')
             ->distinct()
-            ->orderBy('tahun', 'desc')
             ->pluck('tahun')
-            ->filter()
-            ->values();
+            ->filter();
 
-        $riwayatQuery = DB::table('rekap_layanan')
-            ->whereIn('kategori', $keys);
+        $tahunListLp = DB::table('laporan_penyelamatans')
+            ->where('kategori_kejadian', 'kebakaran')
+            ->selectRaw('YEAR(COALESCE(tanggal_kejadian, created_at)) as tahun')
+            ->distinct()
+            ->pluck('tahun')
+            ->filter();
+
+        $tahunSekarang = (int) date('Y');
+        $tahunList = $tahunListRekap
+            ->concat($tahunListLp)
+            ->push($tahunSekarang)
+            ->when($tahunTerpilih, fn ($c) => $c->push($tahunTerpilih))
+            ->map(fn ($t) => (int) $t)
+            ->unique()
+            ->sortDesc()
+            ->values();
 
         $totalsQuery = DB::table('rekap_layanan')
             ->whereIn('kategori', $keys);
 
         if ($tahunTerpilih) {
-            $riwayatQuery->whereYear('tanggal', $tahunTerpilih);
             $totalsQuery->whereYear('tanggal', $tahunTerpilih);
         }
 
@@ -1083,27 +1148,699 @@ class DamtanController extends Controller
         }
 
         if ($filterObjekTerpilih) {
-            $riwayatQuery->where('kategori', $filterObjekTerpilih);
-        }
+            // Pemetaan kategori filter card ke variasi nilai objek di laporan_penyelamatans
+            $mapKategoriKebakaran = [
+                'objek_rumah'            => ['rumah', 'objek_rumah', 'perumahan', 'Rumah'],
+                'objek_gudang'           => ['gudang', 'objek_gudang', 'gedung/gudang', 'Gudang'],
+                'objek_ruko'             => ['ruko', 'objek_ruko', 'Ruko'],
+                'objek_kantor'           => ['kantor', 'objek_kantor', 'Kantor'],
+                'objek_sekolah'          => ['sekolah', 'objek_sekolah', 'Sekolah'],
+                'objek_rumah_ibadah'     => ['rumah_ibadah', 'objek_rumah_ibadah', 'Rumah Ibadah'],
+                'objek_pasar'            => ['pasar_tempat_usaha', 'objek_pasar', 'pasar', 'Pasar / Tempat Usaha'],
+                'objek_kendaraan'        => ['kendaraan_bermotor', 'objek_kendaraan', 'kendaraan', 'Kendaraan Bermotor'],
+                'objek_vital'            => ['objek_vital', 'vital', 'Objek Vital'],
+                'objek_sarana_kesehatan' => ['sarana_kesehatan', 'objek_sarana_kesehatan', 'kesehatan', 'Sarana Kesehatan'],
+                'objek_lahan_pohon'      => ['lahan_pohon', 'objek_lahan_pohon', 'lahan', 'pohon', 'Lahan, Pohon'],
+                'objek_gardu_listrik'    => ['gardu_listrik', 'objek_gardu_listrik', 'gardu', 'Gardu Listrik'],
+                'objek_tpa_sampah'       => ['tempat_sampah', 'objek_tpa_sampah', 'tpa', 'sampah', 'Tempat Pembuangan Sampah'],
+            ];
 
-        $riwayat = $riwayatQuery
-            ->orderBy('tanggal', 'desc')
-            ->orderBy('id', 'desc')
-            ->paginate(20)
-            ->withQueryString();
+            $mappedValues = $mapKategoriKebakaran[$filterObjekTerpilih] ?? [str_replace('objek_', '', $filterObjekTerpilih)];
+            $namaKategori = $kategori[$filterObjekTerpilih][0] ?? '';
+
+            $lpQuery = DB::table('laporan_penyelamatans as lp')
+                ->leftJoin('lp_dokumentasis as doc', 'doc.laporan_id', '=', 'lp.id')
+                ->leftJoin('lp_teknis_logistiks as tek', 'tek.laporan_id', '=', 'lp.id')
+                ->where('lp.kategori_kejadian', 'kebakaran')
+                ->where(function ($q) use ($mappedValues, $namaKategori) {
+                    $q->whereIn('lp.kategori_kebakaran', $mappedValues);
+                    if ($namaKategori) {
+                        $q->orWhere('lp.kategori_kebakaran', 'LIKE', '%' . $namaKategori . '%')
+                          ->orWhere('lp.keterangan_objek_kebakaran', 'LIKE', '%' . $namaKategori . '%');
+                    }
+                });
+
+            if ($tahunTerpilih) {
+                $lpQuery->where(function ($q) use ($tahunTerpilih) {
+                    $q->whereYear('lp.tanggal_kejadian', $tahunTerpilih)
+                      ->orWhere(function ($q2) use ($tahunTerpilih) {
+                          $q2->whereNull('lp.tanggal_kejadian')
+                             ->whereYear('lp.created_at', $tahunTerpilih);
+                      });
+                });
+            }
+
+            $countLp = (clone $lpQuery)->count();
+
+            if ($countLp > 0) {
+                $riwayat = $lpQuery
+                    ->select([
+                        'lp.id',
+                        'lp.nomor_laporan',
+                        DB::raw('COALESCE(lp.tanggal_kejadian, DATE(lp.created_at)) as tanggal'),
+                        'lp.kategori_kebakaran',
+                        'lp.keterangan_objek_kebakaran',
+                        'lp.alamat',
+                        DB::raw('1 as jumlah'),
+                        'lp.jumlah_jiwa',
+                        'lp.korban_meninggal',
+                        'lp.korban_berat',
+                        'lp.korban_ringan',
+                        'lp.korban_hewan_aset',
+                        DB::raw('COALESCE(doc.dugaan_penyebab, lp.dugaan_penyebab) as dugaan_penyebab'),
+                        DB::raw('COALESCE(doc.dugaan_penyebab_lainnya, lp.dugaan_penyebab_lainnya) as dugaan_penyebab_lainnya'),
+                        DB::raw('COALESCE(tek.nama_korban, lp.nama_korban) as nama_korban'),
+                        DB::raw('COALESCE(tek.korban_meninggal, lp.korban_meninggal, 0) as korban_meninggal_fix'),
+                        DB::raw('COALESCE(tek.korban_berat, lp.korban_berat, 0) as korban_berat_fix'),
+                        DB::raw('COALESCE(tek.korban_ringan, lp.korban_ringan, 0) as korban_ringan_fix'),
+                        DB::raw('COALESCE(tek.korban_hewan_aset, lp.korban_hewan_aset) as korban_hewan_aset_fix'),
+                        DB::raw("'laporan_penyelamatan' as sumber_data"),
+                    ])
+                    ->orderBy(DB::raw('COALESCE(lp.tanggal_kejadian, DATE(lp.created_at))'), 'desc')
+                    ->orderBy('lp.id', 'desc')
+                    ->paginate(20)
+                    ->withQueryString();
+            } else {
+                // Fallback ke rekap_layanan jika di laporan_penyelamatans belum ada data kategori tersebut
+                $rkQuery = DB::table('rekap_layanan')
+                    ->where('kategori', $filterObjekTerpilih);
+
+                if ($tahunTerpilih) {
+                    $rkQuery->whereYear('tanggal', $tahunTerpilih);
+                }
+
+                $riwayat = $rkQuery
+                    ->select([
+                        'id',
+                        'tanggal',
+                        'kategori',
+                        'jumlah',
+                        'kecamatan',
+                        'lokasi as alamat',
+                        'keterangan as keterangan_objek_kebakaran',
+                        DB::raw('NULL as dugaan_penyebab'),
+                        DB::raw('NULL as dugaan_penyebab_lainnya'),
+                        DB::raw('NULL as nama_korban'),
+                        DB::raw('0 as korban_meninggal_fix'),
+                        DB::raw('0 as korban_berat_fix'),
+                        DB::raw('0 as korban_ringan_fix'),
+                        DB::raw('NULL as korban_hewan_aset_fix'),
+                        DB::raw("'rekap_layanan' as sumber_data"),
+                    ])
+                    ->orderBy('tanggal', 'desc')
+                    ->orderBy('id', 'desc')
+                    ->paginate(20)
+                    ->withQueryString();
+            }
+        } else {
+            $riwayatQuery = DB::table('rekap_layanan')
+                ->whereIn('kategori', $keys);
+
+            if ($tahunTerpilih) {
+                $riwayatQuery->whereYear('tanggal', $tahunTerpilih);
+            }
+
+            $riwayat = $riwayatQuery
+                ->orderBy('tanggal', 'desc')
+                ->orderBy('id', 'desc')
+                ->paginate(20)
+                ->withQueryString();
+        }
 
         $totals = $totalsQuery
             ->select('kategori', DB::raw('SUM(jumlah) as total'))
             ->groupBy('kategori')
             ->pluck('total', 'kategori');
 
-        return view('internal.damtan.rekap_objek', compact('riwayat', 'totals', 'kategori', 'tahunList', 'tahunTerpilih', 'filterObjekTerpilih'));
+        // Rekapitulasi bulanan komprehensif (12 bulan) untuk tabel format Excel di bawah
+        $tahunRekap = $tahunTerpilih ?: ($tahunList->first() ?: (int) date('Y'));
+        $rekapitulasiKomprehensif = $this->hitungRekapBulananKomprehensif($tahunRekap);
+
+        return view('internal.damtan.rekap_objek', compact(
+            'riwayat',
+            'totals',
+            'kategori',
+            'tahunList',
+            'tahunTerpilih',
+            'filterObjekTerpilih',
+            'rekapitulasiKomprehensif',
+            'tahunRekap'
+        ));
+    }
+
+    /**
+     * Hitung rekapitulasi data kejadian kebakaran bulanan (12 bulan)
+     * dengan struktur persis format tabel laporan resmi Excel.
+     */
+    private function hitungRekapBulananKomprehensif(int $tahun): array
+    {
+        $kategoriList = $this->kategoriObjek();
+        $keys = array_keys($kategoriList);
+
+        $namaBulan = [
+            1 => 'JANUARI', 2 => 'FEBRUARI', 3 => 'MARET', 4 => 'APRIL',
+            5 => 'MEI', 6 => 'JUNI', 7 => 'JULI', 8 => 'AGUSTUS',
+            9 => 'SEPTEMBER', 10 => 'OKTOBER', 11 => 'NOVEMBER', 12 => 'DESEMBER',
+        ];
+
+        $rekap = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $rowObjek = [];
+            foreach ($keys as $kKey) {
+                $rowObjek[$kKey] = 0;
+            }
+
+            $rekap[$m] = array_merge([
+                'no' => $m,
+                'bulan' => $namaBulan[$m],
+                'jumlah_kejadian' => 0,
+            ], $rowObjek, [
+                // Lokasi Kejadian (Kecamatan)
+                'alam_barajo' => 0,
+                'jambi_selatan' => 0,
+                'pasar_jambi' => 0,
+                'jambi_timur' => 0,
+                'telanai_pura' => 0,
+                'paal_merah' => 0,
+                'kota_baru' => 0,
+                'pelayangan' => 0,
+                'danau_teluk' => 0,
+                'danau_sipin' => 0,
+                'jelutung' => 0,
+                'perbatasan' => 0,
+                // Penyebab Kebakaran
+                'listrik' => 0,
+                'minyak' => 0,
+                'kompor' => 0,
+                'rokok' => 0,
+                'gas_lilin_nyamuk' => 0,
+                'lainnya_penyebab' => 0,
+                // Korban Jiwa
+                'kecelakaan' => 0,
+                'luka_bakar' => 0,
+                'meninggal' => 0,
+                // Korban Kendaraan
+                'roda_dua' => 0,
+                'roda_empat' => 0,
+            ]);
+        }
+
+        // Ambil data 13 kategori jenis bangunan dari rekap_layanan untuk tahun tersebut
+        $rekapLayananRecords = DB::table('rekap_layanan')
+            ->whereYear('tanggal', $tahun)
+            ->whereIn('kategori', $keys)
+            ->select([
+                DB::raw('MONTH(tanggal) as bulan'),
+                'kategori',
+                'jumlah',
+            ])
+            ->get();
+
+        $hasRekapLayanan = $rekapLayananRecords->isNotEmpty();
+
+        if ($hasRekapLayanan) {
+            foreach ($rekapLayananRecords as $rk) {
+                $m = (int) $rk->bulan;
+                if ($m < 1 || $m > 12) {
+                    continue;
+                }
+                $jml = (int) $rk->jumlah;
+                $kKey = $rk->kategori;
+
+                if (isset($rekap[$m][$kKey])) {
+                    $rekap[$m][$kKey] += $jml;
+                }
+            }
+        }
+
+        $records = DB::table('laporan_penyelamatans as lp')
+            ->leftJoin('lp_dokumentasis as doc', 'doc.laporan_id', '=', 'lp.id')
+            ->leftJoin('lp_teknis_logistiks as tek', 'tek.laporan_id', '=', 'lp.id')
+            ->where('lp.kategori_kejadian', 'kebakaran')
+            ->where(function ($q) use ($tahun) {
+                $q->whereYear('lp.tanggal_kejadian', $tahun)
+                  ->orWhere(function ($q2) use ($tahun) {
+                      $q2->whereNull('lp.tanggal_kejadian')
+                         ->whereYear('lp.created_at', $tahun);
+                  });
+            })
+            ->select([
+                'lp.id',
+                DB::raw('MONTH(COALESCE(lp.tanggal_kejadian, lp.created_at)) as bulan'),
+                'lp.kategori_kebakaran',
+                'lp.keterangan_objek_kebakaran',
+                'lp.alamat',
+                DB::raw('COALESCE(doc.dugaan_penyebab, lp.dugaan_penyebab) as dugaan_penyebab'),
+                DB::raw('COALESCE(doc.dugaan_penyebab_lainnya, lp.dugaan_penyebab_lainnya) as dugaan_penyebab_lainnya'),
+                DB::raw('COALESCE(tek.korban_ringan, lp.korban_ringan, 0) as korban_ringan'),
+                DB::raw('COALESCE(tek.korban_berat, lp.korban_berat, 0) as korban_berat'),
+                DB::raw('COALESCE(tek.korban_meninggal, lp.korban_meninggal, 0) as korban_meninggal'),
+                DB::raw('COALESCE(tek.korban_hewan_aset, lp.korban_hewan_aset) as korban_hewan_aset'),
+            ])
+            ->get();
+
+        $mapKategoriKebakaran = [
+            'rumah' => 'objek_rumah',
+            'gudang' => 'objek_gudang',
+            'ruko' => 'objek_ruko',
+            'kantor' => 'objek_kantor',
+            'sekolah' => 'objek_sekolah',
+            'rumah_ibadah' => 'objek_rumah_ibadah',
+            'pasar_tempat_usaha' => 'objek_pasar',
+            'kendaraan_bermotor' => 'objek_kendaraan',
+            'objek_vital' => 'objek_vital',
+            'sarana_kesehatan' => 'objek_sarana_kesehatan',
+            'lahan_pohon' => 'objek_lahan_pohon',
+            'gardu_listrik' => 'objek_gardu_listrik',
+            'tempat_sampah' => 'objek_tpa_sampah',
+        ];
+
+        foreach ($records as $row) {
+            $m = (int) $row->bulan;
+            if ($m < 1 || $m > 12) {
+                continue;
+            }
+
+            // 1. Klasifikasi Jenis Bangunan (hanya jika rekap_layanan kosong)
+            if (! $hasRekapLayanan) {
+                $kat = strtolower(trim((string) $row->kategori_kebakaran));
+                $kKey = $mapKategoriKebakaran[$kat] ?? null;
+                if (! $kKey) {
+                    if (str_contains($kat, 'rumah')) {
+                        $kKey = 'objek_rumah';
+                    } elseif (str_contains($kat, 'gudang')) {
+                        $kKey = 'objek_gudang';
+                    } elseif (str_contains($kat, 'ruko')) {
+                        $kKey = 'objek_ruko';
+                    } elseif (str_contains($kat, 'kantor')) {
+                        $kKey = 'objek_kantor';
+                    } elseif (str_contains($kat, 'sekolah')) {
+                        $kKey = 'objek_sekolah';
+                    } elseif (str_contains($kat, 'ibadah')) {
+                        $kKey = 'objek_rumah_ibadah';
+                    } elseif (str_contains($kat, 'pasar')) {
+                        $kKey = 'objek_pasar';
+                    } elseif (str_contains($kat, 'kendaraan') || str_contains($kat, 'motor') || str_contains($kat, 'mobil')) {
+                        $kKey = 'objek_kendaraan';
+                    } elseif (str_contains($kat, 'vital')) {
+                        $kKey = 'objek_vital';
+                    } elseif (str_contains($kat, 'kesehatan')) {
+                        $kKey = 'objek_sarana_kesehatan';
+                    } elseif (str_contains($kat, 'lahan') || str_contains($kat, 'pohon')) {
+                        $kKey = 'objek_lahan_pohon';
+                    } elseif (str_contains($kat, 'gardu') || str_contains($kat, 'listrik')) {
+                        $kKey = 'objek_gardu_listrik';
+                    } elseif (str_contains($kat, 'sampah')) {
+                        $kKey = 'objek_tpa_sampah';
+                    } else {
+                        $kKey = 'objek_pasar';
+                    }
+                }
+
+                if (isset($rekap[$m][$kKey])) {
+                    $rekap[$m][$kKey]++;
+                }
+            }
+
+            // 2. Klasifikasi Lokasi Kejadian (Kecamatan di Kota Jambi)
+            $alamat = strtolower(trim((string) $row->alamat));
+
+            if (str_contains($alamat, 'alam barajo')) {
+                $rekap[$m]['alam_barajo']++;
+            } elseif (str_contains($alamat, 'jambi selatan')) {
+                $rekap[$m]['jambi_selatan']++;
+            } elseif (str_contains($alamat, 'pasar jambi') || (str_contains($alamat, 'pasar') && !str_contains($alamat, 'pasar_'))) {
+                $rekap[$m]['pasar_jambi']++;
+            } elseif (str_contains($alamat, 'jambi timur')) {
+                $rekap[$m]['jambi_timur']++;
+            } elseif (str_contains($alamat, 'telanai')) {
+                $rekap[$m]['telanai_pura']++;
+            } elseif (str_contains($alamat, 'paal merah') || str_contains($alamat, 'paalmerah') || str_contains($alamat, 'pal merah') || str_contains($alamat, 'palmerah')) {
+                $rekap[$m]['paal_merah']++;
+            } elseif (str_contains($alamat, 'kota baru') || str_contains($alamat, 'kotabaru')) {
+                $rekap[$m]['kota_baru']++;
+            } elseif (str_contains($alamat, 'pelayangan')) {
+                $rekap[$m]['pelayangan']++;
+            } elseif (str_contains($alamat, 'danau teluk')) {
+                $rekap[$m]['danau_teluk']++;
+            } elseif (str_contains($alamat, 'danau sipin')) {
+                $rekap[$m]['danau_sipin']++;
+            } elseif (str_contains($alamat, 'jelutung')) {
+                $rekap[$m]['jelutung']++;
+            } elseif (str_contains($alamat, 'muaro jambi') || str_contains($alamat, 'muara jambi') || str_contains($alamat, 'perbatasan') || str_contains($alamat, 'jaluko')) {
+                $rekap[$m]['perbatasan']++;
+            } else {
+                $rekap[$m]['kota_baru']++;
+            }
+
+            // 3. Klasifikasi Penyebab Kebakaran
+            $sebab = strtolower(trim((string) $row->dugaan_penyebab));
+            $sebabLain = strtolower(trim((string) $row->dugaan_penyebab_lainnya));
+            $ket = strtolower(trim((string) ($row->keterangan_objek_kebakaran ?? '')));
+
+            if (in_array($sebab, ['arus_pendek', 'listrik', 'gardu_listrik']) || str_contains($sebabLain, 'listrik') || str_contains($sebabLain, 'konsleting') || str_contains($ket, 'listrik')) {
+                $rekap[$m]['listrik']++;
+            } elseif ($sebab === 'minyak' || str_contains($sebabLain, 'minyak') || str_contains($sebabLain, 'solar') || str_contains($ket, 'minyak') || str_contains($ket, 'solar')) {
+                $rekap[$m]['minyak']++;
+            } elseif ($sebab === 'kompor' || str_contains($sebabLain, 'kompor') || str_contains($ket, 'kompor')) {
+                $rekap[$m]['kompor']++;
+            } elseif ($sebab === 'rokok' || str_contains($sebabLain, 'rokok') || str_contains($ket, 'rokok')) {
+                $rekap[$m]['rokok']++;
+            } elseif (in_array($sebab, ['kebocoran_gas', 'gas']) || str_contains($sebabLain, 'gas') || str_contains($sebabLain, 'lilin') || str_contains($sebabLain, 'nyamuk') || str_contains($ket, 'tabung gas')) {
+                $rekap[$m]['gas_lilin_nyamuk']++;
+            } else {
+                $rekap[$m]['lainnya_penyebab']++;
+            }
+
+            // 4. Korban Jiwa & Kendaraan
+            $ringan = (int) $row->korban_ringan;
+            $berat = (int) $row->korban_berat;
+            $meninggal = (int) $row->korban_meninggal;
+            $aset = strtolower((string) $row->korban_hewan_aset);
+
+            if ($ringan > 0) {
+                $rekap[$m]['kecelakaan'] += $ringan;
+            }
+            if ($berat > 0) {
+                $rekap[$m]['luka_bakar'] += $berat;
+            }
+            if ($meninggal > 0) {
+                $rekap[$m]['meninggal'] += $meninggal;
+            }
+
+            if (str_contains($aset, 'roda dua') || str_contains($aset, 'motor') || str_contains($aset, 'r2')) {
+                $rekap[$m]['roda_dua']++;
+            }
+            if (str_contains($aset, 'roda empat') || str_contains($aset, 'mobil') || str_contains($aset, 'r4')) {
+                $rekap[$m]['roda_empat']++;
+            }
+        }
+
+        // Sinkronisasi jumlah kejadian tiap bulan agar sesuai total jenis bangunan
+        for ($m = 1; $m <= 12; $m++) {
+            $totalBangunan = 0;
+            foreach ($keys as $kKey) {
+                $totalBangunan += ($rekap[$m][$kKey] ?? 0);
+            }
+
+            if ($totalBangunan > 0) {
+                $rekap[$m]['jumlah_kejadian'] = $totalBangunan;
+            }
+        }
+
+        $totals = [
+            'jumlah_kejadian' => 0,
+        ];
+        foreach ($keys as $kKey) {
+            $totals[$kKey] = 0;
+        }
+        $totals = array_merge($totals, [
+            'alam_barajo' => 0, 'jambi_selatan' => 0, 'pasar_jambi' => 0, 'jambi_timur' => 0, 'telanai_pura' => 0, 'paal_merah' => 0,
+            'kota_baru' => 0, 'pelayangan' => 0, 'danau_teluk' => 0, 'danau_sipin' => 0, 'jelutung' => 0, 'perbatasan' => 0,
+            'listrik' => 0, 'minyak' => 0, 'kompor' => 0, 'rokok' => 0, 'gas_lilin_nyamuk' => 0, 'lainnya_penyebab' => 0,
+            'kecelakaan' => 0, 'luka_bakar' => 0, 'meninggal' => 0,
+            'roda_dua' => 0, 'roda_empat' => 0,
+        ]);
+
+        foreach ($rekap as $mRow) {
+            foreach ($totals as $k => $val) {
+                $totals[$k] += $mRow[$k] ?? 0;
+            }
+        }
+
+        return ['bulanan' => $rekap, 'total' => $totals];
+    }
+
+    /**
+     * Hitung rekapitulasi bulanan komprehensif khusus jenis layanan & penyelamatan (8 kategori).
+     */
+    private function hitungRekapLayananBulananKomprehensif(int $tahun): array
+    {
+        $kategoriList = $this->kategoriLayanan();
+        $keys = array_keys($kategoriList);
+
+        $namaBulan = [
+            1 => 'JANUARI', 2 => 'FEBRUARI', 3 => 'MARET', 4 => 'APRIL',
+            5 => 'MEI', 6 => 'JUNI', 7 => 'JULI', 8 => 'AGUSTUS',
+            9 => 'SEPTEMBER', 10 => 'OKTOBER', 11 => 'NOVEMBER', 12 => 'DESEMBER',
+        ];
+
+        $rekap = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $rowLayanan = [];
+            foreach ($keys as $kKey) {
+                $rowLayanan[$kKey] = 0;
+            }
+
+            $rekap[$m] = array_merge([
+                'no' => $m,
+                'bulan' => $namaBulan[$m],
+                'jumlah_kejadian' => 0,
+            ], $rowLayanan, [
+                // Lokasi Kejadian (Kecamatan)
+                'alam_barajo' => 0,
+                'jambi_selatan' => 0,
+                'pasar_jambi' => 0,
+                'jambi_timur' => 0,
+                'telanai_pura' => 0,
+                'paal_merah' => 0,
+                'kota_baru' => 0,
+                'pelayangan' => 0,
+                'danau_teluk' => 0,
+                'danau_sipin' => 0,
+                'jelutung' => 0,
+                'perbatasan' => 0,
+                // Penyebab Kebakaran / Kejadian
+                'listrik' => 0,
+                'minyak' => 0,
+                'kompor' => 0,
+                'rokok' => 0,
+                'gas_lilin_nyamuk' => 0,
+                'lainnya_penyebab' => 0,
+                // Korban Jiwa
+                'kecelakaan' => 0,
+                'luka_bakar' => 0,
+                'meninggal' => 0,
+                // Korban Kendaraan
+                'roda_dua' => 0,
+                'roda_empat' => 0,
+            ]);
+        }
+
+        // Ambil data 8 kategori layanan dari rekap_layanan untuk tahun tersebut
+        $rekapLayananRecords = DB::table('rekap_layanan')
+            ->whereYear('tanggal', $tahun)
+            ->whereIn('kategori', $keys)
+            ->select([
+                DB::raw('MONTH(tanggal) as bulan'),
+                'kategori',
+                'jumlah',
+                'kecamatan',
+                'lokasi',
+                'keterangan',
+            ])
+            ->get();
+
+        $hasRekapLayanan = $rekapLayananRecords->isNotEmpty();
+
+        if ($hasRekapLayanan) {
+            foreach ($rekapLayananRecords as $rk) {
+                $m = (int) $rk->bulan;
+                if ($m < 1 || $m > 12) {
+                    continue;
+                }
+                $jml = (int) $rk->jumlah;
+                $kKey = $rk->kategori;
+
+                if (isset($rekap[$m][$kKey])) {
+                    $rekap[$m][$kKey] += $jml;
+                }
+
+                // Klasifikasi lokasi dari kolom kecamatan / lokasi di rekap_layanan
+                $alamat = strtolower(trim(($rk->kecamatan ?? '') . ' ' . ($rk->lokasi ?? '')));
+                if (str_contains($alamat, 'alam barajo')) {
+                    $rekap[$m]['alam_barajo'] += $jml;
+                } elseif (str_contains($alamat, 'jambi selatan')) {
+                    $rekap[$m]['jambi_selatan'] += $jml;
+                } elseif (str_contains($alamat, 'pasar jambi') || (str_contains($alamat, 'pasar') && ! str_contains($alamat, 'pasar_'))) {
+                    $rekap[$m]['pasar_jambi'] += $jml;
+                } elseif (str_contains($alamat, 'jambi timur')) {
+                    $rekap[$m]['jambi_timur'] += $jml;
+                } elseif (str_contains($alamat, 'telanai')) {
+                    $rekap[$m]['telanai_pura'] += $jml;
+                } elseif (str_contains($alamat, 'paal merah') || str_contains($alamat, 'paalmerah') || str_contains($alamat, 'pal merah') || str_contains($alamat, 'palmerah')) {
+                    $rekap[$m]['paal_merah'] += $jml;
+                } elseif (str_contains($alamat, 'kota baru') || str_contains($alamat, 'kotabaru')) {
+                    $rekap[$m]['kota_baru'] += $jml;
+                } elseif (str_contains($alamat, 'pelayangan')) {
+                    $rekap[$m]['pelayangan'] += $jml;
+                } elseif (str_contains($alamat, 'danau teluk')) {
+                    $rekap[$m]['danau_teluk'] += $jml;
+                } elseif (str_contains($alamat, 'danau sipin')) {
+                    $rekap[$m]['danau_sipin'] += $jml;
+                } elseif (str_contains($alamat, 'jelutung')) {
+                    $rekap[$m]['jelutung'] += $jml;
+                } elseif (str_contains($alamat, 'muaro jambi') || str_contains($alamat, 'muara jambi') || str_contains($alamat, 'perbatasan') || str_contains($alamat, 'jaluko')) {
+                    $rekap[$m]['perbatasan'] += $jml;
+                } else {
+                    $rekap[$m]['kota_baru'] += $jml;
+                }
+            }
+        }
+
+        // Ambil data laporan penyelamatan untuk melengkapi lokasi, penyebab & korban jika ada
+        $recordsLp = DB::table('laporan_penyelamatans as lp')
+            ->leftJoin('lp_dokumentasis as doc', 'doc.laporan_id', '=', 'lp.id')
+            ->leftJoin('lp_teknis_logistiks as tek', 'tek.laporan_id', '=', 'lp.id')
+            ->where(function ($q) use ($tahun) {
+                $q->whereYear('lp.tanggal_kejadian', $tahun)
+                  ->orWhere(function ($q2) use ($tahun) {
+                      $q2->whereNull('lp.tanggal_kejadian')
+                         ->whereYear('lp.created_at', $tahun);
+                  });
+            })
+            ->select([
+                'lp.id',
+                DB::raw('MONTH(COALESCE(lp.tanggal_kejadian, lp.created_at)) as bulan'),
+                'lp.kategori_kejadian',
+                'lp.kategori_non_kebakaran',
+                'lp.rincian_kategori_non_kebakaran',
+                'lp.alamat',
+                DB::raw('COALESCE(doc.dugaan_penyebab, lp.dugaan_penyebab) as dugaan_penyebab'),
+                DB::raw('COALESCE(doc.dugaan_penyebab_lainnya, lp.dugaan_penyebab_lainnya) as dugaan_penyebab_lainnya'),
+                DB::raw('COALESCE(tek.korban_ringan, lp.korban_ringan, 0) as korban_ringan'),
+                DB::raw('COALESCE(tek.korban_berat, lp.korban_berat, 0) as korban_berat'),
+                DB::raw('COALESCE(tek.korban_meninggal, lp.korban_meninggal, 0) as korban_meninggal'),
+                DB::raw('COALESCE(tek.korban_hewan_aset, lp.korban_hewan_aset) as korban_hewan_aset'),
+            ])
+            ->get();
+
+        foreach ($recordsLp as $row) {
+            $m = (int) $row->bulan;
+            if ($m < 1 || $m > 12) {
+                continue;
+            }
+
+            // Jika rekap_layanan kosong, mapping kategori dari laporan_penyelamatans
+            if (! $hasRekapLayanan) {
+                $katKej = strtolower(trim((string) $row->kategori_kejadian));
+                $katNonKeb = strtolower(trim((string) ($row->kategori_non_kebakaran ?? '')));
+                $rincianNonKeb = strtolower(trim((string) ($row->rincian_kategori_non_kebakaran ?? '')));
+                $jnsPen = $katNonKeb . ' ' . $rincianNonKeb;
+                $kKey = 'layanan_lainnya';
+
+                if ($katKej === 'kebakaran' || str_contains($katKej, 'kebakaran')) {
+                    $kKey = 'kebakaran';
+                } elseif (str_contains($jnsPen, 'tawon') || str_contains($jnsPen, 'lebah')) {
+                    $kKey = 'sarang_tawon';
+                } elseif (str_contains($jnsPen, 'hewan') || str_contains($jnsPen, 'ular') || str_contains($jnsPen, 'kucing') || str_contains($jnsPen, 'anjing')) {
+                    $kKey = 'evakuasi_hewan';
+                } elseif (str_contains($jnsPen, 'cincin')) {
+                    $kKey = 'pelepasan_cincin';
+                } elseif (str_contains($jnsPen, 'pohon')) {
+                    $kKey = 'pohon_tumbang';
+                } elseif (str_contains($jnsPen, 'air') || str_contains($jnsPen, 'sungai') || str_contains($jnsPen, 'tenggelam')) {
+                    $kKey = 'pencarian_air';
+                } elseif (str_contains($jnsPen, 'manusia') || str_contains($jnsPen, 'orang') || str_contains($jnsPen, 'terjebak') || str_contains($jnsPen, 'pertolongan')) {
+                    $kKey = 'evakuasi_manusia';
+                }
+
+                if (isset($rekap[$m][$kKey])) {
+                    $rekap[$m][$kKey]++;
+                }
+            }
+
+            // Klasifikasi Penyebab
+            $sebab = strtolower(trim((string) $row->dugaan_penyebab));
+            $sebabLain = strtolower(trim((string) $row->dugaan_penyebab_lainnya));
+
+            if (in_array($sebab, ['arus_pendek', 'listrik', 'gardu_listrik']) || str_contains($sebabLain, 'listrik') || str_contains($sebabLain, 'konsleting')) {
+                $rekap[$m]['listrik']++;
+            } elseif ($sebab === 'minyak' || str_contains($sebabLain, 'minyak') || str_contains($sebabLain, 'solar')) {
+                $rekap[$m]['minyak']++;
+            } elseif ($sebab === 'kompor' || str_contains($sebabLain, 'kompor')) {
+                $rekap[$m]['kompor']++;
+            } elseif ($sebab === 'rokok' || str_contains($sebabLain, 'rokok')) {
+                $rekap[$m]['rokok']++;
+            } elseif (in_array($sebab, ['kebocoran_gas', 'gas']) || str_contains($sebabLain, 'gas') || str_contains($sebabLain, 'lilin') || str_contains($sebabLain, 'nyamuk')) {
+                $rekap[$m]['gas_lilin_nyamuk']++;
+            } else {
+                $rekap[$m]['lainnya_penyebab']++;
+            }
+
+            // Korban Jiwa & Kendaraan
+            $ringan = (int) $row->korban_ringan;
+            $berat = (int) $row->korban_berat;
+            $meninggal = (int) $row->korban_meninggal;
+            $aset = strtolower((string) $row->korban_hewan_aset);
+
+            if ($ringan > 0) {
+                $rekap[$m]['kecelakaan'] += $ringan;
+            }
+            if ($berat > 0) {
+                $rekap[$m]['luka_bakar'] += $berat;
+            }
+            if ($meninggal > 0) {
+                $rekap[$m]['meninggal'] += $meninggal;
+            }
+
+            if (str_contains($aset, 'roda dua') || str_contains($aset, 'motor') || str_contains($aset, 'r2')) {
+                $rekap[$m]['roda_dua']++;
+            }
+            if (str_contains($aset, 'roda empat') || str_contains($aset, 'mobil') || str_contains($aset, 'r4')) {
+                $rekap[$m]['roda_empat']++;
+            }
+        }
+
+        // Sinkronisasi jumlah kejadian tiap bulan agar sesuai total kategori layanan
+        for ($m = 1; $m <= 12; $m++) {
+            $totalLayanan = 0;
+            foreach ($keys as $kKey) {
+                $totalLayanan += ($rekap[$m][$kKey] ?? 0);
+            }
+
+            if ($totalLayanan > 0) {
+                $rekap[$m]['jumlah_kejadian'] = $totalLayanan;
+            }
+        }
+
+        $totals = [
+            'jumlah_kejadian' => 0,
+        ];
+        foreach ($keys as $kKey) {
+            $totals[$kKey] = 0;
+        }
+        $totals = array_merge($totals, [
+            'alam_barajo' => 0, 'jambi_selatan' => 0, 'pasar_jambi' => 0, 'jambi_timur' => 0, 'telanai_pura' => 0, 'paal_merah' => 0,
+            'kota_baru' => 0, 'pelayangan' => 0, 'danau_teluk' => 0, 'danau_sipin' => 0, 'jelutung' => 0, 'perbatasan' => 0,
+            'listrik' => 0, 'minyak' => 0, 'kompor' => 0, 'rokok' => 0, 'gas_lilin_nyamuk' => 0, 'lainnya_penyebab' => 0,
+            'kecelakaan' => 0, 'luka_bakar' => 0, 'meninggal' => 0,
+            'roda_dua' => 0, 'roda_empat' => 0,
+        ]);
+
+        foreach ($rekap as $mRow) {
+            foreach ($totals as $k => $val) {
+                $totals[$k] += $mRow[$k] ?? 0;
+            }
+        }
+
+        return ['bulanan' => $rekap, 'total' => $totals];
     }
 
     public function storeRekapObjek(Request $request)
     {
         if (! Auth::user()->hasAnyRole(['Damtan', 'Super User'])) {
             abort(403, 'Anda tidak memiliki hak akses untuk menambah rekap objek.');
+        }
+
+        $tanggalInput = $request->input('tanggal', $request->input('bulan_tahun'));
+        if (! empty($tanggalInput)) {
+            if (preg_match('/^\d{4}-\d{2}$/', $tanggalInput)) {
+                $tanggalFix = $tanggalInput . '-01';
+            } else {
+                $tanggalFix = date('Y-m-01', strtotime($tanggalInput));
+            }
+            $request->merge(['tanggal' => $tanggalFix]);
         }
 
         $request->validate([
@@ -1132,6 +1869,16 @@ class DamtanController extends Controller
     {
         if (! Auth::user()->hasAnyRole(['Damtan', 'Super User'])) {
             abort(403, 'Anda tidak memiliki hak akses untuk mengedit rekap objek.');
+        }
+
+        $tanggalInput = $request->input('tanggal', $request->input('bulan_tahun'));
+        if (! empty($tanggalInput)) {
+            if (preg_match('/^\d{4}-\d{2}$/', $tanggalInput)) {
+                $tanggalFix = $tanggalInput . '-01';
+            } else {
+                $tanggalFix = date('Y-m-01', strtotime($tanggalInput));
+            }
+            $request->merge(['tanggal' => $tanggalFix]);
         }
 
         $request->validate([
