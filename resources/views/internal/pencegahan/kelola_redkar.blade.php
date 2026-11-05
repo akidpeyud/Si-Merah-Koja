@@ -8,9 +8,7 @@
     .page-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 26px; gap: 16px; flex-wrap: wrap; }
     .page-head-title h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.02em; margin-bottom: 5px; color: var(--ink); }
     .page-head-title p { color: var(--steel); font-size: .95rem; margin-bottom: 0; }
-    .btn-print-rekap, .btn-add, .btn-excel { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; border-radius: 8px; font-size: .9rem; font-weight: 600; transition: all .2s; border: none; text-decoration: none; cursor: pointer; }
-    .btn-print-rekap { background: var(--navy); color: #fff; }
-    .btn-print-rekap:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13, 27, 42, .15); color: #fff; }
+    .btn-add, .btn-excel { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; border-radius: 8px; font-size: .9rem; font-weight: 600; transition: all .2s; border: none; text-decoration: none; cursor: pointer; }
     .btn-add { background: var(--success); color: #fff; }
     .btn-add:hover { background: #146c43; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(25, 135, 84, .15); color: #fff; }
     .btn-excel { background: #fff; color: #1d6f42; border: 1.5px solid #1d6f42; }
@@ -36,10 +34,10 @@
     /* ---------- Card & Tabel ---------- */
     .content-card { background: #ffffff; border: 1px solid var(--line); border-radius: var(--r-md); padding: 24px; box-shadow: var(--shadow-xs); overflow: hidden; transition: box-shadow .2s ease, border-color .2s ease; }
     .content-card:hover { box-shadow: var(--shadow-sm); border-color: #d2dae5; }
-    .table > :not(caption) > * > * { padding: 14px 16px; border-bottom-color: var(--line); color: var(--ink); font-size: .92rem; vertical-align: middle; }
-    .table thead th { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--steel-soft); background: var(--paper); border-bottom: 2px solid var(--line-dark); }
-    .table tbody tr { transition: background .2s; }
-    .table tbody tr:hover { background: #f8fafc; }
+    .table-redkar > :not(caption) > * > * { padding: 12px 14px; border-color: #e2e8f0; color: var(--ink); font-size: .88rem; vertical-align: middle; }
+    .table-redkar thead th { background: #163a63; color: #ffffff; border-color: #244b7a; font-size: .80rem; font-weight: 700; letter-spacing: .02em; text-align: center; white-space: nowrap; }
+    .table-redkar tbody tr { transition: background .15s; }
+    .table-redkar tbody tr:hover { background: #f8fafc; }
 
     /* ---------- Toolbar Filter & Pencarian ---------- */
     .filter-toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
@@ -52,52 +50,22 @@
     .filter-count { margin-left: auto; font-size: .84rem; color: var(--steel); }
     .filter-count b { color: var(--ink); }
 
-    /* ---------- Badge & Tombol Aksi ---------- */
-    .badge-status { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 6px; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; }
-    .status-diproses { background: var(--info-soft); color: var(--info); }
-    .badge-anggota { display: inline-block; padding: 3px 8px; border-radius: 4px; background: rgba(13, 27, 42, .06); color: var(--ink); font-family: monospace; font-weight: 700; font-size: .82rem; }
+    /* ---------- Badges & Buttons ---------- */
+    .badge-status { display: inline-flex; align-items: center; gap: 4px; padding: 4px 9px; border-radius: 6px; font-size: .75rem; font-weight: 700; white-space: nowrap; }
+    .badge-ya { background: #fde8e8; color: #9b1c1c; border: 1px solid #f8b4b4; }
+    .badge-tidak { background: #def7ec; color: #03543f; border: 1px solid #bcf0da; }
+    .badge-sehat { background: #def7ec; color: #03543f; border: 1px solid #bcf0da; }
+    .badge-tidaksehat { background: #fde8e8; color: #9b1c1c; border: 1px solid #f8b4b4; }
 
     .btn-action-group { display: inline-flex; flex-direction: row; align-items: center; gap: 6px; flex-wrap: nowrap; white-space: nowrap; }
-    .btn-action { display: inline-flex; align-items: center; justify-content: center; gap: 5px; height: 32px; padding: 0 10px; border-radius: 6px; font-size: .78rem; font-weight: 600; transition: all .2s; text-decoration: none; border: none; width: auto; cursor: pointer; white-space: nowrap; }
+    .btn-action { display: inline-flex; align-items: center; justify-content: center; gap: 5px; height: 32px; padding: 0 10px; border-radius: 6px; font-size: .78rem; font-weight: 600; transition: all .2s; text-decoration: none; border: none; cursor: pointer; white-space: nowrap; }
     .btn-edit { background: rgba(244, 183, 64, .15); color: #b45309; }
     .btn-edit:hover { background: #d97706; color: #ffffff; }
     .btn-delete { background: var(--signal-soft); color: var(--signal-dark); }
     .btn-delete:hover { background: var(--signal); color: #ffffff; }
-    .btn-cetak { background: var(--paper); color: var(--steel); border: 1px solid var(--line); }
-    .btn-cetak:hover { background: var(--steel-soft); color: #ffffff; border-color: var(--steel-soft); }
 
-    .attachment-link { display: inline-flex; align-items: center; gap: 6px; font-size: .82rem; color: var(--info); font-weight: 500; text-decoration: none; margin-bottom: 4px; transition: color .2s; }
+    .attachment-link { display: inline-flex; align-items: center; gap: 4px; font-size: .75rem; color: var(--info); font-weight: 500; text-decoration: none; margin-top: 3px; white-space: nowrap; }
     .attachment-link:hover { color: var(--navy-dark); text-decoration: underline; }
-
-    @media (max-width: 700px) {
-        :root { --topbar-h: 64px; }
-        .topbar { height: var(--topbar-h); padding: 0 14px; gap: 10px; }
-        .brand { gap: 9px; }
-        .brand img { height: 30px; }
-        .brand span { font-size: .95rem; }
-        .topbar-right { gap: 7px; }
-        .user-chip { padding: 3px; border: none; background: transparent; }
-        .user-avatar { width: 34px; height: 34px; }
-        .btn-logout { width: 38px; height: 38px; padding: 0; border-radius: 10px; font-size: 0; }
-        .btn-logout i { font-size: .9rem; }
-        .content { padding: 26px 16px 50px; }
-        .page-head-title h1 { font-size: 1.55rem; }
-        .page-head-title p { font-size: .88rem; }
-        .content-card { padding: 14px; }
-        .filter-count { margin-left: 0; width: 100%; }
-    }
-    @media (max-width: 576px) {
-        .rekap-grid { grid-template-columns: 1fr; gap: 10px; margin-bottom: 18px; }
-        .rekap-item { padding: 14px 16px; gap: 14px; }
-        .rekap-ico { width: 42px; height: 42px; border-radius: 10px; font-size: 1.05rem; }
-        .rekap-num { font-size: 1.55rem; }
-        .rekap-label { font-size: .74rem; }
-        .rekap-sub { font-size: .72rem; }
-    }
-    @media (max-width: 420px) {
-        .brand span { display: none; }
-        .content { padding-left: 13px; padding-right: 13px; }
-    }
 </style>
 @endpush
 
@@ -114,32 +82,29 @@
     $jmlTanpaKtp  = $totalRelawan - $jmlDenganKtp;
 
     /* ---------- Data untuk Rekap Excel (.xlsx) ---------- */
-    $barisExcel = $listRelawan->values()->map(function ($r, $i) use ($berkasAda) {
-        $adaKtp = $berkasAda($r->file_ktp);
+    $barisExcel = $listRelawan->values()->map(function ($r, $i) {
         $ttl    = trim(($r->tempat_lahir ?: '-') . ($r->tanggal_lahir ? ', ' . \Carbon\Carbon::parse($r->tanggal_lahir)->format('d/m/Y') : ''));
-        $alamat = trim(($r->alamat ?: '-') . ($r->rt_rw ? ', RT/RW ' . $r->rt_rw : ''));
-        $pend   = trim(($r->pendidikan_terakhir ?: '-') . ($r->latar_belakang_pendidikan ? ' (' . $r->latar_belakang_pendidikan . ')' : ''));
+        $alamat = trim(($r->alamat ?: '-') . ($r->rt_rw ? ', RT/RW ' . $r->rt_rw : '') . ($r->kelurahan ? ', Kel. ' . $r->kelurahan : '') . ($r->kecamatan ? ', Kec. ' . $r->kecamatan : ''));
+        $tglBentuk = $r->tanggal_pembentukan ? \Carbon\Carbon::parse($r->tanggal_pembentukan)->format('d/m/Y') : '-';
+        $tglKukuh  = $r->tanggal_pengukuhan ? \Carbon\Carbon::parse($r->tanggal_pengukuhan)->format('d/m/Y') : '-';
 
         return [
-            'no'                => $i + 1,
-            'nomor_anggota'     => (string) ($r->kartu_anggota ?: ($r->nomor_anggota ?: '-')),
-            'id_reg'            => (string) $r->id,
-            'nik'               => (string) $r->nik,
-            'nama_lengkap'      => (string) $r->nama_lengkap,
-            'jenis_kelamin'     => (string) ($r->jenis_kelamin === 'L' ? 'Laki-Laki' : ($r->jenis_kelamin === 'P' ? 'Perempuan' : ($r->jenis_kelamin ?: '-'))),
-            'ttl'               => $ttl,
-            'agama'             => (string) ($r->agama ?: '-'),
-            'status_perkawinan' => (string) ($r->status_perkawinan ?: '-'),
-            'golongan_darah'    => (string) ($r->golongan_darah ?: '-'),
-            'nomor_telp'        => (string) $r->nomor_telp,
-            'alamat_lengkap'    => $alamat,
-            'kecamatan'         => (string) ($r->kecamatan ?: '-'),
-            'kelurahan'         => (string) ($r->kelurahan ?: '-'),
-            'pendidikan'        => $pend,
-            'pekerjaan'         => (string) ($r->pekerjaan ?: '-'),
-            'status_ktp'        => $adaKtp ? 'Terlampir' : 'Belum Ada (Offline)',
-            '_search'           => strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp . ' ' . ($r->kartu_anggota ?: $r->nomor_anggota)),
-            '_kec'              => strtolower((string) $r->kecamatan),
+            'no'                  => $i + 1,
+            'nama_lengkap'        => (string) $r->nama_lengkap,
+            'nik'                 => (string) $r->nik,
+            'ttl'                 => $ttl,
+            'jenis_kelamin'       => (string) ($r->jenis_kelamin ?: '-'),
+            'alamat_lengkap'      => $alamat,
+            'agama'               => (string) ($r->agama ?: '-'),
+            'pekerjaan'           => (string) ($r->pekerjaan ?: '-'),
+            'golongan_darah'      => (string) ($r->golongan_darah ?: '-'),
+            'buta_warna'          => (string) ($r->buta_warna ?: 'Tidak'),
+            'sehat_jasmani'       => (string) ($r->sehat_jasmani ?: 'Sehat'),
+            'nomor_telp'          => (string) $r->nomor_telp,
+            'tanggal_pembentukan' => $tglBentuk,
+            'tanggal_pengukuhan'  => $tglKukuh,
+            '_search'             => strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp . ' ' . $r->alamat . ' ' . $r->pekerjaan),
+            '_kec'                => strtolower((string) $r->kecamatan),
         ];
     })->all();
 
@@ -151,10 +116,6 @@
             'dengan_ktp' => $jmlDenganKtp,
             'tanpa_ktp'  => $jmlTanpaKtp,
         ],
-        'per_kecamatan' => $daftarKecamatan->map(fn($k) => [
-            'nama'   => $k,
-            'jumlah' => $listRelawan->where('kecamatan', $k)->count(),
-        ])->values()->all(),
     ];
 @endphp
 
@@ -217,7 +178,7 @@
             <div class="filter-toolbar">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="search" id="rk-search" class="filter-input" placeholder="Cari nama, NIK, No. Kartu Anggota..." autocomplete="off">
+                    <input type="search" id="rk-search" class="filter-input" placeholder="Cari nama, NIK, pekerjaan, alamat..." autocomplete="off">
                 </div>
                 <select id="rk-kecamatan" class="filter-select">
                     <option value="">Semua Kecamatan</option>
@@ -232,72 +193,126 @@
             @endif
 
             <div class="table-responsive">
-                <table class="table align-middle mb-0">
+                <table class="table table-bordered table-redkar align-middle mb-0">
                     <thead>
                         <tr>
-                            <th>No. Kartu Anggota</th>
-                            <th>Relawan &amp; Kontak</th>
-                            <th>Data Diri</th>
-                            <th>Alamat &amp; Wilayah</th>
-                            <th>Berkas &amp; Darah</th>
-                            <th class="no-print-col text-center" style="min-width: 250px;">Aksi</th>
+                            <th style="width: 50px;">No</th>
+                            <th>Nama</th>
+                            <th>NIK</th>
+                            <th>Tempat Tanggal Lahir</th>
+                            <th>Jenis Kelamin</th>
+                            <th>Alamat</th>
+                            <th>Agama</th>
+                            <th>Pekerjaan</th>
+                            <th>Gol. Darah</th>
+                            <th>Buta Warna</th>
+                            <th>Sehat Jasmani Rohani</th>
+                            <th>No Telfon / WA</th>
+                            <th>Tanggal Pembentukan REDKAR</th>
+                            <th>Tanggal Pengukuhan REDKAR</th>
+                            <th class="no-print-col" style="min-width: 110px;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="rk-body">
-                        @forelse($relawan as $r)
+                        @forelse($relawan as $index => $r)
                         <tr class="rk-row"
-                            data-search="{{ strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp . ' ' . ($r->kartu_anggota ?: $r->nomor_anggota)) }}"
+                            data-search="{{ strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp . ' ' . $r->alamat . ' ' . $r->pekerjaan) }}"
                             data-kecamatan="{{ strtolower($r->kecamatan) }}">
-                            <td>
-                                <span class="badge-anggota">{{ $r->kartu_anggota ?: ($r->nomor_anggota ?: '-') }}</span>
-                                <div style="font-size: .78rem; color: var(--steel-soft); margin-top: 4px;">
-                                    Input: {{ $r->created_at ? $r->created_at->format('d/m/Y') : '-' }}
-                                </div>
-                            </td>
-                            <td>
-                                <strong style="display: block; margin-bottom: 2px;">{{ $r->nama_lengkap }}</strong>
-                                <a href="https://wa.me/{{ preg_replace('/^0/', '62', $r->nomor_telp) }}" target="_blank" style="font-size: .8rem; color: var(--success); text-decoration: none;">
-                                    <i class="fab fa-whatsapp"></i> {{ $r->nomor_telp }}
-                                </a>
-                                <div style="font-size: .78rem; color: var(--steel); margin-top: 2px;">NIK: {{ $r->nik }}</div>
-                            </td>
-                            <td>
-                                <strong>{{ $r->jenis_kelamin === 'L' ? 'Laki-Laki' : ($r->jenis_kelamin === 'P' ? 'Perempuan' : ($r->jenis_kelamin ?: '-')) }}</strong>
-                                <div style="font-size: .8rem; color: var(--steel);">
-                                    {{ $r->tempat_lahir ?: '-' }}{{ $r->tanggal_lahir ? ', ' . \Carbon\Carbon::parse($r->tanggal_lahir)->format('d M Y') : '' }}
-                                </div>
-                                <div style="font-size: .78rem; color: var(--steel-soft); margin-top: 2px;">
-                                    {{ $r->pekerjaan ?: '-' }} &bull; {{ $r->pendidikan_terakhir ?: '-' }}
-                                </div>
-                            </td>
-                            <td>
-                                <span class="badge-status status-diproses mb-1">
-                                    <i class="fas fa-map-marker-alt"></i> Kec. {{ $r->kecamatan ?: '-' }}
-                                </span>
-                                <div style="font-size: .8rem; color: var(--steel);">Kel. {{ $r->kelurahan ?: '-' }}</div>
-                                <div style="font-size: .78rem; color: var(--steel-soft);">{{ $r->alamat }}{{ $r->rt_rw ? ' (RT/RW ' . $r->rt_rw . ')' : '' }}</div>
-                            </td>
-                            <td>
-                                <div style="font-size: .82rem; margin-bottom: 4px;">
-                                    Darah: <strong class="text-danger">{{ $r->golongan_darah ?: '-' }}</strong> &bull; Agama: {{ $r->agama ?: '-' }}
-                                </div>
+                            {{-- 1. No --}}
+                            <td class="text-center fw-bold text-muted">{{ $index + 1 }}</td>
+
+                            {{-- 2. Nama --}}
+                            <td class="fw-bold text-dark text-nowrap">{{ $r->nama_lengkap }}</td>
+
+                            {{-- 3. NIK --}}
+                            <td class="font-monospace fw-semibold text-nowrap">
+                                {{ $r->nik }}
                                 @if($berkasAda($r->file_ktp))
-                                    <a href="{{ asset('storage/' . $r->file_ktp) }}" target="_blank" class="attachment-link">
-                                        <i class="fas fa-id-card"></i> File KTP
-                                    </a>
-                                @else
-                                    <span class="attachment-link text-secondary" title="Tidak dilampirkan (data offline)">
-                                        <i class="fas fa-id-card"></i> KTP (Offline)
-                                    </span>
+                                    <div>
+                                        <a href="{{ asset('storage/' . $r->file_ktp) }}" target="_blank" class="attachment-link" title="Lihat foto KTP">
+                                            <i class="fas fa-file-image"></i> Berkas KTP
+                                        </a>
+                                    </div>
                                 @endif
                             </td>
-                            <td class="no-print-col text-center">
+
+                            {{-- 4. TTL --}}
+                            <td class="text-nowrap">
+                                {{ $r->tempat_lahir ?: '-' }}{{ $r->tanggal_lahir ? ', ' . \Carbon\Carbon::parse($r->tanggal_lahir)->locale('id')->isoFormat('D MMMM Y') : '' }}
+                            </td>
+
+                            {{-- 5. Jenis Kelamin --}}
+                            <td class="text-nowrap text-center">{{ $r->jenis_kelamin ?: '-' }}</td>
+
+                            {{-- 6. Alamat --}}
+                            <td style="min-width: 220px; max-width: 320px; white-space: normal;">
+                                {{ $r->alamat ?: '-' }}
+                                @if($r->rt_rw && $r->rt_rw !== '00/00')
+                                    , RT/RW {{ $r->rt_rw }}
+                                @endif
+                                @if($r->kelurahan)
+                                    , Kel. {{ $r->kelurahan }}
+                                @endif
+                                @if($r->kecamatan)
+                                    , Kec. {{ $r->kecamatan }}
+                                @endif
+                            </td>
+
+                            {{-- 7. Agama --}}
+                            <td class="text-nowrap text-center">{{ $r->agama ?: '-' }}</td>
+
+                            {{-- 8. Pekerjaan --}}
+                            <td class="text-nowrap">{{ $r->pekerjaan ?: '-' }}</td>
+
+                            {{-- 9. Gol. Darah --}}
+                            <td class="text-center fw-bold text-danger text-nowrap">{{ $r->golongan_darah ?: '-' }}</td>
+
+                            {{-- 10. Buta Warna --}}
+                            <td class="text-center text-nowrap">
+                                {{ $r->buta_warna ?: 'Tidak' }}
+                            </td>
+
+                            {{-- 11. Sehat Jasmani Rohani --}}
+                            <td class="text-center text-nowrap">
+                                {{ $r->sehat_jasmani ?: 'Sehat' }}
+                            </td>
+
+                            {{-- 12. No Telfon / WA --}}
+                            <td class="text-nowrap">
+                                @if($r->nomor_telp)
+                                    <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $r->nomor_telp)) }}" target="_blank" class="text-success text-decoration-none fw-bold d-inline-flex align-items-center gap-1">
+                                        <i class="fab fa-whatsapp fs-6"></i> {{ $r->nomor_telp }}
+                                    </a>
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
+                            </td>
+
+                            {{-- 13. Tanggal Pembentukan REDKAR --}}
+                            <td class="text-center text-nowrap">
+                                @if($r->tanggal_pembentukan)
+                                    <span class="fw-semibold text-dark">{{ \Carbon\Carbon::parse($r->tanggal_pembentukan)->locale('id')->isoFormat('D MMMM Y') }}</span>
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
+                            </td>
+
+                            {{-- 14. Tanggal Pengukuhan REDKAR --}}
+                            <td class="text-center text-nowrap">
+                                @if($r->tanggal_pengukuhan)
+                                    <span class="fw-semibold text-dark">{{ \Carbon\Carbon::parse($r->tanggal_pengukuhan)->locale('id')->isoFormat('D MMMM Y') }}</span>
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
+                            </td>
+
+                            {{-- 15. Aksi (Edit, Hapus) --}}
+                            <td class="no-print-col text-center text-nowrap">
                                 <div class="btn-action-group justify-content-center">
                                     @hasanyrole('Pencegahan|Super User')
                                     <a href="/internal/pencegahan/edit-redkar/{{ $r->id }}" class="btn-action btn-edit" title="Edit Data">
                                         <i class="fas fa-pen" style="width: 14px;"></i> Edit
                                     </a>
-
                                     <button type="button" class="btn-action btn-delete"
                                         data-delete-url="/internal/pencegahan/hapus-redkar/{{ $r->id }}"
                                         data-nama="{{ $r->nama_lengkap }}"
@@ -305,23 +320,19 @@
                                         <i class="fas fa-trash" style="width: 14px;"></i> Hapus
                                     </button>
                                     @endhasanyrole
-
-                                    <a href="/internal/pencegahan/cetak-redkar/{{ $r->id }}" target="_blank" class="btn-action btn-cetak" title="Cetak Kartu">
-                                        <i class="fas fa-print" style="width: 14px;"></i> Cetak
-                                    </a>
                                 </div>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center py-5 text-muted" style="font-size: .95rem;">
+                            <td colspan="15" class="text-center py-5 text-muted" style="font-size: .95rem;">
                                 <i class="fas fa-folder-open mb-2" style="font-size: 2rem; color: var(--steel-soft);"></i><br>
                                 Belum ada data relawan REDKAR terdaftar.
                             </td>
                         </tr>
                         @endforelse
                         <tr id="rk-no-result" style="display: none;">
-                            <td colspan="6" class="text-center py-5 text-muted" style="font-size: .95rem;">
+                            <td colspan="15" class="text-center py-5 text-muted" style="font-size: .95rem;">
                                 <i class="fas fa-search mb-2" style="font-size: 2rem; color: var(--steel-soft);"></i><br>
                                 Relawan tidak ditemukan. Coba kata kunci lain atau pilih "Semua Kecamatan".
                             </td>
@@ -438,23 +449,20 @@ var REKAP = @json($rekapData);
 
 function rekapKolomRedkar() {
     return [
-        { k: 'no',                t: 'No',                     w: 6,  a: 'center' },
-        { k: 'nomor_anggota',     t: 'No. Kartu Anggota',      w: 18, a: 'center', txt: true },
-        { k: 'id_reg',            t: 'No. Register',           w: 14, a: 'center' },
-        { k: 'nik',               t: 'NIK',                    w: 20, txt: true },
-        { k: 'nama_lengkap',      t: 'Nama Lengkap',           w: 26 },
-        { k: 'jenis_kelamin',     t: 'Jenis Kelamin',          w: 15, a: 'center' },
-        { k: 'ttl',               t: 'Tempat, Tanggal Lahir',  w: 26 },
-        { k: 'agama',             t: 'Agama',                  w: 14, a: 'center' },
-        { k: 'status_perkawinan', t: 'Status Perkawinan',      w: 18, a: 'center' },
-        { k: 'golongan_darah',    t: 'Gol. Darah',             w: 12, a: 'center' },
-        { k: 'nomor_telp',        t: 'No. Telepon / WA',       w: 18, txt: true },
-        { k: 'alamat_lengkap',    t: 'Alamat Lengkap',         w: 36 },
-        { k: 'kecamatan',         t: 'Kecamatan',              w: 20 },
-        { k: 'kelurahan',         t: 'Kelurahan',              w: 20 },
-        { k: 'pendidikan',        t: 'Pendidikan Terakhir',    w: 24 },
-        { k: 'pekerjaan',         t: 'Pekerjaan',              w: 22 },
-        { k: 'status_ktp',        t: 'Berkas KTP',             w: 20, a: 'center' }
+        { k: 'no',                  t: 'No',                         w: 6,  a: 'center' },
+        { k: 'nama_lengkap',        t: 'Nama',                       w: 26 },
+        { k: 'nik',                 t: 'NIK',                        w: 20, txt: true },
+        { k: 'ttl',                 t: 'Tempat Tanggal Lahir',       w: 26 },
+        { k: 'jenis_kelamin',       t: 'Jenis Kelamin',              w: 15, a: 'center' },
+        { k: 'alamat_lengkap',      t: 'Alamat',                     w: 40 },
+        { k: 'agama',               t: 'Agama',                      w: 14, a: 'center' },
+        { k: 'pekerjaan',           t: 'Pekerjaan',                  w: 22 },
+        { k: 'golongan_darah',      t: 'Gol. Darah',                 w: 12, a: 'center' },
+        { k: 'buta_warna',          t: 'Buta Warna',                 w: 15, a: 'center' },
+        { k: 'sehat_jasmani',       t: 'Sehat Jasmani Rohani',       w: 20, a: 'center' },
+        { k: 'nomor_telp',          t: 'No Telfon / WA',             w: 18, txt: true },
+        { k: 'tanggal_pembentukan', t: 'Tanggal Pembentukan REDKAR', w: 22, a: 'center' },
+        { k: 'tanggal_pengukuhan',  t: 'Tanggal Pengukuhan REDKAR',  w: 22, a: 'center' }
     ];
 }
 
@@ -490,10 +498,6 @@ async function exportRekapExcel() {
         var NAVY = 'FF163A63';
         var thin = { style: 'thin', color: { argb: 'FFBFC8D4' } };
         var border = { top: thin, left: thin, bottom: thin, right: thin };
-        var ktpStyle = {
-            'Terlampir':           { bg: 'FFD1E7DD', fg: 'FF146C43' },
-            'Belum Ada (Offline)': { bg: 'FFFDF0D5', fg: 'FFB45309' }
-        };
         var fillOf = function (argb) { return { type: 'pattern', pattern: 'solid', fgColor: { argb: argb } }; };
 
         var now = new Date();
@@ -510,11 +514,9 @@ async function exportRekapExcel() {
         var cols  = rekapKolomRedkar();
         var NCOL  = cols.length;
         var LAST  = HEAD + Math.max(filteredRows.length, 1);
-        var ktpIdx = cols.map(function (c) { return c.k; }).indexOf('status_ktp') + 1;
-        var kecIdx = cols.map(function (c) { return c.k; }).indexOf('kecamatan') + 1;
 
         var ws = wb.addWorksheet('Data Relawan REDKAR', {
-            views: [{ state: 'frozen', ySplit: HEAD, xSplit: 5 }],
+            views: [{ state: 'frozen', ySplit: HEAD, xSplit: 2 }],
             pageSetup: { paperSize: 9, orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0 }
         });
         cols.forEach(function (c, i) { ws.getColumn(i + 1).width = c.w; });
@@ -529,115 +531,63 @@ async function exportRekapExcel() {
         ws.getCell('A2').value = 'Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi';
         ws.getCell('A2').font = { size: 11, bold: true };
 
-        var jmlKtpFilter = filteredRows.filter(function (r) { return r.status_ktp === 'Terlampir'; }).length;
-        var jmlOffFilter = filteredRows.length - jmlKtpFilter;
-
         ws.mergeCells(3, 1, 3, NCOL);
-        ws.getCell('A3').value = 'Dicetak: ' + tglCetak +
-            '   |   Total relawan: ' + filteredRows.length +
-            '   |   KTP Terlampir: ' + jmlKtpFilter +
-            '   |   Tanpa KTP (Offline): ' + jmlOffFilter;
+        ws.getCell('A3').value = 'Dicetak: ' + tglCetak + '   |   Total relawan: ' + filteredRows.length;
         ws.getCell('A3').font = { size: 10, italic: true, color: { argb: 'FF64748B' } };
 
         var hr = ws.getRow(HEAD);
         cols.forEach(function (c, i) { hr.getCell(i + 1).value = c.t; });
-        hr.height = 32;
+        hr.height = 30;
         hr.eachCell(function (cell) {
-            cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 10.5 };
+            cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 10 };
             cell.fill = fillOf(NAVY);
             cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
             cell.border = border;
         });
 
-        filteredRows.forEach(function (r, idx) {
-            var row = ws.getRow(FIRST + idx);
-            row.values = cols.map(function (c) { return r[c.k]; });
-            row.eachCell({ includeEmpty: true }, function (cell, n) {
-                var c = cols[n - 1];
+        filteredRows.forEach(function (row, rIdx) {
+            var r = ws.getRow(FIRST + rIdx);
+            r.height = 22;
+            cols.forEach(function (c, cIdx) {
+                var cell = r.getCell(cIdx + 1);
+                var val  = row[c.k];
+
+                if (c.txt && val !== null && val !== undefined && val !== '-') {
+                    cell.value = String(val);
+                    cell.numFmt = '@';
+                } else {
+                    cell.value = (val === null || val === undefined || val === '') ? '-' : val;
+                }
+
+                cell.alignment = {
+                    vertical: 'middle',
+                    horizontal: c.a || 'left',
+                    wrapText: true
+                };
                 cell.border = border;
-                cell.alignment = { vertical: 'top', wrapText: true, horizontal: c.a || 'left' };
-                if (c.txt) cell.numFmt = '@';
+                cell.font = { size: 10 };
             });
-            var st = ktpStyle[r.status_ktp];
-            if (st) {
-                var sc = row.getCell(ktpIdx);
-                sc.fill = fillOf(st.bg);
-                sc.font = { bold: true, color: { argb: st.fg } };
-            }
         });
 
-        ws.autoFilter = { from: { row: HEAD, column: 1 }, to: { row: LAST, column: NCOL } };
-
-        var kecLetter = ws.getColumn(kecIdx).letter;
-        var rngKec = "'Data Relawan REDKAR'!$" + kecLetter + '$' + FIRST + ':$' + kecLetter + '$' + LAST;
-
-        var sm = wb.addWorksheet('Ringkasan Kecamatan');
-        sm.getColumn(1).width = 8;
-        sm.getColumn(2).width = 34;
-        sm.getColumn(3).width = 20;
-
-        sm.mergeCells('A1:C1');
-        sm.getCell('A1').value = 'RINGKASAN RELAWAN REDKAR PER KECAMATAN';
-        sm.getCell('A1').font = { size: 14, bold: true, color: { argb: NAVY } };
-        sm.getCell('A2').value = 'Per ' + tglCetak;
-        sm.getCell('A2').font = { italic: true, color: { argb: 'FF64748B' } };
-
-        var headSm = sm.getRow(4);
-        ['No', 'Kecamatan', 'Jumlah Relawan'].forEach(function (t, i) { headSm.getCell(i + 1).value = t; });
-        headSm.eachCell(function (c) {
-            c.font = { bold: true, color: { argb: 'FFFFFFFF' } };
-            c.fill = fillOf(NAVY);
-            c.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
-            c.border = border;
-        });
-        headSm.height = 26;
-
-        REKAP.per_kecamatan.forEach(function (item, i) {
-            var r = 5 + i;
-            var rw = sm.getRow(r);
-            rw.getCell(1).value = i + 1;
-            rw.getCell(2).value = item.nama;
-            rw.getCell(3).value = { formula: 'COUNTIF(' + rngKec + ',"' + item.nama + '")', result: item.jumlah };
-            for (var n = 1; n <= 3; n++) {
-                var c = rw.getCell(n);
-                c.border = border;
-                c.alignment = { vertical: 'middle', horizontal: n === 2 ? 'left' : 'center' };
-            }
-        });
-
-        var endKecRow = 4 + REKAP.per_kecamatan.length;
-        var totalRow = sm.getRow(endKecRow + 1);
-        totalRow.getCell(1).value = '';
-        totalRow.getCell(2).value = 'TOTAL RELAWAN';
-        totalRow.getCell(3).value = {
-            formula: endKecRow >= 5 ? 'SUM(C5:C' + endKecRow + ')' : '0',
-            result: filteredRows.length
-        };
-        for (var n = 1; n <= 3; n++) {
-            var tc = totalRow.getCell(n);
-            tc.font = { bold: true };
-            tc.border = border;
-            tc.alignment = { vertical: 'middle', horizontal: n === 2 ? 'left' : 'center' };
-        }
-
-        var buf  = await wb.xlsx.writeBuffer();
+        var buf = await wb.xlsx.writeBuffer();
         var blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         var url  = URL.createObjectURL(blob);
-        var a = document.createElement('a');
+        var a    = document.createElement('a');
         a.href = url;
         a.download = 'Rekap_REDKAR_' + tglFile + '.xlsx';
         document.body.appendChild(a);
         a.click();
-        a.remove();
-        setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     } catch (err) {
         console.error(err);
-        Swal.fire({ icon: 'error', title: 'Gagal membuat Excel', text: 'Terjadi kesalahan saat menyusun file. Silakan coba lagi.', confirmButtonColor: '#163a63' });
+        Swal.fire({ icon: 'error', title: 'Terjadi Kesalahan', text: 'Gagal mengekspor data ke Excel.', confirmButtonColor: '#163a63' });
     } finally {
         btn.disabled = false;
         btn.innerHTML = oldHtml;
     }
 }
+
 document.getElementById('btnExportExcel').addEventListener('click', exportRekapExcel);
 </script>
 @endpush

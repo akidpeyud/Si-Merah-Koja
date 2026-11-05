@@ -14,16 +14,9 @@ class RedkarController extends Controller
 
     public function kelolaRedkarInternal()
     {
-        $relawan = PendaftarRedkar::orderBy('created_at', 'desc')->get();
+        $relawan = PendaftarRedkar::orderBy('id', 'desc')->get();
 
         return view('internal.pencegahan.kelola_redkar', compact('relawan'));
-    }
-
-    public function cetakRedkar($id)
-    {
-        $relawan = PendaftarRedkar::findOrFail($id);
-
-        return view('internal.pencegahan.cetak_redkar', compact('relawan'));
     }
 
     public function editRedkar($id)
@@ -40,8 +33,9 @@ class RedkarController extends Controller
         $validatedData = $request->validate([
             'nama_lengkap' => 'required|string|max:150',
             'nik' => 'required|string|size:16|unique:redkar_registrations,nik,'.$relawan->id.',id',
-            'kartu_anggota' => 'nullable|string|max:30',
             'nomor_telp' => 'required|string|max:20',
+            'tanggal_pembentukan' => 'nullable|date',
+            'tanggal_pengukuhan' => 'nullable|date',
             'tempat_lahir' => 'required|string|max:100',
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:Laki-Laki,Perempuan',
@@ -55,7 +49,8 @@ class RedkarController extends Controller
             'latar_belakang_pendidikan' => 'required|string|max:255',
             'pekerjaan' => 'required|string|max:100',
             'pekerjaan_lainnya' => 'nullable|string|max:255|required_if:pekerjaan,LAINNYA',
-            'sehat_jasmani' => 'required|in:Ya,Tidak',
+            'buta_warna' => 'required|in:Iya,Tidak',
+            'sehat_jasmani' => 'required|in:Sehat,Tidak',
             'golongan_darah' => 'required|in:A,B,AB,O,Tidak Tahu',
             'foto_ktp' => 'nullable|file|image|mimes:jpg,jpeg,png|max:2048',
         ]);
@@ -116,12 +111,12 @@ class RedkarController extends Controller
 
     public function storeRedkarOffline(Request $request)
     {
-        // Validasi disesuaikan: Akun, password, status akun, status pendaftaran, & kode pos dihapus.
         $validatedData = $request->validate([
             'nama_lengkap' => 'required|string|max:150',
             'nik' => 'required|string|size:16|unique:redkar_registrations,nik',
-            'kartu_anggota' => 'nullable|string|max:30',
             'nomor_telp' => 'required|string|max:20',
+            'tanggal_pembentukan' => 'nullable|date',
+            'tanggal_pengukuhan' => 'nullable|date',
             'tempat_lahir' => 'required|string|max:100',
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:Laki-Laki,Perempuan',
@@ -135,7 +130,8 @@ class RedkarController extends Controller
             'latar_belakang_pendidikan' => 'required|string|max:255',
             'pekerjaan' => 'required|string|max:100',
             'pekerjaan_lainnya' => 'nullable|string|max:255|required_if:pekerjaan,LAINNYA',
-            'sehat_jasmani' => 'required|in:Ya,Tidak',
+            'buta_warna' => 'required|in:Iya,Tidak',
+            'sehat_jasmani' => 'required|in:Sehat,Tidak',
             'golongan_darah' => 'required|in:A,B,AB,O,Tidak Tahu',
             'foto_ktp' => 'nullable|file|image|mimes:jpg,jpeg,png|max:2048',
         ]);
@@ -157,10 +153,9 @@ class RedkarController extends Controller
         }
         unset($validatedData['foto_ktp']);
 
-        // Data default wilayah dan ID kustom
+        // Data default wilayah
         $validatedData['provinsi'] = 'JAMBI';
         $validatedData['kabupaten_kota'] = 'KOTA JAMBI';
-        $validatedData['id'] = 'RDK-'.$validatedData['nik'];
 
         PendaftarRedkar::create($validatedData);
 
