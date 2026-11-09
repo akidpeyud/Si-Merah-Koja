@@ -25,6 +25,7 @@
     // PENGAMBILAN DATA
     // ============================================================
     $rekap_asn    = $rekap_asn ?? (class_exists('\App\Models\DataAsn') ? \App\Models\DataAsn::orderBy('id', 'asc')->get() : collect());
+    $peta_jabatan = $peta_jabatan ?? (class_exists('\App\Models\PetaJabatan') ? \App\Models\PetaJabatan::latest()->get() : collect());
     $rekap_info   = ['sumber' => 'App\\Models\\DataAsn', 'dicek' => []];
     $dokumen_list = $dokumen_list ?? [];
 
@@ -717,6 +718,63 @@
                                     </tfoot>
                                 </table>
                             </div>
+                        </div>
+
+                        <!-- Kontainer Data Peta Jabatan (Gaya SOP) -->
+                        <div class="doc-panel" style="margin-top: 10px;" aria-label="Data Peta Jabatan">
+                            <div class="doc-bar">
+                                <div class="doc-title">
+                                    <i class="fas fa-sitemap"></i>
+                                    <span>Data Peta Jabatan</span>
+                                </div>
+                                <div class="doc-filter">
+                                    <?php if ($peta_jabatan->isNotEmpty()): ?>
+                                    <span class="doc-count"><?= $peta_jabatan->count() ?> dokumen</span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+
+                            <?php if ($peta_jabatan->isNotEmpty()): ?>
+                            <ul class="doc-list" style="list-style: none; padding: 0; margin: 0;">
+                                <?php foreach ($peta_jabatan as $pj):
+                                    $pj_judul    = (string) $pj->judul;
+                                    $pj_url      = route('publik.peta-jabatan.view', $pj->id);
+                                    $pj_download = route('publik.peta-jabatan.download', $pj->id);
+                                    $pj_ext      = strtoupper(pathinfo($pj->file_dokumen, PATHINFO_EXTENSION) ?: 'PDF');
+                                    $pj_ico      = in_array($pj_ext, ['JPG', 'JPEG', 'PNG']) ? 'fa-file-image' : 'fa-file-pdf';
+                                    $pj_meta     = [];
+                                    if ($pj->tahun) {
+                                        $pj_meta[] = 'Tahun ' . $pj->tahun;
+                                    }
+                                    $pj_meta[] = 'Dokumen ' . $pj_ext;
+                                ?>
+                                <li class="doc-row" data-name="<?= $h(mb_strtolower($pj_judul)) ?>">
+                                    <span class="doc-ico"><i class="fas <?= $pj_ico ?>"></i></span>
+                                    <div>
+                                        <p class="doc-name">
+                                            <a href="<?= $h($pj_url) ?>" target="_blank" rel="noopener"><?= $h($pj_judul) ?></a>
+                                        </p>
+                                        <p class="doc-meta">
+                                            <?= $h(implode(' · ', $pj_meta)) ?>
+                                            <?php if ($pj->keterangan): ?>
+                                                <span style="display: block; margin-top: 3px; color: var(--steel); font-size: .84rem;"><?= $h($pj->keterangan) ?></span>
+                                            <?php endif; ?>
+                                        </p>
+                                    </div>
+                                    <div class="doc-actions">
+                                        <a class="tool" href="<?= $h($pj_url) ?>" target="_blank" rel="noopener"><i class="fas fa-arrow-up-right-from-square"></i> Buka</a>
+                                        <a class="tool" href="<?= $h($pj_download) ?>"><i class="fas fa-download"></i> Unduh</a>
+                                    </div>
+                                </li>
+                                <?php endforeach; ?>
+                            </ul>
+                            <?php else: ?>
+                            <div class="doc-empty">
+                                <i class="far fa-folder-open"></i>
+                                <h3>Belum ada Data Peta Jabatan</h3>
+                                <p>Dokumen Peta Jabatan akan tampil di sini setelah diunggah melalui dashboard internal kepegawaian.</p>
+                            </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <?php else: ?>
