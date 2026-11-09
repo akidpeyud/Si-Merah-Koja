@@ -833,60 +833,44 @@ class PencegahanController extends Controller
         return redirect()->back()->with('success', 'Data Fire Drill berhasil dihapus!');
     }
 
-    private function bersihkanDaftarNama($rawText)
-    {
-        if (empty($rawText)) return [];
-        return collect(preg_split('/\r\n|\r|\n/', (string) $rawText))
-            ->map(function ($line) {
-                return trim(preg_replace('/^\d+[\.\)\-\s]+/', '', trim($line)));
-            })
-            ->filter()
-            ->values()
-            ->all();
-    }
-
     // ==========================================
     // BAGIAN PELATIHAN KELUARGA (DAMKAR GOES TO RT)
     // ==========================================
+    /**
+     * Aturan validasi form Pelatihan Keluarga Tanggap Kebakaran.
+     *
+     * @return array<string, mixed>
+     */
+    private function aturanPelatihanKeluarga(): array
+    {
+        return [
+            'nama_peserta'        => ['required', 'string', 'max:255'],
+            'jenis_kelamin'       => ['required', Rule::in(['Laki-Laki', 'Perempuan'])],
+            'kelurahan'           => ['required', 'string', 'max:100'],
+            'kecamatan'           => ['required', 'string', 'max:100'],
+            'tanggal_pelaksanaan' => ['required', 'date'],
+            'tempat_pelaksanaan'  => ['required', 'string', 'max:255'],
+            'alamat_pelaksanaan'  => ['required', 'string', 'max:500'],
+        ];
+    }
+
     public function indexPelatihanKeluarga()
     {
-        $data_pelatihan = PelatihanKeluarga::orderBy('tanggal_pelaksanaan', 'desc')->get();
-        return view('internal.pencegahan.pelatihan_keluarga', compact('data_pelatihan')); 
+        $data_pelatihan = PelatihanKeluarga::orderBy('tanggal_pelaksanaan', 'asc')
+            ->orderBy('id', 'asc')
+            ->get();
+
+        return view('internal.pencegahan.pelatihan_keluarga', compact('data_pelatihan'));
     }
 
     public function createPelatihanKeluarga()
     {
-        return view('internal.pencegahan.tambah_pelatihan_keluarga'); 
+        return view('internal.pencegahan.tambah_pelatihan_keluarga');
     }
 
     public function storePelatihanKeluarga(Request $request)
     {
-        $validated = $request->validate([
-            'tanggal_pelaksanaan'    => 'required|date',
-            'kecamatan'              => 'required|string|max:100',
-            'kelurahan'              => 'required|string|max:100',
-            'rt'                     => 'required|string|max:255',
-            'peserta_laki_laki'      => 'required|integer|min:0',
-            'peserta_perempuan'      => 'required|integer|min:0',
-            'nama_peserta_laki_laki' => 'nullable|string',
-            'nama_peserta_perempuan' => 'nullable|string',
-            'link_dokumentasi'       => 'nullable|string|max:3000',
-        ]);
-
-        $links = $this->parseLinkDokumentasi($request->input('link_dokumentasi'));
-        if ($links === false) {
-            return back()->withInput()->withErrors([
-                'link_dokumentasi' => 'Ada link yang tidak valid. Setiap link harus diawali http:// atau https://',
-            ]);
-        }
-
-        $validated['link_dokumentasi'] = $links;
-
-        $listLaki = $this->bersihkanDaftarNama($request->nama_peserta_laki_laki);
-        $listPerempuan = $this->bersihkanDaftarNama($request->nama_peserta_perempuan);
-
-        $validated['nama_peserta_laki_laki'] = count($listLaki) > 0 ? implode("\n", $listLaki) : null;
-        $validated['nama_peserta_perempuan'] = count($listPerempuan) > 0 ? implode("\n", $listPerempuan) : null;
+        $validated = $request->validate($this->aturanPelatihanKeluarga());
 
         PelatihanKeluarga::create($validated);
 
@@ -896,39 +880,14 @@ class PencegahanController extends Controller
     public function editPelatihanKeluarga($id)
     {
         $item = PelatihanKeluarga::findOrFail($id);
-        return view('internal.pencegahan.edit_pelatihan_keluarga', compact('item')); 
+
+        return view('internal.pencegahan.edit_pelatihan_keluarga', compact('item'));
     }
 
     public function updatePelatihanKeluarga(Request $request, $id)
     {
         $item = PelatihanKeluarga::findOrFail($id);
-
-        $validated = $request->validate([
-            'tanggal_pelaksanaan'    => 'required|date',
-            'kecamatan'              => 'required|string|max:100',
-            'kelurahan'              => 'required|string|max:100',
-            'rt'                     => 'required|string|max:255',
-            'peserta_laki_laki'      => 'required|integer|min:0',
-            'peserta_perempuan'      => 'required|integer|min:0',
-            'nama_peserta_laki_laki' => 'nullable|string',
-            'nama_peserta_perempuan' => 'nullable|string',
-            'link_dokumentasi'       => 'nullable|string|max:3000',
-        ]);
-
-        $links = $this->parseLinkDokumentasi($request->input('link_dokumentasi'));
-        if ($links === false) {
-            return back()->withInput()->withErrors([
-                'link_dokumentasi' => 'Ada link yang tidak valid. Setiap link harus diawali http:// atau https://',
-            ]);
-        }
-
-        $validated['link_dokumentasi'] = $links;
-
-        $listLaki = $this->bersihkanDaftarNama($request->nama_peserta_laki_laki);
-        $listPerempuan = $this->bersihkanDaftarNama($request->nama_peserta_perempuan);
-
-        $validated['nama_peserta_laki_laki'] = count($listLaki) > 0 ? implode("\n", $listLaki) : null;
-        $validated['nama_peserta_perempuan'] = count($listPerempuan) > 0 ? implode("\n", $listPerempuan) : null;
+        $validated = $request->validate($this->aturanPelatihanKeluarga());
 
         $item->update($validated);
 
@@ -941,22 +900,6 @@ class PencegahanController extends Controller
         $item->delete();
 
         return redirect()->back()->with('success', 'Data berhasil dihapus!');
-    }
-
-    private function parseLinkDokumentasi($raw)
-    {
-        $links = collect(preg_split('/\r\n|\r|\n/', (string) $raw))
-            ->map(fn ($l) => trim($l))
-            ->filter()
-            ->values();
-
-        foreach ($links as $l) {
-            if (!preg_match('#^https?://#i', $l) || !filter_var($l, FILTER_VALIDATE_URL)) {
-                return false;
-            }
-        }
-
-        return $links->isEmpty() ? null : $links->implode("\n");
     }
 
     // ==========================================

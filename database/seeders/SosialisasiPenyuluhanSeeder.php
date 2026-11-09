@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 
 class SosialisasiPenyuluhanSeeder extends Seeder
@@ -112,8 +113,29 @@ class SosialisasiPenyuluhanSeeder extends Seeder
             ['RT 01 Kel. Beliung', 'Madrasah Masjid Al Muhandisin', 'Lorong Hasanah 3 RT 01 Kel. Beliung Kec. Alam Barajo', '2026-11-07', 22, 'Vonny Oliviasari, SE', '08127307227', 'spt_sosialisasi_2026_50.pdf'],
         ];
 
+        $targetDir = public_path('uploads/sosialisasi');
+        if (! File::exists($targetDir)) {
+            File::makeDirectory($targetDir, 0755, true);
+        }
+
+        $sourceDir = storage_path('app/public/seed-files/sosialisasi');
+        if (! File::exists($sourceDir)) {
+            $sourceDir = public_path('storage/seed-files/sosialisasi');
+        }
+
         $payload = [];
         foreach ($rows as $row) {
+            $sptFile = $row[7] ?? null;
+
+            if ($sptFile !== null) {
+                $sourcePath = $sourceDir.DIRECTORY_SEPARATOR.$sptFile;
+                $destPath = $targetDir.DIRECTORY_SEPARATOR.$sptFile;
+
+                if (File::exists($sourcePath)) {
+                    File::copy($sourcePath, $destPath);
+                }
+            }
+
             $payload[] = [
                 'jenis_kegiatan' => 'Luar',
                 'no_tanggal_surat_permohonan' => null,
@@ -124,7 +146,7 @@ class SosialisasiPenyuluhanSeeder extends Seeder
                 'jumlah_peserta' => $row[4],
                 'nama_penanggung_jawab' => $row[5],
                 'no_telepon' => $row[6],
-                'surat_perintah_tugas' => $row[7] ?? null,
+                'surat_perintah_tugas' => $sptFile,
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
