@@ -273,7 +273,7 @@
                     </div>
                 </div>
                 <button type="button" class="btn btn-outline" onclick="window.print()"><i class="fas fa-print"></i> Cetak</button>
-                <a href="/sapra/distribusi-staff/cetak" target="_blank" class="btn btn-outline red"><i class="fas fa-file-pdf"></i> PDF</a>
+                <a href="/sapra/distribusi-staff/cetak" id="btnCetakPdf" target="_blank" class="btn btn-outline red"><i class="fas fa-file-pdf"></i> PDF</a>
                 @if($bisaCrud)
                     <button type="button" class="btn btn-primary" data-open="dlgTambah" data-nama=""><i class="fas fa-user-plus"></i> Input Distribusi Baru</button>
                 @endif
@@ -547,6 +547,7 @@
     var yfAll = document.getElementById('yfAll');
     var yfYears = Array.prototype.slice.call(document.querySelectorAll('.yf-year'));
     var filterEmptyRow = document.getElementById('filterEmptyRow');
+    var btnCetakPdf = document.getElementById('btnCetakPdf');
 
     function getSelectedYears() {
         if (!yfAll || yfAll.checked) return [];
@@ -554,16 +555,22 @@
     }
 
     function updateYearLabel() {
-        if (!yearFilterLabel) return;
         var selected = getSelectedYears();
-        if (selected.length === 0) {
-            yearFilterLabel.textContent = 'Semua Tahun';
-        } else if (selected.length === 1) {
-            yearFilterLabel.textContent = 'Tahun ' + selected[0];
-        } else if (selected.length <= 2) {
-            yearFilterLabel.textContent = selected.join(', ');
-        } else {
-            yearFilterLabel.textContent = selected.length + ' Tahun (' + selected.slice(0, 2).join(', ') + '…)';
+        if (yearFilterLabel) {
+            if (selected.length === 0) {
+                yearFilterLabel.textContent = 'Semua Tahun';
+            } else if (selected.length === 1) {
+                yearFilterLabel.textContent = 'Tahun ' + selected[0];
+            } else if (selected.length <= 2) {
+                yearFilterLabel.textContent = selected.join(', ');
+            } else {
+                yearFilterLabel.textContent = selected.length + ' Tahun (' + selected.slice(0, 2).join(', ') + '…)';
+            }
+        }
+        if (btnCetakPdf) {
+            btnCetakPdf.href = selected.length > 0
+                ? '/sapra/distribusi-staff/cetak?tahun=' + encodeURIComponent(selected.join(','))
+                : '/sapra/distribusi-staff/cetak';
         }
     }
 

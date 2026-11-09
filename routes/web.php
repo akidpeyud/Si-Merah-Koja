@@ -418,6 +418,10 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
     Route::get('/sapra/sarana-pemeriksaan', [SapraController::class, 'saranaPemeriksaan']);
     Route::get('/sapra/sarana-pemeriksaan/cetak', [SapraController::class, 'cetakPdfSaranaPemeriksaan']);
 
+    Route::get('/sapra/perbaikan-kendaraan', [SapraController::class, 'perbaikanKendaraan']);
+    Route::get('/sapra/perbaikan-kendaraan/cetak-pdf', [SapraController::class, 'cetakPdfPerbaikanKendaraan']);
+    Route::get('/sapra/perbaikan-kendaraan/cetak-excel', [SapraController::class, 'cetakExcelPerbaikanKendaraan']);
+
     // Aksi Tambah, Ubah, Hapus Data Sapra (Khusus Role Sapra & Super User)
     Route::middleware([RoleMiddleware::class.':Sapra|Super User'])->group(function () {
         Route::post('/sapra/data-hidrant-kota/store', [SapraController::class, 'storeHidrantKota']);
@@ -458,6 +462,10 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
         Route::post('/sapra/sarana-pemeriksaan/store', [SapraController::class, 'storeSaranaPemeriksaan']);
         Route::put('/sapra/sarana-pemeriksaan/update/{id}', [SapraController::class, 'updateSaranaPemeriksaan']);
         Route::delete('/sapra/sarana-pemeriksaan/delete/{id}', [SapraController::class, 'destroySaranaPemeriksaan']);
+
+        Route::post('/sapra/perbaikan-kendaraan/store', [SapraController::class, 'storePerbaikanKendaraan']);
+        Route::put('/sapra/perbaikan-kendaraan/update/{id}', [SapraController::class, 'updatePerbaikanKendaraan']);
+        Route::delete('/sapra/perbaikan-kendaraan/delete/{id}', [SapraController::class, 'destroyPerbaikanKendaraan']);
     });
 
     // --- E. PENCEGAHAN ---
