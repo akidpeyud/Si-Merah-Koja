@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 
 class DiklatAparaturSeeder extends Seeder
@@ -14,6 +15,8 @@ class DiklatAparaturSeeder extends Seeder
     public function run(): void
     {
         $timestamp = '2026-11-09 00:00:00';
+        $seedRoot = storage_path('app/public/seed-files');
+        $publicRoot = storage_path('app/public');
 
         foreach ($this->dataPerTabel() as $namaTabel => $barisData) {
             if (! Schema::hasTable($namaTabel)) {
@@ -28,12 +31,23 @@ class DiklatAparaturSeeder extends Seeder
                 continue;
             }
 
-            $siapSimpan = array_map(function (array $baris) use ($kolomTersedia, $timestamp): array {
+            $siapSimpan = [];
+            foreach ($barisData as $baris) {
+                if (! empty($baris['file_sertifikat'])) {
+                    $sumber = $seedRoot.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $baris['file_sertifikat']);
+                    $tujuan = $publicRoot.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $baris['file_sertifikat']);
+
+                    if (File::exists($sumber)) {
+                        File::ensureDirectoryExists(dirname($tujuan));
+                        File::copy($sumber, $tujuan);
+                    }
+                }
+
                 $baris['created_at'] = $timestamp;
                 $baris['updated_at'] = $timestamp;
 
-                return array_intersect_key($baris, $kolomTersedia);
-            }, $barisData);
+                $siapSimpan[] = array_intersect_key($baris, $kolomTersedia);
+            }
 
             foreach (array_chunk($siapSimpan, 100) as $potongan) {
                 DB::table($namaTabel)->insert($potongan);
@@ -65,7 +79,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/001/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_001_ari_andrianus.pdf',
                 ],
                 [
                     'nama' => 'Deni Gusrianti, ST',
@@ -82,7 +96,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/002/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_002_deni_gusrianti.pdf',
                 ],
                 [
                     'nama' => 'Dian Ariansyah, ST',
@@ -99,7 +113,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/003/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_003_dian_ariansyah.pdf',
                 ],
                 [
                     'nama' => 'Diky Sucipto, ST',
@@ -116,7 +130,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/004/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_004_diky_sucipto.pdf',
                 ],
                 [
                     'nama' => 'Dinda nadila ,ST',
@@ -133,7 +147,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/005/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_005_dinda_nadila.pdf',
                 ],
                 [
                     'nama' => 'Dwi Anggarini, ST',
@@ -150,7 +164,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/006/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_006_dwi_anggarini.pdf',
                 ],
                 [
                     'nama' => 'Mohd Faizal Hidayat, ST',
@@ -167,7 +181,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/007/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_007_mohd_faizal_hidayat.pdf',
                 ],
                 [
                     'nama' => 'Muhamad Yusuf Khanafi, ST',
@@ -184,7 +198,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/008/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_008_muhamad_yusuf_khanafi.pdf',
                 ],
                 [
                     'nama' => 'Nency Dwiyana Putri, ST',
@@ -201,7 +215,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/009/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_009_nency_dwiyana_putri.pdf',
                 ],
                 [
                     'nama' => 'Robby Pradiansyah, ST',
@@ -218,7 +232,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/010/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_010_robby_pradiansyah.pdf',
                 ],
                 [
                     'nama' => 'Rosyah, ST',
@@ -235,7 +249,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/011/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_011_rosyah.pdf',
                 ],
                 [
                     'nama' => 'Teguh Fahrianto, ST',
@@ -252,7 +266,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/012/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_012_teguh_fahrianto.pdf',
                 ],
                 [
                     'nama' => 'Welly Yudhantoro, ST',
@@ -269,7 +283,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/013/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_013_welly_yudhantoro.pdf',
                 ],
                 [
                     'nama' => 'M. Al Chudri, ST',
@@ -286,7 +300,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/014/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_014_m_al_chudri.pdf',
                 ],
                 [
                     'nama' => 'Alfian Widyananta Hernawa, A.Md',
@@ -303,7 +317,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/015/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_015_alfian_widyananta_hernawa.pdf',
                 ],
                 [
                     'nama' => 'M Ilham Ardhy Ramadhan,S.Md',
@@ -320,7 +334,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/016/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_016_m_ilham_ardhy_ramadhan.pdf',
                 ],
                 [
                     'nama' => 'Muhammad Taufik,A,Md.KKK',
@@ -337,7 +351,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/017/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_017_muhammad_taufik.pdf',
                 ],
                 [
                     'nama' => 'Wendo, A.R, A.Md',
@@ -354,7 +368,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/018/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_018_wendo.pdf',
                 ],
                 [
                     'nama' => 'Amid Jaya',
@@ -371,7 +385,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/019/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_019_amid_jaya.pdf',
                 ],
                 [
                     'nama' => 'Anwar',
@@ -388,7 +402,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/020/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_020_anwar.pdf',
                 ],
                 [
                     'nama' => 'Ardi Yanto',
@@ -405,7 +419,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/021/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_021_ardi_yanto.pdf',
                 ],
                 [
                     'nama' => 'Edi Marjoko',
@@ -422,7 +436,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/022/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_022_edi_marjoko.pdf',
                 ],
                 [
                     'nama' => 'Ellysa Tatinia',
@@ -439,7 +453,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/023/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_023_ellysa_tatinia.pdf',
                 ],
                 [
                     'nama' => 'Ferdinand Rolando Telah',
@@ -456,7 +470,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/024/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_024_ferdinand_rolando_telah.pdf',
                 ],
                 [
                     'nama' => 'Hasanudin',
@@ -473,7 +487,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/025/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_025_hasanudin.pdf',
                 ],
                 [
                     'nama' => 'Husnul Mubaraq',
@@ -490,7 +504,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/026/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_026_husnul_mubaraq.pdf',
                 ],
                 [
                     'nama' => 'Indra Sulastri',
@@ -507,13 +521,13 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/027/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_027_indra_sulastri.pdf',
                 ],
                 [
-                    'nama' => 'Amid Jaya',
-                    'nip' => '197908022024211003',
+                    'nama' => 'Kholid Is',
+                    'nip' => '197704052024211006',
                     'tempat_lahir' => 'Jambi',
-                    'tgl_lahir' => '1979-08-02',
+                    'tgl_lahir' => '1977-04-05',
                     'pangkat_golongan' => 'II/a',
                     'jabatan' => 'Pemadam Kebakaran Pemula',
                     'kualifikasi' => 'Pendidikan Dasar',
@@ -524,7 +538,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/028/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_028_kholid_is.pdf',
                 ],
                 [
                     'nama' => 'M. Arif Wahyudi',
@@ -541,7 +555,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/029/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_029_m_arif_wahyudi.pdf',
                 ],
                 [
                     'nama' => 'M. Pikri',
@@ -558,7 +572,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/030/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_030_m_pikri.pdf',
                 ],
                 [
                     'nama' => 'Muhammad Arif',
@@ -575,7 +589,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/031/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_031_muhammad_arif.pdf',
                 ],
                 [
                     'nama' => 'Muhammad Idrus',
@@ -592,7 +606,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/032/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_032_muhammad_idrus.pdf',
                 ],
                 [
                     'nama' => 'Mukrim',
@@ -609,7 +623,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/033/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_033_mukrim.pdf',
                 ],
                 [
                     'nama' => 'Riman Jaya',
@@ -626,7 +640,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/034/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_034_riman_jaya.pdf',
                 ],
                 [
                     'nama' => 'Slamet',
@@ -643,7 +657,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/035/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_035_slamet.pdf',
                 ],
                 [
                     'nama' => 'Sri Weti',
@@ -660,7 +674,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/036/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_036_sri_weti.pdf',
                 ],
                 [
                     'nama' => 'Suheni',
@@ -677,7 +691,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/037/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_037_suheni.pdf',
                 ],
                 [
                     'nama' => 'Susi Ernawati',
@@ -694,7 +708,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/038/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_038_susi_ernawati.pdf',
                 ],
                 [
                     'nama' => 'Susriani',
@@ -711,7 +725,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/039/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_039_susriani.pdf',
                 ],
                 [
                     'nama' => 'Sutrimo',
@@ -728,7 +742,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/040/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_040_sutrimo.pdf',
                 ],
                 [
                     'nama' => 'Tuti Alawiyah',
@@ -745,7 +759,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/041/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_041_tuti_alawiyah.pdf',
                 ],
                 [
                     'nama' => 'Yani Susanti',
@@ -762,7 +776,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/042/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_042_yani_susanti.pdf',
                 ],
                 [
                     'nama' => 'Yudi',
@@ -779,7 +793,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/043/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_043_yudi.pdf',
                 ],
                 [
                     'nama' => 'Said Hasan Basri',
@@ -796,7 +810,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/044/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_044_said_hasan_basri.pdf',
                 ],
                 [
                     'nama' => 'Amrullah',
@@ -813,7 +827,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/045/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_045_amrullah.pdf',
                 ],
                 [
                     'nama' => 'Wirsyarif',
@@ -830,7 +844,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/046/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_046_wirsyarif.pdf',
                 ],
                 [
                     'nama' => 'Yuliana',
@@ -847,7 +861,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/047/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_047_yuliana.pdf',
                 ],
                 [
                     'nama' => 'Tisrianti',
@@ -864,7 +878,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/048/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_048_tisrianti.pdf',
                 ],
                 [
                     'nama' => 'Turman',
@@ -881,7 +895,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/049/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_049_turman.pdf',
                 ],
                 [
                     'nama' => 'Hamidah',
@@ -898,7 +912,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/050/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_050_hamidah.pdf',
                 ],
                 [
                     'nama' => 'Mira Mulyana',
@@ -915,7 +929,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/051/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_051_mira_mulyana.pdf',
                 ],
                 [
                     'nama' => 'Rahmi Feliana',
@@ -932,7 +946,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/052/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_052_rahmi_feliana.pdf',
                 ],
                 [
                     'nama' => 'Sri Kurniawati',
@@ -949,7 +963,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/053/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_053_sri_kurniawati.pdf',
                 ],
                 [
                     'nama' => 'Teguh Sufriyanto',
@@ -966,7 +980,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/054/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_054_teguh_sufriyanto.pdf',
                 ],
                 [
                     'nama' => 'David Hermansyah',
@@ -983,7 +997,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/055/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_055_david_hermansyah.pdf',
                 ],
                 [
                     'nama' => 'Patmawati',
@@ -1000,7 +1014,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/056/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_056_patmawati.pdf',
                 ],
                 [
                     'nama' => 'Andi Setiawan',
@@ -1017,7 +1031,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'DKL.12.13/057/PKA/DAMKARTAN/2024',
                     'tanggal_sttp' => '2024-12-17',
                     'ditandatangani_oleh' => 'Sri Purwaningsih (PJ Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2024/diksar_2024_057_andi_setiawan.pdf',
                 ],
                 [
                     'nama' => 'Kiki, ST',
@@ -1034,7 +1048,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/01/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_001_kiki.pdf',
                 ],
                 [
                     'nama' => 'Abdurrahman Anwar, SE',
@@ -1051,7 +1065,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/02/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_002_abdurrahman_anwar.pdf',
                 ],
                 [
                     'nama' => 'Rully Kurniawan, S.IP, ME',
@@ -1068,7 +1082,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/03/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_003_rully_kurniawan.pdf',
                 ],
                 [
                     'nama' => 'Sahri',
@@ -1085,7 +1099,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/04/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_004_sahri.pdf',
                 ],
                 [
                     'nama' => 'A. Sahbudinsyah',
@@ -1102,7 +1116,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/05/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_005_a_sahbudinsyah.pdf',
                 ],
                 [
                     'nama' => 'M. Ridwansyah',
@@ -1119,7 +1133,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/06/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_006_m_ridwansyah.pdf',
                 ],
                 [
                     'nama' => 'Agung Sunaryadi, SP',
@@ -1136,7 +1150,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/07/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_007_agung_sunaryadi.pdf',
                 ],
                 [
                     'nama' => 'Muziat, SE',
@@ -1153,7 +1167,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/08/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_008_muziat.pdf',
                 ],
                 [
                     'nama' => 'Aman. S',
@@ -1170,7 +1184,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/09/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_009_aman_s.pdf',
                 ],
                 [
                     'nama' => 'Ezwin Kurniawan, SE',
@@ -1187,7 +1201,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/10/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_010_ezwin_kurniawan.pdf',
                 ],
                 [
                     'nama' => 'Novianto, SE',
@@ -1204,7 +1218,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/11/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_011_novianto.pdf',
                 ],
                 [
                     'nama' => 'Ridwan, SE',
@@ -1221,7 +1235,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/12/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_012_ridwan.pdf',
                 ],
                 [
                     'nama' => 'Beni Asril',
@@ -1238,7 +1252,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/13/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_013_beni_asril.pdf',
                 ],
                 [
                     'nama' => 'Sandi Pryanto, SE',
@@ -1255,7 +1269,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/14/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_014_sandi_pryanto.pdf',
                 ],
                 [
                     'nama' => 'Teguh Leksono',
@@ -1272,7 +1286,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/15/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_015_teguh_leksono.pdf',
                 ],
                 [
                     'nama' => 'Feriadi Agus',
@@ -1289,7 +1303,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/16/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_016_feriadi_agus.pdf',
                 ],
                 [
                     'nama' => 'Ilham Saputra',
@@ -1306,7 +1320,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/17/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_017_ilham_saputra.pdf',
                 ],
                 [
                     'nama' => 'Dimas Wahyu Kurniawan',
@@ -1323,7 +1337,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/18/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_018_dimas_wahyu_kurniawan.pdf',
                 ],
                 [
                     'nama' => 'Nur Ruwanda',
@@ -1340,7 +1354,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/19/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_019_nur_ruwanda.pdf',
                 ],
                 [
                     'nama' => 'Muji Harnadi',
@@ -1357,7 +1371,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/20/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_020_muji_harnadi.pdf',
                 ],
                 [
                     'nama' => 'Mardian Hasnur',
@@ -1374,7 +1388,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/21/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_021_mardian_hasnur.pdf',
                 ],
                 [
                     'nama' => 'Bayu Sukma',
@@ -1391,7 +1405,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/22/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_022_bayu_sukma.pdf',
                 ],
                 [
                     'nama' => 'Siswanto',
@@ -1408,7 +1422,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/23/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_023_siswanto.pdf',
                 ],
                 [
                     'nama' => 'Abdul Syukur',
@@ -1425,7 +1439,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/24/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_024_abdul_syukur.pdf',
                 ],
                 [
                     'nama' => 'Sutarto',
@@ -1442,7 +1456,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/25/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_025_sutarto.pdf',
                 ],
                 [
                     'nama' => 'Panji Agung',
@@ -1459,7 +1473,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/26/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_026_panji_agung.pdf',
                 ],
                 [
                     'nama' => 'Andri Wahyudi',
@@ -1476,7 +1490,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/27/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_027_andri_wahyudi.pdf',
                 ],
                 [
                     'nama' => 'M. Dody Styawan',
@@ -1493,7 +1507,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/28/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_028_m_dody_styawan.pdf',
                 ],
                 [
                     'nama' => 'Viky',
@@ -1510,7 +1524,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/29/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_029_viky.pdf',
                 ],
                 [
                     'nama' => 'Dodi Suryady',
@@ -1527,7 +1541,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/30/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_030_dodi_suryady.pdf',
                 ],
                 [
                     'nama' => 'Fahreza',
@@ -1544,7 +1558,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/31/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_031_fahreza.pdf',
                 ],
                 [
                     'nama' => 'Kaharuddin',
@@ -1561,7 +1575,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/32/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_032_kaharuddin.pdf',
                 ],
                 [
                     'nama' => 'Ismail',
@@ -1578,7 +1592,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/33/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_033_ismail.pdf',
                 ],
                 [
                     'nama' => 'Pendi Abdullah',
@@ -1595,7 +1609,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/34/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_034_pendi_abdullah.pdf',
                 ],
                 [
                     'nama' => 'Dewi Sartika, M.M',
@@ -1612,7 +1626,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/35/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_035_dewi_sartika.pdf',
                 ],
                 [
                     'nama' => 'Monalisa,SE. M.Ak',
@@ -1629,7 +1643,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '300.2.5.1/36/PKA/DAMKARTAN/2026',
                     'tanggal_sttp' => '2026-02-18',
                     'ditandatangani_oleh' => 'Maulana (Wali Kota Jambi)',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/diksar_2026/diksar_2026_036_monalisa.pdf',
                 ],
             ],
             'tbl_diklat_f1' => [
@@ -1676,13 +1690,13 @@ class DiklatAparaturSeeder extends Seeder
                     'jabatan' => 'Juru Padam',
                     'kualifikasi' => 'Diklat Pemadam 1',
                     'tempat_pelaksanaan' => 'Jambi',
-                    'tanggal_pelaksanaan' => '2023-04-24',
-                    'tanggal_selesai_pelaksanaan' => '2023-04-30',
+                    'tanggal_pelaksanaan' => '2024-04-24',
+                    'tanggal_selesai_pelaksanaan' => '2024-04-30',
                     'jumlah_jam_pelajaran' => '70',
                     'no_sttp' => 'P.70/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => 'Pramudya Ananta Boga, S.Sos., M.Si (Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_003_ridho_dasrizal_handoko_a.pdf',
                 ],
                 [
                     'nama' => 'Henderiono',
@@ -1699,7 +1713,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.9/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_004_henderiono.pdf',
                 ],
                 [
                     'nama' => 'Sunariyo',
@@ -1716,7 +1730,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.38/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_005_sunariyo.pdf',
                 ],
                 [
                     'nama' => 'Muhammad Isnaini',
@@ -1733,7 +1747,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.21/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_006_muhammad_isnaini.pdf',
                 ],
                 [
                     'nama' => 'Bambang Apriadi',
@@ -1750,7 +1764,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.2/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_007_bambang_apriadi.pdf',
                 ],
                 [
                     'nama' => 'Misbah',
@@ -1767,7 +1781,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.60/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_008_misbah.pdf',
                 ],
                 [
                     'nama' => 'Sandi Saputra, Sh',
@@ -1784,7 +1798,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.33/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_009_sandi_saputra.pdf',
                 ],
                 [
                     'nama' => 'Muhammad Rio',
@@ -1801,7 +1815,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.61/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_010_muhammad_rio.pdf',
                 ],
                 [
                     'nama' => 'M. Heri Hidayat',
@@ -1818,7 +1832,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.15/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_011_m_heri_hidayat.pdf',
                 ],
                 [
                     'nama' => 'Sutriyanto',
@@ -1835,7 +1849,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.77/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_012_sutriyanto.pdf',
                 ],
                 [
                     'nama' => 'Nurpan Taupan',
@@ -1852,7 +1866,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.25/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_013_nurpan_taupan.pdf',
                 ],
                 [
                     'nama' => 'Kms. Ricko Apriansyah',
@@ -1869,7 +1883,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.55/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_014_kms_ricko_apriansyah.pdf',
                 ],
                 [
                     'nama' => 'Sapi\'i',
@@ -1886,7 +1900,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.34/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_015_sapi_i.pdf',
                 ],
                 [
                     'nama' => 'Rd. Jhon Husairi',
@@ -1903,7 +1917,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.67/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_016_rd_jhon_husairi.pdf',
                 ],
                 [
                     'nama' => 'Muhazirin, Se.Sy',
@@ -1920,7 +1934,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.64/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_017_muhazirin.pdf',
                 ],
                 [
                     'nama' => 'Agus Wahyudi',
@@ -1937,7 +1951,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.43/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_018_agus_wahyudi.pdf',
                 ],
                 [
                     'nama' => 'Rori Antoni, S.Pd',
@@ -1954,7 +1968,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.73/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_019_rori_antoni.pdf',
                 ],
                 [
                     'nama' => 'Januarsyah',
@@ -1971,7 +1985,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.13/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_020_januarsyah.pdf',
                 ],
                 [
                     'nama' => 'Sukarno, Sh',
@@ -1988,7 +2002,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.37/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_021_sukarno.pdf',
                 ],
                 [
                     'nama' => 'Sarwo Edy',
@@ -2005,7 +2019,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.35/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_022_sarwo_edy.pdf',
                 ],
                 [
                     'nama' => 'Iwan Effendy',
@@ -2022,7 +2036,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.53/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_023_iwan_effendy.pdf',
                 ],
                 [
                     'nama' => 'M. Soleh',
@@ -2039,7 +2053,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.58/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_024_m_soleh.pdf',
                 ],
                 [
                     'nama' => 'Bunnari',
@@ -2056,7 +2070,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.49/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_025_bunnari.pdf',
                 ],
                 [
                     'nama' => 'Dedi Thoblawi',
@@ -2073,7 +2087,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.50/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_026_dedi_thoblawi.pdf',
                 ],
                 [
                     'nama' => 'Ricky Oktora',
@@ -2090,7 +2104,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.30/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_027_ricky_oktora.pdf',
                 ],
                 [
                     'nama' => 'Muhammad Syafiq',
@@ -2107,7 +2121,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.22/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_028_muhammad_syafiq.pdf',
                 ],
                 [
                     'nama' => 'Anton Wibowo',
@@ -2124,7 +2138,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.47/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_029_anton_wibowo.pdf',
                 ],
                 [
                     'nama' => 'Nanda',
@@ -2141,7 +2155,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.24/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_030_nanda.pdf',
                 ],
                 [
                     'nama' => 'Riki Restiawan',
@@ -2158,7 +2172,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.71/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_031_riki_restiawan.pdf',
                 ],
                 [
                     'nama' => 'Suherman',
@@ -2175,7 +2189,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.36/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_032_suherman.pdf',
                 ],
                 [
                     'nama' => 'Masrizal Oktavianes',
@@ -2192,7 +2206,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.59/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_033_masrizal_oktavianes.pdf',
                 ],
                 [
                     'nama' => 'Rahmad Veri Rizki',
@@ -2209,7 +2223,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.26/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_034_rahmad_veri_rizki.pdf',
                 ],
                 [
                     'nama' => 'Muslim',
@@ -2226,7 +2240,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.23/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_035_muslim.pdf',
                 ],
                 [
                     'nama' => 'Rudi Ariandi',
@@ -2243,7 +2257,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.74/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_036_rudi_ariandi.pdf',
                 ],
                 [
                     'nama' => 'Rinaldo, Sh. Mh',
@@ -2260,7 +2274,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.31/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_037_rinaldo.pdf',
                 ],
                 [
                     'nama' => 'Rahmat Kutana, S.Kom',
@@ -2277,7 +2291,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.27/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_038_rahmat_kutana.pdf',
                 ],
                 [
                     'nama' => 'Ja\'i',
@@ -2294,7 +2308,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.12/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_039_ja_i.pdf',
                 ],
                 [
                     'nama' => 'Reza Eko Novian',
@@ -2311,7 +2325,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.29/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_040_reza_eko_novian.pdf',
                 ],
                 [
                     'nama' => 'Surya Murlia Ningsih, Se',
@@ -2328,7 +2342,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.39/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_041_surya_murlia_ningsih.pdf',
                 ],
                 [
                     'nama' => 'Lestya Rena Agustein',
@@ -2345,7 +2359,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.14/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_042_lestya_rena_agustein.pdf',
                 ],
                 [
                     'nama' => 'M. Nasir, S.Sos',
@@ -2362,7 +2376,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.56/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_043_m_nasir.pdf',
                 ],
                 [
                     'nama' => 'Kaspul Anwar, S.Kom',
@@ -2379,7 +2393,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.54/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_044_kaspul_anwar.pdf',
                 ],
                 [
                     'nama' => 'Achmad Syukri Insani',
@@ -2396,7 +2410,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.41/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_045_achmad_syukri_insani.pdf',
                 ],
                 [
                     'nama' => 'M. Yahya',
@@ -2413,7 +2427,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.16/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_046_m_yahya.pdf',
                 ],
                 [
                     'nama' => 'Supriatin',
@@ -2430,7 +2444,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.76/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_047_supriatin.pdf',
                 ],
                 [
                     'nama' => 'Hadi Surawijaya',
@@ -2447,7 +2461,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.7/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_048_hadi_surawijaya.pdf',
                 ],
                 [
                     'nama' => 'Muharom, Se',
@@ -2464,7 +2478,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.63/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_049_muharom.pdf',
                 ],
                 [
                     'nama' => 'Muhammad Dheni Pranata',
@@ -2481,7 +2495,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.19/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_050_muhammad_dheni_pranata.pdf',
                 ],
                 [
                     'nama' => 'Hendra',
@@ -2498,7 +2512,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.10/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_051_hendra.pdf',
                 ],
                 [
                     'nama' => 'Reza Afrizal, S.Pd',
@@ -2515,7 +2529,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.69/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_052_reza_afrizal.pdf',
                 ],
                 [
                     'nama' => 'Fahrizal',
@@ -2532,7 +2546,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.6/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_053_fahrizal.pdf',
                 ],
                 [
                     'nama' => 'Zakirin',
@@ -2549,7 +2563,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.40/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_054_zakirin.pdf',
                 ],
                 [
                     'nama' => 'Ahmad Fanani',
@@ -2566,7 +2580,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.44/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_055_ahmad_fanani.pdf',
                 ],
                 [
                     'nama' => 'Benni',
@@ -2583,7 +2597,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.48/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_056_benni.pdf',
                 ],
                 [
                     'nama' => 'Agus Harianto',
@@ -2600,7 +2614,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.42/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_057_agus_harianto.pdf',
                 ],
                 [
                     'nama' => 'Mohd Irfan',
@@ -2617,7 +2631,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.18/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_058_mohd_irfan.pdf',
                 ],
                 [
                     'nama' => 'Munirriyadi',
@@ -2634,7 +2648,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.65/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_059_munirriyadi.pdf',
                 ],
                 [
                     'nama' => 'Hari Mubarok, Sh',
@@ -2651,7 +2665,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.8/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_060_hari_mubarok.pdf',
                 ],
                 [
                     'nama' => 'Yoga Tedy Rusady',
@@ -2668,7 +2682,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.80/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_061_yoga_tedy_rusady.pdf',
                 ],
                 [
                     'nama' => 'Syamsuri',
@@ -2685,7 +2699,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.79/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_062_syamsuri.pdf',
                 ],
                 [
                     'nama' => 'Basopi',
@@ -2702,7 +2716,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.3/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_063_basopi.pdf',
                 ],
                 [
                     'nama' => 'Daffa Setya Adinda',
@@ -2719,7 +2733,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.4/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_064_daffa_setya_adinda.pdf',
                 ],
                 [
                     'nama' => 'Majito Sugianto',
@@ -2736,7 +2750,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.17/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_065_majito_sugianto.pdf',
                 ],
                 [
                     'nama' => 'Dody Athoilla Wicaksono',
@@ -2753,7 +2767,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.51/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_066_dody_athoilla_wicaksono.pdf',
                 ],
                 [
                     'nama' => 'Feri Ishariyanto',
@@ -2770,7 +2784,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.52/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_067_feri_ishariyanto.pdf',
                 ],
                 [
                     'nama' => 'Arifin, Se. Sy',
@@ -2787,7 +2801,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_068_arifin.pdf',
                 ],
                 [
                     'nama' => 'M.Febri Harmono',
@@ -2804,7 +2818,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.57/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_069_m_febri_harmono.pdf',
                 ],
                 [
                     'nama' => 'Ahmad Yani',
@@ -2821,7 +2835,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.45/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_070_ahmad_yani.pdf',
                 ],
                 [
                     'nama' => 'Riyan Febriyanto',
@@ -2838,7 +2852,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.32/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_071_riyan_febriyanto.pdf',
                 ],
                 [
                     'nama' => 'Muhammad Hidayat',
@@ -2855,7 +2869,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.20/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_072_muhammad_hidayat.pdf',
                 ],
                 [
                     'nama' => 'Rocki Mis Fadli',
@@ -2872,7 +2886,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.72/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_073_rocki_mis_fadli.pdf',
                 ],
                 [
                     'nama' => 'Redi Julian',
@@ -2889,7 +2903,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.68/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_074_redi_julian.pdf',
                 ],
                 [
                     'nama' => 'Randi Saputra, Se',
@@ -2906,7 +2920,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.28/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_075_randi_saputra.pdf',
                 ],
                 [
                     'nama' => 'Indriyanto Adi Saputra',
@@ -2923,7 +2937,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.11/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_076_indriyanto_adi_saputra.pdf',
                 ],
                 [
                     'nama' => 'Muhammad Surya Pratama',
@@ -2940,7 +2954,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.62/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_077_muhammad_surya_pratama.pdf',
                 ],
                 [
                     'nama' => 'Dedi Agung Pambudi',
@@ -2957,7 +2971,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.5/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_078_dedi_agung_pambudi.pdf',
                 ],
                 [
                     'nama' => 'Paryono',
@@ -2974,7 +2988,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.66/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_079_paryono.pdf',
                 ],
                 [
                     'nama' => 'Amat Ariyanto',
@@ -2991,7 +3005,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.46/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_080_amat_ariyanto.pdf',
                 ],
                 [
                     'nama' => 'Sinta Nuriyah',
@@ -3008,7 +3022,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.75/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_081_sinta_nuriyah.pdf',
                 ],
                 [
                     'nama' => 'Suzanna',
@@ -3025,7 +3039,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.78/132/TU/DAMKAR/MPBK/2024',
                     'tanggal_sttp' => '2024-05-17',
                     'ditandatangani_oleh' => '(Plh Direktur Jenderal Bina Administrasi Kewilayahan dan Plh Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2024/f1_2024_082_suzanna.pdf',
                 ],
                 [
                     'nama' => 'Muhammad Luqman',
@@ -3076,7 +3090,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_001_ade_firnandi_rivai.pdf',
                 ],
                 [
                     'nama' => 'Adi Khiyoto',
@@ -3093,7 +3107,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_002_adi_khiyoto.pdf',
                 ],
                 [
                     'nama' => 'Adi Putra',
@@ -3110,7 +3124,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_003_adi_putra.pdf',
                 ],
                 [
                     'nama' => 'Aditya Prasetyo',
@@ -3127,7 +3141,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_004_aditya_prasetyo.pdf',
                 ],
                 [
                     'nama' => 'Agung Cahyo Suryo Putro',
@@ -3144,7 +3158,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_005_agung_cahyo_suryo_putro.pdf',
                 ],
                 [
                     'nama' => 'Agus Riawan',
@@ -3161,7 +3175,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_006_agus_riawan.pdf',
                 ],
                 [
                     'nama' => 'Agus Wiyoto',
@@ -3178,7 +3192,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_007_agus_wiyoto.pdf',
                 ],
                 [
                     'nama' => 'Ardiansyah, S.Stp',
@@ -3195,7 +3209,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_008_ardiansyah.pdf',
                 ],
                 [
                     'nama' => 'Arif Masdianto',
@@ -3212,7 +3226,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_009_arif_masdianto.pdf',
                 ],
                 [
                     'nama' => 'Arif Arten',
@@ -3229,7 +3243,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_010_arif_arten.pdf',
                 ],
                 [
                     'nama' => 'Aritua Harahap',
@@ -3246,7 +3260,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_011_aritua_harahap.pdf',
                 ],
                 [
                     'nama' => 'Azwar, Se',
@@ -3280,7 +3294,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_013_budy_siswanto.pdf',
                 ],
                 [
                     'nama' => 'Danil Akbar',
@@ -3297,7 +3311,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_014_danil_akbar.pdf',
                 ],
                 [
                     'nama' => 'Deby Nopriyadi',
@@ -3314,7 +3328,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_015_deby_nopriyadi.pdf',
                 ],
                 [
                     'nama' => 'Dodi Pria Setiawan',
@@ -3331,7 +3345,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_016_dodi_pria_setiawan.pdf',
                 ],
                 [
                     'nama' => 'Doni Sumatriadi, S.Stp, Mh',
@@ -3348,7 +3362,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_017_doni_sumatriadi.pdf',
                 ],
                 [
                     'nama' => 'Dwi Salyo Prabowo',
@@ -3365,7 +3379,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_018_dwi_salyo_prabowo.pdf',
                 ],
                 [
                     'nama' => 'Efendi',
@@ -3382,7 +3396,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_019_efendi.pdf',
                 ],
                 [
                     'nama' => 'Febry Roziardy Putra',
@@ -3399,7 +3413,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_020_febry_roziardy_putra.pdf',
                 ],
                 [
                     'nama' => 'Firmansyah',
@@ -3416,7 +3430,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_021_firmansyah.pdf',
                 ],
                 [
                     'nama' => 'Hari Sabta Kusuma',
@@ -3433,7 +3447,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_022_hari_sabta_kusuma.pdf',
                 ],
                 [
                     'nama' => 'Hendra. S',
@@ -3450,7 +3464,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_023_hendra_s.pdf',
                 ],
                 [
                     'nama' => 'Indra Jafrizal, St',
@@ -3467,7 +3481,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_024_indra_jafrizal.pdf',
                 ],
                 [
                     'nama' => 'Ishak Effendi',
@@ -3484,7 +3498,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_025_ishak_effendi.pdf',
                 ],
                 [
                     'nama' => 'Kms. Rahmad Riadi',
@@ -3501,7 +3515,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_026_kms_rahmad_riadi.pdf',
                 ],
                 [
                     'nama' => 'M. Fadli Asril',
@@ -3518,7 +3532,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_027_m_fadli_asril.pdf',
                 ],
                 [
                     'nama' => 'M. Kardela',
@@ -3535,7 +3549,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_028_m_kardela.pdf',
                 ],
                 [
                     'nama' => 'Rudiyanto, ST',
@@ -3552,7 +3566,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_029_rudiyanto.pdf',
                 ],
                 [
                     'nama' => 'Mas Dede Saputra',
@@ -3569,7 +3583,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_030_mas_dede_saputra.pdf',
                 ],
                 [
                     'nama' => 'Muhammad Harris, S.Stp, M.Si',
@@ -3620,7 +3634,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_033_mustaqim.pdf',
                 ],
                 [
                     'nama' => 'Muhammad Sujarkoni',
@@ -3637,7 +3651,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_034_muhammad_sujarkoni.pdf',
                 ],
                 [
                     'nama' => 'Poniadi',
@@ -3654,7 +3668,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_035_poniadi.pdf',
                 ],
                 [
                     'nama' => 'Ragil Ade Nugroho',
@@ -3671,7 +3685,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_036_ragil_ade_nugroho.pdf',
                 ],
                 [
                     'nama' => 'Ranu Prasetio',
@@ -3688,7 +3702,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_037_ranu_prasetio.pdf',
                 ],
                 [
                     'nama' => 'Rudi Utoyo',
@@ -3705,7 +3719,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_038_rudi_utoyo.pdf',
                 ],
                 [
                     'nama' => 'Suci Fitriyanto',
@@ -3722,7 +3736,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_039_suci_fitriyanto.pdf',
                 ],
                 [
                     'nama' => 'Surandi Maulana',
@@ -3739,7 +3753,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_040_surandi_maulana.pdf',
                 ],
                 [
                     'nama' => 'Wagimin',
@@ -3756,7 +3770,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_041_wagimin.pdf',
                 ],
                 [
                     'nama' => 'Wakijan',
@@ -3773,7 +3787,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_042_wakijan.pdf',
                 ],
                 [
                     'nama' => 'Wilopo',
@@ -3790,7 +3804,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.1/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-11',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2025/f1_2025_043_wilopo.pdf',
                 ],
                 [
                     'nama' => 'Yogi Wanda Putra',
@@ -3824,7 +3838,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.12/347/TU/DAMKAR/MPBK/2026',
                     'tanggal_sttp' => '2026-09-30',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2026/f1_2026_001_ezwin_kurniawan.pdf',
                 ],
                 [
                     'nama' => 'Rully Kurniawan, S.IP.,ME',
@@ -3841,7 +3855,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.38/347/TU/DAMKAR/MPBK/2026',
                     'tanggal_sttp' => '2026-09-30',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2026/f1_2026_002_rully_kurniawan.pdf',
                 ],
                 [
                     'nama' => 'Juliansyah Sulaiman, SE',
@@ -3858,7 +3872,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.22/347/TU/DAMKAR/MPBK/2026',
                     'tanggal_sttp' => '2026-09-30',
                     'ditandatangani_oleh' => 'Direktur Manajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f1_2026/f1_2026_003_juliansyah_sulaiman.pdf',
                 ],
             ],
             'tbl_diklat_f2' => [
@@ -3877,7 +3891,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No.00001511/DIKLAT TEKNIS/6000/064/LAN-PEMPROV DKI JAKARTA/2018',
                     'tanggal_sttp' => '2018-11-16',
                     'ditandatangani_oleh' => 'Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f2/f2_001_muhadi.pdf',
                 ],
                 [
                     'nama' => 'MUTASOR, SE',
@@ -3894,7 +3908,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => null,
                     'tanggal_sttp' => '2013-11-23',
                     'ditandatangani_oleh' => 'Direktur Jenderal Pemerintahan Umum Kementrian Dalam Negeri Republik Indonesia',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f2/f2_002_mutasor.pdf',
                 ],
                 [
                     'nama' => 'Rd. SYAHRIAL',
@@ -3911,7 +3925,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 00001218/DIKLAT TEKNIS/6000/064/LAN-PEM PROV DKI.Jakarta/2019',
                     'tanggal_sttp' => '2019-08-23',
                     'ditandatangani_oleh' => 'Plt. Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f2/f2_003_rd_syahrial.pdf',
                 ],
                 [
                     'nama' => 'BAMBANG SUGIONO',
@@ -3928,7 +3942,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 364.1/502/PUM',
                     'tanggal_sttp' => '2013-11-23',
                     'ditandatangani_oleh' => 'an. Menteri Dalam Negeri Plt. Direktur Jenderal Pemerintahan Umum',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f2/f2_004_bambang_sugiono.pdf',
                 ],
                 [
                     'nama' => 'HERMAN YANTO',
@@ -3945,7 +3959,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 00001505/DIKLAT TEKNIS/6000/064/LAN-PEM PROV DKI.Jakarta/2018',
                     'tanggal_sttp' => '2018-11-16',
                     'ditandatangani_oleh' => 'Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f2/f2_005_herman_yanto.pdf',
                 ],
                 [
                     'nama' => 'EDI BAMBANG EVIANTO',
@@ -3962,7 +3976,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 00001194/DIKLAT TEKNIS/6000/064/LAN-PEM PROV DKI.Jakarta/2019',
                     'tanggal_sttp' => '2019-08-23',
                     'ditandatangani_oleh' => 'Plt. Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f2/f2_006_edi_bambang_evianto.pdf',
                 ],
                 [
                     'nama' => 'ABDI MULIA',
@@ -3979,7 +3993,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 00001491/DIKLAT TEKNIS/6000/064/LAN-PEM PROV DKI.Jakarta/2018',
                     'tanggal_sttp' => '2018-11-16',
                     'ditandatangani_oleh' => 'Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f2/f2_007_abdi_mulia.pdf',
                 ],
                 [
                     'nama' => 'DWI WAHYUDI',
@@ -3996,7 +4010,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 00001503/DIKLAT TEKNIS/6000/064/LAN-PEM PROV DKI.Jakarta/2018',
                     'tanggal_sttp' => '2018-11-12',
                     'ditandatangani_oleh' => 'Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f2/f2_008_dwi_wahyudi.pdf',
                 ],
                 [
                     'nama' => 'ABDUL MUTALIB.HS',
@@ -4013,7 +4027,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 00001492/DIKLAT TEKNIS/6000/064/LAN-PEMPROV DKI. JAKARTA/2018',
                     'tanggal_sttp' => '2018-11-12',
                     'ditandatangani_oleh' => 'Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta dan Direktur Manajemen Penanggulangan Bencana dan Kebakaran Kementrian Dalam Negeri Republik Indonesia',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f2/f2_009_abdul_mutalib_hs.pdf',
                 ],
                 [
                     'nama' => 'ADRIYANSYAH',
@@ -4030,7 +4044,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 00001495/DIKLAT TEKNIS/6000/064/LAN-PEMPROV DKI. JAKARTA/2018',
                     'tanggal_sttp' => '2018-11-12',
                     'ditandatangani_oleh' => 'Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta dan Direktur Manajemen Penanggulangan Bencana dan Kebakaran Kementrian Dalam Negeri Republik Indonesia',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f2/f2_010_adriyansyah.pdf',
                 ],
                 [
                     'nama' => 'AMIR HAMZAH',
@@ -4047,7 +4061,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 00001496/DIKLAT TEKNIS/6000/064/LAN-PEMPROV DKI. JAKARTA/2018',
                     'tanggal_sttp' => '2018-11-12',
                     'ditandatangani_oleh' => 'Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta dan Direktur Manajemen Penanggulangan Bencana dan Kebakaran Kementrian Dalam Negeri Republik Indonesia',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f2/f2_011_amir_hamzah.pdf',
                 ],
                 [
                     'nama' => 'APRIYAN PRATAMA PUTRA',
@@ -4064,7 +4078,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 00001497/DIKLAT TEKNIS/6000/064/LAN-PEMPROV DKI. JAKARTA/2018',
                     'tanggal_sttp' => '2018-11-12',
                     'ditandatangani_oleh' => 'Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta dan Direktur Manajemen Penanggulangan Bencana dan Kebakaran Kementrian Dalam Negeri Republik Indonesia',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f2/f2_012_apriyan_pratama_putra.pdf',
                 ],
                 [
                     'nama' => 'AULIA RAHMAN',
@@ -4081,7 +4095,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 00001499/DIKLAT TEKNIS/6000/064/LAN-PEMPROV DKI. JAKARTA/2018',
                     'tanggal_sttp' => '2018-11-12',
                     'ditandatangani_oleh' => 'Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta dan Direktur Manajemen Penanggulangan Bencana dan Kebakaran Kementrian Dalam Negeri Republik Indonesia',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f2/f2_013_aulia_rahman.pdf',
                 ],
                 [
                     'nama' => 'DEDEN RAMADHAN',
@@ -4098,7 +4112,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 00001502/DIKLAT TEKNIS/6000/064/LAN-PEMPROV DKI. JAKARTA/2018',
                     'tanggal_sttp' => '2018-11-12',
                     'ditandatangani_oleh' => 'Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta dan Direktur Manajemen Penanggulangan Bencana dan Kebakaran Kementrian Dalam Negeri Republik Indonesia',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f2/f2_014_deden_ramadhan.pdf',
                 ],
                 [
                     'nama' => 'IRPAN WAHYUDI',
@@ -4115,7 +4129,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 00001507/DIKLAT TEKNIS/6000/064/LAN-PEMPROV DKI. JAKARTA/2018',
                     'tanggal_sttp' => '2018-11-12',
                     'ditandatangani_oleh' => 'Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta dan Direktur Manajemen Penanggulangan Bencana dan Kebakaran Kementrian Dalam Negeri Republik Indonesia',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f2/f2_015_irpan_wahyudi.pdf',
                 ],
                 [
                     'nama' => 'ISTARMAN',
@@ -4132,7 +4146,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 00001508/DIKLAT TEKNIS/6000/064/LAN-PEMPROV DKI. JAKARTA/2018',
                     'tanggal_sttp' => '2018-11-12',
                     'ditandatangani_oleh' => 'Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta dan Direktur Manajemen Penanggulangan Bencana dan Kebakaran Kementrian Dalam Negeri Republik Indonesia',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f2/f2_016_istarman.pdf',
                 ],
                 [
                     'nama' => 'RIFO NOFRIYADI',
@@ -4149,7 +4163,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 00001513/DIKLAT TEKNIS/6000/064/LAN-PEMPROV DKI. JAKARTA/2018',
                     'tanggal_sttp' => '2018-11-12',
                     'ditandatangani_oleh' => 'Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta dan Direktur Manajemen Penanggulangan Bencana dan Kebakaran Kementrian Dalam Negeri Republik Indonesia',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f2/f2_017_rifo_nofriyadi.pdf',
                 ],
                 [
                     'nama' => 'SURYADI',
@@ -4166,7 +4180,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 00001518/DIKLAT TEKNIS/6000/064/LAN-PEMPROV DKI. JAKARTA/2018',
                     'tanggal_sttp' => '2018-11-12',
                     'ditandatangani_oleh' => 'Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta dan Direktur Manajemen Penanggulangan Bencana dan Kebakaran Kementrian Dalam Negeri Republik Indonesia',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f2/f2_018_suryadi.pdf',
                 ],
                 [
                     'nama' => 'EDI SUSILO',
@@ -4234,7 +4248,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '364.1-396 Tahun 2016',
                     'tanggal_sttp' => null,
                     'ditandatangani_oleh' => 'Direktur Jenderal Bina administrasi Kewilayahan',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/f2/f2_022_kasianto.pdf',
                 ],
             ],
             'tbl_diklat_rescue' => [
@@ -4253,7 +4267,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 661/IX/12/-084.31',
                     'tanggal_sttp' => null,
                     'ditandatangani_oleh' => 'Kepala Dinas Pemadam Kebakaran dan Penanggulangan Bencana Provinsi DKI Jakarta',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/rescue/rescue_001_sabari.pdf',
                 ],
                 [
                     'nama' => 'Juliansyah Sulaiman, SE',
@@ -4270,7 +4284,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 00002088/DIKLAT TEKNIS/6000/181/LAN-PEMPROV DKI. JAKARTA/2019',
                     'tanggal_sttp' => '2019-12-13',
                     'ditandatangani_oleh' => 'Plt. Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta dan Direktur Manajemen Penanggulangan Bencana dan Kebakaran Kementrian Dalam Negeri Republik Indonesia',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/rescue/rescue_002_juliansyah_sulaiman.pdf',
                 ],
                 [
                     'nama' => 'M. Sanusi Andrean',
@@ -4287,7 +4301,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 00002089/DIKLAT TEKNIS/6000/181/LAN-PEMPROV DKI. JAKARTA/2019',
                     'tanggal_sttp' => '2019-12-13',
                     'ditandatangani_oleh' => 'Plt. Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta dan Direktur Manajemen Penanggulangan Bencana dan Kebakaran Kementrian Dalam Negeri Republik Indonesia',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/rescue/rescue_003_m_sanusi_andrean.pdf',
                 ],
                 [
                     'nama' => 'Riyadi Yuliatmoko',
@@ -4304,7 +4318,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 00002095/DIKLAT TEKNIS/6000/181/LAN-PEMPROV DKI. JAKARTA/2019',
                     'tanggal_sttp' => '2019-12-13',
                     'ditandatangani_oleh' => 'Plt. Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta dan Direktur Manajemen Penanggulangan Bencana dan Kebakaran Kementrian Dalam Negeri Republik Indonesia',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/rescue/rescue_004_riyadi_yuliatmoko.pdf',
                 ],
                 [
                     'nama' => 'Saipul Mustopa',
@@ -4321,7 +4335,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 00002096/DIKLAT TEKNIS/6000/181/LAN-PEMPROV DKI. JAKARTA/2019',
                     'tanggal_sttp' => '2019-12-13',
                     'ditandatangani_oleh' => 'Plt. Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta dan Direktur Manajemen Penanggulangan Bencana dan Kebakaran Kementrian Dalam Negeri Republik Indonesia',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/rescue/rescue_005_saipul_mustopa.pdf',
                 ],
                 [
                     'nama' => 'Suprapto',
@@ -4338,7 +4352,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'No. 00002100/DIKLAT TEKNIS/6000/181/LAN-PEMPROV DKI. JAKARTA/2019',
                     'tanggal_sttp' => '2019-12-13',
                     'ditandatangani_oleh' => 'Plt. Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta dan Direktur Manajemen Penanggulangan Bencana dan Kebakaran Kementrian Dalam Negeri Republik Indonesia',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/rescue/rescue_006_suprapto.pdf',
                 ],
                 [
                     'nama' => 'MUTASOR, SE',
@@ -4355,7 +4369,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => null,
                     'tanggal_sttp' => null,
                     'ditandatangani_oleh' => 'Direktur Jenderal Pemerintahan Umum Kementrian Dalam Negeri Republik Indonesia',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/rescue/rescue_007_mutasor.pdf',
                 ],
             ],
             'tbl_diklat_mfr' => [
@@ -4374,7 +4388,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.15/81/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-28',
                     'ditandatangani_oleh' => 'Direktur Mnajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/mfr/mfr_001_mustari_affandi.pdf',
                 ],
                 [
                     'nama' => 'Mutasor, SE',
@@ -4391,7 +4405,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.16/81/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-28',
                     'ditandatangani_oleh' => 'Direktur Mnajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/mfr/mfr_002_mutasor.pdf',
                 ],
                 [
                     'nama' => 'Kasianto',
@@ -4408,7 +4422,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => 'P.12/81/TU/DAMKAR/MPBK/2025',
                     'tanggal_sttp' => '2025-07-28',
                     'ditandatangani_oleh' => 'Direktur Mnajemen Penanggulangan Bencana dan Kebakaran',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/mfr/mfr_003_kasianto.pdf',
                 ],
             ],
             'tbl_diklat_operator' => [
@@ -4427,7 +4441,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '03/800.2.4.1/1128/Balai-Bogor/32/2026',
                     'tanggal_sttp' => '2026-10-23',
                     'ditandatangani_oleh' => 'a.n Menteri Dalam Negeri Kepala Badan Pengembangan Sumber Daya Manusia',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/operator/operator_001_reza_afrizal.pdf',
                 ],
                 [
                     'nama' => 'Januarsyah',
@@ -4444,7 +4458,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '03/8002.4.1/1099/Balai-Bogor/32/2026',
                     'tanggal_sttp' => '2026-10-23',
                     'ditandatangani_oleh' => 'a.n Menteri Dalam Negeri Kepala Badan Pengembangan Sumber Daya Manusia',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/operator/operator_002_januarsyah.pdf',
                 ],
             ],
             'tbl_diklat_inspektur' => [
@@ -4463,7 +4477,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '225/1.784.08',
                     'tanggal_sttp' => '2003-08-29',
                     'ditandatangani_oleh' => 'Kepala Dinas Pemadam Kebakaran Provinsi DKI Jakarta',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/inspektur/inspektur_001_suhermanto.pdf',
                 ],
                 [
                     'nama' => 'Sabari',
@@ -4480,7 +4494,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '225/1.784.08',
                     'tanggal_sttp' => '2014-11-07',
                     'ditandatangani_oleh' => 'Kepala Dinas Pemadam Kebakaran Provinsi DKI Jakarta',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/inspektur/inspektur_002_sabari.pdf',
                 ],
                 [
                     'nama' => 'Tri Hastati M., S.P',
@@ -4497,7 +4511,7 @@ class DiklatAparaturSeeder extends Seeder
                     'no_sttp' => '00001903/DIKLAT TEKNIS/6000/063/LAN-PEMPROV DKI.JAKARTA/2019',
                     'tanggal_sttp' => '2019-11-29',
                     'ditandatangani_oleh' => 'Kepala Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta',
-                    'file_sertifikat' => null,
+                    'file_sertifikat' => 'sertifikat_diklat/inspektur/inspektur_003_tri_hastati_m.pdf',
                 ],
             ],
             'tbl_diklat_ppl' => [
