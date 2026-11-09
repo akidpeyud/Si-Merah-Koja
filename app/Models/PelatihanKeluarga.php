@@ -12,14 +12,12 @@ class PelatihanKeluarga extends Model
     protected $table = 'pelatihan_keluarga';
 
     protected $fillable = [
-        'tanggal_pelaksanaan',
-        'kecamatan',
+        'nama_peserta',
+        'jenis_kelamin',
         'kelurahan',
-        'rt',
-        'peserta_perempuan',
-        'nama_peserta_perempuan', // <-- Tambahkan ini
-        'peserta_laki_laki',
-        'nama_peserta_laki_laki', // <-- Tambahkan ini
-        'link_dokumentasi',
+        'kecamatan',
+        'tanggal_pelaksanaan',
+        'tempat_pelaksanaan',
+        'alamat_pelaksanaan',
     ];
 }

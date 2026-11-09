@@ -40,6 +40,7 @@ class DatabaseSeeder extends Seeder
             FireDrillSeeder::class,
             InspeksiBangunanSeeder::class,
             SosialisasiPenyuluhanSeeder::class,
+            PelatihanKeluargaSeeder::class,
         ]);
     }
 }

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cetak PDF - PELATIHAN KELUARGA TANGGAP KEBAKARAN</title>
     <style>
-        /* Pengaturan kertas Landscape A4 resmi */
         @page {
             size: A4 landscape;
             margin: 12mm 14mm;
@@ -23,7 +22,7 @@
             padding: 0;
             color: #000;
             background: #fff;
-            font-size: 10.5pt;
+            font-size: 10pt;
             line-height: 1.35;
         }
 
@@ -106,7 +105,7 @@
             width: 100%;
             border-collapse: collapse;
             table-layout: fixed;
-            font-size: 10pt;
+            font-size: 9.5pt;
         }
         table.data-table th,
         table.data-table td {
@@ -120,12 +119,10 @@
             font-weight: bold;
             text-transform: uppercase;
             text-align: center;
-            font-size: 9.5pt;
+            font-size: 9pt;
             line-height: 1.25;
             padding: 8px 6px;
         }
-
-        /* Mencegah baris terpotong di tengah halaman */
         table.data-table tr {
             page-break-inside: avoid;
         }
@@ -133,64 +130,10 @@
         .text-center { text-align: center; }
         .text-left { text-align: left; }
 
-        /* Tanggal & Hari */
-        .tgl-utama {
-            font-weight: bold;
-            display: block;
-        }
-        .tgl-hari {
-            font-size: 9pt;
-            color: #333;
-            font-style: italic;
-        }
-
-        /* Kolom Peserta (Jumlah di atas, Daftar Nama bernomor di bawah) */
-        .td-peserta {
-            padding: 0 !important;
-            vertical-align: top !important;
-        }
-        .peserta-header-count {
-            text-align: center;
-            font-weight: bold;
-            padding: 6px 4px;
-            background-color: #f9fafb;
-        }
-        .peserta-header-count.has-names {
-            border-bottom: 1px dashed #9ca3af;
-        }
-        .peserta-daftar {
-            margin: 0;
-            padding: 6px 8px 6px 24px;
-            text-align: left;
-            font-size: 9.2pt;
-            line-height: 1.35;
-            list-style-type: decimal !important;
-        }
-        .peserta-daftar li {
-            margin-bottom: 2px;
-            text-transform: capitalize;
-        }
-
-        /* Kolom Link Dokumentasi */
-        td.col-link {
-            text-align: left;
-            font-size: 8.5pt;
-            line-height: 1.3;
-            word-break: break-all;
-        }
-        td.col-link.empty {
-            text-align: center;
-        }
-        td.col-link a {
-            color: #000;
-            text-decoration: underline;
-        }
-
-        /* Footer Total */
         table.data-table tfoot td {
             background-color: #e5e7eb !important;
             font-weight: bold;
-            font-size: 10pt;
+            font-size: 9.5pt;
             padding: 8px 7px;
         }
     </style>
@@ -218,161 +161,74 @@
     <!-- JUDUL LAPORAN -->
     <div class="judul-laporan">
         <h3>DATA PELATIHAN KELUARGA TANGGAP KEBAKARAN</h3>
-        <span>TAHUN {{ date('Y') }}</span>
+        <span>{{ !empty($tahun) ? 'TAHUN ' . $tahun : 'SEMUA TAHUN' }}</span>
     </div>
 
     <!-- TABEL DATA -->
     <table class="data-table">
         <colgroup>
             <col style="width: 4%;">   <!-- NO -->
-            <col style="width: 13%;">  <!-- HARI / TGL -->
-            <col style="width: 8%;">   <!-- RT -->
-            <col style="width: 14%;">  <!-- KELURAHAN -->
-            <col style="width: 14%;">  <!-- KECAMATAN -->
-            <col style="width: 13%;">  <!-- LAKI-LAKI -->
-            <col style="width: 13%;">  <!-- PEREMPUAN -->
-            <col style="width: 8%;">   <!-- TOTAL -->
-            <col style="width: 15%;">  <!-- LINK DOKUMENTASI -->
+            <col style="width: 17%;">  <!-- NAMA PESERTA -->
+            <col style="width: 11%;">  <!-- JENIS KELAMIN -->
+            <col style="width: 12%;">  <!-- KELURAHAN -->
+            <col style="width: 12%;">  <!-- KECAMATAN -->
+            <col style="width: 16%;">  <!-- HARI/TANGGAL PELAKSANAAN -->
+            <col style="width: 11%;">  <!-- TEMPAT PELAKSANAAN -->
+            <col style="width: 17%;">  <!-- ALAMAT PELAKSANAAN -->
         </colgroup>
         <thead>
             <tr>
-                <th rowspan="2">NO</th>
-                <th rowspan="2">HARI / TGL</th>
-                <th rowspan="2">RT</th>
-                <th rowspan="2">KELURAHAN</th>
-                <th rowspan="2">KECAMATAN</th>
-                <th colspan="3">JUMLAH &amp; DAFTAR PESERTA</th>
-                <th rowspan="2">LINK<br>DOKUMENTASI</th>
-            </tr>
-            <tr>
-                <th>LAKI-LAKI</th>
-                <th>PEREMPUAN</th>
-                <th>TOTAL</th>
+                <th>NO</th>
+                <th>NAMA PESERTA</th>
+                <th>JENIS KELAMIN</th>
+                <th>KELURAHAN</th>
+                <th>KECAMATAN</th>
+                <th>HARI/TANGGAL PELAKSANAAN</th>
+                <th>TEMPAT PELAKSANAAN</th>
+                <th>ALAMAT PELAKSANAAN</th>
             </tr>
         </thead>
         <tbody>
             @php
-                $total_semua_perempuan = 0;
-                $total_semua_lakilaki = 0;
-                $total_semua_peserta = 0;
-
-                $parseNama = function ($raw) {
-                    if (is_array($raw)) {
-                        return collect($raw)->map(fn($n) => trim((string) $n))->filter()->values();
-                    }
-                    if (is_string($raw) && str_starts_with(trim($raw), '[')) {
-                        $decoded = json_decode($raw, true);
-                        if (is_array($decoded)) {
-                            return collect($decoded)->map(fn($n) => trim((string) $n))->filter()->values();
-                        }
-                    }
-                    return collect(preg_split('/[\r\n,;]+/', (string) $raw))
-                        ->map(fn($n) => trim($n))
-                        ->filter()
-                        ->values();
-                };
+                $totalLaki = 0;
+                $totalPerempuan = 0;
             @endphp
 
             @forelse ($data as $index => $item)
                 @php
-                    $rawNamaL = $item->nama_peserta_laki_laki
-                        ?? $item->daftar_peserta_laki_laki
-                        ?? $item->peserta_laki_nama
-                        ?? $item->nama_laki_laki
-                        ?? '';
+                    $hariTanggal = !empty($item->tanggal_pelaksanaan)
+                        ? mb_strtoupper(\Carbon\Carbon::parse($item->tanggal_pelaksanaan)->locale('id')->translatedFormat('l, d F Y'))
+                        : '-';
 
-                    $rawNamaP = $item->nama_peserta_perempuan
-                        ?? $item->daftar_peserta_perempuan
-                        ?? $item->peserta_perempuan_nama
-                        ?? $item->nama_perempuan
-                        ?? '';
-
-                    $listNamaL = $parseNama($rawNamaL);
-                    $listNamaP = $parseNama($rawNamaP);
-
-                    $lakilaki = (int) ($item->peserta_laki_laki ?? $listNamaL->count());
-                    $perempuan = (int) ($item->peserta_perempuan ?? $listNamaP->count());
-                    $total_peserta = $lakilaki + $perempuan;
-
-                    $total_semua_lakilaki += $lakilaki;
-                    $total_semua_perempuan += $perempuan;
-                    $total_semua_peserta += $total_peserta;
-
-                    $links = array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $item->link_dokumentasi ?? ''))));
+                    $jk = trim((string) ($item->jenis_kelamin ?? ''));
+                    if (mb_strtolower($jk) === 'laki-laki') {
+                        $totalLaki++;
+                    } elseif (mb_strtolower($jk) === 'perempuan') {
+                        $totalPerempuan++;
+                    }
                 @endphp
                 <tr>
                     <td class="text-center">{{ $index + 1 }}</td>
-                    <td class="text-center">
-                        @if(!empty($item->tanggal_pelaksanaan))
-                            <span class="tgl-utama">{{ \Carbon\Carbon::parse($item->tanggal_pelaksanaan)->locale('id')->translatedFormat('d F Y') }}</span>
-                            <span class="tgl-hari">({{ \Carbon\Carbon::parse($item->tanggal_pelaksanaan)->locale('id')->translatedFormat('l') }})</span>
-                        @else
-                            {{ $item->hari_tgl ?? '-' }}
-                        @endif
-                    </td>
-                    <td class="text-center">{{ $item->rt ?? '-' }}</td>
+                    <td class="text-left">{{ $item->nama_peserta ?? '-' }}</td>
+                    <td class="text-center">{{ $jk !== '' ? $jk : '-' }}</td>
                     <td class="text-center">{{ $item->kelurahan ?? '-' }}</td>
                     <td class="text-center">{{ $item->kecamatan ?? '-' }}</td>
-
-                    <!-- LAKI-LAKI -->
-                    <td class="td-peserta">
-                        <div class="peserta-header-count {{ $listNamaL->isNotEmpty() ? 'has-names' : '' }}">
-                            {{ $lakilaki }} Orang
-                        </div>
-                        @if($listNamaL->isNotEmpty())
-                            <ol class="peserta-daftar">
-                                @foreach($listNamaL as $namaL)
-                                    <li>{{ $namaL }}</li>
-                                @endforeach
-                            </ol>
-                        @endif
-                    </td>
-
-                    <!-- PEREMPUAN -->
-                    <td class="td-peserta">
-                        <div class="peserta-header-count {{ $listNamaP->isNotEmpty() ? 'has-names' : '' }}">
-                            {{ $perempuan }} Orang
-                        </div>
-                        @if($listNamaP->isNotEmpty())
-                            <ol class="peserta-daftar">
-                                @foreach($listNamaP as $namaP)
-                                    <li>{{ $namaP }}</li>
-                                @endforeach
-                            </ol>
-                        @endif
-                    </td>
-
-                    <!-- TOTAL -->
-                    <td class="text-center">
-                        <strong>{{ $total_peserta }} Orang</strong>
-                    </td>
-
-                    <!-- LINK DOKUMENTASI -->
-                    <td class="col-link {{ empty($links) ? 'empty' : '' }}">
-                        @forelse ($links as $i => $link)
-                            @php
-                                $url = preg_match('/^https?:\/\//i', $link) ? $link : 'https://' . $link;
-                            @endphp
-                            {{ count($links) > 1 ? ($i + 1) . '. ' : '' }}<a href="{{ $url }}" target="_blank" rel="noopener">{{ $url }}</a>@if(!$loop->last)<br>@endif
-                        @empty
-                            -
-                        @endforelse
-                    </td>
+                    <td class="text-center">{{ $hariTanggal }}</td>
+                    <td class="text-center">{{ $item->tempat_pelaksanaan ?? '-' }}</td>
+                    <td class="text-left">{{ $item->alamat_pelaksanaan ?? '-' }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="9" class="text-center" style="padding: 18px;">Belum ada data riwayat Pelatihan Keluarga Tanggap Kebakaran.</td>
+                    <td colspan="8" class="text-center" style="padding: 18px;">Belum ada data Pelatihan Keluarga Tanggap Kebakaran.</td>
                 </tr>
             @endforelse
         </tbody>
         @if(count($data) > 0)
         <tfoot>
             <tr>
-                <td colspan="5" style="text-align: right; padding-right: 14px;">TOTAL SELURUH PESERTA</td>
-                <td class="text-center">{{ $total_semua_lakilaki }} Orang</td>
-                <td class="text-center">{{ $total_semua_perempuan }} Orang</td>
-                <td class="text-center">{{ $total_semua_peserta }} Orang</td>
-                <td></td>
+                <td colspan="8" style="text-align: right; padding-right: 12px;">
+                    TOTAL PESERTA: {{ count($data) }} ORANG (LAKI-LAKI: {{ $totalLaki }} | PEREMPUAN: {{ $totalPerempuan }})
+                </td>
             </tr>
         </tfoot>
         @endif

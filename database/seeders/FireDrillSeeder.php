@@ -4,12 +4,13 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 
 class FireDrillSeeder extends Seeder
 {
     /**
-     * Isi data pelatihan pemadam kebakaran (Fire Drill) tahun 2023, 2024, 2025, dan 2026.
+     * Isi data pelatihan pemadam kebakaran (Fire Drill) tahun 2023, 2024, 2025, dan 2026 beserta SPT 2026.
      */
     public function run(): void
     {
@@ -21,9 +22,9 @@ class FireDrillSeeder extends Seeder
 
         /**
          * Format ringkas tiap baris:
-         * [tahun, nama_instansi, tanggal_pelaksanaan, tempat_pelaksanaan, total_peserta, nama_penanggung_jawab, no_telepon]
+         * [tahun, nama_instansi, tanggal_pelaksanaan, tempat_pelaksanaan, total_peserta, nama_penanggung_jawab?, no_telepon?, surat_perintah_tugas?]
          *
-         * @var array<int, array{0: int, 1: string, 2: string, 3: string, 4: int, 5?: string|null, 6?: string|null}>
+         * @var array<int, array{0: int, 1: string, 2: string, 3: string, 4: int, 5?: string|null, 6?: string|null, 7?: string|null}>
          */
         $rows = [
             // =========================================================
@@ -95,35 +96,56 @@ class FireDrillSeeder extends Seeder
             [2025, 'PT. Intisumber Hasil Sempurna Global.', '5 Desember 2025', 'PT. Intisumber Hasil Sempurna Global.', 29],
 
             // =========================================================
-            // TAHUN 2026 (19 Instansi - 807 Peserta)
+            // TAHUN 2026 (19 Instansi - 807 Peserta - 16 SPT)
             // =========================================================
-            [2026, 'SPPG Paal Merah Jambi Selatan Polresta Jambi', 'Senin, 16 Maret 2026', 'SPPG Paal Merah Jambi Selatan Polresta Jambi', 14],
-            [2026, 'Pengadilan Tata Usaha Negara Jambi', 'Jumat, 05 Juni 2026', 'Lapangan Tengah Pengadilan Tata Usaha Negara Jambi', 25, 'Maya Sari', '081278261024'],
-            [2026, 'Rumah Sakit Ibu dan Anak Annisa', 'Sabtu, 6 Juni 2026', 'Aula Rumah Sakit Ibu dan Anak Annisa', 40],
+            [2026, 'SPPG Paal Merah Jambi Selatan Polresta Jambi', 'Senin, 16 Maret 2026', 'SPPG Paal Merah Jambi Selatan Polresta Jambi', 14, 'Belum ad', '0000', '1794193325_6af137ad07ff6_spt.pdf'],
+            [2026, 'Pengadilan Tata Usaha Negara Jambi', 'Jumat, 05 Juni 2026', 'Lapangan Tengah Pengadilan Tata Usaha Negara Jambi', 25, 'Maya Sari', '081278261024', '1794193379_6af137e3bb244_spt.pdf'],
+            [2026, 'Rumah Sakit Ibu dan Anak Annisa', 'Sabtu, 6 Juni 2026', 'Aula Rumah Sakit Ibu dan Anak Annisa', 40, 'Belum ad', '0000', '1794193419_6af1380b5f9ed_spt.pdf'],
             [2026, 'BKPSDMD Kota Jambi', 'Senin, 08 Juni 2026', 'Aula BKPSDMD Kota Jambi', 25],
-            [2026, 'Rumah Sakit TK. III 02.06.01 dr. Bratanata', "Jum'at, 12 Juni 2026", 'Lapangan Apel Denkesyah 02.04.02 Jambi', 35],
-            [2026, 'Kwarda Jambi', 'Minggu, 21 Juni 2026', 'Bumi Kerkemahan ASM Sungai Gelam', 85, 'Ranti Ernawati, S.Pt.,M.Pd', '081335125387'],
-            [2026, 'Mako Binda Jambi', 'Kamis, 25 Juni 2026', 'Mako Binda Jambi', 35],
-            [2026, 'Komando Daerah Militer XX/Tuanku Imam Bonjol Komando Resor Militer 042/Garuda Putih.', "Jum'at, 3 Juli 2026", 'Rupat Sopsrem 042/Gapu dan Lapangan Korem 042/Gapu', 40],
-            [2026, 'Rumah Sakit Mitra Jambi', "Jum'at, 14 Agustus 2026", 'Rumah Sakit Mitra Jambi', 30],
-            [2026, 'RTMC Ditlantas Polda Jambi', 'Kamis, 27 Agustus 2026', 'Ruang Vicon Gedung RTMC Ditlantas Polda Jambi', 50],
-            [2026, 'Pertamina EP Field Jambi', 'Kamis, 27 Agustus 2026', 'Rumah Dinas Perusahaan Pertamina EP Field Jambi', 40],
-            [2026, 'Polda Jambi', "Jum'at, 11 September 2026", 'Aula Lantai 4 Gedung A Polda Jambi dan Lapangan Hitam Polda Jambi', 40],
+            [2026, 'Rumah Sakit TK. III 02.06.01 dr. Bratanata', "Jum'at, 12 Juni 2026", 'Lapangan Apel Denkesyah 02.04.02 Jambi', 35, 'Belum ad', '00000', '1794195036_6af13e5c05f06_spt.pdf'],
+            [2026, 'Kwarda Jambi', 'Minggu, 21 Juni 2026', 'Bumi Kerkemahan ASM Sungai Gelam', 85, 'Ranti Ernawati, S.Pt.,M.Pd', '081335125387', '1794194964_6af13e1463135_spt.pdf'],
+            [2026, 'Mako Binda Jambi', 'Kamis, 25 Juni 2026', 'Mako Binda Jambi', 35, 'Belum ad', '00000', '1794194888_6af13dc826649_spt.pdf'],
+            [2026, 'Komando Daerah Militer XX/Tuanku Imam Bonjol Komando Resor Militer 042/Garuda Putih.', "Jum'at, 3 Juli 2026", 'Rupat Sopsrem 042/Gapu dan Lapangan Korem 042/Gapu', 40, 'Belum ad', '00000', '1794194818_6af13d829c083_spt.pdf'],
+            [2026, 'Rumah Sakit Mitra Jambi', "Jum'at, 14 Agustus 2026", 'Rumah Sakit Mitra Jambi', 30, 'Belum ad', '00000', '1794194753_6af13d41ca878_spt.pdf'],
+            [2026, 'RTMC Ditlantas Polda Jambi', 'Kamis, 27 Agustus 2026', 'Ruang Vicon Gedung RTMC Ditlantas Polda Jambi', 50, 'Belum ad', '00000', '1794194716_6af13d1cc4b4c_spt.pdf'],
+            [2026, 'Pertamina EP Field Jambi', 'Kamis, 27 Agustus 2026', 'Rumah Dinas Perusahaan Pertamina EP Field Jambi', 40, 'Belum ad', '00000', '1794194448_6af13c10e4a13_spt.pdf'],
+            [2026, 'Polda Jambi', "Jum'at, 11 September 2026", 'Aula Lantai 4 Gedung A Polda Jambi dan Lapangan Hitam Polda Jambi', 40, 'Belum ad', '00000', '1794194540_6af13c6cbbdba_spt.pdf'],
             [2026, 'PLN Indonesia Power UPB Jambi', 'Selasa, Kamis, 22.24 September 2026', 'Kantor UPB Jambi dan UP Payo Selincah dan UP PLTMG Sei Gelam', 57],
             [2026, 'SMK Teknologi Penerbangan Indonesia Jambi', 'Jumat, 25 September 2026', 'SMK Teknologi Penerbangan Indonesia Jambi', 30],
-            [2026, 'Dinas Pekerjaan Umum dan Tata Ruang Prov. Jambi', 'Kamis, 22 Oktober 2026', 'Dinas Pekerjaan Umum dan Tata Ruang Prov. Jambi', 35],
-            [2026, 'Yellow Hotel Jambi', 'Selasa, 13 Oktober 2026', 'Yellow Hotel Jambi', 35],
-            [2026, 'DWP Dinas Pekerjaan Umum dan Tata Ruang Prov. Jambi', 'Senin, 2 November 2026', 'Dinas Pekerjaan Umum dan Tata Ruang Prov. Jambi', 160],
-            [2026, 'PT. Kinarya Selaras Piranti (PT.KSP) TTC Jambi', 'Selasa, 3 November 2026', 'PT. Kinarya Selaras Piranti (PT.KSP) TTC Jambi', 31],
-            [2026, 'SMA Negeri 11 Kota Jambi', 'Jumat, 6 November 2026', 'SMA Negeri 11 Kota Jambi', 0],
+            [2026, 'Dinas Pekerjaan Umum dan Tata Ruang Prov. Jambi', 'Kamis, 22 Oktober 2026', 'Dinas Pekerjaan Umum dan Tata Ruang Prov. Jambi', 35, 'Belum ad', '00000', '1794194262_6af13b563646e_spt.pdf'],
+            [2026, 'Yellow Hotel Jambi', 'Selasa, 13 Oktober 2026', 'Yellow Hotel Jambi', 35, 'Belum ad', '00000', '1794194151_6af13ae70f8e7_spt.pdf'],
+            [2026, 'DWP Dinas Pekerjaan Umum dan Tata Ruang Prov. Jambi', 'Senin, 2 November 2026', 'Dinas Pekerjaan Umum dan Tata Ruang Prov. Jambi', 160, 'Belum ad', '00000', '1794194066_6af13a92cc2b3_spt.pdf'],
+            [2026, 'PT. Kinarya Selaras Piranti (PT.KSP) TTC Jambi', 'Selasa, 3 November 2026', 'PT. Kinarya Selaras Piranti (PT.KSP) TTC Jambi', 31, 'Belum ad', '00000', '1794193980_6af13a3c63512_spt.pdf'],
+            [2026, 'SMA Negeri 11 Kota Jambi', 'Jumat, 6 November 2026', 'SMA Negeri 11 Kota Jambi', 0, 'Belum ad', '0000', '1794193827_6af139a3c865b_spt.pdf'],
         ];
 
         $hasPenanggungJawab = Schema::hasColumn('fire_drills', 'nama_penanggung_jawab');
         $hasNoTelepon = Schema::hasColumn('fire_drills', 'no_telepon');
         $hasSpt = Schema::hasColumn('fire_drills', 'surat_perintah_tugas');
 
+        $targetDir = public_path('uploads/fire_drill');
+        if ($hasSpt && ! File::exists($targetDir)) {
+            File::makeDirectory($targetDir, 0755, true);
+        }
+
+        $sourceDir = storage_path('app/public/seed-files/fire_drill');
+        if (! File::exists($sourceDir)) {
+            $sourceDir = public_path('storage/seed-files/fire_drill');
+        }
+
         $payload = [];
         foreach ($rows as $row) {
+            $sptFile = $row[7] ?? null;
+
+            if ($hasSpt && $sptFile !== null) {
+                $sourcePath = $sourceDir.DIRECTORY_SEPARATOR.$sptFile;
+                $destPath = $targetDir.DIRECTORY_SEPARATOR.$sptFile;
+
+                if (File::exists($sourcePath)) {
+                    File::copy($sourcePath, $destPath);
+                }
+            }
+
             $item = [
                 'tahun' => $row[0],
                 'nama_instansi' => $row[1],
@@ -141,7 +163,7 @@ class FireDrillSeeder extends Seeder
                 $item['no_telepon'] = $row[6] ?? null;
             }
             if ($hasSpt) {
-                $item['surat_perintah_tugas'] = null;
+                $item['surat_perintah_tugas'] = $sptFile;
             }
 
             $payload[] = $item;

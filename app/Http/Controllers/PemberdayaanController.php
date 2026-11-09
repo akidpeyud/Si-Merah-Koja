@@ -541,71 +541,88 @@ class PemberdayaanController extends Controller
             ->header('Content-Disposition', 'attachment; filename="'.$filename.'"');
     }
 
-    public function cetakPelatihan()
+    public function cetakPelatihan(Request $request)
     {
-        $data = DB::table('pelatihan_keluarga')->orderBy('tanggal_pelaksanaan', 'desc')->get();
+        $tahun = $request->query('tahun');
 
-        return view('internal.pencegahan.cetak_pelatihan', compact('data'));
+        $query = DB::table('pelatihan_keluarga')
+            ->orderBy('tanggal_pelaksanaan', 'asc')
+            ->orderBy('id', 'asc');
+
+        if (filled($tahun)) {
+            $query->whereYear('tanggal_pelaksanaan', (int) $tahun);
+        }
+
+        $data = $query->get();
+
+        return view('internal.pencegahan.cetak_pelatihan', compact('data', 'tahun'));
     }
 
-    public function cetakExcelPelatihan()
+    public function cetakExcelPelatihan(Request $request)
     {
-        $data = DB::table('pelatihan_keluarga')->orderBy('tanggal_pelaksanaan', 'desc')->get();
-        $filename = 'Data_Pelatihan_Keluarga_'.date('Ymd').'.xls';
+        $tahun = $request->query('tahun');
+
+        $query = DB::table('pelatihan_keluarga')
+            ->orderBy('tanggal_pelaksanaan', 'asc')
+            ->orderBy('id', 'asc');
+
+        if (filled($tahun)) {
+            $query->whereYear('tanggal_pelaksanaan', (int) $tahun);
+        }
+
+        $data = $query->get();
+        $labelTahun = filled($tahun) ? 'Tahun_'.$tahun : 'Semua_Tahun';
+        $filename = 'Data_Pelatihan_Keluarga_'.$labelTahun.'_'.date('Ymd').'.xls';
 
         $html = '<table border="1" cellpadding="5" cellspacing="0">';
         $html .= '<thead>';
         $html .= '<tr>';
-        $html .= '<th rowspan="2" style="background-color: #1f2937; color: white; text-align: center; vertical-align: middle;">NO</th>';
-        $html .= '<th rowspan="2" style="background-color: #1f2937; color: white; text-align: center; vertical-align: middle;">HARI / TGL</th>';
-        $html .= '<th rowspan="2" style="background-color: #1f2937; color: white; text-align: center; vertical-align: middle;">RT</th>';
-        $html .= '<th rowspan="2" style="background-color: #1f2937; color: white; text-align: center; vertical-align: middle;">KELURAHAN</th>';
-        $html .= '<th rowspan="2" style="background-color: #1f2937; color: white; text-align: center; vertical-align: middle;">KECAMATAN</th>';
-        $html .= '<th colspan="3" style="background-color: #1f2937; color: white; text-align: center;">JUMLAH &amp; DAFTAR PESERTA</th>';
-        $html .= '<th rowspan="2" style="background-color: #1f2937; color: white; text-align: center; vertical-align: middle;">LINK DOKUMENTASI</th>';
-        $html .= '</tr>';
-        $html .= '<tr>';
-        $html .= '<th style="background-color: #1f2937; color: white; text-align: center;">LAKI-LAKI</th>';
-        $html .= '<th style="background-color: #1f2937; color: white; text-align: center;">PEREMPUAN</th>';
-        $html .= '<th style="background-color: #1f2937; color: white; text-align: center;">TOTAL PESERTA</th>';
+        $html .= '<th style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">NO</th>';
+        $html .= '<th style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">NAMA PESERTA</th>';
+        $html .= '<th style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">JENIS KELAMIN</th>';
+        $html .= '<th style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">KELURAHAN</th>';
+        $html .= '<th style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">KECAMATAN</th>';
+        $html .= '<th style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">HARI/TANGGAL PELAKSANAAN</th>';
+        $html .= '<th style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">TEMPAT PELAKSANAAN</th>';
+        $html .= '<th style="background-color: #0f172a; color: white; text-align: center; vertical-align: middle;">ALAMAT PELAKSANAAN</th>';
         $html .= '</tr>';
         $html .= '</thead>';
         $html .= '<tbody>';
 
-        $total_semua_lakilaki = 0;
-        $total_semua_perempuan = 0;
-        $total_semua_peserta = 0;
+        $totalLaki = 0;
+        $totalPerempuan = 0;
 
         foreach ($data as $index => $row) {
-            $tanggal = $row->tanggal_pelaksanaan ? Carbon::parse($row->tanggal_pelaksanaan)->locale('id')->translatedFormat('d F Y') : '-';
-            $lakilaki = (int) ($row->peserta_laki_laki ?? 0);
-            $perempuan = (int) ($row->peserta_perempuan ?? 0);
-            $total_peserta = $lakilaki + $perempuan;
+            $hariTanggal = ! empty($row->tanggal_pelaksanaan)
+                ? mb_strtoupper(Carbon::parse($row->tanggal_pelaksanaan)->locale('id')->translatedFormat('l, d F Y'))
+                : '-';
 
-            $total_semua_lakilaki += $lakilaki;
-            $total_semua_perempuan += $perempuan;
-            $total_semua_peserta += $total_peserta;
+            $jk = trim((string) ($row->jenis_kelamin ?? ''));
+            if (mb_strtolower($jk) === 'laki-laki') {
+                $totalLaki++;
+            } elseif (mb_strtolower($jk) === 'perempuan') {
+                $totalPerempuan++;
+            }
 
             $html .= '<tr>';
-            $html .= '<td style="text-align: center; vertical-align: top;">'.($index + 1).'</td>';
-            $html .= '<td style="text-align: center; vertical-align: top;">'.$tanggal.'</td>';
-            $html .= '<td style="text-align: center; vertical-align: top;">'.e($row->rt ?? '-').'</td>';
-            $html .= '<td style="vertical-align: top;">'.e($row->kelurahan ?? '-').'</td>';
-            $html .= '<td style="vertical-align: top;">'.e($row->kecamatan ?? '-').'</td>';
-            $html .= '<td style="vertical-align: top;">'.$this->namaUntukExcel($row->nama_peserta_laki_laki ?? '', $lakilaki).'</td>';
-            $html .= '<td style="vertical-align: top;">'.$this->namaUntukExcel($row->nama_peserta_perempuan ?? '', $perempuan).'</td>';
-            $html .= '<td style="text-align: center; vertical-align: top;"><b>'.$total_peserta.' Orang</b></td>';
-            $html .= '<td style="vertical-align: top;">'.$this->linkUntukExcel($row->link_dokumentasi ?? '').'</td>';
+            $html .= '<td style="text-align: center; vertical-align: middle;">'.($index + 1).'</td>';
+            $html .= '<td style="vertical-align: middle;">'.e($row->nama_peserta ?? '-').'</td>';
+            $html .= '<td style="text-align: center; vertical-align: middle;">'.e($jk !== '' ? $jk : '-').'</td>';
+            $html .= '<td style="text-align: center; vertical-align: middle;">'.e($row->kelurahan ?? '-').'</td>';
+            $html .= '<td style="text-align: center; vertical-align: middle;">'.e($row->kecamatan ?? '-').'</td>';
+            $html .= '<td style="text-align: center; vertical-align: middle;">'.e($hariTanggal).'</td>';
+            $html .= '<td style="text-align: center; vertical-align: middle;">'.e($row->tempat_pelaksanaan ?? '-').'</td>';
+            $html .= '<td style="vertical-align: middle;">'.e($row->alamat_pelaksanaan ?? '-').'</td>';
             $html .= '</tr>';
         }
 
-        $html .= '<tr>';
-        $html .= '<td colspan="5" style="text-align: center; font-weight: bold; background-color: #f3f4f6;">TOTAL SELURUH PESERTA</td>';
-        $html .= '<td style="text-align: center; font-weight: bold; background-color: #f3f4f6;">'.$total_semua_lakilaki.' Orang</td>';
-        $html .= '<td style="text-align: center; font-weight: bold; background-color: #f3f4f6;">'.$total_semua_perempuan.' Orang</td>';
-        $html .= '<td style="text-align: center; font-weight: bold; background-color: #f3f4f6;">'.$total_semua_peserta.' Orang</td>';
-        $html .= '<td style="background-color: #f3f4f6;"></td>';
-        $html .= '</tr>';
+        if ($data->isEmpty()) {
+            $html .= '<tr><td colspan="8" style="text-align: center;">Belum ada data Pelatihan Keluarga Tanggap Kebakaran.</td></tr>';
+        } else {
+            $html .= '<tr>';
+            $html .= '<td colspan="8" style="text-align: right; font-weight: bold; background-color: #f3f4f6;">TOTAL PESERTA: '.$data->count().' ORANG (LAKI-LAKI: '.$totalLaki.' | PEREMPUAN: '.$totalPerempuan.')</td>';
+            $html .= '</tr>';
+        }
 
         $html .= '</tbody>';
         $html .= '</table>';
