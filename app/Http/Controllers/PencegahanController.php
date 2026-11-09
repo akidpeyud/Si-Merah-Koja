@@ -489,10 +489,35 @@ class PencegahanController extends Controller
     }
 
     public function indexInspeksiBangunan()
-{
-    $data_inspeksi = InspeksiBangunan::orderBy('id', 'asc')->get();
-    return view('internal.pencegahan.inspeksi_bangunan', compact('data_inspeksi'));
-}
+    {
+        $data_inspeksi = InspeksiBangunan::orderBy('id', 'asc')->get();
+
+        $daftar_tahun = $data_inspeksi
+            ->map(function ($item) {
+                if (! empty($item->tahun)) {
+                    return (int) $item->tahun;
+                }
+                if (empty($item->tanggal_inspeksi)) {
+                    return null;
+                }
+
+                return (int) \Carbon\Carbon::parse($item->tanggal_inspeksi)->format('Y');
+            })
+            ->filter()
+            ->unique()
+            ->sortDesc()
+            ->values();
+
+        $daftar_jenis = $data_inspeksi
+            ->map(fn ($item) => trim((string) ($item->jenis_usaha ?? '')))
+            ->filter()
+            ->unique(fn (string $jenis) => strtolower($jenis))
+            ->map(fn (string $jenis) => strtoupper($jenis))
+            ->sort()
+            ->values();
+
+        return view('internal.pencegahan.inspeksi_bangunan', compact('data_inspeksi', 'daftar_tahun', 'daftar_jenis'));
+    }
 
     public function create()
     {
@@ -548,6 +573,10 @@ class PencegahanController extends Controller
             'sistem_proteksi_kebakaran' => $validated['sistem_proteksi_kebakaran'],
             'tanggal_inspeksi'          => $validated['tanggal_inspeksi'],
         ];
+
+        if (\Illuminate\Support\Facades\Schema::hasColumn('inspeksi_bangunans', 'tahun')) {
+            $data['tahun'] = (int) \Carbon\Carbon::parse($validated['tanggal_inspeksi'])->format('Y');
+        }
 
         $destinationPath = public_path('uploads/inspeksi');
 
@@ -613,6 +642,13 @@ class PencegahanController extends Controller
             'sistem_proteksi_kebakaran' => $validated['sistem_proteksi_kebakaran'],
             'tanggal_inspeksi'          => $validated['tanggal_inspeksi'],
         ];
+
+        if (\Illuminate\Support\Facades\Schema::hasColumn('inspeksi_bangunans', 'tahun')) {
+            $tanggalBerubah = (string) ($item->tanggal_inspeksi ?? '') !== (string) $validated['tanggal_inspeksi'];
+            $data['tahun'] = (! $tanggalBerubah && ! empty($item->tahun))
+                ? (int) $item->tahun
+                : (int) \Carbon\Carbon::parse($validated['tanggal_inspeksi'])->format('Y');
+        }
 
         $destinationPath = public_path('uploads/inspeksi');
 
@@ -926,10 +962,29 @@ class PencegahanController extends Controller
     // ==========================================
     // FUNGSI DOWNLOAD EXCEL & PDF (INSPEKSI BANGUNAN)
     // ==========================================
-    public function cetakExcelInspeksi()
+    public function cetakExcelInspeksi(Request $request)
     {
-        $data = InspeksiBangunan::orderBy('id', 'asc')->get();
-        $filename = 'Data_Inspeksi_Bangunan_' . date('Ymd') . '.xls';
+        $tahunDipilih = $request->query('tahun');
+        $jenisDipilih = $request->query('jenis');
+        $hasTahunCol = \Illuminate\Support\Facades\Schema::hasColumn('inspeksi_bangunans', 'tahun');
+
+        $query = InspeksiBangunan::query();
+
+        if (filled($tahunDipilih)) {
+            if ($hasTahunCol) {
+                $query->where('tahun', (int) $tahunDipilih);
+            } else {
+                $query->whereYear('tanggal_inspeksi', (int) $tahunDipilih);
+            }
+        }
+        if (filled($jenisDipilih)) {
+            $query->whereRaw('LOWER(TRIM(jenis_usaha)) = ?', [strtolower(trim((string) $jenisDipilih))]);
+        }
+
+        $data = $query->orderBy('id', 'asc')->get();
+
+        $labelFile = filled($tahunDipilih) ? "Tahun_{$tahunDipilih}" : 'Semua_Data';
+        $filename = "Data_Inspeksi_Bangunan_{$labelFile}_" . date('Ymd') . '.xls';
 
         $headers = [
             'Content-Type'        => 'application/vnd.ms-excel; charset=UTF-8',
@@ -941,7 +996,7 @@ class PencegahanController extends Controller
 
         $esc = fn ($v) => htmlspecialchars((string) $v, ENT_XML1 | ENT_QUOTES, 'UTF-8');
 
-        $callback = function () use ($data, $esc) {
+        $callback = function () use ($data, $tahunDipilih, $esc) {
             echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
             echo '<?mso-application progid="Excel.Sheet"?>' . "\n";
             echo '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
@@ -1030,14 +1085,17 @@ class PencegahanController extends Controller
                     : $nilai;
             };
 
-            echo '<Worksheet ss:Name="Inspeksi Bangunan"><Table>' . "\n";
+            $sheetName = filled($tahunDipilih) ? 'Tahun ' . $tahunDipilih : 'Inspeksi Bangunan';
+            $subTahun = filled($tahunDipilih) ? 'TAHUN ' . $esc($tahunDipilih) : 'SEMUA TAHUN';
+
+            echo '<Worksheet ss:Name="' . $esc($sheetName) . '"><Table>' . "\n";
 
             foreach ($columns as $col) {
                 echo '<Column ss:Width="' . $col['width'] . '"/>' . "\n";
             }
 
             echo '<Row ss:Height="18"><Cell ss:MergeAcross="' . $mergeAcross . '" ss:StyleID="sTitle"><Data ss:Type="String">DATA INSPEKSI KEBAKARAN BANGUNAN GEDUNG DAN LINGKUNGAN</Data></Cell></Row>' . "\n";
-            echo '<Row ss:Height="18"><Cell ss:MergeAcross="' . $mergeAcross . '" ss:StyleID="sTitle"><Data ss:Type="String">DINAS PEMADAM KEBAKARAN DAN PENYELAMATAN KOTA JAMBI TAHUN ' . date('Y') . '</Data></Cell></Row>' . "\n";
+            echo '<Row ss:Height="18"><Cell ss:MergeAcross="' . $mergeAcross . '" ss:StyleID="sTitle"><Data ss:Type="String">DINAS PEMADAM KEBAKARAN DAN PENYELAMATAN KOTA JAMBI (' . $subTahun . ')</Data></Cell></Row>' . "\n";
             echo '<Row ss:Height="10"></Row>' . "\n";
 
             echo '<Row ss:Height="28">' . "\n";
@@ -1081,11 +1139,28 @@ class PencegahanController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
-    public function cetakPdfInspeksi()
+    public function cetakPdfInspeksi(Request $request)
     {
-        $data = InspeksiBangunan::orderBy('id', 'asc')->get();
+        $tahunDipilih = $request->query('tahun');
+        $jenisDipilih = $request->query('jenis');
+        $hasTahunCol = \Illuminate\Support\Facades\Schema::hasColumn('inspeksi_bangunans', 'tahun');
 
-        return view('internal.pencegahan.cetak_pdf_inspeksi', compact('data'));
+        $query = InspeksiBangunan::query();
+
+        if (filled($tahunDipilih)) {
+            if ($hasTahunCol) {
+                $query->where('tahun', (int) $tahunDipilih);
+            } else {
+                $query->whereYear('tanggal_inspeksi', (int) $tahunDipilih);
+            }
+        }
+        if (filled($jenisDipilih)) {
+            $query->whereRaw('LOWER(TRIM(jenis_usaha)) = ?', [strtolower(trim((string) $jenisDipilih))]);
+        }
+
+        $data = $query->orderBy('id', 'asc')->get();
+
+        return view('internal.pencegahan.cetak_pdf_inspeksi', compact('data', 'tahunDipilih', 'jenisDipilih'));
     }
 
     // ==========================================

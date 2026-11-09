@@ -66,7 +66,14 @@
 
     <div class="judul-dokumen">
         DATA INSPEKSI KEBAKARAN BANGUNAN GEDUNG DAN LINGKUNGAN<br>
-        TAHUN {{ date('Y') }}
+        @if(!empty($tahunDipilih))
+            TAHUN {{ $tahunDipilih }}
+        @else
+            SEMUA TAHUN
+        @endif
+        @if(!empty($jenisDipilih))
+            <br><span style="font-size: 10px; font-weight: normal;">Filter Jenis Bangunan: {{ strtoupper($jenisDipilih) }}</span>
+        @endif
     </div>
 
     <!-- TABEL DATA -->
