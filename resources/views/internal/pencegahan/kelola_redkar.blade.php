@@ -66,6 +66,14 @@
 
     .attachment-link { display: inline-flex; align-items: center; gap: 4px; font-size: .75rem; color: var(--info); font-weight: 500; text-decoration: none; margin-top: 3px; white-space: nowrap; }
     .attachment-link:hover { color: var(--navy-dark); text-decoration: underline; }
+
+    /* ---------- Pagination Tabel (30 baris/halaman) ---------- */
+    .rk-pagination { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
+    .rk-page-btn { display: inline-flex; align-items: center; justify-content: center; min-width: 34px; height: 34px; padding: 0 10px; border-radius: 6px; border: 1px solid #d2dae5; background: #fff; color: var(--ink); font-size: .84rem; font-weight: 600; cursor: pointer; transition: all .15s; user-select: none; }
+    .rk-page-btn:hover:not([disabled]):not(.active) { background: #f1f5f9; border-color: #cbd5e1; color: var(--navy-dark); }
+    .rk-page-btn.active { background: #163a63; color: #fff; border-color: #163a63; cursor: default; }
+    .rk-page-btn[disabled] { opacity: .45; cursor: not-allowed; }
+    .rk-page-dots { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 34px; color: var(--steel-soft); font-size: .84rem; user-select: none; }
 </style>
 @endpush
 
@@ -77,34 +85,43 @@
     $listRelawan     = collect($relawan);
     $totalRelawan    = $listRelawan->count();
     $daftarKecamatan = $listRelawan->pluck('kecamatan')->filter()->unique()->sort()->values();
+    $daftarTahunBentuk = $listRelawan->pluck('tanggal_pembentukan')->filter()->map(fn($d) => \Carbon\Carbon::parse($d)->format('Y'))->unique()->sort()->values();
+    $daftarTahunKukuh  = $listRelawan->pluck('tanggal_pengukuhan')->filter()->map(fn($d) => \Carbon\Carbon::parse($d)->format('Y'))->unique()->sort()->values();
 
     $jmlDenganKtp = $listRelawan->filter(fn($r) => $berkasAda($r->file_ktp))->count();
     $jmlTanpaKtp  = $totalRelawan - $jmlDenganKtp;
 
     /* ---------- Data untuk Rekap Excel (.xlsx) ---------- */
     $barisExcel = $listRelawan->values()->map(function ($r, $i) {
-        $ttl    = trim(($r->tempat_lahir ?: '-') . ($r->tanggal_lahir ? ', ' . \Carbon\Carbon::parse($r->tanggal_lahir)->format('d/m/Y') : ''));
-        $alamat = trim(($r->alamat ?: '-') . ($r->rt_rw ? ', RT/RW ' . $r->rt_rw : '') . ($r->kelurahan ? ', Kel. ' . $r->kelurahan : '') . ($r->kecamatan ? ', Kec. ' . $r->kecamatan : ''));
+        $ttl       = trim(($r->tempat_lahir ?: '-') . ($r->tanggal_lahir ? ', ' . \Carbon\Carbon::parse($r->tanggal_lahir)->format('d/m/Y') : ''));
         $tglBentuk = $r->tanggal_pembentukan ? \Carbon\Carbon::parse($r->tanggal_pembentukan)->format('d/m/Y') : '-';
         $tglKukuh  = $r->tanggal_pengukuhan ? \Carbon\Carbon::parse($r->tanggal_pengukuhan)->format('d/m/Y') : '-';
+        $thnBentuk = $r->tanggal_pembentukan ? \Carbon\Carbon::parse($r->tanggal_pembentukan)->format('Y') : '';
+        $thnKukuh  = $r->tanggal_pengukuhan ? \Carbon\Carbon::parse($r->tanggal_pengukuhan)->format('Y') : '';
 
         return [
             'no'                  => $i + 1,
             'nama_lengkap'        => (string) $r->nama_lengkap,
-            'nik'                 => (string) $r->nik,
+            'nik'                 => (string) ($r->nik ?: '-'),
             'ttl'                 => $ttl,
             'jenis_kelamin'       => (string) ($r->jenis_kelamin ?: '-'),
-            'alamat_lengkap'      => $alamat,
             'agama'               => (string) ($r->agama ?: '-'),
             'pekerjaan'           => (string) ($r->pekerjaan ?: '-'),
+            'pendidikan_terakhir' => (string) ($r->pendidikan_terakhir ?: '-'),
+            'alamat_rt'           => (string) ($r->alamat ?: '-'),
+            'kelurahan'           => (string) ($r->kelurahan ?: '-'),
+            'kecamatan'           => (string) ($r->kecamatan ?: '-'),
+            'nomor_telp'          => (string) ($r->nomor_telp ?: '-'),
             'golongan_darah'      => (string) ($r->golongan_darah ?: '-'),
+            'kartu_anggota'       => (string) ($r->kartu_anggota ?: '-'),
             'buta_warna'          => (string) ($r->buta_warna ?: 'Tidak'),
             'sehat_jasmani'       => (string) ($r->sehat_jasmani ?: 'Sehat'),
-            'nomor_telp'          => (string) $r->nomor_telp,
             'tanggal_pembentukan' => $tglBentuk,
             'tanggal_pengukuhan'  => $tglKukuh,
-            '_search'             => strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp . ' ' . $r->alamat . ' ' . $r->pekerjaan),
+            '_search'             => strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp . ' ' . $r->alamat . ' ' . $r->kelurahan . ' ' . $r->kecamatan . ' ' . $r->pekerjaan . ' ' . $r->pendidikan_terakhir . ' ' . $r->kartu_anggota),
             '_kec'                => strtolower((string) $r->kecamatan),
+            '_thn_bentuk'         => $thnBentuk,
+            '_thn_kukuh'          => $thnKukuh,
         ];
     })->all();
 
@@ -186,6 +203,18 @@
                         <option value="{{ strtolower($kec) }}">{{ $kec }}</option>
                     @endforeach
                 </select>
+                <select id="rk-tahun-bentuk" class="filter-select" style="min-width: 170px;">
+                    <option value="">Semua Thn Pembentukan</option>
+                    @foreach($daftarTahunBentuk as $thn)
+                        <option value="{{ $thn }}">Pembentukan: {{ $thn }}</option>
+                    @endforeach
+                </select>
+                <select id="rk-tahun-kukuh" class="filter-select" style="min-width: 170px;">
+                    <option value="">Semua Thn Pengukuhan</option>
+                    @foreach($daftarTahunKukuh as $thn)
+                        <option value="{{ $thn }}">Pengukuhan: {{ $thn }}</option>
+                    @endforeach
+                </select>
                 <div class="filter-count">
                     Menampilkan <b id="rk-shown">{{ $totalRelawan }}</b> dari {{ $totalRelawan }} relawan
                 </div>
@@ -196,28 +225,37 @@
                 <table class="table table-bordered table-redkar align-middle mb-0">
                     <thead>
                         <tr>
-                            <th style="width: 50px;">No</th>
-                            <th>Nama</th>
-                            <th>NIK</th>
-                            <th>Tempat Tanggal Lahir</th>
-                            <th>Jenis Kelamin</th>
-                            <th>Alamat</th>
-                            <th>Agama</th>
-                            <th>Pekerjaan</th>
-                            <th>Gol. Darah</th>
-                            <th>Buta Warna</th>
-                            <th>Sehat Jasmani Rohani</th>
-                            <th>No Telfon / WA</th>
-                            <th>Tanggal Pembentukan REDKAR</th>
-                            <th>Tanggal Pengukuhan REDKAR</th>
-                            <th class="no-print-col" style="min-width: 110px;">Aksi</th>
+                            <th rowspan="2" style="width: 50px;">No</th>
+                            <th rowspan="2">Nama</th>
+                            <th rowspan="2">NIK</th>
+                            <th rowspan="2">Tmp / Tgl Lahir</th>
+                            <th rowspan="2">Jenis Kelamin</th>
+                            <th rowspan="2">Agama</th>
+                            <th rowspan="2">Pekerjaan</th>
+                            <th rowspan="2">Pendidikan</th>
+                            <th colspan="3" class="text-center">Alamat</th>
+                            <th rowspan="2">HP</th>
+                            <th rowspan="2">Gol. Darah</th>
+                            <th rowspan="2">Kartu Anggota</th>
+                            <th rowspan="2">Buta Warna</th>
+                            <th rowspan="2">Sehat Jasmani / Rohani</th>
+                            <th rowspan="2">Tanggal Pembentukan REDKAR</th>
+                            <th rowspan="2">Tanggal Pengukuhan REDKAR</th>
+                            <th rowspan="2" class="no-print-col" style="min-width: 110px;">Aksi</th>
+                        </tr>
+                        <tr>
+                            <th>Rt</th>
+                            <th>Kelurahan</th>
+                            <th>Kecamatan</th>
                         </tr>
                     </thead>
                     <tbody id="rk-body">
                         @forelse($relawan as $index => $r)
                         <tr class="rk-row"
-                            data-search="{{ strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp . ' ' . $r->alamat . ' ' . $r->pekerjaan) }}"
-                            data-kecamatan="{{ strtolower($r->kecamatan) }}">
+                            data-search="{{ strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp . ' ' . $r->alamat . ' ' . $r->kelurahan . ' ' . $r->kecamatan . ' ' . $r->pekerjaan . ' ' . $r->pendidikan_terakhir . ' ' . $r->kartu_anggota) }}"
+                            data-kecamatan="{{ strtolower($r->kecamatan) }}"
+                            data-thn-bentuk="{{ $r->tanggal_pembentukan ? \Carbon\Carbon::parse($r->tanggal_pembentukan)->format('Y') : '' }}"
+                            data-thn-kukuh="{{ $r->tanggal_pengukuhan ? \Carbon\Carbon::parse($r->tanggal_pengukuhan)->format('Y') : '' }}">
                             {{-- 1. No --}}
                             <td class="text-center fw-bold text-muted">{{ $index + 1 }}</td>
 
@@ -226,7 +264,7 @@
 
                             {{-- 3. NIK --}}
                             <td class="font-monospace fw-semibold text-nowrap">
-                                {{ $r->nik }}
+                                {{ $r->nik ?: '-' }}
                                 @if($berkasAda($r->file_ktp))
                                     <div>
                                         <a href="{{ asset('storage/' . $r->file_ktp) }}" target="_blank" class="attachment-link" title="Lihat foto KTP">
@@ -244,40 +282,27 @@
                             {{-- 5. Jenis Kelamin --}}
                             <td class="text-nowrap text-center">{{ $r->jenis_kelamin ?: '-' }}</td>
 
-                            {{-- 6. Alamat --}}
-                            <td style="min-width: 220px; max-width: 320px; white-space: normal;">
-                                {{ $r->alamat ?: '-' }}
-                                @if($r->rt_rw && $r->rt_rw !== '00/00')
-                                    , RT/RW {{ $r->rt_rw }}
-                                @endif
-                                @if($r->kelurahan)
-                                    , Kel. {{ $r->kelurahan }}
-                                @endif
-                                @if($r->kecamatan)
-                                    , Kec. {{ $r->kecamatan }}
-                                @endif
-                            </td>
-
-                            {{-- 7. Agama --}}
+                            {{-- 6. Agama --}}
                             <td class="text-nowrap text-center">{{ $r->agama ?: '-' }}</td>
 
-                            {{-- 8. Pekerjaan --}}
+                            {{-- 7. Pekerjaan --}}
                             <td class="text-nowrap">{{ $r->pekerjaan ?: '-' }}</td>
 
-                            {{-- 9. Gol. Darah --}}
-                            <td class="text-center fw-bold text-danger text-nowrap">{{ $r->golongan_darah ?: '-' }}</td>
+                            {{-- 8. Pendidikan --}}
+                            <td class="text-nowrap text-center">{{ $r->pendidikan_terakhir ?: '-' }}</td>
 
-                            {{-- 10. Buta Warna --}}
-                            <td class="text-center text-nowrap">
-                                {{ $r->buta_warna ?: 'Tidak' }}
+                            {{-- 9. Alamat: Rt --}}
+                            <td style="min-width: 180px; max-width: 260px; white-space: normal;">
+                                {{ $r->alamat ?: '-' }}
                             </td>
 
-                            {{-- 11. Sehat Jasmani Rohani --}}
-                            <td class="text-center text-nowrap">
-                                {{ $r->sehat_jasmani ?: 'Sehat' }}
-                            </td>
+                            {{-- 10. Alamat: Kelurahan --}}
+                            <td class="text-nowrap">{{ $r->kelurahan ?: '-' }}</td>
 
-                            {{-- 12. No Telfon / WA --}}
+                            {{-- 11. Alamat: Kecamatan --}}
+                            <td class="text-nowrap">{{ $r->kecamatan ?: '-' }}</td>
+
+                            {{-- 12. HP --}}
                             <td class="text-nowrap">
                                 @if($r->nomor_telp)
                                     <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $r->nomor_telp)) }}" target="_blank" class="text-success text-decoration-none fw-bold d-inline-flex align-items-center gap-1">
@@ -288,7 +313,23 @@
                                 @endif
                             </td>
 
-                            {{-- 13. Tanggal Pembentukan REDKAR --}}
+                            {{-- 13. Gol. Darah --}}
+                            <td class="text-center fw-bold text-danger text-nowrap">{{ $r->golongan_darah ?: '-' }}</td>
+
+                            {{-- 14. Kartu Anggota --}}
+                            <td class="text-center font-monospace text-nowrap">{{ $r->kartu_anggota ?: '-' }}</td>
+
+                            {{-- 15. Buta Warna --}}
+                            <td class="text-center text-nowrap">
+                                {{ $r->buta_warna ?: 'Tidak' }}
+                            </td>
+
+                            {{-- 16. Sehat Jasmani / Rohani --}}
+                            <td class="text-center text-nowrap">
+                                {{ $r->sehat_jasmani ?: 'Sehat' }}
+                            </td>
+
+                            {{-- 17. Tanggal Pembentukan REDKAR --}}
                             <td class="text-center text-nowrap">
                                 @if($r->tanggal_pembentukan)
                                     <span class="fw-semibold text-dark">{{ \Carbon\Carbon::parse($r->tanggal_pembentukan)->locale('id')->isoFormat('D MMMM Y') }}</span>
@@ -297,7 +338,7 @@
                                 @endif
                             </td>
 
-                            {{-- 14. Tanggal Pengukuhan REDKAR --}}
+                            {{-- 18. Tanggal Pengukuhan REDKAR --}}
                             <td class="text-center text-nowrap">
                                 @if($r->tanggal_pengukuhan)
                                     <span class="fw-semibold text-dark">{{ \Carbon\Carbon::parse($r->tanggal_pengukuhan)->locale('id')->isoFormat('D MMMM Y') }}</span>
@@ -306,7 +347,7 @@
                                 @endif
                             </td>
 
-                            {{-- 15. Aksi (Edit, Hapus) --}}
+                            {{-- 19. Aksi (Edit, Hapus) --}}
                             <td class="no-print-col text-center text-nowrap">
                                 <div class="btn-action-group justify-content-center">
                                     @hasanyrole('Pencegahan|Super User')
@@ -325,14 +366,14 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="15" class="text-center py-5 text-muted" style="font-size: .95rem;">
+                            <td colspan="19" class="text-center py-5 text-muted" style="font-size: .95rem;">
                                 <i class="fas fa-folder-open mb-2" style="font-size: 2rem; color: var(--steel-soft);"></i><br>
                                 Belum ada data relawan REDKAR terdaftar.
                             </td>
                         </tr>
                         @endforelse
                         <tr id="rk-no-result" style="display: none;">
-                            <td colspan="15" class="text-center py-5 text-muted" style="font-size: .95rem;">
+                            <td colspan="19" class="text-center py-5 text-muted" style="font-size: .95rem;">
                                 <i class="fas fa-search mb-2" style="font-size: 2rem; color: var(--steel-soft);"></i><br>
                                 Relawan tidak ditemukan. Coba kata kunci lain atau pilih "Semua Kecamatan".
                             </td>
@@ -341,9 +382,12 @@
                 </table>
             </div>
 
-            @if(method_exists($relawan, 'links'))
-                <div class="mt-3">{{ $relawan->links() }}</div>
-            @endif
+            <div class="rk-pagination" id="rk-pagination-box">
+                <div class="text-muted" style="font-size: .84rem;" id="rk-pagination-info">
+                    Menampilkan 1 - 30 dari {{ $totalRelawan }} relawan
+                </div>
+                <div class="d-flex align-items-center gap-1 flex-wrap" id="rk-pagination-nav"></div>
+            </div>
         </div>
 @endsection
 
@@ -353,32 +397,171 @@
 (function () {
     'use strict';
 
-    var search = document.getElementById('rk-search');
-    var select = document.getElementById('rk-kecamatan');
-    if (search && select) {
-        var rows  = Array.prototype.slice.call(document.querySelectorAll('.rk-row'));
-        var shown = document.getElementById('rk-shown');
-        var empty = document.getElementById('rk-no-result');
+    var search       = document.getElementById('rk-search');
+    var selectKec    = document.getElementById('rk-kecamatan');
+    var selectBentuk = document.getElementById('rk-tahun-bentuk');
+    var selectKukuh  = document.getElementById('rk-tahun-kukuh');
+    var rows         = Array.prototype.slice.call(document.querySelectorAll('.rk-row'));
+    var shown        = document.getElementById('rk-shown');
+    var empty        = document.getElementById('rk-no-result');
+    var pageInfo     = document.getElementById('rk-pagination-info');
+    var pageNav      = document.getElementById('rk-pagination-nav');
+    var pageBox      = document.getElementById('rk-pagination-box');
 
-        function applyFilter() {
-            var q   = search.value.trim().toLowerCase();
-            var kec = select.value;
-            var n   = 0;
+    var PAGE_SIZE    = 30;
+    var currentPage  = 1;
+    var matchedRows  = rows.slice();
 
-            rows.forEach(function (row) {
-                var ok = (!q || row.dataset.search.indexOf(q) > -1) &&
-                         (!kec || row.dataset.kecamatan === kec);
-                row.style.display = ok ? '' : 'none';
-                if (ok) n++;
+    function renderPaginationNav(totalPages) {
+        if (!pageNav) return;
+        pageNav.innerHTML = '';
+
+        if (totalPages <= 1) {
+            if (pageBox) pageBox.style.display = matchedRows.length === 0 ? 'none' : 'flex';
+            return;
+        }
+        if (pageBox) pageBox.style.display = 'flex';
+
+        // Tombol Sebelumnya
+        var prevBtn = document.createElement('button');
+        prevBtn.type = 'button';
+        prevBtn.className = 'rk-page-btn';
+        prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+        prevBtn.title = 'Halaman Sebelumnya';
+        if (currentPage <= 1) {
+            prevBtn.disabled = true;
+        } else {
+            prevBtn.addEventListener('click', function () {
+                currentPage--;
+                renderPage(true);
             });
+        }
+        pageNav.appendChild(prevBtn);
 
-            if (shown) shown.textContent = n;
-            if (empty) empty.style.display = n === 0 ? '' : 'none';
+        // Nomor Halaman (dengan ellipsis jika banyak halaman)
+        var pages = [];
+        if (totalPages <= 7) {
+            for (var p = 1; p <= totalPages; p++) pages.push(p);
+        } else {
+            pages.push(1);
+            if (currentPage > 3) pages.push('...');
+            var startP = Math.max(2, currentPage - 1);
+            var endP   = Math.min(totalPages - 1, currentPage + 1);
+            for (var p = startP; p <= endP; p++) pages.push(p);
+            if (currentPage < totalPages - 2) pages.push('...');
+            pages.push(totalPages);
         }
 
-        search.addEventListener('input', applyFilter);
-        select.addEventListener('change', applyFilter);
+        pages.forEach(function (p) {
+            if (p === '...') {
+                var dots = document.createElement('span');
+                dots.className = 'rk-page-dots';
+                dots.textContent = '…';
+                pageNav.appendChild(dots);
+            } else {
+                var pBtn = document.createElement('button');
+                pBtn.type = 'button';
+                pBtn.className = 'rk-page-btn' + (p === currentPage ? ' active' : '');
+                pBtn.textContent = p;
+                if (p === currentPage) {
+                    pBtn.disabled = true;
+                } else {
+                    pBtn.addEventListener('click', function () {
+                        currentPage = p;
+                        renderPage(true);
+                    });
+                }
+                pageNav.appendChild(pBtn);
+            }
+        });
+
+        // Tombol Selanjutnya
+        var nextBtn = document.createElement('button');
+        nextBtn.type = 'button';
+        nextBtn.className = 'rk-page-btn';
+        nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+        nextBtn.title = 'Halaman Selanjutnya';
+        if (currentPage >= totalPages) {
+            nextBtn.disabled = true;
+        } else {
+            nextBtn.addEventListener('click', function () {
+                currentPage++;
+                renderPage(true);
+            });
+        }
+        pageNav.appendChild(nextBtn);
     }
+
+    function renderPage(scroll) {
+        var total = matchedRows.length;
+        var totalPages = Math.ceil(total / PAGE_SIZE) || 1;
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        var start = (currentPage - 1) * PAGE_SIZE;
+        var end   = Math.min(start + PAGE_SIZE, total);
+
+        rows.forEach(function (row) {
+            row.style.display = 'none';
+        });
+
+        for (var i = start; i < end; i++) {
+            matchedRows[i].style.display = '';
+        }
+
+        if (shown) shown.textContent = total;
+        if (empty) empty.style.display = total === 0 ? '' : 'none';
+
+        if (pageInfo) {
+            if (total === 0) {
+                pageInfo.textContent = 'Tidak ada relawan yang sesuai filter.';
+            } else {
+                pageInfo.textContent = 'Menampilkan ' + (start + 1) + ' - ' + end + ' dari ' + total + ' relawan (Halaman ' + currentPage + ' dari ' + totalPages + ')';
+            }
+        }
+
+        renderPaginationNav(totalPages);
+
+        if (scroll) {
+            var card = document.querySelector('.content-card');
+            if (card) {
+                var topPos = card.getBoundingClientRect().top + window.pageYOffset - 80;
+                if (window.pageYOffset > topPos) {
+                    window.scrollTo({ top: topPos, behavior: 'smooth' });
+                }
+            }
+        }
+    }
+
+    function applyFilter() {
+        var q         = search ? search.value.trim().toLowerCase() : '';
+        var kec       = selectKec ? selectKec.value : '';
+        var thnBentuk = selectBentuk ? selectBentuk.value : '';
+        var thnKukuh  = selectKukuh ? selectKukuh.value : '';
+
+        matchedRows = [];
+        rows.forEach(function (row) {
+            var okSearch = !q || (row.dataset.search && row.dataset.search.indexOf(q) > -1);
+            var okKec    = !kec || row.dataset.kecamatan === kec;
+            var okBentuk = !thnBentuk || row.dataset.thnBentuk === thnBentuk;
+            var okKukuh  = !thnKukuh || row.dataset.thnKukuh === thnKukuh;
+
+            if (okSearch && okKec && okBentuk && okKukuh) {
+                matchedRows.push(row);
+            }
+        });
+
+        currentPage = 1;
+        renderPage(false);
+    }
+
+    if (search) search.addEventListener('input', applyFilter);
+    if (selectKec) selectKec.addEventListener('change', applyFilter);
+    if (selectBentuk) selectBentuk.addEventListener('change', applyFilter);
+    if (selectKukuh) selectKukuh.addEventListener('change', applyFilter);
+
+    // Inisialisasi tampilan awal 30 data per halaman
+    applyFilter();
 
     @if(session('success'))
         Swal.fire({
@@ -452,17 +635,21 @@ function rekapKolomRedkar() {
         { k: 'no',                  t: 'No',                         w: 6,  a: 'center' },
         { k: 'nama_lengkap',        t: 'Nama',                       w: 26 },
         { k: 'nik',                 t: 'NIK',                        w: 20, txt: true },
-        { k: 'ttl',                 t: 'Tempat Tanggal Lahir',       w: 26 },
+        { k: 'ttl',                 t: 'Tmp / Tgl Lahir',            w: 24 },
         { k: 'jenis_kelamin',       t: 'Jenis Kelamin',              w: 15, a: 'center' },
-        { k: 'alamat_lengkap',      t: 'Alamat',                     w: 40 },
         { k: 'agama',               t: 'Agama',                      w: 14, a: 'center' },
         { k: 'pekerjaan',           t: 'Pekerjaan',                  w: 22 },
+        { k: 'pendidikan_terakhir', t: 'Pendidikan',                 w: 15, a: 'center' },
+        { k: 'alamat_rt',           t: 'Alamat (Rt)',                w: 32 },
+        { k: 'kelurahan',           t: 'Kelurahan',                  w: 20 },
+        { k: 'kecamatan',           t: 'Kecamatan',                  w: 20 },
+        { k: 'nomor_telp',          t: 'HP',                         w: 18, txt: true },
         { k: 'golongan_darah',      t: 'Gol. Darah',                 w: 12, a: 'center' },
-        { k: 'buta_warna',          t: 'Buta Warna',                 w: 15, a: 'center' },
-        { k: 'sehat_jasmani',       t: 'Sehat Jasmani Rohani',       w: 20, a: 'center' },
-        { k: 'nomor_telp',          t: 'No Telfon / WA',             w: 18, txt: true },
-        { k: 'tanggal_pembentukan', t: 'Tanggal Pembentukan REDKAR', w: 22, a: 'center' },
-        { k: 'tanggal_pengukuhan',  t: 'Tanggal Pengukuhan REDKAR',  w: 22, a: 'center' }
+        { k: 'kartu_anggota',       t: 'Kartu Anggota',              w: 16, a: 'center', txt: true },
+        { k: 'buta_warna',          t: 'Buta Warna',                 w: 14, a: 'center' },
+        { k: 'sehat_jasmani',       t: 'Sehat Jasmani / Rohani',     w: 22, a: 'center' },
+        { k: 'tanggal_pembentukan', t: 'Tanggal Pembentukan REDKAR', w: 24, a: 'center' },
+        { k: 'tanggal_pengukuhan',  t: 'Tanggal Pengukuhan REDKAR',  w: 24, a: 'center' }
     ];
 }
 
@@ -474,13 +661,22 @@ async function exportRekapExcel() {
         return;
     }
 
-    var searchEl = document.getElementById('rk-search');
-    var selectEl = document.getElementById('rk-kecamatan');
-    var q   = searchEl ? searchEl.value.trim().toLowerCase() : '';
-    var kec = selectEl ? selectEl.value : '';
+    var searchEl       = document.getElementById('rk-search');
+    var selectEl       = document.getElementById('rk-kecamatan');
+    var selectBentukEl = document.getElementById('rk-tahun-bentuk');
+    var selectKukuhEl  = document.getElementById('rk-tahun-kukuh');
+
+    var q         = searchEl ? searchEl.value.trim().toLowerCase() : '';
+    var kec       = selectEl ? selectEl.value : '';
+    var thnBentuk = selectBentukEl ? selectBentukEl.value : '';
+    var thnKukuh  = selectKukuhEl ? selectKukuhEl.value : '';
 
     var filteredRows = REKAP.rows.filter(function (r) {
-        return (!q || r._search.indexOf(q) > -1) && (!kec || r._kec === kec);
+        var mQ       = !q || (r._search && r._search.indexOf(q) > -1);
+        var mKec     = !kec || r._kec === kec;
+        var mBentuk  = !thnBentuk || r._thn_bentuk === thnBentuk;
+        var mKukuh   = !thnKukuh || r._thn_kukuh === thnKukuh;
+        return mQ && mKec && mBentuk && mKukuh;
     }).map(function (r, i) {
         return Object.assign({}, r, { no: i + 1 });
     });
