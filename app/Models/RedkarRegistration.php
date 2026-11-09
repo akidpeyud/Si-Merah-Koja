@@ -45,7 +45,5 @@ class RedkarRegistration extends Authenticatable
 
     protected $casts = [
         'tanggal_lahir' => 'date',
-        'tanggal_pembentukan' => 'date',
-        'tanggal_pengukuhan' => 'date',
     ];
 }
