@@ -41,6 +41,7 @@ class DatabaseSeeder extends Seeder
             InspeksiBangunanSeeder::class,
             SosialisasiPenyuluhanSeeder::class,
             PelatihanKeluargaSeeder::class,
+            PetaJabatanSeeder::class,
         ]);
     }
 }
