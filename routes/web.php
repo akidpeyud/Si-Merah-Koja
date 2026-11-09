@@ -104,6 +104,9 @@ Route::get('/public-sigap', [PetaController::class, 'sigap']);
 Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman.index');
 Route::get('/pengumuman/{id}', [PengumumanController::class, 'show'])->whereNumber('id')->name('pengumuman.show');
 
+// Tim Pengembang SIMERAH KOJA (WARLD)
+Route::view('/warld', 'public.team')->name('tim.profil');
+
 // Indeks Kepuasan Masyarakat (IKM) - folder: resources/views/galery/ikm
 Route::get('/ikm', [IkmController::class, 'index'])->name('ikm.index');
 Route::post('/ikm', [IkmController::class, 'store'])->middleware('throttle:5,10')->name('ikm.store');

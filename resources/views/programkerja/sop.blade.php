@@ -613,32 +613,7 @@
 
 </main>
 
-<footer class="footer">
-    <div class="wrap">
-        <div class="footer-grid">
-            <div class="footer-about">
-                <img src="/images/simerahkoja.png" alt="Logo Simerah Koja">
-                <p>Sistem Informasi Manajemen Kebakaran dan Penyelamatan Kota Jambi. Berkomitmen memberikan pelayanan proteksi dan keselamatan masyarakat Kota Jambi secara profesional.</p>
-            </div>
-            <div>
-                <h3>Informasi &amp; Layanan</h3>
-                <p style="font-size: .95rem; line-height: 1.8;">
-                    Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi<br>
-                    Siap melayani penanganan bahaya kebakaran dan operasi evakuasi / penyelamatan 24 jam sehari.
-                </p>
-            </div>
-            <div>
-                <h3>Pengaduan Darurat</h3>
-                <p style="font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 6px;">Call Center: 112</p>
-                <p style="font-size: 1.05rem; font-weight: 700; color: #ffb627; margin-bottom: 12px;">Telepon: (0741) 41171</p>
-                <p style="font-size: .88rem; color: rgba(255,255,255,.6);">Operasi 24 Jam Bebas Pulsa</p>
-            </div>
-        </div>
-        <div style="border-top: 1px solid rgba(255,255,255,.1); margin-top: 48px; padding-top: 24px; text-align: center; font-size: .85rem; color: rgba(255,255,255,.5);">
-            &copy; {{ date('Y') }} Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi (SIMERAH KOJA). Seluruh hak cipta dilindungi.
-        </div>
-    </div>
-</footer>
+@include('layouts.partials.public-footer')
 
 <script>
 (function () {

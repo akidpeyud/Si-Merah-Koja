@@ -914,37 +914,7 @@
 
 </main>
 
-<footer class="footer">
-    <div class="wrap">
-        <div class="footer-grid">
-            <div class="footer-about">
-                <img src="/images/simerahkoja.png" alt="Logo SIMERAH KOJA" loading="lazy">
-                <h3>Tentang kami</h3>
-                <p>SIMERAH KOJA merupakan sistem informasi pemerintahan berbasis elektronik yang terintegrasi pada dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
-            </div>
-            <div>
-                <div class="map">
-                    <iframe title="Lokasi Dinas Pemadam Kebakaran Kota Jambi" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.202353147814!2d103.600648!3d-1.618096!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e22c8c6a234f6b1%3A0x4d537f0a82384f88!2sDinas%20Pemadam%20Kebakaran%20Kota%20Jambi!5e1!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid" tabindex="-1" loading="lazy"></iframe>
-                    <a class="map-link" href="<?= $h($maps_link) ?>" target="_blank" rel="noopener">
-                        <span><i class="fas fa-location-arrow"></i> Buka di Google Maps</span>
-                    </a>
-                </div>
-                <a class="find" href="<?= $h($maps_link) ?>" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Temukan kami di peta</a>
-            </div>
-            <div class="footer-links">
-                <h3>Link terkait</h3>
-                <ul>
-                    <li><a href="https://damkar.jambikota.go.id/" target="_blank" rel="noopener"><i class="fas fa-angle-right"></i> Official Damkar</a></li>
-                    <li><a href="https://jambikota.go.id/" target="_blank" rel="noopener"><i class="fas fa-angle-right"></i> Website Jambikota</a></li>
-                    <li><a href="https://sikoja.jambikota.go.id/" target="_blank" rel="noopener"><i class="fas fa-angle-right"></i> SIKOJA</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bar">
-            <div>SIMERAH KOJA &copy; <?= $h(date('Y')) ?>. Hak cipta dilindungi.</div>
-        </div>
-    </div>
-</footer>
+@include('layouts.partials.public-footer')
 
 <div class="sos-fab" id="sosFab">
     <div class="sos-sheet" id="sosSheet">
