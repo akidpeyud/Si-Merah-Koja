@@ -593,6 +593,218 @@
         </div>
     </div>
 
+    @if(isset($hasDokumenTable) && ! $hasDokumenTable)
+    <div class="card-custom mt-4 p-4 border border-warning bg-light d-print-none">
+        <div class="d-flex align-items-center gap-3">
+            <i class="fas fa-triangle-exclamation text-warning" style="font-size: 1.5rem;"></i>
+            <div>
+                <h6 class="mb-1 fw-bold text-dark">Informasi Migrasi Database</h6>
+                <p class="mb-0 text-muted" style="font-size: 0.85rem;">
+                    File migrasi tabel <code class="text-primary">dokumen_surat_korbans</code> telah disiapkan. Jalankan perintah <code class="bg-white px-2 py-0.5 border rounded">php artisan migrate</code> untuk mengaktifkan penyimpanan data dokumen.
+                </p>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    {{-- ========================================================
+         AREA FORM UPLOAD DOKUMEN SURAT KORBAN
+         ======================================================== --}}
+    @hasanyrole('Damtan|Super User')
+    <div class="card-custom mt-4 d-print-none">
+        <div class="card-header bg-white p-4 border-bottom">
+            <div class="d-flex align-items-center gap-2">
+                <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(22, 58, 99, 0.08); display: flex; align-items: center; justify-content: center; color: var(--navy); font-size: 1.1rem;">
+                    <i class="fas fa-cloud-arrow-up"></i>
+                </div>
+                <div>
+                    <h5 class="mb-0 fw-bold" style="font-family: var(--font-display); color: var(--ink);">Form Upload Dokumen Surat Korban</h5>
+                    <p class="text-muted mb-0" style="font-size: 0.85rem;">Isi identitas surat korban dan unggah file SKK serta Dokumentasi.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-4">
+            <form action="{{ route('surat-korban.upload-dokumen') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="row g-3 mb-4">
+                    {{-- NO SURAT --}}
+                    <div class="col-12 col-md-4">
+                        <label for="input_nomor_surat" class="form-label fw-bold" style="font-size: 0.85rem; color: var(--ink-2);">
+                            No Surat
+                        </label>
+                        <input type="text" list="listNomorSurat" name="nomor_surat" id="input_nomor_surat" class="form-control" placeholder="Contoh: 001/SKK/DAMKAR/2026" onchange="autoFillSurat(this.value)">
+                        <datalist id="listNomorSurat">
+                            @foreach($daftarSuratList ?? [] as $ds)
+                                <option value="{{ $ds->nomor_surat }}">{{ $ds->nama_korban }}</option>
+                            @endforeach
+                        </datalist>
+                    </div>
+
+                    {{-- NAMA --}}
+                    <div class="col-12 col-md-4">
+                        <label for="input_nama" class="form-label fw-bold" style="font-size: 0.85rem; color: var(--ink-2);">
+                            Nama
+                        </label>
+                        <input type="text" name="nama" id="input_nama" class="form-control" placeholder="Nama korban / pemilik">
+                    </div>
+
+                    {{-- NIK --}}
+                    <div class="col-12 col-md-4">
+                        <label for="input_nik" class="form-label fw-bold" style="font-size: 0.85rem; color: var(--ink-2);">
+                            NIK
+                        </label>
+                        <input type="text" name="nik" id="input_nik" class="form-control" placeholder="16 digit NIK">
+                    </div>
+
+                    {{-- TEMPAT TANGGAL LAHIR --}}
+                    <div class="col-12 col-md-6">
+                        <label for="input_ttl" class="form-label fw-bold" style="font-size: 0.85rem; color: var(--ink-2);">
+                            Tempat Tanggal Lahir
+                        </label>
+                        <input type="text" name="tempat_tanggal_lahir" id="input_ttl" class="form-control" placeholder="Contoh: Jambi, 12 Agustus 1985">
+                    </div>
+
+                    {{-- ALAMAT --}}
+                    <div class="col-12 col-md-6">
+                        <label for="input_alamat" class="form-label fw-bold" style="font-size: 0.85rem; color: var(--ink-2);">
+                            Alamat
+                        </label>
+                        <input type="text" name="alamat" id="input_alamat" class="form-control" placeholder="Alamat tempat kejadian / tempat tinggal">
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    {{-- FILE INPUT 1: SKK (Surat Keterangan Kejadian) --}}
+                    <div class="col-12 col-md-6">
+                        <div class="border rounded-3 p-3 bg-light h-100 position-relative">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="badge bg-primary px-2.5 py-1.5" style="font-size: 0.75rem;"><i class="fas fa-file-pdf me-1"></i> SKK</span>
+                                <span class="fw-bold" style="font-size: 0.9rem; color: var(--ink);">Surat Keterangan Kejadian</span>
+                            </div>
+                            <p class="text-muted mb-3" style="font-size: 0.8rem;">Unggah file fisik/scan surat keterangan kejadian resmi (PDF, JPG, PNG &middot; maks 5MB).</p>
+                            
+                            <input type="file" name="file_skk" id="file_skk" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+                        </div>
+                    </div>
+
+                    {{-- FILE INPUT 2: Dokumentasi (Foto Surat/Peristiwa) --}}
+                    <div class="col-12 col-md-6">
+                        <div class="border rounded-3 p-3 bg-light h-100 position-relative">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="badge bg-info text-white px-2.5 py-1.5" style="font-size: 0.75rem;"><i class="fas fa-image me-1"></i> Dokumentasi</span>
+                                <span class="fw-bold" style="font-size: 0.9rem; color: var(--ink);">Foto Surat / Peristiwa</span>
+                            </div>
+                            <p class="text-muted mb-3" style="font-size: 0.8rem;">Unggah foto dokumentasi penyerahan surat, berkas fisik, atau foto peristiwa (PDF, JPG, PNG &middot; maks 5MB).</p>
+                            
+                            <input type="file" name="file_dokumentasi" id="file_dokumentasi" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
+                    <button type="reset" class="btn btn-outline-secondary px-4">
+                        <i class="fas fa-undo me-1"></i> Reset
+                    </button>
+                    <button type="submit" class="btn-custom-primary shadow-sm">
+                        <i class="fas fa-cloud-arrow-up me-2"></i> Unggah Dokumen
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endhasanyrole
+
+    {{-- ========================================================
+         TABEL HASIL UPLOAD DOKUMEN
+         ======================================================== --}}
+    <div class="card-custom mt-4 d-print-none">
+        <div class="card-header bg-white p-4 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(37, 99, 235, 0.08); display: flex; align-items: center; justify-content: center; color: var(--info); font-size: 1.1rem;">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+                <div>
+                    <h5 class="mb-0 fw-bold" style="font-family: var(--font-display); color: var(--ink);">Tabel Hasil Upload Dokumen</h5>
+                    <p class="text-muted mb-0" style="font-size: 0.85rem;">Daftar berkas SKK dan Dokumentasi yang telah berhasil diunggah.</p>
+                </div>
+            </div>
+            <span class="badge bg-secondary px-3 py-2" style="font-size: 0.82rem;">
+                Total: {{ count($dokumenSurat ?? []) }} Dokumen
+            </span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" style="font-size: 0.88rem;">
+                    <thead style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                        <tr>
+                            <th class="text-center py-3" style="width: 50px;">No</th>
+                            <th class="py-3" style="min-width: 170px;">No Surat</th>
+                            <th class="py-3" style="min-width: 150px;">Nama</th>
+                            <th class="py-3" style="min-width: 140px;">NIK</th>
+                            <th class="py-3" style="min-width: 170px;">Tempat Tanggal Lahir</th>
+                            <th class="py-3" style="min-width: 200px;">Alamat</th>
+                            <th class="text-center py-3" style="min-width: 150px;">SKK</th>
+                            <th class="text-center py-3" style="min-width: 150px;">Dokumentasi</th>
+                            @hasanyrole('Damtan|Super User')
+                            <th class="text-center py-3" style="width: 80px;">Aksi</th>
+                            @endhasanyrole
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($dokumenSurat ?? [] as $dok)
+                        <tr>
+                            <td class="text-center fw-bold text-muted">{{ $loop->iteration }}</td>
+                            <td>
+                                <span class="fw-bold text-dark">{{ $dok->nomor_surat ?? '-' }}</span>
+                            </td>
+                            <td class="fw-semibold">{{ $dok->nama ?? '-' }}</td>
+                            <td>{{ $dok->nik ?? '-' }}</td>
+                            <td>{{ $dok->tempat_tanggal_lahir ?? '-' }}</td>
+                            <td style="max-width: 250px; white-space: normal;">{{ $dok->alamat ?? '-' }}</td>
+                            <td class="text-center">
+                                @if(!empty($dok->file_skk))
+                                    <a href="{{ route('surat-korban.lihat-dokumen', ['id' => $dok->id, 'jenis' => 'skk']) }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-2.5 py-1" style="font-size: 0.78rem;">
+                                        <i class="fas fa-file-pdf"></i> Lihat SKK
+                                    </a>
+                                @else
+                                    <span class="badge bg-light text-muted border px-2 py-1">Tidak ada file</span>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                @if(!empty($dok->file_dokumentasi))
+                                    <a href="{{ route('surat-korban.lihat-dokumen', ['id' => $dok->id, 'jenis' => 'dokumentasi']) }}" target="_blank" class="btn btn-sm btn-outline-info d-inline-flex align-items-center gap-1 px-2.5 py-1" style="font-size: 0.78rem;">
+                                        <i class="fas fa-image"></i> Lihat Foto
+                                    </a>
+                                @else
+                                    <span class="badge bg-light text-muted border px-2 py-1">Tidak ada file</span>
+                                @endif
+                            </td>
+                            @hasanyrole('Damtan|Super User')
+                            <td class="text-center">
+                                <form action="{{ route('surat-korban.hapus-dokumen', $dok->id) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data dokumen ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="action-btn delete" title="Hapus Data Dokumen">
+                                        <i class="fas fa-trash-can"></i>
+                                    </button>
+                                </form>
+                            </td>
+                            @endhasanyrole
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="{{ auth()->check() ? 9 : 8 }}" class="text-center py-5 text-muted">
+                                <i class="fas fa-folder-open d-block mb-2" style="font-size: 2rem; color: #cbd5e1;"></i>
+                                Belum ada berkas SKK atau Dokumentasi yang diunggah.
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @push('scripts')
@@ -703,6 +915,26 @@
             const el = document.querySelector('.rekap-scroll');
             if (el) {
                 el.scrollBy({ left: distance, behavior: 'smooth' });
+            }
+        };
+
+        const daftarSuratRef = @json($daftarSuratList ?? []);
+        window.autoFillSurat = function (val) {
+            if (!val) return;
+            const s = daftarSuratRef.find(item => (item.nomor_surat || '').toLowerCase() === val.toLowerCase().trim());
+            if (s) {
+                const elNama = document.getElementById('input_nama');
+                const elNik = document.getElementById('input_nik');
+                const elTtl = document.getElementById('input_ttl');
+                const elAlamat = document.getElementById('input_alamat');
+
+                if (elNama && s.nama_korban) elNama.value = s.nama_korban;
+                if (elNik && s.nik) elNik.value = s.nik;
+                if (elTtl) {
+                    let ttl = (s.tempat_lahir || '') + (s.tanggal_lahir ? ', ' + s.tanggal_lahir : '');
+                    elTtl.value = ttl.trim().replace(/^,|,$/g, '');
+                }
+                if (elAlamat && s.alamat) elAlamat.value = s.alamat;
             }
         };
 

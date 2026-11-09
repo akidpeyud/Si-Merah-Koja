@@ -232,7 +232,7 @@
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <label class="field-label"><span class="num-badge">3</span> Waktu Laporan Diterima <span class="req">*</span></label>
-                                <input type="datetime-local" name="waktu_terima" id="waktu_terima" class="form-control" required>
+                                <input type="time" name="waktu_terima" id="waktu_terima" class="form-control" required>
                             </div>
                             <div class="col-md-4">
                                 <label class="field-label"><span class="num-badge">4</span> Laporan Diterima Melalui <span class="req">*</span></label>
@@ -250,10 +250,10 @@
                             <div class="w-100 d-none d-md-block"></div>
                             <div class="col-md-4">
                                 <label class="field-label"><span class="num-badge">5</span> Waktu Tiba di Lokasi <span class="req">*</span></label>
-                                <input type="datetime-local" name="waktu_tiba" id="waktu_tiba" class="form-control" required>
+                                <input type="time" name="waktu_tiba" id="waktu_tiba" class="form-control" required>
                             </div>
                             <div class="col-md-4">
-                                <label class="field-label"><span class="num-badge">6</span> Jarak Tempuh (dari Mako/Pos)</label>
+                                <label class="field-label"><span class="num-badge">6</span> Jarak Tempuh</label>
                                 <div class="input-group">
                                     <input type="number" step="0.1" min="0" name="jarak_tempuh" class="form-control" placeholder="Cth: 4.1">
                                     <span class="input-group-text">Km</span>
@@ -276,19 +276,19 @@
                                     <div class="row g-3">
                                         <div class="col-md-3">
                                             <label class="field-label">Waktu Kejadian (Awal)</label>
-                                            <input type="datetime-local" name="waktu_kejadian" class="form-control">
+                                            <input type="time" name="waktu_kejadian" class="form-control">
                                         </div>
                                         <div class="col-md-3">
                                             <label class="field-label">Waktu Berangkat Unit</label>
-                                            <input type="datetime-local" name="waktu_berangkat" class="form-control">
+                                            <input type="time" name="waktu_berangkat" class="form-control">
                                         </div>
                                         <div class="col-md-3">
                                             <label class="field-label">Waktu Operasi Selesai</label>
-                                            <input type="datetime-local" name="waktu_selesai" id="waktu_selesai" class="form-control">
+                                            <input type="time" name="waktu_selesai" id="waktu_selesai" class="form-control">
                                         </div>
                                         <div class="col-md-3">
                                             <label class="field-label">Waktu Kembali ke Mako</label>
-                                            <input type="datetime-local" name="waktu_kembali" class="form-control">
+                                            <input type="time" name="waktu_kembali" class="form-control">
                                         </div>
                                     </div>
                                 </div>
@@ -310,7 +310,7 @@
                                 <input type="text" class="form-control" name="nama_pelapor" placeholder="Cth: Bapak Iskandar" required>
                             </div>
                             <div class="col-md-4">
-                                <label class="field-label"><span class="num-badge">9</span> No. Telfon Pelapor</label>
+                                <label class="field-label"><span class="num-badge">9</span> No. Tlp Pelapor</label>
                                 <input type="text" name="telepon_pelapor" id="telepon_pelapor" class="form-control"
                                        placeholder="08xxxxxxxxxx" inputmode="numeric" pattern="[0-9]*" maxlength="15"
                                        title="Hanya boleh angka" autocomplete="off">
@@ -461,8 +461,8 @@
                     <div class="form-section__body">
                         <div class="row g-3">
                             <div class="col-md-8">
-                                <label class="field-label"><span class="num-badge">11</span> Lokasi Kejadian (Alamat Lengkap)</label>
-                                <textarea class="form-control" name="alamat" rows="4" placeholder="Nama jalan, RT/RW, Kelurahan, Kecamatan..."></textarea>
+                                <label class="field-label"><span class="num-badge">11</span> Lokasi Kebakaran / Kejadian (Alamat Lengkap) <span class="req">*</span></label>
+                                <textarea class="form-control" name="alamat" rows="4" placeholder="Nama jalan, RT/RW, Kelurahan, Kecamatan..." required></textarea>
                             </div>
                             <div class="col-md-4">
                                 <label class="field-label">Titik Koordinat</label>
@@ -496,19 +496,19 @@
                     <div class="form-section__body">
                         <div class="row g-3">
                             <div class="col-md-8">
-                                <label class="field-label"><span class="num-badge">12</span> Nama Korban</label>
+                                <label class="field-label"><span class="num-badge">12</span> Nama Korban / KK</label>
                                 <input type="text" name="nama_korban" class="form-control" placeholder="Cth: Bpk. Ahmad, Ibu Siti (Kosongkan jika nihil)">
                                 <small class="field-hint">Tulis nama lengkap korban jika ada, pisahkan dengan koma.</small>
                             </div>
                             <div class="col-md-4">
-                                <label class="field-label"><span class="num-badge">13</span> Jumlah Jiwa</label>
+                                <label class="field-label"><span class="num-badge">13</span> Jumlah yang Terdampak (Jiwa)</label>
                                 <div class="input-group">
                                     <input type="number" min="0" name="jumlah_jiwa" class="form-control" value="0">
                                     <span class="input-group-text">Jiwa</span>
                                 </div>
                             </div>
                             <div class="col-12">
-                                <label class="field-label"><span class="num-badge">14</span> Jumlah Korban (Meninggal dan Cidera)</label>
+                                <label class="field-label mb-1"><span class="num-badge">14</span> Petugas atau Warga <small class="text-muted fw-normal d-block mt-1">(Meninggal atau Cidera)</small></label>
                                 <div class="row g-2">
                                     <div class="col-6 col-md-3">
                                         <label class="field-label text-muted" style="font-size:0.8rem;">Selamat</label>
@@ -529,10 +529,10 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <label class="field-label"><span class="num-badge">15</span> Jumlah Warga yang Terdampak</label>
+                                <label class="field-label"><span class="num-badge">15</span> Jumlah Warga yang Terdampak (KK)</label>
                                 <div class="input-group">
                                     <input type="number" min="0" name="warga_terdampak" class="form-control" value="0">
-                                    <span class="input-group-text">Jiwa / KK</span>
+                                    <span class="input-group-text">KK</span>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -617,7 +617,7 @@
                                 <div class="p-3 rounded border bg-light">
                                     <div class="row g-3">
                                         <div class="col-md-5">
-                                            <label class="field-label"><span class="num-badge">21</span> Penyebab Kebakaran (Diduga)</label>
+                                            <label class="field-label"><span class="num-badge">21</span> Penyebab Kebakaran</label>
                                             <div class="pair">
                                                 <select class="form-select" name="dugaan_penyebab" id="dugaan_penyebab">
                                                     <option selected value="">-- Pilih Penyebab --</option>
@@ -647,7 +647,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="field-label"><span class="num-badge">22</span> Hambatan Lapangan</label>
+                                <label class="field-label"><span class="num-badge">22</span> Hambatan</label>
                                 <textarea class="form-control" name="hambatan_lapangan" rows="3" placeholder="Tuliskan hambatan spesifik saat operasi di lapangan (jika ada)..."></textarea>
                             </div>
                             <div class="col-md-6">
@@ -806,7 +806,7 @@
                     </header>
                     <div class="form-section__body">
                         <div class="mb-3">
-                            <label class="field-label">Instansi Pendukung di Lokasi</label>
+                            <label class="field-label"><span class="num-badge">22</span> Tim Quick Respon / Instansi Pendukung di Lokasi</label>
                             <div class="choice-group">
                                 <label class="choice"><input type="checkbox" id="inst_pln" name="instansi_pendukung[]" value="pln"> PLN</label>
                                 <label class="choice"><input type="checkbox" id="inst_polisi" name="instansi_pendukung[]" value="polisi"> Polisi</label>
@@ -1188,7 +1188,18 @@
     var lama = document.getElementById('lama_operasi');
 
     function selisihMenit(awal, akhir) {
-        if (!awal.value || !akhir.value) return null;
+        if (!awal || !akhir || !awal.value || !akhir.value) return null;
+        if (awal.value.indexOf('T') === -1 && awal.value.indexOf('-') === -1 && awal.value.includes(':') && akhir.value.includes(':')) {
+            var p1 = awal.value.split(':');
+            var p2 = akhir.value.split(':');
+            var m1 = parseInt(p1[0], 10) * 60 + parseInt(p1[1], 10);
+            var m2 = parseInt(p2[0], 10) * 60 + parseInt(p2[1], 10);
+            var diff = m2 - m1;
+            if (diff < 0 && (m1 - m2) > 720) {
+                diff += 1440;
+            }
+            return diff;
+        }
         return Math.round((new Date(akhir.value) - new Date(awal.value)) / 60000);
     }
 
