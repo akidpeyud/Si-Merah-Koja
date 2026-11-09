@@ -38,6 +38,7 @@
                 ['Data Hidrant Kota Jambi', '/sapra/data-hidrant-kota', 'fa-map-location-dot'],
                 ['Mutu Baku Kebutuhan', '/sapra/kebutuhan-sarpras', 'fa-boxes-stacked'],
                 ['Serah Terima Barang', '/sapra/distribusi-staff', 'fa-people-carry-box'],
+                ['Perbaikan Kendaraan', '/sapra/perbaikan-kendaraan', 'fa-screwdriver-wrench'],
             ],
         ],
         [

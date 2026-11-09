@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\HidranExport;
 use App\Exports\HidranKotaExport;
+use App\Exports\PerbaikanKendaraanExport;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -1020,9 +1021,21 @@ class SapraController extends Controller
         return redirect()->back()->with('success', 'Data distribusi dihapus! Stok dikembalikan ke Mutu Baku.');
     }
 
-    public function cetakDistribusiStaff()
+    public function cetakDistribusiStaff(Request $request)
     {
-        $rawData = DB::table('distribusi_barang_staff')
+        $tahunParam = (string) $request->query('tahun', '');
+        $tahunFilter = array_values(array_filter(
+            array_map('trim', explode(',', $tahunParam)),
+            fn ($y) => preg_match('/^\d{4}$/', $y) === 1
+        ));
+
+        $query = DB::table('distribusi_barang_staff');
+
+        if (! empty($tahunFilter)) {
+            $query->whereIn(DB::raw('YEAR(waktu_terima)'), $tahunFilter);
+        }
+
+        $rawData = $query
             ->orderBy('nama_penerima', 'asc')
             ->orderBy('waktu_terima', 'desc')
             ->get();
@@ -1031,7 +1044,7 @@ class SapraController extends Controller
             return strtoupper(trim($item->nama_penerima));
         });
 
-        return view('internal.sapra.distribusi_staff_cetak', compact('dataDistribusi'));
+        return view('internal.sapra.distribusi_staff_cetak', compact('dataDistribusi', 'tahunFilter'));
     }
 
     // ==========================================
@@ -1157,5 +1170,327 @@ class SapraController extends Controller
             ->setPaper('a4', 'portrait');
 
         return $pdf->download('Data_Sarana_Pemeriksaan_Mako_Pos.pdf');
+    }
+
+    // ========================================================
+    // === DATA PERBAIKAN KENDARAAN OPERASIONAL ===
+    // ========================================================
+
+    /**
+     * Pecah input kerusakan/barang (misal: "aki,ban,lampu" atau "Ganti Aki & Ban")
+     * menjadi daftar nama barang yang sudah dinormalisasi.
+     *
+     * @return array<int, string>
+     */
+    private function extractDaftarBarangPerbaikan(string $teks): array
+    {
+        $parts = preg_split('/\s*(?:,|;|\/|\+|&|\bdan\b)\s*/i', $teks, -1, PREG_SPLIT_NO_EMPTY);
+        if (! $parts) {
+            $parts = [$teks];
+        }
+
+        $hasil = [];
+        foreach ($parts as $part) {
+            $clean = strtolower(trim(preg_replace('/\s+/', ' ', $part)));
+            $clean = preg_replace('/^(ganti|penggantian|perbaikan|servis|service|pasang|beli)\s+/i', '', $clean);
+            $clean = trim($clean);
+            if ($clean !== '') {
+                $hasil[] = $clean;
+            }
+        }
+
+        return array_values(array_unique($hasil));
+    }
+
+    /**
+     * Ambil data perbaikan kendaraan beserta deteksi barang berulang per Nopol dalam 1 tahun.
+     *
+     * @return array{0: \Illuminate\Support\Collection, 1: \Illuminate\Support\Collection}
+     */
+    private function getProcessedPerbaikanKendaraan(?string $tahunFilter = null, ?string $jenisFilter = null): array
+    {
+        $dataPerbaikan = DB::table('perbaikan_kendaraans')
+            ->orderBy('tgl_perbaikan', 'desc')
+            ->orderBy('id', 'desc')
+            ->get();
+
+        // Hitung frekuensi penggantian per item barang yang sama per Nopol dalam 1 tahun yang sama
+        $frekuensi = [];
+        foreach ($dataPerbaikan as $row) {
+            $tahun = \Carbon\Carbon::parse($row->tgl_perbaikan)->format('Y');
+            $nopolKey = strtoupper(preg_replace('/\s+/', '', trim($row->nopol_kendaraan)));
+            $daftarBarang = $this->extractDaftarBarangPerbaikan($row->jenis_kerusakan);
+
+            foreach ($daftarBarang as $barangKey) {
+                $key = $tahun.'|'.$nopolKey.'|'.$barangKey;
+
+                if (! isset($frekuensi[$key])) {
+                    $frekuensi[$key] = [
+                        'tahun' => $tahun,
+                        'nopol' => strtoupper(trim($row->nopol_kendaraan)),
+                        'jenis_kendaraan' => strtoupper(trim($row->jenis_kendaraan)),
+                        'merk_kendaraan' => $row->merk_kendaraan,
+                        'barang' => ucwords($barangKey),
+                        'count' => 0,
+                        'tanggal_list' => [],
+                    ];
+                }
+                $frekuensi[$key]['count']++;
+                $frekuensi[$key]['tanggal_list'][] = \Carbon\Carbon::parse($row->tgl_perbaikan)->format('d M Y');
+            }
+        }
+
+        foreach ($dataPerbaikan as $row) {
+            $tahun = \Carbon\Carbon::parse($row->tgl_perbaikan)->format('Y');
+            $nopolKey = strtoupper(preg_replace('/\s+/', '', trim($row->nopol_kendaraan)));
+            $daftarBarang = $this->extractDaftarBarangPerbaikan($row->jenis_kerusakan);
+
+            $barangBerulang = [];
+            foreach ($daftarBarang as $barangKey) {
+                $key = $tahun.'|'.$nopolKey.'|'.$barangKey;
+                if (($frekuensi[$key]['count'] ?? 0) >= 2) {
+                    $barangBerulang[] = $frekuensi[$key];
+                }
+            }
+
+            $row->tahun_perbaikan = $tahun;
+            $row->daftar_item = array_map('ucwords', $daftarBarang);
+            $row->barang_berulang = $barangBerulang;
+            $row->jumlah_ganti_sama = ! empty($barangBerulang) ? max(array_column($barangBerulang, 'count')) : 1;
+
+            // Susun rincian pasangan per baris (Barang, Merek/Tipe, Satuan)
+            $merekParts = $row->merek_tipe_barang
+                ? array_values(array_map('trim', preg_split('/\s*,\s*/', $row->merek_tipe_barang)))
+                : [];
+            $satuanParts = $row->satuan
+                ? array_values(array_map('trim', preg_split('/\s*,\s*/', $row->satuan)))
+                : [];
+
+            $dupKeyMap = [];
+            foreach ($barangBerulang as $bDup) {
+                $dupKeyMap[strtolower($bDup['barang'])] = true;
+            }
+
+            $rincianItems = [];
+            foreach ($row->daftar_item as $idx => $namaBarang) {
+                $merekVal = $merekParts[$idx] ?? (count($merekParts) === 1 && $idx === 0 ? $merekParts[0] : '-');
+                $satuanVal = $satuanParts[$idx] ?? (count($satuanParts) === 1 && $idx === 0 ? $satuanParts[0] : '-');
+                $rincianItems[] = [
+                    'barang' => $namaBarang,
+                    'merek' => ($merekVal !== '' && $merekVal !== '-') ? $merekVal : '-',
+                    'satuan' => ($satuanVal !== '' && $satuanVal !== '-') ? $satuanVal : '-',
+                    'is_dup' => isset($dupKeyMap[strtolower($namaBarang)]),
+                ];
+            }
+            $row->rincian_items = $rincianItems;
+        }
+
+        if ($tahunFilter && $tahunFilter !== 'all') {
+            $dataPerbaikan = $dataPerbaikan->filter(fn ($r) => (string) $r->tahun_perbaikan === (string) $tahunFilter)->values();
+        }
+
+        if ($jenisFilter && $jenisFilter !== 'all') {
+            $dataPerbaikan = $dataPerbaikan->filter(fn ($r) => strtoupper($r->jenis_kendaraan) === strtoupper($jenisFilter))->values();
+        }
+
+        $peringatanBerulang = collect($frekuensi)
+            ->filter(fn ($item) => $item['count'] >= 2)
+            ->values();
+
+        return [$dataPerbaikan, $peringatanBerulang];
+    }
+
+    public function perbaikanKendaraan()
+    {
+        [$dataPerbaikan, $peringatanBerulang] = $this->getProcessedPerbaikanKendaraan();
+
+        return view('internal.sapra.perbaikan_kendaraan', compact('dataPerbaikan', 'peringatanBerulang'));
+    }
+
+    public function cetakPdfPerbaikanKendaraan(Request $request)
+    {
+        $tahun = $request->query('tahun', 'all');
+        $jenis = $request->query('jenis', 'all');
+
+        [$dataPerbaikan] = $this->getProcessedPerbaikanKendaraan($tahun, $jenis);
+
+        $labelTahun = ($tahun && $tahun !== 'all') ? 'TAHUN '.$tahun : 'SEMUA TAHUN';
+        $labelJenis = ($jenis && $jenis !== 'all') ? strtoupper($jenis) : null;
+
+        $pdf = Pdf::loadView('internal.sapra.perbaikan_kendaraan_pdf', compact('dataPerbaikan', 'labelTahun', 'labelJenis'))
+            ->setPaper('a4', 'landscape');
+
+        $suffixTahun = ($tahun && $tahun !== 'all') ? '_'.$tahun : '_Semua_Tahun';
+
+        return $pdf->download('Data_Perbaikan_Kendaraan_Operasional'.$suffixTahun.'.pdf');
+    }
+
+    public function cetakExcelPerbaikanKendaraan(Request $request)
+    {
+        $jenis = $request->query('jenis', 'all');
+
+        [$dataPerbaikan] = $this->getProcessedPerbaikanKendaraan('all', $jenis);
+
+        $suffixJenis = ($jenis && $jenis !== 'all') ? '_'.strtoupper($jenis) : '';
+
+        return Excel::download(
+            new PerbaikanKendaraanExport($dataPerbaikan),
+            'Data_Perbaikan_Kendaraan_Operasional'.$suffixJenis.'.xlsx'
+        );
+    }
+
+    private function mergeDynamicItemsToRequest(Request $request): void
+    {
+        if (! $request->has('items_barang') || ! is_array($request->items_barang)) {
+            return;
+        }
+
+        $barangArr = [];
+        $merekArr = [];
+        $satuanArr = [];
+
+        foreach ($request->items_barang as $idx => $namaBrg) {
+            $namaBrg = trim((string) $namaBrg);
+            if ($namaBrg === '') {
+                continue;
+            }
+            $barangArr[] = $namaBrg;
+            $merekVal = trim((string) ($request->items_merek[$idx] ?? ''));
+            $satuanVal = trim((string) ($request->items_satuan[$idx] ?? ''));
+            $merekArr[] = $merekVal !== '' ? $merekVal : '-';
+            $satuanArr[] = $satuanVal !== '' ? $satuanVal : '-';
+        }
+
+        $hasAnyMerek = collect($merekArr)->contains(fn ($v) => $v !== '-');
+        $hasAnySatuan = collect($satuanArr)->contains(fn ($v) => $v !== '-');
+
+        $request->merge([
+            'jenis_kerusakan' => implode(', ', $barangArr),
+            'merek_tipe_barang' => $hasAnyMerek ? implode(', ', $merekArr) : null,
+            'satuan' => $hasAnySatuan ? implode(', ', $satuanArr) : null,
+        ]);
+    }
+
+    public function storePerbaikanKendaraan(Request $request)
+    {
+        $this->mergeDynamicItemsToRequest($request);
+
+        $request->validate([
+            'nopol_kendaraan' => 'required|string|max:100',
+            'jenis_kendaraan' => 'required|in:R2,R4,R6,R10,r2,r4,r6,r10',
+            'merk_kendaraan' => 'required|string|max:255',
+            'tgl_perbaikan' => 'required|date',
+            'jenis_kerusakan' => 'required|string|max:255',
+            'merek_tipe_barang' => 'nullable|string|max:255',
+            'satuan' => 'nullable|string|max:100',
+            'total_harga' => 'required|numeric|min:0',
+            'foto' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:4096',
+        ], [
+            'nopol_kendaraan.required' => 'Nopol kendaraan wajib diisi.',
+            'jenis_kendaraan.required' => 'Jenis kendaraan wajib dipilih (R2, R4, R6, atau R10).',
+            'merk_kendaraan.required' => 'Merk kendaraan wajib diisi.',
+            'tgl_perbaikan.required' => 'Tanggal perbaikan wajib diisi.',
+            'jenis_kerusakan.required' => 'Jenis kerusakan / penggantian barang wajib diisi.',
+            'total_harga.required' => 'Total harga wajib diisi.',
+            'foto.mimes' => 'Format foto harus berupa JPG, JPEG, PNG, atau WEBP.',
+            'foto.max' => 'Ukuran foto maksimal 4 MB.',
+        ]);
+
+        $fotoPath = null;
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $filename = time().'_'.Str::random(10).'.'.$file->getClientOriginalExtension();
+            $file->move(public_path('uploads/perbaikan_kendaraan'), $filename);
+            $fotoPath = 'uploads/perbaikan_kendaraan/'.$filename;
+        }
+
+        DB::table('perbaikan_kendaraans')->insert([
+            'nopol_kendaraan' => strtoupper(trim($request->nopol_kendaraan)),
+            'jenis_kendaraan' => strtoupper(trim($request->jenis_kendaraan)),
+            'merk_kendaraan' => trim($request->merk_kendaraan),
+            'tgl_perbaikan' => $request->tgl_perbaikan,
+            'jenis_kerusakan' => trim($request->jenis_kerusakan),
+            'merek_tipe_barang' => $request->merek_tipe_barang ? trim($request->merek_tipe_barang) : null,
+            'satuan' => $request->satuan ? trim($request->satuan) : null,
+            'total_harga' => (int) $request->total_harga,
+            'foto' => $fotoPath,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Data perbaikan kendaraan operasional berhasil ditambahkan!');
+    }
+
+    public function updatePerbaikanKendaraan(Request $request, $id)
+    {
+        $this->mergeDynamicItemsToRequest($request);
+
+        $request->validate([
+            'nopol_kendaraan' => 'required|string|max:100',
+            'jenis_kendaraan' => 'required|in:R2,R4,R6,R10,r2,r4,r6,r10',
+            'merk_kendaraan' => 'required|string|max:255',
+            'tgl_perbaikan' => 'required|date',
+            'jenis_kerusakan' => 'required|string|max:255',
+            'merek_tipe_barang' => 'nullable|string|max:255',
+            'satuan' => 'nullable|string|max:100',
+            'total_harga' => 'required|numeric|min:0',
+            'foto' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:4096',
+        ], [
+            'nopol_kendaraan.required' => 'Nopol kendaraan wajib diisi.',
+            'jenis_kendaraan.required' => 'Jenis kendaraan wajib dipilih (R2, R4, R6, atau R10).',
+            'merk_kendaraan.required' => 'Merk kendaraan wajib diisi.',
+            'tgl_perbaikan.required' => 'Tanggal perbaikan wajib diisi.',
+            'jenis_kerusakan.required' => 'Jenis kerusakan / penggantian barang wajib diisi.',
+            'total_harga.required' => 'Total harga wajib diisi.',
+            'foto.mimes' => 'Format foto harus berupa JPG, JPEG, PNG, atau WEBP.',
+            'foto.max' => 'Ukuran foto maksimal 4 MB.',
+        ]);
+
+        $dataLama = DB::table('perbaikan_kendaraans')->where('id', $id)->first();
+        if (! $dataLama) {
+            return redirect()->back()->with('error', 'Data perbaikan kendaraan tidak ditemukan!');
+        }
+
+        $fotoPath = $dataLama->foto;
+        if ($request->hasFile('foto')) {
+            if ($fotoPath && file_exists(public_path($fotoPath))) {
+                unlink(public_path($fotoPath));
+            }
+            $file = $request->file('foto');
+            $filename = time().'_'.Str::random(10).'.'.$file->getClientOriginalExtension();
+            $file->move(public_path('uploads/perbaikan_kendaraan'), $filename);
+            $fotoPath = 'uploads/perbaikan_kendaraan/'.$filename;
+        }
+
+        DB::table('perbaikan_kendaraans')->where('id', $id)->update([
+            'nopol_kendaraan' => strtoupper(trim($request->nopol_kendaraan)),
+            'jenis_kendaraan' => strtoupper(trim($request->jenis_kendaraan)),
+            'merk_kendaraan' => trim($request->merk_kendaraan),
+            'tgl_perbaikan' => $request->tgl_perbaikan,
+            'jenis_kerusakan' => trim($request->jenis_kerusakan),
+            'merek_tipe_barang' => $request->merek_tipe_barang ? trim($request->merek_tipe_barang) : null,
+            'satuan' => $request->satuan ? trim($request->satuan) : null,
+            'total_harga' => (int) $request->total_harga,
+            'foto' => $fotoPath,
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Data perbaikan kendaraan operasional berhasil diperbarui!');
+    }
+
+    public function destroyPerbaikanKendaraan($id)
+    {
+        $data = DB::table('perbaikan_kendaraans')->where('id', $id)->first();
+        if (! $data) {
+            return redirect()->back()->with('error', 'Data perbaikan kendaraan tidak ditemukan!');
+        }
+
+        if ($data->foto && file_exists(public_path($data->foto))) {
+            unlink(public_path($data->foto));
+        }
+
+        DB::table('perbaikan_kendaraans')->where('id', $id)->delete();
+
+        return redirect()->back()->with('success', 'Data perbaikan kendaraan operasional berhasil dihapus!');
     }
 }
