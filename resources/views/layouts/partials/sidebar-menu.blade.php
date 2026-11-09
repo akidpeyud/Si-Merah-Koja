@@ -45,6 +45,7 @@
             'items' => [
                 ['Data Urut Kepangkatan', '/internal/kepegawaian/duk', 'fa-user-tie'],
                 ['Rekap Data ASN', '/internal/data-asn', 'fa-users'],
+                ['Data Peta Jabatan', '/internal/kepegawaian/peta-jabatan', 'fa-sitemap'],
                 ['SOP & Dokumen', '/internal/program-kerja', 'fa-file-contract'],
                 ['Dokumen Publik', route('dokumen-publik.index'), 'fa-file-lines'],
             ],

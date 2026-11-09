@@ -26,6 +26,7 @@ use App\Http\Controllers\PermohonanEdukasiController;
 use App\Http\Controllers\PermohonanRpkbglController;
 use App\Http\Controllers\PermohonanSkkController;
 use App\Http\Controllers\PetaController;
+use App\Http\Controllers\PetaJabatanController;
 use App\Http\Controllers\ProdukHukumController;
 use App\Http\Controllers\ProfilInstansiController;
 use App\Http\Controllers\ProgramKerjaController;
@@ -47,6 +48,7 @@ use App\Models\DokumenPublik;
 use App\Models\EduDamkar;
 use App\Models\Infografis;
 use App\Models\PermohonanEdukasi;
+use App\Models\PetaJabatan;
 use App\Models\UjungDamkar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -870,6 +872,14 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
         Route::get('/duk/{id}/edit', [DukController::class, 'edit'])->name('duk.edit');
         Route::put('/duk/{id}', [DukController::class, 'update'])->name('duk.update');
         Route::delete('/duk/{id}', [DukController::class, 'destroy'])->name('duk.destroy');
+
+        // Data Peta Jabatan
+        Route::get('/peta-jabatan', [PetaJabatanController::class, 'index'])->name('peta-jabatan.index');
+        Route::post('/peta-jabatan', [PetaJabatanController::class, 'store'])->name('peta-jabatan.store');
+        Route::put('/peta-jabatan/{id}', [PetaJabatanController::class, 'update'])->name('peta-jabatan.update');
+        Route::delete('/peta-jabatan/{id}', [PetaJabatanController::class, 'destroy'])->name('peta-jabatan.destroy');
+        Route::get('/peta-jabatan/{id}/view', [PetaJabatanController::class, 'viewFile'])->name('peta-jabatan.view');
+        Route::get('/peta-jabatan/{id}/download', [PetaJabatanController::class, 'downloadFile'])->name('peta-jabatan.download');
     });
 
     // --- REKAP DATA ASN ---
@@ -1038,9 +1048,12 @@ Route::get('/profil/tupoksi', function () {
 });
 Route::get('/profil/kepegawaian', function () {
     $rekap_asn = DataAsn::orderBy('id', 'asc')->get();
+    $peta_jabatan = PetaJabatan::latest()->get();
 
-    return view('public.profil.kepegawaian', compact('rekap_asn'));
+    return view('public.profil.kepegawaian', compact('rekap_asn', 'peta_jabatan'));
 });
+Route::get('/profil/peta-jabatan/{id}/view', [PetaJabatanController::class, 'viewFile'])->name('publik.peta-jabatan.view');
+Route::get('/profil/peta-jabatan/{id}/download', [PetaJabatanController::class, 'downloadFile'])->name('publik.peta-jabatan.download');
 Route::get('/profil/program-kegiatan', function () {
     return view('public.profil.program-kegiatan');
 });
