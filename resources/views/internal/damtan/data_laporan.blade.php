@@ -1,9 +1,10 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Data Laporan Penyelamatan')
+@section('title', request('tab') === 'non-kebakaran' ? 'Data Laporan Penyelamatan' : 'Data Laporan Kebakaran')
 
 @push('styles')
 <style>
+    [x-cloak] { display: none !important; }
     :root {
         --ink: #0d1b2a;
         --ink-2: #132a43;
@@ -341,6 +342,15 @@
         min-width: 220px;
         max-width: 320px;
     }
+    .cell-text-md {
+        text-align: left;
+        font-size: 0.85rem;
+        line-height: 1.45;
+        word-break: break-word;
+        white-space: normal;
+        min-width: 140px;
+        max-width: 220px;
+    }
     .cell-muted  { color: var(--steel-soft); }
     .cell-strong { font-weight: 600; color: var(--ink); }
 
@@ -430,8 +440,8 @@
 
     <div class="page-header">
         <div class="page-header-text">
-            <h1>Data Laporan Penyelamatan</h1>
-            <p>Daftar seluruh laporan kejadian yang telah diinput ke dalam sistem.</p>
+            <h1>{{ $isTabFire ? 'Data Laporan Kebakaran' : 'Data Laporan Penyelamatan' }}</h1>
+            <p>{{ $isTabFire ? 'Daftar seluruh laporan kejadian kebakaran yang telah diinput ke dalam sistem.' : 'Daftar seluruh laporan kejadian penyelamatan yang telah diinput ke dalam sistem.' }}</p>
         </div>
         <div class="d-flex gap-2 flex-wrap align-items-center">
             <!-- EKSPOR (PDF & EXCEL): SEMUA ROLE -->
@@ -561,7 +571,7 @@
             <div class="table-scroll-nav d-print-none">
                 <div class="d-flex align-items-center gap-2">
                     <span class="badge bg-primary px-2 py-1"><i class="fas fa-arrows-alt-h me-1"></i> Format Lengkap</span>
-                    <span class="nav-hint">Menampilkan seluruh <strong>{{ $isTabFire ? '24' : '22' }} kolom</strong> sesuai formulir resmi. Kolom <strong>No</strong> &amp; <strong>Hari/Tanggal</strong> terkunci di kiri:</span>
+                    <span class="nav-hint">Menampilkan seluruh <strong>22 kolom</strong> sesuai formulir resmi. Kolom <strong>No</strong> &amp; <strong>Hari/Tanggal</strong> terkunci di kiri:</span>
                 </div>
                 <div class="d-flex align-items-center gap-1">
                     <button type="button" class="btn-nav-scroll" id="btnScrollStart" title="Kembali ke Kolom Awal (No. 1)"><i class="fas fa-backward me-1"></i> Kolom Awal</button>
@@ -576,37 +586,44 @@
                     <table class="table-rekap" id="tableRekap">
                         <thead>
                             <tr>
-                                <th>No</th>
-                                <th>Hari dan Tanggal</th>
-                                <th>Waktu Laporan Diterima</th>
-                                <th>Laporan Diterima Melalui</th>
-                                <th>Waktu Tiba di Lokasi</th>
-                                <th>Jarak Tempuh</th>
-                                <th>Respon Time</th>
-                                <th>Nama Pelapor</th>
-                                <th>No. Telfon Pelapor</th>
                                 @if($isTabFire)
+                                    <th>No</th>
+                                    <th>Hari dan Tanggal</th>
+                                    <th>Laporan Diterima Melalui</th>
+                                    <th>Waktu Laporan Diterima</th>
+                                    <th>Waktu Tiba di Lokasi</th>
+                                    <th>Jarak Tempuh</th>
+                                    <th>Respon Time</th>
+                                    <th>Nama Pelapor</th>
+                                    <th>No. Tlp Pelapor</th>
                                     <th>Objek Kebakaran</th>
                                     <th>Lokasi Kebakaran</th>
-                                    <th>Nama Korban</th>
-                                    <th>Jumlah Jiwa</th>
-                                    <th>Jumlah Korban (Meninggal &amp; Cidera)</th>
-                                    <th>Jumlah Warga yang Terdampak</th>
+                                    <th>Nama Korban / KK</th>
+                                    <th>Jumlah yang Terdampak (Jiwa)</th>
+                                    <th>Petugas atau Warga<br><small style="font-weight: 500; opacity: 0.9;">(Meninggal atau Cidera)</small></th>
                                     <th>Pimpinan Operasi</th>
                                     <th>Satuan Tugas</th>
                                     <th>Jumlah Personil</th>
                                     <th>Lama Operasi</th>
-                                    <th>Kronologi Kebakaran</th>
                                     <th>Penyebab Kebakaran</th>
                                     <th>Hambatan</th>
                                     <th>Sarana yang Digunakan</th>
-                                    <th>Tim Quick Respon</th>
+                                    <th>Tim Quick Respon<br>Pemadam Kebakaran</th>
                                 @else
+                                    <th>No</th>
+                                    <th>Hari dan Tanggal</th>
+                                    <th>Laporan Diterima Melalui</th>
+                                    <th>Waktu Laporan Diterima</th>
+                                    <th>Waktu Tiba di Lokasi</th>
+                                    <th>Jarak Tempuh</th>
+                                    <th>Respon Time</th>
+                                    <th>Nama Pelapor</th>
+                                    <th>No. Tlp Pelapor</th>
                                     <th>Objek Penyelamatan / Evakuasi</th>
                                     <th>Lokasi Penyelamatan / Evakuasi</th>
-                                    <th>Nama Korban</th>
-                                    <th>Jumlah Jiwa</th>
-                                    <th>Jumlah Korban (Meninggal &amp; Cidera)</th>
+                                    <th>Nama Korban / KK</th>
+                                    <th>Jumlah yang Terdampak (Jiwa)</th>
+                                    <th>Petugas atau Warga<br><small style="font-weight: 500; opacity: 0.9;">(Meninggal atau Cidera)</small></th>
                                     <th>Pimpinan Operasi</th>
                                     <th>Satuan Tugas</th>
                                     <th>Jumlah Personil</th>
@@ -614,7 +631,7 @@
                                     <th>Kronologi Penyelamatan / Evakuasi</th>
                                     <th>Hambatan</th>
                                     <th>Sarana yang Digunakan</th>
-                                    <th>Tim Quick Respon</th>
+                                    <th>Tim Quick Respon<br>Pemadam Kebakaran</th>
                                 @endif
                                 <th>Aksi</th>
                             </tr>
@@ -655,9 +672,23 @@
 
                                 // 6. Jarak Tempuh
                                 $jarakRaw = $a['jarak_tempuh'] ?? null;
-                                $jarakTampil = ($jarakRaw !== null && $jarakRaw !== '')
-                                    ? (is_numeric($jarakRaw) ? $jarakRaw . ' Km' : (preg_match('/km/i', $jarakRaw) ? $jarakRaw : $jarakRaw . ' Km'))
-                                    : '-';
+                                $jarakTampil = '-';
+                                if ($jarakRaw !== null && $jarakRaw !== '' && $jarakRaw !== '-' && !preg_match('/(orang|personel|personil|jiwa|m2|persegi)/i', (string) $jarakRaw)) {
+                                    $jClean = trim(preg_replace('/^[:\s±~]+/', '', (string) $jarakRaw));
+                                    $jClean = rtrim($jClean, " .\t\n\r\0\x0B");
+                                    $jClean = str_replace(',', '.', $jClean);
+                                    if (preg_match('/^(\d+(?:\.\d+)?)\s*(?:meter|m)$/i', $jClean, $jm)) {
+                                        $val = (float) $jm[1];
+                                        $jarakTampil = (str_contains($jm[1], '.') || $val < 20) ? ((float) $val) . ' Km' : (round($val / 1000, 3)) . ' Km';
+                                    } elseif (preg_match('/^(\d+(?:\.\d+)?)\s*km$/i', $jClean, $jm)) {
+                                        $jarakTampil = ((float) $jm[1]) . ' Km';
+                                    } elseif (is_numeric($jClean)) {
+                                        $jarakTampil = ((float) $jClean) . ' Km';
+                                    } elseif (preg_match('/(\d+(?:\.\d+)?)/', $jClean, $jm)) {
+                                        $val = (float) $jm[1];
+                                        $jarakTampil = (preg_match('/meter/i', $jClean)) ? (round($val / 1000, 3)) . ' Km' : ((float) $val) . ' Km';
+                                    }
+                                }
 
                                 // 7. Respon Time
                                 $rt = $row->respon_time;
@@ -778,21 +809,44 @@
                                     $peralatanTxt .= ($peralatanTxt ? ', ' : '') . $a['peralatan_lain'];
                                 }
 
-                                // Tim Quick Respon
-                                $timQuickTampil = !empty($a['tim_respontime']) ? $a['tim_respontime'] : '-';
+                                // Tim Quick Respon Pemadam Kebakaran / Instansi Pendukung
+                                $timQuickRaw = $a['instansi_pendukung'] ?? null;
+                                $timQuickTxt = '';
+                                if (!empty($timQuickRaw)) {
+                                    for ($i = 0; $i < 2 && is_string($timQuickRaw); $i++) {
+                                        $d = json_decode($timQuickRaw, true);
+                                        if ($d === null) break;
+                                        $timQuickRaw = $d;
+                                    }
+                                    if (is_array($timQuickRaw)) {
+                                        $timQuickTxt = implode(', ', array_filter($timQuickRaw));
+                                    } else {
+                                        $timQuickTxt = trim((string) $timQuickRaw);
+                                    }
+                                }
+
+                                if (empty($timQuickTxt) || $timQuickTxt === '-') {
+                                    if (!empty($a['tindakan_instansi']) && $a['tindakan_instansi'] !== '-') {
+                                        $timQuickTxt = $a['tindakan_instansi'];
+                                    } elseif (!empty($a['tim_respontime']) && !preg_match('/\bmenit\b/i', trim($a['tim_respontime'])) && $a['tim_respontime'] !== '-') {
+                                        $timQuickTxt = $a['tim_respontime'];
+                                    } else {
+                                        $timQuickTxt = '-';
+                                    }
+                                }
                             @endphp
                             <tr class="{{ $loop->odd ? 'alt' : '' }}" data-kategori="{{ $isFire ? 'kebakaran' : 'non-kebakaran' }}" data-tanggal="{{ $tglFilter }}" data-tahun="{{ $tglRaw ? Carbon::parse($tglRaw)->year : '' }}">
                                 <td class="no-cell">{{ $data_laporan->firstItem() + $index }}</td>
                                 <td class="cell-strong text-nowrap">{{ $hariTanggalTampil }}</td>
-                                <td class="text-nowrap">{{ $waktuTerimaTampil }}</td>
-                                <td>{{ $mediaPelaporanTampil }}</td>
-                                <td class="text-nowrap">{{ $waktuTibaTampil }}</td>
-                                <td class="text-nowrap">{{ $jarakTampil }}</td>
-                                <td class="text-nowrap">{{ $responTampil }}</td>
-                                <td>{{ $pelaporTampil }}</td>
-                                <td class="text-nowrap">{{ $teleponPelaporTampil }}</td>
 
                                 @if($isTabFire)
+                                    <td>{{ $mediaPelaporanTampil }}</td>
+                                    <td class="text-nowrap">{{ $waktuTerimaTampil }}</td>
+                                    <td class="text-nowrap">{{ $waktuTibaTampil }}</td>
+                                    <td class="text-nowrap">{{ $jarakTampil }}</td>
+                                    <td class="text-nowrap">{{ $responTampil }}</td>
+                                    <td>{{ $pelaporTampil }}</td>
+                                    <td class="text-nowrap">{{ $teleponPelaporTampil }}</td>
                                     <td>
                                         <span class="cell-strong">{{ $objekKebakaranTampil }}</span>
                                         @if($ketObjek)
@@ -800,51 +854,235 @@
                                         @endif
                                     </td>
                                     <td><div class="cell-text-full">{{ $lokasiTampil }}</div></td>
-                                    <td>{{ $namaKorbanTampil }}</td>
-                                    <td class="text-nowrap">{{ $jiwaTampil }}</td>
-                                    <td>{{ $korbanStatusTampil }}</td>
-                                    <td class="text-nowrap">{{ $wargaTerdampakTampil }}</td>
-                                    <td>{{ $pimpinanTampil }}</td>
-                                    <td>{{ $satgasTampil }}</td>
-                                    <td class="text-nowrap">{{ $personilTampil }}</td>
-                                    <td class="text-nowrap">{{ $lamaOperasiTampil }}</td>
-                                    <td><div class="cell-text-full">{{ $kronologiTampil }}</div></td>
-                                    <td>{{ $penyebabTampil }}</td>
-                                    <td><div class="cell-text-full">{{ $hambatanTampil }}</div></td>
                                     <td>
-                                        <div class="text-start" style="font-size: 0.82rem; line-height: 1.4;">
-                                            <div><strong>Air:</strong> {{ $air > 0 ? number_format($air, 0, ',', '.') . ' L' : '-' }}</div>
-                                            <div><strong>Armada:</strong> {{ $armadaTxt }}</div>
-                                            <div><strong>Foam:</strong> {{ $foam > 0 ? number_format($foam, 0, ',', '.') . ' L' : '-' }}</div>
-                                        </div>
-                                    </td>
-                                    <td>{{ $timQuickTampil }}</td>
-                                @else
-                                    <td>
-                                        <span class="cell-strong">{{ $objekPenyelamatanTampil }}</span>
-                                        @if($rincianNonKebakaran)
-                                            <div class="small text-muted">{{ $rincianNonKebakaran }}</div>
-                                        @endif
-                                    </td>
-                                    <td><div class="cell-text-full">{{ $lokasiTampil }}</div></td>
-                                    <td>{{ $namaKorbanTampil }}</td>
-                                    <td class="text-nowrap">{{ $jiwaTampil }}</td>
-                                    <td>{{ $korbanStatusTampil }}</td>
-                                    <td>{{ $pimpinanTampil }}</td>
-                                    <td>{{ $satgasTampil }}</td>
-                                    <td class="text-nowrap">{{ $personilTampil }}</td>
-                                    <td class="text-nowrap">{{ $lamaOperasiTampil }}</td>
-                                    <td><div class="cell-text-full">{{ $kronologiTampil }}</div></td>
-                                    <td><div class="cell-text-full">{{ $hambatanTampil }}</div></td>
-                                    <td>
-                                        <div class="text-start" style="font-size: 0.82rem; line-height: 1.4;">
-                                            <div><strong>Armada:</strong> {{ $armadaTxt }}</div>
-                                            @if($peralatanTxt)
-                                                <div><strong>Alat:</strong> {{ $peralatanTxt }}</div>
+                                        <div class="cell-text-md">
+                                            @if(mb_strlen($namaKorbanTampil) > 40)
+                                                <div x-data="{ expanded: false }">
+                                                    <span x-show="!expanded">{{ \Illuminate\Support\Str::limit($namaKorbanTampil, 40, '') }}...</span>
+                                                    <span x-show="expanded" x-cloak style="display: none;">{{ $namaKorbanTampil }}</span>
+                                                    <button type="button" @click="expanded = !expanded" class="text-blue-600 hover:text-blue-800 text-xs font-semibold underline ms-1 inline-block cursor-pointer bg-transparent border-0 p-0">
+                                                        <span x-text="expanded ? 'Tutup' : 'Selengkapnya'">Selengkapnya</span>
+                                                    </button>
+                                                </div>
+                                            @else
+                                                {{ $namaKorbanTampil }}
                                             @endif
                                         </div>
                                     </td>
-                                    <td>{{ $timQuickTampil }}</td>
+                                    <td class="text-nowrap">{{ $jiwaTampil }}</td>
+                                    <td>{{ $korbanStatusTampil }}</td>
+                                    <td>{{ $pimpinanTampil }}</td>
+                                    <td>
+                                        <div class="cell-text-md">
+                                            @if(mb_strlen($satgasTampil) > 40)
+                                                <div x-data="{ expanded: false }">
+                                                    <span x-show="!expanded">{{ \Illuminate\Support\Str::limit($satgasTampil, 40, '') }}...</span>
+                                                    <span x-show="expanded" x-cloak style="display: none;">{{ $satgasTampil }}</span>
+                                                    <button type="button" @click="expanded = !expanded" class="text-blue-600 hover:text-blue-800 text-xs font-semibold underline ms-1 inline-block cursor-pointer bg-transparent border-0 p-0">
+                                                        <span x-text="expanded ? 'Tutup' : 'Selengkapnya'">Selengkapnya</span>
+                                                    </button>
+                                                </div>
+                                            @else
+                                                {{ $satgasTampil }}
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td class="text-nowrap">{{ $personilTampil }}</td>
+                                    <td class="text-nowrap">{{ $lamaOperasiTampil }}</td>
+                                    <td>
+                                        <div class="cell-text-md">
+                                            @if(mb_strlen($penyebabTampil) > 40)
+                                                <div x-data="{ expanded: false }">
+                                                    <span x-show="!expanded">{{ \Illuminate\Support\Str::limit($penyebabTampil, 40, '') }}...</span>
+                                                    <span x-show="expanded" x-cloak style="display: none;">{{ $penyebabTampil }}</span>
+                                                    <button type="button" @click="expanded = !expanded" class="text-blue-600 hover:text-blue-800 text-xs font-semibold underline ms-1 inline-block cursor-pointer bg-transparent border-0 p-0">
+                                                        <span x-text="expanded ? 'Tutup' : 'Selengkapnya'">Selengkapnya</span>
+                                                    </button>
+                                                </div>
+                                            @else
+                                                {{ $penyebabTampil }}
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="cell-text-full">
+                                            @if(mb_strlen($hambatanTampil) > 80)
+                                                <div x-data="{ expanded: false }">
+                                                    <span x-show="!expanded">{{ \Illuminate\Support\Str::limit($hambatanTampil, 80, '') }}...</span>
+                                                    <span x-show="expanded" x-cloak style="display: none;">{{ $hambatanTampil }}</span>
+                                                    <button type="button" @click="expanded = !expanded" class="text-blue-600 hover:text-blue-800 text-xs font-semibold underline ms-1 inline-block cursor-pointer bg-transparent border-0 p-0">
+                                                        <span x-text="expanded ? 'Tutup' : 'Selengkapnya'">Selengkapnya</span>
+                                                    </button>
+                                                </div>
+                                            @else
+                                                {{ $hambatanTampil }}
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="cell-text-md" style="font-size: 0.82rem; line-height: 1.45;">
+                                            <div><strong>Air:</strong> {{ $air > 0 ? number_format($air, 0, ',', '.') . ' L' : '-' }}</div>
+                                            <div>
+                                                <strong>Armada:</strong>
+                                                @if(mb_strlen($armadaTxt) > 40)
+                                                    <span x-data="{ expanded: false }">
+                                                        <span x-show="!expanded">{{ \Illuminate\Support\Str::limit($armadaTxt, 40, '') }}...</span>
+                                                        <span x-show="expanded" x-cloak style="display: none;">{{ $armadaTxt }}</span>
+                                                        <button type="button" @click="expanded = !expanded" class="text-blue-600 hover:text-blue-800 text-xs font-semibold underline ms-1 inline-block cursor-pointer bg-transparent border-0 p-0">
+                                                            <span x-text="expanded ? 'Tutup' : 'Selengkapnya'">Selengkapnya</span>
+                                                        </button>
+                                                    </span>
+                                                @else
+                                                    {{ $armadaTxt }}
+                                                @endif
+                                            </div>
+                                            <div><strong>Foam:</strong> {{ $foam > 0 ? number_format($foam, 0, ',', '.') . ' L' : '-' }}</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="cell-text-md">
+                                            @if(mb_strlen($timQuickTxt) > 40)
+                                                <div x-data="{ expanded: false }">
+                                                    <span x-show="!expanded">{{ \Illuminate\Support\Str::limit($timQuickTxt, 40, '') }}...</span>
+                                                    <span x-show="expanded" x-cloak style="display: none;">{{ $timQuickTxt }}</span>
+                                                    <button type="button" @click="expanded = !expanded" class="text-blue-600 hover:text-blue-800 text-xs font-semibold underline ms-1 inline-block cursor-pointer bg-transparent border-0 p-0">
+                                                        <span x-text="expanded ? 'Tutup' : 'Selengkapnya'">Selengkapnya</span>
+                                                    </button>
+                                                </div>
+                                            @else
+                                                {{ $timQuickTxt }}
+                                            @endif
+                                        </div>
+                                    </td>
+                                @else
+                                    <td>{{ $mediaPelaporanTampil }}</td>
+                                    <td class="text-nowrap">{{ $waktuTerimaTampil }}</td>
+                                    <td class="text-nowrap">{{ $waktuTibaTampil }}</td>
+                                    <td class="text-nowrap">{{ $jarakTampil }}</td>
+                                    <td class="text-nowrap">{{ $responTampil }}</td>
+                                    <td>{{ $pelaporTampil }}</td>
+                                    <td class="text-nowrap">{{ $teleponPelaporTampil }}</td>
+                                    <td>
+                                        <span class="cell-strong">{{ $objekPenyelamatanTampil }}</span>
+                                        @if($rincianNonKebakaran)
+                                             <div class="small text-muted">{{ $rincianNonKebakaran }}</div>
+                                        @endif
+                                    </td>
+                                    <td><div class="cell-text-full">{{ $lokasiTampil }}</div></td>
+                                    <td>
+                                        <div class="cell-text-md">
+                                            @if(mb_strlen($namaKorbanTampil) > 40)
+                                                <div x-data="{ expanded: false }">
+                                                    <span x-show="!expanded">{{ \Illuminate\Support\Str::limit($namaKorbanTampil, 40, '') }}...</span>
+                                                    <span x-show="expanded" x-cloak style="display: none;">{{ $namaKorbanTampil }}</span>
+                                                    <button type="button" @click="expanded = !expanded" class="text-blue-600 hover:text-blue-800 text-xs font-semibold underline ms-1 inline-block cursor-pointer bg-transparent border-0 p-0">
+                                                        <span x-text="expanded ? 'Tutup' : 'Selengkapnya'">Selengkapnya</span>
+                                                    </button>
+                                                </div>
+                                            @else
+                                                {{ $namaKorbanTampil }}
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td class="text-nowrap">{{ $jiwaTampil }}</td>
+                                    <td>{{ $korbanStatusTampil }}</td>
+                                    <td>{{ $pimpinanTampil }}</td>
+                                    <td>
+                                        <div class="cell-text-md">
+                                            @if(mb_strlen($satgasTampil) > 40)
+                                                <div x-data="{ expanded: false }">
+                                                    <span x-show="!expanded">{{ \Illuminate\Support\Str::limit($satgasTampil, 40, '') }}...</span>
+                                                    <span x-show="expanded" x-cloak style="display: none;">{{ $satgasTampil }}</span>
+                                                    <button type="button" @click="expanded = !expanded" class="text-blue-600 hover:text-blue-800 text-xs font-semibold underline ms-1 inline-block cursor-pointer bg-transparent border-0 p-0">
+                                                        <span x-text="expanded ? 'Tutup' : 'Selengkapnya'">Selengkapnya</span>
+                                                    </button>
+                                                </div>
+                                            @else
+                                                {{ $satgasTampil }}
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td class="text-nowrap">{{ $personilTampil }}</td>
+                                    <td class="text-nowrap">{{ $lamaOperasiTampil }}</td>
+                                    <td>
+                                        <div class="cell-text-full">
+                                            @if(mb_strlen($kronologiTampil) > 80)
+                                                <div x-data="{ expanded: false }">
+                                                    <span x-show="!expanded">{{ \Illuminate\Support\Str::limit($kronologiTampil, 80, '') }}...</span>
+                                                    <span x-show="expanded" x-cloak style="display: none;">{{ $kronologiTampil }}</span>
+                                                    <button type="button" @click="expanded = !expanded" class="text-blue-600 hover:text-blue-800 text-xs font-semibold underline ms-1 inline-block cursor-pointer bg-transparent border-0 p-0">
+                                                        <span x-text="expanded ? 'Tutup' : 'Selengkapnya'">Selengkapnya</span>
+                                                    </button>
+                                                </div>
+                                            @else
+                                                {{ $kronologiTampil }}
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="cell-text-full">
+                                            @if(mb_strlen($hambatanTampil) > 80)
+                                                <div x-data="{ expanded: false }">
+                                                    <span x-show="!expanded">{{ \Illuminate\Support\Str::limit($hambatanTampil, 80, '') }}...</span>
+                                                    <span x-show="expanded" x-cloak style="display: none;">{{ $hambatanTampil }}</span>
+                                                    <button type="button" @click="expanded = !expanded" class="text-blue-600 hover:text-blue-800 text-xs font-semibold underline ms-1 inline-block cursor-pointer bg-transparent border-0 p-0">
+                                                        <span x-text="expanded ? 'Tutup' : 'Selengkapnya'">Selengkapnya</span>
+                                                    </button>
+                                                </div>
+                                            @else
+                                                {{ $hambatanTampil }}
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="cell-text-md" style="font-size: 0.82rem; line-height: 1.45;">
+                                            <div>
+                                                <strong>Armada:</strong>
+                                                @if(mb_strlen($armadaTxt) > 40)
+                                                    <span x-data="{ expanded: false }">
+                                                        <span x-show="!expanded">{{ \Illuminate\Support\Str::limit($armadaTxt, 40, '') }}...</span>
+                                                        <span x-show="expanded" x-cloak style="display: none;">{{ $armadaTxt }}</span>
+                                                        <button type="button" @click="expanded = !expanded" class="text-blue-600 hover:text-blue-800 text-xs font-semibold underline ms-1 inline-block cursor-pointer bg-transparent border-0 p-0">
+                                                            <span x-text="expanded ? 'Tutup' : 'Selengkapnya'">Selengkapnya</span>
+                                                        </button>
+                                                    </span>
+                                                @else
+                                                    {{ $armadaTxt }}
+                                                @endif
+                                            </div>
+                                            @if($peralatanTxt)
+                                                <div>
+                                                    <strong>Alat:</strong>
+                                                    @if(mb_strlen($peralatanTxt) > 40)
+                                                        <span x-data="{ expanded: false }">
+                                                            <span x-show="!expanded">{{ \Illuminate\Support\Str::limit($peralatanTxt, 40, '') }}...</span>
+                                                            <span x-show="expanded" x-cloak style="display: none;">{{ $peralatanTxt }}</span>
+                                                            <button type="button" @click="expanded = !expanded" class="text-blue-600 hover:text-blue-800 text-xs font-semibold underline ms-1 inline-block cursor-pointer bg-transparent border-0 p-0">
+                                                                <span x-text="expanded ? 'Tutup' : 'Selengkapnya'">Selengkapnya</span>
+                                                            </button>
+                                                        </span>
+                                                    @else
+                                                        {{ $peralatanTxt }}
+                                                    @endif
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="cell-text-md">
+                                            @if(mb_strlen($timQuickTxt) > 40)
+                                                <div x-data="{ expanded: false }">
+                                                    <span x-show="!expanded">{{ \Illuminate\Support\Str::limit($timQuickTxt, 40, '') }}...</span>
+                                                    <span x-show="expanded" x-cloak style="display: none;">{{ $timQuickTxt }}</span>
+                                                    <button type="button" @click="expanded = !expanded" class="text-blue-600 hover:text-blue-800 text-xs font-semibold underline ms-1 inline-block cursor-pointer bg-transparent border-0 p-0">
+                                                        <span x-text="expanded ? 'Tutup' : 'Selengkapnya'">Selengkapnya</span>
+                                                    </button>
+                                                </div>
+                                            @else
+                                                {{ $timQuickTxt }}
+                                            @endif
+                                        </div>
+                                    </td>
                                 @endif
 
                                 <td>
@@ -896,6 +1134,7 @@
 @endsection
 
 @push('scripts')
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const rows        = document.querySelectorAll('#tableBody tr[data-kategori]');

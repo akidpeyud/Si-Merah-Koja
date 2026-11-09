@@ -310,6 +310,7 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
     Route::get('/internal/surat-korban/data', [DamtanController::class, 'indexSurat'])->name('surat-korban.data');
     Route::get('/internal/surat-korban/export-excel', SuratKorbanExcelController::class)->name('surat-korban.export-excel');
     Route::get('/internal/surat-korban/cetak/{id}', [DamtanController::class, 'cetakSurat']);
+    Route::get('/internal/surat-korban/dokumen/{id}/{jenis}', [DamtanController::class, 'lihatDokumenSurat'])->name('surat-korban.lihat-dokumen');
 
     // Aksi Kelola Laporan Kebakaran & Surat Korban (Khusus Role Damtan & Super User)
     Route::middleware([RoleMiddleware::class.':Damtan|Super User'])->group(function () {
@@ -324,6 +325,8 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
         Route::get('/internal/surat-korban/edit/{id}', [DamtanController::class, 'editSurat']);
         Route::put('/internal/surat-korban/update/{id}', [DamtanController::class, 'updateSurat']);
         Route::delete('/internal/surat-korban/delete/{id}', [DamtanController::class, 'destroySurat']);
+        Route::post('/internal/surat-korban/upload-dokumen', [DamtanController::class, 'uploadDokumenSurat'])->name('surat-korban.upload-dokumen');
+        Route::delete('/internal/surat-korban/hapus-dokumen/{id}', [DamtanController::class, 'hapusDokumenSurat'])->name('surat-korban.hapus-dokumen');
     });
 
     // KELOLA SURAT KERAMAIAN (ADMIN BAGIAN PEMADAMAN)
