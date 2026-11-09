@@ -157,27 +157,17 @@
     transition: transform 0.25s ease;
 }
 .footer-warld-logo {
-    max-width: 210px;
+    max-width: 175px;
     width: 100%;
     height: auto;
     object-fit: contain;
-    /* Stroke / Outline putih tebal & jelas agar kontras di latar navy gelap */
-    filter: 
-        drop-shadow(1.5px 0 0 #ffffff) 
-        drop-shadow(-1.5px 0 0 #ffffff) 
-        drop-shadow(0 1.5px 0 #ffffff) 
-        drop-shadow(0 -1.5px 0 #ffffff)
-        drop-shadow(0 0 5px rgba(255, 255, 255, 0.85));
-    transition: filter 0.25s ease, transform 0.25s ease;
+    opacity: 0.95;
+    transition: transform 0.25s ease, opacity 0.25s ease, filter 0.25s ease;
 }
 .footer-warld-link:hover .footer-warld-logo {
+    opacity: 1;
     transform: scale(1.05);
-    filter: 
-        drop-shadow(2px 0 0 #ffffff) 
-        drop-shadow(-2px 0 0 #ffffff) 
-        drop-shadow(0 2px 0 #ffffff) 
-        drop-shadow(0 -2px 0 #ffffff)
-        drop-shadow(0 0 12px #ff2d75);
+    filter: drop-shadow(0 0 10px rgba(212, 255, 58, 0.45));
 }
 
 .footer .footer-links a {
