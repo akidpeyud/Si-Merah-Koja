@@ -66,7 +66,9 @@
 
     /* ---------- Penghitung Statistik Peta SIGAP ---------- */
         .rekap-grid { display: grid; grid-template-columns: minmax(210px, 1.2fr) repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 22px; }
-    .rekap-item { display: flex; align-items: center; gap: 14px; background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); padding: 16px 18px; box-shadow: var(--shadow-xs); border-left-width: 4px; }
+    .rekap-item { display: flex; align-items: center; gap: 14px; background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); padding: 16px 18px; box-shadow: var(--shadow-xs); border-left-width: 4px; cursor: pointer; user-select: none; }
+    .rekap-item.active { box-shadow: 0 0 0 2px var(--ink), var(--shadow-sm); transform: translateY(-2px); }
+    .rekap-total.active { box-shadow: 0 0 0 3px rgba(13, 27, 42, .3), 0 0 0 2px #fff inset, var(--shadow-sm); transform: translateY(-2px); }
     .rekap-ico { flex: none; width: 42px; height: 42px; border-radius: 10px; display: grid; place-items: center; font-size: 1.05rem; }
     .rekap-num { font-family: var(--font-display); font-weight: 700; font-size: 1.7rem; line-height: 1; color: var(--ink); }
     .rekap-label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--steel-soft); margin-top: 4px; }
@@ -252,7 +254,7 @@
 
         <!-- REKAP GRID STATISTIK -->
         <div class="rekap-grid">
-            <div class="rekap-item rekap-total">
+            <div class="rekap-item rekap-total active" data-kategori="all" role="button" tabindex="0" title="Klik untuk menampilkan semua kategori">
                 <div class="rekap-ico"><i class="fas fa-map-marked-alt"></i></div>
                 <div>
                     <div class="rekap-num">{{ $totalTitik }}</div>
@@ -261,7 +263,7 @@
                 </div>
             </div>
             @foreach (\App\Models\TitikSigap::KATEGORI as $key => $label)
-            <div class="rekap-item rekap-{{ $key }}">
+            <div class="rekap-item rekap-{{ $key }}" data-kategori="{{ $key }}" role="button" tabindex="0" title="Klik untuk filter kategori {{ $label }}">
                 <div class="rekap-ico"><i class="fas {{ $kategoriMeta[$key]['ikon'] }}"></i></div>
                 <div>
                     <div class="rekap-num">{{ $jumlah[$key] ?? 0 }}</div>
@@ -302,7 +304,7 @@
                         @foreach ($titikSigaps as $index => $titik)
                             <tr>
                                 <td class="text-center fw-bold text-secondary">{{ $index + 1 }}</td>
-                                <td data-search="{{ $titik->kategori }} {{ $titik->tingkat_risiko }}">
+                                <td data-search="[kategori:{{ $titik->kategori }}] {{ $titik->kategori }} {{ $titik->kategori_label }} {{ $titik->tingkat_risiko }}">
                                     @if (isset($kategoriMeta[$titik->kategori]))
                                         <span class="badge-custom bg-{{ $titik->kategori }}"><i class="fas {{ $kategoriMeta[$titik->kategori]['ikon'] }} me-1"></i> {{ $titik->kategori_label }}</span>
                                         @if ($titik->kategori === 'zona_rawan' && $titik->tingkat_risiko)
@@ -411,6 +413,22 @@
                     '</div>'
                 );
 
+                // Fungsi filter kategori (sinkron dengan dropdown & card)
+                function applyKategoriFilter(kat) {
+                    kat = kat || '';
+                    $('#filterKategori').val(kat);
+
+                    $('.rekap-item').removeClass('active');
+                    if (kat) {
+                        $('.rekap-item[data-kategori="' + kat + '"]').addClass('active');
+                    } else {
+                        $('.rekap-item[data-kategori="all"]').addClass('active');
+                    }
+
+                    var searchRegex = kat ? '\\[kategori:' + kat + '\\]' : '';
+                    api.column(1).search(searchRegex, true, false).draw();
+                }
+
                 // Pencarian teks bebas
                 $('#cariTabel').on('input', function () {
                     api.search(this.value).draw();
@@ -418,10 +436,29 @@
 
                 // Menerapkan pencarian/filter ketika dropdown dipilih
                 $('#filterKategori').on('change', function () {
-                    var val = $(this).val(); // nilai kategori, cocok persis dengan data-search di kolom
-                    
-                    // Angka 1 di bawah ini mewakili Indeks Kolom "Kategori" (Kolom ke-2)
-                    api.column(1).search(val ? '^' + val + '$' : '', true, false).draw();
+                    applyKategoriFilter($(this).val());
+                });
+
+                // Menerapkan filter ketika card rekap statistik diklik
+                $(document).on('click', '.rekap-item', function () {
+                    var kat = $(this).data('kategori');
+                    if (kat === 'all' || !kat) {
+                        applyKategoriFilter('');
+                    } else {
+                        if ($(this).hasClass('active')) {
+                            applyKategoriFilter('');
+                        } else {
+                            applyKategoriFilter(kat);
+                        }
+                    }
+                });
+
+                // Aksesibilitas keyboard (Enter / Spasi) pada card
+                $(document).on('keydown', '.rekap-item', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        $(this).click();
+                    }
                 });
             }
         });
