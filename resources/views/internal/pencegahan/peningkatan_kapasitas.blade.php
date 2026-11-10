@@ -108,14 +108,14 @@
             <a href="/internal/pencegahan/peningkatan-kapasitas/diklat-f1" class="stat-card">
                 <div class="stat-ico ic-primary"><i class="fas fa-fire-extinguisher"></i></div>
                 <div>
-                    <div class="stat-title">Data DIKLAT F1</div>
+                    <div class="stat-title">Diklat Pemadam I</div>
                     <div class="stat-value">{{ count($dataF1 ?? []) }}</div>
                 </div>
             </a>
             <a href="/internal/pencegahan/peningkatan-kapasitas/diklat-f2" class="stat-card">
                 <div class="stat-ico ic-primary"><i class="fas fa-fire"></i></div>
                 <div>
-                    <div class="stat-title">Data DIKLAT F2</div>
+                    <div class="stat-title">Pemadam II</div>
                     <div class="stat-value">{{ count($dataF2 ?? []) }}</div>
                 </div>
             </a>
