@@ -62,15 +62,27 @@ class PenggunaanSaranaExcelController extends Controller
 
     public function __invoke(Request $request)
     {
-        // Tahun opsional (?tahun=2026). Nilai selain 4 digit angka diabaikan = semua tahun.
+        // Tahun & bulan opsional (?tahun=2026&bulan=1).
         $tahun = $request->query('tahun');
         $tahun = (is_numeric($tahun) && strlen((string) $tahun) === 4) ? (int) $tahun : null;
+
+        $bulan = $request->query('bulan');
+        $bulan = (is_numeric($bulan) && (int) $bulan >= 1 && (int) $bulan <= 12) ? (int) $bulan : null;
+
+        $daftarNamaBulan = [
+            1 => 'JANUARI', 2 => 'FEBRUARI', 3 => 'MARET', 4 => 'APRIL',
+            5 => 'MEI', 6 => 'JUNI', 7 => 'JULI', 8 => 'AGUSTUS',
+            9 => 'SEPTEMBER', 10 => 'OKTOBER', 11 => 'NOVEMBER', 12 => 'DESEMBER',
+        ];
 
         $model = new PenggunaanSarana;
 
         $query = PenggunaanSarana::orderBy('created_at', 'desc');
         if ($tahun) {
             $query->whereYear('tgl_pelaksanaan', $tahun);
+        }
+        if ($bulan) {
+            $query->whereMonth('tgl_pelaksanaan', $bulan);
         }
         $data = $query->get();
 
@@ -117,7 +129,8 @@ class PenggunaanSaranaExcelController extends Controller
 
         // Judul
         $ws->mergeCells("A1:{$kolTerakhir}2");
-        $ws->setCellValue('A1', 'REKAPITULASI PERMOHONAN PENGGUNAAN SARANA'.($tahun ? ' TAHUN '.$tahun : ''));
+        $periodeJudul = ($bulan ? ' BULAN '.$daftarNamaBulan[$bulan] : '').($tahun ? ' TAHUN '.$tahun : '');
+        $ws->setCellValue('A1', 'REKAPITULASI PERMOHONAN PENGGUNAAN SARANA'.$periodeJudul);
         $ws->mergeCells("A3:{$kolTerakhir}3");
         $ws->setCellValue('A3', 'Dicetak pada: '.Carbon::now()->locale('id')->translatedFormat('d F Y'));
         $ws->getStyle("A1:{$kolTerakhir}3")->applyFromArray([
@@ -222,7 +235,8 @@ class PenggunaanSaranaExcelController extends Controller
         $ws->getPageMargins()->setLeft(0.25)->setRight(0.25)->setTop(0.5)->setBottom(0.5);
 
         /* ---------- Download ---------- */
-        $namaFile = 'Rekap_Penggunaan_Sarana_'.($tahun ? $tahun.'_' : '').date('Ymd').'.xlsx';
+        $bulanPart = $bulan ? sprintf('%02d_', $bulan) : '';
+        $namaFile = 'Rekap_Penggunaan_Sarana_'.($tahun ? $tahun.'_' : '').$bulanPart.date('Ymd').'.xlsx';
 
         return response()->streamDownload(function () use ($ss) {
             (new Xlsx($ss))->save('php://output');

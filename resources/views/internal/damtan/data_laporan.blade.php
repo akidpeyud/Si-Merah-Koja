@@ -228,10 +228,11 @@
     .export-item .txt strong { font-size: .88rem; color: var(--ink); }
     .export-item .txt small { font-size: .76rem; color: var(--steel); }
 
-    /* Pilihan tahun di dalam menu ekspor */
-    .export-year { padding: 4px 10px 10px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
-    .export-year label { display: block; margin-bottom: 6px; font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--steel); }
-    .export-year .form-select { min-height: 38px; font-size: .88rem; font-weight: 600; }
+    /* Pilihan tahun & bulan di dalam menu ekspor */
+    .export-year { padding: 4px 10px 6px; }
+    .export-month { padding: 0 10px 10px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+    .export-year label, .export-month label { display: block; margin-bottom: 6px; font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--steel); }
+    .export-year .form-select, .export-month .form-select { min-height: 38px; font-size: .88rem; font-weight: 600; }
 
     /* ==========================================================
        TABEL REKAP (gaya header navy)
@@ -452,7 +453,7 @@
                 <ul class="dropdown-menu dropdown-menu-end export-menu" aria-labelledby="btnEkspor">
                     <li><h6 class="dropdown-header">Pilih format ekspor</h6></li>
 
-                    <!-- PILIH TAHUN: berlaku untuk Cetak PDF & Cetak Excel -->
+                    <!-- PILIH TAHUN & BULAN: berlaku untuk Cetak PDF & Cetak Excel -->
                     <li class="export-year" onclick="event.stopPropagation()">
                         <label for="tahunEkspor">Tahun</label>
                         <select id="tahunEkspor" class="form-select">
@@ -460,6 +461,24 @@
                             @foreach($daftarTahun as $thn)
                                 <option value="{{ $thn }}" {{ $thn == date('Y') ? 'selected' : '' }}>{{ $thn }}</option>
                             @endforeach
+                        </select>
+                    </li>
+                    <li class="export-month" onclick="event.stopPropagation()">
+                        <label for="bulanEkspor">Bulan</label>
+                        <select id="bulanEkspor" class="form-select">
+                            <option value="">Semua Bulan</option>
+                            <option value="1">Januari</option>
+                            <option value="2">Februari</option>
+                            <option value="3">Maret</option>
+                            <option value="4">April</option>
+                            <option value="5">Mei</option>
+                            <option value="6">Juni</option>
+                            <option value="7">Juli</option>
+                            <option value="8">Agustus</option>
+                            <option value="9">September</option>
+                            <option value="10">Oktober</option>
+                            <option value="11">November</option>
+                            <option value="12">Desember</option>
                         </select>
                     </li>
 
@@ -835,7 +854,7 @@
                                     }
                                 }
                             @endphp
-                            <tr class="{{ $loop->odd ? 'alt' : '' }}" data-kategori="{{ $isFire ? 'kebakaran' : 'non-kebakaran' }}" data-tanggal="{{ $tglFilter }}" data-tahun="{{ $tglRaw ? Carbon::parse($tglRaw)->year : '' }}">
+                            <tr class="{{ $loop->odd ? 'alt' : '' }}" data-kategori="{{ $isFire ? 'kebakaran' : 'non-kebakaran' }}" data-tanggal="{{ $tglFilter }}" data-tahun="{{ $tglRaw ? Carbon::parse($tglRaw)->year : '' }}" data-bulan="{{ $tglRaw ? Carbon::parse($tglRaw)->format('n') : '' }}">
                                 <td class="no-cell">{{ $data_laporan->firstItem() + $index }}</td>
                                 <td class="cell-strong text-nowrap">{{ $hariTanggalTampil }}</td>
 
@@ -1182,18 +1201,21 @@
         }
 
         /* ==========================================================
-           EKSPOR (Cetak PDF & Cetak Excel) per tahun
+           EKSPOR (Cetak PDF & Cetak Excel) per tahun & bulan
            ========================================================== */
         const selTahun  = document.getElementById('tahunEkspor');
+        const selBulan  = document.getElementById('bulanEkspor');
         const spanTahun = document.getElementById('printTahun');
+        const namaBulanIndo = ['', 'JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'];
         let tersimpan   = null;
 
-        // Excel: /internal/damtan/export-excel?tahun=YYYY&kategori=...
+        // Excel: /internal/damtan/export-excel?kategori=...&tahun=YYYY&bulan=M
         document.querySelectorAll('.export-item[data-kategori]').forEach(function (item) {
             item.addEventListener('click', function (e) {
                 e.preventDefault();
                 let url = '/internal/damtan/export-excel?kategori=' + encodeURIComponent(item.dataset.kategori);
                 if (selTahun && selTahun.value) url += '&tahun=' + encodeURIComponent(selTahun.value);
+                if (selBulan && selBulan.value) url += '&bulan=' + encodeURIComponent(selBulan.value);
                 window.location.href = url;
             });
         });
@@ -1209,9 +1231,10 @@
             if (spanTahun) spanTahun.textContent = '';
         }
 
-        // Cetak PDF: baris yang sedang tampil, hanya pada tahun terpilih
+        // Cetak PDF: baris yang sedang tampil, difilter tahun & bulan
         window.cetakPdf = function () {
             const tahun = selTahun ? selTahun.value : '';
+            const bulan = selBulan ? selBulan.value : '';
             let nomor = 0;
             tersimpan = [];
 
@@ -1219,7 +1242,9 @@
                 const noCell = row.querySelector('.no-cell');
                 tersimpan.push({ row: row, display: row.style.display, noCell: noCell, no: noCell ? noCell.textContent : '' });
 
-                const tampil = row.style.display !== 'none' && (!tahun || row.dataset.tahun === tahun);
+                const matchTahun = !tahun || row.dataset.tahun === tahun;
+                const matchBulan = !bulan || (row.dataset.bulan && String(parseInt(row.dataset.bulan, 10)) === String(parseInt(bulan, 10)));
+                const tampil = row.style.display !== 'none' && matchTahun && matchBulan;
                 if (tampil) {
                     nomor++;
                     if (noCell) noCell.textContent = nomor;
@@ -1230,11 +1255,21 @@
 
             if (nomor === 0) {
                 pulihkan();
-                alert(tahun ? 'Tidak ada laporan pada tahun ' + tahun + ' di halaman ini.' : 'Tidak ada data untuk dicetak.');
+                let pesan = 'Tidak ada laporan';
+                if (bulan && tahun) pesan += ' pada ' + namaBulanIndo[parseInt(bulan, 10)] + ' ' + tahun;
+                else if (tahun) pesan += ' pada tahun ' + tahun;
+                else if (bulan) pesan += ' pada bulan ' + namaBulanIndo[parseInt(bulan, 10)];
+                alert(pesan + ' di halaman ini.');
                 return;
             }
 
-            if (spanTahun) spanTahun.textContent = tahun ? ' TAHUN ' + tahun : '';
+            if (spanTahun) {
+                let teksPeriode = '';
+                if (bulan && tahun) teksPeriode = ' BULAN ' + namaBulanIndo[parseInt(bulan, 10)] + ' ' + tahun;
+                else if (tahun) teksPeriode = ' TAHUN ' + tahun;
+                else if (bulan) teksPeriode = ' BULAN ' + namaBulanIndo[parseInt(bulan, 10)];
+                spanTahun.textContent = teksPeriode ? ' ' + teksPeriode : '';
+            }
             window.print();
         };
 

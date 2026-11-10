@@ -340,9 +340,11 @@
     .export-item .txt strong { font-size: .88rem; color: var(--ink); }
     .export-item .txt small { font-size: .76rem; color: var(--steel); }
 
-    .export-year { padding: 4px 10px 10px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
-    .export-year label { display: block; margin-bottom: 6px; font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--steel); }
-    .export-year .form-select { min-height: 38px; font-size: .88rem; font-weight: 600; }
+    /* Pilihan tahun & bulan di dalam menu ekspor */
+    .export-year { padding: 4px 10px 6px; }
+    .export-month { padding: 0 10px 10px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+    .export-year label, .export-month label { display: block; margin-bottom: 6px; font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--steel); }
+    .export-year .form-select, .export-month .form-select { min-height: 38px; font-size: .88rem; font-weight: 600; }
 
     .btn-create-top {
         display: inline-flex;
@@ -625,7 +627,7 @@
                     <ul class="dropdown-menu dropdown-menu-end export-menu" aria-labelledby="btnEkspor">
                         <li><h6 class="dropdown-header">Pilih format ekspor</h6></li>
 
-                        <!-- PILIH TAHUN UNTUK EKSPOR -->
+                        <!-- PILIH TAHUN & BULAN UNTUK EKSPOR -->
                         <li class="export-year" onclick="event.stopPropagation()">
                             <label for="tahunEkspor">Tahun</label>
                             <select id="tahunEkspor" class="form-select">
@@ -633,6 +635,24 @@
                                 @foreach($opsiTahun as $thn)
                                     <option value="{{ $thn }}" {{ (string) request('tahun') === (string) $thn ? 'selected' : '' }}>{{ $thn }}</option>
                                 @endforeach
+                            </select>
+                        </li>
+                        <li class="export-month" onclick="event.stopPropagation()">
+                            <label for="bulanEkspor">Bulan</label>
+                            <select id="bulanEkspor" class="form-select">
+                                <option value="">Semua Bulan</option>
+                                <option value="1">Januari</option>
+                                <option value="2">Februari</option>
+                                <option value="3">Maret</option>
+                                <option value="4">April</option>
+                                <option value="5">Mei</option>
+                                <option value="6">Juni</option>
+                                <option value="7">Juli</option>
+                                <option value="8">Agustus</option>
+                                <option value="9">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
                             </select>
                         </li>
 
@@ -779,6 +799,7 @@
                                         $tgl = !empty($r->tanggal) ? \Carbon\Carbon::parse($r->tanggal) : null;
                                         $bulanStr = $tgl ? $tgl->locale('id')->translatedFormat('F Y') : '-';
                                         $tahunRow = $tgl ? $tgl->year : date('Y');
+                                        $bulanRow = $tgl ? $tgl->format('n') : '';
 
                                         $jenisBangunan = $r->keterangan_objek_kebakaran ?: ($kategori[$filterObjekTerpilih][0] ?? ucwords(str_replace(['_', 'objek_'], ' ', $r->kategori_kebakaran ?? $filterObjekTerpilih)));
                                         $lokasiKejadian = $r->alamat ?: ($r->lokasi ?? ($r->kecamatan ? 'Kec. ' . $r->kecamatan : '-'));
@@ -812,7 +833,7 @@
                                         $kendaraanText = (!empty($korbanAset) && $korbanAset !== '-' && strtolower($korbanAset) !== 'nihil') ? $korbanAset : '-';
                                         $isNihil = ($jiwaText === 'Nihil' && $kendaraanText === '-');
                                     @endphp
-                                    <tr data-tahun="{{ $tahunRow }}">
+                                    <tr data-tahun="{{ $tahunRow }}" data-bulan="{{ $bulanRow }}">
                                         <td class="no-cell">{{ $riwayat->firstItem() + $loop->index }}</td>
                                         <td class="cell-strong">{{ $bulanStr }}</td>
                                         <td><span class="num">{{ $r->jumlah ?? 1 }}</span> Kejadian</td>
@@ -843,7 +864,7 @@
                                 @endforelse
                             @else
                                 @forelse($riwayat as $r)
-                                    <tr data-tahun="{{ \Carbon\Carbon::parse($r->tanggal)->year }}">
+                                    <tr data-tahun="{{ \Carbon\Carbon::parse($r->tanggal)->year }}" data-bulan="{{ \Carbon\Carbon::parse($r->tanggal)->format('n') }}">
                                         <td class="no-cell">{{ $riwayat->firstItem() + $loop->index }}</td>
                                         <td class="cell-strong">{{ \Carbon\Carbon::parse($r->tanggal)->translatedFormat('F Y') }}</td>
                                         <td><span class="tag">{{ $kategori[$r->kategori][0] ?? $r->kategori }}</span></td>
@@ -1307,12 +1328,16 @@
     /* ===== Ekspor Excel & Cetak PDF (Dapat diakses semua pengguna) ===== */
     var btnExcel = document.getElementById('btnExportExcel');
     var selTahunEkspor = document.getElementById('tahunEkspor');
+    var selBulanEkspor = document.getElementById('bulanEkspor');
+    var namaBulanIndo = ['', 'JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'];
     if (btnExcel) {
         btnExcel.addEventListener('click', function (e) {
             e.preventDefault();
             var thn = selTahunEkspor ? selTahunEkspor.value : '';
+            var bln = selBulanEkspor ? selBulanEkspor.value : '';
             var url = '{{ route('damtan.rekap.export-excel') }}?type=objek';
             if (thn) url += '&tahun=' + encodeURIComponent(thn);
+            if (bln) url += '&bulan=' + encodeURIComponent(bln);
             window.location.href = url;
         });
     }
@@ -1332,6 +1357,7 @@
 
     window.cetakPdf = function () {
         var thn = selTahunEkspor ? selTahunEkspor.value : '';
+        var bln = selBulanEkspor ? selBulanEkspor.value : '';
         var rows = document.querySelectorAll('.tbl tbody tr:not(.empty-row)');
         var nomor = 0;
         tersimpanRekap = [];
@@ -1345,7 +1371,9 @@
                 no: noCell ? noCell.textContent : ''
             });
 
-            var tampil = (!thn || row.dataset.tahun === thn);
+            var matchTahun = !thn || row.dataset.tahun === thn;
+            var matchBulan = !bln || (row.dataset.bulan && String(parseInt(row.dataset.bulan, 10)) === String(parseInt(bln, 10)));
+            var tampil = matchTahun && matchBulan;
             if (tampil) {
                 nomor++;
                 row.style.display = '';
@@ -1357,11 +1385,21 @@
 
         if (nomor === 0) {
             pulihkanRekap();
-            alert(thn ? 'Tidak ada data objek kebakaran pada tahun ' + thn + ' di halaman ini.' : 'Tidak ada data untuk dicetak.');
+            var pesan = 'Tidak ada data objek kebakaran';
+            if (bln && thn) pesan += ' pada ' + namaBulanIndo[parseInt(bln, 10)] + ' ' + thn;
+            else if (thn) pesan += ' pada tahun ' + thn;
+            else if (bln) pesan += ' pada bulan ' + namaBulanIndo[parseInt(bln, 10)];
+            alert(pesan + ' di halaman ini.');
             return;
         }
 
-        if (spanThn) spanThn.textContent = thn ? ' TAHUN ' + thn : '';
+        if (spanThn) {
+            var teksPeriode = '';
+            if (bln && thn) teksPeriode = ' BULAN ' + namaBulanIndo[parseInt(bln, 10)] + ' ' + thn;
+            else if (thn) teksPeriode = ' TAHUN ' + thn;
+            else if (bln) teksPeriode = ' BULAN ' + namaBulanIndo[parseInt(bln, 10)];
+            spanThn.textContent = teksPeriode ? ' ' + teksPeriode : '';
+        }
         window.print();
     };
 

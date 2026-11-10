@@ -72,14 +72,33 @@ class SuratKorbanExcelController extends Controller
 
     public function __invoke(Request $request)
     {
-        // Tahun opsional (?tahun=2027). Nilai selain 4 digit angka diabaikan = semua tahun.
+        // Tahun & bulan opsional (?tahun=2027&bulan=1).
         $tahun = $request->query('tahun');
         $tahun = (is_numeric($tahun) && strlen((string) $tahun) === 4) ? (int) $tahun : null;
+
+        $bulan = $request->query('bulan');
+        $bulan = (is_numeric($bulan) && (int) $bulan >= 1 && (int) $bulan <= 12) ? (int) $bulan : null;
+
+        $daftarNamaBulan = [
+            1 => 'JANUARI', 2 => 'FEBRUARI', 3 => 'MARET', 4 => 'APRIL',
+            5 => 'MEI', 6 => 'JUNI', 7 => 'JULI', 8 => 'AGUSTUS',
+            9 => 'SEPTEMBER', 10 => 'OKTOBER', 11 => 'NOVEMBER', 12 => 'DESEMBER',
+        ];
 
         $model = new SuratKorban;
 
         $query = SuratKorban::orderByRaw('COALESCE(tanggal_surat, created_at) DESC')->orderByDesc('id');
-        if ($tahun) {
+        if ($tahun && $bulan) {
+            $awal = Carbon::create($tahun, $bulan, 1)->startOfMonth();
+            $akhir = Carbon::create($tahun, $bulan, 1)->endOfMonth();
+
+            $query->where(function ($q) use ($awal, $akhir) {
+                $q->whereBetween('tanggal_surat', [$awal, $akhir])
+                    ->orWhere(function ($q2) use ($awal, $akhir) {
+                        $q2->whereNull('tanggal_surat')->whereBetween('created_at', [$awal, $akhir]);
+                    });
+            });
+        } elseif ($tahun) {
             $awal = Carbon::create($tahun, 1, 1)->startOfDay();
             $akhir = Carbon::create($tahun, 12, 31)->endOfDay();
 
@@ -87,6 +106,13 @@ class SuratKorbanExcelController extends Controller
                 $q->whereBetween('tanggal_surat', [$awal, $akhir])
                     ->orWhere(function ($q2) use ($awal, $akhir) {
                         $q2->whereNull('tanggal_surat')->whereBetween('created_at', [$awal, $akhir]);
+                    });
+            });
+        } elseif ($bulan) {
+            $query->where(function ($q) use ($bulan) {
+                $q->whereMonth('tanggal_surat', $bulan)
+                    ->orWhere(function ($q2) use ($bulan) {
+                        $q2->whereNull('tanggal_surat')->whereMonth('created_at', $bulan);
                     });
             });
         }
@@ -141,7 +167,8 @@ class SuratKorbanExcelController extends Controller
 
         // Judul
         $ws->mergeCells("A1:{$kolTerakhir}2");
-        $ws->setCellValue('A1', 'REKAPITULASI SURAT KETERANGAN KEJADIAN'.($tahun ? ' TAHUN '.$tahun : ''));
+        $periodeJudul = ($bulan ? ' BULAN '.$daftarNamaBulan[$bulan] : '').($tahun ? ' TAHUN '.$tahun : '');
+        $ws->setCellValue('A1', 'REKAPITULASI SURAT KETERANGAN KEJADIAN'.$periodeJudul);
         $ws->mergeCells("A3:{$kolTerakhir}3");
         $ws->setCellValue('A3', 'Dicetak pada: '.Carbon::now()->locale('id')->translatedFormat('d F Y'));
         $ws->getStyle("A1:{$kolTerakhir}3")->applyFromArray([
@@ -240,7 +267,8 @@ class SuratKorbanExcelController extends Controller
         $ws->getPageMargins()->setLeft(0.25)->setRight(0.25)->setTop(0.5)->setBottom(0.5);
 
         /* ---------- Download ---------- */
-        $namaFile = 'Rekap_Surat_Korban_'.($tahun ? $tahun.'_' : '').date('Ymd').'.xlsx';
+        $bulanPart = $bulan ? sprintf('%02d_', $bulan) : '';
+        $namaFile = 'Rekap_Surat_Korban_'.($tahun ? $tahun.'_' : '').$bulanPart.date('Ymd').'.xlsx';
 
         return response()->streamDownload(function () use ($ss) {
             (new Xlsx($ss))->save('php://output');
