@@ -62,7 +62,7 @@
 
             {{-- Kolom 4: Statistik Pengunjung & Logo WARLD di Bawahnya --}}
             <div class="footer-stats-col">
-                <x-visit-counter page="simerahkoja" :track="false" />
+                <x-visit-counter page="simerahkoja" :  />
                 </div>
             </div>
         </div>
