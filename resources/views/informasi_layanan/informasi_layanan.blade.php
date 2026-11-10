@@ -73,8 +73,8 @@
             'ico'   => 'fa-arrow-trend-up',
             'cards' => [
                 'diksar'    => ['Data DIKSAR',      'fa-user-graduate'],
-                'f1'        => ['Data DIKLAT F1',   'fa-fire-extinguisher'],
-                'f2'        => ['Data DIKLAT F2',   'fa-fire'],
+                'f1'        => ['Data Diklat Pemadam I', 'fa-fire-extinguisher'],
+                'f2'        => ['Data Diklat Pemadam II', 'fa-fire'],
                 'rescue'    => ['DIKLAT Rescue',    'fa-life-ring'],
                 'mfr'       => ['DIKLAT MFR',       'fa-truck-medical'],
                 'operator'  => ['DIKLAT Operator',  'fa-truck'],

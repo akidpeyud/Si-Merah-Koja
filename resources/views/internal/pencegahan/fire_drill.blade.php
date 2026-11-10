@@ -304,6 +304,9 @@
         <li class="nav-item">
             <a class="nav-link {{ Request::is('internal/pencegahan/inspeksi-kebakaran/fire-drill*') ? 'active' : '' }}" href="/internal/pencegahan/inspeksi-kebakaran/fire-drill">FIRE DRILL</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link {{ Request::is('internal/pencegahan/inspeksi-kebakaran/pks*') ? 'active' : '' }}" href="/internal/pencegahan/inspeksi-kebakaran/pks">PKS (PERJANJIAN KERJASAMA)</a>
+        </li>
     </ul>
 
     <!-- FILTER BAR -->

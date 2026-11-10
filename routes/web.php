@@ -574,6 +574,10 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
     Route::get('/internal/pencegahan/inspeksi-kebakaran/fire-drill/cetak', [PencegahanController::class, 'cetak'])->name('fire_drill.cetak');
     Route::get('/internal/pencegahan/fire-drill/export/pdf', [PencegahanController::class, 'cetak']);
 
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/pks', [PencegahanController::class, 'indexPks'])->name('pks.index');
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/pks/excel', [PencegahanController::class, 'cetakExcelPks'])->name('pks.excel');
+    Route::get('/internal/pencegahan/inspeksi-kebakaran/pks/cetak', [PencegahanController::class, 'cetakPdfPks'])->name('pks.cetak');
+
     Route::middleware([RoleMiddleware::class.':Pencegahan|Super User'])->group(function () {
         Route::get('/internal/pencegahan/inspeksi-kebakaran/bangunan/tambah', [PencegahanController::class, 'create']);
         Route::post('/internal/pencegahan/inspeksi-kebakaran/bangunan/tambah', [PencegahanController::class, 'store'])->name('inspeksi.store');
@@ -586,6 +590,12 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
         Route::get('/internal/pencegahan/fire-drill/{id}/edit', [PencegahanController::class, 'editFireDrill'])->name('fire_drill.edit');
         Route::put('/internal/pencegahan/fire-drill/{id}', [PencegahanController::class, 'updateFireDrill'])->name('fire_drill.update');
         Route::delete('/internal/pencegahan/fire-drill/{id}', [PencegahanController::class, 'destroyFireDrill'])->name('fire_drill.destroy');
+
+        Route::get('/internal/pencegahan/inspeksi-kebakaran/pks/tambah', [PencegahanController::class, 'createPks'])->name('pks.create');
+        Route::post('/internal/pencegahan/inspeksi-kebakaran/pks/tambah', [PencegahanController::class, 'storePks'])->name('pks.store');
+        Route::get('/internal/pencegahan/inspeksi-kebakaran/pks/{id}/edit', [PencegahanController::class, 'editPks'])->name('pks.edit');
+        Route::put('/internal/pencegahan/inspeksi-kebakaran/pks/{id}', [PencegahanController::class, 'updatePks'])->name('pks.update');
+        Route::delete('/internal/pencegahan/inspeksi-kebakaran/pks/{id}', [PencegahanController::class, 'destroyPks'])->name('pks.destroy');
     });
 
     // 6. Layanan Inspeksi (Manual)

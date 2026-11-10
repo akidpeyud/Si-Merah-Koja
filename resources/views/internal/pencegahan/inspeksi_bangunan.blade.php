@@ -289,6 +289,9 @@
             <li class="nav-item">
                 <a class="nav-link {{ Request::is('internal/pencegahan/inspeksi-kebakaran/fire-drill*') ? 'active' : '' }}" href="/internal/pencegahan/inspeksi-kebakaran/fire-drill">Fire Drill</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('internal/pencegahan/inspeksi-kebakaran/pks*') ? 'active' : '' }}" href="/internal/pencegahan/inspeksi-kebakaran/pks">PKS (PERJANJIAN KERJASAMA)</a>
+            </li>
         </ul>
 
         <!-- ================= TAB "SEMUA DATA" ================= -->
@@ -307,6 +310,14 @@
                 <div>
                     <div class="stat-title">Fire Drill</div>
                     <div class="stat-value">{{ $total_fire_drill ?? 0 }}</div>
+                </div>
+            </a>
+
+            <a href="/internal/pencegahan/inspeksi-kebakaran/pks" class="stat-card">
+                <div class="stat-ico ic-success"><i class="fas fa-handshake"></i></div>
+                <div>
+                    <div class="stat-title">Perjanjian Kerjasama (PKS)</div>
+                    <div class="stat-value">{{ $total_pks ?? 0 }}</div>
                 </div>
             </a>
         </div>

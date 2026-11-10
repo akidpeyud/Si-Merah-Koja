@@ -220,8 +220,8 @@
 
 @section('content')
         @php
-            $judul = $judul_diklat ?? 'DIKLAT F1';
-            $jenis_url = strtolower(str_replace(' ', '-', $judul));
+            $judul = $judul_diklat ?? 'DIKLAT PEMADAM I';
+            $jenis_url = $jenis_slug ?? (Request::is('*diklat-f2*') ? 'diklat-f2' : (Request::is('*diklat-f1*') ? 'diklat-f1' : strtolower(str_replace(' ', '-', $judul))));
             $canCrud = auth()->user()->hasAnyRole(['Pencegahan', 'Super User']);
 
             $koleksiData = collect($data_diklat ?? []);
@@ -380,7 +380,7 @@
         <div class="table-title-row">
             <div class="table-title">
                 <span class="ico"><i class="fas fa-list-check"></i></span>
-                <span>Data {{ $judul_diklat ?? 'Diklat' }}</span>
+                <span>DATA {{ strtoupper($judul_diklat ?? 'DIKLAT') }}</span>
             </div>
             <div class="year-block-pills">
                 <span class="year-stat-pill">
