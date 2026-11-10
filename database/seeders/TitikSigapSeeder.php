@@ -10,10 +10,6 @@ class TitikSigapSeeder extends Seeder
 {
     public function run(): void
     {
-        if (DB::table('titik_sigaps')->exists()) {
-            return;
-        }
-
         $now = Carbon::now();
 
         // ------------------------------------------------------------------
@@ -158,6 +154,19 @@ class TitikSigapSeeder extends Seeder
             'created_at' => $now,
             'updated_at' => $now,
         ], $rows);
+
+        $existing = DB::table('titik_sigaps')
+            ->select('kategori', 'nama')
+            ->get()
+            ->map(fn ($row) => $row->kategori.'|'.$row->nama)
+            ->flip()
+            ->all();
+
+        $data = array_filter($data, fn ($item) => ! isset($existing[$item['kategori'].'|'.$item['nama']]));
+
+        if (empty($data)) {
+            return;
+        }
 
         foreach (array_chunk($data, 50) as $chunk) {
             DB::table('titik_sigaps')->insert($chunk);

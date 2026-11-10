@@ -43,6 +43,7 @@ class DatabaseSeeder extends Seeder
             KunjunganEdukasiSeeder::class,
             PelatihanKeluargaSeeder::class,
             PetaJabatanSeeder::class,
+            TitikSigapSeeder::class,
         ]);
     }
 }
