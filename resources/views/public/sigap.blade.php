@@ -1376,6 +1376,149 @@ body { font-size: 15px; background: #f4f6f9; }
     .sos-fab-btn span:not(.beacon) { font-size: .9rem; }
 }
 @media (max-width: 380px) { .chips { grid-template-columns: 1fr; } }
+
+/* ==========================================================
+   POPUP TITIK — label di atas nilai, badge kategori, scroll aman
+   ========================================================== */
+.leaflet-popup-content-wrapper { overflow: hidden; }
+.leaflet-popup-content { margin: 0 !important; width: min(300px, calc(100vw - 72px)) !important; min-width: 0 !important; }
+.leaflet-popup-tip { box-shadow: 0 4px 10px rgba(13,27,42,.12); }
+.leaflet-container a.leaflet-popup-close-button {
+    top: 10px !important; right: 10px !important; width: 32px !important; height: 32px !important; line-height: 30px !important;
+    font-size: 20px !important; background: var(--soft); border-radius: 50%; text-align: center; padding: 0 !important;
+}
+.popup { padding: 18px 18px 16px; max-height: min(58vh, 420px); overflow-y: auto; overscroll-behavior: contain; }
+.popup-kat {
+    display: inline-flex; align-items: center; gap: 8px; max-width: calc(100% - 40px);
+    padding: 4px 11px 4px 9px; border-radius: 999px; font-size: .74rem; font-weight: 600; line-height: 1.4;
+    background: var(--soft); color: var(--ink-2); margin-bottom: 10px;
+}
+.popup-kat::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--c, var(--blue)); flex: none; }
+.popup h3 { font-size: 1.1rem; line-height: 1.3; margin: 0 0 6px; padding: 0 28px 0 0; border: 0; letter-spacing: -.01em; overflow-wrap: anywhere; }
+.popup table, .popup tbody { display: block; width: 100%; }
+.popup tr { display: block; padding: 10px 0; border-top: 1px solid var(--line); }
+.popup tr:first-child { margin-top: 8px; }
+.popup td, .popup td:first-child, .popup td:nth-child(2) { display: block; width: auto; padding: 0; border: 0; white-space: normal; }
+.popup td:first-child { font-size: .72rem; font-weight: 600; color: var(--muted); margin-bottom: 2px; }
+.popup td:nth-child(2) { font-size: .9rem; font-weight: 500; color: var(--ink); line-height: 1.5; white-space: pre-line; }
+.popup a {
+    min-height: 44px; margin-top: 6px; border-radius: var(--r-ctl); box-shadow: none; font-size: .9rem;
+}
+.popup a:hover { transform: none; box-shadow: none; }
+.popup-risiko-header { align-items: flex-start; gap: 8px; flex-wrap: wrap; }
+.popup-risiko-header h3 { padding-right: 28px; }
+.kel-chips-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* ==========================================================
+   MOBILE (≤ 720px)
+   ========================================================== */
+@media (max-width: 720px) {
+    :root { --header-h: 60px; }
+    .page-hero { padding: 20px 0 60px; }
+    .crumbs { font-size: .8rem; margin-bottom: 12px; }
+    .page-hero h1 { font-size: 1.9rem; line-height: 1.05; }
+    .page-hero p { font-size: .92rem; margin-top: 10px; }
+    .hero-kicker { font-size: .75rem; padding: 5px 12px; }
+
+    .page-body { padding-bottom: 96px; }
+    .map-wrap { margin-top: -28px; margin-bottom: 20px; }
+    #map { height: 62svh; height: 62vh; min-height: 360px; max-height: 560px; }
+    @supports (height: 1svh) { #map { height: 62svh; } }
+
+    .map-sidebar-header { padding: 16px 14px 12px; }
+    .map-list-header { padding: 12px; gap: 10px; }
+    .side-feature-card, .sidebar-buffer-card { padding: 14px; }
+
+    .chips { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .chip { min-height: 48px; padding: 6px 8px; font-size: .8rem; }
+    .chip b { font-size: .68rem; }
+    .form-control, .form-select, .form-select-side, .form-control-side { min-height: 46px; font-size: 16px; } /* cegah zoom otomatis iOS */
+    .btn-gps-ping, .btn-apply-location, .btn-sbc-modal { min-height: 46px; }
+    #daftar-titik { max-height: 300px; }
+    #daftar-titik > li { min-height: 48px; }
+
+    .leaflet-control-zoom a { width: 40px !important; height: 40px !important; line-height: 40px !important; }
+    .leaflet-control-layers-toggle { width: 40px !important; height: 40px !important; }
+    .leaflet-control-attribution { font-size: 9px; max-width: 70vw; }
+
+    .stat-card { padding: 16px 14px; border-radius: var(--r-card); }
+    .stat-head-icon { display: none; }
+    .stat-head { margin-bottom: 12px; }
+    .stat-actions { width: 100%; }
+    .stat-select { width: 100%; font-size: 16px; }
+    .stat-hint-wrap { margin-top: 12px; }
+    .chart-box, .chart-box--kec { height: 280px; }
+
+    /* Modal dokumen: layar penuh */
+    .custom-modal-backdrop { padding: 0 !important; align-items: stretch !important; }
+    .custom-modal-dialog { width: 100% !important; max-width: none !important; height: 100dvh; max-height: none !important; border-radius: 0; }
+    .custom-modal-header { padding: 12px 14px; gap: 8px; }
+    .custom-modal-header h4 { font-size: .9rem; line-height: 1.35; }
+    .custom-modal-body { padding: 12px 14px; }
+    .modal-zoom-toolbar { width: 100%; justify-content: center; }
+
+    /* Tombol darurat */
+    .sos-fab { right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
+    .sos-fab-btn { padding: 12px 18px; font-size: .9rem; }
+    .sos-sheet { width: min(300px, calc(100vw - 24px)); }
+    .sos-sheet a { padding: 14px; min-height: 48px; }
+
+    .footer { padding: 48px 0 20px; }
+    .footer-bar { margin-top: 36px; padding-top: 20px; flex-direction: column; align-items: flex-start; gap: 16px; }
+}
+@media (max-width: 380px) {
+    .page-hero h1 { font-size: 1.65rem; }
+    .chips { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================
+   NAVIGASI TITIK + POPUP LOKASI SAYA
+   ========================================================== */
+.side-card-header-flex { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 32px; }
+.side-feature-card .btn-gps-ping { margin-top: 14px; }
+.side-feature-card .btn-gps-ping i { font-size: .9rem; }
+.side-feature-card .btn-gps-ping:disabled { background: #93a8d8; border-color: #93a8d8; opacity: 1; }
+.side-card-section + .side-card-section, .btn-gps-ping + .side-card-section {
+    margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line);
+}
+.coord-input-group { display: block; }
+.coord-label {
+    top: 50%; transform: translateY(-50%); left: 11px; width: 22px;
+    font-size: .72rem; font-weight: 700; color: var(--blue); text-transform: none;
+}
+.form-control-side { padding-left: 36px; font-variant-numeric: tabular-nums; -moz-appearance: textfield; appearance: textfield; }
+.form-control-side::-webkit-outer-spin-button, .form-control-side::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.form-control-side::placeholder { color: #94a3b8; }
+.btn-apply-location { margin-top: 10px; }
+.nav-feedback { display: flex; align-items: flex-start; gap: 8px; line-height: 1.45; }
+.nav-feedback.is-success::before, .nav-feedback.is-error::before {
+    content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; margin-top: .45em;
+    background: currentColor;
+}
+.btn-clear-location { color: var(--red-dark); }
+
+/* Popup lokasi saya */
+.popup-user h3 { font-size: 1rem; margin-bottom: 12px; }
+.user-coords { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.user-coords > div { background: var(--soft); border-radius: 10px; padding: 8px 10px; min-width: 0; }
+.user-coords small { display: block; font-size: .7rem; font-weight: 600; color: var(--muted); margin-bottom: 2px; }
+.user-coords b { display: block; font-size: .86rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.user-meta { margin: 10px 0 0; font-size: .8rem; color: var(--ink-3); }
+.user-hint { margin: 10px 0 0; padding-top: 10px; border-top: 1px solid var(--line); font-size: .76rem; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+.user-hint i { color: var(--blue); }
+.user-pulse-marker { width: 22px; height: 22px; box-shadow: 0 2px 8px rgba(13,27,42,.4); }
+
+/* Tombol Reset Navigasi Titik */
+.btn-clear-location {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 6px 12px;
+    background: #fff; border: 1px solid var(--line); border-radius: 10px;
+    color: var(--ink-2); font-size: .78rem; font-weight: 600; cursor: pointer; transition: all .15s;
+}
+.btn-clear-location:hover:not(:disabled) { background: #fef2f2; border-color: #fecaca; color: var(--red-dark); }
+.btn-clear-location:active:not(:disabled) { transform: scale(.97); }
+.btn-clear-location:disabled { opacity: .45; cursor: not-allowed; }
+.btn-clear-location:focus-visible { outline: 3px solid rgba(37,99,235,.55); outline-offset: 2px; }
+@media (max-width: 720px) { .btn-clear-location { min-height: 40px; padding: 8px 14px; } }
 </style>
 
 </head>
@@ -1444,43 +1587,15 @@ body { font-size: 15px; background: #f4f6f9; }
                 <aside class="map-list" aria-label="Navigasi dan Filter Kecamatan">
                     <div class="map-list-header">
                         <div class="side-features-grid">
-                            <!-- Card 1: Filter Kecamatan -->
-                            <div class="side-feature-card">
-                                <div class="side-card-title">
-                                    <i class="fas fa-layer-group"></i>
-                                    <span>Filter Wilayah</span>
-                                </div>
-
-                                <label class="kec-toggle" for="toggle-kec">
-                                    <span class="kec-toggle-text">
-                                        <b>Filter kecamatan</b>
-                                        <small id="toggle-kec-ket">Klik untuk menyaring titik</small>
-                                    </span>
-                                    <input id="toggle-kec" type="checkbox" role="switch" checked>
-                                    <span class="kec-switch" aria-hidden="true"></span>
-                                </label>
-
-                                <div class="side-card-section">
-                                    <label for="select-kecamatan-kanan" class="side-field-label">Pilihan Kecamatan</label>
-                                    <select id="select-kecamatan-kanan" class="form-select-side" aria-label="Pilih Kecamatan">
-                                        <option value="">Semua Kecamatan</option>
-                                    </select>
-                                    <div id="badge-kecamatan-aktif" class="badge-kecamatan-info" style="display: none;">
-                                        <span id="badge-kecamatan-dot" class="dot-kec"></span>
-                                        <span id="badge-kecamatan-nama"></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 2: Navigasi Titik & Koordinat -->
+                            <!-- Card 1: Navigasi Titik & Koordinat -->
                             <div class="side-feature-card">
                                 <div class="side-card-header-flex">
                                     <div class="side-card-title">
                                         <i class="fas fa-location-crosshairs"></i>
                                         <span>Navigasi Titik</span>
                                     </div>
-                                    <button type="button" id="btn-reset-lokasi" class="btn-clear-location" title="Hapus titik saya dari peta" style="display: none;">
-                                        <i class="fas fa-trash-can"></i> Hapus
+                                    <button type="button" id="btn-reset-lokasi" class="btn-clear-location" title="Reset navigasi titik: hapus pin, kosongkan koordinat, dan kembalikan tampilan peta" disabled>
+                                        <i class="fas fa-rotate-left"></i> <span>Reset</span>
                                     </button>
                                 </div>
 
@@ -1506,6 +1621,34 @@ body { font-size: 15px; background: #f4f6f9; }
                                         <span>Arahkan ke Titik</span>
                                     </button>
                                     <div id="nav-feedback-alert" class="nav-feedback" style="display: none;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Card 2: Filter Kecamatan -->
+                            <div class="side-feature-card">
+                                <div class="side-card-title">
+                                    <i class="fas fa-layer-group"></i>
+                                    <span>Filter Wilayah</span>
+                                </div>
+
+                                <label class="kec-toggle" for="toggle-kec">
+                                    <span class="kec-toggle-text">
+                                        <b>Filter kecamatan</b>
+                                        <small id="toggle-kec-ket">Klik untuk menyaring titik</small>
+                                    </span>
+                                    <input id="toggle-kec" type="checkbox" role="switch" checked>
+                                    <span class="kec-switch" aria-hidden="true"></span>
+                                </label>
+
+                                <div class="side-card-section">
+                                    <label for="select-kecamatan-kanan" class="side-field-label">Pilihan Kecamatan</label>
+                                    <select id="select-kecamatan-kanan" class="form-select-side" aria-label="Pilih Kecamatan">
+                                        <option value="">Semua Kecamatan</option>
+                                    </select>
+                                    <div id="badge-kecamatan-aktif" class="badge-kecamatan-info" style="display: none;">
+                                        <span id="badge-kecamatan-dot" class="dot-kec"></span>
+                                        <span id="badge-kecamatan-nama"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1834,8 +1977,21 @@ body { font-size: 15px; background: #f4f6f9; }
         }, 5000);
     }
 
-    function hapusTitikLokasi() {
+    let geoReqId = 0;            // penanda permintaan GPS yang sedang berjalan
+    const GPS_LABEL_DEFAULT = '<i class="fas fa-crosshairs"></i> <span>Cek Titik Sekarang</span>';
+
+    function updateResetState() {
+        if (!el.btnResetLokasi) return;
+        const adaIsi = !!markerUserLocation
+            || (el.inputLat && el.inputLat.value.trim() !== '')
+            || (el.inputLng && el.inputLng.value.trim() !== '');
+        el.btnResetLokasi.disabled = !adaIsi;
+    }
+
+    function resetNavigasiTitik() {
+        geoReqId++;                                   // batalkan hasil GPS yang masih menunggu
         if (markerUserLocation) {
+            markerUserLocation.closePopup();
             map.removeLayer(markerUserLocation);
             markerUserLocation = null;
         }
@@ -1845,9 +2001,16 @@ body { font-size: 15px; background: #f4f6f9; }
         }
         if (el.inputLat) el.inputLat.value = '';
         if (el.inputLng) el.inputLng.value = '';
-        if (el.btnResetLokasi) el.btnResetLokasi.style.display = 'none';
-        showNavFeedback('Titik lokasi telah dihapus dari peta.', 'success');
+        if (el.btnCekLokasi) {
+            el.btnCekLokasi.disabled = false;
+            el.btnCekLokasi.innerHTML = GPS_LABEL_DEFAULT;
+        }
+        map.closePopup();
+        map.setView([-1.6101, 103.6131], 12, { animate: true });
+        updateResetState();
+        showNavFeedback('Navigasi titik direset. Peta kembali ke tampilan awal.', 'success');
     }
+    const hapusTitikLokasi = resetNavigasiTitik;
 
     function setTitikLokasi(lat, lng, akurasi = null, label = 'Titik Kamu Sekarang') {
         if (markerUserLocation) {
@@ -1886,16 +2049,15 @@ body { font-size: 15px; background: #f4f6f9; }
 
         const updatePopupText = (latitude, longitude) => {
             const popupHtml = `
-                <div style="font-family: inherit; font-size: 0.82rem; min-width: 170px;">
-                    <div style="font-weight: 700; color: #0d1b2a; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
-                        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#2563eb;"></span>
-                        ${esc(label)}
+                <div class="popup popup-user">
+                    <span class="popup-kat" style="--c:#2563eb">Lokasi Anda</span>
+                    <h3>${esc(label)}</h3>
+                    <div class="user-coords">
+                        <div><small>Latitude</small><b>${latitude.toFixed(6)}</b></div>
+                        <div><small>Longitude</small><b>${longitude.toFixed(6)}</b></div>
                     </div>
-                    <div style="color: #64748b; font-size: 0.75rem; line-height: 1.45;">
-                        <div>Lat: <b>${latitude.toFixed(6)}</b></div>
-                        <div>Lng: <b>${longitude.toFixed(6)}</b></div>
-                        ${akurasi ? `<div style="font-size:0.7rem; color:#94a3b8; margin-top:2px;">Akurasi: ±${Math.round(akurasi)}m</div>` : ''}
-                    </div>
+                    ${akurasi ? `<p class="user-meta">Akurasi sekitar ±${Math.round(akurasi)} m</p>` : ''}
+                    <p class="user-hint"><i class="fas fa-hand-pointer"></i> Geser pin untuk memindahkan titik</p>
                 </div>
             `;
             markerUserLocation.bindPopup(popupHtml);
@@ -1916,7 +2078,7 @@ body { font-size: 15px; background: #f4f6f9; }
 
         if (el.inputLat) el.inputLat.value = lat.toFixed(6);
         if (el.inputLng) el.inputLng.value = lng.toFixed(6);
-        if (el.btnResetLokasi) el.btnResetLokasi.style.display = 'inline-flex';
+        updateResetState();
 
         map.setView([lat, lng], Math.max(map.getZoom(), 15), { animate: true });
     }
@@ -2627,15 +2789,14 @@ body { font-size: 15px; background: #f4f6f9; }
         });
         // Urutan baris: Kategori, Zona Kerawanan, Kecamatan, Lokasi, Keterangan
         const baris = [
-            ['Kategori', v.label],
             isRawan && zona ? ['Zona Kerawanan', `Risiko ${zona.tingkat} (Radius ${(zona.radius/1000).toFixed(1)} km)`] : null,
             ['Kecamatan', p.kecamatan],
             ['Lokasi', p.lokasi],
             ['Keterangan', p.keterangan]
         ].filter(Boolean).map(([a, b]) => `<tr><td>${esc(a)}</td><td>${esc(b)}</td></tr>`).join('');
-        const popup = `<div class="popup"><h3>${esc(p.nama)}</h3><table>${baris}</table>
+        const popup = `<div class="popup"><span class="popup-kat" style="--c:${isRawan && zona ? zona.warna : v.warna}">${esc(v.label)}</span><h3>${esc(p.nama)}</h3><table>${baris}</table>
             <a href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}" target="_blank" rel="noopener"><i class="fas fa-directions"></i> Rute ke lokasi</a></div>`;
-        return L.marker([p.lat, p.lng], { icon, title: p.nama, alt: p.nama }).bindPopup(popup, { maxWidth: 320, autoPanPadding: [20, 20] });
+        return L.marker([p.lat, p.lng], { icon, title: p.nama, alt: p.nama }).bindPopup(popup, { maxWidth: 320, minWidth: 0, autoPanPadding: [24, 24], closeButton: true });
     }
 
     const popupWilayah = (props, nama) => {
@@ -2706,11 +2867,13 @@ body { font-size: 15px; background: #f4f6f9; }
                 showNavFeedback('Browser tidak mendukung deteksi lokasi Geolocation.', 'error');
                 return;
             }
+            const myReq = ++geoReqId;
             el.btnCekLokasi.disabled = true;
             el.btnCekLokasi.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Mendeteksi...</span>';
 
             navigator.geolocation.getCurrentPosition(
                 function (position) {
+                    if (myReq !== geoReqId) return;
                     el.btnCekLokasi.disabled = false;
                     el.btnCekLokasi.innerHTML = '<i class="fas fa-crosshairs"></i> <span>Cek Titik Sekarang</span>';
                     const lat = position.coords.latitude;
@@ -2720,6 +2883,7 @@ body { font-size: 15px; background: #f4f6f9; }
                     showNavFeedback('Lokasi kamu berhasil ditemukan!', 'success');
                 },
                 function (err) {
+                    if (myReq !== geoReqId) return;
                     el.btnCekLokasi.disabled = false;
                     el.btnCekLokasi.innerHTML = '<i class="fas fa-crosshairs"></i> <span>Cek Titik Sekarang</span>';
                     let pesan = 'Gagal mendeteksi lokasi saat ini.';
@@ -2776,8 +2940,10 @@ body { font-size: 15px; background: #f4f6f9; }
         el.btnTerapkanCoord.addEventListener('click', prosesInputKoordinat);
     }
     if (el.btnResetLokasi) {
-        el.btnResetLokasi.addEventListener('click', hapusTitikLokasi);
+        el.btnResetLokasi.addEventListener('click', resetNavigasiTitik);
     }
+    [el.inputLat, el.inputLng].forEach(i => { if (i) i.addEventListener('input', updateResetState); });
+    updateResetState();
 
     [el.inputLat, el.inputLng].forEach(input => {
         if (input) {
