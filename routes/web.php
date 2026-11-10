@@ -100,12 +100,11 @@ Route::get('/media-informasi', [KabarDamkarController::class, 'indexMediaInforma
 Route::get('/sumber-air', [PublicController::class, 'sumberAir']);
 Route::get('/hidrant-kota', [PublicController::class, 'hidrantKota']);
 Route::get('/public-sigap', [PetaController::class, 'sigap']);
+Route::view('/waarld', 'layouts.partials.sidebarmenu')->name('tim.profil');
 
 Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman.index');
 Route::get('/pengumuman/{id}', [PengumumanController::class, 'show'])->whereNumber('id')->name('pengumuman.show');
 
-// Tim Pengembang SIMERAH KOJA (WARLD)
-Route::view('/warld', 'public.team')->name('tim.profil');
 
 // Indeks Kepuasan Masyarakat (IKM) - folder: resources/views/galery/ikm
 Route::get('/ikm', [IkmController::class, 'index'])->name('ikm.index');

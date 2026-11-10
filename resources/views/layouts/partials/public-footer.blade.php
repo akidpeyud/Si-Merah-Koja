@@ -63,11 +63,6 @@
             {{-- Kolom 4: Statistik Pengunjung & Logo WARLD di Bawahnya --}}
             <div class="footer-stats-col">
                 <x-visit-counter page="simerahkoja" :track="false" />
-
-                <div class="footer-warld-wrapper">
-                    <a href="{{ route('tim.profil') }}" class="footer-warld-link" title="WARLD?">
-                        <img src="{{ asset('images/warld-logo.png') }}" alt="WARLD?" class="footer-warld-logo" loading="lazy">
-                    </a>
                 </div>
             </div>
         </div>
