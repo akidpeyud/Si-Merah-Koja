@@ -157,6 +157,9 @@
 
     <div class="doc-title">
         <h3>REKAPITULASI SERAH TERIMA BARANG</h3>
+        <p style="margin: 0; font-size: 12px; font-weight: bold;">
+            {{ !empty($tahunFilter) ? 'TAHUN ' . implode(', ', $tahunFilter) : 'SEMUA TAHUN' }}
+        </p>
     </div>
 
     <!-- TABEL DATA -->

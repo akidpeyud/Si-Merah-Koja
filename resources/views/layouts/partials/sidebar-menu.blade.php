@@ -38,6 +38,7 @@
                 ['Data Hidrant Kota Jambi', '/sapra/data-hidrant-kota', 'fa-map-location-dot'],
                 ['Mutu Baku Kebutuhan', '/sapra/kebutuhan-sarpras', 'fa-boxes-stacked'],
                 ['Serah Terima Barang', '/sapra/distribusi-staff', 'fa-people-carry-box'],
+                ['Perbaikan Kendaraan', '/sapra/perbaikan-kendaraan', 'fa-screwdriver-wrench'],
             ],
         ],
         [
@@ -45,6 +46,7 @@
             'items' => [
                 ['Data Urut Kepangkatan', '/internal/kepegawaian/duk', 'fa-user-tie'],
                 ['Rekap Data ASN', '/internal/data-asn', 'fa-users'],
+                ['Data Peta Jabatan', '/internal/kepegawaian/peta-jabatan', 'fa-sitemap'],
                 ['SOP & Dokumen', '/internal/program-kerja', 'fa-file-contract'],
                 ['Dokumen Publik', route('dokumen-publik.index'), 'fa-file-lines'],
             ],

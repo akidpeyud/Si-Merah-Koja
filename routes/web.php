@@ -26,6 +26,7 @@ use App\Http\Controllers\PermohonanEdukasiController;
 use App\Http\Controllers\PermohonanRpkbglController;
 use App\Http\Controllers\PermohonanSkkController;
 use App\Http\Controllers\PetaController;
+use App\Http\Controllers\PetaJabatanController;
 use App\Http\Controllers\ProdukHukumController;
 use App\Http\Controllers\ProfilInstansiController;
 use App\Http\Controllers\ProgramKerjaController;
@@ -47,6 +48,7 @@ use App\Models\DokumenPublik;
 use App\Models\EduDamkar;
 use App\Models\Infografis;
 use App\Models\PermohonanEdukasi;
+use App\Models\PetaJabatan;
 use App\Models\UjungDamkar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -101,6 +103,9 @@ Route::get('/public-sigap', [PetaController::class, 'sigap']);
 
 Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman.index');
 Route::get('/pengumuman/{id}', [PengumumanController::class, 'show'])->whereNumber('id')->name('pengumuman.show');
+
+// Tim Pengembang SIMERAH KOJA (WARLD)
+Route::view('/warld', 'public.team')->name('tim.profil');
 
 // Indeks Kepuasan Masyarakat (IKM) - folder: resources/views/galery/ikm
 Route::get('/ikm', [IkmController::class, 'index'])->name('ikm.index');
@@ -310,6 +315,7 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
     Route::get('/internal/surat-korban/data', [DamtanController::class, 'indexSurat'])->name('surat-korban.data');
     Route::get('/internal/surat-korban/export-excel', SuratKorbanExcelController::class)->name('surat-korban.export-excel');
     Route::get('/internal/surat-korban/cetak/{id}', [DamtanController::class, 'cetakSurat']);
+    Route::get('/internal/surat-korban/dokumen/{id}/{jenis}', [DamtanController::class, 'lihatDokumenSurat'])->name('surat-korban.lihat-dokumen');
 
     // Aksi Kelola Laporan Kebakaran & Surat Korban (Khusus Role Damtan & Super User)
     Route::middleware([RoleMiddleware::class.':Damtan|Super User'])->group(function () {
@@ -324,6 +330,8 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
         Route::get('/internal/surat-korban/edit/{id}', [DamtanController::class, 'editSurat']);
         Route::put('/internal/surat-korban/update/{id}', [DamtanController::class, 'updateSurat']);
         Route::delete('/internal/surat-korban/delete/{id}', [DamtanController::class, 'destroySurat']);
+        Route::post('/internal/surat-korban/upload-dokumen', [DamtanController::class, 'uploadDokumenSurat'])->name('surat-korban.upload-dokumen');
+        Route::delete('/internal/surat-korban/hapus-dokumen/{id}', [DamtanController::class, 'hapusDokumenSurat'])->name('surat-korban.hapus-dokumen');
     });
 
     // KELOLA SURAT KERAMAIAN (ADMIN BAGIAN PEMADAMAN)
@@ -418,6 +426,10 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
     Route::get('/sapra/sarana-pemeriksaan', [SapraController::class, 'saranaPemeriksaan']);
     Route::get('/sapra/sarana-pemeriksaan/cetak', [SapraController::class, 'cetakPdfSaranaPemeriksaan']);
 
+    Route::get('/sapra/perbaikan-kendaraan', [SapraController::class, 'perbaikanKendaraan']);
+    Route::get('/sapra/perbaikan-kendaraan/cetak-pdf', [SapraController::class, 'cetakPdfPerbaikanKendaraan']);
+    Route::get('/sapra/perbaikan-kendaraan/cetak-excel', [SapraController::class, 'cetakExcelPerbaikanKendaraan']);
+
     // Aksi Tambah, Ubah, Hapus Data Sapra (Khusus Role Sapra & Super User)
     Route::middleware([RoleMiddleware::class.':Sapra|Super User'])->group(function () {
         Route::post('/sapra/data-hidrant-kota/store', [SapraController::class, 'storeHidrantKota']);
@@ -458,6 +470,10 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
         Route::post('/sapra/sarana-pemeriksaan/store', [SapraController::class, 'storeSaranaPemeriksaan']);
         Route::put('/sapra/sarana-pemeriksaan/update/{id}', [SapraController::class, 'updateSaranaPemeriksaan']);
         Route::delete('/sapra/sarana-pemeriksaan/delete/{id}', [SapraController::class, 'destroySaranaPemeriksaan']);
+
+        Route::post('/sapra/perbaikan-kendaraan/store', [SapraController::class, 'storePerbaikanKendaraan']);
+        Route::put('/sapra/perbaikan-kendaraan/update/{id}', [SapraController::class, 'updatePerbaikanKendaraan']);
+        Route::delete('/sapra/perbaikan-kendaraan/delete/{id}', [SapraController::class, 'destroyPerbaikanKendaraan']);
     });
 
     // --- E. PENCEGAHAN ---
@@ -870,6 +886,14 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
         Route::get('/duk/{id}/edit', [DukController::class, 'edit'])->name('duk.edit');
         Route::put('/duk/{id}', [DukController::class, 'update'])->name('duk.update');
         Route::delete('/duk/{id}', [DukController::class, 'destroy'])->name('duk.destroy');
+
+        // Data Peta Jabatan
+        Route::get('/peta-jabatan', [PetaJabatanController::class, 'index'])->name('peta-jabatan.index');
+        Route::post('/peta-jabatan', [PetaJabatanController::class, 'store'])->name('peta-jabatan.store');
+        Route::put('/peta-jabatan/{id}', [PetaJabatanController::class, 'update'])->name('peta-jabatan.update');
+        Route::delete('/peta-jabatan/{id}', [PetaJabatanController::class, 'destroy'])->name('peta-jabatan.destroy');
+        Route::get('/peta-jabatan/{id}/view', [PetaJabatanController::class, 'viewFile'])->name('peta-jabatan.view');
+        Route::get('/peta-jabatan/{id}/download', [PetaJabatanController::class, 'downloadFile'])->name('peta-jabatan.download');
     });
 
     // --- REKAP DATA ASN ---
@@ -1038,9 +1062,12 @@ Route::get('/profil/tupoksi', function () {
 });
 Route::get('/profil/kepegawaian', function () {
     $rekap_asn = DataAsn::orderBy('id', 'asc')->get();
+    $peta_jabatan = PetaJabatan::latest()->get();
 
-    return view('public.profil.kepegawaian', compact('rekap_asn'));
+    return view('public.profil.kepegawaian', compact('rekap_asn', 'peta_jabatan'));
 });
+Route::get('/profil/peta-jabatan/{id}/view', [PetaJabatanController::class, 'viewFile'])->name('publik.peta-jabatan.view');
+Route::get('/profil/peta-jabatan/{id}/download', [PetaJabatanController::class, 'downloadFile'])->name('publik.peta-jabatan.download');
 Route::get('/profil/program-kegiatan', function () {
     return view('public.profil.program-kegiatan');
 });

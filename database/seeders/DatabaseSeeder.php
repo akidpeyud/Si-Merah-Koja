@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
             SosialisasiPenyuluhanSeeder::class,
             KunjunganEdukasiSeeder::class,
             PelatihanKeluargaSeeder::class,
-            DiklatAparaturSeeder::class,
+            PetaJabatanSeeder::class,
         ]);
     }
 }

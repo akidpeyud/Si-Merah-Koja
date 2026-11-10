@@ -85,19 +85,28 @@
     $listRelawan     = collect($relawan);
     $totalRelawan    = $listRelawan->count();
     $daftarKecamatan = $listRelawan->pluck('kecamatan')->filter()->unique()->sort()->values();
-    $daftarTahunBentuk = $listRelawan->pluck('tanggal_pembentukan')->filter()->map(fn($d) => \Carbon\Carbon::parse($d)->format('Y'))->unique()->sort()->values();
-    $daftarTahunKukuh  = $listRelawan->pluck('tanggal_pengukuhan')->filter()->map(fn($d) => \Carbon\Carbon::parse($d)->format('Y'))->unique()->sort()->values();
+    $formatTahun     = fn($d) => empty($d) || $d === '-' ? '' : (preg_match('/^\d{4}$/', trim((string)$d)) ? trim((string)$d) : (str_starts_with(trim((string)$d), '1970') ? '2022' : \Carbon\Carbon::parse($d)->format('Y')));
+    $daftarTahunBentuk = $listRelawan->pluck('tanggal_pembentukan')->map($formatTahun)->filter()->unique()->sort()->values();
+    $daftarTahunKukuh  = $listRelawan->pluck('tanggal_pengukuhan')->map($formatTahun)->filter()->unique()->sort()->values();
 
     $jmlDenganKtp = $listRelawan->filter(fn($r) => $berkasAda($r->file_ktp))->count();
     $jmlTanpaKtp  = $totalRelawan - $jmlDenganKtp;
 
     /* ---------- Data untuk Rekap Excel (.xlsx) ---------- */
-    $barisExcel = $listRelawan->values()->map(function ($r, $i) {
-        $ttl       = trim(($r->tempat_lahir ?: '-') . ($r->tanggal_lahir ? ', ' . \Carbon\Carbon::parse($r->tanggal_lahir)->format('d/m/Y') : ''));
-        $tglBentuk = $r->tanggal_pembentukan ? \Carbon\Carbon::parse($r->tanggal_pembentukan)->format('d/m/Y') : '-';
-        $tglKukuh  = $r->tanggal_pengukuhan ? \Carbon\Carbon::parse($r->tanggal_pengukuhan)->format('d/m/Y') : '-';
-        $thnBentuk = $r->tanggal_pembentukan ? \Carbon\Carbon::parse($r->tanggal_pembentukan)->format('Y') : '';
-        $thnKukuh  = $r->tanggal_pengukuhan ? \Carbon\Carbon::parse($r->tanggal_pengukuhan)->format('Y') : '';
+    $barisExcel = $listRelawan->values()->map(function ($r, $i) use ($formatTahun) {
+        $ttlParts = [];
+        if ($r->tempat_lahir && $r->tempat_lahir !== '-') {
+            $ttlParts[] = $r->tempat_lahir;
+        }
+        if ($r->tanggal_lahir) {
+            $ttlParts[] = \Carbon\Carbon::parse($r->tanggal_lahir)->format('d/m/Y');
+        }
+        $ttl = !empty($ttlParts) ? implode(', ', $ttlParts) : '-';
+
+        $tglBentuk = $r->tanggal_pembentukan && $r->tanggal_pembentukan !== '-' ? (preg_match('/^\d{4}$/', trim((string)$r->tanggal_pembentukan)) ? trim((string)$r->tanggal_pembentukan) : (str_starts_with(trim((string)$r->tanggal_pembentukan), '1970') ? '2022' : \Carbon\Carbon::parse($r->tanggal_pembentukan)->format('d/m/Y'))) : '-';
+        $tglKukuh  = $r->tanggal_pengukuhan && $r->tanggal_pengukuhan !== '-' ? (preg_match('/^\d{4}$/', trim((string)$r->tanggal_pengukuhan)) ? trim((string)$r->tanggal_pengukuhan) : (str_starts_with(trim((string)$r->tanggal_pengukuhan), '1970') ? '2022' : \Carbon\Carbon::parse($r->tanggal_pengukuhan)->format('d/m/Y'))) : '-';
+        $thnBentuk = $formatTahun($r->tanggal_pembentukan);
+        $thnKukuh  = $formatTahun($r->tanggal_pengukuhan);
 
         return [
             'no'                  => $i + 1,
@@ -254,8 +263,8 @@
                         <tr class="rk-row"
                             data-search="{{ strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp . ' ' . $r->alamat . ' ' . $r->kelurahan . ' ' . $r->kecamatan . ' ' . $r->pekerjaan . ' ' . $r->pendidikan_terakhir . ' ' . $r->kartu_anggota) }}"
                             data-kecamatan="{{ strtolower($r->kecamatan) }}"
-                            data-thn-bentuk="{{ $r->tanggal_pembentukan ? \Carbon\Carbon::parse($r->tanggal_pembentukan)->format('Y') : '' }}"
-                            data-thn-kukuh="{{ $r->tanggal_pengukuhan ? \Carbon\Carbon::parse($r->tanggal_pengukuhan)->format('Y') : '' }}">
+                            data-thn-bentuk="{{ $formatTahun($r->tanggal_pembentukan) }}"
+                            data-thn-kukuh="{{ $formatTahun($r->tanggal_pengukuhan) }}">
                             {{-- 1. No --}}
                             <td class="text-center fw-bold text-muted">{{ $index + 1 }}</td>
 
@@ -276,7 +285,15 @@
 
                             {{-- 4. TTL --}}
                             <td class="text-nowrap">
-                                {{ $r->tempat_lahir ?: '-' }}{{ $r->tanggal_lahir ? ', ' . \Carbon\Carbon::parse($r->tanggal_lahir)->locale('id')->isoFormat('D MMMM Y') : '' }}
+                                @if($r->tempat_lahir && $r->tempat_lahir !== '-' && $r->tanggal_lahir)
+                                    {{ $r->tempat_lahir }}, {{ \Carbon\Carbon::parse($r->tanggal_lahir)->locale('id')->isoFormat('D MMMM Y') }}
+                                @elseif($r->tanggal_lahir)
+                                    {{ \Carbon\Carbon::parse($r->tanggal_lahir)->locale('id')->isoFormat('D MMMM Y') }}
+                                @elseif($r->tempat_lahir && $r->tempat_lahir !== '-')
+                                    {{ $r->tempat_lahir }}
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
                             </td>
 
                             {{-- 5. Jenis Kelamin --}}
@@ -331,8 +348,15 @@
 
                             {{-- 17. Tanggal Pembentukan REDKAR --}}
                             <td class="text-center text-nowrap">
-                                @if($r->tanggal_pembentukan)
-                                    <span class="fw-semibold text-dark">{{ \Carbon\Carbon::parse($r->tanggal_pembentukan)->locale('id')->isoFormat('D MMMM Y') }}</span>
+                                @php $valBentuk = trim((string) $r->tanggal_pembentukan); @endphp
+                                @if($valBentuk !== '' && $valBentuk !== '-')
+                                    @if(preg_match('/^\d{4}$/', $valBentuk))
+                                        <span class="fw-semibold text-dark">{{ $valBentuk }}</span>
+                                    @elseif(str_starts_with($valBentuk, '1970'))
+                                        <span class="fw-semibold text-dark">2022</span>
+                                    @else
+                                        <span class="fw-semibold text-dark">{{ \Carbon\Carbon::parse($valBentuk)->locale('id')->isoFormat('D MMMM Y') }}</span>
+                                    @endif
                                 @else
                                     <span class="text-muted">-</span>
                                 @endif
@@ -340,8 +364,15 @@
 
                             {{-- 18. Tanggal Pengukuhan REDKAR --}}
                             <td class="text-center text-nowrap">
-                                @if($r->tanggal_pengukuhan)
-                                    <span class="fw-semibold text-dark">{{ \Carbon\Carbon::parse($r->tanggal_pengukuhan)->locale('id')->isoFormat('D MMMM Y') }}</span>
+                                @php $valKukuh = trim((string) $r->tanggal_pengukuhan); @endphp
+                                @if($valKukuh !== '' && $valKukuh !== '-')
+                                    @if(preg_match('/^\d{4}$/', $valKukuh))
+                                        <span class="fw-semibold text-dark">{{ $valKukuh }}</span>
+                                    @elseif(str_starts_with($valKukuh, '1970'))
+                                        <span class="fw-semibold text-dark">2022</span>
+                                    @else
+                                        <span class="fw-semibold text-dark">{{ \Carbon\Carbon::parse($valKukuh)->locale('id')->isoFormat('D MMMM Y') }}</span>
+                                    @endif
                                 @else
                                     <span class="text-muted">-</span>
                                 @endif

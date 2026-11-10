@@ -79,7 +79,10 @@ class LaporanKebakaran2026Seeder extends Seeder
                         continue;
                     }
 
-                    $armada = $item['armada'] ?? null;
+                    $teknis = $item['teknis_logistik'] ?? [];
+                    $dok = $item['dokumentasi'] ?? [];
+
+                    $armada = $item['armada'] ?? ($teknis['armada'] ?? null);
                     $armadaJson = is_array($armada) ? json_encode($armada) : $armada;
                     $armadaArr = is_array($armada) ? $armada : (is_string($armada) ? json_decode($armada, true) : null);
 
@@ -106,46 +109,55 @@ class LaporanKebakaran2026Seeder extends Seeder
                         'waktu_berangkat'            => $item['waktu_berangkat'] ?? null,
                         'waktu_tiba'                 => $item['waktu_tiba'] ?? null,
                         'waktu_selesai'              => $item['waktu_selesai'] ?? null,
-                        'waktu_kembali'              => null,
+                        'waktu_kembali'              => $item['waktu_kembali'] ?? null,
 
                         'alamat'                     => $alamat ?? '-',
+                        'jarak_tempuh'               => $item['jarak_tempuh'] ?? null,
+                        'jumlah_jiwa'                => (int) ($item['jumlah_jiwa'] ?? 0),
+                        'warga_terdampak'            => (int) ($item['warga_terdampak'] ?? 0),
                         'korban_selamat'             => (int) ($item['korban_selamat'] ?? 0),
                         'korban_ringan'              => (int) ($item['korban_ringan'] ?? 0),
                         'korban_berat'               => (int) ($item['korban_berat'] ?? 0),
                         'korban_meninggal'           => (int) ($item['korban_meninggal'] ?? 0),
                         'korban_hewan_aset'          => $item['korban_hewan_aset'] ?? null,
-                        'status_evakuasi'            => $item['status_evakuasi'] ?? 'Selesai',
-                        'objek_terdampak'            => $item['objek_terdampak'] ?? null,
+                        'status_evakuasi'            => $item['status_evakuasi'] ?? ($teknis['status_evakuasi'] ?? 'Selesai'),
+                        'objek_terdampak'            => $item['objek_terdampak'] ?? ($teknis['objek_terdampak'] ?? null),
+                        'hambatan_lapangan'          => $item['hambatan_lapangan'] ?? ($teknis['hambatan_lapangan'] ?? null),
 
                         'armada'                     => $armadaJson,
-                        'liter_air'                  => (int) ($item['liter_air'] ?? 0),
-                        'dugaan_penyebab'            => $item['dugaan_penyebab'] ?? 'lainnya',
-                        'dugaan_penyebab_lainnya'    => $item['dugaan_penyebab_lainnya'] ?? null,
-                        'kronologi_lengkap'          => $item['kronologi_lengkap'] ?? null,
+                        'liter_air'                  => (int) ($item['liter_air'] ?? ($teknis['liter_air'] ?? 0)),
+                        'dugaan_penyebab'            => $item['dugaan_penyebab'] ?? ($dok['dugaan_penyebab'] ?? 'lainnya'),
+                        'dugaan_penyebab_lainnya'    => $item['dugaan_penyebab_lainnya'] ?? ($dok['dugaan_penyebab_lainnya'] ?? null),
+                        'kronologi_lengkap'          => $item['kronologi_lengkap'] ?? ($dok['kronologi_lengkap'] ?? null),
                     ]);
 
                     LpTeknisLogistik::create([
                         'laporan_id'       => $laporan->id,
-                        'pimpinan_operasi' => null,
-                        'satuan_tugas'     => $item['satuan_tugas'] ?? 'Mako Damkar',
-                        'hasil_tindakan'   => $item['hasil_tindakan'] ?? 'Terlayani',
-                        'status_evakuasi'  => 'Selesai',
-                        'objek_terdampak'  => $item['keterangan_objek_kebakaran'] ?? null,
+                        'pimpinan_operasi' => $teknis['pimpinan_operasi'] ?? ($item['pimpinan_operasi'] ?? null),
+                        'pendamping_operasi' => $teknis['pendamping_operasi'] ?? ($item['pendamping_operasi'] ?? null),
+                        'satuan_tugas'     => $teknis['satuan_tugas'] ?? ($item['satuan_tugas'] ?? 'Mako Damkar'),
+                        'tim_respontime'   => $teknis['tim_respontime'] ?? ($item['tim_respontime'] ?? null),
+                        'jumlah_personel'  => (int) ($teknis['jumlah_personel'] ?? ($item['jumlah_personel'] ?? 0)),
+                        'langkah_penanganan' => $teknis['langkah_penanganan'] ?? ($item['langkah_penanganan'] ?? null),
+                        'hambatan_lapangan'  => $teknis['hambatan_lapangan'] ?? ($item['hambatan_lapangan'] ?? null),
+                        'hasil_tindakan'   => $teknis['hasil_tindakan'] ?? ($item['hasil_tindakan'] ?? 'Terlayani'),
+                        'status_evakuasi'  => $teknis['status_evakuasi'] ?? ($item['status_evakuasi'] ?? 'Selesai'),
+                        'objek_terdampak'  => $teknis['objek_terdampak'] ?? ($item['keterangan_objek_kebakaran'] ?? null),
                         'korban_selamat'   => (int) ($item['korban_selamat'] ?? 0),
                         'korban_ringan'    => (int) ($item['korban_ringan'] ?? 0),
                         'korban_berat'     => (int) ($item['korban_berat'] ?? 0),
                         'korban_meninggal' => (int) ($item['korban_meninggal'] ?? 0),
                         'korban_hewan_aset'=> $item['korban_hewan_aset'] ?? null,
                         'armada'           => $armadaArr,
-                        'liter_air'        => (int) ($item['liter_air'] ?? 0),
-                        'konsumsi_alat'    => $item['konsumsi_alat'] ?? null,
+                        'liter_air'        => (int) ($item['liter_air'] ?? ($teknis['liter_air'] ?? 0)),
+                        'konsumsi_alat'    => $teknis['konsumsi_alat'] ?? ($item['konsumsi_alat'] ?? null),
                     ]);
 
                     LpDokumentasi::create([
                         'laporan_id'              => $laporan->id,
-                        'dugaan_penyebab'         => $item['dugaan_penyebab'] ?? 'lainnya',
-                        'dugaan_penyebab_lainnya' => $item['dugaan_penyebab_lainnya'] ?? null,
-                        'kronologi_lengkap'       => $item['kronologi_lengkap'] ?? null,
+                        'dugaan_penyebab'         => $dok['dugaan_penyebab'] ?? ($item['dugaan_penyebab'] ?? 'lainnya'),
+                        'dugaan_penyebab_lainnya' => $dok['dugaan_penyebab_lainnya'] ?? ($item['dugaan_penyebab_lainnya'] ?? null),
+                        'kronologi_lengkap'       => $dok['kronologi_lengkap'] ?? ($item['kronologi_lengkap'] ?? null),
                     ]);
 
                     $inserted++;

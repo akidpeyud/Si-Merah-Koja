@@ -10,6 +10,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -806,7 +808,113 @@ class DamtanController extends Controller
             ->orderByDesc('tahun')
             ->pluck('tahun');
 
-        return view('internal.damtan.data_surat', compact('surat', 'tahunList'));
+        // Daftar dokumen yang sudah diunggah
+        $hasDokumenTable = Schema::hasTable('dokumen_surat_korbans');
+        $dokumenSurat = collect();
+        if ($hasDokumenTable) {
+            $dokumenSurat = DB::table('dokumen_surat_korbans')
+                ->orderByDesc('id')
+                ->get();
+        }
+
+        // Daftar referensi surat korban untuk kemudahan auto-fill di form dokumen
+        $daftarSuratList = DB::table('surat_korbans')
+            ->select('id', 'nomor_surat', 'nama_korban', 'nik', 'tempat_lahir', 'tanggal_lahir', 'alamat')
+            ->orderByDesc('id')
+            ->get();
+
+        return view('internal.damtan.data_surat', compact('surat', 'tahunList', 'dokumenSurat', 'hasDokumenTable', 'daftarSuratList'));
+    }
+
+    public function uploadDokumenSurat(Request $request)
+    {
+        if (! Schema::hasTable('dokumen_surat_korbans')) {
+            return redirect()->back()->with('error', 'Tabel dokumen_surat_korbans belum tersedia di database. Silakan jalankan file migration terlebih dahulu.');
+        }
+
+        $request->validate([
+            'nomor_surat' => 'nullable|string|max:255',
+            'nama' => 'nullable|string|max:255',
+            'nik' => 'nullable|string|max:255',
+            'tempat_tanggal_lahir' => 'nullable|string|max:255',
+            'alamat' => 'nullable|string',
+            'file_skk' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'file_dokumentasi' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        ], [
+            'file_skk.mimes' => 'Format file SKK harus berupa PDF, JPG, JPEG, atau PNG.',
+            'file_skk.max' => 'Ukuran file SKK maksimal 5 MB.',
+            'file_dokumentasi.mimes' => 'Format file Dokumentasi harus berupa PDF, JPG, JPEG, atau PNG.',
+            'file_dokumentasi.max' => 'Ukuran file Dokumentasi maksimal 5 MB.',
+        ]);
+
+        if (! $request->hasFile('file_skk') && ! $request->hasFile('file_dokumentasi')) {
+            return redirect()->back()->with('error', 'Pilih setidaknya satu file (SKK atau Dokumentasi) untuk diunggah.');
+        }
+
+        $insertData = [
+            'nomor_surat' => $request->nomor_surat,
+            'nama' => $request->nama,
+            'nik' => $request->nik,
+            'tempat_tanggal_lahir' => $request->tempat_tanggal_lahir,
+            'alamat' => $request->alamat,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
+
+        if ($request->hasFile('file_skk')) {
+            $fileSkk = $request->file('file_skk');
+            $skkExt = $fileSkk->getClientOriginalExtension();
+            $skkName = 'skk_'.time().'_'.Str::random(8).'.'.$skkExt;
+            $pathSkk = $fileSkk->storeAs('surat-korban', $skkName, 'public');
+            $insertData['file_skk'] = $pathSkk;
+        }
+
+        if ($request->hasFile('file_dokumentasi')) {
+            $fileDok = $request->file('file_dokumentasi');
+            $dokExt = $fileDok->getClientOriginalExtension();
+            $dokName = 'dok_'.time().'_'.Str::random(8).'.'.$dokExt;
+            $pathDok = $fileDok->storeAs('surat-korban', $dokName, 'public');
+            $insertData['file_dokumentasi'] = $pathDok;
+        }
+
+        DB::table('dokumen_surat_korbans')->insert($insertData);
+
+        return redirect()->back()->with('success', 'Dokumen berhasil diunggah!');
+    }
+
+    public function lihatDokumenSurat($id, $jenis)
+    {
+        $dokumen = DB::table('dokumen_surat_korbans')->where('id', $id)->first();
+        if (! $dokumen) {
+            abort(404, 'Data dokumen tidak ditemukan.');
+        }
+
+        $path = $jenis === 'skk' ? ($dokumen->file_skk ?? null) : ($dokumen->file_dokumentasi ?? null);
+        if (! $path || ! Storage::disk('public')->exists($path)) {
+            abort(404, 'Berkas fisik tidak ditemukan di penyimpanan server.');
+        }
+
+        return Storage::disk('public')->response($path);
+    }
+
+    public function hapusDokumenSurat($id)
+    {
+        $dokumen = DB::table('dokumen_surat_korbans')->where('id', $id)->first();
+        if (! $dokumen) {
+            return redirect()->back()->with('error', 'Data dokumen tidak ditemukan.');
+        }
+
+        if (! empty($dokumen->file_skk) && Storage::disk('public')->exists($dokumen->file_skk)) {
+            Storage::disk('public')->delete($dokumen->file_skk);
+        }
+
+        if (! empty($dokumen->file_dokumentasi) && Storage::disk('public')->exists($dokumen->file_dokumentasi)) {
+            Storage::disk('public')->delete($dokumen->file_dokumentasi);
+        }
+
+        DB::table('dokumen_surat_korbans')->where('id', $id)->delete();
+
+        return redirect()->back()->with('success', 'Data dokumen berhasil dihapus.');
     }
 
     public function editSurat($id)
