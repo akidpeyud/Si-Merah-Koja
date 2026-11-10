@@ -89,12 +89,12 @@
 
   /* 3. STATEMENT / QUOTE — 60% moss, 30% cream, 10% amber */
   .statement { min-height: 140vh; background: var(--moss); color: var(--cream); display: grid; place-items: center; padding: 20vh 8vw; margin-top: -100vh; margin-top: -100svh; z-index: 6; border-radius: 48px 48px 0 0; border-top: 4px solid var(--amber); }
-  .quote { width: min(100%, 980px); }
-  .quote .mark { display: block; font-size: clamp(5rem, 12vw, 9rem); font-weight: 900; line-height: .6; height: .5em; color: var(--amber); }
-  .quote blockquote p { font-size: clamp(1.7rem, 4.2vw, 3.4rem); font-weight: 600; line-height: 1.2; letter-spacing: -.02em; max-width: 28ch; }
-  .quote figcaption { display: flex; align-items: center; gap: 1.2rem; margin-top: 3rem; font-size: 1rem; font-weight: 600; }
-  .quote .rule { flex: 0 0 56px; height: 3px; background: var(--amber); border-radius: 3px; }
-  .quote cite { font-style: normal; }
+  .quote { width: min(100%, 1240px); }
+  .quote .mark { display: block; font-size: clamp(6rem, 14vw, 12rem); font-weight: 900; line-height: .7; height: .42em; margin-bottom: .1em; color: var(--amber); }
+  .quote blockquote p { font-size: clamp(2.4rem, 8.4vw, 7.4rem); font-weight: 900; line-height: .98; letter-spacing: -.05em; max-width: 14ch; text-wrap: balance; }
+  .quote figcaption { display: flex; align-items: center; gap: 1.2rem; margin-top: clamp(2rem, 5vw, 4rem); font-size: clamp(1rem, 1.5vw, 1.25rem); font-weight: 600; line-height: 1.3; }
+  .quote .rule { flex: 0 0 clamp(48px, 7vw, 96px); height: 4px; background: var(--amber); border-radius: 4px; }
+  .quote cite { font-style: normal; font-weight: 400; }
   .quote a { color: var(--cream); text-decoration: underline; text-decoration-color: var(--amber); text-decoration-thickness: 2px; text-underline-offset: .25em; transition: color .25s; }
   .quote a:hover, .quote a:focus-visible { color: var(--amber); outline: none; }
 
