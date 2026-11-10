@@ -123,10 +123,11 @@
     .export-item .txt strong { font-size: .88rem; color: var(--ink); }
     .export-item .txt small { font-size: .76rem; color: var(--steel); }
 
-    /* Pilihan tahun di dalam menu ekspor */
-    .export-year { padding: 4px 10px 10px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
-    .export-year label { display: block; margin-bottom: 6px; font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--steel); }
-    .export-year .form-select { min-height: 38px; font-size: .88rem; font-weight: 600; }
+    /* Pilihan tahun & bulan di dalam menu ekspor */
+    .export-year { padding: 4px 10px 6px; }
+    .export-month { padding: 0 10px 10px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+    .export-year label, .export-month label { display: block; margin-bottom: 6px; font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--steel); }
+    .export-year .form-select, .export-month .form-select { min-height: 38px; font-size: .88rem; font-weight: 600; }
 
     /* ==========================================================
        TABEL REKAP (gaya header navy, sama dengan Data Laporan)
@@ -332,7 +333,7 @@
                 <ul class="dropdown-menu dropdown-menu-end export-menu" aria-labelledby="btnEkspor">
                     <li><h6 class="dropdown-header">Pilih format ekspor</h6></li>
 
-                    <!-- PILIH TAHUN: berlaku untuk Cetak PDF & Cetak Excel -->
+                    <!-- PILIH TAHUN & BULAN: berlaku untuk Cetak PDF & Cetak Excel -->
                     <li class="export-year" onclick="event.stopPropagation()">
                         <label for="tahunEkspor">Tahun</label>
                         <select id="tahunEkspor" class="form-select">
@@ -340,6 +341,24 @@
                             @foreach($daftarTahun as $thn)
                                 <option value="{{ $thn }}">{{ $thn }}</option>
                             @endforeach
+                        </select>
+                    </li>
+                    <li class="export-month" onclick="event.stopPropagation()">
+                        <label for="bulanEkspor">Bulan</label>
+                        <select id="bulanEkspor" class="form-select">
+                            <option value="">Semua Bulan</option>
+                            <option value="1">Januari</option>
+                            <option value="2">Februari</option>
+                            <option value="3">Maret</option>
+                            <option value="4">April</option>
+                            <option value="5">Mei</option>
+                            <option value="6">Juni</option>
+                            <option value="7">Juli</option>
+                            <option value="8">Agustus</option>
+                            <option value="9">September</option>
+                            <option value="10">Oktober</option>
+                            <option value="11">November</option>
+                            <option value="12">Desember</option>
                         </select>
                     </li>
 
@@ -450,6 +469,7 @@
                         <tbody id="tableBody">
                             @forelse($permohonan as $row)
                             <tr data-tahun="{{ $row->tgl_pelaksanaan ? \Carbon\Carbon::parse($row->tgl_pelaksanaan)->year : '' }}"
+                                data-bulan="{{ $row->tgl_pelaksanaan ? \Carbon\Carbon::parse($row->tgl_pelaksanaan)->format('n') : '' }}"
                                 data-search="{{ strtolower($row->nama . ' ' . $row->nik . ' ' . $row->no_hp . ' ' . $row->alamat . ' ' . $row->jenis_pemohon . ' ' . $row->nama_penanggung_jawab . ' ' . $row->nama_instansi . ' ' . $row->alamat_instansi . ' ' . $row->sarana . ' ' . $row->kegunaan . ' ' . $row->nama_kegiatan . ' ' . $row->lokasi_kegiatan . ' ' . $row->status) }}">
                                 <td class="no-cell">{{ $loop->iteration }}</td>
 
@@ -604,23 +624,32 @@
     }
 
     /* ==========================================================
-       EKSPOR PER TAHUN (Cetak PDF & Cetak Excel)
+       EKSPOR PER TAHUN & BULAN (Cetak PDF & Cetak Excel)
        ========================================================== */
     (function () {
         'use strict';
         var selTahun  = document.getElementById('tahunEkspor');
+        var selBulan  = document.getElementById('bulanEkspor');
         var linkExcel = document.getElementById('linkExcel');
         var spanTahun = document.getElementById('printTahun');
+        var namaBulanIndo = ['', 'JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'];
         var tersimpan = null;
 
-        // Link Excel ikut tahun yang dipilih (?tahun=XXXX)
+        // Link Excel ikut tahun & bulan yang dipilih (?tahun=XXXX&bulan=M)
         function urlExcel() {
             var base = linkExcel.dataset.base;
-            return selTahun.value ? base + '?tahun=' + encodeURIComponent(selTahun.value) : base;
+            var params = [];
+            if (selTahun && selTahun.value) params.push('tahun=' + encodeURIComponent(selTahun.value));
+            if (selBulan && selBulan.value) params.push('bulan=' + encodeURIComponent(selBulan.value));
+            return params.length ? base + '?' + params.join('&') : base;
         }
-        if (selTahun && linkExcel) {
-            linkExcel.href = urlExcel();
-            selTahun.addEventListener('change', function () { linkExcel.href = urlExcel(); });
+        function updateLinkExcel() {
+            if (linkExcel) linkExcel.href = urlExcel();
+        }
+        if (linkExcel) {
+            updateLinkExcel();
+            if (selTahun) selTahun.addEventListener('change', updateLinkExcel);
+            if (selBulan) selBulan.addEventListener('change', updateLinkExcel);
         }
 
         // Kembalikan tampilan tabel setelah cetak selesai
@@ -634,9 +663,10 @@
             if (spanTahun) spanTahun.textContent = '';
         }
 
-        // Cetak PDF: hanya baris pada tahun terpilih, nomor diurut ulang dari 1
+        // Cetak PDF: hanya baris pada tahun & bulan terpilih, nomor diurut ulang dari 1
         window.cetakPdf = function () {
             var tahun = selTahun ? selTahun.value : '';
+            var bulan = selBulan ? selBulan.value : '';
             var rows  = document.querySelectorAll('#tableBody tr[data-search]');
             var nomor = 0;
             tersimpan = [];
@@ -645,7 +675,9 @@
                 var noCell = row.querySelector('.no-cell');
                 tersimpan.push({ row: row, display: row.style.display, noCell: noCell, no: noCell ? noCell.textContent : '' });
 
-                var tampil = row.style.display !== 'none' && (!tahun || row.dataset.tahun === tahun);
+                var matchTahun = !tahun || row.dataset.tahun === tahun;
+                var matchBulan = !bulan || (row.dataset.bulan && String(parseInt(row.dataset.bulan, 10)) === String(parseInt(bulan, 10)));
+                var tampil = row.style.display !== 'none' && matchTahun && matchBulan;
                 if (tampil) {
                     nomor++;
                     if (noCell) noCell.textContent = nomor;
@@ -656,11 +688,21 @@
 
             if (nomor === 0) {
                 pulihkan();
-                alert(tahun ? 'Tidak ada data pengajuan pada tahun ' + tahun + '.' : 'Tidak ada data untuk dicetak.');
+                var pesan = 'Tidak ada data pengajuan';
+                if (bulan && tahun) pesan += ' pada ' + namaBulanIndo[parseInt(bulan, 10)] + ' ' + tahun;
+                else if (tahun) pesan += ' pada tahun ' + tahun;
+                else if (bulan) pesan += ' pada bulan ' + namaBulanIndo[parseInt(bulan, 10)];
+                alert(pesan + '.');
                 return;
             }
 
-            if (spanTahun) spanTahun.textContent = tahun ? ' TAHUN ' + tahun : '';
+            if (spanTahun) {
+                var teksPeriode = '';
+                if (bulan && tahun) teksPeriode = ' BULAN ' + namaBulanIndo[parseInt(bulan, 10)] + ' ' + tahun;
+                else if (tahun) teksPeriode = ' TAHUN ' + tahun;
+                else if (bulan) teksPeriode = ' BULAN ' + namaBulanIndo[parseInt(bulan, 10)];
+                spanTahun.textContent = teksPeriode ? ' ' + teksPeriode : '';
+            }
             window.print();
         };
 

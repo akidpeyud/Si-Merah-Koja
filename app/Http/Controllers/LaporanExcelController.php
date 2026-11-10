@@ -47,6 +47,15 @@ class LaporanExcelController extends Controller
             $tahun = (int) date('Y');
         }
 
+        $bulan = $request->query('bulan');
+        $bulan = (is_numeric($bulan) && (int) $bulan >= 1 && (int) $bulan <= 12) ? (int) $bulan : null;
+
+        $daftarNamaBulan = [
+            1 => 'JANUARI', 2 => 'FEBRUARI', 3 => 'MARET', 4 => 'APRIL',
+            5 => 'MEI', 6 => 'JUNI', 7 => 'JULI', 8 => 'AGUSTUS',
+            9 => 'SEPTEMBER', 10 => 'OKTOBER', 11 => 'NOVEMBER', 12 => 'DESEMBER',
+        ];
+
         $kategori = strtolower((string) $request->query('kategori', 'kebakaran'));
         if (!in_array($kategori, ['kebakaran', 'non-kebakaran'], true)) {
             $kategori = 'kebakaran';
@@ -56,7 +65,19 @@ class LaporanExcelController extends Controller
         /* ---------- 1. Ambil & susun data ---------- */
         $items = LaporanPenyelamatan::query()->get()
             ->map(fn ($row) => $this->susunBaris($row))
-            ->filter(fn ($d) => $d['kebakaran'] === $isKebakaran && $d['tgl'] && $d['tgl']->year === $tahun)
+            ->filter(function ($d) use ($isKebakaran, $tahun, $bulan) {
+                if ($d['kebakaran'] !== $isKebakaran || ! $d['tgl']) {
+                    return false;
+                }
+                if ($d['tgl']->year !== $tahun) {
+                    return false;
+                }
+                if ($bulan !== null && (int) $d['tgl']->month !== $bulan) {
+                    return false;
+                }
+
+                return true;
+            })
             ->sortBy('urut')
             ->values();
 
@@ -100,7 +121,8 @@ class LaporanExcelController extends Controller
         $ws->mergeCells("A1:{$kolTerakhir}2");
         $ws->setCellValue('A1', $isKebakaran ? 'LAPORAN KEBAKARAN' : 'LAPORAN NON-KEBAKARAN');
         $ws->mergeCells("A3:{$kolTerakhir}3");
-        $ws->setCellValue('A3', 'JANUARI - DESEMBER ' . $tahun);
+        $teksSubJudul = $bulan ? ($daftarNamaBulan[$bulan] . ' ' . $tahun) : ('JANUARI - DESEMBER ' . $tahun);
+        $ws->setCellValue('A3', $teksSubJudul);
         $ws->getStyle("A1:{$kolTerakhir}3")->applyFromArray([
             'font'      => ['name' => 'Arial', 'bold' => true, 'size' => 18],
             'alignment' => [
@@ -194,9 +216,10 @@ class LaporanExcelController extends Controller
 
         if ($items->isEmpty()) {
             $ws->mergeCells("A6:{$kolTerakhir}6");
+            $periodeTeks = $bulan ? ('bulan ' . $daftarNamaBulan[$bulan] . ' ' . $tahun) : ('pada tahun ' . $tahun);
             $ws->setCellValue(
                 'A6',
-                'Belum ada data laporan ' . ($isKebakaran ? 'kebakaran' : 'non-kebakaran') . ' pada tahun ' . $tahun . '.'
+                'Belum ada data laporan ' . ($isKebakaran ? 'kebakaran' : 'non-kebakaran') . ' ' . $periodeTeks . '.'
             );
         }
 
@@ -248,7 +271,8 @@ class LaporanExcelController extends Controller
         $ws->getPageMargins()->setLeft(0.25)->setRight(0.25)->setTop(0.5)->setBottom(0.5);
 
         /* ---------- 7. Kirim sebagai download ---------- */
-        $namaFile = ($isKebakaran ? 'Laporan_Kebakaran_' : 'Laporan_Non_Kebakaran_') . $tahun . '.xlsx';
+        $bulanPart = $bulan ? ($daftarNamaBulan[$bulan] . '_') : '';
+        $namaFile = ($isKebakaran ? 'Laporan_Kebakaran_' : 'Laporan_Non_Kebakaran_') . $bulanPart . $tahun . '.xlsx';
 
         return response()->streamDownload(function () use ($ss) {
             (new Xlsx($ss))->save('php://output');

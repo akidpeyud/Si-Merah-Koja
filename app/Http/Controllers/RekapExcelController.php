@@ -46,6 +46,13 @@ class RekapExcelController extends Controller
         $type = $request->query('type', 'objek');
         $isObjek = $type === 'objek';
         $tahun = $request->filled('tahun') ? (int) $request->tahun : null;
+        $bulan = ($request->filled('bulan') && (int) $request->bulan >= 1 && (int) $request->bulan <= 12) ? (int) $request->bulan : null;
+
+        $daftarNamaBulan = [
+            1 => 'JANUARI', 2 => 'FEBRUARI', 3 => 'MARET', 4 => 'APRIL',
+            5 => 'MEI', 6 => 'JUNI', 7 => 'JULI', 8 => 'AGUSTUS',
+            9 => 'SEPTEMBER', 10 => 'OKTOBER', 11 => 'NOVEMBER', 12 => 'DESEMBER',
+        ];
 
         $kategoriMap = $isObjek ? $this->kategoriObjek : $this->kategoriLayanan;
         $keys = array_keys($kategoriMap);
@@ -57,6 +64,9 @@ class RekapExcelController extends Controller
 
         if ($tahun) {
             $query->whereYear('tanggal', $tahun);
+        }
+        if ($bulan) {
+            $query->whereMonth('tanggal', $bulan);
         }
 
         $data = $query->get();
@@ -81,7 +91,11 @@ class RekapExcelController extends Controller
         $sheet->setCellValue('A3', 'Jl. Hos. Cokroaminoto No. 113 Telp. 0741-41171 Kota Jambi');
 
         $sheet->mergeCells('A5:G5');
-        $judulLengkap = $titleJudul.($tahun ? " TAHUN {$tahun}" : ' (SEMUA TAHUN)');
+        $periodeJudul = ($bulan ? " BULAN {$daftarNamaBulan[$bulan]}" : '').($tahun ? " TAHUN {$tahun}" : '');
+        if (! $bulan && ! $tahun) {
+            $periodeJudul = ' (SEMUA TAHUN)';
+        }
+        $judulLengkap = $titleJudul . $periodeJudul;
         $sheet->setCellValue('A5', $judulLengkap);
 
         $sheet->getStyle('A1:A3')->getFont()->setBold(true)->setSize(11);
@@ -177,6 +191,9 @@ class RekapExcelController extends Controller
         $namaFile = $isObjek ? 'Rekap_Objek_Kebakaran' : 'Rekap_Layanan_Penyelamatan';
         if ($tahun) {
             $namaFile .= "_{$tahun}";
+        }
+        if ($bulan) {
+            $namaFile .= sprintf('_%02d', $bulan);
         }
         $namaFile .= '.xlsx';
 
