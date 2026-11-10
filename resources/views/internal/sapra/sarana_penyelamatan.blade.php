@@ -197,7 +197,58 @@
 @endphp
 
 @section('content')
+<style>
+    .print-doc-area { display: none; }
+    @media print {
+        @page { size: A4 portrait; margin: 12mm 14mm; }
+        .topbar, .sidebar, .sidebar-backdrop, .toast-wrap, .screen-only-area, dialog {
+            display: none !important;
+        }
+        body, .shell, .content {
+            background: #fff !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            display: block !important;
+            height: auto !important;
+            overflow: visible !important;
+        }
+        .print-doc-area {
+            display: block !important;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 9pt;
+            color: #000;
+            line-height: 1.35;
+        }
+        .print-doc-area .kop-table { width: 100%; border-collapse: collapse; border-bottom: 3px double #000; margin-bottom: 14px; }
+        .print-doc-area .kop-table td { border: none !important; padding: 0 0 10px 0 !important; vertical-align: middle; }
+        .print-doc-area .kop-logo-left { width: 65px; text-align: left; }
+        .print-doc-area .kop-logo-right { width: 65px; text-align: right; }
+        .print-doc-area .kop-logo { width: 56px; height: auto; }
+        .print-doc-area .kop-text { text-align: center; padding: 0 8px !important; }
+        .print-doc-area .kop-pemkot { font-size: 12pt; font-weight: bold; margin: 0; letter-spacing: 0.5px; color: #000; }
+        .print-doc-area .kop-dinas { font-size: 13.5pt; font-weight: bold; margin: 2px 0; color: #000; }
+        .print-doc-area .kop-alamat { font-size: 8pt; margin: 1px 0; color: #222; }
+        .print-doc-area .judul-laporan { text-align: center; margin-bottom: 14px; }
+        .print-doc-area .judul-laporan h4 { margin: 0 0 3px 0; font-size: 11pt; text-transform: uppercase; text-decoration: underline; font-weight: bold; color: #000; }
+        .print-doc-area .judul-laporan p { margin: 0; font-size: 9pt; font-weight: bold; color: #222; }
+        .print-doc-area .pos-section { margin-bottom: 16px; }
+        .print-doc-area .section-title { background-color: #163a63 !important; color: #ffffff !important; padding: 6px 10px; font-weight: bold; font-size: 9.5pt; text-transform: uppercase; letter-spacing: 0.4px; border: 1px solid #163a63; page-break-after: avoid; }
+        .print-doc-area .section-meta { background-color: #f8fafc !important; border-left: 1px solid #1e293b; border-right: 1px solid #1e293b; padding: 5px 10px; font-size: 8pt; color: #334155; page-break-after: avoid; }
+        .print-doc-area .pdf-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        .print-doc-area .pdf-table thead { display: table-header-group; }
+        .print-doc-area .pdf-table tr { page-break-inside: avoid; }
+        .print-doc-area .pdf-table th, .print-doc-area .pdf-table td { border: 1px solid #1e293b !important; padding: 6px 8px !important; vertical-align: middle; word-wrap: break-word; font-size: 8.5pt; color: #000; }
+        .print-doc-area .pdf-table th { background-color: #e2e8f0 !important; color: #0f172a !important; font-weight: bold; font-size: 8pt; text-align: center; text-transform: uppercase; }
+        .print-doc-area .text-center { text-align: center !important; }
+        .print-doc-area .font-bold { font-weight: bold; }
+        .print-doc-area .img-doc { width: 105px; height: 68px; object-fit: cover; border-radius: 3px; border: 1px solid #cbd5e1; display: block; margin: 2px auto; }
+        .print-doc-area .ttd-container { width: 100%; margin-top: 22px; page-break-inside: avoid; }
+        .print-doc-area .ttd-box { float: right; width: 250px; text-align: center; font-size: 9pt; color: #000; }
+        * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    }
+</style>
 
+<div class="screen-only-area">
         <div class="page-toolbar">
             <div>
                 <h1>Data Sarana Penyelamatan & Evakuasi</h1>
@@ -352,6 +403,95 @@
                 </div>
             </div>
         @endforeach
+</div>
+
+<!-- ==================== AREA CETAK (IDENTIK DENGAN PDF) ==================== -->
+<div class="print-doc-area">
+    <table class="kop-table">
+        <tr>
+            <td class="kop-logo-left">
+                @if(file_exists(public_path('images/jambi.png')))
+                    <img src="{{ asset('images/jambi.png') }}" class="kop-logo" alt="Logo Pemkot">
+                @endif
+            </td>
+            <td class="kop-text">
+                <p class="kop-pemkot">PEMERINTAH KOTA JAMBI</p>
+                <p class="kop-dinas">DINAS PEMADAM KEBAKARAN DAN PENYELAMATAN</p>
+                <p class="kop-alamat">Jl. Jend. Basuki Rahmat No. 01, Kota Baru, Jambi 36128</p>
+                <p class="kop-alamat">Telepon: (0741) 40222 | Call Center: 112 | Email: damkar@jambikota.go.id</p>
+            </td>
+            <td class="kop-logo-right">
+                @if(file_exists(public_path('images/logo.png')))
+                    <img src="{{ asset('images/logo.png') }}" class="kop-logo" alt="Logo Damkar">
+                @endif
+            </td>
+        </tr>
+    </table>
+
+    <div class="judul-laporan">
+        <h4>DATA SARANA PENYELAMATAN &amp; EVAKUASI (RESCUE)</h4>
+        <p>DINAS PEMADAM KEBAKARAN DAN PENYELAMATAN KOTA JAMBI</p>
+    </div>
+
+    @foreach($posPemadam as $pos)
+        @php
+            $dataFilterPrint = $dataPenyelamatan->where('id_pos', $pos->id_pos);
+        @endphp
+        <div class="pos-section">
+            <div class="section-title">{{ $loop->iteration }}. {{ strtoupper($pos->nama_pos) }}</div>
+            <div class="section-meta">
+                <strong>Alamat:</strong> {{ $pos->alamat ?? '-' }}
+                &nbsp;&nbsp;|&nbsp;&nbsp;
+                <strong>Kode Map:</strong> {{ $pos->kode_map ?? '-' }}
+            </div>
+
+            <table class="pdf-table">
+                <thead>
+                    <tr>
+                        <th style="width: 6%;">NO</th>
+                        <th style="width: 48%;">JENIS SARANA PENYELAMATAN</th>
+                        <th style="width: 18%;">JUMLAH</th>
+                        <th style="width: 28%;">DOKUMENTASI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($dataFilterPrint as $item)
+                    <tr>
+                        <td class="text-center">{{ $loop->iteration }}</td>
+                        <td class="font-bold">{{ $item->jenis_sarana }}</td>
+                        <td class="text-center font-bold">{{ $item->jumlah }} Unit</td>
+                        <td class="text-center">
+                            @if($item->path_gambar && file_exists(public_path($item->path_gambar)))
+                                <img src="{{ asset($item->path_gambar) }}" class="img-doc" alt="Foto">
+                            @else
+                                <span style="color: #94a3b8; font-size: 7.5pt; font-style: italic;">Tidak ada foto</span>
+                            @endif
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="4" class="text-center" style="color: #64748b; font-style: italic; padding: 10px !important;">
+                            Belum ada data sarana penyelamatan tercatat di {{ $pos->nama_pos }}.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    @endforeach
+
+    <div class="ttd-container">
+        <div class="ttd-box">
+            <p style="margin: 0 0 3px 0;">Jambi, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <p style="margin: 0;">Mengetahui,</p>
+            <p style="margin: 2px 0 0 0; font-weight: bold;">KEPALA BIDANG SARANA DAN PRASARANA</p>
+            <br><br><br><br>
+            <p style="margin: 0; font-weight: bold; text-decoration: underline;">( ................................................. )</p>
+            <p style="margin: 2px 0 0 0;">NIP. ............................................</p>
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+</div>
 
 @if($bisaCrud)
 <!-- ==================== DIALOG TAMBAH (hanya Sapra) ==================== -->

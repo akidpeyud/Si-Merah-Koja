@@ -50,13 +50,14 @@
     button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; transition: background .2s, color .2s; }
     table { border-collapse: collapse; width: 100%; }
 
-    .page-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
-    .page-toolbar h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.45rem, 2.5vw, 1.9rem); line-height: 1.25; letter-spacing: -.02em; color: var(--ink); margin-bottom: 5px; max-width: 780px; }
+    .page-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+    .page-toolbar h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.45rem, 2.4vw, 1.85rem); line-height: 1.25; letter-spacing: -.02em; color: var(--ink); margin-bottom: 4px; }
     .page-toolbar p { color: var(--steel); font-size: .95rem; margin: 0; }
-    .toolbar-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+    .control-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 20px; }
+    .toolbar-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-left: auto; }
     .mode-badge { display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; padding: 6px 14px; border-radius: 999px; background: var(--info-soft); color: var(--info); border: 1px solid rgba(37, 99, 235, .2); font-size: .78rem; font-weight: 700; }
 
-    .search { position: relative; width: 250px; max-width: 100%; }
+    .search { position: relative; width: 240px; max-width: 100%; }
     .search i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--steel); font-size: .85rem; pointer-events: none; }
     .search input { width: 100%; height: 44px; padding: 0 16px 0 42px; border-radius: 999px; border: 1px solid var(--line-dark); background: #fff; font: inherit; font-size: .9rem; color: var(--ink); transition: border-color .2s, box-shadow .2s; }
     .search input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-soft); }
@@ -80,7 +81,7 @@
     .btn-outline.red:hover { border-color: var(--signal); background: #fef2f2; }
 
     /* TABS FILTER JENIS KENDARAAN (SERASI DENGAN SARANA MAKO & MUTU BAKU) */
-    .tabs { display: flex; gap: 6px; padding: 7px; width: max-content; max-width: 100%; background: #fff; border: 1px solid var(--line); border-radius: 999px; box-shadow: var(--shadow-xs); overflow-x: auto; scrollbar-width: none; margin-bottom: 20px; }
+    .tabs { display: flex; gap: 6px; padding: 6px; width: max-content; max-width: 100%; background: #fff; border: 1px solid var(--line); border-radius: 999px; box-shadow: var(--shadow-xs); overflow-x: auto; scrollbar-width: none; margin: 0; }
     .tabs::-webkit-scrollbar { display: none; }
     .tab { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; padding: 9px 18px; border-radius: 999px; font-weight: 700; font-size: .85rem; color: var(--steel); transition: background .2s, color .2s; }
     .tab:hover { background: var(--paper); color: var(--ink); }
@@ -126,20 +127,23 @@
     /* DAFTAR BARIS ITEM MENURUN KE BAWAH DI TABEL */
     .item-stack { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
     .item-stack.c-align { align-items: center; }
+    .item-stack.r-align { align-items: flex-end; }
     .item-line { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; }
     .item-bullet { color: var(--steel-soft); font-weight: 700; font-size: .82rem; }
+    .item-subtotal { margin-top: 8px; padding-top: 6px; border-top: 1px dashed var(--line-dark); display: flex; align-items: center; justify-content: flex-end; gap: 6px; font-size: .82rem; color: var(--steel); }
+    .item-subtotal strong { font-size: .9rem; font-weight: 800; color: var(--navy); }
 
     /* INPUT DINAMIS MULTI-BARANG DI MODAL */
     .dyn-box { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 10px; }
-    .dyn-head { display: grid; grid-template-columns: 1.3fr 1.1fr .8fr 36px; gap: 8px; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; color: var(--steel); padding: 0 2px; }
+    .dyn-head { display: grid; grid-template-columns: 1.35fr .95fr .6fr 1fr 36px; gap: 8px; font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; color: var(--steel); padding: 0 2px; }
     .dyn-rows { display: grid; gap: 8px; }
-    .dyn-row { display: grid; grid-template-columns: 1.3fr 1.1fr .8fr 36px; gap: 8px; align-items: center; }
+    .dyn-row { display: grid; grid-template-columns: 1.35fr .95fr .6fr 1fr 36px; gap: 8px; align-items: center; }
     .dyn-row .f-input { height: 40px; padding: 0 11px; font-size: .86rem; }
     .btn-del-row { width: 36px; height: 40px; border-radius: 8px; display: grid; place-items: center; background: #fff; border: 1px solid var(--line-dark); color: var(--signal); transition: background .2s, color .2s, border-color .2s; }
     .btn-del-row:hover { background: var(--signal); color: #fff; border-color: var(--signal); }
     .btn-add-row { display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 38px; padding: 0 14px; border-radius: 8px; background: #fff; border: 1px dashed var(--navy); color: var(--navy); font-weight: 700; font-size: .82rem; width: fit-content; transition: background .2s; }
     .btn-add-row:hover { background: var(--navy-light); }
-    @media (max-width: 560px) {
+    @media (max-width: 640px) {
         .dyn-head { display: none; }
         .dyn-row { grid-template-columns: 1fr; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
         .btn-del-row { width: 100%; height: 34px; }
@@ -171,7 +175,7 @@
     .recap-row.total strong { color: var(--navy); font-size: 1.1rem; }
 
     /* DIALOG MODAL */
-    dialog.sheet { margin: auto; padding: 0; border: 0; border-radius: var(--r-md); width: min(660px, calc(100vw - 24px)); max-height: min(90vh, 800px); background: #fff; color: var(--ink); overflow: hidden; box-shadow: var(--shadow-lg); }
+    dialog.sheet { margin: auto; padding: 0; border: 0; border-radius: var(--r-md); width: min(760px, calc(100vw - 24px)); max-height: min(90vh, 820px); background: #fff; color: var(--ink); overflow: hidden; box-shadow: var(--shadow-lg); }
     dialog.sheet[open] { display: flex; flex-direction: column; animation: pop .22s cubic-bezier(.16,.84,.3,1); }
     dialog.sheet::backdrop { background: rgba(13,27,42,.6); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
     @keyframes pop { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
@@ -345,6 +349,27 @@
             <span class="mode-badge"><i class="fas fa-eye"></i> Mode lihat &amp; cetak</span>
         @endunless
     </div>
+</div>
+
+<!-- BARIS FILTER & AKSI (KIRI: TAB JENIS KENDARAAN, KANAN: PENCARIAN + TAHUN + EXPORT + TAMBAH) -->
+<div class="control-bar">
+    <div class="tabs" role="tablist" aria-label="Pilih Jenis Kendaraan">
+        <button type="button" class="tab" role="tab" aria-selected="true" data-jenis-tab="all">
+            <i class="fas fa-layer-group"></i> Semua Jenis
+        </button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-jenis-tab="R2">
+            <i class="fas fa-motorcycle"></i> R2
+        </button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-jenis-tab="R4">
+            <i class="fas fa-car-side"></i> R4
+        </button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-jenis-tab="R6">
+            <i class="fas fa-truck"></i> R6
+        </button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-jenis-tab="R10">
+            <i class="fas fa-truck-moving"></i> R10
+        </button>
+    </div>
 
     <div class="toolbar-actions">
         <label class="search">
@@ -362,10 +387,6 @@
             </select>
         </div>
 
-        <button type="button" class="btn btn-outline" onclick="window.print()">
-            <i class="fas fa-print"></i> Cetak
-        </button>
-
         <a href="/sapra/perbaikan-kendaraan/cetak-excel?tahun=all&jenis=all" id="btnExportExcel" class="btn btn-outline green">
             <i class="fas fa-file-excel"></i> Excel
         </a>
@@ -380,25 +401,6 @@
             </button>
         @endif
     </div>
-</div>
-
-<!-- TAB JENIS KENDARAAN (SERASI DENGAN SARANA MAKO & KEBUTUHAN SARPRAS) -->
-<div class="tabs" role="tablist" aria-label="Pilih Jenis Kendaraan">
-    <button type="button" class="tab" role="tab" aria-selected="true" data-jenis-tab="all">
-        <i class="fas fa-layer-group"></i> Semua Jenis
-    </button>
-    <button type="button" class="tab" role="tab" aria-selected="false" data-jenis-tab="R2">
-        <i class="fas fa-motorcycle"></i> R2 (Roda 2)
-    </button>
-    <button type="button" class="tab" role="tab" aria-selected="false" data-jenis-tab="R4">
-        <i class="fas fa-car-side"></i> R4 (Roda 4)
-    </button>
-    <button type="button" class="tab" role="tab" aria-selected="false" data-jenis-tab="R6">
-        <i class="fas fa-truck"></i> R6 (Roda 6)
-    </button>
-    <button type="button" class="tab" role="tab" aria-selected="false" data-jenis-tab="R10">
-        <i class="fas fa-truck-moving"></i> R10 (Roda 10)
-    </button>
 </div>
 
 @if($peringatanBerulang->isNotEmpty())
@@ -536,8 +538,31 @@
                                 <span class="chip chip-muted">-</span>
                             @endif
                         </td>
-                        <td class="r" style="font-weight: 700; white-space: nowrap; color: var(--ink);">
-                            Rp {{ number_format((int) $item->total_harga, 0, ',', '.') }}
+                        <td class="r" style="white-space: nowrap; color: var(--ink);">
+                            @php
+                                $hasMultiHarga = count($rincianList) > 1 && collect($rincianList)->contains(fn ($r) => ($r['harga'] ?? null) !== null);
+                            @endphp
+                            @if($hasMultiHarga)
+                                <div class="item-stack r-align">
+                                    @foreach($rincianList as $rincian)
+                                        <div class="item-line">
+                                            @if(($rincian['harga'] ?? null) !== null)
+                                                <span style="font-weight: 600; color: var(--steel); font-size: .83rem;">
+                                                    <span class="item-bullet">&bull;</span> Rp {{ number_format((int) $rincian['harga'], 0, ',', '.') }}
+                                                </span>
+                                            @else
+                                                <span class="chip chip-muted">-</span>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <div class="item-subtotal">
+                                    <span>Total:</span>
+                                    <strong>Rp {{ number_format((int) $item->total_harga, 0, ',', '.') }}</strong>
+                                </div>
+                            @else
+                                <span style="font-weight: 700;">Rp {{ number_format((int) $item->total_harga, 0, ',', '.') }}</span>
+                            @endif
                         </td>
                         <td class="c">
                             @if($item->foto && file_exists(public_path($item->foto)))
@@ -713,7 +738,25 @@
                             {{ $item->satuan ?: '-' }}
                         @endif
                     </td>
-                    <td style="text-align: right; font-weight: bold;">Rp {{ number_format((int) $item->total_harga, 0, ',', '.') }}</td>
+                    <td style="text-align: right;">
+                        @php
+                            $hasMultiHargaPrint = count($rincianList) > 1 && collect($rincianList)->contains(fn ($r) => ($r['harga'] ?? null) !== null);
+                        @endphp
+                        @if($hasMultiHargaPrint)
+                            <ul class="pdf-list" style="text-align: right;">
+                                @foreach($rincianList as $rincian)
+                                    <li>
+                                        {{ ($rincian['harga'] ?? null) !== null ? 'Rp ' . number_format((int) $rincian['harga'], 0, ',', '.') : '-' }}
+                                    </li>
+                                @endforeach
+                            </ul>
+                            <div style="margin-top: 4px; padding-top: 4px; border-top: 1px dashed #64748b; font-weight: bold;">
+                                Total: Rp {{ number_format((int) $item->total_harga, 0, ',', '.') }}
+                            </div>
+                        @else
+                            <span style="font-weight: bold;">Rp {{ number_format((int) $item->total_harga, 0, ',', '.') }}</span>
+                        @endif
+                    </td>
                     <td style="text-align: center;">
                         @if(!empty($item->foto) && file_exists(public_path($item->foto)))
                             <img src="{{ asset($item->foto) }}" alt="Foto" style="max-width: 55px; max-height: 45px; object-fit: cover; display: inline-block;">
@@ -805,8 +848,9 @@
                         <div class="dyn-box">
                             <div class="dyn-head">
                                 <span>Jenis Barang / Kerusakan</span>
-                                <span>Merek / Tipe <small style="text-transform:none;font-weight:500;">(Opsional)</small></span>
-                                <span>Satuan <small style="text-transform:none;font-weight:500;">(Opsional)</small></span>
+                                <span>Merek / Tipe <small style="text-transform:none;font-weight:500;">(Ops)</small></span>
+                                <span>Satuan</span>
+                                <span>Harga Item (Rp)</span>
                                 <span></span>
                             </div>
                             <div class="dyn-rows">
@@ -815,13 +859,15 @@
                                         'barang' => $item->jenis_kerusakan,
                                         'merek' => $item->merek_tipe_barang ?? '-',
                                         'satuan' => $item->satuan ?? '-',
+                                        'harga' => (int) $item->total_harga,
                                     ]];
                                 @endphp
                                 @foreach($editRows as $er)
                                     <div class="dyn-row">
                                         <input type="text" name="items_barang[]" class="f-input" value="{{ $er['barang'] }}" placeholder="Contoh: Aki" required>
-                                        <input type="text" name="items_merek[]" class="f-input" value="{{ $er['merek'] !== '-' ? $er['merek'] : '' }}" placeholder="Contoh: GS Astra">
-                                        <input type="text" name="items_satuan[]" class="f-input" value="{{ $er['satuan'] !== '-' ? $er['satuan'] : '' }}" placeholder="Contoh: 1 Unit">
+                                        <input type="text" name="items_merek[]" class="f-input" value="{{ $er['merek'] !== '-' ? $er['merek'] : '' }}" placeholder="Contoh: GS">
+                                        <input type="text" name="items_satuan[]" class="f-input" value="{{ $er['satuan'] !== '-' ? $er['satuan'] : '' }}" placeholder="Cth: 1">
+                                        <input type="number" name="items_harga[]" class="f-input inp-item-harga" value="{{ ($er['harga'] ?? null) !== null ? (int) $er['harga'] : '' }}" min="0" placeholder="Rp Harga">
                                         <button type="button" class="btn-del-row" title="Hapus baris"><i class="fas fa-times"></i></button>
                                     </div>
                                 @endforeach
@@ -834,8 +880,8 @@
 
                     <div class="f-row">
                         <div>
-                            <label class="f-label">Total Harga (Rp)</label>
-                            <input type="number" name="total_harga" class="f-input" value="{{ (int) $item->total_harga }}" min="0" required>
+                            <label class="f-label">Total Harga Keseluruhan (Rp) <span class="f-optional">(Otomatis dijumlahkan)</span></label>
+                            <input type="number" name="total_harga" class="f-input inp-total-harga" value="{{ (int) $item->total_harga }}" min="0" required>
                         </div>
                         <div>
                             <label class="f-label">Ganti Foto <span class="f-optional">(Maks 4MB)</span></label>
@@ -893,15 +939,17 @@
                     <div class="dyn-box">
                         <div class="dyn-head">
                             <span>Jenis Barang / Kerusakan</span>
-                            <span>Merek / Tipe <small style="text-transform:none;font-weight:500;">(Opsional)</small></span>
-                            <span>Satuan <small style="text-transform:none;font-weight:500;">(Opsional)</small></span>
+                            <span>Merek / Tipe <small style="text-transform:none;font-weight:500;">(Ops)</small></span>
+                            <span>Satuan</span>
+                            <span>Harga Item (Rp)</span>
                             <span></span>
                         </div>
                         <div class="dyn-rows">
                             <div class="dyn-row">
                                 <input type="text" name="items_barang[]" class="f-input" placeholder="Contoh: Aki" required>
-                                <input type="text" name="items_merek[]" class="f-input" placeholder="Contoh: GS Astra">
-                                <input type="text" name="items_satuan[]" class="f-input" placeholder="Contoh: 1 Unit">
+                                <input type="text" name="items_merek[]" class="f-input" placeholder="Contoh: GS">
+                                <input type="text" name="items_satuan[]" class="f-input" placeholder="Cth: 1">
+                                <input type="number" name="items_harga[]" class="f-input inp-item-harga" min="0" placeholder="Rp Harga">
                                 <button type="button" class="btn-del-row" title="Hapus baris"><i class="fas fa-times"></i></button>
                             </div>
                         </div>
@@ -913,8 +961,8 @@
 
                 <div class="f-row">
                     <div>
-                        <label class="f-label" for="addHarga">Total Harga (Rp)</label>
-                        <input type="number" id="addHarga" name="total_harga" class="f-input" placeholder="Contoh: 1250000" min="0" required>
+                        <label class="f-label" for="addHarga">Total Harga Keseluruhan (Rp) <span class="f-optional">(Otomatis dijumlahkan)</span></label>
+                        <input type="number" id="addHarga" name="total_harga" class="f-input inp-total-harga" placeholder="Otomatis terhitung dari harga item" min="0" required>
                     </div>
                     <div>
                         <label class="f-label" for="addFoto">Upload Foto <span class="f-optional">(Opsional, Maks 4MB)</span></label>
@@ -947,9 +995,39 @@
         }, 3000);
     });
 
-    /* ---------- Tambah / Hapus Baris Item Barang di Modal ---------- */
+    /* ---------- Tambah / Hapus Baris Item Barang & Auto-Sum Harga di Modal ---------- */
+    function recalcFormTotal(formEl) {
+        if (!formEl) return;
+        var hargaInputs = formEl.querySelectorAll('.inp-item-harga');
+        var totalInput = formEl.querySelector('.inp-total-harga');
+        if (!totalInput || !hargaInputs.length) return;
+
+        var sum = 0;
+        var hasFilled = false;
+        hargaInputs.forEach(function (inp) {
+            var val = parseInt(inp.value, 10);
+            if (!isNaN(val) && val > 0) {
+                sum += val;
+                hasFilled = true;
+            }
+        });
+        if (hasFilled) {
+            totalInput.value = sum;
+        }
+    }
+
+    function bindHargaInput(inp) {
+        if (!inp) return;
+        inp.addEventListener('input', function () {
+            recalcFormTotal(inp.closest('form'));
+        });
+    }
+
+    document.querySelectorAll('.inp-item-harga').forEach(bindHargaInput);
+
     function bindDelRow(btn) {
         btn.addEventListener('click', function () {
+            var formEl = btn.closest('form');
             var container = btn.closest('.dyn-rows');
             var row = btn.closest('.dyn-row');
             if (!container || !row) return;
@@ -958,6 +1036,7 @@
             } else {
                 row.querySelectorAll('input').forEach(function (inp) { inp.value = ''; });
             }
+            recalcFormTotal(formEl);
         });
     }
 
@@ -973,12 +1052,14 @@
             row.className = 'dyn-row';
             row.innerHTML =
                 '<input type="text" name="items_barang[]" class="f-input" placeholder="Contoh: Ban / Lampu" required>' +
-                '<input type="text" name="items_merek[]" class="f-input" placeholder="Contoh: Bridgestone">' +
-                '<input type="text" name="items_satuan[]" class="f-input" placeholder="Contoh: 2 Buah">' +
+                '<input type="text" name="items_merek[]" class="f-input" placeholder="Contoh: GS">' +
+                '<input type="text" name="items_satuan[]" class="f-input" placeholder="Cth: 2">' +
+                '<input type="number" name="items_harga[]" class="f-input inp-item-harga" min="0" placeholder="Rp Harga">' +
                 '<button type="button" class="btn-del-row" title="Hapus baris"><i class="fas fa-times"></i></button>';
 
             container.appendChild(row);
             bindDelRow(row.querySelector('.btn-del-row'));
+            bindHargaInput(row.querySelector('.inp-item-harga'));
             var firstInput = row.querySelector('input');
             if (firstInput) firstInput.focus();
         });

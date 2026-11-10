@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             HidranKotaSeeder::class,
             KebutuhanSarprasSeeder::class,
             PengadaanSarprasSeeder::class,
+            PerbaikanKendaraanSeeder::class,
             DistribusiStaffSeeder::class,
             RekapLayananTableSeeder::class,
             // Legacy seeder 2022-2024 dinonaktifkan agar hanya menyisakan data 2025 & 2026:

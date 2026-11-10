@@ -75,6 +75,7 @@ class PerbaikanKendaraanExport implements Export, WithMultipleSheets
                     'Jenis Kerusakan / Penggantian Barang',
                     'Merek / Tipe Barang',
                     'Satuan',
+                    'Rincian Harga Item',
                     'Total Harga (Rp)',
                     'Keterangan Ganti Barang Berulang',
                 ];
@@ -103,6 +104,19 @@ class PerbaikanKendaraanExport implements Export, WithMultipleSheets
                     $catatanBerulang = implode(' | ', $detail);
                 }
 
+                $rincianHargaText = '-';
+                if (! empty($row->rincian_items) && is_array($row->rincian_items)) {
+                    $parts = [];
+                    foreach ($row->rincian_items as $ri) {
+                        if (($ri['harga'] ?? null) !== null) {
+                            $parts[] = 'Rp '.number_format((int) $ri['harga'], 0, ',', '.');
+                        }
+                    }
+                    if (! empty($parts)) {
+                        $rincianHargaText = implode(', ', $parts);
+                    }
+                }
+
                 return [
                     $this->nomor,
                     $row->nopol_kendaraan,
@@ -112,6 +126,7 @@ class PerbaikanKendaraanExport implements Export, WithMultipleSheets
                     $row->jenis_kerusakan,
                     $row->merek_tipe_barang ?? '-',
                     $row->satuan ?? '-',
+                    $rincianHargaText,
                     (int) $row->total_harga,
                     $catatanBerulang,
                 ];
