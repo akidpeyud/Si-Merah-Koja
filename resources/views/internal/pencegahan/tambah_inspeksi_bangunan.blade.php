@@ -29,6 +29,9 @@
     .form-control:hover, .form-select:hover { border-color: #94a3b8; }
     .form-control:focus, .form-select:focus { border-color: #0284c7; box-shadow: 0 0 0 4px rgba(2,132,199,0.12); outline: none; }
     .form-control[type="file"] { padding: 9px 14px; background: #fff; }
+    .input-group .form-control { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+    .input-group-text { border: 1px solid #cbd5e1; border-left: none; border-radius: 0 10px 10px 0; background-color: #f8fafc; font-weight: 700; color: #475569; padding: 11px 16px; font-size: 14px; }
+    .input-group:focus-within .input-group-text { border-color: #0284c7; }
 
     .upload-card { height: 100%; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 16px; transition: all 0.2s; }
     .upload-card:hover { border-color: #0284c7; background: #f0f9ff; }
@@ -117,7 +120,10 @@
 
                         <div class="col-md-4">
                             <label class="form-label">Luas Bangunan <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="luas_bangunan" value="{{ old('luas_bangunan') }}" placeholder="Contoh: 1.700 m2" required>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="luas_bangunan" value="{{ old('luas_bangunan') }}" placeholder="Contoh: 1.700" required>
+                                <span class="input-group-text">m²</span>
+                            </div>
                         </div>
 
                         <div class="col-md-12">

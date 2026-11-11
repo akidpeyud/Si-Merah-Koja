@@ -569,12 +569,17 @@ class PencegahanController extends Controller
             'rekomendasi' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
 
+        $luasBangunan = trim((string) $validated['luas_bangunan']);
+        if ($luasBangunan !== '') {
+            $luasBangunan = preg_replace('/\s*(m²|m2)$/iu', '', $luasBangunan).' m²';
+        }
+
         $data = [
             'nama_tempat' => $validated['nama_tempat'],
             'jenis_usaha' => $validated['jenis_usaha'],
             'kualifikasi_bangunan' => $validated['kualifikasi_bangunan'],
             'resiko_kebakaran' => $validated['resiko_kebakaran'],
-            'luas_bangunan' => $validated['luas_bangunan'],
+            'luas_bangunan' => $luasBangunan,
             'alamat' => $validated['alamat'],
             'nama_penanggung_jawab' => $validated['nama_penanggung_jawab'],
             'no_telepon' => $validated['no_telepon'],
@@ -638,12 +643,17 @@ class PencegahanController extends Controller
             'rekomendasi' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
 
+        $luasBangunan = trim((string) $validated['luas_bangunan']);
+        if ($luasBangunan !== '') {
+            $luasBangunan = preg_replace('/\s*(m²|m2)$/iu', '', $luasBangunan).' m²';
+        }
+
         $data = [
             'nama_tempat' => $validated['nama_tempat'],
             'jenis_usaha' => $validated['jenis_usaha'],
             'kualifikasi_bangunan' => $validated['kualifikasi_bangunan'],
             'resiko_kebakaran' => $validated['resiko_kebakaran'],
-            'luas_bangunan' => $validated['luas_bangunan'],
+            'luas_bangunan' => $luasBangunan,
             'alamat' => $validated['alamat'],
             'nama_penanggung_jawab' => $validated['nama_penanggung_jawab'],
             'no_telepon' => $validated['no_telepon'],
