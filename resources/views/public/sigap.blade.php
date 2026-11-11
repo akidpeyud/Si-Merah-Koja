@@ -2090,6 +2090,7 @@ body { font-size: 15px; background: #f4f6f9; }
        ========================================================= */
     const isMobile = L.Browser.mobile || window.innerWidth < 768;
     const map = L.map('map', {
+        preferCanvas: true,
         scrollWheelZoom: true,
         touchZoom: true,
         doubleClickZoom: true,

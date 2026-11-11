@@ -61,11 +61,23 @@ use Spatie\Permission\Middleware\RoleMiddleware;
 // 1. RUTE PUBLIK (HALAMAN UTAMA & INFO)
 // ==========================================
 Route::get('/', function () {
-    $daftar_berita = Berita::orderBy('tanggal_kejadian', 'desc')->take(4)->get();
+    $daftar_kejadian = \App\Models\Kejadian::orderByDesc('tanggal')->orderByDesc('id')->take(4)->get();
     $daftar_infografis = Infografis::latest()->take(6)->get();
-    $daftar_medsos = BeritaMedsos::latest()->take(6)->get();
+    $daftar_medsos = BeritaMedsos::with('kategori')->latest()->take(6)->get();
+    $daftar_edu_damkar = EduDamkar::latest()->take(4)->get();
+    $daftar_ujung_damkar = UjungDamkar::latest()->take(6)->get();
+    $daftar_backgrounds = Schema::hasTable('hero_backgrounds')
+        ? DB::table('hero_backgrounds')->where('is_active', true)->orderBy('urutan')->orderBy('id')->get()
+        : collect();
 
-    return view('homepage.index', compact('daftar_berita', 'daftar_infografis', 'daftar_medsos'));
+    return view('homepage.index', compact(
+        'daftar_kejadian',
+        'daftar_infografis',
+        'daftar_medsos',
+        'daftar_edu_damkar',
+        'daftar_ujung_damkar',
+        'daftar_backgrounds'
+    ));
 });
 
 // Program Kerja
@@ -245,6 +257,7 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
     Route::delete('/internal/kelola-pemohon/hapus/{id}', [AuthController::class, 'destroyPemohon']);
 
     // --- B. MANAJEMEN INFORMASI ---
+    Route::get('/internal/operator/background-beranda', [OperatorMedsosController::class, 'indexBackground'])->name('operator.background.index');
     Route::get('/internal/operator/kelola-berita', [BeritaController::class, 'indexInternal']);
     Route::get('/internal/operator/infografis', [OperatorMedsosController::class, 'indexInfografis']);
     Route::get('/internal/operator/berita-medsos', [OperatorMedsosController::class, 'indexMedsos']);
@@ -262,6 +275,12 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
         Route::get('/internal/operator/kelola-berita/edit/{id}', [BeritaController::class, 'edit']);
         Route::put('/internal/operator/kelola-berita/update/{id}', [BeritaController::class, 'update']);
         Route::delete('/internal/operator/kelola-berita/hapus/{id}', [BeritaController::class, 'destroy']);
+
+        // Background Beranda
+        Route::post('/internal/operator/background-beranda/store', [OperatorMedsosController::class, 'storeBackground']);
+        Route::put('/internal/operator/background-beranda/update/{id}', [OperatorMedsosController::class, 'updateBackground']);
+        Route::patch('/internal/operator/background-beranda/toggle/{id}', [OperatorMedsosController::class, 'toggleBackground']);
+        Route::delete('/internal/operator/background-beranda/hapus/{id}', [OperatorMedsosController::class, 'destroyBackground']);
 
         // Infografis
         Route::post('/internal/operator/infografis/store', [OperatorMedsosController::class, 'storeInfografis']);

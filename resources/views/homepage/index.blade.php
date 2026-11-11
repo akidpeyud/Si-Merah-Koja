@@ -275,10 +275,8 @@
             position: relative; isolation: isolate; color: #fff; background: var(--ink); overflow: hidden;
             min-height: calc(100svh - var(--header-h)); display: flex; flex-direction: column;
         }
-        .hero-bg { position: absolute; inset: 0; z-index: -2; background-size: cover; background-position: center; }
-        .hero-bg.b1 { background-image: url('/images/background1.png'); }
-        .hero-bg.b2 { background-image: url('/images/background2.jpeg'); animation: crossfade 14s infinite ease-in-out; }
-        @keyframes crossfade { 0%, 40% { opacity: 0; } 50%, 90% { opacity: 1; } 100% { opacity: 0; } }
+        .hero-bg { position: absolute; inset: 0; z-index: -2; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s ease-in-out; }
+        .hero-bg.is-active { opacity: 1; }
         .hero::before {
             content: ""; position: absolute; inset: 0; z-index: -1;
             background: radial-gradient(60% 55% at 8% 100%, rgba(229,57,45,.38), transparent 70%), linear-gradient(100deg, rgba(13,27,42,.97) 0%, rgba(13,27,42,.84) 48%, rgba(13,27,42,.62) 100%);
@@ -610,6 +608,29 @@
             transform: none;
         }
 
+        @media (max-width: 768px) {
+            .site-header {
+                background: rgba(13, 27, 42, .96);
+                -webkit-backdrop-filter: none;
+                backdrop-filter: none;
+            }
+            .hero-bg.b1,
+            .hero-mark,
+            .about-art img,
+            #kejadian .sec-head img,
+            .giat-art img {
+                animation: none !important;
+            }
+            .reveal-item {
+                will-change: auto;
+            }
+        }
+
+        #tentang, #kejadian, #video, #infografis, #giat {
+            content-visibility: auto;
+            contain-intrinsic-size: 1px 650px;
+        }
+
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
             *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -622,10 +643,10 @@
 <body>
 
 @php
-    // Ticker mengambil data dari Kejadian yang baru (bukan Berita)
-    $listBerita = class_exists('\App\Models\Kejadian') && \Illuminate\Support\Facades\Schema::hasTable('kejadian_damkar')
-            ? \App\Models\Kejadian::orderByDesc('tanggal')->orderByDesc('id')->take(4)->get()
-            : collect();
+    // Gunakan koleksi kejadian yang sudah di-query dari route (tanpa query berulang)
+    $listBerita = isset($daftar_kejadian)
+        ? $daftar_kejadian
+        : (\App\Models\Kejadian::orderByDesc('tanggal')->orderByDesc('id')->take(4)->get());
 @endphp
 
 <!-- ==================== HEADER ==================== -->
@@ -784,9 +805,15 @@
 <main>
 
 <!-- ==================== HERO ==================== -->
+@php
+    $heroBgUrls = (isset($daftar_backgrounds) && $daftar_backgrounds->isNotEmpty())
+        ? $daftar_backgrounds->map(fn($bg) => asset($bg->path_gambar))->values()->all()
+        : [asset('images/background1.png'), asset('images/background2.jpeg')];
+@endphp
 <section class="hero" id="beranda" aria-labelledby="judul-hero">
-    <div class="hero-bg b1"></div>
-    <div class="hero-bg b2"></div>
+    @foreach($heroBgUrls as $bgUrl)
+        <div class="hero-bg {{ $loop->first ? 'b1 is-active' : 'b-slide' }}" style="background-image: url('{{ $bgUrl }}');"></div>
+    @endforeach
 
     <!-- Bilah logo (tengah) -->
     <div class="hero-brandbar rise">
@@ -927,10 +954,8 @@
         </div>
 
         @php
-            // Memanggil data langsung dari Model Kejadian yang baru
-            $listKejadianHome = class_exists('\App\Models\Kejadian') && \Illuminate\Support\Facades\Schema::hasTable('kejadian_damkar')
-                ? \App\Models\Kejadian::orderByDesc('tanggal')->orderByDesc('id')->take(4)->get() 
-                : collect();
+            // Gunakan data kejadian yang sudah dimuat pada awal halaman (tanpa query ulang)
+            $listKejadianHome = $listBerita;
         @endphp
 
         <div class="media-grid" id="kejadianGrid">
@@ -1024,11 +1049,9 @@
 
 <!-- ==================== EDU DAMKAR (VIDEO EDUKASI) ==================== -->
 @php
-    $listEduDamkar = isset($daftar_edu_damkar) && count($daftar_edu_damkar)
+    $listEduDamkar = isset($daftar_edu_damkar)
         ? $daftar_edu_damkar
-        : (\Illuminate\Support\Facades\Schema::hasTable('edu_damkar')
-            ? \App\Models\EduDamkar::latest()->take(4)->get()
-            : collect());
+        : \App\Models\EduDamkar::latest()->take(4)->get();
 @endphp
 <section class="section bg-ink" id="video">
     <div class="wrap">
@@ -1163,11 +1186,9 @@
 
 <!-- ==================== UJUNG-UJUNG DAMKAR (FORMAT VIDEO) ==================== -->
 @php
-    $listUjungDamkar = isset($daftar_ujung_damkar) && count($daftar_ujung_damkar)
+    $listUjungDamkar = isset($daftar_ujung_damkar)
         ? $daftar_ujung_damkar
-        : (\Illuminate\Support\Facades\Schema::hasTable('ujung_damkar')
-            ? \App\Models\UjungDamkar::latest()->take(6)->get()
-            : collect());
+        : \App\Models\UjungDamkar::latest()->take(6)->get();
 @endphp
 <section class="section bg-paper" id="giat">
     <div class="wrap">
@@ -1592,6 +1613,18 @@
         document.querySelectorAll('.reveal-item').forEach(function (el) {
             el.classList.add('is-visible');
         });
+    }
+
+    // Slideshow otomatis untuk Background Hero Beranda (jika ada > 1 foto aktif)
+    var heroSlides = document.querySelectorAll('#beranda .hero-bg');
+    var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (heroSlides.length > 1 && !reducedMotion) {
+        var currentHeroIdx = 0;
+        setInterval(function () {
+            heroSlides[currentHeroIdx].classList.remove('is-active');
+            currentHeroIdx = (currentHeroIdx + 1) % heroSlides.length;
+            heroSlides[currentHeroIdx].classList.add('is-active');
+        }, 7000);
     }
 })();
 </script>

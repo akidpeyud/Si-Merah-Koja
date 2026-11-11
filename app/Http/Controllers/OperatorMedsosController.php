@@ -945,4 +945,168 @@ class OperatorMedsosController extends Controller
 
         return null;
     }
+
+    // ================= BACKGROUND BERANDA PUBLIK =================
+    public function indexBackground()
+    {
+        $backgrounds = DB::table('hero_backgrounds')
+            ->orderBy('urutan', 'asc')
+            ->orderBy('id', 'asc')
+            ->get();
+
+        return view('internal.operator.background_beranda', compact('backgrounds'));
+    }
+
+    public function storeBackground(Request $request)
+    {
+        $request->validate([
+            'judul' => ['nullable', 'string', 'max:255'],
+            'urutan' => ['nullable', 'integer', 'min:1'],
+            'gambar' => ['required', 'file', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
+        ], [
+            'gambar.required' => 'File gambar background wajib dipilih.',
+            'gambar.mimes' => 'Format gambar harus JPG, JPEG, PNG, atau WEBP.',
+            'gambar.max' => 'Ukuran file gambar maksimal 8 MB.',
+        ]);
+
+        $pathGambar = $this->storeAndCompressBackgroundImage($request->file('gambar'));
+        $maxUrutan = (int) DB::table('hero_backgrounds')->max('urutan');
+        $urutan = $request->filled('urutan') ? (int) $request->urutan : ($maxUrutan + 1);
+
+        DB::table('hero_backgrounds')->insert([
+            'judul' => $request->filled('judul') ? trim((string) $request->judul) : 'Background Beranda #'.($maxUrutan + 1),
+            'path_gambar' => $pathGambar,
+            'urutan' => $urutan,
+            'is_active' => true,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return back()->with('success', 'Background beranda berhasil diunggah dan dikompres otomatis!');
+    }
+
+    public function updateBackground(Request $request, $id)
+    {
+        $request->validate([
+            'judul' => ['nullable', 'string', 'max:255'],
+            'urutan' => ['required', 'integer', 'min:1'],
+            'is_active' => ['nullable', 'boolean'],
+            'gambar' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
+        ], [
+            'gambar.mimes' => 'Format gambar harus JPG, JPEG, PNG, atau WEBP.',
+            'gambar.max' => 'Ukuran file gambar maksimal 8 MB.',
+        ]);
+
+        $lama = DB::table('hero_backgrounds')->where('id', $id)->first();
+        if (! $lama) {
+            return back()->with('error', 'Data background tidak ditemukan!');
+        }
+
+        $pathGambar = $lama->path_gambar;
+        if ($request->hasFile('gambar')) {
+            if ($pathGambar && str_starts_with($pathGambar, 'uploads/backgrounds/') && file_exists(public_path($pathGambar))) {
+                @unlink(public_path($pathGambar));
+            }
+            $pathGambar = $this->storeAndCompressBackgroundImage($request->file('gambar'));
+        }
+
+        DB::table('hero_backgrounds')->where('id', $id)->update([
+            'judul' => $request->filled('judul') ? trim((string) $request->judul) : $lama->judul,
+            'path_gambar' => $pathGambar,
+            'urutan' => (int) $request->urutan,
+            'is_active' => $request->boolean('is_active', true),
+            'updated_at' => now(),
+        ]);
+
+        return back()->with('success', 'Data background beranda berhasil diperbarui!');
+    }
+
+    public function toggleBackground($id)
+    {
+        $item = DB::table('hero_backgrounds')->where('id', $id)->first();
+        if (! $item) {
+            return back()->with('error', 'Data background tidak ditemukan!');
+        }
+
+        $statusBaru = ! $item->is_active;
+        DB::table('hero_backgrounds')->where('id', $id)->update([
+            'is_active' => $statusBaru,
+            'updated_at' => now(),
+        ]);
+
+        return back()->with('success', $statusBaru ? 'Background diaktifkan di beranda!' : 'Background dinonaktifkan dari beranda!');
+    }
+
+    public function destroyBackground($id)
+    {
+        $item = DB::table('hero_backgrounds')->where('id', $id)->first();
+        if (! $item) {
+            return back()->with('error', 'Data background tidak ditemukan!');
+        }
+
+        if ($item->path_gambar && str_starts_with($item->path_gambar, 'uploads/backgrounds/') && file_exists(public_path($item->path_gambar))) {
+            @unlink(public_path($item->path_gambar));
+        }
+
+        DB::table('hero_backgrounds')->where('id', $id)->delete();
+
+        return back()->with('success', 'Background beranda berhasil dihapus!');
+    }
+
+    /**
+     * Simpan & kompres otomatis gambar background ke resolusi ideal (maks lebar 1600px, JPEG quality 78)
+     * agar ukuran file selalu ringan (~150-250 KB) meskipun foto asli beberapa MB.
+     */
+    private function storeAndCompressBackgroundImage(\Illuminate\Http\UploadedFile $file): string
+    {
+        $targetDir = public_path('uploads/backgrounds');
+        if (! is_dir($targetDir)) {
+            mkdir($targetDir, 0755, true);
+        }
+
+        $baseName = 'bg_'.time().'_'.Str::random(8);
+        $origExt = strtolower($file->getClientOriginalExtension() ?: 'jpg');
+        $tempName = $baseName.'_raw.'.$origExt;
+        $file->move($targetDir, $tempName);
+        $tempPath = $targetDir.DIRECTORY_SEPARATOR.$tempName;
+
+        if (extension_loaded('gd') && file_exists($tempPath)) {
+            $info = @getimagesize($tempPath);
+            if ($info) {
+                [$w, $h, $imgType] = $info;
+                $src = match ($imgType) {
+                    IMAGETYPE_JPEG => @imagecreatefromjpeg($tempPath),
+                    IMAGETYPE_PNG => @imagecreatefrompng($tempPath),
+                    IMAGETYPE_WEBP => function_exists('imagecreatefromwebp') ? @imagecreatefromwebp($tempPath) : null,
+                    default => null,
+                };
+
+                if ($src) {
+                    $maxW = 1600;
+                    $newW = $w > $maxW ? $maxW : $w;
+                    $newH = (int) round($h * ($newW / $w));
+
+                    $dst = imagecreatetruecolor($newW, $newH);
+                    $bgFill = imagecolorallocate($dst, 13, 27, 42);
+                    imagefilledrectangle($dst, 0, 0, $newW, $newH, $bgFill);
+                    imagecopyresampled($dst, $src, 0, 0, 0, 0, $newW, $newH, $w, $h);
+
+                    $finalName = $baseName.'.jpg';
+                    $finalPath = $targetDir.DIRECTORY_SEPARATOR.$finalName;
+                    @imagejpeg($dst, $finalPath, 78);
+
+                    imagedestroy($src);
+                    imagedestroy($dst);
+
+                    if (file_exists($finalPath)) {
+                        @unlink($tempPath);
+
+                        return 'uploads/backgrounds/'.$finalName;
+                    }
+                }
+            }
+        }
+
+        return 'uploads/backgrounds/'.$tempName;
+    }
 }
