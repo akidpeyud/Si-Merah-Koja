@@ -62,8 +62,30 @@
     .dash-index .stat-unit { font-size: .8rem; color: var(--steel); }
 
     @media (max-width: 640px) {
-        .dash-index .section-meta { margin-left: 0; width: 100%; }
-        .dash-index .stats-grid { grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); }
+        .dash-index .page-head h1 { font-size: 1.24rem; line-height: 1.22; }
+        .dash-index .page-head p { font-size: .8rem; margin-top: 3px; }
+        .dash-index .welcome { margin-top: 12px; padding: 14px 12px; border-radius: 14px; }
+        .dash-index .welcome-date { font-size: .68rem; padding: 4px 10px; }
+        .dash-index .welcome h2 { margin-top: 10px; font-size: 1.1rem; line-height: 1.25; }
+        .dash-index .welcome-sub { font-size: .76rem; line-height: 1.4; }
+        .dash-index .overview { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+        .dash-index .ov-item { padding: 9px 10px; gap: 8px; border-radius: 10px; }
+        .dash-index .ov-ico { flex: 0 0 30px; height: 30px; border-radius: 8px; font-size: .78rem; }
+        .dash-index .ov-title { font-size: .76rem; line-height: 1.2; }
+        .dash-index .ov-desc { font-size: .64rem; line-height: 1.25; }
+        .dash-index .ov-go { top: 6px; right: 7px; font-size: .58rem; }
+        .dash-index .dash-section { margin-top: 22px; }
+        .dash-index .section-heading { gap: 8px; margin-bottom: 10px; }
+        .dash-index .section-heading-ico { width: 32px; height: 32px; border-radius: 9px; font-size: .82rem; }
+        .dash-index .section-heading h3 { font-size: .95rem; }
+        .dash-index .section-meta { margin-left: 0; width: 100%; font-size: .72rem; }
+        .dash-index .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+        .dash-index .stat-card { padding: 11px 10px; gap: 10px; border-radius: 11px; }
+        .dash-index .stat-ico { width: 32px; height: 32px; border-radius: 9px; font-size: .84rem; }
+        .dash-index .stat-go { font-size: .72rem; }
+        .dash-index .stat-value { font-size: 1.38rem; }
+        .dash-index .stat-title { margin-top: 2px; font-size: .76rem; line-height: 1.25; }
+        .dash-index .stat-unit { font-size: .66rem; }
     }
 </style>
 
@@ -208,6 +230,7 @@
                 ['Data Hidrant Kota Jambi', 'hidrant', 'fa-map-location-dot', '/sapra/data-hidrant-kota', $count('hidran_kota'), 'ic-primary'],
                 ['Mutu Baku Kebutuhan', 'data', 'fa-boxes-stacked', '/sapra/kebutuhan-sarpras', $count('kebutuhan_sarpras'), 'ic-primary'],
                 ['Serah Terima Barang', 'transaksi', 'fa-people-carry-box', '/sapra/distribusi-staff', $count('distribusi_barang_staff'), 'ic-info'],
+                ['Perbaikan Kendaraan', 'riwayat', 'fa-screwdriver-wrench', '/sapra/perbaikan-kendaraan', $count('perbaikan_kendaraans'), 'ic-danger'],
             ],
         ],
         [

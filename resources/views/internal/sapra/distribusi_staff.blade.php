@@ -120,6 +120,8 @@
     .btn-outline:hover { border-color: var(--navy); background: var(--paper); }
     .btn-outline.red { color: var(--signal); border-color: var(--signal); }
     .btn-outline.red:hover { background: var(--signal); color: #fff; border-color: var(--signal); }
+    .btn-outline.blue { color: var(--blue); border-color: var(--blue); }
+    .btn-outline.blue:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
     .btn-xs { height: 34px; padding: 0 14px; font-size: .78rem; }
     .table-wrap { background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; margin-top: 10px; box-shadow: var(--shadow-xs); transition: box-shadow .2s, border-color .2s; }
     .table-wrap:hover { box-shadow: var(--shadow-sm); border-color: #d2dae5; }
@@ -132,6 +134,7 @@
     .staff-header .c { text-align: center; }
     .staff-info { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
     .staff-info-left { display: flex; align-items: center; gap: 12px; }
+    .staff-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
     .staff-icon { width: 34px; height: 34px; border-radius: 50%; background: var(--navy); color: #fff; display: grid; place-items: center; font-size: .85rem; }
     .staff-name { font-weight: 700; font-size: .98rem; color: var(--ink); text-transform: uppercase; letter-spacing: .3px; }
     .staff-count { background: var(--navy-light); color: var(--navy); padding: 4px 10px; border-radius: 999px; font-size: .75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
@@ -235,8 +238,6 @@
         ->values();
 @endphp
 
-@section('content')
-
         <div class="page-toolbar">
             <div>
                 <h1>Bukti Serah Terima Barang</h1>
@@ -302,17 +303,29 @@
                             <tr class="staff-header">
                                 <td class="c staff-num">{{ $loop->iteration }}</td>
                                 <td colspan="{{ $bisaCrud ? 5 : 4 }}" class="staff-name-search">
+                                    @php
+                                        $urlBastPdf = '/sapra/distribusi-staff/cetak-personil?nama=' . urlencode($nama) . '&format=pdf';
+                                        $urlBastWord = '/sapra/distribusi-staff/cetak-personil?nama=' . urlencode($nama) . '&format=word';
+                                    @endphp
                                     <div class="staff-info">
                                         <div class="staff-info-left">
                                             <div class="staff-icon"><i class="fas fa-user"></i></div>
                                             <span class="staff-name">{{ $nama }}</span>
                                             <span class="staff-count"><i class="fas fa-box-open"></i> {{ count($items) }} Total Barang</span>
                                         </div>
-                                        @if($bisaCrud)
-                                            <button type="button" class="btn btn-outline btn-xs" data-open="dlgTambah" data-nama="{{ $nama }}">
-                                                <i class="fas fa-plus"></i> Tambah Barang
-                                            </button>
-                                        @endif
+                                        <div class="staff-actions">
+                                            <a href="{{ $urlBastPdf }}" data-base-url="{{ $urlBastPdf }}" class="btn btn-outline red btn-xs js-cetak-personil" title="Unduh Berita Acara Serah Terima Barang (PDF) untuk {{ $nama }}">
+                                                <i class="fas fa-file-pdf"></i> PDF
+                                            </a>
+                                            <a href="{{ $urlBastWord }}" data-base-url="{{ $urlBastWord }}" class="btn btn-outline blue btn-xs js-cetak-personil" title="Unduh Berita Acara Serah Terima Barang (Word) untuk {{ $nama }}">
+                                                <i class="fas fa-file-word"></i> Word
+                                            </a>
+                                            @if($bisaCrud)
+                                                <button type="button" class="btn btn-outline btn-xs" data-open="dlgTambah" data-nama="{{ $nama }}">
+                                                    <i class="fas fa-plus"></i> Tambah Barang
+                                                </button>
+                                            @endif
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -572,6 +585,12 @@
                 ? '/sapra/distribusi-staff/cetak?tahun=' + encodeURIComponent(selected.join(','))
                 : '/sapra/distribusi-staff/cetak';
         }
+        document.querySelectorAll('.js-cetak-personil').forEach(function (link) {
+            var baseUrl = link.getAttribute('data-base-url') || link.href;
+            link.href = selected.length > 0
+                ? baseUrl + '&tahun=' + encodeURIComponent(selected.join(','))
+                : baseUrl;
+        });
     }
 
     function applyFilter() {

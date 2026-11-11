@@ -6,10 +6,25 @@ use App\Exports\HidranExport;
 use App\Exports\HidranKotaExport;
 use App\Exports\PerbaikanKendaraanExport;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpWord\Element\Section;
+use PhpOffice\PhpWord\IOFactory;
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\Settings as PhpWordSettings;
+use PhpOffice\PhpWord\Shared\Converter;
+use PhpOffice\PhpWord\SimpleType\Jc;
+use PhpOffice\PhpWord\SimpleType\JcTable;
+use PhpOffice\PhpWord\SimpleType\TblWidth;
+use PhpOffice\PhpWord\SimpleType\VerticalJc;
+use PhpOffice\PhpWord\Style\Table as PhpWordTableStyle;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class SapraController extends Controller
 {
@@ -929,7 +944,7 @@ class SapraController extends Controller
         $sisaStok = $totalPengadaan - $totalDistribusi;
 
         if ($request->jumlah > $sisaStok) {
-            return redirect()->back()->with('error', 'Gagal: Jumlah distribusi (' . $request->jumlah . ') melebihi sisa stok yang tersedia (' . max(0, $sisaStok) . ' unit)!');
+            return redirect()->back()->with('error', 'Gagal: Jumlah distribusi ('.$request->jumlah.') melebihi sisa stok yang tersedia ('.max(0, $sisaStok).' unit)!');
         }
 
         DB::table('distribusi_barang_staff')->insert([
@@ -978,7 +993,7 @@ class SapraController extends Controller
         $sisaStok = $totalPengadaan - $totalDistribusi;
 
         if ($request->jumlah > $sisaStok) {
-            return redirect()->back()->with('error', 'Gagal: Jumlah distribusi (' . $request->jumlah . ') melebihi sisa stok yang tersedia (' . max(0, $sisaStok) . ' unit)!');
+            return redirect()->back()->with('error', 'Gagal: Jumlah distribusi ('.$request->jumlah.') melebihi sisa stok yang tersedia ('.max(0, $sisaStok).' unit)!');
         }
 
         DB::table('distribusi_barang_staff')->where('id', $id)->update([
@@ -1004,16 +1019,16 @@ class SapraController extends Controller
 
     public function cetakDistribusiStaff(Request $request)
     {
-        $tahunParam = (string) $request->query('tahun', '');
-        $tahunFilter = array_values(array_filter(
-            array_map('trim', explode(',', $tahunParam)),
-            fn ($y) => preg_match('/^\d{4}$/', $y) === 1
-        ));
+        $tahunFilter = $this->parseDistribusiTahunFilter((string) $request->query('tahun', ''));
 
         $query = DB::table('distribusi_barang_staff');
 
         if (! empty($tahunFilter)) {
-            $query->whereIn(DB::raw('YEAR(waktu_terima)'), $tahunFilter);
+            $query->where(function ($subQuery) use ($tahunFilter): void {
+                foreach ($tahunFilter as $tahun) {
+                    $subQuery->orWhereYear('waktu_terima', $tahun);
+                }
+            });
         }
 
         $rawData = $query
@@ -1026,6 +1041,387 @@ class SapraController extends Controller
         });
 
         return view('internal.sapra.distribusi_staff_cetak', compact('dataDistribusi', 'tahunFilter'));
+    }
+
+    /**
+     * Cetak Berita Acara Serah Terima Barang (BAST) khusus 1 orang dalam format PDF atau Word (.docx).
+     */
+    public function cetakDistribusiPersonil(Request $request): Response
+    {
+        $namaInput = trim((string) $request->query('nama', ''));
+        if ($namaInput === '') {
+            return redirect()->back()->with('error', 'Nama personil penerima belum dipilih.');
+        }
+
+        $tahunFilter = $this->parseDistribusiTahunFilter((string) $request->query('tahun', ''));
+        $format = strtolower(trim((string) $request->query('format', 'pdf')));
+        if (! in_array($format, ['pdf', 'word'], true)) {
+            $format = 'pdf';
+        }
+
+        $namaKey = mb_strtoupper($namaInput, 'UTF-8');
+        $query = DB::table('distribusi_barang_staff')
+            ->whereRaw('UPPER(TRIM(nama_penerima)) = ?', [$namaKey]);
+
+        if (! empty($tahunFilter)) {
+            $query->where(function ($subQuery) use ($tahunFilter): void {
+                foreach ($tahunFilter as $tahun) {
+                    $subQuery->orWhereYear('waktu_terima', $tahun);
+                }
+            });
+        }
+
+        $items = $query
+            ->orderBy('waktu_terima', 'asc')
+            ->orderBy('id', 'asc')
+            ->get();
+
+        if ($items->isEmpty()) {
+            return redirect()->back()->with('error', 'Data serah terima barang untuk personil tersebut pada periode ini tidak ditemukan.');
+        }
+
+        $namaPenerima = mb_strtoupper(trim((string) $items->first()->nama_penerima), 'UTF-8');
+        $tahunTercatat = $items
+            ->map(fn (object $item): string => Carbon::parse($item->waktu_terima)->format('Y'))
+            ->unique()
+            ->sort()
+            ->values()
+            ->all();
+
+        $daftarTanggalLabel = $items
+            ->map(fn (object $item): string => Carbon::parse($item->waktu_terima)->locale('id')->translatedFormat('d F Y'))
+            ->unique()
+            ->values()
+            ->implode(', ');
+
+        $labelPeriode = ! empty($tahunFilter)
+            ? 'Tahun '.implode(', ', $tahunFilter)
+            : 'Semua Tahun ('.implode(', ', $tahunTercatat).')';
+
+        $slugNama = Str::slug($namaPenerima, '_') ?: 'personil';
+        $suffixTahun = ! empty($tahunFilter) ? '_'.implode('-', $tahunFilter) : '_semua_tahun';
+        $baseFilename = 'Berita_Acara_Serah_Terima_'.$slugNama.$suffixTahun;
+
+        if ($format === 'word') {
+            return $this->buildBastDocxResponse(
+                $namaPenerima,
+                $items,
+                $labelPeriode,
+                $daftarTanggalLabel,
+                $baseFilename.'.docx'
+            );
+        }
+
+        $pdf = Pdf::loadView('internal.sapra.distribusi_staff_bast_pdf', compact(
+            'namaPenerima',
+            'items',
+            'labelPeriode',
+            'daftarTanggalLabel'
+        ))->setPaper('a4', 'portrait');
+
+        return $pdf->download($baseFilename.'.pdf');
+    }
+
+    /**
+     * Pecah query parameter tahun (dipisahkan koma) menjadi array 4 digit tahun yang valid.
+     *
+     * @return list<string>
+     */
+    private function parseDistribusiTahunFilter(string $tahunParam): array
+    {
+        return array_values(array_filter(
+            array_map('trim', explode(',', $tahunParam)),
+            fn (string $y): bool => preg_match('/^\d{4}$/', $y) === 1
+        ));
+    }
+
+    /**
+     * Bangun file Word (.docx) Berita Acara Serah Terima Barang (BAST) per personil dan kirim sebagai unduhan.
+     */
+    private function buildBastDocxResponse(
+        string $namaPenerima,
+        Collection $items,
+        string $labelPeriode,
+        string $daftarTanggalLabel,
+        string $fileName
+    ): BinaryFileResponse {
+        $cacheDir = storage_path('framework/cache');
+        if (is_dir($cacheDir) && is_writable($cacheDir)) {
+            PhpWordSettings::setTempDir($cacheDir);
+        }
+        PhpWordSettings::setOutputEscapingEnabled(true);
+
+        $phpWord = new PhpWord;
+        $phpWord->setDefaultFontName('Times New Roman');
+        $phpWord->setDefaultFontSize(11);
+
+        $section = $phpWord->addSection([
+            'paperSize' => 'A4',
+            'marginTop' => Converter::cmToTwip(1.5),
+            'marginRight' => Converter::cmToTwip(2),
+            'marginBottom' => Converter::cmToTwip(1.5),
+            'marginLeft' => Converter::cmToTwip(2),
+        ]);
+
+        $this->appendBastKopSurat($section);
+
+        $section->addText(
+            'BERITA ACARA SERAH TERIMA BARANG',
+            ['bold' => true, 'underline' => 'single', 'size' => 12.5],
+            ['alignment' => Jc::CENTER, 'spaceBefore' => 140, 'spaceAfter' => 40]
+        );
+        $section->addText(
+            'Nomor : ......................................................',
+            ['size' => 11],
+            ['alignment' => Jc::CENTER, 'spaceBefore' => 0, 'spaceAfter' => 60]
+        );
+
+        $periodeRun = $section->addTextRun(['alignment' => Jc::CENTER, 'spaceBefore' => 0, 'spaceAfter' => 160]);
+        $periodeRun->addText('Periode Data : ', ['bold' => true, 'size' => 9.5, 'color' => '333333']);
+        $periodeRun->addText($labelPeriode, ['size' => 9.5, 'color' => '333333']);
+        if ($daftarTanggalLabel !== '') {
+            $periodeRun->addTextBreak();
+            $periodeRun->addText('Tanggal Penyerahan Tercatat : ', ['bold' => true, 'size' => 9.5, 'color' => '333333']);
+            $periodeRun->addText($daftarTanggalLabel, ['size' => 9.5, 'color' => '333333']);
+        }
+
+        $section->addText(
+            'Pada hari ini, .......................... Tanggal ........ Bulan .......................... Tahun ..............., Kami yang bertanda tangan di bawah ini :',
+            ['size' => 11.5],
+            ['alignment' => Jc::BOTH, 'spaceBefore' => 0, 'spaceAfter' => 120]
+        );
+
+        $this->appendBastPihakTable($section, $namaPenerima);
+
+        $pengantarRun = $section->addTextRun(['alignment' => Jc::BOTH, 'spaceBefore' => 100, 'spaceAfter' => 120]);
+        $pengantarRun->addText('PIHAK PERTAMA', ['bold' => true, 'size' => 11.5]);
+        $pengantarRun->addText(' telah menyerahkan barang kepada ', ['size' => 11.5]);
+        $pengantarRun->addText('PIHAK KEDUA', ['bold' => true, 'size' => 11.5]);
+        $pengantarRun->addText(', dan ', ['size' => 11.5]);
+        $pengantarRun->addText('PIHAK KEDUA', ['bold' => true, 'size' => 11.5]);
+        $pengantarRun->addText(' menyatakan telah menerima barang dari ', ['size' => 11.5]);
+        $pengantarRun->addText('PIHAK PERTAMA', ['bold' => true, 'size' => 11.5]);
+        $pengantarRun->addText(' berupa :', ['size' => 11.5]);
+
+        $this->appendBastItemsTable($section, $items);
+
+        $penutupRun = $section->addTextRun(['alignment' => Jc::BOTH, 'spaceBefore' => 140, 'spaceAfter' => 200]);
+        $penutupRun->addText(
+            'Demikianlah berita acara serah terima barang ini dibuat oleh kedua belah pihak, adapun barang-barang tersebut dalam keadaan baik dan cukup, sejak penandatanganan berita acara ini, maka barang tersebut menjadi tanggung jawab ',
+            ['size' => 11.5]
+        );
+        $penutupRun->addText('PIHAK KEDUA', ['bold' => true, 'size' => 11.5]);
+        $penutupRun->addText(
+            ', memelihara / merawat dengan baik serta dipergunakan untuk keperluan (tempat dimana barang itu dibutuhkan).',
+            ['size' => 11.5]
+        );
+
+        $this->appendBastSignatures($section, $namaPenerima);
+
+        $tmpDir = (is_dir($cacheDir) && is_writable($cacheDir)) ? $cacheDir : sys_get_temp_dir();
+        $docxPath = rtrim($tmpDir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.uniqid('bast_', true).'.docx';
+
+        IOFactory::createWriter($phpWord, 'Word2007')->save($docxPath);
+
+        return response()->download($docxPath, $fileName, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        ])->deleteFileAfterSend(true);
+    }
+
+    /**
+     * Tambahkan kop surat resmi Pemkot Jambi / Damkar ke dokumen Word BAST.
+     */
+    private function appendBastKopSurat(Section $section): void
+    {
+        $kopTable = $section->addTable([
+            'width' => 9640,
+            'unit' => TblWidth::TWIP,
+            'alignment' => JcTable::CENTER,
+            'layout' => PhpWordTableStyle::LAYOUT_FIXED,
+            'cellMarginTop' => 40,
+            'cellMarginBottom' => 80,
+            'cellMarginLeft' => 40,
+            'cellMarginRight' => 40,
+        ]);
+
+        $kopCellStyle = [
+            'valign' => VerticalJc::CENTER,
+            'borderBottomStyle' => 'double',
+            'borderBottomSize' => 6,
+            'borderBottomColor' => '000000',
+        ];
+
+        $kopTable->addRow(null, ['cantSplit' => true]);
+
+        $leftCell = $kopTable->addCell(1450, $kopCellStyle);
+        $jambiPath = public_path('images/jambi.png');
+        if (file_exists($jambiPath)) {
+            $leftCell->addImage($jambiPath, ['width' => 52, 'alignment' => Jc::CENTER]);
+        }
+
+        $centerCell = $kopTable->addCell(6740, $kopCellStyle);
+        $centerPara = ['alignment' => Jc::CENTER, 'spaceBefore' => 0, 'spaceAfter' => 20];
+        $centerCell->addText('PEMERINTAH KOTA JAMBI', ['size' => 13], $centerPara);
+        $centerCell->addText('DINAS PEMADAM KEBAKARAN DAN PENYELAMATAN', ['bold' => true, 'size' => 14], $centerPara);
+        $centerCell->addText('Jl. HOS Cokroaminoto No. 113 Telp. 0741-41171', ['size' => 10], $centerPara);
+        $centerCell->addText('J A M B I', ['bold' => true, 'size' => 11], ['alignment' => Jc::CENTER, 'spaceBefore' => 0, 'spaceAfter' => 0]);
+
+        $rightCell = $kopTable->addCell(1450, $kopCellStyle);
+        $damkarPath = public_path('images/logo.png');
+        if (file_exists($damkarPath)) {
+            $rightCell->addImage($damkarPath, ['width' => 52, 'alignment' => Jc::CENTER]);
+        }
+    }
+
+    /**
+     * Tambahkan blok identitas Pihak Pertama (kosong) dan Pihak Kedua ke dokumen Word BAST.
+     */
+    private function appendBastPihakTable(Section $section, string $namaPenerima): void
+    {
+        $pihakTable = $section->addTable([
+            'width' => 9640,
+            'unit' => TblWidth::TWIP,
+            'alignment' => JcTable::CENTER,
+            'layout' => PhpWordTableStyle::LAYOUT_FIXED,
+            'cellMarginTop' => 25,
+            'cellMarginBottom' => 25,
+            'cellMarginLeft' => 40,
+            'cellMarginRight' => 40,
+        ]);
+
+        $paraStyle = ['spaceBefore' => 0, 'spaceAfter' => 0];
+        $addFieldRow = function (string $label, string $value, bool $boldValue = false) use ($pihakTable, $paraStyle): void {
+            $pihakTable->addRow(null, ['cantSplit' => true]);
+            $pihakTable->addCell(1800, ['valign' => VerticalJc::TOP])->addText($label, ['size' => 11.5], $paraStyle);
+            $pihakTable->addCell(300, ['valign' => VerticalJc::TOP])->addText(':', ['size' => 11.5], $paraStyle);
+            $pihakTable->addCell(7540, ['valign' => VerticalJc::TOP])->addText($value, ['bold' => $boldValue, 'size' => 11.5], $paraStyle);
+        };
+
+        $dots = '................................................................................';
+        $addFieldRow('Nama', $dots);
+        $addFieldRow('NIP', $dots);
+        $addFieldRow('Jabatan', $dots);
+
+        $pihakTable->addRow(null, ['cantSplit' => true]);
+        $pihak1Label = $pihakTable->addCell(9640, ['gridSpan' => 3])->addTextRun(['spaceBefore' => 20, 'spaceAfter' => 100]);
+        $pihak1Label->addText('Selanjutnya disebut ', ['italic' => true, 'size' => 11]);
+        $pihak1Label->addText('PIHAK PERTAMA', ['bold' => true, 'italic' => true, 'size' => 11]);
+
+        $addFieldRow('Nama', $namaPenerima, true);
+        $addFieldRow('Jabatan', $dots);
+
+        $pihakTable->addRow(null, ['cantSplit' => true]);
+        $pihak2Label = $pihakTable->addCell(9640, ['gridSpan' => 3])->addTextRun(['spaceBefore' => 20, 'spaceAfter' => 20]);
+        $pihak2Label->addText('Selanjutnya disebut ', ['italic' => true, 'size' => 11]);
+        $pihak2Label->addText('PIHAK KEDUA', ['bold' => true, 'italic' => true, 'size' => 11]);
+    }
+
+    /**
+     * Tambahkan tabel rincian barang serah terima ke dokumen Word BAST.
+     */
+    private function appendBastItemsTable(Section $section, Collection $items): void
+    {
+        $table = $section->addTable([
+            'width' => 9640,
+            'unit' => TblWidth::TWIP,
+            'alignment' => JcTable::CENTER,
+            'layout' => PhpWordTableStyle::LAYOUT_FIXED,
+            'borderSize' => 6,
+            'borderColor' => '000000',
+            'borderInsideHSize' => 6,
+            'borderInsideHColor' => '000000',
+            'borderInsideVSize' => 6,
+            'borderInsideVColor' => '000000',
+            'cellMarginTop' => 70,
+            'cellMarginBottom' => 70,
+            'cellMarginLeft' => 100,
+            'cellMarginRight' => 100,
+        ]);
+
+        $widths = [580, 3280, 1160, 1920, 2700];
+        $headers = ['No', 'Jenis Barang', 'Jumlah', 'Tanggal Terima', 'Keterangan'];
+
+        $table->addRow(null, ['tblHeader' => true, 'cantSplit' => true]);
+        foreach ($headers as $idx => $title) {
+            $cell = $table->addCell($widths[$idx], ['bgColor' => 'E2E8F0', 'valign' => VerticalJc::CENTER]);
+            $cell->addText($title, ['bold' => true, 'size' => 10.5], ['alignment' => Jc::CENTER, 'spaceBefore' => 0, 'spaceAfter' => 0]);
+        }
+
+        $centerPara = ['alignment' => Jc::CENTER, 'spaceBefore' => 0, 'spaceAfter' => 0];
+        $leftPara = ['alignment' => Jc::START, 'spaceBefore' => 0, 'spaceAfter' => 0];
+
+        foreach ($items->values() as $idx => $item) {
+            $table->addRow(null, ['cantSplit' => true]);
+
+            $table->addCell($widths[0], ['valign' => VerticalJc::TOP])
+                ->addText((string) ($idx + 1), ['size' => 10.5], $centerPara);
+
+            $barangCell = $table->addCell($widths[1], ['valign' => VerticalJc::TOP]);
+            $barangRun = $barangCell->addTextRun($leftPara);
+            $barangRun->addText((string) $item->nama_barang, ['bold' => true, 'size' => 10.5]);
+            if (! empty($item->detail_barang)) {
+                $barangRun->addTextBreak();
+                $barangRun->addText((string) $item->detail_barang, ['italic' => true, 'size' => 9.5, 'color' => '333333']);
+            }
+
+            $table->addCell($widths[2], ['valign' => VerticalJc::TOP])
+                ->addText(($item->jumlah ?? 1).' Unit', ['size' => 10.5], $centerPara);
+
+            $tglLabel = Carbon::parse($item->waktu_terima)->locale('id')->translatedFormat('d F Y');
+            $table->addCell($widths[3], ['valign' => VerticalJc::TOP])
+                ->addText($tglLabel, ['size' => 10.5], $centerPara);
+
+            $ketLabel = ! empty($item->keterangan) ? (string) $item->keterangan : '-';
+            $table->addCell($widths[4], ['valign' => VerticalJc::TOP])
+                ->addText($ketLabel, ['size' => 10.5], $leftPara);
+        }
+    }
+
+    /**
+     * Tambahkan blok tanda tangan Pihak Kedua, Pihak Pertama (kosong), dan Mengetahui ke dokumen Word BAST.
+     */
+    private function appendBastSignatures(Section $section, string $namaPenerima): void
+    {
+        $ttdTable = $section->addTable([
+            'width' => 9640,
+            'unit' => TblWidth::TWIP,
+            'alignment' => JcTable::CENTER,
+            'layout' => PhpWordTableStyle::LAYOUT_FIXED,
+            'cellMarginTop' => 40,
+            'cellMarginBottom' => 40,
+            'cellMarginLeft' => 80,
+            'cellMarginRight' => 80,
+        ]);
+
+        $centerPara = ['alignment' => Jc::CENTER, 'spaceBefore' => 0, 'spaceAfter' => 0];
+        $ttdLineBreak = function ($cell, string $topText, string $secondText, bool $boldSecond, string $nameText, bool $boldName): void {
+            $run = $cell->addTextRun(['alignment' => Jc::CENTER, 'spaceBefore' => 0, 'spaceAfter' => 0]);
+            $run->addText($topText, ['size' => 11]);
+            $run->addTextBreak();
+            $run->addText($secondText, ['bold' => $boldSecond, 'size' => 11]);
+            $run->addTextBreak();
+            $run->addTextBreak();
+            $run->addTextBreak();
+            $run->addText($nameText, ['bold' => $boldName, 'size' => 11]);
+            $run->addTextBreak();
+            $run->addText('NIP. ...........................................', ['size' => 10]);
+        };
+
+        $ttdTable->addRow(null, ['cantSplit' => true]);
+        $c1 = $ttdTable->addCell(4820, ['valign' => VerticalJc::TOP]);
+        $ttdLineBreak($c1, 'Yang Menerima :', 'PIHAK KEDUA', true, '( '.$namaPenerima.' )', true);
+
+        $c2 = $ttdTable->addCell(4820, ['valign' => VerticalJc::TOP]);
+        $ttdLineBreak($c2, 'Yang Menyerahkan,', 'PIHAK PERTAMA', true, '( .................................................. )', false);
+
+        $ttdTable->addRow(null, ['cantSplit' => true]);
+        $m1 = $ttdTable->addCell(4820, ['valign' => VerticalJc::TOP]);
+        $m1->addText('', ['size' => 8], $centerPara);
+        $ttdLineBreak($m1, 'Mengetahui,', '..................................................', false, '( .................................................. )', false);
+
+        $m2 = $ttdTable->addCell(4820, ['valign' => VerticalJc::TOP]);
+        $m2->addText('', ['size' => 8], $centerPara);
+        $ttdLineBreak($m2, 'Mengetahui,', '..................................................', false, '( .................................................. )', false);
     }
 
     // ==========================================
@@ -1180,7 +1576,7 @@ class SapraController extends Controller
     /**
      * Ambil data perbaikan kendaraan beserta deteksi barang berulang per Nopol dalam 1 tahun.
      *
-     * @return array{0: \Illuminate\Support\Collection, 1: \Illuminate\Support\Collection}
+     * @return array{0: Collection, 1: Collection}
      */
     private function getProcessedPerbaikanKendaraan(?string $tahunFilter = null, ?string $jenisFilter = null): array
     {
@@ -1192,7 +1588,7 @@ class SapraController extends Controller
         // Hitung frekuensi penggantian per item barang yang sama per Nopol dalam 1 tahun yang sama
         $frekuensi = [];
         foreach ($dataPerbaikan as $row) {
-            $tahun = \Carbon\Carbon::parse($row->tgl_perbaikan)->format('Y');
+            $tahun = Carbon::parse($row->tgl_perbaikan)->format('Y');
             $nopolKey = strtoupper(preg_replace('/\s+/', '', trim($row->nopol_kendaraan)));
             $daftarBarang = $this->extractDaftarBarangPerbaikan($row->jenis_kerusakan);
 
@@ -1211,12 +1607,12 @@ class SapraController extends Controller
                     ];
                 }
                 $frekuensi[$key]['count']++;
-                $frekuensi[$key]['tanggal_list'][] = \Carbon\Carbon::parse($row->tgl_perbaikan)->format('d M Y');
+                $frekuensi[$key]['tanggal_list'][] = Carbon::parse($row->tgl_perbaikan)->format('d M Y');
             }
         }
 
         foreach ($dataPerbaikan as $row) {
-            $tahun = \Carbon\Carbon::parse($row->tgl_perbaikan)->format('Y');
+            $tahun = Carbon::parse($row->tgl_perbaikan)->format('Y');
             $nopolKey = strtoupper(preg_replace('/\s+/', '', trim($row->nopol_kendaraan)));
             $daftarBarang = $this->extractDaftarBarangPerbaikan($row->jenis_kerusakan);
 
@@ -1497,7 +1893,7 @@ class SapraController extends Controller
     /**
      * Simpan gambar upload sekaligus perkecil & kompres otomatis via PHP GD agar hemat ruang dan ringan dimuat.
      */
-    private function storeOptimizedImage(\Illuminate\Http\UploadedFile $file, string $relativeDir, int $maxWidth = 1280): string
+    private function storeOptimizedImage(UploadedFile $file, string $relativeDir, int $maxWidth = 1280): string
     {
         $ext = strtolower($file->getClientOriginalExtension() ?: 'jpg');
         $filename = time().'_'.Str::random(10).'.'.$ext;

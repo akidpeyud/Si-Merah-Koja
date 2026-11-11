@@ -47,6 +47,7 @@ use App\Models\DataAsn;
 use App\Models\DokumenPublik;
 use App\Models\EduDamkar;
 use App\Models\Infografis;
+use App\Models\Kejadian;
 use App\Models\PermohonanEdukasi;
 use App\Models\PetaJabatan;
 use App\Models\UjungDamkar;
@@ -61,7 +62,7 @@ use Spatie\Permission\Middleware\RoleMiddleware;
 // 1. RUTE PUBLIK (HALAMAN UTAMA & INFO)
 // ==========================================
 Route::get('/', function () {
-    $daftar_kejadian = \App\Models\Kejadian::orderByDesc('tanggal')->orderByDesc('id')->take(4)->get();
+    $daftar_kejadian = Kejadian::orderByDesc('tanggal')->orderByDesc('id')->take(4)->get();
     $daftar_infografis = Infografis::latest()->take(6)->get();
     $daftar_medsos = BeritaMedsos::with('kategori')->latest()->take(6)->get();
     $daftar_edu_damkar = EduDamkar::latest()->take(4)->get();
@@ -439,6 +440,7 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
 
     Route::get('/sapra/distribusi-staff', [SapraController::class, 'distribusiStaff']);
     Route::get('/sapra/distribusi-staff/cetak', [SapraController::class, 'cetakDistribusiStaff']);
+    Route::get('/sapra/distribusi-staff/cetak-personil', [SapraController::class, 'cetakDistribusiPersonil']);
 
     Route::get('/sapra/sarana-pemeriksaan', [SapraController::class, 'saranaPemeriksaan']);
     Route::get('/sapra/sarana-pemeriksaan/cetak', [SapraController::class, 'cetakPdfSaranaPemeriksaan']);
