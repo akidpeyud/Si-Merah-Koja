@@ -124,6 +124,7 @@ class LogInternalActivity
             'internal/profil-instansi' => 'Profil Instansi',
             'internal/profil' => 'Profil Pengguna',
             'internal/operator/kelola-berita' => 'Berita',
+            'internal/operator/background-beranda' => 'Background Beranda',
             'internal/operator/infografis' => 'Info Grafis',
             'internal/operator/berita-medsos' => 'Berita Medsos',
             'internal/operator/ujung-damkar' => 'Ujung-Ujung Damkar',
