@@ -567,7 +567,7 @@
                         <td class="c">
                             @if($item->foto && file_exists(public_path($item->foto)))
                                 <div class="img-wrap" data-preview-src="{{ asset($item->foto) }}" data-preview-caption="{{ $item->nopol_kendaraan }} — {{ $item->jenis_kerusakan }}">
-                                    <img src="{{ asset($item->foto) }}" alt="Foto Perbaikan">
+                                    <img src="{{ asset($item->foto) }}" alt="Foto Perbaikan" loading="lazy" decoding="async">
                                 </div>
                             @else
                                 <span class="img-empty"><i class="far fa-image"></i> Kosong</span>

@@ -281,10 +281,7 @@ class SapraController extends Controller
 
         $gambarPath = null;
         if ($request->hasFile('gambar')) {
-            $file = $request->file('gambar');
-            $filename = time().'_'.Str::random(10).'.'.$file->getClientOriginalExtension();
-            $file->move(public_path('uploads/prasarana'), $filename);
-            $gambarPath = 'uploads/prasarana/'.$filename;
+            $gambarPath = $this->storeOptimizedImage($request->file('gambar'), 'uploads/prasarana');
         }
 
         DB::table('prasarana')->insert([
@@ -324,10 +321,7 @@ class SapraController extends Controller
             if ($gambarPath && file_exists(public_path($gambarPath))) {
                 unlink(public_path($gambarPath));
             }
-            $file = $request->file('gambar');
-            $filename = time().'_'.Str::random(10).'.'.$file->getClientOriginalExtension();
-            $file->move(public_path('uploads/prasarana'), $filename);
-            $gambarPath = 'uploads/prasarana/'.$filename;
+            $gambarPath = $this->storeOptimizedImage($request->file('gambar'), 'uploads/prasarana');
         }
 
         DB::table('prasarana')->where('id_prasarana', $id)->update([
@@ -411,10 +405,7 @@ class SapraController extends Controller
 
         $gambarPath = null;
         if ($request->hasFile('gambar')) {
-            $file = $request->file('gambar');
-            $filename = time().'_'.Str::random(10).'.'.$file->getClientOriginalExtension();
-            $file->move(public_path('uploads/sarana'), $filename);
-            $gambarPath = 'uploads/sarana/'.$filename;
+            $gambarPath = $this->storeOptimizedImage($request->file('gambar'), 'uploads/sarana');
         }
 
         DB::table('sarana_kebakaran')->insert([
@@ -461,10 +452,7 @@ class SapraController extends Controller
             if ($gambarPath && file_exists(public_path($gambarPath))) {
                 unlink(public_path($gambarPath));
             }
-            $file = $request->file('gambar');
-            $filename = time().'_'.Str::random(10).'.'.$file->getClientOriginalExtension();
-            $file->move(public_path('uploads/sarana'), $filename);
-            $gambarPath = 'uploads/sarana/'.$filename;
+            $gambarPath = $this->storeOptimizedImage($request->file('gambar'), 'uploads/sarana');
         }
 
         DB::table('sarana_kebakaran')->where('id_sarana', $id)->update([
@@ -545,11 +533,7 @@ class SapraController extends Controller
 
         $gambarPath = null;
         if ($request->hasFile('gambar')) {
-            $file = $request->file('gambar');
-            $filename = time().'_'.Str::random(10).'.'.$file->getClientOriginalExtension();
-            // Simpan gambar ke folder public/uploads/penyelamatan
-            $file->move(public_path('uploads/penyelamatan'), $filename);
-            $gambarPath = 'uploads/penyelamatan/'.$filename;
+            $gambarPath = $this->storeOptimizedImage($request->file('gambar'), 'uploads/penyelamatan');
         }
 
         DB::table('sarana_penyelamatan')->insert([
@@ -591,10 +575,7 @@ class SapraController extends Controller
             if ($gambarPath && file_exists(public_path($gambarPath))) {
                 unlink(public_path($gambarPath));
             }
-            $file = $request->file('gambar');
-            $filename = time().'_'.Str::random(10).'.'.$file->getClientOriginalExtension();
-            $file->move(public_path('uploads/penyelamatan'), $filename);
-            $gambarPath = 'uploads/penyelamatan/'.$filename;
+            $gambarPath = $this->storeOptimizedImage($request->file('gambar'), 'uploads/penyelamatan');
         }
 
         DB::table('sarana_penyelamatan')->where('id_sarana_penyelamatan', $id)->update([
@@ -1077,10 +1058,7 @@ class SapraController extends Controller
 
         $gambarPath = null;
         if ($request->hasFile('gambar')) {
-            $file = $request->file('gambar');
-            $filename = time().'_'.Str::random(10).'.'.$file->getClientOriginalExtension();
-            $file->move(public_path('uploads/pemeriksaan'), $filename);
-            $gambarPath = 'uploads/pemeriksaan/'.$filename;
+            $gambarPath = $this->storeOptimizedImage($request->file('gambar'), 'uploads/pemeriksaan');
         }
 
         DB::table('sarana_pemeriksaan')->insert([
@@ -1121,10 +1099,7 @@ class SapraController extends Controller
             if ($gambarPath && file_exists(public_path($gambarPath))) {
                 unlink(public_path($gambarPath));
             }
-            $file = $request->file('gambar');
-            $filename = time().'_'.Str::random(10).'.'.$file->getClientOriginalExtension();
-            $file->move(public_path('uploads/pemeriksaan'), $filename);
-            $gambarPath = 'uploads/pemeriksaan/'.$filename;
+            $gambarPath = $this->storeOptimizedImage($request->file('gambar'), 'uploads/pemeriksaan');
         }
 
         DB::table('sarana_pemeriksaan')->where('id_sarana_pemeriksaan', $id)->update([
@@ -1426,10 +1401,7 @@ class SapraController extends Controller
 
         $fotoPath = null;
         if ($request->hasFile('foto')) {
-            $file = $request->file('foto');
-            $filename = time().'_'.Str::random(10).'.'.$file->getClientOriginalExtension();
-            $file->move(public_path('uploads/perbaikan_kendaraan'), $filename);
-            $fotoPath = 'uploads/perbaikan_kendaraan/'.$filename;
+            $fotoPath = $this->storeOptimizedImage($request->file('foto'), 'uploads/perbaikan_kendaraan');
         }
 
         DB::table('perbaikan_kendaraans')->insert([
@@ -1486,10 +1458,7 @@ class SapraController extends Controller
             if ($fotoPath && file_exists(public_path($fotoPath))) {
                 unlink(public_path($fotoPath));
             }
-            $file = $request->file('foto');
-            $filename = time().'_'.Str::random(10).'.'.$file->getClientOriginalExtension();
-            $file->move(public_path('uploads/perbaikan_kendaraan'), $filename);
-            $fotoPath = 'uploads/perbaikan_kendaraan/'.$filename;
+            $fotoPath = $this->storeOptimizedImage($request->file('foto'), 'uploads/perbaikan_kendaraan');
         }
 
         DB::table('perbaikan_kendaraans')->where('id', $id)->update([
@@ -1523,5 +1492,62 @@ class SapraController extends Controller
         DB::table('perbaikan_kendaraans')->where('id', $id)->delete();
 
         return redirect()->back()->with('success', 'Data perbaikan kendaraan operasional berhasil dihapus!');
+    }
+
+    /**
+     * Simpan gambar upload sekaligus perkecil & kompres otomatis via PHP GD agar hemat ruang dan ringan dimuat.
+     */
+    private function storeOptimizedImage(\Illuminate\Http\UploadedFile $file, string $relativeDir, int $maxWidth = 1280): string
+    {
+        $ext = strtolower($file->getClientOriginalExtension() ?: 'jpg');
+        $filename = time().'_'.Str::random(10).'.'.$ext;
+        $targetDir = public_path($relativeDir);
+
+        if (! is_dir($targetDir)) {
+            mkdir($targetDir, 0755, true);
+        }
+
+        $file->move($targetDir, $filename);
+        $fullPath = $targetDir.DIRECTORY_SEPARATOR.$filename;
+
+        if (extension_loaded('gd') && file_exists($fullPath)) {
+            $info = @getimagesize($fullPath);
+            if ($info && ($info[0] > $maxWidth || filesize($fullPath) > 250 * 1024)) {
+                [$w, $h, $imgType] = $info;
+                $src = match ($imgType) {
+                    IMAGETYPE_JPEG => @imagecreatefromjpeg($fullPath),
+                    IMAGETYPE_PNG => @imagecreatefrompng($fullPath),
+                    IMAGETYPE_WEBP => function_exists('imagecreatefromwebp') ? @imagecreatefromwebp($fullPath) : null,
+                    default => null,
+                };
+
+                if ($src) {
+                    $newW = $w > $maxWidth ? $maxWidth : $w;
+                    $newH = (int) round($h * ($newW / $w));
+                    $dst = imagecreatetruecolor($newW, $newH);
+
+                    if ($imgType === IMAGETYPE_PNG || $imgType === IMAGETYPE_WEBP) {
+                        imagealphablending($dst, false);
+                        imagesavealpha($dst, true);
+                        $transparent = imagecolorallocatealpha($dst, 0, 0, 0, 127);
+                        imagefilledrectangle($dst, 0, 0, $newW, $newH, $transparent);
+                    }
+
+                    imagecopyresampled($dst, $src, 0, 0, 0, 0, $newW, $newH, $w, $h);
+
+                    match ($imgType) {
+                        IMAGETYPE_JPEG => @imagejpeg($dst, $fullPath, 80),
+                        IMAGETYPE_PNG => @imagepng($dst, $fullPath, 8),
+                        IMAGETYPE_WEBP => function_exists('imagewebp') ? @imagewebp($dst, $fullPath, 80) : null,
+                        default => null,
+                    };
+
+                    imagedestroy($src);
+                    imagedestroy($dst);
+                }
+            }
+        }
+
+        return trim($relativeDir, '/').'/'.$filename;
     }
 }

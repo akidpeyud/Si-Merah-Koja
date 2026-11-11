@@ -9,6 +9,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Bootstrap -->
@@ -323,18 +325,26 @@
         .content .detail-section:nth-child(n+6),
         .content form:not(.modal form) .row > [class*="col-"]:nth-child(n+6) { animation-delay: .45s; }
 
-        /* Baris Tabel & Sub-item (Staggered animSubIn) */
+        /* Baris Tabel & Sub-item (Staggered animSubIn hanya 10 baris pertama agar tabel ratusan baris tetap ringan) */
         .content .table tbody tr {
-            animation: animSubIn .55s cubic-bezier(.16, 1, .3, 1) both;
             transition: background-color .2s ease;
         }
-        .content .table tbody tr:nth-child(1) { animation-delay: .18s; }
-        .content .table tbody tr:nth-child(2) { animation-delay: .23s; }
-        .content .table tbody tr:nth-child(3) { animation-delay: .28s; }
-        .content .table tbody tr:nth-child(4) { animation-delay: .33s; }
-        .content .table tbody tr:nth-child(5) { animation-delay: .38s; }
-        .content .table tbody tr:nth-child(6) { animation-delay: .43s; }
-        .content .table tbody tr:nth-child(n+7) { animation-delay: .48s; }
+        .content .table tbody tr:nth-child(-n+10) {
+            animation: animSubIn .45s cubic-bezier(.16, 1, .3, 1) both;
+        }
+        .content .table tbody tr:nth-child(1) { animation-delay: .08s; }
+        .content .table tbody tr:nth-child(2) { animation-delay: .12s; }
+        .content .table tbody tr:nth-child(3) { animation-delay: .16s; }
+        .content .table tbody tr:nth-child(4) { animation-delay: .20s; }
+        .content .table tbody tr:nth-child(5) { animation-delay: .24s; }
+        .content .table tbody tr:nth-child(6) { animation-delay: .28s; }
+        .content .table tbody tr:nth-child(n+7):nth-child(-n+10) { animation-delay: .32s; }
+
+        @media (max-width: 768px) {
+            .content .table tbody tr {
+                animation: none !important;
+            }
+        }
 
         @media (prefers-reduced-motion: reduce) {
             .content *,
