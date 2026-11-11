@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
             CascadeTupoksiSeeder::class,
             ProdukHukumSeeder::class,
             FireDrillSeeder::class,
+            PerjanjianKerjasamaSeeder::class,
             InspeksiBangunanSeeder::class,
             SosialisasiPenyuluhanSeeder::class,
             KunjunganEdukasiSeeder::class,
