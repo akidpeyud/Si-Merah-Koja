@@ -57,10 +57,48 @@
         .hero-logos { width: 100%; justify-content: space-around; }
     }
     @media (max-width: 640px) {
-        .hero-logos-layer { width: calc(100% - 28px); }
-        .hero-logos { padding: 10px 14px; gap: 12px; }
-        .hero-logos img { height: 30px; }
-        .hero-logos img + img { padding-left: 12px; }
+        .hero-logos-layer { width: calc(100% - 28px); margin-top: 14px; }
+        .hero-logos { padding: 8px 12px; gap: 10px; border-radius: 14px; }
+        .hero-logos img { height: 26px; }
+        .hero-logos img + img { padding-left: 10px; }
+
+        /* Compact Mobile Overrides untuk Halaman Publik (Profil, SOP, Produk Hukum, Dokumen Publik, Layanan) */
+        .page-hero { padding: 26px 0 46px !important; }
+        .crumbs { gap: 6px !important; margin-bottom: 12px !important; font-size: .75rem !important; }
+        .crumbs li { gap: 6px !important; }
+        .page-hero h1 { font-size: clamp(1.55rem, 6.5vw, 2.2rem) !important; line-height: 1.05 !important; letter-spacing: -.03em !important; }
+        .page-hero p { margin-top: 10px !important; font-size: .86rem !important; line-height: 1.45 !important; }
+        .tabs-wrap { margin-top: -20px !important; }
+        .tabs { padding: 5px !important; gap: 3px !important; }
+        .tab { padding: 7px 12px !important; font-size: .76rem !important; gap: 6px !important; }
+        .page-body { padding-bottom: 56px !important; }
+        .doc-layout { gap: 16px !important; margin-top: 18px !important; }
+        .doc-panel { border-radius: 16px !important; }
+        .doc-bar { padding: 12px 14px !important; gap: 10px !important; }
+        .doc-title { font-size: .96rem !important; gap: 10px !important; }
+        .doc-title i { width: 32px !important; height: 32px !important; border-radius: 9px !important; font-size: .82rem !important; }
+        .doc-count { padding: 4px 10px !important; font-size: .75rem !important; }
+        .doc-search input { height: 36px !important; font-size: .82rem !important; }
+        .doc-row { grid-template-columns: 40px minmax(0, 1fr) !important; gap: 10px 12px !important; padding: 12px 14px !important; align-items: start !important; }
+        .doc-ico { width: 40px !important; height: 40px !important; border-radius: 10px !important; font-size: 1.1rem !important; }
+        .doc-name { font-size: .9rem !important; line-height: 1.3 !important; }
+        .doc-meta { font-size: .75rem !important; }
+        .doc-actions { grid-column: 1 / -1 !important; gap: 6px !important; }
+        .doc-actions .tool { flex: 1 !important; height: 34px !important; padding: 0 12px !important; font-size: .78rem !important; }
+        .vm-card { padding: 18px 16px !important; border-radius: 16px !important; }
+        .vm-header { margin-bottom: 14px !important; padding-bottom: 10px !important; gap: 10px !important; }
+        .vm-icon { width: 36px !important; height: 36px !important; border-radius: 10px !important; font-size: 1rem !important; }
+        .vm-title { font-size: 1.2rem !important; }
+        .vm-visi-text { font-size: 1rem !important; line-height: 1.45 !important; }
+        .vm-misi-item { gap: 10px !important; }
+        .vm-misi-badge { width: 26px !important; height: 26px !important; font-size: .78rem !important; }
+        .vm-misi-text { font-size: .88rem !important; line-height: 1.45 !important; }
+        .side-card { padding: 16px !important; border-radius: 16px !important; }
+        .side-card h2 { font-size: 1.1rem !important; margin-bottom: 14px !important; }
+        .contact-list { gap: 14px 20px !important; }
+        .contact-list li { grid-template-columns: 34px 1fr !important; gap: 10px !important; }
+        .c-ico { width: 34px !important; height: 34px !important; border-radius: 10px !important; font-size: .88rem !important; }
+        .contact-list span, .contact-list a { font-size: .86rem !important; }
     }
     @media (max-width: 380px) {
         .hero-logos img { height: 24px; }

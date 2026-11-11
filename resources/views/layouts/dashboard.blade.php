@@ -370,8 +370,12 @@
         /* ==========================================================
            GLOBAL INTERNAL & OPERATOR MOBILE RESPONSIVE FIX
            ========================================================== */
-        @media (max-width: 900px) {
+        @media screen and (max-width: 900px) {
+            :root {
+                --topbar-h: 62px;
+            }
             .topbar {
+                height: var(--topbar-h) !important;
                 padding: 0 14px !important;
                 gap: 10px !important;
             }
@@ -462,25 +466,485 @@
             .content {
                 width: 100% !important;
                 max-width: 100% !important;
-                padding: 20px 14px 60px !important;
+                padding: 18px 14px 56px !important;
             }
         }
 
-        @media (max-width: 480px) {
+        /* ==========================================================
+           COMPACT MOBILE UI (<= 640px) - SELURUH MODUL INTERNAL
+           ========================================================== */
+        @media screen and (max-width: 640px) {
+            :root {
+                --topbar-h: 56px;
+            }
+            .topbar {
+                height: var(--topbar-h) !important;
+                padding: 0 12px !important;
+                gap: 8px !important;
+            }
+            .brand {
+                gap: 7px !important;
+            }
+            .brand img {
+                height: 26px !important;
+            }
+            .brand span {
+                display: inline !important;
+                font-size: .84rem !important;
+            }
+            .side-toggle {
+                width: 34px !important;
+                height: 34px !important;
+                font-size: .95rem !important;
+            }
+            .user-avatar {
+                width: 30px !important;
+                height: 30px !important;
+                font-size: .78rem !important;
+            }
+            .btn-logout {
+                height: 32px !important;
+                padding: 0 10px !important;
+                font-size: .74rem !important;
+                gap: 5px !important;
+                border-radius: 9px !important;
+            }
+            .btn-logout i {
+                font-size: .8rem !important;
+            }
+            .sidebar {
+                width: min(82vw, 280px) !important;
+                padding: 14px 10px 24px !important;
+            }
+            .side-link {
+                padding: 9px 11px !important;
+                font-size: .82rem !important;
+                gap: 10px !important;
+            }
+            .side-group summary {
+                padding: 9px 11px !important;
+                font-size: .72rem !important;
+                gap: 10px !important;
+            }
+            .side-sub a {
+                padding: 7px 10px !important;
+                font-size: .78rem !important;
+                gap: 10px !important;
+            }
+
+            .content {
+                padding: 14px 12px 44px !important;
+            }
+            .content .page-head,
+            .content .page-header,
+            .content .page-header-box,
+            .content .page-toolbar,
+            .content .page-head-bar {
+                gap: 10px !important;
+                margin-bottom: 14px !important;
+                padding-bottom: 10px !important;
+            }
+            .content .page-head h1,
+            .content .page-head-title h1,
+            .content .page-header h1,
+            .content .page-header-box h1,
+            .content .page-header-text h1,
+            .content .page-toolbar h1,
+            .content .ik .page-head h1 {
+                font-size: 1.22rem !important;
+                line-height: 1.22 !important;
+                margin-bottom: 3px !important;
+            }
+            .content .page-head p,
+            .content .page-head-title p,
+            .content .page-header p,
+            .content .page-header-box p,
+            .content .page-header-text p,
+            .content .page-toolbar p,
+            .content .ik .page-head p {
+                font-size: .78rem !important;
+                line-height: 1.4 !important;
+            }
+            .content .ik .page {
+                padding: 0 0 36px !important;
+            }
+            .content .ik .ik-head {
+                padding: 12px 14px !important;
+                gap: 10px !important;
+            }
+            .content .ik .ik-body {
+                padding: 14px 12px !important;
+            }
+            .content .ik .input {
+                height: 40px !important;
+                font-size: 16px !important;
+            }
+            .content .section-title {
+                font-size: .92rem !important;
+                margin-top: 20px !important;
+                margin-bottom: 12px !important;
+                padding-bottom: 10px !important;
+            }
+            .content .panel-header {
+                padding: 12px 14px !important;
+            }
+            .content .panel-title {
+                font-size: .92rem !important;
+            }
+            .content .section-heading,
+            .content .table-title-row {
+                gap: 8px !important;
+                margin-bottom: 10px !important;
+            }
+            .content .section-heading-ico,
+            .content .table-title .ico {
+                width: 28px !important;
+                height: 28px !important;
+                border-radius: 8px !important;
+                font-size: .72rem !important;
+            }
+            .content .section-heading h3,
+            .content .table-title {
+                font-size: .88rem !important;
+                white-space: normal !important;
+            }
+            .content .section-heading .line {
+                display: none !important;
+            }
+            .content .count-pill {
+                font-size: .68rem !important;
+                padding: 3px 9px !important;
+            }
+
+            /* Card, Panel, Filter & Banner */
+            .content .card-container,
+            .content .content-card,
+            .content .card-box,
+            .content .base-card,
+            .content .card-custom,
+            .content .detail-card,
+            .content .dt-card,
+            .content .form-card,
+            .content .form-container,
+            .content .form-panel,
+            .content .form-wrapper,
+            .content .ik-card,
+            .content .recap-card,
+            .content .filter-card,
+            .content .card-inner {
+                padding: 13px 12px !important;
+                border-radius: 12px !important;
+            }
+            .content .card-head,
+            .content .panel-head,
+            .content .card-custom .card-header {
+                padding: 12px !important;
+                margin-bottom: 10px !important;
+                gap: 8px !important;
+                flex-wrap: wrap !important;
+            }
+            .content .card-head h2,
+            .content .panel-head h4,
+            .content .card-title-custom h2 {
+                font-size: .92rem !important;
+            }
+            .content .panel {
+                margin-bottom: 18px !important;
+                border-radius: 12px !important;
+            }
+            .content .panel-body {
+                padding: 12px !important;
+            }
+            .content .filter-bar,
+            .content .filter-toolbar {
+                padding: 10px 12px !important;
+                gap: 8px !important;
+                margin: 12px 0 14px !important;
+                border-radius: 10px !important;
+            }
+            .content .filter-bar .form-select,
+            .content .filter-bar .form-control,
+            .content .filter-search input,
+            .content .filter-input,
+            .content .filter-select {
+                min-height: 38px !important;
+                height: 38px !important;
+                font-size: 14px !important;
+                min-width: 0 !important;
+            }
+            .content .recap-banner,
+            .content .summary-strip,
+            .content .info-card {
+                padding: 12px !important;
+                gap: 10px !important;
+                margin-bottom: 14px !important;
+                border-radius: 12px !important;
+            }
+            .content .recap-banner .recap-ico,
+            .content .summary-strip-title i {
+                width: 34px !important;
+                height: 34px !important;
+                font-size: .92rem !important;
+                border-radius: 8px !important;
+            }
+            .content .recap-banner .recap-title,
+            .content .summary-strip-title h4,
+            .content .info-card h2 {
+                font-size: .84rem !important;
+            }
+            .content .recap-box,
+            .content .summary-metric-box {
+                padding: 7px 10px !important;
+                min-width: 0 !important;
+                border-radius: 8px !important;
+            }
+            .content .recap-box .val,
+            .content .summary-metric-box strong {
+                font-size: 1.15rem !important;
+            }
+
+            /* Statistik & Rekap: 2 Kolom Kompak */
+            .content .rekap-grid,
+            .content .stats-grid,
+            .content .stat-cards-grid,
+            .content .ikm-stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 8px !important;
+                margin-bottom: 16px !important;
+            }
+            .content .rekap-item {
+                padding: 10px !important;
+                gap: 8px !important;
+                border-radius: 10px !important;
+                min-width: 0 !important;
+            }
+            .content .rekap-item > div {
+                min-width: 0 !important;
+            }
+            .content .rekap-ico {
+                width: 32px !important;
+                height: 32px !important;
+                border-radius: 8px !important;
+                font-size: .84rem !important;
+            }
+            .content .rekap-num {
+                font-size: 1.25rem !important;
+                line-height: 1.05 !important;
+            }
+            .content .rekap-label {
+                font-size: .64rem !important;
+                line-height: 1.2 !important;
+                margin-top: 2px !important;
+                letter-spacing: .02em !important;
+            }
+            .content .rekap-sub {
+                font-size: .62rem !important;
+                line-height: 1.2 !important;
+                margin-top: 1px !important;
+            }
+            .content .rekap-total .rekap-ico {
+                width: 36px !important;
+                height: 36px !important;
+                font-size: .95rem !important;
+            }
+            .content .rekap-total .rekap-num {
+                font-size: 1.5rem !important;
+            }
+
+            .content .stat-card {
+                padding: 11px 10px !important;
+                gap: 6px !important;
+                border-radius: 10px !important;
+                min-width: 0 !important;
+            }
+            .content .stat-ico {
+                width: 32px !important;
+                height: 32px !important;
+                border-radius: 8px !important;
+                font-size: .85rem !important;
+                margin-bottom: 4px !important;
+            }
+            .content .stat-title {
+                font-size: .7rem !important;
+                line-height: 1.25 !important;
+                margin-bottom: 2px !important;
+            }
+            .content .stat-value {
+                font-size: 1.32rem !important;
+            }
+            .content .stat-unit {
+                font-size: .66rem !important;
+            }
+            .content .active-pill {
+                font-size: .6rem !important;
+                margin-top: 4px !important;
+                padding: 2px 7px !important;
+            }
+
+            .content .mini-stat {
+                padding: 10px !important;
+                gap: 8px !important;
+                border-radius: 10px !important;
+                min-width: 0 !important;
+            }
+            .content .mini-stat-ico {
+                width: 34px !important;
+                height: 34px !important;
+                font-size: .88rem !important;
+                border-radius: 9px !important;
+            }
+            .content .mini-stat-val {
+                font-size: 1.15rem !important;
+            }
+            .content .mini-stat-label {
+                font-size: .68rem !important;
+                line-height: 1.2 !important;
+            }
+
+            .content .ikm-stat {
+                padding: 11px 10px !important;
+                border-radius: 10px !important;
+            }
+            .content .ikm-stat:last-child {
+                grid-column: 1 / -1 !important;
+            }
+            .content .ikm-stat small {
+                font-size: .64rem !important;
+                margin-bottom: 4px !important;
+            }
+            .content .ikm-stat strong {
+                font-size: 1.35rem !important;
+            }
+            .content .ikm-stat span {
+                font-size: .68rem !important;
+                margin-top: 4px !important;
+            }
+            .content .mutu-badge {
+                width: 30px !important;
+                height: 30px !important;
+                font-size: .9rem !important;
+                border-radius: 8px !important;
+            }
+            .content .nrr-row {
+                padding: 10px 12px !important;
+                gap: 8px !important;
+            }
+            .content .nrr-name {
+                font-size: .78rem !important;
+            }
+
+            /* Tombol Aksi, Tab & Tabel */
+            .content .btn-add,
+            .content .btn-tambah,
+            .content .btn-excel,
+            .content .btn-print-rekap,
+            .content .btn-tool,
+            .content .btn-simerah-danger,
+            .content .btn-simerah-secondary,
+            .content .btn-custom-primary,
+            .content .btn-custom-light,
+            .content .btn-primary-custom,
+            .content .btn-secondary-custom,
+            .content .page-head .btn,
+            .content .page-head-bar .btn,
+            .content .page-header .btn,
+            .content .page-toolbar .btn {
+                height: 36px !important;
+                min-height: 36px !important;
+                padding: 0 12px !important;
+                font-size: .78rem !important;
+                gap: 6px !important;
+                border-radius: 8px !important;
+            }
+            .content .btn-edit-item,
+            .content .btn-delete-item {
+                padding: 6px 10px !important;
+                font-size: .74rem !important;
+            }
+            .content .nav-tabs {
+                padding: 8px 10px 0 !important;
+            }
+            .content .nav-tabs .nav-link,
+            .content .custom-nav-tabs .nav-link {
+                padding: 8px 11px !important;
+                font-size: .74rem !important;
+            }
+            .content .tab-content {
+                padding: 12px !important;
+            }
+            .content .tab-kategori {
+                padding: 4px !important;
+                margin-bottom: 12px !important;
+            }
+            .content .tab-kategori a {
+                padding: 7px 12px !important;
+                font-size: .76rem !important;
+            }
+
+            .content .table > :not(caption) > * > *,
+            .content .table thead th,
+            .content .table tbody td,
+            .content .table-simerah thead th,
+            .content .table-simerah tbody td,
+            .content .table-redkar > :not(caption) > * > *,
+            .content .table-detailed th,
+            .content .table-detailed td,
+            .content .tbl thead th,
+            .content .tbl tbody td {
+                padding: 9px 10px !important;
+                font-size: .78rem !important;
+            }
+            .content .table thead th,
+            .content .table-simerah thead th,
+            .content .table-redkar thead th,
+            .content .table-detailed th,
+            .content .tbl thead th {
+                font-size: .68rem !important;
+            }
+            .content .yt-thumb-link,
+            .content .kj-thumb-box {
+                width: 96px !important;
+            }
+            .content .video-title,
+            .content .kj-title,
+            .content .title-text,
+            .content .place-name,
+            .content .instansi-title,
+            .content .cell-nama {
+                font-size: .82rem !important;
+            }
+            .content .badge-status,
+            .content .badge-role,
+            .content .jenis-badge,
+            .content .chip,
+            .content .score-pill,
+            .content .size-pill {
+                font-size: .68rem !important;
+                padding: 3px 8px !important;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
             .topbar {
                 padding: 0 10px !important;
                 gap: 6px !important;
             }
             .brand span {
-                font-size: .82rem !important;
+                display: inline !important;
+                font-size: .78rem !important;
             }
             .btn-logout {
-                padding: 0 10px !important;
-                font-size: .75rem !important;
+                padding: 0 8px !important;
+                font-size: .72rem !important;
             }
-            .card-container, .card-box {
-                padding: 16px 12px !important;
-                border-radius: var(--r-sm) !important;
+            .content {
+                padding: 12px 10px 40px !important;
+            }
+            .content .card-container,
+            .content .content-card,
+            .content .card-box {
+                padding: 12px 10px !important;
+                border-radius: 10px !important;
             }
         }
     </style>

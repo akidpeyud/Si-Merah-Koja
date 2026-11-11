@@ -51,7 +51,7 @@ dialog.sheet .sheet-foot {
 }
 
 /* 2. Perbaikan Body & Shell Scroll pada Mobile (< 900px) */
-@media (max-width: 900px) {
+@media screen and (max-width: 900px) {
     .side-toggle {
         display: inline-flex !important;
     }
@@ -66,24 +66,24 @@ dialog.sheet .sheet-foot {
     .content {
         height: auto !important;
         overflow-y: visible !important;
-        padding: 16px 14px 60px !important;
+        padding: 16px 14px 56px !important;
     }
 }
 
 /* 3. Toolbar & Aksi di Mobile (< 768px) */
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
     .page-toolbar {
         flex-direction: column !important;
         align-items: stretch !important;
-        gap: 12px !important;
-        margin-bottom: 18px !important;
+        gap: 10px !important;
+        margin-bottom: 14px !important;
     }
     .page-toolbar h1 {
-        font-size: 1.4rem !important;
-        line-height: 1.25 !important;
+        font-size: 1.24rem !important;
+        line-height: 1.22 !important;
     }
     .page-toolbar p {
-        font-size: .85rem !important;
+        font-size: .78rem !important;
         line-height: 1.4 !important;
     }
     .toolbar-actions {
@@ -98,14 +98,14 @@ dialog.sheet .sheet-foot {
         order: -1 !important;
     }
     .toolbar-actions .search input {
-        height: 44px !important;
+        height: 40px !important;
         font-size: 16px !important;
     }
     .toolbar-actions .btn {
         flex: 1 1 calc(50% - 6px) !important;
-        height: 42px !important;
-        padding: 0 12px !important;
-        font-size: .84rem !important;
+        height: 37px !important;
+        padding: 0 11px !important;
+        font-size: .78rem !important;
         justify-content: center !important;
     }
     .toolbar-actions .btn[onclick*="print"] {
@@ -114,74 +114,75 @@ dialog.sheet .sheet-foot {
 }
 
 /* 4. Tab Pos Pemadam & Kartu Info (< 768px) */
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
     .tabs {
         width: 100% !important;
-        border-radius: 12px !important;
-        padding: 5px !important;
+        border-radius: 10px !important;
+        padding: 4px !important;
         gap: 4px !important;
         scroll-snap-type: x mandatory !important;
         -webkit-overflow-scrolling: touch !important;
-        margin-bottom: 14px !important;
+        margin-bottom: 12px !important;
     }
     .tab {
-        padding: 8px 14px !important;
-        font-size: .8rem !important;
+        padding: 7px 11px !important;
+        font-size: .75rem !important;
         scroll-snap-align: start !important;
     }
     .info-card {
-        padding: 14px 16px !important;
-        gap: 8px 16px !important;
-        border-radius: 12px !important;
+        padding: 12px !important;
+        gap: 6px 12px !important;
+        border-radius: 10px !important;
     }
     .info-card h2 {
-        font-size: .98rem !important;
+        font-size: .86rem !important;
     }
     .info-row {
-        font-size: .82rem !important;
+        font-size: .76rem !important;
     }
 }
 
 /* 5. Tabel Responsif & Gambar Thumbnail (< 768px) */
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
     .table-wrap {
-        border-radius: 12px !important;
+        border-radius: 10px !important;
         position: relative !important;
     }
     .table-scroll {
         -webkit-overflow-scrolling: touch !important;
     }
     .data-table {
-        min-width: 650px !important;
+        min-width: 600px !important;
     }
     .data-table thead th {
-        padding: 12px 10px !important;
-        font-size: .72rem !important;
+        padding: 9px 8px !important;
+        font-size: .68rem !important;
     }
     .data-table tbody td {
-        padding: 12px 10px !important;
-        font-size: .84rem !important;
+        padding: 9px 8px !important;
+        font-size: .78rem !important;
     }
-    .img-sarana {
-        width: 85px !important;
-        height: 60px !important;
+    .img-sarana,
+    .img-wrap img {
+        width: 64px !important;
+        height: 46px !important;
         border-radius: 4px !important;
     }
     .cell-name {
-        font-size: .88rem !important;
-        margin-bottom: 4px !important;
+        font-size: .8rem !important;
+        margin-bottom: 2px !important;
     }
     .tag-row {
         gap: 4px !important;
     }
     .tag {
-        padding: 3px 7px !important;
-        font-size: .7rem !important;
+        padding: 2px 6px !important;
+        font-size: .66rem !important;
     }
     .row-actions .icon-btn {
-        width: 36px !important;
-        height: 36px !important;
-        font-size: .82rem !important;
+        width: 32px !important;
+        height: 32px !important;
+        font-size: .78rem !important;
     }
 }
 
@@ -311,13 +312,13 @@ dialog.sheet .sheet-foot {
 }
 
 /* 7. Kartu Rekapitulasi (Hidran Kota) */
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
     .recap-wrap {
         grid-template-columns: 1fr !important;
-        margin-top: 18px !important;
+        margin-top: 14px !important;
     }
     .recap-card {
-        padding: 18px !important;
+        padding: 14px 12px !important;
     }
 }
 @media (min-width: 1200px) {

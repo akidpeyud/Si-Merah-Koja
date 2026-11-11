@@ -421,7 +421,6 @@
         .empty p { margin-top: 4px; font-size: .92rem; }
 
         @media (max-width: 960px) { .kj-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } #kejadian .sec-head img { margin-top: 0; margin-bottom: 0; } }
-        @media (max-width: 480px) { .kj-grid { grid-template-columns: 1fr; } }
 
         /* ==========================================================
            VIDEO EDUKASI & LAINNYA
@@ -440,7 +439,6 @@
         .vid-soon { position: absolute; left: 12px; bottom: 12px; padding: 4px 10px; border-radius: 999px; font-size: .75rem; font-weight: 600; background: rgba(13,27,42,.8); color: #fff; }
         .vid h3 { margin-top: 14px; font-size: 1rem; font-weight: 600; line-height: 1.35; color: rgba(255,255,255,.92); text-transform: uppercase; }
         @media (max-width: 960px) { .vid-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-        @media (max-width: 480px) { .vid-grid { grid-template-columns: 1fr; } }
 
         .grafis { columns: 3 260px; column-gap: 20px; }
         .grafis-item { display: block; width: 100%; break-inside: avoid; margin-bottom: 20px; position: relative; border-radius: var(--r-md); overflow: hidden; background: #fff; box-shadow: 0 1px 0 var(--line), 0 12px 28px -18px rgba(13,27,42,.35); }
@@ -464,7 +462,6 @@
         .giat .vid[disabled] .vid-play span { background: rgba(255,255,255,.22); color: #fff; }
 
         @media (max-width: 860px) { .giat { grid-template-columns: 1fr; } .giat-art { position: static; max-width: 420px; margin: 0 auto; } }
-        @media (max-width: 540px) { .giat-vid-grid { grid-template-columns: 1fr; } }
 
         /* ==========================================================
            FOOTER
@@ -624,6 +621,136 @@
             .reveal-item {
                 will-change: auto;
             }
+        }
+
+        /* ==========================================================
+           TAMPILAN MOBILE KOMPAK (OPSI 1: GRID 2 KOLOM & PROPORSIONAL)
+           ========================================================== */
+        @media (max-width: 640px) {
+            .wrap { padding-left: 12px; padding-right: 12px; }
+            .section, #kejadian { padding-top: 36px; padding-bottom: 40px; }
+
+            /* Header Section & Tombol */
+            .sec-head { gap: 10px; margin-bottom: 16px; align-items: center; }
+            .sec-head h2 { font-size: 1.35rem; line-height: 1.15; }
+            .sec-head p { margin-top: 4px; font-size: 0.82rem; line-height: 1.45; }
+            #kejadian .sec-head img { width: 72px; margin: 0; }
+            .sub-head { margin: 32px 0 16px; }
+            .btn { padding: 8px 14px; font-size: 0.78rem; gap: 6px; }
+            .chip { padding: 5px 11px; font-size: 0.74rem; gap: 5px; }
+            .chips { gap: 6px; margin: -4px 0 14px; }
+
+            /* Hero & Panel Darurat */
+            .hero-brandbar { padding-top: 14px; }
+            .logo-strip { padding: 7px 12px; gap: 6px 10px; border-radius: 14px; }
+            .logo-strip img { height: 22px; }
+            .hero-inner { padding: 18px 12px 32px; gap: 20px; }
+            .hero-title { gap: 12px; margin-bottom: 4px; }
+            .hero-mark { height: 56px; }
+            .hero h1 { font-size: 2.15rem; }
+            .hero-full { margin-top: 8px; font-size: 0.82rem; line-height: 1.45; }
+            .hero-lead { margin-top: 6px; font-size: 0.84rem; line-height: 1.5; }
+            .hero-cta { margin-top: 16px; }
+            .sos { padding: 14px; border-radius: 18px; }
+            .sos-head { font-size: 0.84rem; gap: 8px; }
+            .sos-list { gap: 8px; margin-top: 10px; }
+            .sos-link { grid-template-columns: 36px 1fr auto; gap: 10px; padding: 9px 11px; border-radius: 12px; }
+            .sos-ico { width: 36px; height: 36px; border-radius: 9px; font-size: 1rem; }
+            .sos-txt strong { font-size: 0.84rem; }
+            .sos-txt span { font-size: 0.72rem; }
+            .sos-prep { margin-top: 12px; padding-top: 10px; }
+            .sos-prep p { font-size: 0.75rem; margin-bottom: 6px; }
+            .sos-prep ul { grid-template-columns: 1fr 1fr; gap: 5px 8px; font-size: 0.72rem; }
+            .ticker-label { padding: 8px 12px; font-size: 0.74rem; gap: 6px; }
+            .tick { font-size: 0.78rem; gap: 6px; }
+            .tick b { font-size: 0.68rem; padding: 1px 6px; }
+
+            /* Tentang & Quote */
+            .about { gap: 20px; }
+            .about-art { max-width: 150px; margin: 0 auto; padding: 10%; border-radius: 18px; }
+            .about-copy .sec-head { margin-bottom: 12px; }
+            .about-copy p { font-size: 0.86rem; line-height: 1.55; }
+            .about-copy p + p { margin-top: 10px; }
+            .quote { margin-top: 24px; padding: 18px 16px; border-radius: 16px; }
+            .quote::before { font-size: 5.5rem; }
+            .quote blockquote { font-size: 0.98rem; line-height: 1.35; }
+            .quote figcaption { margin-top: 12px; font-size: 0.78rem; gap: 8px; }
+            .quote figcaption::before { width: 22px; }
+
+            /* Grid 2 Kolom Kompak untuk Kejadian & Berita Medsos */
+            .media-grid, .kj-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 10px !important;
+            }
+            .media-card { border-radius: 12px !important; }
+            .media-card .mc-tag {
+                top: 6px !important; left: 6px !important;
+                padding: 2px 6px !important; font-size: 0.52rem !important;
+                border-radius: 4px !important;
+            }
+            .media-card .mc-date {
+                top: 6px !important; right: 6px !important;
+                padding: 3px 6px !important; border-radius: 6px !important;
+            }
+            .media-card .mc-date b { font-size: 0.8rem !important; }
+            .media-card .mc-date span { font-size: 0.5rem !important; }
+            .media-card .mc-play {
+                width: 32px !important; height: 32px !important; font-size: 0.7rem !important;
+            }
+            .media-card .mc-body { padding: 10px !important; }
+            .media-card .mc-title {
+                font-size: 0.76rem !important; line-height: 1.3 !important;
+                margin-bottom: 6px !important;
+            }
+            .media-card .mc-meta {
+                font-size: 0.62rem !important; gap: 3px 6px !important;
+                margin-bottom: 8px !important;
+            }
+            .media-card .mc-foot {
+                font-size: 0.68rem !important; padding-top: 7px !important;
+            }
+            .media-card .mc-foot i {
+                width: 20px !important; height: 20px !important; font-size: 0.6rem !important;
+            }
+
+            /* Grid 2 Kolom Kompak untuk Video Edu Damkar & Ujung-Ujung Damkar */
+            .vid-grid, .giat-vid-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 10px !important;
+            }
+            .vid-thumb { border-radius: 10px; }
+            .vid-play span { width: 34px; height: 34px; font-size: 0.75rem; padding-left: 2px; }
+            .vid-soon { left: 6px; bottom: 6px; padding: 2px 7px; font-size: 0.58rem; }
+            .vid h3, .giat .vid h3 {
+                margin-top: 6px; font-size: 0.74rem; line-height: 1.3;
+                display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+            }
+            .giat { gap: 18px; }
+            .giat-art { max-width: 150px; padding: 14px; border-radius: 16px; }
+
+            /* Grid 2 Kolom Kompak untuk Infografis */
+            .grafis { columns: 2 !important; column-gap: 10px !important; }
+            .grafis-item { margin-bottom: 10px; border-radius: 10px; }
+            .grafis-item .zoom {
+                right: 6px; bottom: 6px; width: 28px; height: 28px; font-size: 0.7rem;
+            }
+
+            /* Tombol Lapor Darurat Mengambang (Pojok Kanan Bawah) Lebih Mungil */
+            .sos-fab { right: 12px; bottom: 12px; gap: 8px; }
+            .sos-fab-btn {
+                padding: 9px 14px; font-size: 0.78rem; gap: 7px;
+                box-shadow: 0 10px 22px -4px rgba(229,57,45,.55);
+            }
+            .sos-fab-btn .beacon { width: 8px; height: 8px; }
+            .sos-sheet { width: min(260px, calc(100vw - 24px)); padding: 6px; border-radius: 14px; }
+            .sos-sheet a { padding: 10px 12px; font-size: 0.82rem; gap: 10px; border-radius: 10px; }
+
+            /* Footer Kompak */
+            .footer { padding: 36px 0 24px; }
+            .footer-about img { height: 64px; margin-bottom: 12px; }
+            .footer h3 { font-size: 1rem; margin-bottom: 10px; }
+            .footer-about p, .footer-contact a, .footer-links a { font-size: 0.84rem; }
+            .map { height: 150px; }
         }
 
         #tentang, #kejadian, #video, #infografis, #giat {
@@ -992,10 +1119,10 @@
 
                     <div class="media-thumb" style="aspect-ratio: 16/10; position: relative; overflow: hidden;">
                         <!-- Tag Jenis -->
-                        <span style="position: absolute; top: 12px; left: 12px; z-index: 2; padding: 4px 10px; background: rgba(255,255,255,0.95); color: #bd241c; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">{{ $labelJenis }}</span>
+                        <span class="mc-tag" style="position: absolute; top: 12px; left: 12px; z-index: 2; padding: 4px 10px; background: rgba(255,255,255,0.95); color: #bd241c; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">{{ $labelJenis }}</span>
                         
                         <!-- Tanggal -->
-                        <div style="position: absolute; top: 10px; right: 10px; padding: 4px 10px; border-radius: 8px; text-align: center; color: #fff; background: {{ $baru ? 'rgba(229,57,45,.95)' : 'rgba(13,27,42,.85)' }}; z-index: 2; line-height: 1.1; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);">
+                        <div class="mc-date" style="position: absolute; top: 10px; right: 10px; padding: 4px 10px; border-radius: 8px; text-align: center; color: #fff; background: {{ $baru ? 'rgba(229,57,45,.95)' : 'rgba(13,27,42,.85)' }}; z-index: 2; line-height: 1.1; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);">
                             <b style="display: block; font-size: 1.1rem; font-family: var(--font-display); font-weight: 800;">{{ $tgl->format('d') }}</b>
                             <span style="display: block; font-size: 0.65rem; text-transform: uppercase; font-weight: 600;">{{ $tgl->translatedFormat('M') }}</span>
                         </div>
@@ -1016,23 +1143,23 @@
 
                         <!-- Ikon Play Video -->
                         @if(!empty($kj->youtube_id))
-                            <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; background: rgba(229,57,45,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; z-index: 3; box-shadow: 0 8px 20px rgba(0,0,0,0.3);"><i class="fas fa-play" style="margin-left: 2px;"></i></span>
+                            <span class="mc-play" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; background: rgba(229,57,45,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; z-index: 3; box-shadow: 0 8px 20px rgba(0,0,0,0.3);"><i class="fas fa-play" style="margin-left: 2px;"></i></span>
                         @endif
                     </div>
 
-                    <div style="padding: 16px; display: flex; flex-direction: column; flex: 1;">
-                        <h3 style="font-size: 0.95rem; font-weight: 700; line-height: 1.4; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-family: var(--font-display);">{{ $kj->judul }}</h3>
+                    <div class="mc-body" style="padding: 16px; display: flex; flex-direction: column; flex: 1;">
+                        <h3 class="mc-title" style="font-size: 0.95rem; font-weight: 700; line-height: 1.4; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-family: var(--font-display);">{{ $kj->judul }}</h3>
                         
-                        <div style="display: flex; flex-wrap: wrap; gap: 8px 12px; font-size: 0.75rem; color: var(--steel); font-weight: 600; margin-bottom: 16px;">
+                        <div class="mc-meta" style="display: flex; flex-wrap: wrap; gap: 8px 12px; font-size: 0.75rem; color: var(--steel); font-weight: 600; margin-bottom: 16px;">
                             <span style="display: flex; align-items: center; gap: 5px;"><i class="far fa-calendar-alt"></i> {{ $tgl->translatedFormat('H:i') }} WIB</span>
                             @if($kj->lokasi)<span style="display: flex; align-items: center; gap: 5px;"><i class="fas fa-location-dot"></i> {{ \Illuminate\Support\Str::limit($kj->lokasi, 22) }}</span>@endif
                         </div>
                         
                         <!-- Link Bawah -->
                         @if(!empty($kj->youtube_id))
-                            <span style="margin-top: auto; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; font-weight: 800; border-top: 1px solid var(--line); padding-top: 12px; color: var(--signal-d);">Tonton video <i class="fas fa-play" style="background: var(--soft); color: var(--ink); width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 0.75rem;"></i></span>
+                            <span class="mc-foot" style="margin-top: auto; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; font-weight: 800; border-top: 1px solid var(--line); padding-top: 12px; color: var(--signal-d);">Tonton video <i class="fas fa-play" style="background: var(--soft); color: var(--ink); width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 0.75rem;"></i></span>
                         @elseif(!empty($kj->link))
-                            <span style="margin-top: auto; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; font-weight: 800; border-top: 1px solid var(--line); padding-top: 12px; color: var(--signal-d);">Selengkapnya <i class="fas fa-angle-right" style="background: var(--soft); color: var(--ink); width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 0.75rem;"></i></span>
+                            <span class="mc-foot" style="margin-top: auto; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; font-weight: 800; border-top: 1px solid var(--line); padding-top: 12px; color: var(--signal-d);">Selengkapnya <i class="fas fa-angle-right" style="background: var(--soft); color: var(--ink); width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 0.75rem;"></i></span>
                         @endif
                     </div>
                 </article>
@@ -1158,19 +1285,19 @@
                 @endphp
 
                 <article class="media-card" data-kat="{{ $namaKatCard }}">
-                    <div style="position: relative; background: var(--paper); aspect-ratio: 4 / 3; overflow: hidden;">
+                    <div class="media-thumb" style="position: relative; background: var(--paper); aspect-ratio: 4 / 3; overflow: hidden;">
                         @if($medsos->kategori)
-                            <span style="position: absolute; top: 12px; left: 12px; padding: 4px 12px; border-radius: 6px; font-size: .7rem; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; background: rgba(255, 255, 255, 0.95); color: var(--signal-d); z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.08); backdrop-filter: blur(4px);">{{ $namaKatCard }}</span>
+                            <span class="mc-tag" style="position: absolute; top: 12px; left: 12px; padding: 4px 12px; border-radius: 6px; font-size: .7rem; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; background: rgba(255, 255, 255, 0.95); color: var(--signal-d); z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.08); backdrop-filter: blur(4px);">{{ $namaKatCard }}</span>
                         @endif
                         <img src="{{ asset('storage/' . $medsos->gambar) }}" alt="{{ $medsos->judul }}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s;">
                     </div>
-                    <div style="display: flex; flex-direction: column; flex: 1; padding: 18px 20px 20px;">
-                        <h3 style="font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.05rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 12px; transition: color 0.2s;">{{ $medsos->judul }}</h3>
-                        <div style="margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .8rem; color: var(--steel); font-weight: 500;">
+                    <div class="mc-body" style="display: flex; flex-direction: column; flex: 1; padding: 18px 20px 20px;">
+                        <h3 class="mc-title" style="font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.05rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 12px; transition: color 0.2s;">{{ $medsos->judul }}</h3>
+                        <div class="mc-meta" style="margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .8rem; color: var(--steel); font-weight: 500;">
                             <span style="display: flex; align-items: center; gap: 6px;"><i class="far fa-calendar-alt"></i>{{ \Carbon\Carbon::parse($medsos->tanggal)->locale('id')->translatedFormat('d M Y, H:i') }}</span>
                             <span style="display: flex; align-items: center; gap: 6px;"><i class="{{ $ikonSumber }}" style="color: {{ str_contains($s, 'youtube') ? '#ff0000' : (str_contains($s, 'instagram') ? '#d6249f' : 'inherit') }}"></i>{{ $medsos->sumber }}</span>
                         </div>
-                        <a href="{{ $medsos->link ?? '#' }}" target="_blank" rel="noopener" style="margin-top: auto; font-weight: 700; font-size: .88rem; color: var(--signal-d); display: inline-flex; gap: 6px; align-items: center; transition: gap 0.2s;">Selengkapnya <i class="fas fa-angle-right"></i></a>
+                        <a class="mc-foot" href="{{ $medsos->link ?? '#' }}" target="_blank" rel="noopener" style="margin-top: auto; font-weight: 700; font-size: .88rem; color: var(--signal-d); display: inline-flex; gap: 6px; align-items: center; transition: gap 0.2s;">Selengkapnya <i class="fas fa-angle-right"></i></a>
                     </div>
                 </article>
             @empty
