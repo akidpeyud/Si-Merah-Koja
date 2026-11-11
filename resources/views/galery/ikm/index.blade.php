@@ -673,14 +673,39 @@
         }
         @media (max-width:700px){
             .wrap{width:min(calc(100% - 28px),1180px)}
-            .page-hero h1{font-size:clamp(2.8rem,15vw,4.5rem)}
+            .page-hero h1{font-size:clamp(1.65rem,7vw,2.35rem)}
         }
-        @media (max-width:520px){
-            .media-grid{grid-template-columns:1fr}
-        }
-        @media (max-width:390px){
-            .media-body{padding:16px}
-            .media-thumb{aspect-ratio:16/10}
+        @media (max-width:640px){
+            .page-hero{padding:26px 0 46px}
+            .crumbs{margin-bottom:12px;font-size:.75rem}
+            .hero-kicker{padding:5px 10px;font-size:.66rem;margin-bottom:10px}
+            .page-hero h1{font-size:clamp(1.55rem,6.5vw,2.15rem);line-height:1.05;letter-spacing:-.035em}
+            .page-hero p{margin-top:10px;font-size:.86rem}
+            .hero-line{margin-top:14px;width:48px;height:3px}
+            .page-nav-wrap{margin-top:-20px;padding:0 12px}
+            .page-nav a{padding:7px 13px;font-size:.76rem}
+            .content-head{margin:24px 0 14px}
+            .content-head h2{font-size:1.25rem}
+            .content-head p{font-size:.8rem}
+            .page-body{padding-bottom:60px}
+            .media-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+            .media-card{border-radius:14px}
+            .media-tag{top:6px;left:6px;padding:3px 7px;font-size:.54rem;border-radius:6px;max-width:calc(100% - 42px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+            .media-source{top:6px;right:6px;width:24px;height:24px;font-size:.65rem}
+            .photo-play{width:34px;height:34px;font-size:.72rem}
+            .media-body{padding:10px}
+            .media-date{font-size:.66rem;gap:4px}
+            .media-title{margin-top:4px;font-size:.78rem;line-height:1.25;-webkit-line-clamp:2}
+            .media-desc{display:none}
+            .media-foot{margin-top:8px;padding-top:8px}
+            .media-link{font-size:.7rem}
+            .media-link span{width:22px;height:22px;font-size:.62rem}
+            .sos-fab{right:12px;bottom:12px}
+            .sos-fab-btn{padding:9px 14px;font-size:.78rem;gap:7px;box-shadow:0 8px 18px -4px rgba(229,57,45,.55)}
+            .sos-fab-btn .beacon{width:8px;height:8px}
+            .footer{padding:38px 0 24px}
+            .footer-about img{height:64px;margin-bottom:14px}
+            .footer-bar{margin-top:28px;padding-top:20px;font-size:.8rem}
         }
 
         /* ================= FORM SURVEI (DALAM HALAMAN) ================= */

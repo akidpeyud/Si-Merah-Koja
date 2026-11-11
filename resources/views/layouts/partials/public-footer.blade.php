@@ -97,9 +97,37 @@
     }
 }
 @media (max-width: 640px) {
+    .footer {
+        padding: 38px 0 24px !important;
+    }
     .footer .footer-grid {
         grid-template-columns: 1fr !important;
-        gap: 28px !important;
+        gap: 24px !important;
+    }
+    .footer-logo-main,
+    .footer-about img {
+        max-height: 64px !important;
+        height: 64px !important;
+        margin-bottom: 14px !important;
+    }
+    .footer-bar {
+        margin-top: 28px !important;
+        padding-top: 20px !important;
+        font-size: 0.8rem !important;
+    }
+    .sos-fab {
+        right: 12px !important;
+        bottom: 12px !important;
+    }
+    .sos-fab-btn {
+        padding: 9px 14px !important;
+        font-size: 0.78rem !important;
+        gap: 7px !important;
+        box-shadow: 0 8px 18px -4px rgba(229, 57, 45, 0.55) !important;
+    }
+    .sos-fab-btn .beacon {
+        width: 8px !important;
+        height: 8px !important;
     }
 }
 

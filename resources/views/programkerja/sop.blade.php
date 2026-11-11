@@ -372,10 +372,18 @@
         .doc-empty h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; color: var(--ink); margin-bottom: 6px; }
 
         @media (max-width: 640px) {
-            .doc-row { grid-template-columns: 52px minmax(0, 1fr); align-items: start; }
+            .page-hero { padding: 26px 0 46px; }
+            .crumbs { gap: 6px; margin-bottom: 12px; font-size: .75rem; }
+            .page-hero h1 { font-size: clamp(1.55rem, 6.5vw, 2.2rem); line-height: 1.05; }
+            .page-hero p { margin-top: 10px; font-size: .86rem; }
+            .tabs-wrap { margin-top: -20px; }
+            .tab { padding: 7px 12px; font-size: .76rem; }
+            .doc-row { grid-template-columns: 40px minmax(0, 1fr); gap: 10px 12px; padding: 12px 14px; align-items: start; }
+            .doc-ico { width: 40px; height: 40px; border-radius: 10px; font-size: 1.1rem; }
+            .doc-name { font-size: .9rem; }
             .doc-actions { grid-column: 1 / -1; width: 100%; }
-            .doc-actions .tool { flex: 1; }
-            .sop-cat-btn { flex: 1 1 calc(50% - 6px); justify-content: center; padding: 10px 12px; font-size: .85rem; }
+            .doc-actions .tool { flex: 1; height: 34px; font-size: .78rem; }
+            .sop-cat-btn { flex: 1 1 calc(50% - 6px); justify-content: center; padding: 8px 10px; font-size: .78rem; }
         }
 
         /* Kontak & Footer */

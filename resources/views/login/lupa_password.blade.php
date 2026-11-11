@@ -264,6 +264,64 @@
         .back-to-home:hover {
             color: #0d1b2a;
         }
+
+        @media screen and (max-width: 640px) {
+            body {
+                background-attachment: scroll;
+            }
+            .splash-logo-container img {
+                height: 74px;
+                margin-bottom: 14px;
+            }
+            .splash-title {
+                font-size: 16px;
+                margin-bottom: 18px;
+            }
+            .login-wrapper {
+                padding: 14px;
+            }
+            .login-card {
+                border-radius: 14px;
+            }
+            .login-header {
+                padding: 22px 18px 16px;
+                border-bottom-width: 3px;
+            }
+            .login-header img {
+                height: 82px;
+                margin-bottom: 12px;
+            }
+            .login-header p {
+                font-size: 11px;
+            }
+            .login-body {
+                padding: 22px 18px;
+            }
+            .login-title {
+                font-size: 17px;
+                margin-bottom: 8px;
+            }
+            .reset-desc {
+                font-size: 11.5px;
+                margin-bottom: 16px;
+            }
+            .form-label {
+                font-size: 12px;
+                margin-bottom: 6px;
+            }
+            .form-control {
+                font-size: 16px;
+                padding: 9px 12px;
+            }
+            .btn-submit {
+                font-size: 13px;
+                padding: 10px 12px;
+            }
+            .back-to-home {
+                margin-top: 16px;
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body>

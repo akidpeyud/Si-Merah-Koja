@@ -332,9 +332,14 @@
             .data-table tr:hover td:nth-child(2) { background: var(--paper); }
         }
         @media (max-width: 640px) {
-            .doc-row { grid-template-columns: 52px minmax(0, 1fr); }
+            .page-hero { padding: 26px 0 46px; }
+            .page-hero h1 { font-size: clamp(1.55rem, 6.5vw, 2.2rem); line-height: 1.05; }
+            .page-hero p { margin-top: 10px; font-size: .86rem; }
+            .doc-row { grid-template-columns: 40px minmax(0, 1fr); gap: 10px 12px; padding: 12px 14px; }
+            .doc-ico { width: 40px; height: 40px; border-radius: 10px; font-size: 1.1rem; }
+            .doc-name { font-size: .9rem; }
             .doc-actions { grid-column: 1 / -1; }
-            .doc-actions .tool { flex: 1; }
+            .doc-actions .tool { flex: 1; height: 34px; font-size: .78rem; }
         }
 
         .beacon { position: relative; width: 12px; height: 12px; border-radius: 50%; background: #fff; flex: none; }

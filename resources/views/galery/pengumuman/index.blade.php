@@ -389,8 +389,33 @@
         @media (max-width:991px){.page-hero{padding:43px 0 78px}}
         @media (max-width:700px){
             .wrap{width:min(calc(100% - 28px),1180px)}
-            .page-hero h1{font-size:clamp(2.8rem,15vw,4.5rem)}
-            .page-hero h1.h1-judul{font-size:clamp(1.7rem,7vw,2.4rem)}
+            .page-hero h1{font-size:clamp(1.7rem,7vw,2.35rem)}
+            .page-hero h1.h1-judul{font-size:clamp(1.4rem,5.5vw,1.9rem)}
+        }
+        @media (max-width:640px){
+            .page-hero{padding:26px 0 42px}
+            .crumbs{margin-bottom:12px;font-size:.75rem}
+            .hero-kicker{padding:5px 10px;font-size:.66rem;margin-bottom:10px}
+            .page-hero h1{font-size:clamp(1.55rem,6.5vw,2.15rem);line-height:1.05;letter-spacing:-.035em}
+            .page-hero p{margin-top:10px;font-size:.86rem}
+            .hero-line{margin-top:14px;width:48px;height:3px}
+            .pg-page .wrap{padding-top:24px}
+            .page-body{padding-bottom:60px}
+            .pg-cats{gap:6px;margin:12px 0 20px}
+            .pg-cats a{padding:6px 12px;font-size:.76rem}
+            .pg-list{gap:12px}
+            .pg-card{padding:14px;border-radius:16px;gap:12px}
+            .pg-main h3{font-size:1rem;margin-top:8px}
+            .pg-main p{font-size:.82rem}
+            .pg-more{font-size:.76rem;margin-top:10px}
+            .pg-article{padding:18px;border-radius:16px}
+            .pg-body{margin-top:16px;font-size:.92rem;line-height:1.7}
+            .sos-fab{right:12px;bottom:12px}
+            .sos-fab-btn{padding:9px 14px;font-size:.78rem;gap:7px;box-shadow:0 8px 18px -4px rgba(229,57,45,.55)}
+            .sos-fab-btn .beacon{width:8px;height:8px}
+            .footer{padding:38px 0 24px}
+            .footer-about img{height:64px;margin-bottom:14px}
+            .footer-bar{margin-top:28px;padding-top:20px;font-size:.8rem}
         }
     </style>
 </head>

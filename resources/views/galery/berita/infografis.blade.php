@@ -550,8 +550,37 @@
             .page-nav a { padding: 8px 16px; font-size: 0.85rem; }
         }
         @media (max-width:700px){
-            .wrap{width:min(calc(100% - 28px),1180px)}
-            .page-hero h1{font-size:clamp(2.8rem,15vw,4.5rem)}
+            .wrap{width:min(calc(100% - 24px),1180px)}
+            .page-hero h1{font-size:clamp(1.7rem,7vw,2.6rem)}
+        }
+        @media (max-width:640px){
+            .page-hero{padding:32px 0 60px}
+            .crumbs{font-size:.75rem;margin-bottom:14px;gap:6px}
+            .hero-kicker{padding:5px 9px;font-size:.64rem;margin-bottom:10px}
+            .page-hero h1{font-size:clamp(1.55rem,6.5vw,2.2rem);line-height:1.08}
+            .page-hero p{margin-top:10px;font-size:.85rem;line-height:1.5}
+            .hero-line{width:48px;height:3px;margin-top:14px}
+            .page-nav-wrap{margin-top:-22px;padding:0 12px}
+            .page-nav{padding:5px;gap:3px}
+            .page-nav a{padding:7px 13px;font-size:.76rem;gap:6px}
+            .page-nav a i{font-size:.85rem}
+            .content-head{margin:28px 0 14px;gap:12px}
+            .content-head h2{font-size:1.3rem}
+            .content-head p{font-size:.8rem;margin-top:4px}
+            .grafis-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+            .grafis-card{border-radius:14px}
+            .grafis-zoom{top:8px;right:8px;width:28px;height:28px;font-size:.72rem}
+            .grafis-title{padding:22px 10px 10px;font-size:.74rem;line-height:1.25}
+            .sos-fab{right:12px;bottom:12px;gap:8px}
+            .sos-fab-btn{padding:9px 14px;font-size:.78rem;gap:7px}
+            .sos-fab-btn .beacon{width:8px;height:8px}
+            .sos-sheet{width:min(260px,calc(100vw - 24px));padding:6px;border-radius:14px}
+            .sos-sheet a{padding:10px 12px;font-size:.82rem;gap:10px;border-radius:10px}
+            .footer{padding:36px 0 24px}
+            .footer-about img{height:64px;margin-bottom:12px}
+            .footer h3{font-size:1rem;margin-bottom:10px}
+            .footer-about p,.footer-contact a,.footer-links a{font-size:.84rem}
+            .map{height:150px}
         }
     </style>
 </head>

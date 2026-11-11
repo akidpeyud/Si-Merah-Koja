@@ -331,7 +331,7 @@
                                         @if($item->path_gambar && file_exists(public_path($item->path_gambar)))
                                             <div class="img-wrap">
                                                 <a href="{{ asset($item->path_gambar) }}" target="_blank" rel="noopener">
-                                                    <img src="{{ asset($item->path_gambar) }}" alt="{{ $item->jenis_sarana }}" class="img-sarana" onerror="this.onerror=null; this.src='https://via.placeholder.com/200x130?text=Gambar+Hilang';">
+                                                    <img src="{{ asset($item->path_gambar) }}" alt="{{ $item->jenis_sarana }}" class="img-sarana" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='https://via.placeholder.com/200x130?text=Gambar+Hilang';">
                                                 </a>
                                             </div>
                                         @else

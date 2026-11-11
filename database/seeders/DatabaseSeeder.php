@@ -46,6 +46,7 @@ class DatabaseSeeder extends Seeder
             PelatihanKeluargaSeeder::class,
             PetaJabatanSeeder::class,
             TitikSigapSeeder::class,
+            HeroBackgroundSeeder::class,
         ]);
     }
 }
