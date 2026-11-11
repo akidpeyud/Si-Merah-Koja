@@ -237,7 +237,25 @@
                             {{ $item->satuan ?: '-' }}
                         @endif
                     </td>
-                    <td class="text-right fw-bold">Rp {{ number_format((int) $item->total_harga, 0, ',', '.') }}</td>
+                    <td class="text-right">
+                        @php
+                            $hasMultiHarga = count($rincianList) > 1 && collect($rincianList)->contains(fn ($r) => ($r['harga'] ?? null) !== null);
+                        @endphp
+                        @if($hasMultiHarga)
+                            <ul class="pdf-list" style="text-align: right;">
+                                @foreach($rincianList as $rincian)
+                                    <li>
+                                        {{ ($rincian['harga'] ?? null) !== null ? 'Rp ' . number_format((int) $rincian['harga'], 0, ',', '.') : '-' }}
+                                    </li>
+                                @endforeach
+                            </ul>
+                            <div style="margin-top: 4px; padding-top: 4px; border-top: 1px dashed #64748b; font-weight: bold;">
+                                Total: Rp {{ number_format((int) $item->total_harga, 0, ',', '.') }}
+                            </div>
+                        @else
+                            <span class="fw-bold">Rp {{ number_format((int) $item->total_harga, 0, ',', '.') }}</span>
+                        @endif
+                    </td>
                     <td class="text-center">
                         @php
                             $fotoBase64 = '';

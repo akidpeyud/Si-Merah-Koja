@@ -1258,12 +1258,15 @@ class SapraController extends Controller
             $row->barang_berulang = $barangBerulang;
             $row->jumlah_ganti_sama = ! empty($barangBerulang) ? max(array_column($barangBerulang, 'count')) : 1;
 
-            // Susun rincian pasangan per baris (Barang, Merek/Tipe, Satuan)
+            // Susun rincian pasangan per baris (Barang, Merek/Tipe, Satuan, Harga)
             $merekParts = $row->merek_tipe_barang
                 ? array_values(array_map('trim', preg_split('/\s*,\s*/', $row->merek_tipe_barang)))
                 : [];
             $satuanParts = $row->satuan
                 ? array_values(array_map('trim', preg_split('/\s*,\s*/', $row->satuan)))
+                : [];
+            $hargaParts = ! empty($row->rincian_harga)
+                ? array_values(array_map('trim', preg_split('/\s*,\s*/', (string) $row->rincian_harga)))
                 : [];
 
             $dupKeyMap = [];
@@ -1275,10 +1278,16 @@ class SapraController extends Controller
             foreach ($row->daftar_item as $idx => $namaBarang) {
                 $merekVal = $merekParts[$idx] ?? (count($merekParts) === 1 && $idx === 0 ? $merekParts[0] : '-');
                 $satuanVal = $satuanParts[$idx] ?? (count($satuanParts) === 1 && $idx === 0 ? $satuanParts[0] : '-');
+                $hargaRaw = $hargaParts[$idx] ?? (count($row->daftar_item) === 1 && $idx === 0 ? (string) $row->total_harga : null);
+                $hargaVal = ($hargaRaw !== null && $hargaRaw !== '' && $hargaRaw !== '-' && is_numeric($hargaRaw))
+                    ? (int) $hargaRaw
+                    : null;
+
                 $rincianItems[] = [
                     'barang' => $namaBarang,
                     'merek' => ($merekVal !== '' && $merekVal !== '-') ? $merekVal : '-',
                     'satuan' => ($satuanVal !== '' && $satuanVal !== '-') ? $satuanVal : '-',
+                    'harga' => $hargaVal,
                     'is_dup' => isset($dupKeyMap[strtolower($namaBarang)]),
                 ];
             }
@@ -1348,6 +1357,9 @@ class SapraController extends Controller
         $barangArr = [];
         $merekArr = [];
         $satuanArr = [];
+        $hargaArr = [];
+        $sumHarga = 0;
+        $hasHargaInput = $request->has('items_harga') && is_array($request->items_harga);
 
         foreach ($request->items_barang as $idx => $namaBrg) {
             $namaBrg = trim((string) $namaBrg);
@@ -1359,16 +1371,31 @@ class SapraController extends Controller
             $satuanVal = trim((string) ($request->items_satuan[$idx] ?? ''));
             $merekArr[] = $merekVal !== '' ? $merekVal : '-';
             $satuanArr[] = $satuanVal !== '' ? $satuanVal : '-';
+
+            if ($hasHargaInput) {
+                $hargaClean = preg_replace('/[^0-9]/', '', (string) ($request->items_harga[$idx] ?? ''));
+                $hargaInt = $hargaClean !== '' ? (int) $hargaClean : 0;
+                $hargaArr[] = (string) $hargaInt;
+                $sumHarga += $hargaInt;
+            }
         }
 
         $hasAnyMerek = collect($merekArr)->contains(fn ($v) => $v !== '-');
         $hasAnySatuan = collect($satuanArr)->contains(fn ($v) => $v !== '-');
+        $hasAnyHarga = collect($hargaArr)->contains(fn ($v) => (int) $v > 0);
 
-        $request->merge([
+        $merged = [
             'jenis_kerusakan' => implode(', ', $barangArr),
             'merek_tipe_barang' => $hasAnyMerek ? implode(', ', $merekArr) : null,
             'satuan' => $hasAnySatuan ? implode(', ', $satuanArr) : null,
-        ]);
+            'rincian_harga' => $hasAnyHarga ? implode(', ', $hargaArr) : null,
+        ];
+
+        if ($hasHargaInput && $hasAnyHarga) {
+            $merged['total_harga'] = $sumHarga;
+        }
+
+        $request->merge($merged);
     }
 
     public function storePerbaikanKendaraan(Request $request)
@@ -1383,6 +1410,7 @@ class SapraController extends Controller
             'jenis_kerusakan' => 'required|string|max:255',
             'merek_tipe_barang' => 'nullable|string|max:255',
             'satuan' => 'nullable|string|max:100',
+            'rincian_harga' => 'nullable|string|max:255',
             'total_harga' => 'required|numeric|min:0',
             'foto' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:4096',
         ], [
@@ -1412,6 +1440,7 @@ class SapraController extends Controller
             'jenis_kerusakan' => trim($request->jenis_kerusakan),
             'merek_tipe_barang' => $request->merek_tipe_barang ? trim($request->merek_tipe_barang) : null,
             'satuan' => $request->satuan ? trim($request->satuan) : null,
+            'rincian_harga' => $request->rincian_harga ? trim($request->rincian_harga) : null,
             'total_harga' => (int) $request->total_harga,
             'foto' => $fotoPath,
             'created_at' => now(),
@@ -1433,6 +1462,7 @@ class SapraController extends Controller
             'jenis_kerusakan' => 'required|string|max:255',
             'merek_tipe_barang' => 'nullable|string|max:255',
             'satuan' => 'nullable|string|max:100',
+            'rincian_harga' => 'nullable|string|max:255',
             'total_harga' => 'required|numeric|min:0',
             'foto' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:4096',
         ], [
@@ -1470,6 +1500,7 @@ class SapraController extends Controller
             'jenis_kerusakan' => trim($request->jenis_kerusakan),
             'merek_tipe_barang' => $request->merek_tipe_barang ? trim($request->merek_tipe_barang) : null,
             'satuan' => $request->satuan ? trim($request->satuan) : null,
+            'rincian_harga' => $request->rincian_harga ? trim($request->rincian_harga) : null,
             'total_harga' => (int) $request->total_harga,
             'foto' => $fotoPath,
             'updated_at' => now(),
