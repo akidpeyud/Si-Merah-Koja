@@ -105,7 +105,6 @@ Route::view('/waarld', 'layouts.partials.sidebarmenu')->name('tim.profil');
 Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman.index');
 Route::get('/pengumuman/{id}', [PengumumanController::class, 'show'])->whereNumber('id')->name('pengumuman.show');
 
-
 // Indeks Kepuasan Masyarakat (IKM) - folder: resources/views/galery/ikm
 Route::get('/ikm', [IkmController::class, 'index'])->name('ikm.index');
 Route::post('/ikm', [IkmController::class, 'store'])->middleware('throttle:5,10')->name('ikm.store');
@@ -934,7 +933,7 @@ Route::get('/api/titik-sigap', [PetaController::class, 'apiData']);
 Route::get('/api/titik', [PetaController::class, 'apiData']);
 
 // Route Admin Peta SIGAP
-Route::prefix('internal/peta-sigap')->middleware(['auth'])->group(function () {
+Route::prefix('internal/peta-sigap')->middleware(['auth', LogInternalActivity::class])->group(function () {
     Route::get('/input', [PetaController::class, 'input']);
     Route::post('/store', [PetaController::class, 'store']);
     Route::get('/data', [PetaController::class, 'data']);
@@ -967,7 +966,7 @@ Route::get('/sarpras/sarana', [SapraHomeController::class, 'sarana'])->name('sar
 Route::get('/sarpras/prasarana', [SapraHomeController::class, 'prasarana'])->name('sarpras.prasarana');
 
 // --- RUTE INTERNAL DOKUMEN PUBLIK ---
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', LogInternalActivity::class])->group(function () {
     Route::get('dokumen-publik', [DokumenPublikController::class, 'index'])->name('dokumen-publik.index');
 
     Route::middleware([RoleMiddleware::class.':Super User|Sekretariat'])->group(function () {
@@ -1016,7 +1015,7 @@ Route::get('/dokumen/lppd', function () {
 });
 
 // --- RUTE INTERNAL PRODUK HUKUM ---
-Route::prefix('internal/produk-hukum')->name('internal.produk-hukum.')->middleware(['auth'])->group(function () {
+Route::prefix('internal/produk-hukum')->name('internal.produk-hukum.')->middleware(['auth', LogInternalActivity::class])->group(function () {
     Route::get('/{kategori}', [ProdukHukumController::class, 'index'])->name('index');
     Route::get('/{kategori}/create', [ProdukHukumController::class, 'create'])->name('create');
     Route::post('/{kategori}', [ProdukHukumController::class, 'store'])->name('store');
@@ -1048,7 +1047,7 @@ Route::get('/produk-hukum/peraturan-kepala-daerah', function () {
 });
 
 // --- RUTE INTERNAL PROFIL INSTANSI ---
-Route::prefix('internal/profil-instansi')->name('internal.profil-instansi.')->middleware(['auth'])->group(function () {
+Route::prefix('internal/profil-instansi')->name('internal.profil-instansi.')->middleware(['auth', LogInternalActivity::class])->group(function () {
     Route::get('/{kategori}', [ProfilInstansiController::class, 'index'])->name('index');
     Route::get('/{kategori}/create', [ProfilInstansiController::class, 'create'])->name('create');
     Route::post('/{kategori}', [ProfilInstansiController::class, 'store'])->name('store');
