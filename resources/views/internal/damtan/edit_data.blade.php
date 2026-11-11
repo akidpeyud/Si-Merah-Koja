@@ -94,22 +94,50 @@
     /* Decode kolom JSON dengan aman (kolom bisa berupa string JSON atau sudah array) */
     $dec = fn ($v) => is_array($v) ? $v : (json_decode($v ?? '[]', true) ?? []);
 
-    /* Penanda "selected" untuk <option> */
-    $sel = fn ($a, $b) => (string) ($a ?? '') === (string) $b ? 'selected' : '';
+    /* Penanda "selected" untuk <option> (case-insensitive & trim) */
+    $sel = fn ($a, $b) => strcasecmp(trim((string) ($a ?? '')), trim((string) $b)) === 0 ? 'selected' : '';
 
     /* Format datetime-local & time */
     $dt = fn ($v) => $v ? date('Y-m-d\TH:i', strtotime($v)) : '';
     $tm = fn ($v) => $v ? date('H:i', strtotime($v)) : '';
 
-    $evakuasi     = $dec($teknis->metode_evakuasi ?? null);
-    $penyelamatan = $dec($teknis->metode_penyelamatan ?? null);
-    $alat         = $dec($teknis->peralatan ?? null);
-    $armada       = $dec($teknis->armada ?? null);
-    $instansi     = $dec($dokumentasi->instansi_pendukung ?? null);
+    $evakuasi     = $dec($teknis->metode_evakuasi ?? ($laporan->metode_evakuasi ?? null));
+    $penyelamatan = $dec($teknis->metode_penyelamatan ?? ($laporan->metode_penyelamatan ?? null));
+    $alat         = $dec($teknis->peralatan ?? ($laporan->peralatan ?? null));
+    $armada       = $dec($teknis->armada ?? ($laporan->armada ?? null));
+    $instansi     = $dec($dokumentasi->instansi_pendukung ?? ($laporan->instansi_pendukung ?? null));
     $rin          = $dec($laporan->rincian_objek ?? null);   // rincian objek kebakaran (JSON)
 
+    /* Helper cek keberadaan item di array (case-insensitive / substring) */
+    $hasItem = function ($needle, $haystack) {
+        if (!is_array($haystack)) return false;
+        foreach ($haystack as $item) {
+            $itemStr = (string)$item;
+            if (strcasecmp($itemStr, $needle) === 0 || stripos($itemStr, $needle) !== false) {
+                return true;
+            }
+        }
+        return false;
+    };
+
     /* Tanggal kejadian: dari waktu kejadian, jika kosong pakai waktu terima / tanggal dibuat */
-    $tglKejadian = \Carbon\Carbon::parse($laporan->waktu_kejadian ?: ($laporan->waktu_terima ?: $laporan->created_at))->format('Y-m-d');
+    $tglKejadian = \Carbon\Carbon::parse($laporan->waktu_kejadian ?: ($laporan->waktu_terima ?: ($laporan->tanggal_kejadian ?: $laporan->created_at)))->format('Y-m-d');
+
+    /* Lama operasi fallback */
+    $lamaOperasiVal = $teknis->lama_operasi ?? null;
+    if (empty($lamaOperasiVal) && !empty($laporan->waktu_tiba) && !empty($laporan->waktu_selesai)) {
+        try {
+            $t1 = \Carbon\Carbon::parse($laporan->waktu_tiba);
+            $t2 = \Carbon\Carbon::parse($laporan->waktu_selesai);
+            $diffM = $t1->diffInMinutes($t2);
+            if ($diffM >= 0) {
+                $lamaOperasiVal = $diffM;
+            }
+        } catch (\Throwable $e) {}
+    }
+    if (empty($lamaOperasiVal) && !empty($teknis->langkah_penanganan) && preg_match('/Lama Operasi:\s*(\d+)/i', $teknis->langkah_penanganan, $m)) {
+        $lamaOperasiVal = (int) $m[1];
+    }
 
     $optMedia = [
         'call_center_112' => 'Call Center 112',
@@ -120,9 +148,28 @@
         'langsung' => 'Datang Langsung ke Mako/Pos',
         'instansi_lain' => 'Laporan Instansi Lain',
     ];
+
+    /* Helper untuk cek kecocokan media pelaporan */
+    $isMediaSelected = function ($key, $label) use ($laporan) {
+        $val = trim((string)($laporan->media_pelaporan ?? ''));
+        if (strcasecmp($val, $key) === 0 || strcasecmp($val, $label) === 0) return true;
+        $valLower = strtolower($val);
+        if ($key === 'operator_layanan' && (str_contains($valLower, 'operator') || str_contains($valLower, 'damkar/telpon'))) return true;
+        if ($key === 'dijemput' && str_contains($valLower, 'jemput')) return true;
+        if ($key === 'whatsapp' && (str_contains($valLower, 'wa') || str_contains($valLower, 'whatsapp'))) return true;
+        if ($key === 'telepon' && (str_contains($valLower, 'telepon') || str_contains($valLower, 'telfon') || str_contains($valLower, 'telpon'))) return true;
+        if ($key === 'call_center_112' && str_contains($valLower, '112')) return true;
+        if ($key === 'langsung' && (str_contains($valLower, 'langsung') || str_contains($valLower, 'mako') || str_contains($valLower, 'pos'))) return true;
+        return false;
+    };
+
     $optKategori = [
-        'kebakaran' => 'Kebakaran', 'penyelamatan_hewan' => 'Penyelamatan Hewan', 'bencana_alam' => 'Bencana Alam',
-        'kecelakaan_lalu_lintas' => 'Kecelakaan Lalu Lintas', 'evakuasi_medis' => 'Evakuasi Medis',
+        'kebakaran' => 'Kebakaran',
+        'penyelamatan' => 'Penyelamatan',
+        'penyelamatan_hewan' => 'Penyelamatan Hewan',
+        'bencana_alam' => 'Bencana Alam',
+        'kecelakaan_lalu_lintas' => 'Kecelakaan Lalu Lintas',
+        'evakuasi_medis' => 'Evakuasi Medis',
     ];
     $optObjek = [
         'rumah' => 'Rumah', 'gudang' => 'Gudang', 'ruko' => 'Ruko', 'kantor' => 'Kantor', 'sekolah' => 'Sekolah',
@@ -130,6 +177,7 @@
         'kendaraan_bermotor' => 'Kendaraan Bermotor', 'objek_vital' => 'Objek Vital',
         'sarana_kesehatan' => 'Sarana Kesehatan', 'lahan_pohon' => 'Lahan, Pohon',
         'gardu_listrik' => 'Gardu Listrik', 'tempat_sampah' => 'Tempat Pembuangan Sampah',
+        'lainnya' => 'Lainnya',
     ];
     $optNonKebakaran = [
         'fire_rescue' => 'Fire Rescue', 'water_rescue' => 'Water Rescue', 'land_rescue' => 'Land Rescue',
@@ -141,7 +189,30 @@
         'arus_pendek' => 'Arus pendek listrik', 'kebocoran_gas' => 'Kebocoran gas', 'sambaran_petir' => 'Sambaran petir',
         'kelalaian_manusia' => 'Kelalaian manusia', 'faktor_alam' => 'Faktor alam', 'lainnya' => 'Lainnya',
     ];
-    $prio = $laporan->prioritas ?? 'rendah';
+    $prio = strtolower((string)($laporan->prioritas ?? 'rendah'));
+
+    /* Helper deteksi jenis hewan untuk Tab 4 */
+    $rawHewan = trim((string)($khusus->jenis_hewan ?? ''));
+    $rawHewanLower = strtolower($rawHewan);
+    $jenisHewanVal = '';
+    $jenisHewanLainnyaVal = '';
+    if (!empty($rawHewan)) {
+        if (str_contains($rawHewanLower, 'ular')) {
+            $jenisHewanVal = 'ular';
+        } elseif (str_contains($rawHewanLower, 'tawon') || str_contains($rawHewanLower, 'lebah') || str_contains($rawHewanLower, 'vespa')) {
+            $jenisHewanVal = 'tawon';
+        } elseif (str_contains($rawHewanLower, 'kera') || str_contains($rawHewanLower, 'monyet')) {
+            $jenisHewanVal = 'kera';
+        } elseif (str_contains($rawHewanLower, 'biawak')) {
+            $jenisHewanVal = 'biawak';
+        } else {
+            $jenisHewanVal = 'lainnya';
+            $jenisHewanLainnyaVal = $rawHewan;
+        }
+    }
+    if (!empty($khusus->jenis_hewan_lainnya)) {
+        $jenisHewanLainnyaVal = $khusus->jenis_hewan_lainnya;
+    }
 @endphp
 
 <div class="page-head d-flex flex-wrap justify-content-between align-items-start gap-3">
@@ -259,9 +330,17 @@
                                 <label class="field-label"><span class="num-badge">4</span> Laporan Diterima Melalui <span class="req">*</span></label>
                                 <select class="form-select" name="media_pelaporan" required>
                                     <option value="">-- Pilih Layanan --</option>
+                                    @php $matchedMedia = false; @endphp
                                     @foreach ($optMedia as $v => $l)
-                                        <option value="{{ $v }}" {{ $sel($laporan->media_pelaporan, $v) }}>{{ $l }}</option>
+                                        @php
+                                            $isSel = $isMediaSelected($v, $l);
+                                            if ($isSel) { $matchedMedia = true; }
+                                        @endphp
+                                        <option value="{{ $v }}" {{ $isSel ? 'selected' : '' }}>{{ $l }}</option>
                                     @endforeach
+                                    @if (!$matchedMedia && !empty($laporan->media_pelaporan))
+                                        <option value="{{ $laporan->media_pelaporan }}" selected>{{ $laporan->media_pelaporan }}</option>
+                                    @endif
                                 </select>
                             </div>
                             <div class="w-100 d-none d-md-block"></div>
@@ -351,8 +430,14 @@
                                     <label class="field-label"><span class="num-badge">10</span> Kategori Kejadian Umum</label>
                                     <select class="form-select" name="kategori_kejadian" id="kategori_kejadian">
                                         <option value="">-- Pilih Kategori Kejadian --</option>
+                                        @php
+                                            $rawKat = strtolower(trim((string)($laporan->kategori_kejadian ?? '')));
+                                        @endphp
                                         @foreach ($optKategori as $v => $l)
-                                            <option value="{{ $v }}" {{ $sel($laporan->kategori_kejadian, $v) }}>{{ $l }}</option>
+                                            @php
+                                                $isKatSel = (strcasecmp($rawKat, $v) === 0 || ($v === 'penyelamatan' && !str_contains($rawKat, 'kebakaran') && !empty($rawKat)));
+                                            @endphp
+                                            <option value="{{ $v }}" {{ $isKatSel ? 'selected' : '' }}>{{ $l }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -374,11 +459,19 @@
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="field-label"><span class="num-badge">10</span> Objek Kebakaran <span class="req">*</span></label>
-                                        <select class="form-select" name="objek_kebakaran" id="objek_kebakaran" required>
+                                        <select class="form-select" name="objek_kebakaran" id="objek_kebakaran">
                                             <option value="">-- Pilih Objek --</option>
+                                            @php $matchedObjek = false; @endphp
                                             @foreach ($optObjek as $v => $l)
-                                                <option value="{{ $v }}" {{ $sel($laporan->kategori_kebakaran, $v) }}>{{ $l }}</option>
+                                                @php
+                                                    $isObjSel = (strcasecmp((string)$laporan->kategori_kebakaran, (string)$v) === 0);
+                                                    if ($isObjSel) $matchedObjek = true;
+                                                @endphp
+                                                <option value="{{ $v }}" {{ $isObjSel ? 'selected' : '' }}>{{ $l }}</option>
                                             @endforeach
+                                            @if (!$matchedObjek && !empty($laporan->kategori_kebakaran))
+                                                <option value="{{ $laporan->kategori_kebakaran }}" selected>{{ ucwords(str_replace('_', ' ', $laporan->kategori_kebakaran)) }}</option>
+                                            @endif
                                         </select>
                                     </div>
 
@@ -393,7 +486,7 @@
                                     <div class="col-12">
                                         {{-- Rumah: jenis bangunan + unit --}}
                                         <div class="sub-objek" data-objek="rumah">
-                                            <label class="field-label">Rincian Rumah</label>
+                                             <label class="field-label">Rincian Rumah</label>
                                             <div class="pair">
                                                 <select class="form-select" name="tipe_bangunan_rumah" disabled>
                                                     <option value="">-- Jenis Bangunan --</option>
@@ -460,11 +553,19 @@
                                 <div class="pair">
                                     <select class="form-select" name="kategori_non_kebakaran" id="kategori_non_kebakaran" disabled>
                                         <option value="">-- Pilih Jenis Evakuasi --</option>
+                                        @php $matchedNon = false; @endphp
                                         @foreach ($optNonKebakaran as $v => $l)
-                                            <option value="{{ $v }}" {{ $sel($laporan->kategori_non_kebakaran, $v) }}>{{ $l }}</option>
+                                            @php
+                                                $isNonSel = (strcasecmp((string)$laporan->kategori_non_kebakaran, (string)$v) === 0);
+                                                if ($isNonSel) $matchedNon = true;
+                                            @endphp
+                                            <option value="{{ $v }}" {{ $isNonSel ? 'selected' : '' }}>{{ $l }}</option>
                                         @endforeach
+                                        @if (!$matchedNon && !empty($laporan->kategori_non_kebakaran))
+                                            <option value="{{ $laporan->kategori_non_kebakaran }}" selected>{{ ucwords(str_replace('_', ' ', $laporan->kategori_non_kebakaran)) }}</option>
+                                        @endif
                                     </select>
-                                    <input type="text" class="form-control" name="rincian_kategori_non_kebakaran" id="rincian_kategori_non_kebakaran" value="{{ $laporan->rincian_kategori_non_kebakaran ?? '' }}" placeholder="Ketik jika 'Lainnya'..." disabled>
+                                    <input type="text" class="form-control" name="rincian_kategori_non_kebakaran" id="rincian_kategori_non_kebakaran" value="{{ $laporan->rincian_kategori_non_kebakaran ?? '' }}" placeholder="Ketik rincian evakuasi / jika 'Lainnya'..." disabled>
                                 </div>
                             </div>
                         </div>
@@ -558,9 +659,12 @@
                                 <label class="field-label">Status Evakuasi</label>
                                 <select class="form-select" name="status_evakuasi">
                                     <option value="">-- Pilih Status --</option>
-                                    <option value="selesai" {{ $sel($teknis->status_evakuasi ?? '', 'selesai') }}>Selesai</option>
-                                    <option value="dalam_proses" {{ $sel($teknis->status_evakuasi ?? '', 'dalam_proses') }}>Dalam Proses</option>
-                                    <option value="dirujuk_ke_rs" {{ $sel($teknis->status_evakuasi ?? '', 'dirujuk_ke_rs') }}>Dirujuk ke RS</option>
+                                    @php
+                                        $stEv = strtolower(trim((string)($teknis->status_evakuasi ?? ($laporan->status_evakuasi ?? ''))));
+                                    @endphp
+                                    <option value="selesai" {{ $stEv === 'selesai' ? 'selected' : '' }}>Selesai</option>
+                                    <option value="dalam_proses" {{ $stEv === 'dalam_proses' ? 'selected' : '' }}>Dalam Proses</option>
+                                    <option value="dirujuk_ke_rs" {{ $stEv === 'dirujuk_ke_rs' ? 'selected' : '' }}>Dirujuk ke RS</option>
                                 </select>
                             </div>
                             <div class="col-md-4">
@@ -609,7 +713,7 @@
                             <div class="col-md-4">
                                 <label class="field-label"><span class="num-badge">19</span> Lama Operasi</label>
                                 <div class="input-group">
-                                    <input type="number" min="0" name="lama_operasi" id="lama_operasi" class="form-control" value="{{ $teknis->lama_operasi ?? '' }}" placeholder="0">
+                                    <input type="number" min="0" name="lama_operasi" id="lama_operasi" class="form-control" value="{{ $lamaOperasiVal ?? '' }}" placeholder="0">
                                     <span class="input-group-text">Menit</span>
                                 </div>
                                 <small class="field-hint">Terisi otomatis dari Waktu Tiba s/d Selesai.</small>
@@ -678,19 +782,19 @@
                             <div class="col-md-6">
                                 <label class="field-label">Metode Evakuasi</label>
                                 <div class="choice-group">
-                                    <label class="choice"><input type="checkbox" id="me_vr" name="metode_evakuasi[]" value="vertical_rescue" {{ in_array('vertical_rescue', $evakuasi) ? 'checked' : '' }}> Vertical Rescue</label>
-                                    <label class="choice"><input type="checkbox" id="me_wr" name="metode_evakuasi[]" value="water_rescue" {{ in_array('water_rescue', $evakuasi) ? 'checked' : '' }}> Water Rescue</label>
-                                    <label class="choice"><input type="checkbox" id="me_td" name="metode_evakuasi[]" value="tangga_darurat" {{ in_array('tangga_darurat', $evakuasi) ? 'checked' : '' }}> Penggunaan Tangga Darurat</label>
+                                    <label class="choice"><input type="checkbox" id="me_vr" name="metode_evakuasi[]" value="vertical_rescue" {{ $hasItem('vertical_rescue', $evakuasi) ? 'checked' : '' }}> Vertical Rescue</label>
+                                    <label class="choice"><input type="checkbox" id="me_wr" name="metode_evakuasi[]" value="water_rescue" {{ $hasItem('water_rescue', $evakuasi) ? 'checked' : '' }}> Water Rescue</label>
+                                    <label class="choice"><input type="checkbox" id="me_td" name="metode_evakuasi[]" value="tangga_darurat" {{ $hasItem('tangga_darurat', $evakuasi) ? 'checked' : '' }}> Penggunaan Tangga Darurat</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="field-label">Metode Penyelamatan</label>
                                 <div class="choice-group">
-                                    <label class="choice"><input type="checkbox" id="mp_vr" name="metode_penyelamatan[]" value="vertical_rescue" {{ in_array('vertical_rescue', $penyelamatan) ? 'checked' : '' }}> Vertical Rescue</label>
-                                    <label class="choice"><input type="checkbox" id="mp_wr" name="metode_penyelamatan[]" value="water_rescue" {{ in_array('water_rescue', $penyelamatan) ? 'checked' : '' }}> Water Rescue</label>
-                                    <label class="choice"><input type="checkbox" id="mp_ps" name="metode_penyelamatan[]" value="pemadaman_statis" {{ in_array('pemadaman_statis', $penyelamatan) ? 'checked' : '' }}> Pemadam Statis</label>
-                                    <label class="choice"><input type="checkbox" id="mp_pd" name="metode_penyelamatan[]" value="pemadaman_dinamis" {{ in_array('pemadaman_dinamis', $penyelamatan) ? 'checked' : '' }}> Pemadam Dinamis</label>
-                                    <label class="choice"><input type="checkbox" id="mp_emd" name="metode_penyelamatan[]" value="evakuasi_medis_dasar" {{ in_array('evakuasi_medis_dasar', $penyelamatan) ? 'checked' : '' }}> Evakuasi Medis Dasar</label>
+                                    <label class="choice"><input type="checkbox" id="mp_vr" name="metode_penyelamatan[]" value="vertical_rescue" {{ $hasItem('vertical_rescue', $penyelamatan) ? 'checked' : '' }}> Vertical Rescue</label>
+                                    <label class="choice"><input type="checkbox" id="mp_wr" name="metode_penyelamatan[]" value="water_rescue" {{ $hasItem('water_rescue', $penyelamatan) ? 'checked' : '' }}> Water Rescue</label>
+                                    <label class="choice"><input type="checkbox" id="mp_ps" name="metode_penyelamatan[]" value="pemadaman_statis" {{ $hasItem('pemadaman_statis', $penyelamatan) ? 'checked' : '' }}> Pemadam Statis</label>
+                                    <label class="choice"><input type="checkbox" id="mp_pd" name="metode_penyelamatan[]" value="pemadaman_dinamis" {{ $hasItem('pemadaman_dinamis', $penyelamatan) ? 'checked' : '' }}> Pemadam Dinamis</label>
+                                    <label class="choice"><input type="checkbox" id="mp_emd" name="metode_penyelamatan[]" value="evakuasi_medis_dasar" {{ $hasItem('evakuasi_medis_dasar', $penyelamatan) ? 'checked' : '' }}> Evakuasi Medis Dasar</label>
                                 </div>
                             </div>
                         </div>
@@ -711,38 +815,38 @@
                                     <div class="col-md-4">
                                         <label class="field-label">Air (Liter)</label>
                                         <div class="input-group">
-                                            <input type="number" min="0" name="jumlah_air" class="form-control" value="{{ $teknis->liter_air ?? '' }}" placeholder="0">
+                                            <input type="number" min="0" name="jumlah_air" class="form-control" value="{{ $teknis->liter_air ?? ($laporan->liter_air ?? '') }}" placeholder="0">
                                             <span class="input-group-text">Liter</span>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="field-label">Armada (Unit)</label>
                                         <div class="input-group">
-                                            <input type="number" min="0" name="jumlah_armada" class="form-control" value="{{ $teknis->jumlah_armada ?? '' }}" placeholder="0">
+                                            <input type="number" min="0" name="jumlah_armada" class="form-control" value="{{ $teknis->jumlah_armada ?? (is_array($armada) && count($armada) ? count($armada) : '') }}" placeholder="0">
                                             <span class="input-group-text">Unit</span>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="field-label">Liquid Foam (Liter)</label>
                                         <div class="input-group">
-                                            <input type="number" min="0" name="liter_foam" class="form-control" value="{{ $teknis->liter_foam ?? '' }}" placeholder="0">
+                                            <input type="number" min="0" name="liter_foam" class="form-control" value="{{ $teknis->liter_foam ?? ($laporan->liter_foam ?? '') }}" placeholder="0">
                                             <span class="input-group-text">Liter</span>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="field-label">BBM Unit (Liter)</label>
                                         <div class="input-group">
-                                            <input type="number" min="0" name="liter_bbm" class="form-control" value="{{ $teknis->liter_bbm ?? '' }}" placeholder="0">
+                                            <input type="number" min="0" name="liter_bbm" class="form-control" value="{{ $teknis->liter_bbm ?? ($laporan->liter_bbm ?? '') }}" placeholder="0">
                                             <span class="input-group-text">Liter</span>
                                         </div>
                                     </div>
                                     <div class="col-md-8">
                                         <label class="field-label">Jenis Unit Armada Terlibat</label>
                                         <div class="choice-group">
-                                            <label class="choice"><input type="checkbox" id="arm_pompa" name="armada[]" value="pompa" {{ in_array('pompa', $armada) ? 'checked' : '' }}> Unit Pompa</label>
-                                            <label class="choice"><input type="checkbox" id="arm_rescue" name="armada[]" value="rescue" {{ in_array('rescue', $armada) ? 'checked' : '' }}> Unit Rescue</label>
-                                            <label class="choice"><input type="checkbox" id="arm_tangki" name="armada[]" value="tangki" {{ in_array('tangki', $armada) ? 'checked' : '' }}> Unit Tangki</label>
-                                            <label class="choice"><input type="checkbox" id="arm_ambulans" name="armada[]" value="ambulans" {{ in_array('ambulans', $armada) ? 'checked' : '' }}> Ambulans</label>
+                                            <label class="choice"><input type="checkbox" id="arm_pompa" name="armada[]" value="pompa" {{ $hasItem('pompa', $armada) ? 'checked' : '' }}> Unit Pompa</label>
+                                            <label class="choice"><input type="checkbox" id="arm_rescue" name="armada[]" value="rescue" {{ $hasItem('rescue', $armada) ? 'checked' : '' }}> Unit Rescue</label>
+                                            <label class="choice"><input type="checkbox" id="arm_tangki" name="armada[]" value="tangki" {{ ($hasItem('tangki', $armada) || $hasItem('liter', $armada)) ? 'checked' : '' }}> Unit Tangki</label>
+                                            <label class="choice"><input type="checkbox" id="arm_ambulans" name="armada[]" value="ambulans" {{ $hasItem('ambulans', $armada) ? 'checked' : '' }}> Ambulans</label>
                                         </div>
                                     </div>
                                 </div>
@@ -751,10 +855,10 @@
                             <div class="col-12">
                                 <label class="field-label">Peralatan Khusus yang Digunakan</label>
                                 <div class="choice-group mb-2">
-                                    <label class="choice"><input type="checkbox" id="alat_scba" name="peralatan[]" value="SCBA" {{ in_array('SCBA', $alat) ? 'checked' : '' }}> SCBA</label>
-                                    <label class="choice"><input type="checkbox" id="alat_thermal" name="peralatan[]" value="Thermal Camera" {{ in_array('Thermal Camera', $alat) ? 'checked' : '' }}> Thermal Camera</label>
-                                    <label class="choice"><input type="checkbox" id="alat_chainsaw" name="peralatan[]" value="Chainsaw" {{ in_array('Chainsaw', $alat) ? 'checked' : '' }}> Chainsaw</label>
-                                    <label class="choice"><input type="checkbox" id="alat_selam" name="peralatan[]" value="Alat Selam" {{ in_array('Alat Selam', $alat) ? 'checked' : '' }}> Alat Selam</label>
+                                    <label class="choice"><input type="checkbox" id="alat_scba" name="peralatan[]" value="SCBA" {{ $hasItem('SCBA', $alat) ? 'checked' : '' }}> SCBA</label>
+                                    <label class="choice"><input type="checkbox" id="alat_thermal" name="peralatan[]" value="Thermal Camera" {{ $hasItem('Thermal Camera', $alat) ? 'checked' : '' }}> Thermal Camera</label>
+                                    <label class="choice"><input type="checkbox" id="alat_chainsaw" name="peralatan[]" value="Chainsaw" {{ $hasItem('Chainsaw', $alat) ? 'checked' : '' }}> Chainsaw</label>
+                                    <label class="choice"><input type="checkbox" id="alat_selam" name="peralatan[]" value="Alat Selam" {{ $hasItem('Alat Selam', $alat) ? 'checked' : '' }}> Alat Selam</label>
                                 </div>
                                 <input type="text" name="peralatan_lain" class="form-control" value="{{ $teknis->peralatan_lain ?? '' }}" placeholder="Alat khusus lainnya (pisahkan dengan koma)...">
                             </div>
@@ -824,11 +928,11 @@
                         <div class="mb-3">
                             <label class="field-label"><span class="num-badge">22</span> Tim Quick Respon / Instansi Pendukung di Lokasi</label>
                             <div class="choice-group">
-                                <label class="choice"><input type="checkbox" id="inst_pln" name="instansi_pendukung[]" value="pln" {{ in_array('pln', $instansi) ? 'checked' : '' }}> PLN</label>
-                                <label class="choice"><input type="checkbox" id="inst_polisi" name="instansi_pendukung[]" value="polisi" {{ in_array('polisi', $instansi) ? 'checked' : '' }}> Polisi</label>
-                                <label class="choice"><input type="checkbox" id="inst_tni" name="instansi_pendukung[]" value="tni" {{ in_array('tni', $instansi) ? 'checked' : '' }}> TNI</label>
-                                <label class="choice"><input type="checkbox" id="inst_pmi" name="instansi_pendukung[]" value="pmi" {{ in_array('pmi', $instansi) ? 'checked' : '' }}> BPBD</label>
-                                <label class="choice"><input type="checkbox" id="inst_relawan" name="instansi_pendukung[]" value="relawan_lokal" {{ in_array('relawan_lokal', $instansi) ? 'checked' : '' }}> Relawan Lokal</label>
+                                <label class="choice"><input type="checkbox" id="inst_pln" name="instansi_pendukung[]" value="pln" {{ $hasItem('pln', $instansi) ? 'checked' : '' }}> PLN</label>
+                                <label class="choice"><input type="checkbox" id="inst_polisi" name="instansi_pendukung[]" value="polisi" {{ $hasItem('polisi', $instansi) ? 'checked' : '' }}> Polisi</label>
+                                <label class="choice"><input type="checkbox" id="inst_tni" name="instansi_pendukung[]" value="tni" {{ $hasItem('tni', $instansi) ? 'checked' : '' }}> TNI</label>
+                                <label class="choice"><input type="checkbox" id="inst_pmi" name="instansi_pendukung[]" value="pmi" {{ ($hasItem('pmi', $instansi) || $hasItem('bpbd', $instansi)) ? 'checked' : '' }}> BPBD</label>
+                                <label class="choice"><input type="checkbox" id="inst_relawan" name="instansi_pendukung[]" value="relawan_lokal" {{ ($hasItem('relawan', $instansi) || $hasItem('relawan_lokal', $instansi)) ? 'checked' : '' }}> Relawan Lokal</label>
                             </div>
                         </div>
                         <div class="row g-3">
@@ -932,13 +1036,13 @@
                                 <div class="pair">
                                     <select class="form-select" name="jenis_hewan" id="jenis_hewan">
                                         <option value="">-- Pilih --</option>
-                                        <option value="ular" {{ $sel($khusus->jenis_hewan ?? '', 'ular') }}>Ular</option>
-                                        <option value="tawon" {{ $sel($khusus->jenis_hewan ?? '', 'tawon') }}>Tawon/Vespa</option>
-                                        <option value="kera" {{ $sel($khusus->jenis_hewan ?? '', 'kera') }}>Kera</option>
-                                        <option value="biawak" {{ $sel($khusus->jenis_hewan ?? '', 'biawak') }}>Biawak</option>
-                                        <option value="lainnya" {{ $sel($khusus->jenis_hewan ?? '', 'lainnya') }}>Lainnya</option>
+                                        <option value="ular" {{ $jenisHewanVal === 'ular' ? 'selected' : '' }}>Ular</option>
+                                        <option value="tawon" {{ $jenisHewanVal === 'tawon' ? 'selected' : '' }}>Tawon/Vespa</option>
+                                        <option value="kera" {{ $jenisHewanVal === 'kera' ? 'selected' : '' }}>Kera</option>
+                                        <option value="biawak" {{ $jenisHewanVal === 'biawak' ? 'selected' : '' }}>Biawak</option>
+                                        <option value="lainnya" {{ $jenisHewanVal === 'lainnya' ? 'selected' : '' }}>Lainnya</option>
                                     </select>
-                                    <input type="text" class="form-control" name="jenis_hewan_lainnya" id="jenis_hewan_lainnya" value="{{ $khusus->jenis_hewan_lainnya ?? '' }}" placeholder="Ketik jika 'Lainnya'..." disabled>
+                                    <input type="text" class="form-control" name="jenis_hewan_lainnya" id="jenis_hewan_lainnya" value="{{ $jenisHewanLainnyaVal }}" placeholder="Ketik jika 'Lainnya'..." {{ $jenisHewanVal === 'lainnya' ? '' : 'disabled' }}>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -1176,7 +1280,7 @@
     var blokNon = document.getElementById('blokNonKebakaran');
     var nonSelect = document.getElementById('kategori_non_kebakaran');
 
-    function tampilkanSubObjek() {
+    function tampilkanSubObjek(isUserAction) {
         var isFire = kategori.value === 'kebakaran';
         document.querySelectorAll('.sub-objek').forEach(function (box) {
             var aktif = isFire && box.getAttribute('data-objek') === objek.value;
@@ -1184,37 +1288,48 @@
             // Field yang disembunyikan di-disable supaya tidak ikut terkirim
             box.querySelectorAll('input, select').forEach(function (el) {
                 el.disabled = !aktif;
-                if (!aktif) el.value = '';
+                if (!aktif && isUserAction) {
+                    el.value = '';
+                }
             });
         });
     }
 
-    function sinkronKategori() {
+    function sinkronKategori(isUserAction) {
         var isFire = kategori.value === 'kebakaran';
 
         blokKebakaran.style.display = isFire ? '' : 'none';
         objek.disabled = !isFire;
         objek.required = isFire;
-        if (!isFire) objek.value = '';
+        if (!isFire && isUserAction) {
+            objek.value = '';
+        }
 
         if (ketObjek) {
             ketObjek.disabled = !isFire;
-            if (!isFire) ketObjek.value = '';
+            if (!isFire && isUserAction) {
+                ketObjek.value = '';
+            }
         }
 
         blokNon.style.display = isFire ? 'none' : '';
         nonSelect.disabled = isFire;
-        if (isFire) {
-            nonSelect.value = '';
-            nonSelect.dispatchEvent(new Event('change')); // reset kolom "Lainnya"
+        var rincianNon = document.getElementById('rincian_kategori_non_kebakaran');
+        if (rincianNon) {
+            rincianNon.disabled = isFire;
         }
-        tampilkanSubObjek();
+
+        if (isFire && isUserAction) {
+            nonSelect.value = '';
+            if (rincianNon) rincianNon.value = '';
+        }
+        tampilkanSubObjek(isUserAction);
     }
 
     if (kategori && objek) {
-        kategori.addEventListener('change', sinkronKategori);
-        objek.addEventListener('change', tampilkanSubObjek);
-        sinkronKategori();   // sesuaikan tampilan dengan data yang tersimpan
+        kategori.addEventListener('change', function () { sinkronKategori(true); });
+        objek.addEventListener('change', function () { tampilkanSubObjek(true); });
+        sinkronKategori(false);   // sesuaikan tampilan awal tanpa mereset data tersimpan
     }
 
     /* ==========================================================
@@ -1309,9 +1424,13 @@
         var inputEl = document.getElementById(inputId);
 
         if (selectEl && inputEl) {
-            // Status awal sesuai data yang tersimpan
-            inputEl.disabled = selectEl.disabled || selectEl.value !== 'lainnya';
-            inputEl.required = !inputEl.disabled;
+            // Status awal sesuai data yang tersimpan: jika sudah ada isinya, biarkan aktif
+            if (inputEl.value && inputEl.value.trim() !== '') {
+                inputEl.disabled = false;
+            } else {
+                inputEl.disabled = selectEl.disabled || selectEl.value !== 'lainnya';
+            }
+            inputEl.required = !inputEl.disabled && selectEl.value === 'lainnya';
 
             selectEl.addEventListener('change', function () {
                 if (this.value === 'lainnya') {
@@ -1327,7 +1446,7 @@
         }
     }
 
-    setupLainnyaLogic('kategori_non_kebakaran', 'rincian_kategori_non_kebakaran');
+    // Jangan pasang setupLainnyaLogic ke 'kategori_non_kebakaran' karena rincian_kategori_non_kebakaran dipakai untuk semua jenis evakuasi (Biawak, Ular, dsb.)
     setupLainnyaLogic('dugaan_penyebab', 'dugaan_penyebab_lainnya');
     setupLainnyaLogic('cara_bertindak', 'cara_bertindak_lainnya');
     setupLainnyaLogic('jenis_hewan', 'jenis_hewan_lainnya');

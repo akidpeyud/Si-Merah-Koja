@@ -431,7 +431,7 @@ class DamtanController extends Controller
                 'korban_berat' => $request->korban_berat ?? 0,
                 'korban_meninggal' => $request->korban_meninggal ?? 0,
                 'korban_hewan_aset' => $request->korban_hewan_aset,
-                'status_evakuasi' => $request->status_evakuasi,
+                'status_evakuasi' => $request->status_evakuasi ?? 'Selesai',
                 'objek_terdampak' => $request->objek_terdampak,
 
                 'metode_evakuasi' => $request->has('metode_evakuasi') ? json_encode($request->metode_evakuasi) : null,
@@ -472,7 +472,7 @@ class DamtanController extends Controller
             // TAB 4: INSERT TABEL KATEGORI KHUSUS
             LpKategoriKhusus::create([
                 'laporan_id' => $laporan->id,
-                'jenis_hewan' => $request->jenis_hewan,
+                'jenis_hewan' => ($request->jenis_hewan === 'lainnya' && ! empty($request->jenis_hewan_lainnya)) ? $request->jenis_hewan_lainnya : ($request->jenis_hewan ?? $request->jenis_hewan_lainnya),
                 'jenis_hewan_lainnya' => $request->jenis_hewan_lainnya,
                 'spesies_hewan' => $request->spesies_hewan,
                 'dimensi_hewan' => $request->dimensi_hewan,
@@ -544,14 +544,14 @@ class DamtanController extends Controller
                     'telepon_pelapor' => $request->telepon_pelapor,
                     'media_pelaporan' => $request->media_pelaporan,
 
-                    'kategori_kebakaran' => $request->kategori_kebakaran ?? $request->objek_kebakaran,
-                    'keterangan_objek_kebakaran' => $request->keterangan_objek_kebakaran,
-                    'rincian_objek' => $this->rincianObjek($request),
+                    'kategori_kebakaran' => $request->kategori_kebakaran ?? $request->objek_kebakaran ?? ($request->kategori_kejadian === 'kebakaran' ? $laporan->kategori_kebakaran : null),
+                    'keterangan_objek_kebakaran' => $request->keterangan_objek_kebakaran ?? ($request->kategori_kejadian === 'kebakaran' ? $laporan->keterangan_objek_kebakaran : null),
+                    'rincian_objek' => $this->rincianObjek($request) ?? ($request->kategori_kejadian === 'kebakaran' ? $laporan->rincian_objek : null),
 
-                    'kategori_non_kebakaran' => $request->kategori_non_kebakaran,
-                    'rincian_kategori_non_kebakaran' => $request->rincian_kategori_non_kebakaran,
-                    'kategori_kejadian' => $request->kategori_kejadian,
-                    'prioritas' => $request->prioritas ?? 'rendah',
+                    'kategori_non_kebakaran' => $request->kategori_non_kebakaran ?? ($request->kategori_kejadian !== 'kebakaran' ? $laporan->kategori_non_kebakaran : null),
+                    'rincian_kategori_non_kebakaran' => $request->rincian_kategori_non_kebakaran ?? ($request->kategori_kejadian !== 'kebakaran' ? $laporan->rincian_kategori_non_kebakaran : null),
+                    'kategori_kejadian' => $request->kategori_kejadian ?? $laporan->kategori_kejadian,
+                    'prioritas' => $request->prioritas ?? $laporan->prioritas ?? 'rendah',
                     'waktu_kejadian' => $this->formatWaktu($request->waktu_kejadian, $request->tanggal_kejadian),
                     'waktu_terima' => $this->formatWaktu($request->waktu_terima, $request->tanggal_kejadian),
                     'waktu_berangkat' => $this->formatWaktu($request->waktu_berangkat, $request->tanggal_kejadian),
@@ -586,7 +586,7 @@ class DamtanController extends Controller
                     'korban_berat' => $request->korban_berat ?? 0,
                     'korban_meninggal' => $request->korban_meninggal ?? 0,
                     'korban_hewan_aset' => $request->korban_hewan_aset,
-                    'status_evakuasi' => $request->status_evakuasi,
+                    'status_evakuasi' => $request->status_evakuasi ?? 'Selesai',
                     'objek_terdampak' => $request->objek_terdampak,
                     'metode_evakuasi' => $request->has('metode_evakuasi') ? json_encode($request->metode_evakuasi) : null,
                     'metode_penyelamatan' => $request->has('metode_penyelamatan') ? json_encode($request->metode_penyelamatan) : null,
@@ -636,7 +636,7 @@ class DamtanController extends Controller
             LpKategoriKhusus::updateOrCreate(
                 ['laporan_id' => $id],
                 [
-                    'jenis_hewan' => $request->jenis_hewan,
+                    'jenis_hewan' => ($request->jenis_hewan === 'lainnya' && ! empty($request->jenis_hewan_lainnya)) ? $request->jenis_hewan_lainnya : ($request->jenis_hewan ?? $request->jenis_hewan_lainnya),
                     'jenis_hewan_lainnya' => $request->jenis_hewan_lainnya,
                     'spesies_hewan' => $request->spesies_hewan,
                     'dimensi_hewan' => $request->dimensi_hewan,
@@ -1092,7 +1092,7 @@ class DamtanController extends Controller
         $tanggalInput = $request->input('tanggal', $request->input('bulan_tahun'));
         if (! empty($tanggalInput)) {
             if (preg_match('/^\d{4}-\d{2}$/', $tanggalInput)) {
-                $tanggalFix = $tanggalInput . '-01';
+                $tanggalFix = $tanggalInput.'-01';
             } else {
                 $tanggalFix = date('Y-m-01', strtotime($tanggalInput));
             }
@@ -1130,7 +1130,7 @@ class DamtanController extends Controller
         $tanggalInput = $request->input('tanggal', $request->input('bulan_tahun'));
         if (! empty($tanggalInput)) {
             if (preg_match('/^\d{4}-\d{2}$/', $tanggalInput)) {
-                $tanggalFix = $tanggalInput . '-01';
+                $tanggalFix = $tanggalInput.'-01';
             } else {
                 $tanggalFix = date('Y-m-01', strtotime($tanggalInput));
             }
@@ -1258,19 +1258,19 @@ class DamtanController extends Controller
         if ($filterObjekTerpilih) {
             // Pemetaan kategori filter card ke variasi nilai objek di laporan_penyelamatans
             $mapKategoriKebakaran = [
-                'objek_rumah'            => ['rumah', 'objek_rumah', 'perumahan', 'Rumah'],
-                'objek_gudang'           => ['gudang', 'objek_gudang', 'gedung/gudang', 'Gudang'],
-                'objek_ruko'             => ['ruko', 'objek_ruko', 'Ruko'],
-                'objek_kantor'           => ['kantor', 'objek_kantor', 'Kantor'],
-                'objek_sekolah'          => ['sekolah', 'objek_sekolah', 'Sekolah'],
-                'objek_rumah_ibadah'     => ['rumah_ibadah', 'objek_rumah_ibadah', 'Rumah Ibadah'],
-                'objek_pasar'            => ['pasar_tempat_usaha', 'objek_pasar', 'pasar', 'Pasar / Tempat Usaha'],
-                'objek_kendaraan'        => ['kendaraan_bermotor', 'objek_kendaraan', 'kendaraan', 'Kendaraan Bermotor'],
-                'objek_vital'            => ['objek_vital', 'vital', 'Objek Vital'],
+                'objek_rumah' => ['rumah', 'objek_rumah', 'perumahan', 'Rumah'],
+                'objek_gudang' => ['gudang', 'objek_gudang', 'gedung/gudang', 'Gudang'],
+                'objek_ruko' => ['ruko', 'objek_ruko', 'Ruko'],
+                'objek_kantor' => ['kantor', 'objek_kantor', 'Kantor'],
+                'objek_sekolah' => ['sekolah', 'objek_sekolah', 'Sekolah'],
+                'objek_rumah_ibadah' => ['rumah_ibadah', 'objek_rumah_ibadah', 'Rumah Ibadah'],
+                'objek_pasar' => ['pasar_tempat_usaha', 'objek_pasar', 'pasar', 'Pasar / Tempat Usaha'],
+                'objek_kendaraan' => ['kendaraan_bermotor', 'objek_kendaraan', 'kendaraan', 'Kendaraan Bermotor'],
+                'objek_vital' => ['objek_vital', 'vital', 'Objek Vital'],
                 'objek_sarana_kesehatan' => ['sarana_kesehatan', 'objek_sarana_kesehatan', 'kesehatan', 'Sarana Kesehatan'],
-                'objek_lahan_pohon'      => ['lahan_pohon', 'objek_lahan_pohon', 'lahan', 'pohon', 'Lahan, Pohon'],
-                'objek_gardu_listrik'    => ['gardu_listrik', 'objek_gardu_listrik', 'gardu', 'Gardu Listrik'],
-                'objek_tpa_sampah'       => ['tempat_sampah', 'objek_tpa_sampah', 'tpa', 'sampah', 'Tempat Pembuangan Sampah'],
+                'objek_lahan_pohon' => ['lahan_pohon', 'objek_lahan_pohon', 'lahan', 'pohon', 'Lahan, Pohon'],
+                'objek_gardu_listrik' => ['gardu_listrik', 'objek_gardu_listrik', 'gardu', 'Gardu Listrik'],
+                'objek_tpa_sampah' => ['tempat_sampah', 'objek_tpa_sampah', 'tpa', 'sampah', 'Tempat Pembuangan Sampah'],
             ];
 
             $mappedValues = $mapKategoriKebakaran[$filterObjekTerpilih] ?? [str_replace('objek_', '', $filterObjekTerpilih)];
@@ -1283,18 +1283,18 @@ class DamtanController extends Controller
                 ->where(function ($q) use ($mappedValues, $namaKategori) {
                     $q->whereIn('lp.kategori_kebakaran', $mappedValues);
                     if ($namaKategori) {
-                        $q->orWhere('lp.kategori_kebakaran', 'LIKE', '%' . $namaKategori . '%')
-                          ->orWhere('lp.keterangan_objek_kebakaran', 'LIKE', '%' . $namaKategori . '%');
+                        $q->orWhere('lp.kategori_kebakaran', 'LIKE', '%'.$namaKategori.'%')
+                            ->orWhere('lp.keterangan_objek_kebakaran', 'LIKE', '%'.$namaKategori.'%');
                     }
                 });
 
             if ($tahunTerpilih) {
                 $lpQuery->where(function ($q) use ($tahunTerpilih) {
                     $q->whereYear('lp.tanggal_kejadian', $tahunTerpilih)
-                      ->orWhere(function ($q2) use ($tahunTerpilih) {
-                          $q2->whereNull('lp.tanggal_kejadian')
-                             ->whereYear('lp.created_at', $tahunTerpilih);
-                      });
+                        ->orWhere(function ($q2) use ($tahunTerpilih) {
+                            $q2->whereNull('lp.tanggal_kejadian')
+                                ->whereYear('lp.created_at', $tahunTerpilih);
+                        });
                 });
             }
 
@@ -1487,10 +1487,10 @@ class DamtanController extends Controller
             ->where('lp.kategori_kejadian', 'kebakaran')
             ->where(function ($q) use ($tahun) {
                 $q->whereYear('lp.tanggal_kejadian', $tahun)
-                  ->orWhere(function ($q2) use ($tahun) {
-                      $q2->whereNull('lp.tanggal_kejadian')
-                         ->whereYear('lp.created_at', $tahun);
-                  });
+                    ->orWhere(function ($q2) use ($tahun) {
+                        $q2->whereNull('lp.tanggal_kejadian')
+                            ->whereYear('lp.created_at', $tahun);
+                    });
             })
             ->select([
                 'lp.id',
@@ -1577,7 +1577,7 @@ class DamtanController extends Controller
                 $rekap[$m]['alam_barajo']++;
             } elseif (str_contains($alamat, 'jambi selatan')) {
                 $rekap[$m]['jambi_selatan']++;
-            } elseif (str_contains($alamat, 'pasar jambi') || (str_contains($alamat, 'pasar') && !str_contains($alamat, 'pasar_'))) {
+            } elseif (str_contains($alamat, 'pasar jambi') || (str_contains($alamat, 'pasar') && ! str_contains($alamat, 'pasar_'))) {
                 $rekap[$m]['pasar_jambi']++;
             } elseif (str_contains($alamat, 'jambi timur')) {
                 $rekap[$m]['jambi_timur']++;
@@ -1765,7 +1765,7 @@ class DamtanController extends Controller
                 }
 
                 // Klasifikasi lokasi dari kolom kecamatan / lokasi di rekap_layanan
-                $alamat = strtolower(trim(($rk->kecamatan ?? '') . ' ' . ($rk->lokasi ?? '')));
+                $alamat = strtolower(trim(($rk->kecamatan ?? '').' '.($rk->lokasi ?? '')));
                 if (str_contains($alamat, 'alam barajo')) {
                     $rekap[$m]['alam_barajo'] += $jml;
                 } elseif (str_contains($alamat, 'jambi selatan')) {
@@ -1802,10 +1802,10 @@ class DamtanController extends Controller
             ->leftJoin('lp_teknis_logistiks as tek', 'tek.laporan_id', '=', 'lp.id')
             ->where(function ($q) use ($tahun) {
                 $q->whereYear('lp.tanggal_kejadian', $tahun)
-                  ->orWhere(function ($q2) use ($tahun) {
-                      $q2->whereNull('lp.tanggal_kejadian')
-                         ->whereYear('lp.created_at', $tahun);
-                  });
+                    ->orWhere(function ($q2) use ($tahun) {
+                        $q2->whereNull('lp.tanggal_kejadian')
+                            ->whereYear('lp.created_at', $tahun);
+                    });
             })
             ->select([
                 'lp.id',
@@ -1834,7 +1834,7 @@ class DamtanController extends Controller
                 $katKej = strtolower(trim((string) $row->kategori_kejadian));
                 $katNonKeb = strtolower(trim((string) ($row->kategori_non_kebakaran ?? '')));
                 $rincianNonKeb = strtolower(trim((string) ($row->rincian_kategori_non_kebakaran ?? '')));
-                $jnsPen = $katNonKeb . ' ' . $rincianNonKeb;
+                $jnsPen = $katNonKeb.' '.$rincianNonKeb;
                 $kKey = 'layanan_lainnya';
 
                 if ($katKej === 'kebakaran' || str_contains($katKej, 'kebakaran')) {
@@ -1944,7 +1944,7 @@ class DamtanController extends Controller
         $tanggalInput = $request->input('tanggal', $request->input('bulan_tahun'));
         if (! empty($tanggalInput)) {
             if (preg_match('/^\d{4}-\d{2}$/', $tanggalInput)) {
-                $tanggalFix = $tanggalInput . '-01';
+                $tanggalFix = $tanggalInput.'-01';
             } else {
                 $tanggalFix = date('Y-m-01', strtotime($tanggalInput));
             }
@@ -1982,7 +1982,7 @@ class DamtanController extends Controller
         $tanggalInput = $request->input('tanggal', $request->input('bulan_tahun'));
         if (! empty($tanggalInput)) {
             if (preg_match('/^\d{4}-\d{2}$/', $tanggalInput)) {
-                $tanggalFix = $tanggalInput . '-01';
+                $tanggalFix = $tanggalInput.'-01';
             } else {
                 $tanggalFix = date('Y-m-01', strtotime($tanggalInput));
             }

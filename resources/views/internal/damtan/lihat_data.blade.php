@@ -146,26 +146,74 @@
 
 @php
     /* ==========================================================
-       PENYESUAIAN DENGAN FORM INPUT (nama field = atribut name di form)
+       PENYESUAIAN DENGAN FORM INPUT & DATABASE
        ========================================================== */
 
-    // Rincian objek kebakaran (unit_rumah, unit_gudang, unit_ruko, dst.)
-    $objek_kb   = $laporan->objek_kebakaran ?? null;
-    $unit_objek = $objek_kb ? ($laporan->{'unit_' . $objek_kb} ?? null) : null;
+    // 1. Objek & Rincian Objek Kebakaran
+    $objek_kb = $laporan->kategori_kebakaran ?? $laporan->objek_kebakaran ?? null;
+
+    // Rincian objek (bisa berupa JSON di kolom rincian_objek atau atribut langsung)
+    $rincianData = [];
+    if (!empty($laporan->rincian_objek)) {
+        if (is_string($laporan->rincian_objek)) {
+            $rincianData = json_decode($laporan->rincian_objek, true) ?: [];
+        } elseif (is_array($laporan->rincian_objek)) {
+            $rincianData = $laporan->rincian_objek;
+        }
+    }
+
+    $tipe_bangunan   = $rincianData['tipe_bangunan_rumah'] ?? $laporan->tipe_bangunan_rumah ?? null;
+    $unit_objek      = $rincianData['unit_' . $objek_kb] ?? ($objek_kb ? ($laporan->{'unit_' . $objek_kb} ?? null) : null);
+    $nama_pasar      = $rincianData['nama_pasar_tempat_usaha'] ?? $laporan->nama_pasar_tempat_usaha ?? null;
+    $jenis_kendaraan = $rincianData['jenis_kendaraan'] ?? $laporan->jenis_kendaraan ?? null;
+    $jenis_vital     = $rincianData['jenis_objek_vital'] ?? $laporan->jenis_objek_vital ?? null;
 
     $rincian_objek = [];
-    if (!empty($laporan->tipe_bangunan_rumah))     $rincian_objek[] = 'Bangunan ' . ucwords(str_replace('_', ' ', $laporan->tipe_bangunan_rumah));
-    if (!empty($unit_objek))                       $rincian_objek[] = $unit_objek . ' Unit';
-    if (!empty($laporan->nama_pasar_tempat_usaha)) $rincian_objek[] = $laporan->nama_pasar_tempat_usaha;
-    if (!empty($laporan->jenis_kendaraan))         $rincian_objek[] = strtoupper($laporan->jenis_kendaraan);
-    if (!empty($laporan->jenis_objek_vital))       $rincian_objek[] = ucwords(str_replace('_', ' ', $laporan->jenis_objek_vital));
+    if (!empty($tipe_bangunan))    $rincian_objek[] = 'Bangunan ' . ucwords(str_replace('_', ' ', $tipe_bangunan));
+    if (!empty($unit_objek))       $rincian_objek[] = $unit_objek . ' Unit';
+    if (!empty($nama_pasar))       $rincian_objek[] = $nama_pasar;
+    if (!empty($jenis_kendaraan))  $rincian_objek[] = strtoupper($jenis_kendaraan);
+    if (!empty($jenis_vital))      $rincian_objek[] = ucwords(str_replace('_', ' ', $jenis_vital));
 
-    // Field baru dari form yang mungkin belum masuk flag controller
-    $x_dasar  = !empty($teknis->satgas_operasi) || !empty($teknis->tim_quick_respon)
-                || (!empty($teknis->lama_operasi) && $teknis->lama_operasi > 0);
-    $x_korban = !empty($teknis->jiwa_terdampak) && $teknis->jiwa_terdampak > 0;
-    $x_logis  = (!empty($teknis->jumlah_air) && $teknis->jumlah_air > 0)
-                || (!empty($teknis->jumlah_armada) && $teknis->jumlah_armada > 0);
+    // 2. Perhitungan Lama Operasi (hitung dinamis dari selisih waktu_tiba & waktu_selesai)
+    $lamaOperasiMenit = null;
+    $lamaOperasiTeks  = null;
+    if (!empty($teknis->lama_operasi) && is_numeric($teknis->lama_operasi) && $teknis->lama_operasi > 0) {
+        $lamaOperasiMenit = (int) $teknis->lama_operasi;
+    } elseif (!empty($laporan->waktu_tiba) && !empty($laporan->waktu_selesai)) {
+        $wt = \Carbon\Carbon::parse($laporan->waktu_tiba);
+        $ws = \Carbon\Carbon::parse($laporan->waktu_selesai);
+        $diff = $wt->diffInMinutes($ws);
+        if ($diff > 0) {
+            $lamaOperasiMenit = $diff;
+        }
+    }
+
+    if ($lamaOperasiMenit !== null && $lamaOperasiMenit > 0) {
+        if ($lamaOperasiMenit >= 60) {
+            $j = floor($lamaOperasiMenit / 60);
+            $s = $lamaOperasiMenit % 60;
+            $lamaOperasiTeks = $j . ' Jam' . ($s > 0 ? ' ' . $s . ' Menit' : '');
+        } else {
+            $lamaOperasiTeks = $lamaOperasiMenit . ' Menit';
+        }
+    }
+
+    // 3. Sinkronisasi Field Teknis & Logistik
+    $satgas = !empty($teknis->satuan_tugas) ? $teknis->satuan_tugas : (!empty($teknis->satgas_operasi) ? $teknis->satgas_operasi : null);
+    $quickRespon = !empty($teknis->tim_respontime) ? $teknis->tim_respontime : (!empty($teknis->tim_quick_respon) ? $teknis->tim_quick_respon : null);
+    $literAir = ($teknis->liter_air ?? 0) > 0 ? $teknis->liter_air : (($teknis->jumlah_air ?? 0) > 0 ? $teknis->jumlah_air : 0);
+    $namaKorban = !empty($teknis->nama_korban) ? $teknis->nama_korban : (!empty($laporan->nama_korban) ? $laporan->nama_korban : null);
+    $jmlJiwa = ($teknis->jumlah_jiwa ?? 0) > 0 ? $teknis->jumlah_jiwa : (($laporan->jumlah_jiwa ?? 0) > 0 ? $laporan->jumlah_jiwa : 0);
+    $wargaTerdampak = ($teknis->warga_terdampak ?? 0) > 0 ? $teknis->warga_terdampak : (($laporan->warga_terdampak ?? 0) > 0 ? $laporan->warga_terdampak : 0);
+
+    // Hitung armada
+    $jmlArmada = (!empty($teknis->jumlah_armada) && $teknis->jumlah_armada > 0) ? $teknis->jumlah_armada : (!empty($arr_armada) ? count($arr_armada) : null);
+
+    // Update flags
+    $x_dasar  = !empty($satgas) || !empty($quickRespon) || !empty($lamaOperasiTeks);
+    $x_korban = $wargaTerdampak > 0 || $jmlJiwa > 0 || !empty($namaKorban);
+    $x_logis  = $literAir > 0 || !empty($jmlArmada);
 
     $has_teknis_dasar = ($has_teknis_dasar ?? false) || $x_dasar;
     $has_korban       = ($has_korban ?? false) || $x_korban;
@@ -186,6 +234,16 @@
         'evakuasi_cincin'    => 'Evakuasi Cincin / Anting',
         'evakuasi_kendaraan' => 'Evakuasi Kendaraan Bermotor',
         'lainnya'            => 'Lainnya',
+    ];
+
+    // Label dugaan penyebab kebakaran
+    $map_penyebab = [
+        'arus_pendek'       => 'Arus pendek listrik',
+        'kebocoran_gas'     => 'Kebocoran gas',
+        'sambaran_petir'    => 'Sambaran petir',
+        'kelalaian_manusia' => 'Kelalaian manusia',
+        'faktor_alam'       => 'Faktor alam',
+        'lainnya'           => 'Lainnya',
     ];
 @endphp
 
@@ -245,16 +303,17 @@
                     </div>
                     @endif
 
-                    {{-- Objek kebakaran (form: objek_kebakaran) --}}
-                    @if(!empty($laporan->objek_kebakaran))
+                    {{-- Objek kebakaran (kategori_kebakaran / objek_kebakaran) --}}
+                    @if(!empty($objek_kb))
                     <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-fire"></i></div>
                             <div class="data-label">Objek Kebakaran</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value text-capitalize">{{ str_replace('_', ' ', $laporan->objek_kebakaran) }}</div>
+                            <div class="data-value text-capitalize">{{ str_replace('_', ' ', $objek_kb) }}</div>
                         </div>
                     </div>
+                    @endif
 
                     @if(!empty($rincian_objek))
                     <div class="pdf-item-full">
@@ -276,7 +335,6 @@
                             <div class="data-value teks-panjang">{{ $laporan->keterangan_objek_kebakaran }}</div>
                         </div>
                     </div>
-                    @endif
                     @endif
 
                     {{-- Non-kebakaran (form: kategori_non_kebakaran) --}}
@@ -503,35 +561,35 @@
                     </div>
                     @endif
 
-                    @if(!empty($teknis->satgas_operasi))
+                    @if(!empty($satgas))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-users-cog"></i></div>
-                            <div class="data-label">Satgas Operasi</div>
+                            <div class="data-label">Satuan Tugas</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->satgas_operasi }}</div>
+                            <div class="data-value">{{ $satgas }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->tim_quick_respon))
+                    @if(!empty($quickRespon))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-stopwatch"></i></div>
                             <div class="data-label">Tim Quick Respon</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->tim_quick_respon }}</div>
+                            <div class="data-value">{{ $quickRespon }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->lama_operasi) && $teknis->lama_operasi > 0)
+                    @if(!empty($lamaOperasiTeks))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-hourglass-half"></i></div>
                             <div class="data-label">Lama Operasi</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->lama_operasi }} Menit</div>
+                            <div class="data-value">{{ $lamaOperasiTeks }}</div>
                         </div>
                     </div>
                     @endif
@@ -644,24 +702,24 @@
                 @if($has_korban)
                 <div class="sub-header">Data Korban & Aset</div>
                 <div class="pdf-grid">
-                    @if(!empty($teknis->nama_korban))
+                    @if(!empty($namaKorban))
                     <div class="pdf-item-full">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-id-card"></i></div>
                             <div class="data-label">Nama Korban</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->nama_korban }}</div>
+                            <div class="data-value">{{ $namaKorban }}</div>
                         </div>
                     </div>
                     @endif
 
-                    @if(!empty($teknis->jumlah_jiwa) && $teknis->jumlah_jiwa > 0)
+                    @if(!empty($jmlJiwa) && $jmlJiwa > 0)
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-users"></i></div>
                             <div class="data-label">Jumlah Jiwa</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->jumlah_jiwa }} Jiwa</div>
+                            <div class="data-value">{{ $jmlJiwa }} Jiwa</div>
                         </div>
                     </div>
                     @endif
@@ -751,13 +809,13 @@
                     </div>
                     @endif
 
-                    @if(!empty($teknis->jumlah_armada) && $teknis->jumlah_armada > 0)
+                    @if(!empty($jmlArmada) && $jmlArmada > 0)
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-truck-moving"></i></div>
                             <div class="data-label">Jumlah Armada</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->jumlah_armada }} Unit</div>
+                            <div class="data-value">{{ $jmlArmada }} Unit</div>
                         </div>
                     </div>
                     @endif
@@ -784,13 +842,13 @@
                     </div>
                     @endif
 
-                    @if(!empty($teknis->jumlah_air) && $teknis->jumlah_air > 0)
+                    @if($literAir > 0)
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-tint"></i></div>
                             <div class="data-label">Konsumsi Air</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value">{{ $teknis->jumlah_air }} Liter</div>
+                            <div class="data-value">{{ number_format($literAir, 0, ',', '.') }} Liter</div>
                         </div>
                     </div>
                     @endif
@@ -838,13 +896,17 @@
                 @if($has_investigasi)
                 <div class="sub-header">Investigasi Lapangan</div>
                 <div class="pdf-grid">
-                    @if(!empty($dokumentasi->dugaan_penyebab))
+                    @php
+                        $penyebabRaw = !empty($dokumentasi->dugaan_penyebab) ? $dokumentasi->dugaan_penyebab : (!empty($laporan->dugaan_penyebab) ? $laporan->dugaan_penyebab : null);
+                        $penyebabTeks = $penyebabRaw ? ($map_penyebab[$penyebabRaw] ?? ucwords(str_replace('_', ' ', $penyebabRaw))) : null;
+                    @endphp
+                    @if(!empty($penyebabTeks))
                     <div class="pdf-item">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-bolt"></i></div>
                             <div class="data-label">Dugaan Penyebab</div>
                             <div class="data-colon">:</div>
-                            <div class="data-value text-capitalize">{{ str_replace('_', ' ', $dokumentasi->dugaan_penyebab) }}</div>
+                            <div class="data-value">{{ $penyebabTeks }}</div>
                         </div>
                     </div>
                     @endif
