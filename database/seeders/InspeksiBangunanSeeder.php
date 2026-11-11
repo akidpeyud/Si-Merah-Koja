@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 class InspeksiBangunanSeeder extends Seeder
 {
     /**
-     * Isi data Inspeksi Bangunan Gedung dan Lingkungan dari sheet tahun 2025 (118 bangunan).
+     * Isi data Inspeksi Bangunan Gedung dan Lingkungan tahun 2025 (118 bangunan) dan 2026 (100 bangunan).
      */
     public function run(): void
     {
@@ -143,7 +143,111 @@ class InspeksiBangunanSeeder extends Seeder
             ['Pabrik Kopi AAA', 'INDUSTRI', 'Rendah', 'Tinggi', '3380 m²', 'Jl. Berdikari No.13 RT.23 Kel. Payo Selincah Kec. Jambi Timur', 'Kristonsen Tanuar', null, 'Tidak Memenuhi Syarat', '2025-12-24'],
             ['Pabrik Kopi Paman', 'INDUSTRI', 'Rendah', 'Tinggi', '2296 m²', 'Jl. Gunung Semeru Kel. Payo Selincah Kec. Paal Merah Kota Jambi', 'CV. Perusahaan Kopi Bubuk NEFO', null, 'Memenuhi Syarat dengan Catatan', '2025-12-24'],
             ['TK AL IRSYAD', 'SEKOLAH', 'Rendah', 'Rendah', '126 m²', 'Jl.Abdul Muis RT.12 No.39 Kelurahan Lingkar Selatan, Kota Jambi.', null, null, 'Tidak Memenuhi Syarat', '2025-12-29'],
-            ['Sucofindo', 'LABORATORIUM', 'Rendah', 'Tinggi', '1437 m²', 'Jl. Sari Bakti Kel. Bagan Pete Kec. Kota Baru Kota Jambi', 'Zuber Kertapati', null, 'Memenuhi Syarat dengan Catatan', '2025-12-30'],
+            ['Sucofindo', 'LABORATORIUM', 'Rendah', 'Tinggi', '1437 m²', 'Jl. Sari Bakti Kel. Bagan Pete Kec. Kota Baru Kota Jambi', 'Zuber Kertapati', null, 'Memenuhi Syarat dengan Catatan', '2025-12-30', 2025],
+
+            // ==========================================
+            // DATA TAHUN 2026 (100 Bangunan)
+            // ==========================================
+            ['RS Abdurrahman Sayoeti', 'RUMAH SAKIT', 'Sedang', 'Tinggi', '7554.45 m²', 'Jl. K.H. Hasan Anang No. 33 RT. 08 Kel. Olak Kemang, Kec. Danau Teluk, Kota Jambi', 'Dinas Kesehatan Kota Jambi', null, 'Memenuhi Syarat dengan Catatan', '2026-01-07', 2026],
+            ['TK Raudatul Athfal Al-Ikhlash', 'SEKOLAH', 'Rendah', 'Rendah', '90 m²', 'Jl. Serunai Malam III RT. 05 No. 268 Kel. Suka Karya Kec. Kota Baru Kota Jambi', 'Yuniwati', '0812 7470 8495', 'Tidak Memenuhi Syarat', '2026-01-08', 2026],
+            ['TK Tahfidzhul Qur’an Ash-Shiddiiqi', 'SEKOLAH', 'Rendah', 'Rendah', '208 m²', 'Jl. Abdul Chatab RT 27 Kelurahan Pasir Putih Kecamatan Jambi Selatan Kota Jambi', 'Era Maya Sofa', '0812 7395 5834', 'Tidak Memenuhi Syarat', '2026-01-12', 2026],
+            ['Fresh Mart Tugu Juang', 'SWALAYAN', 'Rendah', 'Sedang', '512 m²', 'Jl. Hos Cokroaminito Kelurahan Selamet Kecamatan Telanaipura Kota Jambi', 'Fresh Group', null, 'Tidak Memenuhi Syarat', '2026-01-15', 2026],
+            ['Fresh One Mayang', 'SWALAYAN', 'Rendah', 'Sedang', '720 m²', 'Jl. Ir. H. Juanda, Kelurahan Simpang III Sipin, Kecamatan Kota Baru, Kota Jambi', 'Fresh Group', null, 'Tidak Memenuhi Syarat', '2026-01-15', 2026],
+            ['Mitra 10', 'SWALAYAN', 'Rendah', 'Tinggi', '4759 m²', 'Jl. Kapt. A. Bakaruddin Kel. Selamat Kec. Danau Sipin', 'Jambi Business Center', null, 'Memenuhi Syarat', '2026-01-15', 2026],
+            ['TK As Salam', 'SEKOLAH', 'Rendah', 'Rendah', '428 m²', 'Jl.SK.Syahbuddin, mayang mangurai Kec.Alam barajo Kota Jambi', 'Rora Linda', '0813 6647 1408', 'Memenuhi Syarat dengan Catatan', '2026-01-21', 2026],
+            ['TK As Shofa', 'SEKOLAH', 'Rendah', 'Rendah', '210 m²', 'Jl.Sari bakti III RT.37 Kel.bagan pete Kec.alam barajo Kota Jambi', 'Nurhayati', '0853 3779 5050', 'Memenuhi Syarat dengan Catatan', '2026-01-21', 2026],
+            ['Paud SPS Beringin', 'SEKOLAH', 'Rendah', 'Rendah', '108 m²', 'Jl.Spatur II RT.03 Kel.Kenali asam bawah Kec.Kota Baru Kota Jambi', 'Yulisyawati', '0819 7348 6651', 'Tidak Memenuhi Syarat', '2026-01-22', 2026],
+            ['MI Nurussibyan', 'SEKOLAH', 'Rendah', 'Rendah', '450 m²', 'Jl.H.M. Yusuf Nasri RT.22 Kel.Wijaya Kec.Jambi Selatan Kota Jambi', 'Depi Fitriyani', '0813 6777 5045', 'Tidak Memenuhi Syarat', '2026-01-22', 2026],
+            ['Labkesda Kota Jambi', 'LABORATORIUM', 'Rendah', 'Tinggi', '1139 m²', 'Jl. H. Agus Salim Kecamatan Kota Baru Kota Jambi', 'Hj. Elvi Roza', '(0741) 443712', 'Tidak Memenuhi Syarat', '2026-01-27', 2026],
+            ['PT United Tractor', 'INDUSTRI', 'Rendah', 'Tinggi', '1489 m²', 'Jl. Patimura KM. 10, Simpang Rimbo, Kenali Besar, Kec. Kota Baru, Kota Jambi', 'Biondany Gumilang', '0811 6666 899', 'Memenuhi Syarat', '2026-02-05', 2026],
+            ['PT Vipul Jaya Lestari', 'GUDANG', 'Rendah', 'Tinggi', '5000 m²', 'Jl. Lingkar Timur II, Kel. Payo Selincah Kec. Paal Merah', 'Gaurang', null, 'Tidak Memenuhi Syarat', '2026-02-05', 2026],
+            ['TK Telkom Jambi', 'SEKOLAH', 'Rendah', 'Rendah', '504 m²', 'Jl.A.K Gani No.2 RT.01 Kel.Pasar Kec.Pasar Jambi Kota Jambi', 'JAMIATUL SAADIAH', null, 'Tidak Memenuhi Syarat', '2026-02-05', 2026],
+            ['TK Almahira', 'SEKOLAH', 'Rendah', 'Rendah', '120 m²', 'Jl.Teuku Sulaiman RT.10 Kel.Pakuan Baru Kec.Jambi Selatan Kota Jambi', 'RIZKA DWI ASTUTI', '0852 6689 7742', 'Tidak Memenuhi Syarat', '2026-02-05', 2026],
+            ['Laboratorium Pratama Prodia', 'LABORATORIUM', 'Rendah', 'Tinggi', '204 m²', 'Jl. Urip Sumoharjo No 2-3 Sungai Putri Kota Jambi', null, null, 'Tidak Memenuhi Syarat', '2026-02-23', 2026],
+            ['Rumah Sakit Royal Prima', 'RUMAH SAKIT', 'Sedang', 'Tinggi', '3000 m²', 'Jl. Raden Wijaya RT. Kel. The Hok Kec. Jambi Selatan Kota Jambi', 'IRWAN ADJI', '0741 41010', 'Tidak Memenuhi Syarat', '2026-02-27', 2026],
+            ['Klinik Pratama Imera', 'KLINIK', 'Rendah', 'Sedang', '144.05 m²', 'Jl. Serma Ishak Ahmad kelurahan Mayang Mangurai Kecamatan Kota Baru Kota Jambi', 'SUHARDI', null, 'Tidak Memenuhi Syarat', '2026-03-04', 2026],
+            ['PT. Mitra Baja Profilindo', 'GUDANG', 'Rendah', 'Rendah', '160 m²', 'Jl. Lingkar Timur I Kelurahan Eka Jaya Kecamatan Paal Merah Kota Jambi', 'Ety Tjandi', null, 'Tidak Memenuhi Syarat', '2026-03-10', 2026],
+            ['TK Karunia Global School', 'SEKOLAH', 'Rendah', 'Rendah', '1054 m²', 'Jl. Tidore No.08 RT 23 Kelurahan Kebun Handil Kec. Jelutung, Kota Jambi', 'MURNI MEI ASMOROWATI', '0741 41690 - 5915156', 'Tidak Memenuhi Syarat', '2026-04-02', 2026],
+            ['SPPG Yayasan Bina Kreatif Al-Khalifi', 'PABRIK', 'Rendah', 'Tinggi', '285 m²', 'Jl. Iswahyudi Kelurahan Pasir Putih, Kecamatan Jambi Selatan, Kota Jambi', 'Yayasan Bina Kreatif Al- Khalifi', null, 'Tidak Memenuhi Syarat', '2026-04-07', 2026],
+            ['SPPG Yayasan Artha Nusa Rembaka', 'PABRIK', 'Rendah', 'Tinggi', '400 m²', 'Jl. Komplek PU Pasir Putih 5, Kecamatan Jambi Selatan, Kota Jambi', 'HERU JUANDA', '0822 5526 2939', 'Tidak Memenuhi Syarat', '2026-04-07', 2026],
+            ['TK Bina Kasih', 'SEKOLAH', 'Rendah', 'Rendah', '653 m²', 'Jl. Prof. HMO Bafadhal LorongKemang II, RT. 04 Kel. Cempaka Putih Kec. Jelutung Kota Jambi', 'BETTY SIMANJUNTAK', '0813 6638 3002', 'Tidak Memenuhi Syarat', '2026-04-09', 2026],
+            ['TK Golden Star', 'SEKOLAH', 'Rendah', 'Rendah', '564.5 m²', 'Jl. Jend. Sudirman No. 25A Kel. Talang Jauh Kec. Jelutung Kota Jambi', 'SARI RAMBE', '0857 8820 3833', 'Tidak Memenuhi Syarat', '2026-04-09', 2026],
+            ['PAUD Happy Holy Kids', 'SEKOLAH', 'Rendah', 'Rendah', '256 m²', 'Jl. Lingkar Barat RT.09 Kel.Kenali Besar Kec. Alam Barajo, Kota Jambi', 'MARULIN HOTMAIDA SINAGA', '0852 7383 2221', 'Tidak Memenuhi Syarat', '2026-04-09', 2026],
+            ['RS Baiturrahim', 'RUMAH SAKIT', 'Sedang', 'Tinggi', '2000 m²', 'Jl. Prof. DR. Moh. Yamin No. 30 Kel. Lebak Bandung Kec. Jelutung Kota Jambi', 'ANISAH TRI AGUSTINI', '0741 35165', 'Memenuhi Syarat dengan Catatan', '2026-04-09', 2026],
+            ['Klinik Poltekkes Kemenkes Jambi', 'KLINIK', 'Rendah', 'Sedang', '279 m²', 'Jl. Prof DR GA Siwabessy No.42 Buluran Kenali Kecamatan Telanaipura Kota Jambi', 'Mira Sri Gumila', null, 'Tidak Memenuhi Syarat', '2026-04-14', 2026],
+            ['PT. Sinar Sentosa Primatama', 'DEALER/GUDANG', 'Rendah', 'Tinggi', '128 m²', 'Jl. Sunan Gunung Jati Kel. Kenali Asam Bawah Kec. Kota Baru', 'PANJI', '0831 1656 8903', 'Tidak Memenuhi Syarat', '2026-04-16', 2026],
+            ['Mc Donald\'s Sipin', 'RESTORAN', 'Rendah', 'Tinggi', '490.49 m²', 'Jl. Sumantri Brojonegoro No. 54 Kel. Sungai Putri Kec. Danau Teluk Kota Jambi', 'Caroline Djajadiningrat', null, 'Memenuhi Syarat dengan Catatan', '2026-04-21', 2026],
+            ['Mc Donald\'s Thehok', 'RESTORAN', 'Rendah', 'Tinggi', '468.63 m²', 'Jl. Jend. Sudirman Kel. Talang Jauh Kec. Jelutung Kota Jambi', 'Caroline Djajadiningrat', null, 'Memenuhi Syarat', '2026-04-21', 2026],
+            ['Sekretariat DPRD Kota Jambi', 'KANTOR', null, null, null, null, null, null, null, '2026-04-28', 2026],
+            ['WTC Batanghari', 'MALL', 'Sedang', 'Tinggi', '3329 m²', 'JI.Sultan Thaha Syaifuddin Kelurahan Pasar Jambi Kecamatan Pasar Jambi.', 'HERMI', '0741-7837028', 'Memenuhi Syarat', '2026-04-30', 2026],
+            ['Universitas Dinamika Bangsa (UNAMA)', 'UNIVERSITAS', 'Sedang', 'Sedang', '3059 m²', 'Jl. Jendral Sudirman,Kelurahan The Hok, Kecamatan Jambi Selatan, Kota Jambi', 'Ahmad Husaein', '0741-35097', 'Tidak Memenuhi Syarat', '2026-05-13', 2026],
+            ['du Palais Hotel', 'HOTEL', 'Sedang', 'Tinggi', '2248 m²', 'Jl. Rajawali I Kel. Jelutung Kec. Jelutung Kota Jambi', 'Lindawati', null, 'Tidak Memenuhi Syarat', '2026-05-13', 2026],
+            ['TK kartika II-25', 'SEKOLAH', 'Rendah', 'Rendah', '500 m²', 'Jl. Yos Sudarso RT.13 Kasang Jaya Kec.Jambi Timur, Kota Jambi', 'MERLISSA', '0822 8557 2244', 'Tidak Memenuhi Syarat', '2026-05-13', 2026],
+            ['Klinik pratama tahsina aestetic', 'KLINIK', 'Rendah', 'Sedang', '168 m²', 'Jl. Ir. H Juanda No. 003 RT 030 Kelurahan Simpang III Sipin Kecamatan Kota Baru Kota Jambi', 'Alfia Roza', null, null, '2026-05-20', 2026],
+            ['Ramayana', 'MALL', 'Sedang', 'Tinggi', '2900 m²', 'Jl. Sultan Thaha No.17 Kelurahan Pasar Kecamatan Pasar Kota Jambi,', 'PT. Batanghari Propertindo', null, 'Tidak Memenuhi Syarat', '2026-05-26', 2026],
+            ['RS Mitra', 'RUMAH SAKIT', 'Sedang', 'Tinggi', '4176 m²', 'Jl. Jendral Basuki Rahmat No. 77 RT. 07 Kelurahan Paal 5 Kecamatan Kota Baru Kota Jambi', 'PT. Mekar Dharma Medika', null, 'Tidak Memenuhi Syarat', '2026-06-04', 2026],
+            ['RSIA Anissa', 'RUMAH SAKIT', 'Sedang', 'Tinggi', '837.9 m²', 'Jl. Kabia No. 04 RT. 01 Kelurahan Kebun Handil Kecamatan Jelutung Kota Jambi', 'M. Shahrenal Adepintor', '0741-445226', 'Tidak Memenuhi Syarat', '2026-06-05', 2026],
+            ['Badan Intelijen Daerah Jambi', 'PEMERINTAH', 'Rendah', 'Tinggi', null, null, null, null, null, '2026-06-18', 2026],
+            ['Klinik Utama Jambi Skin Centre', 'KLINIK', 'Rendah', 'Sedang', null, 'Jl. Slamet Riyadi Broni No.85 Kelurahan Solok Sipin Kecamatan Danau Sipin Kota Jambi', 'Mike Kusumawati', null, 'Tidak Memenuhi Syarat', '2026-06-18', 2026],
+            ['Pengadilan Tinggi Tata Usaha Negara Jambi', 'PEMERINTAH', 'Rendah', 'Tinggi', '2196 m²', 'Jl. Kol. M. Kukuh No.1 RT. 09 Kelurahan Paal Lima Kecamatan Kota Baru Kota Jambi', 'Maya Sari', '0812 7826 1024', 'Tidak Memenuhi Syarat', '2026-06-19', 2026],
+            ['Rumah Quran Rajawali', 'SEKOLAH', 'Rendah', 'Rendah', '150 m²', 'Jl. Total RT.12 Kel.Paal Lima Kec.Kota Baru, Kota Jambi', 'SUSILA HAYATI', null, 'Tidak Memenuhi Syarat', '2026-06-23', 2026],
+            ['TK Mutiara Ibu', 'SEKOLAH', 'Rendah', 'Rendah', '300 m²', 'Jl. Dr. Purwadi No. 16 RT.08, Kel.Kenali Besar Kec. Alam Barajo, Kota Jambi', 'IMELDA YENI', '0812 7981 3001', 'Tidak Memenuhi Syarat', '2026-06-23', 2026],
+            ['RS Rapha Theresia', 'RUMAH SAKIT', 'Sedang', 'Tinggi', '11377 m²', 'Jl. Kardinal Damojuwono, Kelurahan Kenali Asam Atas, Kec. Kota Baru, Kota Jambi.', 'Maria Marcia L. Marimba', null, 'Memenuhi Syarat', '2026-06-23', 2026],
+            ['Klinik Utama Jambi Eye Centre', 'KLINIK', 'Rendah', 'Sedang', '1704 m²', 'Kol. Amir Hamzah No.21-23 Kelurahan Selamat, Kecamatan Telanaipura Kota Jambi', 'Muhammad Ikhsan', null, 'Tidak Memenuhi Syarat', '2026-07-02', 2026],
+            ['Mandala Swalayan', 'SWALAYAN', 'Rendah', 'Tinggi', '1776 m²', 'Jl. Mr. Assa’at No.10 Blok A RT.22 Kelurahan Sungai Asam Kecamatan Pasar Jambi Kota Jambi', 'Didi Bongsu', '0811 7482 58', 'Memenuhi Syarat dengan Catatan', '2026-07-09', 2026],
+            ['Meranti Swalayan', 'SWALAYAN', 'Sedang', 'Tinggi', '6634 m²', 'Jl. Guru Djamin Datuk Bagindo Kelurahan Talang Banjar Kecamatan Jambi Timur Kota Jambi', 'Didi Bongsu', '0811 7482 58', 'Memenuhi Syarat dengan Catatan', '2026-07-09', 2026],
+            ['Sekolah Rakyat Bagan Pete', 'SEKOLAH', 'Rendah', 'Tinggi', '27699.73 m²', 'Kelurahan Bagan Pete Kecamatan Alam Barajo Kota Jambi', 'Kementrian Sosial', null, 'Memenuhi Syarat dengan Catatan', '2026-07-11', 2026],
+            ['Madrasah Aliyah Laboratorium', 'SEKOLAH', 'Rendah', 'Tinggi', '5000 m²', 'Jl. Arif Rahman Hakim No. 111 36125, Jambi', null, null, 'Tidak Memenuhi Syarat', null, 2026],
+            ['RS Baiturrahim', 'RUMAH SAKIT', 'Sedang', 'Tinggi', '2000 m²', 'Jl. Prof. DR. Moh. Yamin No. 30 Kel. Lebak Bandung Kec. Jelutung Kota Jambi', 'Dr. Filius Chandra, SE., MM', null, 'Memenuhi Syarat dengan Catatan', '2026-07-23', 2026],
+            ['TPA Talang Gulo', 'TEMPAT PEMROSESAN SAMPAH', 'Rendah', 'Tinggi', '2418 m²', 'Jl. Kebersihan RT. 04 Kelurahan Talang Gulo Kecamatan Kota Baru Kota Jambi', 'Pemerintah Kota Jambi', null, 'Tidak Memenuhi Syarat', '2026-07-29', 2026],
+            ['SMA Yadika', 'SEKOLAH', 'Sedang', 'Sedang', '9225 m²', 'Jl. Abdul Muis Lrg. Anggrek, RT. 38, Kelurahan Lingkar Selatan, Kecamatan Paal Merah, Kota Jambi', 'Yayasan Yadika Kota Jambi', null, 'Tidak Memenuhi Syarat', '2026-07-30', 2026],
+            ['Laboratorium Klinik Biomedica', 'KLINIK', 'Rendah', 'Sedang', '35 m²', 'Jl. RB. Siagian Kelurahan Pasir Putih Kecamatan Jambi Selatan Kota Jambi', 'Laboratorium Klinik', null, 'Memenuhi Syarat', '2026-07-31', 2026],
+            ['Gudang HM Sampoerna', 'GUDANG', 'Rendah', 'Tinggi', '1458 m²', 'Komplek Pergudangan PT. KLM Jl. Lingkar Selatan I RT. 30 Kav. 07 Kel. Paal Merah Kec. Jambi Selatan Kota Jambi', 'PT. HM Sampoerna', null, 'Memenuhi Syarat dengan Catatan', '2026-08-04', 2026],
+            ['PT. Altrak 1978', 'INDUSTRI', 'Rendah', 'Tinggi', '96.1 m²', 'Jl. Lingkar Barat 1 Kel. Kenali Asam Bawah Kec. Jambi Selatan', 'AHMAD MUSANI', '0741 63408', 'Memenuhi Syarat dengan Catatan', '2026-08-05', 2026],
+            ['Klinik Utama Elyassmine Kambang', 'KLINIK', 'Rendah', 'Rendah', '212 m²', 'Jl. RE. Marta Dinata Kel. Telanaipura Kec. Telanaipura Kota Jambi', 'Essy Octavia', null, 'Memenuhi Syarat dengan Catatan', '2026-08-10', 2026],
+            ['Rumah Sakit Islam Arafah', 'RUMAH SAKIT', 'Rendah', 'Tinggi', '5400 m²', 'Jl. Empu Gandring RT.10 Kel. Solok Sipin Kec. Danau Sipin Kota Jambi', 'PT. Dasa Husada Bersama', null, 'Memenuhi Syarat', '2026-08-11', 2026],
+            ['Raudhatul Athfal Taufiqurfahman', 'SEKOLAH', 'Rendah', 'Rendah', '84 m²', 'Blok 1 No.39 RT.32 Perumahan Pesona Kenali Kecamatan Kota Baru, Kota Jambi', 'Nuraini', '0852 0800 5056', 'Tidak Memenuhi Syarat', '2026-08-13', 2026],
+            ['RS St Theresia', 'RUMAH SAKIT', 'Sedang', 'Tinggi', '8743.8 m²', 'Jl. Prof. Dr. Sutomo No. 19 Kel. Pasar Kec. Pasar', 'Yayasak Bakti Utama', null, 'Memenuhi Syarat', '2026-08-20', 2026],
+            ['Lippo Mall', 'MALL', 'Rendah', 'Tinggi', '18900 m²', 'Jl. Mayor Abd. Karta Wirana Kel. Budiman Kec. Jambi Timur', 'PT. Damarindo Perkasa', null, 'Memenuhi Syarat', '2026-08-20', 2026],
+            ['Klinik Pratama PTPN IV', 'KLINIK', 'Rendah', 'Sedang', '150.75 m²', 'Jl. Lingkar Barat Kel. Kenali Asam Bawah Kec. Kota Baru', 'Wawan Kurniawan', null, 'Memenuhi Syarat dengan Catatan', '2026-08-21', 2026],
+            ['Klinik Ascot', 'KLINIK', 'Rendah', 'Sedang', '432 m²', 'Jl. Iswahyudi Kel. Talang Bakung Kec. Jambi Selatan Kota Jambi', 'Didi Zulkarnain', null, 'Tidak Memenuhi Syarat', '2026-08-24', 2026],
+            ['RS DKT', 'RUMAH SAKIT', 'Rendah', 'Tinggi', '896 m²', 'Jl. Raden Mattaher Kelurahan Sulanjana Kecamatan Jambi Timur Kota Jambi', 'R. Marpaung,', null, 'Memenuhi Syarat dengan Catatan', '2026-08-28', 2026],
+            ['sd smp nurul ilmi', 'SEKOLAH', 'Sedang', 'Sedang', '3548 m²', 'Jl. Syech Mahmud RT.16 Kel.Simpang Rimbo Kecamatan Alam Barajo Kota Jambi', 'SAI\'IN', '0813 7937 265', 'Tidak Memenuhi Syarat', '2026-08-10', 2026],
+            ['sma 11', 'SEKOLAH', 'Rendah', 'Sedang', '10000 m²', 'Jl.Sersan Anwar Bay Kel.Bagan Pete Kec.Alam Barajo Kota Jambi', 'Novi Dwi Setyaningsih', '0838 7097 1399', 'Tidak Memenuhi Syarat', '2026-08-26', 2026],
+            ['klinik utama zaira', 'KLINIK', 'Rendah', 'Rendah', '128 m²', 'Jl. Sunan Gunung Jati Kel. Kenali Asam Bawah Kec. Kota Baru', 'Aulia Chairani', null, 'Memenuhi Syarat dengan Catatan', '2026-08-28', 2026],
+            ['RUMAH SAKIT KAMBANG', 'RUMAH SAKIT', 'Rendah', 'Tinggi', '3395 m²', 'Jl. Kol. Amir Hamzah Kel. Selamat Kec. Telanaipura', 'Mustarim', null, 'Memenuhi Syarat dengan Catatan', '2026-09-03', 2026],
+            ['SMK 1', 'SEKOLAH', null, null, '9462 m²', 'Jl.A.Thalib Telanaipura Kecamatan Telanaipura,Kota Jambi', null, null, 'Tidak Memenuhi Syarat', '2026-09-09', 2026],
+            ['du Palais Hotel', 'HOTEL', 'Sedang', 'Tinggi', '2248 m²', 'Jl. Rajawali I Kel. Jelutung Kec. Jelutung Kota Jambi', 'Lindawati', null, 'Tidak Memenuhi Syarat', '2026-09-10', 2026],
+            ['Suria Harapan School', 'SEKOLAH', 'Sedang', 'Tinggi', '6016 m²', 'Jl. Hayam Wuruk Kel. Talang Jauh Bawah Kec. Jelutung', 'Suria Harapan Chool Kota Jambi', null, 'Tidak Memenuhi Syarat', '2026-09-10', 2026],
+            ['Diva Family Karaoke', 'HIBURAN', 'Rendah', 'Tinggi', '883.63 m²', 'Jl. Hayam Wuruk No. 167-169 Kel. Talang Jauh Bawah Kec. Jelutung', 'PT. Swara Jambi Pratama', null, 'Tidak Memenuhi Syarat', '2026-09-10', 2026],
+            ['Christine Bakery', 'INDUSTRI', 'Rendah', 'Sedang', '975 m²', 'Jl. Hayam Wuruk Kel. Talang Jauh Bawah Kec. Jelutung', 'PT. Christine Adi Mitra', null, 'Tidak Memenuhi Syarat', '2026-09-10', 2026],
+            ['Klinik Pratama Kanwil Pemasyarakatan Jambi', 'KLINIK', 'Rendah', 'Rendah', '57 m²', 'Jl. Jenderal Basuki Rahmat Kec. Kota Baru', 'Zakia Raditha Nasution', null, 'Tidak Memenuhi Syarat', '2026-09-14', 2026],
+            ['English 1', 'SEKOLAH', 'Rendah', 'Sedang', '400 m²', 'Kawasan Jambi Business Center (JBC) Jalan Kapt A Bakaruddin Blok W2.05 & W2, RW.06, Kel. Selamat Kec. Danau Sipin Kota Jambi', null, null, 'Tidak Memenuhi Syarat', '2026-09-17', 2026],
+            ['Saung Kita', 'RESTORAN', 'Rendah', 'Sedang', '1200 m²', 'Jl. Mpu Gandring Kel. Solok Sipin Kec. Telanaipura Kota Jambi', 'PT. Eskaka Prima Boga', null, 'Tidak Memenuhi Syarat', '2026-09-17', 2026],
+            ['Starbucks Sipin', 'RESTORAN', 'Rendah', 'Rendah', '231.934 m²', 'Jl. Sumantri Brojonegoro Kel. Solok Sipin Kec. Telanaipura', 'PT. Sari Coffee Indonesia', null, 'Memenuhi Syarat', '2026-09-17', 2026],
+            ['Starbucks The Hok', 'RESTORAN', 'Rendah', 'Rendah', '90 m²', 'Jl. Jenderal Sudirman No. 46 Kel. Talang Jauh Kec. Jelutung Kota Jambi', 'PT. Sari Coffee Indonesia', null, 'Memenuhi Syarat', '2026-09-17', 2026],
+            ['Klinik Pratama Zuri Medika', 'KLINIK', 'Rendah', 'Rendah', '128 m²', 'Jl. Sunan Gunung Jati Kel. Kenali Asam Bawah Kec. Kota Baru', 'Aulia Chairani', null, 'Tidak Memenuhi Syarat', '2026-09-22', 2026],
+            ['Uptd Spal-D', 'INFRASTRUKTUR SANITASI', 'Rendah', 'Sedang', '9000 m²', 'Jl. Raden Fattah Kel. Sijenjang Kec. Jambi Timur', 'Pemerintah Kota Jambi', null, 'Memenuhi Syarat dengan Catatan', '2026-09-23', 2026],
+            ['PT. Lingga Harapan', 'INDUSTRI', 'Rendah', 'Sedang', '12560 m²', 'Jl. Yos Sudarso RT. 05 Kel. Sijenjang Kec.Jambi Timur, Kota Jambi', 'Sulivandy Susanto', null, 'Tidak Memenuhi Syarat', '2026-09-23', 2026],
+            ['Rumah Sakit Bhayangkara', 'RUMAH SAKIT', 'Sedang', 'Tinggi', '8286 m²', 'Jl. Raden Mattaher Kelurahan Pasar Kecamatan Pasar Jambi Kota Jambi', 'H. Muhammad El Yandiko', null, 'Memenuhi Syarat', '2026-09-28', 2026],
+            ['SD Ahmad Dahlan', 'SEKOLAH', 'Rendah', 'Sedang', '723 m²', 'Jl. Enggano Perumnas, Handil Jaya, Kec. Jelutung Kota Jambi', 'WAHIDIN HARAHAP', '0741 41786', 'Tidak Memenuhi Syarat', '2026-09-30', 2026],
+            ['PT. Bangun Globalindo Perkasa', 'INDUSTRI', 'Rendah', 'Tinggi', '5397 m²', 'Jl. Lingkar Selatan Kel. Paal Merah Kec. Jambi Selatan Kota Jambi', 'PT. BGP Indonesia', null, 'Memenuhi Syarat', '2026-10-01', 2026],
+            ['De tones Afgan Family Karaoke', 'HIBURAN', 'Rendah', 'Tinggi', '90.03 m²', 'Jl. Kolonel Abunjani No. 32 Kel. Simpang III Sipin Kec. Kota Baru', null, null, 'Tidak Memenuhi Syarat', '2026-10-01', 2026],
+            ['Kantor Perwakilan BEI', 'KANTOR', 'Rendah', 'Rendah', '166 m²', 'Jl. Kolonel Abunjani Kel. Selamat Kec. Kota Baru', 'PT. Bursa Efek Indonesia', null, 'Memenuhi Syarat', '2026-10-01', 2026],
+            ['Black Hawk’s Luxury Lounge & Karaoke', 'HIBURAN', 'Rendah', 'Tinggi', '280.5 m²', 'Kawasan Jambi Bussines Center (JBC) Ruko Blok W1.31-W1.37 Jl. Kapt. A Bakaruddin Kelurahan Selamat Kecamatan Danau Sipin Kota Jambi', 'CV. Global Titik Noktah', null, 'Tidak Memenuhi Syarat', '2026-10-08', 2026],
+            ['Yello Hotel', 'HOTEL', 'Tinggi', 'Tinggi', '8031 m²', 'Jl. Jendral Sudirman,Kelurahan Tambak Sari, Kecamatan Jambi Selatan, Kota Jambi', 'Yello Hotel Jambi', null, 'Memenuhi Syarat', '2026-10-12', 2026],
+            ['Jentera Medika', 'KLINIK', 'Rendah', 'Rendah', '252 m²', 'Jl. Kapten Muda Dauh No. 48 RT. 35 Kel. Payo Lebar Kec. Jelutung Kota Jambi', 'Mazida Hosmisi', null, 'Memenuhi Syarat dengan Catatan', '2026-10-14', 2026],
+            ['Rimbo Medika', 'KLINIK', 'Rendah', 'Tinggi', '1014 m²', 'Jl. Kapten Pattimura Kel. Kenali Besar Kec. Kota Baru', 'Klinik Utama Rimbo Medika', null, 'Tidak Memenuhi Syarat', '2026-10-16', 2026],
+            ['jpm trona', 'MALL', 'Sedang', 'Tinggi', '12560 m²', 'Jl. Jendral Sudirman Kel. Talang Jauh Kec. Jelutung', 'Zeni Viona', null, 'Memenuhi Syarat', '2026-10-19', 2026],
+            ['telkomsel telecomunication center', 'KANTOR', 'Sedang', 'Tinggi', '00:13:53 m²', 'Jl. Slamet Riyadi Broni No.03 Kelurahan Solok Sipin Kecamatan Danau Sipin Kota Jambi', 'PT. Kinarya Selaras Piranti', null, 'Memenuhi Syarat', '2026-10-19', 2026],
+            ['Klinik Pratama Lagom Premier Clinic', 'KLINIK', 'Rendah', 'Rendah', '376 m²', 'Jl. Nias Kel. Handil Jaya Kec. Jelutung', 'Erwan Malik', null, 'Tidak Memenuhi Syarat', '2026-10-22', 2026],
+            ['Klinik Pratama Syifa Medika', 'KLINIK', 'Rendah', 'Rendah', '541,2 m²', 'Jl. Kapten Pattimura RT. 47 Kel. Kenali Besar Kec. Kota Baru', 'Klinik Pratama Syifa Medika', null, 'Memenuhi Syarat dengan Catatan', '2026-10-26', 2026],
+            ['Trona Talang Bakung', 'KLINIK', 'Rendah', 'Tinggi', '7808 m²', 'Jl. Sultan Hasanudin Kel. Bakung Jaya Kec. Paal Merah Kota Jambi', null, null, null, '2026-10-29', 2026],
+            ['Trona Arizona', 'KLINIK', 'Rendah', 'Tinggi', '960 m²', 'Jl. Sunan Giri Kel. Simpang III Sipin Kec. Kota Baru Kota Jambi', null, null, null, '2026-10-29', 2026],
+            ['Labkesda Provinsi Jambi', 'LABORATORIUM', null, null, null, null, null, null, null, '2026-11-09', 2026],
+            ['BW Luxury Hotel', 'HOTEL', null, null, null, null, null, null, null, '2026-11-11', 2026],
+            ['Abadi Hotel & Convention Center', 'HOTEL', null, null, null, null, null, null, null, '2026-11-14', 2026],
+            ['Abadi Suite Hotel And Tower', 'HOTEL', null, null, null, null, null, null, null, '2026-11-14', 2026],
         ];
 
         $optionalColumns = [
@@ -178,7 +282,7 @@ class InspeksiBangunanSeeder extends Seeder
             ];
 
             if ($hasTahun) {
-                $item['tahun'] = 2025;
+                $item['tahun'] = $row[10] ?? 2025;
             }
 
             foreach ($availableOptional as $col => $index) {
@@ -196,6 +300,8 @@ class InspeksiBangunanSeeder extends Seeder
         }
 
         DB::table('inspeksi_bangunans')->truncate();
-        DB::table('inspeksi_bangunans')->insert($payload);
+        foreach (array_chunk($payload, 100) as $chunk) {
+            DB::table('inspeksi_bangunans')->insert($chunk);
+        }
     }
 }
