@@ -106,7 +106,7 @@ class LogInternalActivity
             return 'Ubah';
         }
 
-        if (str_contains($path, 'store') || str_contains($path, 'tambah') || str_contains($path, 'create')) {
+        if ($method === 'POST' || str_contains($path, 'store') || str_contains($path, 'tambah') || str_contains($path, 'create') || str_contains($path, 'simpan') || str_contains($path, 'import')) {
             return 'Tambah';
         }
 
@@ -121,6 +121,7 @@ class LogInternalActivity
         $moduleMap = [
             'internal/kelola-user' => 'Kelola Pengguna',
             'internal/kelola-pemohon' => 'Kelola Akun Pemohon',
+            'internal/profil-instansi' => 'Profil Instansi',
             'internal/profil' => 'Profil Pengguna',
             'internal/operator/kelola-berita' => 'Berita',
             'internal/operator/infografis' => 'Info Grafis',
@@ -130,27 +131,48 @@ class LogInternalActivity
             'internal/operator/kejadian' => 'Kejadian',
             'internal/operator/pengumuman' => 'Pengumuman',
             'internal/operator/ikm' => 'Survei IKM',
+
+            // Pencegahan
+            'pks' => 'Pencegahan - PKS',
+            'fire-drill' => 'Pencegahan - Fire Drill',
             'internal/pencegahan/kelola-edukasi' => 'Pencegahan - Edukasi',
-            'internal/pencegahan/kelola-redkar' => 'Pencegahan - Redkar',
+            'redkar' => 'Pencegahan - Redkar',
             'internal/pencegahan/kelola-rpkbgl' => 'Pencegahan - RPKBGL',
             'internal/pencegahan/kelola-skk' => 'Pencegahan - SKK',
             'internal/pencegahan/inspeksi-kebakaran' => 'Pencegahan - Inspeksi',
+            'internal/pencegahan/layanan-inspeksi' => 'Pencegahan - Layanan Inspeksi',
+            'internal/pencegahan/layanan-sosialisasi' => 'Pencegahan - Layanan Sosialisasi',
+            'internal/pencegahan/pelatihan' => 'Pencegahan - Pelatihan',
+            'internal/pencegahan/pembinaan-pengembangan' => 'Pencegahan - Pembinaan Pengembangan',
             'internal/pencegahan/peningkatan-kapasitas' => 'Pencegahan - Aparatur',
             'internal/pencegahan/pemberdayaan-masyarakat' => 'Pencegahan - Pemberdayaan',
+
+            // Damtan
             'internal/damtan/rekap-objek' => 'Damtan - Rekap Objek',
-            'internal/damtan/data-laporan' => 'Damtan - Data Laporan',
-            'internal/damtan/kelola-penggunaan-sarana' => 'Damtan - Penggunaan Sarana',
             'internal/damtan/rekap-layanan' => 'Damtan - Rekap Layanan',
-            'internal/surat-korban' => 'Damtan - Surat Korban',
+            'internal/damtan/kelola-penggunaan-sarana' => 'Damtan - Penggunaan Sarana',
+            'internal/damtan/kelola-izin-keramaian' => 'Damtan - Izin Keramaian',
             'internal/izin-keramaian' => 'Damtan - Izin Keramaian',
+            'internal/surat-korban' => 'Damtan - Surat Korban',
+            'internal/damtan/data-laporan' => 'Damtan - Data Laporan',
+            'internal/damtan/input-data' => 'Damtan - Data Laporan',
+            'internal/damtan/update-data' => 'Damtan - Data Laporan',
+            'internal/damtan/hapus-data' => 'Damtan - Data Laporan',
+
+            // Sarpras
+            'sapra/perbaikan-kendaraan' => 'Sarpras - Perbaikan Kendaraan',
             'sapra' => 'Sarana & Prasarana',
+
+            // Kepegawaian & Dokumen
             'internal/kepegawaian/duk' => 'Kepegawaian - DUK',
+            'internal/kepegawaian/peta-jabatan' => 'Kepegawaian - Peta Jabatan',
             'internal/data-asn' => 'Kepegawaian - Data ASN',
             'internal/program-kerja' => 'Kepegawaian - SOP & Dokumen',
             'internal/dokumen-publik' => 'Kepegawaian - Dokumen Publik',
             'dokumen-publik' => 'Kepegawaian - Dokumen Publik',
+
+            // Profil, Hukum, Peta Sigap
             'internal/produk-hukum' => 'Produk Hukum',
-            'internal/profil-instansi' => 'Profil Instansi',
             'internal/peta-sigap' => 'Peta Sigapkar',
         ];
 
@@ -173,7 +195,24 @@ class LogInternalActivity
      */
     protected function generateDescription(string $action, string $module, Request $request): string
     {
-        $identifiers = ['judul', 'nama_lengkap', 'nama', 'nama_kegiatan', 'nomor_pegawai', 'nomor_surat', 'nip', 'nama_sarana', 'lokasi', 'email'];
+        $identifiers = [
+            'judul',
+            'judul_dokumen',
+            'nama_lengkap',
+            'nama',
+            'nama_kegiatan',
+            'nama_perusahaan',
+            'nomor_pks',
+            'nopol_kendaraan',
+            'merk_kendaraan',
+            'nomor_pegawai',
+            'nomor_surat',
+            'nip',
+            'nama_sarana',
+            'nama_pos',
+            'lokasi',
+            'email',
+        ];
         $subject = null;
 
         foreach ($identifiers as $key) {
