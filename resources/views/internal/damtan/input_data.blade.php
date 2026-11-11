@@ -95,12 +95,21 @@
     $sel = fn ($a, $b) => (string) ($a ?? '') === (string) $b ? 'selected' : '';
 
     $optMedia = [
-        'whatsapp' => 'Layanan WA Damkar', 'telepon' => 'Telepon Call Center',
-        'langsung' => 'Datang Langsung ke Mako/Pos', 'instansi_lain' => 'Laporan Instansi Lain',
+        'call_center_112' => 'Call Center 112',
+        'operator_layanan' => 'Operator Layanan Damkar',
+        'telepon' => 'Telfon Damkar',
+        'dijemput' => 'Dijemput',
+        'whatsapp' => 'Layanan WA Damkar',
+        'langsung' => 'Datang Langsung ke Mako/Pos',
+        'instansi_lain' => 'Laporan Instansi Lain',
     ];
     $optKategori = [
-        'kebakaran' => 'Kebakaran', 'penyelamatan_hewan' => 'Penyelamatan Hewan', 'bencana_alam' => 'Bencana Alam',
-        'kecelakaan_lalu_lintas' => 'Kecelakaan Lalu Lintas', 'evakuasi_medis' => 'Evakuasi Medis',
+        'kebakaran' => 'Kebakaran',
+        'penyelamatan' => 'Penyelamatan',
+        'penyelamatan_hewan' => 'Penyelamatan Hewan',
+        'bencana_alam' => 'Bencana Alam',
+        'kecelakaan_lalu_lintas' => 'Kecelakaan Lalu Lintas',
+        'evakuasi_medis' => 'Evakuasi Medis',
     ];
     $optObjek = [
         'rumah' => 'Rumah', 'gudang' => 'Gudang', 'ruko' => 'Ruko', 'kantor' => 'Kantor', 'sekolah' => 'Sekolah',
@@ -108,6 +117,7 @@
         'kendaraan_bermotor' => 'Kendaraan Bermotor', 'objek_vital' => 'Objek Vital',
         'sarana_kesehatan' => 'Sarana Kesehatan', 'lahan_pohon' => 'Lahan, Pohon',
         'gardu_listrik' => 'Gardu Listrik', 'tempat_sampah' => 'Tempat Pembuangan Sampah',
+        'lainnya' => 'Lainnya',
     ];
     $optNonKebakaran = [
         'fire_rescue' => 'Fire Rescue', 'water_rescue' => 'Water Rescue', 'land_rescue' => 'Land Rescue',
@@ -120,7 +130,7 @@
         'kelalaian_manusia' => 'Kelalaian manusia', 'faktor_alam' => 'Faktor alam', 'lainnya' => 'Lainnya',
     ];
 
-    $kategoriDefault = old('kategori_kejadian', request('kategori') === 'non-kebakaran' ? 'penyelamatan_hewan' : 'kebakaran');
+    $kategoriDefault = old('kategori_kejadian', request('kategori') === 'non-kebakaran' ? 'penyelamatan' : 'kebakaran');
     $prio = old('prioritas', 'rendah');
 @endphp
 
@@ -445,7 +455,7 @@
                                             <option value="{{ $v }}" {{ $sel(old('kategori_non_kebakaran'), $v) }}>{{ $l }}</option>
                                         @endforeach
                                     </select>
-                                    <input type="text" class="form-control" name="rincian_kategori_non_kebakaran" id="rincian_kategori_non_kebakaran" value="{{ old('rincian_kategori_non_kebakaran') }}" placeholder="Ketik jika 'Lainnya'..." disabled>
+                                    <input type="text" class="form-control" name="rincian_kategori_non_kebakaran" id="rincian_kategori_non_kebakaran" value="{{ old('rincian_kategori_non_kebakaran') }}" placeholder="Ketik rincian evakuasi / jika 'Lainnya'..." disabled>
                                 </div>
                             </div>
                         </div>
@@ -1156,8 +1166,12 @@
             nonSelect.disabled = isFire;
             if (isFire) {
                 nonSelect.value = '';
-                nonSelect.dispatchEvent(new Event('change')); // reset kolom "Lainnya"
             }
+        }
+        var rincianNon = document.getElementById('rincian_kategori_non_kebakaran');
+        if (rincianNon) {
+            rincianNon.disabled = isFire;
+            if (isFire) rincianNon.value = '';
         }
 
         // Section khusus kebakaran (Analisis Kejadian): sembunyikan jika non-kebakaran
@@ -1268,7 +1282,12 @@
         var inputEl = document.getElementById(inputId);
 
         if (selectEl && inputEl) {
-            inputEl.disabled = selectEl.value !== 'lainnya';
+            if (inputEl.value && inputEl.value.trim() !== '') {
+                inputEl.disabled = false;
+            } else {
+                inputEl.disabled = selectEl.disabled || selectEl.value !== 'lainnya';
+            }
+            inputEl.required = !inputEl.disabled && selectEl.value === 'lainnya';
 
             selectEl.addEventListener('change', function () {
                 if (this.value === 'lainnya') {
@@ -1284,7 +1303,6 @@
         }
     }
 
-    setupLainnyaLogic('kategori_non_kebakaran', 'rincian_kategori_non_kebakaran');
     setupLainnyaLogic('dugaan_penyebab', 'dugaan_penyebab_lainnya');
     setupLainnyaLogic('cara_bertindak', 'cara_bertindak_lainnya');
     setupLainnyaLogic('jenis_hewan', 'jenis_hewan_lainnya');
