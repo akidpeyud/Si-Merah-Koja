@@ -41,7 +41,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '15.71.051',
                 'status_pendaftaran' => 'Diterima',
             ],
             1 => [
@@ -68,7 +67,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB+',
-                'kartu_anggota' => '15.71.052',
                 'status_pendaftaran' => 'Diterima',
             ],
             2 => [
@@ -95,7 +93,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '15.71.053',
                 'status_pendaftaran' => 'Diterima',
             ],
             3 => [
@@ -122,7 +119,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '15.71.054',
                 'status_pendaftaran' => 'Diterima',
             ],
             4 => [
@@ -149,7 +145,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.71.056',
                 'status_pendaftaran' => 'Diterima',
             ],
             5 => [
@@ -176,7 +171,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.71.057',
                 'status_pendaftaran' => 'Diterima',
             ],
             6 => [
@@ -203,7 +197,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '15.71.058',
                 'status_pendaftaran' => 'Diterima',
             ],
             7 => [
@@ -230,7 +223,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.71.059',
                 'status_pendaftaran' => 'Diterima',
             ],
             8 => [
@@ -257,7 +249,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.71.060',
                 'status_pendaftaran' => 'Diterima',
             ],
             9 => [
@@ -284,7 +275,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '15.71.061',
                 'status_pendaftaran' => 'Diterima',
             ],
             10 => [
@@ -311,7 +301,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.71.062',
                 'status_pendaftaran' => 'Diterima',
             ],
             11 => [
@@ -338,7 +327,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.71.063',
                 'status_pendaftaran' => 'Diterima',
             ],
             12 => [
@@ -365,7 +353,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '15.71.064',
                 'status_pendaftaran' => 'Diterima',
             ],
             13 => [
@@ -392,7 +379,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '15.71.066',
                 'status_pendaftaran' => 'Diterima',
             ],
             14 => [
@@ -419,7 +405,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '15.71.067',
                 'status_pendaftaran' => 'Diterima',
             ],
             15 => [
@@ -446,7 +431,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.71.068',
                 'status_pendaftaran' => 'Diterima',
             ],
             16 => [
@@ -473,7 +457,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '15.71.069',
                 'status_pendaftaran' => 'Diterima',
             ],
             17 => [
@@ -500,7 +483,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.71.070',
                 'status_pendaftaran' => 'Diterima',
             ],
             18 => [
@@ -527,7 +509,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '15.71.071',
                 'status_pendaftaran' => 'Diterima',
             ],
             19 => [
@@ -554,7 +535,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '15.71.072',
                 'status_pendaftaran' => 'Diterima',
             ],
             20 => [
@@ -581,7 +561,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '15.71.073',
                 'status_pendaftaran' => 'Diterima',
             ],
             21 => [
@@ -608,7 +587,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '15.71.074',
                 'status_pendaftaran' => 'Diterima',
             ],
             22 => [
@@ -635,7 +613,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.71.075',
                 'status_pendaftaran' => 'Diterima',
             ],
             23 => [
@@ -662,7 +639,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '15.71.076',
                 'status_pendaftaran' => 'Diterima',
             ],
             24 => [
@@ -689,7 +665,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '15.71.077',
                 'status_pendaftaran' => 'Diterima',
             ],
             25 => [
@@ -716,7 +691,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '15.71.078',
                 'status_pendaftaran' => 'Diterima',
             ],
             26 => [
@@ -743,7 +717,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B+',
-                'kartu_anggota' => '15.71.079',
                 'status_pendaftaran' => 'Diterima',
             ],
             27 => [
@@ -770,7 +743,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.71.080',
                 'status_pendaftaran' => 'Diterima',
             ],
             28 => [
@@ -797,7 +769,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '15.71.081',
                 'status_pendaftaran' => 'Diterima',
             ],
             29 => [
@@ -824,7 +795,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.71.082',
                 'status_pendaftaran' => 'Diterima',
             ],
             30 => [
@@ -851,7 +821,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.71.083',
                 'status_pendaftaran' => 'Diterima',
             ],
             31 => [
@@ -878,7 +847,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '15.71.084',
                 'status_pendaftaran' => 'Diterima',
             ],
             32 => [
@@ -905,7 +873,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '15.71.085',
                 'status_pendaftaran' => 'Diterima',
             ],
             33 => [
@@ -932,7 +899,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '15.71.086',
                 'status_pendaftaran' => 'Diterima',
             ],
             34 => [
@@ -959,7 +925,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.71.087',
                 'status_pendaftaran' => 'Diterima',
             ],
             35 => [
@@ -986,7 +951,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '15.71.088',
                 'status_pendaftaran' => 'Diterima',
             ],
             36 => [
@@ -1013,7 +977,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '1571.089',
                 'status_pendaftaran' => 'Diterima',
             ],
             37 => [
@@ -1040,7 +1003,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '15.71.090',
                 'status_pendaftaran' => 'Diterima',
             ],
             38 => [
@@ -1067,7 +1029,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '15.71.091',
                 'status_pendaftaran' => 'Diterima',
             ],
             39 => [
@@ -1094,7 +1055,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '15.71.092',
                 'status_pendaftaran' => 'Diterima',
             ],
             40 => [
@@ -1121,7 +1081,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '15.71.093',
                 'status_pendaftaran' => 'Diterima',
             ],
             41 => [
@@ -1148,7 +1107,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '15.71.094',
                 'status_pendaftaran' => 'Diterima',
             ],
             42 => [
@@ -1175,7 +1133,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '15.71.095',
                 'status_pendaftaran' => 'Diterima',
             ],
             43 => [
@@ -1202,7 +1159,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '15.71.096',
                 'status_pendaftaran' => 'Diterima',
             ],
             44 => [
@@ -1229,7 +1185,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'o',
-                'kartu_anggota' => 'l5.17.097',
                 'status_pendaftaran' => 'Diterima',
             ],
             45 => [
@@ -1256,7 +1211,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '15.17.098',
                 'status_pendaftaran' => 'Diterima',
             ],
             46 => [
@@ -1283,7 +1237,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'o',
-                'kartu_anggota' => '15.71.099',
                 'status_pendaftaran' => 'Diterima',
             ],
             47 => [
@@ -1310,7 +1263,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '15.71.100',
                 'status_pendaftaran' => 'Diterima',
             ],
             48 => [
@@ -1337,7 +1289,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '15.71.101',
                 'status_pendaftaran' => 'Diterima',
             ],
             49 => [
@@ -1364,7 +1315,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '15.71.102',
                 'status_pendaftaran' => 'Diterima',
             ],
             50 => [
@@ -1391,7 +1341,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '15.71.103',
                 'status_pendaftaran' => 'Diterima',
             ],
             51 => [
@@ -1418,7 +1367,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '15.71.104',
                 'status_pendaftaran' => 'Diterima',
             ],
             52 => [
@@ -1445,7 +1393,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '15.17.105',
                 'status_pendaftaran' => 'Diterima',
             ],
             53 => [
@@ -1472,7 +1419,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '15.17.106',
                 'status_pendaftaran' => 'Diterima',
             ],
             54 => [
@@ -1499,7 +1445,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.17.107',
                 'status_pendaftaran' => 'Diterima',
             ],
             55 => [
@@ -1526,7 +1471,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '15.17.108',
                 'status_pendaftaran' => 'Diterima',
             ],
             56 => [
@@ -1553,7 +1497,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '15.17.109',
                 'status_pendaftaran' => 'Diterima',
             ],
             57 => [
@@ -1580,7 +1523,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.17.110',
                 'status_pendaftaran' => 'Diterima',
             ],
             58 => [
@@ -1607,7 +1549,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '15.71.111',
                 'status_pendaftaran' => 'Diterima',
             ],
             59 => [
@@ -1634,7 +1575,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '15.17.112',
                 'status_pendaftaran' => 'Diterima',
             ],
             60 => [
@@ -1661,7 +1601,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.17.113',
                 'status_pendaftaran' => 'Diterima',
             ],
             61 => [
@@ -1688,7 +1627,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '15.17.114',
                 'status_pendaftaran' => 'Diterima',
             ],
             62 => [
@@ -1715,7 +1653,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.71.115',
                 'status_pendaftaran' => 'Diterima',
             ],
             63 => [
@@ -1742,7 +1679,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '15.71.116',
                 'status_pendaftaran' => 'Diterima',
             ],
             64 => [
@@ -1769,7 +1705,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.17.117',
                 'status_pendaftaran' => 'Diterima',
             ],
             65 => [
@@ -1796,7 +1731,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '15.71.118',
                 'status_pendaftaran' => 'Diterima',
             ],
             66 => [
@@ -1823,7 +1757,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.71.119',
                 'status_pendaftaran' => 'Diterima',
             ],
             67 => [
@@ -1850,7 +1783,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '15.71.120',
                 'status_pendaftaran' => 'Diterima',
             ],
             68 => [
@@ -1877,7 +1809,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.71.031',
                 'status_pendaftaran' => 'Diterima',
             ],
             69 => [
@@ -1904,7 +1835,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.71.032',
                 'status_pendaftaran' => 'Diterima',
             ],
             70 => [
@@ -1931,7 +1861,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '15.71.033',
                 'status_pendaftaran' => 'Diterima',
             ],
             71 => [
@@ -1958,7 +1887,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '15.71.034',
                 'status_pendaftaran' => 'Diterima',
             ],
             72 => [
@@ -1985,7 +1913,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '15.71.035',
                 'status_pendaftaran' => 'Diterima',
             ],
             73 => [
@@ -2012,7 +1939,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '15.71.036',
                 'status_pendaftaran' => 'Diterima',
             ],
             74 => [
@@ -2039,7 +1965,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '15.71.037',
                 'status_pendaftaran' => 'Diterima',
             ],
             75 => [
@@ -2066,7 +1991,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '15.71.038',
                 'status_pendaftaran' => 'Diterima',
             ],
             76 => [
@@ -2093,7 +2017,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '15.71.039',
                 'status_pendaftaran' => 'Diterima',
             ],
             77 => [
@@ -2120,7 +2043,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B+',
-                'kartu_anggota' => '15.71.040',
                 'status_pendaftaran' => 'Diterima',
             ],
             78 => [
@@ -2147,7 +2069,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '15.71.041',
                 'status_pendaftaran' => 'Diterima',
             ],
             79 => [
@@ -2174,7 +2095,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '15.71.042',
                 'status_pendaftaran' => 'Diterima',
             ],
             80 => [
@@ -2201,7 +2121,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '15.71.043',
                 'status_pendaftaran' => 'Diterima',
             ],
             81 => [
@@ -2228,7 +2147,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '15.71.044',
                 'status_pendaftaran' => 'Diterima',
             ],
             82 => [
@@ -2255,7 +2173,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '15.71.045',
                 'status_pendaftaran' => 'Diterima',
             ],
             83 => [
@@ -2282,7 +2199,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '15.71.046',
                 'status_pendaftaran' => 'Diterima',
             ],
             84 => [
@@ -2309,7 +2225,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '15.71.047',
                 'status_pendaftaran' => 'Diterima',
             ],
             85 => [
@@ -2336,7 +2251,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '15.71.048',
                 'status_pendaftaran' => 'Diterima',
             ],
             86 => [
@@ -2363,7 +2277,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B+',
-                'kartu_anggota' => '415.71.49',
                 'status_pendaftaran' => 'Diterima',
             ],
             87 => [
@@ -2390,7 +2303,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '15.71.050',
                 'status_pendaftaran' => 'Diterima',
             ],
             88 => [
@@ -2417,7 +2329,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             89 => [
@@ -2444,7 +2355,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             90 => [
@@ -2471,7 +2381,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             91 => [
@@ -2498,7 +2407,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             92 => [
@@ -2525,7 +2433,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             93 => [
@@ -2552,7 +2459,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             94 => [
@@ -2579,7 +2485,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             95 => [
@@ -2606,7 +2511,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             96 => [
@@ -2633,7 +2537,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             97 => [
@@ -2660,7 +2563,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             98 => [
@@ -2687,7 +2589,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             99 => [
@@ -2714,7 +2615,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             100 => [
@@ -2741,7 +2641,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             101 => [
@@ -2768,7 +2667,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             102 => [
@@ -2795,7 +2693,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             103 => [
@@ -2822,7 +2719,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             104 => [
@@ -2849,7 +2745,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             105 => [
@@ -2876,7 +2771,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             106 => [
@@ -2903,7 +2797,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             107 => [
@@ -2930,7 +2823,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             108 => [
@@ -2957,7 +2849,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             109 => [
@@ -2984,7 +2875,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             110 => [
@@ -3011,7 +2901,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             111 => [
@@ -3038,7 +2927,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             112 => [
@@ -3065,7 +2953,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             113 => [
@@ -3092,7 +2979,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             114 => [
@@ -3119,7 +3005,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             115 => [
@@ -3146,7 +3031,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             116 => [
@@ -3173,7 +3057,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             117 => [
@@ -3200,7 +3083,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             118 => [
@@ -3227,7 +3109,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             119 => [
@@ -3254,7 +3135,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             120 => [
@@ -3281,7 +3161,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             121 => [
@@ -3308,7 +3187,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             122 => [
@@ -3335,7 +3213,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             123 => [
@@ -3362,7 +3239,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             124 => [
@@ -3389,7 +3265,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             125 => [
@@ -3416,7 +3291,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             126 => [
@@ -3443,7 +3317,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             127 => [
@@ -3470,7 +3343,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             128 => [
@@ -3497,7 +3369,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             129 => [
@@ -3524,7 +3395,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             130 => [
@@ -3551,7 +3421,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             131 => [
@@ -3578,7 +3447,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             132 => [
@@ -3605,7 +3473,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             133 => [
@@ -3632,7 +3499,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             134 => [
@@ -3659,7 +3525,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             135 => [
@@ -3686,7 +3551,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             136 => [
@@ -3713,7 +3577,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             137 => [
@@ -3740,7 +3603,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             138 => [
@@ -3767,7 +3629,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             139 => [
@@ -3794,7 +3655,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             140 => [
@@ -3821,7 +3681,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             141 => [
@@ -3848,7 +3707,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             142 => [
@@ -3875,7 +3733,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             143 => [
@@ -3902,7 +3759,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             144 => [
@@ -3929,7 +3785,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             145 => [
@@ -3956,7 +3811,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             146 => [
@@ -3983,7 +3837,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             147 => [
@@ -4010,7 +3863,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             148 => [
@@ -4037,7 +3889,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             149 => [
@@ -4064,7 +3915,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             150 => [
@@ -4091,7 +3941,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             151 => [
@@ -4118,7 +3967,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             152 => [
@@ -4145,7 +3993,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             153 => [
@@ -4172,7 +4019,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             154 => [
@@ -4199,7 +4045,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             155 => [
@@ -4226,7 +4071,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             156 => [
@@ -4253,7 +4097,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             157 => [
@@ -4280,7 +4123,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             158 => [
@@ -4307,7 +4149,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             159 => [
@@ -4334,7 +4175,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             160 => [
@@ -4361,7 +4201,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             161 => [
@@ -4388,7 +4227,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             162 => [
@@ -4415,7 +4253,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             163 => [
@@ -4442,7 +4279,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             164 => [
@@ -4469,7 +4305,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             165 => [
@@ -4496,7 +4331,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             166 => [
@@ -4523,7 +4357,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             167 => [
@@ -4550,7 +4383,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             168 => [
@@ -4577,7 +4409,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             169 => [
@@ -4604,7 +4435,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             170 => [
@@ -4631,7 +4461,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             171 => [
@@ -4658,7 +4487,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B+',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             172 => [
@@ -4685,7 +4513,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             173 => [
@@ -4712,7 +4539,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             174 => [
@@ -4739,7 +4565,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             175 => [
@@ -4766,7 +4591,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             176 => [
@@ -4793,7 +4617,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             177 => [
@@ -4820,7 +4643,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             178 => [
@@ -4847,7 +4669,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             179 => [
@@ -4874,7 +4695,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             180 => [
@@ -4901,7 +4721,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A+',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             181 => [
@@ -4928,7 +4747,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             182 => [
@@ -4955,7 +4773,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             183 => [
@@ -4982,7 +4799,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             184 => [
@@ -5009,7 +4825,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             185 => [
@@ -5036,7 +4851,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             186 => [
@@ -5063,7 +4877,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             187 => [
@@ -5090,7 +4903,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A+',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             188 => [
@@ -5117,7 +4929,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             189 => [
@@ -5144,7 +4955,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             190 => [
@@ -5171,7 +4981,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             191 => [
@@ -5198,7 +5007,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             192 => [
@@ -5225,7 +5033,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             193 => [
@@ -5252,7 +5059,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             194 => [
@@ -5279,7 +5085,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             195 => [
@@ -5306,7 +5111,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             196 => [
@@ -5333,7 +5137,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             197 => [
@@ -5360,7 +5163,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             198 => [
@@ -5387,7 +5189,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             199 => [
@@ -5414,7 +5215,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'Ab',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             200 => [
@@ -5441,7 +5241,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B+',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             201 => [
@@ -5468,7 +5267,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             202 => [
@@ -5495,7 +5293,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             203 => [
@@ -5522,7 +5319,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             204 => [
@@ -5549,7 +5345,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             205 => [
@@ -5576,7 +5371,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             206 => [
@@ -5603,7 +5397,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             207 => [
@@ -5630,7 +5423,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             208 => [
@@ -5657,7 +5449,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             209 => [
@@ -5684,7 +5475,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             210 => [
@@ -5711,7 +5501,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             211 => [
@@ -5738,7 +5527,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             212 => [
@@ -5765,7 +5553,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             213 => [
@@ -5792,7 +5579,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             214 => [
@@ -5819,7 +5605,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             215 => [
@@ -5846,7 +5631,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             216 => [
@@ -5873,7 +5657,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             217 => [
@@ -5900,7 +5683,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             218 => [
@@ -5927,7 +5709,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             219 => [
@@ -5954,7 +5735,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             220 => [
@@ -5981,7 +5761,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             221 => [
@@ -6008,7 +5787,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             222 => [
@@ -6035,7 +5813,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             223 => [
@@ -6062,7 +5839,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             224 => [
@@ -6089,7 +5865,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             225 => [
@@ -6116,7 +5891,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             226 => [
@@ -6143,7 +5917,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             227 => [
@@ -6170,7 +5943,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             228 => [
@@ -6197,7 +5969,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             229 => [
@@ -6224,7 +5995,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             230 => [
@@ -6251,7 +6021,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             231 => [
@@ -6278,7 +6047,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             232 => [
@@ -6305,7 +6073,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             233 => [
@@ -6332,7 +6099,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             234 => [
@@ -6359,7 +6125,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             235 => [
@@ -6386,7 +6151,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             236 => [
@@ -6413,7 +6177,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             237 => [
@@ -6440,7 +6203,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             238 => [
@@ -6467,7 +6229,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             239 => [
@@ -6494,7 +6255,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             240 => [
@@ -6521,7 +6281,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             241 => [
@@ -6548,7 +6307,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             242 => [
@@ -6575,7 +6333,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             243 => [
@@ -6602,7 +6359,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             244 => [
@@ -6629,7 +6385,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             245 => [
@@ -6656,7 +6411,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             246 => [
@@ -6683,7 +6437,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             247 => [
@@ -6710,7 +6463,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             248 => [
@@ -6737,7 +6489,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             249 => [
@@ -6764,7 +6515,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             250 => [
@@ -6791,7 +6541,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             251 => [
@@ -6818,7 +6567,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             252 => [
@@ -6845,7 +6593,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             253 => [
@@ -6872,7 +6619,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             254 => [
@@ -6899,7 +6645,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             255 => [
@@ -6926,7 +6671,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             256 => [
@@ -6953,7 +6697,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             257 => [
@@ -6980,7 +6723,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             258 => [
@@ -7007,7 +6749,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             259 => [
@@ -7034,7 +6775,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             260 => [
@@ -7061,7 +6801,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             261 => [
@@ -7088,7 +6827,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             262 => [
@@ -7115,7 +6853,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             263 => [
@@ -7142,7 +6879,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             264 => [
@@ -7169,7 +6905,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             265 => [
@@ -7196,7 +6931,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             266 => [
@@ -7223,7 +6957,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             267 => [
@@ -7250,7 +6983,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             268 => [
@@ -7277,7 +7009,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             269 => [
@@ -7304,7 +7035,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             270 => [
@@ -7331,7 +7061,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             271 => [
@@ -7358,7 +7087,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             272 => [
@@ -7385,7 +7113,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             273 => [
@@ -7412,7 +7139,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             274 => [
@@ -7439,7 +7165,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             275 => [
@@ -7466,7 +7191,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             276 => [
@@ -7493,7 +7217,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             277 => [
@@ -7520,7 +7243,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             278 => [
@@ -7547,7 +7269,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             279 => [
@@ -7574,7 +7295,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             280 => [
@@ -7601,7 +7321,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             281 => [
@@ -7628,7 +7347,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             282 => [
@@ -7655,7 +7373,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             283 => [
@@ -7682,7 +7399,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B+',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             284 => [
@@ -7709,7 +7425,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             285 => [
@@ -7736,7 +7451,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             286 => [
@@ -7763,7 +7477,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             287 => [
@@ -7790,7 +7503,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             288 => [
@@ -7817,7 +7529,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             289 => [
@@ -7844,7 +7555,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             290 => [
@@ -7871,7 +7581,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             291 => [
@@ -7898,7 +7607,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             292 => [
@@ -7925,7 +7633,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             293 => [
@@ -7952,7 +7659,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             294 => [
@@ -7979,7 +7685,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             295 => [
@@ -8006,7 +7711,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             296 => [
@@ -8033,7 +7737,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             297 => [
@@ -8060,7 +7763,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             298 => [
@@ -8087,7 +7789,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             299 => [
@@ -8114,7 +7815,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             300 => [
@@ -8141,7 +7841,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             301 => [
@@ -8168,7 +7867,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             302 => [
@@ -8195,7 +7893,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             303 => [
@@ -8222,7 +7919,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             304 => [
@@ -8249,7 +7945,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             305 => [
@@ -8276,7 +7971,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             306 => [
@@ -8303,7 +7997,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             307 => [
@@ -8330,7 +8023,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             308 => [
@@ -8357,7 +8049,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             309 => [
@@ -8384,7 +8075,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             310 => [
@@ -8411,7 +8101,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             311 => [
@@ -8438,7 +8127,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             312 => [
@@ -8465,7 +8153,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             313 => [
@@ -8492,7 +8179,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             314 => [
@@ -8519,7 +8205,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             315 => [
@@ -8546,7 +8231,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             316 => [
@@ -8573,7 +8257,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             317 => [
@@ -8600,7 +8283,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             318 => [
@@ -8627,7 +8309,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             319 => [
@@ -8654,7 +8335,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             320 => [
@@ -8681,7 +8361,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             321 => [
@@ -8708,7 +8387,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'O',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             322 => [
@@ -8735,7 +8413,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'A',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             323 => [
@@ -8762,7 +8439,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             324 => [
@@ -8789,7 +8465,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             325 => [
@@ -8816,7 +8491,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'B',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             326 => [
@@ -8843,7 +8517,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             327 => [
@@ -8870,7 +8543,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => 'AB',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             328 => [
@@ -8897,7 +8569,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             329 => [
@@ -8924,7 +8595,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
             330 => [
@@ -8951,7 +8621,6 @@ class DataAnggotaRedkar extends Seeder
                 'sehat_jasmani' => 'Sehat',
                 'buta_warna' => 'Tidak',
                 'golongan_darah' => '-',
-                'kartu_anggota' => '-',
                 'status_pendaftaran' => 'Diterima',
             ],
         ];

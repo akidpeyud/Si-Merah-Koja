@@ -38,7 +38,6 @@ class RedkarRegistration extends Authenticatable
         'sehat_jasmani',
         'buta_warna',
         'golongan_darah',
-        'kartu_anggota',
         'status_akun',
         'status_pendaftaran',
     ];
