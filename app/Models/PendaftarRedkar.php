@@ -36,7 +36,6 @@ class PendaftarRedkar extends Model
         'sehat_jasmani',
         'buta_warna',
         'golongan_darah',
-        'kartu_anggota',
         'status_pendaftaran',
     ];
 
