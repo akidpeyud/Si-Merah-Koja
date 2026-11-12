@@ -2,82 +2,74 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\RekapAktivitasBulananExport;
 use App\Models\ActivityLog;
+use App\Services\ActivityRecapService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ActivityLogController extends Controller
 {
+    public function __construct(
+        private readonly ActivityRecapService $recapService
+    ) {}
+
     /**
      * Menampilkan daftar riwayat aktivitas operasional internal (pegawai).
      */
     public function index(Request $request): View
     {
-        $query = ActivityLog::with('user')
-            ->where(function ($q) {
-                $q->whereNull('user_role')->orWhere('user_role', '!=', 'Pemohon');
-            })
+        $category = ActivityRecapService::CATEGORY_INTERNAL;
+        $period = $this->recapService->resolveDetailPeriod($request);
+
+        $query = $this->buildFilteredLogsQuery($request, $category, $period, withUser: true)
             ->latest();
-
-        // Filter pencarian teks
-        if ($request->filled('q')) {
-            $keyword = trim((string) $request->input('q'));
-            $query->where(function ($q) use ($keyword) {
-                $q->where('description', 'like', "%{$keyword}%")
-                    ->orWhere('user_name', 'like', "%{$keyword}%")
-                    ->orWhere('module', 'like', "%{$keyword}%")
-                    ->orWhere('ip_address', 'like', "%{$keyword}%");
-            });
-        }
-
-        // Filter Aksi
-        if ($request->filled('action')) {
-            $query->where('action', $request->input('action'));
-        }
-
-        // Filter Modul
-        if ($request->filled('module')) {
-            $query->where('module', $request->input('module'));
-        }
-
-        // Filter Tanggal Mulai
-        if ($request->filled('date_start')) {
-            $query->whereDate('created_at', '>=', $request->input('date_start'));
-        }
-
-        // Filter Tanggal Selesai
-        if ($request->filled('date_end')) {
-            $query->whereDate('created_at', '<=', $request->input('date_end'));
-        }
 
         $logs = $query->paginate(20)->withQueryString();
 
-        // Opsi modul untuk filter dropdown (khusus internal)
-        $modules = ActivityLog::select('module')
-            ->where(function ($q) {
-                $q->whereNull('user_role')->orWhere('user_role', '!=', 'Pemohon');
-            })
+        $modules = $this->recapService->applyCategoryScope(ActivityLog::query(), $category)
+            ->select('module')
             ->distinct()
             ->whereNotNull('module')
             ->orderBy('module')
             ->pluck('module');
 
-        // Ringkasan statistik aktivitas internal
-        $today = Carbon::today();
-        $internalQuery = fn () => ActivityLog::where(function ($q) {
-            $q->whereNull('user_role')->orWhere('user_role', '!=', 'Pemohon');
-        });
+        $periodStatsQuery = fn (): Builder => $this->recapService->applyDetailPeriodToQuery(
+            $this->recapService->applyCategoryScope(ActivityLog::query(), $category),
+            $period
+        );
 
         $stats = [
-            'total' => $internalQuery()->count(),
-            'today' => $internalQuery()->whereDate('created_at', $today)->count(),
-            'tambah' => $internalQuery()->where('action', 'Tambah')->count(),
-            'ubah' => $internalQuery()->where('action', 'Ubah')->count(),
-            'hapus' => $internalQuery()->where('action', 'Hapus')->count(),
+            'total' => $periodStatsQuery()->count(),
+            'today' => $this->recapService->applyCategoryScope(ActivityLog::query(), $category)
+                ->whereBetween('created_at', $this->recapService->todayStorageBounds())
+                ->count(),
+            'tambah' => $periodStatsQuery()->where('action', 'Tambah')->count(),
+            'ubah' => $periodStatsQuery()->where('action', 'Ubah')->count(),
+            'hapus' => $periodStatsQuery()->where('action', 'Hapus')->count(),
         ];
 
-        return view('internal.riwayat_aktivitas', compact('logs', 'modules', 'stats'));
+        $availableYears = $this->recapService->availableDetailYears($category);
+        $monthOptions = ActivityRecapService::MONTH_NAMES;
+        $retentionMonths = $this->recapService->retentionMonths($category);
+
+        return view('internal.riwayat_aktivitas', compact(
+            'logs',
+            'modules',
+            'stats',
+            'period',
+            'availableYears',
+            'monthOptions',
+            'retentionMonths'
+        ));
     }
 
     /**
@@ -85,12 +77,177 @@ class ActivityLogController extends Controller
      */
     public function pemohon(Request $request): View
     {
-        $query = ActivityLog::where('user_role', 'Pemohon')->latest();
+        $category = ActivityRecapService::CATEGORY_PEMOHON;
+        $period = $this->recapService->resolveDetailPeriod($request);
 
-        // Filter pencarian teks
+        $query = $this->buildFilteredLogsQuery($request, $category, $period, withUser: false)
+            ->latest();
+
+        $logs = $query->paginate(20)->withQueryString();
+
+        $modules = $this->recapService->applyCategoryScope(ActivityLog::query(), $category)
+            ->select('module')
+            ->distinct()
+            ->whereNotNull('module')
+            ->orderBy('module')
+            ->pluck('module');
+
+        $periodStatsQuery = fn (): Builder => $this->recapService->applyDetailPeriodToQuery(
+            $this->recapService->applyCategoryScope(ActivityLog::query(), $category),
+            $period
+        );
+
+        $stats = [
+            'total' => $periodStatsQuery()->count(),
+            'today' => $this->recapService->applyCategoryScope(ActivityLog::query(), $category)
+                ->whereBetween('created_at', $this->recapService->todayStorageBounds())
+                ->count(),
+            'rpkbgl' => $periodStatsQuery()->where('module', 'Permohonan RPKBGL')->count(),
+            'skk' => $periodStatsQuery()->where('module', 'Permohonan SKK')->count(),
+            'izin' => $periodStatsQuery()->where('module', 'Permohonan Izin Keramaian')->count(),
+            'sarana' => $periodStatsQuery()->where('module', 'Permohonan Sarana Damkar')->count(),
+            'edukasi' => $periodStatsQuery()->where('module', 'Permohonan Edukasi & Sosialisasi')->count(),
+        ];
+
+        $availableYears = $this->recapService->availableDetailYears($category);
+        $monthOptions = ActivityRecapService::MONTH_NAMES;
+        $retentionMonths = $this->recapService->retentionMonths($category);
+
+        return view('internal.riwayat_aktivitas_pemohon', compact(
+            'logs',
+            'modules',
+            'stats',
+            'period',
+            'availableYears',
+            'monthOptions',
+            'retentionMonths'
+        ));
+    }
+
+    /**
+     * Menampilkan halaman Rekap Bulanan Riwayat Aktivitas (Internal & Pemohon terpisah).
+     */
+    public function rekap(Request $request): View
+    {
+        [$selectedYear, $yearFilter, $selectedCategory] = $this->resolveRecapFilters($request);
+
+        $recap = $this->recapService->getRecapData($yearFilter, $selectedCategory);
+        $prunable = $this->recapService->countPrunable();
+        $retentionInternal = $this->recapService->retentionMonths(ActivityRecapService::CATEGORY_INTERNAL);
+        $retentionPemohon = $this->recapService->retentionMonths(ActivityRecapService::CATEGORY_PEMOHON);
+
+        return view('internal.riwayat_aktivitas_rekap', compact(
+            'recap',
+            'prunable',
+            'selectedYear',
+            'selectedCategory',
+            'retentionInternal',
+            'retentionPemohon'
+        ));
+    }
+
+    /**
+     * Ekspor Rekap Bulanan Riwayat Aktivitas ke file Excel (.xlsx).
+     */
+    public function exportRekapExcel(Request $request): BinaryFileResponse
+    {
+        [, $yearFilter, $selectedCategory] = $this->resolveRecapFilters($request);
+        $recap = $this->recapService->getRecapData($yearFilter, $selectedCategory);
+
+        $suffixTahun = $yearFilter ? "_{$yearFilter}" : '_Semua_Tahun';
+        $suffixKategori = $selectedCategory !== 'all' ? '_'.ucfirst($selectedCategory) : '';
+
+        return Excel::download(
+            new RekapAktivitasBulananExport(
+                monthlyInternal: $recap['monthly_internal'],
+                monthlyPemohon: $recap['monthly_pemohon'],
+                moduleDetails: $recap['module_details'],
+                category: $selectedCategory
+            ),
+            "Rekap_Bulanan_Riwayat_Aktivitas{$suffixTahun}{$suffixKategori}.xlsx"
+        );
+    }
+
+    /**
+     * Ekspor Rekap Bulanan Riwayat Aktivitas ke file PDF.
+     */
+    public function exportRekapPdf(Request $request): Response
+    {
+        [, $yearFilter, $selectedCategory] = $this->resolveRecapFilters($request);
+        $recap = $this->recapService->getRecapData($yearFilter, $selectedCategory);
+
+        $labelTahun = $yearFilter ? "TAHUN {$yearFilter}" : 'SEMUA TAHUN';
+        $labelKategori = match ($selectedCategory) {
+            ActivityRecapService::CATEGORY_INTERNAL => 'AKTIVITAS INTERNAL PEGAWAI',
+            ActivityRecapService::CATEGORY_PEMOHON => 'PERMOHONAN SURAT PEMOHON',
+            default => 'INTERNAL & PERMOHONAN PEMOHON',
+        };
+
+        $nowLocal = Carbon::now($this->recapService->timezone())->locale('id');
+        $printedAt = $nowLocal->translatedFormat('d F Y H:i');
+        $printedDate = $nowLocal->translatedFormat('d F Y');
+        $printedBy = (string) (Auth::user()?->nama_lengkap ?? Auth::user()?->name ?? 'Petugas');
+
+        $pdf = Pdf::loadView('internal.riwayat_aktivitas_rekap_pdf', compact(
+            'recap',
+            'selectedCategory',
+            'labelTahun',
+            'labelKategori',
+            'printedAt',
+            'printedDate',
+            'printedBy'
+        ))->setPaper('a4', 'landscape');
+
+        $suffixTahun = $yearFilter ? "_{$yearFilter}" : '_Semua_Tahun';
+        $suffixKategori = $selectedCategory !== 'all' ? '_'.ucfirst($selectedCategory) : '';
+
+        return $pdf->download("Rekap_Bulanan_Riwayat_Aktivitas{$suffixTahun}{$suffixKategori}.pdf");
+    }
+
+    /**
+     * Ringkas dan arsipkan log detail yang melewati batas retensi (khusus Super User).
+     */
+    public function prune(): RedirectResponse
+    {
+        if (! Auth::user()?->hasRole('Super User')) {
+            abort(403, 'Akses ditolak. Hanya Super User yang dapat mengarsipkan log aktivitas.');
+        }
+
+        $result = $this->recapService->pruneAndSummarize();
+
+        if ($result['total_deleted'] === 0) {
+            $internalMonths = $this->recapService->retentionMonths(ActivityRecapService::CATEGORY_INTERNAL);
+            $pemohonMonths = $this->recapService->retentionMonths(ActivityRecapService::CATEGORY_PEMOHON);
+
+            return back()->with(
+                'success',
+                "Tidak ada log detail yang melewati masa retensi ({$internalMonths} bulan internal / {$pemohonMonths} bulan pemohon)."
+            );
+        }
+
+        return back()->with(
+            'success',
+            sprintf(
+                'Berhasil meringkas & mengarsipkan %d log internal serta %d log pemohon ke Rekap Bulanan.',
+                $result['internal']['deleted'],
+                $result['pemohon']['deleted']
+            )
+        );
+    }
+
+    /**
+     * Bangun query filter standar untuk halaman log detail internal maupun pemohon.
+     *
+     * @param  array{selected_month: string, selected_year: string, date_start: ?string, date_end: ?string, has_date_range: bool}  $period
+     */
+    private function buildFilteredLogsQuery(Request $request, string $category, array $period, bool $withUser): Builder
+    {
+        $query = $withUser ? ActivityLog::with('user') : ActivityLog::query();
+        $this->recapService->applyCategoryScope($query, $category);
+
         if ($request->filled('q')) {
             $keyword = trim((string) $request->input('q'));
-            $query->where(function ($q) use ($keyword) {
+            $query->where(function (Builder $q) use ($keyword): void {
                 $q->where('description', 'like', "%{$keyword}%")
                     ->orWhere('user_name', 'like', "%{$keyword}%")
                     ->orWhere('module', 'like', "%{$keyword}%")
@@ -98,45 +255,35 @@ class ActivityLogController extends Controller
             });
         }
 
-        // Filter Modul / Jenis Surat
+        if ($withUser && $request->filled('action')) {
+            $query->where('action', $request->input('action'));
+        }
+
         if ($request->filled('module')) {
             $query->where('module', $request->input('module'));
         }
 
-        // Filter Tanggal Mulai
-        if ($request->filled('date_start')) {
-            $query->whereDate('created_at', '>=', $request->input('date_start'));
-        }
+        return $this->recapService->applyDetailPeriodToQuery($query, $period);
+    }
 
-        // Filter Tanggal Selesai
-        if ($request->filled('date_end')) {
-            $query->whereDate('created_at', '<=', $request->input('date_end'));
-        }
+    /**
+     * Resolusi filter tahun & kategori untuk halaman serta ekspor Rekap Bulanan.
+     *
+     * @return array{0: string, 1: ?int, 2: string}
+     */
+    private function resolveRecapFilters(Request $request): array
+    {
+        $rawYear = trim((string) $request->input('year', 'all'));
+        $selectedYear = ($rawYear !== 'all' && preg_match('/^\d{4}$/', $rawYear) === 1) ? $rawYear : 'all';
+        $yearFilter = $selectedYear !== 'all' ? (int) $selectedYear : null;
 
-        $logs = $query->paginate(20)->withQueryString();
+        $rawCategory = trim((string) $request->input('category', 'all'));
+        $selectedCategory = in_array(
+            $rawCategory,
+            [ActivityRecapService::CATEGORY_INTERNAL, ActivityRecapService::CATEGORY_PEMOHON],
+            true
+        ) ? $rawCategory : 'all';
 
-        // Opsi modul untuk filter dropdown (khusus pemohon)
-        $modules = ActivityLog::where('user_role', 'Pemohon')
-            ->select('module')
-            ->distinct()
-            ->whereNotNull('module')
-            ->orderBy('module')
-            ->pluck('module');
-
-        // Ringkasan statistik permohonan pemohon
-        $today = Carbon::today();
-        $pemohonQuery = fn () => ActivityLog::where('user_role', 'Pemohon');
-
-        $stats = [
-            'total' => $pemohonQuery()->count(),
-            'today' => $pemohonQuery()->whereDate('created_at', $today)->count(),
-            'rpkbgl' => $pemohonQuery()->where('module', 'Permohonan RPKBGL')->count(),
-            'skk' => $pemohonQuery()->where('module', 'Permohonan SKK')->count(),
-            'izin' => $pemohonQuery()->where('module', 'Permohonan Izin Keramaian')->count(),
-            'sarana' => $pemohonQuery()->where('module', 'Permohonan Sarana Damkar')->count(),
-            'edukasi' => $pemohonQuery()->where('module', 'Permohonan Edukasi & Sosialisasi')->count(),
-        ];
-
-        return view('internal.riwayat_aktivitas_pemohon', compact('logs', 'modules', 'stats'));
+        return [$selectedYear, $yearFilter, $selectedCategory];
     }
 }

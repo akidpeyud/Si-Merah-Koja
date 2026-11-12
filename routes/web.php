@@ -245,6 +245,10 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
     });
     Route::get('/internal/riwayat-aktivitas', [ActivityLogController::class, 'index'])->name('internal.riwayat-aktivitas');
     Route::get('/internal/riwayat-aktivitas-pemohon', [ActivityLogController::class, 'pemohon'])->name('internal.riwayat-aktivitas-pemohon');
+    Route::get('/internal/riwayat-aktivitas-rekap', [ActivityLogController::class, 'rekap'])->name('internal.riwayat-aktivitas-rekap');
+    Route::get('/internal/riwayat-aktivitas-rekap/excel', [ActivityLogController::class, 'exportRekapExcel'])->name('internal.riwayat-aktivitas-rekap.excel');
+    Route::get('/internal/riwayat-aktivitas-rekap/pdf', [ActivityLogController::class, 'exportRekapPdf'])->name('internal.riwayat-aktivitas-rekap.pdf');
+    Route::post('/internal/riwayat-aktivitas-rekap/prune', [ActivityLogController::class, 'prune'])->name('internal.riwayat-aktivitas-rekap.prune');
     Route::get('/internal/profil', [AuthController::class, 'showProfile']);
     Route::post('/internal/profil/update-password', [AuthController::class, 'updatePassword']);
     Route::get('/internal/kelola-user', [AuthController::class, 'kelolaUser']);
