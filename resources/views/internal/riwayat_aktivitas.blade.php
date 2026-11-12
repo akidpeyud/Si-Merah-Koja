@@ -157,6 +157,14 @@
     <div>
         <h1>Riwayat Aktivitas Internal</h1>
         <p>Catatan rekam jejak aktivitas operasional (tambah, ubah, dan hapus data) oleh pegawai internal sistem.</p>
+        <div class="mt-2 d-flex flex-wrap align-items-center gap-2">
+            <span class="badge rounded-pill text-bg-light border text-secondary px-3 py-2 fw-semibold">
+                <i class="fa-regular fa-calendar me-1 text-primary"></i> Periode: {{ $period['period_label'] }}
+            </span>
+            <span class="small text-muted">
+                Log detail otomatis diringkas ke <a href="{{ route('internal.riwayat-aktivitas-rekap') }}" class="text-decoration-underline fw-semibold text-secondary">Rekap Bulanan</a> setelah {{ $retentionMonths }} bulan.
+            </span>
+        </div>
     </div>
     <div class="btn-group p-1 bg-white border rounded-3 shadow-xs">
         <a href="{{ route('internal.riwayat-aktivitas') }}" class="btn btn-sm btn-primary fw-bold px-3 py-2" style="background: var(--navy); border-color: var(--navy);">
@@ -164,6 +172,9 @@
         </a>
         <a href="{{ route('internal.riwayat-aktivitas-pemohon') }}" class="btn btn-sm btn-light text-secondary fw-semibold px-3 py-2">
             <i class="fa-solid fa-file-signature me-1"></i> Permohonan Surat
+        </a>
+        <a href="{{ route('internal.riwayat-aktivitas-rekap') }}" class="btn btn-sm btn-light text-secondary fw-semibold px-3 py-2">
+            <i class="fa-solid fa-chart-column me-1"></i> Rekap Bulanan
         </a>
     </div>
 </div>
@@ -219,9 +230,9 @@
 
 <div class="content-card">
     <!-- Filter Pencarian -->
-    <form action="{{ route('internal.riwayat-aktivitas') }}" method="GET" class="filter-card">
+    <form action="{{ route('internal.riwayat-aktivitas') }}" method="GET" class="filter-card" id="filterLogForm">
         <div class="row g-2 align-items-end">
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-4">
                 <label class="form-label small fw-semibold text-muted mb-1">Cari Keterangan / Pengguna</label>
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0 text-muted" style="border-color: var(--line-dark);">
@@ -229,6 +240,26 @@
                     </span>
                     <input type="text" name="q" class="form-control border-start-0 ps-0" placeholder="Ketik kata kunci..." value="{{ request('q') }}">
                 </div>
+            </div>
+
+            <div class="col-6 col-md-2">
+                <label class="form-label small fw-semibold text-muted mb-1">Bulan</label>
+                <select name="month" class="form-select period-select">
+                    <option value="all" {{ $period['selected_month'] === 'all' ? 'selected' : '' }}>Semua Bulan</option>
+                    @foreach($monthOptions as $num => $name)
+                        <option value="{{ $num }}" {{ (string) $period['selected_month'] === (string) $num ? 'selected' : '' }}>{{ $name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="col-6 col-md-2">
+                <label class="form-label small fw-semibold text-muted mb-1">Tahun</label>
+                <select name="year" class="form-select period-select">
+                    <option value="all" {{ $period['selected_year'] === 'all' ? 'selected' : '' }}>Semua Tahun</option>
+                    @foreach($availableYears as $yr)
+                        <option value="{{ $yr }}" {{ (string) $period['selected_year'] === (string) $yr ? 'selected' : '' }}>{{ $yr }}</option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="col-6 col-md-2">
@@ -241,7 +272,7 @@
                 </select>
             </div>
 
-            <div class="col-6 col-md-3">
+            <div class="col-6 col-md-2">
                 <label class="form-label small fw-semibold text-muted mb-1">Modul / Menu</label>
                 <select name="module" class="form-select">
                     <option value="">Semua Modul</option>
@@ -251,23 +282,23 @@
                 </select>
             </div>
 
-            <div class="col-6 col-md-2">
-                <label class="form-label small fw-semibold text-muted mb-1">Dari Tanggal</label>
-                <input type="date" name="date_start" class="form-control" value="{{ request('date_start') }}">
+            <div class="col-6 col-md-3">
+                <label class="form-label small fw-semibold text-muted mb-1">Dari Tanggal (Opsional)</label>
+                <input type="date" name="date_start" class="form-control date-range-input" value="{{ request('date_start') }}">
             </div>
 
-            <div class="col-6 col-md-2">
-                <label class="form-label small fw-semibold text-muted mb-1">Sampai Tanggal</label>
-                <input type="date" name="date_end" class="form-control" value="{{ request('date_end') }}">
+            <div class="col-6 col-md-3">
+                <label class="form-label small fw-semibold text-muted mb-1">Sampai Tanggal (Opsional)</label>
+                <input type="date" name="date_end" class="form-control date-range-input" value="{{ request('date_end') }}">
             </div>
 
-            <div class="col-12 d-flex justify-content-end gap-2 mt-3">
-                <button type="submit" class="btn btn-sm btn-primary px-3" style="background: var(--navy); border-color: var(--navy);">
+            <div class="col-12 col-md-6 d-flex justify-content-end gap-2 mt-2 mt-md-0">
+                <button type="submit" class="btn btn-sm btn-primary px-3 py-2" style="background: var(--navy); border-color: var(--navy);">
                     <i class="fa-solid fa-filter me-1"></i> Terapkan Filter
                 </button>
-                @if(request()->anyFilled(['q', 'action', 'module', 'date_start', 'date_end']))
-                    <a href="{{ route('internal.riwayat-aktivitas') }}" class="btn btn-sm btn-light border px-3">
-                        <i class="fa-solid fa-rotate-left me-1"></i> Reset
+                @if(! $period['is_default_current_month'] || request()->anyFilled(['q', 'action', 'module', 'date_start', 'date_end']))
+                    <a href="{{ route('internal.riwayat-aktivitas') }}" class="btn btn-sm btn-light border px-3 py-2">
+                        <i class="fa-solid fa-rotate-left me-1"></i> Bulan Ini
                     </a>
                 @endif
             </div>
@@ -364,3 +395,28 @@
     @endif
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const periodSelects = document.querySelectorAll('#filterLogForm .period-select');
+    const dateInputs = document.querySelectorAll('#filterLogForm .date-range-input');
+
+    dateInputs.forEach(function (input) {
+        input.addEventListener('change', function () {
+            if (input.value) {
+                periodSelects.forEach(function (sel) { sel.value = 'all'; });
+            }
+        });
+    });
+
+    periodSelects.forEach(function (sel) {
+        sel.addEventListener('change', function () {
+            if (sel.value !== 'all') {
+                dateInputs.forEach(function (input) { input.value = ''; });
+            }
+        });
+    });
+});
+</script>
+@endpush

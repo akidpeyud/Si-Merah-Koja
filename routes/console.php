@@ -11,3 +11,8 @@ Artisan::command('inspire', function () {
 Schedule::command('visits:prune')
     ->daily()
     ->timezone((string) config('visits.timezone', 'Asia/Jakarta'));
+
+Schedule::command('activity:prune')
+    ->dailyAt('01:15')
+    ->timezone((string) config('activity.timezone', 'Asia/Jakarta'))
+    ->withoutOverlapping(30);

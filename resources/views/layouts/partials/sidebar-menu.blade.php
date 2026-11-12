@@ -90,6 +90,7 @@
             'items' => [
                 ['Aktivitas Internal', route('internal.riwayat-aktivitas'), 'fa-user-tie'],
                 ['Permohonan Surat', route('internal.riwayat-aktivitas-pemohon'), 'fa-file-signature'],
+                ['Rekap Bulanan', route('internal.riwayat-aktivitas-rekap'), 'fa-chart-column'],
             ],
         ],
         [
