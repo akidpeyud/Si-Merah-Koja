@@ -219,6 +219,17 @@
                 return res.json();
             })
             .then(function (json) {
+                if (json.mime && json.mime.indexOf('image/') === 0) {
+                    viewerContainer.innerHTML = '';
+                    if (pdfPageInfo) pdfPageInfo.textContent = 'Format: Gambar (' + (json.ext || '').toUpperCase() + ')';
+                    var img = document.createElement('img');
+                    img.src = 'data:' + json.mime + ';base64,' + json.base64;
+                    img.alt = json.judul || 'Pratinjau Gambar';
+                    img.className = 'pdf-page-canvas';
+                    viewerContainer.appendChild(img);
+                    return null;
+                }
+
                 var binaryString = window.atob(json.base64);
                 var len = binaryString.length;
                 var bytes = new Uint8Array(len);
@@ -228,6 +239,7 @@
                 return window.pdfjsLib.getDocument({ data: bytes }).promise;
             })
             .then(function (pdf) {
+                if (!pdf) return;
                 viewerContainer.innerHTML = '';
                 if (pdfPageInfo) pdfPageInfo.textContent = 'Total: ' + pdf.numPages + ' halaman';
 

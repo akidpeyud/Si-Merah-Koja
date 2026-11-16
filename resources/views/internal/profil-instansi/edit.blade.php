@@ -73,13 +73,15 @@
                     </div>
 
                     <div class="col-12">
-                        <label for="file_dokumen" class="form-label">Ganti Dokumen (Opsional, Hanya PDF, Maks. 10MB)</label>
-                        <input type="file" name="file_dokumen" id="file_dokumen" class="form-control @error('file_dokumen') is-invalid @enderror" accept="application/pdf,.pdf">
+                        <label for="file_dokumen" class="form-label">Ganti Dokumen (Opsional, PDF / JPG / PNG, Maks. 10MB)</label>
+                        <input type="file" name="file_dokumen" id="file_dokumen" class="form-control @error('file_dokumen') is-invalid @enderror" accept="application/pdf,.pdf,image/jpeg,image/png,.jpg,.jpeg,.png">
+                        <input type="hidden" name="file_dokumen_base64" id="file_dokumen_base64">
+                        <input type="hidden" name="file_dokumen_name" id="file_dokumen_name">
                         <small class="text-muted d-block mt-1">
-                            Biarkan kosong jika tidak ingin mengganti dokumen lama (Format wajib <b>.pdf</b>).
+                            Biarkan kosong jika tidak ingin mengganti dokumen lama (Format: <b>.pdf</b>, <b>.jpg</b>, <b>.jpeg</b>, atau <b>.png</b>).
                             @if($item->file_dokumen)
                                 <a href="{{ route('internal.profil-instansi.download-file', [$kategori, $item->id]) }}" class="text-primary fw-semibold ms-1">
-                                    <i class="fas fa-download"></i> Unduh PDF Saat Ini
+                                    <i class="fas fa-download"></i> Unduh File Saat Ini
                                 </a>
                             @endif
                         </small>
@@ -138,6 +140,44 @@
             }
         });
     });
+
+    // Handle file upload fallback (Base64) to bypass small php.ini upload_max_filesize
+    var fileInput = document.getElementById('file_dokumen');
+    var base64Input = document.getElementById('file_dokumen_base64');
+    var nameInput = document.getElementById('file_dokumen_name');
+
+    if (fileInput && base64Input && nameInput) {
+        fileInput.addEventListener('change', function () {
+            var file = fileInput.files && fileInput.files[0];
+            if (!file) {
+                base64Input.value = '';
+                nameInput.value = '';
+                return;
+            }
+            if (file.size > 10 * 1024 * 1024) {
+                alert('Ukuran file maksimal 10MB.');
+                fileInput.value = '';
+                base64Input.value = '';
+                nameInput.value = '';
+                return;
+            }
+            nameInput.value = file.name;
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                base64Input.value = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        var form = fileInput.closest('form');
+        if (form) {
+            form.addEventListener('submit', function () {
+                if (base64Input.value) {
+                    fileInput.removeAttribute('name');
+                }
+            });
+        }
+    }
 })();
 </script>
 @endpush

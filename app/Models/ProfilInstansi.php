@@ -20,11 +20,12 @@ class ProfilInstansi extends Model
     ];
 
     /**
-     * Daftar 4 kategori profil instansi (tanpa Kepegawaian & Visi Misi yang statis)
+     * Daftar kategori profil instansi yang dikelola melalui dashboard internal
      */
     public static function daftarKategori(): array
     {
         return [
+            'visi-misi' => 'Visi Misi',
             'sotk' => 'SOTK',
             'tupoksi' => 'Tupoksi',
             'program-kegiatan' => 'Program Kegiatan',
