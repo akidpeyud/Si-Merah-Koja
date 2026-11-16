@@ -839,10 +839,7 @@
                     <button class="menu-trigger" type="button" aria-expanded="false">Dokumen <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
                         <li><a href="/dokumen/renstra">Renstra</a></li>
-                        <li><a href="/dokumen/renja">Renja</a></li>
                         <li><a href="/dokumen/spm">SPM</a></li>
-                        <li><a href="/dokumen/sakip">SAKIP</a></li>
-                        <li><a href="/dokumen/lppd">LPPD</a></li>
                     </ul>
                 </li>
 

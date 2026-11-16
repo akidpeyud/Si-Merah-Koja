@@ -80,10 +80,7 @@
                     <button class="menu-trigger" type="button" aria-expanded="false">Dokumen <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
                         <li><a href="/dokumen/renstra" {!! request()->is('dokumen/renstra') ? 'aria-current="page"' : '' !!}>Renstra</a></li>
-                        <li><a href="/dokumen/renja" {!! request()->is('dokumen/renja') ? 'aria-current="page"' : '' !!}>Renja</a></li>
                         <li><a href="/dokumen/spm" {!! request()->is('dokumen/spm') ? 'aria-current="page"' : '' !!}>SPM</a></li>
-                        <li><a href="/dokumen/sakip" {!! request()->is('dokumen/sakip') ? 'aria-current="page"' : '' !!}>SAKIP</a></li>
-                        <li><a href="/dokumen/lppd" {!! request()->is('dokumen/lppd') ? 'aria-current="page"' : '' !!}>LPPD</a></li>
                     </ul>
                 </li>
 
