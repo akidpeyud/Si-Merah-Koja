@@ -47,6 +47,7 @@ use App\Models\DataAsn;
 use App\Models\DokumenPublik;
 use App\Models\EduDamkar;
 use App\Models\Infografis;
+use App\Models\Kejadian;
 use App\Models\PermohonanEdukasi;
 use App\Models\PetaJabatan;
 use App\Models\UjungDamkar;
@@ -61,7 +62,7 @@ use Spatie\Permission\Middleware\RoleMiddleware;
 // 1. RUTE PUBLIK (HALAMAN UTAMA & INFO)
 // ==========================================
 Route::get('/', function () {
-    $daftar_kejadian = \App\Models\Kejadian::orderByDesc('tanggal')->orderByDesc('id')->take(4)->get();
+    $daftar_kejadian = Kejadian::orderByDesc('tanggal')->orderByDesc('id')->take(4)->get();
     $daftar_infografis = Infografis::latest()->take(6)->get();
     $daftar_medsos = BeritaMedsos::with('kategori')->latest()->take(6)->get();
     $daftar_edu_damkar = EduDamkar::latest()->take(4)->get();
@@ -1003,34 +1004,18 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
 Route::get('/dokumen-publik/view/{id}', [DokumenPublikController::class, 'showFile']);
 Route::get('/dokumen-publik/download/{id}', [DokumenPublikController::class, 'download'])->name('publik.dokumen-publik.download');
 
+Route::redirect('/dokumen', '/dokumen/renstra');
+
 Route::get('/dokumen/renstra', function () {
     $dokumens = DokumenPublik::where('kategori', 'Renstra')->latest()->get();
 
     return view('public.dokumen-publik.renstra', compact('dokumens'));
 });
 
-Route::get('/dokumen/renja', function () {
-    $dokumens = DokumenPublik::where('kategori', 'Renja')->latest()->get();
-
-    return view('public.dokumen-publik.renja', compact('dokumens'));
-});
-
 Route::get('/dokumen/spm', function () {
     $dokumens = DokumenPublik::where('kategori', 'SPM')->latest()->get();
 
     return view('public.dokumen-publik.spm', compact('dokumens'));
-});
-
-Route::get('/dokumen/sakip', function () {
-    $dokumens = DokumenPublik::where('kategori', 'SAKIP')->latest()->get();
-
-    return view('public.dokumen-publik.sakip', compact('dokumens'));
-});
-
-Route::get('/dokumen/lppd', function () {
-    $dokumens = DokumenPublik::where('kategori', 'LPPD')->latest()->get();
-
-    return view('public.dokumen-publik.lppd', compact('dokumens'));
 });
 
 // --- RUTE INTERNAL PRODUK HUKUM ---
