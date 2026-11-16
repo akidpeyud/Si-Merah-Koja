@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BeritaMedsos;
+use App\Models\Pengumuman;
 use Illuminate\Http\Request;
 
 class KabarDamkarController extends Controller
@@ -26,6 +27,56 @@ class KabarDamkarController extends Controller
         $modelKategori = $relasi->getRelated();
         $kolomKategori = $relasi->getForeignKeyName();
 
+        $daftar_kategori = $modelKategori->newQuery()
+            ->where('nama_kategori', '!=', 'Lainya')
+            ->orderBy('id')
+            ->get();
+
+        if ($kategoriId === 'pengumuman') {
+            $q = trim((string) $request->query('q', ''));
+            $katPengumuman = $request->query('kat_pengumuman');
+
+            $pgQuery = Pengumuman::terbit();
+
+            if ($q !== '') {
+                $pgQuery->where(function ($w) use ($q) {
+                    $w->where('judul', 'like', "%{$q}%")
+                        ->orWhere('isi', 'like', "%{$q}%");
+                });
+            }
+
+            if (! empty($katPengumuman) && in_array($katPengumuman, Pengumuman::KATEGORI, true)) {
+                if ($katPengumuman === 'Penting') {
+                    $pgQuery->where(function ($w) {
+                        $w->where('kategori', 'Penting')
+                            ->orWhere('penting', true);
+                    });
+                } else {
+                    $pgQuery->where('kategori', $katPengumuman);
+                }
+            }
+
+            $daftar_pengumuman = $pgQuery
+                ->orderByDesc('penting')
+                ->orderByDesc('tanggal')
+                ->orderByDesc('id')
+                ->paginate(9)
+                ->withQueryString();
+
+            $medsos = collect();
+            $daftar_kategori_pengumuman = Pengumuman::KATEGORI;
+
+            return view('galery.berita.media_informasi', compact(
+                'medsos',
+                'daftar_kategori',
+                'kategoriId',
+                'daftar_pengumuman',
+                'daftar_kategori_pengumuman',
+                'katPengumuman',
+                'q'
+            ));
+        }
+
         $query = BeritaMedsos::with('kategori')->orderByDesc('tanggal');
 
         if (! empty($kategoriId)) {
@@ -44,11 +95,8 @@ class KabarDamkarController extends Controller
 
         app(OperatorMedsosController::class)->syncMissingImages($medsos->getCollection());
 
-        $daftar_kategori = $modelKategori->newQuery()
-            ->where('nama_kategori', '!=', 'Lainya')
-            ->orderBy('id')
-            ->get();
+        $daftar_pengumuman = collect();
 
-        return view('galery.berita.media_informasi', compact('medsos', 'daftar_kategori', 'kategoriId'));
+        return view('galery.berita.media_informasi', compact('medsos', 'daftar_kategori', 'kategoriId', 'daftar_pengumuman'));
     }
 }
