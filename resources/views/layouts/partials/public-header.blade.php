@@ -96,8 +96,7 @@
                     <button class="menu-trigger" type="button" aria-expanded="false">Galeri <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
                         <li><a href="/ikm" {!! request()->is('ikm*') ? 'aria-current="page"' : '' !!}>IKM (Indeks Kepuasan Masyarakat)</a></li>
-                        <li><a href="/pengumuman" {!! request()->is('pengumuman*') ? 'aria-current="page"' : '' !!}>Pengumuman</a></li>
-                        <li class="has-sub {{ request()->is('edu-damkar*', 'infografis*', 'media-informasi*', 'ujung-ujung-damkar*', 'pemadaman-penyelamatan-evakuasi*') ? 'current' : '' }}">
+                        <li class="has-sub {{ request()->is('edu-damkar*', 'infografis*', 'media-informasi*', 'pengumuman*', 'ujung-ujung-damkar*', 'pemadaman-penyelamatan-evakuasi*') ? 'current' : '' }}">
                             <button class="sub-trigger" type="button" aria-expanded="false">
                                 Berita <i class="fas fa-chevron-right"></i>
                             </button>

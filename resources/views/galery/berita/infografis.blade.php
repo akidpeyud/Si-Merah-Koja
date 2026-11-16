@@ -379,7 +379,7 @@
         /* ================= INFOGRAFIS GRID ================= */
         .grafis-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
             gap: 24px;
         }
         .grafis-card {
@@ -391,27 +391,56 @@
             border: 1px solid var(--line);
             border-radius: 22px;
             overflow: hidden;
-            box-shadow: 0 7px 24px rgba(13,27,42,.055);
+            box-shadow: 0 10px 28px rgba(13,27,42,.06);
             transition: transform .35s cubic-bezier(.2,.75,.25,1), box-shadow .35s, border-color .35s;
-            cursor: zoom-in;
-            aspect-ratio: 4 / 5;
+            cursor: pointer;
+            text-align: left;
         }
         .grafis-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 24px 55px rgba(13,27,42,.14);
-            border-color: rgba(229,57,45,.25);
+            transform: translateY(-7px);
+            box-shadow: 0 24px 52px rgba(13,27,42,.14);
+            border-color: rgba(229,57,45,.28);
         }
-        .grafis-card img {
+        .grafis-thumb {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            background: radial-gradient(circle at center, #162f47 0%, #0b1826 100%);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+        }
+        .grafis-thumb img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            border-radius: 12px;
             display: block;
-            transition: filter .35s, transform .5s;
+            transition: filter .35s, transform .55s cubic-bezier(.2,.75,.25,1);
         }
-        .grafis-card:hover img {
+        .grafis-card:hover .grafis-thumb img {
             filter: saturate(1.06);
-            transform: scale(1.03);
+            transform: scale(1.045);
         }
+        .grafis-badge {
+            position: absolute;
+            z-index: 3;
+            top: 13px; left: 13px;
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 11px;
+            border-radius: 999px;
+            background: rgba(11,24,38,.78);
+            border: 1px solid rgba(255,255,255,.16);
+            backdrop-filter: blur(8px);
+            color: #fff;
+            font-size: .68rem;
+            font-weight: 800;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+        .grafis-badge i { color: var(--amber); font-size: .72rem; }
 
         .grafis-zoom {
             position: absolute;
@@ -421,35 +450,58 @@
             border-radius: 50%;
             display: grid; place-items: center;
             color: #fff;
-            background: rgba(7,20,33,.68);
-            border: 1px solid rgba(255,255,255,.2);
-            backdrop-filter: blur(8px);
-            font-size: .95rem;
-            opacity: 0; transform: translateY(-4px);
-            transition: .3s ease;
+            background: rgba(229,57,45,.92);
+            border: 1px solid rgba(255,255,255,.25);
+            box-shadow: 0 6px 18px rgba(229,57,45,.35);
+            font-size: .9rem;
+            opacity: 0; transform: scale(.88);
+            transition: .28s cubic-bezier(.2,.75,.25,1);
         }
         .grafis-card:hover .grafis-zoom {
-            opacity: 1; transform: translateY(0);
+            opacity: 1; transform: scale(1);
         }
 
+        .grafis-body {
+            padding: 16px 18px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            justify-content: space-between;
+            background: #fff;
+        }
         .grafis-title {
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            background: linear-gradient(to top, rgba(7,20,33,.9), transparent);
-            color: #fff;
-            padding: 36px 18px 18px;
+            color: var(--ink);
             font-family: var(--display);
             font-weight: 700;
-            font-size: 1rem;
-            line-height: 1.35;
+            font-size: .98rem;
+            line-height: 1.38;
             letter-spacing: -.01em;
-            opacity: 0;
-            transition: opacity .3s;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: color .2s;
         }
-        .grafis-card:hover .grafis-title { opacity: 1; }
-        
+        .grafis-card:hover .grafis-title { color: var(--signal-dark); }
+        .grafis-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 8px;
+            border-top: 1px solid var(--soft);
+            font-size: .78rem;
+            font-weight: 700;
+            color: var(--steel);
+        }
+        .grafis-foot span {
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .grafis-card:hover .grafis-foot { color: var(--ink); }
+        .grafis-card:hover .grafis-foot i.fa-arrow-up-right-from-square { color: var(--signal); }
+
         @media (hover: none) { 
-            .grafis-card .grafis-zoom, .grafis-card .grafis-title { opacity: 1; transform: translateY(0); } 
+            .grafis-card .grafis-zoom { opacity: 1; transform: scale(1); } 
         }
 
         .empty-filter{
@@ -459,39 +511,194 @@
         .empty-filter i{font-size:2.8rem;color:#c8d1db;margin-bottom:12px}
         .empty-filter h2{font-family:var(--display);color:var(--ink);margin-bottom:5px}
 
-        /* ================= MODAL DIALOG (GAMBAR / LIGHTBOX) ================= */
-        dialog{
-            border:0;padding:0;background:transparent;
-            width:min(1100px,96vw);margin:auto;overflow:visible
+        /* ================= MODAL DIALOG (GAMBAR / LIGHTBOX PREMIUM) ================= */
+        dialog#mediaDialog {
+            border: 0;
+            padding: 0;
+            background: transparent;
+            width: min(920px, 94vw);
+            max-height: 94dvh;
+            margin: auto;
+            overflow: visible;
         }
-        dialog::backdrop{
-            background:rgba(7,14,24,.88);
-            backdrop-filter:blur(8px);
-            -webkit-backdrop-filter:blur(8px)
+        dialog#mediaDialog::backdrop {
+            background: rgba(6, 13, 22, .86);
+            backdrop-filter: blur(12px) saturate(1.2);
+            -webkit-backdrop-filter: blur(12px) saturate(1.2);
         }
-        .dlg-close{
-            position:absolute;top:-52px;right:0;
-            width:42px;height:42px;border-radius:50%;
-            background:#fff;color:var(--ink);font-size:1.05rem;
-            display:grid;place-items:center;
-            box-shadow:0 8px 22px rgba(0,0,0,.3);transition:.2s
+        .lb-shell {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(165deg, #102437 0%, #0b1826 100%);
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: 24px;
+            box-shadow: 0 32px 80px rgba(0,0,0,.65);
+            overflow: hidden;
+            max-height: 92dvh;
+            animation: lbPop .26s cubic-bezier(.16,.84,.3,1) both;
         }
-        .dlg-close:hover{background:var(--signal);color:#fff;transform:scale(1.06)}
+        @keyframes lbPop {
+            from { opacity: 0; transform: scale(.95) translateY(10px); }
+            to { opacity: 1; transform: none; }
+        }
+        .lb-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 20px;
+            background: rgba(255,255,255,.04);
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+        .lb-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+        .lb-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 5px 12px;
+            border-radius: 999px;
+            background: rgba(229,57,45,.18);
+            border: 1px solid rgba(229,57,45,.35);
+            color: #ff8a80;
+            font-size: .74rem;
+            font-weight: 800;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .lb-counter {
+            color: rgba(255,255,255,.65);
+            font-size: .82rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+        .lb-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .lb-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            height: 38px;
+            padding: 0 14px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.12);
+            color: rgba(255,255,255,.9);
+            font-size: .8rem;
+            font-weight: 700;
+            transition: background .2s, color .2s, transform .15s;
+        }
+        .lb-btn:hover {
+            background: rgba(255,255,255,.16);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+        .dlg-close {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.1);
+            border: 1px solid rgba(255,255,255,.14);
+            color: #fff;
+            font-size: .95rem;
+            display: grid;
+            place-items: center;
+            transition: background .2s, transform .2s;
+        }
+        .dlg-close:hover {
+            background: var(--signal);
+            border-color: var(--signal);
+            color: #fff;
+            transform: rotate(90deg);
+        }
+        .lb-stage {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at center, rgba(24,59,90,.35) 0%, rgba(7,15,24,.85) 100%);
+            padding: 20px 64px;
+            min-height: 320px;
+            max-height: calc(92dvh - 140px);
+            overflow: hidden;
+        }
+        #lbImg {
+            max-height: calc(92dvh - 180px);
+            max-width: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 14px;
+            box-shadow: 0 20px 50px rgba(0,0,0,.55);
+            border: 1px solid rgba(255,255,255,.08);
+            transition: opacity .2s ease, transform .25s ease;
+        }
+        .lb-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(13,27,42,.78);
+            border: 1px solid rgba(255,255,255,.18);
+            color: #fff;
+            display: grid;
+            place-items: center;
+            font-size: .95rem;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 8px 24px rgba(0,0,0,.35);
+            transition: background .2s, transform .2s, border-color .2s;
+            z-index: 5;
+        }
+        .lb-nav:hover {
+            background: var(--signal);
+            border-color: var(--signal);
+            transform: translateY(-50%) scale(1.08);
+        }
+        .lb-prev { left: 14px; }
+        .lb-next { right: 14px; }
+        .lb-foot {
+            padding: 15px 22px 17px;
+            background: rgba(255,255,255,.03);
+            border-top: 1px solid rgba(255,255,255,.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        #lbTxt {
+            color: #fff;
+            font-family: var(--display);
+            font-weight: 700;
+            font-size: clamp(.95rem, 1.4vw, 1.12rem);
+            line-height: 1.35;
+            margin: 0;
+        }
+        .lb-sub {
+            color: rgba(255,255,255,.55);
+            font-size: .78rem;
+            white-space: nowrap;
+        }
         @media (max-width: 640px) {
-            .dlg-close {
-                top: 10px; right: 10px; width: 38px; height: 38px; font-size: 1rem;
-                background: rgba(13, 27, 42, .88); color: #fff; border: 1px solid rgba(255,255,255,.2);
-                box-shadow: 0 4px 14px rgba(0,0,0,.4); z-index: 20;
-            }
-        }
-        
-        #lightboxContent img {
-            max-height: 84dvh; width: auto; margin: 0 auto; 
-            border-radius: 20px; box-shadow: 0 30px 60px rgba(0,0,0,.5);
-        }
-        #lightboxContent p {
-            margin-top: 18px; text-align: center; color: #fff;
-            font-family: var(--display); font-weight: 600; font-size: 1.15rem;
+            dialog#mediaDialog { width: 96vw; }
+            .lb-topbar { padding: 12px 14px; }
+            .lb-btn span { display: none; }
+            .lb-btn { padding: 0 11px; }
+            .lb-stage { padding: 12px 12px; }
+            .lb-nav { width: 38px; height: 38px; font-size: .85rem; }
+            .lb-prev { left: 8px; }
+            .lb-next { right: 8px; }
+            .lb-foot { flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 14px; }
         }
 
 /* ==========================================================
@@ -676,7 +883,6 @@
                     <button class="menu-trigger" type="button" aria-expanded="false">Galeri <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
                         <li><a href="/ikm">IKM (Indeks Kepuasan Masyarakat)</a></li>
-                        <li><a href="/pengumuman">Pengumuman</a></li>
                         <li class="has-sub current">
                             <button class="sub-trigger" type="button" aria-expanded="false">
                                 Berita <i class="fas fa-chevron-right"></i>
@@ -787,18 +993,27 @@
 
         <div class="grafis-grid">
             @forelse($daftar_infografis ?? [] as $info)
+                @php
+                    $ver = @filemtime(storage_path('app/public/' . $info->gambar)) ?: 1;
+                    $imgSrc = asset('storage/' . $info->gambar) . '?v=' . $ver;
+                @endphp
                 <button type="button" class="grafis-card"
-                        data-src="{{ asset('storage/' . $info->gambar) }}"
-                        data-title="{{ $info->judul ?? 'Infografis Damkar' }}"
+                        data-index="{{ $loop->index }}"
+                        data-src="{{ $imgSrc }}"
+                        data-title="{{ $info->judul ?? 'Infografis Damkar Kota Jambi' }}"
                         aria-label="Perbesar: {{ $info->judul ?? 'Infografis' }}">
-                    
-                    <span class="grafis-zoom" aria-hidden="true"><i class="fas fa-search-plus"></i></span>
-                    
-                    <img src="{{ asset('storage/' . $info->gambar) }}" alt="{{ $info->judul ?? 'Infografis' }}" loading="lazy">
-                    
-                    @if(!empty($info->judul))
-                        <div class="grafis-title">{{ $info->judul }}</div>
-                    @endif
+                    <div class="grafis-thumb">
+                        <span class="grafis-badge"><i class="fas fa-bolt"></i> Infografis</span>
+                        <span class="grafis-zoom" aria-hidden="true"><i class="fas fa-expand"></i></span>
+                        <img src="{{ $imgSrc }}" alt="{{ $info->judul ?? 'Infografis' }}" loading="lazy">
+                    </div>
+                    <div class="grafis-body">
+                        <div class="grafis-title">{{ $info->judul ?? 'Infografis Edukasi Damkar Kota Jambi' }}</div>
+                        <div class="grafis-foot">
+                            <span><i class="fas fa-shield-flame"></i> Damkar Kota Jambi</span>
+                            <span>Lihat <i class="fas fa-arrow-up-right-from-square"></i></span>
+                        </div>
+                    </div>
                 </button>
             @empty
                 <div class="empty-filter">
@@ -822,10 +1037,35 @@
 
 <!-- ==================== MODAL DIALOG (GAMBAR LIGHTBOX) ==================== -->
 <dialog id="mediaDialog" aria-label="Lihat Infografis">
-    <button type="button" class="dlg-close" aria-label="Tutup"><i class="fas fa-times"></i></button>
-    <div id="lightboxContent">
-        <img src="" alt="" id="lbImg">
-        <p id="lbTxt"></p>
+    <div class="lb-shell" id="lightboxContent">
+        <div class="lb-topbar">
+            <div class="lb-meta">
+                <span class="lb-pill"><i class="fas fa-image"></i> Infografis</span>
+                <span class="lb-counter" id="lbCounter">1 / 1</span>
+            </div>
+            <div class="lb-actions">
+                <a href="#" id="lbOpen" target="_blank" rel="noopener" class="lb-btn" title="Buka ukuran penuh">
+                    <i class="fas fa-up-right-from-square"></i><span>Ukuran Penuh</span>
+                </a>
+                <a href="#" id="lbDownload" download class="lb-btn" title="Unduh infografis">
+                    <i class="fas fa-download"></i><span>Unduh</span>
+                </a>
+                <button type="button" class="dlg-close" aria-label="Tutup"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+        <div class="lb-stage">
+            <button type="button" class="lb-nav lb-prev" id="lbPrev" aria-label="Infografis sebelumnya">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <img src="" alt="" id="lbImg">
+            <button type="button" class="lb-nav lb-next" id="lbNext" aria-label="Infografis berikutnya">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        <div class="lb-foot">
+            <p id="lbTxt"></p>
+            <span class="lb-sub">Dinas Pemadam Kebakaran &amp; Penyelamatan Kota Jambi</span>
+        </div>
     </div>
 </dialog>
 
@@ -936,16 +1176,44 @@
     var mDialog = document.getElementById('mediaDialog');
     var lbImg = document.getElementById('lbImg');
     var lbTxt = document.getElementById('lbTxt');
-    var cards = document.querySelectorAll('.grafis-card');
+    var lbCounter = document.getElementById('lbCounter');
+    var lbOpen = document.getElementById('lbOpen');
+    var lbDownload = document.getElementById('lbDownload');
+    var lbPrev = document.getElementById('lbPrev');
+    var lbNext = document.getElementById('lbNext');
+    var cards = Array.from(document.querySelectorAll('.grafis-card'));
+    var currentIndex = 0;
 
-    cards.forEach(function (card) {
+    function showSlide(index) {
+        if (!cards.length) return;
+        currentIndex = (index + cards.length) % cards.length;
+        var card = cards[currentIndex];
+        var src = card.getAttribute('data-src');
+        var title = card.getAttribute('data-title') || 'Infografis Damkar Kota Jambi';
+
+        lbImg.style.opacity = '0.35';
+        lbImg.src = src;
+        lbImg.alt = title;
+        lbImg.onload = function () { lbImg.style.opacity = '1'; };
+        lbTxt.textContent = title;
+        if (lbCounter) lbCounter.textContent = (currentIndex + 1) + ' / ' + cards.length;
+        if (lbOpen) lbOpen.href = src;
+        if (lbDownload) lbDownload.href = src;
+
+        var showNav = cards.length > 1;
+        if (lbPrev) lbPrev.style.display = showNav ? 'grid' : 'none';
+        if (lbNext) lbNext.style.display = showNav ? 'grid' : 'none';
+    }
+
+    cards.forEach(function (card, idx) {
         card.addEventListener('click', function () {
-            lbImg.src = card.getAttribute('data-src');
-            lbImg.alt = card.getAttribute('data-title');
-            lbTxt.textContent = card.getAttribute('data-title');
+            showSlide(idx);
             mDialog.showModal();
         });
     });
+
+    if (lbPrev) lbPrev.addEventListener('click', function () { showSlide(currentIndex - 1); });
+    if (lbNext) lbNext.addEventListener('click', function () { showSlide(currentIndex + 1); });
 
     function closeDialog() {
         mDialog.close();
@@ -958,6 +1226,11 @@
     mDialog.querySelector('.dlg-close').addEventListener('click', closeDialog);
     mDialog.addEventListener('click', function (e) {
         if (e.target === mDialog) closeDialog();
+    });
+    document.addEventListener('keydown', function (e) {
+        if (!mDialog.open) return;
+        if (e.key === 'ArrowLeft') showSlide(currentIndex - 1);
+        if (e.key === 'ArrowRight') showSlide(currentIndex + 1);
     });
 
 

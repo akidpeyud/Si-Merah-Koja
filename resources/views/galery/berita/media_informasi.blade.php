@@ -518,6 +518,43 @@
         .page-item.active .page-link{background:var(--ink);border-color:var(--ink);color:#fff}
         .page-item.disabled .page-link{opacity:.45;cursor:default}
 
+        /* ================= PENGUMUMAN DALAM MEDIA INFORMASI ================= */
+        .pg-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px}
+        .pg-filter{display:flex;gap:10px;flex:1 1 320px;max-width:520px}
+        .pg-search{flex:1;display:flex;align-items:center;gap:10px;padding:0 16px;background:#fff;border:1.5px solid var(--line);border-radius:999px;transition:border-color .2s,box-shadow .2s}
+        .pg-search:focus-within{border-color:var(--signal);box-shadow:0 0 0 4px rgba(229,57,45,.12)}
+        .pg-search i{color:var(--steel)}
+        .pg-search input{flex:1;min-width:0;padding:11px 0;border:0;outline:0;background:transparent;font:inherit;font-size:.9rem;color:var(--ink)}
+        .pg-btn{padding:0 22px;border-radius:999px;background:var(--ink);color:#fff;font-weight:800;font-size:.88rem;transition:.2s}
+        .pg-btn:hover{background:var(--signal)}
+        .pg-cats{display:flex;flex-wrap:wrap;gap:8px}
+        .pg-cats a{padding:8px 16px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:.83rem;font-weight:700;color:var(--steel);transition:.2s}
+        .pg-cats a:hover{color:var(--ink);background:var(--soft)}
+        .pg-cats a[aria-current=page]{background:var(--ink);border-color:var(--ink);color:#fff}
+        .pg-list{display:grid;gap:16px}
+        .pg-card{display:grid;grid-template-columns:86px 1fr;gap:22px;align-items:start;padding:22px;background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 7px 24px rgba(13,27,42,.055);transition:transform .3s cubic-bezier(.2,.75,.25,1),box-shadow .3s,border-color .3s}
+        .pg-card:hover{transform:translateY(-4px);box-shadow:0 20px 45px rgba(13,27,42,.12);border-color:rgba(229,57,45,.25)}
+        .pg-card.is-penting{border-left:5px solid var(--signal)}
+        .pg-date{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 6px;border-radius:16px;background:var(--ink);color:#fff;line-height:1.1;text-align:center}
+        .pg-date b{font-family:var(--display);font-size:1.9rem;font-weight:800}
+        .pg-date span{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--amber)}
+        .pg-date small{margin-top:3px;font-size:.7rem;opacity:.7}
+        .pg-main{min-width:0}
+        .pg-tags{display:flex;flex-wrap:wrap;align-items:center;gap:7px}
+        .tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:8px;background:var(--soft);color:var(--ink-2);font-size:.68rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+        .tag-penting{background:rgba(229,57,45,.12);color:var(--signal-dark)}
+        .tag-file{background:#eef6ff;color:#2762a8}
+        .pg-main h3{margin-top:10px;font-family:var(--display);font-weight:750;font-size:1.2rem;line-height:1.3;letter-spacing:-.02em;transition:color .2s}
+        .pg-card:hover h3{color:var(--signal-dark)}
+        .pg-main p{margin-top:6px;color:var(--steel);font-size:.92rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+        .pg-more{display:inline-flex;align-items:center;gap:8px;margin-top:12px;font-size:.82rem;font-weight:800;color:var(--ink);transition:.2s}
+        .pg-card:hover .pg-more{color:var(--signal-dark);gap:12px}
+        @media (max-width:560px){
+            .pg-card{grid-template-columns:1fr;gap:14px}
+            .pg-date{flex-direction:row;justify-content:flex-start;gap:8px;padding:8px 14px;justify-self:start}
+            .pg-date b{font-size:1.3rem}
+        }
+
 /* ==========================================================
            FOOTER
            ========================================================== */
@@ -719,7 +756,6 @@
                     <button class="menu-trigger" type="button" aria-expanded="false">Galeri <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
                         <li><a href="/ikm">IKM (Indeks Kepuasan Masyarakat)</a></li>
-                        <li><a href="/pengumuman">Pengumuman</a></li>
                         <li class="has-sub current">
                             <button class="sub-trigger" type="button" aria-expanded="false">
                                 Berita <i class="fas fa-chevron-right"></i>
@@ -833,11 +869,92 @@
                     {{ $kat->nama_kategori }}
                 </a>
             @endforeach
+            <a class="tab" href="{{ route('media.informasi', ['kategori' => 'pengumuman']) }}" {!! ($kategoriId === 'pengumuman') ? 'aria-current="page"' : '' !!}>
+                <i class="fas fa-bullhorn" style="margin-right:6px;font-size:.78rem;"></i> Pengumuman
+            </a>
         </nav>
     </div>
 
-    <!-- Grid Berita -->
+    <!-- Grid Berita / Pengumuman -->
     <div class="wrap media-layout">
+        @if($kategoriId === 'pengumuman')
+            <div class="content-head">
+                <div>
+                    <h2>Pengumuman Resmi</h2>
+                    <p>Informasi dan pemberitahuan resmi dari Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.</p>
+                </div>
+            </div>
+
+            <div class="pg-toolbar">
+                <nav class="pg-cats" aria-label="Filter kategori pengumuman">
+                    <a href="{{ route('media.informasi', array_filter(['kategori' => 'pengumuman', 'q' => $q ?? null])) }}" @if(empty($katPengumuman)) aria-current="page" @endif>Semua</a>
+                    @foreach($daftar_kategori_pengumuman ?? ['Umum', 'Layanan', 'Kepegawaian', 'Penting'] as $katPg)
+                        <a href="{{ route('media.informasi', array_filter(['kategori' => 'pengumuman', 'kat_pengumuman' => $katPg, 'q' => $q ?? null])) }}" @if(($katPengumuman ?? '') === $katPg) aria-current="page" @endif>{{ $katPg }}</a>
+                    @endforeach
+                </nav>
+
+                <form class="pg-filter" method="GET" action="{{ route('media.informasi') }}" role="search">
+                    <input type="hidden" name="kategori" value="pengumuman">
+                    @if(!empty($katPengumuman))<input type="hidden" name="kat_pengumuman" value="{{ $katPengumuman }}">@endif
+                    <label class="pg-search">
+                        <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+                        <input type="search" name="q" value="{{ $q ?? '' }}" placeholder="Cari pengumuman..." aria-label="Cari pengumuman">
+                    </label>
+                    <button type="submit" class="pg-btn">Cari</button>
+                </form>
+            </div>
+
+            <div class="pg-list">
+                @forelse($daftar_pengumuman ?? [] as $p)
+                    @php
+                        $tgl = \Carbon\Carbon::parse($p->tanggal)->locale('id');
+                    @endphp
+                    <a href="{{ route('pengumuman.show', $p->id) }}" class="pg-card {{ $p->penting ? 'is-penting' : '' }}">
+                        <time class="pg-date" datetime="{{ $tgl->format('Y-m-d') }}">
+                            <b>{{ $tgl->format('d') }}</b>
+                            <span>{{ $tgl->translatedFormat('M') }}</span>
+                            <small>{{ $tgl->format('Y') }}</small>
+                        </time>
+                        <div class="pg-main">
+                            <div class="pg-tags">
+                                @if($p->penting)<span class="tag tag-penting"><i class="fas fa-bullhorn"></i> Penting</span>@endif
+                                <span class="tag">{{ $p->kategori }}</span>
+                                @if($p->lampiran)<span class="tag tag-file"><i class="fas fa-paperclip"></i> Lampiran</span>@endif
+                            </div>
+                            <h3>{{ $p->judul }}</h3>
+                            <p>{{ \Illuminate\Support\Str::limit(strip_tags((string) $p->isi), 170) }}</p>
+                            <span class="pg-more">Baca selengkapnya <i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+                @empty
+                    <div class="empty-filter">
+                        <i class="fas fa-bullhorn"></i>
+                        <h2>Belum ada pengumuman</h2>
+                        <p>Pengumuman resmi akan tampil di sini setelah dipublikasikan oleh petugas.</p>
+                    </div>
+                @endforelse
+            </div>
+
+            @if(isset($daftar_pengumuman) && method_exists($daftar_pengumuman, 'hasPages') && $daftar_pengumuman->hasPages())
+                <nav class="pagination-container" aria-label="Navigasi halaman pengumuman">
+                    <ul class="pagination">
+                        @foreach($daftar_pengumuman->withQueryString()->linkCollection() as $link)
+                            @php
+                                $label = $loop->first ? '<i class="fas fa-chevron-left" aria-label="Sebelumnya"></i>'
+                                       : ($loop->last ? '<i class="fas fa-chevron-right" aria-label="Berikutnya"></i>' : $link['label']);
+                            @endphp
+                            <li class="page-item {{ $link['active'] ? 'active' : '' }} {{ $link['url'] ? '' : 'disabled' }}">
+                                @if($link['url'])
+                                    <a class="page-link" href="{{ $link['url'] }}" @if($link['active']) aria-current="page" @endif>{!! $label !!}</a>
+                                @else
+                                    <span class="page-link">{!! $label !!}</span>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                </nav>
+            @endif
+        @else
         <div class="content-head">
             <div>
                 <h2>Dokumentasi terbaru</h2>
@@ -905,6 +1022,7 @@
                     @endforeach
                 </ul>
             </nav>
+        @endif
         @endif
     </div>
 </div>
