@@ -17,7 +17,7 @@
     ];
 
     $segment     = request()->segment(2);
-    $tab_aktif   = array_key_exists($segment, $tabs) ? $segment : 'kepegawaian';
+    $tab_aktif   = array_key_exists($segment, $tabs) ? $segment : 'visi-misi';
     $label_aktif = $tabs[$tab_aktif]['label'];
     $judul_aktif = $tabs[$tab_aktif]['judul'];
 
@@ -104,12 +104,14 @@
 
         foreach ($dokumenDB as $doc) {
             $judul_doc = $doc->judul_dokumen ?? $doc->judul ?? $doc->nama_dokumen ?? $doc->nama ?? 'Dokumen ' . $label_aktif;
-            $nama_file = $doc->nama_file ?? $doc->file ?? $doc->file_pdf ?? $doc->dokumen ?? '';
+            $nama_file = $doc->file_dokumen ?? $doc->nama_file ?? $doc->file ?? $doc->file_pdf ?? $doc->dokumen ?? '';
             $url_view  = Route::has('publik.profil.view') ? route('publik.profil.view', ['kategori' => $tab_aktif, 'id' => $doc->id]) : url('/internal/profil-instansi/' . $tab_aktif . '/' . $doc->id . '/view');
             $url_dl    = Route::has('publik.profil.download') ? route('publik.profil.download', ['kategori' => $tab_aktif, 'id' => $doc->id]) : url('/internal/profil-instansi/' . $tab_aktif . '/' . $doc->id . '/download');
 
             $dokumen_list[] = [
                 'judul'        => $judul_doc,
+                'tahun'        => $doc->tahun ?? null,
+                'keterangan'   => $doc->keterangan ?? null,
                 'url'          => $url_view,
                 'url_download' => $url_dl,
                 'ext'          => pathinfo($nama_file, PATHINFO_EXTENSION) ?: 'PDF'
@@ -118,43 +120,6 @@
     }
 
     $jumlah = count($dokumen_list);
-
-    // Ambil data konten Visi Misi jika pada tab visi-misi
-    $visi_teks = 'Mewujudkan Kota Perdagangan dan Jasa yang Bersih, Aman, Harmonis, Agamis, Inovatif dan Sejahtera';
-    $misi_list = [
-        'Penguatan Kualitas Sumberdaya Manusia;',
-        'Penguatan Kapasitas Ekonomi Perkotaan;',
-        'Penguatan Tata Kelola Pemerintah Yang Baik;',
-        'Penguatan Ketertiban dan Ketentraman Lingkungan serta Partisipasi Masyarakat dalam Pembangunan; dan',
-        'Penguatan Pengelolaan Infrastruktur dan Lingkungan Hidup yang Merata, Berkualitas dan Berkelanjutan.',
-    ];
-    $visi_judul = 'Visi & Misi';
-
-    if ($tab_aktif === 'visi-misi') {
-        $vmRecord = null;
-        if (class_exists('\App\Models\ProfilInstansi')) {
-            $vmRecord = \App\Models\ProfilInstansi::where('kategori', 'visi-misi')->first();
-        } elseif (Schema::hasTable('profil_instansis')) {
-            $vmRecord = DB::table('profil_instansis')->where('kategori', 'visi-misi')->first();
-        }
-
-        if ($vmRecord) {
-            if (!empty($vmRecord->judul)) {
-                $visi_judul = preg_replace('/\s*kota\s+jambi/i', '', $vmRecord->judul);
-            }
-            $ket = json_decode($vmRecord->keterangan ?? '', true);
-            if (is_array($ket)) {
-                if (!empty($ket['visi'])) {
-                    $visi_teks = $ket['visi'];
-                }
-                if (!empty($ket['misi']) && is_array($ket['misi'])) {
-                    $misi_list = $ket['misi'];
-                }
-            } elseif (!empty($vmRecord->keterangan)) {
-                $visi_teks = $vmRecord->keterangan;
-            }
-        }
-    }
 
     // Helper untuk merapikan tampilan tabel dinamis (menyembunyikan id & timestamp)
     $filterKolom = function ($row) {
@@ -446,11 +411,11 @@
             <ol class="crumbs">
                 <li><a href="/">Beranda</a></li>
                 <li><a href="/profil/visi-misi">Profil</a></li>
-                <li><span aria-current="page"><?= $h($tab_aktif === 'visi-misi' ? $visi_judul : $tabs[$tab_aktif]['label']) ?></span></li>
+                <li><span aria-current="page"><?= $h($tabs[$tab_aktif]['label']) ?></span></li>
             </ol>
         </nav>
-        <h1><?= $h($tab_aktif === 'visi-misi' ? $visi_judul : $tabs[$tab_aktif]['label']) ?></h1>
-        <p><?= $h($tab_aktif === 'visi-misi' ? 'Visi dan Misi Pembangunan Kota Jambi Dinas Pemadam Kebakaran dan Penyelamatan.' : ($tabs[$tab_aktif]['judul'] . ' Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.')) ?></p>
+        <h1><?= $h($tabs[$tab_aktif]['label']) ?></h1>
+        <p><?= $h($tabs[$tab_aktif]['judul'] . ' Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.') ?></p>
     </div>
     @include('layouts.partials.hero-logos', ['float' => true])
 </section>
@@ -469,43 +434,7 @@
     <div class="wrap">
         <div class="doc-layout">
 
-            <?php if ($tab_aktif === 'visi-misi'): ?>
-                <!-- ==============================================
-                     KARTU TAMPILAN VISI & MISI KOTA JAMBI
-                     ============================================== -->
-                <div class="vm-grid" aria-label="Visi dan Misi">
-                    <!-- Kartu Visi -->
-                    <div class="vm-card vm-card--visi">
-                        <div class="vm-header">
-                            <span class="vm-icon"><i class="fas fa-bullseye"></i></span>
-                            <h2 class="vm-title">Visi</h2>
-                        </div>
-                        <div class="vm-visi-body">
-                            <span class="vm-quote-icon"><i class="fas fa-quote-left"></i></span>
-                            <blockquote class="vm-visi-text">
-                                &ldquo; <?= $h($visi_teks) ?> &bdquo;
-                            </blockquote>
-                        </div>
-                    </div>
-
-                    <!-- Kartu Misi -->
-                    <div class="vm-card vm-card--misi">
-                        <div class="vm-header">
-                            <span class="vm-icon"><i class="fas fa-list-ol"></i></span>
-                            <h2 class="vm-title">Misi</h2>
-                        </div>
-                        <ol class="vm-misi-list">
-                            <?php foreach ($misi_list as $idx => $misi_item): ?>
-                            <li class="vm-misi-item">
-                                <span class="vm-misi-badge"><?= $idx + 1 ?></span>
-                                <span class="vm-misi-text"><?= $h($misi_item) ?></span>
-                            </li>
-                            <?php endforeach; ?>
-                        </ol>
-                    </div>
-                </div>
-
-            <?php elseif ($tab_aktif === 'kepegawaian'): ?>
+            <?php if ($tab_aktif === 'kepegawaian'): ?>
                 <!-- ==============================================
                      PANEL 1: DATA URUT KEPEGAWAIAN (DUK)
                      ============================================== -->
@@ -617,7 +546,6 @@
                 </section>
             <?php endif; ?>
 
-            <?php if ($tab_aktif !== 'visi-misi'): ?>
             <!-- ==============================================
                  PANEL DOKUMEN (DOKUMEN PUBLIK / DOKUMEN PROFIL)
                  ============================================== -->
@@ -649,7 +577,8 @@
                         $url_download = (string) ($d['url_download'] ?? $url);
                         $ada          = $url !== '';
                         $ext          = strtoupper($d['ext'] ?? 'PDF') ?: 'PDF';
-                        $ico          = ['PDF' => 'fa-file-pdf', 'DOC' => 'fa-file-word', 'DOCX' => 'fa-file-word', 'XLS' => 'fa-file-excel', 'XLSX' => 'fa-file-excel'][$ext] ?? 'fa-file-lines';
+                        $is_image     = in_array($ext, ['JPG', 'JPEG', 'PNG'], true);
+                        $ico          = ['PDF' => 'fa-file-pdf', 'JPG' => 'fa-file-image', 'JPEG' => 'fa-file-image', 'PNG' => 'fa-file-image', 'DOC' => 'fa-file-word', 'DOCX' => 'fa-file-word', 'XLS' => 'fa-file-excel', 'XLSX' => 'fa-file-excel'][$ext] ?? 'fa-file-lines';
                     ?>
                     <li class="doc-row <?= $ada ? '' : 'is-empty' ?>" data-name="<?= $h(mb_strtolower($judul)) ?>">
                         <span class="doc-ico"><i class="fas <?= $h($ada ? $ico : 'fa-file-circle-question') ?>"></i></span>
@@ -661,7 +590,10 @@
                                     <?= $h($judul) ?>
                                 <?php endif; ?>
                             </p>
-                            <p class="doc-meta"><?= $ada ? 'Dokumen ' . $h($ext) : 'Berkas belum diunggah' ?></p>
+                            <p class="doc-meta">
+                                <?= $ada ? ($is_image ? 'Gambar ' . $h($ext) : 'Dokumen ' . $h($ext)) : 'Berkas belum diunggah' ?>
+                                <?php if (!empty($d['tahun'])): ?> &bull; Tahun <?= $h($d['tahun']) ?><?php endif; ?>
+                            </p>
                         </div>
                         <?php if ($ada): ?>
                         <div class="doc-actions">
@@ -670,17 +602,32 @@
                         </div>
                         <?php endif; ?>
                     </li>
+                    <?php if ($ada && ($ext === 'PDF' || $is_image)): ?>
+                    <li class="doc-preview-item" style="padding: 20px clamp(16px, 2.5vw, 26px); border-bottom: 1px solid var(--line); background: #f8fafc;">
+                        <?php if ($is_image): ?>
+                            <div style="width: 100%; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 10px 28px rgba(13,27,42,.10); background: #ffffff;">
+                                <img src="<?= $h($url) ?>" alt="<?= $h($judul) ?>" style="width: 100%; height: auto; display: block;">
+                            </div>
+                        <?php else: ?>
+                            <div class="vm-pdf-poster" data-raw-url="<?= $h($url) ?>?raw=1" data-download-url="<?= $h($url_download) ?>" style="display: grid; gap: 16px;">
+                                <div class="vm-pdf-loading" style="padding: 40px 20px; text-align: center; color: var(--steel); background: #ffffff; border-radius: 14px; border: 1px solid var(--line);">
+                                    <i class="fas fa-circle-notch fa-spin" style="font-size: 1.5rem; color: var(--signal); margin-bottom: 10px; display: inline-block;"></i>
+                                    <p style="font-weight: 600; margin: 0;">Memuat tampilan dokumen Visi &amp; Misi...</p>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </li>
+                    <?php endif; ?>
                     <?php endforeach; ?>
                 </ul>
                 <?php else: ?>
                 <div class="doc-empty">
                     <i class="far fa-folder-open"></i>
-                    <h3>Belum ada dokumen</h3>
-                    <p>Dokumen akan tampil di sini setelah petugas mengunggahnya melalui dashboard.</p>
+                    <h3>Belum ada dokumen Visi &amp; Misi</h3>
+                    <p>Dokumen atau gambar Visi &amp; Misi akan tampil di sini setelah petugas mengunggahnya melalui menu Profil Instansi di dashboard internal.</p>
                 </div>
                 <?php endif; ?>
             </section>
-            <?php endif; ?>
 
             <!-- Kontak Dinas -->
             <aside aria-label="Kontak dinas">
@@ -802,6 +749,77 @@
             if (dukCount) dukCount.textContent = n + ' pegawai';
         });
     }
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+(function () {
+    'use strict';
+    var pdfContainers = document.querySelectorAll('.vm-pdf-poster');
+    if (!pdfContainers.length || !window.pdfjsLib) return;
+
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    pdfContainers.forEach(function (container) {
+        var rawUrl = container.getAttribute('data-raw-url');
+        var downloadUrl = container.getAttribute('data-download-url');
+        if (!rawUrl) return;
+
+        fetch(rawUrl, {
+            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+            credentials: 'same-origin'
+        })
+            .then(function (res) {
+                if (!res.ok) throw new Error('Gagal memuat dokumen');
+                return res.json();
+            })
+            .then(function (json) {
+                if (json.mime && json.mime.indexOf('image/') === 0) {
+                    container.innerHTML = '';
+                    var imgWrap = document.createElement('div');
+                    imgWrap.style.cssText = 'width:100%;border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 10px 28px rgba(13,27,42,.10);background:#fff;';
+                    var img = document.createElement('img');
+                    img.src = 'data:' + json.mime + ';base64,' + json.base64;
+                    img.alt = json.judul || 'Visi dan Misi';
+                    img.style.cssText = 'width:100%;height:auto;display:block;';
+                    imgWrap.appendChild(img);
+                    container.appendChild(imgWrap);
+                    return null;
+                }
+
+                var binary = window.atob(json.base64);
+                var bytes = new Uint8Array(binary.length);
+                for (var i = 0; i < binary.length; i++) {
+                    bytes[i] = binary.charCodeAt(i);
+                }
+                return window.pdfjsLib.getDocument({ data: bytes }).promise;
+            })
+            .then(function (pdf) {
+                if (!pdf) return;
+                container.innerHTML = '';
+                for (var pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                    (function (num) {
+                        var pageWrap = document.createElement('div');
+                        pageWrap.style.cssText = 'width:100%;border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 10px 28px rgba(13,27,42,.10);background:#fff;';
+                        var canvas = document.createElement('canvas');
+                        canvas.style.cssText = 'width:100%;height:auto;display:block;';
+                        pageWrap.appendChild(canvas);
+                        container.appendChild(pageWrap);
+
+                        pdf.getPage(num).then(function (page) {
+                            var viewport = page.getViewport({ scale: 2.0 });
+                            var ctx = canvas.getContext('2d');
+                            canvas.width = viewport.width;
+                            canvas.height = viewport.height;
+                            page.render({ canvasContext: ctx, viewport: viewport });
+                        });
+                    })(pageNum);
+                }
+            })
+            .catch(function () {
+                container.innerHTML = '<div style="padding:24px;text-align:center;color:var(--steel);background:#fff;border-radius:14px;border:1px solid var(--line);">Gagal memuat tampilan langsung. Silakan <a href="' + (downloadUrl || '#') + '" style="color:var(--signal);font-weight:700;text-decoration:underline;">unduh dokumen di sini</a>.</div>';
+            });
+    });
 })();
 </script>
 </body>
