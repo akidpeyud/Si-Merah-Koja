@@ -57,8 +57,10 @@ class PetaJabatanController extends Controller
         ], [
             'judul.required' => 'Judul Peta Jabatan wajib diisi.',
             'file_dokumen.required' => 'File dokumen wajib diunggah.',
+            'file_dokumen.uploaded' => 'File dokumen gagal diunggah atau melebihi batas ukuran maksimal (10MB).',
             'file_dokumen.mimes' => 'File dokumen harus berformat PDF, JPG, JPEG, atau PNG.',
-            'file_dokumen.max' => 'Ukuran file dokumen maksimal 10MB.',
+            'file_dokumen.max' => 'Ukuran file dokumen terlalu besar. Maksimal ukuran file adalah 10MB.',
+            'tahun.digits' => 'Format tahun harus berupa 4 digit angka (contoh: 2026).',
         ]);
 
         $path = $request->file('file_dokumen')->store('peta-jabatan', 'public');
@@ -90,8 +92,10 @@ class PetaJabatanController extends Controller
             'file_dokumen' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ], [
             'judul.required' => 'Judul Peta Jabatan wajib diisi.',
+            'file_dokumen.uploaded' => 'File dokumen gagal diunggah atau melebihi batas ukuran maksimal (10MB).',
             'file_dokumen.mimes' => 'File dokumen harus berformat PDF, JPG, JPEG, atau PNG.',
-            'file_dokumen.max' => 'Ukuran file dokumen maksimal 10MB.',
+            'file_dokumen.max' => 'Ukuran file dokumen terlalu besar. Maksimal ukuran file adalah 10MB.',
+            'tahun.digits' => 'Format tahun harus berupa 4 digit angka (contoh: 2026).',
         ]);
 
         $dataUpdate = [
