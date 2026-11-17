@@ -5,11 +5,14 @@
 
     /* ------------------------------------------------------------
        PENGATURAN HALAMAN PUBLIK DOKUMEN
-       Tab disesuaikan untuk Kategori Dokumen Publik yang ditampilkan di depan (Renstra & SPM).
+       Tab disesuaikan untuk 5 Kategori Dokumen Publik.
        ------------------------------------------------------------ */
     $tabs = [
         'renstra' => ['url' => '/dokumen/renstra', 'label' => 'Renstra', 'ico' => 'fa-file-lines', 'judul' => 'Rencana Strategis (Renstra)'],
+        'renja'   => ['url' => '/dokumen/renja',   'label' => 'Renja',   'ico' => 'fa-file-lines', 'judul' => 'Rencana Kerja (Renja)'],
         'spm'     => ['url' => '/dokumen/spm',     'label' => 'SPM',     'ico' => 'fa-file-shield', 'judul' => 'Standar Pelayanan Minimal (SPM)'],
+        'sakip'   => ['url' => '/dokumen/sakip',   'label' => 'SAKIP',   'ico' => 'fa-chart-pie',  'judul' => 'SAKIP'],
+        'lppd'    => ['url' => '/dokumen/lppd',    'label' => 'LPPD',    'ico' => 'fa-book',       'judul' => 'LPPD'],
     ];
     
     // Set tab aktif ke spm
