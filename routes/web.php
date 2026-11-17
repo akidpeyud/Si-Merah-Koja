@@ -1058,6 +1058,7 @@ Route::prefix('internal/profil-instansi')->name('internal.profil-instansi.')->mi
     Route::get('/{kategori}', [ProfilInstansiController::class, 'index'])->name('index');
     Route::get('/{kategori}/create', [ProfilInstansiController::class, 'create'])->name('create');
     Route::post('/{kategori}', [ProfilInstansiController::class, 'store'])->name('store');
+    Route::post('/{kategori}/gambaran-besar', [ProfilInstansiController::class, 'updateGambaranBesar'])->name('update-gambaran-besar');
     Route::get('/{kategori}/{id}/view', [ProfilInstansiController::class, 'viewFile'])->name('view-file');
     Route::get('/{kategori}/{id}/download', [ProfilInstansiController::class, 'downloadFile'])->name('download-file');
     Route::get('/{kategori}/{id}/edit', [ProfilInstansiController::class, 'edit'])->name('edit');

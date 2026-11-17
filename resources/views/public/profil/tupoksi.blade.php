@@ -118,6 +118,9 @@
     }
 
     $jumlah = count($dokumen_list);
+    $gambaran_besar = class_exists('\App\Models\ProfilInstansi')
+        ? \App\Models\ProfilInstansi::getGambaranBesar('tupoksi')
+        : null;
 
     // Helper untuk merapikan tampilan tabel dinamis (menyembunyikan id & timestamp)
     $filterKolom = function ($row) {
@@ -517,14 +520,41 @@
                 </section>
             <?php endif; ?>
 
+            <?php if (!empty($gambaran_besar)): ?>
             <!-- ==============================================
-                 PANEL DOKUMEN (DOKUMEN PUBLIK / DOKUMEN PROFIL)
+                 PANEL GAMBARAN BESAR TUPOKSI (VISUAL INFOGRAFIS)
+                 ============================================== -->
+            <section class="doc-panel" aria-label="Gambaran Besar Tupoksi" style="border-radius: var(--r-lg); overflow: hidden; background: #fff; border: 1px solid var(--line); box-shadow: 0 12px 32px rgba(13,27,42,.07);">
+                <div class="doc-bar" style="padding: 18px clamp(16px, 2.5vw, 26px); border-bottom: 1px solid var(--line); background: #ffffff;">
+                    <div class="doc-title" style="display: flex; align-items: center; gap: 12px; font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: var(--ink);">
+                        <i class="fas fa-image" style="flex: none; width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: var(--ink); color: var(--amber); font-size: .95rem;"></i>
+                        <div>
+                            <span style="display: block;">Gambaran Besar Tugas Pokok dan Fungsi</span>
+                            <small style="font-family: var(--font-body); font-weight: 500; font-size: .84rem; color: var(--steel);">Ringkasan visual 5 tugas pokok dan fungsi Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi</small>
+                        </div>
+                    </div>
+                    <div class="doc-filter">
+                        <a href="<?= $h($gambaran_besar['url']) ?>?v=<?= $h($gambaran_besar['updated_at']) ?>" target="_blank" rel="noopener" class="tool" style="display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 16px; border-radius: 999px; background: var(--paper); font-size: .85rem; font-weight: 600; color: var(--ink); transition: .2s;">
+                            <i class="fas fa-up-right-and-down-left-from-center"></i> Lihat Gambar Penuh
+                        </a>
+                    </div>
+                </div>
+                <div style="padding: clamp(16px, 3vw, 28px); background: #f8fafc; text-align: center;">
+                    <div style="max-width: 1000px; margin: 0 auto; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 16px 36px -10px rgba(13,27,42,.12); background: #ffffff;">
+                        <img src="<?= $h($gambaran_besar['url']) ?>?v=<?= $h($gambaran_besar['updated_at']) ?>" alt="Gambaran Besar Tugas Pokok dan Fungsi Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi" style="width: 100%; height: auto; display: block;">
+                    </div>
+                </div>
+            </section>
+            <?php endif; ?>
+
+            <!-- ==============================================
+                 PANEL DOKUMEN RESMI (PDF TUPOKSI)
                  ============================================== -->
             <section class="doc-panel" aria-label="Daftar dokumen">
                 <div class="doc-bar">
                     <div class="doc-title">
-                        <i class="fas <?= $h($tab_aktif === 'kepegawaian' ? 'fa-file-lines' : $tabs[$tab_aktif]['ico']) ?>"></i>
-                        <span><?= $h($tab_aktif === 'kepegawaian' ? 'Dokumen Publik Kepegawaian' : $tabs[$tab_aktif]['judul']) ?></span>
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Dokumen Resmi <?= $h($tab_aktif === 'kepegawaian' ? 'Dokumen Publik Kepegawaian' : $tabs[$tab_aktif]['judul']) ?></span>
                     </div>
                     <div class="doc-filter">
                         <?php if ($jumlah): ?>

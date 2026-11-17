@@ -52,8 +52,9 @@ class ProfilInstansiController extends Controller
         }
 
         $data = $query->latest()->paginate(10)->withQueryString();
+        $gambaranBesar = ProfilInstansi::getGambaranBesar($kategori);
 
-        return view('internal.profil-instansi.index', compact('data', 'kategori', 'judulKategori'));
+        return view('internal.profil-instansi.index', compact('data', 'kategori', 'judulKategori', 'gambaranBesar'));
     }
 
     /**
@@ -282,5 +283,85 @@ class ProfilInstansiController extends Controller
         return Storage::disk('public')->download($item->file_dokumen, $filename, [
             'Content-Type' => $mime,
         ]);
+    }
+
+    /**
+     * Memperbarui file gambaran besar / infografis visual untuk kategori profil tertentu
+     */
+    public function updateGambaranBesar(Request $request, string $kategori)
+    {
+        $this->pastikanAksesCrud();
+        $judulKategori = $this->cekKategori($kategori);
+
+        if ($request->filled('gambar_base64')) {
+            $request->validate([
+                'gambar_base64' => 'required|string',
+                'gambar_name' => 'required|string|max:255',
+            ]);
+
+            $rawBase64 = (string) $request->input('gambar_base64');
+            if (str_contains($rawBase64, ',')) {
+                [, $rawBase64] = explode(',', $rawBase64, 2);
+            }
+
+            $binary = base64_decode($rawBase64, true);
+            if ($binary === false || strlen($binary) === 0) {
+                return back()->with('error', 'Format file gambar tidak valid.');
+            }
+
+            if (strlen($binary) > 10 * 1024 * 1024) {
+                return back()->with('error', 'Ukuran gambar maksimal 10MB.');
+            }
+
+            $originalName = (string) $request->input('gambar_name', 'gambaran-besar.jpg');
+            $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+            if (! in_array($ext, ['jpg', 'jpeg', 'png', 'webp'], true)) {
+                return back()->with('error', 'File wajib berformat JPG, JPEG, PNG, atau WEBP.');
+            }
+
+            $dir = "profil-instansi/{$kategori}";
+            if (! Storage::disk('public')->exists($dir)) {
+                Storage::disk('public')->makeDirectory($dir);
+            }
+
+            foreach (Storage::disk('public')->files($dir) as $file) {
+                if (str_starts_with(basename($file), "gambaran-besar-{$kategori}.")) {
+                    Storage::disk('public')->delete($file);
+                }
+            }
+
+            $targetName = "gambaran-besar-{$kategori}.{$ext}";
+            Storage::disk('public')->put("{$dir}/{$targetName}", $binary);
+
+            return back()->with('success', "Gambaran besar {$judulKategori} berhasil diperbarui.");
+        }
+
+        $request->validate([
+            'gambar' => 'required|image|mimes:jpg,jpeg,png,webp|max:10240',
+        ], [
+            'gambar.required' => 'File gambar wajib dipilih.',
+            'gambar.image' => 'File harus berupa gambar.',
+            'gambar.mimes' => 'Format gambar harus JPG, JPEG, PNG, atau WEBP.',
+            'gambar.max' => 'Ukuran gambar maksimal 10MB.',
+            'gambar.uploaded' => 'Ukuran file melebihi batas upload server PHP. Silakan unggah ulang.',
+        ]);
+
+        $ext = strtolower($request->file('gambar')->getClientOriginalExtension()) ?: 'jpg';
+        $dir = "profil-instansi/{$kategori}";
+
+        if (! Storage::disk('public')->exists($dir)) {
+            Storage::disk('public')->makeDirectory($dir);
+        }
+
+        foreach (Storage::disk('public')->files($dir) as $file) {
+            if (str_starts_with(basename($file), "gambaran-besar-{$kategori}.")) {
+                Storage::disk('public')->delete($file);
+            }
+        }
+
+        $targetName = "gambaran-besar-{$kategori}.{$ext}";
+        $request->file('gambar')->storeAs($dir, $targetName, 'public');
+
+        return back()->with('success', "Gambaran besar {$judulKategori} berhasil diperbarui.");
     }
 }
