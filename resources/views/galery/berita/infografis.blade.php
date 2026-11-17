@@ -999,12 +999,41 @@
                 @php
                     $relPath = ltrim((string) $info->gambar, '/');
                     $baseFile = basename($relPath);
-                    $publicFallback = '/images/infografis/' . $baseFile;
-                    $ver = optional($info->updated_at)->timestamp ?: 1;
-                    $imgSrc = preg_match('#^https?://#i', $relPath)
-                        ? $relPath
-                        : route('publik.infografis.gambar', ['id' => $info->id], false) . '?v=' . $ver;
-                    $fallbackSrc = $publicFallback . '?v=' . $ver;
+                    $storageFile = storage_path('app/public/' . $relPath);
+                    $seedFile = storage_path('app/public/seed-files/infografis/' . $baseFile);
+                    $pubImgFile = public_path('images/infografis/' . $baseFile);
+
+                    // Pastikan file di storage/app/public/infografis valid (persis seperti Media Informasi)
+                    if (!is_file($storageFile) || @getimagesize($storageFile) === false) {
+                        if (is_file($seedFile) && @getimagesize($seedFile) !== false) {
+                            \Illuminate\Support\Facades\Storage::disk('public')->put($relPath, file_get_contents($seedFile));
+                        } elseif (is_file($pubImgFile) && @getimagesize($pubImgFile) !== false) {
+                            \Illuminate\Support\Facades\Storage::disk('public')->put($relPath, file_get_contents($pubImgFile));
+                        } elseif (preg_match('/^ig_([A-Za-z0-9_-]+)\./', $baseFile, $mCode)) {
+                            $dlBin = \App\Models\Infografis::downloadInstagramMedia($mCode[1]);
+                            if ($dlBin) {
+                                \Illuminate\Support\Facades\Storage::disk('public')->put($relPath, $dlBin);
+                            }
+                        }
+                    }
+
+                    // Pastikan salinan di public/images/infografis juga tersedia
+                    if (is_file($storageFile) && !is_file($pubImgFile)) {
+                        if (!is_dir(dirname($pubImgFile))) {
+                            @mkdir(dirname($pubImgFile), 0755, true);
+                        }
+                        @copy($storageFile, $pubImgFile);
+                    }
+
+                    $ver = @filemtime($storageFile) ?: (@filemtime($pubImgFile) ?: 1);
+                    $storageUrl = asset('storage/' . $relPath) . '?v=' . $ver;
+                    $publicUrl = asset('images/infografis/' . $baseFile) . '?v=' . $ver;
+                    $routeUrl = url('/infografis/gambar/' . $info->id) . '?v=' . $ver;
+
+                    $imgSrc = is_file(public_path('storage/' . $relPath))
+                        ? $storageUrl
+                        : (is_file($pubImgFile) ? $publicUrl : $routeUrl);
+                    $fallbackSrc = is_file($pubImgFile) ? $publicUrl : $routeUrl;
                 @endphp
                 <button type="button" class="grafis-card"
                         data-index="{{ $loop->index }}"
