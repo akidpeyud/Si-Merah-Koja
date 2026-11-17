@@ -997,18 +997,28 @@
         <div class="grafis-grid">
             @forelse($daftar_infografis ?? [] as $info)
                 @php
-                    $ver = @filemtime(storage_path('app/public/' . $info->gambar)) ?: 1;
-                    $imgSrc = asset('storage/' . $info->gambar) . '?v=' . $ver;
+                    $relPath = ltrim((string) $info->gambar, '/');
+                    $baseFile = basename($relPath);
+                    $storageFile = storage_path('app/public/' . $relPath);
+                    $publicFallback = 'images/infografis/' . $baseFile;
+                    $ver = @filemtime($storageFile) ?: (@filemtime(public_path($publicFallback)) ?: 1);
+                    $imgSrc = file_exists(public_path('storage/' . $relPath))
+                        ? asset('storage/' . $relPath) . '?v=' . $ver
+                        : (file_exists(public_path($publicFallback))
+                            ? asset($publicFallback) . '?v=' . $ver
+                            : asset('storage/' . $relPath) . '?v=' . $ver);
+                    $fallbackSrc = asset($publicFallback) . '?v=' . $ver;
                 @endphp
                 <button type="button" class="grafis-card"
                         data-index="{{ $loop->index }}"
                         data-src="{{ $imgSrc }}"
+                        data-fallback="{{ $fallbackSrc }}"
                         data-title="{{ $info->judul ?? 'Infografis Damkar Kota Jambi' }}"
                         aria-label="Perbesar: {{ $info->judul ?? 'Infografis' }}">
                     <div class="grafis-thumb">
                         <span class="grafis-badge"><i class="fas fa-bolt"></i> Infografis</span>
                         <span class="grafis-zoom" aria-hidden="true"><i class="fas fa-expand"></i></span>
-                        <img src="{{ $imgSrc }}" alt="{{ $info->judul ?? 'Infografis' }}" loading="lazy">
+                        <img src="{{ $imgSrc }}" alt="{{ $info->judul ?? 'Infografis' }}" loading="lazy" onerror="if(this.src!=='{{ $fallbackSrc }}'){this.src='{{ $fallbackSrc }}';}">
                     </div>
                     <div class="grafis-body">
                         <div class="grafis-title">{{ $info->judul ?? 'Infografis Edukasi Damkar Kota Jambi' }}</div>
