@@ -62,16 +62,17 @@
 
             {{-- Kolom 4: Statistik Pengunjung & Logo WARLD di Bawahnya --}}
             <div class="footer-stats-col">
-                <x-visit-counter page="simerahkoja" :  />
-                </div>
+                <x-visit-counter page="simerahkoja" />
             </div>
         </div>
 
         {{-- Bar Bawah: Hak Cipta & Media Sosial --}}
         <div class="footer-bar">
-            <div>SIMERAH KOJA &copy; {{ date('Y') }}. Hak cipta dilindungi.</div>
-            <div class="social">
-                <a href="mailto:damkar.jbi@gmail.com" title="Email" aria-label="Email"><i class="fas fa-envelope"></i></a>
+            <div class="footer-copy">
+                &copy; {{ date('Y') }} <strong>SIMERAH KOJA</strong>. Hak cipta dilindungi.
+            </div>
+            <div class="social" aria-label="Media Sosial">
+                <a href="mailto:damkar.jbi@gmail.com" title="Email Resmi" aria-label="Email"><i class="fas fa-envelope"></i></a>
                 <a href="https://twitter.com/damkarkotajambi" target="_blank" rel="noopener" title="Twitter / X" aria-label="Twitter / X"><i class="fab fa-twitter"></i></a>
                 <a href="https://www.facebook.com/DamkarKotaJambi" target="_blank" rel="noopener" title="Facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
                 <a href="https://www.youtube.com/@damkarkotajambi" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
@@ -210,5 +211,74 @@
 .footer .footer-links a:hover {
     color: #ffffff;
     gap: 14px;
+}
+
+/* Bar Bawah: Hak Cipta & Media Sosial Clean */
+.footer .footer-bar {
+    margin-top: clamp(36px, 5vw, 56px) !important;
+    padding-top: 24px !important;
+    padding-bottom: 8px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 16px 24px !important;
+}
+
+.footer-copy {
+    color: rgba(255, 255, 255, 0.65) !important;
+    font-size: 0.88rem !important;
+    line-height: 1.5 !important;
+    letter-spacing: 0.01em !important;
+}
+
+.footer-copy strong {
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-weight: 600 !important;
+}
+
+.footer .footer-bar .social {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    margin: 0 !important;
+}
+
+.footer .footer-bar .social a {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 10px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: rgba(255, 255, 255, 0.75) !important;
+    font-size: 0.92rem !important;
+    text-decoration: none !important;
+    transition: all 0.25s ease !important;
+}
+
+.footer .footer-bar .social a:hover {
+    background: #e5392d !important;
+    border-color: #e5392d !important;
+    color: #ffffff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px -2px rgba(229, 57, 45, 0.45) !important;
+}
+
+@media (max-width: 768px) {
+    .footer .footer-bar {
+        flex-direction: column-reverse !important;
+        text-align: center !important;
+        justify-content: center !important;
+        gap: 16px !important;
+        margin-top: 28px !important;
+        padding-top: 20px !important;
+    }
+    .footer-copy {
+        font-size: 0.82rem !important;
+    }
 }
 </style>
