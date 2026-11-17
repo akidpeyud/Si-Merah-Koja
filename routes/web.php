@@ -55,6 +55,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\Permission\Middleware\RoleMiddleware;
 
@@ -170,8 +171,8 @@ Route::get('/infografis/gambar/{id}', function (int $id) {
     if (preg_match('/^ig_([A-Za-z0-9_-]+)\./', $baseName, $m)) {
         $bin = Infografis::downloadInstagramMedia($m[1]);
         if ($bin) {
-            \Illuminate\Support\Facades\Storage::disk('public')->put($clean, $bin);
-            $mime = (new \finfo(FILEINFO_MIME_TYPE))->buffer($bin) ?: 'image/jpeg';
+            Storage::disk('public')->put($clean, $bin);
+            $mime = (new finfo(FILEINFO_MIME_TYPE))->buffer($bin) ?: 'image/jpeg';
 
             return response($bin, 200, ['Content-Type' => $mime, 'Cache-Control' => 'public, max-age=86400']);
         }
@@ -487,6 +488,7 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
     Route::get('/sapra/perbaikan-kendaraan', [SapraController::class, 'perbaikanKendaraan']);
     Route::get('/sapra/perbaikan-kendaraan/cetak-pdf', [SapraController::class, 'cetakPdfPerbaikanKendaraan']);
     Route::get('/sapra/perbaikan-kendaraan/cetak-excel', [SapraController::class, 'cetakExcelPerbaikanKendaraan']);
+    Route::get('/sapra/perbaikan-kendaraan/template-excel', [SapraController::class, 'downloadTemplatePerbaikan'])->name('sapra.perbaikan-kendaraan.template');
 
     // Aksi Tambah, Ubah, Hapus Data Sapra (Khusus Role Sapra & Super User)
     Route::middleware([RoleMiddleware::class.':Sapra|Super User'])->group(function () {
@@ -532,6 +534,7 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
         Route::post('/sapra/perbaikan-kendaraan/store', [SapraController::class, 'storePerbaikanKendaraan']);
         Route::put('/sapra/perbaikan-kendaraan/update/{id}', [SapraController::class, 'updatePerbaikanKendaraan']);
         Route::delete('/sapra/perbaikan-kendaraan/delete/{id}', [SapraController::class, 'destroyPerbaikanKendaraan']);
+        Route::post('/sapra/perbaikan-kendaraan/import', [SapraController::class, 'importPerbaikanKendaraan'])->name('sapra.perbaikan-kendaraan.import');
     });
 
     // --- E. PENCEGAHAN ---
