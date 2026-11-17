@@ -48,6 +48,9 @@ class DatabaseSeeder extends Seeder
             PetaJabatanSeeder::class,
             TitikSigapSeeder::class,
             HeroBackgroundSeeder::class,
+            InfografisSeeder::class,
+            UjungDamkarTableSeeder::class,
+            EduDamkarTableSeeder::class,
         ]);
     }
 }
