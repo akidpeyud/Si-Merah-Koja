@@ -78,38 +78,40 @@ class InfografisSeeder extends Seeder
         $now = now();
         $disk = Storage::disk('public');
 
-        foreach ($items as $item) {
+        DB::table('infografis')->truncate();
+
+        foreach ($items as $idx => $item) {
             $gambar = 'infografis/'.$item['file'];
             $seedPath = $seedDir.DIRECTORY_SEPARATOR.$item['file'];
             $pubImgPath = $publicImgDir.DIRECTORY_SEPARATOR.$item['file'];
+            $targetPath = $targetDir.DIRECTORY_SEPARATOR.$item['file'];
 
-            if (! $disk->exists($gambar)) {
-                $bin = null;
-                if (File::exists($seedPath)) {
-                    $bin = File::get($seedPath);
-                } elseif (File::exists($pubImgPath)) {
-                    $bin = File::get($pubImgPath);
-                } else {
-                    $bin = Infografis::downloadInstagramMedia($item['code']);
-                }
+            $bin = null;
+            if (File::exists($seedPath) && @getimagesize($seedPath) !== false) {
+                $bin = File::get($seedPath);
+            } elseif (File::exists($pubImgPath) && @getimagesize($pubImgPath) !== false) {
+                $bin = File::get($pubImgPath);
+            } elseif (File::exists($targetPath) && @getimagesize($targetPath) !== false) {
+                $bin = File::get($targetPath);
+            } else {
+                $bin = Infografis::downloadInstagramMedia($item['code']);
+            }
 
-                if ($bin) {
-                    $disk->put($gambar, $bin);
+            if ($bin) {
+                $disk->put($gambar, $bin);
+                File::put($pubImgPath, $bin);
+                if (! File::exists($seedPath)) {
+                    File::put($seedPath, $bin);
                 }
             }
 
-            if ($disk->exists($gambar) && ! File::exists($pubImgPath)) {
-                File::put($pubImgPath, $disk->get($gambar));
-            }
-
-            DB::table('infografis')->updateOrInsert(
-                ['gambar' => $gambar],
-                [
-                    'judul' => $item['judul'],
-                    'created_at' => $now,
-                    'updated_at' => $now,
-                ]
-            );
+            DB::table('infografis')->insert([
+                'id' => $idx + 1,
+                'judul' => $item['judul'],
+                'gambar' => $gambar,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
         }
     }
 }
