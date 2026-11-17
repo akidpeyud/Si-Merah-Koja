@@ -10,5 +10,6 @@ class StokSapra extends Model
     use HasFactory;
 
     protected $table = 'stok_sapras';
+
     protected $guarded = ['id']; // Memperbolehkan mass assignment selain ID
 }

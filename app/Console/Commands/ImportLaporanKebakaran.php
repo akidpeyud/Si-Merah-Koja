@@ -40,30 +40,34 @@ class ImportLaporanKebakaran extends Command
 
     // Urutan penting: pola yang lebih spesifik dicek lebih dulu.
     private const OBJEK = [
-        'tempat_sampah'      => '/sampah|\btpa\b|\btps\b/i',
-        'rumah_ibadah'       => '/masjid|mushola|musholla|surau|gereja|vihara|klenteng|\bpura\b|ibadah/i',
-        'sarana_kesehatan'   => '/rumah sakit|\brs\b|\brsud\b|puskesmas|klinik|posyandu/i',
-        'sekolah'            => '/sekolah|\b(sd|sdn|smp|smpn|sma|sman|smk|smkn|mts|man|paud|tk)\b|madrasah|kampus|universitas|\buin\b|pesantren|ponpes/i',
-        'gudang'             => '/gudang/i',
-        'ruko'               => '/\bruko\b|kios|toko|warung/i',
+        'tempat_sampah' => '/sampah|\btpa\b|\btps\b/i',
+        'rumah_ibadah' => '/masjid|mushola|musholla|surau|gereja|vihara|klenteng|\bpura\b|ibadah/i',
+        'sarana_kesehatan' => '/rumah sakit|\brs\b|\brsud\b|puskesmas|klinik|posyandu/i',
+        'sekolah' => '/sekolah|\b(sd|sdn|smp|smpn|sma|sman|smk|smkn|mts|man|paud|tk)\b|madrasah|kampus|universitas|\buin\b|pesantren|ponpes/i',
+        'gudang' => '/gudang/i',
+        'ruko' => '/\bruko\b|kios|toko|warung/i',
         'pasar_tempat_usaha' => '/pasar|bengkel|restoran|rumah makan|kedai|cafe|kafe|salon|pabrik|mini ?market|alfamart|indomaret|hotel|dealer|spbu|pom bensin|studio|\bmall\b/i',
-        'kantor'             => '/kantor|\bdinas\b|\bbalai\b/i',
-        'rumah'              => '/rumah|bedeng|\bkost\b|\bkos\b|asrama|kontrakan|\bmess\b|\bmes\b/i',
+        'kantor' => '/kantor|\bdinas\b|\bbalai\b/i',
+        'rumah' => '/rumah|bedeng|\bkost\b|\bkos\b|asrama|kontrakan|\bmess\b|\bmes\b/i',
         'kendaraan_bermotor' => '/motor|mobil|kendaraan|truk|truck|\bbus\b|angkot|pick ?up|ambulans/i',
-        'gardu_listrik'      => '/gardu|trafo|kabel|tiang|listrik|amper|meteran|\bkwh\b/i',
-        'lahan_pohon'        => '/lahan|pohon|semak|kebun|rumput|hutan|gambut|belukar|ilalang/i',
+        'gardu_listrik' => '/gardu|trafo|kabel|tiang|listrik|amper|meteran|\bkwh\b/i',
+        'lahan_pohon' => '/lahan|pohon|semak|kebun|rumput|hutan|gambut|belukar|ilalang/i',
     ];
 
     private array $kolomCache = [];
+
     private array $kolomDilewati = [];
+
     private array $urutNomor = [];
+
     private array $catatan = [];
 
     public function handle(): int
     {
         $userId = $this->option('user');
-        if (!$userId || !DB::table('users')->where('id', $userId)->exists()) {
+        if (! $userId || ! DB::table('users')->where('id', $userId)->exists()) {
             $this->error('Isi --user dengan ID user yang valid, contoh: --user=1');
+
             return self::FAILURE;
         }
 
@@ -71,6 +75,7 @@ class ImportLaporanKebakaran extends Command
         $files = $this->kumpulkanFile($this->argument('sumber'));
         if (empty($files)) {
             $this->error('Tidak ada file .xlsx yang ditemukan.');
+
             return self::FAILURE;
         }
 
@@ -83,10 +88,10 @@ class ImportLaporanKebakaran extends Command
 
         $this->table(['File', 'Tahun', 'Kejadian', 'Masuk', 'Sudah ada', 'Dilewati'], $ringkas);
 
-        if (!empty($this->kolomDilewati)) {
+        if (! empty($this->kolomDilewati)) {
             $this->warn('Kolom ini tidak ada di tabel, jadi datanya tidak tersimpan:');
             foreach ($this->kolomDilewati as $tabel => $kolom) {
-                $this->line('  ' . $tabel . ': ' . implode(', ', array_keys($kolom)));
+                $this->line('  '.$tabel.': '.implode(', ', array_keys($kolom)));
             }
         }
 
@@ -97,7 +102,7 @@ class ImportLaporanKebakaran extends Command
             fputcsv($fh, $c);
         }
         fclose($fh);
-        $this->info(count($this->catatan) . ' catatan untuk dicek manual: ' . $laporan);
+        $this->info(count($this->catatan).' catatan untuk dicek manual: '.$laporan);
 
         return self::SUCCESS;
     }
@@ -125,14 +130,15 @@ class ImportLaporanKebakaran extends Command
         // Tahun laporan dari judul ("TAHUN 2022", "JANUARI - DESEMBER 2025") atau nama file
         $tahun = null;
         foreach (array_slice($rows, 0, 5) as $r) {
-            if (!empty($r[0]) && preg_match('/(20\d{2})/', (string) $r[0], $m)) {
+            if (! empty($r[0]) && preg_match('/(20\d{2})/', (string) $r[0], $m)) {
                 $tahun = (int) $m[1];
                 break;
             }
         }
         $tahun = $tahun ?: (preg_match('/(20\d{2})/', $nama, $m) ? (int) $m[1] : null);
-        if (!$tahun) {
+        if (! $tahun) {
             $this->catat($nama, '-', 'Tahun laporan tidak terbaca, file dilewati.');
+
             return [$nama, '?', 0, 0, 0, 0];
         }
 
@@ -146,6 +152,7 @@ class ImportLaporanKebakaran extends Command
         }
         if ($hdr === null) {
             $this->catat($nama, '-', 'Baris judul kolom tidak ditemukan, file dilewati.');
+
             return [$nama, $tahun, 0, 0, 0, 0];
         }
 
@@ -153,7 +160,7 @@ class ImportLaporanKebakaran extends Command
         $h = [];
         foreach ($rows[$hdr] as $i => $v) {
             $k = Str::lower(trim((string) $v));
-            if ($k !== '' && !isset($h[$k])) {
+            if ($k !== '' && ! isset($h[$k])) {
                 $h[$k] = $i;
             }
         }
@@ -165,23 +172,25 @@ class ImportLaporanKebakaran extends Command
                     }
                 }
             }
+
             return null;
         };
         $C = [
-            'no'     => $h['no'] ?? 0,
-            'tgl'    => $cari(['tanggal']),
-            'jam'    => $cari(['jam']),
-            'jenis'  => $cari(['jenis']),
-            'sebab'  => $cari(['penyebab']),
-            'lok'    => $cari(['lokasi']),
-            'pel'    => $cari(['nama pemilik', 'nama pelapor']),
-            'arm'    => $cari(['armada']),
-            'air'    => $cari(['jumlah air']),
-            'resp'   => $cari(['respon']),
-            'ket'    => $cari(['ket']),
+            'no' => $h['no'] ?? 0,
+            'tgl' => $cari(['tanggal']),
+            'jam' => $cari(['jam']),
+            'jenis' => $cari(['jenis']),
+            'sebab' => $cari(['penyebab']),
+            'lok' => $cari(['lokasi']),
+            'pel' => $cari(['nama pemilik', 'nama pelapor']),
+            'arm' => $cari(['armada']),
+            'air' => $cari(['jumlah air']),
+            'resp' => $cari(['respon']),
+            'ket' => $cari(['ket']),
         ];
         if ($C['tgl'] === null || $C['jam'] === null || $C['lok'] === null) {
             $this->catat($nama, '-', 'Kolom Tanggal/Jam/Lokasi tidak ditemukan, file dilewati.');
+
             return [$nama, $tahun, 0, 0, 0, 0];
         }
 
@@ -189,7 +198,7 @@ class ImportLaporanKebakaran extends Command
         $kejadian = [];
         for ($i = $hdr + 1; $i < count($rows); $i++) {
             $no = $rows[$i][$C['no']] ?? null;
-            if (!is_numeric($no)) {
+            if (! is_numeric($no)) {
                 continue;
             }
             $kejadian[(int) $no][] = $rows[$i];
@@ -204,9 +213,10 @@ class ImportLaporanKebakaran extends Command
             // ---- Tanggal (tahun dipaksa mengikuti tahun laporan) ----
             $tglMentah = $g('tgl');
             $tgl = $this->parseTanggal($tglMentah, $tahun);
-            if (!$tgl) {
-                $this->catat($nama, $no, 'Tanggal tidak terbaca (' . json_encode($tglMentah) . '), kejadian dilewati.');
+            if (! $tgl) {
+                $this->catat($nama, $no, 'Tanggal tidak terbaca ('.json_encode($tglMentah).'), kejadian dilewati.');
                 $lewat++;
+
                 continue;
             }
             if (preg_match('/(\d{4})\s*$/', trim((string) $tglMentah, " \t\"'"), $my) && (int) $my[1] !== $tahun) {
@@ -218,8 +228,8 @@ class ImportLaporanKebakaran extends Command
             $respon = $this->parseRespon($C['resp'] !== null ? $g('resp') : null);
             $terima = $jam ? $tgl->copy()->setTime($jam[0], $jam[1]) : null;
             $tiba = ($terima && $respon !== null) ? $terima->copy()->addMinutes($respon) : null;
-            if (!$jam) {
-                $this->catat($nama, $no, 'Jam tidak terbaca (' . json_encode($g('jam')) . '), waktu_terima dikosongkan.');
+            if (! $jam) {
+                $this->catat($nama, $no, 'Jam tidak terbaca ('.json_encode($g('jam')).'), waktu_terima dikosongkan.');
             } elseif ($respon === null) {
                 $this->catat($nama, $no, 'Respon time kosong, waktu_tiba dikosongkan.');
             }
@@ -229,7 +239,7 @@ class ImportLaporanKebakaran extends Command
             $telepon = null;
             if ($pelapor && preg_match('/((?:\+?62|0)\d{8,13})/', $pelapor, $m)) {
                 $telepon = $m[1];
-                $pelapor = $this->bersih(trim(preg_replace('/\(?\s*' . preg_quote($m[1], '/') . '\s*\)?/', '', $pelapor), " -/,;"));
+                $pelapor = $this->bersih(trim(preg_replace('/\(?\s*'.preg_quote($m[1], '/').'\s*\)?/', '', $pelapor), ' -/,;'));
             }
 
             // ---- Objek & penyebab ----
@@ -263,11 +273,13 @@ class ImportLaporanKebakaran extends Command
                 ->exists();
             if ($sudah) {
                 $ada++;
+
                 continue;
             }
 
             if ($dry) {
                 $masuk++;
+
                 continue;
             }
 
@@ -275,55 +287,55 @@ class ImportLaporanKebakaran extends Command
             try {
                 $now = now();
                 $id = DB::table('laporan_penyelamatans')->insertGetId($this->saring('laporan_penyelamatans', [
-                    'user_id'       => $userId,
+                    'user_id' => $userId,
                     'nomor_laporan' => $this->nomorLaporan($tgl),
-                    'id_laporan'    => (string) Str::uuid(),
+                    'id_laporan' => (string) Str::uuid(),
 
                     'tanggal_kejadian' => $tgl->toDateString(),
-                    'hari_kejadian'    => $tgl->copy()->locale('id')->translatedFormat('l'),
-                    'bulan_kejadian'   => $tgl->copy()->locale('id')->translatedFormat('F'),
-                    'tahun_kejadian'   => $tgl->year,
+                    'hari_kejadian' => $tgl->copy()->locale('id')->translatedFormat('l'),
+                    'bulan_kejadian' => $tgl->copy()->locale('id')->translatedFormat('F'),
+                    'tahun_kejadian' => $tgl->year,
 
-                    'nama_pelapor'    => $pelapor,
+                    'nama_pelapor' => $pelapor,
                     'telepon_pelapor' => $telepon,
 
-                    'kategori_kejadian'          => 'kebakaran',
-                    'kategori_kebakaran'         => $kategori,
+                    'kategori_kejadian' => 'kebakaran',
+                    'kategori_kebakaran' => $kategori,
                     'keterangan_objek_kebakaran' => $jenisAsli,
-                    'prioritas'                  => 'rendah',
+                    'prioritas' => 'rendah',
 
                     'waktu_kejadian' => $terimaStr,
-                    'waktu_terima'   => $terimaStr,
-                    'waktu_tiba'     => $tiba ? $tiba->format('Y-m-d H:i:s') : null,
-                    'alamat'         => $alamat,
+                    'waktu_terima' => $terimaStr,
+                    'waktu_tiba' => $tiba ? $tiba->format('Y-m-d H:i:s') : null,
+                    'alamat' => $alamat,
 
                     'created_at' => $now,
                     'updated_at' => $now,
                 ]));
 
                 DB::table('lp_teknis_logistiks')->insert($this->saring('lp_teknis_logistiks', [
-                    'laporan_id'     => $id,
-                    'satuan_tugas'   => $satgas,
-                    'armada'         => $armada ? json_encode([$armada]) : null,
-                    'liter_air'      => $liter,
-                    'konsumsi_alat'  => $konsumsi,
-                    'created_at'     => $now,
-                    'updated_at'     => $now,
+                    'laporan_id' => $id,
+                    'satuan_tugas' => $satgas,
+                    'armada' => $armada ? json_encode([$armada]) : null,
+                    'liter_air' => $liter,
+                    'konsumsi_alat' => $konsumsi,
+                    'created_at' => $now,
+                    'updated_at' => $now,
                 ]));
 
                 DB::table('lp_dokumentasis')->insert($this->saring('lp_dokumentasis', [
-                    'laporan_id'              => $id,
-                    'dugaan_penyebab'         => $sebab,
+                    'laporan_id' => $id,
+                    'dugaan_penyebab' => $sebab,
                     'dugaan_penyebab_lainnya' => $sebabLain,
-                    'created_at'              => $now,
-                    'updated_at'              => $now,
+                    'created_at' => $now,
+                    'updated_at' => $now,
                 ]));
 
                 DB::commit();
                 $masuk++;
             } catch (\Throwable $e) {
                 DB::rollBack();
-                $this->catat($nama, $no, 'GAGAL disimpan: ' . $e->getMessage());
+                $this->catat($nama, $no, 'GAGAL disimpan: '.$e->getMessage());
                 $lewat++;
             }
         }
@@ -341,19 +353,20 @@ class ImportLaporanKebakaran extends Command
         }
 
         // Tanggal tersimpan sebagai angka serial Excel
-        if (is_numeric($v) && !is_string($v) && $v > 20000) {
+        if (is_numeric($v) && ! is_string($v) && $v > 20000) {
             $d = Carbon::instance(ExcelDate::excelToDateTimeObject($v));
+
             return checkdate($d->month, $d->day, $tahun) ? Carbon::create($tahun, $d->month, $d->day, 0, 0, 0) : null;
         }
 
         // Buang karakter di depan (apostrof, koma), mis. "'06 Juni 2026" atau ",04 Maret 2023"
         $s = preg_replace('/^[^\d]+/', '', trim((string) $v));
-        if (!preg_match('/^(\d{1,2})\s+([A-Za-z]+)/', $s, $m)) {
+        if (! preg_match('/^(\d{1,2})\s+([A-Za-z]+)/', $s, $m)) {
             return null;
         }
         $bulan = self::BULAN[Str::lower($m[2])] ?? null;
         $hari = (int) $m[1];
-        if (!$bulan || !checkdate($bulan, $hari, $tahun)) {
+        if (! $bulan || ! checkdate($bulan, $hari, $tahun)) {
             return null;
         }
 
@@ -366,8 +379,9 @@ class ImportLaporanKebakaran extends Command
             return null;
         }
         // Sel berformat waktu: pecahan hari (0.5 = 12:00)
-        if (!is_string($v) && is_numeric($v) && $v >= 0 && $v < 1) {
+        if (! is_string($v) && is_numeric($v) && $v >= 0 && $v < 1) {
             $menit = ((int) round($v * 1440)) % 1440;
+
             return [intdiv($menit, 60), $menit % 60];
         }
         $s = trim((string) $v, " \t\"'");
@@ -378,15 +392,17 @@ class ImportLaporanKebakaran extends Command
                 return [$jam, $mnt];
             }
         }
+
         return null;
     }
 
     private function parseRespon($v): ?int
     {
         $s = $this->bersih($v);
-        if ($s === null || !preg_match('/\d+/', $s, $m)) {
+        if ($s === null || ! preg_match('/\d+/', $s, $m)) {
             return null;
         }
+
         return (int) $m[0];
     }
 
@@ -422,6 +438,7 @@ class ImportLaporanKebakaran extends Command
                 return $kunci;
             }
         }
+
         return null;
     }
 
@@ -442,7 +459,7 @@ class ImportLaporanKebakaran extends Command
         if (str_contains($s, 'gas')) {
             return ['kebocoran_gas', null];
         }
-        if (!str_contains($s, 'pencuri')
+        if (! str_contains($s, 'pencuri')
             && preg_match('/sampah|puntung|rokok|obat nyamuk|korek|lilin|lalai|kelalaian|bakar|membakar|pembakaran/', $s)) {
             return ['kelalaian_manusia', null];
         }
@@ -462,23 +479,24 @@ class ImportLaporanKebakaran extends Command
             return null;
         }
         $s = trim(preg_replace('/\s+/u', ' ', (string) $v), " \t\"'");
+
         return ($s === '' || $s === '-' || $s === '.') ? null : $s;
     }
 
     /** Format sama dengan DamtanController::buatNomorLaporan (REG-YYYYMMDD-0001). */
     private function nomorLaporan(Carbon $tanggal): string
     {
-        $prefix = 'REG-' . $tanggal->format('Ymd') . '-';
+        $prefix = 'REG-'.$tanggal->format('Ymd').'-';
 
-        if (!isset($this->urutNomor[$prefix])) {
+        if (! isset($this->urutNomor[$prefix])) {
             $akhir = DB::table('laporan_penyelamatans')
-                ->where('nomor_laporan', 'like', $prefix . '%')
+                ->where('nomor_laporan', 'like', $prefix.'%')
                 ->orderByDesc('nomor_laporan')
                 ->value('nomor_laporan');
             $this->urutNomor[$prefix] = $akhir ? (int) substr($akhir, -4) : 0;
         }
 
-        return $prefix . str_pad(++$this->urutNomor[$prefix], 4, '0', STR_PAD_LEFT);
+        return $prefix.str_pad(++$this->urutNomor[$prefix], 4, '0', STR_PAD_LEFT);
     }
 
     private function kolom(string $tabel): array
@@ -491,7 +509,7 @@ class ImportLaporanKebakaran extends Command
     {
         $ada = $this->kolom($tabel);
         foreach ($data as $k => $v) {
-            if (!in_array($k, $ada, true)) {
+            if (! in_array($k, $ada, true)) {
                 // kolom opsional yang memang belum ditambahkan tidak perlu dilaporkan jika nilainya kosong
                 if ($v !== null && $v !== '') {
                     $this->kolomDilewati[$tabel][$k] = true;
@@ -499,6 +517,7 @@ class ImportLaporanKebakaran extends Command
                 unset($data[$k]);
             }
         }
+
         return $data;
     }
 
@@ -512,8 +531,8 @@ class ImportLaporanKebakaran extends Command
         $hasil = [];
         foreach ($sumber as $s) {
             if (is_dir($s)) {
-                foreach (glob(rtrim($s, '/\\') . DIRECTORY_SEPARATOR . '*.xlsx') ?: [] as $f) {
-                    if (!str_starts_with(basename($f), '~$')) {
+                foreach (glob(rtrim($s, '/\\').DIRECTORY_SEPARATOR.'*.xlsx') ?: [] as $f) {
+                    if (! str_starts_with(basename($f), '~$')) {
                         $hasil[] = $f;
                     }
                 }
@@ -524,6 +543,7 @@ class ImportLaporanKebakaran extends Command
             }
         }
         sort($hasil);
+
         return $hasil;
     }
 }

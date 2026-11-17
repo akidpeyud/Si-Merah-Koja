@@ -62,14 +62,14 @@ class InfografisSeeder extends Seeder
         $now = now();
 
         foreach ($items as $item) {
-            $sourcePath = $sourceDir . DIRECTORY_SEPARATOR . $item['file'];
-            $targetPath = $targetDir . DIRECTORY_SEPARATOR . $item['file'];
+            $sourcePath = $sourceDir.DIRECTORY_SEPARATOR.$item['file'];
+            $targetPath = $targetDir.DIRECTORY_SEPARATOR.$item['file'];
 
             if (File::exists($sourcePath) && ! File::exists($targetPath)) {
                 File::copy($sourcePath, $targetPath);
             }
 
-            $gambar = 'infografis/' . $item['file'];
+            $gambar = 'infografis/'.$item['file'];
 
             DB::table('infografis')->updateOrInsert(
                 ['gambar' => $gambar],

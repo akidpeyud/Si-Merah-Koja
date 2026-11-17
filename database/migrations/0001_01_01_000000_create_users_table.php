@@ -16,11 +16,11 @@ return new class extends Migration
             $table->id();
             $table->string('nama_lengkap');
             $table->string('email')->unique();
-            
+
             // Kolom kustom kita
             $table->string('nomor_pegawai')->unique();
             $table->string('role')->default('pegawai');
-            
+
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

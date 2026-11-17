@@ -9,6 +9,7 @@ use App\Models\UjungDamkar;
 use Carbon\Carbon;
 use GuzzleHttp\TransferStats;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -1057,7 +1058,7 @@ class OperatorMedsosController extends Controller
      * Simpan & kompres otomatis gambar background ke resolusi ideal (maks lebar 1600px, JPEG quality 78)
      * agar ukuran file selalu ringan (~150-250 KB) meskipun foto asli beberapa MB.
      */
-    private function storeAndCompressBackgroundImage(\Illuminate\Http\UploadedFile $file): string
+    private function storeAndCompressBackgroundImage(UploadedFile $file): string
     {
         $targetDir = public_path('uploads/backgrounds');
         if (! is_dir($targetDir)) {

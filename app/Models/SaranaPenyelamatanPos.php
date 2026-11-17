@@ -10,12 +10,12 @@ class SaranaPenyelamatanPos extends Model
     use HasFactory;
 
     protected $table = 'sarana_penyelamatan_pos';
-    
+
     protected $fillable = [
-        'lokasi_pos_id', 
-        'jenis_sarana_penyelamatan', 
-        'jumlah', 
-        'gambar'
+        'lokasi_pos_id',
+        'jenis_sarana_penyelamatan',
+        'jumlah',
+        'gambar',
     ];
 
     // Relasi: 1 Sarana Penyelamatan hanya milik 1 Lokasi Pos

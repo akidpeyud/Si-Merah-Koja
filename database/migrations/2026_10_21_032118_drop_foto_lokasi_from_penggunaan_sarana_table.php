@@ -15,13 +15,13 @@ return new class extends Migration
             }
 
             // 2. Pastikan 3 kolom berkas yang baru sudah ada (jaga-jaga jika belum masuk ke tabel)
-            if (!Schema::hasColumn('penggunaan_sarana', 'surat_permohonan')) {
+            if (! Schema::hasColumn('penggunaan_sarana', 'surat_permohonan')) {
                 $table->string('surat_permohonan')->after('waktu_selesai');
             }
-            if (!Schema::hasColumn('penggunaan_sarana', 'fotokopi_ktp')) {
+            if (! Schema::hasColumn('penggunaan_sarana', 'fotokopi_ktp')) {
                 $table->string('fotokopi_ktp')->after('surat_permohonan');
             }
-            if (!Schema::hasColumn('penggunaan_sarana', 'sket_denah_lokasi')) {
+            if (! Schema::hasColumn('penggunaan_sarana', 'sket_denah_lokasi')) {
                 $table->string('sket_denah_lokasi')->after('fotokopi_ktp');
             }
         });
@@ -30,7 +30,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('penggunaan_sarana', function (Blueprint $table) {
-            if (!Schema::hasColumn('penggunaan_sarana', 'foto_lokasi')) {
+            if (! Schema::hasColumn('penggunaan_sarana', 'foto_lokasi')) {
                 $table->string('foto_lokasi')->nullable();
             }
         });

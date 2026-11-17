@@ -13,7 +13,7 @@ class Pengumuman extends Model
     protected $table = 'pengumumans';
 
     // Kategori bawaan sesuai controller Anda
-    public const KATEGORI = ['Umum', 'Kepegawaian', 'Layanan', 'Penting']; 
+    public const KATEGORI = ['Umum', 'Kepegawaian', 'Layanan', 'Penting'];
 
     // Kolom-kolom yang diizinkan untuk diisi dari form
     protected $fillable = [

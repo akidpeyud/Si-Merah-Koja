@@ -10,21 +10,21 @@ return new class extends Migration
     {
         Schema::create('peningkatan_kapasitas', function (Blueprint $table) {
             $table->id();
-            
+
             // Detail Kegiatan
             $table->string('nama_kegiatan');
             $table->string('penyelenggara');
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
             $table->string('jenis_kegiatan');
-            
+
             // Peserta
             $table->integer('jumlah_pegawai');
-            
+
             // File & Catatan
             $table->string('dokumen_terkait')->nullable(); // Untuk path upload Surat Tugas/Sertifikat
             $table->text('catatan')->nullable();
-            
+
             $table->timestamps();
         });
     }

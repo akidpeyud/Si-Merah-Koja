@@ -14,25 +14,25 @@ class HeroBackgroundSeeder extends Seeder
     {
         $backgrounds = [
             [
-                'id'          => 1,
-                'judul'       => 'Gedung Mako Damkartan Kota Jambi (Background Utama 1)',
+                'id' => 1,
+                'judul' => 'Gedung Mako Damkartan Kota Jambi (Background Utama 1)',
                 'path_gambar' => 'images/background1.png',
-                'urutan'      => 1,
-                'is_active'   => true,
+                'urutan' => 1,
+                'is_active' => true,
             ],
             [
-                'id'          => 2,
-                'judul'       => 'Armada & Operasional Damkartan Kota Jambi (Background Utama 2)',
+                'id' => 2,
+                'judul' => 'Armada & Operasional Damkartan Kota Jambi (Background Utama 2)',
                 'path_gambar' => 'images/background2.jpeg',
-                'urutan'      => 2,
-                'is_active'   => true,
+                'urutan' => 2,
+                'is_active' => true,
             ],
             [
-                'id'          => 3,
-                'judul'       => 'background api',
+                'id' => 3,
+                'judul' => 'background api',
                 'path_gambar' => 'uploads/backgrounds/bg_1794361691_CjpEvzhA.jpg',
-                'urutan'      => 3,
-                'is_active'   => true,
+                'urutan' => 3,
+                'is_active' => true,
             ],
         ];
 
@@ -40,12 +40,12 @@ class HeroBackgroundSeeder extends Seeder
             DB::table('hero_backgrounds')->updateOrInsert(
                 ['id' => $bg['id']],
                 [
-                    'judul'       => $bg['judul'],
+                    'judul' => $bg['judul'],
                     'path_gambar' => $bg['path_gambar'],
-                    'urutan'      => $bg['urutan'],
-                    'is_active'   => $bg['is_active'],
-                    'created_at'  => now(),
-                    'updated_at'  => now(),
+                    'urutan' => $bg['urutan'],
+                    'is_active' => $bg['is_active'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]
             );
         }

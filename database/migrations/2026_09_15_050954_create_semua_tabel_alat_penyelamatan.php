@@ -10,13 +10,13 @@ return new class extends Migration
     {
         // Daftar 7 tabel yang akan dibuat masing-masing
         $tables = [
-            'apd_rescues', 
-            'baju_evakuasi_lebahs', 
-            'box_tempat_ulars', 
-            'helm_climbings', 
-            'stik_ulars', 
-            'alat_evakuasi_lebahs', 
-            'alat_pemotong_cincins'
+            'apd_rescues',
+            'baju_evakuasi_lebahs',
+            'box_tempat_ulars',
+            'helm_climbings',
+            'stik_ulars',
+            'alat_evakuasi_lebahs',
+            'alat_pemotong_cincins',
         ];
 
         // Looping untuk membuat ke-7 tabel dengan struktur yang sama
@@ -37,8 +37,8 @@ return new class extends Migration
     public function down()
     {
         $tables = [
-            'apd_rescues', 'baju_evakuasi_lebahs', 'box_tempat_ulars', 
-            'helm_climbings', 'stik_ulars', 'alat_evakuasi_lebahs', 'alat_pemotong_cincins'
+            'apd_rescues', 'baju_evakuasi_lebahs', 'box_tempat_ulars',
+            'helm_climbings', 'stik_ulars', 'alat_evakuasi_lebahs', 'alat_pemotong_cincins',
         ];
 
         foreach ($tables as $tableName) {

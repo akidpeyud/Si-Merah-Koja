@@ -24,9 +24,9 @@ class EvakuasiLengkapImport implements Import, WithMultipleSheets
     public array $sheetInstances = [];
 
     /**
-     * @param int $userId ID User pemilik data laporan
-     * @param bool $dryRun Mode simulasi tanpa menyimpan ke database
-     * @param array $availableSheets Daftar nama sheet yang ingin diproses (jika kosong, proses sheet utama)
+     * @param  int  $userId  ID User pemilik data laporan
+     * @param  bool  $dryRun  Mode simulasi tanpa menyimpan ke database
+     * @param  array  $availableSheets  Daftar nama sheet yang ingin diproses (jika kosong, proses sheet utama)
      */
     public function __construct(
         protected int $userId = 1,
@@ -106,9 +106,9 @@ class EvakuasiLengkapSheetImport implements ToCollection, WithCalculatedFormulas
     ];
 
     /**
-     * @param string $sheetName Nama sheet saat ini
-     * @param int $userId ID User pemilik data laporan
-     * @param bool $dryRun Mode simulasi tanpa menyimpan ke database
+     * @param  string  $sheetName  Nama sheet saat ini
+     * @param  int  $userId  ID User pemilik data laporan
+     * @param  bool  $dryRun  Mode simulasi tanpa menyimpan ke database
      */
     public function __construct(
         public string $sheetName = '',

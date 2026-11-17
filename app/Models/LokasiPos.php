@@ -10,6 +10,7 @@ class LokasiPos extends Model
     use HasFactory;
 
     protected $table = 'lokasi_pos';
+
     protected $fillable = ['nama_lokasi', 'tipe', 'alamat'];
 
     // Anak Ke-1 (Prasarana)

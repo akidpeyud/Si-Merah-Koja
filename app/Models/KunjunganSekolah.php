@@ -10,5 +10,6 @@ class KunjunganSekolah extends Model
     use HasFactory;
 
     protected $table = 'kunjungan_sekolahs';
+
     protected $guarded = [];
 }

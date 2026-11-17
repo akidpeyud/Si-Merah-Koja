@@ -19,9 +19,9 @@ class InjectGlobalFeedback
         // 1) Flash otomatis untuk aksi POST/PUT/PATCH/DELETE yang berhasil
         if (in_array(strtoupper($request->method()), ['POST', 'PUT', 'PATCH', 'DELETE'], true)) {
             if ($response->isRedirection()
-                && !session()->has('success')
-                && !session()->has('error')
-                && !session()->has('errors')) {
+                && ! session()->has('success')
+                && ! session()->has('error')
+                && ! session()->has('errors')) {
                 $msg = match (strtoupper($request->method())) {
                     'DELETE' => 'Data berhasil dihapus.',
                     'PUT', 'PATCH' => 'Data berhasil diperbarui.',
@@ -40,12 +40,12 @@ class InjectGlobalFeedback
         }
 
         $contentType = $response->headers->get('Content-Type', '');
-        if (!str_contains($contentType, 'text/html')) {
+        if (! str_contains($contentType, 'text/html')) {
             return $response;
         }
 
         $content = $response->getContent();
-        if (!is_string($content) || $content === '') {
+        if (! is_string($content) || $content === '') {
             return $response;
         }
 
@@ -60,7 +60,7 @@ class InjectGlobalFeedback
             return $response;
         }
 
-        $injected = self::MARKER . view('components.global-feedback')->render();
+        $injected = self::MARKER.view('components.global-feedback')->render();
         $response->setContent(substr_replace($content, $injected, $pos, 0));
 
         return $response;

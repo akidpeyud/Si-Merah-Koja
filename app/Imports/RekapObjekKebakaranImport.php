@@ -13,8 +13,11 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 class RekapObjekKebakaranImport implements ToCollection, WithCalculatedFormulas, WithMultipleSheets, WithStartRow
 {
     public int $totalBulan = 0;
+
     public int $totalDisimpan = 0;
+
     public int $totalDilewati = 0;
+
     public array $importedDetails = [];
 
     private const BULAN_MAP = [
@@ -107,12 +110,14 @@ class RekapObjekKebakaranImport implements ToCollection, WithCalculatedFormulas,
                 // Jika berisi strip (-), kosong, atau bukan angka
                 if ($rawVal === '-' || $rawVal === '' || ! is_numeric($rawVal)) {
                     $this->totalDilewati++;
+
                     continue;
                 }
 
                 $jumlah = (int) $rawVal;
                 if ($jumlah <= 0) {
                     $this->totalDilewati++;
+
                     continue;
                 }
 

@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama_instansi');
             $table->year('tahun');
-            $table->string('tanggal_pelaksanaan'); 
+            $table->string('tanggal_pelaksanaan');
             $table->string('tempat_pelaksanaan');
             $table->integer('peserta_laki_laki')->nullable()->default(0);
             $table->integer('peserta_perempuan')->nullable()->default(0);

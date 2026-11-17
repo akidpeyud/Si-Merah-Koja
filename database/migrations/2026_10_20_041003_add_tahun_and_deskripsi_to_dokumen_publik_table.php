@@ -9,13 +9,13 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up(): void
-{
-    Schema::table('dokumen_publik', function (Blueprint $table) {
-        $table->year('tahun')->nullable();
-        $table->text('deskripsi')->nullable();
-    });
-}
+    public function up(): void
+    {
+        Schema::table('dokumen_publik', function (Blueprint $table) {
+            $table->year('tahun')->nullable();
+            $table->text('deskripsi')->nullable();
+        });
+    }
 
     /**
      * Reverse the migrations.

@@ -11,5 +11,6 @@ class DiklatPpl extends Model
 
     // Sesuai dengan nama tabel di database lu
     protected $table = 'tbl_diklat_ppl';
+
     protected $guarded = ['id'];
 }

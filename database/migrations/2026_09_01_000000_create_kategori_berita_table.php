@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB; // <-- Jangan lupa tambahkan baris ini di atas
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema; // <-- Jangan lupa tambahkan baris ini di atas
 
 return new class extends Migration
 {

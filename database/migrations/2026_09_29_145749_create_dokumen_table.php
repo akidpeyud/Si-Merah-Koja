@@ -12,26 +12,26 @@ return new class extends Migration
             $table->id();
             $table->string('judul_dokumen');
             $table->string('nama_file');
-            
+
             // Kolom kategori utama
             $table->enum('kategori', [
-                'SOTK', 
-                'SOP', 
-                'Perencanaan', 
-                'Pelaporan', 
-                'Produk Hukum'
+                'SOTK',
+                'SOP',
+                'Perencanaan',
+                'Pelaporan',
+                'Produk Hukum',
             ]);
-            
+
             // Kolom sub-kategori khusus SOP disesuaikan menjadi 6 bagian
             $table->enum('sub_kategori', [
-                'Pencegahan', 
-                'Pemadaman Kebakaran', 
-                'Penyelamatan dan Evakuasi', 
-                'Sarana dan Prasarana', 
-                'Kepegawaian', 
-                'Keuangan'
+                'Pencegahan',
+                'Pemadaman Kebakaran',
+                'Penyelamatan dan Evakuasi',
+                'Sarana dan Prasarana',
+                'Kepegawaian',
+                'Keuangan',
             ])->nullable();
-            
+
             $table->timestamps();
         });
     }

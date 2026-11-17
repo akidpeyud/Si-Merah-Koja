@@ -33,8 +33,8 @@ class SuratKorban extends Model
     ];
 
     protected $casts = [
-    'tanggal_lahir'    => 'date',
-    'tanggal_kejadian' => 'date',
-    'tanggal_surat'    => 'datetime',
+        'tanggal_lahir' => 'date',
+        'tanggal_kejadian' => 'date',
+        'tanggal_surat' => 'datetime',
     ];
 }

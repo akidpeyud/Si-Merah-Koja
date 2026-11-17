@@ -10,6 +10,7 @@ class PrasaranaPos extends Model
     use HasFactory;
 
     protected $table = 'prasarana_pos';
+
     protected $fillable = ['lokasi_pos_id', 'jenis_prasarana', 'gambar'];
 
     // Relasi Belongs-To: 1 Prasarana hanya milik 1 Lokasi

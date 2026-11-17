@@ -11,5 +11,6 @@ class DiklatMfr extends Model
 
     // Asumsi nama tabel di database adalah tbl_diklat_mfr
     protected $table = 'tbl_diklat_mfr';
+
     protected $guarded = ['id'];
 }

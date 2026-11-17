@@ -17,7 +17,7 @@ class LaporanPenyelamatan extends Model
 
     protected $casts = [
         'tanggal_kejadian' => 'date',
-        'tahun_kejadian'   => 'integer',
+        'tahun_kejadian' => 'integer',
     ];
 
     // Relasi One-to-One ke tabel Teknis & Logistik
@@ -55,7 +55,7 @@ class LaporanPenyelamatan extends Model
      */
     public function getResponTimeAttribute()
     {
-        if (!$this->waktu_terima || !$this->waktu_tiba) {
+        if (! $this->waktu_terima || ! $this->waktu_tiba) {
             return null;
         }
 
