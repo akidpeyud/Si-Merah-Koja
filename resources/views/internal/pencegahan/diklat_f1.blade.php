@@ -268,11 +268,14 @@
             </div>
 
             <div class="toolbar-actions">
-                <!-- TOMBOL TAMBAH HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
+                <!-- TOMBOL TAMBAH & IMPOR HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
                 @hasanyrole('Pencegahan|Super User')
                 <a href="/internal/pencegahan/peningkatan-kapasitas/tambah?jenis={{ $judul }}" class="btn-tool navy">
                     <i class="fas fa-plus"></i> Tambah Data
                 </a>
+                <button type="button" class="btn-import-excel" data-bs-toggle="modal" data-bs-target="#modalImportPencegahan">
+                    <i class="fas fa-file-import"></i> Impor Excel
+                </button>
                 @endhasanyrole
 
                 <!-- EXCEL & PDF TERBUKA UNTUK SEMUA ROLE -->
@@ -488,6 +491,9 @@
                 </tbody>
             </table>
         </div>
+
+@include('internal.pencegahan.partials.import_modal', ['modul' => $jenis_url, 'judul' => $judul])
+@include('internal.pencegahan.partials.table_optimizer')
 @endsection
 
 @push('scripts')

@@ -19,6 +19,7 @@ use App\Http\Controllers\PemberdayaanController;
 use App\Http\Controllers\PemohonAuthController;
 use App\Http\Controllers\PemohonDashboardController;
 use App\Http\Controllers\PencegahanController;
+use App\Http\Controllers\PencegahanImportController;
 use App\Http\Controllers\PenggunaanSaranaController;
 use App\Http\Controllers\PenggunaanSaranaExcelController;
 use App\Http\Controllers\PengumumanController;
@@ -859,20 +860,7 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
     });
 
     // 11. Peningkatan Kapasitas Aparatur
-    Route::get('/internal/pencegahan/peningkatan-kapasitas', function () {
-        $dataDiksar = Schema::hasTable('tbl_diksar') ? DB::table('tbl_diksar')->orderBy('id', 'desc')->get() : [];
-        $dataF1 = Schema::hasTable('tbl_diklat_f1') ? DB::table('tbl_diklat_f1')->orderBy('id', 'desc')->get() : [];
-        $dataF2 = Schema::hasTable('tbl_diklat_f2') ? DB::table('tbl_diklat_f2')->orderBy('id', 'desc')->get() : [];
-        $dataRescue = Schema::hasTable('tbl_diklat_rescue') ? DB::table('tbl_diklat_rescue')->orderBy('id', 'desc')->get() : [];
-        $dataMfr = Schema::hasTable('tbl_diklat_mfr') ? DB::table('tbl_diklat_mfr')->orderBy('id', 'desc')->get() : [];
-        $dataOperator = Schema::hasTable('tbl_diklat_operator') ? DB::table('tbl_diklat_operator')->orderBy('id', 'desc')->get() : [];
-        $dataInspektur = Schema::hasTable('tbl_diklat_inspektur') ? DB::table('tbl_diklat_inspektur')->orderBy('id', 'desc')->get() : [];
-        $dataPpl = Schema::hasTable('tbl_diklat_ppl') ? DB::table('tbl_diklat_ppl')->orderBy('id', 'desc')->get() : [];
-
-        return view('internal.pencegahan.peningkatan_kapasitas', compact(
-            'dataDiksar', 'dataF1', 'dataF2', 'dataRescue', 'dataMfr', 'dataOperator', 'dataInspektur', 'dataPpl'
-        ));
-    });
+    Route::get('/internal/pencegahan/peningkatan-kapasitas', [PencegahanController::class, 'indexPeningkatanKapasitas']);
 
     Route::get('/internal/pencegahan/peningkatan-kapasitas/lihat/{jenis}/{id}', function ($jenis, $id) {
         $map = ['diksar' => 'tbl_diksar', 'diklat-f1' => 'tbl_diklat_f1', 'diklat-f2' => 'tbl_diklat_f2', 'diklat-rescue' => 'tbl_diklat_rescue', 'diklat-mfr' => 'tbl_diklat_mfr', 'diklat-operator' => 'tbl_diklat_operator', 'diklat-inspektur' => 'tbl_diklat_inspektur', 'diklat-ppl' => 'tbl_diklat_ppl'];
@@ -908,6 +896,10 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
         Route::post('/internal/pencegahan/peningkatan-kapasitas/edit/{jenis}/{id}', [PencegahanController::class, 'updateDiklat'])->whereNumber('id');
 
         Route::delete('/internal/pencegahan/peningkatan-kapasitas/hapus/{jenis}/{id}', [PencegahanController::class, 'destroyDiklat'])->whereNumber('id');
+
+        // Impor Excel & Unduh Template Bidang Pencegahan
+        Route::post('/internal/pencegahan/import/{modul}', [PencegahanImportController::class, 'import'])->name('pencegahan.import');
+        Route::get('/internal/pencegahan/import-template/{modul}', [PencegahanImportController::class, 'template'])->name('pencegahan.import.template');
     });
 
     // --- F. DUK KEPEGAWAIAN ---

@@ -64,11 +64,14 @@
             </div>
 
             <div class="d-flex gap-2 flex-wrap">
-                <!-- TOMBOL TAMBAH HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
+                <!-- TOMBOL TAMBAH & IMPOR HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
                 @hasanyrole('Pencegahan|Super User')
                 <a href="/internal/pencegahan/peningkatan-kapasitas/tambah" class="btn-add">
                     <i class="fas fa-plus"></i> Tambah Data
                 </a>
+                <button type="button" class="btn-import-excel" style="border-radius:999px;" data-bs-toggle="modal" data-bs-target="#modalImportPencegahan">
+                    <i class="fas fa-file-import"></i> Impor Excel
+                </button>
                 @endhasanyrole
 
                 <!-- TOMBOL EXCEL (MULTI-SHEET SEMUA DIKLAT) TERBUKA UNTUK SEMUA ROLE -->
@@ -102,58 +105,60 @@
                 <div class="stat-ico ic-primary"><i class="fas fa-user-graduate"></i></div>
                 <div>
                     <div class="stat-title">Data DIKSAR</div>
-                    <div class="stat-value">{{ count($dataDiksar ?? []) }}</div>
+                    <div class="stat-value">{{ $jumlahDiklat['diksar'] ?? count($dataDiksar ?? []) }}</div>
                 </div>
             </a>
             <a href="/internal/pencegahan/peningkatan-kapasitas/diklat-f1" class="stat-card">
                 <div class="stat-ico ic-primary"><i class="fas fa-fire-extinguisher"></i></div>
                 <div>
                     <div class="stat-title">Diklat Pemadam I</div>
-                    <div class="stat-value">{{ count($dataF1 ?? []) }}</div>
+                    <div class="stat-value">{{ $jumlahDiklat['diklat-f1'] ?? count($dataF1 ?? []) }}</div>
                 </div>
             </a>
             <a href="/internal/pencegahan/peningkatan-kapasitas/diklat-f2" class="stat-card">
                 <div class="stat-ico ic-primary"><i class="fas fa-fire"></i></div>
                 <div>
                     <div class="stat-title">Pemadam II</div>
-                    <div class="stat-value">{{ count($dataF2 ?? []) }}</div>
+                    <div class="stat-value">{{ $jumlahDiklat['diklat-f2'] ?? count($dataF2 ?? []) }}</div>
                 </div>
             </a>
             <a href="/internal/pencegahan/peningkatan-kapasitas/diklat-rescue" class="stat-card">
                 <div class="stat-ico ic-primary"><i class="fas fa-life-ring"></i></div>
                 <div>
                     <div class="stat-title">Diklat Rescue</div>
-                    <div class="stat-value">{{ count($dataRescue ?? []) }}</div>
+                    <div class="stat-value">{{ $jumlahDiklat['diklat-rescue'] ?? count($dataRescue ?? []) }}</div>
                 </div>
             </a>
             <a href="/internal/pencegahan/peningkatan-kapasitas/diklat-mfr" class="stat-card">
                 <div class="stat-ico ic-primary"><i class="fas fa-truck-medical"></i></div>
                 <div>
                     <div class="stat-title">Diklat MFR</div>
-                    <div class="stat-value">{{ count($dataMfr ?? []) }}</div>
+                    <div class="stat-value">{{ $jumlahDiklat['diklat-mfr'] ?? count($dataMfr ?? []) }}</div>
                 </div>
             </a>
             <a href="/internal/pencegahan/peningkatan-kapasitas/diklat-operator" class="stat-card">
                 <div class="stat-ico ic-primary"><i class="fas fa-truck"></i></div>
                 <div>
                     <div class="stat-title">Diklat Operator</div>
-                    <div class="stat-value">{{ count($dataOperator ?? []) }}</div>
+                    <div class="stat-value">{{ $jumlahDiklat['diklat-operator'] ?? count($dataOperator ?? []) }}</div>
                 </div>
             </a>
             <a href="/internal/pencegahan/peningkatan-kapasitas/diklat-inspektur" class="stat-card">
                 <div class="stat-ico ic-primary"><i class="fas fa-magnifying-glass-chart"></i></div>
                 <div>
                     <div class="stat-title">Diklat Inspektur</div>
-                    <div class="stat-value">{{ count($dataInspektur ?? []) }}</div>
+                    <div class="stat-value">{{ $jumlahDiklat['diklat-inspektur'] ?? count($dataInspektur ?? []) }}</div>
                 </div>
             </a>
             <a href="/internal/pencegahan/peningkatan-kapasitas/diklat-ppl" class="stat-card">
                 <div class="stat-ico ic-primary"><i class="fas fa-chalkboard-user"></i></div>
                 <div>
                     <div class="stat-title">Diklat PPL</div>
-                    <div class="stat-value">{{ count($dataPpl ?? []) }}</div>
+                    <div class="stat-value">{{ $jumlahDiklat['diklat-ppl'] ?? count($dataPpl ?? []) }}</div>
                 </div>
             </a>
         </div>
 
+@include('internal.pencegahan.partials.import_modal', ['modul' => 'diklat', 'judul' => 'Peningkatan Kapasitas Aparatur', 'pilihDiklat' => true])
+@include('internal.pencegahan.partials.table_optimizer')
 @endsection
