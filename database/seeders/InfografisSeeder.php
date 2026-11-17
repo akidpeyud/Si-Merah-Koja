@@ -115,4 +115,3 @@ class InfografisSeeder extends Seeder
         }
     }
 }
-
