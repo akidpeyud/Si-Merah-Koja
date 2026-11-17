@@ -61,7 +61,27 @@
 
     /* ---------- Penghitung Statistik Dinamis Kategori Dokumen Publik ---------- */
     .rekap-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 22px; }
-    .rekap-item { display: flex; align-items: center; gap: 14px; background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); padding: 16px 18px; box-shadow: var(--shadow-xs); border-left-width: 4px; }
+    .rekap-item { 
+        display: flex; align-items: center; gap: 14px; 
+        background: #fff; border: 1px solid var(--line); 
+        border-radius: var(--r-md); padding: 16px 18px; 
+        box-shadow: var(--shadow-xs); border-left-width: 4px; 
+        text-decoration: none; color: inherit; cursor: pointer;
+        transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background-color .18s ease;
+    }
+    .rekap-item:hover { 
+        transform: translateY(-2px); 
+        box-shadow: var(--shadow-md); 
+        color: inherit; 
+    }
+    .rekap-item.active { 
+        background: #f1f5f9; 
+        border-color: var(--navy); 
+        box-shadow: 0 0 0 2px var(--navy), var(--shadow-sm); 
+    }
+    .rekap-item.active .rekap-label { 
+        color: var(--navy); 
+    }
     .rekap-ico { flex: none; width: 42px; height: 42px; border-radius: 10px; display: grid; place-items: center; font-size: 1.05rem; }
     .rekap-num { font-family: var(--font-display); font-weight: 700; font-size: 1.7rem; line-height: 1; color: var(--ink); }
     .rekap-label { font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--steel-soft); margin-top: 4px; }
@@ -165,21 +185,21 @@
         ];
     })->all();
 
-    $totalDokumen = count($barisExcel);
-    $hitungKategori = [];
+    $totalDokumenTersaring = count($barisExcel);
+    $hitungKategoriTersaring = [];
 
     foreach ($daftarKategori as $kategori => $config) {
-        $hitungKategori[$kategori] = collect($barisExcel)
+        $hitungKategoriTersaring[$kategori] = collect($barisExcel)
             ->filter(fn($item) => strcasecmp(trim($item['kategori']), trim($kategori)) === 0)
             ->count();
     }
 
     $rekapData = [
         'rows' => $barisExcel,
-        'sum'  => array_merge(['total' => $totalDokumen], $hitungKategori),
+        'sum'  => array_merge(['total' => $totalDokumenTersaring], $hitungKategoriTersaring),
         'per_kategori' => collect($daftarKategori)->map(fn($config, $kategori) => [
             'nama'   => $kategori,
-            'jumlah' => $hitungKategori[$kategori] ?? 0,
+            'jumlah' => $hitungKategoriTersaring[$kategori] ?? 0,
         ])->values()->all(),
     ];
 @endphp
@@ -203,26 +223,34 @@
             </div>
         </div>
 
-        <!-- REKAP GRID STATISTIK DINAMIS KATEGORI -->
+        <!-- REKAP GRID STATISTIK DINAMIS KATEGORI (KLIK UNTUK FILTER) -->
         <div class="rekap-grid">
-            <div class="rekap-item rekap-total">
+            <a href="{{ route('dokumen-publik.index') }}" 
+               class="rekap-item rekap-total {{ !request()->filled('kategori') ? 'active' : '' }}"
+               title="Tampilkan Semua Kategori">
                 <div class="rekap-ico"><i class="fas fa-folder-open"></i></div>
                 <div>
-                    <div class="rekap-num">{{ $totalDokumen }}</div>
+                    <div class="rekap-num">{{ $totalDokumen ?? 0 }}</div>
                     <div class="rekap-label">Total Dokumen</div>
-                    <div class="rekap-sub">Terpublikasi di sistem</div>
+                    <div class="rekap-sub">{{ !request()->filled('kategori') ? 'Semua Ditampilkan' : 'Klik untuk reset' }}</div>
                 </div>
-            </div>
+            </a>
 
             @foreach($daftarKategori as $key => $info)
-            <div class="rekap-item {{ $info['class'] }}">
+            @php
+                $isActive = request('kategori') === $key;
+                $cardUrl = $isActive ? route('dokumen-publik.index') : route('dokumen-publik.index', ['kategori' => $key]);
+            @endphp
+            <a href="{{ $cardUrl }}" 
+               class="rekap-item {{ $info['class'] }} {{ $isActive ? 'active' : '' }}"
+               title="{{ $isActive ? 'Klik untuk membatalkan filter' : 'Filter Kategori ' . $key }}">
                 <div class="rekap-ico"><i class="fas {{ $info['icon'] }}"></i></div>
                 <div>
-                    <div class="rekap-num">{{ $hitungKategori[$key] }}</div>
+                    <div class="rekap-num">{{ $statistikKategori[$key] ?? 0 }}</div>
                     <div class="rekap-label">{{ $info['label'] }}</div>
-                    <div class="rekap-sub">Kategori Publik</div>
+                    <div class="rekap-sub">{{ $isActive ? 'Filter Aktif (Klik batal)' : 'Klik untuk filter' }}</div>
                 </div>
-            </div>
+            </a>
             @endforeach
         </div>
 

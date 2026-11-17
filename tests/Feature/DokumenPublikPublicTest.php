@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
@@ -72,5 +73,37 @@ class DokumenPublikPublicTest extends TestCase
         $this->get('/dokumen/renja')->assertNotFound();
         $this->get('/dokumen/sakip')->assertNotFound();
         $this->get('/dokumen/lppd')->assertNotFound();
+    }
+
+    /**
+     * Test card statistik pada internal/dokumen-publik berfungsi sebagai filter yang bisa diklik.
+     */
+    public function test_internal_dokumen_publik_cards_have_clickable_filter_links(): void
+    {
+        $kategoriList = ['Renstra', 'Renja', 'SPM', 'SAKIP', 'LPPD'];
+        $dokumens = new LengthAwarePaginator([], 0, 10);
+        $totalDokumen = 15;
+        $statistikKategori = [
+            'Renstra' => 5,
+            'Renja' => 3,
+            'SPM' => 2,
+            'SAKIP' => 2,
+            'LPPD' => 3,
+        ];
+
+        // 1. Tanpa filter: card Total Dokumen aktif, card kategori punya link filter ?kategori=...
+        request()->query->replace([]);
+        $htmlWithoutFilter = view('internal.dokumen-publik.index', compact('dokumens', 'kategoriList', 'totalDokumen', 'statistikKategori'))->render();
+
+        $this->assertStringContainsString('class="rekap-item rekap-total active"', $htmlWithoutFilter);
+        $this->assertStringContainsString('kategori=Renstra', $htmlWithoutFilter);
+        $this->assertStringContainsString('kategori=SPM', $htmlWithoutFilter);
+
+        // 2. Dengan filter kategori=Renstra: card Renstra aktif
+        request()->query->replace(['kategori' => 'Renstra']);
+        $htmlWithFilter = view('internal.dokumen-publik.index', compact('dokumens', 'kategoriList', 'totalDokumen', 'statistikKategori'))->render();
+
+        $this->assertStringContainsString('class="rekap-item rekap-renstra active"', $htmlWithFilter);
+        $this->assertStringNotContainsString('class="rekap-item rekap-total active"', $htmlWithFilter);
     }
 }
