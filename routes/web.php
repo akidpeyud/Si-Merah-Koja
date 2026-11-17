@@ -1009,18 +1009,34 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
 Route::get('/dokumen-publik/view/{id}', [DokumenPublikController::class, 'showFile']);
 Route::get('/dokumen-publik/download/{id}', [DokumenPublikController::class, 'download'])->name('publik.dokumen-publik.download');
 
-Route::redirect('/dokumen', '/dokumen/renstra');
-
 Route::get('/dokumen/renstra', function () {
     $dokumens = DokumenPublik::where('kategori', 'Renstra')->latest()->get();
 
     return view('public.dokumen-publik.renstra', compact('dokumens'));
 });
 
+Route::get('/dokumen/renja', function () {
+    $dokumens = DokumenPublik::where('kategori', 'Renja')->latest()->get();
+
+    return view('public.dokumen-publik.renja', compact('dokumens'));
+});
+
 Route::get('/dokumen/spm', function () {
     $dokumens = DokumenPublik::where('kategori', 'SPM')->latest()->get();
 
     return view('public.dokumen-publik.spm', compact('dokumens'));
+});
+
+Route::get('/dokumen/sakip', function () {
+    $dokumens = DokumenPublik::where('kategori', 'SAKIP')->latest()->get();
+
+    return view('public.dokumen-publik.sakip', compact('dokumens'));
+});
+
+Route::get('/dokumen/lppd', function () {
+    $dokumens = DokumenPublik::where('kategori', 'LPPD')->latest()->get();
+
+    return view('public.dokumen-publik.lppd', compact('dokumens'));
 });
 
 // --- RUTE INTERNAL PRODUK HUKUM ---
