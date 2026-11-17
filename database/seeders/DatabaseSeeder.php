@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
             DokumenPublikSeeder::class,
             VisiMisiSeeder::class,
             SotkSeeder::class,
+            TupoksiSeeder::class,
             CascadeTupoksiSeeder::class,
             ProdukHukumSeeder::class,
             FireDrillSeeder::class,
