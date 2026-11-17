@@ -100,12 +100,16 @@
     @endif
 
     @if ($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert" style="border-radius: 10px;">
-            <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+        <div class="alert alert-danger alert-dismissible fade show mb-4 d-flex align-items-start gap-3" role="alert" style="border-radius: 12px; border-left: 5px solid var(--signal, #dc3545);">
+            <i class="fas fa-circle-exclamation mt-1 text-danger" style="font-size: 1.25rem;"></i>
+            <div class="flex-grow-1">
+                <strong style="color: var(--ink);">Gagal memproses data Peta Jabatan:</strong>
+                <ul class="mb-0 mt-1 ps-3" style="font-size: .92rem;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
@@ -320,6 +324,35 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('editKeterangan').value = button.getAttribute('data-keterangan') || '';
         });
     }
+
+    // Validasi ukuran file pada client-side (Maks 10MB)
+    var fileInputs = document.querySelectorAll('input[type="file"][name="file_dokumen"]');
+    var MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+    fileInputs.forEach(function (input) {
+        input.addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                var file = this.files[0];
+                if (file.size > MAX_FILE_SIZE) {
+                    var sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ukuran File Terlalu Besar',
+                            html: 'File yang Anda pilih berukuran <b>' + sizeMB + ' MB</b>.<br>' +
+                                  'Batas maksimal dokumen adalah <b>10 MB</b>.<br>' +
+                                  'Silakan kompresi file PDF atau pilih file yang lebih kecil.',
+                            confirmButtonColor: '#163a63',
+                            confirmButtonText: 'Mengerti'
+                        });
+                    } else {
+                        alert('Ukuran file dokumen terlalu besar (' + sizeMB + ' MB). Maksimal ukuran file adalah 10 MB.');
+                    }
+                    this.value = '';
+                }
+            }
+        });
+    });
 });
 </script>
 @endpush

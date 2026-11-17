@@ -869,7 +869,6 @@
                     <button class="menu-trigger" type="button" aria-expanded="false">Galeri <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
                         <li><a href="/ikm">IKM (Indeks Kepuasan Masyarakat)</a></li>
-                        <li><a href="/pengumuman">Pengumuman</a></li>
                         <li class="has-sub">
                             <button class="sub-trigger" type="button" aria-expanded="false">
                                 Berita <i class="fas fa-chevron-right"></i>

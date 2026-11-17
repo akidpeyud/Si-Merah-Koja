@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
             KejadianDamkarTableSeeder::class,
             DokumenSopSeeder::class,
             DokumenPublikSeeder::class,
+            VisiMisiSeeder::class,
             SotkSeeder::class,
             CascadeTupoksiSeeder::class,
             ProdukHukumSeeder::class,
@@ -47,6 +48,9 @@ class DatabaseSeeder extends Seeder
             PetaJabatanSeeder::class,
             TitikSigapSeeder::class,
             HeroBackgroundSeeder::class,
+            InfografisSeeder::class,
+            UjungDamkarTableSeeder::class,
+            EduDamkarTableSeeder::class,
         ]);
     }
 }

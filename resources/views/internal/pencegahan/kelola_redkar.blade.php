@@ -122,12 +122,11 @@
             'kecamatan'           => (string) ($r->kecamatan ?: '-'),
             'nomor_telp'          => (string) ($r->nomor_telp ?: '-'),
             'golongan_darah'      => (string) ($r->golongan_darah ?: '-'),
-            'kartu_anggota'       => (string) ($r->kartu_anggota ?: '-'),
             'buta_warna'          => (string) ($r->buta_warna ?: 'Tidak'),
             'sehat_jasmani'       => (string) ($r->sehat_jasmani ?: 'Sehat'),
             'tanggal_pembentukan' => $tglBentuk,
             'tanggal_pengukuhan'  => $tglKukuh,
-            '_search'             => strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp . ' ' . $r->alamat . ' ' . $r->kelurahan . ' ' . $r->kecamatan . ' ' . $r->pekerjaan . ' ' . $r->pendidikan_terakhir . ' ' . $r->kartu_anggota),
+            '_search'             => strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp . ' ' . $r->alamat . ' ' . $r->kelurahan . ' ' . $r->kecamatan . ' ' . $r->pekerjaan . ' ' . $r->pendidikan_terakhir),
             '_kec'                => strtolower((string) $r->kecamatan),
             '_thn_bentuk'         => $thnBentuk,
             '_thn_kukuh'          => $thnKukuh,
@@ -245,7 +244,6 @@
                             <th colspan="3" class="text-center">Alamat</th>
                             <th rowspan="2">HP</th>
                             <th rowspan="2">Gol. Darah</th>
-                            <th rowspan="2">Kartu Anggota</th>
                             <th rowspan="2">Buta Warna</th>
                             <th rowspan="2">Sehat Jasmani / Rohani</th>
                             <th rowspan="2">Tanggal Pembentukan REDKAR</th>
@@ -261,7 +259,7 @@
                     <tbody id="rk-body">
                         @forelse($relawan as $index => $r)
                         <tr class="rk-row"
-                            data-search="{{ strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp . ' ' . $r->alamat . ' ' . $r->kelurahan . ' ' . $r->kecamatan . ' ' . $r->pekerjaan . ' ' . $r->pendidikan_terakhir . ' ' . $r->kartu_anggota) }}"
+                            data-search="{{ strtolower($r->nama_lengkap . ' ' . $r->nik . ' ' . $r->nomor_telp . ' ' . $r->alamat . ' ' . $r->kelurahan . ' ' . $r->kecamatan . ' ' . $r->pekerjaan . ' ' . $r->pendidikan_terakhir) }}"
                             data-kecamatan="{{ strtolower($r->kecamatan) }}"
                             data-thn-bentuk="{{ $formatTahun($r->tanggal_pembentukan) }}"
                             data-thn-kukuh="{{ $formatTahun($r->tanggal_pengukuhan) }}">
@@ -333,20 +331,17 @@
                             {{-- 13. Gol. Darah --}}
                             <td class="text-center fw-bold text-danger text-nowrap">{{ $r->golongan_darah ?: '-' }}</td>
 
-                            {{-- 14. Kartu Anggota --}}
-                            <td class="text-center font-monospace text-nowrap">{{ $r->kartu_anggota ?: '-' }}</td>
-
-                            {{-- 15. Buta Warna --}}
+                            {{-- 14. Buta Warna --}}
                             <td class="text-center text-nowrap">
                                 {{ $r->buta_warna ?: 'Tidak' }}
                             </td>
 
-                            {{-- 16. Sehat Jasmani / Rohani --}}
+                            {{-- 15. Sehat Jasmani / Rohani --}}
                             <td class="text-center text-nowrap">
                                 {{ $r->sehat_jasmani ?: 'Sehat' }}
                             </td>
 
-                            {{-- 17. Tanggal Pembentukan REDKAR --}}
+                            {{-- 16. Tanggal Pembentukan REDKAR --}}
                             <td class="text-center text-nowrap">
                                 @php $valBentuk = trim((string) $r->tanggal_pembentukan); @endphp
                                 @if($valBentuk !== '' && $valBentuk !== '-')
@@ -362,7 +357,7 @@
                                 @endif
                             </td>
 
-                            {{-- 18. Tanggal Pengukuhan REDKAR --}}
+                            {{-- 17. Tanggal Pengukuhan REDKAR --}}
                             <td class="text-center text-nowrap">
                                 @php $valKukuh = trim((string) $r->tanggal_pengukuhan); @endphp
                                 @if($valKukuh !== '' && $valKukuh !== '-')
@@ -676,7 +671,6 @@ function rekapKolomRedkar() {
         { k: 'kecamatan',           t: 'Kecamatan',                  w: 20 },
         { k: 'nomor_telp',          t: 'HP',                         w: 18, txt: true },
         { k: 'golongan_darah',      t: 'Gol. Darah',                 w: 12, a: 'center' },
-        { k: 'kartu_anggota',       t: 'Kartu Anggota',              w: 16, a: 'center', txt: true },
         { k: 'buta_warna',          t: 'Buta Warna',                 w: 14, a: 'center' },
         { k: 'sehat_jasmani',       t: 'Sehat Jasmani / Rohani',     w: 22, a: 'center' },
         { k: 'tanggal_pembentukan', t: 'Tanggal Pembentukan REDKAR', w: 24, a: 'center' },

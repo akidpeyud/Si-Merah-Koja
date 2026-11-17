@@ -220,18 +220,27 @@
                                 <span class="row-num">{{ $index + 1 }}</span>
                             </td>
                             <td>
-                                <a href="{{ $item->link_asli }}" target="_blank" rel="noopener noreferrer" class="yt-thumb-link" title="Tonton: {{ $item->judul }}">
-                                    <img src="https://i.ytimg.com/vi/{{ $item->youtube_id }}/hqdefault.jpg" alt="Thumbnail {{ $item->judul }}" loading="lazy">
-                                    <span class="yt-thumb-play"><i class="fas fa-circle-play"></i></span>
+                                @php
+                                    $ytId = trim($item->youtube_id ?? '');
+                                    $isYt = strlen($ytId) === 11 && !str_contains($ytId, '/');
+                                    $tUrl = $isYt ? "https://i.ytimg.com/vi/{$ytId}/hqdefault.jpg" : '/images/background1.png';
+                                @endphp
+                                <a href="{{ $item->link_asli }}" target="_blank" rel="noopener noreferrer" class="yt-thumb-link" title="Buka: {{ $item->judul }}">
+                                    <img src="{{ $tUrl }}" alt="Thumbnail {{ $item->judul }}" loading="lazy" onerror="this.src='/images/background1.png'">
+                                    <span class="yt-thumb-play"><i class="fas {{ $isYt ? 'fa-circle-play' : 'fa-up-right-from-square' }}"></i></span>
                                 </a>
                             </td>
                             <td>
                                 <div class="video-title">{{ $item->judul }}</div>
                                 <div class="video-meta">
                                     <a href="{{ $item->link_asli }}" target="_blank" rel="noopener noreferrer" class="yt-watch-link">
-                                        <i class="fab fa-youtube"></i> Tonton di YouTube
+                                        @if($isYt)
+                                            <i class="fab fa-youtube"></i> Tonton di YouTube
+                                        @else
+                                            <i class="fas fa-newspaper"></i> Buka Liputan Berita
+                                        @endif
                                     </a>
-                                    @if(!empty($item->youtube_id))
+                                    @if($isYt)
                                         <span class="yt-id-code"><i class="fas fa-hashtag me-1"></i>{{ $item->youtube_id }}</span>
                                     @endif
                                 </div>

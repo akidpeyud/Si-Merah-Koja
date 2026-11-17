@@ -133,7 +133,7 @@
             --paper: #f3f5f8; --white: #ffffff;
             --signal: #e5392d; --signal-d: #c22b20;
             --amber: #ffb627; --steel: #5b6c7f; --line: #dbe2ea;
-            --c-pns: #1d3856; --c-pppk: #e5392d;
+            --c-pns: #2563eb; --c-pppk: #e5392d;
             --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
             --font-body: 'Instrument Sans', system-ui, sans-serif;
             --r-lg: 28px; --r-md: 18px; --r-sm: 10px;
@@ -256,10 +256,10 @@
         .kpi strong { grid-column: 1; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.8rem, 3vw, 2.4rem); line-height: 1.1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
         .kpi span.sub { grid-column: 1 / -1; margin-top: 4px; font-size: .8rem; color: var(--steel); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .kpi-ico { grid-column: 2; grid-row: 1 / span 2; width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; font-size: 1.05rem; }
-        .kpi--main { background: linear-gradient(135deg, var(--ink) 0%, var(--ink-3) 100%); border-color: transparent; color: #fff; }
+        .kpi--main { background: linear-gradient(135deg, #163a63 0%, #2563eb 100%); border-color: transparent; color: #fff; }
         .kpi--main small, .kpi--main span.sub { color: rgba(255,255,255,.72); }
         .kpi--main .kpi-ico { background: rgba(255,255,255,.12); color: var(--amber); }
-        .kpi--pns .kpi-ico { background: #e6edf6; color: var(--c-pns); }
+        .kpi--pns .kpi-ico { background: #eff6ff; color: var(--c-pns); }
         .kpi--pppk .kpi-ico { background: #fdeceb; color: var(--c-pppk); }
         .kpi--jab .kpi-ico { background: #fff4d9; color: #b27a00; }
         .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; display: inline-block; }
@@ -496,7 +496,6 @@
                     <button class="menu-trigger" type="button" aria-expanded="false">Galeri <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
                         <li><a href="/ikm">IKM (Indeks Kepuasan Masyarakat)</a></li>
-                        <li><a href="/pengumuman">Pengumuman</a></li>
                         <li class="has-sub">
                             <button class="sub-trigger" type="button" aria-expanded="false">Berita <i class="fas fa-chevron-right"></i></button>
                             <ul class="dropdown-sub">

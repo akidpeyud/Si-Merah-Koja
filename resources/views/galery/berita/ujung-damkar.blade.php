@@ -734,7 +734,6 @@
                     <button class="menu-trigger" type="button" aria-expanded="false">Galeri <i class="fas fa-chevron-down"></i></button>
                     <ul class="dropdown">
                         <li><a href="/ikm">IKM (Indeks Kepuasan Masyarakat)</a></li>
-                        <li><a href="/pengumuman">Pengumuman</a></li>
                         <li class="has-sub current">
                             <button class="sub-trigger" type="button" aria-expanded="false">
                                 Berita <i class="fas fa-chevron-right"></i>
@@ -847,29 +846,31 @@
             @forelse($listUjungDamkar as $vu)
                 @php
                     $youtubeId  = trim($vu->youtube_id ?? '');
+                    $isYoutube  = strlen($youtubeId) === 11 && !str_contains($youtubeId, '/');
                     $judulVideo = $vu->judul ?? 'Dokumentasi Ujung-ujung Damkar';
-                    $thumbUrl = "https://i.ytimg.com/vi/{$youtubeId}/hqdefault.jpg";
+                    $thumbUrl   = $isYoutube
+                        ? "https://i.ytimg.com/vi/{$youtubeId}/hqdefault.jpg"
+                        : ($youtubeId !== '' && str_starts_with($youtubeId, 'http') ? $youtubeId : '/images/background1.png');
                 @endphp
 
+                @if($isYoutube)
                 <button type="button"
                         class="media-card"
-                        @if($youtubeId) data-yt="{{ $youtubeId }}" data-title="{{ $judulVideo }}" @else disabled @endif>
+                        data-yt="{{ $youtubeId }}"
+                        data-title="{{ $judulVideo }}">
                     
                     <div class="media-thumb">
                         <span class="media-tag">Ujung-ujung Damkar</span>
                         <span class="media-source" aria-hidden="true">
                             <i class="fab fa-youtube"></i>
                         </span>
-                        
-                        @if($youtubeId)
-                            <img src="{{ $thumbUrl }}"
-                                 alt="{{ $judulVideo }}"
-                                 loading="lazy"
-                                 onerror="this.src='/images/placeholder.jpg'">
-                            <span class="photo-play" aria-hidden="true">
-                                <i class="fas fa-play"></i>
-                            </span>
-                        @endif
+                        <img src="{{ $thumbUrl }}"
+                             alt="{{ $judulVideo }}"
+                             loading="lazy"
+                             onerror="this.src='/images/background1.png'">
+                        <span class="photo-play" aria-hidden="true">
+                            <i class="fas fa-play"></i>
+                        </span>
                     </div>
                     
                     <div class="media-body">
@@ -892,6 +893,39 @@
                         </span>
                     </div>
                 </button>
+                @else
+                <a href="{{ $vu->link_asli }}" target="_blank" rel="noopener noreferrer" class="media-card">
+                    <div class="media-thumb">
+                        <span class="media-tag">Ujung-ujung Damkar</span>
+                        <span class="media-source" aria-hidden="true">
+                            <i class="fas fa-newspaper"></i>
+                        </span>
+                        <img src="{{ $thumbUrl }}"
+                             alt="{{ $judulVideo }}"
+                             loading="lazy"
+                             onerror="this.src='/images/background1.png'">
+                    </div>
+                    <div class="media-body">
+                        <h3>{{ $judulVideo }}</h3>
+                        <div class="media-meta">
+                            @if(!empty($vu->created_at))
+                                <span>
+                                    <i class="far fa-calendar-alt"></i>
+                                    {{ \Carbon\Carbon::parse($vu->created_at)->locale('id')->translatedFormat('d M Y') }}
+                                </span>
+                            @endif
+                            <span>
+                                <i class="fas fa-newspaper"></i>
+                                Liputan Media
+                            </span>
+                        </div>
+                        <span class="media-link">
+                            Baca selengkapnya
+                            <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </a>
+                @endif
             @empty
                 <div class="empty-filter">
                     <i class="fas fa-video-slash"></i>
