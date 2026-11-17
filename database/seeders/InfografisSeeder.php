@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Infografis;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class InfografisSeeder extends Seeder
 {
@@ -13,6 +15,8 @@ class InfografisSeeder extends Seeder
      */
     public function run(): void
     {
+        @set_time_limit(0);
+
         $seedDir = storage_path('app/public/seed-files/infografis');
         $publicImgDir = public_path('images/infografis');
         $targetDir = storage_path('app/public/infografis');
@@ -72,30 +76,31 @@ class InfografisSeeder extends Seeder
         ];
 
         $now = now();
+        $disk = Storage::disk('public');
 
         foreach ($items as $item) {
-            $seedPath = $seedDir . DIRECTORY_SEPARATOR . $item['file'];
-            $pubImgPath = $publicImgDir . DIRECTORY_SEPARATOR . $item['file'];
-            $targetPath = $targetDir . DIRECTORY_SEPARATOR . $item['file'];
+            $gambar = 'infografis/'.$item['file'];
+            $seedPath = $seedDir.DIRECTORY_SEPARATOR.$item['file'];
+            $pubImgPath = $publicImgDir.DIRECTORY_SEPARATOR.$item['file'];
 
-            // 1. Salin dari seed-files atau public/images jika belum ada di storage/app/public/infografis
-            if (! File::exists($targetPath)) {
+            if (! $disk->exists($gambar)) {
+                $bin = null;
                 if (File::exists($seedPath)) {
-                    File::copy($seedPath, $targetPath);
+                    $bin = File::get($seedPath);
                 } elseif (File::exists($pubImgPath)) {
-                    File::copy($pubImgPath, $targetPath);
+                    $bin = File::get($pubImgPath);
                 } else {
-                    // Fallback unduh otomatis dari Instagram jika file lokal belum ter-pull
-                    $this->downloadFromInstagram($item['code'], $targetPath);
+                    $bin = Infografis::downloadInstagramMedia($item['code']);
+                }
+
+                if ($bin) {
+                    $disk->put($gambar, $bin);
                 }
             }
 
-            // Pastikan public/images/infografis juga terisi sebagai fallback tanpa storage:link
-            if (File::exists($targetPath) && ! File::exists($pubImgPath)) {
-                File::copy($targetPath, $pubImgPath);
+            if ($disk->exists($gambar) && ! File::exists($pubImgPath)) {
+                File::put($pubImgPath, $disk->get($gambar));
             }
-
-            $gambar = 'infografis/' . $item['file'];
 
             DB::table('infografis')->updateOrInsert(
                 ['gambar' => $gambar],
@@ -107,25 +112,5 @@ class InfografisSeeder extends Seeder
             );
         }
     }
-
-    private function downloadFromInstagram(string $code, string $destPath): void
-    {
-        if (! function_exists('curl_init')) {
-            return;
-        }
-
-        $ch = curl_init("https://www.instagram.com/p/{$code}/media/?size=l");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 15);
-        curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
-        $bin = curl_exec($ch);
-        curl_close($ch);
-
-        if (is_string($bin) && strlen($bin) > 1000) {
-            File::put($destPath, $bin);
-        }
-    }
 }
+
