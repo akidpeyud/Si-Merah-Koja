@@ -994,46 +994,25 @@
             </div>
         </div>
 
+        @php
+            // Jika tabel infografis masih kosong atau belum lengkap 9 item, jalankan seeder otomatis
+            if (empty($daftar_infografis) || count($daftar_infografis) === 0) {
+                try {
+                    app(\Database\Seeders\InfografisSeeder::class)->run();
+                    $daftar_infografis = \App\Models\Infografis::latest()->get();
+                } catch (\Throwable $e) {
+                    // abaikan
+                }
+            }
+        @endphp
+
         <div class="grafis-grid">
             @forelse($daftar_infografis ?? [] as $info)
                 @php
-                    $relPath = ltrim((string) $info->gambar, '/');
-                    $baseFile = basename($relPath);
-                    $storageFile = storage_path('app/public/' . $relPath);
-                    $seedFile = storage_path('app/public/seed-files/infografis/' . $baseFile);
-                    $pubImgFile = public_path('images/infografis/' . $baseFile);
-
-                    // Pastikan file di storage/app/public/infografis valid (persis seperti Media Informasi)
-                    if (!is_file($storageFile) || @getimagesize($storageFile) === false) {
-                        if (is_file($seedFile) && @getimagesize($seedFile) !== false) {
-                            \Illuminate\Support\Facades\Storage::disk('public')->put($relPath, file_get_contents($seedFile));
-                        } elseif (is_file($pubImgFile) && @getimagesize($pubImgFile) !== false) {
-                            \Illuminate\Support\Facades\Storage::disk('public')->put($relPath, file_get_contents($pubImgFile));
-                        } elseif (preg_match('/^ig_([A-Za-z0-9_-]+)\./', $baseFile, $mCode)) {
-                            $dlBin = \App\Models\Infografis::downloadInstagramMedia($mCode[1]);
-                            if ($dlBin) {
-                                \Illuminate\Support\Facades\Storage::disk('public')->put($relPath, $dlBin);
-                            }
-                        }
-                    }
-
-                    // Pastikan salinan di public/images/infografis juga tersedia
-                    if (is_file($storageFile) && !is_file($pubImgFile)) {
-                        if (!is_dir(dirname($pubImgFile))) {
-                            @mkdir(dirname($pubImgFile), 0755, true);
-                        }
-                        @copy($storageFile, $pubImgFile);
-                    }
-
-                    $ver = @filemtime($storageFile) ?: (@filemtime($pubImgFile) ?: 1);
-                    $storageUrl = asset('storage/' . $relPath) . '?v=' . $ver;
-                    $publicUrl = asset('images/infografis/' . $baseFile) . '?v=' . $ver;
-                    $routeUrl = url('/infografis/gambar/' . $info->id) . '?v=' . $ver;
-
-                    $imgSrc = is_file(public_path('storage/' . $relPath))
-                        ? $storageUrl
-                        : (is_file($pubImgFile) ? $publicUrl : $routeUrl);
-                    $fallbackSrc = is_file($pubImgFile) ? $publicUrl : $routeUrl;
+                    $imgSrc = $info instanceof \App\Models\Infografis
+                        ? $info->getImageDataUri()
+                        : asset('storage/' . ltrim((string) $info->gambar, '/'));
+                    $fallbackSrc = '/images/infografis/' . basename((string) $info->gambar);
                 @endphp
                 <button type="button" class="grafis-card"
                         data-index="{{ $loop->index }}"
