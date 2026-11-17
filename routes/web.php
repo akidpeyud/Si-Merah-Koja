@@ -380,6 +380,7 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
     Route::middleware([RoleMiddleware::class.':Damtan|Super User'])->group(function () {
         Route::get('/internal/damtan/input-data', [DamtanController::class, 'createPenyelamatan'])->name('damtan.laporan.create');
         Route::post('/internal/damtan/input-data/store', [DamtanController::class, 'storePenyelamatan'])->name('damtan.laporan.store');
+        Route::post('/internal/damtan/import-excel', [DamtanController::class, 'importExcel'])->name('damtan.laporan.import-excel');
         Route::get('/internal/damtan/edit-data/{id}', [DamtanController::class, 'editPenyelamatan'])->name('damtan.laporan.edit');
         Route::put('/internal/damtan/update-data/{id}', [DamtanController::class, 'updatePenyelamatan'])->name('damtan.laporan.update');
         Route::delete('/internal/damtan/hapus-data/{id}', [DamtanController::class, 'destroyPenyelamatan']);

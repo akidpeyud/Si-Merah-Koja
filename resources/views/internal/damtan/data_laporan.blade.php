@@ -445,6 +445,13 @@
             <p>{{ $isTabFire ? 'Daftar seluruh laporan kejadian kebakaran yang telah diinput ke dalam sistem.' : 'Daftar seluruh laporan kejadian penyelamatan yang telah diinput ke dalam sistem.' }}</p>
         </div>
         <div class="d-flex gap-2 flex-wrap align-items-center">
+            <!-- IMPOR EXCEL: HANYA DAMTAN DAN SUPER USER (Sesuai DUK Kepegawaian) -->
+            @hasanyrole('Damtan|Super User')
+            <button type="button" class="btn btn-outline-success d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalImportExcel" style="height: 44px; padding: 0 18px; border-radius: 8px; font-weight: 600;">
+                <i class="fas fa-file-arrow-up"></i> Impor Excel
+            </button>
+            @endhasanyrole
+
             <!-- EKSPOR (PDF & EXCEL): SEMUA ROLE -->
             <div class="dropdown">
                 <button class="btn-custom-light shadow-sm dropdown-toggle" type="button" id="btnEkspor" data-bs-toggle="dropdown" aria-expanded="false">
@@ -1150,6 +1157,55 @@
         </div>
     </div>
 
+    <!-- MODAL IMPOR EXCEL LAPORAN (Sesuai DUK Kepegawaian) -->
+    @hasanyrole('Damtan|Super User')
+    <div class="modal fade" id="modalImportExcel" tabindex="-1" aria-labelledby="modalImportExcelLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow" style="border-radius: 14px; overflow: hidden;">
+                <form action="{{ route('damtan.laporan.import-excel') }}" method="POST" enctype="multipart/form-data" id="formImportExcel">
+                    @csrf
+                    <div class="modal-header" style="background: var(--ink); color: #fff; padding: 18px 24px;">
+                        <h5 class="modal-title fs-6 fw-bold mb-0" id="modalImportExcelLabel">
+                            <i class="fas fa-file-excel text-success me-2"></i> Impor Data Laporan dari Excel
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <p class="text-muted small mb-3">
+                            Unggah file dokumen Excel (<code>.xlsx</code>, <code>.xls</code>, atau <code>.csv</code>) sesuai dengan format resmi data laporan kebakaran dan penyelamatan Disdamkartan.
+                        </p>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Kategori Laporan <span class="text-danger">*</span></label>
+                            <select name="kategori_impor" class="form-select" required>
+                                <option value="kebakaran" {{ $isTabFire ? 'selected' : '' }}>Laporan Kebakaran</option>
+                                <option value="non-kebakaran" {{ !$isTabFire ? 'selected' : '' }}>Laporan Penyelamatan (Non-Kebakaran)</option>
+                            </select>
+                            <div class="form-text small text-muted">Sesuaikan jenis laporan dengan file yang akan diunggah.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Pilih File Excel / CSV <span class="text-danger">*</span></label>
+                            <input type="file" name="file_excel" class="form-control" accept=".xlsx,.xls,.csv" required>
+                            <div class="form-text small text-muted">Format yang didukung: .xlsx, .xls, .csv (Maks. 15MB)</div>
+                        </div>
+
+                        <div class="alert alert-info border-0 small py-2 px-3 mb-0" style="background: var(--navy-soft); color: var(--navy);">
+                            <i class="fas fa-info-circle me-1"></i> <strong>Sistem Otomatis:</strong>
+                            Seluruh 22 kolom laporan (tanggal, waktu, pelapor, objek, lokasi, korban, satgas, lama operasi, sarana, dan respon time) dipetakan dan divalidasi secara otomatis.
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light px-4 py-3">
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-sm btn-success px-4" id="btnSubmitImport">
+                            <i class="fas fa-upload me-1"></i> Mulai Impor
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endhasanyrole
 @endsection
 
 @push('scripts')
