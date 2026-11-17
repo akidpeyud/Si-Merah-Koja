@@ -126,32 +126,69 @@ class Infografis extends Model
             }
         }
 
-        // Fallback via Http::withoutVerifying() + OpenGraph crawler (sama seperti BeritaMedsos)
-        try {
-            $postUrl = "https://www.instagram.com/p/{$code}/";
-            $htmlRes = Http::withoutVerifying()
-                ->timeout(12)
-                ->withHeaders([
-                    'User-Agent' => 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
-                ])
-                ->get($postUrl);
+        // Fallback OpenGraph DOMDocument (identik 100% dengan BeritaMedsos)
+        $postUrl = "https://www.instagram.com/p/{$code}/";
+        $userAgents = [
+            'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
+            'Twitterbot/1.0',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        ];
 
-            if ($htmlRes->ok() && preg_match('/property=["\']og:image["\']\s+content=["\']([^"\']+)["\']/i', $htmlRes->body(), $m)) {
-                $imgUrl = html_entity_decode($m[1], ENT_QUOTES | ENT_HTML5);
+        foreach ($userAgents as $ua) {
+            try {
+                $htmlRes = Http::withoutVerifying()
+                    ->timeout(12)
+                    ->connectTimeout(6)
+                    ->withHeaders([
+                        'User-Agent' => $ua,
+                        'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                        'Accept-Language' => 'id-ID,id;q=0.9,en;q=0.8',
+                    ])
+                    ->get($postUrl);
+
+                if (! $htmlRes->ok()) {
+                    continue;
+                }
+
+                $doc = new \DOMDocument;
+                libxml_use_internal_errors(true);
+                $doc->loadHTML('<?xml encoding="utf-8" ?>'.substr($htmlRes->body(), 0, 800000));
+                libxml_clear_errors();
+
+                $meta = [];
+                foreach ($doc->getElementsByTagName('meta') as $m) {
+                    $key = strtolower($m->getAttribute('property') ?: $m->getAttribute('name'));
+                    $val = trim($m->getAttribute('content'));
+                    if ($key !== '' && $val !== '' && ! isset($meta[$key])) {
+                        $meta[$key] = $val;
+                    }
+                }
+
+                $imgUrl = $meta['og:image:secure_url']
+                    ?? $meta['og:image']
+                    ?? $meta['twitter:image']
+                    ?? $meta['twitter:image:src']
+                    ?? null;
+
+                if (! $imgUrl) {
+                    continue;
+                }
+
                 $imgRes = Http::withoutVerifying()
                     ->timeout(15)
+                    ->connectTimeout(6)
                     ->withHeaders([
-                        'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                        'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
                         'Referer' => $postUrl,
                     ])
                     ->get($imgUrl);
 
-                if ($imgRes->ok() && strlen($imgRes->body()) > 2048) {
+                if ($imgRes->ok() && strlen($imgRes->body()) > 2048 && @getimagesizefromstring($imgRes->body()) !== false) {
                     return $imgRes->body();
                 }
+            } catch (\Throwable $e) {
+                continue;
             }
-        } catch (\Throwable $e) {
-            // abaikan error jaringan sementara
         }
 
         return null;
