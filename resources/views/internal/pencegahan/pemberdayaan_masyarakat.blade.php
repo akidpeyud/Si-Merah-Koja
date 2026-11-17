@@ -232,6 +232,9 @@
         <div class="toolbar-actions">
             @hasanyrole('Pencegahan|Super User')
             <a href="/internal/pencegahan/pemberdayaan-masyarakat/create" id="btnTambahData" class="btn-tool navy"><i class="fas fa-plus"></i> Tambah Data</a>
+            <button type="button" class="btn-import-excel" data-bs-toggle="modal" data-bs-target="#modalImportPencegahan">
+                <i class="fas fa-file-import"></i> Impor Excel
+            </button>
             @endhasanyrole
 
             <div class="export-dropdown">
@@ -577,6 +580,11 @@
             Data yang Anda cari tidak ditemukan.
         </div>
     @endif
+
+@if($aktif !== 'semua')
+    @include('internal.pencegahan.partials.import_modal', ['modul' => 'sosialisasi', 'judul' => 'Sosialisasi & Edukasi'])
+@endif
+@include('internal.pencegahan.partials.table_optimizer')
 @endsection
 
 @push('scripts')

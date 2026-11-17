@@ -223,6 +223,9 @@
                 <a href="{{ route('skk.create') }}" class="btn-add">
                     <i class="fas fa-plus"></i> Tambah SKK
                 </a>
+                <button type="button" class="btn-import-excel" style="height:44px;" data-bs-toggle="modal" data-bs-target="#modalImportPencegahan">
+                    <i class="fas fa-file-import"></i> Impor Excel
+                </button>
                 @endhasanyrole
 
                 <button type="button" id="btnExportExcel" class="btn-excel">
@@ -523,10 +526,12 @@
         @endhasanyrole
 
 <!-- Script Bootstrap & SweetAlert -->
+@include('internal.pencegahan.partials.import_modal', ['modul' => 'skk', 'judul' => 'Data SKK'])
+@include('internal.pencegahan.partials.table_optimizer')
 @endsection
 
 @push('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
 <script>
 (function () {
     'use strict';

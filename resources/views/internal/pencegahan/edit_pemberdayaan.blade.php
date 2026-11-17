@@ -188,7 +188,7 @@
             suratWrap.style.display = 'flex';
             inputSurat.required = true;
             labelInstansi.innerHTML = 'Nama Instansi/Lembaga (TK/SD/SLTP/SLTA/Perguruan Tinggi) <span class="req">*</span>';
-            inputInstansi.placeholder = 'Contoh: TK Pertiwi / SDN 12 Kota Jambi / Universitas Jambi';
+            inputInstansi.placeholder = 'Contoh: TK Pertiwi / SDN 12 Kota Jambi / Universitas Nurdin Hamzah';
             inputTempat.placeholder = 'Contoh: Mako Damkar Kota Jambi';
         } else {
             suratWrap.style.display = 'none';

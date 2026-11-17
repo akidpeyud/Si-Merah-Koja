@@ -155,6 +155,9 @@
                 <a href="/internal/pencegahan/tambah-redkar" class="btn-add">
                     <i class="fas fa-plus"></i> Tambah Relawan
                 </a>
+                <button type="button" class="btn-import-excel" style="height:44px;" data-bs-toggle="modal" data-bs-target="#modalImportPencegahan">
+                    <i class="fas fa-file-import"></i> Impor Excel
+                </button>
                 @endhasanyrole
 
                 <button type="button" id="btnExportExcel" class="btn-excel">
@@ -415,10 +418,12 @@
                 <div class="d-flex align-items-center gap-1 flex-wrap" id="rk-pagination-nav"></div>
             </div>
         </div>
+@include('internal.pencegahan.partials.import_modal', ['modul' => 'redkar', 'judul' => 'Data Redkar'])
+@include('internal.pencegahan.partials.table_optimizer')
 @endsection
 
 @push('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
 <script>
 (function () {
     'use strict';
