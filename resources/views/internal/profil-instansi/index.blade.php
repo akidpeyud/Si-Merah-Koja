@@ -38,6 +38,47 @@
             @endhasanyrole
         </div>
 
+        @if($kategori === 'tupoksi')
+            <!-- ==================== KARTU GAMBARAN BESAR TUPOKSI ==================== -->
+            <div class="card border-0 shadow-sm mb-4" style="border-radius: 16px; overflow: hidden; background: #ffffff;">
+                <div class="card-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div>
+                        <h5 class="fw-bold mb-1 text-dark d-flex align-items-center gap-2">
+                            <i class="fas fa-image text-danger"></i> Gambaran Besar Visual {{ $judulKategori }}
+                        </h5>
+                        <p class="text-muted small mb-0">Infografis / banner visual yang tampil secara besar di halaman publik sebelum daftar dokumen PDF.</p>
+                    </div>
+                    @hasanyrole('Super User|Operator')
+                    <button type="button" class="btn btn-outline-danger btn-sm d-inline-flex align-items-center gap-2 fw-semibold px-3 py-2" style="border-radius: 10px;" data-bs-toggle="modal" data-bs-target="#modalGantiGambaranBesar">
+                        <i class="fas fa-camera"></i> Ganti Gambaran Besar
+                    </button>
+                    @endhasanyrole
+                </div>
+                <div class="card-body p-4 text-center bg-light">
+                    @if($gambaranBesar)
+                        <div class="mx-auto" style="max-width: 820px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); background: #ffffff;">
+                            <img src="{{ $gambaranBesar['url'] }}?v={{ $gambaranBesar['updated_at'] }}" alt="Gambaran Besar {{ $judulKategori }}" class="img-fluid w-100" style="display: block; max-height: 460px; object-fit: contain;">
+                        </div>
+                        <div class="mt-3 text-muted small d-flex justify-content-center align-items-center gap-3 flex-wrap">
+                            <span><i class="fas fa-check-circle text-success me-1"></i> Tampil Aktif di Halaman Publik</span>
+                            <span>&bull;</span>
+                            <span><i class="fas fa-clock text-secondary me-1"></i> Terakhir diperbarui: {{ date('d M Y H:i', $gambaranBesar['updated_at']) }} WIB</span>
+                        </div>
+                    @else
+                        <div class="py-4 text-muted">
+                            <i class="fas fa-image fa-3x mb-3 text-secondary opacity-50"></i>
+                            <p class="mb-2 fw-medium">Belum ada gambaran besar yang diunggah.</p>
+                            @hasanyrole('Super User|Operator')
+                            <button type="button" class="btn btn-primary btn-sm px-3" data-bs-toggle="modal" data-bs-target="#modalGantiGambaranBesar">
+                                <i class="fas fa-upload me-1"></i> Unggah Gambaran Besar Sekarang
+                            </button>
+                            @endhasanyrole
+                        </div>
+                    @endif
+                </div>
+            </div>
+        @endif
+
         <div class="card-container">
             <!-- Baris Pencarian & Info -->
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
@@ -183,6 +224,48 @@
         </div>
     </div>
 </div>
+
+@if($kategori === 'tupoksi')
+@hasanyrole('Super User|Operator')
+<!-- ==================== MODAL GANTI GAMBARAN BESAR TUPOKSI ==================== -->
+<div class="modal fade" id="modalGantiGambaranBesar" tabindex="-1" aria-labelledby="modalGantiGambaranBesarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 16px; overflow: hidden;">
+            <form action="{{ route('internal.profil-instansi.update-gambaran-besar', $kategori) }}" method="POST" enctype="multipart/form-data" id="formGantiGambaranBesar">
+                @csrf
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold" id="modalGantiGambaranBesarLabel">
+                        <i class="fas fa-image me-2 text-danger"></i>Ganti Gambaran Besar {{ $judulKategori }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label for="inputGambarTupoksi" class="form-label fw-semibold">Pilih File Gambar Baru (JPG, JPEG, PNG, WEBP) <span class="text-danger">*</span></label>
+                        <input type="file" name="gambar" id="inputGambarTupoksi" class="form-control" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" required>
+                        <input type="hidden" name="gambar_base64" id="inputGambarTupoksiBase64">
+                        <input type="hidden" name="gambar_name" id="inputGambarTupoksiName">
+                        <small class="text-muted d-block mt-1">Format: <b>.jpg</b>, <b>.jpeg</b>, <b>.png</b>, <b>.webp</b> (maksimal 10MB).</small>
+                    </div>
+
+                    <!-- Area Pratinjau Gambar Baru Sebelum Simpan -->
+                    <div id="previewAreaGambaranBesar" class="p-3 bg-light border rounded-3 text-center" style="display: none;">
+                        <p class="small fw-semibold text-muted mb-2">Pratinjau Gambar yang Dipilih:</p>
+                        <img id="imgPreviewGambaranBesar" src="#" alt="Pratinjau" class="img-fluid rounded border" style="max-height: 320px; object-fit: contain;">
+                    </div>
+                </div>
+                <div class="modal-footer bg-light border-0 d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal" style="border-radius: 8px;">Batal</button>
+                    <button type="submit" class="btn btn-danger px-4 fw-semibold" id="btnSubmitGambaranBesar" style="border-radius: 8px;">
+                        <i class="fas fa-cloud-arrow-up me-1"></i> Simpan &amp; Terapkan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endhasanyrole
+@endif
 @endsection
 
 @push('scripts')
@@ -286,6 +369,54 @@
             if (viewerContainer) viewerContainer.innerHTML = '';
             if (pdfPageInfo) pdfPageInfo.textContent = '';
         });
+    }
+
+    /* ---------- Pratinjau & Fallback Base64 Ganti Gambaran Besar ---------- */
+    var inputGambar = document.getElementById('inputGambarTupoksi');
+    var inputGambarBase64 = document.getElementById('inputGambarTupoksiBase64');
+    var inputGambarName = document.getElementById('inputGambarTupoksiName');
+    var previewArea = document.getElementById('previewAreaGambaranBesar');
+    var imgPreview = document.getElementById('imgPreviewGambaranBesar');
+    var formGambaran = document.getElementById('formGantiGambaranBesar');
+
+    if (inputGambar && inputGambarBase64 && inputGambarName) {
+        inputGambar.addEventListener('change', function () {
+            var file = inputGambar.files && inputGambar.files[0];
+            if (!file) {
+                inputGambarBase64.value = '';
+                inputGambarName.value = '';
+                if (previewArea) previewArea.style.display = 'none';
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                alert('Ukuran gambar maksimal 10MB.');
+                inputGambar.value = '';
+                inputGambarBase64.value = '';
+                inputGambarName.value = '';
+                if (previewArea) previewArea.style.display = 'none';
+                return;
+            }
+
+            inputGambarName.value = file.name;
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                inputGambarBase64.value = e.target.result;
+                if (imgPreview && previewArea) {
+                    imgPreview.src = e.target.result;
+                    previewArea.style.display = 'block';
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+
+        if (formGambaran) {
+            formGambaran.addEventListener('submit', function () {
+                if (inputGambarBase64.value) {
+                    inputGambar.removeAttribute('name');
+                }
+            });
+        }
     }
 })();
 </script>
