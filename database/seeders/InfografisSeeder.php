@@ -97,9 +97,6 @@ class InfografisSeeder extends Seeder
                 $bin = Infografis::downloadInstagramMedia($item['code']);
             }
 
-<<<<<<< HEAD
-            $gambar = 'infografis/'.$item['file'];
-=======
             if ($bin) {
                 $disk->put($gambar, $bin);
                 File::put($pubImgPath, $bin);
@@ -107,7 +104,6 @@ class InfografisSeeder extends Seeder
                     File::put($seedPath, $bin);
                 }
             }
->>>>>>> 81f4971902b9f34f6479f8d5868dc87ccbd1fe43
 
             DB::table('infografis')->insert([
                 'id' => $idx + 1,
@@ -119,4 +115,3 @@ class InfografisSeeder extends Seeder
         }
     }
 }
-
