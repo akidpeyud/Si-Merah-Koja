@@ -396,6 +396,9 @@
         </a>
 
         @if($bisaCrud)
+            <button type="button" class="btn btn-outline" data-open="dlgImport" style="color: var(--blue); border-color: var(--blue);">
+                <i class="fas fa-file-import"></i> Impor
+            </button>
             <button type="button" class="btn btn-primary" data-open="dlgTambah">
                 <i class="fas fa-plus"></i> Tambah data
             </button>
@@ -896,6 +899,46 @@
             </form>
         </dialog>
     @endforeach
+
+    <!-- MODAL IMPOR DATA EXCEL -->
+    <dialog class="sheet" id="dlgImport" style="width: min(560px, calc(100vw - 24px));">
+        <div class="sheet-head">
+            <h2 style="display:flex; align-items:center; gap:8px;">
+                <i class="fas fa-file-import" style="color: var(--blue);"></i> Impor Data Excel Perbaikan
+            </h2>
+            <button type="button" class="sheet-x" data-close aria-label="Tutup"><i class="fas fa-times"></i></button>
+        </div>
+        <form action="/sapra/perbaikan-kendaraan/import" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="sheet-body" style="gap: 16px;">
+                <div style="background: var(--navy-light); border: 1px solid rgba(22, 58, 99, 0.15); border-radius: 10px; padding: 14px; font-size: 0.85rem; color: var(--navy-dark); line-height: 1.55;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px;">
+                        <strong><i class="fas fa-circle-info"></i> Petunjuk Impor:</strong>
+                        <a href="/sapra/perbaikan-kendaraan/template-excel" class="btn btn-outline green" style="height: 32px; padding: 0 10px; font-size: 0.76rem;">
+                            <i class="fas fa-download"></i> Format Template (.xlsx)
+                        </a>
+                    </div>
+                    <ul style="margin: 0; padding-left: 18px; color: var(--steel); font-size: 0.82rem; display: grid; gap: 4px;">
+                        <li>Gunakan file Excel (.xlsx / .xls) atau CSV.</li>
+                        <li><strong>Anti-Duplikasi Aktif:</strong> Jika Nopol, Tanggal Perbaikan, dan Jenis Kerusakan sudah ada, sistem akan memperbarui data tersebut (tidak akan ganda).</li>
+                        <li><strong>Urutan Tahun Otomatis:</strong> Data yang diimpor otomatis terurut rapi per tahun dan tanggal terbaru.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <label class="f-label" for="fileExcelImport">Pilih File Excel / CSV <span style="color: var(--signal);">*</span></label>
+                    <input type="file" id="fileExcelImport" name="file_excel" class="f-input" accept=".xlsx,.xls,.csv" required style="padding-top: 8px;">
+                    <span style="font-size: 0.78rem; color: var(--steel); margin-top: 5px; display: block;">Maksimal ukuran file: 10 MB.</span>
+                </div>
+            </div>
+            <div class="sheet-foot">
+                <button type="button" class="btn-cancel" data-close>Batal</button>
+                <button type="submit" class="btn btn-primary" style="background: var(--blue);">
+                    <i class="fas fa-upload"></i> Mulai Impor Data
+                </button>
+            </div>
+        </form>
+    </dialog>
 
     <!-- MODAL TAMBAH DATA BARU -->
     <dialog class="sheet" id="dlgTambah">
