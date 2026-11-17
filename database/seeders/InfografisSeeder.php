@@ -49,11 +49,6 @@ class InfografisSeeder extends Seeder
                 'file' => 'ig_Dce9dRTpQzt.jpg',
             ],
             [
-                'code' => 'DcSMWE5JJme',
-                'judul' => 'Lomba Domino HUT Kemerdekaan RI Ke-81 Damkar Kota Jambi',
-                'file' => 'ig_DcSMWE5JJme.jpg',
-            ],
-            [
                 'code' => 'DcH8t1rJEh8',
                 'judul' => 'Dirgahayu Republik Indonesia Ke-81',
                 'file' => 'ig_DcH8t1rJEh8.jpg',
