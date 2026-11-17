@@ -586,34 +586,6 @@
             </section>
 
             <!-- KONTAK DINAS -->
-            <aside aria-label="Kontak dinas">
-                <div class="side-card">
-                    <h2>Kontak dinas</h2>
-                    <ul class="contact-list">
-                        <li>
-                            <span class="c-ico"><i class="fas fa-envelope-open-text"></i></span>
-                            <div>
-                                <small>Email resmi</small>
-                                <a href="mailto:damkar.jbi@gmail.com">damkar.jbi@gmail.com</a>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="c-ico"><i class="fas fa-phone-alt"></i></span>
-                            <div>
-                                <small>Telepon</small>
-                                <a href="tel:<?= $h($no_telepon) ?>"><?= $h($telepon_tampil) ?></a>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="c-ico"><i class="fas fa-map-marker-alt"></i></span>
-                            <div>
-                                <small>Alamat kantor</small>
-                                <a href="<?= $h($maps_link) ?>" target="_blank" rel="noopener">Jl. HOS. Cokroaminoto, Suka Karya, Kec. Kota Baru, Kota Jambi</a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </aside>
 
         </div>
     </div>
