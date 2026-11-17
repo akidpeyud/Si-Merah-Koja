@@ -145,6 +145,41 @@ Route::get('/infografis', function () {
     return view('galery.berita.infografis', compact('daftar_infografis'));
 })->name('publik.infografis');
 
+/**
+ * Sajikan gambar infografis lewat Laravel agar tetap tampil di komputer mana pun,
+ * walaupun `php artisan storage:link` belum dijalankan atau file storage belum ada.
+ * Urutan cari: storage/app/public -> seed-files/infografis -> public/images/infografis -> unduh dari Instagram.
+ */
+Route::get('/infografis/gambar/{id}', function (int $id) {
+    $info = Infografis::findOrFail($id);
+    $clean = ltrim(preg_replace('#^/?(public/|storage/)#', '', (string) $info->gambar), '/');
+    $baseName = basename($clean);
+
+    $candidates = [
+        storage_path('app/public/'.$clean),
+        storage_path('app/public/seed-files/infografis/'.$baseName),
+        public_path('images/infografis/'.$baseName),
+    ];
+
+    foreach ($candidates as $path) {
+        if ($baseName !== '' && is_file($path)) {
+            return response()->file($path, ['Cache-Control' => 'public, max-age=86400']);
+        }
+    }
+
+    if (preg_match('/^ig_([A-Za-z0-9_-]+)\./', $baseName, $m)) {
+        $bin = Infografis::downloadInstagramMedia($m[1]);
+        if ($bin) {
+            \Illuminate\Support\Facades\Storage::disk('public')->put($clean, $bin);
+            $mime = (new \finfo(FILEINFO_MIME_TYPE))->buffer($bin) ?: 'image/jpeg';
+
+            return response($bin, 200, ['Content-Type' => $mime, 'Cache-Control' => 'public, max-age=86400']);
+        }
+    }
+
+    abort(404);
+})->whereNumber('id')->name('publik.infografis.gambar');
+
 // ==========================================
 // 2. RUTE AKUN PEMOHON (MASYARAKAT / PERUSAHAAN)
 // ==========================================
@@ -1059,6 +1094,7 @@ Route::prefix('internal/profil-instansi')->name('internal.profil-instansi.')->mi
     Route::get('/{kategori}', [ProfilInstansiController::class, 'index'])->name('index');
     Route::get('/{kategori}/create', [ProfilInstansiController::class, 'create'])->name('create');
     Route::post('/{kategori}', [ProfilInstansiController::class, 'store'])->name('store');
+    Route::post('/{kategori}/gambaran-besar', [ProfilInstansiController::class, 'updateGambaranBesar'])->name('update-gambaran-besar');
     Route::get('/{kategori}/{id}/view', [ProfilInstansiController::class, 'viewFile'])->name('view-file');
     Route::get('/{kategori}/{id}/download', [ProfilInstansiController::class, 'downloadFile'])->name('download-file');
     Route::get('/{kategori}/{id}/edit', [ProfilInstansiController::class, 'edit'])->name('edit');

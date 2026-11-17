@@ -182,7 +182,10 @@
                         <tr>
                             <td class="fw-bold text-muted">{{ $index + 1 }}</td>
                             <td>
-                                <img src="{{ asset('storage/' . $item->gambar) }}" alt="Infografis" style="height: 70px; width: 120px; object-fit: cover; border-radius: var(--r-sm); border: 1px solid var(--line);">
+                                @php
+                                    $fbImg = asset('images/infografis/' . basename((string) $item->gambar));
+                                @endphp
+                                <img src="{{ asset('storage/' . $item->gambar) }}" onerror="if(this.src!=='{{ $fbImg }}'){this.src='{{ $fbImg }}';}" alt="Infografis" style="height: 70px; width: 120px; object-fit: cover; border-radius: var(--r-sm); border: 1px solid var(--line);">
                             </td>
                             <td>
                                 <span class="fw-bold text-dark">{{ $item->judul ?? 'Tanpa Judul' }}</span>

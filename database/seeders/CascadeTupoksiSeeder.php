@@ -70,5 +70,15 @@ class CascadeTupoksiSeeder extends Seeder
                 $item
             );
         }
+
+        // Salin file gambaran besar visual Tupoksi jika tersedia di seed-files
+        $seedTupoksiImage = storage_path('app/public/seed-files/tupoksi/gambaran-besar-tupoksi.jpg');
+        if (! File::exists($seedTupoksiImage)) {
+            $seedTupoksiImage = public_path('storage/seed-files/tupoksi/gambaran-besar-tupoksi.jpg');
+        }
+        $destTupoksiImage = storage_path('app/public/profil-instansi/tupoksi/gambaran-besar-tupoksi.jpg');
+        if (File::exists($seedTupoksiImage) && ! File::exists($destTupoksiImage)) {
+            File::copy($seedTupoksiImage, $destTupoksiImage);
+        }
     }
 }

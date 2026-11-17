@@ -104,12 +104,14 @@
 
         foreach ($dokumenDB as $doc) {
             $judul_doc = $doc->judul_dokumen ?? $doc->judul ?? $doc->nama_dokumen ?? $doc->nama ?? 'Dokumen ' . $label_aktif;
-            $nama_file = $doc->nama_file ?? $doc->file ?? $doc->file_pdf ?? $doc->dokumen ?? '';
+            $nama_file = $doc->file_dokumen ?? $doc->nama_file ?? $doc->file ?? $doc->file_pdf ?? $doc->dokumen ?? '';
             $url_view  = Route::has('publik.profil.view') ? route('publik.profil.view', ['kategori' => $tab_aktif, 'id' => $doc->id]) : url('/internal/profil-instansi/' . $tab_aktif . '/' . $doc->id . '/view');
             $url_dl    = Route::has('publik.profil.download') ? route('publik.profil.download', ['kategori' => $tab_aktif, 'id' => $doc->id]) : url('/internal/profil-instansi/' . $tab_aktif . '/' . $doc->id . '/download');
 
             $dokumen_list[] = [
                 'judul'        => $judul_doc,
+                'tahun'        => $doc->tahun ?? null,
+                'keterangan'   => $doc->keterangan ?? null,
                 'url'          => $url_view,
                 'url_download' => $url_dl,
                 'ext'          => pathinfo($nama_file, PATHINFO_EXTENSION) ?: 'PDF'
@@ -548,7 +550,8 @@
                         $url_download = (string) ($d['url_download'] ?? $url);
                         $ada          = $url !== '';
                         $ext          = strtoupper($d['ext'] ?? 'PDF') ?: 'PDF';
-                        $ico          = ['PDF' => 'fa-file-pdf', 'DOC' => 'fa-file-word', 'DOCX' => 'fa-file-word', 'XLS' => 'fa-file-excel', 'XLSX' => 'fa-file-excel'][$ext] ?? 'fa-file-lines';
+                        $is_image     = in_array($ext, ['JPG', 'JPEG', 'PNG', 'WEBP'], true);
+                        $ico          = ['PDF' => 'fa-file-pdf', 'JPG' => 'fa-file-image', 'JPEG' => 'fa-file-image', 'PNG' => 'fa-file-image', 'WEBP' => 'fa-file-image', 'DOC' => 'fa-file-word', 'DOCX' => 'fa-file-word', 'XLS' => 'fa-file-excel', 'XLSX' => 'fa-file-excel'][$ext] ?? 'fa-file-lines';
                     ?>
                     <li class="doc-row <?= $ada ? '' : 'is-empty' ?>" data-name="<?= $h(mb_strtolower($judul)) ?>">
                         <span class="doc-ico"><i class="fas <?= $h($ada ? $ico : 'fa-file-circle-question') ?>"></i></span>
@@ -560,7 +563,10 @@
                                     <?= $h($judul) ?>
                                 <?php endif; ?>
                             </p>
-                            <p class="doc-meta"><?= $ada ? 'Dokumen ' . $h($ext) : 'Berkas belum diunggah' ?></p>
+                            <p class="doc-meta">
+                                <?= $ada ? ($is_image ? 'Gambar ' . $h($ext) : 'Dokumen ' . $h($ext)) : 'Berkas belum diunggah' ?>
+                                <?php if (!empty($d['tahun'])): ?> &bull; Tahun <?= $h($d['tahun']) ?><?php endif; ?>
+                            </p>
                         </div>
                         <?php if ($ada): ?>
                         <div class="doc-actions">
@@ -569,6 +575,13 @@
                         </div>
                         <?php endif; ?>
                     </li>
+                    <?php if ($ada && $is_image): ?>
+                    <li class="doc-preview-item" style="padding: 24px clamp(16px, 2.5vw, 26px); border-bottom: 1px solid var(--line); background: #f8fafc; text-align: center;">
+                        <div style="max-width: 1000px; margin: 0 auto; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 10px 28px rgba(13,27,42,.10); background: #ffffff;">
+                            <img src="<?= $h($url) ?>" alt="<?= $h($judul) ?>" style="width: 100%; height: auto; display: block;">
+                        </div>
+                    </li>
+                    <?php endif; ?>
                     <?php endforeach; ?>
                 </ul>
                 <?php else: ?>
