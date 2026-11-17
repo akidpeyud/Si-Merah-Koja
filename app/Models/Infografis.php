@@ -14,7 +14,6 @@ class Infografis extends Model
 
     protected $table = 'infografis';
 
-    // Tambahkan baris ini untuk mengizinkan mass assignment
     protected $fillable = ['judul', 'gambar'];
 
     protected static function booted(): void
@@ -24,81 +23,66 @@ class Infografis extends Model
         });
     }
 
-    /**
-     * Sinkronisasi otomatis file gambar infografis ke storage/app/public/infografis
-     * dan public/images/infografis apabila file lokal belum ada di komputer.
-     */
-    public function syncMissingImage(): void
+    public function getImageDataUri(): ?string
     {
-        $raw = trim((string) $this->gambar);
-        if ($raw === '' || preg_match('#^https?://#i', $raw)) {
-            return;
+        if (! $this->gambar) {
+            return null;
         }
 
-        $clean = ltrim(preg_replace('#^/?(public/|storage/)#', '', $raw), '/');
-        $baseName = basename($clean);
-        $disk = Storage::disk('public');
-        $pubImgDir = public_path('images/infografis');
-        $pubImgPath = $pubImgDir.DIRECTORY_SEPARATOR.$baseName;
+        $filename = basename($this->gambar);
+        $candidates = [
+            storage_path('app/public/' . ltrim($this->gambar, '/')),
+            public_path('images/infografis/' . $filename),
+            storage_path('app/public/seed-files/infografis/' . $filename),
+        ];
 
-        if ($disk->exists($clean)) {
-            if (! File::exists($pubImgPath)) {
-                if (! File::exists($pubImgDir)) {
-                    @File::makeDirectory($pubImgDir, 0755, true);
-                }
-                @File::put($pubImgPath, $disk->get($clean));
+        foreach ($candidates as $path) {
+            if (File::exists($path) && @getimagesize($path) !== false) {
+                $mime = File::mimeType($path) ?: 'image/jpeg';
+                $data = base64_encode(File::get($path));
+
+                return "data:{$mime};base64,{$data}";
             }
-
-            return;
         }
 
-        // 1. Cek di seed-files atau public/images/infografis
-        $seedPath = storage_path('app/public/seed-files/infografis/'.$baseName);
-        if (File::exists($seedPath)) {
-            $bin = File::get($seedPath);
-            $disk->put($clean, $bin);
-            if (! File::exists($pubImgPath)) {
-                if (! File::exists($pubImgDir)) {
-                    @File::makeDirectory($pubImgDir, 0755, true);
-                }
-                @File::put($pubImgPath, $bin);
-            }
-
-            return;
-        }
-
-        if (File::exists($pubImgPath)) {
-            $disk->put($clean, File::get($pubImgPath));
-
-            return;
-        }
-
-        // 2. Unduh otomatis dari Instagram berdasarkan shortcode ig_{CODE}.jpg (seperti Media Informasi)
-        if (! preg_match('/^ig_([A-Za-z0-9_-]+)\./', $baseName, $m)) {
-            return;
-        }
-
-        $code = $m[1];
-        $cacheKey = 'infografis_sync_fail_'.$code;
-        if (cache()->has($cacheKey)) {
-            return;
-        }
-
-        $bin = self::downloadInstagramMedia($code);
-        if (! $bin) {
-            cache()->put($cacheKey, true, now()->addMinutes(30));
-
-            return;
-        }
-
-        $disk->put($clean, $bin);
-        if (! File::exists($pubImgDir)) {
-            @File::makeDirectory($pubImgDir, 0755, true);
-        }
-        @File::put($pubImgPath, $bin);
+        return null;
     }
 
-    public static function downloadInstagramMedia(string $code): ?string
+    public function syncMissingImage(): void
+    {
+        if (! $this->gambar) {
+            return;
+        }
+
+        $disk = Storage::disk('public');
+        $filename = basename($this->gambar);
+        $targetPath = storage_path('app/public/' . ltrim($this->gambar, '/'));
+
+        if (File::exists($targetPath) && @getimagesize($targetPath) !== false) {
+            return;
+        }
+
+        $fallbacks = [
+            public_path('images/infografis/' . $filename),
+            storage_path('app/public/seed-files/infografis/' . $filename),
+        ];
+
+        foreach ($fallbacks as $fallback) {
+            if (File::exists($fallback) && @getimagesize($fallback) !== false) {
+                $disk->put($this->gambar, File::get($fallback));
+                return;
+            }
+        }
+
+        if (preg_match('/^ig_([A-Za-z0-9_-]+)\./', $filename, $matches)) {
+            $bin = self::downloadInstagramMedia($matches[1]);
+            if ($bin) {
+                $disk->put($this->gambar, $bin);
+            }
+        }
+    }
+
+    public static function downloadInstagramMedia(string $shortcode): ?string
     {
         $mediaUrl = "https://www.instagram.com/p/{$code}/media/?size=l";
 
