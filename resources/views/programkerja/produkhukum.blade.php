@@ -484,45 +484,6 @@
                 <?php endif; ?>
             </section>
 
-            <!-- Kontak -->
-            <aside aria-label="Kontak dinas">
-                <div class="side-card">
-                    <h2>Kontak dinas</h2>
-                    <ul class="contact-list">
-                        <li>
-                            <span class="c-ico"><i class="fas fa-envelope-open-text"></i></span>
-                            <div>
-                                <small>Email resmi</small>
-                                <a href="mailto:damkar.jbi@gmail.com">damkar.jbi@gmail.com</a>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="c-ico"><i class="fas fa-phone-alt"></i></span>
-                            <div>
-                                <small>Telepon</small>
-                                <a href="tel:<?= $h($no_telepon) ?>"><?= $h($telepon_tampil) ?></a>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="c-ico"><i class="fas fa-map-marker-alt"></i></span>
-                            <div>
-                                <small>Alamat kantor</small>
-                                <a href="<?= $h($maps_link) ?>" target="_blank" rel="noopener">Jl. HOS. Cokroaminoto, Suka Karya, Kec. Kota Baru</a>
-                            </div>
-                        </li>
-                    </ul>
-
-                    <p class="social-title">Ikuti kami</p>
-                    <div class="social">
-                        <a href="mailto:damkar.jbi@gmail.com" title="Email" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                        <a href="https://twitter.com/damkarkotajambi" target="_blank" rel="noopener" title="Twitter / X" aria-label="Twitter / X"><i class="fab fa-twitter"></i></a>
-                        <a href="https://www.facebook.com/DamkarKotaJambi" target="_blank" rel="noopener" title="Facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://www.youtube.com/@damkarkotajambi" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                        <a href="https://www.tiktok.com/@damkar.kota.jambi" target="_blank" rel="noopener" title="TikTok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-                        <a href="https://www.instagram.com/damkar.kotajambi/" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-            </aside>
 
         </div>
     </div>
