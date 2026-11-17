@@ -52,6 +52,16 @@
             ],
         ],
         [
+            'title' => 'Profil Instansi', 'icon' => 'fa-sitemap', 'roles' => $ops,
+            'items' => [
+                ['Visi Misi', '/internal/profil-instansi/visi-misi', 'fa-bullseye'],
+                ['SOTK', '/internal/profil-instansi/sotk', 'fa-sitemap'],
+                ['Tupoksi', '/internal/profil-instansi/tupoksi', 'fa-list-check'],
+                ['Program Kegiatan', '/internal/profil-instansi/program-kegiatan', 'fa-calendar-check'],
+                ['Cascading', '/internal/profil-instansi/cascading', 'fa-diagram-project'],
+            ],
+        ],
+        [
             'title' => 'Produk Hukum', 'icon' => 'fa-scale-balanced', 'roles' => $ops,
             'items' => [
                 ['Undang-Undang', '/internal/produk-hukum/undang-undang', 'fa-scale-balanced'],
@@ -74,16 +84,6 @@
                 ['Data Pengumuman', '/internal/operator/pengumuman', 'fa-bullhorn'],
                 ['Data IKM', '/internal/operator/ikm', 'fa-face-smile'],
                 ['Titik Peta Sigapkar', '/internal/peta-sigap/data', 'fa-location-dot'],
-            ],
-        ],
-        [
-            'title' => 'Profil Instansi', 'icon' => 'fa-sitemap', 'roles' => $ops,
-            'items' => [
-                ['Visi Misi', '/internal/profil-instansi/visi-misi', 'fa-bullseye'],
-                ['SOTK', '/internal/profil-instansi/sotk', 'fa-sitemap'],
-                ['Tupoksi', '/internal/profil-instansi/tupoksi', 'fa-list-check'],
-                ['Program Kegiatan', '/internal/profil-instansi/program-kegiatan', 'fa-calendar-check'],
-                ['Cascading', '/internal/profil-instansi/cascading', 'fa-diagram-project'],
             ],
         ],
         [
