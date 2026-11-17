@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::table('penggunaan_sarana', function (Blueprint $table) {
             foreach ($this->kolomBerkas as $kolom) {
-                if (!Schema::hasColumn('penggunaan_sarana', $kolom)) {
+                if (! Schema::hasColumn('penggunaan_sarana', $kolom)) {
                     $table->string($kolom)->nullable();
                 }
             }

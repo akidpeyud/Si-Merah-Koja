@@ -994,21 +994,151 @@
             </div>
         </div>
 
+        @php
+            // Jika tabel infografis masih kosong, jalankan seeder otomatis
+            if (empty($daftar_infografis) || count($daftar_infografis) === 0) {
+                try {
+                    app(\Database\Seeders\InfografisSeeder::class)->run();
+                    $daftar_infografis = \App\Models\Infografis::latest()->get();
+                } catch (\Throwable $e) {
+                    // abaikan
+                }
+            }
+
+            $resolveInfografisSrc = function ($info): string {
+                $raw = trim((string) ($info->gambar ?? ''));
+                if ($raw === '' || preg_match('#^https?://#i', $raw)) {
+                    return $raw;
+                }
+
+                $clean = ltrim(preg_replace('#^/?(public/|storage/)#', '', $raw), '/');
+                $baseName = basename($clean);
+
+                $candidates = [
+                    storage_path('app/public/' . $clean),
+                    storage_path('app/public/seed-files/infografis/' . $baseName),
+                    public_path('images/infografis/' . $baseName),
+                    public_path('storage/' . $clean),
+                ];
+
+                $bin = null;
+                $mime = 'image/jpeg';
+
+                foreach ($candidates as $path) {
+                    if ($baseName !== '' && is_file($path)) {
+                        $imgInfo = @getimagesize($path);
+                        if ($imgInfo !== false) {
+                            $content = @file_get_contents($path);
+                            if (is_string($content) && strlen($content) > 1024) {
+                                $bin = $content;
+                                $mime = $imgInfo['mime'] ?? 'image/jpeg';
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // Jika file lokal belum ada, tarik dari Instagram via OpenGraph DOMDocument (sama seperti Media Informasi)
+                if (!$bin && preg_match('/^ig_([A-Za-z0-9_-]+)\./', $baseName, $mCode)) {
+                    $code = $mCode[1];
+                    $postUrl = "https://www.instagram.com/p/{$code}/";
+                    $userAgents = [
+                        'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
+                        'Twitterbot/1.0',
+                        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+                    ];
+                    foreach ($userAgents as $ua) {
+                        try {
+                            $htmlRes = \Illuminate\Support\Facades\Http::withoutVerifying()
+                                ->timeout(12)
+                                ->connectTimeout(6)
+                                ->withHeaders([
+                                    'User-Agent' => $ua,
+                                    'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                                    'Accept-Language' => 'id-ID,id;q=0.9,en;q=0.8',
+                                ])
+                                ->get($postUrl);
+
+                            if (!$htmlRes->ok()) {
+                                continue;
+                            }
+
+                            $doc = new \DOMDocument();
+                            libxml_use_internal_errors(true);
+                            $doc->loadHTML('<?xml encoding="utf-8" ?>' . substr($htmlRes->body(), 0, 800000));
+                            libxml_clear_errors();
+
+                            $meta = [];
+                            foreach ($doc->getElementsByTagName('meta') as $m) {
+                                $key = strtolower($m->getAttribute('property') ?: $m->getAttribute('name'));
+                                $val = trim($m->getAttribute('content'));
+                                if ($key !== '' && $val !== '' && !isset($meta[$key])) {
+                                    $meta[$key] = $val;
+                                }
+                            }
+
+                            $imgUrl = $meta['og:image:secure_url']
+                                ?? $meta['og:image']
+                                ?? $meta['twitter:image']
+                                ?? $meta['twitter:image:src']
+                                ?? null;
+
+                            if (!$imgUrl) {
+                                continue;
+                            }
+
+                            $imgRes = \Illuminate\Support\Facades\Http::withoutVerifying()
+                                ->timeout(15)
+                                ->connectTimeout(6)
+                                ->withHeaders([
+                                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+                                    'Referer' => $postUrl,
+                                ])
+                                ->get($imgUrl);
+
+                            if ($imgRes->ok() && strlen($imgRes->body()) > 2048 && @getimagesizefromstring($imgRes->body()) !== false) {
+                                $bin = $imgRes->body();
+                                break;
+                            }
+                        } catch (\Throwable $e) {
+                            continue;
+                        }
+                    }
+                }
+
+                if ($bin) {
+                    try {
+                        $disk = \Illuminate\Support\Facades\Storage::disk('public');
+                        if (!$disk->exists($clean) || @getimagesize(storage_path('app/public/' . $clean)) === false) {
+                            $disk->put($clean, $bin);
+                        }
+                    } catch (\Throwable $e) {
+                        // abaikan
+                    }
+
+                    return 'data:' . $mime . ';base64,' . base64_encode($bin);
+                }
+
+                return asset('storage/' . $clean);
+            };
+        @endphp
+
         <div class="grafis-grid">
             @forelse($daftar_infografis ?? [] as $info)
                 @php
-                    $ver = @filemtime(storage_path('app/public/' . $info->gambar)) ?: 1;
-                    $imgSrc = asset('storage/' . $info->gambar) . '?v=' . $ver;
+                    $imgSrc = $resolveInfografisSrc($info);
+                    $fallbackSrc = '/images/infografis/' . basename((string) $info->gambar);
                 @endphp
                 <button type="button" class="grafis-card"
                         data-index="{{ $loop->index }}"
                         data-src="{{ $imgSrc }}"
+                        data-fallback="{{ $fallbackSrc }}"
                         data-title="{{ $info->judul ?? 'Infografis Damkar Kota Jambi' }}"
                         aria-label="Perbesar: {{ $info->judul ?? 'Infografis' }}">
                     <div class="grafis-thumb">
                         <span class="grafis-badge"><i class="fas fa-bolt"></i> Infografis</span>
                         <span class="grafis-zoom" aria-hidden="true"><i class="fas fa-expand"></i></span>
-                        <img src="{{ $imgSrc }}" alt="{{ $info->judul ?? 'Infografis' }}" loading="lazy">
+                        <img src="{{ $imgSrc }}" alt="{{ $info->judul ?? 'Infografis' }}" loading="lazy" onerror="this.onerror=null;this.src='{{ $fallbackSrc }}';">
                     </div>
                     <div class="grafis-body">
                         <div class="grafis-title">{{ $info->judul ?? 'Infografis Edukasi Damkar Kota Jambi' }}</div>

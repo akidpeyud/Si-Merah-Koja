@@ -14,20 +14,20 @@ return new class extends Migration
         Schema::create('redkar_registrations', function (Blueprint $table) {
             // ID diubah jadi string karena controller memakai format "RDK-..." berbasis NIK
             $table->string('id')->primary();
-            
+
             // Data Pribadi Dasar
             $table->string('nik', 16)->unique();
             $table->string('nama_lengkap', 150);
-            $table->string('jenis_kelamin'); 
+            $table->string('jenis_kelamin');
             $table->string('tempat_lahir', 100);
             $table->date('tanggal_lahir');
             $table->string('status_perkawinan');
             $table->string('agama');
             $table->string('nomor_telp', 20);
-            
+
             // Berkas KTP
             $table->string('file_ktp')->nullable();
-            
+
             // Domisili (Kolom kode pos sudah dihapus)
             $table->text('alamat');
             $table->string('rt_rw', 10);
@@ -35,7 +35,7 @@ return new class extends Migration
             $table->string('kabupaten_kota')->default('KOTA JAMBI');
             $table->string('kecamatan', 50);
             $table->string('kelurahan', 50);
-            
+
             // Latar Belakang & Fisik
             $table->string('pendidikan_terakhir');
             $table->string('latar_belakang_pendidikan', 255);
@@ -43,10 +43,10 @@ return new class extends Migration
             $table->string('sehat_jasmani');
             $table->string('buta_warna')->nullable();
             $table->string('golongan_darah');
-            
+
             // Status Sistem (Hanya status pendaftaran untuk pencatatan internal)
             $table->string('status_pendaftaran')->default('Pending');
-            
+
             $table->timestamps();
         });
     }

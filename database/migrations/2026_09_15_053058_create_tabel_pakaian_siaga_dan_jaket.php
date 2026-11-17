@@ -10,7 +10,7 @@ return new class extends Migration
     {
         $tables = [
             'baju_siaga_celana_training',
-            'jaket_waterproof'
+            'jaket_waterproof',
         ];
 
         foreach ($tables as $tableName) {

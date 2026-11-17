@@ -11,5 +11,6 @@ class DiklatF2 extends Model
 
     // Asumsi nama tabel lu di phpMyAdmin adalah tbl_diklat_f2
     protected $table = 'tbl_diklat_f2';
+
     protected $guarded = ['id'];
 }

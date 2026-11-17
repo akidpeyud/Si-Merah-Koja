@@ -43,14 +43,14 @@ class ImportLaporanKebakaranCommand extends Command
             $candidatePaths = [
                 base_path($filePath),
                 base_path($cleanedName),
-                base_path('storage/app/import/' . $filePath),
-                base_path('storage/app/import/' . $cleanedName),
-                base_path('storage/app/' . $filePath),
-                base_path('storage/app/' . $cleanedName),
-                $userHome . '\\Downloads\\' . $filePath,
-                $userHome . '\\Downloads\\' . $cleanedName,
-                $userHome . '\\Desktop\\' . $filePath,
-                $userHome . '\\Desktop\\' . $cleanedName,
+                base_path('storage/app/import/'.$filePath),
+                base_path('storage/app/import/'.$cleanedName),
+                base_path('storage/app/'.$filePath),
+                base_path('storage/app/'.$cleanedName),
+                $userHome.'\\Downloads\\'.$filePath,
+                $userHome.'\\Downloads\\'.$cleanedName,
+                $userHome.'\\Desktop\\'.$filePath,
+                $userHome.'\\Desktop\\'.$cleanedName,
             ];
 
             $found = null;
@@ -65,8 +65,8 @@ class ImportLaporanKebakaranCommand extends Command
                 $filePath = $found;
             } else {
                 $this->error("File Excel tidak ditemukan di lokasi: {$filePath}");
-                $this->line("Tips:");
-                $this->line("1. Pastikan file berada di folder: " . base_path());
+                $this->line('Tips:');
+                $this->line('1. Pastikan file berada di folder: '.base_path());
                 $this->line("2. Atau gunakan path lengkap, contoh: php artisan import:laporan-kebakaran \"{$userHome}\\Downloads\\{$cleanedName}\"");
                 $this->line("3. Periksa ejaan nama file (apakah ada huruf ganda seperti 'Laporann' atau 'Bulanann').");
 

@@ -71,6 +71,7 @@ class LaporanEvakuasiSeeder extends Seeder
 
                             if ($exists) {
                                 $skipped++;
+
                                 continue;
                             }
 

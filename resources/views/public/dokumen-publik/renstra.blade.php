@@ -5,14 +5,11 @@
 
     /* ------------------------------------------------------------
        PENGATURAN HALAMAN PUBLIK DOKUMEN
-       Tab disesuaikan untuk 5 Kategori Dokumen Publik.
+       Tab disesuaikan untuk Kategori Dokumen Publik (Renstra & SPM).
        ------------------------------------------------------------ */
     $tabs = [
         'renstra' => ['url' => '/dokumen/renstra', 'label' => 'Renstra', 'ico' => 'fa-file-lines', 'judul' => 'Rencana Strategis (Renstra)'],
-        'renja'   => ['url' => '/dokumen/renja',   'label' => 'Renja',   'ico' => 'fa-file-lines', 'judul' => 'Rencana Kerja (Renja)'],
         'spm'     => ['url' => '/dokumen/spm',     'label' => 'SPM',     'ico' => 'fa-file-shield', 'judul' => 'Standar Pelayanan Minimal (SPM)'],
-        'sakip'   => ['url' => '/dokumen/sakip',   'label' => 'SAKIP',   'ico' => 'fa-chart-pie',  'judul' => 'SAKIP'],
-        'lppd'    => ['url' => '/dokumen/lppd',    'label' => 'LPPD',    'ico' => 'fa-book',       'judul' => 'LPPD'],
     ];
     
     // Set tab aktif saat ini
@@ -592,35 +589,6 @@
                 <?php endif; ?>
             </section>
 
-            <!-- Kontak -->
-            <aside aria-label="Kontak dinas">
-                <div class="side-card">
-                    <h2>Kontak dinas</h2>
-                    <ul class="contact-list">
-                        <li>
-                            <span class="c-ico"><i class="fas fa-envelope-open-text"></i></span>
-                            <div>
-                                <small>Email resmi</small>
-                                <a href="mailto:damkar.jbi@gmail.com">damkar.jbi@gmail.com</a>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="c-ico"><i class="fas fa-phone-alt"></i></span>
-                            <div>
-                                <small>Telepon</small>
-                                <a href="tel:<?= $h($no_telepon) ?>"><?= $h($telepon_tampil) ?></a>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="c-ico"><i class="fas fa-map-marker-alt"></i></span>
-                            <div>
-                                <small>Alamat kantor</small>
-                                <a href="<?= $h($maps_link) ?>" target="_blank" rel="noopener">Jl. HOS. Cokroaminoto, Suka Karya, Kec. Kota Baru</a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </aside>
 
         </div>
     </div>

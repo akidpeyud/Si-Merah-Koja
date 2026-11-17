@@ -2,7 +2,7 @@
     use Illuminate\Support\Facades\Schema;
     use Illuminate\Support\Facades\DB;
 
-    $h = function ($v) { return htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8'); };
+    $h = function ($v) { return htmlspecialchars(is_array($v) ? json_encode($v) : (string) $v, ENT_QUOTES, 'UTF-8'); };
 
     /* ------------------------------------------------------------
        PENGATURAN HALAMAN (6 TAB PROFIL INSTANSI)
@@ -115,6 +115,128 @@
                 'ext'          => pathinfo($nama_file, PATHINFO_EXTENSION) ?: 'PDF'
             ];
         }
+    }
+
+    // ============================================================
+    // KHUSUS TAB SOTK: 7 CONTAINER STRUKTUR ORGANISASI
+    // ============================================================
+    $sotk_containers = [];
+    if ($tab_aktif === 'sotk') {
+        $sotkDB = collect();
+        if (class_exists('\App\Models\ProfilInstansi')) {
+            $sotkDB = \App\Models\ProfilInstansi::where('kategori', 'sotk')
+                ->orderBy('urutan', 'asc')
+                ->orderBy('id', 'asc')
+                ->get();
+        } elseif (Schema::hasTable('profil_instansis')) {
+            $sotkDB = DB::table('profil_instansis')->where('kategori', 'sotk')->orderBy('urutan', 'asc')->orderBy('id', 'asc')->get();
+        }
+
+        $formatSotkDoc = function ($doc, $defaultJudul) {
+            $judul = $doc->judul ?? $defaultJudul;
+            $nama_file = $doc->file_dokumen ?? $doc->nama_file ?? $doc->file ?? $doc->file_pdf ?? '';
+            $ada = !empty($nama_file);
+            $url_view = ($ada && $doc) ? (Route::has('publik.profil.view') ? route('publik.profil.view', ['kategori' => 'sotk', 'id' => $doc->id]) : url('/internal/profil-instansi/sotk/' . $doc->id . '/view')) : '';
+            $url_dl = ($ada && $doc) ? (Route::has('publik.profil.download') ? route('publik.profil.download', ['kategori' => 'sotk', 'id' => $doc->id]) : url('/internal/profil-instansi/sotk/' . $doc->id . '/download')) : '';
+            $ext = $ada ? (strtoupper(pathinfo($nama_file, PATHINFO_EXTENSION)) ?: 'PDF') : 'PDF';
+            $ico = match ($ext) {
+                'PDF' => 'fa-file-pdf',
+                'DOC', 'DOCX' => 'fa-file-word',
+                'XLS', 'XLSX' => 'fa-file-excel',
+                default => 'fa-file-lines'
+            };
+
+            return [
+                'id' => $doc?->id,
+                'judul' => $judul,
+                'url' => $url_view,
+                'url_download' => $url_dl,
+                'ext' => $ext,
+                'ico' => $ico,
+                'ada' => $ada,
+                'keterangan' => $doc?->keterangan ?? '',
+                'tahun' => $doc?->tahun ?? null,
+            ];
+        };
+
+        $c1_doc = $sotkDB->firstWhere('sub_kategori', 'dinas') ?? $sotkDB->firstWhere('urutan', 1) ?? $sotkDB->first();
+        $c2_doc = $sotkDB->firstWhere('sub_kategori', 'komando') ?? $sotkDB->firstWhere('urutan', 2);
+        $c3_doc = $sotkDB->firstWhere('sub_kategori', 'sekretariat') ?? $sotkDB->firstWhere('urutan', 3);
+        $c4_doc = $sotkDB->firstWhere('sub_kategori', 'bidang_pencegahan') ?? $sotkDB->firstWhere('urutan', 4);
+        $c5_doc = $sotkDB->firstWhere('sub_kategori', 'bidang_sapra') ?? $sotkDB->firstWhere('urutan', 5);
+        $c6_doc = $sotkDB->firstWhere('sub_kategori', 'bidang_damtan') ?? $sotkDB->firstWhere('urutan', 6);
+
+        $posJudulList = [
+            ['nama' => 'Alam Barajo', 'judul' => 'Struktur Organisasi Pos Pelayanan Alam Barajo', 'kategori' => 'Pos Pelayanan Alam Barajo'],
+            ['nama' => 'Paal Merah', 'judul' => 'Struktur Organisasi Pos Pelayanan Paal Merah', 'kategori' => 'Pos Pelayanan Paal Merah'],
+            ['nama' => 'Jambi Kota Seberang', 'judul' => 'Struktur Organisasi Pos Pelayanan Jambi Kota Seberang', 'kategori' => 'Pos Pelayanan Jambi Kota Seberang'],
+            ['nama' => 'Jambi Timur', 'judul' => 'Struktur Organisasi Pos Pelayanan Jambi Timur', 'kategori' => 'Pos Pelayanan Jambi Timur'],
+            ['nama' => 'Kota Baru', 'judul' => 'Struktur Organisasi Pos Pelayanan Kota Baru', 'kategori' => 'Pos Pelayanan Kota Baru'],
+            ['nama' => 'Pelayangan', 'judul' => 'Struktur Organisasi Pos Pelayanan Pelayangan', 'kategori' => 'Pos Pelayanan Pelayangan'],
+        ];
+
+        $posItems = [];
+        $posDB = $sotkDB->where('sub_kategori', 'pos_pelayanan');
+        foreach ($posJudulList as $idx => $pInfo) {
+            $pJudul = $pInfo['judul'];
+            $docPos = $posDB->firstWhere('judul', $pJudul) ?? $posDB->firstWhere('urutan', 7 + $idx);
+            $item = $formatSotkDoc($docPos, $pJudul);
+            $item['nama_pos'] = $pInfo['nama'];
+            $item['kategori_pos'] = $pInfo['kategori'];
+            $posItems[] = $item;
+        }
+
+        $sotk_containers = [
+            1 => [
+                'nomor' => 1,
+                'judul' => 'Struktur Organisasi Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi',
+                'ico' => 'fa-sitemap',
+                'view_besar' => true,
+                'dokumen' => $formatSotkDoc($c1_doc, 'Struktur Organisasi Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi'),
+            ],
+            2 => [
+                'nomor' => 2,
+                'judul' => 'Struktur Organisasi Komando Kebakaran dan Penyelamatan Regu 1, Regu 2, Regu 3',
+                'ico' => 'fa-users-line',
+                'view_besar' => false,
+                'dokumen' => $formatSotkDoc($c2_doc, 'Struktur Organisasi Komando Kebakaran dan Penyelamatan Regu 1, Regu 2, Regu 3'),
+            ],
+            3 => [
+                'nomor' => 3,
+                'judul' => 'Struktur Organisasi Sekretariat',
+                'ico' => 'fa-building-columns',
+                'view_besar' => false,
+                'dokumen' => $formatSotkDoc($c3_doc, 'Struktur Organisasi Sekretariat'),
+            ],
+            4 => [
+                'nomor' => 4,
+                'judul' => 'Struktur Organisasi Bidang Pencegahan',
+                'ico' => 'fa-fire-extinguisher',
+                'view_besar' => false,
+                'dokumen' => $formatSotkDoc($c4_doc, 'Struktur Organisasi Bidang Pencegahan'),
+            ],
+            5 => [
+                'nomor' => 5,
+                'judul' => 'Struktur Organisasi Bidang Sapra',
+                'ico' => 'fa-truck-droplet',
+                'view_besar' => false,
+                'dokumen' => $formatSotkDoc($c5_doc, 'Struktur Organisasi Bidang Sapra'),
+            ],
+            6 => [
+                'nomor' => 6,
+                'judul' => 'Struktur Organisasi Bidang Damtan',
+                'ico' => 'fa-helmet-safety',
+                'view_besar' => false,
+                'dokumen' => $formatSotkDoc($c6_doc, 'Struktur Organisasi Bidang Damtan'),
+            ],
+            7 => [
+                'nomor' => 7,
+                'judul' => 'Struktur Organisasi Pos Pelayanan',
+                'ico' => 'fa-map-location-dot',
+                'view_besar' => false,
+                'items' => $posItems,
+            ],
+        ];
     }
 
     $jumlah = count($dokumen_list);
@@ -354,6 +476,35 @@
         .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
         /* ==========================================================
+           TOMBOL FILTER KATEGORI POS PELAYANAN
+           ========================================================== */
+        .btn-pos-filter {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            border-radius: 999px;
+            font-size: .82rem;
+            font-weight: 600;
+            border: 1px solid var(--line);
+            background: #fff;
+            color: var(--ink-2);
+            cursor: pointer;
+            transition: all .2s ease;
+        }
+        .btn-pos-filter:hover {
+            background: var(--paper);
+            border-color: #cbd5e1;
+            color: var(--ink);
+        }
+        .btn-pos-filter.is-active {
+            background: var(--ink);
+            border-color: var(--ink);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(13,27,42,.2);
+        }
+
+        /* ==========================================================
            ANIMASI HOVER KARTU / KONTAINER
            ========================================================== */
         .doc-panel, .side-card { transition: transform .35s cubic-bezier(.16,.84,.3,1), box-shadow .35s ease, border-color .35s ease; }
@@ -517,117 +668,208 @@
                 </section>
             <?php endif; ?>
 
-            <!-- ==============================================
-                 PANEL DOKUMEN (DOKUMEN PUBLIK / DOKUMEN PROFIL)
-                 ============================================== -->
-            <section class="doc-panel" aria-label="Daftar dokumen">
-                <div class="doc-bar">
-                    <div class="doc-title">
-                        <i class="fas <?= $h($tab_aktif === 'kepegawaian' ? 'fa-file-lines' : $tabs[$tab_aktif]['ico']) ?>"></i>
-                        <span><?= $h($tab_aktif === 'kepegawaian' ? 'Dokumen Publik Kepegawaian' : $tabs[$tab_aktif]['judul']) ?></span>
+            <?php if ($tab_aktif === 'sotk'): ?>
+                <!-- ==============================================
+                     7 CONTAINER STRUKTUR ORGANISASI (SOTK)
+                     ============================================== -->
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 4px;">
+                    <div style="font-size: .95rem; color: var(--steel); font-weight: 600;">
+                        <i class="fas fa-layer-group text-danger me-1"></i> Struktur Organisasi dan Tata Kerja (SOTK)
                     </div>
-                    <div class="doc-filter">
-                        <?php if ($jumlah): ?>
-                        <span class="doc-count" id="docCount"><?= (int) $jumlah ?> dokumen</span>
-                        <?php endif; ?>
-                        <?php if ($jumlah > 5): ?>
-                        <label class="doc-search">
-                            <span class="sr-only">Cari dokumen</span>
-                            <i class="fas fa-search"></i>
-                            <input type="search" id="docSearch" placeholder="Cari dokumen..." autocomplete="off">
-                        </label>
-                        <?php endif; ?>
-                    </div>
+                    <label class="doc-search">
+                        <span class="sr-only">Cari struktur organisasi</span>
+                        <i class="fas fa-search"></i>
+                        <input type="search" id="docSearch" placeholder="Cari struktur organisasi..." autocomplete="off">
+                    </label>
                 </div>
 
-                <?php if ($jumlah): ?>
-                <ul class="doc-list">
-                    <?php foreach ($dokumen_list as $d):
-                        $judul        = (string) ($d['judul'] ?? '');
-                        $url          = (string) ($d['url'] ?? '');
-                        $url_download = (string) ($d['url_download'] ?? $url);
-                        $ada          = $url !== '';
-                        $ext          = strtoupper($d['ext'] ?? 'PDF') ?: 'PDF';
-                        $ico          = ['PDF' => 'fa-file-pdf', 'DOC' => 'fa-file-word', 'DOCX' => 'fa-file-word', 'XLS' => 'fa-file-excel', 'XLSX' => 'fa-file-excel'][$ext] ?? 'fa-file-lines';
-                    ?>
-                    <li class="doc-row <?= $ada ? '' : 'is-empty' ?>" data-name="<?= $h(mb_strtolower($judul)) ?>">
-                        <span class="doc-ico"><i class="fas <?= $h($ada ? $ico : 'fa-file-circle-question') ?>"></i></span>
-                        <div>
-                            <p class="doc-name">
-                                <?php if ($ada): ?>
-                                    <a href="<?= $h($url) ?>" target="_blank" rel="noopener"><?= $h($judul) ?></a>
+                <?php foreach ($sotk_containers as $num => $cnt): ?>
+                    <section class="doc-panel" id="sotk-container-<?= $num ?>" aria-label="<?= $h($cnt['judul']) ?>">
+                        <div class="doc-bar">
+                            <div class="doc-title">
+                                <span><?= $h($cnt['judul']) ?></span>
+                            </div>
+                            <div class="doc-filter">
+                                <?php if ($num === 7): ?>
+                                    <span class="doc-count"><?= count($cnt['items']) ?> Pos Pelayanan</span>
                                 <?php else: ?>
-                                    <?= $h($judul) ?>
+                                    <span class="doc-count"><?= $cnt['dokumen']['ada'] ? 'Tersedia' : 'Belum diunggah' ?></span>
                                 <?php endif; ?>
-                            </p>
-                            <p class="doc-meta"><?= $ada ? 'Dokumen ' . $h($ext) : 'Berkas belum diunggah' ?></p>
+                            </div>
                         </div>
-                        <?php if ($ada): ?>
-                        <div class="doc-actions">
-                            <a class="tool" href="<?= $h($url) ?>" target="_blank" rel="noopener"><i class="fas fa-arrow-up-right-from-square"></i> Buka</a>
-                            <a class="tool" href="<?= $h($url_download) ?>"><i class="fas fa-download"></i> Unduh</a>
-                        </div>
+
+                        <?php if ($num === 7): ?>
+                            <div style="padding: 12px clamp(16px, 2.5vw, 26px); background: #f8fafc; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                <strong style="color: var(--ink); font-size: .85rem; margin-right: 4px;"><i class="fas fa-tags text-danger me-1"></i> Kategori Pos:</strong>
+                                <button type="button" class="btn-pos-filter is-active" data-pos="all">
+                                    <i class="fas fa-layer-group" style="font-size: .75rem;"></i> Semua Pos
+                                </button>
+                                <?php foreach ($cnt['items'] as $pItem): ?>
+                                    <button type="button" class="btn-pos-filter" data-pos="<?= $h($pItem['nama_pos']) ?>">
+                                        <?= $h($pItem['nama_pos']) ?>
+                                    </button>
+                                <?php endforeach; ?>
+                            </div>
+                            <ul class="doc-list" id="posDocList">
+                                <?php foreach ($cnt['items'] as $pItem):
+                                    $pJudul = (string) $pItem['judul'];
+                                    $pUrl = (string) $pItem['url'];
+                                    $pUrlDl = (string) ($pItem['url_download'] ?: $pUrl);
+                                    $pAda = (bool) $pItem['ada'];
+                                    $pExt = $pItem['ext'];
+                                    $pIco = $pItem['ico'];
+                                ?>
+                                <li class="doc-row <?= $pAda ? '' : 'is-empty' ?>" data-name="<?= $h(mb_strtolower($pJudul . ' ' . $pItem['kategori_pos'])) ?>" data-pos-name="<?= $h($pItem['nama_pos']) ?>">
+                                    <span class="doc-ico"><i class="fas <?= $h($pAda ? $pIco : 'fa-file-circle-question') ?>"></i></span>
+                                    <div>
+                                        <div style="margin-bottom: 4px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                                            <span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 6px; background: rgba(229,57,45,.08); color: var(--signal-d); font-size: .78rem; font-weight: 700;">
+                                                <i class="fas fa-tag" style="font-size: .68rem;"></i> Kategori: <?= $h($pItem['kategori_pos']) ?>
+                                            </span>
+                                        </div>
+                                        <p class="doc-name">
+                                            <?php if ($pAda): ?>
+                                                <a href="<?= $h($pUrl) ?>" target="_blank" rel="noopener"><?= $h($pJudul) ?></a>
+                                            <?php else: ?>
+                                                <?= $h($pJudul) ?>
+                                            <?php endif; ?>
+                                        </p>
+                                        <p class="doc-meta"><?= $pAda ? 'Dokumen ' . $h($pExt) . ($pItem['tahun'] ? ' • Tahun ' . $h($pItem['tahun']) : '') : 'Berkas belum diunggah' ?></p>
+                                    </div>
+                                    <?php if ($pAda): ?>
+                                    <div class="doc-actions">
+                                        <a class="tool" href="<?= $h($pUrl) ?>" target="_blank" rel="noopener"><i class="fas fa-arrow-up-right-from-square"></i> Buka</a>
+                                        <a class="tool" href="<?= $h($pUrlDl) ?>"><i class="fas fa-download"></i> Unduh</a>
+                                    </div>
+                                    <?php else: ?>
+                                    <div class="doc-actions">
+                                        <span class="tool" style="opacity: 0.65; cursor: not-allowed;"><i class="fas fa-clock"></i> Belum Ada Berkas</span>
+                                    </div>
+                                    <?php endif; ?>
+                                </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php else:
+                            $d = $cnt['dokumen'];
+                            $judul = (string) $d['judul'];
+                            $url = (string) $d['url'];
+                            $url_download = (string) ($d['url_download'] ?: $url);
+                            $ada = (bool) $d['ada'];
+                            $ext = $d['ext'];
+                            $ico = $d['ico'];
+                        ?>
+                            <ul class="doc-list">
+                                <li class="doc-row <?= $ada ? '' : 'is-empty' ?>" data-name="<?= $h(mb_strtolower($judul)) ?>">
+                                    <span class="doc-ico"><i class="fas <?= $h($ada ? $ico : 'fa-file-circle-question') ?>"></i></span>
+                                    <div>
+                                        <p class="doc-name">
+                                            <?php if ($ada): ?>
+                                                <a href="<?= $h($url) ?>" target="_blank" rel="noopener"><?= $h($judul) ?></a>
+                                            <?php else: ?>
+                                                <?= $h($judul) ?>
+                                            <?php endif; ?>
+                                        </p>
+                                        <p class="doc-meta"><?= $ada ? 'Dokumen ' . $h($ext) . ($d['tahun'] ? ' • Tahun ' . $h($d['tahun']) : '') : 'Berkas belum diunggah' ?></p>
+                                    </div>
+                                    <?php if ($ada): ?>
+                                    <div class="doc-actions">
+                                        <a class="tool" href="<?= $h($url) ?>" target="_blank" rel="noopener"><i class="fas fa-arrow-up-right-from-square"></i> Buka</a>
+                                        <a class="tool" href="<?= $h($url_download) ?>"><i class="fas fa-download"></i> Unduh</a>
+                                    </div>
+                                    <?php else: ?>
+                                    <div class="doc-actions">
+                                        <span class="tool" style="opacity: 0.65; cursor: not-allowed;"><i class="fas fa-clock"></i> Belum Ada Berkas</span>
+                                    </div>
+                                    <?php endif; ?>
+                                </li>
+
+                                <?php if ($cnt['view_besar'] && $ada && $ext === 'PDF'): ?>
+                                <li class="doc-preview-item" style="padding: 18px clamp(16px, 2.5vw, 26px); border-bottom: 1px solid var(--line); background: #f8fafc;">
+                                    <div style="width: 100%; height: clamp(520px, 80vh, 900px); border-radius: 12px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 4px 16px rgba(13,27,42,.08); background: #525659;">
+                                        <iframe src="<?= $h($url) ?>#toolbar=1&navpanes=0" style="width: 100%; height: 100%; border: none; display: block;" title="<?= $h($judul) ?>">
+                                            <p style="padding: 20px; color: #fff;">Browser Anda tidak mendukung pratinjau dokumen langsung. Silakan <a href="<?= $h($url_download) ?>" style="color: #60a5fa; text-decoration: underline;">unduh file PDF di sini</a>.</p>
+                                        </iframe>
+                                    </div>
+                                </li>
+                                <?php endif; ?>
+                            </ul>
                         <?php endif; ?>
-                    </li>
-                    <?php if ($ada && $ext === 'PDF'): ?>
-                    <li class="doc-preview-item" style="padding: 18px clamp(16px, 2.5vw, 26px); border-bottom: 1px solid var(--line); background: #f8fafc;">
-                        <div style="width: 100%; height: clamp(520px, 80vh, 900px); border-radius: 12px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 4px 16px rgba(13,27,42,.08); background: #525659;">
-                            <iframe src="<?= $h($url) ?>#toolbar=1&navpanes=0" style="width: 100%; height: 100%; border: none; display: block;" title="<?= $h($judul) ?>">
-                                <p style="padding: 20px; color: #fff;">Browser Anda tidak mendukung pratinjau dokumen langsung. Silakan <a href="<?= $h($url_download) ?>" style="color: #60a5fa; text-decoration: underline;">unduh file PDF di sini</a>.</p>
-                            </iframe>
+                    </section>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <!-- ==============================================
+                     PANEL DOKUMEN LAINNYA
+                     ============================================== -->
+                <section class="doc-panel" aria-label="Daftar dokumen">
+                    <div class="doc-bar">
+                        <div class="doc-title">
+                            <i class="fas <?= $h($tab_aktif === 'kepegawaian' ? 'fa-file-lines' : $tabs[$tab_aktif]['ico']) ?>"></i>
+                            <span><?= $h($tab_aktif === 'kepegawaian' ? 'Dokumen Publik Kepegawaian' : $tabs[$tab_aktif]['judul']) ?></span>
                         </div>
-                    </li>
-                    <?php endif; ?>
-                    <?php endforeach; ?>
-                </ul>
-                <?php else: ?>
-                <div class="doc-empty">
-                    <i class="far fa-folder-open"></i>
-                    <h3>Belum ada dokumen</h3>
-                    <p>Dokumen akan tampil di sini setelah petugas mengunggahnya melalui dashboard.</p>
-                </div>
-                <?php endif; ?>
-            </section>
-
-            <!-- Kontak Dinas -->
-            <aside aria-label="Kontak dinas">
-                <div class="side-card">
-                    <h2>Kontak dinas</h2>
-                    <ul class="contact-list">
-                        <li>
-                            <span class="c-ico"><i class="fas fa-envelope-open-text"></i></span>
-                            <div>
-                                <small>Email resmi</small>
-                                <a href="mailto:damkar.jbi@gmail.com">damkar.jbi@gmail.com</a>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="c-ico"><i class="fas fa-phone-alt"></i></span>
-                            <div>
-                                <small>Telepon</small>
-                                <a href="tel:<?= $h($no_telepon) ?>"><?= $h($telepon_tampil) ?></a>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="c-ico"><i class="fas fa-map-marker-alt"></i></span>
-                            <div>
-                                <small>Alamat kantor</small>
-                                <a href="<?= $h($maps_link) ?>" target="_blank" rel="noopener">Jl. HOS. Cokroaminoto, Suka Karya, Kec. Kota Baru</a>
-                            </div>
-                        </li>
-                    </ul>
-
-                    <p class="social-title">Ikuti kami</p>
-                    <div class="social">
-                        <a href="mailto:damkar.jbi@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                        <a href="https://twitter.com/damkarkotajambi" target="_blank" rel="noopener" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                        <a href="https://www.facebook.com/DamkarKotaJambi" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://www.youtube.com/@damkarkotajambi" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                        <a href="https://www.tiktok.com/@damkar.kota.jambi" target="_blank" rel="noopener" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-                        <a href="https://www.instagram.com/damkar.kotajambi/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <div class="doc-filter">
+                            <?php if ($jumlah): ?>
+                            <span class="doc-count" id="docCount"><?= (int) $jumlah ?> dokumen</span>
+                            <?php endif; ?>
+                            <?php if ($jumlah > 5): ?>
+                            <label class="doc-search">
+                                <span class="sr-only">Cari dokumen</span>
+                                <i class="fas fa-search"></i>
+                                <input type="search" id="docSearch" placeholder="Cari dokumen..." autocomplete="off">
+                            </label>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                </div>
-            </aside>
+
+                    <?php if ($jumlah): ?>
+                    <ul class="doc-list">
+                        <?php foreach ($dokumen_list as $d):
+                            $judul        = (string) ($d['judul'] ?? '');
+                            $url          = (string) ($d['url'] ?? '');
+                            $url_download = (string) ($d['url_download'] ?? $url);
+                            $ada          = $url !== '';
+                            $ext          = strtoupper($d['ext'] ?? 'PDF') ?: 'PDF';
+                            $ico          = ['PDF' => 'fa-file-pdf', 'DOC' => 'fa-file-word', 'DOCX' => 'fa-file-word', 'XLS' => 'fa-file-excel', 'XLSX' => 'fa-file-excel'][$ext] ?? 'fa-file-lines';
+                        ?>
+                        <li class="doc-row <?= $ada ? '' : 'is-empty' ?>" data-name="<?= $h(mb_strtolower($judul)) ?>">
+                            <span class="doc-ico"><i class="fas <?= $h($ada ? $ico : 'fa-file-circle-question') ?>"></i></span>
+                            <div>
+                                <p class="doc-name">
+                                    <?php if ($ada): ?>
+                                        <a href="<?= $h($url) ?>" target="_blank" rel="noopener"><?= $h($judul) ?></a>
+                                    <?php else: ?>
+                                        <?= $h($judul) ?>
+                                    <?php endif; ?>
+                                </p>
+                                <p class="doc-meta"><?= $ada ? 'Dokumen ' . $h($ext) : 'Berkas belum diunggah' ?></p>
+                            </div>
+                            <?php if ($ada): ?>
+                            <div class="doc-actions">
+                                <a class="tool" href="<?= $h($url) ?>" target="_blank" rel="noopener"><i class="fas fa-arrow-up-right-from-square"></i> Buka</a>
+                                <a class="tool" href="<?= $h($url_download) ?>"><i class="fas fa-download"></i> Unduh</a>
+                            </div>
+                            <?php endif; ?>
+                        </li>
+                        <?php if ($ada && $ext === 'PDF'): ?>
+                        <li class="doc-preview-item" style="padding: 18px clamp(16px, 2.5vw, 26px); border-bottom: 1px solid var(--line); background: #f8fafc;">
+                            <div style="width: 100%; height: clamp(520px, 80vh, 900px); border-radius: 12px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 4px 16px rgba(13,27,42,.08); background: #525659;">
+                                <iframe src="<?= $h($url) ?>#toolbar=1&navpanes=0" style="width: 100%; height: 100%; border: none; display: block;" title="<?= $h($judul) ?>">
+                                    <p style="padding: 20px; color: #fff;">Browser Anda tidak mendukung pratinjau dokumen langsung. Silakan <a href="<?= $h($url_download) ?>" style="color: #60a5fa; text-decoration: underline;">unduh file PDF di sini</a>.</p>
+                                </iframe>
+                            </div>
+                        </li>
+                        <?php endif; ?>
+                        <?php endforeach; ?>
+                    </ul>
+                    <?php else: ?>
+                    <div class="doc-empty">
+                        <i class="far fa-folder-open"></i>
+                        <h3>Belum ada dokumen</h3>
+                        <p>Dokumen akan tampil di sini setelah petugas mengunggahnya melalui dashboard.</p>
+                    </div>
+                    <?php endif; ?>
+                </section>
+            <?php endif; ?>
+
 
         </div>
     </div>
@@ -680,16 +922,56 @@
     });
     document.addEventListener('click', function (e) { if (!e.target.closest('.has-drop')) closeDrops(null); });
 
-    /* Pencarian Dokumen */
+    /* Pencarian Dokumen & Filter Kategori Pos Pelayanan */
     var docSearch = document.getElementById('docSearch');
-    if (docSearch) {
-        var rows = document.querySelectorAll('.doc-row');
-        var count = document.getElementById('docCount');
-        docSearch.addEventListener('input', function () {
-            var q = docSearch.value.trim().toLowerCase(), n = 0;
-            rows.forEach(function (r) { var hit = r.dataset.name.indexOf(q) !== -1; r.hidden = !hit; if (hit) n++; });
-            if (count) count.textContent = n + ' dokumen';
+    var posFilters = document.querySelectorAll('.btn-pos-filter');
+    var posRows = document.querySelectorAll('#sotk-container-7 .doc-row');
+    var activePos = 'all';
+
+    function filterSotk() {
+        var q = docSearch ? docSearch.value.trim().toLowerCase() : '';
+        var n = 0;
+
+        // Container 1 s/d 6
+        document.querySelectorAll('.doc-panel:not(#sotk-container-7) .doc-row').forEach(function (r) {
+            var hit = !q || (r.dataset.name || '').indexOf(q) !== -1;
+            r.hidden = !hit;
+            if (hit) n++;
         });
+
+        // Container 7 (Pos Pelayanan)
+        posRows.forEach(function (r) {
+            var matchPos = (activePos === 'all' || r.dataset.posName === activePos);
+            var matchSearch = !q || (r.dataset.name || '').indexOf(q) !== -1;
+            var hit = matchPos && matchSearch;
+            r.hidden = !hit;
+            if (hit) n++;
+        });
+
+        var preview = document.querySelector('.doc-preview-item');
+        if (preview) {
+            var c1Row = document.querySelector('#sotk-container-1 .doc-row');
+            if (c1Row) {
+                preview.style.display = c1Row.hidden ? 'none' : '';
+            }
+        }
+        var count = document.getElementById('docCount');
+        if (count) count.textContent = n + ' dokumen';
+    }
+
+    if (posFilters.length > 0) {
+        posFilters.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                posFilters.forEach(function (b) { b.classList.remove('is-active'); });
+                btn.classList.add('is-active');
+                activePos = btn.dataset.pos || 'all';
+                filterSotk();
+            });
+        });
+    }
+
+    if (docSearch) {
+        docSearch.addEventListener('input', filterSotk);
     }
 
     /* Pencarian Pegawai DUK */

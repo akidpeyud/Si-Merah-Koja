@@ -10,13 +10,13 @@ return new class extends Migration
     {
         Schema::create('prasarana_pos', function (Blueprint $table) {
             $table->id();
-            
+
             // Relasi (Foreign Key) ke tabel lokasi_pos
             $table->foreignId('lokasi_pos_id')->constrained('lokasi_pos')->onDelete('cascade');
-            
+
             $table->string('jenis_prasarana', 255);
             $table->string('gambar')->nullable(); // Disiapkan untuk upload gambar
-            
+
             $table->timestamps();
         });
     }

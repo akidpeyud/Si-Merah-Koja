@@ -56,6 +56,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\Permission\Middleware\RoleMiddleware;
 
@@ -145,6 +146,41 @@ Route::get('/infografis', function () {
 
     return view('galery.berita.infografis', compact('daftar_infografis'));
 })->name('publik.infografis');
+
+/**
+ * Sajikan gambar infografis lewat Laravel agar tetap tampil di komputer mana pun,
+ * walaupun `php artisan storage:link` belum dijalankan atau file storage belum ada.
+ * Urutan cari: storage/app/public -> seed-files/infografis -> public/images/infografis -> unduh dari Instagram.
+ */
+Route::get('/infografis/gambar/{id}', function (int $id) {
+    $info = Infografis::findOrFail($id);
+    $clean = ltrim(preg_replace('#^/?(public/|storage/)#', '', (string) $info->gambar), '/');
+    $baseName = basename($clean);
+
+    $candidates = [
+        storage_path('app/public/'.$clean),
+        storage_path('app/public/seed-files/infografis/'.$baseName),
+        public_path('images/infografis/'.$baseName),
+    ];
+
+    foreach ($candidates as $path) {
+        if ($baseName !== '' && is_file($path)) {
+            return response()->file($path, ['Cache-Control' => 'public, max-age=86400']);
+        }
+    }
+
+    if (preg_match('/^ig_([A-Za-z0-9_-]+)\./', $baseName, $m)) {
+        $bin = Infografis::downloadInstagramMedia($m[1]);
+        if ($bin) {
+            Storage::disk('public')->put($clean, $bin);
+            $mime = (new finfo(FILEINFO_MIME_TYPE))->buffer($bin) ?: 'image/jpeg';
+
+            return response($bin, 200, ['Content-Type' => $mime, 'Cache-Control' => 'public, max-age=86400']);
+        }
+    }
+
+    abort(404);
+})->whereNumber('id')->name('publik.infografis.gambar');
 
 // ==========================================
 // 2. RUTE AKUN PEMOHON (MASYARAKAT / PERUSAHAAN)
@@ -453,6 +489,7 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
     Route::get('/sapra/perbaikan-kendaraan', [SapraController::class, 'perbaikanKendaraan']);
     Route::get('/sapra/perbaikan-kendaraan/cetak-pdf', [SapraController::class, 'cetakPdfPerbaikanKendaraan']);
     Route::get('/sapra/perbaikan-kendaraan/cetak-excel', [SapraController::class, 'cetakExcelPerbaikanKendaraan']);
+    Route::get('/sapra/perbaikan-kendaraan/template-excel', [SapraController::class, 'downloadTemplatePerbaikan'])->name('sapra.perbaikan-kendaraan.template');
 
     // Aksi Tambah, Ubah, Hapus Data Sapra (Khusus Role Sapra & Super User)
     Route::middleware([RoleMiddleware::class.':Sapra|Super User'])->group(function () {
@@ -498,6 +535,7 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
         Route::post('/sapra/perbaikan-kendaraan/store', [SapraController::class, 'storePerbaikanKendaraan']);
         Route::put('/sapra/perbaikan-kendaraan/update/{id}', [SapraController::class, 'updatePerbaikanKendaraan']);
         Route::delete('/sapra/perbaikan-kendaraan/delete/{id}', [SapraController::class, 'destroyPerbaikanKendaraan']);
+        Route::post('/sapra/perbaikan-kendaraan/import', [SapraController::class, 'importPerbaikanKendaraan'])->name('sapra.perbaikan-kendaraan.import');
     });
 
     // --- E. PENCEGAHAN ---
@@ -998,6 +1036,7 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
 });
 
 // --- RUTE PUBLIK DOKUMEN (BACA & UNDUH) ---
+Route::redirect('/dokumen', '/dokumen/renstra');
 Route::get('/dokumen-publik/view/{id}', [DokumenPublikController::class, 'showFile']);
 Route::get('/dokumen-publik/download/{id}', [DokumenPublikController::class, 'download'])->name('publik.dokumen-publik.download');
 
@@ -1007,28 +1046,10 @@ Route::get('/dokumen/renstra', function () {
     return view('public.dokumen-publik.renstra', compact('dokumens'));
 });
 
-Route::get('/dokumen/renja', function () {
-    $dokumens = DokumenPublik::where('kategori', 'Renja')->latest()->get();
-
-    return view('public.dokumen-publik.renja', compact('dokumens'));
-});
-
 Route::get('/dokumen/spm', function () {
     $dokumens = DokumenPublik::where('kategori', 'SPM')->latest()->get();
 
     return view('public.dokumen-publik.spm', compact('dokumens'));
-});
-
-Route::get('/dokumen/sakip', function () {
-    $dokumens = DokumenPublik::where('kategori', 'SAKIP')->latest()->get();
-
-    return view('public.dokumen-publik.sakip', compact('dokumens'));
-});
-
-Route::get('/dokumen/lppd', function () {
-    $dokumens = DokumenPublik::where('kategori', 'LPPD')->latest()->get();
-
-    return view('public.dokumen-publik.lppd', compact('dokumens'));
 });
 
 // --- RUTE INTERNAL PRODUK HUKUM ---

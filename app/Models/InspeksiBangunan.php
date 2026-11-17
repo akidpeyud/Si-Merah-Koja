@@ -10,5 +10,6 @@ class InspeksiBangunan extends Model // <- Nama class harus sama persis dengan n
     use HasFactory;
 
     protected $table = 'inspeksi_bangunans';
+
     protected $guarded = [];
 }

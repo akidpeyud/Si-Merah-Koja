@@ -95,7 +95,7 @@ class RekapExcelController extends Controller
         if (! $bulan && ! $tahun) {
             $periodeJudul = ' (SEMUA TAHUN)';
         }
-        $judulLengkap = $titleJudul . $periodeJudul;
+        $judulLengkap = $titleJudul.$periodeJudul;
         $sheet->setCellValue('A5', $judulLengkap);
 
         $sheet->getStyle('A1:A3')->getFont()->setBold(true)->setSize(11);

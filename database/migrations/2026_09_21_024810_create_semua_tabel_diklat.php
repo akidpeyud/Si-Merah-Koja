@@ -26,7 +26,7 @@ return new class extends Migration
         foreach ($tables as $tableName) {
             Schema::create($tableName, function (Blueprint $table) {
                 $table->id(); // Membuat kolom 'id' INT AUTO_INCREMENT PRIMARY KEY
-                
+
                 // Gunakan nullable() agar tidak error jika ada data kosong dari Excel
                 $table->string('no_urut', 50)->nullable();
                 $table->string('nama', 255)->nullable();
@@ -45,12 +45,12 @@ return new class extends Migration
                 $table->string('kode_verifikasi', 255)->nullable();
                 $table->string('persentasi_penilaian', 100)->nullable();
                 $table->string('jenis_diklat', 255)->nullable();
-                
+
                 // Karena di SQL kamu menggunakan VARCHAR(100) untuk tanggal, kita pakai string()
                 // Jika ingin memakai format bawaan Laravel (TIMESTAMP), ganti 2 baris di bawah dengan: $table->timestamps();
                 $table->string('created_at', 100)->nullable();
                 $table->string('updated_at', 100)->nullable();
-                
+
                 $table->string('ttl', 100)->nullable();
                 $table->text('ket')->nullable();
             });

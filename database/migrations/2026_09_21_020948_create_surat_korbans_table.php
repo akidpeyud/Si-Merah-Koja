@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('surat_korbans', function (Blueprint $table) {
             $table->id();
-            
+
             // Dibuat unique() agar tidak ada nomor surat yang sama persis
-            $table->string('nomor_surat')->unique(); 
-            
+            $table->string('nomor_surat')->unique();
+
             // Ditambahkan nullable() agar tidak error jika ada field form yang terlewat/kosong
             $table->string('nama_korban')->nullable();
             $table->string('status_kepemilikan')->nullable();
@@ -32,10 +32,10 @@ return new class extends Migration
             $table->time('waktu_kejadian')->nullable();
             $table->string('tembusan_camat')->nullable();
             $table->string('tembusan_lurah')->nullable();
-            
+
             // Wajib nullable() karena di Controller kamu tidak mengirimkan data 'tanggal_surat'
             $table->dateTime('tanggal_surat')->nullable();
-            
+
             $table->timestamps();
         });
     }

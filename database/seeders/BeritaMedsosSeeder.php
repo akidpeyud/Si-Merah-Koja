@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Carbon\Carbon;
+use GuzzleHttp\TransferStats;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -23,73 +24,76 @@ use Illuminate\Support\Str;
  */
 class BeritaMedsosSeeder extends Seeder
 {
-    private const UA_BROWSER  = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
+    private const UA_BROWSER = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
+
     private const UA_FACEBOOK = 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)';
-    private const UA_TWITTER  = 'Twitterbot/1.0';
+
+    private const UA_TWITTER = 'Twitterbot/1.0';
 
     private const PLACEHOLDER_PATH = 'berita_medsos/placeholder.png';
-    private const PLACEHOLDER_PNG  = 'iVBORw0KGgoAAAANSUhEUgAAAEAAAAAkCAIAAAC2bqvFAAAAPElEQVR42u3PMQ0AMAgAMJh/h3ycqJgLEpLWQbN64rIXxwkICAgICAgICAgICAgICAgICAgICAgICAhs++e4Au84WIkmAAAAAElFTkSuQmCC';
+
+    private const PLACEHOLDER_PNG = 'iVBORw0KGgoAAAANSUhEUgAAAEAAAAAkCAIAAAC2bqvFAAAAPElEQVR42u3PMQ0AMAgAMJh/h3ycqJgLEpLWQbN64rIXxwkICAgICAgICAgICAgICAgICAgICAgICAhs++e4Au84WIkmAAAAAElFTkSuQmCC';
 
     /** Nama sumber yang rapi berdasarkan domain. */
     private const SITE_NAMES = [
         'instagram.com' => 'Instagram',
-        'tiktok.com'    => 'TikTok',
-        'youtube.com'   => 'YouTube',
-        'youtu.be'      => 'YouTube',
-        'facebook.com'  => 'Facebook',
-        'fb.watch'      => 'Facebook',
-        'x.com'         => 'X (Twitter)',
-        'twitter.com'   => 'X (Twitter)',
-        'jambione.com'                  => 'Jambi One',
-        'jambiekspres.disway.id'        => 'Jambi Ekspres',
-        'jambiekspres.bacakoran.co'     => 'Jambi Ekspres',
-        'jambiindependent.disway.id'    => 'Jambi Independent',
+        'tiktok.com' => 'TikTok',
+        'youtube.com' => 'YouTube',
+        'youtu.be' => 'YouTube',
+        'facebook.com' => 'Facebook',
+        'fb.watch' => 'Facebook',
+        'x.com' => 'X (Twitter)',
+        'twitter.com' => 'X (Twitter)',
+        'jambione.com' => 'Jambi One',
+        'jambiekspres.disway.id' => 'Jambi Ekspres',
+        'jambiekspres.bacakoran.co' => 'Jambi Ekspres',
+        'jambiindependent.disway.id' => 'Jambi Independent',
         'jambiindependent.bacakoran.co' => 'Jambi Independent',
-        'jambitv.disway.id'             => 'Jambi TV',
-        'jambi.tribunnews.com'          => 'Tribun Jambi',
-        'bicarajambi.com'               => 'Bicara Jambi',
-        'sepucukjambi.id'               => 'Sepucuk Jambi',
-        'mattanews.co'                  => 'Matta News',
-        'infojambi.com'                 => 'Info Jambi',
-        'siginjaione.com'               => 'Siginjai One',
-        'metrojambi.com'                => 'Metro Jambi',
-        'detik.com'                     => 'Detik',
-        'regional.kompas.com'           => 'Kompas',
-        'generasi-indonesia.com'        => 'Generasi Indonesia',
-        'reportasenusantara.com'        => 'Reportase Nusantara',
-        'detail.id'                     => 'Detail.id',
-        'okezone.com'                   => 'Okezone',
-        'inews.id'                      => 'iNews',
-        'jambilink.id'                  => 'Jambilink',
-        'jambiseru.com'                 => 'Jambi Seru',
-        'jambibro.com'                  => 'Jambi Bro',
-        'sekato.id'                     => 'Sekato',
-        'signalberita.com'              => 'Signal Berita',
-        'dradio.id'                     => 'D Radio',
-        'ceritajambi.com'               => 'Cerita Jambi',
-        'lihatjambi.com'                => 'Lihat Jambi',
-        'seloko.id'                     => 'Seloko',
-        'jambi.antaranews.com'          => 'Antara Jambi',
-        'kabarku.id'                    => 'Kabarku',
-        'jambiday.com'                  => 'Jambi Day',
-        'jambiupdate.co'                => 'Jambi Update',
-        'zonabrita.com'                 => 'Zona Brita',
-        'sinarjambi.com'                => 'Sinar Jambi',
-        'gracak.com'                    => 'Gracak',
-        'mediakpk.co.id'                => 'Media KPK',
-        'brisik.co'                     => 'Brisik',
-        'jambikota.go.id'               => 'Pemkot Jambi',
-        'jambi.indozone.id'             => 'Indozone Jambi',
-        'swarajambi.net'                => 'Swara Jambi',
-        'jambiprima.com'                => 'Jambi Prima',
-        'seputarberita.co.id'           => 'Seputar Berita',
-        'bidikindonesianews.co.id'      => 'Bidik Indonesia News',
-        'jamberita.com'                 => 'Jamberita',
-        'wartanews.co'                  => 'Warta News',
-        'jambi.pikiran-rakyat.com'      => 'Pikiran Rakyat Jambi',
-        'orasi.id'                      => 'Orasi',
-        'global-hukumindonesia.id'      => 'Global Hukum Indonesia',
-        'jambitrends.com'               => 'Jambi Trends',
+        'jambitv.disway.id' => 'Jambi TV',
+        'jambi.tribunnews.com' => 'Tribun Jambi',
+        'bicarajambi.com' => 'Bicara Jambi',
+        'sepucukjambi.id' => 'Sepucuk Jambi',
+        'mattanews.co' => 'Matta News',
+        'infojambi.com' => 'Info Jambi',
+        'siginjaione.com' => 'Siginjai One',
+        'metrojambi.com' => 'Metro Jambi',
+        'detik.com' => 'Detik',
+        'regional.kompas.com' => 'Kompas',
+        'generasi-indonesia.com' => 'Generasi Indonesia',
+        'reportasenusantara.com' => 'Reportase Nusantara',
+        'detail.id' => 'Detail.id',
+        'okezone.com' => 'Okezone',
+        'inews.id' => 'iNews',
+        'jambilink.id' => 'Jambilink',
+        'jambiseru.com' => 'Jambi Seru',
+        'jambibro.com' => 'Jambi Bro',
+        'sekato.id' => 'Sekato',
+        'signalberita.com' => 'Signal Berita',
+        'dradio.id' => 'D Radio',
+        'ceritajambi.com' => 'Cerita Jambi',
+        'lihatjambi.com' => 'Lihat Jambi',
+        'seloko.id' => 'Seloko',
+        'jambi.antaranews.com' => 'Antara Jambi',
+        'kabarku.id' => 'Kabarku',
+        'jambiday.com' => 'Jambi Day',
+        'jambiupdate.co' => 'Jambi Update',
+        'zonabrita.com' => 'Zona Brita',
+        'sinarjambi.com' => 'Sinar Jambi',
+        'gracak.com' => 'Gracak',
+        'mediakpk.co.id' => 'Media KPK',
+        'brisik.co' => 'Brisik',
+        'jambikota.go.id' => 'Pemkot Jambi',
+        'jambi.indozone.id' => 'Indozone Jambi',
+        'swarajambi.net' => 'Swara Jambi',
+        'jambiprima.com' => 'Jambi Prima',
+        'seputarberita.co.id' => 'Seputar Berita',
+        'bidikindonesianews.co.id' => 'Bidik Indonesia News',
+        'jamberita.com' => 'Jamberita',
+        'wartanews.co' => 'Warta News',
+        'jambi.pikiran-rakyat.com' => 'Pikiran Rakyat Jambi',
+        'orasi.id' => 'Orasi',
+        'global-hukumindonesia.id' => 'Global Hukum Indonesia',
+        'jambitrends.com' => 'Jambi Trends',
     ];
 
     // =====================================================================
@@ -554,16 +558,16 @@ class BeritaMedsosSeeder extends Seeder
             $existing[$this->dedupeKey($l)] = true;
         }
 
-        $data    = $this->data();
-        $total   = array_sum(array_map('count', $data));
-        $no      = 0;
+        $data = $this->data();
+        $total = array_sum(array_map('count', $data));
+        $no = 0;
         $lengkap = 0;
         $parsial = 0;
-        $skip    = 0;
+        $skip = 0;
 
         foreach ($data as $namaKategori => $links) {
             $kategoriId = $this->kategoriId($namaKategori);
-            $this->say("== {$namaKategori} (" . count($links) . ' link)', 'info');
+            $this->say("== {$namaKategori} (".count($links).' link)', 'info');
 
             foreach ($links as $link) {
                 $no++;
@@ -571,6 +575,7 @@ class BeritaMedsosSeeder extends Seeder
 
                 if (isset($existing[$key])) {
                     $skip++;
+
                     continue;
                 }
 
@@ -578,34 +583,35 @@ class BeritaMedsosSeeder extends Seeder
 
                 // Link share.google diganti dengan alamat aslinya bila berhasil di-resolve
                 $finalLink = $link;
-                if ($this->hostIs($this->hostOf($link), ['share.google']) && !empty($meta['final_url'])) {
+                if ($this->hostIs($this->hostOf($link), ['share.google']) && ! empty($meta['final_url'])) {
                     $finalLink = $this->cleanLink($meta['final_url']);
                     $key2 = $this->dedupeKey($finalLink);
                     if (isset($existing[$key2])) {
                         $skip++;
+
                         continue;
                     }
                     $existing[$key2] = true;
                 }
                 $existing[$key] = true;
 
-                $sumber  = $this->sumberDariLink($finalLink);
-                $judul   = !empty($meta['title']) ? $meta['title'] : $this->judulDariUrl($finalLink, $sumber);
+                $sumber = $this->sumberDariLink($finalLink);
+                $judul = ! empty($meta['title']) ? $meta['title'] : $this->judulDariUrl($finalLink, $sumber);
                 $tanggal = $meta['date'] ?? $this->tanggalDariUrl($finalLink) ?? now()->format('Y-m-d H:i:s');
-                $gambar  = !empty($meta['image']) ? $this->unduhGambar($meta['image'], $finalLink) : null;
+                $gambar = ! empty($meta['image']) ? $this->unduhGambar($meta['image'], $finalLink) : null;
 
-                $lengkapItem = $gambar !== null && !empty($meta['title']);
-                $gambar    ??= self::PLACEHOLDER_PATH;
+                $lengkapItem = $gambar !== null && ! empty($meta['title']);
+                $gambar ??= self::PLACEHOLDER_PATH;
 
                 DB::table('berita_medsos')->insert([
                     'kategori_id' => $kategoriId,
-                    'judul'       => Str::limit($judul, 250, ''),
-                    'tanggal'     => $tanggal,
-                    'sumber'      => $sumber,
-                    'link'        => Str::limit($finalLink, 250, ''),
-                    'gambar'      => $gambar,
-                    'created_at'  => now(),
-                    'updated_at'  => now(),
+                    'judul' => Str::limit($judul, 250, ''),
+                    'tanggal' => $tanggal,
+                    'sumber' => $sumber,
+                    'link' => Str::limit($finalLink, 250, ''),
+                    'gambar' => $gambar,
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
 
                 $lengkapItem ? $lengkap++ : $parsial++;
@@ -649,9 +655,11 @@ class BeritaMedsosSeeder extends Seeder
             if (Schema::hasColumn('kategori_berita', 'updated_at')) {
                 $data['updated_at'] = now();
             }
+
             return (int) DB::table('kategori_berita')->insertGetId($data);
         } catch (\Throwable $e) {
             $this->say("Gagal membuat kategori '{$nama}' ({$e->getMessage()}). Berita kategori ini disimpan tanpa kategori.", 'error');
+
             return null;
         }
     }
@@ -661,7 +669,7 @@ class BeritaMedsosSeeder extends Seeder
     // =====================================================================
     private function fetchMeta(string $url): array
     {
-        $host   = $this->hostOf($url);
+        $host = $this->hostOf($url);
         $result = [];
 
         try {
@@ -674,7 +682,7 @@ class BeritaMedsosSeeder extends Seeder
             if (empty($result['title']) || empty($result['image'])) {
                 $og = $this->metaOpenGraph($url);
                 foreach ($og as $k => $v) {
-                    if (empty($result[$k]) && !empty($v)) {
+                    if (empty($result[$k]) && ! empty($v)) {
                         $result[$k] = $v;
                     }
                 }
@@ -689,14 +697,14 @@ class BeritaMedsosSeeder extends Seeder
     private function metaYoutube(string $url): array
     {
         $id = $this->extractYoutubeId($url);
-        if (!$id) {
+        if (! $id) {
             return [];
         }
 
         $title = null;
         try {
             $res = Http::timeout(8)->get('https://www.youtube.com/oembed', [
-                'url'    => 'https://www.youtube.com/watch?v=' . $id,
+                'url' => 'https://www.youtube.com/watch?v='.$id,
                 'format' => 'json',
             ]);
             if ($res->ok()) {
@@ -740,20 +748,20 @@ class BeritaMedsosSeeder extends Seeder
 
         foreach ([self::UA_BROWSER, self::UA_FACEBOOK, self::UA_TWITTER] as $ua) {
             $fetched = $this->httpGet($url, $ua);
-            $res     = $fetched['res'];
+            $res = $fetched['res'];
 
-            if (!$res || !$res->ok()) {
+            if (! $res || ! $res->ok()) {
                 continue;
             }
 
             $parsed = $this->parseMeta($res->body(), $fetched['final']);
             $parsed['final_url'] = $fetched['final'];
 
-            if (empty($best) || (empty($best['image']) && !empty($parsed['image']))) {
+            if (empty($best) || (empty($best['image']) && ! empty($parsed['image']))) {
                 $best = $parsed;
             }
 
-            if (!empty($best['title']) && !empty($best['image'])) {
+            if (! empty($best['title']) && ! empty($best['image'])) {
                 break;
             }
         }
@@ -769,14 +777,14 @@ class BeritaMedsosSeeder extends Seeder
             $res = Http::timeout(10)
                 ->connectTimeout(5)
                 ->withHeaders(array_filter([
-                    'User-Agent'      => $userAgent,
-                    'Accept'          => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    'User-Agent' => $userAgent,
+                    'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                     'Accept-Language' => 'id-ID,id;q=0.9,en;q=0.8',
-                    'Referer'         => $referer,
+                    'Referer' => $referer,
                 ]))
                 ->withOptions([
                     'allow_redirects' => ['max' => 5],
-                    'on_stats'        => function (\GuzzleHttp\TransferStats $stats) use (&$final) {
+                    'on_stats' => function (TransferStats $stats) use (&$final) {
                         $final = (string) $stats->getEffectiveUri();
                     },
                 ])
@@ -792,23 +800,23 @@ class BeritaMedsosSeeder extends Seeder
     {
         $html = substr($html, 0, 800000);
 
-        $doc = new \DOMDocument();
+        $doc = new \DOMDocument;
         libxml_use_internal_errors(true);
-        $doc->loadHTML('<?xml encoding="utf-8" ?>' . $html);
+        $doc->loadHTML('<?xml encoding="utf-8" ?>'.$html);
         libxml_clear_errors();
 
         $meta = [];
         foreach ($doc->getElementsByTagName('meta') as $m) {
             $key = strtolower($m->getAttribute('property') ?: $m->getAttribute('name'));
             $val = trim($m->getAttribute('content'));
-            if ($key !== '' && $val !== '' && !isset($meta[$key])) {
+            if ($key !== '' && $val !== '' && ! isset($meta[$key])) {
                 $meta[$key] = $val;
             }
         }
 
         $title = $meta['og:title'] ?? $meta['twitter:title'] ?? null;
-        if (!$title) {
-            $t     = $doc->getElementsByTagName('title')->item(0);
+        if (! $title) {
+            $t = $doc->getElementsByTagName('title')->item(0);
             $title = $t ? trim($t->textContent) : null;
         }
 
@@ -839,7 +847,7 @@ class BeritaMedsosSeeder extends Seeder
         return [
             'title' => $title ? trim($title) : null,
             'image' => $image ? $this->absoluteUrl($image, $baseUrl) : null,
-            'date'  => $date,
+            'date' => $date,
         ];
     }
 
@@ -849,20 +857,20 @@ class BeritaMedsosSeeder extends Seeder
             return $path;
         }
 
-        $p      = parse_url($baseUrl);
+        $p = parse_url($baseUrl);
         $scheme = $p['scheme'] ?? 'https';
 
         if (str_starts_with($path, '//')) {
-            return $scheme . ':' . $path;
+            return $scheme.':'.$path;
         }
 
-        $origin = $scheme . '://' . ($p['host'] ?? '') . (isset($p['port']) ? ':' . $p['port'] : '');
+        $origin = $scheme.'://'.($p['host'] ?? '').(isset($p['port']) ? ':'.$p['port'] : '');
 
         if (str_starts_with($path, '/')) {
-            return $origin . $path;
+            return $origin.$path;
         }
 
-        return $origin . rtrim(dirname($p['path'] ?? '/'), '/') . '/' . $path;
+        return $origin.rtrim(dirname($p['path'] ?? '/'), '/').'/'.$path;
     }
 
     // =====================================================================
@@ -875,12 +883,12 @@ class BeritaMedsosSeeder extends Seeder
                 ->connectTimeout(5)
                 ->withHeaders(array_filter([
                     'User-Agent' => self::UA_BROWSER,
-                    'Accept'     => 'image/avif,image/webp,image/*,*/*;q=0.8',
-                    'Referer'    => $referer,
+                    'Accept' => 'image/avif,image/webp,image/*,*/*;q=0.8',
+                    'Referer' => $referer,
                 ]))
                 ->get($imageUrl);
 
-            if (!$res->ok()) {
+            if (! $res->ok()) {
                 return null;
             }
 
@@ -891,18 +899,18 @@ class BeritaMedsosSeeder extends Seeder
             }
 
             $mime = (new \finfo(FILEINFO_MIME_TYPE))->buffer($body);
-            $ext  = match ($mime) {
+            $ext = match ($mime) {
                 'image/jpeg' => 'jpg',
-                'image/png'  => 'png',
+                'image/png' => 'png',
                 'image/webp' => 'webp',
-                default      => null,
+                default => null,
             };
 
-            if (!$ext) {
+            if (! $ext) {
                 return null;
             }
 
-            $path = 'berita_medsos/' . Str::random(40) . '.' . $ext;
+            $path = 'berita_medsos/'.Str::random(40).'.'.$ext;
             Storage::disk('public')->put($path, $body);
 
             return $path;
@@ -915,7 +923,7 @@ class BeritaMedsosSeeder extends Seeder
     private function ensurePlaceholder(): void
     {
         $disk = Storage::disk('public');
-        if (!$disk->exists(self::PLACEHOLDER_PATH)) {
+        if (! $disk->exists(self::PLACEHOLDER_PATH)) {
             $disk->put(self::PLACEHOLDER_PATH, base64_decode(self::PLACEHOLDER_PNG));
         }
     }
@@ -926,16 +934,18 @@ class BeritaMedsosSeeder extends Seeder
     private function hostOf(?string $url): string
     {
         $host = strtolower(parse_url($url ?? '', PHP_URL_HOST) ?? '');
+
         return preg_replace('/^www\./', '', $host);
     }
 
     private function hostIs(string $host, array $domains): bool
     {
         foreach ($domains as $d) {
-            if ($host === $d || str_ends_with($host, '.' . $d)) {
+            if ($host === $d || str_ends_with($host, '.'.$d)) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -944,7 +954,7 @@ class BeritaMedsosSeeder extends Seeder
         $host = $this->hostOf($url);
 
         foreach (self::SITE_NAMES as $domain => $name) {
-            if ($host === $domain || str_ends_with($host, '.' . $domain)) {
+            if ($host === $domain || str_ends_with($host, '.'.$domain)) {
                 return $name;
             }
         }
@@ -956,7 +966,7 @@ class BeritaMedsosSeeder extends Seeder
     private function cleanLink(string $url): string
     {
         $p = parse_url($url);
-        if (!$p || empty($p['host'])) {
+        if (! $p || empty($p['host'])) {
             return $url;
         }
 
@@ -968,12 +978,12 @@ class BeritaMedsosSeeder extends Seeder
             }
         }
 
-        $clean = ($p['scheme'] ?? 'https') . '://' . $p['host']
-            . (isset($p['port']) ? ':' . $p['port'] : '')
-            . ($p['path'] ?? '');
+        $clean = ($p['scheme'] ?? 'https').'://'.$p['host']
+            .(isset($p['port']) ? ':'.$p['port'] : '')
+            .($p['path'] ?? '');
 
-        if (!empty($query)) {
-            $clean .= '?' . http_build_query($query);
+        if (! empty($query)) {
+            $clean .= '?'.http_build_query($query);
         }
 
         return $clean;
@@ -984,13 +994,13 @@ class BeritaMedsosSeeder extends Seeder
     {
         $id = $this->extractYoutubeId($url);
         if ($id) {
-            return 'yt:' . $id;
+            return 'yt:'.$id;
         }
 
         $p = parse_url($this->cleanLink($url));
         $host = strtolower(preg_replace('/^www\./', '', $p['host'] ?? ''));
 
-        return $host . rtrim($p['path'] ?? '', '/') . (isset($p['query']) ? '?' . $p['query'] : '');
+        return $host.rtrim($p['path'] ?? '', '/').(isset($p['query']) ? '?'.$p['query'] : '');
     }
 
     private function extractYoutubeId(string $url): ?string
@@ -1011,11 +1021,11 @@ class BeritaMedsosSeeder extends Seeder
         $text = trim(preg_replace('/[-_]+/', ' ', $slug));
 
         // slug yang cuma angka / terlalu pendek / ID video bukan judul yang berarti
-        if ($text === '' || ctype_digit($text) || mb_strlen($text) < 12 || !str_contains($text, ' ')) {
-            return 'Publikasi ' . $sumber;
+        if ($text === '' || ctype_digit($text) || mb_strlen($text) < 12 || ! str_contains($text, ' ')) {
+            return 'Publikasi '.$sumber;
         }
 
-        return mb_strtoupper(mb_substr($text, 0, 1)) . mb_substr($text, 1);
+        return mb_strtoupper(mb_substr($text, 0, 1)).mb_substr($text, 1);
     }
 
     private function tanggalDariUrl(string $url): ?string

@@ -11,16 +11,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('laporan_penyelamatans', function (Blueprint $table) {
-            if (!Schema::hasColumn('laporan_penyelamatans', 'tanggal_kejadian')) {
+            if (! Schema::hasColumn('laporan_penyelamatans', 'tanggal_kejadian')) {
                 $table->date('tanggal_kejadian')->nullable()->index();
             }
-            if (!Schema::hasColumn('laporan_penyelamatans', 'hari_kejadian')) {
+            if (! Schema::hasColumn('laporan_penyelamatans', 'hari_kejadian')) {
                 $table->string('hari_kejadian', 20)->nullable();
             }
-            if (!Schema::hasColumn('laporan_penyelamatans', 'bulan_kejadian')) {
+            if (! Schema::hasColumn('laporan_penyelamatans', 'bulan_kejadian')) {
                 $table->string('bulan_kejadian', 20)->nullable();
             }
-            if (!Schema::hasColumn('laporan_penyelamatans', 'tahun_kejadian')) {
+            if (! Schema::hasColumn('laporan_penyelamatans', 'tahun_kejadian')) {
                 $table->smallInteger('tahun_kejadian')->nullable()->index();
             }
         });
@@ -34,9 +34,9 @@ return new class extends Migration
                 $t = Carbon::parse($sumber)->locale('id');
                 DB::table('laporan_penyelamatans')->where('id', $row->id)->update([
                     'tanggal_kejadian' => $t->toDateString(),
-                    'hari_kejadian'    => $t->translatedFormat('l'),
-                    'bulan_kejadian'   => $t->translatedFormat('F'),
-                    'tahun_kejadian'   => $t->year,
+                    'hari_kejadian' => $t->translatedFormat('l'),
+                    'bulan_kejadian' => $t->translatedFormat('F'),
+                    'tahun_kejadian' => $t->year,
                 ]);
             });
     }

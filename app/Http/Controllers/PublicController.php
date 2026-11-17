@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\FireDrill;
+use App\Models\InspeksiBangunan;
+use App\Models\PelatihanKeluarga;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use App\Models\InspeksiBangunan;
-use App\Models\FireDrill;
-use App\Models\PelatihanKeluarga;
-// Sarpras (halaman baru: sapra_home)
 
+// Sarpras (halaman baru: sapra_home)
 
 class PublicController extends Controller
 {
@@ -23,21 +22,21 @@ class PublicController extends Controller
 
         $stat = [
             // Peningkatan Kapasitas Aparatur (tabel sama dengan PencegahanController)
-            'diksar'    => $hitung('tbl_diksar'),
-            'f1'        => $hitung('tbl_diklat_f1'),
-            'f2'        => $hitung('tbl_diklat_f2'),
-            'rescue'    => $hitung('tbl_diklat_rescue'),
-            'mfr'       => $hitung('tbl_diklat_mfr'),
-            'operator'  => $hitung('tbl_diklat_operator'),
+            'diksar' => $hitung('tbl_diksar'),
+            'f1' => $hitung('tbl_diklat_f1'),
+            'f2' => $hitung('tbl_diklat_f2'),
+            'rescue' => $hitung('tbl_diklat_rescue'),
+            'mfr' => $hitung('tbl_diklat_mfr'),
+            'operator' => $hitung('tbl_diklat_operator'),
             'inspektur' => $hitung('tbl_diklat_inspektur'),
-            'ppl'       => $hitung('tbl_diklat_ppl'),
+            'ppl' => $hitung('tbl_diklat_ppl'),
 
             // Pencegahan Kebakaran & Inspeksi (pakai Model, sama seperti controller internal)
-            'inspeksi'   => InspeksiBangunan::count(),
+            'inspeksi' => InspeksiBangunan::count(),
             'fire_drill' => FireDrill::count(),
 
             // Pemberdayaan Masyarakat
-            'pelatihan'   => PelatihanKeluarga::count(),
+            'pelatihan' => PelatihanKeluarga::count(),
             'sosialisasi' => $hitung('sosialisasi_edukasi'),
         ];
 
@@ -86,10 +85,10 @@ class PublicController extends Controller
     public function sumberAir()
     {
         // Query database dilengkapi
-        $hidranPilar  = DB::table('prasaranas')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
+        $hidranPilar = DB::table('prasaranas')->where('kategori', 'Hidrant Pilar')->orderBy('no_urut', 'asc')->get();
         $hidranGedung = DB::table('prasaranas')->where('kategori', 'Hidrant Gedung')->orderBy('no_urut', 'asc')->get();
-        $embung       = DB::table('prasaranas')->where('kategori', 'Embung')->orderBy('no_urut', 'asc')->get();
-        $danau        = DB::table('prasaranas')->where('kategori', 'Danau')->orderBy('no_urut', 'asc')->get();
+        $embung = DB::table('prasaranas')->where('kategori', 'Embung')->orderBy('no_urut', 'asc')->get();
+        $danau = DB::table('prasaranas')->where('kategori', 'Danau')->orderBy('no_urut', 'asc')->get();
 
         return view('informasi_layanan.sumber_air', compact('hidranPilar', 'hidranGedung', 'embung', 'danau'));
     }
@@ -98,7 +97,7 @@ class PublicController extends Controller
     public function hidrantKota()
     {
         $dataMaintenance = DB::table('hidran_kota')->orderBy('id', 'asc')->get();
+
         return view('informasi_layanan.hidrant_kota', compact('dataMaintenance'));
     }
-    
 }

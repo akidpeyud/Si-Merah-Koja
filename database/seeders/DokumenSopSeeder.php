@@ -91,18 +91,26 @@ class DokumenSopSeeder extends Seeder
             // Kategori: Sarana dan Prasarana
             // ==========================================
             [
-                'judul_dokumen' => 'Sop sarana dan prasarana',
-                'nama_file' => '1792836055_SOP_SAPRA_1.pdf',
-                'file_path' => 'seed-files/sop/sapras/SOP SAPRA 1.pdf',
-                'source_file' => 'seed-files/sop/sapras/SOP SAPRA 1.pdf',
+                'judul_dokumen' => 'SOP PERAWATAN & PEMELIHARAAN',
+                'nama_file' => '1794889669_SOP_PERAWATAN___PEMELIHARAAN.pdf',
+                'file_path' => 'dokumen/1794889669_SOP_PERAWATAN___PEMELIHARAAN.pdf',
+                'source_file' => 'seed-files/sop/sapras/SOP PERAWATAN & PEMELIHARAAN.pdf',
                 'kategori' => 'SOP',
                 'sub_kategori' => 'Sarana dan Prasarana',
             ],
             [
-                'judul_dokumen' => 'Sop sarana dan prasarana 2',
-                'nama_file' => '1792836075_SOP_SAPRAS_2-compressed.pdf',
-                'file_path' => 'seed-files/sop/sapras/SOP SAPRAS 2-compressed.pdf',
-                'source_file' => 'seed-files/sop/sapras/SOP SAPRAS 2-compressed.pdf',
+                'judul_dokumen' => 'SOP PENGADAAN PRASARANA',
+                'nama_file' => '1794889685_SOP_PENGADAAN_PRASARANA.pdf',
+                'file_path' => 'dokumen/1794889685_SOP_PENGADAAN_PRASARANA.pdf',
+                'source_file' => 'seed-files/sop/sapras/SOP PENGADAAN PRASARANA.pdf',
+                'kategori' => 'SOP',
+                'sub_kategori' => 'Sarana dan Prasarana',
+            ],
+            [
+                'judul_dokumen' => 'SOP JAFUNG DATA DAN INFORMASI00028',
+                'nama_file' => '1794889708_SOP_JAFUNG_DATA_DAN_INFORMASI00028.pdf',
+                'file_path' => 'dokumen/1794889708_SOP_JAFUNG_DATA_DAN_INFORMASI00028.pdf',
+                'source_file' => 'seed-files/sop/sapras/SOP JAFUNG DATA DAN INFORMASI00028.pdf',
                 'kategori' => 'SOP',
                 'sub_kategori' => 'Sarana dan Prasarana',
             ],
@@ -298,6 +306,12 @@ class DokumenSopSeeder extends Seeder
         if (! File::exists($targetDir)) {
             File::makeDirectory($targetDir, 0755, true);
         }
+
+        // Bersihkan data dokumen SOP sarpras lama jika masih ada
+        DB::table('dokumen_sop')->whereIn('nama_file', [
+            '1792836055_SOP_SAPRA_1.pdf',
+            '1792836075_SOP_SAPRAS_2-compressed.pdf',
+        ])->delete();
 
         foreach ($dokumenSop as $item) {
             $sourceRelative = $item['source_file'] ?? null;

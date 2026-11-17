@@ -111,7 +111,28 @@
                         @forelse($data as $index => $item)
                         <tr>
                             <td class="text-center fw-bold text-secondary">{{ $data->firstItem() + $index }}</td>
-                            <td class="fw-semibold" style="min-width: 240px; white-space: normal;">{{ $item->judul }}</td>
+                            <td class="fw-semibold" style="min-width: 240px; white-space: normal;">
+                                <div>{{ $item->judul }}</div>
+                                @if($kategori === 'sotk' && $item->sub_kategori)
+                                    <div class="mt-1">
+                                        @php
+                                            $subMap = [
+                                                'dinas' => 'Dinas',
+                                                'komando' => 'Komando',
+                                                'sekretariat' => 'Sekretariat',
+                                                'bidang_pencegahan' => 'Bidang Pencegahan',
+                                                'bidang_sapra' => 'Bidang Sapra',
+                                                'bidang_damtan' => 'Bidang Damtan',
+                                                'pos_pelayanan' => 'Pos Pelayanan',
+                                            ];
+                                            $labelSub = $subMap[$item->sub_kategori] ?? ucfirst($item->sub_kategori);
+                                        @endphp
+                                        <span class="badge {{ $item->sub_kategori === 'pos_pelayanan' ? 'bg-danger' : 'badge-navy' }}" style="font-size: .74rem; font-weight: 600;">
+                                            <i class="fas {{ $item->sub_kategori === 'pos_pelayanan' ? 'fa-map-pin' : 'fa-layer-group' }} me-1"></i> {{ $labelSub }}
+                                        </span>
+                                    </div>
+                                @endif
+                            </td>
                             <td class="text-center">
                                 @if($item->tahun)
                                     <span class="badge badge-navy">{{ $item->tahun }}</span>

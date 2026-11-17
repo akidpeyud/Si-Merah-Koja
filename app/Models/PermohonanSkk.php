@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,6 +16,6 @@ class PermohonanSkk extends Model
         'nik_pemilik_usaha', 'alamat_pemilik_usaha', 'kategori_bangunan',
         'alamat_bangunan', 'kecamatan', 'kelurahan', 'luas_lahan',
         'luas_bangunan', 'tinggi_bangunan', 'file_surat_permohonan',
-        'file_persyaratan_lainnya', 'status_permohonan'
+        'file_persyaratan_lainnya', 'status_permohonan',
     ];
 }

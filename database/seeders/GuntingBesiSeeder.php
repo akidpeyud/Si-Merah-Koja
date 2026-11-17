@@ -16,7 +16,7 @@ class GuntingBesiSeeder extends Seeder
             ['nama_penerima' => 'Hermanyanto', 'jabatan' => 'Danpos Palmerah', 'jumlah' => '1 Unit', 'tahun' => '', 'kondisi' => 'Baik', 'keterangan' => null],
             ['nama_penerima' => 'Dwi Wahyudi', 'jabatan' => 'Danpos Kota Baru', 'jumlah' => '1 Unit', 'tahun' => '', 'kondisi' => 'Baik', 'keterangan' => null],
         ];
-        
+
         DB::table('gunting_besis')->insert($gunting_besis);
     }
 }

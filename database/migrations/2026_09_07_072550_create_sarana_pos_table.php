@@ -10,14 +10,14 @@ return new class extends Migration
     {
         Schema::create('sarana_pos', function (Blueprint $table) {
             $table->id();
-            
+
             // Menginduk ke tabel lokasi yang sama dengan prasarana
             $table->foreignId('lokasi_pos_id')->constrained('lokasi_pos')->onDelete('cascade');
-            
+
             $table->string('jenis_sarana', 255);
             $table->integer('jumlah')->default(0);
             $table->string('gambar')->nullable(); // Untuk upload gambar
-            
+
             $table->timestamps();
         });
     }
