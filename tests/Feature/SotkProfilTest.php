@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\ProfilInstansi;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\ViewErrorBag;
 use Tests\TestCase;
 
 class SotkProfilTest extends TestCase
@@ -141,5 +142,22 @@ class SotkProfilTest extends TestCase
         $this->assertCount(1, $matches[0]);
         $this->assertStringContainsString('sotk-container-1', $content);
         $this->assertStringContainsString('sotk-container-7', $content);
+    }
+
+    /**
+     * Uji form tambah SOTK internal menampilkan dropdown kontainer & pos pelayanan.
+     */
+    public function test_form_tambah_sotk_menampilkan_pilihan_kategori_dan_pos(): void
+    {
+        $view = view('internal.profil-instansi.create', [
+            'kategori' => 'sotk',
+            'judulKategori' => 'SOTK',
+            'errors' => new ViewErrorBag,
+        ])->render();
+
+        $this->assertStringContainsString('Kategori Kontainer SOTK', $view);
+        $this->assertStringContainsString('Kategori Pos Pelayanan', $view);
+        $this->assertStringContainsString('Pos Pelayanan Alam Barajo', $view);
+        $this->assertStringContainsString('Pos Pelayanan Paal Merah', $view);
     }
 }

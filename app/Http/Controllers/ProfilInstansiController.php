@@ -81,6 +81,11 @@ class ProfilInstansiController extends Controller
             'keterangan' => 'nullable|string',
         ];
 
+        if ($kategori === 'sotk') {
+            $rules['sub_kategori'] = 'nullable|string|in:dinas,komando,sekretariat,bidang_pencegahan,bidang_sapra,bidang_damtan,pos_pelayanan';
+            $rules['pos_pelayanan'] = 'nullable|string|max:100';
+        }
+
         if ($request->filled('file_dokumen_base64')) {
             $rules['file_dokumen_base64'] = 'required|string';
             $rules['file_dokumen_name'] = 'required|string|max:255';
@@ -98,13 +103,20 @@ class ProfilInstansiController extends Controller
 
         $path = $this->simpanFileDokumen($request, $kategori);
 
-        ProfilInstansi::create([
+        $createData = [
             'kategori' => $kategori,
             'judul' => $request->judul,
             'tahun' => $request->tahun,
             'keterangan' => $request->keterangan,
             'file_dokumen' => $path,
-        ]);
+        ];
+
+        if ($kategori === 'sotk' && $request->filled('sub_kategori')) {
+            $createData['sub_kategori'] = $request->sub_kategori;
+            $createData['urutan'] = $this->hitungUrutanSotk($request->sub_kategori, $request->pos_pelayanan);
+        }
+
+        ProfilInstansi::create($createData);
 
         return redirect()->route('internal.profil-instansi.index', $kategori)
             ->with('success', "Data {$judulKategori} berhasil ditambahkan.");
@@ -151,6 +163,11 @@ class ProfilInstansiController extends Controller
             'keterangan' => $request->keterangan,
         ];
 
+        if ($kategori === 'sotk' && $request->filled('sub_kategori')) {
+            $dataUpdate['sub_kategori'] = $request->sub_kategori;
+            $dataUpdate['urutan'] = $this->hitungUrutanSotk($request->sub_kategori, $request->pos_pelayanan);
+        }
+
         $newPath = $this->simpanFileDokumen($request, $kategori);
         if ($newPath !== null) {
             if ($item->file_dokumen && Storage::disk('public')->exists($item->file_dokumen)) {
@@ -163,6 +180,36 @@ class ProfilInstansiController extends Controller
 
         return redirect()->route('internal.profil-instansi.index', $kategori)
             ->with('success', "Data {$judulKategori} berhasil diperbarui.");
+    }
+
+    /**
+     * Hitung urutan kontainer SOTK (1 s/d 12) berdasarkan sub kategori & pilihan pos pelayanan
+     */
+    private function hitungUrutanSotk(?string $subKategori, ?string $posPelayanan): int
+    {
+        $urutanMap = [
+            'dinas' => 1,
+            'komando' => 2,
+            'sekretariat' => 3,
+            'bidang_pencegahan' => 4,
+            'bidang_sapra' => 5,
+            'bidang_damtan' => 6,
+        ];
+
+        $posUrutanMap = [
+            'Alam Barajo' => 7,
+            'Paal Merah' => 8,
+            'Jambi Kota Seberang' => 9,
+            'Jambi Timur' => 10,
+            'Kota Baru' => 11,
+            'Pelayangan' => 12,
+        ];
+
+        if ($subKategori === 'pos_pelayanan') {
+            return $posUrutanMap[$posPelayanan] ?? 7;
+        }
+
+        return $urutanMap[$subKategori] ?? 1;
     }
 
     /**
