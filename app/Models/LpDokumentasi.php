@@ -10,6 +10,7 @@ class LpDokumentasi extends Model
     use HasFactory;
 
     protected $table = 'lp_dokumentasis';
+
     protected $guarded = ['id'];
 
     public function laporan()

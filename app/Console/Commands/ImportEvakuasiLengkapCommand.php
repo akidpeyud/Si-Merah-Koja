@@ -356,7 +356,7 @@ class ImportEvakuasiLengkapCommand extends Command
         } catch (\Throwable) {
             // Fallback via ZipArchive untuk format .xlsx
             $sheets = [];
-            $zip = new \ZipArchive();
+            $zip = new \ZipArchive;
             if ($zip->open($filePath) === true) {
                 if ($xml = $zip->getFromName('xl/workbook.xml')) {
                     $sxml = simplexml_load_string($xml);

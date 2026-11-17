@@ -2,14 +2,14 @@
 
 namespace App\Exports;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class HidranKotaExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize
+class HidranKotaExport implements FromCollection, ShouldAutoSize, WithHeadings, WithMapping
 {
     public function collection(): Collection
     {
@@ -31,7 +31,7 @@ class HidranKotaExport implements FromCollection, WithHeadings, WithMapping, Sho
             'Kondisi Hidran',
             'Tekanan Air',
             'Machino',
-            'Keterangan'
+            'Keterangan',
         ];
     }
 
@@ -52,7 +52,7 @@ class HidranKotaExport implements FromCollection, WithHeadings, WithMapping, Sho
             $row->kondisi_hidran ?? '-',
             $row->tekanan ?? '-',
             $row->machino ?? '-',
-            $row->keterangan ?? '-'
+            $row->keterangan ?? '-',
         ];
     }
 }

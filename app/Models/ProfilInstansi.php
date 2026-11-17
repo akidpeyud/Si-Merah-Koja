@@ -14,10 +14,12 @@ class ProfilInstansi extends Model
 
     protected $fillable = [
         'kategori',
+        'sub_kategori',
         'judul',
         'tahun',
         'keterangan',
         'file_dokumen',
+        'urutan',
     ];
 
     /**

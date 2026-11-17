@@ -5,10 +5,10 @@ namespace App\Imports;
 use App\Models\HidranKota;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
-use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class HidranKotaImport implements ToCollection, WithStartRow, WithCalculatedFormulas
+class HidranKotaImport implements ToCollection, WithCalculatedFormulas, WithStartRow
 {
     /**
      * Mulai membaca data dari baris ke-4 (mengabaikan header yang digabung/di-merge)
@@ -22,9 +22,9 @@ class HidranKotaImport implements ToCollection, WithStartRow, WithCalculatedForm
     {
         // Daftar string yang ada di baris bawah (keterangan/summary) agar dilewati
         $invalid_jalans = [
-            'keterangan', 'kondisi baik', 'kondisi rusak', 'tekanan kuat', 
-            'tekanan sedang', 'tekanan lemah', 'bisa di pakai', 
-            'tidak bisa di pakai', 'tergantung listrik', 'tidak keluar air', 'total hidrant'
+            'keterangan', 'kondisi baik', 'kondisi rusak', 'tekanan kuat',
+            'tekanan sedang', 'tekanan lemah', 'bisa di pakai',
+            'tidak bisa di pakai', 'tergantung listrik', 'tidak keluar air', 'total hidrant',
         ];
 
         foreach ($rows as $row) {
@@ -41,31 +41,41 @@ class HidranKotaImport implements ToCollection, WithStartRow, WithCalculatedForm
 
             // Normalisasi Kondisi
             $kondisi = null;
-            if (!empty($row[7])) { $kondisi = 'Baik'; }
-            elseif (!empty($row[8])) { $kondisi = 'Rusak'; }
+            if (! empty($row[7])) {
+                $kondisi = 'Baik';
+            } elseif (! empty($row[8])) {
+                $kondisi = 'Rusak';
+            }
 
             // Normalisasi Tekanan
             $tekanan = null;
-            if (!empty($row[9])) { $tekanan = 'Kuat'; }
-            elseif (!empty($row[10])) { $tekanan = 'Sedang'; }
-            elseif (!empty($row[11])) { $tekanan = 'Lemah'; }
+            if (! empty($row[9])) {
+                $tekanan = 'Kuat';
+            } elseif (! empty($row[10])) {
+                $tekanan = 'Sedang';
+            } elseif (! empty($row[11])) {
+                $tekanan = 'Lemah';
+            }
 
             // Normalisasi Machino
             $machino = null;
-            if (!empty($row[12])) { $machino = 'Baik'; }
-            elseif (!empty($row[13])) { $machino = 'Rusak'; }
+            if (! empty($row[12])) {
+                $machino = 'Baik';
+            } elseif (! empty($row[13])) {
+                $machino = 'Rusak';
+            }
 
             HidranKota::create([
-                'jalan'           => $row[1] ?? null,
-                'kecamatan'       => $row[2] ?? null,
-                'kelurahan'       => $row[3] ?? null,
-                'rt'              => $row[4] ?? null,
+                'jalan' => $row[1] ?? null,
+                'kecamatan' => $row[2] ?? null,
+                'kelurahan' => $row[3] ?? null,
+                'rt' => $row[4] ?? null,
                 'lokasi_terdekat' => $row[5] ?? null,
-                'kode_map'        => $row[6] ?? null,
-                'kondisi_hidran'  => $kondisi,
-                'tekanan'         => $tekanan,
-                'machino'         => $machino,
-                'keterangan'      => $row[14] ?? null,
+                'kode_map' => $row[6] ?? null,
+                'kondisi_hidran' => $kondisi,
+                'tekanan' => $tekanan,
+                'machino' => $machino,
+                'keterangan' => $row[14] ?? null,
             ]);
         }
     }

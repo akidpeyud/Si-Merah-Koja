@@ -2,23 +2,23 @@
 
 namespace App\Exports;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Collection; // <-- Tambahan ini
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB; // <-- Tambahan ini
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class HidranExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize
+class HidranExport implements FromCollection, ShouldAutoSize, WithHeadings, WithMapping
 {
     public function collection(): Collection // <-- Tambahan : Collection di sini
     {
         // Ambil semua data prasarana (hidrant, embung, danau)
         // Diurutkan berdasarkan kategori, lalu no urut
         return DB::table('prasaranas')
-                 ->orderBy('kategori', 'asc')
-                 ->orderBy('no_urut', 'asc')
-                 ->get();
+            ->orderBy('kategori', 'asc')
+            ->orderBy('no_urut', 'asc')
+            ->get();
     }
 
     // Ini buat bikin baris paling atas (Judul Kolom)
@@ -31,7 +31,7 @@ class HidranExport implements FromCollection, WithHeadings, WithMapping, ShouldA
             'Alamat Lengkap',
             'Kode Maps',
             'Jumlah (Unit)',
-            'Luas Area'
+            'Luas Area',
         ];
     }
 
@@ -44,8 +44,8 @@ class HidranExport implements FromCollection, WithHeadings, WithMapping, ShouldA
             $row->nama_gedung,
             $row->alamat,
             $row->kode_maps ?? '-',
-            $row->jumlah ? $row->jumlah . ' Unit' : '-',
-            $row->luas ?? '-'
+            $row->jumlah ? $row->jumlah.' Unit' : '-',
+            $row->luas ?? '-',
         ];
     }
 }

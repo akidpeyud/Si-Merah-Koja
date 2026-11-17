@@ -10,6 +10,7 @@ class LpTeknisLogistik extends Model
     use HasFactory;
 
     protected $table = 'lp_teknis_logistiks';
+
     protected $guarded = ['id'];
 
     // Relasi balik (Belongs To) ke tabel Laporan

@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('berita_medsos', function (Blueprint $table) {
             $table->id();
             // Menambahkan foreign key kategori_id
-            $table->unsignedBigInteger('kategori_id')->nullable(); 
+            $table->unsignedBigInteger('kategori_id')->nullable();
 
             $table->string('judul');
             $table->dateTime('tanggal');

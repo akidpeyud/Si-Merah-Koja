@@ -12,20 +12,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('izin_keramaian', function (Blueprint $table) {
-            if (!Schema::hasColumn('izin_keramaian', 'jenis_event')) {
+            if (! Schema::hasColumn('izin_keramaian', 'jenis_event')) {
                 $table->enum('jenis_event', ['hiburan', 'non_hiburan'])
-                      ->default('non_hiburan')->after('nama_acara');
+                    ->default('non_hiburan')->after('nama_acara');
             }
-            
-            if (!Schema::hasColumn('izin_keramaian', 'surat_permohonan')) {
+
+            if (! Schema::hasColumn('izin_keramaian', 'surat_permohonan')) {
                 $table->string('surat_permohonan')->nullable()->after('jumlah_staff');
             }
-            
-            if (!Schema::hasColumn('izin_keramaian', 'fotokopi_ktp')) {
+
+            if (! Schema::hasColumn('izin_keramaian', 'fotokopi_ktp')) {
                 $table->string('fotokopi_ktp')->nullable()->after('surat_permohonan');
             }
-            
-            if (!Schema::hasColumn('izin_keramaian', 'bukti_pajak_bpprd')) {
+
+            if (! Schema::hasColumn('izin_keramaian', 'bukti_pajak_bpprd')) {
                 $table->string('bukti_pajak_bpprd')->nullable()->after('foto_jalur_evakuasi');
             }
         });
@@ -38,7 +38,7 @@ return new class extends Migration
     {
         Schema::table('izin_keramaian', function (Blueprint $table) {
             $columns = [];
-            
+
             if (Schema::hasColumn('izin_keramaian', 'jenis_event')) {
                 $columns[] = 'jenis_event';
             }
@@ -52,7 +52,7 @@ return new class extends Migration
                 $columns[] = 'bukti_pajak_bpprd';
             }
 
-            if (!empty($columns)) {
+            if (! empty($columns)) {
                 $table->dropColumn($columns);
             }
         });

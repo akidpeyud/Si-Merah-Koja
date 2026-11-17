@@ -26,17 +26,17 @@ class UjungDamkarController extends Controller
     {
         $request->validate([
             'judul' => 'required|string|max:255',
-            'link'  => 'required|url',
+            'link' => 'required|url',
         ], [
             'judul.required' => 'Judul kegiatan atau video wajib diisi.',
-            'link.required'  => 'Tautan video YouTube wajib diisi.',
-            'link.url'       => 'Format tautan tidak valid.',
+            'link.required' => 'Tautan video YouTube wajib diisi.',
+            'link.url' => 'Format tautan tidak valid.',
         ]);
 
         // Ekstrak 11 karakter ID YouTube dari link
         $youtubeId = $this->extractYoutubeId($request->link);
 
-        if (!$youtubeId) {
+        if (! $youtubeId) {
             return redirect()
                 ->back()
                 ->withInput()
@@ -44,9 +44,9 @@ class UjungDamkarController extends Controller
         }
 
         UjungDamkar::create([
-            'judul'      => $request->judul,
+            'judul' => $request->judul,
             'youtube_id' => $youtubeId,
-            'link_asli'  => $request->link,
+            'link_asli' => $request->link,
         ]);
 
         return redirect()

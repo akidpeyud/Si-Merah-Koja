@@ -11,5 +11,6 @@ class DiklatInspektur extends Model
 
     // Asumsi nama tabelnya tbl_diklat_inspektur (sesuaikan kalau beda)
     protected $table = 'tbl_diklat_inspektur';
+
     protected $guarded = ['id'];
 }

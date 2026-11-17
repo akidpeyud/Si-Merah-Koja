@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Berita;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -17,7 +17,7 @@ class BeritaController extends Controller
     {
         $user = Auth::user();
 
-        if (!$user) {
+        if (! $user) {
             abort(403, 'Akses Ditolak! Anda belum login.');
         }
 
@@ -40,7 +40,7 @@ class BeritaController extends Controller
             ->intersect(self::ROLE_BOLEH)
             ->isNotEmpty();
 
-        if (!$boleh) {
+        if (! $boleh) {
             abort(403, 'Akses Ditolak! Hanya Operator dan Super User yang boleh menambah, mengedit, atau menghapus berita.');
         }
     }
@@ -49,6 +49,7 @@ class BeritaController extends Controller
     public function showPublic($id)
     {
         $berita = Berita::findOrFail($id);
+
         return view('public.berita_detail', compact('berita'));
     }
 
@@ -56,6 +57,7 @@ class BeritaController extends Controller
     public function indexInternal()
     {
         $berita = Berita::orderBy('tanggal_kejadian', 'desc')->get();
+
         return view('internal.operator.kelola_berita', compact('berita'));
     }
 
@@ -63,6 +65,7 @@ class BeritaController extends Controller
     public function create()
     {
         $this->cekAkses();
+
         return view('internal.operator.form_berita');
     }
 
@@ -80,7 +83,7 @@ class BeritaController extends Controller
             'sumber_informasi' => 'required|string',
             'keterangan_singkat' => 'required|string',
             'detail_lengkap' => 'required|string',
-            'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+            'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $data = $request->all();
@@ -99,6 +102,7 @@ class BeritaController extends Controller
     {
         $this->cekAkses();
         $berita = Berita::findOrFail($id);
+
         return view('internal.operator.form_berita', compact('berita'));
     }
 
@@ -117,7 +121,7 @@ class BeritaController extends Controller
             'sumber_informasi' => 'required|string',
             'keterangan_singkat' => 'required|string',
             'detail_lengkap' => 'required|string',
-            'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+            'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $data = $request->all();

@@ -13,18 +13,18 @@ return new class extends Migration
     {
         Schema::create('izin_keramaian', function (Blueprint $table) {
             $table->id();
-            
+
             // 1. Data Pemohon
             $table->string('nama');
             $table->char('nik', 16);
             $table->string('no_hp');
             $table->text('alamat');
-            
+
             // 2. Data Usaha
             $table->string('nama_direktur');
             $table->string('nama_usaha');
             $table->string('no_izin_usaha');
-            
+
             // 3. Data Lokasi Acara
             $table->string('nama_acara');
             $table->enum('jenis_event', ['hiburan', 'non_hiburan']); // TAMBAHAN BARU
@@ -33,21 +33,21 @@ return new class extends Migration
             $table->time('waktu_mulai');
             $table->time('waktu_selesai');
             $table->integer('jumlah_penonton');
-            
+
             // 4. Data Peralatan
             $table->integer('jumlah_apar')->default(8);
             $table->integer('jumlah_staff')->default(4);
-            
+
             // 5. Berkas Persyaratan (Path file)
             $table->string('surat_permohonan'); // TAMBAHAN BARU
             $table->string('fotokopi_ktp'); // TAMBAHAN BARU
-            $table->string('foto_jalur_evakuasi'); 
+            $table->string('foto_jalur_evakuasi');
             $table->string('bukti_pajak_bpprd')->nullable(); // TAMBAHAN BARU (Nullable karena khusus hiburan)
-            $table->string('surat_pernyataan'); 
+            $table->string('surat_pernyataan');
 
             // Status Permohonan (Pending, Proses, Disetujui, Ditolak)
             $table->string('status_permohonan')->default('Pending');
-            
+
             $table->timestamps();
         });
     }

@@ -47,6 +47,43 @@
             <form action="{{ route('internal.profil-instansi.store', $kategori) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="row g-4">
+                    @if($kategori === 'sotk')
+                    <div class="col-md-6">
+                        <label for="sub_kategori" class="form-label">Kategori Kontainer SOTK <span class="text-danger">*</span></label>
+                        <select name="sub_kategori" id="sub_kategori" class="form-select @error('sub_kategori') is-invalid @enderror" required>
+                            <option value="">-- Pilih Kontainer SOTK --</option>
+                            <option value="dinas" {{ old('sub_kategori') === 'dinas' ? 'selected' : '' }}>Struktur Organisasi Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi</option>
+                            <option value="komando" {{ old('sub_kategori') === 'komando' ? 'selected' : '' }}>Struktur Organisasi Komando Kebakaran dan Penyelamatan Regu 1, Regu 2, Regu 3</option>
+                            <option value="sekretariat" {{ old('sub_kategori') === 'sekretariat' ? 'selected' : '' }}>Struktur Organisasi Sekretariat</option>
+                            <option value="bidang_pencegahan" {{ old('sub_kategori') === 'bidang_pencegahan' ? 'selected' : '' }}>Struktur Organisasi Bidang Pencegahan</option>
+                            <option value="bidang_sapra" {{ old('sub_kategori') === 'bidang_sapra' ? 'selected' : '' }}>Struktur Organisasi Bidang Sapra</option>
+                            <option value="bidang_damtan" {{ old('sub_kategori') === 'bidang_damtan' ? 'selected' : '' }}>Struktur Organisasi Bidang Damtan</option>
+                            <option value="pos_pelayanan" {{ old('sub_kategori') === 'pos_pelayanan' ? 'selected' : '' }}>Struktur Organisasi Pos Pelayanan</option>
+                        </select>
+                        <small class="text-muted d-block mt-1">Pilih salah satu dari 7 kontainer SOTK.</small>
+                        @error('sub_kategori')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-6" id="wrap_pos_pelayanan" style="{{ old('sub_kategori') === 'pos_pelayanan' ? '' : 'display: none;' }}">
+                        <label for="pos_pelayanan" class="form-label">Kategori Pos Pelayanan <span class="text-danger">*</span></label>
+                        <select name="pos_pelayanan" id="pos_pelayanan" class="form-select @error('pos_pelayanan') is-invalid @enderror">
+                            <option value="">-- Pilih Wilayah Pos Pelayanan --</option>
+                            <option value="Alam Barajo" {{ old('pos_pelayanan') === 'Alam Barajo' ? 'selected' : '' }}>Pos Pelayanan Alam Barajo</option>
+                            <option value="Paal Merah" {{ old('pos_pelayanan') === 'Paal Merah' ? 'selected' : '' }}>Pos Pelayanan Paal Merah</option>
+                            <option value="Jambi Kota Seberang" {{ old('pos_pelayanan') === 'Jambi Kota Seberang' ? 'selected' : '' }}>Pos Pelayanan Jambi Kota Seberang</option>
+                            <option value="Jambi Timur" {{ old('pos_pelayanan') === 'Jambi Timur' ? 'selected' : '' }}>Pos Pelayanan Jambi Timur</option>
+                            <option value="Kota Baru" {{ old('pos_pelayanan') === 'Kota Baru' ? 'selected' : '' }}>Pos Pelayanan Kota Baru</option>
+                            <option value="Pelayangan" {{ old('pos_pelayanan') === 'Pelayangan' ? 'selected' : '' }}>Pos Pelayanan Pelayangan</option>
+                        </select>
+                        <small class="text-muted d-block mt-1">Pilih wilayah pos pelayanan yang sesuai.</small>
+                        @error('pos_pelayanan')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    @endif
+
                     <div class="col-md-8">
                         <label for="judul" class="form-label">Judul / Nama Dokumen <span class="text-danger">*</span></label>
                         <input type="text" name="judul" id="judul" class="form-control @error('judul') is-invalid @enderror" placeholder="Masukkan judul dokumen {{ strtolower($judulKategori) }}..." value="{{ old('judul') }}" required>
@@ -132,6 +169,48 @@
             }
         });
     });
+
+    // SOTK Dropdown & Autoname Judul
+    var subKatSelect = document.getElementById('sub_kategori');
+    var wrapPos = document.getElementById('wrap_pos_pelayanan');
+    var posSelect = document.getElementById('pos_pelayanan');
+    var judulInput = document.getElementById('judul');
+
+    var sotkTitlesMap = {
+        'dinas': 'Struktur Organisasi Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi',
+        'komando': 'Struktur Organisasi Komando Kebakaran dan Penyelamatan Regu 1, Regu 2, Regu 3',
+        'sekretariat': 'Struktur Organisasi Sekretariat',
+        'bidang_pencegahan': 'Struktur Organisasi Bidang Pencegahan',
+        'bidang_sapra': 'Struktur Organisasi Bidang Sapra',
+        'bidang_damtan': 'Struktur Organisasi Bidang Damtan'
+    };
+
+    if (subKatSelect) {
+        subKatSelect.addEventListener('change', function () {
+            var val = subKatSelect.value;
+            if (val === 'pos_pelayanan') {
+                if (wrapPos) wrapPos.style.display = '';
+                if (posSelect && posSelect.value) {
+                    judulInput.value = 'Struktur Organisasi Pos Pelayanan ' + posSelect.value;
+                } else if (!judulInput.value || Object.values(sotkTitlesMap).includes(judulInput.value)) {
+                    judulInput.value = 'Struktur Organisasi Pos Pelayanan ';
+                }
+            } else {
+                if (wrapPos) wrapPos.style.display = 'none';
+                if (sotkTitlesMap[val]) {
+                    judulInput.value = sotkTitlesMap[val];
+                }
+            }
+        });
+    }
+
+    if (posSelect) {
+        posSelect.addEventListener('change', function () {
+            if (posSelect.value && subKatSelect && subKatSelect.value === 'pos_pelayanan') {
+                judulInput.value = 'Struktur Organisasi Pos Pelayanan ' + posSelect.value;
+            }
+        });
+    }
 
     // Handle file upload fallback (Base64) to bypass small php.ini upload_max_filesize
     var fileInput = document.getElementById('file_dokumen');

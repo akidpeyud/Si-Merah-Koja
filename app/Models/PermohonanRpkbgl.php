@@ -54,10 +54,10 @@ class PermohonanRpkbgl extends Model
     // Kolom JSON otomatis menjadi array saat dibaca, dan otomatis di-encode saat disimpan
     protected $casts = [
         'file_data_teknis_proteksi' => 'array',
-        'file_persyaratan_lainnya'  => 'array',
-        'tgl_pemeriksaan'           => 'date',
-        'luas_lahan'                => 'decimal:2',
-        'luas_bangunan'             => 'decimal:2',
-        'tinggi_bangunan'           => 'decimal:2',
+        'file_persyaratan_lainnya' => 'array',
+        'tgl_pemeriksaan' => 'date',
+        'luas_lahan' => 'decimal:2',
+        'luas_bangunan' => 'decimal:2',
+        'tinggi_bangunan' => 'decimal:2',
     ];
 }

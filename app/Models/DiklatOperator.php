@@ -11,5 +11,6 @@ class DiklatOperator extends Model
 
     // Asumsi nama tabel di database lu adalah tbl_diklat_operator
     protected $table = 'tbl_diklat_operator';
+
     protected $guarded = ['id'];
 }

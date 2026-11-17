@@ -9,17 +9,17 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-public function up(): void
-{
-    Schema::table('redkar_registrations', function (Blueprint $table) {
-        $table->string('nomor_anggota', 30)->nullable()->after('status_pendaftaran');
-    });
-}
+    public function up(): void
+    {
+        Schema::table('redkar_registrations', function (Blueprint $table) {
+            $table->string('nomor_anggota', 30)->nullable()->after('status_pendaftaran');
+        });
+    }
 
-public function down(): void
-{
-    Schema::table('redkar_registrations', function (Blueprint $table) {
-        $table->dropColumn('nomor_anggota');
-    });
-}
+    public function down(): void
+    {
+        Schema::table('redkar_registrations', function (Blueprint $table) {
+            $table->dropColumn('nomor_anggota');
+        });
+    }
 };

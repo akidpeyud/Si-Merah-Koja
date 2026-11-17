@@ -17,6 +17,6 @@ class Dokumen extends Model
         'judul_dokumen',
         'nama_file',
         'kategori',
-        'sub_kategori'
+        'sub_kategori',
     ];
 }

@@ -1,5 +1,7 @@
 <?php
+
 namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -213,7 +215,7 @@ class LanjutanAlatPenyelamatanSeeder extends Seeder
         ];
         DB::table('masker_asap')->insert($masker_asap);
 
-       // -- INI AWAL PART 2 --
+        // -- INI AWAL PART 2 --
         $sepatu_safety = [
             ['nama_penerima' => 'Rully Kurniawan', 'jabatan' => '', 'jumlah' => '1', 'tahun' => '2024', 'kondisi' => 'Baik', 'keterangan' => null],
             ['nama_penerima' => 'Kasianto', 'jabatan' => '', 'jumlah' => '1', 'tahun' => '2024', 'kondisi' => 'Baik', 'keterangan' => null],
@@ -344,7 +346,7 @@ class LanjutanAlatPenyelamatanSeeder extends Seeder
             ['nama_penerima' => 'Turman', 'jabatan' => '', 'jumlah' => '1', 'tahun' => '', 'kondisi' => 'Baik', 'keterangan' => null],
         ];
         DB::table('sepatu_safety')->insert($sepatu_safety);
-     // -- INI AWAL PART 3 --
+        // -- INI AWAL PART 3 --
         $baju_driver_dan_baju_mekanik = [
             ['nama_penerima' => 'DODI PRIA SETIAWAN', 'jabatan' => 'DRIVER TON 1 MAKO', 'jumlah' => '1', 'tahun' => '2025', 'kondisi' => 'Baik', 'keterangan' => null],
             ['nama_penerima' => 'JANUARSYAH', 'jabatan' => 'DRIVER TON 1 MAKO', 'jumlah' => '1', 'tahun' => '2025', 'kondisi' => 'Baik', 'keterangan' => null],
@@ -513,7 +515,7 @@ class LanjutanAlatPenyelamatanSeeder extends Seeder
             ['nama_penerima' => 'Sapi\'i', 'jabatan' => '', 'jumlah' => '1', 'tahun' => '-', 'kondisi' => 'Baik', 'keterangan' => null],
         ];
         DB::table('baju_tahan_panas_dan_helm_pemadam_kebakaran')->insert($baju_tahan_panas_dan_helm_pemadam_kebakaran);
-       // -- INI AWAL PART 4 (TERAKHIR) --
+        // -- INI AWAL PART 4 (TERAKHIR) --
         $filter_atau_catridge_masker_asap = [
             ['nama_penerima' => 'Amad Yani', 'jabatan' => '', 'jumlah' => '1', 'tahun' => '2025', 'kondisi' => 'Baik', 'keterangan' => null],
             ['nama_penerima' => 'Riman Jaya', 'jabatan' => '', 'jumlah' => '1', 'tahun' => '2025', 'kondisi' => 'Baik', 'keterangan' => null],

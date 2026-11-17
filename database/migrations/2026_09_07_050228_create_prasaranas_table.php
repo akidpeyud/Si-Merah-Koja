@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('kode_maps')->nullable(); // 5. kode_maps
             $table->integer('jumlah')->nullable(); // 6. jumlah
             $table->timestamps(); // 7 & 8. created_at & updated_at
-            
+
             // Kolom baru yang ditambahkan sesuai gambar
             $table->string('kategori')->nullable(); // 9. kategori
             $table->string('luas')->nullable(); // 10. luas

@@ -22,7 +22,7 @@ return new class extends Migration
 
     public function down()
     {
-        if (!Schema::hasColumn('titik_sigaps', 'tanggal')) {
+        if (! Schema::hasColumn('titik_sigaps', 'tanggal')) {
             Schema::table('titik_sigaps', function (Blueprint $table) {
                 $table->date('tanggal')->nullable()->after('nama');
             });

@@ -3,16 +3,14 @@
 namespace App\Exports;
 
 use App\Models\TitikSigap;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Illuminate\Support\Collection;
 
 class TitikSigapExport implements FromCollection, WithHeadings, WithMapping
 {
-    /**
-    * @return \Illuminate\Support\Collection
-    */
     public function collection(): Collection
     {
         return TitikSigap::orderBy('created_at', 'desc')->get();
@@ -45,7 +43,7 @@ class TitikSigapExport implements FromCollection, WithHeadings, WithMapping
             $titik->id,
             ucwords(str_replace('_', ' ', $titik->kategori)),
             $titik->nama,
-            $titik->tanggal ? \Carbon\Carbon::parse($titik->tanggal)->format('d M Y') : '-',
+            $titik->tanggal ? Carbon::parse($titik->tanggal)->format('d M Y') : '-',
             $titik->lokasi,
             $titik->keterangan,
             $titik->latitude,

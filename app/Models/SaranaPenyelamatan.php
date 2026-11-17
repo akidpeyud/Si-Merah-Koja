@@ -10,5 +10,6 @@ class SaranaPenyelamatan extends Model
     use HasFactory;
 
     protected $table = 'sarana_penyelamatans';
+
     protected $guarded = ['id'];
 }

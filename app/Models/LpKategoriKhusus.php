@@ -10,6 +10,7 @@ class LpKategoriKhusus extends Model
     use HasFactory;
 
     protected $table = 'lp_kategori_khusus';
+
     protected $guarded = ['id'];
 
     public function laporan()

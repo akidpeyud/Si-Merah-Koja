@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         // 1) Kalau tabel belum ada -> buat lengkap dari awal
-        if (!Schema::hasTable($this->tabel)) {
+        if (! Schema::hasTable($this->tabel)) {
             Schema::create($this->tabel, function (Blueprint $table) {
                 $table->id();
 
@@ -35,16 +35,17 @@ return new class extends Migration
                 $table->index('tanggal_pelaksanaan');
                 $table->index(['kecamatan', 'kelurahan']);
             });
+
             return;
         }
 
         // 2) Kalau tabel sudah ada -> pastikan kolom nama peserta ditambahkan
         Schema::table($this->tabel, function (Blueprint $table) {
-            if (!Schema::hasColumn($this->tabel, 'nama_peserta_perempuan')) {
+            if (! Schema::hasColumn($this->tabel, 'nama_peserta_perempuan')) {
                 $table->text('nama_peserta_perempuan')->nullable()->after('peserta_perempuan');
             }
 
-            if (!Schema::hasColumn($this->tabel, 'nama_peserta_laki_laki')) {
+            if (! Schema::hasColumn($this->tabel, 'nama_peserta_laki_laki')) {
                 $table->text('nama_peserta_laki_laki')->nullable()->after('peserta_laki_laki');
             }
         });

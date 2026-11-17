@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,6 +10,7 @@ class DataAsn extends Model
     use HasFactory;
 
     protected $table = 'data_asns';
+
     protected $fillable = ['nama_jabatan', 'pns', 'pppk'];
 
     // Menghitung jumlah seluruh (PNS + PPPK) otomatis

@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\DataAsn;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Seeder;
 
 class DataAsnSeeder extends Seeder
 {
@@ -33,10 +32,10 @@ class DataAsnSeeder extends Seeder
         foreach ($data as $item) {
             DataAsn::create([
                 'nama_jabatan' => $item['nama_jabatan'],
-                'pns'          => $item['pns'],
-                'pppk'         => $item['pppk'],
-                'created_at'   => now(),
-                'updated_at'   => now(),
+                'pns' => $item['pns'],
+                'pppk' => $item['pppk'],
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
         }
     }

@@ -26,18 +26,22 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
  */
 class LaporanExcelController extends Controller
 {
-    private const F_PELAPOR   = 'nama_pelapor';      // Nama Pemilik/Pelapor
-    private const F_KORBAN    = 'korban';            // daftar nama korban
-    private const F_KERUGIAN  = 'jumlah_kerugian';   // Jumlah Kerugian (angka rupiah)
-    private const F_KEPUASAN  = 'tingkat_kepuasan';  // Tingkat Kepuasan
-    private const F_REGU      = 'regu_petugas';      // Ket (regu / pos yang bertugas)
+    private const F_PELAPOR = 'nama_pelapor';      // Nama Pemilik/Pelapor
+
+    private const F_KORBAN = 'korban';            // daftar nama korban
+
+    private const F_KERUGIAN = 'jumlah_kerugian';   // Jumlah Kerugian (angka rupiah)
+
+    private const F_KEPUASAN = 'tingkat_kepuasan';  // Tingkat Kepuasan
+
+    private const F_REGU = 'regu_petugas';      // Ket (regu / pos yang bertugas)
 
     private array $mapPenyebab = [
-        'arus_pendek'       => 'Arus pendek listrik',
-        'kebocoran_gas'     => 'Kebocoran gas',
-        'sambaran_petir'    => 'Sambaran petir',
+        'arus_pendek' => 'Arus pendek listrik',
+        'kebocoran_gas' => 'Kebocoran gas',
+        'sambaran_petir' => 'Sambaran petir',
         'kelalaian_manusia' => 'Kelalaian manusia',
-        'faktor_alam'       => 'Faktor alam',
+        'faktor_alam' => 'Faktor alam',
     ];
 
     public function __invoke(Request $request)
@@ -57,7 +61,7 @@ class LaporanExcelController extends Controller
         ];
 
         $kategori = strtolower((string) $request->query('kategori', 'kebakaran'));
-        if (!in_array($kategori, ['kebakaran', 'non-kebakaran'], true)) {
+        if (! in_array($kategori, ['kebakaran', 'non-kebakaran'], true)) {
             $kategori = 'kebakaran';
         }
         $isKebakaran = $kategori === 'kebakaran';
@@ -85,7 +89,7 @@ class LaporanExcelController extends Controller
         $kolom = $this->kolom($kategori);
 
         // Beri huruf kolom (A, B, C, ...) secara otomatis
-        $idx  = 1;
+        $idx = 1;
         $peta = [];
         foreach ($kolom as &$k) {
             $k['huruf'] = Coordinate::stringFromColumnIndex($idx);
@@ -102,7 +106,7 @@ class LaporanExcelController extends Controller
         $kolTerakhir = Coordinate::stringFromColumnIndex($idx - 1);
 
         /* ---------- 3. Buat workbook ---------- */
-        $ss = new Spreadsheet();
+        $ss = new Spreadsheet;
         $ss->getDefaultStyle()->getFont()->setName('Arial')->setSize(12);
         $ws = $ss->getActiveSheet();
         $ws->setTitle('TAHUNAN');
@@ -121,42 +125,42 @@ class LaporanExcelController extends Controller
         $ws->mergeCells("A1:{$kolTerakhir}2");
         $ws->setCellValue('A1', $isKebakaran ? 'LAPORAN KEBAKARAN' : 'LAPORAN NON-KEBAKARAN');
         $ws->mergeCells("A3:{$kolTerakhir}3");
-        $teksSubJudul = $bulan ? ($daftarNamaBulan[$bulan] . ' ' . $tahun) : ('JANUARI - DESEMBER ' . $tahun);
+        $teksSubJudul = $bulan ? ($daftarNamaBulan[$bulan].' '.$tahun) : ('JANUARI - DESEMBER '.$tahun);
         $ws->setCellValue('A3', $teksSubJudul);
         $ws->getStyle("A1:{$kolTerakhir}3")->applyFromArray([
-            'font'      => ['name' => 'Arial', 'bold' => true, 'size' => 18],
+            'font' => ['name' => 'Arial', 'bold' => true, 'size' => 18],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical'   => Alignment::VERTICAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
             ],
         ]);
         $ws->getRowDimension(3)->setRowHeight(23.25);
 
         // Header tabel (baris 5)
         foreach ($kolom as $k) {
-            $ws->setCellValue($k['huruf'] . '5', $k['head']);
-            if (!empty($k['huruf2'])) {
+            $ws->setCellValue($k['huruf'].'5', $k['head']);
+            if (! empty($k['huruf2'])) {
                 $ws->mergeCells("{$k['huruf']}5:{$k['huruf2']}5");
             }
         }
         $ws->getStyle("A5:{$kolTerakhir}5")->applyFromArray([
-            'font'      => ['name' => 'Arial', 'bold' => true, 'size' => 14],
+            'font' => ['name' => 'Arial', 'bold' => true, 'size' => 14],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical'   => Alignment::VERTICAL_CENTER,
-                'wrapText'   => true,
+                'vertical' => Alignment::VERTICAL_CENTER,
+                'wrapText' => true,
             ],
         ]);
         $ws->getRowDimension(5)->setRowHeight(40);
 
         /* ---------- 4. Isi data ---------- */
-        $r        = 6;   // baris data pertama
-        $no       = 1;   // nomor urut laporan
+        $r = 6;   // baris data pertama
+        $no = 1;   // nomor urut laporan
         $noKorban = 1;   // nomor urut korban (berlanjut antar laporan)
 
         foreach ($items as $d) {
             $jmlBaris = max(1, count($d['korban']));
-            $akhir    = $r + $jmlBaris - 1;
+            $akhir = $r + $jmlBaris - 1;
 
             foreach ($kolom as $k) {
                 $h = $k['huruf'];
@@ -185,14 +189,14 @@ class LaporanExcelController extends Controller
             }
 
             // Korban: satu nama per baris, nomor berlanjut
-            $hNo   = $peta['no_korban'];
+            $hNo = $peta['no_korban'];
             $hNama = $peta['korban'];
             if (count($d['korban']) === 0) {
                 $ws->setCellValue("{$hNama}{$r}", '-');
             } else {
                 foreach ($d['korban'] as $i => $namaKorban) {
-                    $ws->setCellValue($hNo . ($r + $i), $noKorban++);
-                    $ws->setCellValue($hNama . ($r + $i), $namaKorban);
+                    $ws->setCellValue($hNo.($r + $i), $noKorban++);
+                    $ws->setCellValue($hNama.($r + $i), $namaKorban);
                 }
             }
 
@@ -203,7 +207,7 @@ class LaporanExcelController extends Controller
                         continue;
                     }
                     $ws->mergeCells("{$k['huruf']}{$r}:{$k['huruf']}{$akhir}");
-                    if (!empty($k['huruf2'])) {
+                    if (! empty($k['huruf2'])) {
                         $ws->mergeCells("{$k['huruf2']}{$r}:{$k['huruf2']}{$akhir}");
                     }
                 }
@@ -216,10 +220,10 @@ class LaporanExcelController extends Controller
 
         if ($items->isEmpty()) {
             $ws->mergeCells("A6:{$kolTerakhir}6");
-            $periodeTeks = $bulan ? ('bulan ' . $daftarNamaBulan[$bulan] . ' ' . $tahun) : ('pada tahun ' . $tahun);
+            $periodeTeks = $bulan ? ('bulan '.$daftarNamaBulan[$bulan].' '.$tahun) : ('pada tahun '.$tahun);
             $ws->setCellValue(
                 'A6',
-                'Belum ada data laporan ' . ($isKebakaran ? 'kebakaran' : 'non-kebakaran') . ' ' . $periodeTeks . '.'
+                'Belum ada data laporan '.($isKebakaran ? 'kebakaran' : 'non-kebakaran').' '.$periodeTeks.'.'
             );
         }
 
@@ -242,11 +246,11 @@ class LaporanExcelController extends Controller
         }
 
         $ws->getStyle($rentang)->applyFromArray([
-            'font'      => ['name' => 'Arial', 'size' => 12],
+            'font' => ['name' => 'Arial', 'size' => 12],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical'   => Alignment::VERTICAL_CENTER,
-                'wrapText'   => true,
+                'vertical' => Alignment::VERTICAL_CENTER,
+                'wrapText' => true,
             ],
         ]);
 
@@ -271,8 +275,8 @@ class LaporanExcelController extends Controller
         $ws->getPageMargins()->setLeft(0.25)->setRight(0.25)->setTop(0.5)->setBottom(0.5);
 
         /* ---------- 7. Kirim sebagai download ---------- */
-        $bulanPart = $bulan ? ($daftarNamaBulan[$bulan] . '_') : '';
-        $namaFile = ($isKebakaran ? 'Laporan_Kebakaran_' : 'Laporan_Non_Kebakaran_') . $bulanPart . $tahun . '.xlsx';
+        $bulanPart = $bulan ? ($daftarNamaBulan[$bulan].'_') : '';
+        $namaFile = ($isKebakaran ? 'Laporan_Kebakaran_' : 'Laporan_Non_Kebakaran_').$bulanPart.$tahun.'.xlsx';
 
         return response()->streamDownload(function () use ($ss) {
             (new Xlsx($ss))->save('php://output');
@@ -342,18 +346,18 @@ class LaporanExcelController extends Controller
 
         $tglRaw = $a['tanggal_kejadian'] ?? $a['waktu_kejadian'] ?? null;
         $jamRaw = $a['waktu_kejadian'] ?? $a['waktu_terima'] ?? null;
-        $tgl    = $tglRaw ? Carbon::parse($tglRaw) : null;
-        $jam    = $jamRaw ? Carbon::parse($jamRaw) : null;
+        $tgl = $tglRaw ? Carbon::parse($tglRaw) : null;
+        $jam = $jamRaw ? Carbon::parse($jamRaw) : null;
 
         // Jenis: kebakaran -> yang terbakar; non-kebakaran -> jenis kejadiannya
         if ($kebakaran) {
             $jenisMentah = $a['kategori_kebakaran'] ?? null;
         } else {
-            $jenisMentah = !empty($a['kategori_non_kebakaran'])
+            $jenisMentah = ! empty($a['kategori_non_kebakaran'])
                 ? $a['kategori_non_kebakaran']
                 : ($a['kategori_kejadian'] ?? null);
         }
-        $jenis = !empty($jenisMentah) ? ucwords(str_replace(['_', '-'], ' ', $jenisMentah)) : '-';
+        $jenis = ! empty($jenisMentah) ? ucwords(str_replace(['_', '-'], ' ', $jenisMentah)) : '-';
 
         // Penyebab
         $p = $a['dugaan_penyebab'] ?? null;
@@ -366,42 +370,42 @@ class LaporanExcelController extends Controller
         }
 
         // Armada: daftar unit (JSON) atau jumlah
-        $unit   = $this->daftar($a['armada'] ?? null);
+        $unit = $this->daftar($a['armada'] ?? null);
         $armada = count($unit)
             ? implode(', ', $unit)
             : (($a['jumlah_armada'] ?? '') !== '' ? (string) $a['jumlah_armada'] : '-');
 
         // Jumlah air
-        $air   = $a['liter_air'] ?? null;
-        $airTx = (is_numeric($air) && $air > 0) ? number_format($air, 0, ',', '.') . ' Liter' : '-';
+        $air = $a['liter_air'] ?? null;
+        $airTx = (is_numeric($air) && $air > 0) ? number_format($air, 0, ',', '.').' Liter' : '-';
 
         // Respon time (accessor di model)
-        $rt     = $row->respon_time;
-        $respon = (!is_null($rt) && $rt >= 0) ? (int) $rt : '-';
+        $rt = $row->respon_time;
+        $respon = (! is_null($rt) && $rt >= 0) ? (int) $rt : '-';
 
         // Jumlah kerugian
-        $rugi   = $a[self::F_KERUGIAN] ?? null;
+        $rugi = $a[self::F_KERUGIAN] ?? null;
         $rugiTx = (is_numeric($rugi) && $rugi > 0)
             ? number_format($rugi, 0, ',', '.')
             : ((is_string($rugi) && trim($rugi) !== '') ? trim($rugi) : '-');
 
         return [
             'kebakaran' => $kebakaran,
-            'tgl'       => $tgl,
-            'urut'      => ($tgl ? $tgl->format('Y-m-d') : '') . ' ' . ($jam ? $jam->format('H:i') : ''),
-            'tanggal'   => $tgl ? $tgl->copy()->locale('id')->translatedFormat('d F Y') : '-',
-            'jam'       => $jam ? $jam->format('H.i') : '-',
-            'jenis'     => $jenis,
-            'penyebab'  => $penyebab,
-            'lokasi'    => !empty($a['alamat']) ? $a['alamat'] : '-',
-            'pelapor'   => !empty($a[self::F_PELAPOR]) ? $a[self::F_PELAPOR] : '-',
-            'korban'    => $this->daftar($a[self::F_KORBAN] ?? null),
-            'armada'    => $armada,
-            'air'       => $airTx,
-            'kerugian'  => $rugiTx,
-            'respon'    => $respon,
-            'kepuasan'  => !empty($a[self::F_KEPUASAN]) ? $a[self::F_KEPUASAN] : 'Terlayani',
-            'regu'      => !empty($a[self::F_REGU]) ? $a[self::F_REGU] : '-',
+            'tgl' => $tgl,
+            'urut' => ($tgl ? $tgl->format('Y-m-d') : '').' '.($jam ? $jam->format('H:i') : ''),
+            'tanggal' => $tgl ? $tgl->copy()->locale('id')->translatedFormat('d F Y') : '-',
+            'jam' => $jam ? $jam->format('H.i') : '-',
+            'jenis' => $jenis,
+            'penyebab' => $penyebab,
+            'lokasi' => ! empty($a['alamat']) ? $a['alamat'] : '-',
+            'pelapor' => ! empty($a[self::F_PELAPOR]) ? $a[self::F_PELAPOR] : '-',
+            'korban' => $this->daftar($a[self::F_KORBAN] ?? null),
+            'armada' => $armada,
+            'air' => $airTx,
+            'kerugian' => $rugiTx,
+            'respon' => $respon,
+            'kepuasan' => ! empty($a[self::F_KEPUASAN]) ? $a[self::F_KEPUASAN] : 'Terlayani',
+            'regu' => ! empty($a[self::F_REGU]) ? $a[self::F_REGU] : '-',
         ];
     }
 
@@ -421,7 +425,7 @@ class LaporanExcelController extends Controller
         if (is_string($nilai)) {
             $nilai = preg_split('/\r\n|\r|\n/', $nilai);
         }
-        if (!is_array($nilai)) {
+        if (! is_array($nilai)) {
             return [];
         }
 

@@ -33,7 +33,7 @@ return new class extends Migration
                 'berita_acara',
                 'hasil_penilaian',
                 'rekomendasi',
-                'skk'
+                'skk',
             ]);
         });
     }

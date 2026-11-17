@@ -24,9 +24,9 @@ class LaporanKebakaran2026Import implements Import, WithMultipleSheets
     public array $sheetInstances = [];
 
     /**
-     * @param int $userId ID User pemilik data laporan
-     * @param bool $dryRun Mode simulasi tanpa menyimpan perubahan ke database
-     * @param array $availableSheets Daftar seluruh sheet di file Excel
+     * @param  int  $userId  ID User pemilik data laporan
+     * @param  bool  $dryRun  Mode simulasi tanpa menyimpan perubahan ke database
+     * @param  array  $availableSheets  Daftar seluruh sheet di file Excel
      */
     public function __construct(
         protected int $userId = 1,
@@ -107,9 +107,9 @@ class LaporanKebakaran2026SheetImport implements ToCollection, WithCalculatedFor
     ];
 
     /**
-     * @param string $sheetName Nama sheet saat ini
-     * @param int $userId ID User pemilik data laporan
-     * @param bool $dryRun Mode simulasi tanpa menyimpan ke database
+     * @param  string  $sheetName  Nama sheet saat ini
+     * @param  int  $userId  ID User pemilik data laporan
+     * @param  bool  $dryRun  Mode simulasi tanpa menyimpan ke database
      */
     public function __construct(
         public string $sheetName = '',
@@ -362,7 +362,7 @@ class LaporanKebakaran2026SheetImport implements ToCollection, WithCalculatedFor
                 $namaPelapor, $teleponPelapor, $mediaPelaporan, $kategoriKebakaran, $rawObjek,
                 $waktuTerimaStr, $waktuTibaStr, $waktuSelesaiStr, $alamat, $jarakTempuh,
                 $namaKorban, $jumlahJiwa, $korbanData, $wargaTerdampak,
-                $pimpinanOperasi, $satuanTugas, $jumlahPersonel, $responTime, $rawLama,
+                $pimpinanOperasi, $satuanTugas, $jumlahPersonel, $rawLama,
                 $kronologi, $penyebabMap, $hambatan, $saranaData, $instansiData
             ) {
                 $nomorLaporan = $this->buatNomorLaporan($carbonTanggal);
@@ -517,7 +517,7 @@ class LaporanKebakaran2026SheetImport implements ToCollection, WithCalculatedFor
             $cleaned = trim(str_replace(["'", '"'], '', $teks));
 
             // Pola pencarian bulan spesifik: "02 Maret 2026", "26Juli 2026", "juli 2026", "7 Januari 2026"
-            if (preg_match('/(?:(\d{1,2})\s*)?(' . $polaBulan . ')(?:\s*(\d{4}))?/i', $cleaned, $m)) {
+            if (preg_match('/(?:(\d{1,2})\s*)?('.$polaBulan.')(?:\s*(\d{4}))?/i', $cleaned, $m)) {
                 $namaBulan = strtolower($m[2]);
                 if (isset($bulanMap[$namaBulan])) {
                     $day = ! empty($m[1]) ? (int) $m[1] : 1;

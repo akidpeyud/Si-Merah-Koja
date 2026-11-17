@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB; 
+use Illuminate\Support\Facades\DB;
 
 class InspeksiController extends Controller
 {
@@ -13,11 +13,11 @@ class InspeksiController extends Controller
         $namaFile = null;
         if ($request->hasFile('dokumen_pendukung')) {
             $file = $request->file('dokumen_pendukung');
-            $namaFile = time() . "_" . $file->getClientOriginalName();
-            $file->move(public_path('uploads/inspeksi'), $namaFile); 
+            $namaFile = time().'_'.$file->getClientOriginalName();
+            $file->move(public_path('uploads/inspeksi'), $namaFile);
         }
 
-        $data = $request->except(['_token']); 
+        $data = $request->except(['_token']);
         if ($namaFile) {
             $data['dokumen_pendukung'] = $namaFile;
         }
@@ -34,6 +34,7 @@ class InspeksiController extends Controller
     public function show($id)
     {
         $data = DB::table('jadwal_inspeksis')->where('id', $id)->first();
+
         return view('internal.pencegahan.lihat_inspeksi', compact('data'));
     }
 
@@ -41,6 +42,7 @@ class InspeksiController extends Controller
     public function edit($id)
     {
         $data = DB::table('jadwal_inspeksis')->where('id', $id)->first();
+
         return view('internal.pencegahan.edit_inspeksi', compact('data'));
     }
 
@@ -48,10 +50,10 @@ class InspeksiController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->except(['_token']);
-        
+
         if ($request->hasFile('dokumen_pendukung')) {
             $file = $request->file('dokumen_pendukung');
-            $namaFile = time() . "_" . $file->getClientOriginalName();
+            $namaFile = time().'_'.$file->getClientOriginalName();
             $file->move(public_path('uploads/inspeksi'), $namaFile);
             $data['dokumen_pendukung'] = $namaFile;
         }

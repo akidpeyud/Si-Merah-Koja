@@ -17,7 +17,7 @@ use Spatie\Permission\Traits\HasRoles; // 1. TAMBAHAN SPATIE: Panggil class-nya
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasRoles; // 2. TAMBAHAN SPATIE: Sisipkan di sini
+    use HasFactory, HasRoles, Notifiable; // 2. TAMBAHAN SPATIE: Sisipkan di sini
 
     /**
      * Get the attributes that should be cast.
