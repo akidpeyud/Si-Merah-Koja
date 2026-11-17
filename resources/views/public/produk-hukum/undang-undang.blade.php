@@ -665,10 +665,6 @@
 @include('layouts.partials.public-footer')
 
 @include('layouts.partials.public-sos')
-    <button class="sos-fab-btn" type="button" aria-expanded="false" aria-controls="sosSheet">
-        <span class="beacon" aria-hidden="true"></span> Lapor darurat
-    </button>
-</div>
 
 <script>
 (function () {
