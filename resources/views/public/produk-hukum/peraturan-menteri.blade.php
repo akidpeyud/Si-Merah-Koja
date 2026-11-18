@@ -47,9 +47,9 @@
         ],
     ];
 
-    // Otomatis mendeteksi halaman aktif dari URL (misal: 'undang-undang')
+    // Otomatis mendeteksi halaman aktif dari URL
     $segment = request()->segment(2);
-    $tab_aktif = array_key_exists($segment, $tabs) ? $segment : 'undang-undang';
+    $tab_aktif = array_key_exists($segment, $tabs) ? $segment : 'peraturan-menteri';
     $label_aktif = $tabs[$tab_aktif]['label'];
 
     // ============================================================
@@ -59,18 +59,62 @@
 
     if (class_exists('\App\Models\ProdukHukum')) {
         $dokumenDB = \App\Models\ProdukHukum::whereIn('kategori', [$tab_aktif, $label_aktif])
-                        ->latest()
+                        ->orderByRaw('CASE WHEN tahun IS NULL THEN 0 ELSE 1 END DESC')
+                        ->orderBy('tahun', 'desc')
+                        ->orderBy('id', 'desc')
                         ->get();
     } elseif (Schema::hasTable('produk_hukums')) {
         $dokumenDB = DB::table('produk_hukums')
                         ->whereIn('kategori', [$tab_aktif, $label_aktif])
+                        ->orderByRaw('CASE WHEN tahun IS NULL THEN 0 ELSE 1 END DESC')
+                        ->orderBy('tahun', 'desc')
                         ->orderBy('id', 'desc')
                         ->get();
     } elseif (class_exists('\App\Models\Dokumen')) {
         $dokumenDB = \App\Models\Dokumen::where('kategori', 'Produk Hukum')
                         ->whereIn('sub_kategori', [$tab_aktif, $label_aktif])
-                        ->latest()
+                        ->orderByRaw('CASE WHEN tahun IS NULL THEN 0 ELSE 1 END DESC')
+                        ->orderBy('tahun', 'desc')
+                        ->orderBy('id', 'desc')
                         ->get();
+    }
+
+    // 5 Kategori Folder Kementerian sesuai arahan
+    $daftar_folder = [
+        'permendagri' => [
+            'nama' => 'PERMENDAGRI',
+            'desc' => 'Peraturan Menteri Dalam Negeri',
+            'icon' => 'fa-landmark',
+        ],
+        'permen-pu' => [
+            'nama' => 'PERMEN PU',
+            'desc' => 'Peraturan Menteri Pekerjaan Umum',
+            'icon' => 'fa-building-shield',
+        ],
+        'permenkes' => [
+            'nama' => 'PERMENKES',
+            'desc' => 'Peraturan Menteri Kesehatan',
+            'icon' => 'fa-heart-pulse',
+        ],
+        'permenaker' => [
+            'nama' => 'PERMENAKER',
+            'desc' => 'Peraturan Menteri Ketenagakerjaan',
+            'icon' => 'fa-briefcase',
+        ],
+        'permen-panrb' => [
+            'nama' => 'PERMEN PANRB',
+            'desc' => 'Peraturan Menteri PANRB',
+            'icon' => 'fa-file-shield',
+        ],
+    ];
+
+    $folder_counts = [
+        'all' => $dokumenDB->count(),
+    ];
+    foreach ($daftar_folder as $fKey => $fInfo) {
+        $folder_counts[$fKey] = $dokumenDB->filter(function ($doc) use ($fKey) {
+            return ($doc->sub_kategori ?? '') === $fKey;
+        })->count();
     }
 
     $dokumen_list = [];
@@ -86,7 +130,15 @@
                     ? route('publik.produk-hukum.download', ['kategori' => $tab_aktif, 'id' => $doc->id])
                     : url('/internal/produk-hukum/' . $tab_aktif . '/' . $doc->id . '/download');
 
+        $sub_kat  = $doc->sub_kategori ?? '';
+        $nama_sub = $doc->nama_sub_kategori ?? ($daftar_folder[$sub_kat]['nama'] ?? null);
+
         $dokumen_list[] = [
+            'id'           => $doc->id,
+            'nomor'        => $doc->nomor ?? '',
+            'tahun'        => $doc->tahun ?? '',
+            'sub_kategori' => $sub_kat,
+            'nama_sub'     => $nama_sub,
             'judul'        => $judul_doc,
             'url'          => $url_view,
             'url_download' => $url_dl,
@@ -447,6 +499,221 @@
         .social a:hover { background: var(--signal); color: #fff; transform: translateY(-3px); }
 
         .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+        /* ==========================================================
+           5 FOLDER KATEGORI KEMENTERIAN
+           ========================================================== */
+        .folder-section {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: var(--r-lg);
+            padding: clamp(18px, 2.5vw, 24px);
+            box-shadow: 0 4px 18px -8px rgba(13,27,42,.08);
+            transition: box-shadow .25s ease, border-color .25s ease;
+        }
+        .folder-section:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 10px 28px -10px rgba(13,27,42,.14);
+        }
+        .folder-top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--line);
+        }
+        .folder-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .folder-heading-ico {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            background: rgba(229, 57, 45, .1);
+            color: var(--signal-d);
+            font-size: 1.05rem;
+        }
+        .folder-heading h3 {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.2;
+        }
+        .folder-heading p {
+            font-size: .84rem;
+            color: var(--steel);
+            margin: 0;
+        }
+        .btn-folder-all {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-size: .84rem;
+            font-weight: 700;
+            background: var(--paper);
+            color: var(--steel);
+            border: 1.5px solid var(--line);
+            transition: all .2s ease;
+            cursor: pointer;
+        }
+        .btn-folder-all:hover {
+            background: #e2e8f0;
+            color: var(--ink);
+        }
+        .btn-folder-all.is-active {
+            background: var(--ink);
+            color: #fff;
+            border-color: var(--ink);
+            box-shadow: 0 4px 14px rgba(13,27,42,.2);
+        }
+        .folder-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 14px;
+        }
+        @media (max-width: 1200px) {
+            .folder-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .folder-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .folder-grid { grid-template-columns: 1fr; }
+        }
+        .folder-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            text-align: left;
+            padding: 16px;
+            background: var(--paper);
+            border: 1.5px solid var(--line);
+            border-radius: var(--r-md);
+            cursor: pointer;
+            transition: all .22s cubic-bezier(.16,.84,.3,1);
+            position: relative;
+            overflow: hidden;
+            min-height: 120px;
+        }
+        .folder-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--amber);
+            opacity: 0;
+            transition: opacity .2s ease;
+        }
+        .folder-card:hover {
+            transform: translateY(-3px);
+            background: #fff;
+            border-color: #cbd5e1;
+            box-shadow: 0 10px 22px -8px rgba(13,27,42,.12);
+        }
+        .folder-card:hover::before {
+            opacity: 1;
+        }
+        .folder-card.is-active {
+            background: #fff;
+            border-color: var(--signal);
+            box-shadow: 0 10px 24px -6px rgba(229,57,45,.22);
+        }
+        .folder-card.is-active::before {
+            background: var(--signal);
+            opacity: 1;
+            height: 4px;
+        }
+        .folder-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .folder-card-ico {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            font-size: 1.1rem;
+            background: #fff;
+            color: #d97706;
+            box-shadow: 0 2px 6px rgba(0,0,0,.04);
+            transition: all .2s ease;
+        }
+        .folder-card.is-active .folder-card-ico {
+            background: var(--signal);
+            color: #fff;
+        }
+        .folder-count-pill {
+            font-size: .72rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: rgba(13,27,42,.07);
+            color: var(--steel);
+            font-variant-numeric: tabular-nums;
+        }
+        .folder-card.is-active .folder-count-pill {
+            background: rgba(229,57,45,.12);
+            color: var(--signal-d);
+        }
+        .folder-card-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: .95rem;
+            line-height: 1.25;
+            color: var(--ink);
+            margin-bottom: 3px;
+            letter-spacing: -.01em;
+        }
+        .folder-card-desc {
+            font-size: .74rem;
+            color: var(--steel);
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .badge-folder-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 9px;
+            border-radius: 6px;
+            font-size: .73rem;
+            font-weight: 700;
+            letter-spacing: .02em;
+            background: rgba(13,27,42,.06);
+            color: var(--ink);
+        }
+        .badge-year-label {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: .73rem;
+            font-weight: 700;
+            background: #fdeceb;
+            color: var(--signal-d);
+        }
+
         .doc-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
         .doc-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; padding: 16px clamp(16px, 2.5vw, 26px); border-bottom: 1px solid var(--line); }
         .doc-title { display: flex; align-items: center; gap: 12px; min-width: 0; font-family: var(--font-display); font-weight: 700; font-stretch: 92%; font-size: 1.1rem; line-height: 1.25; }
@@ -590,6 +857,39 @@
     <div class="wrap">
         <div class="doc-layout">
 
+            <!-- 5 Kategori Folder Kementerian -->
+            <section class="folder-section" aria-label="Filter Kementerian">
+                <div class="folder-top-bar">
+                    <div class="folder-heading">
+                        <span class="folder-heading-ico"><i class="fas fa-folder-tree"></i></span>
+                        <div>
+                            <h3>Kategori Kementerian</h3>
+                            <p>Pilih salah satu folder kementerian untuk memfilter dokumen peraturan terkait.</p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-folder-all is-active" data-folder="all">
+                        <i class="fas fa-layer-group"></i> Semua Folder (<?= (int) $folder_counts['all'] ?>)
+                    </button>
+                </div>
+
+                <div class="folder-grid">
+                    <?php foreach ($daftar_folder as $fKey => $fVal):
+                        $cnt = (int) ($folder_counts[$fKey] ?? 0);
+                    ?>
+                    <button type="button" class="folder-card" data-folder="<?= $h($fKey) ?>">
+                        <div class="folder-card-top">
+                            <span class="folder-card-ico"><i class="fas <?= $h($fVal['icon']) ?>"></i></span>
+                            <span class="folder-count-pill"><?= $cnt ?> Dokumen</span>
+                        </div>
+                        <div>
+                            <div class="folder-card-title"><?= $h($fVal['nama']) ?></div>
+                            <div class="folder-card-desc"><?= $h($fVal['desc']) ?></div>
+                        </div>
+                    </button>
+                    <?php endforeach; ?>
+                </div>
+            </section>
+
             <!-- Daftar dokumen -->
             <section class="doc-panel" aria-label="Daftar dokumen">
                 <div class="doc-bar">
@@ -605,7 +905,7 @@
                         <label class="doc-search">
                             <span class="sr-only">Cari dokumen</span>
                             <i class="fas fa-search"></i>
-                            <input type="search" id="docSearch" placeholder="Cari dokumen" autocomplete="off">
+                            <input type="search" id="docSearch" placeholder="Cari dokumen atau tahun..." autocomplete="off">
                         </label>
                         <?php endif; ?>
                     </div>
@@ -624,9 +924,25 @@
                         $ext          = $ext ?: 'PDF';
                         $ico          = ['PDF' => 'fa-file-pdf', 'DOC' => 'fa-file-word', 'DOCX' => 'fa-file-word', 'XLS' => 'fa-file-excel', 'XLSX' => 'fa-file-excel'][$ext] ?? 'fa-file-lines';
                     ?>
-                    <li class="doc-row <?= $ada ? '' : 'is-empty' ?>" data-name="<?= $h(mb_strtolower($judul)) ?>">
+                    <li class="doc-row <?= $ada ? '' : 'is-empty' ?>"
+                        data-name="<?= $h(mb_strtolower($judul)) ?>"
+                        data-folder="<?= $h($d['sub_kategori'] ?? '') ?>"
+                        data-tahun="<?= $h($d['tahun'] ?? '') ?>">
                         <span class="doc-ico"><i class="fas <?= $h($ada ? $ico : 'fa-file-circle-question') ?>"></i></span>
                         <div>
+                            <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 4px;">
+                                <?php if (!empty($d['tahun'])): ?>
+                                    <span class="badge-year-label"><?= $h($d['tahun']) ?></span>
+                                <?php endif; ?>
+                                <?php if (!empty($d['nama_sub'])): ?>
+                                    <span class="badge-folder-label">
+                                        <i class="fas fa-folder text-warning" style="font-size: .72rem;"></i> <?= $h($d['nama_sub']) ?>
+                                    </span>
+                                <?php endif; ?>
+                                <?php if (!empty($d['nomor'])): ?>
+                                    <span style="font-size: .82rem; font-weight: 600; color: var(--steel);"><?= $h($d['nomor']) ?></span>
+                                <?php endif; ?>
+                            </div>
                             <p class="doc-name">
                                 <?php if ($ada): ?>
                                     <a href="<?= $h($url) ?>" target="_blank" rel="noopener"><?= $h($judul) ?></a>
@@ -645,7 +961,7 @@
                     </li>
                     <?php endforeach; ?>
                 </ul>
-                <p class="doc-none" id="docNone" hidden>Tidak ada dokumen yang cocok. Coba kata kunci lain.</p>
+                <p class="doc-none" id="docNone" hidden>Tidak ada dokumen yang cocok. Coba kata kunci lain atau pilih folder lain.</p>
                 <?php else: ?>
                 <div class="doc-empty">
                     <i class="far fa-folder-open"></i>
@@ -769,24 +1085,77 @@
         fabBtn.setAttribute('aria-expanded', open);
     });
 
-    /* ---------- Pencarian Dokumen ---------- */
+    /* ---------- Filter Folder & Pencarian Dokumen ---------- */
     var search = document.getElementById('docSearch');
-    if (search) {
-        var rows = document.querySelectorAll('.doc-row');
-        var count = document.getElementById('docCount');
-        var none = document.getElementById('docNone');
-        search.addEventListener('input', function () {
-            var q = search.value.trim().toLowerCase();
-            var n = 0;
-            rows.forEach(function (r) {
-                var hit = r.dataset.name.indexOf(q) !== -1;
-                r.hidden = !hit;
-                if (hit) n++;
-            });
-            if (count) count.textContent = n + ' dokumen';
-            none.hidden = n !== 0;
-        });
+    var rows = document.querySelectorAll('.doc-row');
+    var count = document.getElementById('docCount');
+    var none = document.getElementById('docNone');
+    var folderCards = document.querySelectorAll('.folder-card, .btn-folder-all');
+    var currentFolder = 'all';
+
+    // Periksa jika terdapat parameter folder di URL
+    var urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('folder')) {
+        var folderParam = urlParams.get('folder');
+        var matchingBtn = document.querySelector('[data-folder="' + folderParam + '"]');
+        if (matchingBtn) {
+            currentFolder = folderParam;
+            folderCards.forEach(function (b) { b.classList.remove('is-active'); });
+            matchingBtn.classList.add('is-active');
+        }
     }
+
+    function applyFilter() {
+        var q = search ? search.value.trim().toLowerCase() : '';
+        var n = 0;
+        rows.forEach(function (r) {
+            var f = r.getAttribute('data-folder') || '';
+            var name = r.getAttribute('data-name') || '';
+            var tahun = r.getAttribute('data-tahun') || '';
+
+            var matchFolder = (currentFolder === 'all' || f === currentFolder);
+            var matchSearch = (!q || name.indexOf(q) !== -1 || tahun.indexOf(q) !== -1);
+
+            var visible = matchFolder && matchSearch;
+            r.hidden = !visible;
+            if (visible) n++;
+        });
+
+        if (count) count.textContent = n + ' dokumen';
+        if (none) none.hidden = n !== 0;
+    }
+
+    folderCards.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var targetFolder = this.getAttribute('data-folder');
+            if (currentFolder === targetFolder && targetFolder !== 'all') {
+                currentFolder = 'all';
+                folderCards.forEach(function (b) { b.classList.remove('is-active'); });
+                var allBtn = document.querySelector('.btn-folder-all');
+                if (allBtn) allBtn.classList.add('is-active');
+            } else {
+                currentFolder = targetFolder;
+                folderCards.forEach(function (b) { b.classList.remove('is-active'); });
+                this.classList.add('is-active');
+            }
+
+            var newUrl = new URL(window.location);
+            if (currentFolder === 'all') {
+                newUrl.searchParams.delete('folder');
+            } else {
+                newUrl.searchParams.set('folder', currentFolder);
+            }
+            window.history.replaceState({}, '', newUrl);
+
+            applyFilter();
+        });
+    });
+
+    if (search) {
+        search.addEventListener('input', applyFilter);
+    }
+
+    applyFilter();
 
     /* ---------- Scroll tab aktif ke tengah (mobile) ---------- */
     var tabsEl = document.querySelector('.tabs');

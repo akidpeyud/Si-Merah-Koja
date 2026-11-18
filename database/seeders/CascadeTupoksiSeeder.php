@@ -39,8 +39,8 @@ class CascadeTupoksiSeeder extends Seeder
                 'kategori' => 'tupoksi',
                 'tahun' => 2026,
                 'keterangan' => 'Dokumen Tugas Pokok dan Fungsi (Tupoksi) Dinas Pemadam Kebakaran dan Penyelamatan Kota Jambi.',
-                'file_dokumen' => 'profil-instansi/tupoksi/SOTK_Dinas_Pemadam_Kebakaran_dan_Penyelamatan_Kota_Jambi_Perwal_50_2025 (1).pdf',
-                'source_file' => 'seed-files/cascade_tupoksi/SOTK_Dinas_Pemadam_Kebakaran_dan_Penyelamatan_Kota_Jambi_Perwal_50_2025 (1).pdf',
+                'file_dokumen' => 'profil-instansi/tupoksi/SOTK_Dinas_Pemadam_Kebakaran_dan_Penyelamatan_Kota_Jambi_Perwal_50_2025_gabungan.pdf',
+                'source_file' => 'seed-files/tupoksi/SOTK_Dinas_Pemadam_Kebakaran_dan_Penyelamatan_Kota_Jambi_Perwal_50_2025_gabungan.pdf',
             ],
         ];
 
