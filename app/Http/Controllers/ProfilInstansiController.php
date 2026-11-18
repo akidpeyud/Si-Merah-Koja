@@ -304,6 +304,9 @@ class ProfilInstansiController extends Controller
 
         return response()->file($path, [
             'Content-Type' => $mime,
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+            'Pragma' => 'no-cache',
+            'Expires' => '0',
         ]);
     }
 
@@ -329,6 +332,9 @@ class ProfilInstansiController extends Controller
 
         return Storage::disk('public')->download($item->file_dokumen, $filename, [
             'Content-Type' => $mime,
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+            'Pragma' => 'no-cache',
+            'Expires' => '0',
         ]);
     }
 

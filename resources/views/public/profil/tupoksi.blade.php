@@ -105,8 +105,9 @@
         foreach ($dokumenDB as $doc) {
             $judul_doc = $doc->judul_dokumen ?? $doc->judul ?? $doc->nama_dokumen ?? $doc->nama ?? 'Dokumen ' . $label_aktif;
             $nama_file = $doc->nama_file ?? $doc->file ?? $doc->file_pdf ?? $doc->dokumen ?? '';
-            $url_view  = Route::has('publik.profil.view') ? route('publik.profil.view', ['kategori' => $tab_aktif, 'id' => $doc->id]) : url('/internal/profil-instansi/' . $tab_aktif . '/' . $doc->id . '/view');
-            $url_dl    = Route::has('publik.profil.download') ? route('publik.profil.download', ['kategori' => $tab_aktif, 'id' => $doc->id]) : url('/internal/profil-instansi/' . $tab_aktif . '/' . $doc->id . '/download');
+            $vParam    = !empty($doc->updated_at) ? '?v=' . strtotime((string) $doc->updated_at) : '?v=' . time();
+            $url_view  = (Route::has('publik.profil.view') ? route('publik.profil.view', ['kategori' => $tab_aktif, 'id' => $doc->id]) : url('/internal/profil-instansi/' . $tab_aktif . '/' . $doc->id . '/view')) . $vParam;
+            $url_dl    = (Route::has('publik.profil.download') ? route('publik.profil.download', ['kategori' => $tab_aktif, 'id' => $doc->id]) : url('/internal/profil-instansi/' . $tab_aktif . '/' . $doc->id . '/download')) . $vParam;
 
             $dokumen_list[] = [
                 'judul'        => $judul_doc,
