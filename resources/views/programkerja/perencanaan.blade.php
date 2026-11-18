@@ -96,68 +96,159 @@
         .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: clamp(16px, 4vw, 32px); padding-right: clamp(16px, 4vw, 32px); }
 
         /* ==========================================================
-           HEADER PUBLIK
+           HEADER & NAVBAR (Standar SIMERAH KOJA)
            ========================================================== */
         .site-header {
             position: sticky; top: 0; z-index: 60;
-            background: rgba(13, 27, 42, .85);
+            background: rgba(13, 27, 42, .88);
             -webkit-backdrop-filter: blur(14px) saturate(1.4);
             backdrop-filter: blur(14px) saturate(1.4);
             border-bottom: 1px solid rgba(255,255,255,.08);
         }
         .nav {
-            max-width: var(--wrap); margin: 0 auto; height: var(--header-h);
-            padding: 0 clamp(16px, 4vw, 32px);
+            max-width: 1440px; margin: 0 auto; min-height: var(--header-h);
+            padding: 0 clamp(16px, 3vw, 32px);
             display: flex; align-items: center; justify-content: space-between; gap: 24px;
         }
-        .brand { display: flex; align-items: center; gap: 12px; }
-        .brand img { height: 38px; width: auto; }
-
-        .menu { display: flex; align-items: center; gap: 2px; }
+        .brand { display: flex; align-items: center; flex: none; }
+        .brand a { display: flex; align-items: center; }
+        .brand a + a { margin-left: 14px; padding-left: 14px; border-left: 1px solid rgba(255,255,255,.16); }
+        .brand img { height: 36px; width: auto; }
+        .nav-panel { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+        .menu { display: flex; align-items: center; justify-content: center; gap: 2px; flex: 1; min-width: 0; }
         .menu > li { position: relative; }
         .menu-link, .menu-trigger {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 9px 14px; border-radius: 999px;
-            color: rgba(255,255,255,.88); font-size: .92rem; font-weight: 500;
-            transition: background .2s, color .2s;
+            position: relative; display: inline-flex; align-items: center; gap: 6px;
+            padding: 10px 11px; color: rgba(255,255,255,.78);
+            font-size: .875rem; font-weight: 500; letter-spacing: .005em; white-space: nowrap;
+            transition: color .2s;
         }
-        .menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger, .menu > li.current > .menu-trigger { background: rgba(255,255,255,.1); color: #fff; }
-        .menu-trigger i { font-size: .65rem; transition: transform .2s; }
-        .has-drop.open > .menu-trigger i { transform: rotate(180deg); }
-        .menu .btn-login { background: var(--signal); color: #fff; margin-left: 10px; font-weight: 600; padding: 9px 22px; }
-        .menu .btn-login:hover { background: var(--signal-d); }
-
+        .menu-link::after, .menu-trigger::after {
+            content: ""; position: absolute; left: 11px; right: 11px; bottom: 2px; height: 2px;
+            border-radius: 2px; background: var(--amber);
+            transform: scaleX(0); transform-origin: left; transition: transform .25s ease;
+        }
+        .menu-link:hover, .menu-trigger:hover, .has-drop.open > .menu-trigger, .menu-link.is-active, .menu-trigger.is-active { color: #fff; }
+        .menu-link:hover::after, .menu-trigger:hover::after, .has-drop.open > .menu-trigger::after, .menu-link.is-active::after, .menu-trigger.is-active::after { transform: scaleX(1); }
+        .menu-trigger i { font-size: .6rem; opacity: .6; transition: transform .2s, opacity .2s; }
+        .has-drop.open > .menu-trigger i { transform: rotate(180deg); opacity: 1; }
+        .nav-actions { display: flex; align-items: center; gap: 10px; flex: none; }
+        .nav-actions > li { position: relative; }
+        .btn-nav {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            height: 40px; padding: 0 16px; border-radius: 999px;
+            font-size: .875rem; font-weight: 600; white-space: nowrap;
+            transition: background .2s, border-color .2s, color .2s, transform .2s;
+        }
+        .btn-nav:active { transform: scale(.97); }
+        .btn-nav i.fa-chevron-down { font-size: .6rem; opacity: .8; transition: transform .2s; }
+        .has-drop.open > .btn-nav i.fa-chevron-down { transform: rotate(180deg); }
+        .btn-nav--alert { background: var(--signal); color: #fff; }
+        .btn-nav--alert:hover, .has-drop.open > .btn-nav--alert { background: var(--signal-d); }
+        .btn-nav--alert .beacon { width: 8px; height: 8px; background: #fff; border-radius: 50%; }
+        .btn-nav--ghost { border: 1.5px solid rgba(255,255,255,.3); color: #fff; }
+        .btn-nav--ghost:hover, .has-drop.open > .btn-nav--ghost { border-color: #fff; background: rgba(255,255,255,.08); }
         .dropdown {
-            display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 250px;
+            position: absolute; top: calc(100% + 14px); left: 50%; min-width: 250px; width: max-content; max-width: 320px;
             background: var(--ink-2); border: 1px solid rgba(255,255,255,.1);
-            border-radius: var(--r-md); padding: 6px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
+            border-radius: 16px; padding: 8px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
+            visibility: hidden; opacity: 0; pointer-events: none;
+            transform: translate(-50%, 6px);
+            transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s;
         }
-        .dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
-        .dropdown a { display: block; padding: 11px 14px; border-radius: var(--r-sm); font-size: .92rem; color: rgba(255,255,255,.85); }
-        .dropdown a:hover, .dropdown a[aria-current="page"] { background: rgba(255,255,255,.1); color: #fff; }
-        .has-drop.open .dropdown { display: block; }
-        @media (hover: hover) and (min-width: 992px) {
-            .has-drop:hover .dropdown { display: block; }
+        .nav-actions .dropdown { left: auto; right: 0; transform: translate(0, 6px); }
+        .dropdown::before { content: ""; position: absolute; left: 0; right: 0; top: -14px; height: 14px; }
+        .dropdown::after {
+            content: ""; position: absolute; top: -6px; left: 50%; width: 10px; height: 10px; margin-left: -5px;
+            background: var(--ink-2); border-top: 1px solid rgba(255,255,255,.1); border-left: 1px solid rgba(255,255,255,.1);
+            transform: rotate(45deg);
         }
-
-        .nav-toggle { display: none; width: 44px; height: 44px; border-radius: 12px; color: #fff; font-size: 1.15rem; }
+        .nav-actions .dropdown::after { left: auto; right: 24px; margin-left: 0; }
+        .has-drop.open > .dropdown {
+            visibility: visible; opacity: 1; pointer-events: auto;
+            transform: translate(-50%, 0); transition-delay: 0s;
+        }
+        .nav-actions .has-drop.open > .dropdown { transform: translate(0, 0); }
+        .dropdown a, .dropdown .btn-logout {
+            display: flex; align-items: center; gap: 12px; width: 100%;
+            padding: 10px 14px; border-radius: var(--r-sm);
+            font-size: .9rem; line-height: 1.4; color: rgba(255,255,255,.85); text-align: left; white-space: normal;
+            transition: background .15s, color .15s;
+        }
+        .dropdown a:hover, .dropdown a:focus-visible { background: rgba(255,255,255,.08); color: #fff; }
+        .dropdown a i { width: 18px; text-align: center; font-size: 1rem; flex: none; }
+        .dropdown a .fa-phone-alt { color: #38bdf8; }
+        .dropdown a .fa-whatsapp  { color: #25d366; }
+        .dropdown a .fa-headset   { color: #f87171; }
+        .dropdown .btn-logout { color: #ff8b8b; cursor: pointer; }
+        .dropdown .btn-logout:hover { background: rgba(255,255,255,.08); color: #ffb8b8; }
+        .has-sub { position: relative; }
+        .has-sub > .sub-trigger {
+            width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            padding: 10px 14px; border-radius: var(--r-sm); font-size: .9rem; line-height: 1.4; text-align: left;
+            color: rgba(255,255,255,.85); transition: background .15s, color .15s;
+        }
+        .has-sub > .sub-trigger i { font-size: .65rem; opacity: .7; transition: transform .2s; }
+        .has-sub > .sub-trigger:hover, .has-sub.open > .sub-trigger { background: rgba(255,255,255,.08); color: #fff; }
+        .dropdown-sub {
+            display: none; position: absolute; top: -8px; left: 100%; min-width: 230px; margin-left: 6px; z-index: 10;
+            background: var(--ink-2); border: 1px solid rgba(255,255,255,.1);
+            border-radius: 16px; padding: 8px; box-shadow: 0 24px 48px rgba(0,0,0,.45);
+        }
+        .dropdown-sub::before { content: ""; position: absolute; top: 0; bottom: 0; left: -12px; width: 12px; }
+        .has-sub.open > .dropdown-sub { display: block; }
+        .nav-toggle { display: none; width: 44px; height: 44px; border-radius: 12px; color: #fff; font-size: 1.15rem; align-items: center; justify-content: center; }
         .nav-toggle:hover { background: rgba(255,255,255,.1); }
-
-        @media (max-width: 991px) {
-            .nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
-            .menu {
-                display: none; position: fixed; top: var(--header-h); left: 0; right: 0;
-                max-height: calc(100dvh - var(--header-h)); overflow-y: auto;
-                flex-direction: column; align-items: stretch; gap: 4px;
-                padding: 16px clamp(16px, 4vw, 32px) 28px; background: var(--ink);
-                border-bottom: 1px solid rgba(255,255,255,.1);
-            }
-            .nav-open .menu { display: flex; }
-            .menu-link, .menu-trigger { width: 100%; justify-content: space-between; padding: 14px 16px; border-radius: 14px; font-size: 1rem; }
-            .dropdown { position: static; margin: 2px 0 8px 12px; box-shadow: none; background: transparent; border: 0; border-left: 2px solid rgba(255,255,255,.12); border-radius: 0; }
-            .dropdown::before { display: none; }
-            .menu .btn-login { margin: 8px 0 0; justify-content: center; padding: 14px; }
+        @media (hover: hover) and (min-width: 1201px) {
+            .has-drop:hover > .dropdown { visibility: visible; opacity: 1; pointer-events: auto; transform: translate(-50%, 0); transition-delay: 0s; }
+            .nav-actions .has-drop:hover > .dropdown { transform: translate(0, 0); }
+            .has-drop:hover > .menu-trigger { color: #fff; }
+            .has-drop:hover > .menu-trigger::after { transform: scaleX(1); }
+            .has-sub:hover > .dropdown-sub { display: block; }
+            .has-sub:hover > .sub-trigger { background: rgba(255,255,255,.08); color: #fff; }
+            .dropdown-sub { left: auto; right: 100%; margin-left: 0; margin-right: 6px; }
+            .dropdown-sub::before { left: auto; right: -12px; }
+            .has-sub > .sub-trigger i { transform: rotate(180deg); }
         }
+        @media (max-width: 1200px) {
+            .nav { gap: 12px; }
+            .nav-toggle { display: inline-flex; margin-left: auto; }
+            .nav-panel {
+                display: none; position: absolute; top: 100%; left: 0; right: 0;
+                max-height: calc(100dvh - var(--header-h)); overflow-y: auto; overscroll-behavior: contain;
+                flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 20px;
+                padding: 8px clamp(16px, 4vw, 32px) 28px;
+                background: var(--ink); border-bottom: 1px solid rgba(255,255,255,.1);
+                box-shadow: 0 30px 40px rgba(0,0,0,.35);
+            }
+            .nav-open .nav-panel { display: flex; }
+            .menu { flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 0; flex: none; }
+            .menu > li { border-bottom: 1px solid rgba(255,255,255,.08); }
+            .menu-link, .menu-trigger { width: 100%; justify-content: space-between; padding: 16px 4px; font-size: 1rem; white-space: normal; color: rgba(255,255,255,.9); }
+            .menu-link::after, .menu-trigger::after { display: none; }
+            .menu-link.is-active, .menu-trigger.is-active { color: var(--amber); }
+            .menu-trigger i { font-size: .7rem; }
+            .nav-actions { flex-direction: column; align-items: stretch; gap: 10px; }
+            .btn-nav { height: 48px; font-size: 1rem; }
+            .nav-actions .has-drop > .btn-nav { width: 100%; }
+            .dropdown, .nav-actions .dropdown {
+                display: none; position: static; min-width: 0; width: auto; max-width: none; margin: 0 0 12px 4px; padding: 0 0 0 12px;
+                background: transparent; border: 0; border-left: 2px solid rgba(255,255,255,.14); border-radius: 0; box-shadow: none;
+                visibility: visible; opacity: 1; pointer-events: auto; transform: none; transition: none;
+            }
+            .dropdown::before, .dropdown::after { display: none; }
+            .has-drop.open > .dropdown, .nav-actions .has-drop.open > .dropdown { display: block; transform: none; }
+            .dropdown a, .dropdown .btn-logout { padding: 13px 12px; font-size: .95rem; }
+            .has-sub > .sub-trigger { padding: 13px 12px; font-size: .95rem; }
+            .has-sub.open > .sub-trigger i { transform: rotate(90deg); }
+            .dropdown-sub { position: static; margin: 2px 0 6px 8px; padding: 0 0 0 10px; min-width: 0; background: transparent; border: 0; border-left: 2px solid rgba(255,255,255,.14); border-radius: 0; box-shadow: none; }
+            .dropdown-sub::before { display: none; }
+        }
+        @media (max-width: 480px) {
+            .brand img { height: 30px; }
+            .brand a + a { margin-left: 10px; padding-left: 10px; }
+        }
+        body.nav-lock { overflow: hidden; }
 
         /* ==========================================================
            HERO HALAMAN
@@ -332,78 +423,8 @@
 </head>
 <body>
 
-<!-- ==================== HEADER PUBLIK ==================== -->
-<header class="site-header" id="siteHeader">
-    <nav class="nav" aria-label="Navigasi utama">
-        <a href="/" class="brand" aria-label="SIMERAH KOJA, beranda">
-            <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
-            <img src="/images/logo.png" alt="Logo Damkar">
-            <img src="/images/logo-redkar.png" alt="Logo Redkar">
-        </a>
-
-        <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="menu">
-            <i class="fas fa-bars"></i>
-        </button>
-
-        <ul class="menu" id="menu">
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan kedaruratan <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="<?= $h($wa_link) ?>" target="_blank" rel="noopener">WhatsApp</a></li>
-                    <li><a href="tel:<?= $h($no_telepon) ?>">Telepon</a></li>
-                    <li><a href="tel:112">Call Center 112</a></li>
-                </ul>
-            </li>
-            <li class="has-drop current">
-                <button class="menu-trigger" type="button" aria-expanded="false">Program kerja <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <?php foreach (['sotk', 'perencanaan', 'pelaporan', 'sop', 'produkhukum'] as $k): ?>
-                        <li><a href="<?= $h($tabs[$k]['url']) ?>" <?php if ($k === $tab_aktif): ?> aria-current="page" <?php endif; ?>><?= $h($tabs[$k]['label']) ?></a></li>
-                    <?php endforeach; ?>
-                </ul>
-            </li>
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Layanan<i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/layanan-fasilitas/layanan_perizinan">RPKBGL</a></li>
-                    <li><a href="/layanan-fasilitas/skk">SKK &amp; Perpanjang SKK</a></li>
-                    <li><a href="/layanan-fasilitas/edukasi_sosialisasi">Edukasi dan sosialisasi</a></li>
-                    <li><a href="/public-sigap">SIGAP</a></li>
-                    <li><a href="/informasi-layanan">Informasi layanan</a></li>
-                </ul>
-            </li>
-            <li class="has-drop">
-                <button class="menu-trigger" type="button" aria-expanded="false">Kabar Damkar <i class="fas fa-chevron-down"></i></button>
-                <ul class="dropdown">
-                    <li><a href="/edu-damkar">Edu Damkar</a></li>
-                    <li><a href="/infografis">Infografis</a></li>
-                    <li><a href="/media-informasi">Media Informasi</a></li>
-                    <li><a href="/ujung-ujung-damkar">Ujung-ujung Damkar</a></li>
-                </ul>
-            </li>
-            <li><a class="menu-link" href="/redkar">Redkar</a></li>
-                @if(session()->has('pemohon_id'))
-                <li class="has-drop">
-                    <button class="menu-trigger btn-login" type="button" aria-expanded="false">
-                        <i class="fas fa-user-circle"></i> {{ strtok(session('pemohon_nama'), " ") }} <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <ul class="dropdown">
-                        <li>
-                            <form action="{{ route('pemohon.logout') }}" method="POST" style="margin: 0;">
-                                @csrf
-                                <button type="submit" class="btn-logout">
-                                    <i class="fas fa-sign-out-alt"></i> Keluar
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
-                </li>
-            @else
-                <li><a class="menu-link btn-login" href="{{ route('pemohon.login') }}">Masuk</a></li>
-            @endif
-        </ul>
-    </nav>
-</header>
+<!-- ==================== HEADER ==================== -->
+@include('layouts.partials.public-header')
 
 <main>
 
@@ -530,46 +551,11 @@
     </button>
 </div>
 
+@include('layouts.partials.public-scripts')
+
 <script>
 (function () {
     'use strict';
-
-    var header = document.getElementById('siteHeader');
-    var toggle = header.querySelector('.nav-toggle');
-    var drops = header.querySelectorAll('.has-drop');
-
-    function closeDrops(except) {
-        drops.forEach(function (li) {
-            if (li !== except) {
-                li.classList.remove('open');
-                li.querySelector('.menu-trigger').setAttribute('aria-expanded', 'false');
-            }
-        });
-    }
-
-    toggle.addEventListener('click', function () {
-        var open = header.classList.toggle('nav-open');
-        toggle.setAttribute('aria-expanded', open);
-        toggle.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
-        toggle.querySelector('i').className = open ? 'fas fa-times' : 'fas fa-bars';
-    });
-
-    drops.forEach(function (li) {
-        var btn = li.querySelector('.menu-trigger');
-        btn.addEventListener('click', function () {
-            var open = li.classList.toggle('open');
-            btn.setAttribute('aria-expanded', open);
-            closeDrops(li);
-        });
-    });
-
-    document.addEventListener('click', function (e) {
-        if (!e.target.closest('.has-drop')) closeDrops(null);
-    });
-
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') closeDrops(null);
-    });
 
     var fab = document.getElementById('sosFab');
     var fabBtn = fab.querySelector('.sos-fab-btn');

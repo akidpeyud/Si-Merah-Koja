@@ -12,7 +12,7 @@
             <a href="/" aria-label="SIMERAH KOJA, beranda">
                 <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
             </a>
-            <a href="/" title="Beranda">
+            <a href="/login" title="Login Internal Pegawai">
                 <img src="/images/logo.png" alt="Logo Damkar">
             </a>
             <a href="javascript:void(0)" aria-label="Logo Redkar" style="pointer-events: none; cursor: default;">
@@ -149,4 +149,5 @@
             </ul>
         </div>
     </nav>
+    <div class="progress" id="progress" aria-hidden="true"></div>
 </header>
