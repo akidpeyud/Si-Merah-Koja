@@ -42,6 +42,10 @@ class ProdukHukumController extends Controller
 
         $query = ProdukHukum::where('kategori', $kategori);
 
+        if ($kategori === 'peraturan-menteri' && $request->filled('sub_kategori')) {
+            $query->where('sub_kategori', $request->sub_kategori);
+        }
+
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -51,9 +55,15 @@ class ProdukHukumController extends Controller
             });
         }
 
-        $data = $query->latest()->paginate(10)->withQueryString();
+        // Urutkan tahun termuda paling atas
+        $query->orderByRaw('CASE WHEN tahun IS NULL THEN 0 ELSE 1 END DESC')
+            ->orderBy('tahun', 'desc')
+            ->orderBy('id', 'desc');
 
-        return view('internal.produk-hukum.index', compact('data', 'kategori', 'judulKategori'));
+        $data = $query->paginate(10)->withQueryString();
+        $daftarSubMenteri = ProdukHukum::daftarSubKategoriMenteri();
+
+        return view('internal.produk-hukum.index', compact('data', 'kategori', 'judulKategori', 'daftarSubMenteri'));
     }
 
     /**
@@ -63,8 +73,9 @@ class ProdukHukumController extends Controller
     {
         $this->pastikanAksesCrud();
         $judulKategori = $this->cekKategori($kategori);
+        $daftarSubMenteri = ProdukHukum::daftarSubKategoriMenteri();
 
-        return view('internal.produk-hukum.create', compact('kategori', 'judulKategori'));
+        return view('internal.produk-hukum.create', compact('kategori', 'judulKategori', 'daftarSubMenteri'));
     }
 
     /**
@@ -75,14 +86,21 @@ class ProdukHukumController extends Controller
         $this->pastikanAksesCrud();
         $judulKategori = $this->cekKategori($kategori);
 
-        $request->validate([
+        $rules = [
             'nomor' => 'nullable|string|max:150',
             'tahun' => 'nullable|digits:4',
             'judul' => 'required|string|max:255',
             'keterangan' => 'nullable|string',
             'file_dokumen' => 'required|file|mimes:pdf|max:10240', // Wajib PDF, Maks 10MB
-        ], [
+        ];
+
+        if ($kategori === 'peraturan-menteri') {
+            $rules['sub_kategori'] = 'required|string|in:'.implode(',', array_keys(ProdukHukum::daftarSubKategoriMenteri()));
+        }
+
+        $request->validate($rules, [
             'judul.required' => 'Judul atau tentang peraturan wajib diisi.',
+            'sub_kategori.required' => 'Kategori kementerian wajib dipilih.',
             'file_dokumen.required' => 'File dokumen PDF wajib diunggah.',
             'file_dokumen.mimes' => 'File dokumen wajib berformat PDF (.pdf).',
             'file_dokumen.max' => 'Ukuran file PDF maksimal 10MB.',
@@ -92,6 +110,7 @@ class ProdukHukumController extends Controller
 
         ProdukHukum::create([
             'kategori' => $kategori,
+            'sub_kategori' => $kategori === 'peraturan-menteri' ? $request->sub_kategori : null,
             'nomor' => $request->nomor,
             'tahun' => $request->tahun,
             'judul' => $request->judul,
@@ -111,8 +130,9 @@ class ProdukHukumController extends Controller
         $this->pastikanAksesCrud();
         $judulKategori = $this->cekKategori($kategori);
         $item = ProdukHukum::where('kategori', $kategori)->findOrFail($id);
+        $daftarSubMenteri = ProdukHukum::daftarSubKategoriMenteri();
 
-        return view('internal.produk-hukum.edit', compact('kategori', 'judulKategori', 'item'));
+        return view('internal.produk-hukum.edit', compact('kategori', 'judulKategori', 'item', 'daftarSubMenteri'));
     }
 
     /**
@@ -124,14 +144,21 @@ class ProdukHukumController extends Controller
         $judulKategori = $this->cekKategori($kategori);
         $item = ProdukHukum::where('kategori', $kategori)->findOrFail($id);
 
-        $request->validate([
+        $rules = [
             'nomor' => 'nullable|string|max:150',
             'tahun' => 'nullable|digits:4',
             'judul' => 'required|string|max:255',
             'keterangan' => 'nullable|string',
             'file_dokumen' => 'nullable|file|mimes:pdf|max:10240', // Opsional saat edit, wajib PDF jika diisi
-        ], [
+        ];
+
+        if ($kategori === 'peraturan-menteri') {
+            $rules['sub_kategori'] = 'required|string|in:'.implode(',', array_keys(ProdukHukum::daftarSubKategoriMenteri()));
+        }
+
+        $request->validate($rules, [
             'judul.required' => 'Judul atau tentang peraturan wajib diisi.',
+            'sub_kategori.required' => 'Kategori kementerian wajib dipilih.',
             'file_dokumen.mimes' => 'File dokumen pengganti wajib berformat PDF (.pdf).',
             'file_dokumen.max' => 'Ukuran file PDF maksimal 10MB.',
         ]);
@@ -142,6 +169,10 @@ class ProdukHukumController extends Controller
             'judul' => $request->judul,
             'keterangan' => $request->keterangan,
         ];
+
+        if ($kategori === 'peraturan-menteri') {
+            $dataUpdate['sub_kategori'] = $request->sub_kategori;
+        }
 
         if ($request->hasFile('file_dokumen')) {
             if ($item->file_dokumen && Storage::disk('public')->exists($item->file_dokumen)) {

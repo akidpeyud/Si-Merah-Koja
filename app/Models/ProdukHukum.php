@@ -13,12 +13,27 @@ class ProdukHukum extends Model
 
     protected $fillable = [
         'kategori',
+        'sub_kategori',
         'nomor',
         'tahun',
         'judul',
         'keterangan',
         'file_dokumen',
     ];
+
+    /**
+     * Daftar sub kategori / kementerian khusus untuk Peraturan Menteri
+     */
+    public static function daftarSubKategoriMenteri(): array
+    {
+        return [
+            'permendagri' => 'PERMENDAGRI',
+            'permen-pu' => 'PERMEN PU',
+            'permenkes' => 'PERMENKES',
+            'permenaker' => 'PERMENAKER',
+            'permen-panrb' => 'PERMEN PANRB',
+        ];
+    }
 
     /**
      * Daftar kategori produk hukum yang valid beserta label tampilannya
@@ -41,5 +56,17 @@ class ProdukHukum extends Model
     public function getNamaKategoriAttribute(): string
     {
         return self::daftarKategori()[$this->kategori] ?? 'Produk Hukum';
+    }
+
+    /**
+     * Helper untuk mengambil nama label dari slug sub kategori
+     */
+    public function getNamaSubKategoriAttribute(): ?string
+    {
+        if (! $this->sub_kategori) {
+            return null;
+        }
+
+        return self::daftarSubKategoriMenteri()[$this->sub_kategori] ?? strtoupper(str_replace('-', ' ', $this->sub_kategori));
     }
 }
