@@ -216,36 +216,6 @@
                                     </form>
                                 </div>
                             </td>
-
-                            <!-- Modal Edit per Item (Hanya dirender untuk Operator & Super User) -->
-                            <div class="modal fade" id="modalEdit{{ $item->id }}" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <form action="/internal/operator/edu-damkar/update/{{ $item->id }}" method="POST">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-header">
-                                                <h5 class="modal-title"><i class="fas fa-pen-to-square text-warning"></i> Edit Video Edu Damkar</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                                            </div>
-                                            <div class="modal-body text-start">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Link Video YouTube <span class="text-danger">*</span></label>
-                                                    <input type="url" class="form-control" name="link" value="{{ $item->link_asli }}" required>
-                                                </div>
-                                                <div class="mb-1">
-                                                    <label class="form-label">Judul Materi Edukasi <span class="text-danger">*</span></label>
-                                                    <input type="text" class="form-control" name="judul" value="{{ $item->judul }}" required>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn-simerah-secondary" data-bs-dismiss="modal">Batal</button>
-                                                <button type="submit" class="btn-simerah-danger"><i class="fas fa-floppy-disk"></i> Simpan Perubahan</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
                             @endhasanyrole
                         </tr>
                         @empty
@@ -269,6 +239,40 @@
                 </table>
             </div>
         </div>
+
+<!-- MODAL EDIT PER ITEM (di luar tabel & card-box agar tidak tertutup backdrop/terpotong) -->
+@hasanyrole('Operator|Super User')
+@foreach($videos ?? [] as $item)
+<div class="modal fade" id="modalEdit{{ $item->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form action="/internal/operator/edu-damkar/update/{{ $item->id }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-pen-to-square text-warning"></i> Edit Video Edu Damkar</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body text-start">
+                    <div class="mb-3">
+                        <label class="form-label">Link Video YouTube <span class="text-danger">*</span></label>
+                        <input type="url" class="form-control" name="link" value="{{ $item->link_asli }}" required>
+                    </div>
+                    <div class="mb-1">
+                        <label class="form-label">Judul Materi Edukasi <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="judul" value="{{ $item->judul }}" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-simerah-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn-simerah-danger"><i class="fas fa-floppy-disk"></i> Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endforeach
+@endhasanyrole
 
 <!-- MODAL TAMBAH VIDEO EDUKASI (Hanya Dirender untuk Operator & Super User) -->
 @hasanyrole('Operator|Super User')
