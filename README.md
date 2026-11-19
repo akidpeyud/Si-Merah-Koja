@@ -127,7 +127,9 @@ simerahkoja/
 └── storage/
     └── app/public/
         ├── dokumen/              # Penyimpanan file dokumen SOP & publik aktif
-        └── seed-files/sop/       # File master PDF SOP untuk kebutuhan seeding (terlacak di Git)
+        ├── profil-instansi/sotk/ # Penyimpanan file PDF struktur organisasi (SOTK) aktif
+        ├── seed-files/sop/       # File master PDF SOP untuk kebutuhan seeding (terlacak di Git)
+        └── seed-files/sotk/      # File master PDF SOTK/struktur organisasi untuk kebutuhan seeding (terlacak di Git)
 ```
 
 ---
@@ -164,15 +166,49 @@ simerahkoja/
    ```
    Atau jika ingin menjalankan seeder tertentu secara spesifik:
    ```bash
-   # Seeder akun pengguna, role Spatie, & pemohon
    php artisan db:seed --class=UsersTableSeeder
-
-   # Seeder dokumen SOP beserta penyalinan file PDF dari storage/app/public/seed-files/sop
-   php artisan db:seed --class=DokumenSopSeeder
-
-   # Seeder data anggota REDKAR & data ASN
-   php artisan db:seed --class=DataAnggotaRedkar
+   php artisan db:seed --class=PegawaiSeeder
    php artisan db:seed --class=DataAsnSeeder
+   php artisan db:seed --class=TitikSigapSeeder
+   php artisan db:seed --class=DataAsnSeeder
+   php artisan db:seed --class=DataAnggotaRedkar
+   php artisan db:seed --class=BeritaMedsosSeeder
+   php artisan db:seed --class=PosPemadamSeeder
+   php artisan db:seed --class=SaranaKebakaranSeeder
+   php artisan db:seed --class=PrasaranaKebakaranSeeder
+   php artisan db:seed --class=SaranaPenyelamatanMakoSeeder
+   php artisan db:seed --class=SumberAirSeeder
+   php artisan db:seed --class=HidranKotaSeeder
+   php artisan db:seed --class=KebutuhanSarprasSeeder
+   php artisan db:seed --class=PengadaanSarprasSeeder
+   php artisan db:seed --class=DistribusiStaffSeeder
+   php artisan db:seed --class=DokumenSopSeeder
+   php artisan db:seed --class=UjungDamkarTableSeeder
+   php artisan db:seed --class=KejadianDamkarTableSeeder
+   php artisan db:seed --class=EduDamkarTableSeeder
+   php artisan db:seed --class=KunjunganEdukasiSeeder
+   php artisan db:seed --class=DokumenPublikSeeder
+   php artisan db:seed --class=SotkSeeder
+   php artisan db:seed --class=ProdukHukumSeeder
+   php artisan db:seed --class=CascadeTupoksiSeeder
+   php artisan db:seed --class=RekapLayananTableSeeder
+   php artisan db:seed --class=LaporanKebakaran2026Seeder
+   php artisan db:seed --class=LaporanEvakuasiSeeder
+   php artisan db:seed --class=FireDrillSeeder
+   php artisan db:seed --class=InspeksiBangunanSeeder
+   php artisan db:seed --class=PelatihanKeluargaSeeder
+   php artisan db:seed --class=SosialisasiPenyuluhanSeeder
+   php artisan db:seed --class=DiklatAparaturSeeder
+   php artisan db:seed --class=PerbaikanKendaraanSeeder
+   php artisan db:seed --class=PerjanjianKerjasamaSeeder
+   php artisan db:seed --class=HeroBackgroundSeeder
+   php artisan db:seed --class=VisiMisiSeeder
+   php artisan db:seed --class=InfografisSeeder
+   php artisan db:seed --class=CascadeTupoksiSeeder
+   php artisan db:seed --class=UjungDamkarTableSeeder
+   php artisan db:seed --class=EduDamkarTableSeeder
+   php artisan db:seed --class=ProgramKegiatanSeeder
+   php artisan db:seed --class=SotkSeeder
    ```
 
 6. **Build aset frontend & jalankan server lokal:**
