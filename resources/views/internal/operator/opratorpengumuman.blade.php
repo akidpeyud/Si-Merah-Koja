@@ -209,64 +209,6 @@
                                     </form>
                                 </div>
                             </td>
-
-                            <!-- Modal Edit per Item -->
-                            <div class="modal fade" id="modalEdit{{ $item->id }}" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered modal-lg">
-                                    <div class="modal-content">
-                                        <form action="{{ route('operator.pengumuman.update', $item->id) }}" method="POST" enctype="multipart/form-data">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-header">
-                                                <h5 class="modal-title"><i class="fas fa-pen-to-square text-warning"></i> Edit Pengumuman</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                                            </div>
-                                            <div class="modal-body text-start">
-                                                <div class="row">
-                                                    <div class="col-md-12 mb-3">
-                                                        <label class="form-label">Judul Pengumuman <span class="text-danger">*</span></label>
-                                                        <input type="text" class="form-control" name="judul" value="{{ $item->judul }}" required>
-                                                    </div>
-                                                    <div class="col-md-6 mb-3">
-                                                        <label class="form-label">Kategori</label>
-                                                        <select class="form-control" name="kategori">
-                                                            <option value="Umum" {{ $item->kategori == 'Umum' ? 'selected' : '' }}>Umum</option>
-                                                            <option value="Layanan" {{ $item->kategori == 'Layanan' ? 'selected' : '' }}>Layanan</option>
-                                                            <option value="Kepegawaian" {{ $item->kategori == 'Kepegawaian' ? 'selected' : '' }}>Kepegawaian</option>
-                                                            <option value="Penting" {{ $item->kategori == 'Penting' ? 'selected' : '' }}>Penting</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-6 mb-3">
-                                                        <label class="form-label">Tanggal <span class="text-danger">*</span></label>
-                                                        <input type="date" class="form-control" name="tanggal" value="{{ $item->tanggal }}" required>
-                                                    </div>
-                                                    <div class="col-md-12 mb-3">
-                                                        <label class="form-label">Isi Pengumuman <span class="text-danger">*</span></label>
-                                                        <textarea class="form-control" name="isi_pengumuman" rows="5" required>{{ $item->isi }}</textarea>
-                                                    </div>
-                                                    <div class="col-md-12 mb-3">
-                                                        <label class="form-label">Update Dokumen Lampiran</label>
-                                                        <input type="file" class="form-control" name="lampiran" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                                                        <span class="form-hint">Biarkan kosong jika tidak ingin mengubah lampiran. (Maks 2MB)</span>
-                                                    </div>
-                                                    <div class="col-md-12 mb-1">
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" name="penting" id="editPenting{{ $item->id }}" {{ $item->penting ? 'checked' : '' }}>
-                                                            <label class="form-check-label fw-bold text-danger" for="editPenting{{ $item->id }}">
-                                                                Tandai sebagai Pengumuman Penting (Tampil paling atas)
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn-simerah-secondary" data-bs-dismiss="modal">Batal</button>
-                                                <button type="submit" class="btn-simerah-danger"><i class="fas fa-floppy-disk"></i> Simpan Perubahan</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
                             @endhasanyrole
                         </tr>
                         @empty
@@ -290,6 +232,68 @@
                 </table>
             </div>
         </div>
+
+<!-- MODAL EDIT PER ITEM (di luar tabel & card-box agar tidak tertutup backdrop/terpotong) -->
+@hasanyrole('Operator|Super User')
+@foreach($pengumuman ?? [] as $item)
+<div class="modal fade" id="modalEdit{{ $item->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <form action="{{ route('operator.pengumuman.update', $item->id) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-pen-to-square text-warning"></i> Edit Pengumuman</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body text-start">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Judul Pengumuman <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="judul" value="{{ $item->judul }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Kategori</label>
+                            <select class="form-control" name="kategori">
+                                <option value="Umum" {{ $item->kategori == 'Umum' ? 'selected' : '' }}>Umum</option>
+                                <option value="Layanan" {{ $item->kategori == 'Layanan' ? 'selected' : '' }}>Layanan</option>
+                                <option value="Kepegawaian" {{ $item->kategori == 'Kepegawaian' ? 'selected' : '' }}>Kepegawaian</option>
+                                <option value="Penting" {{ $item->kategori == 'Penting' ? 'selected' : '' }}>Penting</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Tanggal <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" name="tanggal" value="{{ $item->tanggal }}" required>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Isi Pengumuman <span class="text-danger">*</span></label>
+                            <textarea class="form-control" name="isi_pengumuman" rows="5" required>{{ $item->isi }}</textarea>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Update Dokumen Lampiran</label>
+                            <input type="file" class="form-control" name="lampiran" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            <span class="form-hint">Biarkan kosong jika tidak ingin mengubah lampiran. (Maks 2MB)</span>
+                        </div>
+                        <div class="col-md-12 mb-1">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="penting" id="editPenting{{ $item->id }}" {{ $item->penting ? 'checked' : '' }}>
+                                <label class="form-check-label fw-bold text-danger" for="editPenting{{ $item->id }}">
+                                    Tandai sebagai Pengumuman Penting (Tampil paling atas)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-simerah-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn-simerah-danger"><i class="fas fa-floppy-disk"></i> Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endforeach
+@endhasanyrole
 
 <!-- MODAL TAMBAH PENGUMUMAN -->
 @hasanyrole('Operator|Super User')

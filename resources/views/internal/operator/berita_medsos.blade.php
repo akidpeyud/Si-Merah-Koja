@@ -235,59 +235,6 @@
                                     </button>
                                 </form>
                             </td>
-
-                            <!-- Modal Edit Hanya Dirender untuk Operator & Super User -->
-                            <div class="modal fade" id="modalEdit{{ $item->id }}" tabindex="-1">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <form action="/internal/operator/berita-medsos/update/{{ $item->id }}" method="POST" enctype="multipart/form-data">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-header">
-                                                <h5 class="modal-title fs-6"><i class="fas fa-pen-to-square me-2 text-warning"></i>Edit Berita Media Sosial</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                            </div>
-                                            <div class="modal-body text-start">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Judul Berita</label>
-                                                    <input type="text" class="form-control" name="judul" value="{{ $item->judul }}" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Kategori Berita <span class="text-danger">*</span></label>
-                                                    <select class="form-select" name="kategori_id" required>
-                                                        <option value="">-- Pilih Kategori --</option>
-                                                        @foreach($kategoriData as $kat)
-                                                            <option value="{{ $kat->id }}" {{ $item->kategori_id == $kat->id ? 'selected' : '' }}>
-                                                                {{ $kat->nama_kategori }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Tanggal & Waktu</label>
-                                                    <input type="datetime-local" class="form-control" name="tanggal" value="{{ \Carbon\Carbon::parse($item->tanggal)->format('Y-m-d\TH:i') }}" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Sumber Akun</label>
-                                                    <input type="text" class="form-control" name="sumber" value="{{ $item->sumber }}" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Link Postingan (Opsional)</label>
-                                                    <input type="url" class="form-control" name="link" value="{{ $item->link }}">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Ganti Foto (Opsional)</label>
-                                                    <input type="file" class="form-control" name="gambar" accept=".jpg,.jpeg,.png">
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
-                                                <button type="submit" class="btn btn-navy btn-sm fw-bold text-white" style="background:var(--navy);">Simpan Perubahan</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
                             @endhasanyrole
                         </tr>
                         @empty
@@ -300,6 +247,63 @@
                 </table>
             </div>
         </div>
+
+<!-- Modal Edit Berita Medsos (di luar tabel & card-box agar tidak tertutup backdrop/terpotong) -->
+@hasanyrole('Operator|Super User')
+@foreach($medsosData as $item)
+<div class="modal fade" id="modalEdit{{ $item->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form action="/internal/operator/berita-medsos/update/{{ $item->id }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title fs-6"><i class="fas fa-pen-to-square me-2 text-warning"></i>Edit Berita Media Sosial</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-start">
+                    <div class="mb-3">
+                        <label class="form-label">Judul Berita</label>
+                        <input type="text" class="form-control" name="judul" value="{{ $item->judul }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Kategori Berita <span class="text-danger">*</span></label>
+                        <select class="form-select" name="kategori_id" required>
+                            <option value="">-- Pilih Kategori --</option>
+                            @foreach($kategoriData as $kat)
+                                <option value="{{ $kat->id }}" {{ $item->kategori_id == $kat->id ? 'selected' : '' }}>
+                                    {{ $kat->nama_kategori }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tanggal & Waktu</label>
+                        <input type="datetime-local" class="form-control" name="tanggal" value="{{ \Carbon\Carbon::parse($item->tanggal)->format('Y-m-d\TH:i') }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Sumber Akun</label>
+                        <input type="text" class="form-control" name="sumber" value="{{ $item->sumber }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Link Postingan (Opsional)</label>
+                        <input type="url" class="form-control" name="link" value="{{ $item->link }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ganti Foto (Opsional)</label>
+                        <input type="file" class="form-control" name="gambar" accept=".jpg,.jpeg,.png">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-navy btn-sm fw-bold text-white" style="background:var(--navy);">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endforeach
+@endhasanyrole
 
 <!-- Modal Tambah Berita Medsos (Hybrid) - Hanya untuk Operator & Super User -->
 @hasanyrole('Operator|Super User')
