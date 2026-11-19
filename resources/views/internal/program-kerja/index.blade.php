@@ -174,11 +174,9 @@
             </div>
             
             <div class="d-flex gap-2 flex-wrap">
-                @hasanyrole('Super User|Sekretariat')
                 <button type="button" class="btn-add" data-bs-toggle="modal" data-bs-target="#modalTambah">
                     <i class="fas fa-plus"></i> Tambah SOP
                 </button>
-                @endhasanyrole
 
                 <button type="button" id="btnExportExcel" class="btn-excel">
                     <i class="fas fa-file-excel"></i> Rekap Excel
@@ -247,7 +245,6 @@
                                 </a>
                             </td>
                             <td class="text-center">
-                                @hasanyrole('Super User|Sekretariat')
                                 <div class="btn-action-group">
                                     <button type="button" class="btn-icon edit" title="Edit Data"
                                         data-bs-toggle="modal"
@@ -264,9 +261,6 @@
                                         <button type="submit" class="btn-icon delete" title="Hapus Data"><i class="fas fa-trash"></i></button>
                                     </form>
                                 </div>
-                                @else
-                                    <span class="text-muted" style="font-size: .8rem;"><i>Tidak ada akses</i></span>
-                                @endhasanyrole
                             </td>
                         </tr>
                         @empty
@@ -283,7 +277,6 @@
         </div>
 
 <!-- ==================== MODAL TAMBAH DATA ==================== -->
-@hasanyrole('Super User|Sekretariat')
 <div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -377,7 +370,6 @@
         </div>
     </div>
 </div>
-@endhasanyrole
 @endsection
 
 @push('scripts')

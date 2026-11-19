@@ -114,7 +114,8 @@ Route::get('/berita/{id}', [BeritaController::class, 'showPublic']);
 Route::get('/media-informasi', [KabarDamkarController::class, 'indexMediaInformasi'])->name('media.informasi');
 Route::get('/sumber-air', [PublicController::class, 'sumberAir']);
 Route::get('/hidrant-kota', [PublicController::class, 'hidrantKota']);
-Route::get('/public-sigap', [PetaController::class, 'sigap']);
+Route::redirect('/public-sigap', '/sigapkar');
+Route::get('/sigapkar', [PetaController::class, 'sigap'])->name('public.sigap');
 Route::view('/waarld', 'layouts.partials.sidebarmenu')->name('tim.profil');
 
 Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman.index');
@@ -990,12 +991,15 @@ Route::get('/api/titik', [PetaController::class, 'apiData']);
 
 // Route Admin Peta SIGAP
 Route::prefix('internal/peta-sigap')->middleware(['auth', LogInternalActivity::class])->group(function () {
-    Route::get('/input', [PetaController::class, 'input']);
-    Route::post('/store', [PetaController::class, 'store']);
     Route::get('/data', [PetaController::class, 'data']);
-    Route::get('/edit/{id}', [PetaController::class, 'edit']);
-    Route::put('/update/{id}', [PetaController::class, 'update']);
-    Route::delete('/hapus/{id}', [PetaController::class, 'destroy']);
+
+    Route::middleware([RoleMiddleware::class.':Pencegahan|Super User'])->group(function () {
+        Route::get('/input', [PetaController::class, 'input']);
+        Route::post('/store', [PetaController::class, 'store']);
+        Route::get('/edit/{id}', [PetaController::class, 'edit']);
+        Route::put('/update/{id}', [PetaController::class, 'update']);
+        Route::delete('/hapus/{id}', [PetaController::class, 'destroy']);
+    });
 });
 
 // ==========================================
