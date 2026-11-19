@@ -376,29 +376,171 @@
 
     @page {
         size: landscape;
-        margin: 0;
+        margin: 6mm 4mm;
     }
     @media print {
         @page {
             size: landscape;
-            margin: 0;
+            margin: 6mm 4mm;
         }
-        .topbar, .sidebar, .sidebar-backdrop, .page-header, .card-header, .card-footer, .tab-kategori,
-        .btn, .dropdown, form, .modal, .action-btn, #globalSuccessAlert, #globalErrorAlert, .d-print-none { display: none !important; }
-        html { background: #fff !important; margin: 0 !important; padding: 0 !important; }
-        body { background-color: white !important; font-size: 9.5pt !important; margin: 0 !important; padding: 1cm !important; box-sizing: border-box !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        .shell { display: block; }
-        .content { padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
-        .card-custom { box-shadow: none !important; border: none !important; border-radius: 0 !important; }
-        .card-body { padding: 0 !important; }
 
-        .rekap-scroll { padding: 0 !important; overflow: visible !important; }
-        .rekap-wrap { min-width: 0 !important; border: none !important; border-radius: 0 !important; box-shadow: none !important; }
-        .table-rekap { width: 100% !important; margin-bottom: 20px; table-layout: auto !important; border-collapse: collapse !important; }
-        .table-rekap thead th { background: #f2f2f2 !important; color: #000 !important; border: 1px solid #000 !important; font-size: 9pt !important; padding: 6px 4px !important; }
-        .table-rekap tbody td, .table-rekap tbody tr.alt td { background: #fff !important; color: #000 !important; border: 1px solid #000 !important; padding: 5px 4px !important; font-size: 8.5pt !important; line-height: 1.35 !important; }
-        .table-rekap tbody td.no-cell { background: #fff !important; color: #000 !important; font-size: 9.5pt !important; font-weight: bold !important; border: 1px solid #000 !important; }
-        th:last-child, td:last-child { display: none !important; }
+        .topbar, .sidebar, .sidebar-backdrop, .page-header, .card-header, .card-footer, .tab-kategori,
+        .table-scroll-nav, .btn, .dropdown, form, .modal, .action-btn, #globalSuccessAlert, #globalErrorAlert,
+        .pagination-container, .pagination, .d-print-none {
+            display: none !important;
+        }
+
+        html, body {
+            background: #fff !important;
+            color: #000 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            font-family: Arial, Helvetica, sans-serif !important;
+        }
+
+        .shell, .content, .card-custom, .card-body, .rekap-scroll, .rekap-wrap {
+            display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            background: transparent !important;
+            overflow: visible !important;
+            height: auto !important;
+            min-height: 0 !important;
+        }
+
+        #print-header {
+            display: block !important;
+            width: 100% !important;
+            margin: 0 0 6px 0 !important;
+            page-break-after: avoid !important;
+            break-after: avoid !important;
+        }
+
+        .table-rekap {
+            display: table !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            table-layout: fixed !important;
+            border-collapse: collapse !important;
+            margin: 0 0 10px 0 !important;
+            background: #fff !important;
+            page-break-inside: auto !important;
+        }
+
+        .table-rekap thead {
+            display: table-header-group !important;
+        }
+
+        .table-rekap tbody {
+            display: table-row-group !important;
+        }
+
+        .table-rekap tr {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        .table-rekap thead th {
+            background: #f1f5f9 !important;
+            color: #000 !important;
+            border: 0.5pt solid #000 !important;
+            font-size: 5.5pt !important;
+            font-weight: 700 !important;
+            padding: 2.5px 1.5px !important;
+            text-align: center !important;
+            vertical-align: middle !important;
+            white-space: normal !important;
+            word-break: break-word !important;
+            line-height: 1.15 !important;
+        }
+
+        .table-rekap tbody td,
+        .table-rekap tbody tr.alt td {
+            background: #fff !important;
+            color: #000 !important;
+            border: 0.5pt solid #000 !important;
+            padding: 2px 1.5px !important;
+            font-size: 5pt !important;
+            line-height: 1.2 !important;
+            white-space: normal !important;
+            word-break: break-word !important;
+            vertical-align: middle !important;
+        }
+
+        .table-rekap tbody td.no-cell {
+            background: #fff !important;
+            color: #000 !important;
+            font-size: 5.5pt !important;
+            font-weight: bold !important;
+            text-align: center !important;
+            border: 0.5pt solid #000 !important;
+            padding: 2px 1px !important;
+        }
+
+        .table-rekap th.col-aksi,
+        .table-rekap td.col-aksi,
+        .table-rekap th:last-child,
+        .table-rekap td:last-child {
+            display: none !important;
+            width: 0 !important;
+        }
+
+        /* 22 Kolom Terbagi Pas 100% Lebar Kertas Landscape */
+        .table-rekap th:nth-child(1),  .table-rekap td:nth-child(1)  { width: 2.2% !important; text-align: center !important; }
+        .table-rekap th:nth-child(2),  .table-rekap td:nth-child(2)  { width: 5.8% !important; text-align: center !important; }
+        .table-rekap th:nth-child(3),  .table-rekap td:nth-child(3)  { width: 4.5% !important; text-align: center !important; }
+        .table-rekap th:nth-child(4),  .table-rekap td:nth-child(4)  { width: 3.5% !important; text-align: center !important; }
+        .table-rekap th:nth-child(5),  .table-rekap td:nth-child(5)  { width: 3.5% !important; text-align: center !important; }
+        .table-rekap th:nth-child(6),  .table-rekap td:nth-child(6)  { width: 3.0% !important; text-align: center !important; }
+        .table-rekap th:nth-child(7),  .table-rekap td:nth-child(7)  { width: 3.0% !important; text-align: center !important; }
+        .table-rekap th:nth-child(8),  .table-rekap td:nth-child(8)  { width: 4.5% !important; text-align: left !important; }
+        .table-rekap th:nth-child(9),  .table-rekap td:nth-child(9)  { width: 4.0% !important; text-align: center !important; }
+        .table-rekap th:nth-child(10), .table-rekap td:nth-child(10) { width: 5.0% !important; text-align: left !important; }
+        .table-rekap th:nth-child(11), .table-rekap td:nth-child(11) { width: 8.0% !important; text-align: left !important; }
+        .table-rekap th:nth-child(12), .table-rekap td:nth-child(12) { width: 4.5% !important; text-align: left !important; }
+        .table-rekap th:nth-child(13), .table-rekap td:nth-child(13) { width: 3.0% !important; text-align: center !important; }
+        .table-rekap th:nth-child(14), .table-rekap td:nth-child(14) { width: 4.0% !important; text-align: center !important; }
+        .table-rekap th:nth-child(15), .table-rekap td:nth-child(15) { width: 4.5% !important; text-align: left !important; }
+        .table-rekap th:nth-child(16), .table-rekap td:nth-child(16) { width: 5.5% !important; text-align: left !important; }
+        .table-rekap th:nth-child(17), .table-rekap td:nth-child(17) { width: 3.0% !important; text-align: center !important; }
+        .table-rekap th:nth-child(18), .table-rekap td:nth-child(18) { width: 3.5% !important; text-align: center !important; }
+        .table-rekap th:nth-child(19), .table-rekap td:nth-child(19) { width: 8.0% !important; text-align: left !important; }
+        .table-rekap th:nth-child(20), .table-rekap td:nth-child(20) { width: 5.0% !important; text-align: left !important; }
+        .table-rekap th:nth-child(21), .table-rekap td:nth-child(21) { width: 6.0% !important; text-align: left !important; }
+        .table-rekap th:nth-child(22), .table-rekap td:nth-child(22) { width: 6.0% !important; text-align: left !important; }
+
+        .table-rekap .text-nowrap {
+            white-space: normal !important;
+        }
+        .table-rekap .cell-text-full,
+        .table-rekap .cell-text-md {
+            min-width: 0 !important;
+            max-width: none !important;
+            width: 100% !important;
+            font-size: 5pt !important;
+            line-height: 1.2 !important;
+            white-space: normal !important;
+            word-break: break-word !important;
+        }
+
+        .table-rekap [x-show="expanded"] {
+            display: inline !important;
+        }
+        .table-rekap [x-show="!expanded"] {
+            display: none !important;
+        }
+        .table-rekap button {
+            display: none !important;
+        }
     }
 </style>
 @endpush
@@ -574,23 +716,29 @@
         <div class="card-body p-0">
 
             <!-- HEADER KHUSUS CETAK PDF -->
-            <div id="print-header" class="d-none d-print-block" style="width: 100%; margin-bottom: 20px;">
-                <div style="display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; margin-bottom: 15px;">
-                    <div style="width: 15% !important; text-align: left !important;">
-                        <img src="/images/jambi.png" style="width: 80px; height: auto;">
-                    </div>
-                    <div style="width: 70% !important; text-align: center !important;">
-                        <div style="font-size: 14pt; color: #000; margin-bottom: 2px; font-family: 'Times New Roman', Times, serif;">PEMERINTAH KOTA JAMBI</div>
-                        <div style="font-size: 16pt; font-weight: bold; color: #000; line-height: 1.1; margin-bottom: 5px; font-family: 'Times New Roman', Times, serif;">DINAS PEMADAM KEBAKARAN<br>DAN PENYELAMATAN</div>
-                        <div style="font-size: 10pt; color: #000; font-family: 'Times New Roman', Times, serif;">Jl. Hos. Cokroaminoto No. 113 Telp. 0741-41171<br>JAMBI</div>
-                    </div>
-                    <div style="width: 15% !important; text-align: right !important;">
-                        <img src="/images/logo.png" style="width: 100px; height: auto; margin-left: auto;">
-                    </div>
+            <div id="print-header" class="d-none d-print-block">
+                <table style="width: 100%; border: none !important; margin-bottom: 4px; border-collapse: collapse;">
+                    <tr>
+                        <td style="width: 65px; border: none !important; padding: 0; text-align: left; vertical-align: middle;">
+                            <img src="/images/jambi.png" style="width: 48px; height: auto;">
+                        </td>
+                        <td style="border: none !important; padding: 0 10px; text-align: center; vertical-align: middle;">
+                            <div style="font-size: 11pt; font-weight: bold; color: #000; font-family: Arial, sans-serif; letter-spacing: 0.04em;">PEMERINTAH KOTA JAMBI</div>
+                            <div style="font-size: 13pt; font-weight: bold; color: #000; font-family: Arial, sans-serif; line-height: 1.15; margin: 2px 0;">DINAS PEMADAM KEBAKARAN DAN PENYELAMATAN</div>
+                            <div style="font-size: 8pt; color: #333; font-family: Arial, sans-serif;">Jl. Hos. Cokroaminoto No. 113 Telp. 0741-41171 Kota Jambi</div>
+                        </td>
+                        <td style="width: 65px; border: none !important; padding: 0; text-align: right; vertical-align: middle;">
+                            <img src="/images/logo.png" style="width: 58px; height: auto;">
+                        </td>
+                    </tr>
+                </table>
+                <div style="border-top: 2px solid #000; border-bottom: 1px solid #000; height: 1px; width: 100%; margin: 3px 0 5px;"></div>
+                <div style="text-align: center; font-weight: bold; font-size: 10pt; color: #000; font-family: Arial, sans-serif; margin-bottom: 2px; text-transform: uppercase;">
+                    REKAPITULASI DATA LAPORAN {{ $isTabFire ? 'KEBAKARAN' : 'NON-KEBAKARAN' }}<span id="printTahun"></span>
                 </div>
-                <div style="border-top: 3px solid black !important; border-bottom: 1px solid black !important; height: 2px !important; width: 100% !important; margin-bottom: 15px !important;"></div>
-                <h3 style="text-align: center !important; font-weight: bold; margin-bottom: 5px; font-size: 16px; color: black; font-family: 'Times New Roman', Times, serif;">REKAPITULASI DATA LAPORAN {{ $isTabFire ? 'KEBAKARAN' : 'NON-KEBAKARAN' }}<span id="printTahun"></span></h3>
-                <p style="text-align: center !important; font-size: 12px; margin-bottom: 15px; color: black; font-family: 'Times New Roman', Times, serif;">Dicetak pada: {{ date('d F Y') }}</p>
+                <div style="text-align: center; font-size: 7.5pt; color: #555; font-family: Arial, sans-serif; margin-bottom: 6px;">
+                    Dicetak pada: {{ date('d F Y') }}
+                </div>
             </div>
 
             <!-- Kontrol Navigasi Geser Kolom Lengkap -->
@@ -623,7 +771,7 @@
                                     <th>Nama Pelapor</th>
                                     <th>No. Tlp Pelapor</th>
                                     <th>Objek Kebakaran</th>
-                                    <th>Lokasi Kebakaran</th>
+                                    <th>Lokasi Kejadian</th>
                                     <th>Nama Korban / KK</th>
                                     <th>Jumlah yang Terdampak (Jiwa)</th>
                                     <th>Petugas atau Warga<br><small style="font-weight: 500; opacity: 0.9;">(Meninggal atau Cidera)</small></th>
@@ -645,8 +793,8 @@
                                     <th>Respon Time</th>
                                     <th>Nama Pelapor</th>
                                     <th>No. Tlp Pelapor</th>
-                                    <th>Objek Penyelamatan / Evakuasi</th>
-                                    <th>Lokasi Penyelamatan / Evakuasi</th>
+                                    <th>Objek Penyelamatan</th>
+                                    <th>Lokasi Kejadian</th>
                                     <th>Nama Korban / KK</th>
                                     <th>Jumlah yang Terdampak (Jiwa)</th>
                                     <th>Petugas atau Warga<br><small style="font-weight: 500; opacity: 0.9;">(Meninggal atau Cidera)</small></th>
@@ -654,7 +802,7 @@
                                     <th>Satuan Tugas</th>
                                     <th>Jumlah Personil</th>
                                     <th>Lama Operasi</th>
-                                    <th>Kronologi Penyelamatan / Evakuasi</th>
+                                    <th>Kronologi Penyelamatan</th>
                                     <th>Hambatan</th>
                                     <th>Sarana yang Digunakan</th>
                                     <th>Tim Quick Respon<br>Pemadam Kebakaran</th>

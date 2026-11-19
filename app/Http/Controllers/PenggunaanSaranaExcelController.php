@@ -5,64 +5,25 @@ namespace App\Http\Controllers;
 use App\Models\PenggunaanSarana;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 /**
  * Cetak Excel: Rekapitulasi Permohonan Penggunaan Sarana.
+ * Menyesuaikan kolom resmi tabel Kelola Penggunaan Sarana di Bidang Pemadaman.
  *
  * URL: /internal/damtan/kelola-penggunaan-sarana/export-excel
- *      /internal/damtan/kelola-penggunaan-sarana/export-excel?tahun=2026
- *
- * Kolom dibaca otomatis dari tabel, jadi tidak perlu menyesuaikan nama field.
- * Filter tahun mengikuti kolom "Tgl Kegiatan" (tgl_pelaksanaan).
+ *      /internal/damtan/kelola-penggunaan-sarana/export-excel?tahun=2026&bulan=1
  */
 class PenggunaanSaranaExcelController extends Controller
 {
-    /** Kolom tabel yang tidak ikut dicetak */
-    private array $sembunyi = ['id', 'updated_at', 'deleted_at'];
-
-    /**
-     * Kolom yang namanya mengandung kata-kata ini dianggap berkas/foto
-     * (surat pemohon, fotocopy KTP, sketsa denah lokasi, dsb.) dan TIDAK ikut dicetak.
-     */
-    private array $kataBerkas = [
-        'surat', 'ktp', 'fotocopy', 'foto', 'sket', 'denah', 'lampiran',
-        'dokumen', 'berkas', 'file', 'gambar', 'upload', 'scan', 'path',
-    ];
-
-    /** True jika kolom berisi berkas/foto (dilihat dari nama kolom atau isi datanya) */
-    private function kolomBerkas(string $nama, $data): bool
-    {
-        $lower = strtolower($nama);
-        foreach ($this->kataBerkas as $kata) {
-            if (str_contains($lower, $kata)) {
-                return true;
-            }
-        }
-
-        // Cadangan: jika isi kolom berupa nama/path file gambar, PDF, atau dokumen
-        foreach ($data as $row) {
-            $v = $row->{$nama};
-            if (is_string($v) && preg_match('/\.(jpe?g|png|gif|webp|bmp|pdf|docx?)$/i', trim($v))) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public function __invoke(Request $request)
     {
-        // Tahun & bulan opsional (?tahun=2026&bulan=1).
         $tahun = $request->query('tahun');
         $tahun = (is_numeric($tahun) && strlen((string) $tahun) === 4) ? (int) $tahun : null;
 
@@ -75,9 +36,7 @@ class PenggunaanSaranaExcelController extends Controller
             9 => 'SEPTEMBER', 10 => 'OKTOBER', 11 => 'NOVEMBER', 12 => 'DESEMBER',
         ];
 
-        $model = new PenggunaanSarana;
-
-        $query = PenggunaanSarana::orderBy('created_at', 'desc');
+        $query = PenggunaanSarana::orderByRaw('COALESCE(tgl_pelaksanaan, created_at) ASC')->orderBy('id', 'asc');
         if ($tahun) {
             $query->whereYear('tgl_pelaksanaan', $tahun);
         }
@@ -86,30 +45,25 @@ class PenggunaanSaranaExcelController extends Controller
         }
         $data = $query->get();
 
-        $kolomDb = array_values(array_diff(
-            Schema::getColumnListing($model->getTable()),
-            $this->sembunyi
-        ));
-
-        // Buang kolom berkas/foto (surat pemohon, fotocopy KTP, sketsa denah lokasi, dsb.)
-        $kolomDb = array_values(array_filter($kolomDb, function ($nama) use ($data) {
-            return ! $this->kolomBerkas($nama, $data);
-        }));
-
-        // Buang kolom ID (mis. pemohon_id, id_pemohon, user_id)
-        $kolomDb = array_values(array_filter($kolomDb, function ($nama) {
-            return ! preg_match('/(^id_|_id$)/i', $nama);
-        }));
-
-        /* ---------- Definisi kolom ---------- */
-        $kolom = [['key' => 'no', 'head' => 'No', 'w' => 6]];
-        foreach ($kolomDb as $nama) {
-            $kolom[] = [
-                'key' => $nama,
-                'head' => Str::headline($nama),
-                'w' => 24,
-            ];
-        }
+        /* ---------- 1. Definisi Kolom Resmi Sesuai Tabel Kelola Penggunaan Sarana ---------- */
+        $kolom = [
+            ['key' => 'no',                     'head' => 'No',                                      'w' => 6,   'al' => 'c'],
+            ['key' => 'nama',                   'head' => 'Nama Pemohon',                            'w' => 24,  'al' => 'l'],
+            ['key' => 'nik',                    'head' => 'NIK',                                     'w' => 20,  'al' => 'c', 'teks' => true],
+            ['key' => 'no_hp',                  'head' => 'No HP/WA',                                'w' => 18,  'al' => 'c', 'teks' => true],
+            ['key' => 'alamat',                 'head' => 'Alamat',                                  'w' => 30,  'al' => 'l'],
+            ['key' => 'jenis_pemohon',          'head' => 'Jenis Pemohon',                           'w' => 18,  'al' => 'c'],
+            ['key' => 'nama_penanggung_jawab',  'head' => 'Nama Penanggung Jawab',                   'w' => 24,  'al' => 'l'],
+            ['key' => 'nama_instansi',          'head' => 'Nama Instansi / Fasum / Perorangan',      'w' => 28,  'al' => 'l'],
+            ['key' => 'alamat_instansi',        'head' => 'Alamat Instansi',                         'w' => 30,  'al' => 'l'],
+            ['key' => 'sarana',                 'head' => 'Sarana yang Diajukan',                    'w' => 24,  'al' => 'l'],
+            ['key' => 'kegunaan',               'head' => 'Kegunaan Sarana',                         'w' => 28,  'al' => 'l'],
+            ['key' => 'nama_kegiatan',          'head' => 'Nama Kegiatan',                           'w' => 24,  'al' => 'l'],
+            ['key' => 'lokasi_kegiatan',        'head' => 'Lokasi Kegiatan',                         'w' => 28,  'al' => 'l'],
+            ['key' => 'tgl_pelaksanaan',        'head' => 'Tanggal Pelaksanaan',                     'w' => 20,  'al' => 'c'],
+            ['key' => 'waktu_pelaksanaan',      'head' => 'Waktu Pelaksanaan',                       'w' => 20,  'al' => 'c', 'teks' => true],
+            ['key' => 'status',                 'head' => 'Status',                                  'w' => 16,  'al' => 'c'],
+        ];
 
         foreach ($kolom as $i => &$k) {
             $k['huruf'] = Coordinate::stringFromColumnIndex($i + 1);
@@ -117,9 +71,9 @@ class PenggunaanSaranaExcelController extends Controller
         unset($k);
         $kolTerakhir = Coordinate::stringFromColumnIndex(count($kolom));
 
-        /* ---------- Workbook ---------- */
+        /* ---------- 2. Buat Workbook ---------- */
         $ss = new Spreadsheet;
-        $ss->getDefaultStyle()->getFont()->setName('Arial')->setSize(11);
+        $ss->getDefaultStyle()->getFont()->setName('Arial')->setSize(10);
         $ws = $ss->getActiveSheet();
         $ws->setTitle('PENGGUNAAN SARANA');
 
@@ -127,102 +81,138 @@ class PenggunaanSaranaExcelController extends Controller
             $ws->getColumnDimension($k['huruf'])->setWidth($k['w']);
         }
 
-        // Judul
-        $ws->mergeCells("A1:{$kolTerakhir}2");
-        $periodeJudul = ($bulan ? ' BULAN '.$daftarNamaBulan[$bulan] : '').($tahun ? ' TAHUN '.$tahun : '');
-        $ws->setCellValue('A1', 'REKAPITULASI PERMOHONAN PENGGUNAAN SARANA'.$periodeJudul);
+        // Kop Header
+        $ws->mergeCells("A1:{$kolTerakhir}1");
+        $ws->setCellValue('A1', 'PEMERINTAH KOTA JAMBI');
+        $ws->getStyle('A1')->applyFromArray([
+            'font' => ['name' => 'Arial', 'bold' => true, 'size' => 12],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+        ]);
+
+        $ws->mergeCells("A2:{$kolTerakhir}2");
+        $ws->setCellValue('A2', 'DINAS PEMADAM KEBAKARAN DAN PENYELAMATAN');
+        $ws->getStyle('A2')->applyFromArray([
+            'font' => ['name' => 'Arial', 'bold' => true, 'size' => 14],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+        ]);
+
         $ws->mergeCells("A3:{$kolTerakhir}3");
-        $ws->setCellValue('A3', 'Dicetak pada: '.Carbon::now()->locale('id')->translatedFormat('d F Y'));
-        $ws->getStyle("A1:{$kolTerakhir}3")->applyFromArray([
-            'font' => ['name' => 'Arial', 'bold' => true, 'size' => 16],
-            'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical' => Alignment::VERTICAL_CENTER,
-            ],
+        $ws->setCellValue('A3', 'REKAPITULASI PERMOHONAN PENGGUNAAN SARANA');
+        $ws->getStyle('A3')->applyFromArray([
+            'font' => ['name' => 'Arial', 'bold' => true, 'size' => 12],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
         ]);
-        $ws->getStyle('A3')->getFont()->setSize(11)->setBold(false);
 
-        // Header tabel (baris 5)
+        $ws->mergeCells("A4:{$kolTerakhir}4");
+        $periodeJudul = ($bulan ? ('BULAN '.$daftarNamaBulan[$bulan].' ') : '').($tahun ? ('TAHUN '.$tahun) : 'SEMUA DATA');
+        $ws->setCellValue('A4', 'PERIODE: '.$periodeJudul);
+        $ws->getStyle('A4')->applyFromArray([
+            'font' => ['name' => 'Arial', 'bold' => true, 'italic' => true, 'size' => 11],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+        ]);
+
+        $ws->getRowDimension(1)->setRowHeight(20);
+        $ws->getRowDimension(2)->setRowHeight(24);
+        $ws->getRowDimension(3)->setRowHeight(22);
+        $ws->getRowDimension(4)->setRowHeight(20);
+        $ws->getRowDimension(5)->setRowHeight(10); // jeda kosong
+
+        // Header Tabel (Baris 6) - Tanpa Warna Latar
         foreach ($kolom as $k) {
-            $ws->setCellValue($k['huruf'].'5', $k['head']);
+            $ws->setCellValue($k['huruf'].'6', $k['head']);
         }
-        $ws->getStyle("A5:{$kolTerakhir}5")->applyFromArray([
-            'font' => ['name' => 'Arial', 'bold' => true, 'size' => 12, 'color' => ['argb' => 'FFFFFFFF']],
-            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => 'FFB91C1C']],
+        $ws->getStyle("A6:{$kolTerakhir}6")->applyFromArray([
+            'font' => ['name' => 'Arial', 'bold' => true, 'size' => 10],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
                 'vertical' => Alignment::VERTICAL_CENTER,
                 'wrapText' => true,
             ],
-        ]);
-        $ws->getRowDimension(5)->setRowHeight(32);
-
-        /* ---------- Isi data ---------- */
-        $r = 6;
-        foreach ($data as $i => $row) {
-            foreach ($kolom as $k) {
-                $sel = $k['huruf'].$r;
-
-                if ($k['key'] === 'no') {
-                    $ws->setCellValue($sel, $i + 1);
-
-                    continue;
-                }
-
-                $v = $row->{$k['key']};
-
-                if ($v instanceof \DateTimeInterface) {
-                    $v = Carbon::instance($v)->locale('id')->translatedFormat(
-                        $k['key'] === 'created_at' ? 'd F Y' : 'd F Y'
-                    );
-                } elseif (is_array($v) || is_object($v)) {
-                    $v = json_encode($v, JSON_UNESCAPED_UNICODE);
-                } elseif ($k['key'] === 'status_permohonan' && ($v === null || $v === '')) {
-                    $v = 'Pending';
-                } elseif ($k['key'] === 'jenis_event' || Str::startsWith($k['key'], 'jenis')) {
-                    $v = $v ? ucfirst(str_replace('_', ' ', (string) $v)) : '-';
-                }
-
-                if ($v === null || $v === '') {
-                    $v = '-';
-                }
-
-                // Semua disimpan sebagai teks agar angka 0 di depan (NIK, No HP, dsb.) tidak hilang
-                $ws->setCellValueExplicit($sel, (string) $v, DataType::TYPE_STRING);
-            }
-            $r++;
-        }
-
-        $terakhir = max(6, $r - 1);
-
-        if ($data->isEmpty()) {
-            $ws->mergeCells("A6:{$kolTerakhir}6");
-            $ws->setCellValue('A6', $tahun
-                ? 'Belum ada data pengajuan Penggunaan Sarana pada tahun '.$tahun.'.'
-                : 'Belum ada data pengajuan Penggunaan Sarana.');
-        }
-
-        /* ---------- Gaya sel data ---------- */
-        $ws->getStyle("A5:{$kolTerakhir}{$terakhir}")->getBorders()->getAllBorders()
-            ->setBorderStyle(Border::BORDER_THIN);
-
-        $ws->getStyle("A6:{$kolTerakhir}{$terakhir}")->applyFromArray([
-            'font' => ['name' => 'Arial', 'size' => 11],
-            'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_LEFT,
-                'vertical' => Alignment::VERTICAL_CENTER,
-                'wrapText' => true,
+            'borders' => [
+                'allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => '000000']],
             ],
         ]);
+        $ws->getRowDimension(6)->setRowHeight(36);
 
-        // Kolom No rata tengah
-        $ws->getStyle("A6:A{$terakhir}")->getAlignment()
-            ->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        /* ---------- 3. Isi Data (Baris 7 ke Bawah) ---------- */
+        $baris = 7;
+        if ($data->isEmpty()) {
+            $ws->mergeCells("A7:{$kolTerakhir}7");
+            $periodeTeks = $bulan ? ('bulan '.$daftarNamaBulan[$bulan].' '.$tahun) : ($tahun ? ('pada tahun '.$tahun) : '');
+            $ws->setCellValue('A7', 'Belum ada data permohonan penggunaan sarana '.$periodeTeks.'.');
+            $ws->getStyle("A7:{$kolTerakhir}7")->applyFromArray([
+                'font' => ['name' => 'Arial', 'italic' => true, 'size' => 10],
+                'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+                'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => '000000']]],
+            ]);
+            $ws->getRowDimension(7)->setRowHeight(28);
+            $terakhir = 7;
+        } else {
+            foreach ($data as $i => $row) {
+                $tglPelaksanaan = $row->tgl_pelaksanaan
+                    ? Carbon::parse($row->tgl_pelaksanaan)->locale('id')->translatedFormat('d F Y')
+                    : '-';
 
-        // Header tetap terlihat saat scroll
-        $ws->freezePane('A6');
+                $waktu = (! empty($row->waktu_mulai))
+                    ? (substr((string) $row->waktu_mulai, 0, 5).' - '.substr((string) ($row->waktu_selesai ?? ''), 0, 5).' WIB')
+                    : '-';
 
-        /* ---------- Pengaturan cetak ---------- */
+                $barisData = [
+                    'no' => $i + 1,
+                    'nama' => $row->nama ?? '-',
+                    'nik' => $row->nik ?? '-',
+                    'no_hp' => $row->no_hp ?? '-',
+                    'alamat' => $row->alamat ?? '-',
+                    'jenis_pemohon' => ucfirst($row->jenis_pemohon ?? '-'),
+                    'nama_penanggung_jawab' => $row->nama_penanggung_jawab ?? '-',
+                    'nama_instansi' => $row->nama_instansi ?? '-',
+                    'alamat_instansi' => $row->alamat_instansi ?? '-',
+                    'sarana' => $row->sarana ?? '-',
+                    'kegunaan' => $row->kegunaan ?? '-',
+                    'nama_kegiatan' => $row->nama_kegiatan ?? '-',
+                    'lokasi_kegiatan' => $row->lokasi_kegiatan ?? '-',
+                    'tgl_pelaksanaan' => $tglPelaksanaan,
+                    'waktu_pelaksanaan' => $waktu,
+                    'status' => ucfirst($row->status ?? 'Pending'),
+                ];
+
+                foreach ($kolom as $k) {
+                    $sel = $k['huruf'].$baris;
+                    $val = $barisData[$k['key']] ?? '-';
+
+                    if (! empty($k['teks'])) {
+                        $ws->setCellValueExplicit($sel, (string) $val, DataType::TYPE_STRING);
+                    } else {
+                        $ws->setCellValue($sel, $val);
+                    }
+                }
+
+                $ws->getRowDimension($baris)->setRowHeight(-1);
+                $baris++;
+            }
+            $terakhir = $baris - 1;
+
+            // Border & Style Semua Sel Data
+            $rentangData = "A7:{$kolTerakhir}{$terakhir}";
+            $ws->getStyle($rentangData)->applyFromArray([
+                'font' => ['name' => 'Arial', 'size' => 10],
+                'alignment' => [
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                    'wrapText' => true,
+                ],
+                'borders' => [
+                    'allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => '000000']],
+                ],
+            ]);
+
+            // Set Alignment Rata Kiri atau Rata Tengah per Kolom
+            foreach ($kolom as $k) {
+                $align = ($k['al'] ?? 'c') === 'l' ? Alignment::HORIZONTAL_LEFT : Alignment::HORIZONTAL_CENTER;
+                $ws->getStyle("{$k['huruf']}7:{$k['huruf']}{$terakhir}")->getAlignment()->setHorizontal($align);
+            }
+        }
+
+        /* ---------- 4. Pengaturan Cetak ---------- */
         $ws->getPageSetup()
             ->setOrientation(PageSetup::ORIENTATION_LANDSCAPE)
             ->setPaperSize(PageSetup::PAPERSIZE_FOLIO)
@@ -230,11 +220,11 @@ class PenggunaanSaranaExcelController extends Controller
             ->setFitToWidth(1)
             ->setFitToHeight(0)
             ->setHorizontalCentered(true)
-            ->setRowsToRepeatAtTopByStartAndEnd(5, 5)
+            ->setRowsToRepeatAtTopByStartAndEnd(6, 6)
             ->setPrintArea("A1:{$kolTerakhir}{$terakhir}");
-        $ws->getPageMargins()->setLeft(0.25)->setRight(0.25)->setTop(0.5)->setBottom(0.5);
+        $ws->getPageMargins()->setLeft(0.25)->setRight(0.25)->setTop(0.4)->setBottom(0.4);
 
-        /* ---------- Download ---------- */
+        /* ---------- 5. Download ---------- */
         $bulanPart = $bulan ? sprintf('%02d_', $bulan) : '';
         $namaFile = 'Rekap_Penggunaan_Sarana_'.($tahun ? $tahun.'_' : '').$bulanPart.date('Ymd').'.xlsx';
 
