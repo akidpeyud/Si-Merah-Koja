@@ -287,7 +287,7 @@
 @endpush
 
 @section('content')
-@hasanyrole('Super User|Operator|User')
+@hasanyrole('Super User|Pencegahan')
 
     <!-- Header Section -->
     <div class="page-header-box">
