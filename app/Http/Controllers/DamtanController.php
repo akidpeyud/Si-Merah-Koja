@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\Evakuasi2026Import;
+use App\Imports\EvakuasiLengkapImport;
+use App\Imports\LaporanKebakaran2026Import;
+use App\Imports\LaporanKebakaranBulananImport;
 use App\Models\LaporanPenyelamatan;
 use App\Models\LpDokumentasi;
 use App\Models\LpKategoriKhusus;
@@ -14,6 +18,8 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class DamtanController extends Controller
 {
@@ -680,6 +686,119 @@ class DamtanController extends Controller
         $laporan->delete();
 
         return redirect()->back()->with('success', 'Data Laporan berhasil dihapus secara permanen!');
+    }
+
+    /**
+     * 8. Impor Data Laporan Kebakaran atau Penyelamatan dari File Excel / CSV.
+     */
+    public function importExcel(Request $request)
+    {
+        if (! auth()->user()->hasAnyRole(['Super User', 'Damtan'])) {
+            abort(403, 'Anda tidak memiliki hak akses untuk mengimpor data laporan.');
+        }
+
+        $request->validate([
+            'kategori_impor' => 'required|in:kebakaran,non-kebakaran',
+            'file_excel' => 'required|file|mimes:xlsx,xls,csv,txt|max:15360',
+        ], [
+            'kategori_impor.required' => 'Pilih kategori laporan terlebih dahulu.',
+            'kategori_impor.in' => 'Kategori laporan tidak valid.',
+            'file_excel.required' => 'Pilih file Excel (.xlsx / .xls / .csv) terlebih dahulu.',
+            'file_excel.mimes' => 'Format file harus berupa Excel (.xlsx / .xls) atau CSV (.csv).',
+            'file_excel.max' => 'Ukuran file maksimal adalah 15MB.',
+        ]);
+
+        $file = $request->file('file_excel');
+        $filePath = $file->getRealPath();
+        $userId = auth()->id() ?? 1;
+        $kategori = $request->input('kategori_impor');
+
+        try {
+            $availableSheets = [];
+            try {
+                $reader = IOFactory::createReaderForFile($filePath);
+                $availableSheets = $reader->listWorksheetNames($filePath);
+            } catch (\Throwable $e) {
+                // Abaikan jika pembaca sheet spesifik gagal (misal file CSV polos)
+            }
+
+            $totalDisimpan = 0;
+            $totalDuplikat = 0;
+            $totalDilewati = 0;
+
+            if ($kategori === 'kebakaran') {
+                $importer = new LaporanKebakaran2026Import(
+                    userId: $userId,
+                    dryRun: false,
+                    availableSheets: $availableSheets
+                );
+                Excel::import($importer, $file);
+
+                foreach ($importer->sheetInstances as $inst) {
+                    $totalDisimpan += $inst->totalDisimpan;
+                    $totalDuplikat += $inst->totalDuplikat;
+                    $totalDilewati += $inst->totalDilewati;
+                }
+
+                // Fallback jika format bulanan tunggal
+                if ($totalDisimpan === 0 && ! empty($availableSheets)) {
+                    $bulananImporter = new LaporanKebakaranBulananImport(
+                        userId: $userId,
+                        allSheets: true,
+                        availableSheets: $availableSheets
+                    );
+                    Excel::import($bulananImporter, $file);
+                    $totalDisimpan = $bulananImporter->totalDisimpan;
+                    $totalDuplikat = $bulananImporter->totalDuplikat;
+                    $totalDilewati = $bulananImporter->totalDilewati;
+                }
+
+                $tabTarget = 'kebakaran';
+                $namaLabel = 'Laporan Kebakaran';
+            } else {
+                $importer = new EvakuasiLengkapImport(
+                    userId: $userId,
+                    dryRun: false,
+                    availableSheets: $availableSheets
+                );
+                Excel::import($importer, $file);
+
+                foreach ($importer->sheetInstances as $inst) {
+                    $totalDisimpan += $inst->totalDisimpan;
+                    $totalDuplikat += $inst->totalDuplikat;
+                    $totalDilewati += $inst->totalDilewati;
+                }
+
+                // Fallback jika format mingguan sederhana (10-12 kolom)
+                if ($totalDisimpan === 0 && ! empty($availableSheets)) {
+                    $evakuasi2026Importer = new Evakuasi2026Import(
+                        userId: $userId,
+                        allSheets: true,
+                        availableSheets: $availableSheets
+                    );
+                    Excel::import($evakuasi2026Importer, $file);
+                    $totalDisimpan = $evakuasi2026Importer->totalDisimpan;
+                    $totalDuplikat = $evakuasi2026Importer->totalDuplikat;
+                    $totalDilewati = $evakuasi2026Importer->totalDilewati;
+                }
+
+                $tabTarget = 'non-kebakaran';
+                $namaLabel = 'Laporan Penyelamatan (Non-Kebakaran)';
+            }
+
+            $pesan = "Impor {$namaLabel} selesai: {$totalDisimpan} data berhasil disimpan.";
+            if ($totalDuplikat > 0) {
+                $pesan .= " ({$totalDuplikat} data sudah ada/dilewati).";
+            }
+
+            return redirect()->route('damtan.laporan.index', ['tab' => $tabTarget])
+                ->with('success', $pesan);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return redirect()->route('damtan.laporan.index', ['tab' => $kategori])
+                ->with('error', 'Gagal mengimpor file Excel: '.$e->getMessage());
+        }
     }
 
     // ==========================================

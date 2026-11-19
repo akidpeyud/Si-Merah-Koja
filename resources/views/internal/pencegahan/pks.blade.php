@@ -241,6 +241,9 @@
             <a href="{{ route('pks.create') }}" class="btn-tool navy">
                 <i class="fas fa-plus"></i> Tambah Data
             </a>
+            <button type="button" class="btn-import-excel" data-bs-toggle="modal" data-bs-target="#modalImportPencegahan">
+                <i class="fas fa-file-import"></i> Impor Excel
+            </button>
             @endhasanyrole
 
             <!-- DROPDOWN CETAK EXCEL -->
@@ -445,6 +448,9 @@
             </tbody>
         </table>
     </div>
+
+@include('internal.pencegahan.partials.import_modal', ['modul' => 'pks', 'judul' => 'Perjanjian Kerjasama (PKS)'])
+@include('internal.pencegahan.partials.table_optimizer')
 @endsection
 
 @push('scripts')

@@ -218,12 +218,15 @@
             {{-- Toolbar disembunyikan di tab Semua Data --}}
             @unless(Request::is('internal/pencegahan/inspeksi-kebakaran'))
             <div class="toolbar">
-                <!-- TOMBOL TAMBAH HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
+                <!-- TOMBOL TAMBAH & IMPOR HANYA UNTUK PENCEGAHAN DAN SUPER USER -->
                 @hasanyrole('Pencegahan|Super User')
                     @if(Request::is('internal/pencegahan/inspeksi-kebakaran/bangunan*'))
                     <a href="/internal/pencegahan/inspeksi-kebakaran/bangunan/tambah" class="btn-tool navy">
                         <i class="fas fa-plus"></i> Tambah Data
                     </a>
+                    <button type="button" class="btn-import-excel" data-bs-toggle="modal" data-bs-target="#modalImportPencegahan">
+                        <i class="fas fa-file-import"></i> Impor Excel
+                    </button>
                     @endif
                 @endhasanyrole
 
@@ -528,6 +531,11 @@
             </table>
         </div>
         @endif
+
+@if(Request::is('internal/pencegahan/inspeksi-kebakaran/bangunan*'))
+    @include('internal.pencegahan.partials.import_modal', ['modul' => 'inspeksi-bangunan', 'judul' => 'Inspeksi Bangunan Gedung & Lingkungan'])
+@endif
+@include('internal.pencegahan.partials.table_optimizer')
 @endsection
 
 @push('scripts')

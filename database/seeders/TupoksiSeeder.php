@@ -20,14 +20,20 @@ class TupoksiSeeder extends Seeder
         }
 
         // 1. Dokumen PDF Resmi Tupoksi
-        $pdfFileName = 'SOTK_Dinas_Pemadam_Kebakaran_dan_Penyelamatan_Kota_Jambi_Perwal_50_2025 (1).pdf';
-        $pdfSource = storage_path('app/public/seed-files/cascade_tupoksi/'.$pdfFileName);
+        $pdfFileName = 'SOTK_Dinas_Pemadam_Kebakaran_dan_Penyelamatan_Kota_Jambi_Perwal_50_2025_gabungan.pdf';
+        $pdfSource = storage_path('app/public/seed-files/tupoksi/'.$pdfFileName);
+        if (! File::exists($pdfSource)) {
+            $pdfSource = public_path('storage/seed-files/tupoksi/'.$pdfFileName);
+        }
+        if (! File::exists($pdfSource)) {
+            $pdfSource = storage_path('app/public/seed-files/cascade_tupoksi/'.$pdfFileName);
+        }
         if (! File::exists($pdfSource)) {
             $pdfSource = public_path('storage/seed-files/cascade_tupoksi/'.$pdfFileName);
         }
 
         $pdfDestination = storage_path('app/public/profil-instansi/tupoksi/'.$pdfFileName);
-        if (File::exists($pdfSource) && ! File::exists($pdfDestination)) {
+        if (File::exists($pdfSource)) {
             File::copy($pdfSource, $pdfDestination);
         }
 

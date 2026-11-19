@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Input Data Penyelamatan')
+@section('title', 'Input Data Kebakaran dan Penyelamatan')
 
 {{-- ==================== CSS KHUSUS HALAMAN INI ==================== --}}
 @push('styles')
@@ -136,7 +136,7 @@
 
 <div class="page-head d-flex flex-wrap justify-content-between align-items-start gap-3">
     <div>
-        <h1>Form Penginputan Data Penyelamatan</h1>
+        <h1>Form Penginputan Data Kebakaran dan Penyelamatan</h1>
         <p>Bagian Pemadaman &amp; Penyelamatan - Disdamkartan Kota Jambi.</p>
     </div>
     <a href="/internal/damtan/data-laporan" class="btn-custom-light">

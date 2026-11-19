@@ -12,9 +12,15 @@
             <a href="/" aria-label="SIMERAH KOJA, beranda">
                 <img src="/images/jambi.png" alt="Logo Pemkot Jambi">
             </a>
-            <a href="/" title="Beranda">
-                <img src="/images/logo.png" alt="Logo Damkar">
-            </a>
+            @if(request()->is('/'))
+                <a href="/login" title="Login Internal Pegawai">
+                    <img src="/images/logo.png" alt="Logo Damkar">
+                </a>
+            @else
+                <a href="/" title="SIMERAH KOJA, beranda">
+                    <img src="/images/logo.png" alt="Logo Damkar">
+                </a>
+            @endif
             <a href="javascript:void(0)" aria-label="Logo Redkar" style="pointer-events: none; cursor: default;">
                 <img src="/images/logo-redkar.png" alt="Logo Redkar">
             </a>
@@ -50,7 +56,7 @@
                     </ul>
                 </li>
 
-                <li><a class="menu-link {{ request()->is('public-sigap*') ? 'is-active' : '' }}" href="/public-sigap">Sigapkar</a></li>
+                <li><a class="menu-link {{ request()->is('sigapkar*') ? 'is-active' : '' }}" href="/sigapkar">Sigapkar</a></li>
 
                 <li class="has-drop {{ request()->is('sop*') ? 'current' : '' }}">
                     <button class="menu-trigger" type="button" aria-expanded="false">SOP <i class="fas fa-chevron-down"></i></button>
@@ -149,4 +155,5 @@
             </ul>
         </div>
     </nav>
+    <div class="progress" id="progress" aria-hidden="true"></div>
 </header>

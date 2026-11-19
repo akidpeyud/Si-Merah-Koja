@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Exports\HidranExport;
 use App\Exports\HidranKotaExport;
 use App\Exports\PerbaikanKendaraanExport;
+use App\Exports\PerbaikanKendaraanTemplateExport;
+use App\Imports\PerbaikanKendaraanImport;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -1888,6 +1890,43 @@ class SapraController extends Controller
         DB::table('perbaikan_kendaraans')->where('id', $id)->delete();
 
         return redirect()->back()->with('success', 'Data perbaikan kendaraan operasional berhasil dihapus!');
+    }
+
+    public function importPerbaikanKendaraan(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|file|mimes:xlsx,xls,csv|max:10240',
+        ], [
+            'file_excel.required' => 'Pilih file Excel yang akan diimpor.',
+            'file_excel.mimes' => 'Format file harus berupa Excel (.xlsx atau .xls) atau CSV.',
+            'file_excel.max' => 'Ukuran file maksimal 10 MB.',
+        ]);
+
+        try {
+            $import = new PerbaikanKendaraanImport;
+            Excel::import($import, $request->file('file_excel'));
+
+            $msg = "Impor data perbaikan kendaraan selesai! {$import->insertedCount} data baru ditambahkan";
+            if ($import->updatedCount > 0) {
+                $msg .= ", {$import->updatedCount} data lama diperbarui (anti-duplikasi)";
+            }
+            if ($import->skippedCount > 0) {
+                $msg .= ", {$import->skippedCount} baris tidak valid dilewati";
+            }
+            $msg .= '.';
+
+            return redirect()->back()->with('success', $msg);
+        } catch (\Throwable $e) {
+            return redirect()->back()->with('error', 'Gagal mengimpor file Excel: '.$e->getMessage());
+        }
+    }
+
+    public function downloadTemplatePerbaikan()
+    {
+        return Excel::download(
+            new PerbaikanKendaraanTemplateExport,
+            'Template_Impor_Perbaikan_Kendaraan.xlsx'
+        );
     }
 
     /**

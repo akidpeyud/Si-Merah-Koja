@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -59,8 +59,8 @@ class RekapExcelController extends Controller
 
         $query = DB::table('rekap_layanan')
             ->whereIn('kategori', $keys)
-            ->orderBy('tanggal', 'desc')
-            ->orderBy('id', 'desc');
+            ->orderBy('tanggal', 'asc')
+            ->orderBy('id', 'asc');
 
         if ($tahun) {
             $query->whereYear('tanggal', $tahun);
@@ -79,114 +79,155 @@ class RekapExcelController extends Controller
         $colLabel = $isObjek ? 'Objek Terbakar' : 'Jenis Layanan';
 
         $spreadsheet = new Spreadsheet;
+        $spreadsheet->getDefaultStyle()->getFont()->setName('Arial')->setSize(10);
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle(substr($sheetTitle, 0, 31));
 
-        // Header Instansi
+        // Header Instansi (Kop)
         $sheet->mergeCells('A1:G1');
         $sheet->setCellValue('A1', 'PEMERINTAH KOTA JAMBI');
+        $sheet->getStyle('A1')->applyFromArray([
+            'font' => ['name' => 'Arial', 'bold' => true, 'size' => 12],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+        ]);
+
         $sheet->mergeCells('A2:G2');
         $sheet->setCellValue('A2', 'DINAS PEMADAM KEBAKARAN DAN PENYELAMATAN');
+        $sheet->getStyle('A2')->applyFromArray([
+            'font' => ['name' => 'Arial', 'bold' => true, 'size' => 14],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+        ]);
+
         $sheet->mergeCells('A3:G3');
-        $sheet->setCellValue('A3', 'Jl. Hos. Cokroaminoto No. 113 Telp. 0741-41171 Kota Jambi');
+        $sheet->setCellValue('A3', $titleJudul);
+        $sheet->getStyle('A3')->applyFromArray([
+            'font' => ['name' => 'Arial', 'bold' => true, 'size' => 12],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+        ]);
 
-        $sheet->mergeCells('A5:G5');
-        $periodeJudul = ($bulan ? " BULAN {$daftarNamaBulan[$bulan]}" : '').($tahun ? " TAHUN {$tahun}" : '');
-        if (! $bulan && ! $tahun) {
-            $periodeJudul = ' (SEMUA TAHUN)';
-        }
-        $judulLengkap = $titleJudul.$periodeJudul;
-        $sheet->setCellValue('A5', $judulLengkap);
+        $sheet->mergeCells('A4:G4');
+        $periodeJudul = ($bulan ? ('BULAN '.$daftarNamaBulan[$bulan].' ') : '').($tahun ? ('TAHUN '.$tahun) : 'SEMUA DATA');
+        $sheet->setCellValue('A4', 'PERIODE: '.$periodeJudul);
+        $sheet->getStyle('A4')->applyFromArray([
+            'font' => ['name' => 'Arial', 'bold' => true, 'italic' => true, 'size' => 11],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+        ]);
 
-        $sheet->getStyle('A1:A3')->getFont()->setBold(true)->setSize(11);
-        $sheet->getStyle('A2')->getFont()->setSize(13);
-        $sheet->getStyle('A5')->getFont()->setBold(true)->setSize(12);
-        $sheet->getStyle('A1:G5')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getRowDimension(1)->setRowHeight(20);
+        $sheet->getRowDimension(2)->setRowHeight(24);
+        $sheet->getRowDimension(3)->setRowHeight(22);
+        $sheet->getRowDimension(4)->setRowHeight(20);
+        $sheet->getRowDimension(5)->setRowHeight(10); // jeda kosong
 
-        // Header Tabel
-        $headers = ['No', 'Tanggal Kejadian', $colLabel, 'Jumlah Kejadian', 'Kecamatan', 'Lokasi / Alamat', 'Keterangan'];
+        // Header Tabel (Baris 6) - Sesuai Kolom Tabel CRUD Web & Tanpa Warna Latar
+        $headers = [
+            ['key' => 'no',        'head' => 'No',             'w' => 6],
+            ['key' => 'bulan',     'head' => 'Bulan',          'w' => 18],
+            ['key' => 'kategori',  'head' => $colLabel,        'w' => 26],
+            ['key' => 'jumlah',    'head' => 'Jumlah',         'w' => 12],
+            ['key' => 'kecamatan', 'head' => 'Kecamatan',      'w' => 20],
+            ['key' => 'lokasi',    'head' => 'Lokasi / Alamat', 'w' => 32],
+            ['key' => 'keterangan', 'head' => 'Keterangan',     'w' => 30],
+        ];
         $cols = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
 
-        $rowIdx = 7;
+        $rowIdx = 6;
         foreach ($headers as $i => $h) {
-            $sheet->setCellValue($cols[$i].$rowIdx, $h);
+            $colLetter = $cols[$i];
+            $sheet->setCellValue($colLetter.$rowIdx, $h['head']);
+            $sheet->getColumnDimension($colLetter)->setWidth($h['w']);
         }
 
-        $sheet->getStyle('A7:G7')->applyFromArray([
-            'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
-            'fill' => [
-                'fillType' => Fill::FILL_SOLID,
-                'startColor' => ['rgb' => '163A63'],
-            ],
+        $sheet->getStyle('A6:G6')->applyFromArray([
+            'font' => ['name' => 'Arial', 'bold' => true, 'size' => 10],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
                 'vertical' => Alignment::VERTICAL_CENTER,
+                'wrapText' => true,
+            ],
+            'borders' => [
+                'allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => '000000']],
             ],
         ]);
-        $sheet->getRowDimension(7)->setRowHeight(26);
+        $sheet->getRowDimension(6)->setRowHeight(36);
 
-        // Data Rows
-        $rowIdx = 8;
+        // Data Rows (Baris 7 ke Bawah) - Tanpa Warna Latar
+        $rowIdx = 7;
         $totalKejadian = 0;
-        foreach ($data as $idx => $r) {
-            $sheet->setCellValue('A'.$rowIdx, $idx + 1);
-            $sheet->setCellValue('B'.$rowIdx, Carbon::parse($r->tanggal)->translatedFormat('d M Y'));
-            $sheet->setCellValue('C'.$rowIdx, $kategoriMap[$r->kategori] ?? $r->kategori);
-            $sheet->setCellValue('D'.$rowIdx, $r->jumlah);
-            $sheet->setCellValue('E'.$rowIdx, $r->kecamatan ?: '-');
-            $sheet->setCellValue('F'.$rowIdx, $r->lokasi ?: '-');
-            $sheet->setCellValue('G'.$rowIdx, $r->keterangan ?: '-');
 
-            $totalKejadian += (int) $r->jumlah;
+        if ($data->isEmpty()) {
+            $sheet->mergeCells('A7:G7');
+            $periodeTeks = $bulan ? ('bulan '.$daftarNamaBulan[$bulan].' '.$tahun) : ($tahun ? ('pada tahun '.$tahun) : '');
+            $sheet->setCellValue('A7', 'Belum ada data rekap '.$periodeTeks.'.');
+            $sheet->getStyle('A7:G7')->applyFromArray([
+                'font' => ['name' => 'Arial', 'italic' => true, 'size' => 10],
+                'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+                'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => '000000']]],
+            ]);
+            $sheet->getRowDimension(7)->setRowHeight(28);
+            $lastRow = 7;
+        } else {
+            foreach ($data as $idx => $r) {
+                $bulanStr = $r->tanggal ? Carbon::parse($r->tanggal)->locale('id')->translatedFormat('F Y') : '-';
+                $sheet->setCellValue('A'.$rowIdx, $idx + 1);
+                $sheet->setCellValue('B'.$rowIdx, $bulanStr);
+                $sheet->setCellValue('C'.$rowIdx, $kategoriMap[$r->kategori] ?? $r->kategori);
+                $sheet->setCellValue('D'.$rowIdx, (int) $r->jumlah);
+                $sheet->setCellValue('E'.$rowIdx, $r->kecamatan ?: '-');
+                $sheet->setCellValue('F'.$rowIdx, $r->lokasi ?: '-');
+                $sheet->setCellValue('G'.$rowIdx, $r->keterangan ?: '-');
 
-            // Zebra color
-            if ($idx % 2 === 1) {
-                $sheet->getStyle("A{$rowIdx}:G{$rowIdx}")->getFill()->applyFromArray([
-                    'fillType' => Fill::FILL_SOLID,
-                    'startColor' => ['rgb' => 'F1F5F9'],
-                ]);
+                $totalKejadian += (int) $r->jumlah;
+                $sheet->getRowDimension($rowIdx)->setRowHeight(-1);
+                $rowIdx++;
             }
 
-            $rowIdx++;
-        }
+            // Baris Total - Tanpa Warna Latar
+            $sheet->mergeCells("A{$rowIdx}:C{$rowIdx}");
+            $sheet->setCellValue("A{$rowIdx}", 'TOTAL KEJADIAN');
+            $sheet->setCellValue("D{$rowIdx}", $totalKejadian);
+            $sheet->setCellValue("E{$rowIdx}", '');
+            $sheet->setCellValue("F{$rowIdx}", '');
+            $sheet->setCellValue("G{$rowIdx}", '');
 
-        // Baris Total
-        $sheet->mergeCells("A{$rowIdx}:C{$rowIdx}");
-        $sheet->setCellValue("A{$rowIdx}", 'TOTAL KEJADIAN');
-        $sheet->setCellValue("D{$rowIdx}", $totalKejadian);
-        $sheet->setCellValue("E{$rowIdx}", '');
-        $sheet->setCellValue("F{$rowIdx}", '');
-        $sheet->setCellValue("G{$rowIdx}", '');
+            $sheet->getStyle("A{$rowIdx}:G{$rowIdx}")->applyFromArray([
+                'font' => ['name' => 'Arial', 'bold' => true, 'size' => 10],
+                'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => '000000']]],
+            ]);
+            $sheet->getStyle("A{$rowIdx}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+            $sheet->getStyle("D{$rowIdx}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
-        $sheet->getStyle("A{$rowIdx}:G{$rowIdx}")->applyFromArray([
-            'font' => ['bold' => true],
-            'fill' => [
-                'fillType' => Fill::FILL_SOLID,
-                'startColor' => ['rgb' => 'E2E8F0'],
-            ],
-        ]);
-        $sheet->getStyle("A{$rowIdx}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->getStyle("D{$rowIdx}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $lastRow = $rowIdx;
 
-        // Borders & Alignments
-        $lastRow = $rowIdx;
-        $sheet->getStyle("A7:G{$lastRow}")->applyFromArray([
-            'borders' => [
-                'allBorders' => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color' => ['rgb' => 'CBD5E1'],
+            // Borders & Alignments
+            $sheet->getStyle("A7:G{$lastRow}")->applyFromArray([
+                'font' => ['name' => 'Arial', 'size' => 10],
+                'alignment' => ['vertical' => Alignment::VERTICAL_CENTER, 'wrapText' => true],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['rgb' => '000000'],
+                    ],
                 ],
-            ],
-        ]);
+            ]);
 
-        $sheet->getStyle("A8:B{$lastRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle("D8:D{$lastRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle("E8:E{$lastRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-
-        // Auto width
-        foreach ($cols as $c) {
-            $sheet->getColumnDimension($c)->setAutoSize(true);
+            $sheet->getStyle("A7:B{$lastRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("C7:C{$lastRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("D7:E{$lastRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("F7:G{$lastRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
         }
+
+        // Pengaturan Cetak
+        $sheet->getPageSetup()
+            ->setOrientation(PageSetup::ORIENTATION_LANDSCAPE)
+            ->setPaperSize(PageSetup::PAPERSIZE_FOLIO)
+            ->setFitToPage(true)
+            ->setFitToWidth(1)
+            ->setFitToHeight(0)
+            ->setHorizontalCentered(true)
+            ->setRowsToRepeatAtTopByStartAndEnd(6, 6)
+            ->setPrintArea("A1:G{$lastRow}");
+        $sheet->getPageMargins()->setLeft(0.25)->setRight(0.25)->setTop(0.4)->setBottom(0.4);
 
         $namaFile = $isObjek ? 'Rekap_Objek_Kebakaran' : 'Rekap_Layanan_Penyelamatan';
         if ($tahun) {

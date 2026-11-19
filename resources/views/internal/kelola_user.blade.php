@@ -68,11 +68,16 @@
     .btn-edit:hover { background: var(--info); color: white; }
     .btn-delete { background: var(--signal-soft); color: var(--signal); }
     .btn-delete:hover { background: var(--signal); color: white; }
+    .modal { z-index: 1060 !important; }
+    .modal-backdrop { z-index: 1050 !important; }
     .modal-content {
         border: 1px solid var(--line) !important;
         border-radius: var(--r-md) !important;
         overflow: hidden;
         box-shadow: var(--shadow-lg) !important;
+    }
+    .modal-dialog-scrollable .modal-content {
+        max-height: calc(100vh - 3.5rem);
     }
     .modal-header {
         background: var(--ink) !important;
@@ -151,7 +156,7 @@
         </div>
 
         <!-- VALIDATION ERROR -->
-        @if($errors->any())
+        @if(isset($errors) && $errors->any())
             <div class="alert-error">
                 <div>
                     <i class="fas fa-exclamation-circle me-2"></i>
@@ -210,81 +215,83 @@
                                     </div>
                                 </td>
                             </tr>
-
-                            <!-- MODAL EDIT USER HANYA UNTUK SUPER USER -->
-                            @hasrole('Super User')
-                            <div class="modal fade" id="editUserModal{{ $u->id }}" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">
-                                                <i class="fas fa-user-edit me-2"></i> Edit Pengguna
-                                            </h5>
-                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-
-                                        <form action="/internal/kelola-user/update/{{ $u->id }}" method="POST">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-body">
-                                                <!-- Nama -->
-                                                <div class="mb-3">
-                                                    <label class="form-label">Nama Lengkap</label>
-                                                    <input type="text" name="nama_lengkap" class="form-control" value="{{ $u->nama_lengkap }}" required>
-                                                </div>
-
-                                                <!-- NIP -->
-                                                <div class="mb-3">
-                                                    <label class="form-label">NIP / Nomor Kepegawaian</label>
-                                                    <input type="text" name="nomor_pegawai" class="form-control" value="{{ $u->nomor_pegawai }}" required>
-                                                </div>
-
-                                                <!-- Email -->
-                                                <div class="mb-3">
-                                                    <label class="form-label">Alamat Email</label>
-                                                    <input type="email" name="email" class="form-control" value="{{ $u->email }}" required>
-                                                </div>
-
-                                                <!-- Role -->
-                                                <div class="mb-3">
-                                                    <label class="form-label">Pilih Hak Akses (Role)</label>
-                                                    <select name="role" class="form-select" required>
-                                                        <option value="Super User" {{ $u->role == 'Super User' ? 'selected' : '' }}>Super User (Admin Penuh)</option>
-                                                        <option value="Sapra" {{ $u->role == 'Sapra' ? 'selected' : '' }}>Sapra (Sarana Prasarana)</option>
-                                                        <option value="Damtan" {{ $u->role == 'Damtan' ? 'selected' : '' }}>Damtan (Pemadaman & Penyelamatan)</option>
-                                                        <option value="Pencegahan" {{ $u->role == 'Pencegahan' ? 'selected' : '' }}>Pencegahan (Inspeksi & Redkar)</option>
-                                                        <option value="Sekretariat" {{ $u->role == 'Sekretariat' ? 'selected' : '' }}>Sekretariat (Kepegawaian)</option>
-                                                        <option value="Operator" {{ $u->role == 'Operator' ? 'selected' : '' }}>Operator (Manajemen Informasi)</option>
-                                                    </select>
-                                                </div>
-
-                                                <!-- Password -->
-                                                <div class="mb-1">
-                                                    <label class="form-label">Password Baru (Opsional)</label>
-                                                    <input type="password" name="password" class="form-control" placeholder="Kosongkan jika tidak ingin mengubah password">
-                                                    <div class="form-text">Isi hanya jika ingin mereset password pengguna ini secara paksa.</div>
-                                                </div>
-                                            </div>
-
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Simpan Perubahan</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            @endhasrole
                         @endforeach
                     </tbody>
                 </table>
             </div>
         </div>
 
+        <!-- MODAL EDIT USER HANYA UNTUK SUPER USER -->
+        @hasrole('Super User')
+            @foreach($users as $u)
+            <div class="modal fade" id="editUserModal{{ $u->id }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ $u->id }}" aria-hidden="true" data-bs-backdrop="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editUserModalLabel{{ $u->id }}">
+                                <i class="fas fa-user-edit me-2"></i> Edit Pengguna
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <form action="/internal/kelola-user/update/{{ $u->id }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="modal-body">
+                                <!-- Nama -->
+                                <div class="mb-3">
+                                    <label class="form-label">Nama Lengkap</label>
+                                    <input type="text" name="nama_lengkap" class="form-control" value="{{ $u->nama_lengkap }}" required>
+                                </div>
+
+                                <!-- NIP -->
+                                <div class="mb-3">
+                                    <label class="form-label">NIP / Nomor Kepegawaian</label>
+                                    <input type="text" name="nomor_pegawai" class="form-control" value="{{ $u->nomor_pegawai }}" required>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="mb-3">
+                                    <label class="form-label">Alamat Email</label>
+                                    <input type="email" name="email" class="form-control" value="{{ $u->email }}" required>
+                                </div>
+
+                                <!-- Role -->
+                                <div class="mb-3">
+                                    <label class="form-label">Pilih Hak Akses (Role)</label>
+                                    <select name="role" class="form-select" required>
+                                        <option value="Super User" {{ $u->role == 'Super User' ? 'selected' : '' }}>Super User (Admin Penuh)</option>
+                                        <option value="Sapra" {{ $u->role == 'Sapra' ? 'selected' : '' }}>Sapra (Sarana Prasarana)</option>
+                                        <option value="Damtan" {{ $u->role == 'Damtan' ? 'selected' : '' }}>Damtan (Pemadaman & Penyelamatan)</option>
+                                        <option value="Pencegahan" {{ $u->role == 'Pencegahan' ? 'selected' : '' }}>Pencegahan (Inspeksi & Redkar)</option>
+                                        <option value="Sekretariat" {{ $u->role == 'Sekretariat' ? 'selected' : '' }}>Sekretariat (Kepegawaian)</option>
+                                        <option value="Operator" {{ $u->role == 'Operator' ? 'selected' : '' }}>Operator (Manajemen Informasi)</option>
+                                    </select>
+                                </div>
+
+                                <!-- Password -->
+                                <div class="mb-1">
+                                    <label class="form-label">Password Baru (Opsional)</label>
+                                    <input type="password" name="password" class="form-control" placeholder="Kosongkan jika tidak ingin mengubah password">
+                                    <div class="form-text">Isi hanya jika ingin mereset password pengguna ini secara paksa.</div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Simpan Perubahan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        @endhasrole
+
 <!-- MODAL TAMBAH USER HANYA UNTUK SUPER USER -->
 @hasrole('Super User')
 <div class="modal fade" id="addUserModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">

@@ -280,6 +280,9 @@
             <a href="/internal/pencegahan/pemberdayaan-masyarakat/pelatihan-keluarga/create" class="btn-tool navy">
                 <i class="fas fa-plus"></i> Tambah Data
             </a>
+            <button type="button" class="btn-import-excel" data-bs-toggle="modal" data-bs-target="#modalImportPencegahan">
+                <i class="fas fa-file-import"></i> Impor Excel
+            </button>
             @endhasanyrole
 
             <!-- DROPDOWN CETAK EXCEL -->
@@ -539,6 +542,9 @@
             Data Pelatihan Keluarga yang Anda cari tidak ditemukan.
         </div>
     </div>
+
+@include('internal.pencegahan.partials.import_modal', ['modul' => 'pelatihan-keluarga', 'judul' => 'Pelatihan Keluarga Tanggap Kebakaran'])
+@include('internal.pencegahan.partials.table_optimizer')
 @endsection
 
 @push('scripts')

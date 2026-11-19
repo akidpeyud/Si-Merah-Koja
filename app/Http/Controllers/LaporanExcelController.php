@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LaporanPenyelamatan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -14,27 +15,23 @@ use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 /**
- * Export laporan ke Excel, per tahun dan per jenis laporan.
+ * Controller untuk mengekspor Laporan Operasional Kebakaran & Non-Kebakaran ke format Excel (.xlsx)
+ * Menyesuaikan 22 kolom tabel resmi yang ada di Data Laporan (Bidang Pemadaman).
  *
- * URL: /internal/damtan/export-excel?tahun=2026&kategori=kebakaran
+ * URL: /internal/damtan/export-excel?tahun=2026&bulan=10&kategori=kebakaran
  *      /internal/damtan/export-excel?tahun=2026&kategori=non-kebakaran
- *
- * - kategori=kebakaran      -> "Laporan Kebakaran" (format Laporan_Kebakaran__2024.xlsx)
- * - kategori=non-kebakaran  -> "Laporan Non-Kebakaran" (tanpa kolom khusus kebakaran:
- *                              penyebab, jumlah air, jumlah kerugian)
- * Jika kategori kosong / tidak dikenal, otomatis dianggap "kebakaran".
  */
 class LaporanExcelController extends Controller
 {
-    private const F_PELAPOR = 'nama_pelapor';      // Nama Pemilik/Pelapor
-
-    private const F_KORBAN = 'korban';            // daftar nama korban
-
-    private const F_KERUGIAN = 'jumlah_kerugian';   // Jumlah Kerugian (angka rupiah)
-
-    private const F_KEPUASAN = 'tingkat_kepuasan';  // Tingkat Kepuasan
-
-    private const F_REGU = 'regu_petugas';      // Ket (regu / pos yang bertugas)
+    private array $mapMedia = [
+        'call_center_112' => 'Call Center 112',
+        'operator_layanan' => 'Operator Layanan Damkar',
+        'telepon' => 'Telfon Damkar',
+        'dijemput' => 'Dijemput',
+        'whatsapp' => 'WhatsApp Damkar',
+        'langsung' => 'Datang Langsung',
+        'instansi_lain' => 'Instansi Lain',
+    ];
 
     private array $mapPenyebab = [
         'arus_pendek' => 'Arus pendek listrik',
@@ -66,203 +63,183 @@ class LaporanExcelController extends Controller
         }
         $isKebakaran = $kategori === 'kebakaran';
 
-        /* ---------- 1. Ambil & susun data ---------- */
-        $items = LaporanPenyelamatan::query()->get()
-            ->map(fn ($row) => $this->susunBaris($row))
-            ->filter(function ($d) use ($isKebakaran, $tahun, $bulan) {
-                if ($d['kebakaran'] !== $isKebakaran || ! $d['tgl']) {
-                    return false;
-                }
-                if ($d['tgl']->year !== $tahun) {
-                    return false;
-                }
-                if ($bulan !== null && (int) $d['tgl']->month !== $bulan) {
-                    return false;
-                }
+        /* ---------- 1. Ambil Data dari Database (Lengkap dengan Relasi Teknis & Dokumentasi) ---------- */
+        $query = LaporanPenyelamatan::leftJoin('lp_teknis_logistiks', 'laporan_penyelamatans.id', '=', 'lp_teknis_logistiks.laporan_id')
+            ->leftJoin('lp_dokumentasis', 'laporan_penyelamatans.id', '=', 'lp_dokumentasis.laporan_id')
+            ->leftJoin('lp_kategori_khusus', 'laporan_penyelamatans.id', '=', 'lp_kategori_khusus.laporan_id')
+            ->select(
+                'laporan_penyelamatans.*',
+                DB::raw('COALESCE(lp_teknis_logistiks.nama_korban, laporan_penyelamatans.nama_korban) as nama_korban'),
+                DB::raw('COALESCE(lp_teknis_logistiks.jumlah_jiwa, laporan_penyelamatans.jumlah_jiwa, 0) as jumlah_jiwa'),
+                DB::raw('COALESCE(lp_teknis_logistiks.warga_terdampak, laporan_penyelamatans.warga_terdampak, 0) as warga_terdampak'),
+                DB::raw('COALESCE(lp_teknis_logistiks.korban_meninggal, laporan_penyelamatans.korban_meninggal, 0) as korban_meninggal'),
+                DB::raw('COALESCE(lp_teknis_logistiks.korban_berat, laporan_penyelamatans.korban_berat, 0) as korban_berat'),
+                DB::raw('COALESCE(lp_teknis_logistiks.korban_ringan, laporan_penyelamatans.korban_ringan, 0) as korban_ringan'),
+                DB::raw('COALESCE(lp_teknis_logistiks.hambatan_lapangan, laporan_penyelamatans.hambatan_lapangan) as hambatan_lapangan'),
+                DB::raw('COALESCE(lp_teknis_logistiks.armada, laporan_penyelamatans.armada) as armada'),
+                DB::raw('COALESCE(lp_teknis_logistiks.liter_air, laporan_penyelamatans.liter_air, 0) as liter_air'),
+                DB::raw('COALESCE(lp_teknis_logistiks.liter_foam, laporan_penyelamatans.liter_foam, 0) as liter_foam'),
+                DB::raw('COALESCE(lp_teknis_logistiks.jumlah_personel, laporan_penyelamatans.jumlah_personel, 0) as jumlah_personel'),
+                DB::raw('COALESCE(lp_dokumentasis.dugaan_penyebab, laporan_penyelamatans.dugaan_penyebab) as dugaan_penyebab'),
+                DB::raw('COALESCE(lp_dokumentasis.dugaan_penyebab_lainnya, laporan_penyelamatans.dugaan_penyebab_lainnya) as dugaan_penyebab_lainnya'),
+                DB::raw('COALESCE(lp_dokumentasis.kronologi_lengkap, laporan_penyelamatans.kronologi_lengkap) as kronologi_lengkap'),
+                'lp_teknis_logistiks.pimpinan_operasi',
+                'lp_teknis_logistiks.pendamping_operasi',
+                'lp_teknis_logistiks.satuan_tugas',
+                'lp_teknis_logistiks.tim_respontime',
+                'lp_teknis_logistiks.peralatan',
+                'lp_teknis_logistiks.peralatan_lain',
+                'lp_dokumentasis.instansi_pendukung',
+                'lp_dokumentasis.tindakan_instansi'
+            );
 
-                return true;
-            })
-            ->sortBy('urut')
-            ->values();
-
-        /* ---------- 2. Tentukan kolom sesuai jenis laporan ---------- */
-        $kolom = $this->kolom($kategori);
-
-        // Beri huruf kolom (A, B, C, ...) secara otomatis
-        $idx = 1;
-        $peta = [];
-        foreach ($kolom as &$k) {
-            $k['huruf'] = Coordinate::stringFromColumnIndex($idx);
-            if (($k['span'] ?? 1) === 2) {
-                $k['huruf2'] = Coordinate::stringFromColumnIndex($idx + 1);
-                $idx += 2;
-            } else {
-                $idx += 1;
-            }
-            $peta[$k['key']] = $k['huruf'];
+        if ($isKebakaran) {
+            $query->where('laporan_penyelamatans.kategori_kejadian', 'kebakaran');
+        } else {
+            $query->where('laporan_penyelamatans.kategori_kejadian', '!=', 'kebakaran');
         }
-        unset($k);
 
-        $kolTerakhir = Coordinate::stringFromColumnIndex($idx - 1);
+        if ($tahun) {
+            $query->whereYear(DB::raw('COALESCE(laporan_penyelamatans.tanggal_kejadian, laporan_penyelamatans.created_at)'), $tahun);
+        }
+        if ($bulan) {
+            $query->whereMonth(DB::raw('COALESCE(laporan_penyelamatans.tanggal_kejadian, laporan_penyelamatans.created_at)'), $bulan);
+        }
 
-        /* ---------- 3. Buat workbook ---------- */
+        $items = $query->orderBy(DB::raw('COALESCE(laporan_penyelamatans.tanggal_kejadian, laporan_penyelamatans.created_at)'), 'asc')
+            ->orderBy(DB::raw('COALESCE(laporan_penyelamatans.waktu_terima, laporan_penyelamatans.waktu_kejadian)'), 'asc')
+            ->orderBy('laporan_penyelamatans.id', 'asc')
+            ->get();
+
+        /* ---------- 2. Susun 22 Kolom Sesuai Tabel Data Laporan ---------- */
+        $kolom = $this->kolom($isKebakaran);
+        $totalKolom = count($kolom);
+        $kolTerakhir = Coordinate::stringFromColumnIndex($totalKolom);
+
+        /* ---------- 3. Buat Workbook Spreadsheet ---------- */
         $ss = new Spreadsheet;
-        $ss->getDefaultStyle()->getFont()->setName('Arial')->setSize(12);
+        $ss->getDefaultStyle()->getFont()->setName('Arial')->setSize(10);
         $ws = $ss->getActiveSheet();
-        $ws->setTitle('TAHUNAN');
+        $ws->setTitle($isKebakaran ? 'KEBAKARAN' : 'NON_KEBAKARAN');
 
-        // Lebar kolom
-        foreach ($kolom as $k) {
-            if (($k['span'] ?? 1) === 2) {
-                $ws->getColumnDimension($k['huruf'])->setWidth($k['w'][0]);
-                $ws->getColumnDimension($k['huruf2'])->setWidth($k['w'][1]);
-            } else {
-                $ws->getColumnDimension($k['huruf'])->setWidth($k['w']);
-            }
+        // Set lebar kolom
+        foreach ($kolom as $idx => $k) {
+            $huruf = Coordinate::stringFromColumnIndex($idx + 1);
+            $ws->getColumnDimension($huruf)->setWidth($k['w']);
         }
 
-        // Judul
-        $ws->mergeCells("A1:{$kolTerakhir}2");
-        $ws->setCellValue('A1', $isKebakaran ? 'LAPORAN KEBAKARAN' : 'LAPORAN NON-KEBAKARAN');
-        $ws->mergeCells("A3:{$kolTerakhir}3");
-        $teksSubJudul = $bulan ? ($daftarNamaBulan[$bulan].' '.$tahun) : ('JANUARI - DESEMBER '.$tahun);
-        $ws->setCellValue('A3', $teksSubJudul);
-        $ws->getStyle("A1:{$kolTerakhir}3")->applyFromArray([
-            'font' => ['name' => 'Arial', 'bold' => true, 'size' => 18],
-            'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical' => Alignment::VERTICAL_CENTER,
-            ],
+        // Kop Header Laporan
+        $ws->mergeCells("A1:{$kolTerakhir}1");
+        $ws->setCellValue('A1', 'PEMERINTAH KOTA JAMBI');
+        $ws->getStyle('A1')->applyFromArray([
+            'font' => ['name' => 'Arial', 'bold' => true, 'size' => 12],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
         ]);
-        $ws->getRowDimension(3)->setRowHeight(23.25);
 
-        // Header tabel (baris 5)
-        foreach ($kolom as $k) {
-            $ws->setCellValue($k['huruf'].'5', $k['head']);
-            if (! empty($k['huruf2'])) {
-                $ws->mergeCells("{$k['huruf']}5:{$k['huruf2']}5");
-            }
-        }
-        $ws->getStyle("A5:{$kolTerakhir}5")->applyFromArray([
+        $ws->mergeCells("A2:{$kolTerakhir}2");
+        $ws->setCellValue('A2', 'DINAS PEMADAM KEBAKARAN DAN PENYELAMATAN');
+        $ws->getStyle('A2')->applyFromArray([
             'font' => ['name' => 'Arial', 'bold' => true, 'size' => 14],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+        ]);
+
+        $ws->mergeCells("A3:{$kolTerakhir}3");
+        $ws->setCellValue('A3', $isKebakaran ? 'REKAPITULASI LAPORAN KEJADIAN KEBAKARAN' : 'REKAPITULASI LAPORAN OPERASI PENYELAMATAN & NON-KEBAKARAN');
+        $ws->getStyle('A3')->applyFromArray([
+            'font' => ['name' => 'Arial', 'bold' => true, 'size' => 12],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+        ]);
+
+        $ws->mergeCells("A4:{$kolTerakhir}4");
+        $teksPeriode = $bulan ? ('BULAN '.$daftarNamaBulan[$bulan].' TAHUN '.$tahun) : ('PERIODE TAHUN '.$tahun);
+        $ws->setCellValue('A4', $teksPeriode);
+        $ws->getStyle('A4')->applyFromArray([
+            'font' => ['name' => 'Arial', 'bold' => true, 'italic' => true, 'size' => 11],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+        ]);
+
+        $ws->getRowDimension(1)->setRowHeight(20);
+        $ws->getRowDimension(2)->setRowHeight(24);
+        $ws->getRowDimension(3)->setRowHeight(22);
+        $ws->getRowDimension(4)->setRowHeight(20);
+        $ws->getRowDimension(5)->setRowHeight(10); // baris jeda kosong
+
+        // Header Tabel (Baris 6)
+        foreach ($kolom as $idx => $k) {
+            $huruf = Coordinate::stringFromColumnIndex($idx + 1);
+            $ws->setCellValue("{$huruf}6", $k['head']);
+        }
+
+        $ws->getStyle("A6:{$kolTerakhir}6")->applyFromArray([
+            'font' => ['name' => 'Arial', 'bold' => true, 'size' => 10],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
                 'vertical' => Alignment::VERTICAL_CENTER,
                 'wrapText' => true,
             ],
+            'borders' => [
+                'allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => '000000']],
+            ],
         ]);
-        $ws->getRowDimension(5)->setRowHeight(40);
+        $ws->getRowDimension(6)->setRowHeight(38);
 
-        /* ---------- 4. Isi data ---------- */
-        $r = 6;   // baris data pertama
-        $no = 1;   // nomor urut laporan
-        $noKorban = 1;   // nomor urut korban (berlanjut antar laporan)
-
-        foreach ($items as $d) {
-            $jmlBaris = max(1, count($d['korban']));
-            $akhir = $r + $jmlBaris - 1;
-
-            foreach ($kolom as $k) {
-                $h = $k['huruf'];
-                switch ($k['key']) {
-                    case 'no':
-                        $ws->setCellValue("{$h}{$r}", $no++);
-                        break;
-
-                    case 'jam':
-                        $ws->setCellValueExplicit("{$h}{$r}", $d['jam'], DataType::TYPE_STRING);
-                        break;
-
-                    case 'respon':
-                        $ws->setCellValue("{$h}{$r}", $d['respon']);
-                        $ws->setCellValue("{$k['huruf2']}{$r}", $d['respon'] === '-' ? '' : 'Menit');
-                        break;
-
-                    case 'no_korban':
-                    case 'korban':
-                        // diisi terpisah di bawah (satu korban per baris)
-                        break;
-
-                    default:
-                        $ws->setCellValue("{$h}{$r}", $d[$k['key']] ?? '-');
-                }
-            }
-
-            // Korban: satu nama per baris, nomor berlanjut
-            $hNo = $peta['no_korban'];
-            $hNama = $peta['korban'];
-            if (count($d['korban']) === 0) {
-                $ws->setCellValue("{$hNama}{$r}", '-');
-            } else {
-                foreach ($d['korban'] as $i => $namaKorban) {
-                    $ws->setCellValue($hNo.($r + $i), $noKorban++);
-                    $ws->setCellValue($hNama.($r + $i), $namaKorban);
-                }
-            }
-
-            // Gabungkan sel (merge) ke bawah bila korban lebih dari satu
-            if ($jmlBaris > 1) {
-                foreach ($kolom as $k) {
-                    if (($k['gabung'] ?? true) === false) {
-                        continue;
-                    }
-                    $ws->mergeCells("{$k['huruf']}{$r}:{$k['huruf']}{$akhir}");
-                    if (! empty($k['huruf2'])) {
-                        $ws->mergeCells("{$k['huruf2']}{$r}:{$k['huruf2']}{$akhir}");
-                    }
-                }
-            }
-
-            $r = $akhir + 1;
-        }
-
-        $terakhir = max(6, $r - 1);
+        /* ---------- 4. Tulis Data (Baris 7 ke Bawah) ---------- */
+        $baris = 7;
+        $no = 1;
 
         if ($items->isEmpty()) {
-            $ws->mergeCells("A6:{$kolTerakhir}6");
+            $ws->mergeCells("A7:{$kolTerakhir}7");
             $periodeTeks = $bulan ? ('bulan '.$daftarNamaBulan[$bulan].' '.$tahun) : ('pada tahun '.$tahun);
-            $ws->setCellValue(
-                'A6',
-                'Belum ada data laporan '.($isKebakaran ? 'kebakaran' : 'non-kebakaran').' '.$periodeTeks.'.'
-            );
-        }
+            $ws->setCellValue('A7', 'Belum ada data laporan '.($isKebakaran ? 'kebakaran' : 'penyelamatan/non-kebakaran').' '.$periodeTeks.'.');
+            $ws->getStyle("A7:{$kolTerakhir}7")->applyFromArray([
+                'font' => ['name' => 'Arial', 'italic' => true, 'size' => 11],
+                'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+                'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]],
+            ]);
+            $ws->getRowDimension(7)->setRowHeight(30);
+            $terakhir = 7;
+        } else {
+            foreach ($items as $row) {
+                $dataBaris = $this->ekstrakBaris($row, $no++, $isKebakaran);
 
-        /* ---------- 5. Gaya sel data ---------- */
-        $rentang = "A6:{$kolTerakhir}{$terakhir}";
+                foreach ($kolom as $idx => $k) {
+                    $huruf = Coordinate::stringFromColumnIndex($idx + 1);
+                    $val = $dataBaris[$k['key']] ?? '-';
 
-        $ws->getStyle("A5:{$kolTerakhir}{$terakhir}")->getBorders()->getAllBorders()
-            ->setBorderStyle(Border::BORDER_THIN);
-
-        // "Respon Time" + "Menit" tampil seperti satu sel (tanpa garis di antaranya)
-        if (isset($peta['respon'])) {
-            foreach ($kolom as $k) {
-                if ($k['key'] === 'respon') {
-                    $ws->getStyle("{$k['huruf']}6:{$k['huruf']}{$terakhir}")
-                        ->getBorders()->getRight()->setBorderStyle(Border::BORDER_NONE);
-                    $ws->getStyle("{$k['huruf2']}6:{$k['huruf2']}{$terakhir}")
-                        ->getBorders()->getLeft()->setBorderStyle(Border::BORDER_NONE);
+                    if (in_array($k['key'], ['waktu_terima', 'waktu_tiba', 'telepon'], true)) {
+                        $ws->setCellValueExplicit("{$huruf}{$baris}", (string) $val, DataType::TYPE_STRING);
+                    } else {
+                        $ws->setCellValue("{$huruf}{$baris}", $val);
+                    }
                 }
+
+                $ws->getRowDimension($baris)->setRowHeight(-1); // auto-fit tinggi baris
+                $baris++;
+            }
+            $terakhir = $baris - 1;
+
+            // Border & Style Semua Sel Data
+            $rentangData = "A7:{$kolTerakhir}{$terakhir}";
+            $ws->getStyle($rentangData)->applyFromArray([
+                'font' => ['name' => 'Arial', 'size' => 10],
+                'alignment' => [
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                    'wrapText' => true,
+                ],
+                'borders' => [
+                    'allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => '000000']],
+                ],
+            ]);
+
+            // Set Alignment Rata Kiri atau Rata Tengah per Kolom
+            foreach ($kolom as $idx => $k) {
+                $huruf = Coordinate::stringFromColumnIndex($idx + 1);
+                $align = ($k['al'] ?? 'c') === 'l' ? Alignment::HORIZONTAL_LEFT : Alignment::HORIZONTAL_CENTER;
+                $ws->getStyle("{$huruf}7:{$huruf}{$terakhir}")->getAlignment()->setHorizontal($align);
             }
         }
 
-        $ws->getStyle($rentang)->applyFromArray([
-            'font' => ['name' => 'Arial', 'size' => 12],
-            'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical' => Alignment::VERTICAL_CENTER,
-                'wrapText' => true,
-            ],
-        ]);
-
-        // Kolom teks panjang rata kiri
-        foreach ($kolom as $k) {
-            if (($k['al'] ?? 'c') === 'l') {
-                $ws->getStyle("{$k['huruf']}6:{$k['huruf']}{$terakhir}")->getAlignment()
-                    ->setHorizontal(Alignment::HORIZONTAL_LEFT);
-            }
-        }
-
-        /* ---------- 6. Pengaturan cetak ---------- */
+        /* ---------- 5. Pengaturan Cetak Halaman (Page Setup) ---------- */
         $ws->getPageSetup()
             ->setOrientation(PageSetup::ORIENTATION_LANDSCAPE)
             ->setPaperSize(PageSetup::PAPERSIZE_FOLIO)
@@ -270,11 +247,12 @@ class LaporanExcelController extends Controller
             ->setFitToWidth(1)
             ->setFitToHeight(0)
             ->setHorizontalCentered(true)
-            ->setRowsToRepeatAtTopByStartAndEnd(5, 5)
+            ->setRowsToRepeatAtTopByStartAndEnd(6, 6)
             ->setPrintArea("A1:{$kolTerakhir}{$terakhir}");
-        $ws->getPageMargins()->setLeft(0.25)->setRight(0.25)->setTop(0.5)->setBottom(0.5);
 
-        /* ---------- 7. Kirim sebagai download ---------- */
+        $ws->getPageMargins()->setLeft(0.25)->setRight(0.25)->setTop(0.4)->setBottom(0.4);
+
+        /* ---------- 6. Download File Excel ---------- */
         $bulanPart = $bulan ? ($daftarNamaBulan[$bulan].'_') : '';
         $namaFile = ($isKebakaran ? 'Laporan_Kebakaran_' : 'Laporan_Non_Kebakaran_').$bulanPart.$tahun.'.xlsx';
 
@@ -286,160 +264,290 @@ class LaporanExcelController extends Controller
     }
 
     /**
-     * Daftar kolom per jenis laporan.
-     *
-     * key    : nama kunci data (lihat susunBaris)
-     * head   : judul kolom
-     * w      : lebar kolom (array [a, b] jika span = 2)
-     * al     : 'l' = rata kiri, selain itu rata tengah
-     * gabung : false = sel TIDAK digabung ke bawah (khusus kolom korban)
-     * span   : 2 = memakai dua kolom (Respon Time + "Menit")
+     * Definisi 22 Kolom Resmi Sesuai Tampilan Tabel Web Data Laporan
      */
-    private function kolom(string $kategori): array
+    private function kolom(bool $isKebakaran): array
     {
-        if ($kategori === 'kebakaran') {
-            return [
-                ['key' => 'no',        'head' => 'No',                   'w' => 5.1],
-                ['key' => 'tanggal',   'head' => 'Tanggal Kejadian',     'w' => 24.6],
-                ['key' => 'jam',       'head' => 'Jam',                  'w' => 13],
-                ['key' => 'jenis',     'head' => 'Jenis yang terbakar',  'w' => 31.3],
-                ['key' => 'penyebab',  'head' => 'Penyebab',             'w' => 25.9, 'al' => 'l'],
-                ['key' => 'lokasi',    'head' => 'Lokasi Kejadian',      'w' => 26.9, 'al' => 'l'],
-                ['key' => 'pelapor',   'head' => 'Nama Pemilik/Pelapor', 'w' => 25.9],
-                ['key' => 'no_korban', 'head' => 'NO',                   'w' => 7.7,  'gabung' => false],
-                ['key' => 'korban',    'head' => 'Nama Korban',          'w' => 29.3, 'al' => 'l', 'gabung' => false],
-                ['key' => 'armada',    'head' => 'Armada',               'w' => 21.4],
-                ['key' => 'air',       'head' => 'Jumlah Air',           'w' => 19.6],
-                ['key' => 'kerugian',  'head' => 'Jumlah Kerugian',      'w' => 17.4],
-                ['key' => 'respon',    'head' => 'Respon Time',          'w' => [9.7, 13.9], 'span' => 2],
-                ['key' => 'kepuasan',  'head' => 'Tingkat Kepuasan',     'w' => 16.6],
-                ['key' => 'regu',      'head' => 'Ket',                  'w' => 18.6, 'al' => 'l'],
-            ];
-        }
-
-        // Non-kebakaran: tanpa penyebab, jumlah air, dan jumlah kerugian
         return [
-            ['key' => 'no',        'head' => 'No',                   'w' => 5.1],
-            ['key' => 'tanggal',   'head' => 'Tanggal Kejadian',     'w' => 24.6],
-            ['key' => 'jam',       'head' => 'Jam',                  'w' => 13],
-            ['key' => 'jenis',     'head' => 'Jenis Kejadian',       'w' => 31.3],
-            ['key' => 'lokasi',    'head' => 'Lokasi Kejadian',      'w' => 32, 'al' => 'l'],
-            ['key' => 'pelapor',   'head' => 'Nama Pemilik/Pelapor', 'w' => 25.9],
-            ['key' => 'no_korban', 'head' => 'NO',                   'w' => 7.7,  'gabung' => false],
-            ['key' => 'korban',    'head' => 'Nama Korban',          'w' => 29.3, 'al' => 'l', 'gabung' => false],
-            ['key' => 'armada',    'head' => 'Armada',               'w' => 21.4],
-            ['key' => 'respon',    'head' => 'Respon Time',          'w' => [9.7, 13.9], 'span' => 2],
-            ['key' => 'kepuasan',  'head' => 'Tingkat Kepuasan',     'w' => 16.6],
-            ['key' => 'regu',      'head' => 'Ket',                  'w' => 18.6, 'al' => 'l'],
+            ['key' => 'no',            'head' => 'No',                                                                  'w' => 6,   'al' => 'c'],
+            ['key' => 'hari_tanggal',  'head' => 'Hari dan Tanggal',                                                    'w' => 26,  'al' => 'c'],
+            ['key' => 'media',         'head' => 'Laporan Diterima Melalui',                                            'w' => 24,  'al' => 'c'],
+            ['key' => 'waktu_terima',  'head' => 'Waktu Laporan Diterima',                                              'w' => 18,  'al' => 'c'],
+            ['key' => 'waktu_tiba',    'head' => 'Waktu Tiba di Lokasi',                                                'w' => 18,  'al' => 'c'],
+            ['key' => 'jarak',         'head' => 'Jarak Tempuh',                                                        'w' => 14,  'al' => 'c'],
+            ['key' => 'respon',        'head' => 'Respon Time',                                                         'w' => 14,  'al' => 'c'],
+            ['key' => 'pelapor',       'head' => 'Nama Pelapor',                                                        'w' => 24,  'al' => 'l'],
+            ['key' => 'telepon',       'head' => 'No. Tlp Pelapor',                                                     'w' => 18,  'al' => 'c'],
+            ['key' => 'objek',         'head' => $isKebakaran ? 'Objek Kebakaran' : 'Objek Penyelamatan',               'w' => 26,  'al' => 'l'],
+            ['key' => 'lokasi',        'head' => 'Lokasi Kejadian',                                                     'w' => 32,  'al' => 'l'],
+            ['key' => 'nama_korban',   'head' => 'Nama Korban / KK',                                                    'w' => 24,  'al' => 'l'],
+            ['key' => 'jiwa',          'head' => 'Jumlah yang Terdampak (Jiwa)',                                        'w' => 18,  'al' => 'c'],
+            ['key' => 'korban_status', 'head' => "Petugas atau Warga\n(Meninggal atau Cidera)",                         'w' => 22,  'al' => 'c'],
+            ['key' => 'pimpinan',      'head' => 'Pimpinan Operasi',                                                    'w' => 24,  'al' => 'l'],
+            ['key' => 'satgas',        'head' => 'Satuan Tugas',                                                        'w' => 26,  'al' => 'l'],
+            ['key' => 'personil',      'head' => 'Jumlah Personil',                                                     'w' => 16,  'al' => 'c'],
+            ['key' => 'lama_operasi',  'head' => 'Lama Operasi',                                                        'w' => 18,  'al' => 'c'],
+            ['key' => 'uraian',        'head' => $isKebakaran ? 'Penyebab Kebakaran' : 'Kronologi Penyelamatan',       'w' => 35,  'al' => 'l'],
+            ['key' => 'hambatan',      'head' => 'Hambatan',                                                            'w' => 22,  'al' => 'l'],
+            ['key' => 'sarana',        'head' => 'Sarana yang Digunakan',                                               'w' => 28,  'al' => 'l'],
+            ['key' => 'tim_quick',     'head' => "Tim Quick Respon\nPemadam Kebakaran",                                 'w' => 26,  'al' => 'l'],
         ];
     }
 
     /**
-     * Ubah satu laporan menjadi array siap tulis ke Excel.
-     * Memakai atribut mentah supaya aman walau ada kolom yang belum dibuat.
+     * Ekstrak data model menjadi 22 kolom siap cetak.
      */
-    private function susunBaris($row): array
+    private function ekstrakBaris($row, int $no, bool $isKebakaran): array
     {
         $a = $row->getAttributes();
 
-        $kebakaran = strtolower($a['kategori_kejadian'] ?? '') === 'kebakaran';
+        // 2. Hari dan Tanggal
+        $tglRaw = $a['tanggal_kejadian'] ?? $a['created_at'] ?? null;
+        $hariTxt = ! empty($a['hari_kejadian']) ? ucfirst($a['hari_kejadian']) : ($tglRaw ? Carbon::parse($tglRaw)->locale('id')->isoFormat('dddd') : '-');
+        $tglTxt = $tglRaw ? Carbon::parse($tglRaw)->locale('id')->translatedFormat('d F Y') : '-';
+        $hariTanggalTampil = ($hariTxt !== '-' && $tglTxt !== '-') ? $hariTxt.', '.$tglTxt : ($tglTxt !== '-' ? $tglTxt : '-');
 
-        $tglRaw = $a['tanggal_kejadian'] ?? $a['waktu_kejadian'] ?? null;
-        $jamRaw = $a['waktu_kejadian'] ?? $a['waktu_terima'] ?? null;
-        $tgl = $tglRaw ? Carbon::parse($tglRaw) : null;
-        $jam = $jamRaw ? Carbon::parse($jamRaw) : null;
+        // 3. Media Pelaporan
+        $mediaRaw = $a['media_pelaporan'] ?? '';
+        $mediaPelaporanTampil = $this->mapMedia[$mediaRaw] ?? ($mediaRaw ? ucwords(str_replace('_', ' ', $mediaRaw)) : '-');
 
-        // Jenis: kebakaran -> yang terbakar; non-kebakaran -> jenis kejadiannya
-        if ($kebakaran) {
-            $jenisMentah = $a['kategori_kebakaran'] ?? null;
-        } else {
-            $jenisMentah = ! empty($a['kategori_non_kebakaran'])
-                ? $a['kategori_non_kebakaran']
-                : ($a['kategori_kejadian'] ?? null);
+        // 4. Waktu Laporan Diterima
+        $waktuTerimaRaw = $a['waktu_terima'] ?? $a['waktu_kejadian'] ?? null;
+        $waktuTerimaTampil = $waktuTerimaRaw ? Carbon::parse($waktuTerimaRaw)->format('H.i').' WIB' : '-';
+
+        // 5. Waktu Tiba di Lokasi
+        $waktuTibaRaw = $a['waktu_tiba'] ?? null;
+        $waktuTibaTampil = $waktuTibaRaw ? Carbon::parse($waktuTibaRaw)->format('H.i').' WIB' : '-';
+
+        // 6. Jarak Tempuh
+        $jarakRaw = $a['jarak_tempuh'] ?? null;
+        $jarakTampil = '-';
+        if ($jarakRaw !== null && $jarakRaw !== '' && $jarakRaw !== '-' && ! preg_match('/(orang|personel|personil|jiwa|m2|persegi)/i', (string) $jarakRaw)) {
+            $jClean = trim(preg_replace('/^[:\s±~]+/', '', (string) $jarakRaw));
+            $jClean = rtrim($jClean, " .\t\n\r\0\x0B");
+            $jClean = str_replace(',', '.', $jClean);
+            if (preg_match('/^(\d+(?:\.\d+)?)\s*(?:meter|m)$/i', $jClean, $jm)) {
+                $val = (float) $jm[1];
+                $jarakTampil = (str_contains($jm[1], '.') || $val < 20) ? ((float) $val).' Km' : (round($val / 1000, 3)).' Km';
+            } elseif (preg_match('/^(\d+(?:\.\d+)?)\s*km$/i', $jClean, $jm)) {
+                $jarakTampil = ((float) $jm[1]).' Km';
+            } elseif (is_numeric($jClean)) {
+                $jarakTampil = ((float) $jClean).' Km';
+            } elseif (preg_match('/(\d+(?:\.\d+)?)/', $jClean, $jm)) {
+                $val = (float) $jm[1];
+                $jarakTampil = (preg_match('/meter/i', $jClean)) ? (round($val / 1000, 3)).' Km' : ((float) $val).' Km';
+            }
         }
-        $jenis = ! empty($jenisMentah) ? ucwords(str_replace(['_', '-'], ' ', $jenisMentah)) : '-';
 
-        // Penyebab
-        $p = $a['dugaan_penyebab'] ?? null;
-        if ($p === 'lainnya') {
-            $penyebab = $a['dugaan_penyebab_lainnya'] ?? '-';
-        } elseif ($p) {
-            $penyebab = $this->mapPenyebab[$p] ?? ucwords(str_replace('_', ' ', $p));
-        } else {
-            $penyebab = '-';
-        }
-
-        // Armada: daftar unit (JSON) atau jumlah
-        $unit = $this->daftar($a['armada'] ?? null);
-        $armada = count($unit)
-            ? implode(', ', $unit)
-            : (($a['jumlah_armada'] ?? '') !== '' ? (string) $a['jumlah_armada'] : '-');
-
-        // Jumlah air
-        $air = $a['liter_air'] ?? null;
-        $airTx = (is_numeric($air) && $air > 0) ? number_format($air, 0, ',', '.').' Liter' : '-';
-
-        // Respon time (accessor di model)
+        // 7. Respon Time
         $rt = $row->respon_time;
-        $respon = (! is_null($rt) && $rt >= 0) ? (int) $rt : '-';
+        $responTampil = (! is_null($rt) && $rt >= 0) ? $rt.' Menit' : '-';
 
-        // Jumlah kerugian
-        $rugi = $a[self::F_KERUGIAN] ?? null;
-        $rugiTx = (is_numeric($rugi) && $rugi > 0)
-            ? number_format($rugi, 0, ',', '.')
-            : ((is_string($rugi) && trim($rugi) !== '') ? trim($rugi) : '-');
+        // 8. Nama Pelapor
+        $pelaporTampil = ! empty($a['nama_pelapor']) ? $a['nama_pelapor'] : '-';
+
+        // 9. No. Tlp Pelapor
+        $teleponPelaporTampil = ! empty($a['telepon_pelapor']) ? $a['telepon_pelapor'] : '-';
+
+        // 10. Objek Kejadian
+        if ($isKebakaran) {
+            $objekTampil = ! empty($a['kategori_kebakaran']) ? ucwords(str_replace('_', ' ', $a['kategori_kebakaran'])) : '-';
+            if (! empty($a['keterangan_objek_kebakaran'])) {
+                $objekTampil .= "\n(".$a['keterangan_objek_kebakaran'].')';
+            }
+        } else {
+            $objekTampil = ! empty($a['kategori_non_kebakaran'])
+                ? ucwords(str_replace('_', ' ', $a['kategori_non_kebakaran']))
+                : (! empty($a['kategori_kejadian']) ? ucwords(str_replace('_', ' ', $a['kategori_kejadian'])) : '-');
+            $rincian = ! empty($a['rincian_kategori_non_kebakaran']) ? $a['rincian_kategori_non_kebakaran'] : (! empty($a['jenis_hewan']) ? $a['jenis_hewan'] : '');
+            if (! empty($rincian)) {
+                $objekTampil .= "\n(".$rincian.')';
+            }
+        }
+
+        // 11. Lokasi Kejadian
+        $lokasiTampil = ! empty($a['alamat']) ? $a['alamat'] : '-';
+
+        // 12. Nama Korban / KK
+        $korbanRaw = trim((string) ($a['nama_korban'] ?? ''));
+        $namaKorbanTampil = ($korbanRaw !== '' && strtolower($korbanRaw) !== 'nihil') ? $korbanRaw : 'Nihil';
+
+        // 13. Jumlah yang Terdampak (Jiwa)
+        $jiwaCount = (int) ($a['jumlah_jiwa'] ?? 0);
+        $jiwaTampil = $jiwaCount > 0 ? $jiwaCount.' Jiwa' : '0';
+
+        // 14. Petugas atau Warga (Meninggal atau Cidera)
+        $meninggal = (int) ($a['korban_meninggal'] ?? 0);
+        $cidera = (int) (($a['korban_berat'] ?? 0) + ($a['korban_ringan'] ?? 0));
+        if ($meninggal === 0 && $cidera === 0) {
+            $korbanStatusTampil = 'Nihil';
+        } else {
+            $kList = [];
+            if ($meninggal > 0) {
+                $kList[] = "Meninggal: {$meninggal}";
+            }
+            if ($cidera > 0) {
+                $kList[] = "Cidera: {$cidera}";
+            }
+            $korbanStatusTampil = implode(', ', $kList);
+        }
+
+        // 15. Pimpinan Operasi
+        $pimpinanTampil = ! empty($a['pimpinan_operasi']) ? $a['pimpinan_operasi'] : '-';
+
+        // 16. Satuan Tugas
+        $satgasTampil = ! empty($a['satuan_tugas']) ? $a['satuan_tugas'] : '-';
+
+        // 17. Jumlah Personil
+        $jmlPersonel = (int) ($a['jumlah_personel'] ?? 0);
+        $personilTampil = $jmlPersonel > 0 ? $jmlPersonel.' Orang' : '-';
+
+        // 18. Lama Operasi
+        $lamaOperasiTampil = '-';
+        if (! empty($a['waktu_tiba']) && ! empty($a['waktu_selesai'])) {
+            $wt = Carbon::parse($a['waktu_tiba']);
+            $ws = Carbon::parse($a['waktu_selesai']);
+            $diffMnt = $wt->diffInMinutes($ws);
+            if ($diffMnt >= 60) {
+                $j = floor($diffMnt / 60);
+                $s = $diffMnt % 60;
+                $lamaOperasiTampil = $j.' Jam'.($s > 0 ? ' '.$s.' Menit' : '');
+            } else {
+                $lamaOperasiTampil = $diffMnt.' Menit';
+            }
+        }
+
+        // 19. Penyebab Kebakaran (Kebakaran) atau Kronologi Penyelamatan (Non-Kebakaran)
+        if ($isKebakaran) {
+            $p = $a['dugaan_penyebab'] ?? null;
+            if ($p === 'lainnya') {
+                $uraianTampil = $a['dugaan_penyebab_lainnya'] ?? '-';
+            } elseif ($p) {
+                $uraianTampil = $this->mapPenyebab[$p] ?? ucwords(str_replace('_', ' ', $p));
+            } else {
+                $uraianTampil = '-';
+            }
+        } else {
+            $uraianTampil = ! empty($a['kronologi_lengkap']) ? $a['kronologi_lengkap'] : '-';
+        }
+
+        // 20. Hambatan
+        $hambatanRaw = trim((string) ($a['hambatan_lapangan'] ?? ''));
+        $hambatanTampil = ($hambatanRaw !== '' && strtolower($hambatanRaw) !== 'nihil') ? $hambatanRaw : 'Nihil';
+
+        // 21. Sarana yang Digunakan (Air, Armada, Foam, Peralatan)
+        $air = (int) ($a['liter_air'] ?? 0);
+        $foam = (int) ($a['liter_foam'] ?? 0);
+        $jmlArmada = $a['jumlah_armada'] ?? null;
+        $armadaTxt = '-';
+        if ($jmlArmada !== null && $jmlArmada !== '') {
+            $armadaTxt = $jmlArmada.' Unit';
+        } elseif (! empty($a['armada'])) {
+            $arm = $a['armada'];
+            for ($i = 0; $i < 2 && is_string($arm); $i++) {
+                $d = json_decode($arm, true);
+                if ($d === null) {
+                    break;
+                }
+                $arm = $d;
+            }
+            $armadaTxt = is_array($arm) ? (count($arm) ? implode(', ', array_map('ucfirst', $arm)) : '-') : $arm;
+        }
+
+        $peralatanTxt = '';
+        if (! empty($a['peralatan'])) {
+            $per = $a['peralatan'];
+            for ($i = 0; $i < 2 && is_string($per); $i++) {
+                $d = json_decode($per, true);
+                if ($d === null) {
+                    break;
+                }
+                $per = $d;
+            }
+            $peralatanTxt = is_array($per) ? implode(', ', $per) : $per;
+        }
+        if (! empty($a['peralatan_lain'])) {
+            $peralatanTxt .= ($peralatanTxt ? ', ' : '').$a['peralatan_lain'];
+        }
+
+        $saranaParts = [];
+        if ($isKebakaran) {
+            if ($air > 0) {
+                $saranaParts[] = 'Air: '.number_format($air, 0, ',', '.').' L';
+            }
+            if ($armadaTxt !== '-' && $armadaTxt !== '') {
+                $saranaParts[] = 'Armada: '.$armadaTxt;
+            }
+            if ($foam > 0) {
+                $saranaParts[] = 'Foam: '.number_format($foam, 0, ',', '.').' L';
+            }
+            if ($peralatanTxt !== '') {
+                $saranaParts[] = 'Alat: '.$peralatanTxt;
+            }
+        } else {
+            if ($armadaTxt !== '-' && $armadaTxt !== '') {
+                $saranaParts[] = 'Armada: '.$armadaTxt;
+            }
+            if ($peralatanTxt !== '') {
+                $saranaParts[] = 'Alat: '.$peralatanTxt;
+            }
+            if ($air > 0) {
+                $saranaParts[] = 'Air: '.number_format($air, 0, ',', '.').' L';
+            }
+        }
+        $saranaTampil = count($saranaParts) ? implode("\n", $saranaParts) : '-';
+
+        // 22. Tim Quick Respon Pemadam Kebakaran / Instansi Pendukung
+        $timQuickRaw = $a['instansi_pendukung'] ?? null;
+        $timQuickTxt = '';
+        if (! empty($timQuickRaw)) {
+            for ($i = 0; $i < 2 && is_string($timQuickRaw); $i++) {
+                $d = json_decode($timQuickRaw, true);
+                if ($d === null) {
+                    break;
+                }
+                $timQuickRaw = $d;
+            }
+            if (is_array($timQuickRaw)) {
+                $timQuickTxt = implode(', ', array_filter($timQuickRaw));
+            } else {
+                $timQuickTxt = trim((string) $timQuickRaw);
+            }
+        }
+
+        if (empty($timQuickTxt) || $timQuickTxt === '-') {
+            if (! empty($a['tindakan_instansi']) && $a['tindakan_instansi'] !== '-') {
+                $timQuickTxt = $a['tindakan_instansi'];
+            } elseif (! empty($a['tim_respontime']) && ! preg_match('/\bmenit\b/i', trim($a['tim_respontime'])) && $a['tim_respontime'] !== '-') {
+                $timQuickTxt = $a['tim_respontime'];
+            } else {
+                $timQuickTxt = '-';
+            }
+        }
 
         return [
-            'kebakaran' => $kebakaran,
-            'tgl' => $tgl,
-            'urut' => ($tgl ? $tgl->format('Y-m-d') : '').' '.($jam ? $jam->format('H:i') : ''),
-            'tanggal' => $tgl ? $tgl->copy()->locale('id')->translatedFormat('d F Y') : '-',
-            'jam' => $jam ? $jam->format('H.i') : '-',
-            'jenis' => $jenis,
-            'penyebab' => $penyebab,
-            'lokasi' => ! empty($a['alamat']) ? $a['alamat'] : '-',
-            'pelapor' => ! empty($a[self::F_PELAPOR]) ? $a[self::F_PELAPOR] : '-',
-            'korban' => $this->daftar($a[self::F_KORBAN] ?? null),
-            'armada' => $armada,
-            'air' => $airTx,
-            'kerugian' => $rugiTx,
-            'respon' => $respon,
-            'kepuasan' => ! empty($a[self::F_KEPUASAN]) ? $a[self::F_KEPUASAN] : 'Terlayani',
-            'regu' => ! empty($a[self::F_REGU]) ? $a[self::F_REGU] : '-',
+            'no' => $no,
+            'hari_tanggal' => $hariTanggalTampil,
+            'media' => $mediaPelaporanTampil,
+            'waktu_terima' => $waktuTerimaTampil,
+            'waktu_tiba' => $waktuTibaTampil,
+            'jarak' => $jarakTampil,
+            'respon' => $responTampil,
+            'pelapor' => $pelaporTampil,
+            'telepon' => $teleponPelaporTampil,
+            'objek' => $objekTampil,
+            'lokasi' => $lokasiTampil,
+            'nama_korban' => $namaKorbanTampil,
+            'jiwa' => $jiwaTampil,
+            'korban_status' => $korbanStatusTampil,
+            'pimpinan' => $pimpinanTampil,
+            'satgas' => $satgasTampil,
+            'personil' => $personilTampil,
+            'lama_operasi' => $lamaOperasiTampil,
+            'uraian' => $uraianTampil,
+            'hambatan' => $hambatanTampil,
+            'sarana' => $saranaTampil,
+            'tim_quick' => $timQuickTxt,
         ];
-    }
-
-    /**
-     * Ubah nilai kolom (JSON / JSON ter-encode dua kali / teks per baris) menjadi array nama.
-     */
-    private function daftar($nilai): array
-    {
-        for ($i = 0; $i < 2 && is_string($nilai); $i++) {
-            $d = json_decode($nilai, true);
-            if ($d === null) {
-                break;
-            }
-            $nilai = $d;
-        }
-
-        if (is_string($nilai)) {
-            $nilai = preg_split('/\r\n|\r|\n/', $nilai);
-        }
-        if (! is_array($nilai)) {
-            return [];
-        }
-
-        $hasil = [];
-        foreach ($nilai as $n) {
-            if (is_array($n)) {
-                $n = $n['nama'] ?? $n['name'] ?? null;
-            }
-            $n = trim((string) $n);
-            if ($n !== '' && $n !== '-') {
-                $hasil[] = $n;
-            }
-        }
-
-        return $hasil;
     }
 }

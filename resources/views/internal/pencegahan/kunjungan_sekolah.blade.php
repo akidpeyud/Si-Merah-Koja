@@ -94,6 +94,9 @@
         <div class="toolbar-actions">
             @hasanyrole('Pencegahan|Super User')
             <a href="{{ route('kunjungan_sekolah.create') }}" class="btn-tool navy"><i class="fas fa-plus"></i> Tambah Data</a>
+            <button type="button" class="btn-import-excel" data-bs-toggle="modal" data-bs-target="#modalImportPencegahan">
+                <i class="fas fa-file-import"></i> Impor Excel
+            </button>
             @endhasanyrole
 
             <div class="export-dropdown">
@@ -286,4 +289,7 @@
         });
     }
 </script>
+
+@include('internal.pencegahan.partials.import_modal', ['modul' => 'kunjungan-sekolah', 'judul' => 'Kunjungan Sekolah'])
+@include('internal.pencegahan.partials.table_optimizer')
 @endsection

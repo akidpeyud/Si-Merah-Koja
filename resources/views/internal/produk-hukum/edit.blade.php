@@ -19,7 +19,6 @@
 @endpush
 
 @section('content')
-@section('content')
 
         @if ($errors->any())
             <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert" style="border-radius: 12px;">
@@ -48,6 +47,24 @@
                 @csrf
                 @method('PUT')
                 <div class="row g-4">
+                    @if ($kategori === 'peraturan-menteri')
+                    <div class="col-12">
+                        <label for="sub_kategori" class="form-label">Kementerian / Folder <span class="text-danger">*</span></label>
+                        <select name="sub_kategori" id="sub_kategori" class="form-control form-select @error('sub_kategori') is-invalid @enderror" required>
+                            <option value="">-- Pilih Kementerian / Folder --</option>
+                            @foreach ($daftarSubMenteri as $keySub => $labelSub)
+                                <option value="{{ $keySub }}" {{ old('sub_kategori', $item->sub_kategori) === $keySub ? 'selected' : '' }}>
+                                    {{ $labelSub }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <small class="text-muted d-block mt-1">Pilih kementerian terkait agar dokumen terkelompok secara otomatis di folder publik yang tepat.</small>
+                        @error('sub_kategori')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    @endif
+
                     <div class="col-md-8">
                         <label for="nomor" class="form-label">Nomor Peraturan</label>
                         <input type="text" name="nomor" id="nomor" class="form-control @error('nomor') is-invalid @enderror" placeholder="Contoh: Nomor 24 Tahun 2007" value="{{ old('nomor', $item->nomor) }}">

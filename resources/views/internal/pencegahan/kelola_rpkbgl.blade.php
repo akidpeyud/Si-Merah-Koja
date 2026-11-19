@@ -225,6 +225,9 @@
                 <a href="/internal/pencegahan/kelola-rpkbgl/create" class="btn-add no-print-col">
                     <i class="fas fa-plus"></i> Tambah Data
                 </a>
+                <button type="button" class="btn-import-excel no-print-col" style="height:44px;" data-bs-toggle="modal" data-bs-target="#modalImportPencegahan">
+                    <i class="fas fa-file-import"></i> Impor Excel
+                </button>
                 @endhasanyrole
 
                 <button type="button" id="btnExportExcel" class="btn-excel no-print-col">
@@ -525,10 +528,12 @@
         @endhasanyrole
 
 <!-- Script Bootstrap & SweetAlert -->
+@include('internal.pencegahan.partials.import_modal', ['modul' => 'rpkbgl', 'judul' => 'Data RPPKBGL'])
+@include('internal.pencegahan.partials.table_optimizer')
 @endsection
 
 @push('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
 <script>
 (function () {
     'use strict';

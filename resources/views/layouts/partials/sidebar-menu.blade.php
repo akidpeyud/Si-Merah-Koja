@@ -13,6 +13,7 @@
                 ['Data Redkar', '/internal/pencegahan/kelola-redkar', 'fa-users-rectangle'],
                 ['Data RPPKBGL', '/internal/pencegahan/kelola-rpkbgl', 'fa-building-circle-check'],
                 ['Data SKK', '/internal/pencegahan/kelola-skk', 'fa-file-shield'],
+                ['Titik Peta Sigapkar', '/internal/peta-sigap/data', 'fa-location-dot'],
             ],
         ],
         [
@@ -83,7 +84,6 @@
                 ['Pemadaman, Penyelamatan & Evakuasi', '/internal/operator/kejadian', 'fa-fire-flame-curved'],
                 ['Data Pengumuman', '/internal/operator/pengumuman', 'fa-bullhorn'],
                 ['Data IKM', '/internal/operator/ikm', 'fa-face-smile'],
-                ['Titik Peta Sigapkar', '/internal/peta-sigap/data', 'fa-location-dot'],
             ],
         ],
         [

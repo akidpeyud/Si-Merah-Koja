@@ -144,18 +144,12 @@ class PencegahanController extends Controller
 
     public function indexPeningkatanKapasitas()
     {
-        $dataDiksar = Schema::hasTable('tbl_diksar') ? DB::table('tbl_diksar')->orderBy('id', 'desc')->get() : [];
-        $dataF1 = Schema::hasTable('tbl_diklat_f1') ? DB::table('tbl_diklat_f1')->orderBy('id', 'desc')->get() : [];
-        $dataF2 = Schema::hasTable('tbl_diklat_f2') ? DB::table('tbl_diklat_f2')->orderBy('id', 'desc')->get() : [];
-        $dataInspektur = Schema::hasTable('tbl_diklat_inspektur') ? DB::table('tbl_diklat_inspektur')->orderBy('id', 'desc')->get() : [];
-        $dataMfr = Schema::hasTable('tbl_diklat_mfr') ? DB::table('tbl_diklat_mfr')->orderBy('id', 'desc')->get() : [];
-        $dataRescue = Schema::hasTable('tbl_diklat_rescue') ? DB::table('tbl_diklat_rescue')->orderBy('id', 'desc')->get() : [];
-        $dataOperator = Schema::hasTable('tbl_diklat_operator') ? DB::table('tbl_diklat_operator')->orderBy('id', 'desc')->get() : [];
-        $dataPpl = Schema::hasTable('tbl_diklat_ppl') ? DB::table('tbl_diklat_ppl')->orderBy('id', 'desc')->get() : [];
+        $jumlahDiklat = [];
+        foreach (self::TABEL_DIKLAT as $slug => $tabel) {
+            $jumlahDiklat[$slug] = Schema::hasTable($tabel) ? DB::table($tabel)->count() : 0;
+        }
 
-        return view('internal.pencegahan.peningkatan_kapasitas', compact(
-            'dataDiksar', 'dataF1', 'dataF2', 'dataInspektur', 'dataMfr', 'dataRescue', 'dataOperator', 'dataPpl'
-        ));
+        return view('internal.pencegahan.peningkatan_kapasitas', compact('jumlahDiklat'));
     }
 
     public function createDiklat(Request $request)
@@ -483,16 +477,12 @@ class PencegahanController extends Controller
     // ==========================================
     public function index()
     {
-        $data_inspeksi = InspeksiBangunan::orderBy('id', 'asc')->get();
-        $data_fire_drill = FireDrill::orderBy('id', 'asc')->get();
-        $data_pks = PerjanjianKerjasama::orderBy('id', 'asc')->get();
-
-        $total_inspeksi = $data_inspeksi->count();
-        $total_fire_drill = $data_fire_drill->count();
-        $total_pks = $data_pks->count();
+        $total_inspeksi = InspeksiBangunan::count();
+        $total_fire_drill = FireDrill::count();
+        $total_pks = PerjanjianKerjasama::count();
 
         return view('internal.pencegahan.inspeksi_bangunan', compact(
-            'data_inspeksi', 'data_fire_drill', 'data_pks', 'total_inspeksi', 'total_fire_drill', 'total_pks'
+            'total_inspeksi', 'total_fire_drill', 'total_pks'
         ));
     }
 
@@ -569,12 +559,17 @@ class PencegahanController extends Controller
             'rekomendasi' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
 
+        $luasBangunan = trim((string) $validated['luas_bangunan']);
+        if ($luasBangunan !== '') {
+            $luasBangunan = preg_replace('/\s*(m²|m2)$/iu', '', $luasBangunan).' m²';
+        }
+
         $data = [
             'nama_tempat' => $validated['nama_tempat'],
             'jenis_usaha' => $validated['jenis_usaha'],
             'kualifikasi_bangunan' => $validated['kualifikasi_bangunan'],
             'resiko_kebakaran' => $validated['resiko_kebakaran'],
-            'luas_bangunan' => $validated['luas_bangunan'],
+            'luas_bangunan' => $luasBangunan,
             'alamat' => $validated['alamat'],
             'nama_penanggung_jawab' => $validated['nama_penanggung_jawab'],
             'no_telepon' => $validated['no_telepon'],
@@ -638,12 +633,17 @@ class PencegahanController extends Controller
             'rekomendasi' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
 
+        $luasBangunan = trim((string) $validated['luas_bangunan']);
+        if ($luasBangunan !== '') {
+            $luasBangunan = preg_replace('/\s*(m²|m2)$/iu', '', $luasBangunan).' m²';
+        }
+
         $data = [
             'nama_tempat' => $validated['nama_tempat'],
             'jenis_usaha' => $validated['jenis_usaha'],
             'kualifikasi_bangunan' => $validated['kualifikasi_bangunan'],
             'resiko_kebakaran' => $validated['resiko_kebakaran'],
-            'luas_bangunan' => $validated['luas_bangunan'],
+            'luas_bangunan' => $luasBangunan,
             'alamat' => $validated['alamat'],
             'nama_penanggung_jawab' => $validated['nama_penanggung_jawab'],
             'no_telepon' => $validated['no_telepon'],

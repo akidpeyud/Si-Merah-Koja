@@ -19,6 +19,7 @@ use App\Http\Controllers\PemberdayaanController;
 use App\Http\Controllers\PemohonAuthController;
 use App\Http\Controllers\PemohonDashboardController;
 use App\Http\Controllers\PencegahanController;
+use App\Http\Controllers\PencegahanImportController;
 use App\Http\Controllers\PenggunaanSaranaController;
 use App\Http\Controllers\PenggunaanSaranaExcelController;
 use App\Http\Controllers\PengumumanController;
@@ -55,6 +56,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\Permission\Middleware\RoleMiddleware;
 
@@ -112,7 +114,8 @@ Route::get('/berita/{id}', [BeritaController::class, 'showPublic']);
 Route::get('/media-informasi', [KabarDamkarController::class, 'indexMediaInformasi'])->name('media.informasi');
 Route::get('/sumber-air', [PublicController::class, 'sumberAir']);
 Route::get('/hidrant-kota', [PublicController::class, 'hidrantKota']);
-Route::get('/public-sigap', [PetaController::class, 'sigap']);
+Route::redirect('/public-sigap', '/sigapkar');
+Route::get('/sigapkar', [PetaController::class, 'sigap'])->name('public.sigap');
 Route::view('/waarld', 'layouts.partials.sidebarmenu')->name('tim.profil');
 
 Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman.index');
@@ -170,8 +173,8 @@ Route::get('/infografis/gambar/{id}', function (int $id) {
     if (preg_match('/^ig_([A-Za-z0-9_-]+)\./', $baseName, $m)) {
         $bin = Infografis::downloadInstagramMedia($m[1]);
         if ($bin) {
-            \Illuminate\Support\Facades\Storage::disk('public')->put($clean, $bin);
-            $mime = (new \finfo(FILEINFO_MIME_TYPE))->buffer($bin) ?: 'image/jpeg';
+            Storage::disk('public')->put($clean, $bin);
+            $mime = (new finfo(FILEINFO_MIME_TYPE))->buffer($bin) ?: 'image/jpeg';
 
             return response($bin, 200, ['Content-Type' => $mime, 'Cache-Control' => 'public, max-age=86400']);
         }
@@ -378,6 +381,7 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
     Route::middleware([RoleMiddleware::class.':Damtan|Super User'])->group(function () {
         Route::get('/internal/damtan/input-data', [DamtanController::class, 'createPenyelamatan'])->name('damtan.laporan.create');
         Route::post('/internal/damtan/input-data/store', [DamtanController::class, 'storePenyelamatan'])->name('damtan.laporan.store');
+        Route::post('/internal/damtan/import-excel', [DamtanController::class, 'importExcel'])->name('damtan.laporan.import-excel');
         Route::get('/internal/damtan/edit-data/{id}', [DamtanController::class, 'editPenyelamatan'])->name('damtan.laporan.edit');
         Route::put('/internal/damtan/update-data/{id}', [DamtanController::class, 'updatePenyelamatan'])->name('damtan.laporan.update');
         Route::delete('/internal/damtan/hapus-data/{id}', [DamtanController::class, 'destroyPenyelamatan']);
@@ -487,6 +491,7 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
     Route::get('/sapra/perbaikan-kendaraan', [SapraController::class, 'perbaikanKendaraan']);
     Route::get('/sapra/perbaikan-kendaraan/cetak-pdf', [SapraController::class, 'cetakPdfPerbaikanKendaraan']);
     Route::get('/sapra/perbaikan-kendaraan/cetak-excel', [SapraController::class, 'cetakExcelPerbaikanKendaraan']);
+    Route::get('/sapra/perbaikan-kendaraan/template-excel', [SapraController::class, 'downloadTemplatePerbaikan'])->name('sapra.perbaikan-kendaraan.template');
 
     // Aksi Tambah, Ubah, Hapus Data Sapra (Khusus Role Sapra & Super User)
     Route::middleware([RoleMiddleware::class.':Sapra|Super User'])->group(function () {
@@ -532,6 +537,7 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
         Route::post('/sapra/perbaikan-kendaraan/store', [SapraController::class, 'storePerbaikanKendaraan']);
         Route::put('/sapra/perbaikan-kendaraan/update/{id}', [SapraController::class, 'updatePerbaikanKendaraan']);
         Route::delete('/sapra/perbaikan-kendaraan/delete/{id}', [SapraController::class, 'destroyPerbaikanKendaraan']);
+        Route::post('/sapra/perbaikan-kendaraan/import', [SapraController::class, 'importPerbaikanKendaraan'])->name('sapra.perbaikan-kendaraan.import');
     });
 
     // --- E. PENCEGAHAN ---
@@ -894,20 +900,7 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
     });
 
     // 11. Peningkatan Kapasitas Aparatur
-    Route::get('/internal/pencegahan/peningkatan-kapasitas', function () {
-        $dataDiksar = Schema::hasTable('tbl_diksar') ? DB::table('tbl_diksar')->orderBy('id', 'desc')->get() : [];
-        $dataF1 = Schema::hasTable('tbl_diklat_f1') ? DB::table('tbl_diklat_f1')->orderBy('id', 'desc')->get() : [];
-        $dataF2 = Schema::hasTable('tbl_diklat_f2') ? DB::table('tbl_diklat_f2')->orderBy('id', 'desc')->get() : [];
-        $dataRescue = Schema::hasTable('tbl_diklat_rescue') ? DB::table('tbl_diklat_rescue')->orderBy('id', 'desc')->get() : [];
-        $dataMfr = Schema::hasTable('tbl_diklat_mfr') ? DB::table('tbl_diklat_mfr')->orderBy('id', 'desc')->get() : [];
-        $dataOperator = Schema::hasTable('tbl_diklat_operator') ? DB::table('tbl_diklat_operator')->orderBy('id', 'desc')->get() : [];
-        $dataInspektur = Schema::hasTable('tbl_diklat_inspektur') ? DB::table('tbl_diklat_inspektur')->orderBy('id', 'desc')->get() : [];
-        $dataPpl = Schema::hasTable('tbl_diklat_ppl') ? DB::table('tbl_diklat_ppl')->orderBy('id', 'desc')->get() : [];
-
-        return view('internal.pencegahan.peningkatan_kapasitas', compact(
-            'dataDiksar', 'dataF1', 'dataF2', 'dataRescue', 'dataMfr', 'dataOperator', 'dataInspektur', 'dataPpl'
-        ));
-    });
+    Route::get('/internal/pencegahan/peningkatan-kapasitas', [PencegahanController::class, 'indexPeningkatanKapasitas']);
 
     Route::get('/internal/pencegahan/peningkatan-kapasitas/lihat/{jenis}/{id}', function ($jenis, $id) {
         $map = ['diksar' => 'tbl_diksar', 'diklat-f1' => 'tbl_diklat_f1', 'diklat-f2' => 'tbl_diklat_f2', 'diklat-rescue' => 'tbl_diklat_rescue', 'diklat-mfr' => 'tbl_diklat_mfr', 'diklat-operator' => 'tbl_diklat_operator', 'diklat-inspektur' => 'tbl_diklat_inspektur', 'diklat-ppl' => 'tbl_diklat_ppl'];
@@ -943,6 +936,10 @@ Route::middleware(['auth', LogInternalActivity::class])->group(function () {
         Route::post('/internal/pencegahan/peningkatan-kapasitas/edit/{jenis}/{id}', [PencegahanController::class, 'updateDiklat'])->whereNumber('id');
 
         Route::delete('/internal/pencegahan/peningkatan-kapasitas/hapus/{jenis}/{id}', [PencegahanController::class, 'destroyDiklat'])->whereNumber('id');
+
+        // Impor Excel & Unduh Template Bidang Pencegahan
+        Route::post('/internal/pencegahan/import/{modul}', [PencegahanImportController::class, 'import'])->name('pencegahan.import');
+        Route::get('/internal/pencegahan/import-template/{modul}', [PencegahanImportController::class, 'template'])->name('pencegahan.import.template');
     });
 
     // --- F. DUK KEPEGAWAIAN ---
@@ -994,12 +991,15 @@ Route::get('/api/titik', [PetaController::class, 'apiData']);
 
 // Route Admin Peta SIGAP
 Route::prefix('internal/peta-sigap')->middleware(['auth', LogInternalActivity::class])->group(function () {
-    Route::get('/input', [PetaController::class, 'input']);
-    Route::post('/store', [PetaController::class, 'store']);
     Route::get('/data', [PetaController::class, 'data']);
-    Route::get('/edit/{id}', [PetaController::class, 'edit']);
-    Route::put('/update/{id}', [PetaController::class, 'update']);
-    Route::delete('/hapus/{id}', [PetaController::class, 'destroy']);
+
+    Route::middleware([RoleMiddleware::class.':Pencegahan|Super User'])->group(function () {
+        Route::get('/input', [PetaController::class, 'input']);
+        Route::post('/store', [PetaController::class, 'store']);
+        Route::get('/edit/{id}', [PetaController::class, 'edit']);
+        Route::put('/update/{id}', [PetaController::class, 'update']);
+        Route::delete('/hapus/{id}', [PetaController::class, 'destroy']);
+    });
 });
 
 // ==========================================

@@ -179,9 +179,28 @@
         <div class="card-container">
             <!-- Baris Pencarian & Info -->
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
-                <form action="{{ route('internal.produk-hukum.index', $kategori) }}" method="GET" class="search-wrap">
-                    <i class="fas fa-magnifying-glass"></i>
-                    <input type="text" name="search" class="form-control" placeholder="Cari nomor, tahun, atau judul..." value="{{ request('search') }}">
+                <form action="{{ route('internal.produk-hukum.index', $kategori) }}" method="GET" class="d-flex flex-wrap gap-2 align-items-center">
+                    <div class="search-wrap">
+                        <i class="fas fa-magnifying-glass"></i>
+                        <input type="text" name="search" class="form-control" placeholder="Cari nomor, tahun, atau judul..." value="{{ request('search') }}">
+                    </div>
+
+                    @if ($kategori === 'peraturan-menteri' && !empty($daftarSubMenteri))
+                    <select name="sub_kategori" class="form-select form-control" style="width: auto; min-width: 170px;" onchange="this.form.submit()">
+                        <option value="">-- Semua Kementerian --</option>
+                        @foreach ($daftarSubMenteri as $keySub => $labelSub)
+                            <option value="{{ $keySub }}" {{ request('sub_kategori') === $keySub ? 'selected' : '' }}>
+                                {{ $labelSub }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @endif
+
+                    @if(request('search') || request('sub_kategori'))
+                        <a href="{{ route('internal.produk-hukum.index', $kategori) }}" class="btn btn-outline-secondary btn-sm" style="border-radius: 8px;">
+                            <i class="fas fa-xmark"></i> Reset
+                        </a>
+                    @endif
                 </form>
 
                 <div class="text-muted small fw-medium">
@@ -209,7 +228,16 @@
                         @forelse($data as $index => $item)
                         <tr>
                             <td class="text-center fw-bold text-secondary">{{ $data->firstItem() + $index }}</td>
-                            <td class="fw-bold">{{ $item->nomor ?: '-' }}</td>
+                            <td class="fw-bold">
+                                {{ $item->nomor ?: '-' }}
+                                @if ($kategori === 'peraturan-menteri' && $item->sub_kategori)
+                                    <div class="mt-1">
+                                        <span class="badge" style="background: rgba(13, 27, 42, .08); color: var(--ink); font-size: .72rem; font-weight: 600;">
+                                            <i class="fas fa-folder me-1 text-warning"></i>{{ $item->nama_sub_kategori }}
+                                        </span>
+                                    </div>
+                                @endif
+                            </td>
                             <td class="text-center">
                                 @if($item->tahun)
                                     <span class="badge badge-navy">{{ $item->tahun }}</span>

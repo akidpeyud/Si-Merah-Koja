@@ -243,8 +243,8 @@
                     <i class="fas fa-file-excel me-1"></i> Cetak Excel
                 </a>
 
-                <!-- Tombol Tambah Titik Baru HANYA untuk Super User & Operator -->
-                @hasanyrole('Super User|Operator')
+                <!-- Tombol Tambah Titik Baru HANYA untuk Super User & Pencegahan -->
+                @hasanyrole('Super User|Pencegahan')
                 <a href="/internal/peta-sigap/input" class="btn-tambah text-decoration-none">
                     <i class="fas fa-plus me-1"></i> Tambah Titik Baru
                 </a>
@@ -329,7 +329,7 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="btn-action-group">
-                                        @hasanyrole('Super User|Operator')
+                                        @hasanyrole('Super User|Pencegahan')
                                         <!-- Tombol Edit -->
                                         <a href="{{ url('/internal/peta-sigap/edit/' . $titik->id) }}" class="btn-action btn-edit" title="Edit Data" aria-label="Edit {{ $titik->nama }}">
                                             <i class="fas fa-pen"></i>
